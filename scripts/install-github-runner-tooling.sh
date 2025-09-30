@@ -84,11 +84,33 @@ verify_installations() {
             log_error "Go tool $tool: NOT FOUND"
         fi
     done
+
+    # Check Node.js tools
+    local node_tools=("eslint" "prettier" "ts-prune" "orval" "pyright" "vite" "vitest" "tsc" "playwright")
+    for tool in "${node_tools[@]}"; do
+        if command_exists "$tool"; then
+            log_success "Node.js tool $tool: $(command -v "$tool")"
+        else
+            log_error "Node.js tool $tool: NOT FOUND"
+        fi
+    done
 }
 
 # Check if command exists
 command_exists() {
     command -v "$1" >/dev/null 2>&1
+}
+
+# Detect OS (simplified for GitHub Actions)
+detect_os() {
+    if [[ -f /etc/os-release ]]; then
+        . /etc/os-release
+        OS="linux"
+    else
+        OS="linux"  # Default for GitHub Actions runners
+    fi
+
+    log_info "Detected OS: $OS"
 }
 
 # Install Go development tools
@@ -162,6 +184,61 @@ install_go_tools() {
     fi
 }
 
+# Install Node.js development tools
+install_node_tools() {
+    log_info "Installing Node.js development tools..."
+
+    # Install global npm packages
+    local packages=("eslint" "prettier" "ts-prune" "orval" "pyright" "vite" "vitest" "@playwright/test")
+
+    for package in "${packages[@]}"; do
+        if ! command_exists "$package"; then
+            log_info "Installing $package..."
+            if [[ "$OS" == "linux" ]]; then
+                sudo npm install -g "$package"
+            else
+                # On macOS, try without sudo first, fall back to sudo if needed
+                if ! npm install -g "$package" 2>/dev/null; then
+                    log_warning "npm install failed without sudo, trying with sudo..."
+                    sudo npm install -g "$package"
+                fi
+            fi
+            log_success "$package installed successfully"
+        else
+            log_info "$package already installed"
+        fi
+    done
+
+    # Install TypeScript separately (provides tsc command)
+    if ! command_exists tsc; then
+        log_info "Installing TypeScript (tsc)..."
+        if [[ "$OS" == "linux" ]]; then
+            sudo npm install -g typescript
+        else
+            # On macOS, try without sudo first, fall back to sudo if needed
+            if ! npm install -g typescript 2>/dev/null; then
+                log_warning "npm install failed without sudo, trying with sudo..."
+                sudo npm install -g typescript
+            fi
+        fi
+        log_success "TypeScript (tsc) installed successfully"
+    else
+        log_info "TypeScript (tsc) already installed"
+    fi
+
+    # Install Playwright browser dependencies
+    log_info "Installing Playwright browser dependencies..."
+    if [[ -f "frontend/package.json" ]]; then
+        cd frontend
+        npm install @playwright/test
+        npx playwright install-deps
+        cd - > /dev/null
+        log_success "Playwright browser dependencies installed successfully!"
+    else
+        log_warning "frontend/package.json not found, skipping Playwright browser dependencies"
+    fi
+}
+
 # Install any additional tools if needed
 install_additional_tools() {
     # Install Task if not already installed
@@ -176,6 +253,9 @@ install_additional_tools() {
     # Install Go tools
     install_go_tools
 
+    # Install Node.js tools
+    install_node_tools
+
     # Add any other custom installations here if needed
     # This is where you would put any tools that can't be installed
     # via standard GitHub Actions setup actions
@@ -184,6 +264,9 @@ install_additional_tools() {
 # Main installation function
 main() {
     log_info "Starting GitHub Runner tooling setup..."
+
+    # Detect OS
+    detect_os
 
     # Verify all expected tools are available
     verify_installations
