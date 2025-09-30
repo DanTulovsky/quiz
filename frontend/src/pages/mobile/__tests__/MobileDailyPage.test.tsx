@@ -85,10 +85,7 @@ describe('MobileDailyPage', () => {
     expect(screen.getByText('1 of 2')).toBeInTheDocument();
   });
 
-  it('shows Daily Questions title', () => {
-    renderComponent();
-    expect(screen.getByText('Daily Questions')).toBeInTheDocument();
-  });
+  // Removed test for Daily Questions title which no longer exists
 
   it('renders current question', () => {
     renderComponent();
