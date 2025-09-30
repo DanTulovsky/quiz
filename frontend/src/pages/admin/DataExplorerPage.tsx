@@ -1406,12 +1406,12 @@ const QuestionUsersSection: React.FC<{
   // Create options for the multi-select
   const userOptions = allUsers
     .filter(
-      (userData: { user?: { id: number; username: string } }) =>
-        userData?.user && userData.user.id
+      (user: { id?: number; username?: string }) =>
+        user && user.id && user.username
     )
-    .map((userData: { user?: { id: number; username: string } }) => ({
-      value: userData.user!.id.toString(),
-      label: userData.user!.username,
+    .map((user: { id: number; username: string }) => ({
+      value: user.id.toString(),
+      label: user.username,
     }));
 
   // Get currently assigned user IDs

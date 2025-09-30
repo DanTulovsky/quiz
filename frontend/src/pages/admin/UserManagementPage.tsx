@@ -55,7 +55,6 @@ import {
   useUsersPaginated,
   usePauseUser,
   useResumeUser,
-  UserWithProgress,
 } from '../../api/admin';
 import { User, Role } from '../../api/api';
 import {
@@ -362,7 +361,7 @@ const UserManagementPage: React.FC = () => {
                 </Text>
                 <Text size='xl' fw={700}>
                   {usersData?.users?.filter(
-                    (u: UserWithProgress) => u.user?.ai_enabled
+                    (u: { ai_enabled?: boolean }) => u?.ai_enabled
                   ).length || 0}
                 </Text>
               </div>
@@ -380,9 +379,9 @@ const UserManagementPage: React.FC = () => {
                 </Text>
                 <Text size='xl' fw={700}>
                   {usersData?.users?.filter(
-                    (u: UserWithProgress) =>
-                      u.user?.last_active &&
-                      new Date(u.user.last_active) >
+                    (u: { last_active?: string }) =>
+                      u?.last_active &&
+                      new Date(u.last_active) >
                         new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
                   ).length || 0}
                 </Text>

@@ -34,7 +34,7 @@ import {
 import { useAuth } from '../../hooks/useAuth';
 import { Navigate } from 'react-router-dom';
 import { notifications } from '@mantine/notifications';
-import { useUsersPaginated, UserWithProgress } from '../../api/admin';
+import { useUsersPaginated } from '../../api/admin';
 import logger from '../../utils/logger';
 
 interface NotificationStats {
@@ -761,9 +761,7 @@ const NotificationsPage: React.FC = () => {
                   onChange={value => setSelectedUsername(value || '')}
                   data={
                     usersData?.users
-                      ?.map(
-                        (userData: UserWithProgress) => userData.user?.username
-                      )
+                      ?.map((user: { username?: string }) => user?.username)
                       .filter(Boolean) || []
                   }
                   searchable

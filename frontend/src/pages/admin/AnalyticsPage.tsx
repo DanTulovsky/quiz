@@ -36,10 +36,6 @@ interface User {
   username: string;
 }
 
-interface UserDataItem {
-  user: User;
-}
-
 interface UserAnalytics {
   distribution: {
     high: number;
@@ -354,10 +350,8 @@ const AnalyticsPage: React.FC = () => {
     logger.debug('Users data:', usersData);
     if (usersData?.users) {
       logger.debug('Setting allUsers:', usersData.users);
-      // Extract user data from the nested structure
-      const extractedUsers = usersData.users.map(
-        (item: UserDataItem) => item.user
-      );
+      // Extract user data (now directly in the array)
+      const extractedUsers = usersData.users as User[];
       logger.debug('Extracted users:', extractedUsers);
       setAllUsers(extractedUsers);
     }

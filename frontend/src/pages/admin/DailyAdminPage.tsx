@@ -126,14 +126,14 @@ const DailyAdminPage: React.FC = () => {
     if (selectedUser != null) return; // already set
     const fromUrl = searchParams.get('user');
     if (!fromUrl) return;
-    const list: Array<{ user: { id: number; username: string } }> | undefined =
+    const list: Array<{ id: number; username: string }> | undefined =
       usersData?.users;
     if (!list || list.length === 0) return;
     const found = list.find(
-      item => item?.user?.username?.toLowerCase() === fromUrl.toLowerCase()
+      user => user?.username?.toLowerCase() === fromUrl.toLowerCase()
     );
     if (found) {
-      setSelectedUser(found.user.id);
+      setSelectedUser(found.id);
     }
   }, [usersData, searchParams, selectedUser]);
 
@@ -143,10 +143,9 @@ const DailyAdminPage: React.FC = () => {
     if (selectedUser != null) {
       localStorage.setItem('dailyAdmin.selectedUserId', String(selectedUser));
       // Try to find the username from the loaded users list; fall back to id
-      const list:
-        | Array<{ user: { id: number; username: string } }>
-        | undefined = usersData?.users;
-      const userObj = list?.find(u => u?.user?.id === selectedUser)?.user;
+      const list: Array<{ id: number; username: string }> | undefined =
+        usersData?.users;
+      const userObj = list?.find(u => u?.id === selectedUser);
       const urlValue = userObj?.username ?? String(selectedUser);
       next.set('user', urlValue);
     } else {
@@ -199,20 +198,18 @@ const DailyAdminPage: React.FC = () => {
   const userSelectData =
     usersData?.users
       ?.filter(
-        (item: { user?: { id?: number; username?: string } }) =>
-          item?.user && item.user.id && item.user.username
+        (user: { id?: number; username?: string }) =>
+          user && user.id && user.username
       )
-      ?.map(
-        (item: { user: { id: number; username: string; email: string } }) => ({
-          value: item.user.id.toString(),
-          label: `${item.user.username} (${item.user.email || 'No email'})`,
-        })
-      ) || [];
+      ?.map((user: { id: number; username: string; email?: string }) => ({
+        value: user.id.toString(),
+        label: `${user.username} (${user.email || 'No email'})`,
+      })) || [];
 
   const selectedUserData = usersData?.users?.find(
-    (item: { user: { id: number; username: string; email: string } }) =>
-      item?.user?.id === selectedUser
-  )?.user;
+    (user: { id: number; username: string; email?: string }) =>
+      user?.id === selectedUser
+  );
 
   // Get questions from API
   const questions = dailyQuestions?.questions || [];

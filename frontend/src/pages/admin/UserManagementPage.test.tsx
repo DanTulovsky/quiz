@@ -14,7 +14,6 @@ import {
   useUsersPaginated,
   usePauseUser,
   useResumeUser,
-  UserWithProgress,
 } from '../../api/admin';
 import { User, Role } from '../../api/api';
 import {
@@ -73,27 +72,9 @@ const mockUserPaused: User = {
   is_paused: true, // This user is paused
 } as User;
 
-const mockUserWithProgress: UserWithProgress = {
-  ...mockUser,
-  progress: {
-    current_level: 'A1',
-    suggested_level: 'A2',
-    accuracy_rate: 85.5,
-    total_questions: 20,
-    correct_answers: 17,
-  },
-};
+const mockUserWithProgress = mockUser;
 
-const mockUserWithProgressPaused: UserWithProgress = {
-  ...mockUserPaused,
-  progress: {
-    current_level: 'A1',
-    suggested_level: 'A2',
-    accuracy_rate: 85.5,
-    total_questions: 20,
-    correct_answers: 17,
-  },
-};
+const mockUserWithProgressPaused = mockUserPaused;
 
 const mockUsersData = {
   users: [mockUserWithProgress],
