@@ -94,7 +94,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
         collapsed: { mobile: !opened },
       }}
       header={{ height: { base: 50, md: 70 } }}
-      footer={{ height: 90 }}
+      footer={{ height: 60 }}
     >
       <AppShell.Navbar p='md'>
         <AppShell.Section grow>
@@ -195,7 +195,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
           align='center'
           style={{ height: '100%', width: '100%' }}
         >
-          <Text fw={500} tt='capitalize'>
+          <Text fw={600} size='sm' tt='capitalize'>
             {navItems.find(n => n.key === activeTab)?.label}
           </Text>
         </Group>

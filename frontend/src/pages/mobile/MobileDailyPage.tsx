@@ -1,5 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { parseLocalDateString } from '../../utils/time';
 import {
   Container,
   Paper,
@@ -19,6 +20,7 @@ import { IconCheck, IconX, IconCalendar } from '@tabler/icons-react';
 import { useDailyQuestions } from '../../hooks/useDailyQuestions';
 import { useDisclosure } from '@mantine/hooks';
 import DailyDatePicker from '../../components/DailyDatePicker';
+import { useMantineTheme } from '@mantine/core';
 
 const MobileDailyPage: React.FC = () => {
   const { date: dateParam } = useParams();
@@ -125,6 +127,8 @@ const MobileDailyPage: React.FC = () => {
       ? ((currentQuestionIndex + 1) / questions.length) * 100
       : 0;
 
+  const theme = useMantineTheme();
+
   return (
     <Container size='sm'>
       <Stack gap='md'>
@@ -163,11 +167,12 @@ const MobileDailyPage: React.FC = () => {
                           variant='filled'
                           style={{
                             position: 'absolute',
-                            top: -4,
-                            right: -4,
+                            top: -6,
+                            right: -6,
+                            transform: 'scale(0.9)',
                           }}
                         >
-                          {new Date(selectedDate).getDate()}
+                          {parseLocalDateString(selectedDate).getDate()}
                         </Badge>
                       )}
                     </ActionIcon>
@@ -240,6 +245,9 @@ const MobileDailyPage: React.FC = () => {
                         color={
                           isIncorrect ? 'red' : isCorrect ? 'green' : 'blue'
                         }
+                        c={
+                          isIncorrect ? 'red' : isCorrect ? 'green' : undefined
+                        }
                         size='lg'
                         onClick={() =>
                           !isSubmittedLocal && setSelectedAnswerLocal(index)
@@ -268,6 +276,11 @@ const MobileDailyPage: React.FC = () => {
                           },
                           label: {
                             fontWeight: isCorrect || isIncorrect ? 600 : 400,
+                            color: isCorrect
+                              ? theme.colors.green[7]
+                              : isIncorrect
+                                ? theme.colors.red[7]
+                                : undefined,
                           },
                         }}
                       >
