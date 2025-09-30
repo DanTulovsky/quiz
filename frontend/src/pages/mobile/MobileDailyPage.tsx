@@ -205,9 +205,7 @@ const MobileDailyPage: React.FC = () => {
                 </Badge>
               </Group>
             </Group>
-            <Text size='lg' fw={500}>
-              Daily Questions
-            </Text>
+            {/* Removed redundant Daily Questions label */}
             <Progress value={progressValue} color='orange' />
           </Stack>
         </Paper>
