@@ -284,7 +284,14 @@ const MobileDailyPage: React.FC = () => {
                           },
                         }}
                       >
-                        <Text>{option}</Text>
+                        <Text
+                          style={{
+                            wordBreak: 'break-word',
+                            whiteSpace: 'normal',
+                          }}
+                        >
+                          {option}
+                        </Text>
                       </Button>
                     );
                   }
