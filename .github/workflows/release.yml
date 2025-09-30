@@ -11,14 +11,17 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test:
+  test-check:
     runs-on: ubuntu-24.04
-    outputs:
-      test-workflow-id: ${{ steps.trigger-test.outputs.workflow-id }}
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+    permissions:
+      contents: read
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # Full history for version calculation
 
     - name: Trigger test workflow
       id: trigger-test
@@ -86,7 +89,7 @@ jobs:
 
   release:
     runs-on: ubuntu-24.04
-    needs: test
+    needs: test-check
 
     steps:
     - name: Checkout code
