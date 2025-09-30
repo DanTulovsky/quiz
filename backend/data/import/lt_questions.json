@@ -1,0 +1,1122 @@
+[
+    {
+        "content": {
+            "question": "Choose the correct sentence:",
+            "options": [
+                "Non è normale e naturale.",
+                "Non e normale è naturale.",
+                "Non è normale è naturale.",
+                "Non e normale e naturale."
+            ]
+        },
+        "correct_answer": 0,
+        "explanation": "Use è (is) with accent and e (and) without accent. Structure: Non è X e Y.",
+        "grammar_focus": "e_vs_è",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Pick the correct Italian for “global”:",
+            "options": [
+                "globalo",
+                "globala",
+                "globale",
+                "globalmente"
+            ]
+        },
+        "correct_answer": 2,
+        "explanation": "English -al typically becomes Italian -ale: global → globale.",
+        "grammar_focus": "al2ale",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Select the correct adverb meaning “really”:",
+            "options": [
+                "realmente",
+                "reale",
+                "realità",
+                "realmentee"
+            ]
+        },
+        "correct_answer": 0,
+        "explanation": "-mente forms adverbs from adjectives: reale → realmente.",
+        "grammar_focus": "mente",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Choose the correct word meaning “probability”:",
+            "options": [
+                "probabilita",
+                "probabilitá",
+                "probabilità",
+                "probabilità "
+            ]
+        },
+        "correct_answer": 2,
+        "explanation": "English -ity → Italian -ità with grave accent: probabilità.",
+        "grammar_focus": "ity2ità",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Pick the correct Italian for “indication”:",
+            "options": [
+                "indicazione",
+                "indicare",
+                "indicato",
+                "indiciazione"
+            ]
+        },
+        "correct_answer": 0,
+        "explanation": "-tion → -zione for nouns: indicazione (feminine).",
+        "grammar_focus": "tion2z",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Select the correct Italian for “difference”:",
+            "options": [
+                "differanza",
+                "differenza",
+                "diferenza",
+                "differente"
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "-ence → -enza: differenza. Note the double f.",
+        "grammar_focus": "ence2za",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Pick the correct way to say “I work today”:",
+            "options": [
+                "Oggi lavorare.",
+                "Oggi lavoro.",
+                "Oggi lavori.",
+                "Oggi lavora."
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "First person singular uses -o: lavoro. Temporal adverbs can lead.",
+        "grammar_focus": "pres1sg",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Select the correct sentence for “She finishes later”:",
+            "options": [
+                "Lei finisce più tardi.",
+                "Lei finisci più tardi.",
+                "Lei finisco più tardi.",
+                "Lei finisca più tardi."
+            ]
+        },
+        "correct_answer": 0,
+        "explanation": "Finire uses -isc for lei: finisce. Remember the accent in più.",
+        "grammar_focus": "isc_3sg",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Choose the correct form for “We understand”:",
+            "options": [
+                "Capiamo",
+                "Capisciamo",
+                "Capimo",
+                "Capiscamo"
+            ]
+        },
+        "correct_answer": 0,
+        "explanation": "No -isc for noi: capire → capiamo.",
+        "grammar_focus": "isc_noi",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Pick the correct placement for “I want to see it (masc.)”:",
+            "options": [
+                "Voglio lo vedere.",
+                "Lo voglio vedere.",
+                "Voglio vedere lo.",
+                "Voglio vederla."
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "Clitic before the conjugated verb is correct; also “Voglio vederlo” works.",
+        "grammar_focus": "cl_pos",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Select the correct clitic cluster for “Can you show us it?”:",
+            "options": [
+                "Puoi mostrarci lo?",
+                "Puoi mostrarlo ci?",
+                "Puoi farcelo vedere?",
+                "Puoi farelo civedere?"
+            ]
+        },
+        "correct_answer": 2,
+        "explanation": "Order is person (ce) before thing (lo). Common with fare vedere: farcelo vedere.",
+        "grammar_focus": "cl_order",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Choose the correct past form for “I have bought it (the house)”:",
+            "options": [
+                "L’ho comprato.",
+                "L’ho comprata.",
+                "Lo ho comprato la casa.",
+                "Ho comprato la."
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "With la as clitic, the participle agrees: la casa → l’ho comprata.",
+        "grammar_focus": "pp_agree",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Select the correct sentence (female speaker) for “I arrived yesterday”:",
+            "options": [
+                "Ho arrivata ieri.",
+                "Sono arrivata ieri.",
+                "Sono arrivato ieri.",
+                "Ho arrivato ieri."
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "Motion verbs take essere; participle agrees with the subject.",
+        "grammar_focus": "aux_ess",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Pick the correct form for “Shall we go to eat?”:",
+            "options": [
+                "Andiamo mangiare?",
+                "Andiamo a mangiare?",
+                "Andiamo per mangiare?",
+                "Andiamo di mangiare?"
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "With motion verbs use a + infinitive: Andiamo a mangiare?",
+        "grammar_focus": "a_inf",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Choose the correct sentence for “I don’t know if I can come”:",
+            "options": [
+                "Non conosco se posso venire.",
+                "Non so se posso venire.",
+                "Non so posso venire.",
+                "Non conosco posso venire."
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "Use sapere for information: Non so se + clause.",
+        "grammar_focus": "sapere",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Select the correct plural for “the cities”:",
+            "options": [
+                "le cittas",
+                "le città",
+                "le citte",
+                "i città"
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "-ità nouns are invariable; plural shown by the article: le città.",
+        "grammar_focus": "ità_pl",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Pick the correct phrase for “my (male) friends”:",
+            "options": [
+                "i mio amici",
+                "i miei amici",
+                "i mie amici",
+                "il miei amici"
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "Irregular plural possessive: i miei amici.",
+        "grammar_focus": "poss_pl",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Choose the correct spelling for “today”:",
+            "options": [
+                "ogi",
+                "oggi",
+                "ogggi",
+                "oji"
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "oggi has double g; double consonants are meaningful.",
+        "grammar_focus": "dbl_cons",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Select the correct plural for “female friends”:",
+            "options": [
+                "le amice",
+                "le amici",
+                "le amiche",
+                "le amichi"
+            ]
+        },
+        "correct_answer": 2,
+        "explanation": "Add h to keep hard /k/ before e: amiche.",
+        "grammar_focus": "ch_rule",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Pick the correct infinitive meaning “to eat”:",
+            "options": [
+                "mangiare",
+                "mangiàre",
+                "mangere",
+                "mangiareh"
+            ]
+        },
+        "correct_answer": 0,
+        "explanation": "GI softens g in mangiare; no accent or h needed.",
+        "grammar_focus": "gi_soft",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Choose the correct sentence for “They speak too much”:",
+            "options": [
+                "Parlano molto.",
+                "Parlano troppo.",
+                "Parlono troppo.",
+                "Parlano troppa."
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "troppo = too much; 3rd plural -are = -ano.",
+        "grammar_focus": "pres3pl",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Select the correct sentence for “They live here”:",
+            "options": [
+                "Vivono qui.",
+                "Vive qui.",
+                "Vivete qui.",
+                "Vivo qui."
+            ]
+        },
+        "correct_answer": 0,
+        "explanation": "-ere 3rd plural ends in -ono: vivono.",
+        "grammar_focus": "ere3pl",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Pick the correct form for “they do/make”:",
+            "options": [
+                "Fano",
+                "Fanno",
+                "Fanono",
+                "Fannò"
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "Irregular with double n: fanno.",
+        "grammar_focus": "fanno",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Choose the correct time expression meaning “at seven o’clock”:",
+            "options": [
+                "a le sette",
+                "alle sette",
+                "alla sette",
+                "al le sette"
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "a + le (ore) → alle: alle sette.",
+        "grammar_focus": "allehr",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Select the correct sentence for “We have cleaned the car”:",
+            "options": [
+                "Abbiamo pulito la macchina.",
+                "Abbiamo pulita la macchina.",
+                "Siamo pulito la macchina.",
+                "Abbiamo pulire la macchina."
+            ]
+        },
+        "correct_answer": 0,
+        "explanation": "With avere, no agreement with a following noun.",
+        "grammar_focus": "averepp",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Pick the correct negative with “yet”:",
+            "options": [
+                "Non hai già pulito?",
+                "Non hai ancora pulito?",
+                "Non hai mai pulito?",
+                "Non hai pulito già?"
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "Negative + ancora = yet; già = already for positives.",
+        "grammar_focus": "gia_anc",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Choose the correct sentence for “We haven’t cleaned all the houses yet”:",
+            "options": [
+                "Non abbiamo pulito ancora tutte le case.",
+                "Non abbiamo ancora pulito tutte le case.",
+                "Non ancora abbiamo pulito tutte le case.",
+                "Non abbiamo pulite ancora tutte le case."
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "Place ancora after non and before the participle.",
+        "grammar_focus": "anc_pos",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Select the correct participle meaning “organized”:",
+            "options": [
+                "organizzato",
+                "organizzuto",
+                "organizzito",
+                "organizzare"
+            ]
+        },
+        "correct_answer": 0,
+        "explanation": "-are → -ato: organizzato.",
+        "grammar_focus": "are_ato",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Pick the common irregular participle meaning “seen”:",
+            "options": [
+                "veduto",
+                "viso",
+                "visto",
+                "vedito"
+            ]
+        },
+        "correct_answer": 2,
+        "explanation": "visto is the common form of vedere’s participle.",
+        "grammar_focus": "visto",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Select the correct pair of irregular participles:",
+            "options": [
+                "fare → fato; dire → dito",
+                "fare → fatto; dire → detto",
+                "fare → fesso; dire → diso",
+                "fare → fattato; dire → parlato"
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "Both take double t: fatto, detto.",
+        "grammar_focus": "fat_det",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Choose the correct form for “Can you give me it?”:",
+            "options": [
+                "Puoi darmelo?",
+                "Puoi daremi lo?",
+                "Puoi damelo?",
+                "Puoi darlo me?"
+            ]
+        },
+        "correct_answer": 0,
+        "explanation": "mi → me before lo: darmelo (single word with infinitive).",
+        "grammar_focus": "me_lo",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Pick the correct sentence for “I have already given them to you”:",
+            "options": [
+                "Ti li ho già dati.",
+                "Te li ho già dati.",
+                "Te li ho già dato.",
+                "Ti le ho già dati."
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "ti → te before another clitic; li triggers plural agreement: dati.",
+        "grammar_focus": "te_li",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Select the correct sentence for “I’m getting ready”:",
+            "options": [
+                "Mi preparo.",
+                "Mi preparo sono.",
+                "Sono preparo.",
+                "Mi prepari."
+            ]
+        },
+        "correct_answer": 0,
+        "explanation": "Reflexive present: mi preparo = I get ready.",
+        "grammar_focus": "refl_prs",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Choose the correct sentence for “We got ready”:",
+            "options": [
+                "Ci abbiamo preparati.",
+                "Ci siamo preparati.",
+                "Ci siamo preparato.",
+                "Ci abbiamo preparato."
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "Reflexives take essere in the past; participle agrees with subject.",
+        "grammar_focus": "refl_pp",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Pick the correct question to a female: “Have you had fun?”:",
+            "options": [
+                "Ti sei divertita?",
+                "Ti hai divertita?",
+                "Ti sei divertito?",
+                "Sei ti divertita?"
+            ]
+        },
+        "correct_answer": 0,
+        "explanation": "Reflexive + essere; agreement with subject’s gender.",
+        "grammar_focus": "diversi",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Select the sentence with correct e/è usage:",
+            "options": [
+                "E tardi ma non e importante.",
+                "È tardi ma non è importante.",
+                "E tardi ma non è importante.",
+                "È tardi ma non e importante."
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "È (is) needs the accent; e (and) is without accent.",
+        "grammar_focus": "e_vs_è",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Choose the correct form (tu) for conoscere:",
+            "options": [
+                "Conoschi",
+                "Conosci",
+                "Conosce",
+                "Conoscie"
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "Conoscere → conosci (CI = /chi/); SCI would be /shi/.",
+        "grammar_focus": "ci_sci",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Pick the correct elision before a vowel:",
+            "options": [
+                "La università",
+                "L’università",
+                "Lo università",
+                "Il università"
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "Before vowels, la/il → l’: l’università.",
+        "grammar_focus": "elide_l",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Select the correct plural for “the opinions”:",
+            "options": [
+                "Le opinione",
+                "Le opinioni",
+                "I opinioni",
+                "Gli opinioni"
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "-ione is feminine; plural -ioni: le opinioni.",
+        "grammar_focus": "ione_pl",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Choose the correct sentence for “He hasn’t found it (fem.) yet”:",
+            "options": [
+                "Non l’ha ancora trovata.",
+                "Non l’ha già trovata.",
+                "Non la ha trovata ancora.",
+                "Non l’ha ancora trovato."
+            ]
+        },
+        "correct_answer": 0,
+        "explanation": "In negatives use ancora; la → trovata (agreement).",
+        "grammar_focus": "anc_pp",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Pick the correct 3rd plural for sapere:",
+            "options": [
+                "Sanno",
+                "Sannò",
+                "Sono",
+                "Sannono"
+            ]
+        },
+        "correct_answer": 0,
+        "explanation": "Irregular: sanno (no accent).",
+        "grammar_focus": "sanno",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Build the verb from the noun: “invitation” →",
+            "options": [
+                "invitazione",
+                "invitare",
+                "invito",
+                "invitate"
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "Remove -ation, add -are: invitare.",
+        "grammar_focus": "ationV",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Form the adjective from the verb: “importare” →",
+            "options": [
+                "importato",
+                "importante",
+                "importabile",
+                "importanza"
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "Verb → -ante adjective: importante.",
+        "grammar_focus": "anteAdj",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Choose the correct agreement: “They are sincere” (mixed group):",
+            "options": [
+                "Sono sinceri.",
+                "Sono sincera.",
+                "Sono sincere.",
+                "Sono sincero."
+            ]
+        },
+        "correct_answer": 0,
+        "explanation": "Masculine/mixed plural: sinceri.",
+        "grammar_focus": "adjAgr",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Pick the correct plural for adjectives in -e: “They are intelligent”:",
+            "options": [
+                "Sono intelligente.",
+                "Sono intelligenta.",
+                "Sono intelligenti.",
+                "Sono intelligentes."
+            ]
+        },
+        "correct_answer": 2,
+        "explanation": "-e adjectives plural → -i for both genders.",
+        "grammar_focus": "e2i_adj",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Select the correct plural for “the doors”:",
+            "options": [
+                "I porte",
+                "Le porte",
+                "Le porta",
+                "I porta"
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "la porta → le porte.",
+        "grammar_focus": "a2e_pl",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Pick the correct 2nd singular for potere:",
+            "options": [
+                "poui",
+                "põe",
+                "puoi",
+                "puoì"
+            ]
+        },
+        "correct_answer": 2,
+        "explanation": "Irregular: puoi.",
+        "grammar_focus": "puoi",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Choose the correct sentence for “He can come to eat there”:",
+            "options": [
+                "Può venire a mangiare là.",
+                "Può venire mangiare a là.",
+                "Può a venire a mangiare là.",
+                "Può venire per mangiare là."
+            ]
+        },
+        "correct_answer": 0,
+        "explanation": "Motion + a + infinitive; adverb là at end is natural.",
+        "grammar_focus": "a_inf",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Select the correct polite request:",
+            "options": [
+                "Mi dai il tuo libro?",
+                "Mi dai tuo libro?",
+                "Dai mi il tuo libro?",
+                "Mi dai lo tuo libro?"
+            ]
+        },
+        "correct_answer": 0,
+        "explanation": "Possessives need the article: il tuo libro.",
+        "grammar_focus": "poss_art",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Form the adverb from the adjective “normale”:",
+            "options": [
+                "normalemente",
+                "normalmente",
+                "normalite",
+                "normalità"
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "Add -mente: normalmente.",
+        "grammar_focus": "mente",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Pick the correct plural for “the concerts”:",
+            "options": [
+                "gli concerto",
+                "i concerti",
+                "le concerti",
+                "i concerto"
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "il concerto → i concerti.",
+        "grammar_focus": "o2i_pl",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Choose the correct sentence for “We want to see them (fem.)”:",
+            "options": [
+                "Le vogliamo vedere.",
+                "Li vogliamo vedere.",
+                "Lo vogliamo vedere.",
+                "La vogliamo vedere."
+            ]
+        },
+        "correct_answer": 0,
+        "explanation": "Feminine plural clitic: le.",
+        "grammar_focus": "le_clit",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Select the correct contraction with ho/hai/ha:",
+            "options": [
+                "Lo ho visto.",
+                "L’ho visto.",
+                "La ho vista.",
+                "Le ho vista."
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "lo/la + ho → l’ho (elision).",
+        "grammar_focus": "l_ho",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Identify the correct spelling (double r) for “to arrive”:",
+            "options": [
+                "arivare",
+                "arrivare",
+                "arrivahre",
+                "arrivàre"
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "arrivare has double r; no h or accent.",
+        "grammar_focus": "dbl_r",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Find the correct contraction for “Where is …?”:",
+            "options": [
+                "Dove è?",
+                "Dov’è?",
+                "Dovè?",
+                "Dove’é?"
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "dove + è → dov’è.",
+        "grammar_focus": "wh_è",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Choose the correct contraction for “How is …?”:",
+            "options": [
+                "Come è?",
+                "Com’è?",
+                "Come’ è?",
+                "Comé?"
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "come + è → com’è.",
+        "grammar_focus": "wh_è",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Pick the correct contraction for “What is …?”:",
+            "options": [
+                "Cosa è?",
+                "Cos’è?",
+                "Cose’?",
+                "Cosè?"
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "cosa + è → cos’è.",
+        "grammar_focus": "wh_è",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Select the correct sentence for “You (tu) know me”:",
+            "options": [
+                "Tu mi conosci.",
+                "Tu mi conoschi.",
+                "Tu mi conoscie.",
+                "Tu mi conosciei."
+            ]
+        },
+        "correct_answer": 0,
+        "explanation": "Conosci (CI = /chi/); SCI would be /shi/ (e.g., scienza).",
+        "grammar_focus": "ci_sci",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Pick the correct “about what …?” question:",
+            "options": [
+                "Cosa parli?",
+                "Di cosa parli?",
+                "A cosa parli?",
+                "Per cosa parli?"
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "Use di to express “about”: Di cosa parli?",
+        "grammar_focus": "di_ques",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Choose the best because-clause:",
+            "options": [
+                "Perché non vengo perché lavoro.",
+                "Non vengo perché lavoro.",
+                "Perché lavoro, perché non vengo.",
+                "Non vengo per che lavoro."
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "Perché serves as “because” in a single causal clause.",
+        "grammar_focus": "perche",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Select the correct reflexive + clitic order in past:",
+            "options": [
+                "Dove te lo sei comprato?",
+                "Dove ti lo hai comprato?",
+                "Dove te l’hai comprato?",
+                "Dove ti lo sei comprato?"
+            ]
+        },
+        "correct_answer": 0,
+        "explanation": "Reflexive uses essere; person-before-thing: te lo sei comprato.",
+        "grammar_focus": "refl_cl",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Pick the correct form for “He wants to show us it”:",
+            "options": [
+                "Vuole farcelo vedere.",
+                "Vuole farceli vedere.",
+                "Vuole farcela vedere.",
+                "Vuole farlocecivedere."
+            ]
+        },
+        "correct_answer": 0,
+        "explanation": "ce (us) + lo (it) before vedere with fare: farcelo vedere.",
+        "grammar_focus": "ce_lo",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Identify the correct plural for “the possibilities”:",
+            "options": [
+                "le possibilite",
+                "le possibilità",
+                "le possibilitá",
+                "i possibilità"
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "-ità nouns are invariable; use plural article: le possibilità.",
+        "grammar_focus": "ità_pl",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Identify the correct plural for “the opportunities”:",
+            "options": [
+                "le opportunità",
+                "le opportunite",
+                "gli opportunità",
+                "le oportunità"
+            ]
+        },
+        "correct_answer": 0,
+        "explanation": "opportunità is invariable; plural article: le opportunità.",
+        "grammar_focus": "ità_pl",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Choose the correct agreement: “The houses are clean”:",
+            "options": [
+                "Le case è pulito.",
+                "Le case sono puliti.",
+                "Le case sono pulite.",
+                "Le case sono pulita."
+            ]
+        },
+        "correct_answer": 2,
+        "explanation": "Feminine plural: pulite; verb plural: sono.",
+        "grammar_focus": "adjAgr",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Pick the correct combo: “At 8 o’clock shall we go to eat?”:",
+            "options": [
+                "Alle otto andiamo a mangiare?",
+                "Al otto andiamo a mangiare?",
+                "Alle otto andiamo mangiare?",
+                "Alle otto andiamo di mangiare?"
+            ]
+        },
+        "correct_answer": 0,
+        "explanation": "a+le → alle; motion + a + infinitive.",
+        "grammar_focus": "alle_a",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Select the best equivalent of “I don’t care”:",
+            "options": [
+                "Non mi importa.",
+                "Non importa a me.",
+                "Io non importa.",
+                "Non per me importa."
+            ]
+        },
+        "correct_answer": 0,
+        "explanation": "Idiomatic form: Non mi importa.",
+        "grammar_focus": "idioms",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Pick the common phone greeting:",
+            "options": [
+                "Pronto?",
+                "Pronti?",
+                "Sono pronto?",
+                "Ciao?"
+            ]
+        },
+        "correct_answer": 0,
+        "explanation": "Standard phone answer in Italian: Pronto?",
+        "grammar_focus": "idioms",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Choose the polite response to thanks:",
+            "options": [
+                "Di niente.",
+                "Per niente.",
+                "Perché niente.",
+                "Niente perché."
+            ]
+        },
+        "correct_answer": 0,
+        "explanation": "You’re welcome: Di niente.",
+        "grammar_focus": "idioms",
+        "language": "italian",
+        "type": "qa"
+    },
+    {
+        "content": {
+            "question": "Choose the natural phrasing for “(Will you) come to my place?”:",
+            "options": [
+                "Vieni a la casa mia?",
+                "Vieni a casa mia?",
+                "Vieni alla casa mia?",
+                "Vieni a la mia casa?"
+            ]
+        },
+        "correct_answer": 1,
+        "explanation": "Fixed pattern: a casa mia (no article).",
+        "grammar_focus": "casa_mia",
+        "language": "italian",
+        "type": "qa"
+    }
+]

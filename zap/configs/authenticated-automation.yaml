@@ -1,0 +1,62 @@
+# ZAP Automation Framework Configuration for Authenticated Scan
+
+env:
+  contexts:
+  - name: "authenticated-context"
+    urls:
+    - "http://host.docker.internal:3000"
+    authentication:
+      method: "manual"
+    users:
+    - name: "authenticated-user"
+      credentials:
+        username: "${ZAP_ADMIN_USERNAME}"
+        password: "${ZAP_ADMIN_PASSWORD}"
+    sessionManagement:
+      method: "cookie"
+      parameters:
+        sessionTokensRegex: "JSESSIONID|sessionid|session"
+    technology:
+      include: []
+      exclude: []
+  parameters:
+    failOnError: true
+    progressToStdout: false
+
+jobs:
+- parameters:
+    context: "authenticated-context"
+    user: "authenticated-user"
+    maxDuration: 0
+    url: "http://host.docker.internal:3000"
+    maxCrawlDepth: 5
+    maxCrawlStates: 0
+    eventWait: 1000
+    reloadWait: 1000
+  type: "spiderAjax"
+- parameters:
+    context: "authenticated-context"
+    user: "authenticated-user"
+  type: "activeScan"
+- parameters:
+    maxDuration: 0
+  type: "passiveScan-wait"
+- parameters:
+    format: "Long"
+    summaryFile: "/zap/wrk/zap/reports/zap-authenticated-report.json"
+  rules: []
+  type: "outputSummary"
+- parameters:
+    reportDescription: "Authenticated security scan report"
+    reportDir: "/zap/wrk/"
+    reportFile: "zap/reports/zap-authenticated-report.html"
+    reportTitle: "ZAP Authenticated Scanning Report"
+    template: "traditional-html"
+  type: "report"
+- parameters:
+    reportDescription: "Authenticated security scan report"
+    reportDir: "/zap/wrk/"
+    reportFile: "zap/reports/zap-authenticated-report.json"
+    reportTitle: "ZAP Authenticated Scanning Report"
+    template: "traditional-json"
+  type: "report"

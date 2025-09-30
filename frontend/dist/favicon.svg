@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Quiz Favicon">
+  <title>Quiz</title>
+  <rect x="6" y="6" width="52" height="52" rx="12" ry="12" fill="#4c6ef5"/>
+
+  <!-- Clean, bold Q for clarity at small sizes -->
+  <circle cx="32" cy="28" r="14" fill="#ffffff"/>
+  <line x1="40" y1="38" x2="46" y2="44" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- Compact check to suggest correctness/learning -->
+  <path d="M23 41 l5 5 l11 -11" fill="none" stroke="#12b886" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

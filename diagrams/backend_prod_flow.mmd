@@ -1,0 +1,45 @@
+flowchart TD
+  %% Backend production architecture (no tests)
+  subgraph Backend
+    Server["cmd/server\nHTTP API Server\n- loads config\n- runs migrations\n- sets up observability"]
+    Worker["cmd/worker\nWorker process\n- long-running jobs\n- worker admin UI"]
+    DB["PostgreSQL\n- application data, jobs, assignments"]
+    Obs["Observability\nOpenTelemetry, logging, metrics"]
+    AI["AI Provider\nOpenAI / Ollama (external)"]
+    Services["Services layer\nUserService, QuestionService,\nLearningService, DailyQuestionService,\nWorkerService, AIService, EmailService,\nGenerationHintService, OAuthService"]
+    Router["Router & Handlers\nHTTP handlers, middleware, sessions"]
+    DBManager["database.Manager\nInitDBWithConfig / InitDBWithoutMigrations"]
+    Migrations["migrations/* (run on server start)"]
+    AdminHandler["Worker Admin Handler\n(exposes worker admin endpoints)"]
+  end
+
+  %% Initialization and control flow
+  Server -->|"init -> DBManager"| DBManager
+  DBManager -->|"connects"| DB
+  Server -->|"run migrations"| Migrations
+  Server -->|"create services"| Services
+  Server -->|"create router"| Router
+  Router -->|"calls"| Services
+  Router -->|"read/write"| DB
+  Router -->|"enqueue job (insert job row)"| DB
+
+  %% Worker flows
+  Worker -->|"init -> DBManager (no migrations)"| DBManager
+  Worker -->|"create services"| Services
+  Worker -->|"start worker instance (poll/process)"| Services
+  Worker -->|"polls/consumes jobs"| DB
+  Worker -->|"write results / assignments"| DB
+  Worker -->|"call AI for generation"| AI
+  Worker -->|"send emails via EmailService"| Services
+  Worker -->|"expose admin HTTP endpoints"| AdminHandler
+  AdminHandler -->|"served by worker router"| Router
+
+  %% Observability and external
+  Server -->|"emit traces/metrics/logs"| Obs
+  Worker -->|"emit traces/metrics/logs"| Obs
+  AI -->|"external provider"| Obs
+
+  classDef infra fill:#f8f8ff,stroke:#ddd
+  class DB,Obs,AI,Migrations infra
+
+

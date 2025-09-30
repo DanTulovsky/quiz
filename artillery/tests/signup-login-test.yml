@@ -1,0 +1,71 @@
+
+scenarios:
+  - name: "Complete signup and login workflow"
+    weight: 80
+    flow:
+      # Generate unique user data
+      - function: "generateRandomUser"
+
+      # Step 1: Register new user
+      - post:
+          url: "/v1/auth/signup"
+          json:
+            email: "{{ userEmail }}"
+            password: "{{ userPassword }}"
+            username: "{{ username }}"
+          expect:
+            - statusCode: 201
+            - hasProperty: "success"
+            - hasProperty: "message"
+      - think: 1
+
+      # Step 2: Login with the registered user
+      - post:
+          url: "/v1/auth/login"
+          json:
+            username: "{{ username }}"
+            password: "{{ userPassword }}"
+          expect:
+            - statusCode: 200
+            - hasProperty: "user"
+            - hasProperty: "message"
+      - think: 1
+
+      # Step 3: Verify user is logged in
+      - get:
+          url: "/v1/auth/status"
+          expect:
+            - statusCode: [200, 401]
+      - think: 2
+
+      # Step 4: Test some authenticated endpoints
+      - get:
+          url: "/v1/userz/profile"
+          expect:
+            - statusCode: [200, 401]
+      - think: 1
+
+  - name: "Signup with invalid data"
+    weight: 20
+    flow:
+      # Test registration with invalid email
+      - post:
+          url: "/v1/auth/signup"
+          json:
+            email: "invalid-email"
+            password: "testpassword123"
+            username: "testuser"
+          expect:
+            - statusCode: 400
+      - think: 1
+
+      # Test registration with weak password
+      - post:
+          url: "/v1/auth/signup"
+          json:
+            email: "test@example.com"
+            password: "123"
+            username: "testuser"
+          expect:
+            - statusCode: 400
+      - think: 1

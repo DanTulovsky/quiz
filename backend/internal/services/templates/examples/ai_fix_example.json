@@ -1,0 +1,15 @@
+{
+    "content": {
+        "question": "What color were the apples she bought?",
+        "options": [
+            "red",
+            "green",
+            "yellow",
+            "blue"
+        ],
+        "passage": "She went to market and bought some apples.",
+        "sentence": "Che colore avevano le mele che ha comprato?"
+    },
+    "correct_answer": 1,
+    "explanation": "The passage indicates she bought green apples; the Italian sentence asks 'What color were the apples that she bought?', so 'green' is the correct meaning in English context."
+}

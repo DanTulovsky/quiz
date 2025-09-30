@@ -1,0 +1,110 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm/
+.yarn/
+
+# Frontend build artifacts
+frontend/dist/
+frontend/.vite/
+frontend/test-results/
+frontend/playwright-report/
+frontend/coverage/
+frontend/.nyc_output/
+
+# Backend build artifacts
+backend/quiz-app
+backend/quiz-worker
+build/
+backend/coverage.out
+backend/coverage.html
+
+# Development files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.example
+
+# IDE/Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+
+# OS files
+.DS_Store
+Thumbs.db
+*.tmp
+*.temp
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Documentation and non-essential files
+README.md
+docs/
+*.md
+LICENSE
+CHANGELOG*
+
+# Test databases and temporary files
+*.db-journal
+test.db
+backend/data/test-write.txt
+*.test.db
+
+# Logs
+*.log
+logs/
+backend/logs/
+
+# Cache directories
+.cache/
+.parcel-cache/
+.next/
+.nuxt/
+dist/
+
+# Test coverage
+coverage/
+.nyc_output/
+*.lcov
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Package manager files (keep only what's needed)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+.circleci/
+
+# Local development
+.local/
+local/

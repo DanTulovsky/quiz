@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Swagger UI</title>
+  <link rel="icon" href="data:,">
+      <link rel="stylesheet" type="text/css" href="/backend/swaggerui/swagger-ui.css" />
+</head>
+<body>
+  <div id="swagger-ui"></div>
+      <script src="/backend/swaggerui/swagger-ui-bundle.js"></script>
+  <script>
+    window.onload = function() {
+      SwaggerUIBundle({
+        url: "/swagger.yaml",
+        dom_id: '#swagger-ui',
+      });
+    };
+  </script>
+</body>
+</html>

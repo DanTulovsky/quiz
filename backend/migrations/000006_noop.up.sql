@@ -1,0 +1,2 @@
+-- No-op migration to satisfy migration system
+-- This migration does nothing and is only used to satisfy the migration numbering

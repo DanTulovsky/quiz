@@ -1,0 +1,8 @@
+{
+  "sentence": "La ragazza indossa un vestito rosso.",
+  "question": "vestito",
+  "options": ["car", "dress", "book", "window"],
+  "correct_answer": 1,
+  "explanation": "'Vestito' means 'dress' in this context.",
+  "topic": "clothing"
+}

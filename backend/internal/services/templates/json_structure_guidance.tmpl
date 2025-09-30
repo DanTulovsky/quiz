@@ -1,0 +1,21 @@
+CRITICAL JSON STRUCTURE REQUIREMENTS:
+You MUST respond with ONLY valid JSON that matches this exact structure:
+{{.SchemaForPrompt}}
+
+IMPORTANT:
+- Do NOT include any text before or after the JSON
+- Do NOT include any explanations, markdown, or code blocks
+- Do NOT include any reasoning or thinking
+- Do NOT wrap the JSON in ```json or ``` code blocks
+- Your entire response must be valid JSON only
+- Ensure all string values are properly quoted
+- Ensure all arrays have exactly 4 items for options
+- Start your response directly with [ and end with ]
+- Do NOT add any formatting, indentation, or extra whitespace
+
+
+Do NOT format like this:
+```json
+[{...}]
+```
+Just return the raw JSON array directly, with no extra text or formatting.

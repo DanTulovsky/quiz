@@ -1,0 +1,53 @@
+# ZAP Automation Framework Configuration for Quick (Fast Feedback) Scan
+
+env:
+  contexts:
+  - name: "quick-context"
+    urls:
+    - "http://host.docker.internal:3000"
+    sessionManagement:
+      method: "cookie"
+      parameters:
+        sessionTokensRegex: "JSESSIONID|sessionid|session"
+    technology:
+      include: []
+      exclude: []
+  parameters:
+    failOnError: true
+    progressToStdout: false
+
+jobs:
+- parameters:
+    context: "quick-context"
+    maxDuration: 0
+    url: "http://host.docker.internal:3000"
+    maxCrawlDepth: 2
+    maxCrawlStates: 0
+    eventWait: 1000
+    reloadWait: 1000
+  type: "spiderAjax"
+- parameters:
+    context: "quick-context"
+  type: "activeScan"
+- parameters:
+    maxDuration: 0
+  type: "passiveScan-wait"
+- parameters:
+    format: "Long"
+    summaryFile: "/zap/wrk/zap/reports/zap-quick-report.json"
+  rules: []
+  type: "outputSummary"
+- parameters:
+    reportDescription: "Quick security scan report"
+    reportDir: "/zap/wrk/"
+    reportFile: "zap/reports/zap-quick-report.html"
+    reportTitle: "ZAP Quick Scanning Report"
+    template: "traditional-html"
+  type: "report"
+- parameters:
+    reportDescription: "Quick security scan report"
+    reportDir: "/zap/wrk/"
+    reportFile: "zap/reports/zap-quick-report.json"
+    reportTitle: "ZAP Quick Scanning Report"
+    template: "traditional-json"
+  type: "report"

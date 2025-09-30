@@ -1,0 +1,96 @@
+extensions:
+  health_check:
+  pprof:
+    endpoint: 0.0.0.0:1777
+  zpages:
+    endpoint: 0.0.0.0:55679
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+  postgresql:
+    endpoint: ${env:POSTGRES_HOST}:${env:POSTGRES_PORT}
+    transport: tcp
+    username: ${env:POSTGRES_USER}
+    password: ${env:POSTGRES_PASSWORD}
+    collection_interval: 10s
+    tls:
+      insecure: true
+  # Collect own metrics
+  prometheus:
+    config:
+      scrape_configs:
+        - job_name: "otel-collector"
+          scrape_interval: 10s
+          static_configs:
+            - targets: ["0.0.0.0:8888"]
+  hostmetrics:
+    collection_interval: 60s
+    scrapers:
+      cpu: {}
+      disk: {}
+      load: {}
+      filesystem: {}
+      memory: {}
+      network: {}
+      paging: {}
+      process:
+        mute_process_name_error: true
+        mute_process_exe_error: true
+        mute_process_io_error: true
+      processes: {}
+
+processors:
+  batch:
+  resourcedetection:
+    detectors: [env, system]
+  cumulativetodelta:
+  attributes:
+    actions:
+      - key: service.version
+        action: upsert
+        from_attribute: service_version
+  resource/env:
+    attributes:
+      - key: deployment.environment
+        value: ${env:ENVIRONMENT}
+        action: upsert
+#  resource:
+#    attributes:
+#    - key: custom
+#      value: "frog"
+#      action: upsert
+
+exporters:
+  otlp:
+    endpoint: ${env:SIGNZ_OTEL_COLLECTOR_HOST}:${env:SIGNZ_OTEL_COLLECTOR_PORT}
+    tls:
+      insecure: ${env:SIGNZ_OTEL_COLLECTOR_INSECURE}
+    headers:
+      Authorization: Bearer ${env:SIGNZ_OTEL_COLLECTOR_TOKEN}
+
+service:
+  telemetry:
+    metrics:
+      level: basic
+    logs:
+      level: info
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch, resourcedetection, attributes, resource/env]
+      exporters: [otlp]
+    metrics:
+      receivers: [otlp, prometheus, postgresql]
+      processors: [batch, resourcedetection, attributes, resource/env]
+      exporters: [otlp]
+    logs:
+      receivers: [otlp]
+      processors: [batch, resourcedetection, attributes, resource/env]
+      exporters: [otlp]
+
+  extensions: [health_check, pprof, zpages]

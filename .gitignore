@@ -1,0 +1,33 @@
+node_modules/
+/test-results/
+.env
+
+
+#Ignore cursor AI rules
+.cursor/rules/codacy.mdc
+cookies.txt
+build
+
+# ZAP Security Scan Reports and Configs
+zap/reports/
+zap/configs/merged-*.yaml
+zap/configs/authenticated.env.yaml
+
+# ZAP merged configuration files
+zap-merged-*.yaml
+.python-version
+
+# Python virtual environment (managed by pyenv)
+.python-version
+
+# Local configuration files (should not be committed)
+config.local.yaml
+
+# Auto-generated merged configuration files
+merged.config.yaml
+.test_keep_running
+
+# Revive log files
+revive.log
+backend/revive.log
+.env.prod

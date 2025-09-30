@@ -1,0 +1,7 @@
+{
+  "question": "Qual è la parola mancante? 'Sono andato al ___ ieri.'",
+  "options": ["cinema", "parco", "scuola", "negozio"],
+  "correct_answer": 1,
+  "explanation": "'Parco' is the best fit for the context of the sentence.",
+  "topic": "places_in_town"
+}

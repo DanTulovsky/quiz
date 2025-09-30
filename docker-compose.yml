@@ -1,0 +1,229 @@
+name: quiz-dev
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-quiz_db}
+      - POSTGRES_USER=${POSTGRES_USER:-quiz_user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-quiz_password}
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-quiz_user} -d ${POSTGRES_DB:-quiz_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  backend:
+    build:
+      context: .
+      dockerfile: ${BACKEND_DOCKERFILE:-Dockerfile.backend}
+      args:
+        BUILDKIT_INLINE_CACHE: 1
+        TARGETOS: linux
+        TARGETARCH: amd64
+        APP_VERSION: ${APP_VERSION}
+        COMMIT_HASH: ${COMMIT_HASH}
+        BUILD_TIME: ${BUILD_TIME}
+      cache_from:
+        - type=local,src=/tmp/.buildx-cache-backend
+      # cache_to:
+      #   - type=local,dest=/tmp/.buildx-cache-backend-new,mode=max
+      x-bake:
+        provenance: false
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    # volumes:
+    #   - ./backend/data:/app/data
+    environment:
+      - SERVER_ADMIN_USERNAME=${SERVER_ADMIN_USERNAME:-admin}
+      - SERVER_ADMIN_PASSWORD=${SERVER_ADMIN_PASSWORD:-password}
+      - GIN_MODE=${GIN_MODE:-release}
+      - DATABASE_URL=postgres://${POSTGRES_USER:-quiz_user}:${POSTGRES_PASSWORD:-quiz_password}@postgres:5432/${POSTGRES_DB:-quiz_db}?sslmode=disable
+      - SERVER_SESSION_SECRET=${SERVER_SESSION_SECRET:-your_session_secret_here}
+      - SERVER_PORT=${SERVER_PORT:-8080}
+      - HOST=0.0.0.0 # Listen on all interfaces within the container
+      - SERVER_DEBUG=${SERVER_DEBUG:-false}
+      - SERVER_LOG_LEVEL=${SERVER_LOG_LEVEL:-info}
+      - SERVER_CORS_ORIGINS=${SERVER_CORS_ORIGINS:-http://localhost:3000,http://localhost:8181}
+      - SERVER_WORKER_PORT=${SERVER_WORKER_PORT:-8181}
+      # URL for the worker service, accessed externally by browsers (e.g. for /amdinz)
+      - SERVER_WORKER_BASE_URL=http://localhost:8181
+      # URL for the worker service, accessed internally by the backend (e.g. for /version)
+      - SERVER_WORKER_INTERNAL_URL=http://worker:8081
+      - GOOGLE_OAUTH_CLIENT_ID=${GOOGLE_OAUTH_CLIENT_ID}
+      - GOOGLE_OAUTH_CLIENT_SECRET=${GOOGLE_OAUTH_CLIENT_SECRET}
+      - GOOGLE_OAUTH_REDIRECT_URL=${GOOGLE_OAUTH_REDIRECT_URL:-http://localhost:3000/oauth-callback}
+      - QUIZ_CONFIG_FILE=/app/merged.config.yaml
+      - MIGRATIONS_PATH=file:///app/migrations
+      - OPEN_TELEMETRY_ENDPOINT=${OPEN_TELEMETRY_ENDPOINT:-otel-collector:4317}
+      - OPEN_TELEMETRY_SERVICE_NAME=${OPEN_TELEMETRY_SERVICE_NAME:-quiz-backend}
+      - OPEN_TELEMETRY_SERVICE_VERSION=${OPEN_TELEMETRY_SERVICE_VERSION:-${APP_VERSION:-dev}}
+      - OPEN_TELEMETRY_PROTOCOL=${OPEN_TELEMETRY_PROTOCOL:-grpc}
+      - OPEN_TELEMETRY_INSECURE=${OPEN_TELEMETRY_INSECURE:-true}
+      - OPEN_TELEMETRY_ENABLE_TRACING=${OPEN_TELEMETRY_ENABLE_TRACING:-true}
+      - OPEN_TELEMETRY_ENABLE_METRICS=${OPEN_TELEMETRY_ENABLE_METRICS:-true}
+      - OPEN_TELEMETRY_ENABLE_LOGGING=${OPEN_TELEMETRY_ENABLE_LOGGING:-true}
+      - OPEN_TELEMETRY_SAMPLING_RATE=${OPEN_TELEMETRY_SAMPLING_RATE:-1.0}
+      - OTEL_SEMCONV_STABILITY_OPT_IN=http/dup
+      - SWAGGER_FILE_PATH=/app/swagger.yaml
+      # Email Configuration
+      - EMAIL_ENABLED=${EMAIL_ENABLED:-true}
+      - EMAIL_SMTP_HOST=${EMAIL_SMTP_HOST:-smtp.email.us-chicago-1.oci.oraclecloud.com}
+      - EMAIL_SMTP_PORT=${EMAIL_SMTP_PORT:-587}
+      - EMAIL_SMTP_USERNAME=${EMAIL_SMTP_USERNAME:-ocid1.user.oc1..aaaaaaaav5fg2qctpi5pl4lwwld5yjywuboga6xe3njwdkteehccrk46zqtq@ocid1.tenancy.oc1..aaaaaaaafsri6x2ohmqj5scnuzphnrnxfll5jw2ljsg7m3y3ji722kdentiq.xh.com}
+      - EMAIL_SMTP_PASSWORD=${EMAIL_SMTP_PASSWORD}
+      - EMAIL_FROM_ADDRESS=${EMAIL_FROM_ADDRESS:-ntfy@wetsnow.com}
+      - EMAIL_FROM_NAME=${EMAIL_FROM_NAME:-Quiz App}
+      - EMAIL_DAILY_REMINDER_ENABLED=${EMAIL_DAILY_REMINDER_ENABLED:-true}
+      - EMAIL_DAILY_REMINDER_HOUR=${EMAIL_DAILY_REMINDER_HOUR:-9}
+      - SERVER_APP_BASE_URL=${SERVER_APP_BASE_URL:-http://localhost:3000}
+    healthcheck:
+      test: ["CMD", "sh", "-c", "curl -f http://localhost:8080/health || wget --quiet --tries=1 --spider http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+      args:
+        BUILDKIT_INLINE_CACHE: 1
+        TARGETOS: linux
+        TARGETARCH: amd64
+        APP_VERSION: ${APP_VERSION}
+        COMMIT_HASH: ${COMMIT_HASH}
+        BUILD_TIME: ${BUILD_TIME}
+      cache_from:
+        - type=local,src=/tmp/.buildx-cache-worker
+      # cache_to:
+      #   - type=local,dest=/tmp/.buildx-cache-worker-new,mode=max
+    ports:
+      - 8181:8081
+    env_file:
+      - .env
+    volumes:
+      - ./backend/data:/app/data
+    environment:
+      - START_WORKER_PAUSED=${START_WORKER_PAUSED:-false}
+      - DATABASE_URL=postgres://${POSTGRES_USER:-quiz_user}:${POSTGRES_PASSWORD:-quiz_password}@postgres:5432/${POSTGRES_DB:-quiz_db}?sslmode=disable
+      - SERVER_SESSION_SECRET=${SERVER_SESSION_SECRET:-your_session_secret_here}
+      - SERVER_PORT=8081
+      - HOST=0.0.0.0 # Listen on all interfaces within the container
+      - SERVER_DEBUG=${SERVER_DEBUG:-false}
+      - SERVER_LOG_LEVEL=${SERVER_LOG_LEVEL:-info}
+      - SERVER_WORKER_PORT=${SERVER_WORKER_PORT:-8081}
+      - SERVER_BACKEND_BASE_URL=http://localhost:8080
+      - QUIZ_CONFIG_FILE=/app/merged.config.yaml
+      - MIGRATIONS_PATH=file:///app/migrations
+      - OPEN_TELEMETRY_ENDPOINT=${OPEN_TELEMETRY_ENDPOINT:-otel-collector:4317}
+      - OPEN_TELEMETRY_SERVICE_NAME=${OPEN_TELEMETRY_SERVICE_NAME:-quiz-worker}
+      - OPEN_TELEMETRY_SERVICE_VERSION=${OPEN_TELEMETRY_SERVICE_VERSION:-${APP_VERSION:-dev}}
+      - OPEN_TELEMETRY_PROTOCOL=${OPEN_TELEMETRY_PROTOCOL:-grpc}
+      - OPEN_TELEMETRY_INSECURE=${OPEN_TELEMETRY_INSECURE:-true}
+      - OPEN_TELEMETRY_ENABLE_TRACING=${OPEN_TELEMETRY_ENABLE_TRACING:-true}
+      - OPEN_TELEMETRY_ENABLE_METRICS=${OPEN_TELEMETRY_ENABLE_METRICS:-true}
+      - OPEN_TELEMETRY_ENABLE_LOGGING=${OPEN_TELEMETRY_ENABLE_LOGGING:-true}
+      - OPEN_TELEMETRY_SAMPLING_RATE=${OPEN_TELEMETRY_SAMPLING_RATE:-1.0}
+      - OTEL_SEMCONV_STABILITY_OPT_IN=http/dup
+      # Email Configuration
+      - EMAIL_ENABLED=${EMAIL_ENABLED:-true}
+      - EMAIL_SMTP_HOST=${EMAIL_SMTP_HOST:-smtp.email.us-chicago-1.oci.oraclecloud.com}
+      - EMAIL_SMTP_PORT=${EMAIL_SMTP_PORT:-587}
+      - EMAIL_SMTP_USERNAME=${EMAIL_SMTP_USERNAME:-ocid1.user.oc1..aaaaaaaav5fg2qctpi5pl4lwwld5yjywuboga6xe3njwdkteehccrk46zqtq@ocid1.tenancy.oc1..aaaaaaaafsri6x2ohmqj5scnuzphnrnxfll5jw2ljsg7m3y3ji722kdentiq.xh.com}
+      - EMAIL_SMTP_PASSWORD=${EMAIL_SMTP_PASSWORD}
+      - EMAIL_FROM_ADDRESS=${EMAIL_FROM_ADDRESS:-ntfy@wetsnow.com}
+      - EMAIL_FROM_NAME=${EMAIL_FROM_NAME:-Quiz App}
+      - EMAIL_DAILY_REMINDER_ENABLED=${EMAIL_DAILY_REMINDER_ENABLED:-true}
+      - EMAIL_DAILY_REMINDER_HOUR=${EMAIL_DAILY_REMINDER_HOUR:-9}
+    healthcheck:
+      test: ["CMD", "sh", "-c", "curl -f http://localhost:${SERVER_WORKER_PORT:-8081}/v1/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+      args:
+        BUILDKIT_INLINE_CACHE: 1
+        NODE_ENV: production
+        APP_VERSION: ${APP_VERSION}
+        COMMIT_HASH: ${COMMIT_HASH}
+        BUILD_TIME: ${BUILD_TIME}
+      cache_from:
+        - type=local,src=/tmp/.buildx-cache-frontend
+      # cache_to:
+      #   - type=local,dest=/tmp/.buildx-cache-frontend-new,mode=max
+    ports:
+      - "${FRONTEND_PORT:-3000}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "sh", "-c", "curl -f http://localhost:/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    command: ["--config", "/etc/otel/config.yaml"]
+    restart: always
+    hostname: quiz
+    env_file:
+      - path: ./.env
+        required: true
+    environment:
+      - POSTGRES_HOST=${POSTGRES_HOST:-postgres}
+      - POSTGRES_PORT=${POSTGRES_PORT:-5432}
+      - POSTGRES_USER=${POSTGRES_USER:-quiz_user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-quiz_password}
+      - ENVIRONMENT=${ENVIRONMENT:-prod}
+    volumes:
+      - ./otel-collector/config/config.docker.yaml:/etc/otel/config.yaml
+
+  tts:
+    container_name: openai-edge-tts
+    restart: unless-stopped
+    # image: travisvn/openai-edge-tts:latest
+    image: mrwetsnow/openai-edge-tts:latest
+    ports:
+      - '${TTS_PORT:-5050}:5050'
+    env_file:
+      - .env
+    environment: # optionally define in -e argument when running docker command
+      API_KEY: ${TTS_API_KEY:-your_api_key_here}
+      PORT: ${TTS_PORT:-5050}
+      DEFAULT_VOICE: ${TTS_DEFAULT_VOICE:-echo}
+      DEFAULT_RESPONSE_FORMAT: ${TTS_DEFAULT_RESPONSE_FORMAT:-mp3}
+      DEFAULT_SPEED: ${TTS_DEFAULT_SPEED:-1.0}
+      DEFAULT_LANGUAGE: ${TTS_DEFAULT_LANGUAGE:-it-IT}
+      REQUIRE_API_KEY: ${TTS_REQUIRE_API_KEY:-False}
+      REMOVE_FILTER: ${TTS_REMOVE_FILTER:-False}
+      EXPAND_API: ${TTS_EXPAND_API:-True}
+      DETAILED_ERROR_LOGGING: ${TTS_DETAILED_ERROR_LOGGING:-True}
+
+volumes:
+  postgres_prod_data:
+
+networks:
+  default:
+    driver: bridge

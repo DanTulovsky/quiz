@@ -1,0 +1,24 @@
+{
+    "postman.settings.dotenv-detection-notification-visibility": false,
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "host.docker.internal",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "quiz dev (docker)",
+            "group": "quiz",
+            "database": "quiz_db",
+            "username": "quiz_user"
+        }
+    ],
+    "typescript.tsdk": "frontend/node_modules/typescript/lib",
+    "typescript.preferences.includePackageJsonAutoImports": "on",
+    "typescript.suggest.autoImports": true,
+    "eslint.workingDirectories": [
+        "frontend"
+    ],
+    "eslint.options": {
+        "overrideConfigFile": "frontend/.eslintrc.json"
+    }
+}

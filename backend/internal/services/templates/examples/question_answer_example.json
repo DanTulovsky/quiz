@@ -1,0 +1,7 @@
+{
+  "question": "Cosa fai nel tempo libero?",
+  "options": ["Leggo libri", "Guardo la TV", "Faccio sport", "Cucino"],
+  "correct_answer": 2,
+  "explanation": "'Faccio sport' is the best answer for someone who does sports in their free time.",
+  "topic": "free_time_activities"
+}

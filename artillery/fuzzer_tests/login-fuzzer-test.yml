@@ -1,0 +1,37 @@
+scenarios:
+  - name: "Login with fuzzed username"
+    weight: 50
+    flow:
+      - post:
+          url: "/v1/auth/login"
+          json:
+            username: '{{ naughtyString }}'
+            password: "password123"
+          expect:
+            - statusCode: [400, 401]
+          timeout: 5
+      - think: 1
+
+  - name: "Login with fuzzed password"
+    weight: 30
+    flow:
+      - post:
+          url: "/v1/auth/login"
+          json:
+            username: "testuser"
+            password: '{{ naughtyString }}'
+          expect:
+            - statusCode: [400, 401]
+          timeout: 5
+      - think: 1
+
+  - name: "Login with fuzzed JSON payload"
+    weight: 20
+    flow:
+      - post:
+          url: "/v1/auth/login"
+          json: '{{ naughtyString }}'
+          expect:
+            - statusCode: [400, 401]
+          timeout: 5
+      - think: 1

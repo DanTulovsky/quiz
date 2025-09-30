@@ -1,0 +1,12 @@
+{
+  "admin": {
+    "id": 2,
+    "name": "admin",
+    "description": "Administrative access to all features"
+  },
+  "user": {
+    "id": 1,
+    "name": "user",
+    "description": "Normal site access"
+  }
+}

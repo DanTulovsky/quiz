@@ -1,0 +1,129 @@
+Generate a batch of {{.Count}} {{.Language}} language learning questions for level {{.Level}}.
+
+Question Type: {{.QuestionType}}
+
+Requirements:
+- Return exactly {{.Count}} questions
+- Make the questions appropriate for {{.Level}} level learners
+- Focus on practical, real-world usage
+- Ensure exactly 4 options for all question types
+- Make sure to vary which options are correct and which are incorrect (e.g. don't always make the first option correct)
+- Make distractors plausible but clearly incorrect
+- Provide clear, educational explanations
+- The "topic" must be a specific, fine-grained grammar or vocabulary topic (e.g., "past-participle-agreement", "restaurant-vocabulary")
+- ALL question types must have multiple choice options with exactly 4 choices
+- Ensure variety in the questions - make each question as different as possible from the others
+
+{{/* Only 2-3 variety elements will be selected per question for focused, realistic prompts */}}
+{{if .StyleModifier}}
+Style: Use a {{.StyleModifier}} tone and approach for these questions.
+{{end}}
+
+{{if .DifficultyModifier}}
+Complexity: Focus on {{.DifficultyModifier}} aspects within the {{.Level}} level.
+{{end}}
+
+{{if .GrammarFocus}}
+Grammar Focus: Emphasize {{.GrammarFocus}} in the questions.
+{{end}}
+
+{{if .VocabularyDomain}}
+Vocabulary Domain: Include vocabulary related to {{.VocabularyDomain}}.
+{{end}}
+
+{{if .TopicCategory}}
+Context: Frame questions around {{.TopicCategory}} situations and scenarios.
+{{end}}
+
+{{if .Scenario}}
+Scenario: Set questions in the context of {{.Scenario}}.
+{{end}}
+
+{{if .TimeContext}}
+Time Context: Use {{.TimeContext}} as the temporal setting for questions.
+{{end}}
+
+CRITICAL: If the question type is 'question_answer' (qa), you MUST NOT generate fill-in-the-blank or cloze questions. Only generate direct, conversational, or factual questions. Do NOT use blanks (___) or missing words in the sentence for QA type.
+
+BAD (do not do this for QA):
+"После окончания курсов, я ___ искать новую работу с бол..."
+GOOD (for QA):
+"Что вы будете делать после окончания курсов?"
+
+{{if eq .QuestionType "question_answer"}}
+Question-Answer Requirements:
+- DO NOT generate fill-in-the-blank questions or questions with blanks (___) in the sentence for this type.
+- Only generate conversational or factual questions that can be answered directly with one of the options.
+- Each question should be a direct question or prompt, not a sentence with a missing word or blank.
+- Convert to multiple choice format with the question and 4 possible answers or responses
+- Make the questions conversational and natural
+- Ensure all options are plausible responses. The correct answer MUST NOT always be the first option. Randomize the order for every question.
+- Example (correct answer is NOT at index 0):
+{{.ExampleContent}}
+{{end}}
+
+{{if eq .QuestionType "vocabulary"}}
+Vocabulary in Context Requirements:
+- For each question, return a JSON object with the following fields:
+  - "sentence": a complete sentence in the target language (no markdown)
+  - "question": the word to be quizzed (must appear in the sentence)
+  - "options": an array of 4 English meanings/translations of the target word (one correct, three plausible distractors)
+  - "correct_answer": the index (0-3) of the correct option in the options array
+  - "explanation": a brief explanation of why the correct answer is correct (in English)
+  - "topic": a specific, fine-grained vocabulary topic (e.g., "clothing", "food", "workplace")
+- Do NOT use markdown or bolding in the sentence—just plain text.
+- Only one option should be correct; the others should be plausible but incorrect meanings. The correct answer MUST NOT always be the first option. Randomize the order for every question.
+- Example (correct answer is NOT at index 0):
+{{.ExampleContent}}
+{{end}}
+
+{{if .SchemaForPrompt}}
+For providers that do not use grammar, here is the schema for reference:
+```
+{{.SchemaForPrompt}}
+```
+{{end}}
+
+{{if eq .QuestionType "reading_comprehension"}}
+Reading Comprehension Requirements:
+- Include a "passage" field with a text passage in the target language for EACH question
+- Passage length should be appropriate for the specified level: {{.Level}}
+  - For lower levels (beginner/elementary): 4-6 sentences (shorter, simpler passages)
+  - For intermediate levels: 6-12 sentences (medium length passages)
+  - For higher levels (advanced/proficient): 12-20 sentences (comprehensive passages with advanced vocabulary and grammar)
+  - Maximum length: 20 sentences for any level
+- Format the passage for readability: break into short paragraphs, use clear line breaks, and avoid long wall-of-text blocks. Make sure the passage is visually easy to read for a learner (no giant paragraphs).
+- Each question should test comprehension of its respective passage content, vocabulary, or grammar used in the passage
+- The passages should be appropriate for the specified level: {{.Level}}
+- Example (correct answer is NOT at index 0):
+{{.ExampleContent}}
+{{else if eq .QuestionType "fill_in_blank"}}
+Fill-in-Blank Requirements:
+- Convert to "Which word/phrase best completes this sentence: [sentence with blank]?" format
+- Include the original sentence with ___ in the question text, then provide 4 options to fill the blank
+- Make the sentence context clear and appropriate for the level. The correct answer MUST NOT always be the first option. Randomize the order for every question.
+- Example (correct answer is NOT at index 0):
+{{.ExampleContent}}
+{{else}}
+General Requirements:
+- Standard multiple choice format
+- Clear, unambiguous questions
+- Four distinct options with one clearly correct answer for each question
+{{end}}
+
+{{if .Topic}}
+Topic focus: {{.Topic}}
+{{end}}
+
+{{if .RecentQuestionHistory}}
+To ensure variety, do not generate questions similar to these recent ones:
+{{range .RecentQuestionHistory}}- {{.}}
+{{end}}
+{{end}}
+
+CRITICAL:
+- Do NOT include the correct answer, or any hints about the correct answer (such as the answer in parentheses, quotes, as a root/stem, or as a hint), anywhere in the question text or sentence. The question must not reveal the answer.
+- For fill-in-the-blank questions: The blank should be a simple ___, and the sentence must not contain the answer or any part of it in any form (including in parentheses, as a root, or as a hint).
+- Return ONLY a JSON array of questions, with no extra commentary or explanation.
+- Do NOT include literal "\n" or "\n\n" in your output—use real line breaks in any explanations.
+- Do not add any extra whitespace or blank lines between JSON objects.

@@ -1,0 +1,40 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+How to run tests, generate code and run it:
+
+TESTS
+
+- To run backend and worker golang unit tests: task test-go-unit
+- To run backend and worker golang integration tests: task test-go-integration
+- To run backend and worker golang tests (both unit and integration): task test-go
+- To run frontend unit tests: task test-frontend
+- To run end-to-end (e2e) tests: task test-e2e
+- To run end-to-end (e2e) tests and keep servers running at the end: test-e2e-keep-running
+- To run end-to-end (e2e) tests when servers are already running: task test-e2e-only
+- To run end-to-end (e2e) tests from a single file: task test-e2e-file FILE=frontend/tests/<filename>
+- To run ALL TESTS: task test
+
+- To run end-to-end (e2e) tests and ask a human for help: task test-e2e-manual-debug-ui
+
+FORMAT and LINT
+
+- To format files run: task format
+- To lint files run: task lint
+- To find dead code run: task deadcode
+
+START, STOP and RESTART Prod
+
+- To restart prod run: task restart-prod
+- To start prod run: task start-prod
+- To stop prod run: task stop-prod
+
+START, STOP and RESTART Test
+
+- To stop test servers run: task stop-test-servers
+
+TO Regenerate API types after changing swagger.yaml
+
+- task generate-api-types

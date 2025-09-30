@@ -1,0 +1,76 @@
+# syntax=docker/dockerfile:1.6
+# Stage 1: Build the worker application
+FROM golang:1.25-alpine3.22 AS builder
+
+# Add build arguments for better caching
+ARG BUILDKIT_INLINE_CACHE=1
+ARG TARGETOS=linux
+ARG TARGETARCH=amd64
+ARG APP_VERSION=dev
+ARG COMMIT_HASH=dev
+ARG BUILD_TIME=unknown
+
+WORKDIR /app
+
+# Copy go.mod and go.sum files first for better dependency caching
+COPY backend/go.mod backend/go.sum ./
+RUN --mount=type=cache,id=quiz-worker-gomod,sharing=locked,target=/go/pkg/mod \
+    go mod download
+
+# Install build dependencies for cgo (cached)
+RUN --mount=type=cache,id=quiz-worker-apk,sharing=locked,target=/var/cache/apk \
+    apk add --no-cache --no-progress gcc musl-dev binutils-gold
+
+# Copy source code (excluding build artifacts via .dockerignore)
+COPY backend/cmd ./cmd
+COPY backend/internal ./internal
+
+# Build the worker application with specific flags to reduce metadata resolution
+RUN --mount=type=cache,id=quiz-worker-gomod,sharing=locked,target=/go/pkg/mod \
+    --mount=type=cache,id=quiz-worker-gobuild,sharing=locked,target=/root/.cache/go-build \
+    CGO_ENABLED=1 \
+    CGO_CFLAGS="-D_LARGEFILE64_SOURCE" \
+    go build \
+    -a \
+    -installsuffix cgo \
+    -ldflags="-w -s -X 'quizapp/internal/version.Version=$APP_VERSION' -X 'quizapp/internal/version.Commit=$COMMIT_HASH' -X 'quizapp/internal/version.BuildTime=$BUILD_TIME'" \
+    -o /app/quiz-worker \
+    ./cmd/worker
+
+# Stage 2: Create a minimal production image
+FROM alpine:3.22
+
+RUN --mount=type=cache,id=quiz-worker-apk,sharing=locked,target=/var/cache/apk \
+    apk add --no-cache --no-progress ca-certificates curl tzdata
+
+WORKDIR /app
+
+# Copy the built binary from the builder stage
+COPY --from=builder /app/quiz-worker .
+
+COPY schema.sql .
+
+# Copy the merged config file into the image
+COPY merged.config.yaml ./merged.config.yaml
+COPY scripts/merge-config.sh ./scripts/merge-config.sh
+COPY scripts/entrypoint.sh /app/entrypoint.sh
+
+ARG TARGETARCH
+RUN set -eux; \
+    case "$TARGETARCH" in \
+    "amd64") yq_arch="yq_linux_amd64" ;; \
+    "arm64") yq_arch="yq_linux_arm64" ;; \
+    *) yq_arch="yq_linux_amd64" ;; \
+    esac; \
+    curl -L -o /usr/local/bin/yq "https://github.com/mikefarah/yq/releases/latest/download/${yq_arch}"; \
+    chmod +x /usr/local/bin/yq; \
+    chmod +x /app/entrypoint.sh; \
+    chmod +x ./scripts/merge-config.sh
+
+# Set the environment variable for the config file
+ENV QUIZ_CONFIG_FILE=/app/merged.config.yaml
+
+RUN mkdir -p /app/data && chmod 777 /app/data
+
+EXPOSE 8081
+ENTRYPOINT ["/app/entrypoint.sh"]

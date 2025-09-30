@@ -1,0 +1,22 @@
+
+config:
+  target: 'http://host.docker.internal:3001'
+  phases:
+    - arrivalCount: 10
+      arrivalRate: 2
+      duration: 10
+  environments:
+    localhost:
+      target: 'http://localhost:3001'
+    indocker:
+      target: 'http://host.docker.internal:3001'
+    production:
+      target: 'https://quiz.wetsnow.com'
+  defaults:
+    headers:
+      Content-Type: 'application/json'
+      Accept: 'application/json'
+    environment: 'indocker'
+  processor: './processors.ts'
+  plugins:
+    expect: {}

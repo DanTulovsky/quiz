@@ -1,0 +1,53 @@
+# ZAP Automation Framework Configuration for API Scan
+
+env:
+  contexts:
+  - name: "api-context"
+    urls:
+    - "http://host.docker.internal:8081"
+    sessionManagement:
+      method: "cookie"
+      parameters:
+        sessionTokensRegex: "JSESSIONID|sessionid|session"
+    technology:
+      include: []
+      exclude: []
+  parameters:
+    failOnError: true
+    progressToStdout: false
+
+jobs:
+- parameters:
+    context: "api-context"
+    maxDuration: 0
+    url: "http://host.docker.internal:8081"
+    maxCrawlDepth: 3
+    maxCrawlStates: 0
+    eventWait: 1000
+    reloadWait: 1000
+  type: "spiderAjax"
+- parameters:
+    context: "api-context"
+  type: "activeScan"
+- parameters:
+    maxDuration: 0
+  type: "passiveScan-wait"
+- parameters:
+    format: "Long"
+    summaryFile: "/zap/wrk/zap/reports/zap-api-report.json"
+  rules: []
+  type: "outputSummary"
+- parameters:
+    reportDescription: "API security scan report"
+    reportDir: "/zap/wrk/"
+    reportFile: "zap/reports/zap-api-report.html"
+    reportTitle: "ZAP API Scanning Report"
+    template: "traditional-html"
+  type: "report"
+- parameters:
+    reportDescription: "API security scan report"
+    reportDir: "/zap/wrk/"
+    reportFile: "zap/reports/zap-api-report.json"
+    reportTitle: "ZAP API Scanning Report"
+    template: "traditional-json"
+  type: "report"

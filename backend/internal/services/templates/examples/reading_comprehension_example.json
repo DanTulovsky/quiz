@@ -1,0 +1,13 @@
+{
+  "passage": "La pizza è uno dei piatti più famosi dell'Italia. Originaria di Napoli, la pizza margherita è stata creata nel 1889 per onorare la regina Margherita di Savoia. I colori della pizza - rosso del pomodoro, bianco della mozzarella e verde del basilico - rappresentano la bandiera italiana. Oggi la pizza è popolare in tutto il mondo e ogni regione ha le sue varianti. La pizza napoletana è stata riconosciuta dall'UNESCO come patrimonio culturale immateriale dell'umanità nel 2017.",
+  "question": "Quando è stata creata la pizza margherita?",
+  "options": [
+    "1889",
+    "1899",
+    "1879",
+    "1869"
+  ],
+  "correct_answer": 0,
+  "explanation": "La pizza margherita è stata creata nel 1889 per onorare la regina Margherita di Savoia.",
+  "topic": "culture"
+}

@@ -1,0 +1,1674 @@
+version: "3"
+
+dotenv: [".env", "{{.ENV}}/.env", "{{.HOME}}/.env"]
+
+vars:
+  SHELL: /bin/bash
+  SESSION_SECRET: test_session_secret_for_e2e
+  DYNAMIC_TEST_DB_URL:
+    sh: |
+      if [ -n "$IN_DOCKER" ]; then
+        echo "postgres://quiz_user:quiz_password@host.docker.internal:5433/quiz_test_db?sslmode=disable"
+      else
+        echo "postgres://quiz_user:quiz_password@localhost:5433/quiz_test_db?sslmode=disable"
+      fi
+  DYNAMIC_DB_URL:
+    sh: |
+      if [ -n "$IN_DOCKER" ]; then
+        echo "postgres://quiz_user:quiz_password@host.docker.internal:5432/quiz_db?sslmode=disable"
+      else
+        echo "postgres://quiz_user:quiz_password@localhost:5432/quiz_db?sslmode=disable"
+      fi
+  DYNAMIC_TEST_BASE_URL:
+    sh: |
+      if [ -n "$IN_DOCKER" ]; then
+        echo "http://host.docker.internal:3001"
+      else
+        echo "http://localhost:3001"
+      fi
+
+env:
+  SHELL: "{{.SHELL}}"
+
+tasks:
+  # Configuration merging tasks
+  # - merge-config: Uses config.local.yaml (production/development)
+  # - merge-config-test: Uses config.local.test.yaml (testing only)
+  merge-config:
+    desc: Merge config.yaml and config.local.yaml into merged.config.yaml using yq
+    cmds:
+      - scripts/merge-config.sh config.yaml config.local.yaml merged.config.yaml
+
+  merge-config-test:
+    desc: Merge config.yaml and config.local.test.yaml into merged.config.yaml using yq (for testing)
+    cmds:
+      - scripts/merge-config.sh config.yaml config.local.test.yaml merged.config.yaml
+
+  test:
+    desc: "Main test target - runs Go tests, frontend tests, and E2E tests"
+    cmds:
+      - task: test-go
+      - task: test-frontend
+      # - task: test-e2e
+      # - task: test-e2e-api
+      - task: test-merge-config
+      - task: check-undocumented-apis
+
+  test-go:
+    desc: "All Go tests (unit + integration with database)"
+    dir: backend
+    cmds:
+      - task: clean-test
+      - task: test-go-unit
+      - task: clean-test
+      - task: test-go-integration
+
+  test-go-unit:
+    desc: "Go unit tests only (no database required)"
+    dir: backend
+    deps: [merge-config-test]
+    env:
+      QUIZ_CONFIG_FILE: "{{.TASKFILE_DIR}}/merged.config.yaml"
+      SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"
+    cmds:
+      - echo "Running backend Go unit tests (no database required)..."
+      - QUIZ_CONFIG_FILE={{.TASKFILE_DIR}}/merged.config.yaml go test -timeout 30s -failfast ./...
+
+  test-go-integration:
+    desc: "Go integration tests (requires database)"
+    dir: backend
+    deps: [merge-config-test]
+    env:
+      TEST_DATABASE_URL: "{{.DYNAMIC_TEST_DB_URL}}"
+      QUIZ_CONFIG_FILE: "{{.TASKFILE_DIR}}/merged.config.yaml"
+      SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"
+      MIGRATIONS_PATH: "file://{{.TASKFILE_DIR}}/backend/migrations"
+      COMPOSE_BAKE: true
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+    cmds:
+      - task: clean-test
+      - defer: docker compose -f ../docker-compose.test.yml down -v
+      - echo "Starting test database..."
+      - docker compose -f ../docker-compose.test.yml up -d --wait postgres-test
+      - echo "Running backend Go integration tests (sequential to avoid database races)..."
+      - go test -timeout 5m -tags=integration -p 1 -failfast ./...
+
+  test-go-integration-single:
+    desc: Run a single Go integration test by name (TEST_NAME=TestName)
+    dir: backend
+    deps: [merge-config-test]
+    env:
+      TEST_DATABASE_URL: "{{.DYNAMIC_TEST_DB_URL}}"
+      QUIZ_CONFIG_FILE: "{{.TASKFILE_DIR}}/merged.config.yaml"
+      SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"
+      MIGRATIONS_PATH: "file://{{.TASKFILE_DIR}}/backend/migrations"
+      COMPOSE_BAKE: true
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+      TEST_NAME: "{{.TEST_NAME}}"
+    cmds:
+      - defer: docker compose -f ../docker-compose.test.yml down -v
+      - echo Starting test database...
+      - docker compose -f ../docker-compose.test.yml up -d --wait postgres-test
+      - go test -timeout 5m -tags=integration -p 1 -failfast ./... -run {{.TEST_NAME}}
+    silent: false
+
+  coverage:
+    desc: "Run test coverage for Go code"
+    dir: backend
+    deps: [merge-config-test]
+    env:
+      TEST_DATABASE_URL: "{{.DYNAMIC_TEST_DB_URL}}"
+      QUIZ_CONFIG_FILE: "{{.TASKFILE_DIR}}/merged.config.yaml"
+      SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"
+      MIGRATIONS_PATH: "file://{{.TASKFILE_DIR}}/backend/migrations"
+      COMPOSE_BAKE: true
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+    cmds:
+      - task: clean-test
+      - defer: docker compose -f ../docker-compose.test.yml down -v
+      - echo "Starting test database for coverage..."
+      - docker compose -f ../docker-compose.test.yml up -d --wait postgres-test
+      - echo "Running unit tests with coverage..."
+      - go test -coverprofile=coverage-unit.out -covermode=atomic -p 1 -failfast ./...
+      - echo "Running integration tests with coverage..."
+      - go test -coverprofile=coverage-integration.out -covermode=atomic -p 1 -failfast -tags=integration ./...
+      - echo "Merging coverage profiles..."
+      - "{{.TASKFILE_DIR}}/scripts/merge-coverage.sh {{.TASKFILE_DIR}}"
+      - echo "Coverage report:"
+      - go tool cover -func=coverage.out
+      - echo ""
+      - echo "HTML coverage report generated - coverage.html"
+      - go tool cover -html=coverage.out -o coverage.html
+      - echo "Coverage by package:"
+      - go tool cover -func=coverage.out | grep "total:" || echo "No coverage data"
+
+  setup-test-db:
+    desc: "Setup test database (including go-admin schema)"
+    dir: backend
+    deps: [merge-config-test]
+    env:
+      DATABASE_URL: "{{.DYNAMIC_TEST_DB_URL}}"
+      QUIZ_CONFIG_FILE: "{{.TASKFILE_DIR}}/merged.config.yaml"
+      SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"
+      MIGRATIONS_PATH: "file://{{.TASKFILE_DIR}}/backend/migrations"
+      OPEN_TELEMETRY_ENABLE_TRACING: "false"
+      OPEN_TELEMETRY_ENABLE_METRICS: "false"
+    cmds:
+      - echo "Setting up test database with go-admin schema..."
+      - go run ./cmd/setup-test-db
+
+  reset-test-db:
+    desc: "Reset test database (no confirmation required)"
+    dir: backend
+    deps: [merge-config-test]
+    env:
+      DATABASE_URL: "{{.DYNAMIC_TEST_DB_URL}}"
+      QUIZ_CONFIG_FILE: "{{.TASKFILE_DIR}}/merged.config.yaml"
+      SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"
+      MIGRATIONS_PATH: "file://{{.TASKFILE_DIR}}/backend/migrations"
+      SKIP_CONFIRMATION: "true"
+      OPEN_TELEMETRY_ENABLE_TRACING: "false"
+      OPEN_TELEMETRY_ENABLE_METRICS: "false"
+    cmds:
+      - echo "Resetting test database..."
+      - echo "yes" | go run ./cmd/reset-db
+
+  # --- Database Migration Tasks ---
+
+  migrate-up:
+    desc: "Run database migrations up (apply all pending migrations)"
+    deps: [merge-config]
+    env:
+      DATABASE_URL: "{{.DYNAMIC_DB_URL}}"
+    cmds:
+      - echo "Running database migrations up..."
+      - migrate -path backend/migrations -database "{{.DATABASE_URL}}" up
+      - echo "✅ Migrations applied successfully!"
+
+  migrate-down:
+    desc: "Run database migrations down (rollback all migrations)"
+    deps: [merge-config]
+    env:
+      DATABASE_URL: "{{.DYNAMIC_DB_URL}}"
+    cmds:
+      - echo "Running database migrations down..."
+      - migrate -path backend/migrations -database "{{.DATABASE_URL}}" down
+      - echo "✅ Migrations rolled back successfully!"
+
+  migrate-force:
+    desc: "Force migration version (use when migration is stuck)"
+    deps: [merge-config]
+    env:
+      DATABASE_URL: "{{.DYNAMIC_DB_URL}}"
+    cmds:
+      - echo "Forcing migration version to {{.VERSION}}..."
+      - migrate -path backend/migrations -database "{{.DATABASE_URL}}" force {{.VERSION}}
+      - echo "✅ Migration version forced to {{.VERSION}}!"
+
+  migrate-status:
+    desc: "Show migration status"
+    deps: [merge-config]
+    env:
+      DATABASE_URL: "{{.DYNAMIC_DB_URL}}"
+    cmds:
+      - echo "Migration status:"
+      - migrate -path backend/migrations -database "{{.DATABASE_URL}}" version
+
+  migrate-create:
+    desc: "Create a new migration file (requires NAME parameter)"
+    cmds:
+      - "echo Creating new migration: {{.NAME}}"
+      - "migrate create -ext sql -dir backend/migrations -seq {{.NAME}}"
+      - "echo ✅ Migration files created for {{.NAME}}"
+      - "echo Check backend/migrations/ for the new .up.sql and .down.sql files."
+
+  migrate-test-up:
+    desc: "Run database migrations up for test database"
+    deps: [merge-config]
+    env:
+      DATABASE_URL: "{{.DYNAMIC_TEST_DB_URL}}"
+    cmds:
+      - echo "Running test database migrations up..."
+      - migrate -path backend/migrations -database "{{.DATABASE_URL}}" up
+      - echo "✅ Test migrations applied successfully!"
+
+  migrate-test-down:
+    desc: "Run database migrations down for test database"
+    deps: [merge-config]
+    env:
+      DATABASE_URL: "{{.DYNAMIC_TEST_DB_URL}}"
+    cmds:
+      - echo "Running test database migrations down..."
+      - migrate -path backend/migrations -database "{{.DATABASE_URL}}" down
+      - echo "✅ Test migrations rolled back successfully!"
+
+  migrate-test-status:
+    desc: "Show test database migration status"
+    deps: [merge-config]
+    env:
+      DATABASE_URL: "{{.DYNAMIC_TEST_DB_URL}}"
+    cmds:
+      - echo "Test database migration status:"
+      - migrate -path backend/migrations -database "{{.DATABASE_URL}}" version
+
+  # --- End Database Migration Tasks ---
+
+  test-e2e:
+    desc: "E2E tests (run against dockerized app with test database)"
+    dir: frontend
+    deps: [start-test-environment, setup-frontend]
+    env:
+      # Exclude endpoints that require external AI backend (e.g., /ai-fix)
+      # This prevents flaky CI failures when an AI server (ollama/openai) isn't available.
+      # Use a regex to match variable question IDs (e.g. /v1/admin/backend/questions/2/ai-fix)
+      E2E_EXCLUDE_PATHS: "re:/v1/admin/backend/questions/[0-9]+/ai-fix"
+      TEST_BASE_URL: "{{.DYNAMIC_TEST_BASE_URL}}"
+      DOCKER_BUILDKIT: 1
+      COMPOSE_DOCKER_CLI_BUILD: 1
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+      COMPOSE_BAKE: true
+      SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"
+    cmds:
+      - defer: |
+          if [ "${KEEP_RUNNING}" != "1" ]; then
+            echo "Stopping test servers..."
+            docker compose -f ../docker-compose.test.yml down -v --remove-orphans
+          else
+            echo "KEEP_RUNNING=1 set, leaving servers running"
+          fi
+      - echo "Running Playwright E2E tests..."
+      - npx playwright install
+      - npx playwright test
+
+  test-e2e-api:
+    desc: "API E2E tests (run against dockerized app with test database)"
+    dir: frontend
+    deps: [start-test-environment, setup-frontend]
+    env:
+      # Exclude endpoints that require external AI backend (e.g., /ai-fix)
+      # This prevents flaky CI failures when an AI server (ollama/openai) isn't available.
+      # Use a regex to match variable question IDs (e.g. /v1/admin/backend/questions/2/ai-fix)
+      E2E_EXCLUDE_PATHS: "re:/v1/admin/backend/questions/[0-9]+/ai-fix"
+      TEST_BASE_URL: "{{.DYNAMIC_TEST_BASE_URL}}"
+      DOCKER_BUILDKIT: 1
+      COMPOSE_DOCKER_CLI_BUILD: 1
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+      COMPOSE_BAKE: true
+      SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"
+    cmds:
+      - defer: |
+          if [ "${KEEP_RUNNING}" != "1" ]; then
+            echo "Stopping test servers..."
+            docker compose -f ../docker-compose.test.yml down -v --remove-orphans
+          else
+            echo "KEEP_RUNNING=1 set, leaving servers running"
+          fi
+      - echo "Running Playwright API E2E tests..."
+      - npx playwright install
+      - npx playwright test --grep "api_"
+
+  test-e2e-api-keep-running:
+    desc: "API E2E tests (run against dockerized app with test database)"
+    dir: frontend
+    deps: [start-test-environment, setup-frontend]
+    env:
+      # Exclude endpoints that require external AI backend (e.g., /ai-fix)
+      # This prevents flaky CI failures when an AI server (ollama/openai) isn't available.
+      # Use a regex to match variable question IDs (e.g. /v1/admin/backend/questions/2/ai-fix)
+      E2E_EXCLUDE_PATHS: "re:/v1/admin/backend/questions/[0-9]+/ai-fix"
+      TEST_BASE_URL: "{{.DYNAMIC_TEST_BASE_URL}}"
+      DOCKER_BUILDKIT: 1
+      COMPOSE_DOCKER_CLI_BUILD: 1
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+      COMPOSE_BAKE: true
+      SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"
+    cmds:
+      - echo "Running Playwright API E2E tests..."
+      - npx playwright install
+      - npx playwright test --grep "api_"
+
+  test-e2e-api-only:
+    desc: "Run E2E API tests only (assumes servers are already running)"
+    dir: frontend
+    env:
+      # Exclude endpoints that require external AI backend (e.g., /ai-fix)
+      # This prevents flaky CI failures when an AI server (ollama/openai) isn't available.
+      # Use a regex to match variable question IDs (e.g. /v1/admin/backend/questions/2/ai-fix)
+      E2E_EXCLUDE_PATHS: "re:/v1/admin/backend/questions/[0-9]+/ai-fix"
+      DATABASE_URL: "{{.DYNAMIC_TEST_DB_URL}}"
+      TEST_BASE_URL: "{{.DYNAMIC_TEST_BASE_URL}}"
+      SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"
+      DOCKER_BUILDKIT: 1
+      COMPOSE_DOCKER_CLI_BUILD: 1
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+      COMPOSE_BAKE: true
+    cmds:
+      - echo "Resetting database for clean test state..."
+      - task reset-test-db
+      - echo "Setting up test database with golden data..."
+      - task setup-test-db
+      - echo "Running Playwright E2E tests..."
+      - npm ci
+      - npx playwright test --grep "api_" --workers=1
+
+  test-e2e-api-single:
+    desc: "Run a single API E2E test file (FILE=filename.spec.ts)"
+    dir: frontend
+    deps: [start-test-environment, setup-frontend]
+    env:
+      DATABASE_URL: "{{.DYNAMIC_TEST_DB_URL}}"
+      TEST_BASE_URL: "{{.DYNAMIC_TEST_BASE_URL}}"
+      SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"
+      DOCKER_BUILDKIT: 1
+      COMPOSE_DOCKER_CLI_BUILD: 1
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+      COMPOSE_BAKE: true
+      FILE: "{{.FILE}}"
+    cmds:
+      - |
+        if [ -z "$FILE" ]; then
+          echo "❌ Error: FILE parameter is required"
+          echo "Usage: task test-e2e-api-single FILE=api_comprehensive.spec.ts"
+          echo ""
+          echo "Available API test files:"
+          echo "  - api_login.spec.ts"
+          echo "  - api_comprehensive.spec.ts"
+          echo ""
+          echo "Examples:"
+          echo "  task test-e2e-api-single FILE=api_comprehensive.spec.ts"
+          echo "  task test-e2e-api-single FILE=api_login.spec.ts"
+          exit 1
+        fi
+      - echo "Resetting database for clean test state..."
+      - task reset-test-db
+      - echo "Setting up test database with golden data..."
+      - task setup-test-db
+      - 'echo "Running single API E2E test file: {{.FILE}}"'
+      - npm ci
+      - npx playwright test {{.FILE}} --workers=1
+      - |
+        if [ "${KEEP_RUNNING}" != "1" ]; then
+          echo "Stopping test servers..."
+          docker compose -f ../docker-compose.test.yml down -v --remove-orphans
+        else
+          echo "KEEP_RUNNING=1 set, leaving servers running"
+        fi
+
+  test-e2e-keep-running:
+    desc: "E2E tests (run against dockerized app with test database)"
+    dir: frontend
+    deps: [start-test-environment, setup-frontend]
+    env:
+      # Exclude endpoints that require external AI backend (e.g., /ai-fix)
+      # This prevents flaky CI failures when an AI server (ollama/openai) isn't available.
+      # Use a regex to match variable question IDs (e.g. /v1/admin/backend/questions/2/ai-fix)
+      E2E_EXCLUDE_PATHS: "re:/v1/admin/backend/questions/[0-9]+/ai-fix"
+      TEST_BASE_URL: "{{.DYNAMIC_TEST_BASE_URL}}"
+      KEEP_RUNNING: 1
+      DOCKER_BUILDKIT: 1
+      COMPOSE_DOCKER_CLI_BUILD: 1
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+      COMPOSE_BAKE: true
+      SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"
+    cmds:
+      - echo "Running Playwright E2E tests..."
+      - npm ci
+      - npx playwright test
+
+  test-e2e-only:
+    desc: "Run E2E tests only (assumes servers are already running)"
+    dir: frontend
+    env:
+      # Exclude endpoints that require external AI backend (e.g., /ai-fix)
+      # This prevents flaky CI failures when an AI server (ollama/openai) isn't available.
+      E2E_EXCLUDE_PATHS: "/questions/ai-fix"
+      DATABASE_URL: "{{.DYNAMIC_TEST_DB_URL}}"
+      TEST_BASE_URL: "{{.DYNAMIC_TEST_BASE_URL}}"
+      SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"
+      DOCKER_BUILDKIT: 1
+      COMPOSE_DOCKER_CLI_BUILD: 1
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+      COMPOSE_BAKE: true
+    deps: [setup-frontend]
+    cmds:
+      - echo "Resetting database for clean test state..."
+      - task reset-test-db
+      - echo "Setting up test database with golden data..."
+      - task setup-test-db
+      - echo "Running Playwright E2E tests..."
+      - npx playwright test --workers=1
+
+  test-e2e-file:
+    desc: "Run E2E tests on a specific file (faster iteration)"
+    dir: frontend
+    deps: [start-test-environment, setup-frontend]
+    env:
+      # Exclude endpoints that require external AI backend (e.g., /ai-fix)
+      # This prevents flaky CI failures when an AI server (ollama/openai) isn't available.
+      E2E_EXCLUDE_PATHS: "/questions/ai-fix"
+      TEST_BASE_URL: "{{.DYNAMIC_TEST_BASE_URL}}"
+      SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"
+      DOCKER_BUILDKIT: 1
+      COMPOSE_DOCKER_CLI_BUILD: 1
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+      COMPOSE_BAKE: true
+    cmds:
+      - echo "Resetting database for clean test state..."
+      - task reset-test-db
+      - npx playwright test "{{.FILE}}" --workers=1
+      - |
+        if [ "${KEEP_RUNNING}" != "1" ]; then
+          echo "Stopping test servers..."
+          docker compose -f ../docker-compose.test.yml down -v --remove-orphans
+        else
+          echo "KEEP_RUNNING=1 set, leaving servers running"
+        fi
+
+  test-e2e-manual-debug-ui:
+    desc: "Manual E2E debugging with Playwright UI (leaves servers running)"
+    deps: [start-test-environment, setup-frontend]
+    dir: frontend
+    env:
+      TEST_BASE_URL: "{{.DYNAMIC_TEST_BASE_URL}}"
+      SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"
+      KEEP_RUNNING: 1
+      DOCKER_BUILDKIT: 1
+      COMPOSE_DOCKER_CLI_BUILD: 1
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+      COMPOSE_BAKE: true
+    cmds:
+      - echo "Setting up E2E test environment for manual debugging..."
+      - defer: |
+          if [ "${KEEP_RUNNING}" != "1" ]; then
+            echo "Stopping test servers..."
+            docker compose -f ../docker-compose.test.yml down -v --remove-orphans
+          else
+            echo "KEEP_RUNNING=1 set, leaving servers running"
+          fi
+      - echo "Resetting database for clean test state..."
+      - task reset-test-db
+      - echo "✅ Test servers are running at:"
+      - echo "   Frontend - http://localhost:3000"
+      - echo "   Backend - http://localhost:8080"
+      - echo ""
+      - echo "🚀 Starting Playwright UI for interactive debugging..."
+      - echo "   Exit the UI to continue"
+      - echo "   Servers will remain running for manual testing"
+      - echo ""
+      - npm ci
+      - npx playwright test --ui --workers=1
+
+  # --- Artillery API E2E Testing ---
+
+  start-test-environment:
+    desc: "Start test servers and setup database for Artillery/E2E tests"
+    deps: [stop-test-servers, clean-test]
+    env:
+      DATABASE_URL: "{{.DYNAMIC_TEST_DB_URL}}"
+      TEST_BASE_URL: "{{.DYNAMIC_TEST_BASE_URL}}"
+      KEEP_RUNNING: 1
+      DOCKER_BUILDKIT: 1
+      COMPOSE_DOCKER_CLI_BUILD: 1
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+      COMPOSE_BAKE: true
+      ENVIRONMENT: "{{.ENVIRONMENT}}"
+    cmds:
+      - echo "Starting test servers..."
+      - docker compose -f docker-compose.test.yml up -d --build --wait
+      - |
+        # Check if all containers are healthy
+        if docker compose -f docker-compose.test.yml ps --format table | grep -q "Up"; then
+          echo "✅ All test containers started successfully"
+        else
+          echo "❌ Some containers failed to start. Showing logs:"
+          docker compose -f docker-compose.test.yml logs
+          exit 1
+        fi
+      - echo "Setting up test database with golden data..."
+      - task setup-test-db
+      - echo "✅ Test environment ready!"
+
+  test-artillery-run:
+    desc: "Run Artillery test by name (TEST_NAME=test-name, SOLO=1 for single request)"
+    deps: [build-artillery]
+    env:
+      DOCKER_BUILDKIT: 1
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+      TEST_NAME: "{{.TEST_NAME}}"
+      HOST_PROJECT_PATH: "/Users/dant/src/quiz"
+      ENVIRONMENT: "indocker"
+    cmds:
+      - |
+        if [ -z "$TEST_NAME" ]; then
+          echo "❌ Error: TEST_NAME parameter is required"
+          echo "Usage: task test-artillery-run TEST_NAME=test-name [SOLO=1]"
+          echo ""
+          echo "Available tests:"
+          echo "  - login-test"
+          echo "  - signup-login-test"
+          echo "  - artillery.config (load test)"
+          echo ""
+          echo "Examples:"
+          echo "  task test-artillery-run TEST_NAME=login-test"
+          echo "  task test-artillery-run TEST_NAME=login-test SOLO=1"
+          exit 1
+        fi
+      - |
+        # Check if test environment is running, start if not
+        if ! docker compose -f docker-compose.test.yml ps --format table | grep -q "Up"; then
+          echo "Starting test environment..."
+          task start-test-environment
+          echo "0" > {{.TASKFILE_DIR}}/.test_keep_running
+        else
+          echo "Test environment already running"
+          echo "1" > {{.TASKFILE_DIR}}/.test_keep_running
+        fi
+      - 'echo "Running Artillery test: {{.TEST_NAME}}"'
+      - |
+        docker run --rm -it -v ${HOST_PROJECT_PATH}/artillery:/scripts \
+          -e NODE_OPTIONS="--no-deprecation" \
+          quiz-artillery \
+          artillery run --config /scripts/config.yaml -e ${ENVIRONMENT} /scripts/tests/{{.TEST_NAME}}.yml
+      - |
+        if [ "$(cat {{.TASKFILE_DIR}}/.test_keep_running 2>/dev/null || echo '0')" != "1" ]; then
+          echo "Stopping test servers..."
+          docker compose -f docker-compose.test.yml down -v --remove-orphans
+        else
+          echo "Test environment was already running, leaving servers running"
+        fi
+
+  test-artillery-all:
+    desc: "Run all Artillery tests sequentially (SOLO=1 for single request per test)"
+    deps: [build-artillery]
+    env:
+      DOCKER_BUILDKIT: 1
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+      HOST_PROJECT_PATH: "/Users/dant/src/quiz"
+      ENVIRONMENT: "indocker"
+    cmds:
+      - |
+        # Check if test environment is running, start if not
+        if ! docker compose -f docker-compose.test.yml ps --format table | grep -q "Up"; then
+          echo "Starting test environment..."
+          task start-test-environment
+          echo "0" > {{.TASKFILE_DIR}}/.test_keep_running
+        else
+          echo "Test environment already running"
+          echo "1" > {{.TASKFILE_DIR}}/.test_keep_running
+        fi
+      - |
+        echo "Finding all Artillery test files..."
+        # Find all .yml files in artillery directory (excluding processors.js and Dockerfile)
+        TEST_FILES=$(find artillery -name "*.yml" -type f -path "artillery/tests/*" | sort)
+        if [ -z "$TEST_FILES" ]; then
+          echo "❌ No Artillery test files found in artillery/ directory"
+          exit 1
+        fi
+        echo "Found test files:"
+        echo "$TEST_FILES" | nl
+        echo ""
+        echo "Running all Artillery tests sequentially..."
+        COUNTER=1
+        for test_file in $TEST_FILES; do
+          if [ -n "$test_file" ]; then
+            echo "=== $COUNTER. $(basename "$test_file" .yml) ==="
+            docker run --rm -it -v ${HOST_PROJECT_PATH}/artillery:/scripts \
+              -e NODE_OPTIONS="--no-deprecation" \
+              quiz-artillery \
+              artillery run -q --config /scripts/config.yaml -e ${ENVIRONMENT} "/scripts/tests/$(basename "$test_file")"
+            echo ""
+            COUNTER=$((COUNTER + 1))
+          fi
+        done
+      - echo "✅ All Artillery tests completed!"
+      - |
+        if [ "$(cat {{.TASKFILE_DIR}}/.test_keep_running 2>/dev/null || echo '0')" != "1" ]; then
+          echo "Stopping test servers..."
+          docker compose -f docker-compose.test.yml down -v --remove-orphans
+        else
+          echo "Test environment was already running, leaving servers running"
+        fi
+
+  # --- End Artillery API E2E Testing ---
+
+  build-artillery:
+    desc: "Build Artillery Docker image for load testing"
+    env:
+      DOCKER_BUILDKIT: 1
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+    cmds:
+      - echo "Building Artillery Docker image (cache export disabled)..."
+      - docker build -f artillery/Dockerfile -t quiz-artillery artillery/
+      - echo "✅ Artillery Docker image built successfully!"
+
+  build:
+    desc: "Build all components"
+    deps: [generate-api-types, build-backend, build-frontend]
+    cmds:
+      - task: check-undocumented-apis
+
+  generate-api-types:
+    desc: "Generate API types from OpenAPI specification (both backend and frontend)"
+    cmds:
+      - echo "Generating Go API types from swagger.yaml..."
+      - cd backend && mkdir -p internal/api
+      - cd backend && oapi-codegen -config oapi-codegen.yaml ../swagger.yaml
+      - echo "✅ Backend API types generated successfully!"
+      - cd frontend && npm run generate-types
+      - echo "✅ Frontend API types generated successfully!"
+      - echo "🎉 All API types generated from swagger.yaml!"
+
+  build-backend:
+    desc: "Build backend"
+    dir: backend
+    cmds:
+      - echo "Building backend..."
+      - mkdir -p ../build
+      - go build -o ../build/quiz-app ./cmd/server
+
+  build-cli-worker:
+    desc: "Build CLI worker tool"
+    dir: backend
+    cmds:
+      - echo "Building CLI worker..."
+      - mkdir -p ../build
+      - go build -o ../build/cli-worker ./cmd/cli-worker
+
+  build-cleanup:
+    desc: "Build database cleanup tool"
+    dir: backend
+    cmds:
+      - echo "Building cleanup tool..."
+      - mkdir -p ../build
+      - go build -o ../build/cleanup ./cmd/cleanup
+
+  build-adm:
+    desc: "Build admin CLI tool"
+    dir: backend
+    cmds:
+      - echo "Building admin CLI tool..."
+      - mkdir -p ../build
+      - go build -o ../build/adm ./cmd/adm
+
+  run-cli-worker:
+    desc: "Run CLI worker tool (requires --user flag and optional parameters)"
+    dir: backend
+    deps: [merge-config]
+    env:
+      QUIZ_CONFIG_FILE: "{{.TASKFILE_DIR}}/merged.config.yaml"
+      SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"
+    cmds:
+      - echo "Running CLI worker..."
+      - go run ./cmd/cli-worker {{.CLI_ARGS}}
+
+  cli-worker-help:
+    desc: "Show CLI worker help"
+    dir: backend
+    cmds:
+      - go run ./cmd/cli-worker --help
+
+  run-cleanup:
+    desc: "Run database cleanup tool (removes legacy question types and orphaned responses)"
+    dir: backend
+    deps: [merge-config]
+    env:
+      QUIZ_CONFIG_FILE: "{{.TASKFILE_DIR}}/merged.config.yaml"
+      SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"
+    cmds:
+      - echo "Running database cleanup..."
+      - go run ./cmd/cleanup
+
+  run-cleanup-stats:
+    desc: "Show database cleanup statistics (dry run)"
+    dir: backend
+    deps: [merge-config]
+    env:
+      QUIZ_CONFIG_FILE: "{{.TASKFILE_DIR}}/merged.config.yaml"
+      SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"
+    cmds:
+      - echo "Checking database cleanup statistics..."
+      - go run ./cmd/cleanup -stats
+
+  run-adm:
+    desc: "Run admin CLI tool"
+    dir: backend
+    deps: [merge-config]
+    env:
+      QUIZ_CONFIG_FILE: "{{.TASKFILE_DIR}}/merged.config.yaml"
+      SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"
+    cmds:
+      - echo "Running admin CLI tool..."
+      - go run ./cmd/adm {{.ADM_ARGS}}
+
+  adm-help:
+    desc: "Show admin CLI help"
+    dir: backend
+    deps: [merge-config]
+    env:
+      QUIZ_CONFIG_FILE: "{{.TASKFILE_DIR}}/merged.config.yaml"
+      SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"
+    cmds:
+      - echo "Admin CLI help:"
+      - go run ./cmd/adm --help
+
+  build-cli-worker-docker:
+    desc: "Build CLI worker Docker image"
+    env:
+      DOCKER_BUILDKIT: 1
+      COMPOSE_DOCKER_CLI_BUILD: 1
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+    cmds:
+      - echo "Building CLI worker Docker image (cache export disabled)..."
+      - docker build -f Dockerfile.cli-worker -t quiz-cli-worker .
+      - echo "✅ CLI worker Docker image built successfully!"
+
+  # --- CSP Nonce Automation ---
+  # Note: For all Docker-based builds (including test/prod), CSP nonce is handled in Dockerfile.frontend.
+  # The 'frontend-csp-nonce' task is only needed for local, non-Docker builds.
+  frontend-csp-nonce:
+    desc: "Add CSP nonces to built frontend HTML and inject into nginx.conf (local only)"
+    cmds:
+      - echo "Adding CSP nonces to built frontend HTML..."
+      - python3 scripts/add_nonces_to_built_html.py
+      - echo "Injecting CSP nonce into nginx.conf..."
+      - python3 scripts/inject_csp_nonce.py
+
+  self-host-fonts:
+    desc: "Self-host Google Fonts by downloading font files and updating codebase"
+    cmds:
+      - python3 scripts/self_host_fonts.py
+
+  build-frontend:
+    desc: "Build frontend"
+    dir: frontend
+    env:
+      COMPOSE_BAKE: true
+    cmds:
+      - echo "Building frontend..."
+      - npm ci
+      - INLINE_RUNTIME_CHUNK=false npm run build
+      - task: ../frontend-csp-nonce
+
+  stop-test-servers:
+    desc: "Stop test servers with Docker Compose"
+    env:
+      COMPOSE_BAKE: true
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+    cmds:
+      - echo "Dumping logs from test containers..."
+      - docker compose -f docker-compose.test.yml logs || true
+      - echo "Stopping test servers with docker-compose..."
+      - docker compose -f docker-compose.test.yml down -v --remove-orphans
+
+  logs:
+    desc: "Show docker compose logs"
+    cmds:
+      - docker compose logs
+
+  start-dev:
+    desc: "Start development instance (preserves data, builds locally)"
+    deps: [build-all-with-version, merge-config, generate-api-types]
+    env:
+      DOCKER_BUILDKIT: 1
+      COMPOSE_DOCKER_CLI_BUILD: 1
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+      COMPOSE_BAKE: true
+      QUIZ_CONFIG_FILE: "{{.TASKFILE_DIR}}/merged.config.yaml"
+      SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"
+      ENVIRONMENT: "dev"
+    cmds:
+      - echo "🚀 Starting dev servers with BuildKit optimizations..."
+      - START_WORKER_PAUSED=false docker compose up -d --wait
+      - echo "✅ Dev services are running:"
+      - echo "   Frontend - http://localhost:3000"
+      - echo "   Backend - http://localhost:8080"
+      - echo "   Database - postgres://localhost:5432"
+
+  stop-dev:
+    desc: "Stop development instance (preserves data)"
+    env:
+      COMPOSE_BAKE: true
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+    cmds:
+      - echo "Stopping dev servers (keeping data)..."
+      - docker compose down
+      - echo "✅ Dev services stopped (data preserved)"
+
+  restart-dev:
+    desc: "Restart development instance (preserves data)"
+    deps: [setup-cache-dirs]
+    env:
+      DOCKER_BUILDKIT: 1
+      COMPOSE_DOCKER_CLI_BUILD: 1
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+      COMPOSE_BAKE: true
+    cmds:
+      - task: stop-dev
+      - task: start-dev
+
+  backup-dev-db:
+    desc: "Backup production database"
+    env:
+      COMPOSE_BAKE: true
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+    cmds:
+      - echo "Creating development database backup..."
+      - mkdir -p backups
+      - docker compose exec postgres pg_dump -U quiz_user -d quiz_db > backups/quiz_prod_backup_$(date +%Y%m%d_%H%M%S).sql
+      - echo "✅ Backup created in backups/ directory"
+
+  reset-dev-db:
+    desc: "⚠️  DANGER: Reset production database to empty state (requires confirmation)"
+    env:
+      COMPOSE_BAKE: true
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+      QUIZ_CONFIG_FILE: "{{.TASKFILE_DIR}}/merged.config.yaml"
+      SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"
+    cmds:
+      - defer: { task: stop-dev }
+      - echo "⚠️  This will reset the PRODUCTION database!"
+      - echo "Make sure production services are running first..."
+      - task: start-dev
+      - echo "Running database reset utility..."
+      - cd backend && go run ./cmd/reset-db
+      - echo "✅ Database reset complete with admin user recreated."
+
+  reset-dev-db-direct:
+    desc: "⚠️  DANGER: Direct database reset (bypasses Docker, uses local environment)"
+    dir: backend
+    env:
+      QUIZ_CONFIG_FILE: "{{.TASKFILE_DIR}}/merged.config.yaml"
+      SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"
+    cmds:
+      - echo "⚠️  Resetting database directly using local environment..."
+      - go run ./cmd/reset-db
+
+  reset-prod-db:
+    desc: "⚠️  DANGER: Reset production database to empty state (requires confirmation)"
+    env:
+      QUIZ_CONFIG_FILE: "{{.TASKFILE_DIR}}/merged.config.yaml"
+      SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"
+    cmds:
+      - defer: { task: stop-prod }
+      - echo "⚠️  This will reset the PRODUCTION database!"
+      - echo "Make sure production services are running first..."
+      - task: start-prod
+      - echo "Running database reset utility..."
+      - cd backend && go run ./cmd/reset-db
+      - echo "✅ Database reset complete with admin user recreated."
+
+  reset-prod-db-direct:
+    desc: "⚠️  DANGER: Direct database reset (bypasses Docker, uses local environment)"
+    dir: backend
+    env:
+      QUIZ_CONFIG_FILE: "{{.TASKFILE_DIR}}/merged.config.yaml"
+      SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"
+    cmds:
+      - echo "⚠️  Resetting database directly using local environment..."
+      - go run ./cmd/reset-db
+
+  status:
+    desc: "Show status of all services"
+    cmds:
+      - echo "=== Dev Services Status ==="
+      - docker compose ps || echo "Dev services not running"
+      - echo ""
+      - echo "=== Test Services Status ==="
+      - docker compose -f docker-compose.test.yml ps || echo "Test services not running"
+      - echo ""
+      - echo "=== Prod Services Status ==="
+      - docker compose -f docker-compose.prod.yml ps || echo "Prod services not running"
+      - echo ""
+      - echo "=== Docker Volumes ==="
+      - docker volume ls | grep -E "(quiz|postgres)" || echo "No quiz-related volumes found"
+
+  clean-test:
+    desc: "Clean up test docker volumes and builds"
+    env:
+      COMPOSE_BAKE: true
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+    cmds:
+      - echo "Cleaning up test docker volumes and builds..."
+      - docker compose -f docker-compose.test.yml down -v --remove-orphans || true
+
+  clean-dev:
+    desc: "Clean up dev docker volumes and builds (DESTROYS DATA)"
+    env:
+      COMPOSE_BAKE: true
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+    cmds:
+      - echo "Cleaning up dev docker volumes and builds..."
+      - docker compose down -v --remove-orphans
+
+  clean-prod:
+    desc: "Clean up prod docker volumes and builds (DESTROYS DATA)"
+    env:
+      COMPOSE_BAKE: true
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+    cmds:
+      - echo "Cleaning up production docker volumes and builds..."
+      - docker compose -f docker-compose.prod.yml down -v --remove-orphans
+
+  clean-build-cache:
+    desc: "Clean Docker build cache to free up space"
+    env:
+      COMPOSE_BAKE: true
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+    cmds:
+      - echo "🧹 Cleaning Docker build cache..."
+      - rm -rf /tmp/.buildx-cache /tmp/.buildx-cache-new || true
+      - rm -rf /tmp/.buildx-cache-frontend /tmp/.buildx-cache-worker || true
+      - docker builder prune -f
+      - echo "✅ Build cache cleaned!"
+
+  setup-cache-dirs:
+    desc: "Set up cache directories with proper permissions"
+    cmds:
+      - echo "🔧 Setting up cache directories..."
+      - mkdir -p /tmp/.buildx-cache /tmp/.buildx-cache-frontend /tmp/.buildx-cache-worker /tmp/.buildx-cache-backend
+      - chmod 755 /tmp/.buildx-cache /tmp/.buildx-cache-frontend /tmp/.buildx-cache-worker /tmp/.buildx-cache-backend
+      - echo "✅ Cache directories created with proper permissions"
+
+  setup-buildx:
+    desc: "Ensure Docker Buildx builder exists and is used"
+    cmds:
+      - |
+        if docker buildx ls | grep -q "quiz-builder"; then
+          echo "Using existing Docker Buildx builder 'quiz-builder'..."
+          docker buildx use quiz-builder
+          if ! docker buildx inspect --bootstrap quiz-builder >/dev/null 2>&1; then
+            echo "Recreating builder without host networking due to bootstrap failure..."
+            docker buildx rm quiz-builder || true
+            docker buildx create --name quiz-builder --use --driver docker-container
+            docker buildx inspect --bootstrap quiz-builder
+          else
+            docker buildx inspect --bootstrap quiz-builder
+          fi
+        else
+          echo "Creating and using Docker Buildx builder 'quiz-builder'..."
+          docker buildx create --name quiz-builder --use --driver docker-container
+          docker buildx inspect --bootstrap quiz-builder
+        fi
+
+  lint-go-mod-tidy:
+    desc: "Run go mod tidy"
+    dir: backend
+    cmds:
+      - go mod tidy
+
+  lint:
+    desc: "Run all linters (frontend and backend)"
+    cmds:
+      - task: lint-backend
+      - task: lint-frontend
+      - task: lint-go-mod-tidy
+      - echo "✅ All linting passed!"
+
+  lint-backend:
+    desc: "Run backend linters (golangci-lint, go-revive, gofumpt, staticcheck)"
+    deps: [format-backend]
+    dir: backend
+    cmds:
+      - echo "Running backend linters..."
+      - golangci-lint run
+      - revive -config revive.toml -set_exit_status ./...
+      - echo "Running gofumpt (modern formatting check)..."
+      - |
+        files=$(gofumpt -l -extra .)
+        if [ -n "$files" ]; then
+          echo "❌ gofumpt found formatting issues:"
+          echo "$files"
+          exit 1
+        fi
+      - echo "Running staticcheck (modern Go idioms)..."
+      - staticcheck ./cmd/... ./internal/handlers/... ./internal/middleware/... ./internal/models/... ./internal/observability/... ./internal/services/... ./internal/utils/... ./internal/version/... ./internal/worker/... ./internal/config/... ./internal/database/...
+      - echo "Running error handling enforcement script..."
+      - "{{.TASKFILE_DIR}}/scripts/check-fmt-errorf.sh"
+      - echo "✅ Backend linting passed!"
+
+  lint-frontend:
+    desc: "Run frontend linters (ESLint and Prettier)"
+    deps: [format-frontend]
+    dir: frontend
+    cmds:
+      - echo "Running frontend linters..."
+      - npm run format:check
+      - npm run lint
+      - echo "✅ Frontend linting passed!"
+
+  test-frontend:
+    desc: "Run frontend unit tests"
+    dir: frontend
+    env:
+      NODE_OPTIONS: "--max-old-space-size=16384 --no-deprecation"
+    cmds:
+      - echo "Running frontend unit tests..."
+      - npm ci --legacy-peer-deps
+      - npm test -- --reporter=verbose --logHeapUsage
+
+  format:
+    desc: "Format all code (Prettier for frontend, gofmt for backend)"
+    cmds:
+      - task: format-frontend
+      - task: format-backend
+      - echo "✅ All code formatted!"
+
+  format-frontend:
+    desc: "Format frontend code with Prettier"
+    dir: frontend
+    cmds:
+      - echo "Formatting frontend code with Prettier..."
+      - npm run format
+      - echo "✅ Frontend code formatted!"
+
+  # Install frontend dependencies once for fast repeated runs
+  setup-frontend:
+    desc: "Install frontend npm dependencies (ci)"
+    dir: frontend
+    cmds:
+      - echo "Installing frontend dependencies..."
+      - npm ci --silent --legacy-peer-deps
+    silent: true
+
+  format-backend:
+    desc: "Format backend code with gofmt, goimports, and gofumpt (modern Go formatting)"
+    dir: backend
+    cmds:
+      - echo "Formatting backend code with gofmt and goimports..."
+      - go fmt ./...
+      - command -v goimports >/dev/null 2>&1 && goimports -w .
+      - gofumpt -w -extra .
+      - echo "✅ Backend code formatted!"
+
+  deadcode:
+    desc: "Detect dead code in backend and frontend"
+    cmds:
+      - task: deadcode-backend
+      - task: deadcode-frontend
+      - echo "✅ Dead code analysis complete!"
+
+  deadcode-backend:
+    desc: "Detect dead code in Go backend using deadcode tool"
+    dir: backend
+    cmds:
+      - echo "Analyzing backend for dead code..."
+      - |
+        if ! command -v deadcode >/dev/null 2>&1; then
+          echo "Installing deadcode tool..."
+          go install golang.org/x/tools/cmd/deadcode@latest
+        fi
+      - deadcode -test ./...
+      - echo "✅ Backend dead code analysis complete!"
+
+  deadcode-frontend:
+    desc: "Detect dead code in TypeScript frontend using ts-prune"
+    dir: frontend
+    cmds:
+      - echo "Analyzing frontend for dead code..."
+      - npm ci --silent --legacy-peer-deps
+      - |
+        if ! npm list ts-prune >/dev/null 2>&1; then
+          echo "Installing ts-prune for dead code detection..."
+          npm install --save-dev ts-prune --legacy-peer-deps
+        fi
+      - echo "Running ts-prune to find potentially unused exports (excluding auto-generated files)..."
+      - 'npx ts-prune --ignore "src/api/api\.ts" || echo "Note: ts-prune found potentially unused exports (this is informational)"'
+      - echo "✅ Frontend dead code analysis complete!"
+
+  zap:
+    desc: "Run ZAP baseline security scan (unauthenticated)"
+    cmds:
+      - echo "🔒 Running ZAP baseline security scan..."
+      - echo "Make sure the application is running first (task start-prod)"
+      - echo ""
+      - mkdir -p zap/reports
+      - echo "Starting ZAP baseline security scan with Docker..."
+      - docker run --rm -v $(pwd):/zap/wrk/:rw -t ghcr.io/zaproxy/zaproxy:stable zap.sh -cmd -autorun /zap/wrk/zap/configs/baseline-automation.yaml
+      - echo ""
+      - echo "✅ ZAP baseline security scan completed!"
+      - echo "📊 Report files generated:"
+      - echo "   - zap/reports/zap-baseline-report.html (HTML report)"
+      - echo "   - zap/reports/zap-baseline-report.json (JSON report)"
+      - echo ""
+      - echo "🔍 Review the reports for security findings"
+
+  zap-quick:
+    desc: "Run ZAP quick security scan (fast development feedback)"
+    cmds:
+      - echo "⚡ Running ZAP quick security scan..."
+      - echo "Make sure the application is running first (task start-prod)"
+      - echo ""
+      - mkdir -p zap/reports
+      - echo "Starting ZAP quick security scan with Docker..."
+      - docker run --rm -v $(pwd):/zap/wrk/:rw -t ghcr.io/zaproxy/zaproxy:stable zap.sh -cmd -autorun /zap/wrk/zap/configs/quick-automation.yaml
+      - echo ""
+      - echo "✅ ZAP quick security scan completed!"
+      - echo "📊 Report files generated:"
+      - echo "   - zap/reports/zap-quick-report.html (HTML report)"
+      - echo "   - zap/reports/zap-quick-report.json (JSON report)"
+      - echo ""
+      - echo "🔍 Review the reports for critical security findings"
+
+  zap-authenticated:
+    desc: "Run ZAP authenticated security scan (comprehensive with login)"
+    cmds:
+      - ./zap/scripts/check-auth-env.sh
+      - mkdir -p zap/reports
+      - echo "Starting ZAP authenticated security scan with Docker..."
+      - docker run --rm -v $(pwd):/zap/wrk/:rw -t ghcr.io/zaproxy/zaproxy:stable zap.sh -cmd -autorun /zap/wrk/zap/configs/authenticated-automation.yaml
+      - echo "✅ ZAP authenticated security scan completed!"
+      - echo "📊 Report files generated:"
+      - echo "   - zap/reports/zap-authenticated-report.html (HTML report)"
+      - echo "   - zap/reports/zap-authenticated-report.json (JSON report)"
+      - echo "🔍 Review the reports for security findings"
+
+  zap-api:
+    desc: "Run ZAP API security scan (backend API testing)"
+    cmds:
+      - echo "🔌 Running ZAP API security scan..."
+      - echo "Make sure the application is running first (task start-prod)"
+      - echo ""
+      - mkdir -p zap/reports
+      - echo "Starting ZAP API security scan with Docker..."
+      - docker run --rm -v $(pwd):/zap/wrk/:rw -t ghcr.io/zaproxy/zaproxy:stable zap.sh -cmd -autorun /zap/wrk/zap/configs/api-automation.yaml
+      - echo ""
+      - echo "✅ ZAP API security scan completed!"
+      - echo "📊 Report files generated:"
+      - echo "   - zap/reports/zap-api-report.html (HTML report)"
+      - echo "   - zap/reports/zap-api-report.json (JSON report)"
+      - echo ""
+      - echo "🔍 Review the reports for API security findings"
+
+  zap-all:
+    desc: "Run all ZAP security scans (comprehensive testing)"
+    cmds:
+      - echo "🔒 Running comprehensive ZAP security testing..."
+      - echo "Make sure the application is running first (task start-prod)"
+      - echo ""
+      - mkdir -p zap/reports
+      - echo "1️⃣ Running quick scan..."
+      - task: zap-quick
+      - echo ""
+      - echo "2️⃣ Running baseline scan..."
+      - task: zap
+      - echo ""
+      - echo "3️⃣ Running API scan..."
+      - task: zap-api
+      - echo ""
+      - |
+        if [ -n "$ZAP_ADMIN_USERNAME" ] && [ -n "$ZAP_ADMIN_PASSWORD" ]; then
+          echo "4️⃣ Running authenticated scan..."
+          task: zap-authenticated
+        else
+          echo "⚠️  Skipping authenticated scan (ZAP_ADMIN_USERNAME and ZAP_ADMIN_PASSWORD not set)"
+          echo "   Set them to run authenticated scans:"
+          echo "   export ZAP_ADMIN_USERNAME=admin@example.com"
+          echo "   export ZAP_ADMIN_PASSWORD=admin123"
+        fi
+      - echo ""
+      - echo "✅ All ZAP security scans completed!"
+      - echo "📊 All reports generated in zap/reports/ directory"
+      - echo "🔍 Review all reports for comprehensive security assessment"
+
+  zap-docker:
+    desc: "Run ZAP security scan using Docker (no local ZAP installation required)"
+    cmds:
+      - echo "🐳 Running ZAP security scan using Docker..."
+      - echo "Make sure the application is running first (task start-prod)"
+      - echo ""
+      - mkdir -p zap/reports
+      - echo "Starting ZAP baseline security scan with Docker..."
+      - docker run --rm -v $(pwd):/zap/wrk/:rw -t ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t http://host.docker.internal:3000 -J zap/reports/zap-docker-report.json -r zap/reports/zap-docker-security-report.html -I
+      - echo ""
+      - echo "✅ ZAP security scan completed!"
+      - echo "📊 Report files generated:"
+      - echo "   - zap/reports/zap-docker-security-report.html (HTML report)"
+      - echo "   - zap/reports/zap-docker-report.json (JSON report)"
+      - echo ""
+      - echo "🔍 Review the reports for security findings"
+
+  zap-docker-full:
+    desc: "Run ZAP full security scan using Docker"
+    cmds:
+      - echo "🐳 Running ZAP full security scan using Docker..."
+      - echo "Make sure the application is running first (task start-prod)"
+      - echo ""
+      - mkdir -p zap/reports
+      - echo "Starting ZAP full security scan with Docker (30+ minutes)..."
+      - docker run --rm -v $(pwd):/zap/wrk/:rw -t ghcr.io/zaproxy/zaproxy:stable zap-full-scan.py -t http://host.docker.internal:3000 -J zap/reports/zap-docker-full-report.json -r zap/reports/zap-docker-full-report.html -I
+      - echo ""
+      - echo "✅ ZAP full security scan completed!"
+      - echo "📊 Report files generated:"
+      - echo "   - zap/reports/zap-docker-full-report.html (HTML report)"
+      - echo "   - zap/reports/zap-docker-full-report.json (JSON report)"
+      - echo ""
+      - echo "🔍 Review the reports for comprehensive security findings"
+
+  install-tooling:
+    desc: "Install all required development tooling (macOS and Linux)"
+    cmds:
+      - echo "🔧 Installing development tooling for Quiz Application..."
+      - echo "This will install:"
+      - echo "  • Task (build system)"
+      - echo "  • Docker & Docker Compose"
+      - echo "  • Go (backend development)"
+      - echo "  • Node.js & npm (frontend development)"
+      - echo "  • Ollama (AI model server)"
+      - echo "  • Development tools (eslint, prettier, etc.)"
+      - echo ""
+      - echo "Running installation script..."
+      - ./scripts/install-tooling.sh
+
+  install-tooling-dry-run:
+    desc: "Show what tooling would be installed (dry run)"
+    cmds:
+      - 'echo "DRY RUN: Showing what tooling would be installed..."'
+      - echo "This will show what would be installed without actually installing anything."
+      - echo ""
+      - ./scripts/install-tooling.sh --dry-run
+
+  update-csp-hashes:
+    desc: "Scan frontend build for inline styles and update CSP hashes in nginx.conf"
+    cmds:
+      - python3 scripts/update_csp_hashes.py
+
+  restart-dev-backend:
+    desc: "Rebuild and restart only the backend Docker container (production)"
+    deps: [build-backend-with-version, setup-cache-dirs, generate-api-types]
+    env:
+      DOCKER_BUILDKIT: 1
+      COMPOSE_DOCKER_CLI_BUILD: 1
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+      COMPOSE_BAKE: true
+    cmds:
+      - echo "Restarting only the backend container (dev)..."
+      - docker compose up -d --no-deps backend
+      - echo "✅ Backend container rebuilt and restarted (dev)."
+
+  restart-dev-worker:
+    desc: "Rebuild and restart only the worker Docker container (production)"
+    deps: [build-backend-with-version, setup-cache-dirs, generate-api-types]
+    env:
+      DOCKER_BUILDKIT: 1
+      COMPOSE_DOCKER_CLI_BUILD: 1
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+      COMPOSE_BAKE: true
+    cmds:
+      - echo "Restarting only the worker container (dev)..."
+      - docker compose up -d --no-deps worker
+      - echo "✅ Worker container rebuilt and restarted (dev)."
+
+  restart-dev-frontend:
+    desc: "Rebuild and restart only the frontend Docker container (production)"
+    deps: [build-frontend-with-version, setup-cache-dirs, generate-api-types]
+    env:
+      DOCKER_BUILDKIT: 1
+      COMPOSE_DOCKER_CLI_BUILD: 1
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+      COMPOSE_BAKE: true
+    cmds:
+      - echo "Restarting only the frontend container (dev)..."
+      - docker compose up -d --no-deps frontend
+      - echo "✅ Frontend container rebuilt and restarted (dev)."
+
+  test-merge-config:
+    desc: "Test merge-config.sh script logic"
+    cmds:
+      - bash scripts/test_merge_config.sh
+
+  analyze-test-performance:
+    desc: "Analyze integration test performance and identify bottlenecks"
+    dir: backend
+    cmds:
+      - echo "🔍 Analyzing test performance..."
+      - ../scripts/analyze-test-performance.sh
+
+  check-undocumented-apis:
+    desc: "Check for undocumented APIs by comparing router endpoints with swagger.yaml"
+    cmds:
+      - echo "🔍 Checking for undocumented APIs..."
+      - ./scripts/check-undocumented-apis.sh
+
+  validate-api:
+    desc: "Validate API documentation and check for undocumented endpoints"
+    deps: [check-undocumented-apis]
+    cmds:
+      - echo "✅ API documentation validation complete"
+
+  # --- Script Management Tasks ---
+
+  # CSP Management Scripts
+  csp-add-nonces:
+    desc: "Add CSP nonces to built frontend HTML"
+    cmds:
+      - echo "Adding CSP nonces to built frontend HTML..."
+      - ./scripts/add_nonces_to_built_html.py
+
+  csp-analyze-hashes:
+    desc: "Analyze CSP hash lengths in nginx.conf"
+    cmds:
+      - echo "Analyzing CSP hashes..."
+      - ./scripts/analyze_csp_hashes.py
+
+  csp-analyze-header-length:
+    desc: "Analyze CSP header length and identify potential issues"
+    cmds:
+      - echo "Analyzing CSP header length..."
+      - ./scripts/analyze_csp_header_length.py
+
+  csp-extract-hashes:
+    desc: "Extract CSP hashes from error messages and format them"
+    cmds:
+      - echo "Extracting CSP hashes..."
+      - ./scripts/extract_csp_hashes.py
+
+  csp-fix-hashes:
+    desc: "Fix CSP hash length warnings in nginx.conf"
+    cmds:
+      - echo "Fixing CSP hashes..."
+      - ./scripts/fix_csp_hashes.py
+
+  csp-fix-hashes-conservative:
+    desc: "Conservative fix for CSP hash length warnings (only removes clearly malformed hashes)"
+    cmds:
+      - echo "Fixing CSP hashes conservatively..."
+      - ./scripts/fix_csp_hashes_conservative.py
+
+  csp-remove-duplicates:
+    desc: "Remove duplicate CSP hashes from nginx.conf"
+    cmds:
+      - echo "Removing duplicate CSP hashes..."
+      - ./scripts/remove_duplicate_csp_hashes.py
+
+  csp-verify-hashes:
+    desc: "Verify CSP hash lengths in nginx.conf"
+    cmds:
+      - echo "Verifying CSP hashes..."
+      - ./scripts/verify_csp_hashes.py
+
+  csp-generate-nonce:
+    desc: "Generate CSP nonces for inline styles and scripts"
+    cmds:
+      - echo "Generating CSP nonce..."
+      - ./scripts/generate_csp_nonce.py
+
+  csp-inject-nonce:
+    desc: "Extract CSP nonce from built frontend HTML and inject into nginx.conf"
+    cmds:
+      - echo "Injecting CSP nonce..."
+      - ./scripts/inject_csp_nonce.py
+
+  csp-update-hashes:
+    desc: "Scan frontend build for inline styles and update CSP hashes in nginx.conf"
+    cmds:
+      - echo "Updating CSP hashes..."
+      - ./scripts/update_csp_hashes.py
+
+  csp-update-nginx-nonces:
+    desc: "Update nginx.conf to use CSP nonces for frontend instead of hashes"
+    cmds:
+      - echo "Updating nginx.conf for CSP nonces..."
+      - ./scripts/update_nginx_for_frontend_nonces.py
+
+  csp-simplify-dev:
+    desc: "Simplify CSP for development by using unsafe-inline"
+    cmds:
+      - echo "Simplifying CSP for development..."
+      - ./scripts/simplify_csp_for_dev.py
+
+  # Font Management Scripts
+  fonts-fix-google-integrity:
+    desc: "Fix Google Fonts integrity issue in frontend/index.html"
+    cmds:
+      - echo "Fixing Google Fonts integrity..."
+      - ./scripts/fix_google_fonts_integrity.py
+
+  fonts-self-host:
+    desc: "Self-host Google Fonts by downloading font files and updating codebase"
+    cmds:
+      - echo "Self-hosting Google Fonts..."
+      - ./scripts/self_host_fonts.py
+
+  # Testing Scripts
+  test-rate-limits:
+    desc: "Test rate limiting configuration with comprehensive checks"
+    cmds:
+      - echo "Testing rate limits..."
+      - ./scripts/test-rate-limits.sh
+
+  # Utility Scripts
+  generate-types:
+    desc: "Generate TypeScript types from OpenAPI specification"
+    cmds:
+      - echo "Generating TypeScript types..."
+      - ./scripts/generate-types.js
+
+  # CLI Worker Scripts
+  cli-worker-run:
+    desc: "Run CLI worker with Docker (requires --env and --username flags)"
+    cmds:
+      - echo "Running CLI worker..."
+      - ./scripts/run-cli-worker.sh
+
+  # All CSP Management Tasks
+  csp-all:
+    desc: "Run all CSP management tasks (analyze, fix, verify)"
+    cmds:
+      - echo "Running all CSP management tasks..."
+      - task: csp-analyze-hashes
+      - task: csp-analyze-header-length
+      - task: csp-verify-hashes
+      - echo "✅ All CSP management tasks completed!"
+
+  # All Scripts
+  scripts-help:
+    desc: "Show available script tasks"
+    cmds:
+      - echo "Available script tasks:"
+      - echo ""
+      - echo "CSP Management:"
+      - echo "  task csp-add-nonces          - Add CSP nonces to built HTML"
+      - echo "  task csp-analyze-hashes       - Analyze CSP hash lengths"
+      - echo "  task csp-analyze-header-length - Analyze CSP header length"
+      - echo "  task csp-extract-hashes       - Extract CSP hashes from errors"
+      - echo "  task csp-fix-hashes           - Fix CSP hash length warnings"
+      - echo "  task csp-fix-hashes-conservative - Conservative CSP hash fix"
+      - echo "  task csp-remove-duplicates    - Remove duplicate CSP hashes"
+      - echo "  task csp-verify-hashes        - Verify CSP hash lengths"
+      - echo "  task csp-generate-nonce       - Generate CSP nonces"
+      - echo "  task csp-inject-nonce         - Inject CSP nonce into nginx"
+      - echo "  task csp-update-hashes        - Update CSP hashes from build"
+      - echo "  task csp-update-nginx-nonces  - Update nginx for CSP nonces"
+      - echo "  task csp-simplify-dev         - Simplify CSP for development"
+      - echo "  task csp-all                  - Run all CSP management tasks"
+      - echo ""
+      - echo "Font Management:"
+      - echo "  task fonts-fix-google-integrity - Fix Google Fonts integrity"
+      - echo "  task fonts-self-host           - Self-host Google Fonts"
+      - echo ""
+      - echo "Testing:"
+      - echo "  task test-rate-limits         - Test rate limiting"
+      - echo "  task test-rate-limits-quick   - Quick rate limit test"
+      - echo ""
+      - echo "Utilities:"
+      - echo "  task generate-types            - Generate TypeScript types"
+      - echo "  task cli-worker-run           - Run CLI worker with Docker"
+
+  release-build:
+    desc: "Build Docker images for the next semantic tag"
+    deps: [setup-cache-dirs, setup-buildx, merge-config]
+    env:
+      DOCKER_BUILDKIT: 1
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+    cmds:
+      - |
+        set -e
+        # compute next semver tag and other meta via helper (prints shell assignments)
+        NEW_TAG=$(./scripts/compute-next-release.sh)
+        COMMIT_HASH=$(git rev-parse --short HEAD)
+        BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+        APP_VERSION="prod"
+        echo "Release version: $NEW_TAG"
+        echo "Calling parallel release build script with tag: $NEW_TAG"
+        bash ./scripts/release-build-parallel.sh "$NEW_TAG" "$COMMIT_HASH" "$BUILD_TIME" "$APP_VERSION"
+
+  release-tag:
+    desc: "Create and push the git tag for the next semantic version"
+    cmds:
+      - bash ./scripts/release-tag.sh
+
+  release:
+    desc: "Run lint, then build images, push images, and create/push git tag via subtasks"
+    deps: [lint, test]
+    cmds:
+      - task: release-build
+      - task: release-tag
+
+  build-all-with-version:
+    desc: "Build all Docker images with version, commit, and build time injected from git."
+    deps: [setup-cache-dirs]
+    env:
+      DOCKER_BUILDKIT: 1
+      COMPOSE_DOCKER_CLI_BUILD: 1
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+      COMPOSE_BAKE: true
+    cmds:
+      - |
+        export APP_VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo dev)
+        export COMMIT_HASH=$(git rev-parse --short HEAD)
+        export BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+        echo "Building with version: $APP_VERSION, commit: $COMMIT_HASH, build time: $BUILD_TIME"
+        # Create cache directories with proper permissions
+        mkdir -p /tmp/.buildx-cache /tmp/.buildx-cache-frontend /tmp/.buildx-cache-worker
+        chmod 755 /tmp/.buildx-cache /tmp/.buildx-cache-frontend /tmp/.buildx-cache-worker
+        echo "Building Docker images (cache export disabled)..."
+        # Temporarily disable cache export by setting empty cache_to
+        export BUILDKIT_CACHE_TO=""
+        # Determine host architecture and map to Docker TARGETARCH (amd64/arm64)
+        TARGETARCH="$(uname -m)"
+        case "$TARGETARCH" in
+          x86_64|x86-64|x64)
+            TARGETARCH="amd64" ;;
+          aarch64|arm64)
+            TARGETARCH="arm64" ;;
+          *)
+            TARGETARCH="amd64" ;;
+        esac
+        APP_VERSION=$APP_VERSION COMMIT_HASH=$COMMIT_HASH BUILD_TIME=$BUILD_TIME \
+          docker compose build --build-arg TARGETARCH=$TARGETARCH
+
+  build-frontend-with-version:
+    desc: "Build frontend Docker images with version, commit, and build time injected from git."
+    deps: [setup-cache-dirs]
+    env:
+      DOCKER_BUILDKIT: 1
+      COMPOSE_DOCKER_CLI_BUILD: 1
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+      COMPOSE_BAKE: true
+    cmds:
+      - |
+        export APP_VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo dev)
+        export COMMIT_HASH=$(git rev-parse --short HEAD)
+        export BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+        echo "Building with version: $APP_VERSION, commit: $COMMIT_HASH, build time: $BUILD_TIME"
+        # Create cache directories with proper permissions
+        mkdir -p /tmp/.buildx-cache /tmp/.buildx-cache-frontend
+        chmod 755 /tmp/.buildx-cache /tmp/.buildx-cache-frontend
+        echo "Building Docker images (cache export disabled)..."
+        # Temporarily disable cache export by setting empty cache_to
+        export BUILDKIT_CACHE_TO=""
+        TARGETARCH="$(uname -m)"
+        case "$TARGETARCH" in
+          x86_64|x86-64|x64)
+            TARGETARCH="amd64" ;;
+          aarch64|arm64)
+            TARGETARCH="arm64" ;;
+          *)
+            TARGETARCH="amd64" ;;
+        esac
+        APP_VERSION=$APP_VERSION COMMIT_HASH=$COMMIT_HASH BUILD_TIME=$BUILD_TIME \
+          docker compose build --build-arg TARGETARCH=$TARGETARCH frontend
+
+  build-backend-with-version:
+    desc: "Build backend Docker images with version, commit, and build time injected from git."
+    deps: [setup-cache-dirs]
+    env:
+      DOCKER_BUILDKIT: 1
+      COMPOSE_DOCKER_CLI_BUILD: 1
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+      COMPOSE_BAKE: true
+    cmds:
+      - |
+        export APP_VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo dev)
+        export COMMIT_HASH=$(git rev-parse --short HEAD)
+        export BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+        echo "Building with version: $APP_VERSION, commit: $COMMIT_HASH, build time: $BUILD_TIME"
+        # Create cache directories with proper permissions
+        mkdir -p /tmp/.buildx-cache /tmp/.buildx-cache-worker
+        chmod 755 /tmp/.buildx-cache /tmp/.buildx-cache-worker
+        echo "Building Docker images (cache export disabled)..."
+        # Temporarily disable cache export by setting empty cache_to
+        export BUILDKIT_CACHE_TO=""
+        TARGETARCH="$(uname -m)"
+        case "$TARGETARCH" in
+          x86_64|x86-64|x64)
+            TARGETARCH="amd64" ;;
+          aarch64|arm64)
+            TARGETARCH="arm64" ;;
+          *)
+            TARGETARCH="amd64" ;;
+        esac
+        APP_VERSION=$APP_VERSION COMMIT_HASH=$COMMIT_HASH BUILD_TIME=$BUILD_TIME \
+          docker compose build --build-arg TARGETARCH=$TARGETARCH backend
+
+  test-frontend-file:
+    desc: "Run a single frontend unit test file (vitest, CI mode)"
+    dir: frontend
+    cmds:
+      - |
+        if [ -z "$FILE" ]; then
+          echo "You must provide FILE=src/components/Chat.test.tsx (relative to frontend/)"
+          exit 1
+        fi
+        task clean-test
+        echo "Running single frontend unit test file: $FILE ..."
+        npm ci --legacy-peer-deps
+        npm test -- $(basename $FILE)
+
+  tidy:
+    desc: "go mod tidy"
+    dir: backend
+    cmds:
+      - go mod tidy
+
+  start-prod:
+    desc: "Start production instance from prebuilt images (no local build)"
+    env:
+      IMAGE_TAG: "{{.IMAGE_TAG}}"
+      ENVIRONMENT: "prod"
+      QUIZ_CONFIG_FILE: "{{.TASKFILE_DIR}}/merged.config.yaml"
+      SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"
+    cmds:
+      - 'echo "🚀 Starting production services from images (tag: ${IMAGE_TAG:-latest})..."'
+      - START_WORKER_PAUSED=false docker compose -f docker-compose.prod.yml up -d --wait
+      - "echo ✅ Production services are running:"
+      - "echo    Frontend - http://localhost:3000"
+      - "echo    Backend - http://localhost:8080"
+      - "echo    Database - postgres://localhost:5432"
+
+  stop-prod:
+    desc: "Stop production instance (preserves data)"
+    cmds:
+      - "echo 'Stopping production servers (keeping data)...'"
+      - docker compose -f docker-compose.prod.yml down
+      - "echo '✅ Production services stopped (data preserved)'"
+
+  restart-prod:
+    desc: "Restart production instance (preserves data, no build)"
+    env:
+      IMAGE_TAG: "{{.IMAGE_TAG}}"
+    cmds:
+      - 'echo "Pulling production images (tag: ${IMAGE_TAG:-latest})..."'
+      - docker compose -f docker-compose.prod.yml pull
+      - task: stop-prod
+      - task: start-prod

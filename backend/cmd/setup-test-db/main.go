@@ -1,0 +1,953 @@
+// Package main provides a utility to set up the test database with initial data.
+package main
+
+import (
+	"context"
+	"database/sql"
+	"encoding/json"
+	"flag"
+	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
+	"time"
+
+	"quizapp/internal/config"
+	"quizapp/internal/database"
+	"quizapp/internal/models"
+	"quizapp/internal/observability"
+	"quizapp/internal/services"
+	contextutils "quizapp/internal/utils"
+
+	"go.uber.org/zap/zapcore"
+	"gopkg.in/yaml.v3"
+)
+
+// TestUser represents a user in the test data files
+type TestUser struct {
+	Username          string   `yaml:"username"`
+	Email             string   `yaml:"email"`
+	Password          string   `yaml:"password"` // Special field for password creation
+	PreferredLanguage string   `yaml:"preferred_language"`
+	CurrentLevel      string   `yaml:"current_level"`
+	AIProvider        string   `yaml:"ai_provider"`
+	AIModel           string   `yaml:"ai_model"`
+	AIAPIKey          string   `yaml:"ai_api_key"`
+	Roles             []string `yaml:"roles"`
+}
+
+// TestUsers represents a collection of test users
+type TestUsers struct {
+	Users []TestUser `yaml:"users"`
+}
+
+// TestQuestions represents a collection of test questions
+type TestQuestions struct {
+	Questions []models.Question `yaml:"questions"`
+}
+
+// TestResponses represents a collection of test user responses
+type TestResponses struct {
+	UserResponses []struct {
+		Username       string `yaml:"username"`
+		QuestionIndex  int    `yaml:"question_index"`
+		UserAnswer     string `yaml:"user_answer"`
+		IsCorrect      bool   `yaml:"is_correct"`
+		ResponseTimeMs int    `yaml:"response_time_ms"`
+	} `yaml:"user_responses"`
+
+	QuestionReports []struct {
+		Username      string  `yaml:"username"`
+		QuestionIndex int     `yaml:"question_index"`
+		ReportReason  string  `yaml:"report_reason"`
+		CreatedAt     *string `yaml:"created_at"`
+	} `yaml:"question_reports"`
+}
+
+// TestAnalytics represents analytics test data
+type TestAnalytics struct {
+	PriorityScores []struct {
+		Username         string  `yaml:"username"`
+		QuestionIndex    int     `yaml:"question_index"`
+		PriorityScore    float64 `yaml:"priority_score"`
+		LastCalculatedAt string  `yaml:"last_calculated_at"`
+	} `yaml:"priority_scores"`
+
+	LearningPreferences []struct {
+		Username             string  `yaml:"username"`
+		FocusOnWeakAreas     bool    `yaml:"focus_on_weak_areas"`
+		FreshQuestionRatio   float64 `yaml:"fresh_question_ratio"`
+		WeakAreaBoost        float64 `yaml:"weak_area_boost"`
+		KnownQuestionPenalty float64 `yaml:"known_question_penalty"`
+		ReviewIntervalDays   int     `yaml:"review_interval_days"`
+		DailyReminderEnabled bool    `yaml:"daily_reminder_enabled"`
+	} `yaml:"learning_preferences"`
+
+	PerformanceMetrics []struct {
+		Username              string  `yaml:"username"`
+		Topic                 string  `yaml:"topic"`
+		Language              string  `yaml:"language"`
+		Level                 string  `yaml:"level"`
+		TotalAttempts         int     `yaml:"total_attempts"`
+		CorrectAttempts       int     `yaml:"correct_attempts"`
+		AverageResponseTimeMs float64 `yaml:"average_response_time_ms"`
+	} `yaml:"performance_metrics"`
+
+	UserQuestionMetadata []struct {
+		Username        string  `yaml:"username"`
+		QuestionIndex   int     `yaml:"question_index"`
+		MarkedAsKnown   bool    `yaml:"marked_as_known"`
+		MarkedAsKnownAt *string `yaml:"marked_as_known_at"`
+	} `yaml:"user_question_metadata"`
+}
+
+// TestDailyAssignments represents the structure for daily question assignments in test data
+type TestDailyAssignments struct {
+	DailyAssignments []struct {
+		Username           string `yaml:"username"`
+		Date               string `yaml:"date"`
+		QuestionIDs        []int  `yaml:"question_ids"`
+		CompletedQuestions []int  `yaml:"completed_questions"`
+	} `yaml:"daily_assignments"`
+}
+
+func resetTestDatabase(databaseURL, testDB string, logger *observability.Logger) error {
+	ctx := context.Background()
+
+	// Create admin connection string by replacing the database name with 'postgres'
+	// This connects to the admin database to drop/create the test database
+	adminConnStr := strings.Replace(databaseURL, "/"+testDB+"?", "/postgres?", 1)
+	if !strings.Contains(adminConnStr, "/postgres?") {
+		// Handle case where there's no query string
+		adminConnStr = strings.Replace(databaseURL, "/"+testDB, "/postgres", 1)
+	}
+
+	logger.Info(ctx, "Connecting to admin database", map[string]interface{}{"connection_string": adminConnStr})
+	adminDB, err := sql.Open("postgres", adminConnStr)
+	if err != nil {
+		return contextutils.WrapErrorf(contextutils.ErrDatabaseConnection, "failed to connect to postgres database for drop/create: %v", err)
+	}
+	defer func() {
+		if err := adminDB.Close(); err != nil {
+			logger.Warn(ctx, "Warning: failed to close adminDB", map[string]interface{}{"error": err.Error()})
+		}
+	}()
+
+	logger.Info(ctx, "Terminating connections to test DB", map[string]interface{}{"database": testDB})
+	_, err = adminDB.Exec(fmt.Sprintf(`
+		SELECT pg_terminate_backend(pid)
+		FROM pg_stat_activity
+		WHERE datname = '%s' AND pid <> pg_backend_pid();
+	`, testDB))
+	if err != nil {
+		logger.Warn(ctx, "Warning: failed to terminate connections", map[string]interface{}{"error": err.Error()})
+	}
+
+	logger.Info(ctx, "Dropping test database", map[string]interface{}{"database": testDB})
+	_, err = adminDB.Exec(fmt.Sprintf("DROP DATABASE IF EXISTS %s WITH (FORCE);", testDB))
+	if err != nil {
+		return contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to drop test database: %v", err)
+	}
+	logger.Info(ctx, "Successfully dropped test database", map[string]interface{}{"database": testDB})
+
+	logger.Info(ctx, "Creating test database", map[string]interface{}{"database": testDB})
+	_, err = adminDB.Exec(fmt.Sprintf("CREATE DATABASE %s;", testDB))
+	if err != nil {
+		return contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to create test database: %v", err)
+	}
+	logger.Info(ctx, "Successfully created test database", map[string]interface{}{"database": testDB})
+
+	logger.Info(ctx, "Test database reset complete")
+	return nil
+}
+
+func main() {
+	ctx := context.Background()
+
+	// CLI flags
+	verbose := flag.Bool("verbose", false, "enable verbose logging")
+	flag.Parse()
+
+	// Load configuration first
+	cfg, err := config.NewConfig()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to load config: %v\n", err)
+		os.Exit(1)
+	}
+
+	// Setup observability (tracing/metrics). Suppress logger creation here to avoid startup noise.
+	originalLogging := cfg.OpenTelemetry.EnableLogging
+	cfg.OpenTelemetry.EnableLogging = false
+	tp, mp, _, err := observability.SetupObservability(&cfg.OpenTelemetry, "setup-test-db")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to initialize observability: %v\n", err)
+		os.Exit(1)
+	}
+
+	// Create logger with level based on --verbose flag
+	logLevel := zapcore.WarnLevel
+	if *verbose {
+		logLevel = zapcore.InfoLevel
+	}
+	// Restore config flag for logger construction (to allow OTLP exporter if enabled)
+	cfg.OpenTelemetry.EnableLogging = originalLogging
+	logger := observability.NewLoggerWithLevel(&cfg.OpenTelemetry, logLevel)
+	defer func() {
+		if tp != nil {
+			if err := tp.Shutdown(context.TODO()); err != nil {
+				logger.Warn(ctx, "Error shutting down tracer provider", map[string]interface{}{"error": err.Error()})
+			}
+		}
+		if mp != nil {
+			if err := mp.Shutdown(context.TODO()); err != nil {
+				logger.Warn(ctx, "Error shutting down meter provider", map[string]interface{}{"error": err.Error()})
+			}
+		}
+	}()
+
+	// Get DB connection info from env or use defaults
+	dbUser := "quiz_user"
+	dbPassword := "quiz_password"
+	dbHost := "localhost"
+	dbPort := "5433"
+	testDB := "quiz_test_db"
+
+	// Allow override from DATABASE_URL
+	databaseURL := os.Getenv("DATABASE_URL")
+	if databaseURL == "" {
+		databaseURL = fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", dbUser, dbPassword, dbHost, dbPort, testDB)
+	}
+
+	// Debug: Print the DATABASE_URL we're using
+	logger.Info(ctx, "DATABASE_URL from environment", map[string]interface{}{"database_url": os.Getenv("DATABASE_URL")})
+	logger.Info(ctx, "Using database URL", map[string]interface{}{"database_url": databaseURL})
+
+	// --- Drop and recreate the test database ---
+	if err := resetTestDatabase(databaseURL, testDB, logger); err != nil {
+		logger.Error(ctx, "Failed to reset test database", err)
+		os.Exit(1)
+	}
+
+	// Now connect to the new test database
+	logger.Info(ctx, "Connecting to database", map[string]interface{}{"database_url": databaseURL})
+
+	// Initialize database manager with logger
+	dbManager := database.NewManager(logger)
+	db, err := dbManager.InitDB(databaseURL)
+	if err != nil {
+		logger.Error(ctx, "Failed to initialize database", err)
+		os.Exit(1)
+	}
+	defer func() {
+		if err := db.Close(); err != nil {
+			logger.Warn(ctx, "Warning: failed to close database", map[string]interface{}{"error": err.Error()})
+		}
+	}()
+
+	// Get the root directory (backend is the working directory)
+	rootDir, err := os.Getwd()
+	if err != nil {
+		logger.Error(ctx, "Failed to get working directory", err)
+		os.Exit(1)
+	}
+
+	// Apply schema from schema.sql
+	schemaPath := filepath.Join(rootDir, "..", "schema.sql")
+	if err := applySchema(db, schemaPath, rootDir, logger); err != nil {
+		logger.Error(ctx, "Failed to apply schema", err)
+		os.Exit(1)
+	}
+
+	// Initialize services
+	userService := services.NewUserServiceWithLogger(db, cfg, logger)
+	learningService := services.NewLearningServiceWithLogger(db, cfg, logger)
+	// Create question service
+	questionService := services.NewQuestionServiceWithLogger(db, learningService, cfg, logger)
+
+	// Ensure admin user exists
+	if err := userService.EnsureAdminUserExists(ctx, "admin", "password"); err != nil {
+		logger.Error(ctx, "Failed to ensure admin user exists", err)
+		os.Exit(1)
+	}
+
+	// Load and insert test data
+	users, err := setupTestData(ctx, rootDir, userService, questionService, learningService, db, logger)
+	if err != nil {
+		logger.Error(ctx, "Failed to setup test data", err)
+		os.Exit(1)
+	}
+
+	// Output user data to JSON file for E2E tests
+	if err := outputUserDataForTests(users, rootDir, logger); err != nil {
+		logger.Error(ctx, "Failed to output user data for tests", err)
+		os.Exit(1)
+	}
+
+	// Output roles data to JSON file for E2E tests
+	if err := outputRolesDataForTests(db, rootDir, logger); err != nil {
+		logger.Error(ctx, "Failed to output roles data for tests", err)
+		os.Exit(1)
+	}
+
+	logger.Info(ctx, "Test database created successfully")
+}
+
+func applySchema(db *sql.DB, schemaPath, _ string, logger *observability.Logger) error {
+	ctx := context.Background()
+
+	// First, drop all existing tables and sequences to ensure clean state
+	logger.Info(ctx, "Dropping existing tables and sequences")
+	dropSQL := `
+		-- Drop tables in reverse dependency order
+		DROP TABLE IF EXISTS performance_metrics CASCADE;
+		DROP TABLE IF EXISTS user_responses CASCADE;
+		DROP TABLE IF EXISTS questions CASCADE;
+		DROP TABLE IF EXISTS users CASCADE;
+
+		-- Drop any remaining sequences (in case they weren't cleaned up)
+		DROP SEQUENCE IF EXISTS users_id_seq CASCADE;
+		DROP SEQUENCE IF EXISTS questions_id_seq CASCADE;
+		DROP SEQUENCE IF EXISTS user_responses_id_seq CASCADE;
+		DROP SEQUENCE IF EXISTS performance_metrics_id_seq CASCADE;
+	`
+
+	if _, err := db.Exec(dropSQL); err != nil {
+		return contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to drop existing tables: %w", err)
+	}
+
+	// Now apply the schema
+	logger.Info(ctx, "Applying schema")
+	schemaSQL, err := os.ReadFile(schemaPath)
+	if err != nil {
+		return contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to read schema file: %w", err)
+	}
+
+	if _, err := db.Exec(string(schemaSQL)); err != nil {
+		return contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to execute schema: %w", err)
+	}
+
+	// Priority system tables are already included in the main schema.sql
+	// No additional migration needed
+	logger.Info(ctx, "Priority system tables already included in main schema")
+
+	return nil
+}
+
+func setupTestData(ctx context.Context, rootDir string, userService *services.UserService, questionService *services.QuestionService, learningService *services.LearningService, db *sql.DB, logger *observability.Logger) (map[string]*models.User, error) {
+	dataDir := filepath.Join(rootDir, "data")
+
+	// 1. Load and create users
+	users, err := loadAndCreateUsers(ctx, filepath.Join(dataDir, "test_users.yaml"), userService, logger)
+	if err != nil {
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup users: %w", err)
+	}
+
+	// 2. Load and create questions
+	questions, err := loadAndCreateQuestions(ctx, filepath.Join(dataDir, "test_questions.yaml"), questionService, users, logger)
+	if err != nil {
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup questions: %w", err)
+	}
+
+	// 3. Load and create user responses
+	if err := loadAndCreateResponses(ctx, filepath.Join(dataDir, "test_responses.yaml"), users, questions, learningService, logger); err != nil {
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup responses: %w", err)
+	}
+
+	// 4. Load and create question reports
+	if err := loadAndCreateQuestionReports(ctx, filepath.Join(dataDir, "test_responses.yaml"), users, questions, db, logger); err != nil {
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup question reports: %w", err)
+	}
+
+	// 5. Load and create analytics data
+	if err := loadAndCreateAnalytics(ctx, filepath.Join(dataDir, "test_analytics.yaml"), users, questions, learningService, db, logger); err != nil {
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup analytics: %w", err)
+	}
+
+	// 6. Load and create daily assignments
+	if err := loadAndCreateDailyAssignments(ctx, filepath.Join(dataDir, "test_daily_assignments.yaml"), users, questions, db, logger); err != nil {
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup daily assignments: %w", err)
+	}
+
+	return users, nil
+}
+
+func loadAndCreateUsers(ctx context.Context, filePath string, userService *services.UserService, logger *observability.Logger) (result0 map[string]*models.User, err error) {
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		return nil, err
+	}
+
+	var testUsers TestUsers
+	if err := yaml.Unmarshal(data, &testUsers); err != nil {
+		return nil, err
+	}
+
+	users := make(map[string]*models.User)
+	for _, testUser := range testUsers.Users {
+		// Create user with email and timezone
+		user, err := userService.CreateUserWithEmailAndTimezone(
+			ctx,
+			testUser.Username,
+			testUser.Email,
+			"UTC", // Default timezone for test users
+			testUser.PreferredLanguage,
+			testUser.CurrentLevel,
+		)
+		if err != nil {
+			return nil, contextutils.WrapErrorf(err, "failed to create user %s", testUser.Username)
+		}
+
+		// Set password separately since CreateUserWithEmailAndTimezone doesn't set password
+		if err := userService.UpdateUserPassword(ctx, user.ID, testUser.Password); err != nil {
+			return nil, contextutils.WrapErrorf(err, "failed to set password for user %s", testUser.Username)
+		}
+
+		// Update additional settings
+		settings := &models.UserSettings{
+			Language:   testUser.PreferredLanguage,
+			Level:      testUser.CurrentLevel,
+			AIProvider: testUser.AIProvider,
+			AIModel:    testUser.AIModel,
+			AIAPIKey:   testUser.AIAPIKey,
+			AIEnabled:  testUser.AIProvider != "", // Enable AI if provider is set
+		}
+
+		if err := userService.UpdateUserSettings(ctx, user.ID, settings); err != nil {
+			return nil, contextutils.WrapErrorf(err, "failed to update settings for user %s", testUser.Username)
+		}
+
+		// Assign roles from YAML configuration
+		for _, roleName := range testUser.Roles {
+			err = userService.AssignRoleByName(ctx, user.ID, roleName)
+			if err != nil {
+				logger.Warn(ctx, "Failed to assign role to user", map[string]interface{}{
+					"username": testUser.Username,
+					"role":     roleName,
+					"error":    err.Error(),
+				})
+			} else {
+				logger.Info(ctx, "Assigned role to user", map[string]interface{}{
+					"username": testUser.Username,
+					"role":     roleName,
+					"user_id":  user.ID,
+				})
+			}
+		}
+
+		users[testUser.Username] = user
+	}
+
+	return users, nil
+}
+
+func loadAndCreateQuestions(ctx context.Context, filePath string, questionService *services.QuestionService, users map[string]*models.User, _ *observability.Logger) (result0 []*models.Question, err error) {
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		return nil, err
+	}
+
+	var testQuestions TestQuestions
+	if err := yaml.Unmarshal(data, &testQuestions); err != nil {
+		return nil, err
+	}
+
+	var questions []*models.Question
+	for i, question := range testQuestions.Questions {
+		// Set the created time since it's not in YAML
+		question.CreatedAt = time.Now()
+
+		// Get the users this question should be assigned to
+		questionUsers := question.Users
+		var assignedUserIDs []int
+		if len(questionUsers) == 0 {
+			// Fallback to round-robin if no users specified
+			for _, user := range users {
+				assignedUserIDs = append(assignedUserIDs, user.ID)
+			}
+			if len(assignedUserIDs) == 0 {
+				return nil, contextutils.ErrorWithContextf("no users available to assign questions to")
+			}
+			// Assign to one user in round-robin
+			assignedUserIDs = []int{assignedUserIDs[i%len(assignedUserIDs)]}
+		} else {
+			for _, username := range questionUsers {
+				user, exists := users[username]
+				if !exists {
+					return nil, contextutils.ErrorWithContextf("user not found: %s", username)
+				}
+				assignedUserIDs = append(assignedUserIDs, user.ID)
+			}
+		}
+
+		if err := questionService.SaveQuestion(ctx, &question); err != nil {
+			return nil, contextutils.WrapErrorf(err, "failed to save question %d", i)
+		}
+
+		for _, userID := range assignedUserIDs {
+			if err := questionService.AssignQuestionToUser(ctx, question.ID, userID); err != nil {
+				return nil, contextutils.WrapErrorf(err, "failed to assign question %d to user %d", question.ID, userID)
+			}
+		}
+
+		questions = append(questions, &question)
+	}
+
+	return questions, nil
+}
+
+func loadAndCreateResponses(_ context.Context, filePath string, users map[string]*models.User, questions []*models.Question, learningService *services.LearningService, _ *observability.Logger) error {
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		return err
+	}
+
+	var testResponses TestResponses
+	if err := yaml.Unmarshal(data, &testResponses); err != nil {
+		return err
+	}
+
+	for i, responseData := range testResponses.UserResponses {
+		user, exists := users[responseData.Username]
+		if !exists {
+			return contextutils.ErrorWithContextf("user not found: %s", responseData.Username)
+		}
+
+		if responseData.QuestionIndex >= len(questions) {
+			return contextutils.ErrorWithContextf("question index out of range: %d", responseData.QuestionIndex)
+		}
+
+		question := questions[responseData.QuestionIndex]
+
+		// Use RecordAnswerWithPriority to ensure priority scores are calculated
+		if err := learningService.RecordAnswerWithPriority(
+			context.Background(),
+			user.ID,
+			question.ID,
+			0, // Use index 0 for test data
+			responseData.IsCorrect,
+			responseData.ResponseTimeMs,
+		); err != nil {
+			return contextutils.WrapErrorf(err, "failed to record response %d", i)
+		}
+
+	}
+
+	return nil
+}
+
+func loadAndCreateQuestionReports(_ context.Context, filePath string, users map[string]*models.User, questions []*models.Question, db *sql.DB, _ *observability.Logger) error {
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		return contextutils.WrapError(err, "failed to read responses file")
+	}
+
+	var testResponses TestResponses
+	if err := yaml.Unmarshal(data, &testResponses); err != nil {
+		return contextutils.WrapError(err, "failed to parse responses data")
+	}
+
+	// Load question reports
+	for i, reportData := range testResponses.QuestionReports {
+		user, exists := users[reportData.Username]
+		if !exists {
+			return contextutils.ErrorWithContextf("user not found for question report: %s", reportData.Username)
+		}
+
+		if reportData.QuestionIndex >= len(questions) {
+			return contextutils.ErrorWithContextf("question index out of range for question report: %d", reportData.QuestionIndex)
+		}
+
+		question := questions[reportData.QuestionIndex]
+
+		// Parse the timestamp if provided, otherwise use current time
+		var createdAt time.Time
+		if reportData.CreatedAt != nil {
+			var err error
+			createdAt, err = time.Parse(time.RFC3339, *reportData.CreatedAt)
+			if err != nil {
+				return contextutils.ErrorWithContextf("invalid timestamp format for question report: %s", *reportData.CreatedAt)
+			}
+		} else {
+			createdAt = time.Now()
+		}
+
+		// Insert question report directly into database
+		_, err := db.Exec(`
+			INSERT INTO question_reports (question_id, reported_by_user_id, report_reason, created_at)
+			VALUES ($1, $2, $3, $4)
+			ON CONFLICT (question_id, reported_by_user_id) DO NOTHING
+		`, question.ID, user.ID, reportData.ReportReason, createdAt)
+		if err != nil {
+			return contextutils.WrapErrorf(err, "failed to insert question report %d", i)
+		}
+	}
+
+	return nil
+}
+
+func loadAndCreateAnalytics(ctx context.Context, filePath string, users map[string]*models.User, questions []*models.Question, learningService *services.LearningService, db *sql.DB, logger *observability.Logger) error {
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		// Analytics file is optional, so just return if it doesn't exist
+		logger.Warn(ctx, "Analytics file not found", map[string]interface{}{"file_path": filePath})
+		return nil
+	}
+
+	var testAnalytics TestAnalytics
+	if err := yaml.Unmarshal(data, &testAnalytics); err != nil {
+		return contextutils.WrapError(err, "failed to parse analytics data")
+	}
+
+	// Load priority scores
+	for _, priorityData := range testAnalytics.PriorityScores {
+		user, exists := users[priorityData.Username]
+		if !exists {
+			return contextutils.ErrorWithContextf("user not found for priority score: %s", priorityData.Username)
+		}
+
+		if priorityData.QuestionIndex >= len(questions) {
+			return contextutils.ErrorWithContextf("question index out of range for priority score: %d", priorityData.QuestionIndex)
+		}
+
+		question := questions[priorityData.QuestionIndex]
+
+		// Parse the timestamp
+		lastCalculatedAt, err := time.Parse(time.RFC3339, priorityData.LastCalculatedAt)
+		if err != nil {
+			return contextutils.ErrorWithContextf("invalid timestamp format for priority score: %s", priorityData.LastCalculatedAt)
+		}
+
+		// Insert priority score directly into database
+		_, err = db.Exec(`
+			INSERT INTO question_priority_scores (user_id, question_id, priority_score, last_calculated_at, created_at, updated_at)
+			VALUES ($1, $2, $3, $4, NOW(), NOW())
+			ON CONFLICT (user_id, question_id) DO UPDATE SET
+				priority_score = EXCLUDED.priority_score,
+				last_calculated_at = EXCLUDED.last_calculated_at,
+				updated_at = NOW()
+		`, user.ID, question.ID, priorityData.PriorityScore, lastCalculatedAt)
+		if err != nil {
+			return contextutils.WrapError(err, "failed to insert priority score")
+		}
+
+	}
+
+	// Load learning preferences
+	for _, prefData := range testAnalytics.LearningPreferences {
+		user, exists := users[prefData.Username]
+		if !exists {
+			return contextutils.ErrorWithContextf("user not found for learning preferences: %s", prefData.Username)
+		}
+
+		// Ensure daily_goal is present and valid. The schema enforces daily_goal > 0
+		// so default to the service's default if not provided or invalid.
+		dailyGoal := 0
+		// Try to parse a daily_goal field if it exists in the YAML by checking for a map
+		// fallback: the YAML struct doesn't include daily_goal currently; use default
+		// from the LearningService defaults.
+		// We'll fetch defaults from service to avoid duplicating magic numbers.
+		defaultPrefs := learningService.GetDefaultLearningPreferences()
+		if dailyGoal <= 0 {
+			dailyGoal = defaultPrefs.DailyGoal
+		}
+
+		prefs := &models.UserLearningPreferences{
+			UserID:               user.ID,
+			FocusOnWeakAreas:     prefData.FocusOnWeakAreas,
+			FreshQuestionRatio:   prefData.FreshQuestionRatio,
+			WeakAreaBoost:        prefData.WeakAreaBoost,
+			KnownQuestionPenalty: prefData.KnownQuestionPenalty,
+			ReviewIntervalDays:   prefData.ReviewIntervalDays,
+			DailyReminderEnabled: prefData.DailyReminderEnabled,
+			DailyGoal:            dailyGoal,
+		}
+
+		if _, err := learningService.UpdateUserLearningPreferences(ctx, user.ID, prefs); err != nil {
+			return contextutils.WrapErrorf(err, "failed to update learning preferences for user %s", prefData.Username)
+		}
+
+	}
+
+	// Load performance metrics
+	for _, metricData := range testAnalytics.PerformanceMetrics {
+		user, exists := users[metricData.Username]
+		if !exists {
+			return contextutils.ErrorWithContextf("user not found for performance metrics: %s", metricData.Username)
+		}
+
+		// Insert performance metric directly into database
+		_, err := db.Exec(`
+			INSERT INTO performance_metrics (user_id, topic, language, level, total_attempts, correct_attempts, average_response_time_ms, last_updated)
+			VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+			ON CONFLICT (user_id, topic, language, level) DO UPDATE SET
+				total_attempts = EXCLUDED.total_attempts,
+				correct_attempts = EXCLUDED.correct_attempts,
+				average_response_time_ms = EXCLUDED.average_response_time_ms,
+				last_updated = NOW()
+		`, user.ID, metricData.Topic, metricData.Language, metricData.Level,
+			metricData.TotalAttempts, metricData.CorrectAttempts, metricData.AverageResponseTimeMs)
+		if err != nil {
+			return contextutils.WrapError(err, "failed to insert performance metric")
+		}
+
+	}
+
+	// Load user question metadata (marked as known)
+	for _, metadata := range testAnalytics.UserQuestionMetadata {
+		user, exists := users[metadata.Username]
+		if !exists {
+			return contextutils.ErrorWithContextf("user not found for question metadata: %s", metadata.Username)
+		}
+
+		if metadata.QuestionIndex >= len(questions) {
+			return contextutils.ErrorWithContextf("question index out of range for metadata: %d", metadata.QuestionIndex)
+		}
+
+		question := questions[metadata.QuestionIndex]
+
+		if metadata.MarkedAsKnown {
+			var markedAt time.Time
+			if metadata.MarkedAsKnownAt != nil {
+				var err error
+				markedAt, err = time.Parse(time.RFC3339, *metadata.MarkedAsKnownAt)
+				if err != nil {
+					return contextutils.ErrorWithContextf("invalid timestamp format for marked as known: %s", *metadata.MarkedAsKnownAt)
+				}
+			} else {
+				markedAt = time.Now()
+			}
+
+			// Insert into user_question_metadata table
+			_, err := db.Exec(`
+				INSERT INTO user_question_metadata (user_id, question_id, marked_as_known, marked_as_known_at, created_at, updated_at)
+				VALUES ($1, $2, $3, $4, NOW(), NOW())
+				ON CONFLICT (user_id, question_id) DO UPDATE SET
+					marked_as_known = EXCLUDED.marked_as_known,
+					marked_as_known_at = EXCLUDED.marked_as_known_at,
+					updated_at = NOW()
+			`, user.ID, question.ID, metadata.MarkedAsKnown, markedAt)
+			if err != nil {
+				return contextutils.WrapError(err, "failed to insert question metadata")
+			}
+
+		}
+	}
+
+	return nil
+}
+
+func loadAndCreateDailyAssignments(ctx context.Context, filePath string, users map[string]*models.User, questions []*models.Question, db *sql.DB, logger *observability.Logger) error {
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		// File doesn't exist, skip daily assignments
+		logger.Info(ctx, "Daily assignments file not found, skipping", map[string]interface{}{
+			"file_path": filePath,
+		})
+		return nil
+	}
+
+	var testDailyAssignments TestDailyAssignments
+	if err := yaml.Unmarshal(data, &testDailyAssignments); err != nil {
+		return err
+	}
+
+	for _, assignmentData := range testDailyAssignments.DailyAssignments {
+		user, exists := users[assignmentData.Username]
+		if !exists {
+			logger.Warn(ctx, "User not found for daily assignment", map[string]interface{}{
+				"username": assignmentData.Username,
+			})
+			continue
+		}
+
+		// Parse the date
+		date, err := time.Parse("2006-01-02", assignmentData.Date)
+		if err != nil {
+			logger.Warn(ctx, "Invalid date format for daily assignment", map[string]interface{}{
+				"username": assignmentData.Username,
+				"date":     assignmentData.Date,
+			})
+			continue
+		}
+
+		// Create a map of completed questions for quick lookup
+		completedQuestions := make(map[int]bool)
+		for _, qID := range assignmentData.CompletedQuestions {
+			completedQuestions[qID] = true
+		}
+
+		// Assign questions to the user for the specific date
+		for _, questionID := range assignmentData.QuestionIDs {
+			// Check if question exists
+			if questionID <= 0 || questionID > len(questions) {
+				logger.Warn(ctx, "Question ID out of range for daily assignment", map[string]interface{}{
+					"username":    assignmentData.Username,
+					"date":        assignmentData.Date,
+					"question_id": questionID,
+				})
+				continue
+			}
+
+			question := questions[questionID-1] // Convert to 0-based index
+
+			// Ensure we don't violate unique constraint by removing any existing assignment for the same
+			// (user_id, question_id, assignment_date) tuple before inserting. This avoids relying on
+			// ON CONFLICT which requires the constraint to be present in some test DB states.
+			deleteQuery := `DELETE FROM daily_question_assignments WHERE user_id = $1 AND question_id = $2 AND assignment_date = $3`
+			if _, err := db.ExecContext(ctx, deleteQuery, user.ID, question.ID, date); err != nil {
+				logger.Error(ctx, "Failed to delete existing daily assignment", err, map[string]interface{}{
+					"username":    assignmentData.Username,
+					"date":        assignmentData.Date,
+					"question_id": questionID,
+				})
+				return contextutils.WrapErrorf(err, "failed to delete existing daily assignment for user %s, question %d", assignmentData.Username, questionID)
+			}
+
+			// Insert the assignment directly into the database
+			query := `
+				INSERT INTO daily_question_assignments (user_id, question_id, assignment_date, is_completed, completed_at)
+				VALUES ($1, $2, $3, $4, $5)
+			`
+
+			isCompleted := completedQuestions[questionID]
+			var completedAt *time.Time
+			if isCompleted {
+				now := time.Now()
+				completedAt = &now
+			}
+
+			if _, err := db.ExecContext(ctx, query, user.ID, question.ID, date, isCompleted, completedAt); err != nil {
+				logger.Error(ctx, "Failed to create daily assignment", err, map[string]interface{}{
+					"username":    assignmentData.Username,
+					"date":        assignmentData.Date,
+					"question_id": questionID,
+				})
+				return contextutils.WrapErrorf(err, "failed to create daily assignment for user %s, question %d", assignmentData.Username, questionID)
+			}
+		}
+
+		logger.Info(ctx, "Created daily assignments", map[string]interface{}{
+			"username": assignmentData.Username,
+			"date":     assignmentData.Date,
+			"count":    len(assignmentData.QuestionIDs),
+		})
+	}
+
+	return nil
+}
+
+// outputUserDataForTests outputs the created user data to a JSON file for E2E tests to read
+func outputUserDataForTests(users map[string]*models.User, rootDir string, logger *observability.Logger) error {
+	// Create a simplified structure for the E2E test
+	type TestUserData struct {
+		ID       int    `json:"id"`
+		Username string `json:"username"`
+		Email    string `json:"email"`
+	}
+
+	userData := make(map[string]TestUserData)
+	for username, user := range users {
+		userData[username] = TestUserData{
+			ID:       user.ID,
+			Username: user.Username,
+			Email:    user.Email.String,
+		}
+	}
+
+	// Write to JSON file in the frontend/tests directory
+	outputPath := filepath.Join(rootDir, "..", "frontend", "tests", "test-users.json")
+
+	// Ensure the directory exists
+	outputDir := filepath.Dir(outputPath)
+	if err := os.MkdirAll(outputDir, 0o755); err != nil {
+		return contextutils.WrapErrorf(err, "failed to create output directory: %s", outputDir)
+	}
+
+	// Marshal to JSON with pretty printing
+	jsonData, err := json.MarshalIndent(userData, "", "  ")
+	if err != nil {
+		return contextutils.WrapErrorf(err, "failed to marshal user data to JSON")
+	}
+
+	// Write to file
+	if err := os.WriteFile(outputPath, jsonData, 0o644); err != nil {
+		return contextutils.WrapErrorf(err, "failed to write user data to file: %s", outputPath)
+	}
+
+	logger.Info(context.Background(), "Output user data for E2E tests", map[string]interface{}{
+		"file_path":  outputPath,
+		"user_count": len(userData),
+	})
+
+	return nil
+}
+
+// outputRolesDataForTests outputs the created roles data to a JSON file for E2E tests to read
+func outputRolesDataForTests(db *sql.DB, rootDir string, logger *observability.Logger) error {
+	// Query all roles from the database
+	rows, err := db.Query(`
+		SELECT id, name, description, created_at, updated_at
+		FROM roles
+		ORDER BY id
+	`)
+	if err != nil {
+		return contextutils.WrapErrorf(err, "failed to query roles from database")
+	}
+	defer func() {
+		if err := rows.Close(); err != nil {
+			logger.Warn(context.Background(), "Warning: failed to close rows", map[string]interface{}{"error": err.Error()})
+		}
+	}()
+
+	// Create a simplified structure for the E2E test
+	type TestRoleData struct {
+		ID          int    `json:"id"`
+		Name        string `json:"name"`
+		Description string `json:"description"`
+	}
+
+	roleData := make(map[string]TestRoleData)
+	for rows.Next() {
+		var role models.Role
+		err := rows.Scan(&role.ID, &role.Name, &role.Description, &role.CreatedAt, &role.UpdatedAt)
+		if err != nil {
+			return contextutils.WrapErrorf(err, "failed to scan role data")
+		}
+		roleData[role.Name] = TestRoleData{
+			ID:          role.ID,
+			Name:        role.Name,
+			Description: role.Description,
+		}
+	}
+
+	if err := rows.Err(); err != nil {
+		return contextutils.WrapErrorf(err, "error iterating over roles")
+	}
+
+	// Write to JSON file in the frontend/tests directory
+	outputPath := filepath.Join(rootDir, "..", "frontend", "tests", "test-roles.json")
+
+	// Ensure the directory exists
+	outputDir := filepath.Dir(outputPath)
+	if err := os.MkdirAll(outputDir, 0o755); err != nil {
+		return contextutils.WrapErrorf(err, "failed to create output directory: %s", outputDir)
+	}
+
+	// Marshal to JSON with pretty printing
+	jsonData, err := json.MarshalIndent(roleData, "", "  ")
+	if err != nil {
+		return contextutils.WrapErrorf(err, "failed to marshal roles data to JSON")
+	}
+
+	// Write to file
+	if err := os.WriteFile(outputPath, jsonData, 0o644); err != nil {
+		return contextutils.WrapErrorf(err, "failed to write roles data to file: %s", outputPath)
+	}
+
+	logger.Info(context.Background(), "Output roles data for E2E tests", map[string]interface{}{
+		"file_path":   outputPath,
+		"roles_count": len(roleData),
+	})
+
+	return nil
+}

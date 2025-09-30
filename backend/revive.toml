@@ -1,0 +1,3 @@
+# Revive configuration file
+# Disable logging to prevent revive.log file creation
+logLevel = "error"  # Only log errors, not info messages

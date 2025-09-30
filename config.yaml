@@ -1,0 +1,637 @@
+# AI Providers Configuration
+#
+# Each provider can specify:
+# - name: Display name for the provider
+# - code: Unique identifier for the provider
+# - url: Base URL for the provider's API
+# - supports_grammar: Whether the provider supports the 'grammar' field in API requests
+#   (Google's Generative AI API does not support this field)
+# - question_batch_size: Maximum number of questions to generate in a single AI request
+# - models: List of available models with their max token limits
+
+providers:
+  - name: Ollama
+    code: ollama
+    url: "http://localhost:11434/v1"
+    supports_grammar: true
+    question_batch_size: 1
+    models:
+      - { name: "Llama 4", code: "llama4:latest", max_tokens: 8192 }
+      - { name: "Llama 3.3", code: "llama3.3:latest", max_tokens: 8192 }
+      - { name: "Deepseek", code: "deepseek-r1:latest", max_tokens: 8192 }
+      - { name: "Gemma 3", code: "gemma3:latest", max_tokens: 8192 }
+      - { name: "Gemma 3n (e4b)", code: "gemma3n:e4b", max_tokens: 8192 }
+  - name: OpenAI
+    code: openai
+    url: "https://api.openai.com/v1"
+    supports_grammar: true
+    question_batch_size: 5
+    models:
+      - { name: "GPT-4.1", code: "gpt-4.1", max_tokens: 16384 }
+      - { name: "o4-mini", code: "o4-mini", max_tokens: 16384 }
+      - { name: "o1", code: "o1", max_tokens: 32768 }
+  - name: Anthropic
+    code: anthropic
+    url: "https://api.anthropic.com/v1"
+    supports_grammar: true
+    question_batch_size: 5
+    models:
+      - {
+          name: "Claude 4 Sonnet",
+          code: "claude-sonnet-4-20250514",
+          max_tokens: 64000,
+        }
+      - {
+          name: "Claude 4 Opus",
+          code: "claude-opus-4-20250514",
+          max_tokens: 32000,
+        }
+      - {
+          name: "Claude 3.7 Sonnet",
+          code: "claude-3-7-sonnet-latest",
+          max_tokens: 64000,
+        }
+      - {
+          name: "Claude 3.5 Haiku",
+          code: "claude-3-5-haiku-latest",
+          max_tokens: 8192,
+        }
+  - name: Google
+    code: google
+    url: "https://generativelanguage.googleapis.com/v1beta/openai"
+    supports_grammar: false
+    question_batch_size: 5
+    models:
+      - { name: "Gemini 2.0 Flash", code: "gemini-2.0-flash", max_tokens: 8192 }
+      - {
+          name: "Gemini 2.5 Flash Lite",
+          code: "gemini-2.5-flash-lite-preview-06-17",
+          max_tokens: 64000,
+        }
+      - {
+          name: "Gemini 2.5 Flash",
+          code: "gemini-2.5-flash",
+          max_tokens: 65536,
+        }
+
+# Server Configuration
+#
+# Server settings that can be overridden by environment variables
+server:
+  port: "8080"
+  worker_port: "8081"
+  admin_username: "admin"
+  admin_password: "password"
+  session_secret: "your-secret-key"
+  debug: false
+  log_level: "info"
+  worker_base_url: "http://localhost:8081"
+  worker_internal_url: "http://worker:8081"
+  backend_base_url: "http://localhost:8080"
+  app_base_url: "http://localhost:3000"
+  max_ai_concurrent: 10
+  max_ai_per_user: 3
+  question_refill_threshold: 30
+  # Minimum fraction (0.0 - 1.0) of fresh (never-seen) questions to aim for when
+  # refilling question pools. Default 0.35 = 35%.
+  daily_fresh_question_ratio: 0.35
+  max_history: 20
+  max_activity_logs: 100
+  # How many days ahead the worker assigns daily questions (0=today only). If absent, env DAILY_HORIZON_DAYS is used.
+  # Note that the daily_repeat_avoid_days doesn't work great when this is > 1 since questions are pre-generated for multiple days.
+  daily_horizon_days: 1
+  # Avoid repeating daily questions answered correctly within N days (default 7)
+  daily_repeat_avoid_days: 7
+  cors_origins:
+    - "http://localhost:3000"
+    - "http://localhost:3001"
+    - "http://localhost:5173"
+
+# Database Configuration
+#
+# Database connection pool settings
+database:
+  url: "postgres://quiz_user:quiz_password@localhost:5432/quiz_db?sslmode=disable"
+  max_open_conns: 25
+  max_idle_conns: 5
+  conn_max_lifetime_minutes: 5
+
+# OpenTelemetry Configuration
+#
+# Observability settings for tracing, metrics, and logging
+open_telemetry:
+  endpoint: "localhost:4317"
+  protocol: "grpc"
+  insecure: true
+  service_name: "quiz-backend"
+  service_version: "dev"
+  enable_tracing: true
+  enable_metrics: true
+  enable_logging: true
+  sampling_rate: 1.0
+
+system:
+  auth:
+    signups_disabled: false
+    # OAuth signup whitelist - allows OAuth signups even when signups are disabled
+    # allowed_domains:
+    #   - "company.com"
+    #   - "trusted-partner.org"
+    # allowed_emails:
+    #   - "admin@example.com"
+    #   - "support@quizapp.com"
+
+# Email Configuration
+#
+# Email settings for sending notifications and reminders
+# SMTP settings are configured via environment variables:
+# - EMAIL_SMTP_HOST: SMTP server hostname
+# - EMAIL_SMTP_PORT: SMTP server port
+# - EMAIL_SMTP_USERNAME: SMTP username
+# - EMAIL_SMTP_PASSWORD: SMTP password
+# - EMAIL_FROM_ADDRESS: From email address
+# - EMAIL_FROM_NAME: From name for emails
+# - EMAIL_DAILY_REMINDER_HOUR: Hour of day to send daily reminders (0-23)
+# - EMAIL_ENABLED: Whether email sending is enabled (true/false)
+# - APP_BASE_URL: Frontend application URL for email links (e.g. http://localhost:3000)
+
+email:
+  enabled: true
+  daily_reminder:
+    hour: 9 # Send daily reminders at 9 AM
+    enabled: true
+  smtp:
+    host: "smtp.email.us-chicago-1.oci.oraclecloud.com"
+    port: 587
+    username: "ocid1.user.oc1..aaaaaaaav5fg2qctpi5pl4lwwld5yjywuboga6xe3njwdkteehccrk46zqtq@ocid1.tenancy.oc1..aaaaaaaafsri6x2ohmqj5scnuzphnrnxfll5jw2ljsg7m3y3ji722kdentiq.xh.com"
+    # In Environment Variables
+    # password: "your-password"
+    from_address: "ntfy@wetsnow.com"
+    from_name: "Quiz App"
+  # Note: APP_BASE_URL should be set via environment variable for the frontend URL
+
+# Language-specific levels and descriptions
+language_levels:
+  italian:
+    levels:
+      - "A1"
+      - "A2"
+      - "B1"
+      - "B1+"
+      - "B1++"
+      - "B2"
+      - "C1"
+      - "C2"
+    descriptions:
+      A1: "Beginner"
+      A2: "Elementary"
+      B1: "Intermediate"
+      B1+: "Intermediate Plus"
+      B1++: "Strong Intermediate"
+      B2: "Upper-Intermediate"
+      C1: "Advanced"
+      C2: "Proficient"
+
+  french:
+    levels:
+      - "A1"
+      - "A2"
+      - "B1"
+      - "B1+"
+      - "B1++"
+      - "B2"
+      - "C1"
+      - "C2"
+    descriptions:
+      A1: "Beginner"
+      A2: "Elementary"
+      B1: "Intermediate"
+      B1+: "Intermediate Plus"
+      B1++: "Strong Intermediate"
+      B2: "Upper-Intermediate"
+      C1: "Advanced"
+      C2: "Proficient"
+
+  german:
+    levels:
+      - "A1"
+      - "A2"
+      - "B1"
+      - "B1+"
+      - "B1++"
+      - "B2"
+      - "C1"
+      - "C2"
+    descriptions:
+      A1: "Beginner"
+      A2: "Elementary"
+      B1: "Intermediate"
+      B1+: "Intermediate Plus"
+      B1++: "Strong Intermediate"
+      B2: "Upper-Intermediate"
+      C1: "Advanced"
+      C2: "Proficient"
+
+  russian:
+    levels:
+      - "A1"
+      - "A2"
+      - "B1"
+      - "B1+"
+      - "B1++"
+      - "B2"
+      - "C1"
+      - "C2"
+    descriptions:
+      A1: "Beginner"
+      A2: "Elementary"
+      B1: "Intermediate"
+      B1+: "Intermediate Plus"
+      B1++: "Strong Intermediate"
+      B2: "Upper-Intermediate"
+      C1: "Advanced"
+      C2: "Proficient"
+
+  japanese:
+    levels:
+      - "N5"
+      - "N4"
+      - "N3"
+      - "N2"
+      - "N1"
+    descriptions:
+      N5: "Beginner"
+      N4: "Elementary"
+      N3: "Intermediate"
+      N2: "Upper-Intermediate"
+      N1: "Advanced"
+
+  chinese:
+    levels:
+      - "HSK1"
+      - "HSK2"
+      - "HSK3"
+      - "HSK4"
+      - "HSK5"
+      - "HSK6"
+    descriptions:
+      HSK1: "Beginner"
+      HSK2: "Elementary"
+      HSK3: "Intermediate"
+      HSK4: "Upper-Intermediate"
+      HSK5: "Advanced"
+      HSK6: "Proficient"
+
+# Languages are now derived automatically from language_levels keys
+
+# Question variety configuration
+variety:
+  # Topic categories for contextual variety
+  topic_categories:
+    - "daily_life"
+    - "travel"
+    - "work"
+    - "hobbies"
+    - "food"
+    - "shopping"
+    - "health"
+    - "education"
+    - "technology"
+    - "sports"
+    - "entertainment"
+    - "family"
+    - "weather"
+    - "transportation"
+    - "culture"
+    - "business"
+    - "social_interactions"
+    - "emergencies"
+    - "time_management"
+    - "personal_development"
+
+  # Grammar focus areas by level
+  grammar_focus_by_level:
+    A1:
+      - "basic_pronouns"
+      - "simple_present"
+      - "basic_articles"
+      - "numbers"
+      - "basic_questions"
+      - "simple_negation"
+      - "basic_prepositions"
+      - "possessive_adjectives"
+      - "basic_adjectives"
+      - "simple_imperatives"
+    A2:
+      - "present_continuous"
+      - "simple_past"
+      - "future_with_will"
+      - "comparatives"
+      - "basic_adverbs"
+      - "object_pronouns"
+      - "demonstratives"
+      - "basic_conjunctions"
+      - "countable_uncountable"
+      - "basic_modal_verbs"
+    B1:
+      - "present_perfect"
+      - "past_continuous"
+      - "future_plans"
+      - "conditionals_0_1"
+      - "passive_voice_basic"
+      - "reported_speech_basic"
+      - "relative_clauses"
+      - "phrasal_verbs"
+      - "gerunds_infinitives"
+      - "subjunctive_basic"
+    "B1+":
+      - "present_perfect_continuous"
+      - "past_perfect"
+      - "conditionals_2_3"
+      - "passive_voice_advanced"
+      - "reported_speech_advanced"
+      - "modal_perfects"
+      - "inversion"
+      - "participle_clauses"
+      - "subjunctive_advanced"
+      - "idiomatic_expressions"
+    "B1++":
+      - "future_perfect"
+      - "mixed_conditionals"
+      - "causative_forms"
+      - "cleft_sentences"
+      - "emphatic_structures"
+      - "advanced_modals"
+      - "complex_gerunds"
+      - "advanced_prepositions"
+      - "collocations"
+      - "register_variation"
+    B2:
+      - "future_perfect_continuous"
+      - "past_perfect_continuous"
+      - "mixed_conditionals_advanced"
+      - "inversion_advanced"
+      - "ellipsis"
+      - "fronting"
+      - "advanced_passive"
+      - "complex_reported_speech"
+      - "advanced_subjunctive"
+      - "discourse_markers"
+    C1:
+      - "advanced_conditionals"
+      - "complex_inversion"
+      - "advanced_ellipsis"
+      - "complex_fronting"
+      - "advanced_participle_clauses"
+      - "complex_gerund_structures"
+      - "advanced_modality"
+      - "complex_register_shifts"
+      - "advanced_collocations"
+      - "stylistic_variation"
+    C2:
+      - "mastery_level_grammar"
+      - "complex_syntactic_structures"
+      - "advanced_stylistic_devices"
+      - "nuanced_register_control"
+      - "complex_discourse_patterns"
+      - "advanced_ellipsis_patterns"
+      - "complex_fronting_structures"
+      - "advanced_inversion_patterns"
+      - "mastery_level_modality"
+      - "sophisticated_grammatical_choices"
+    # Japanese JLPT levels
+    N5:
+      - "basic_particles"
+      - "present_tense"
+      - "basic_adjectives"
+      - "numbers_time"
+      - "basic_verbs"
+      - "basic_questions"
+      - "basic_negation"
+      - "basic_pronouns"
+      - "basic_sentence_structure"
+      - "basic_vocabulary"
+    N4:
+      - "past_tense"
+      - "te_form"
+      - "basic_conditionals"
+      - "basic_modality"
+      - "intermediate_particles"
+      - "basic_keigo"
+      - "basic_conjunctions"
+      - "relative_clauses_basic"
+      - "intermediate_adjectives"
+      - "basic_passive"
+    N3:
+      - "intermediate_grammar"
+      - "intermediate_keigo"
+      - "complex_particles"
+      - "intermediate_conditionals"
+      - "causative_forms"
+      - "intermediate_modality"
+      - "complex_sentence_structures"
+      - "intermediate_vocabulary"
+      - "advanced_te_form"
+      - "intermediate_expressions"
+    N2:
+      - "advanced_grammar"
+      - "advanced_keigo"
+      - "complex_conditionals"
+      - "advanced_modality"
+      - "complex_causative"
+      - "advanced_expressions"
+      - "complex_sentence_patterns"
+      - "advanced_vocabulary"
+      - "nuanced_particles"
+      - "formal_expressions"
+    N1:
+      - "mastery_grammar"
+      - "mastery_keigo"
+      - "complex_expressions"
+      - "advanced_vocabulary"
+      - "nuanced_grammar"
+      - "literary_expressions"
+      - "complex_modality"
+      - "advanced_sentence_patterns"
+      - "professional_language"
+      - "cultural_expressions"
+    # Chinese HSK levels
+    HSK1:
+      - "basic_pronunciation"
+      - "basic_tones"
+      - "basic_vocabulary"
+      - "basic_sentence_structure"
+      - "basic_numbers"
+      - "basic_time"
+      - "basic_questions"
+      - "basic_negation"
+      - "basic_pronouns"
+      - "basic_verbs"
+    HSK2:
+      - "basic_grammar"
+      - "basic_particles"
+      - "basic_comparatives"
+      - "basic_past_tense"
+      - "basic_future"
+      - "basic_modality"
+      - "basic_conjunctions"
+      - "basic_adjectives"
+      - "basic_adverbs"
+      - "basic_expressions"
+    HSK3:
+      - "intermediate_grammar"
+      - "intermediate_particles"
+      - "intermediate_tenses"
+      - "intermediate_modality"
+      - "intermediate_comparatives"
+      - "intermediate_conjunctions"
+      - "intermediate_expressions"
+      - "intermediate_vocabulary"
+      - "basic_idioms"
+      - "intermediate_sentence_patterns"
+    HSK4:
+      - "advanced_grammar"
+      - "advanced_particles"
+      - "complex_tenses"
+      - "advanced_modality"
+      - "advanced_comparatives"
+      - "complex_conjunctions"
+      - "advanced_expressions"
+      - "advanced_vocabulary"
+      - "intermediate_idioms"
+      - "complex_sentence_patterns"
+    HSK5:
+      - "complex_grammar"
+      - "nuanced_particles"
+      - "complex_modality"
+      - "advanced_expressions"
+      - "advanced_vocabulary"
+      - "advanced_idioms"
+      - "complex_sentence_structures"
+      - "formal_expressions"
+      - "literary_expressions"
+      - "professional_language"
+    HSK6:
+      - "mastery_grammar"
+      - "mastery_particles"
+      - "mastery_modality"
+      - "mastery_expressions"
+      - "mastery_vocabulary"
+      - "mastery_idioms"
+      - "mastery_sentence_structures"
+      - "mastery_formal_expressions"
+      - "mastery_literary_expressions"
+      - "mastery_professional_language"
+
+  # General grammar focus areas for additional variety
+  grammar_focus:
+    - "verb_tenses"
+    - "articles"
+    - "prepositions"
+    - "pronouns"
+    - "adjectives"
+    - "adverbs"
+    - "conjunctions"
+    - "negation"
+    - "questions"
+    - "conditionals"
+    - "passive_voice"
+    - "reported_speech"
+    - "subjunctive"
+    - "imperatives"
+    - "comparatives"
+    - "superlatives"
+    - "phrasal_verbs"
+    - "idioms"
+    - "collocations"
+    - "word_formation"
+
+  # Vocabulary domains
+  vocabulary_domains:
+    - "basic_vocabulary"
+    - "food_and_dining"
+    - "transportation"
+    - "accommodation"
+    - "shopping"
+    - "health_and_medicine"
+    - "education"
+    - "work_and_professions"
+    - "technology"
+    - "sports_and_leisure"
+    - "entertainment"
+    - "family_and_relationships"
+    - "weather_and_climate"
+    - "time_and_dates"
+    - "numbers_and_quantities"
+    - "colors_and_descriptions"
+    - "emotions_and_feelings"
+    - "directions_and_locations"
+    - "emergencies"
+    - "cultural_topics"
+
+  # Scenario contexts for real-world variety
+  scenarios:
+    - "at_the_airport"
+    - "in_a_restaurant"
+    - "at_the_doctor"
+    - "shopping_for_clothes"
+    - "making_reservations"
+    - "asking_for_directions"
+    - "ordering_food"
+    - "checking_into_hotel"
+    - "using_public_transport"
+    - "visiting_a_museum"
+    - "attending_a_meeting"
+    - "making_small_talk"
+    - "dealing_with_problems"
+    - "celebrating_occasions"
+    - "planning_trips"
+    - "job_interviews"
+    - "phone_conversations"
+    - "writing_emails"
+    - "social_media"
+    - "formal_events"
+
+  # Question style modifiers
+  style_modifiers:
+    - "conversational"
+    - "formal"
+    - "casual"
+    - "academic"
+    - "business"
+    - "travel"
+    - "social"
+    - "practical"
+    - "theoretical"
+    - "cultural"
+    - "historical"
+    - "modern"
+    - "traditional"
+    - "contemporary"
+    - "regional"
+
+  # Difficulty modifiers within levels
+  difficulty_modifiers:
+    - "basic"
+    - "intermediate"
+    - "advanced"
+    - "simple"
+    - "complex"
+    - "straightforward"
+    - "challenging"
+    - "nuanced"
+    - "detailed"
+    - "comprehensive"
+
+  # Time contexts
+  time_contexts:
+    - "morning_routine"
+    - "workday"
+    - "evening_activities"
+    - "weekend"
+    - "holiday"
+    - "special_occasion"
+    - "daily_chores"
+    - "leisure_time"
+    - "rush_hour"
+    - "quiet_time"

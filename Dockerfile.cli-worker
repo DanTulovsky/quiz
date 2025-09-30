@@ -1,0 +1,60 @@
+# syntax=docker/dockerfile:1.6
+# Build stage
+FROM golang:1.25-alpine3.22 AS builder
+
+# Install build dependencies (cached)
+RUN --mount=type=cache,id=quiz-cliworker-apk,sharing=locked,target=/var/cache/apk \
+    apk add --no-cache --no-progress gcc musl-dev binutils-gold
+
+WORKDIR /app
+
+# Copy go mod files
+COPY backend/go.mod backend/go.sum ./
+
+# Download dependencies (cache Go modules)
+RUN --mount=type=cache,id=quiz-cliworker-gomod,sharing=locked,target=/go/pkg/mod \
+    go mod download
+
+# Copy source code
+COPY backend/cmd ./cmd
+COPY backend/internal ./internal
+COPY backend/migrations ./migrations
+
+# Copy configuration files
+COPY config.yaml ./
+COPY swagger.yaml ./
+
+# Build the CLI worker (cache build cache)
+RUN --mount=type=cache,id=quiz-cliworker-gomod,sharing=locked,target=/go/pkg/mod \
+    --mount=type=cache,id=quiz-cliworker-gobuild,sharing=locked,target=/root/.cache/go-build \
+    CGO_ENABLED=1 \
+    CGO_CFLAGS="-D_LARGEFILE64_SOURCE" \
+    go build \
+    -ldflags="-w -s" \
+    -o cli-worker \
+    ./cmd/cli-worker
+
+# Runtime stage
+FROM alpine:3.22
+
+# Install runtime dependencies (cached)
+RUN --mount=type=cache,id=quiz-cliworker-apk,sharing=locked,target=/var/cache/apk \
+    apk add --no-cache --no-progress ca-certificates curl wget tzdata
+
+WORKDIR /app
+
+# Copy the binary from builder stage
+COPY --from=builder /app/cli-worker .
+
+# Copy configuration files
+COPY --from=builder /app/config.yaml ./
+COPY --from=builder /app/swagger.yaml ./
+
+# Create data directory
+RUN mkdir -p /app/data && chmod 777 /app/data
+
+# Set environment variables
+ENV QUIZ_CONFIG_FILE=/app/config.yaml
+
+# Default command
+ENTRYPOINT ["./cli-worker"]

@@ -1,0 +1,3 @@
+apis:
+  swagger.yaml:
+    alias: ai-quiz-application-api

@@ -1,0 +1,197 @@
+/* Mantine CSS imports */
+@import '@mantine/core/styles.css';
+@import '@mantine/dates/styles.css';
+@import '@mantine/notifications/styles.css';
+
+/* Custom font */
+/* Self-hosted fonts */
+@import './fonts.css';
+
+/* Global styles */
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+  /* Safe area insets for iOS devices */
+  .mobile-layout {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Ensure touch targets are at least 44px */
+  button,
+  .mantine-Button-root {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Improve text readability on mobile */
+  body {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  /* Prevent horizontal scroll */
+  body {
+    overflow-x: hidden;
+  }
+
+  /* Better spacing for mobile forms */
+  .mantine-Stack-root {
+    gap: 1rem;
+  }
+
+  /* Mobile-optimized containers */
+  .mantine-Container-root {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* iOS safe area support */
+@supports (padding: max(0px)) {
+  .mobile-safe-header {
+    padding-top: max(1rem, env(safe-area-inset-top));
+  }
+
+  .mobile-safe-footer {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+}
+
+/* Syntax Highlighter Theme (VSC Dark Plus equivalent) */
+.syntax-highlighter-vsc-dark {
+  background-color: #1e1e1e !important;
+  color: #d4d4d4 !important;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  padding: 16px !important;
+  border-radius: 6px !important;
+  overflow-x: auto !important;
+}
+
+.syntax-highlighter-vsc-dark pre {
+  background-color: transparent !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.syntax-highlighter-vsc-dark code {
+  background-color: transparent !important;
+  color: inherit !important;
+  font-family: inherit !important;
+  font-size: inherit !important;
+  padding: 0 !important;
+}
+
+/* Token colors for syntax highlighting */
+.syntax-highlighter-vsc-dark .token.comment,
+.syntax-highlighter-vsc-dark .token.prolog,
+.syntax-highlighter-vsc-dark .token.doctype,
+.syntax-highlighter-vsc-dark .token.cdata {
+  color: #6a9955 !important;
+}
+
+.syntax-highlighter-vsc-dark .token.punctuation {
+  color: #d4d4d4 !important;
+}
+
+.syntax-highlighter-vsc-dark .token.property,
+.syntax-highlighter-vsc-dark .token.tag,
+.syntax-highlighter-vsc-dark .token.boolean,
+.syntax-highlighter-vsc-dark .token.number,
+.syntax-highlighter-vsc-dark .token.constant,
+.syntax-highlighter-vsc-dark .token.symbol,
+.syntax-highlighter-vsc-dark .token.deleted {
+  color: #b5cea8 !important;
+}
+
+.syntax-highlighter-vsc-dark .token.selector,
+.syntax-highlighter-vsc-dark .token.attr-name,
+.syntax-highlighter-vsc-dark .token.string,
+.syntax-highlighter-vsc-dark .token.char,
+.syntax-highlighter-vsc-dark .token.builtin,
+.syntax-highlighter-vsc-dark .token.inserted {
+  color: #ce9178 !important;
+}
+
+.syntax-highlighter-vsc-dark .token.operator,
+.syntax-highlighter-vsc-dark .token.entity,
+.syntax-highlighter-vsc-dark .token.url,
+.syntax-highlighter-vsc-dark .language-css .token.string,
+.syntax-highlighter-vsc-dark .style .token.string {
+  color: #d4d4d4 !important;
+}
+
+.syntax-highlighter-vsc-dark .token.atrule,
+.syntax-highlighter-vsc-dark .token.attr-value,
+.syntax-highlighter-vsc-dark .token.keyword {
+  color: #c586c0 !important;
+}
+
+.syntax-highlighter-vsc-dark .token.function {
+  color: #dcdcaa !important;
+}
+
+.syntax-highlighter-vsc-dark .token.class-name {
+  color: #4ec9b0 !important;
+}
+
+.syntax-highlighter-vsc-dark .token.regex,
+.syntax-highlighter-vsc-dark .token.important,
+.syntax-highlighter-vsc-dark .token.variable {
+  color: #9cdcfe !important;
+}
+
+.syntax-highlighter-vsc-dark .token.important,
+.syntax-highlighter-vsc-dark .token.bold {
+  font-weight: bold !important;
+}
+
+.syntax-highlighter-vsc-dark .token.italic {
+  font-style: italic !important;
+}
+
+/* Utility classes */
+.text-balance {
+  text-wrap: balance;
+}
+
+.animate-pulse-subtle {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.reading-passage-text {
+  font-size: 1.18rem;
+  line-height: 1.85;
+  padding: 8px 0;
+  border-radius: 8px;
+  background: none;
+  /* If you want a subtle background, uncomment below: */
+  /* background: rgba(0,0,0,0.02); */
+  /* transition: background 0.2s; */
+}

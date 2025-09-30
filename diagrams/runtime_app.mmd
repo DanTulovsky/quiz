@@ -1,0 +1,40 @@
+flowchart TD
+  Browser["User browser\n(Interacts with UI)"]
+  subgraph Frontend
+    FE["React app (runs in browser)\n- Sends HTTP requests to /v1/*\n- Uses session cookie / auth"]
+  end
+
+  subgraph Backend
+    API["HTTP API /v1/*\n- Auth, Quiz endpoints, Admin"]
+    Static["Serves frontend static files\n(./frontend/dist)"]
+    Router["Router & Middleware\n- Sessions, CORS, Validation"]
+  end
+
+  Worker["Worker Process\n(long-running service)"]
+  DB["PostgreSQL\n- application data, jobs, worker status"]
+  AI["AI Provider (OpenAI / Ollama)\n- model generation / completions"]
+  Obs["OpenTelemetry\n- traces & metrics"]
+
+  Browser -->|"loads SPA / user actions"| FE
+  FE -->|"HTTP: GET/POST /v1/* (session cookie)"| API
+  Browser -->|"static files (index.html, assets)"| Static
+
+  API -->|"read / write"| DB
+  API -->|"enqueue job (write job row)"| DB
+  API -->|"control /status request"| Worker
+  API -->|"call AI (on-demand)"| AI
+
+  Worker -->|"polls DB or reads queued jobs"| DB
+  Worker -->|"process job → write results / assignments"| DB
+  Worker -->|"call AI for generation"| AI
+  Worker -->|"expose admin HTTP endpoints (version, health)"| API
+
+  API -->|"emit traces/metrics"| Obs
+  Worker -->|"emit traces/metrics"| Obs
+  AI -->|"external provider metrics"| Obs
+
+  classDef infra fill:#f8f8ff,stroke:#ddd
+  class Obs infra
+
+
+

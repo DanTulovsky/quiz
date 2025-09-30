@@ -1,0 +1,6 @@
+system:
+  auth:
+    signups_disabled: false
+
+# Test mode configuration
+is_test: true

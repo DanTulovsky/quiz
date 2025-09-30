@@ -1,0 +1,37 @@
+scenarios:
+  - name: "Login with existing user"
+    weight: 70
+    flow:
+      - function: "getExistingRandomUser"
+      - post:
+          url: "/v1/auth/login"
+          json:
+            username: "{{ username }}"
+            password: "{{ userPassword }}"
+          expect:
+            - statusCode: 200
+          timeout: 2
+      - think: 1
+      - get:
+          url: "/v1/auth/status"
+          expect:
+            - statusCode: 200
+          timeout: 2
+
+  - name: "Login with unknown user"
+    weight: 30
+    flow:
+      - post:
+          url: "/v1/auth/login"
+          json:
+            username: "unknownuser123"
+            password: "wrongpassword"
+          expect:
+            - statusCode: 401
+          timeout: 2
+      - think: 1
+      - get:
+          url: "/v1/auth/status"
+          expect:
+            - statusCode: 200
+          timeout: 2
