@@ -1,0 +1,197 @@
+name: Release
+
+on:
+  workflow_dispatch: # Allow manual trigger
+  push:
+    tags:
+      - 'v*.*.*' # Trigger on semantic version tags
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # Full history for version calculation
+
+    - name: Create .env from secret
+      run: |
+        if [ -n "$DOT_ENV_FILE_FOR_RELEASE" ]; then
+          echo "Writing .env from DOT_ENV_FILE_FOR_RELEASE secret..."
+          printf '%s\n' "$DOT_ENV_FILE_FOR_RELEASE" > .env
+          ls -la .env
+        else
+          echo "DOT_ENV_FILE_FOR_RELEASE secret is empty or not set; skipping .env creation."
+        fi
+      env:
+        DOT_ENV_FILE_FOR_RELEASE: ${{ secrets.DOT_ENV_FILE_FOR_RELEASE }}
+
+    - name: Set up Go
+      uses: actions/setup-go@v6
+      with:
+        go-version-file: 'backend/go.mod'
+        cache-dependency-path: |
+          backend/go.sum
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v5
+      with:
+        node-version: 'lts/*'
+        cache: 'npm'
+        cache-dependency-path: 'frontend/package-lock.json'
+
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.x'
+
+    - name: Set up GitHub Runner tooling
+      run: |
+        echo "Setting up additional tooling via install-github-runner-tooling.sh..."
+        ./scripts/install-github-runner-tooling.sh
+
+        # Ensure Go binaries and Task are in PATH
+        echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
+        echo "/usr/local/go/bin" >> $GITHUB_PATH
+
+        # Verify key tools are installed
+        echo "=== VERIFYING INSTALLATIONS ==="
+        go version || echo "Go command failed"
+        task --version || echo "Task command failed"
+        node --version || echo "Node command failed"
+        npm --version || echo "Npm command failed"
+        docker --version || echo "Docker command failed"
+        docker compose version || echo "Docker compose command failed"
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Create cache directories
+      run: |
+        mkdir -p /tmp/.buildx-cache
+        mkdir -p /tmp/.buildx-cache-frontend
+        mkdir -p /tmp/.buildx-cache-worker
+        mkdir -p /tmp/.buildx-cache-backend
+        # Ensure parent directories for other cached paths exist as well
+        mkdir -p ~/.cache/go-build
+        mkdir -p ~/go/pkg/mod
+        mkdir -p ~/.npm
+        mkdir -p frontend/node_modules
+        mkdir -p ~/go/bin
+        mkdir -p ~/.cache/pip
+        mkdir -p ~/.pyenv
+        chmod 755 /tmp/.buildx-cache*
+
+    - name: Cache Docker layers
+      uses: actions/cache@v4
+      with:
+        path: /tmp/.buildx-cache*
+        key: ${{ runner.os }}-buildx-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-
+
+    - name: Cache Go modules
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('backend/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+
+    - name: Cache Node.js dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.npm
+          frontend/node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: Cache Go binaries
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/go/bin
+          ~/.cache/go-build
+        key: ${{ runner.os }}-go-binaries-${{ hashFiles('backend/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-binaries-
+
+    - name: Cache Python dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cache/pip
+          ~/.pyenv
+        key: ${{ runner.os }}-python-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-python-
+
+    - name: Configure Docker BuildKit
+      run: |
+        echo "DOCKER_BUILDKIT=1" >> $GITHUB_ENV
+        echo "COMPOSE_DOCKER_CLI_BUILD=1" >> $GITHUB_ENV
+        echo "DOCKER_BUILDKIT_NO_PROVENANCE=1" >> $GITHUB_ENV
+
+    - name: Run release
+      run: |
+        echo "Running release process with 'task release'..."
+
+        # Set up environment variables
+        export SHELL=/bin/bash
+
+        # Run the complete release process
+        task release
+
+      env:
+        # Database configuration for tests (if needed during release)
+        DYNAMIC_TEST_DB_URL: "postgres://quiz_user:quiz_password@localhost:5433/quiz_test_db?sslmode=disable"
+        DYNAMIC_DB_URL: "postgres://quiz_user:quiz_password@localhost:5432/quiz_db?sslmode=disable"
+        DYNAMIC_TEST_BASE_URL: "http://localhost:3001"
+
+        # Docker configuration
+        DOCKER_BUILDKIT: 1
+        COMPOSE_DOCKER_CLI_BUILD: 1
+        DOCKER_BUILDKIT_NO_PROVENANCE: 1
+        COMPOSE_BAKE: true
+
+    - name: Upload release artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: release-artifacts
+        path: |
+          build/
+          backend/coverage*.out
+          frontend/coverage/
+          zap/reports/
+        retention-days: 7
+
+    - name: Clean up release environment
+      if: always()
+      run: |
+        echo "Cleaning up release environment..."
+
+        # Stop any running services and clean up
+        task stop-test-servers || true
+        task clean-test || true
+
+        # Clean up Docker
+        docker system prune -f || true
+
+    # Provide an SSH debugging session if the workflow fails so a developer can connect.
+    # The session will automatically end after 5 minutes if nobody connects.
+    - name: Setup tmate session
+      if: ${{ failure() }}
+      uses: mxschmitt/action-tmate@v3
+      timeout-minutes: 5
