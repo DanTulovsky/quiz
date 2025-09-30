@@ -18,4 +18,14 @@ declare module '@tabler/icons-react' {
   export const IconKeyboard: React.ComponentType<any>;
   export const IconChevronLeft: React.ComponentType<any>;
   export const IconChevronRight: React.ComponentType<any>;
+  export const IconSun: React.ComponentType<any>;
+  export const IconMoon: React.ComponentType<any>;
+  export const IconDeviceDesktop: React.ComponentType<any>;
+  export const IconBook: React.ComponentType<any>;
+  export const IconVocabulary: React.ComponentType<any>;
+  export const IconMessage: React.ComponentType<any>;
+  export const IconCalendar: React.ComponentType<any>;
+  export const IconLogout: React.ComponentType<any>;
+  export const IconBook2: React.ComponentType<any>;
+  export const IconAbc: React.ComponentType<any>;
 }

@@ -8,14 +8,15 @@ import {
   Button,
   ActionIcon,
   Stack,
+  Divider,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import {
   IconSun,
   IconMoon,
   IconDeviceDesktop,
-  IconBook,
-  IconVocabulary,
+  IconBook2,
+  IconAbc,
   IconMessage,
   IconCalendar,
   IconLogout,
@@ -64,11 +65,11 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
   const activeTab = getActiveTab();
 
   const navItems = [
-    { key: 'quiz', label: 'Quiz', icon: IconBook, path: '/m/quiz' },
+    { key: 'quiz', label: 'Quiz', icon: IconBook2, path: '/m/quiz' },
     {
       key: 'vocabulary',
       label: 'Vocabulary',
-      icon: IconVocabulary,
+      icon: IconAbc,
       path: '/m/vocabulary',
     },
     {
@@ -94,7 +95,6 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
         collapsed: { mobile: !opened },
       }}
       header={{ height: { base: 50, md: 70 } }}
-      footer={{ height: 60 }}
     >
       <AppShell.Navbar p='md'>
         <AppShell.Section grow>
@@ -119,6 +119,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
                 </Button>
               );
             })}
+            <Divider my='sm' />
             <Button
               variant='subtle'
               leftSection={<IconDeviceDesktop size={16} />}
@@ -131,6 +132,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
             >
               Desktop View
             </Button>
+            <Divider my='sm' />
             <Button
               variant='subtle'
               color='red'
@@ -161,7 +163,9 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
               size='sm'
               color={theme.colors.gray[6]}
             />
-            <Text>Quiz</Text>
+            <Text fw={600} tt='capitalize'>
+              {navItems.find(n => n.key === activeTab)?.label}
+            </Text>
           </Group>
 
           <Group>
@@ -180,26 +184,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
         </div>
       </AppShell.Header>
 
-      <AppShell.Footer
-        p='xs'
-        className='mobile-safe-footer'
-        style={{
-          backgroundColor:
-            colorScheme === 'dark'
-              ? theme.colors.dark[7]
-              : theme.colors.gray[1],
-        }}
-      >
-        <Group
-          justify='center'
-          align='center'
-          style={{ height: '100%', width: '100%' }}
-        >
-          <Text fw={600} size='sm' tt='capitalize'>
-            {navItems.find(n => n.key === activeTab)?.label}
-          </Text>
-        </Group>
-      </AppShell.Footer>
+      {/* Removed footer displaying active section label */}
 
       <AppShell.Main>{children}</AppShell.Main>
     </AppShell>
