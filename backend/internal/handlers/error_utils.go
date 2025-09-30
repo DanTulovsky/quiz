@@ -51,18 +51,6 @@ func StandardizeHTTPError(c *gin.Context, statusCode int, message, details strin
 	c.JSON(statusCode, appErr.ToJSON())
 }
 
-// StandardizeStructuredError sends a structured machine-readable error payload.
-func StandardizeStructuredError(c *gin.Context, _ int, code, message, details string, retryable bool) {
-	appErr := contextutils.NewAppError(
-		contextutils.ErrorCode(code),
-		contextutils.SeverityError,
-		message,
-		details,
-	)
-
-	StandardizeAppErrorWithRetry(c, appErr, retryable)
-}
-
 // StandardizeAppError sends a structured error response using AppError
 func StandardizeAppError(c *gin.Context, err *contextutils.AppError) {
 	// Map error codes to HTTP status codes
@@ -73,18 +61,6 @@ func StandardizeAppError(c *gin.Context, err *contextutils.AppError) {
 
 	// Add retryable information based on error type
 	errorJSON["retryable"] = contextutils.IsRetryable(err)
-
-	c.JSON(statusCode, errorJSON)
-}
-
-// StandardizeAppErrorWithRetry sends a structured error response with explicit retryable flag
-func StandardizeAppErrorWithRetry(c *gin.Context, err *contextutils.AppError, retryable bool) {
-	// Map error codes to HTTP status codes
-	statusCode := mapErrorCodeToHTTPStatus(err.Code)
-
-	// Convert error to JSON structure
-	errorJSON := err.ToJSON()
-	errorJSON["retryable"] = retryable
 
 	c.JSON(statusCode, errorJSON)
 }
