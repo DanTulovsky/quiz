@@ -181,7 +181,7 @@ const MobileDailyPage: React.FC = () => {
 
                   <Popover.Dropdown p={0}>
                     <DailyDatePicker
-                      dropdownType="modal"
+                      dropdownType='modal'
                       selectedDate={selectedDate}
                       onDateSelect={date => {
                         if (date) {

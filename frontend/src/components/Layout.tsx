@@ -63,7 +63,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
       navigator.userAgent
     );
-  const shouldShowMobileButton = deviceView === 'desktop' || isMobileViewport || isMobileUA;
+  const shouldShowMobileButton =
+    deviceView === 'desktop' || isMobileViewport || isMobileUA;
   // Only call the hook when we have a valid language parameter
   const language = user?.preferred_language;
   const hasValidLanguage = Boolean(language && language.trim() !== '');

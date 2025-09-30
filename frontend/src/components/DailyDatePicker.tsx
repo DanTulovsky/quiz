@@ -133,7 +133,7 @@ const DailyDatePicker: React.FC<DailyDatePickerProps> = ({
       withCellSpacing={withCellSpacing}
       firstDayOfWeek={firstDayOfWeek as 1}
       presets={[{ value: formatDateForAPI(new Date()), label: 'Today' }]}
-      presetsPlacement="bottom"
+      presetsPlacement='bottom'
       getDayProps={getDayProps}
     />
   );
