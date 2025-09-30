@@ -64,7 +64,7 @@ jobs:
           const workflowId = ${{ steps.trigger-test.outputs.workflow-id }};
 
           let attempts = 0;
-          const maxAttempts = 60; // 10 minutes max wait time
+          const maxAttempts = 180; // 30 minutes max wait time
           const delayMs = 10000; // 10 seconds
 
           while (attempts < maxAttempts) {
@@ -102,7 +102,7 @@ jobs:
             attempts++;
           }
 
-          core.setFailed(`Test workflow did not complete within ${maxAttempts * delayMs / 1000} seconds`);
+          core.setFailed(`Test workflow did not complete within ${maxAttempts * delayMs / (1000 * 60)} minutes`);
 
   release:
     runs-on: ubuntu-24.04
