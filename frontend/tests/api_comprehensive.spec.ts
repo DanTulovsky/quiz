@@ -1553,6 +1553,29 @@ test.describe('Comprehensive API Tests', () => {
           }
         }
 
+        // For force-send endpoint, check if reminderuser exists first
+        if (path.includes('/force-send')) {
+          try {
+            // Try to find reminderuser in the database first
+            const userCheckResponse = await request.get(`${baseURL}/v1/admin/backend/userz?username=reminderuser`, {
+              headers: {
+                'Cookie': sessionCookie
+              }
+            });
+
+            if (userCheckResponse.status() === 404) {
+              const responseText = await userCheckResponse.text();
+              throw new Error(`Test data not properly loaded: reminderuser not found in database. Response: ${responseText}. This indicates the setup-test-db command may have failed or the database state is inconsistent.`);
+            }
+          } catch (error) {
+            if (error instanceof Error && error.message.includes('Test data not properly loaded')) {
+              throw error; // Re-throw our custom error
+            }
+            console.log('⚠️  Failed to check reminderuser existence:', error);
+            // Continue with the test anyway for other errors
+          }
+        }
+
         const response = await request[testCase.method.toLowerCase()](url.toString(), requestOptions);
 
         // Remove user ID from available list if this was a DELETE operation on a user endpoint

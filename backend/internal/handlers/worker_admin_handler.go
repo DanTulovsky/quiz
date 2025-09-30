@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"errors"
+	"fmt"
 	"html/template"
 	"net/http"
 	"strconv"
@@ -673,7 +674,12 @@ func (h *WorkerAdminHandler) ForceSendNotification(c *gin.Context) {
 	}
 
 	if user == nil {
-		HandleAppError(c, contextutils.ErrRecordNotFound)
+		HandleAppError(c, contextutils.NewAppError(
+			contextutils.ErrorCodeRecordNotFound,
+			contextutils.SeverityInfo,
+			fmt.Sprintf("User '%s' not found", request.Username),
+			"",
+		))
 		return
 	}
 
