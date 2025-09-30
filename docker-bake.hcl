@@ -2,6 +2,15 @@ group "default" {
   targets = ["backend", "worker", "frontend"]
 }
 
+# Enable concurrent builds and optimize for cross-compilation
+variable "BUILDKIT_SBOM_SCAN_STAGE" {
+  default = "false"
+}
+
+variable "BUILDKIT_SBOM_SCAN_CONTEXT" {
+  default = "false"
+}
+
 variable "APP_VERSION" {
   default = "dev"
 }
@@ -13,6 +22,7 @@ variable "COMMIT_HASH" {
 variable "BUILD_TIME" {
   default = ""
 }
+
 
 target "backend" {
   context = "."

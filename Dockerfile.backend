@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.6
 # Stage 1: Build the application
-FROM golang:1.25-alpine3.22 AS builder
+FROM --platform=$BUILDPLATFORM golang:1.25-alpine3.22 AS builder
 
 # Add build arguments for better caching
 ARG BUILDKIT_INLINE_CACHE=1

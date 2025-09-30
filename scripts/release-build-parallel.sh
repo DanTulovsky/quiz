@@ -27,8 +27,18 @@ if command -v docker >/dev/null 2>&1; then
     exit 1
   fi
 
-  # Run bake; --push ensures images are pushed
-  docker buildx bake -f docker-bake.hcl --progress=auto --push default || {
+  # Run bake with optimized settings for cross-compilation performance
+  # Use registry cache for better cross-platform performance
+  docker buildx bake -f docker-bake.hcl \
+    --progress=auto \
+    --push \
+    --set "*.cache-from=type=registry,ref=mrwetsnow/quiz-backend:buildcache" \
+    --set "*.cache-from=type=registry,ref=mrwetsnow/quiz-worker:buildcache" \
+    --set "*.cache-from=type=registry,ref=mrwetsnow/quiz-frontend:buildcache" \
+    --set "*.cache-to=type=registry,ref=mrwetsnow/quiz-backend:buildcache,mode=max" \
+    --set "*.cache-to=type=registry,ref=mrwetsnow/quiz-worker:buildcache,mode=max" \
+    --set "*.cache-to=type=registry,ref=mrwetsnow/quiz-frontend:buildcache,mode=max" \
+    default || {
     echo "One or more bake targets failed" >&2
     exit 1
   }
