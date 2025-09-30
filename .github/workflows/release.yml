@@ -43,6 +43,8 @@ jobs:
 
     - name: Run Tests
       uses: ./.github/actions/run-tests
+      with:
+        tts-image: ${{ vars.TTS_IMAGE }}
 
   release:
     runs-on: ubuntu-24.04
