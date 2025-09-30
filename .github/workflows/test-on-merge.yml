@@ -219,6 +219,7 @@ jobs:
         # Set up test environment variables
         export SHELL=/bin/bash
         export SESSION_SECRET=test_session_secret_for_e2e
+        export TTS_IMAGE=${{ vars.TTS_IMAGE }}
 
         # Run the complete test suite
         task test-e2e-api
