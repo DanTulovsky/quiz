@@ -17,91 +17,32 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-24.04
-    outputs:
-      workflow-id: ${{ steps.trigger-test.outputs.workflow-id }}
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-
-    - name: Trigger test workflow and get run ID
-      id: trigger-test
-      uses: actions/github-script@v7
       with:
-        script: |
-          // Trigger the test workflow
-          const ref = 'main';
-          await github.rest.actions.createWorkflowDispatch({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            workflow_id: 'test-on-merge.yml',
-            ref: ref,
-          });
+        fetch-depth: 0 # Full history for version calculation
 
-          core.info(`Triggered test workflow on ref: ${ref}`);
+    - name: Create .env from secret
+      run: |
+        if [ -n "$DOT_ENV_FILE_FOR_RELEASE" ]; then
+          echo "Writing .env from DOT_ENV_FILE_FOR_RELEASE secret..."
+          printf '%s\n' "$DOT_ENV_FILE_FOR_RELEASE" > .env
+          ls -la .env
+        else
+          echo "DOT_ENV_FILE_FOR_RELEASE secret is empty or not set; skipping .env creation."
+        fi
+      env:
+        DOT_ENV_FILE_FOR_RELEASE: ${{ secrets.DOT_ENV_FILE_FOR_RELEASE }}
 
-          // Wait a moment for the workflow run to be created
-          await new Promise(resolve => setTimeout(resolve, 3000));
-
-          // Get the most recent workflow run for this workflow
-          const runsResponse = await github.rest.actions.listWorkflowRuns({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            workflow_id: 'test-on-merge.yml',
-            per_page: 1
-          });
-
-          const workflowRun = runsResponse.data.workflow_runs[0];
-          core.setOutput('workflow-id', workflowRun.id);
-
-          return `Triggered workflow run ID: ${workflowRun.id}`;
-
-    - name: Wait for test workflow to complete
-      uses: actions/github-script@v7
+    - name: Setup Environment
+      uses: ./.github/actions/setup-environment
       with:
-        script: |
-          const workflowId = ${{ steps.trigger-test.outputs.workflow-id }};
+        enable-docker: 'true'
 
-          let attempts = 0;
-          const maxAttempts = 180; // 30 minutes max wait time
-          const delayMs = 10000; // 10 seconds
-
-          while (attempts < maxAttempts) {
-            const runResponse = await github.rest.actions.getWorkflowRun({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              run_id: workflowId
-            });
-
-            const status = runResponse.data.status;
-            const conclusion = runResponse.data.conclusion;
-
-            core.info(`Workflow run ${workflowId} - status: ${status}, conclusion: ${conclusion}`);
-
-            if (status === 'completed') {
-              if (conclusion === 'success') {
-                core.info('Test workflow completed successfully!');
-                return;
-              } else if (conclusion === 'failure') {
-                core.setFailed(`Test workflow failed with conclusion: ${conclusion}`);
-                return;
-              } else if (conclusion === 'cancelled') {
-                core.info(`Test workflow was cancelled (conclusion: ${conclusion}). This might indicate an issue.`);
-                core.setFailed(`Test workflow was cancelled. Please check if tests actually passed.`);
-                return;
-              } else {
-                core.info(`Test workflow completed with conclusion: ${conclusion}`);
-                // For other conclusions (neutral, skipped, etc.), we'll assume it's acceptable for release
-                return;
-              }
-            }
-
-            // Wait before checking again
-            await new Promise(resolve => setTimeout(resolve, delayMs));
-            attempts++;
-          }
-
-          core.setFailed(`Test workflow did not complete within ${maxAttempts * delayMs / (1000 * 60)} minutes`);
+    - name: Run Tests
+      uses: ./.github/actions/run-tests
 
   release:
     runs-on: ubuntu-24.04
@@ -125,116 +66,10 @@ jobs:
       env:
         DOT_ENV_FILE_FOR_RELEASE: ${{ secrets.DOT_ENV_FILE_FOR_RELEASE }}
 
-    - name: Set up Go
-      uses: actions/setup-go@v6
+    - name: Setup Environment
+      uses: ./.github/actions/setup-environment
       with:
-        go-version-file: 'backend/go.mod'
-        cache-dependency-path: |
-          backend/go.sum
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v5
-      with:
-        node-version: 'lts/*'
-        cache: 'npm'
-        cache-dependency-path: 'frontend/package-lock.json'
-
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: '3.x'
-
-    - name: Set up GitHub Runner tooling
-      run: |
-        echo "Setting up additional tooling via install-github-runner-tooling.sh..."
-        ./scripts/install-github-runner-tooling.sh
-
-        # Ensure Go binaries and Task are in PATH
-        echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
-        echo "$HOME/.local/bin" >> $GITHUB_PATH
-        echo "/usr/local/go/bin" >> $GITHUB_PATH
-
-        # Verify key tools are installed
-        echo "=== VERIFYING INSTALLATIONS ==="
-        go version || echo "Go command failed"
-        task --version || echo "Task command failed"
-        node --version || echo "Node command failed"
-        npm --version || echo "Npm command failed"
-        docker --version || echo "Docker command failed"
-        docker compose version || echo "Docker compose command failed"
-
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-
-    - name: Create cache directories
-      run: |
-        mkdir -p /tmp/.buildx-cache
-        mkdir -p /tmp/.buildx-cache-frontend
-        mkdir -p /tmp/.buildx-cache-worker
-        mkdir -p /tmp/.buildx-cache-backend
-        # Ensure parent directories for other cached paths exist as well
-        mkdir -p ~/.cache/go-build
-        mkdir -p ~/go/pkg/mod
-        mkdir -p ~/.npm
-        mkdir -p frontend/node_modules
-        mkdir -p ~/go/bin
-        mkdir -p ~/.cache/pip
-        mkdir -p ~/.pyenv
-        chmod 755 /tmp/.buildx-cache*
-
-    - name: Cache Docker layers
-      uses: actions/cache@v4
-      with:
-        path: /tmp/.buildx-cache*
-        key: ${{ runner.os }}-buildx-${{ github.sha }}
-        restore-keys: |
-          ${{ runner.os }}-buildx-
-
-    - name: Cache Go modules
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.cache/go-build
-          ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('backend/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
-
-    - name: Cache Node.js dependencies
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.npm
-          frontend/node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
-
-    - name: Cache Go binaries
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/go/bin
-          ~/.cache/go-build
-        key: ${{ runner.os }}-go-binaries-${{ hashFiles('backend/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-binaries-
-
-    - name: Cache Python dependencies
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.cache/pip
-          ~/.pyenv
-        key: ${{ runner.os }}-python-${{ hashFiles('**/requirements*.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-python-
-
-    - name: Configure Docker BuildKit
-      run: |
-        echo "DOCKER_BUILDKIT=1" >> $GITHUB_ENV
-        echo "COMPOSE_DOCKER_CLI_BUILD=1" >> $GITHUB_ENV
-        echo "DOCKER_BUILDKIT_NO_PROVENANCE=1" >> $GITHUB_ENV
+        enable-docker: 'true'
 
     - name: Run release
       run: |

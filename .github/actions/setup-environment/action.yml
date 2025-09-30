@@ -1,0 +1,120 @@
+name: 'Setup Environment'
+description: 'Sets up the complete development environment for the quiz application'
+
+inputs:
+  enable-docker:
+    description: 'Whether to set up Docker BuildKit and caching'
+    required: false
+    default: 'true'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Go
+      uses: actions/setup-go@v6
+      with:
+        go-version-file: 'backend/go.mod'
+        cache-dependency-path: |
+          backend/go.sum
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v5
+      with:
+        node-version: 'lts/*'
+        cache: 'npm'
+        cache-dependency-path: 'frontend/package-lock.json'
+
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.x'
+
+    - name: Set up GitHub Runner tooling
+      run: |
+        echo "Setting up additional tooling via install-github-runner-tooling.sh..."
+        ./scripts/install-github-runner-tooling.sh
+
+        # Ensure Go binaries and Task are in PATH
+        echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
+        echo "/usr/local/go/bin" >> $GITHUB_PATH
+      shell: bash
+
+    - name: Set up Docker Buildx
+      if: inputs.enable-docker == 'true'
+      uses: docker/setup-buildx-action@v3
+
+    - name: Create cache directories
+      if: inputs.enable-docker == 'true'
+      run: |
+        mkdir -p /tmp/.buildx-cache
+        mkdir -p /tmp/.buildx-cache-frontend
+        mkdir -p /tmp/.buildx-cache-worker
+        mkdir -p /tmp/.buildx-cache-backend
+        # Ensure parent directories for other cached paths exist as well
+        mkdir -p ~/.cache/go-build
+        mkdir -p ~/go/pkg/mod
+        mkdir -p ~/.npm
+        mkdir -p frontend/node_modules
+        mkdir -p ~/go/bin
+        mkdir -p ~/.cache/pip
+        mkdir -p ~/.pyenv
+        chmod 755 /tmp/.buildx-cache*
+      shell: bash
+
+    - name: Cache Docker layers
+      if: inputs.enable-docker == 'true'
+      uses: actions/cache@v4
+      with:
+        path: /tmp/.buildx-cache*
+        key: ${{ runner.os }}-buildx-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-
+
+    - name: Cache Go modules
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('backend/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+
+    - name: Cache Node.js dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.npm
+          frontend/node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: Cache Go binaries
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/go/bin
+          ~/.cache/go-build
+        key: ${{ runner.os }}-go-binaries-${{ hashFiles('backend/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-binaries-
+
+    - name: Cache Python dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cache/pip
+          ~/.pyenv
+        key: ${{ runner.os }}-python-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-python-
+
+    - name: Configure Docker BuildKit
+      if: inputs.enable-docker == 'true'
+      run: |
+        echo "DOCKER_BUILDKIT=1" >> $GITHUB_ENV
+        echo "COMPOSE_DOCKER_CLI_BUILD=1" >> $GITHUB_ENV
+        echo "DOCKER_BUILDKIT_NO_PROVENANCE=1" >> $GITHUB_ENV
+      shell: bash

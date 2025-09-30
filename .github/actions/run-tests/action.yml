@@ -1,0 +1,103 @@
+name: 'Run Tests'
+description: 'Runs the complete test suite for the quiz application'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Run tests (Go unit and integration)
+      run: |
+        echo "Running Go unit and integration test suite with 'task test-go'..."
+
+        # Set up test environment variables
+        export SHELL=/bin/bash
+        export SESSION_SECRET=test_session_secret_for_e2e
+
+        # Run the complete test suite
+        task test-go
+
+      env:
+        # Database configuration for tests
+        DYNAMIC_TEST_DB_URL: "postgres://quiz_user:quiz_password@localhost:5433/quiz_test_db?sslmode=disable"
+        DYNAMIC_DB_URL: "postgres://quiz_user:quiz_password@localhost:5432/quiz_db?sslmode=disable"
+        DYNAMIC_TEST_BASE_URL: "http://localhost:3001"
+
+        # Docker configuration
+        DOCKER_BUILDKIT: 1
+        COMPOSE_DOCKER_CLI_BUILD: 1
+        DOCKER_BUILDKIT_NO_PROVENANCE: 1
+        COMPOSE_BAKE: true
+      shell: bash
+
+    - name: Run tests (frontend)
+      run: |
+        echo "Running frontend test suite with 'task test-frontend'..."
+
+        # Set up test environment variables
+        export SHELL=/bin/bash
+        export SESSION_SECRET=test_session_secret_for_e2e
+
+        # Run the complete test suite
+        task test-frontend
+
+      env:
+        # Database configuration for tests
+        DYNAMIC_TEST_DB_URL: "postgres://quiz_user:quiz_password@localhost:5433/quiz_test_db?sslmode=disable"
+        DYNAMIC_DB_URL: "postgres://quiz_user:quiz_password@localhost:5432/quiz_db?sslmode=disable"
+        DYNAMIC_TEST_BASE_URL: "http://localhost:3001"
+
+        # Docker configuration
+        DOCKER_BUILDKIT: 1
+        COMPOSE_DOCKER_CLI_BUILD: 1
+        DOCKER_BUILDKIT_NO_PROVENANCE: 1
+        COMPOSE_BAKE: true
+      shell: bash
+
+    - name: Run tests (other)
+      run: |
+        echo "Running other test suite with 'task test-merge-config' and 'task check-undocumented-apis'..."
+
+        # Set up test environment variables
+        export SHELL=/bin/bash
+        export SESSION_SECRET=test_session_secret_for_e2e
+
+        # Run the complete test suite
+        task test-merge-config
+        task check-undocumented-apis
+
+      env:
+        # Database configuration for tests
+        DYNAMIC_TEST_DB_URL: "postgres://quiz_user:quiz_password@localhost:5433/quiz_test_db?sslmode=disable"
+        DYNAMIC_DB_URL: "postgres://quiz_user:quiz_password@localhost:5432/quiz_db?sslmode=disable"
+        DYNAMIC_TEST_BASE_URL: "http://localhost:3001"
+
+        # Docker configuration
+        DOCKER_BUILDKIT: 1
+        COMPOSE_DOCKER_CLI_BUILD: 1
+        DOCKER_BUILDKIT_NO_PROVENANCE: 1
+        COMPOSE_BAKE: true
+      shell: bash
+
+    - name: Run tests (e2e API only)
+      run: |
+        echo "Running e2e API test suite with 'task test-e2e-api'..."
+
+        # Set up test environment variables
+        export SHELL=/bin/bash
+        export SESSION_SECRET=test_session_secret_for_e2e
+        export TTS_IMAGE=${{ vars.TTS_IMAGE }}
+
+        # Run the complete test suite
+        task test-e2e-api
+
+      env:
+        # Database configuration for tests
+        DYNAMIC_TEST_DB_URL: "postgres://quiz_user:quiz_password@localhost:5433/quiz_test_db?sslmode=disable"
+        DYNAMIC_DB_URL: "postgres://quiz_user:quiz_password@localhost:5432/quiz_db?sslmode=disable"
+        DYNAMIC_TEST_BASE_URL: "http://localhost:3001"
+
+        # Docker configuration
+        DOCKER_BUILDKIT: 1
+        COMPOSE_DOCKER_CLI_BUILD: 1
+        DOCKER_BUILDKIT_NO_PROVENANCE: 1
+        COMPOSE_BAKE: true
+      shell: bash
