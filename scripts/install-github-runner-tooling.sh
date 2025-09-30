@@ -74,11 +74,92 @@ verify_installations() {
     else
         log_error "Docker not found"
     fi
+
+    # Check Go tools
+    local go_tools=("oapi-codegen" "deadcode" "golangci-lint" "revive" "goimports" "gofumpt" "staticcheck")
+    for tool in "${go_tools[@]}"; do
+        if command_exists "$tool"; then
+            log_success "Go tool $tool: $(command -v "$tool")"
+        else
+            log_error "Go tool $tool: NOT FOUND"
+        fi
+    done
 }
 
 # Check if command exists
 command_exists() {
     command -v "$1" >/dev/null 2>&1
+}
+
+# Install Go development tools
+install_go_tools() {
+    log_info "Installing Go development tools..."
+
+    # Ensure Go bin directory is in PATH for current session
+    export PATH=$PATH:$(go env GOPATH)/bin
+
+    # Install oapi-codegen
+    if ! command_exists oapi-codegen; then
+        log_info "Installing oapi-codegen..."
+        go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@latest
+        log_success "oapi-codegen installed successfully"
+    else
+        log_info "oapi-codegen already installed"
+    fi
+
+    # Install deadcode
+    if ! command_exists deadcode; then
+        log_info "Installing deadcode..."
+        go install golang.org/x/tools/cmd/deadcode@latest
+        log_success "deadcode installed successfully"
+    else
+        log_info "deadcode already installed"
+    fi
+
+    # Install golangci-lint
+    if ! command_exists golangci-lint; then
+        log_info "Installing golangci-lint..."
+        go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.3.1
+        log_success "golangci-lint installed successfully"
+    else
+        log_info "golangci-lint already installed"
+    fi
+
+    # Install revive
+    if ! command_exists revive; then
+        log_info "Installing revive..."
+        go install github.com/mgechev/revive@latest
+        log_success "revive installed successfully"
+    else
+        log_info "revive already installed"
+    fi
+
+    # Install goimports
+    if ! command_exists goimports; then
+        log_info "Installing goimports..."
+        go install golang.org/x/tools/cmd/goimports@latest
+        log_success "goimports installed successfully"
+    else
+        log_info "goimports already installed"
+    fi
+
+    # Install gofumpt (modern formatting, enforces 'any' over 'interface{}')
+    if ! command_exists gofumpt; then
+        log_info "Installing gofumpt..."
+        go install mvdan.cc/gofumpt@latest
+        log_success "gofumpt installed successfully"
+    else
+        log_info "gofumpt already installed"
+    fi
+
+    # Install staticcheck (modernize linter)
+    if ! command_exists staticcheck; then
+        log_info "Installing staticcheck..."
+        go install honnef.co/go/tools/cmd/staticcheck@latest
+        log_success "staticcheck installed successfully"
+    else
+        log_info "staticcheck already installed"
+    fi
 }
 
 # Install any additional tools if needed
@@ -91,6 +172,9 @@ install_additional_tools() {
     else
         log_info "Task already installed: $(task --version)"
     fi
+
+    # Install Go tools
+    install_go_tools
 
     # Add any other custom installations here if needed
     # This is where you would put any tools that can't be installed
