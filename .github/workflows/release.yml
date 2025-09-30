@@ -149,6 +149,7 @@ jobs:
 
         # Set up environment variables
         export SHELL=/bin/bash
+        export TTS_IMAGE=${{ vars.TTS_IMAGE }}
 
         # Run the complete release process
         task release
