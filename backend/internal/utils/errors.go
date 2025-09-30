@@ -508,6 +508,7 @@ func (e *AppError) ToJSON() map[string]interface{} {
 		"code":     string(e.Code),
 		"message":  e.Message,
 		"severity": string(e.Severity),
+		"error":    e.Message, // Include error field for backward compatibility
 	}
 
 	if e.Details != "" {
@@ -531,7 +532,9 @@ func (e *AppError) ToJSON() map[string]interface{} {
 // ToJSONWithLocale converts an AppError to a JSON-serializable structure with localized messages
 func (e *AppError) ToJSONWithLocale(locale string) map[string]interface{} {
 	result := e.ToJSON()
-	// Replace the message with localized version
-	result["message"] = GetLocalizedMessage(e.Code, ParseLocale(locale))
+	// Replace the message with localized version and update error field too
+	localizedMessage := GetLocalizedMessage(e.Code, ParseLocale(locale))
+	result["message"] = localizedMessage
+	result["error"] = localizedMessage // Keep error field in sync
 	return result
 }
