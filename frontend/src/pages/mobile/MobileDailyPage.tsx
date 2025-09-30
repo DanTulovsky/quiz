@@ -8,13 +8,17 @@ import {
   Button,
   Group,
   Badge,
+  ActionIcon,
+  Popover,
   Alert,
   Loader,
   Center,
   Progress,
 } from '@mantine/core';
-import { IconCheck, IconX } from '@tabler/icons-react';
+import { IconCheck, IconX, IconCalendar } from '@tabler/icons-react';
 import { useDailyQuestions } from '../../hooks/useDailyQuestions';
+import { useDisclosure } from '@mantine/hooks';
+import DailyDatePicker from '../../components/DailyDatePicker';
 
 const MobileDailyPage: React.FC = () => {
   const { date: dateParam } = useParams();
@@ -32,7 +36,12 @@ const MobileDailyPage: React.FC = () => {
     isSubmittingAnswer,
     currentQuestionIndex,
     questions,
+    availableDates,
   } = useDailyQuestions();
+
+  // Popover control for date picker
+  const [pickerOpened, { toggle: togglePicker, close: closePicker }] =
+    useDisclosure(false);
 
   // Local UI state
   const [selectedAnswerLocal, setSelectedAnswerLocal] = useState<number | null>(
@@ -122,13 +131,72 @@ const MobileDailyPage: React.FC = () => {
         {/* Daily Progress Header */}
         <Paper p='md' radius='md' withBorder>
           <Stack gap='xs'>
-            <Group justify='space-between'>
+            <Group justify='space-between' align='center'>
               <Badge variant='light' color='orange'>
                 Daily Challenge
               </Badge>
-              <Badge variant='outline'>
-                {currentQuestionIndex + 1} of {questions.length}
-              </Badge>
+
+              {/* Right side: date picker icon and question counter */}
+              <Group gap='sm' align='center'>
+                {/* Date picker popover */}
+                <Popover
+                  opened={pickerOpened}
+                  onChange={opened => {
+                    if (!opened) closePicker();
+                  }}
+                  position='bottom'
+                  offset={4}
+                >
+                  <Popover.Target>
+                    <ActionIcon
+                      variant='light'
+                      size='lg'
+                      onClick={togglePicker}
+                      style={{ position: 'relative' }}
+                      aria-label='Select date'
+                    >
+                      <IconCalendar size={18} />
+                      {selectedDate && (
+                        <Badge
+                          size='xs'
+                          color='blue'
+                          variant='filled'
+                          style={{
+                            position: 'absolute',
+                            top: -4,
+                            right: -4,
+                          }}
+                        >
+                          {new Date(selectedDate).getDate()}
+                        </Badge>
+                      )}
+                    </ActionIcon>
+                  </Popover.Target>
+
+                  <Popover.Dropdown p={0}>
+                    <DailyDatePicker
+                      selectedDate={selectedDate}
+                      onDateSelect={date => {
+                        if (date) {
+                          setSelectedDate(date);
+                          closePicker();
+                        }
+                      }}
+                      availableDates={availableDates}
+                      maxDate={new Date()}
+                      size='sm'
+                      clearable={false}
+                      hideOutsideDates
+                      withCellSpacing={false}
+                      firstDayOfWeek={1}
+                    />
+                  </Popover.Dropdown>
+                </Popover>
+
+                <Badge variant='outline'>
+                  {currentQuestionIndex + 1} of {questions.length}
+                </Badge>
+              </Group>
             </Group>
             <Text size='lg' fw={500}>
               Daily Questions
