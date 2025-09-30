@@ -15,9 +15,15 @@ import {
   Loader,
   Center,
   Box,
+  Tooltip,
+  ActionIcon,
+  LoadingOverlay,
 } from '@mantine/core';
 import { IconCheck, IconX } from '@tabler/icons-react';
+import { Volume2, VolumeX } from 'lucide-react';
 import { useQuestionFlow } from '../hooks/useQuestionFlow';
+import { useTTS } from '../hooks/useTTS';
+import { defaultVoiceForLanguage } from '../utils/tts';
 
 export type QuestionMode = 'quiz' | 'reading' | 'vocabulary';
 
@@ -39,6 +45,14 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
     null
   );
   const [isSubmittedLocal, setIsSubmittedLocal] = useState(false);
+
+  // TTS state for reading comprehension passages
+  const {
+    isLoading: isTTSLoading,
+    isPlaying: isTTSPlaying,
+    playTTS,
+    stopTTS,
+  } = useTTS();
 
   const { question, isLoading, error, forceFetchNextQuestion } =
     useQuestionFlow({ mode, questionId });
@@ -83,6 +97,21 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
       setIsTransitioning(false);
     }
   }, [forceFetchNextQuestion, setFeedback]);
+
+  // TTS handler functions
+  const handleTTSPlay = async (text: string) => {
+    if (!text) return;
+
+    // Determine the best voice: default for question.language -> fallback to 'echo'
+    const finalVoice =
+      defaultVoiceForLanguage(question?.language || 'en') || 'echo';
+
+    await playTTS(text, finalVoice);
+  };
+
+  const handleTTSStop = () => {
+    stopTTS();
+  };
 
   // Reset state when question changes
   useEffect(() => {
@@ -138,25 +167,91 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
               </Badge>
             </Group>
 
-            {/* For reading comprehension, show passage first */}
+            {/* Show passage for reading comprehension questions */}
             {question.type === 'reading_comprehension' &&
               question.content?.passage && (
-                <>
+                <Paper
+                  p='md'
+                  bg='var(--mantine-color-body)'
+                  radius='md'
+                  withBorder
+                  style={{ position: 'relative' }}
+                >
+                  <LoadingOverlay
+                    visible={isTTSLoading}
+                    overlayProps={{ backgroundOpacity: 0.35, blur: 1 }}
+                    zIndex={5}
+                  />
                   <Box
                     style={{
-                      maxHeight: '200px',
-                      overflowY: 'auto',
+                      position: 'absolute',
+                      top: 8,
+                      right: 8,
+                      zIndex: 10,
                     }}
                   >
-                    <Text size='sm' style={{ whiteSpace: 'pre-line' }}>
-                      {question.content.passage}
-                    </Text>
+                    <Group gap={4} align='center'>
+                      <Badge
+                        size='xs'
+                        color='gray'
+                        variant='filled'
+                        radius='sm'
+                        title='Shortcut: P'
+                      >
+                        P
+                      </Badge>
+                      <Tooltip
+                        label={
+                          isTTSPlaying ? 'Stop audio' : 'Listen to passage'
+                        }
+                      >
+                        <ActionIcon
+                          size='sm'
+                          variant='subtle'
+                          color={isTTSPlaying ? 'red' : 'blue'}
+                          onClick={() => {
+                            if (isTTSPlaying || isTTSLoading) {
+                              handleTTSStop();
+                            } else {
+                              handleTTSPlay(question.content?.passage || '');
+                            }
+                          }}
+                          disabled={false}
+                          aria-label={
+                            isTTSPlaying || isTTSLoading
+                              ? 'Stop audio'
+                              : 'Listen to passage'
+                          }
+                        >
+                          {isTTSPlaying || isTTSLoading ? (
+                            <VolumeX size={16} />
+                          ) : (
+                            <Volume2 size={16} />
+                          )}
+                        </ActionIcon>
+                      </Tooltip>
+                    </Group>
                   </Box>
-                  <Text size='lg' fw={500}>
-                    {question.content?.question}
+                  <Text
+                    size='sm'
+                    style={{
+                      whiteSpace: 'pre-line',
+                      lineHeight: 1.6,
+                      fontWeight: 400,
+                      letterSpacing: 0.1,
+                    }}
+                  >
+                    {question.content.passage}
                   </Text>
-                </>
+                </Paper>
               )}
+
+            {/* For reading comprehension, place the question after the passage */}
+            {question.type === 'reading_comprehension' && (
+              <Text size='lg' fw={500}>
+                {question.content?.question}
+              </Text>
+            )}
 
             {/* For vocabulary, show sentence context */}
             {question.type === 'vocabulary' && question.content?.sentence && (
