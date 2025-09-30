@@ -76,7 +76,7 @@ verify_installations() {
     fi
 
     # Check Go tools
-    local go_tools=("oapi-codegen" "deadcode" "golangci-lint" "revive" "goimports" "gofumpt" "staticcheck")
+    local go_tools=("oapi-codegen" "goimports")
     for tool in "${go_tools[@]}"; do
         if command_exists "$tool"; then
             log_success "Go tool $tool: $(command -v "$tool")"
@@ -86,7 +86,7 @@ verify_installations() {
     done
 
     # Check Node.js tools
-    local node_tools=("eslint" "prettier" "ts-prune" "orval" "pyright" "vite" "vitest" "tsc" "playwright")
+    local node_tools=("orval" "vite" "tsc")
     for tool in "${node_tools[@]}"; do
         if command_exists "$tool"; then
             log_success "Node.js tool $tool: $(command -v "$tool")"
@@ -129,33 +129,6 @@ install_go_tools() {
         log_info "oapi-codegen already installed"
     fi
 
-    # Install deadcode
-    if ! command_exists deadcode; then
-        log_info "Installing deadcode..."
-        go install golang.org/x/tools/cmd/deadcode@latest
-        log_success "deadcode installed successfully"
-    else
-        log_info "deadcode already installed"
-    fi
-
-    # Install golangci-lint
-    if ! command_exists golangci-lint; then
-        log_info "Installing golangci-lint..."
-        go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.3.1
-        log_success "golangci-lint installed successfully"
-    else
-        log_info "golangci-lint already installed"
-    fi
-
-    # Install revive
-    if ! command_exists revive; then
-        log_info "Installing revive..."
-        go install github.com/mgechev/revive@latest
-        log_success "revive installed successfully"
-    else
-        log_info "revive already installed"
-    fi
-
     # Install goimports
     if ! command_exists goimports; then
         log_info "Installing goimports..."
@@ -164,24 +137,6 @@ install_go_tools() {
     else
         log_info "goimports already installed"
     fi
-
-    # Install gofumpt (modern formatting, enforces 'any' over 'interface{}')
-    if ! command_exists gofumpt; then
-        log_info "Installing gofumpt..."
-        go install mvdan.cc/gofumpt@latest
-        log_success "gofumpt installed successfully"
-    else
-        log_info "gofumpt already installed"
-    fi
-
-    # Install staticcheck (modernize linter)
-    if ! command_exists staticcheck; then
-        log_info "Installing staticcheck..."
-        go install honnef.co/go/tools/cmd/staticcheck@latest
-        log_success "staticcheck installed successfully"
-    else
-        log_info "staticcheck already installed"
-    fi
 }
 
 # Install Node.js development tools
@@ -189,7 +144,7 @@ install_node_tools() {
     log_info "Installing Node.js development tools..."
 
     # Install global npm packages
-    local packages=("eslint" "prettier" "ts-prune" "orval" "pyright" "vite" "vitest" "@playwright/test")
+    local packages=("orval" "vite")
 
     for package in "${packages[@]}"; do
         if ! command_exists "$package"; then
@@ -224,18 +179,6 @@ install_node_tools() {
         log_success "TypeScript (tsc) installed successfully"
     else
         log_info "TypeScript (tsc) already installed"
-    fi
-
-    # Install Playwright browser dependencies
-    log_info "Installing Playwright browser dependencies..."
-    if [[ -f "frontend/package.json" ]]; then
-        cd frontend
-        npm install @playwright/test
-        npx playwright install-deps
-        cd - > /dev/null
-        log_success "Playwright browser dependencies installed successfully!"
-    else
-        log_warning "frontend/package.json not found, skipping Playwright browser dependencies"
     fi
 }
 

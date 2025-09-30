@@ -1518,8 +1518,7 @@ tasks:
       - bash ./scripts/release-tag.sh
 
   release:
-    desc: "Run lint, then build images, push images, and create/push git tag via subtasks"
-    deps: [lint, test]
+    desc: "Build images, push images, and create/push git tag via subtasks"
     cmds:
       - task: release-build
       - task: release-tag

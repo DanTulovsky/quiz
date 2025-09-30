@@ -11,8 +11,82 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  test:
+    runs-on: ubuntu-24.04
+    outputs:
+      test-workflow-id: ${{ steps.trigger-test.outputs.workflow-id }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Trigger test workflow
+      id: trigger-test
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const workflowResponse = await github.rest.actions.createWorkflowDispatch({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            workflow_id: 'test-on-merge.yml',
+            ref: context.sha,
+          });
+
+          // Get the workflow run that was just triggered
+          const runsResponse = await github.rest.actions.listWorkflowRuns({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            workflow_id: 'test-on-merge.yml',
+            per_page: 1
+          });
+
+          const workflowRun = runsResponse.data.workflow_runs[0];
+          core.setOutput('workflow-id', workflowRun.id);
+
+          return `Triggered test workflow run ID: ${workflowRun.id}`;
+
+    - name: Wait for test workflow to complete
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const workflowId = ${{ steps.trigger-test.outputs.workflow-id }};
+
+          let attempts = 0;
+          const maxAttempts = 60; // 10 minutes max wait time
+          const delayMs = 10000; // 10 seconds
+
+          while (attempts < maxAttempts) {
+            const runResponse = await github.rest.actions.getWorkflowRun({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: workflowId
+            });
+
+            const status = runResponse.data.status;
+            const conclusion = runResponse.data.conclusion;
+
+            core.info(`Workflow status: ${status}, conclusion: ${conclusion}`);
+
+            if (status === 'completed') {
+              if (conclusion === 'success') {
+                core.info('Test workflow completed successfully!');
+                return;
+              } else {
+                core.setFailed(`Test workflow failed with conclusion: ${conclusion}`);
+                return;
+              }
+            }
+
+            // Wait before checking again
+            await new Promise(resolve => setTimeout(resolve, delayMs));
+            attempts++;
+          }
+
+          core.setFailed(`Test workflow did not complete within ${maxAttempts * delayMs / 1000} seconds`);
+
   release:
     runs-on: ubuntu-24.04
+    needs: test
 
     steps:
     - name: Checkout code
