@@ -132,6 +132,8 @@ const DailyDatePicker: React.FC<DailyDatePickerProps> = ({
       hideOutsideDates={hideOutsideDates}
       withCellSpacing={withCellSpacing}
       firstDayOfWeek={firstDayOfWeek as 1}
+      presets={[{ value: formatDateForAPI(new Date()), label: 'Today' }]}
+      presetsPlacement="bottom"
       getDayProps={getDayProps}
     />
   );

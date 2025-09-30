@@ -376,16 +376,6 @@ const DailyPage: React.FC = () => {
                   withCellSpacing={false}
                   firstDayOfWeek={1}
                 />
-                <Button
-                  size='xs'
-                  variant='subtle'
-                  onClick={() =>
-                    setSelectedDate(new Date().toISOString().split('T')[0])
-                  }
-                  ml={8}
-                >
-                  Today
-                </Button>
                 {progress && currentQuestion && (
                   <Button
                     leftSection={<HistoryIcon size={16} />}
