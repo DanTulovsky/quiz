@@ -723,42 +723,57 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                 <Radio
                   key={`${question.id}-${shuffledIndex}-${option}`}
                   value={shuffledIndex.toString()}
-                  label={
-                    <span style={{ color: isSubmitted ? '#000' : undefined }}>
-                      <Badge
-                        size='xs'
-                        color='gray'
-                        variant='outline'
-                        radius='sm'
-                        mr={6}
-                      >
-                        {shuffledIndex + 1}
-                      </Badge>
-                      {option}
-                      {/* Show tags after submission */}
-                      {isUserAnswer && (
+              label={
+                    <div
+                      style={{
+                        color: isSubmitted ? '#000' : undefined,
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: 8,
+                        whiteSpace: 'normal',
+                        wordBreak: 'break-word',
+                        overflowWrap: 'anywhere',
+                        // Ensure long words wrap on small screens
+                      }}
+                    >
+                      <div style={{ flex: '0 0 auto' }}>
                         <Badge
-                          ml={8}
                           size='xs'
-                          color='blue'
-                          variant='filled'
+                          color='gray'
+                          variant='outline'
                           radius='sm'
+                          mr={6}
                         >
-                          Your answer
+                          {shuffledIndex + 1}
                         </Badge>
-                      )}
-                      {isCorrectAnswer && (
-                        <Badge
-                          ml={8}
-                          size='xs'
-                          color='green'
-                          variant='filled'
-                          radius='sm'
-                        >
-                          Correct answer
-                        </Badge>
-                      )}
-                    </span>
+                      </div>
+                      <div style={{ flex: '1 1 auto', minWidth: 0 }}>
+                        {/* option text and badges */}
+                        <div style={{ display: 'inline' }}>{option}</div>
+                        {isUserAnswer && (
+                          <Badge
+                            ml={8}
+                            size='xs'
+                            color='blue'
+                            variant='filled'
+                            radius='sm'
+                          >
+                            Your answer
+                          </Badge>
+                        )}
+                        {isCorrectAnswer && (
+                          <Badge
+                            ml={8}
+                            size='xs'
+                            color='green'
+                            variant='filled'
+                            radius='sm'
+                          >
+                            Correct answer
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
                   }
                   disabled={isSubmitted}
                   data-testid={`option-${shuffledIndex}`}
