@@ -666,6 +666,9 @@ func (s *QuestionService) GetQuestionWithStats(ctx context.Context, id int) (res
 		&stats.CorrectCount, &stats.IncorrectCount, &stats.TotalResponses,
 	)
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, contextutils.ErrQuestionNotFound
+		}
 		return nil, contextutils.WrapError(err, "failed to get question with stats")
 	}
 
