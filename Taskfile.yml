@@ -1521,7 +1521,6 @@ tasks:
     desc: "Build images, push images, and create/push git tag via subtasks"
     cmds:
       - task: release-build
-      - task: release-tag
 
   build-all-with-version:
     desc: "Build all Docker images with version, commit, and build time injected from git."
