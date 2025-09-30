@@ -156,7 +156,7 @@ const MobileDailyPage: React.FC = () => {
                       variant='light'
                       size='lg'
                       onClick={togglePicker}
-                      style={{ position: 'relative' }}
+                      style={{ position: 'relative', padding: 6 }}
                       aria-label='Select date'
                     >
                       <IconCalendar size={18} />
@@ -167,9 +167,10 @@ const MobileDailyPage: React.FC = () => {
                           variant='filled'
                           style={{
                             position: 'absolute',
-                            top: -6,
-                            right: -6,
-                            transform: 'scale(0.9)',
+                            top: -2,
+                            right: -2,
+                            transform: 'scale(0.75)',
+                            pointerEvents: 'none',
                           }}
                         >
                           {parseLocalDateString(selectedDate).getDate()}
