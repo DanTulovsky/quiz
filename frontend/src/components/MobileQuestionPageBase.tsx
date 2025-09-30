@@ -227,7 +227,11 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
                       },
                     }}
                   >
-                    <Text>{option}</Text>
+                    <Text
+                      style={{ wordBreak: 'break-word', whiteSpace: 'normal' }}
+                    >
+                      {option}
+                    </Text>
                   </Button>
                 );
               })
