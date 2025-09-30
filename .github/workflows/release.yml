@@ -53,7 +53,6 @@ jobs:
 
           const workflowRun = runsResponse.data.workflow_runs[0];
           core.setOutput('workflow-id', workflowRun.id);
-          core.setOutput('run-number', workflowRun.run_number);
 
           return `Triggered workflow run ID: ${workflowRun.id}`;
 
