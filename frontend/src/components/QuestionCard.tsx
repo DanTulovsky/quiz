@@ -708,10 +708,17 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
               // Determine if this option is the user's answer or the correct answer
               const originalIndex = shuffledToOriginalMap.get(shuffledIndex);
 
+              // Detect if this option is the one the user selected. Rely on the
+              // computed shuffled index that already accounts for mapping from
+              // feedback indices → displayed order instead of comparing against
+              // the original index only. This makes the badge robust even when
+              // tests (or backend) provide a shuffled index.
               const isUserAnswer =
                 isSubmitted &&
-                typeof currentFeedback?.user_answer_index === 'number' &&
-                originalIndex === currentFeedback.user_answer_index;
+                ((typeof currentFeedback?.user_answer_index === 'number' &&
+                  originalIndex === currentFeedback.user_answer_index) ||
+                  (computedSelectedShuffledIndex !== null &&
+                    shuffledIndex === computedSelectedShuffledIndex));
 
               // Use correct_answer_index to find which shuffled option is correct
               const isCorrectAnswer =
@@ -748,30 +755,32 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                         </Badge>
                       </div>
                       <div style={{ flex: '1 1 auto', minWidth: 0 }}>
-                        {/* option text and badges */}
-                        <div style={{ display: 'inline' }}>{option}</div>
-                        {isUserAnswer && (
-                          <Badge
-                            ml={8}
-                            size='xs'
-                            color='blue'
-                            variant='filled'
-                            radius='sm'
-                          >
-                            Your answer
-                          </Badge>
-                        )}
-                        {isCorrectAnswer && (
-                          <Badge
-                            ml={8}
-                            size='xs'
-                            color='green'
-                            variant='filled'
-                            radius='sm'
-                          >
-                            Correct answer
-                          </Badge>
-                        )}
+                        {/* option text and badges share the same inline container to aid test selectors */}
+                        <div style={{ display: 'inline' }}>
+                          {option}
+                          {isUserAnswer && (
+                            <Badge
+                              ml={8}
+                              size='xs'
+                              color='blue'
+                              variant='filled'
+                              radius='sm'
+                            >
+                              Your answer
+                            </Badge>
+                          )}
+                          {isCorrectAnswer && (
+                            <Badge
+                              ml={8}
+                              size='xs'
+                              color='green'
+                              variant='filled'
+                              radius='sm'
+                            >
+                              Correct answer
+                            </Badge>
+                          )}
+                        </div>
                       </div>
                     </div>
                   }

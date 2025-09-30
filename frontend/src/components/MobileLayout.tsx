@@ -100,6 +100,25 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
         <AppShell.Section grow>
           <Stack gap='md'>
             <Text fw={500}>Menu</Text>
+            {/* Primary navigation moved from footer */}
+            {navItems.map(item => {
+              const Icon = item.icon;
+              return (
+                <Button
+                  key={item.key}
+                  variant={activeTab === item.key ? 'light' : 'subtle'}
+                  leftSection={<Icon size={16} />}
+                  onClick={() => {
+                    handleNavigation(item.path);
+                    if (opened) toggle(); // close menu after navigation
+                  }}
+                  fullWidth
+                  justify='flex-start'
+                >
+                  {item.label}
+                </Button>
+              );
+            })}
             <Button
               variant='subtle'
               leftSection={<IconDeviceDesktop size={16} />}
@@ -142,7 +161,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
               size='sm'
               color={theme.colors.gray[6]}
             />
-            <Text>WetSnow Quiz</Text>
+            <Text>Quiz</Text>
           </Group>
 
           <Group>
@@ -172,36 +191,13 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
         }}
       >
         <Group
-          justify='space-around'
-          gap={4}
+          justify='center'
+          align='center'
           style={{ height: '100%', width: '100%' }}
         >
-          {navItems.map(item => {
-            const Icon = item.icon;
-            return (
-              <Button
-                key={item.key}
-                variant={activeTab === item.key ? 'filled' : 'subtle'}
-                size='xs'
-                px={2}
-                onClick={() => handleNavigation(item.path)}
-                style={{
-                  flex: 1,
-                  maxWidth: '90px',
-                  height: '75px',
-                  borderRadius: theme.radius.md,
-                  padding: '8px 4px',
-                }}
-              >
-                <Stack gap={4} align='center' justify='center'>
-                  <Icon size={24} />
-                  <Text size='xs' tt='capitalize' fw={500} lh={1.2}>
-                    {item.label}
-                  </Text>
-                </Stack>
-              </Button>
-            );
-          })}
+          <Text fw={500} tt='capitalize'>
+            {navItems.find(n => n.key === activeTab)?.label}
+          </Text>
         </Group>
       </AppShell.Footer>
 
