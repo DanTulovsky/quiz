@@ -71,16 +71,6 @@ runs:
         restore-keys: |
           ${{ runner.os }}-buildx-
 
-    - name: Cache Go modules
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.cache/go-build
-          ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('backend/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
-
     - name: Cache Node.js dependencies
       uses: actions/cache@v4
       with:
@@ -90,16 +80,6 @@ runs:
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
-
-    - name: Cache Go binaries
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/go/bin
-          ~/.cache/go-build
-        key: ${{ runner.os }}-go-binaries-${{ hashFiles('backend/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-binaries-
 
     - name: Cache Python dependencies
       uses: actions/cache@v4
