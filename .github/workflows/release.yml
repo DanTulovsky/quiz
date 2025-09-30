@@ -18,29 +18,32 @@ jobs:
   test:
     runs-on: ubuntu-24.04
     outputs:
-      test-workflow-id: ${{ steps.trigger-test.outputs.workflow-id }}
+      workflow-id: ${{ steps.trigger-test.outputs.workflow-id }}
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Trigger test workflow
+    - name: Trigger test workflow and get run ID
       id: trigger-test
       uses: actions/github-script@v7
       with:
         script: |
-          // For releases, trigger the test workflow on the main branch
-          // since the tests should run against the latest main branch code
+          // Trigger the test workflow
           const ref = 'main';
-
-          const workflowResponse = await github.rest.actions.createWorkflowDispatch({
+          await github.rest.actions.createWorkflowDispatch({
             owner: context.repo.owner,
             repo: context.repo.repo,
             workflow_id: 'test-on-merge.yml',
             ref: ref,
           });
 
-          // Get the workflow run that was just triggered
+          core.info(`Triggered test workflow on ref: ${ref}`);
+
+          // Wait a moment for the workflow run to be created
+          await new Promise(resolve => setTimeout(resolve, 3000));
+
+          // Get the most recent workflow run for this workflow
           const runsResponse = await github.rest.actions.listWorkflowRuns({
             owner: context.repo.owner,
             repo: context.repo.repo,
@@ -50,8 +53,9 @@ jobs:
 
           const workflowRun = runsResponse.data.workflow_runs[0];
           core.setOutput('workflow-id', workflowRun.id);
+          core.setOutput('run-number', workflowRun.run_number);
 
-          return `Triggered test workflow run ID: ${workflowRun.id}`;
+          return `Triggered workflow run ID: ${workflowRun.id}`;
 
     - name: Wait for test workflow to complete
       uses: actions/github-script@v7
@@ -73,14 +77,22 @@ jobs:
             const status = runResponse.data.status;
             const conclusion = runResponse.data.conclusion;
 
-            core.info(`Workflow status: ${status}, conclusion: ${conclusion}`);
+            core.info(`Workflow run ${workflowId} - status: ${status}, conclusion: ${conclusion}`);
 
             if (status === 'completed') {
               if (conclusion === 'success') {
                 core.info('Test workflow completed successfully!');
                 return;
-              } else {
+              } else if (conclusion === 'failure') {
                 core.setFailed(`Test workflow failed with conclusion: ${conclusion}`);
+                return;
+              } else if (conclusion === 'cancelled') {
+                core.info(`Test workflow was cancelled (conclusion: ${conclusion}). This might indicate an issue.`);
+                core.setFailed(`Test workflow was cancelled. Please check if tests actually passed.`);
+                return;
+              } else {
+                core.info(`Test workflow completed with conclusion: ${conclusion}`);
+                // For other conclusions (neutral, skipped, etc.), we'll assume it's acceptable for release
                 return;
               }
             }
