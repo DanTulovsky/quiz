@@ -723,7 +723,7 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                 <Radio
                   key={`${question.id}-${shuffledIndex}-${option}`}
                   value={shuffledIndex.toString()}
-              label={
+                  label={
                     <div
                       style={{
                         color: isSubmitted ? '#000' : undefined,
