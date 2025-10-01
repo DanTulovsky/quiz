@@ -515,14 +515,14 @@ tasks:
       ENVIRONMENT: "{{.ENVIRONMENT}}"
     cmds:
       - echo "Starting test servers..."
-      - docker compose -f docker-compose.test.yml up -d --build --wait
+      - docker compose -f docker-compose.test.from.images.yml up -d --build --wait
       - |
         # Check if all containers are healthy
-        if docker compose -f docker-compose.test.yml ps --format table | grep -q "Up"; then
+        if docker compose -f docker-compose.test.from.images.yml ps --format table | grep -q "Up"; then
           echo "✅ All test containers started successfully"
         else
           echo "❌ Some containers failed to start. Showing logs:"
-          docker compose -f docker-compose.test.yml logs
+          docker compose -f docker-compose.test.from.images.yml logs
           exit 1
         fi
       - echo "Setting up test database with golden data..."
@@ -556,7 +556,7 @@ tasks:
         fi
       - |
         # Check if test environment is running, start if not
-        if ! docker compose -f docker-compose.test.yml ps --format table | grep -q "Up"; then
+        if ! docker compose -f docker-compose.test.from.images.yml ps --format table | grep -q "Up"; then
           echo "Starting test environment..."
           task start-test-environment
           echo "0" > {{.TASKFILE_DIR}}/.test_keep_running
@@ -577,11 +577,64 @@ tasks:
       - |
         if [ "$(cat {{.TASKFILE_DIR}}/.test_keep_running 2>/dev/null || echo '0')" != "1" ]; then
           echo "Stopping test servers..."
-          docker compose -f docker-compose.test.yml down -v --remove-orphans
+          docker compose -f docker-compose.test.from.images.yml down -v --remove-orphans
         else
           echo "Test environment was already running, leaving servers running"
         fi
 
+  test-artillery-fuzzer:
+    desc: "Run all Artillery tests sequentially (SOLO=1 for single request per test)"
+    deps: [build-artillery]
+    env:
+      DOCKER_BUILDKIT: 1
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+      HOST_PROJECT_PATH: "/Users/dant/src/quiz"
+      ENVIRONMENT: "indocker"
+    cmds:
+      - |
+        # Check if test environment is running, start if not
+        if ! docker compose -f docker-compose.test.from.images.yml ps --format table | grep -q "Up"; then
+          echo "Starting test environment..."
+          task start-test-environment
+          echo "0" > {{.TASKFILE_DIR}}/.test_keep_running
+        else
+          echo "Test environment already running"
+          echo "1" > {{.TASKFILE_DIR}}/.test_keep_running
+        fi
+      - |
+        echo "Finding all Artillery test files..."
+        # Find all .yml files in artillery directory (excluding processors.js and Dockerfile)
+        TEST_FILES=$(find artillery -name "*.yml" -type f -path "artillery/fuzzer_tests/*" | sort)
+        if [ -z "$TEST_FILES" ]; then
+          echo "❌ No Artillery test files found in artillery/ directory"
+          exit 1
+        fi
+        echo "Found test files:"
+        echo "$TEST_FILES" | nl
+        echo ""
+        echo "Running all Artillery tests sequentially..."
+        COUNTER=1
+        for test_file in $TEST_FILES; do
+          if [ -n "$test_file" ]; then
+            echo "=== $COUNTER. $(basename "$test_file" .yml) ==="
+            CONFIG_FILE="/scripts/config.fuzzer.yaml"
+            echo "Config file: $CONFIG_FILE"
+            docker run --rm -it -v ${HOST_PROJECT_PATH}/artillery:/scripts \
+              -e NODE_OPTIONS="--no-deprecation" \
+              quiz-artillery \
+              artillery run -q --config "$CONFIG_FILE" -e ${ENVIRONMENT} "/scripts/$(basename "$(dirname "$test_file")")/$(basename "$test_file")"
+            echo ""
+            COUNTER=$((COUNTER + 1))
+          fi
+        done
+      - echo "✅ All Artillery tests completed!"
+      - |
+        if [ "$(cat {{.TASKFILE_DIR}}/.test_keep_running 2>/dev/null || echo '0')" != "1" ]; then
+          echo "Stopping test servers..."
+          docker compose -f docker-compose.test.from.images.yml down -v --remove-orphans
+        else
+          echo "Test environment was already running, leaving servers running"
+        fi
   test-artillery-all:
     desc: "Run all Artillery tests sequentially (SOLO=1 for single request per test)"
     deps: [build-artillery]
@@ -593,7 +646,7 @@ tasks:
     cmds:
       - |
         # Check if test environment is running, start if not
-        if ! docker compose -f docker-compose.test.yml ps --format table | grep -q "Up"; then
+        if ! docker compose -f docker-compose.test.from.images.yml ps --format table | grep -q "Up"; then
           echo "Starting test environment..."
           task start-test-environment
           echo "0" > {{.TASKFILE_DIR}}/.test_keep_running
@@ -634,7 +687,7 @@ tasks:
       - |
         if [ "$(cat {{.TASKFILE_DIR}}/.test_keep_running 2>/dev/null || echo '0')" != "1" ]; then
           echo "Stopping test servers..."
-          docker compose -f docker-compose.test.yml down -v --remove-orphans
+          docker compose -f docker-compose.test.from.images.yml down -v --remove-orphans
         else
           echo "Test environment was already running, leaving servers running"
         fi
