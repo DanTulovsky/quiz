@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   Container,
@@ -85,6 +85,10 @@ const MobileDailyPage: React.FC = () => {
     explanation?: string;
   } | null>(null);
 
+  // Refs for buttons to enable scrolling
+  const submitButtonRef = useRef<HTMLButtonElement>(null);
+  const nextButtonRef = useRef<HTMLButtonElement>(null);
+
   // TTS state for reading comprehension passages
   const {
     isLoading: isTTSLoading,
@@ -132,6 +136,16 @@ const MobileDailyPage: React.FC = () => {
   const handleTTSStop = () => {
     stopTTS();
   };
+
+  // Function to scroll to submit button (mobile only)
+  const scrollToSubmitButton = useCallback(() => {
+    if (submitButtonRef.current) {
+      submitButtonRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }
+  }, []);
 
   const { isAuthenticated } = useAuth();
 
@@ -237,6 +251,16 @@ const MobileDailyPage: React.FC = () => {
         correct_answer_index: response.correct_answer_index ?? 0,
         explanation: response.explanation,
       });
+
+      // Scroll to next question button after feedback is shown
+      setTimeout(() => {
+        if (nextButtonRef.current) {
+          nextButtonRef.current.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+          });
+        }
+      }, 300); // Delay to allow feedback animation to complete
     } catch (error) {
       console.error('Failed to submit answer:', error);
     }
@@ -456,9 +480,16 @@ const MobileDailyPage: React.FC = () => {
                           isIncorrect ? 'red' : isCorrect ? 'green' : undefined
                         }
                         size='lg'
-                        onClick={() =>
-                          !isSubmittedLocal && setSelectedAnswerLocal(index)
-                        }
+                        onClick={() => {
+                          if (!isSubmittedLocal) {
+                            setSelectedAnswerLocal(index);
+                            // Scroll to submit button in mobile view after a brief delay
+                            // to ensure the selection state has been updated
+                            setTimeout(() => {
+                              scrollToSubmitButton();
+                            }, 100);
+                          }
+                        }}
                         disabled={isSubmittedLocal}
                         fullWidth
                         justify='flex-start'
@@ -539,6 +570,7 @@ const MobileDailyPage: React.FC = () => {
         <Group grow>
           {!isSubmittedLocal ? (
             <Button
+              ref={submitButtonRef}
               variant='filled'
               onClick={handleAnswerSubmit}
               disabled={!canSubmit}
@@ -548,6 +580,7 @@ const MobileDailyPage: React.FC = () => {
             </Button>
           ) : (
             <Button
+              ref={nextButtonRef}
               variant='filled'
               onClick={handleNextQuestion}
               disabled={!hasNextQuestion}

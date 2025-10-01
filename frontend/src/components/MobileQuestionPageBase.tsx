@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuestion } from '../contexts/useQuestion';
 import { useQuestionUrlState } from '../hooks/useQuestionUrlState';
@@ -54,6 +54,10 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
   );
   const [isSubmittedLocal, setIsSubmittedLocal] = useState(false);
 
+  // Refs for buttons to enable scrolling
+  const submitButtonRef = useRef<HTMLButtonElement>(null);
+  const nextButtonRef = useRef<HTMLButtonElement>(null);
+
   // TTS state for reading comprehension passages
   const {
     isLoading: isTTSLoading,
@@ -83,6 +87,16 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
 
   const [isTransitioning, setIsTransitioning] = useState(false);
 
+  // Function to scroll to submit button (mobile only)
+  const scrollToSubmitButton = useCallback(() => {
+    if (submitButtonRef.current) {
+      submitButtonRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }
+  }, []);
+
   // Handle answer submission
   const handleAnswerSubmit = useCallback(async () => {
     if (!question || selectedAnswerLocal === null) return;
@@ -96,6 +110,16 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
       });
 
       setFeedback(response);
+
+      // Scroll to next question button after feedback is shown
+      setTimeout(() => {
+        if (nextButtonRef.current) {
+          nextButtonRef.current.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+          });
+        }
+      }, 300); // Delay to allow feedback animation to complete
     } catch (error) {
       console.error('Failed to submit answer:', error);
     }
@@ -414,9 +438,16 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
                     variant={isSelected ? 'filled' : 'light'}
                     color={isIncorrect ? 'red' : isCorrect ? 'green' : 'blue'}
                     size='lg'
-                    onClick={() =>
-                      !isSubmittedLocal && setSelectedAnswerLocal(index)
-                    }
+                    onClick={() => {
+                      if (!isSubmittedLocal) {
+                        setSelectedAnswerLocal(index);
+                        // Scroll to submit button in mobile view after a brief delay
+                        // to ensure the selection state has been updated
+                        setTimeout(() => {
+                          scrollToSubmitButton();
+                        }, 100);
+                      }
+                    }}
                     disabled={isSubmittedLocal}
                     fullWidth
                     justify='flex-start'
@@ -491,6 +522,7 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
         {/* Action Buttons */}
         {!isSubmittedLocal ? (
           <Button
+            ref={submitButtonRef}
             variant='filled'
             onClick={handleAnswerSubmit}
             disabled={!canSubmit}
@@ -501,6 +533,7 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
           </Button>
         ) : (
           <Button
+            ref={nextButtonRef}
             variant='filled'
             onClick={handleNextQuestion}
             loading={isTransitioning}
