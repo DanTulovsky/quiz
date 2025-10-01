@@ -18,17 +18,8 @@ RUN --mount=type=cache,id=quiz-backend-gomod,sharing=locked,target=/go/pkg/mod \
     go mod download
 
 # Install build dependencies for cgo (cached)
-# Install native and cross-compilation toolchains
 RUN --mount=type=cache,id=quiz-backend-apk,sharing=locked,target=/var/cache/apk \
-    apk add --no-cache --no-progress gcc musl-dev binutils-gold && \
-    case "$(uname -m)" in \
-        x86_64) \
-            apk add --no-cache --no-progress aarch64-none-elf-gcc aarch64-none-elf-binutils || true; \
-            ;; \
-        aarch64) \
-            apk add --no-cache --no-progress x86_64-none-elf-gcc x86_64-none-elf-binutils || true; \
-            ;; \
-    esac
+    apk add --no-cache --no-progress gcc musl-dev binutils-gold
 
 # Copy source code (excluding build artifacts via .dockerignore)
 COPY backend/cmd ./cmd
@@ -37,14 +28,6 @@ COPY backend/internal ./internal
 # Build the application with specific flags to reduce metadata resolution
 RUN --mount=type=cache,id=quiz-backend-gomod,sharing=locked,target=/go/pkg/mod \
     --mount=type=cache,id=quiz-backend-gobuild,sharing=locked,target=/root/.cache/go-build \
-    set -ex; \
-    BUILD_CC=gcc; \
-    if [ "$TARGETARCH" = "arm64" ] && [ "$(uname -m)" = "x86_64" ]; then \
-        BUILD_CC=aarch64-none-elf-gcc; \
-    elif [ "$TARGETARCH" = "amd64" ] && [ "$(uname -m)" = "aarch64" ]; then \
-        BUILD_CC=x86_64-none-elf-gcc; \
-    fi; \
-    CC=$BUILD_CC \
     CGO_ENABLED=1 \
     CGO_CFLAGS="-D_LARGEFILE64_SOURCE" \
     GOOS=${TARGETOS} \

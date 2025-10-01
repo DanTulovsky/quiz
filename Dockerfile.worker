@@ -28,14 +28,6 @@ COPY backend/internal ./internal
 # Build the worker application with specific flags to reduce metadata resolution
 RUN --mount=type=cache,id=quiz-worker-gomod,sharing=locked,target=/go/pkg/mod \
     --mount=type=cache,id=quiz-worker-gobuild,sharing=locked,target=/root/.cache/go-build \
-    set -ex; \
-    BUILD_CC=gcc; \
-    if [ "$TARGETARCH" = "arm64" ] && [ "$(uname -m)" = "x86_64" ]; then \
-        BUILD_CC=aarch64-none-elf-gcc; \
-    elif [ "$TARGETARCH" = "amd64" ] && [ "$(uname -m)" = "aarch64" ]; then \
-        BUILD_CC=x86_64-none-elf-gcc; \
-    fi; \
-    CC=$BUILD_CC \
     CGO_ENABLED=1 \
     CGO_CFLAGS="-D_LARGEFILE64_SOURCE" \
     GOOS=${TARGETOS} \
