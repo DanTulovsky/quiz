@@ -550,14 +550,6 @@ const MobileDailyPage: React.FC = () => {
 
         {/* Action Buttons */}
         <Group grow>
-          <Button
-            variant='light'
-            onClick={handlePrevQuestion}
-            disabled={!hasPreviousQuestion}
-          >
-            Previous
-          </Button>
-
           {!isSubmittedLocal ? (
             <Button
               variant='filled'
