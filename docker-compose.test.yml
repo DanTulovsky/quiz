@@ -32,7 +32,6 @@ services:
       args:
         BUILDKIT_INLINE_CACHE: 1
         TARGETOS: linux
-        TARGETARCH: amd64
       cache_from:
         - type=local,src=/tmp/.buildx-cache-backend
       cache_to:
@@ -92,7 +91,6 @@ services:
       args:
         BUILDKIT_INLINE_CACHE: 1
         TARGETOS: linux
-        TARGETARCH: amd64
       cache_from:
         - type=local,src=/tmp/.buildx-cache-worker
       cache_to:

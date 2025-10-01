@@ -26,7 +26,6 @@ services:
       args:
         BUILDKIT_INLINE_CACHE: 1
         TARGETOS: linux
-        TARGETARCH: amd64
         APP_VERSION: ${APP_VERSION}
         COMMIT_HASH: ${COMMIT_HASH}
         BUILD_TIME: ${BUILD_TIME}
@@ -102,7 +101,6 @@ services:
       args:
         BUILDKIT_INLINE_CACHE: 1
         TARGETOS: linux
-        TARGETARCH: amd64
         APP_VERSION: ${APP_VERSION}
         COMMIT_HASH: ${COMMIT_HASH}
         BUILD_TIME: ${BUILD_TIME}
