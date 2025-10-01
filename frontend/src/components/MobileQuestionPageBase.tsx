@@ -20,6 +20,7 @@ import {
   LoadingOverlay,
   Modal,
   Textarea,
+  Title,
 } from '@mantine/core';
 import { useAuth } from '../hooks/useAuth';
 import { IconCheck, IconX } from '@tabler/icons-react';
@@ -402,11 +403,13 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
             {/* For vocabulary, show sentence context */}
             {question.type === 'vocabulary' && question.content?.sentence && (
               <>
-                <Text size='sm' c='dimmed' fs='italic'>
+                {/* Make sentence larger and not italic to match desktop */}
+                <Title order={4} data-testid='vocab-sentence' mb={0}>
                   "{question.content.sentence}"
-                </Text>
-                <Text size='lg' fw={500}>
-                  {question.content?.question}
+                </Title>
+                {/* Prompt: What does X mean in this context? */}
+                <Text size='sm' c='dimmed' mt={-6} mb={8} style={{ fontWeight: 500 }}>
+                  What does <strong>{question.content.question}</strong> mean in this context?
                 </Text>
               </>
             )}
