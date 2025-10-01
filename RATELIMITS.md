@@ -74,7 +74,9 @@ limit_req zone=api_limit burst=15 nodelay;
 
 ### Test Environment
 
-In test environments (`docker-compose.test.yml`):
+In test environments, rate limiting can be controlled via the `ENABLE_RATELIMITS` environment variable:
+
+**Default behavior (rate limiting disabled for testing):**
 ```yaml
 volumes:
   - ./nginx/snippets/off:/etc/nginx/snippets:ro
@@ -84,6 +86,29 @@ The "off" snippets are empty files, effectively disabling rate limiting:
 ```nginx
 # nginx/snippets/off/ratelimit-api.inc
 # (empty file - no rate limiting)
+```
+
+**To enable rate limiting in tests:**
+```bash
+export ENABLE_RATELIMITS=true
+task start-test-environment-from-images
+```
+
+This will use `docker-compose.test.from.images.with.ratelimits.yml` which omits the volume mount, allowing the built-in "on" snippets from the frontend image to take effect.
+
+### Task Runner Integration
+
+The Taskfile automatically detects the `ENABLE_RATELIMITS` environment variable and uses the appropriate docker-compose file:
+
+```bash
+# Determine which compose file to use based on ENABLE_RATELIMITS
+COMPOSE_FILE="docker-compose.test.from.images.yml"
+if [ "${ENABLE_RATELIMITS:-false}" = "true" ]; then
+  COMPOSE_FILE="docker-compose.test.from.images.with.ratelimits.yml"
+  echo "🔒 Rate limiting enabled - using $COMPOSE_FILE"
+else
+  echo "🚫 Rate limiting disabled - using $COMPOSE_FILE"
+fi
 ```
 
 ## Files Involved

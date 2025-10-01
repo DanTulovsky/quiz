@@ -1,0 +1,180 @@
+name: quiz-test
+
+# Alternative cache configuration using registry (more reliable for concurrent builds):
+# cache_from:
+#   - type=registry,ref=your-registry.com/quiz:cache-backend
+# cache_to:
+#   - type=registry,ref=your-registry.com/quiz:cache-backend,mode=max
+
+services:
+  postgres-test:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=quiz_test_db
+      - POSTGRES_USER=quiz_user
+      - POSTGRES_PASSWORD=quiz_password
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    ports:
+      - "5433:5432"
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U quiz_user -d quiz_test_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  backend-test:
+    image: mrwetsnow/quiz-backend:${IMAGE_TAG:-latest}
+    ports:
+      - "8081:8080"
+    networks:
+      default:
+        aliases:
+          - backend
+    environment:
+      - START_WORKER_PAUSED=true
+      - SERVER_ADMIN_USERNAME=admin
+      - SERVER_ADMIN_PASSWORD=password
+      - GIN_MODE=test
+      - DATABASE_URL=postgres://quiz_user:quiz_password@postgres-test:5432/quiz_test_db?sslmode=disable
+      - SERVER_SESSION_SECRET=test_session_secret
+      - SERVER_PORT=8080
+      - HOST=0.0.0.0
+      - SERVER_DEBUG=true
+      - SERVER_LOG_LEVEL=debug
+      - IS_TEST=true
+      - SERVER_CORS_ORIGINS=${SERVER_CORS_ORIGINS:-http://localhost:3001,http://localhost:8082,http://host.docker.internal:3001}
+      - SERVER_WORKER_BASE_URL=http://localhost:8082
+      - GOOGLE_OAUTH_CLIENT_ID=${GOOGLE_OAUTH_CLIENT_ID}
+      - GOOGLE_OAUTH_CLIENT_SECRET=${GOOGLE_OAUTH_CLIENT_SECRET}
+      - GOOGLE_OAUTH_REDIRECT_URL=${GOOGLE_OAUTH_REDIRECT_URL:-http://localhost:3001/oauth-callback}
+      - QUIZ_CONFIG_FILE=/app/merged.config.yaml
+      - MIGRATIONS_PATH=file:///app/migrations
+      - OPEN_TELEMETRY_ENDPOINT=${OPEN_TELEMETRY_ENDPOINT:-otel-collector:4317}
+      - OPEN_TELEMETRY_SERVICE_NAME=${OPEN_TELEMETRY_SERVICE_NAME:-quiz-backend}
+      - OPEN_TELEMETRY_SERVICE_VERSION=${OPEN_TELEMETRY_SERVICE_VERSION:-test}
+      - OPEN_TELEMETRY_PROTOCOL=${OPEN_TELEMETRY_PROTOCOL:-grpc}
+      - OPEN_TELEMETRY_INSECURE=${OPEN_TELEMETRY_INSECURE:-true}
+      - OPEN_TELEMETRY_ENABLE_TRACING=${OPEN_TELEMETRY_ENABLE_TRACING:-true}
+      - OPEN_TELEMETRY_ENABLE_METRICS=${OPEN_TELEMETRY_ENABLE_METRICS:-true}
+      - OPEN_TELEMETRY_ENABLE_LOGGING=${OPEN_TELEMETRY_ENABLE_LOGGING:-true}
+      - OPEN_TELEMETRY_SAMPLING_RATE=${OPEN_TELEMETRY_SAMPLING_RATE:-1.0}
+      - OTEL_SEMCONV_STABILITY_OPT_IN=http/dup
+      - SWAGGER_FILE_PATH=/app/swagger.yaml
+    healthcheck:
+      test: ["CMD", "sh", "-c", "curl -f http://localhost:8080/health || wget --quiet --tries=1 --spider http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    depends_on:
+      postgres-test:
+        condition: service_healthy
+
+  worker-test:
+    image: mrwetsnow/quiz-worker:${IMAGE_TAG:-latest}
+    ports:
+      - 8082:8081
+    networks:
+      default:
+        aliases:
+          - worker
+    environment:
+      - START_WORKER_PAUSED=true
+      - GIN_MODE=test
+      - DATABASE_URL=postgres://quiz_user:quiz_password@postgres-test:5432/quiz_test_db?sslmode=disable
+      - SERVER_SESSION_SECRET=test_session_secret
+      - SERVER_PORT=8081
+      - HOST=0.0.0.0
+      - SERVER_DEBUG=true
+      - SERVER_LOG_LEVEL=debug
+      - IS_TEST=true
+      - SERVER_WORKER_PORT=${SERVER_WORKER_PORT:-8081}
+      - SERVER_BACKEND_BASE_URL=http://localhost:8081
+      - QUIZ_CONFIG_FILE=/app/merged.config.yaml
+      - MIGRATIONS_PATH=file:///app/migrations
+      - OPEN_TELEMETRY_ENDPOINT=${OPEN_TELEMETRY_ENDPOINT:-otel-collector:4317}
+      - OPEN_TELEMETRY_SERVICE_NAME=${OPEN_TELEMETRY_SERVICE_NAME:-quiz-worker}
+      - OPEN_TELEMETRY_SERVICE_VERSION=${OPEN_TELEMETRY_SERVICE_VERSION:-test}
+      - OPEN_TELEMETRY_PROTOCOL=${OPEN_TELEMETRY_PROTOCOL:-grpc}
+      - OPEN_TELEMETRY_INSECURE=${OPEN_TELEMETRY_INSECURE:-true}
+      - OPEN_TELEMETRY_ENABLE_TRACING=${OPEN_TELEMETRY_ENABLE_TRACING:-true}
+      - OPEN_TELEMETRY_ENABLE_METRICS=${OPEN_TELEMETRY_ENABLE_METRICS:-true}
+      - OPEN_TELEMETRY_ENABLE_LOGGING=${OPEN_TELEMETRY_ENABLE_LOGGING:-true}
+      - OPEN_TELEMETRY_SAMPLING_RATE=${OPEN_TELEMETRY_SAMPLING_RATE:-1.0}
+      - OTEL_SEMCONV_STABILITY_OPT_IN=http/dup
+    healthcheck:
+      test: ["CMD", "sh", "-c", "curl -f http://localhost:8081/v1/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    depends_on:
+      postgres-test:
+        condition: service_healthy
+
+  frontend-test:
+    image: mrwetsnow/quiz-frontend:${IMAGE_TAG:-latest}
+    ports:
+      - "${FRONTEND_PORT:-3001}:80"
+    depends_on:
+      backend-test:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  otel-collector-test:
+    image: otel/opentelemetry-collector-contrib
+    command: ["--config", "/etc/otel/config.yaml"]
+    restart: always
+    hostname: quiz
+    env_file:
+      - path: ./.env
+        required: true
+    environment:
+      - POSTGRES_HOST=${POSTGRES_HOST:-postgres}
+      - POSTGRES_PORT=${POSTGRES_PORT:-5432}
+      - POSTGRES_USER=${POSTGRES_USER:-quiz_user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-quiz_password}
+      - ENVIRONMENT=test
+    networks:
+      default:
+        aliases:
+          - otel-collector
+    volumes:
+      - ./otel-collector/config/config.docker.test.yaml:/etc/otel/config.yaml
+
+  tts-test:
+    container_name: openai-edge-tts-test
+    restart: unless-stopped
+    # Select image via TTS_IMAGE env var so platform-specific image can be used.
+    # Example in .env: TTS_IMAGE=travisvn/openai-edge-tts:latest
+    image: ${TTS_IMAGE:-mrwetsnow/openai-edge-tts:latest}
+    ports:
+      - '5051:5050'
+    env_file:
+      - .env
+    networks:
+      default:
+        aliases:
+          - tts
+    environment: # optionally define in -e argument when running docker command
+      API_KEY: ${TTS_API_KEY:-your_api_key_here}
+      PORT: ${TTS_PORT:-5050}
+      DEFAULT_VOICE: ${TTS_DEFAULT_VOICE:-echo}
+      DEFAULT_RESPONSE_FORMAT: ${TTS_DEFAULT_RESPONSE_FORMAT:-mp3}
+      DEFAULT_SPEED: ${TTS_DEFAULT_SPEED:-1.0}
+      DEFAULT_LANGUAGE: ${TTS_DEFAULT_LANGUAGE:-it-IT}
+      REQUIRE_API_KEY: ${TTS_REQUIRE_API_KEY:-False}
+      REMOVE_FILTER: ${TTS_REMOVE_FILTER:-False}
+      EXPAND_API: ${TTS_EXPAND_API:-True}
+      DETAILED_ERROR_LOGGING: ${TTS_DETAILED_ERROR_LOGGING:-True}
+
+networks:
+  default:
+    driver: bridge

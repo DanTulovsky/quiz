@@ -9,7 +9,7 @@ config:
       duration: 10
       name: "20 users/second for 10 seconds"
     - arrivalRate: 20
-      rampTo: 100
+      rampTo: 10000
       duration: 10
       name: "20 users/second to 100 users/second for 10 seconds"
     - arrivalCount: 1000
