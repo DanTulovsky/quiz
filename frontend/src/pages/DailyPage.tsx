@@ -330,6 +330,10 @@ const DailyPage: React.FC = () => {
         incorrect_count:
           currentQuestion.user_incorrect_count ??
           currentQuestion.question.incorrect_count,
+        user_total_responses: currentQuestion.user_total_responses,
+        user_correct_count: currentQuestion.user_correct_count,
+        user_incorrect_count: currentQuestion.user_incorrect_count,
+        user_shown_count: currentQuestion.user_shown_count,
       }
     : currentQuestion?.question;
 

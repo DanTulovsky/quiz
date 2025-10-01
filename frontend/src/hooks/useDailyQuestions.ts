@@ -217,6 +217,10 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
             queryKey: [`/v1/daily/progress/${selectedDate}`, user?.id],
           }),
           refetchDates(),
+          // Invalidate history for this specific question since its state changed
+          queryClient.invalidateQueries({
+            queryKey: [`/v1/daily/history/${questionId}`, user?.id],
+          }),
         ]);
 
         showNotificationWithClean({
@@ -285,6 +289,10 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
             queryKey: [`/v1/daily/progress/${selectedDate}`, user?.id],
           }),
           refetchDates(),
+          // Invalidate history for this specific question so it updates with the new answer
+          queryClient.invalidateQueries({
+            queryKey: [`/v1/daily/history/${questionId}`, user?.id],
+          }),
         ]);
 
         // Force refetch progress data

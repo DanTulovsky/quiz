@@ -790,7 +790,9 @@ func (s *DailyQuestionService) GetQuestionHistory(ctx context.Context, userID, q
 		FROM daily_question_assignments dqa
 		LEFT JOIN daily_assignment_responses dar ON dar.assignment_id = dqa.id
 		LEFT JOIN user_responses ur ON ur.id = dar.user_response_id
-		WHERE dqa.user_id = $1 AND dqa.question_id = $2 AND dqa.assignment_date >= NOW() - INTERVAL '` + fmt.Sprintf("%d days", days) + `'
+		WHERE dqa.user_id = $1 AND dqa.question_id = $2
+		AND dqa.assignment_date >= NOW() - INTERVAL '` + fmt.Sprintf("%d days", days) + `'
+		AND dqa.assignment_date <= CURRENT_DATE + INTERVAL '1 day'
 		ORDER BY dqa.assignment_date ASC
 	`
 

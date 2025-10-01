@@ -475,9 +475,20 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
       },
     });
 
-    // Fetch question history
+    // Get user from auth context for query key
+    const { user } = useAuth();
+
+    // Fetch question history - only for daily questions
     const { data: historyData, isLoading: isHistoryLoading } =
-      useGetV1DailyHistoryQuestionId(question.id);
+      useGetV1DailyHistoryQuestionId(
+        question.user_total_responses !== undefined ? question.id : 0,
+        {
+          enabled: question.user_total_responses !== undefined,
+          query: {
+            queryKey: [`/v1/daily/history/${question.id}`, user?.id],
+          },
+        }
+      );
 
     const handleReport = async () => {
       if (isReported || reportMutation.isPending || !question.id) return;
@@ -794,17 +805,25 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
       );
     };
 
-    // Always show all stats, defaulting to 0
+    // Prefer user-specific stats for daily questions, fall back to global stats
     const shown =
-      typeof question.total_responses === 'number'
-        ? question.total_responses
-        : 0;
+      typeof question.user_total_responses === 'number'
+        ? question.user_total_responses
+        : typeof question.total_responses === 'number'
+          ? question.total_responses
+          : 0;
     const correct =
-      typeof question.correct_count === 'number' ? question.correct_count : 0;
+      typeof question.user_correct_count === 'number'
+        ? question.user_correct_count
+        : typeof question.correct_count === 'number'
+          ? question.correct_count
+          : 0;
     const wrong =
-      typeof question.incorrect_count === 'number'
-        ? question.incorrect_count
-        : 0;
+      typeof question.user_incorrect_count === 'number'
+        ? question.user_incorrect_count
+        : typeof question.incorrect_count === 'number'
+          ? question.incorrect_count
+          : 0;
 
     return (
       <Box
@@ -1190,12 +1209,14 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
             </Group>
           )}
 
-          {/* Question history chart */}
-          <QuestionHistoryChart
-            history={historyData?.history || []}
-            isLoading={isHistoryLoading}
-            questionId={question.id}
-          />
+          {/* Question history chart - only show for daily questions */}
+          {question.user_total_responses !== undefined && (
+            <QuestionHistoryChart
+              history={historyData?.history || []}
+              isLoading={isHistoryLoading}
+              questionId={question.id}
+            />
+          )}
         </Box>
 
         {/* Fixed bottom row: report issue (left), stats (right) */}
