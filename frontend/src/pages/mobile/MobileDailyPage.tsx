@@ -147,7 +147,7 @@ const MobileDailyPage: React.FC = () => {
     }
   }, []);
 
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
 
   const handleReport = async () => {
     if (isReported || reportMutation.isPending || !currentQuestion?.question_id)
@@ -311,8 +311,12 @@ const MobileDailyPage: React.FC = () => {
                 Daily Challenge
               </Badge>
 
-              {/* Right side: date picker icon and question counter */}
+              {/* Right side: user level (right-justified), date picker and question counter */}
               <Group gap='sm' align='center'>
+                <Badge color='blue' variant='light' style={{ textTransform: 'uppercase' }}>
+                  {user?.current_level || 'A1'}
+                </Badge>
+
                 {/* Direct date picker - no intermediate popup */}
                 <DailyDatePicker
                   dropdownType='modal'
@@ -348,12 +352,13 @@ const MobileDailyPage: React.FC = () => {
         <Paper p='md' radius='md' withBorder>
           <Stack gap='md'>
             <Group justify='space-between'>
-              <Badge color='blue'>
-                {currentQuestion.question.language} -{' '}
-                {currentQuestion.question.level}
-              </Badge>
+              {/* Left side reserved for potential labels (kept empty for spacing) */}
 
-              {/* TTS button for reading comprehension */}
+              {/* Right side: show user language & level, and TTS button for reading comprehension */}
+              <Group align='center' spacing='sm'>
+                <Badge color='blue' variant='light' style={{ textTransform: 'uppercase' }}>
+                  {user?.preferred_language || 'italian'} - {user?.current_level || 'A1'}
+                </Badge>
               {currentQuestion.question.type === 'reading_comprehension' &&
                 currentQuestion.question.content?.passage && (
                   <Tooltip
