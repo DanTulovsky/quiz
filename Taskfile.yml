@@ -524,9 +524,10 @@ tasks:
         else
           echo "🚫 Rate limiting disabled - using $COMPOSE_FILE"
         fi
+
+        echo "Starting containers with $COMPOSE_FILE..."
         docker compose -f "$COMPOSE_FILE" up -d --build --wait
-      - |
-        # Use the same COMPOSE_FILE variable from above for health check
+
         if docker compose -f "$COMPOSE_FILE" ps --format table | grep -q "Up"; then
           echo "✅ All test containers started successfully"
         else
@@ -574,10 +575,10 @@ tasks:
         if ! docker compose -f "$COMPOSE_FILE" ps --format table | grep -q "Up"; then
           echo "Starting test environment..."
           task start-test-environment-from-images
-          echo "0" > .test_keep_running
+          echo "0" > {{.TASKFILE_DIR}}/.test_keep_running
         else
           echo "Test environment already running"
-          echo "1" > .test_keep_running
+          echo "1" > {{.TASKFILE_DIR}}/.test_keep_running
         fi
       - 'echo "Running Artillery test: {{.TEST_NAME}}"'
       - |
