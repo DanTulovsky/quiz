@@ -1,6 +1,8 @@
 # syntax=docker/dockerfile:1.6
 # Stage 1: Build the worker application
-FROM --platform=$BUILDPLATFORM golang:1.25-alpine3.22 AS builder
+# Note: Not using --platform=$BUILDPLATFORM because CGO cross-compilation requires
+# complex toolchain setup. Building natively per platform (ARM64 via QEMU on AMD64 runners).
+FROM golang:1.25-alpine3.22 AS builder
 
 # Add build arguments for better caching
 ARG BUILDKIT_INLINE_CACHE=1
