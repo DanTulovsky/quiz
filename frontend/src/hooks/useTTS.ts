@@ -125,11 +125,6 @@ export const useTTS = (): TTSHookReturn => {
       const existing = sharedInflight.get(key);
       if (existing) {
         try {
-          console.debug(
-            '[useTTS] prebuffer: waiting existing inflight',
-            key,
-            source
-          );
           await existing.promise;
         } finally {
           if (mountedRef.current) setIsBuffering(false);
@@ -138,7 +133,6 @@ export const useTTS = (): TTSHookReturn => {
       }
 
       const controller = new AbortController();
-      console.debug('[useTTS] prebuffer: start', key, source);
       const inflight = (async () => {
         let completedLocal = false;
         try {
@@ -243,7 +237,6 @@ export const useTTS = (): TTSHookReturn => {
               channelData,
               sampleRate: decoded.sampleRate,
             });
-            console.debug('[useTTS] prebuffer: decoded cached', key, source);
             if (mountedRef.current) setBufferingProgress(1);
             completedLocal = true;
           }
@@ -262,9 +255,6 @@ export const useTTS = (): TTSHookReturn => {
             sharedInflight.delete(key);
           if (mountedRef.current) setIsBuffering(false);
           if (!completedLocal && mountedRef.current) setBufferingProgress(0);
-          console.debug('[useTTS] prebuffer: finished', key, source, {
-            completed: completedLocal,
-          });
         }
       })();
 
@@ -433,7 +423,6 @@ export const useTTS = (): TTSHookReturn => {
       // Also clear any cached progress state for UI consumers
       if (mountedRef.current) setIsBuffering(false);
       if (mountedRef.current) setBufferingProgress(0);
-      console.debug('[useTTS] cancelPrebuffer', key);
     }
   }, []);
 
