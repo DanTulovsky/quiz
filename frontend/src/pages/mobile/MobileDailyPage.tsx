@@ -36,6 +36,27 @@ import {
 } from '../../api/api';
 import { showNotificationWithClean } from '../../notifications';
 
+// Highlight occurrences of target word within a sentence with bold styling.
+function highlightTargetWord(sentence: string, target: string) {
+  if (!target) return sentence;
+  const regex = new RegExp(`\\b${target.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')}\\b`, 'gi');
+  const parts = sentence.split(regex);
+  const matches = sentence.match(regex);
+  if (!matches) return sentence;
+  const result: React.ReactNode[] = [];
+  for (let i = 0; i < parts.length; i++) {
+    result.push(parts[i]);
+    if (i < matches.length) {
+      result.push(
+        <strong key={i} style={{ color: '#1976d2', fontWeight: 700 }}>
+          {matches[i]}
+        </strong>
+      );
+    }
+  }
+  return result;
+}
+
 const MobileDailyPage: React.FC = () => {
   const { date: dateParam } = useParams();
 
@@ -409,9 +430,38 @@ const MobileDailyPage: React.FC = () => {
                 </Paper>
               )}
 
-            <Text size='lg' fw={500}>
-              {currentQuestion.question.content?.question}
-            </Text>
+            {/* Vocabulary question: show sentence with highlighted target word */}
+            {currentQuestion.question.type === 'vocabulary' &&
+              (() => {
+                const { sentence, question: qWord } = currentQuestion.question.content || {};
+                if (sentence && qWord && sentence.trim() && qWord.trim()) {
+                  // If the sentence equals the target word, skip highlighting to keep text contiguous
+                  const shouldHighlight = sentence.trim().toLowerCase() !== qWord.trim().toLowerCase();
+                  return (
+                    <>
+                      <Text size='md' fw={500}>
+                        {shouldHighlight
+                          ? highlightTargetWord(sentence, qWord)
+                          : sentence}
+                      </Text>
+                      <Text size='lg' fw={500} mt={8}>
+                        {qWord}
+                      </Text>
+                      {shouldHighlight && (
+                        <Text size='sm' c='dimmed' mt={4}>
+                          What does <strong>{qWord}</strong> mean in this context?
+                        </Text>
+                      )}
+                    </>
+                  );
+                }
+                // Fallback: render question only
+                return (
+                  <Text size='lg' fw={500}>
+                    {qWord || ''}
+                  </Text>
+                );
+              })()}
 
             {/* Answer Options */}
             <Stack gap='sm'>
