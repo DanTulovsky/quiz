@@ -501,7 +501,7 @@ tasks:
 
   # --- Artillery API E2E Testing ---
 
-  start-test-environment:
+  start-test-environment-from-images:
     desc: "Start test servers and setup database for Artillery/E2E tests"
     deps: [stop-test-servers, clean-test]
     env:
