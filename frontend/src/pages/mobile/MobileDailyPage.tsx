@@ -83,6 +83,16 @@ const MobileDailyPage: React.FC = () => {
     setFeedbackLocal(null);
   }, [currentQuestion?.id]);
 
+  // Scroll to top when a new daily question is loaded (mobile)
+  useEffect(() => {
+    if (!currentQuestion?.id) return;
+    try {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (e) {
+      // ignore in non-browser environments
+    }
+  }, [currentQuestion?.id]);
+
   // TTS handler functions
   const handleTTSPlay = async (text: string) => {
     if (!text) return;
