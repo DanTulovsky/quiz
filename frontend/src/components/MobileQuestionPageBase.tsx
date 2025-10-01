@@ -136,7 +136,11 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
     if (isReported || reportMutation.isPending || !question?.id) return;
 
     if (!isAuthenticated) {
-      showNotificationWithClean({ title: 'Error', message: 'You must be logged in to report a question.', color: 'red' });
+      showNotificationWithClean({
+        title: 'Error',
+        message: 'You must be logged in to report a question.',
+        color: 'red',
+      });
       return;
     }
 
@@ -148,7 +152,10 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
 
     setIsReporting(true);
     try {
-      reportMutation.mutate({ id: question.id, data: { report_reason: reportReason } });
+      reportMutation.mutate({
+        id: question.id,
+        data: { report_reason: reportReason },
+      });
     } finally {
       setIsReporting(false);
     }
@@ -159,7 +166,10 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
 
     setIsMarkingKnown(true);
     try {
-      markKnownMutation.mutate({ id: question.id, data: { confidence_level: confidenceLevel } });
+      markKnownMutation.mutate({
+        id: question.id,
+        data: { confidence_level: confidenceLevel },
+      });
     } finally {
       setIsMarkingKnown(false);
     }
@@ -174,7 +184,8 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
         setReportReason('');
         showNotificationWithClean({
           title: 'Success',
-          message: 'Question reported successfully. Thank you for your feedback!',
+          message:
+            'Question reported successfully. Thank you for your feedback!',
           color: 'green',
         });
       },
@@ -195,12 +206,26 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
         const confidence = confidenceLevel;
         setConfidenceLevel(null);
         let message = 'Preference saved.';
-        if (confidence === 1) message = 'Saved with low confidence. You will see this question more often.';
-        if (confidence === 2) message = 'Saved with some confidence. You will see this question a bit more often.';
-        if (confidence === 3) message = 'Saved with neutral confidence. No change to how often you will see this question.';
-        if (confidence === 4) message = 'Saved with high confidence. You will see this question less often.';
-        if (confidence === 5) message = 'Saved with complete confidence. You will rarely see this question.';
-        showNotificationWithClean({ title: 'Success', message, color: 'green' });
+        if (confidence === 1)
+          message =
+            'Saved with low confidence. You will see this question more often.';
+        if (confidence === 2)
+          message =
+            'Saved with some confidence. You will see this question a bit more often.';
+        if (confidence === 3)
+          message =
+            'Saved with neutral confidence. No change to how often you will see this question.';
+        if (confidence === 4)
+          message =
+            'Saved with high confidence. You will see this question less often.';
+        if (confidence === 5)
+          message =
+            'Saved with complete confidence. You will rarely see this question.';
+        showNotificationWithClean({
+          title: 'Success',
+          message,
+          color: 'green',
+        });
       },
       onError: error => {
         showNotificationWithClean({
@@ -519,32 +544,106 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
         </Box>
 
         {/* Mark Known Modal */}
-        <Modal opened={showMarkKnownModal} onClose={() => setShowMarkKnownModal(false)} title='Adjust Question Frequency' size='sm' closeOnClickOutside={false} closeOnEscape={false}>
+        <Modal
+          opened={showMarkKnownModal}
+          onClose={() => setShowMarkKnownModal(false)}
+          title='Adjust Question Frequency'
+          size='sm'
+          closeOnClickOutside={false}
+          closeOnEscape={false}
+        >
           <Stack gap='md'>
-            <Text size='sm' c='dimmed'>Choose how often you want to see this question in future quizzes: 1–2 show it more, 3 no change, 4–5 show it less.</Text>
-            <Text size='sm' fw={500}>How confident are you about this question?</Text>
+            <Text size='sm' c='dimmed'>
+              Choose how often you want to see this question in future quizzes:
+              1–2 show it more, 3 no change, 4–5 show it less.
+            </Text>
+            <Text size='sm' fw={500}>
+              How confident are you about this question?
+            </Text>
             <Group gap='xs' justify='space-between'>
               {[1, 2, 3, 4, 5].map(level => (
-                <Button key={level} variant={confidenceLevel === level ? 'filled' : 'light'} color={confidenceLevel === level ? 'teal' : 'gray'} onClick={() => setConfidenceLevel(level)} style={{ flex: 1, minHeight: '56px' }} data-testid={`confidence-level-${level}`}>
+                <Button
+                  key={level}
+                  variant={confidenceLevel === level ? 'filled' : 'light'}
+                  color={confidenceLevel === level ? 'teal' : 'gray'}
+                  onClick={() => setConfidenceLevel(level)}
+                  style={{ flex: 1, minHeight: '56px' }}
+                  data-testid={`confidence-level-${level}`}
+                >
                   {level}
                 </Button>
               ))}
             </Group>
             <Group justify='space-between'>
-              <Button variant='subtle' onClick={() => { setShowMarkKnownModal(false); setConfidenceLevel(null); }} data-testid='cancel-mark-known'>Cancel</Button>
-              <Button onClick={handleMarkAsKnown} disabled={!confidenceLevel || isMarkingKnown} loading={isMarkingKnown} color='teal' data-testid='submit-mark-known'>Save</Button>
+              <Button
+                variant='subtle'
+                onClick={() => {
+                  setShowMarkKnownModal(false);
+                  setConfidenceLevel(null);
+                }}
+                data-testid='cancel-mark-known'
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleMarkAsKnown}
+                disabled={!confidenceLevel || isMarkingKnown}
+                loading={isMarkingKnown}
+                color='teal'
+                data-testid='submit-mark-known'
+              >
+                Save
+              </Button>
             </Group>
           </Stack>
         </Modal>
 
         {/* Report Modal */}
-        <Modal opened={showReportModal} onClose={() => { setShowReportModal(false); setReportReason(''); }} title='Report Issue with Question' size='sm' closeOnClickOutside={false} closeOnEscape={false}>
+        <Modal
+          opened={showReportModal}
+          onClose={() => {
+            setShowReportModal(false);
+            setReportReason('');
+          }}
+          title='Report Issue with Question'
+          size='sm'
+          closeOnClickOutside={false}
+          closeOnEscape={false}
+        >
           <Stack gap='md'>
-            <Text size='sm' c='dimmed'>Please let us know what's wrong with this question. Your feedback helps us improve the quality of our content.</Text>
-            <Textarea placeholder='Describe the issue (optional, max 512 characters)...' value={reportReason} onChange={e => setReportReason(e.target.value)} maxLength={512} minRows={4} data-testid='report-reason-input' id='report-reason-textarea' />
+            <Text size='sm' c='dimmed'>
+              Please let us know what's wrong with this question. Your feedback
+              helps us improve the quality of our content.
+            </Text>
+            <Textarea
+              placeholder='Describe the issue (optional, max 512 characters)...'
+              value={reportReason}
+              onChange={e => setReportReason(e.target.value)}
+              maxLength={512}
+              minRows={4}
+              data-testid='report-reason-input'
+              id='report-reason-textarea'
+            />
             <Group justify='space-between'>
-              <Button variant='subtle' onClick={() => { setShowReportModal(false); setReportReason(''); }} data-testid='cancel-report'>Cancel</Button>
-              <Button onClick={handleSubmitReport} disabled={isReporting} loading={isReporting} color='red' data-testid='submit-report'>Report Question</Button>
+              <Button
+                variant='subtle'
+                onClick={() => {
+                  setShowReportModal(false);
+                  setReportReason('');
+                }}
+                data-testid='cancel-report'
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSubmitReport}
+                disabled={isReporting}
+                loading={isReporting}
+                color='red'
+                data-testid='submit-report'
+              >
+                Report Question
+              </Button>
             </Group>
           </Stack>
         </Modal>

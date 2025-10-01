@@ -113,157 +113,153 @@ export const useTTS = (): TTSHookReturn => {
     setIsLoading(false);
   }, []);
 
-  const prebufferTTS = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async (text: string, voice?: string, _source: PrebufferSource = 'other') => {
-      if (!text) return;
-      const key = `${voice ?? ''}::${text}`;
-      if (sharedDecodedCache.has(key)) return;
+  const prebufferTTS = useCallback(async (text: string, voice?: string) => {
+    if (!text) return;
+    const key = `${voice ?? ''}::${text}`;
+    if (sharedDecodedCache.has(key)) return;
 
-      setIsBuffering(true);
+    setIsBuffering(true);
 
-      // If another component already started prebuffering the same key, wait for it.
-      const existing = sharedInflight.get(key);
-      if (existing) {
-        try {
-          await existing.promise;
-        } finally {
-          if (mountedRef.current) setIsBuffering(false);
-        }
-        return;
+    // If another component already started prebuffering the same key, wait for it.
+    const existing = sharedInflight.get(key);
+    if (existing) {
+      try {
+        await existing.promise;
+      } finally {
+        if (mountedRef.current) setIsBuffering(false);
       }
+      return;
+    }
 
-      const controller = new AbortController();
-      const inflight = (async () => {
-        let completedLocal = false;
-        try {
-          const response = await fetch('/v1/audio/speech', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              input: text,
-              voice: voice || 'echo',
-              model: 'tts-1',
-              stream_format: 'sse',
-            } as TTSRequest),
-            signal: controller.signal,
-          });
+    const controller = new AbortController();
+    const inflight = (async () => {
+      let completedLocal = false;
+      try {
+        const response = await fetch('/v1/audio/speech', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            input: text,
+            voice: voice || 'echo',
+            model: 'tts-1',
+            stream_format: 'sse',
+          } as TTSRequest),
+          signal: controller.signal,
+        });
 
-          if (!response.ok)
-            throw new Error(`TTS request failed: ${response.status}`);
+        if (!response.ok)
+          throw new Error(`TTS request failed: ${response.status}`);
 
-          const reader = response.body?.getReader();
-          if (!reader) throw new Error('No response body reader available');
-          const decoder = new TextDecoder();
+        const reader = response.body?.getReader();
+        if (!reader) throw new Error('No response body reader available');
+        const decoder = new TextDecoder();
 
-          const chunks: Uint8Array[] = [];
-          let bytes = 0;
+        const chunks: Uint8Array[] = [];
+        let bytes = 0;
 
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            const chunk = decoder.decode(value);
-            const lines = chunk.split('\n');
-            for (const line of lines) {
-              if (line.startsWith('data: ')) {
-                try {
-                  const rawParsed: unknown = JSON.parse(line.slice(6));
-                  if (
-                    rawParsed &&
-                    typeof rawParsed === 'object' &&
-                    !Array.isArray(rawParsed)
-                  ) {
-                    const obj = rawParsed as Record<string, unknown>;
-                    const type =
-                      typeof obj.type === 'string' ? obj.type : undefined;
-                    if (type === 'audio' || type === 'speech.audio.delta') {
-                      const b64 =
-                        typeof obj.audio === 'string' ? obj.audio : undefined;
-                      if (b64) {
-                        const binary = atob(b64);
-                        const bytesArr = new Uint8Array(binary.length);
-                        for (let i = 0; i < binary.length; i++)
-                          bytesArr[i] = binary.charCodeAt(i);
-                        chunks.push(bytesArr);
-                        bytes += bytesArr.byteLength;
-                        // update progress while buffering, capped to MIN_DECODE_BYTES
-                        try {
-                          const p = Math.min(bytes / MIN_DECODE_BYTES, 1);
-                          if (mountedRef.current) setBufferingProgress(p);
-                        } catch {
-                          // ignore
-                        }
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const chunk = decoder.decode(value);
+          const lines = chunk.split('\n');
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              try {
+                const rawParsed: unknown = JSON.parse(line.slice(6));
+                if (
+                  rawParsed &&
+                  typeof rawParsed === 'object' &&
+                  !Array.isArray(rawParsed)
+                ) {
+                  const obj = rawParsed as Record<string, unknown>;
+                  const type =
+                    typeof obj.type === 'string' ? obj.type : undefined;
+                  if (type === 'audio' || type === 'speech.audio.delta') {
+                    const b64 =
+                      typeof obj.audio === 'string' ? obj.audio : undefined;
+                    if (b64) {
+                      const binary = atob(b64);
+                      const bytesArr = new Uint8Array(binary.length);
+                      for (let i = 0; i < binary.length; i++)
+                        bytesArr[i] = binary.charCodeAt(i);
+                      chunks.push(bytesArr);
+                      bytes += bytesArr.byteLength;
+                      // update progress while buffering, capped to MIN_DECODE_BYTES
+                      try {
+                        const p = Math.min(bytes / MIN_DECODE_BYTES, 1);
+                        if (mountedRef.current) setBufferingProgress(p);
+                      } catch {
+                        // ignore
                       }
                     }
                   }
-                } catch {
-                  // ignore parse errors
                 }
+              } catch {
+                // ignore parse errors
               }
             }
           }
-
-          if (bytes > 0) {
-            const merged = new Uint8Array(bytes);
-            let off = 0;
-            for (const c of chunks) {
-              merged.set(c, off);
-              off += c.byteLength;
-            }
-            const ctx =
-              audioContextRef.current ||
-              new (window.AudioContext ||
-                (
-                  window as unknown as {
-                    webkitAudioContext: typeof AudioContext;
-                  }
-                ).webkitAudioContext)();
-            try {
-              if (!audioContextRef.current) audioContextRef.current = ctx;
-              await ctx.resume();
-            } catch {}
-
-            const decoded: AudioBuffer = await ctx.decodeAudioData(
-              merged.buffer.slice(0)
-            );
-            const ch = decoded.numberOfChannels;
-            const channelData: Float32Array[] = new Array(ch);
-            for (let i = 0; i < ch; i++) {
-              const src = decoded.getChannelData(i);
-              const copy = new Float32Array(src.length);
-              copy.set(src);
-              channelData[i] = copy;
-            }
-            sharedDecodedCache.set(key, {
-              channelData,
-              sampleRate: decoded.sampleRate,
-            });
-            if (mountedRef.current) setBufferingProgress(1);
-            completedLocal = true;
-          }
-        } catch (e) {
-          const name = (e as { name?: string })?.name || '';
-          const message = (e as { message?: string })?.message || '';
-          const isAbort =
-            name === 'AbortError' || /aborted|abort(ed)?/i.test(message || '');
-          if (!isAbort) {
-            logger.error('Prebuffer TTS error:', e);
-            throw e;
-          }
-        } finally {
-          // Clean up inflight entry
-          if (sharedInflight.get(key)?.controller === controller)
-            sharedInflight.delete(key);
-          if (mountedRef.current) setIsBuffering(false);
-          if (!completedLocal && mountedRef.current) setBufferingProgress(0);
         }
-      })();
 
-      sharedInflight.set(key, { promise: inflight, controller });
-      return inflight;
-    },
-    []
-  );
+        if (bytes > 0) {
+          const merged = new Uint8Array(bytes);
+          let off = 0;
+          for (const c of chunks) {
+            merged.set(c, off);
+            off += c.byteLength;
+          }
+          const ctx =
+            audioContextRef.current ||
+            new (window.AudioContext ||
+              (
+                window as unknown as {
+                  webkitAudioContext: typeof AudioContext;
+                }
+              ).webkitAudioContext)();
+          try {
+            if (!audioContextRef.current) audioContextRef.current = ctx;
+            await ctx.resume();
+          } catch {}
+
+          const decoded: AudioBuffer = await ctx.decodeAudioData(
+            merged.buffer.slice(0)
+          );
+          const ch = decoded.numberOfChannels;
+          const channelData: Float32Array[] = new Array(ch);
+          for (let i = 0; i < ch; i++) {
+            const src = decoded.getChannelData(i);
+            const copy = new Float32Array(src.length);
+            copy.set(src);
+            channelData[i] = copy;
+          }
+          sharedDecodedCache.set(key, {
+            channelData,
+            sampleRate: decoded.sampleRate,
+          });
+          if (mountedRef.current) setBufferingProgress(1);
+          completedLocal = true;
+        }
+      } catch (e) {
+        const name = (e as { name?: string })?.name || '';
+        const message = (e as { message?: string })?.message || '';
+        const isAbort =
+          name === 'AbortError' || /aborted|abort(ed)?/i.test(message || '');
+        if (!isAbort) {
+          logger.error('Prebuffer TTS error:', e);
+          throw e;
+        }
+      } finally {
+        // Clean up inflight entry
+        if (sharedInflight.get(key)?.controller === controller)
+          sharedInflight.delete(key);
+        if (mountedRef.current) setIsBuffering(false);
+        if (!completedLocal && mountedRef.current) setBufferingProgress(0);
+      }
+    })();
+
+    sharedInflight.set(key, { promise: inflight, controller });
+    return inflight;
+  }, []);
 
   const playTTS = useCallback(
     async (text: string, voice?: string) => {

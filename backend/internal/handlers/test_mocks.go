@@ -6,13 +6,13 @@ package handlers
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"strings"
 
 	"quizapp/internal/config"
 	"quizapp/internal/models"
 	"quizapp/internal/observability"
 	"quizapp/internal/services"
+	"quizapp/internal/utils/contextutils"
 )
 
 // MockAIService implements AIServiceInterface for testing
@@ -32,11 +32,11 @@ func (m *MockAIService) TestConnection(ctx context.Context, provider, model, api
 	if provider != "" && model != "" {
 		// If it's a test API key, return an error to simulate failure
 		if strings.Contains(apiKey, "test") || apiKey == "" {
-			return fmt.Errorf("invalid API key")
+			return contextutils.ErrorWithContextf("invalid API key")
 		}
 		return nil
 	}
-	return fmt.Errorf("missing provider or model")
+	return contextutils.ErrorWithContextf("missing provider or model")
 }
 
 // CallWithPrompt returns a mock response for AI fix requests, otherwise delegates to real service
@@ -78,21 +78,21 @@ func (m *MockAIService) GenerateQuestion(ctx context.Context, userConfig *servic
 	if m.realService != nil {
 		return m.realService.GenerateQuestion(ctx, userConfig, req)
 	}
-	return nil, fmt.Errorf("GenerateQuestion not implemented in mock")
+	return nil, contextutils.ErrorWithContextf("GenerateQuestion not implemented in mock")
 }
 
 func (m *MockAIService) GenerateQuestions(ctx context.Context, userConfig *services.UserAIConfig, req *models.AIQuestionGenRequest) ([]*models.Question, error) {
 	if m.realService != nil {
 		return m.realService.GenerateQuestions(ctx, userConfig, req)
 	}
-	return nil, fmt.Errorf("GenerateQuestions not implemented in mock")
+	return nil, contextutils.ErrorWithContextf("GenerateQuestions not implemented in mock")
 }
 
 func (m *MockAIService) GenerateQuestionsStream(ctx context.Context, userConfig *services.UserAIConfig, req *models.AIQuestionGenRequest, progress chan<- *models.Question, variety *services.VarietyElements) error {
 	if m.realService != nil {
 		return m.realService.GenerateQuestionsStream(ctx, userConfig, req, progress, variety)
 	}
-	return fmt.Errorf("GenerateQuestionsStream not implemented in mock")
+	return contextutils.ErrorWithContextf("GenerateQuestionsStream not implemented in mock")
 }
 
 func (m *MockAIService) GenerateChatResponse(ctx context.Context, userConfig *services.UserAIConfig, req *models.AIChatRequest) (string, error) {

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { screen } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import MobileDailyPage from '../MobileDailyPage';
 import { renderWithProviders } from '../../../test-utils';
 
@@ -14,7 +14,10 @@ vi.mock('../../../hooks/useAuth', () => ({
 // Mock tanstack-query mutation hooks used in component
 vi.mock('../../../api/api', () => ({
   usePostV1QuizQuestionIdReport: () => ({ mutate: vi.fn(), isPending: false }),
-  usePostV1QuizQuestionIdMarkKnown: () => ({ mutate: vi.fn(), isPending: false }),
+  usePostV1QuizQuestionIdMarkKnown: () => ({
+    mutate: vi.fn(),
+    isPending: false,
+  }),
 }));
 
 const mockSubmitAnswer = vi.fn();
@@ -130,16 +133,36 @@ describe('MobileDailyPage', () => {
     ).toBeInTheDocument();
   });
 
-  it('shows previous and next navigation', () => {
+  it('shows submit and next navigation', () => {
     renderComponent();
     expect(
-      screen.getByRole('button', { name: /Previous/i })
+      screen.getByRole('button', { name: /Submit Answer/i })
     ).toBeInTheDocument();
   });
 
-  it('disables Previous button when no previous question', () => {
+  it('shows next button after submitting answer', () => {
     renderComponent();
-    const previousButton = screen.getByRole('button', { name: /Previous/i });
-    expect(previousButton).toBeDisabled();
+
+    // First select an answer option (look for Italian answer options)
+    const answerOptions = screen.getAllByRole('button');
+    const answerButton = answerOptions.find(
+      button =>
+        button.textContent &&
+        ['Bene', 'Male', 'Così così', 'Benissimo'].includes(
+          button.textContent.trim()
+        )
+    );
+
+    if (answerButton) {
+      fireEvent.click(answerButton);
+    }
+
+    // Now submit the answer
+    const submitButton = screen.getByRole('button', { name: /Submit Answer/i });
+    fireEvent.click(submitButton);
+
+    expect(
+      screen.getByRole('button', { name: /Next Question/i })
+    ).toBeInTheDocument();
   });
 });

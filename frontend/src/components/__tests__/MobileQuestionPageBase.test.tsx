@@ -67,7 +67,10 @@ vi.mock('../../api/api', () => ({
   ),
   // Add mocks for tanstack-query mutation hooks used in component
   usePostV1QuizQuestionIdReport: () => ({ mutate: vi.fn(), isPending: false }),
-  usePostV1QuizQuestionIdMarkKnown: () => ({ mutate: vi.fn(), isPending: false }),
+  usePostV1QuizQuestionIdMarkKnown: () => ({
+    mutate: vi.fn(),
+    isPending: false,
+  }),
 }));
 
 const renderComponent = (mode: 'quiz' | 'reading' | 'vocabulary') => {

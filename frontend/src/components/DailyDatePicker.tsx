@@ -17,6 +17,7 @@ interface DailyDatePickerProps {
   withCellSpacing?: boolean;
   firstDayOfWeek?: number;
   isAdminMode?: boolean;
+  dropdownType?: 'popover' | 'modal';
 }
 
 const DailyDatePicker: React.FC<DailyDatePickerProps> = ({
@@ -33,6 +34,7 @@ const DailyDatePicker: React.FC<DailyDatePickerProps> = ({
   withCellSpacing = false,
   firstDayOfWeek = 1,
   isAdminMode = false,
+  dropdownType = 'popover',
 }) => {
   const theme = useMantineTheme();
 
@@ -132,8 +134,8 @@ const DailyDatePicker: React.FC<DailyDatePickerProps> = ({
       hideOutsideDates={hideOutsideDates}
       withCellSpacing={withCellSpacing}
       firstDayOfWeek={firstDayOfWeek as 1}
+      dropdownType={dropdownType}
       presets={[{ value: formatDateForAPI(new Date()), label: 'Today' }]}
-      presetsPlacement='bottom'
       getDayProps={getDayProps}
     />
   );

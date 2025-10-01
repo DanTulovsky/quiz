@@ -1,6 +1,5 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { parseLocalDateString } from '../../utils/time';
 import {
   Container,
   Paper,
@@ -10,7 +9,6 @@ import {
   Group,
   Badge,
   ActionIcon,
-  Popover,
   Alert,
   Loader,
   Center,
@@ -22,10 +20,9 @@ import {
   Textarea,
 } from '@mantine/core';
 import { useAuth } from '../../hooks/useAuth';
-import { IconCheck, IconX, IconCalendar } from '@tabler/icons-react';
+import { IconCheck, IconX } from '@tabler/icons-react';
 import { Volume2, VolumeX } from 'lucide-react';
 import { useDailyQuestions } from '../../hooks/useDailyQuestions';
-import { useDisclosure } from '@mantine/hooks';
 import DailyDatePicker from '../../components/DailyDatePicker';
 import { useMantineTheme } from '@mantine/core';
 import { useTTS } from '../../hooks/useTTS';
@@ -39,7 +36,10 @@ import { showNotificationWithClean } from '../../notifications';
 // Highlight occurrences of target word within a sentence with bold styling.
 function highlightTargetWord(sentence: string, target: string) {
   if (!target) return sentence;
-  const regex = new RegExp(`\\b${target.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')}\\b`, 'gi');
+  const regex = new RegExp(
+    `\\b${target.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')}\\b`,
+    'gi'
+  );
   const parts = sentence.split(regex);
   const matches = sentence.match(regex);
   if (!matches) return sentence;
@@ -66,19 +66,13 @@ const MobileDailyPage: React.FC = () => {
     currentQuestion,
     submitAnswer,
     goToNextQuestion,
-    goToPreviousQuestion,
     hasNextQuestion,
-    hasPreviousQuestion,
     isLoading,
     isSubmittingAnswer,
     currentQuestionIndex,
     questions,
     availableDates,
   } = useDailyQuestions();
-
-  // Popover control for date picker
-  const [pickerOpened, { toggle: togglePicker, close: closePicker }] =
-    useDisclosure(false);
 
   // Local UI state
   const [selectedAnswerLocal, setSelectedAnswerLocal] = useState<number | null>(
@@ -142,16 +136,20 @@ const MobileDailyPage: React.FC = () => {
   const { isAuthenticated } = useAuth();
 
   const handleReport = async () => {
-    if (isReported || reportMutation.isPending || !currentQuestion?.question_id) return;
+    if (isReported || reportMutation.isPending || !currentQuestion?.question_id)
+      return;
 
     if (!isAuthenticated) {
-      showNotificationWithClean({ title: 'Error', message: 'You must be logged in to report a question.', color: 'red' });
+      showNotificationWithClean({
+        title: 'Error',
+        message: 'You must be logged in to report a question.',
+        color: 'red',
+      });
       return;
     }
 
     setShowReportModal(true);
   };
-
 
   // Reporting & mark-known state (mobile parity)
   const [isReported, setIsReported] = useState(false);
@@ -168,10 +166,19 @@ const MobileDailyPage: React.FC = () => {
         setIsReported(true);
         setShowReportModal(false);
         setReportReason('');
-        showNotificationWithClean({ title: 'Success', message: 'Question reported successfully. Thank you for your feedback!', color: 'green' });
+        showNotificationWithClean({
+          title: 'Success',
+          message:
+            'Question reported successfully. Thank you for your feedback!',
+          color: 'green',
+        });
       },
       onError: error => {
-        showNotificationWithClean({ title: 'Error', message: error?.error || 'Failed to report question.', color: 'red' });
+        showNotificationWithClean({
+          title: 'Error',
+          message: error?.error || 'Failed to report question.',
+          color: 'red',
+        });
       },
     },
   });
@@ -183,15 +190,33 @@ const MobileDailyPage: React.FC = () => {
         const confidence = confidenceLevel;
         setConfidenceLevel(null);
         let message = 'Preference saved.';
-        if (confidence === 1) message = 'Saved with low confidence. You will see this question more often.';
-        if (confidence === 2) message = 'Saved with some confidence. You will see this question a bit more often.';
-        if (confidence === 3) message = 'Saved with neutral confidence. No change to how often you will see this question.';
-        if (confidence === 4) message = 'Saved with high confidence. You will see this question less often.';
-        if (confidence === 5) message = 'Saved with complete confidence. You will rarely see this question.';
-        showNotificationWithClean({ title: 'Success', message, color: 'green' });
+        if (confidence === 1)
+          message =
+            'Saved with low confidence. You will see this question more often.';
+        if (confidence === 2)
+          message =
+            'Saved with some confidence. You will see this question a bit more often.';
+        if (confidence === 3)
+          message =
+            'Saved with neutral confidence. No change to how often you will see this question.';
+        if (confidence === 4)
+          message =
+            'Saved with high confidence. You will see this question less often.';
+        if (confidence === 5)
+          message =
+            'Saved with complete confidence. You will rarely see this question.';
+        showNotificationWithClean({
+          title: 'Success',
+          message,
+          color: 'green',
+        });
       },
       onError: error => {
-        showNotificationWithClean({ title: 'Error', message: error?.error || 'Failed to mark question as known.', color: 'red' });
+        showNotificationWithClean({
+          title: 'Error',
+          message: error?.error || 'Failed to mark question as known.',
+          color: 'red',
+        });
       },
     },
   });
@@ -207,7 +232,11 @@ const MobileDailyPage: React.FC = () => {
         currentQuestion.question_id,
         selectedAnswerLocal
       );
-      setFeedbackLocal(response);
+      setFeedbackLocal({
+        is_correct: response.is_correct ?? false,
+        correct_answer_index: response.correct_answer_index ?? 0,
+        explanation: response.explanation,
+      });
     } catch (error) {
       console.error('Failed to submit answer:', error);
     }
@@ -220,14 +249,6 @@ const MobileDailyPage: React.FC = () => {
     setFeedbackLocal(null);
     goToNextQuestion();
   }, [goToNextQuestion]);
-
-  // Handle previous question
-  const handlePrevQuestion = useCallback(() => {
-    setSelectedAnswerLocal(null);
-    setIsSubmittedLocal(false);
-    setFeedbackLocal(null);
-    goToPreviousQuestion();
-  }, [goToPreviousQuestion]);
 
   if (isLoading && !currentQuestion) {
     return (
@@ -268,64 +289,26 @@ const MobileDailyPage: React.FC = () => {
 
               {/* Right side: date picker icon and question counter */}
               <Group gap='sm' align='center'>
-                {/* Date picker popover */}
-                <Popover
-                  opened={pickerOpened}
-                  onChange={opened => {
-                    if (!opened) closePicker();
+                {/* Direct date picker - no intermediate popup */}
+                <DailyDatePicker
+                  dropdownType='modal'
+                  selectedDate={selectedDate}
+                  onDateSelect={date => {
+                    if (date) {
+                      setSelectedDate(date);
+                    }
                   }}
-                  closeOnClickOutside={false}
-                  position='bottom'
-                  offset={4}
-                >
-                  <Popover.Target>
-                    <ActionIcon
-                      variant='light'
-                      size='lg'
-                      onClick={togglePicker}
-                      style={{ position: 'relative', padding: 6 }}
-                      aria-label='Select date'
-                    >
-                      <IconCalendar size={18} />
-                      {selectedDate && (
-                        <Badge
-                          size='xs'
-                          color='blue'
-                          variant='filled'
-                          style={{
-                            position: 'absolute',
-                            top: -2,
-                            right: -2,
-                            transform: 'scale(0.75)',
-                            pointerEvents: 'none',
-                          }}
-                        >
-                          {parseLocalDateString(selectedDate).getDate()}
-                        </Badge>
-                      )}
-                    </ActionIcon>
-                  </Popover.Target>
-
-                  <Popover.Dropdown p={0}>
-                    <DailyDatePicker
-                      dropdownType='modal'
-                      selectedDate={selectedDate}
-                      onDateSelect={date => {
-                        if (date) {
-                          setSelectedDate(date);
-                          closePicker();
-                        }
-                      }}
-                      availableDates={availableDates}
-                      maxDate={new Date()}
-                      size='sm'
-                      clearable={false}
-                      hideOutsideDates
-                      withCellSpacing={false}
-                      firstDayOfWeek={1}
-                    />
-                  </Popover.Dropdown>
-                </Popover>
+                  availableDates={availableDates}
+                  maxDate={new Date()}
+                  size='xs'
+                  clearable={false}
+                  hideOutsideDates
+                  withCellSpacing={false}
+                  firstDayOfWeek={1}
+                  style={{
+                    width: '180px',
+                  }}
+                />
 
                 <Badge variant='outline'>
                   {currentQuestionIndex + 1} of {questions.length}
@@ -414,10 +397,13 @@ const MobileDailyPage: React.FC = () => {
             {/* Vocabulary question: show sentence with highlighted target word */}
             {currentQuestion.question.type === 'vocabulary' &&
               (() => {
-                const { sentence, question: qWord } = currentQuestion.question.content || {};
+                const { sentence, question: qWord } =
+                  currentQuestion.question.content || {};
                 if (sentence && qWord && sentence.trim() && qWord.trim()) {
                   // If the sentence equals the target word, skip highlighting to keep text contiguous
-                  const shouldHighlight = sentence.trim().toLowerCase() !== qWord.trim().toLowerCase();
+                  const shouldHighlight =
+                    sentence.trim().toLowerCase() !==
+                    qWord.trim().toLowerCase();
                   return (
                     <>
                       <Text size='md' fw={500}>
@@ -430,7 +416,8 @@ const MobileDailyPage: React.FC = () => {
                       </Text>
                       {shouldHighlight && (
                         <Text size='sm' c='dimmed' mt={4}>
-                          What does <strong>{qWord}</strong> mean in this context?
+                          What does <strong>{qWord}</strong> mean in this
+                          context?
                         </Text>
                       )}
                     </>
@@ -579,41 +566,146 @@ const MobileDailyPage: React.FC = () => {
           }}
         >
           <Group justify='space-between' gap='xs'>
-            <Button onClick={() => handleReport()} disabled={isReported || reportMutation.isPending} variant='subtle' color='gray' size='xs' data-testid='report-question-btn' style={{ flex: 1 }}>
+            <Button
+              onClick={() => handleReport()}
+              disabled={isReported || reportMutation.isPending}
+              variant='subtle'
+              color='gray'
+              size='xs'
+              data-testid='report-question-btn'
+              style={{ flex: 1 }}
+            >
               {isReported ? 'Reported' : 'Report issue'}
             </Button>
 
-            <Button onClick={() => setShowMarkKnownModal(true)} variant='subtle' color='gray' size='xs' data-testid='mark-known-btn' style={{ flex: 1 }}>Adjust frequency</Button>
+            <Button
+              onClick={() => setShowMarkKnownModal(true)}
+              variant='subtle'
+              color='gray'
+              size='xs'
+              data-testid='mark-known-btn'
+              style={{ flex: 1 }}
+            >
+              Adjust frequency
+            </Button>
           </Group>
         </Box>
 
         {/* Mark Known Modal */}
-        <Modal opened={showMarkKnownModal} onClose={() => setShowMarkKnownModal(false)} title='Adjust Question Frequency' size='sm' closeOnClickOutside={false} closeOnEscape={false}>
+        <Modal
+          opened={showMarkKnownModal}
+          onClose={() => setShowMarkKnownModal(false)}
+          title='Adjust Question Frequency'
+          size='sm'
+          closeOnClickOutside={false}
+          closeOnEscape={false}
+        >
           <Stack gap='md'>
-            <Text size='sm' c='dimmed'>Choose how often you want to see this question in future quizzes: 1–2 show it more, 3 no change, 4–5 show it less.</Text>
-            <Text size='sm' fw={500}>How confident are you about this question?</Text>
+            <Text size='sm' c='dimmed'>
+              Choose how often you want to see this question in future quizzes:
+              1–2 show it more, 3 no change, 4–5 show it less.
+            </Text>
+            <Text size='sm' fw={500}>
+              How confident are you about this question?
+            </Text>
             <Group gap='xs' justify='space-between'>
               {[1, 2, 3, 4, 5].map(level => (
-                <Button key={level} variant={confidenceLevel === level ? 'filled' : 'light'} color={confidenceLevel === level ? 'teal' : 'gray'} onClick={() => setConfidenceLevel(level)} style={{ flex: 1, minHeight: '56px' }} data-testid={`confidence-level-${level}`}>
+                <Button
+                  key={level}
+                  variant={confidenceLevel === level ? 'filled' : 'light'}
+                  color={confidenceLevel === level ? 'teal' : 'gray'}
+                  onClick={() => setConfidenceLevel(level)}
+                  style={{ flex: 1, minHeight: '56px' }}
+                  data-testid={`confidence-level-${level}`}
+                >
                   {level}
                 </Button>
               ))}
             </Group>
             <Group justify='space-between'>
-              <Button variant='subtle' onClick={() => { setShowMarkKnownModal(false); setConfidenceLevel(null); }} data-testid='cancel-mark-known'>Cancel</Button>
-              <Button onClick={() => { if (!currentQuestion?.question_id || !confidenceLevel) return; setIsMarkingKnown(true); markKnownMutation.mutate({ id: currentQuestion.question_id, data: { confidence_level: confidenceLevel } }); }} disabled={!confidenceLevel} loading={isMarkingKnown} color='teal' data-testid='submit-mark-known'>Save</Button>
+              <Button
+                variant='subtle'
+                onClick={() => {
+                  setShowMarkKnownModal(false);
+                  setConfidenceLevel(null);
+                }}
+                data-testid='cancel-mark-known'
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => {
+                  if (!currentQuestion?.question_id || !confidenceLevel) return;
+                  setIsMarkingKnown(true);
+                  markKnownMutation.mutate({
+                    id: currentQuestion.question_id,
+                    data: { confidence_level: confidenceLevel },
+                  });
+                }}
+                disabled={!confidenceLevel}
+                loading={isMarkingKnown}
+                color='teal'
+                data-testid='submit-mark-known'
+              >
+                Save
+              </Button>
             </Group>
           </Stack>
         </Modal>
 
         {/* Report Modal */}
-        <Modal opened={showReportModal} onClose={() => { setShowReportModal(false); setReportReason(''); }} title='Report Issue with Question' size='sm' closeOnClickOutside={false} closeOnEscape={false}>
+        <Modal
+          opened={showReportModal}
+          onClose={() => {
+            setShowReportModal(false);
+            setReportReason('');
+          }}
+          title='Report Issue with Question'
+          size='sm'
+          closeOnClickOutside={false}
+          closeOnEscape={false}
+        >
           <Stack gap='md'>
-            <Text size='sm' c='dimmed'>Please let us know what's wrong with this question. Your feedback helps us improve the quality of our content.</Text>
-            <Textarea placeholder='Describe the issue (optional, max 512 characters)...' value={reportReason} onChange={e => setReportReason(e.target.value)} maxLength={512} minRows={4} data-testid='report-reason-input' id='report-reason-textarea' />
+            <Text size='sm' c='dimmed'>
+              Please let us know what's wrong with this question. Your feedback
+              helps us improve the quality of our content.
+            </Text>
+            <Textarea
+              placeholder='Describe the issue (optional, max 512 characters)...'
+              value={reportReason}
+              onChange={e => setReportReason(e.target.value)}
+              maxLength={512}
+              minRows={4}
+              data-testid='report-reason-input'
+              id='report-reason-textarea'
+            />
             <Group justify='space-between'>
-              <Button variant='subtle' onClick={() => { setShowReportModal(false); setReportReason(''); }} data-testid='cancel-report'>Cancel</Button>
-              <Button onClick={() => { if (!currentQuestion?.question_id) return; setIsReporting(true); reportMutation.mutate({ id: currentQuestion.question_id, data: { report_reason: reportReason } }); }} disabled={isReporting} loading={isReporting} color='red' data-testid='submit-report'>Report Question</Button>
+              <Button
+                variant='subtle'
+                onClick={() => {
+                  setShowReportModal(false);
+                  setReportReason('');
+                }}
+                data-testid='cancel-report'
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => {
+                  if (!currentQuestion?.question_id) return;
+                  setIsReporting(true);
+                  reportMutation.mutate({
+                    id: currentQuestion.question_id,
+                    data: { report_reason: reportReason },
+                  });
+                }}
+                disabled={isReporting}
+                loading={isReporting}
+                color='red'
+                data-testid='submit-report'
+              >
+                Report Question
+              </Button>
             </Group>
           </Stack>
         </Modal>
