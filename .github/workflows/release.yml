@@ -10,13 +10,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-permissions:
-  contents: read
-  actions: write
-
 jobs:
-  test:
-    runs-on: ubuntu-24.04
+  release:
+    runs-on: ubuntu-24.04-arm
 
     steps:
     - name: Checkout code
@@ -46,33 +42,6 @@ jobs:
       with:
         tts-image: ${{ vars.TTS_IMAGE }}
 
-  release:
-    runs-on: ubuntu-24.04-arm
-    needs: test
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0 # Full history for version calculation
-
-    - name: Create .env from secret
-      run: |
-        if [ -n "$DOT_ENV_FILE_FOR_RELEASE" ]; then
-          echo "Writing .env from DOT_ENV_FILE_FOR_RELEASE secret..."
-          printf '%s\n' "$DOT_ENV_FILE_FOR_RELEASE" > .env
-          ls -la .env
-        else
-          echo "DOT_ENV_FILE_FOR_RELEASE secret is empty or not set; skipping .env creation."
-        fi
-      env:
-        DOT_ENV_FILE_FOR_RELEASE: ${{ secrets.DOT_ENV_FILE_FOR_RELEASE }}
-
-    - name: Setup Environment
-      uses: ./.github/actions/setup-environment
-      with:
-        enable-docker: 'true'
-
     - name: Login to Docker Hub
       uses: docker/login-action@v3
       with:
@@ -85,6 +54,7 @@ jobs:
 
         # Set up environment variables
         export SHELL=/bin/bash
+        # Because I need to creeate one image with both amd64 and arm64
         export TTS_IMAGE=${{ vars.TTS_IMAGE }}
 
         # Run the complete release process
