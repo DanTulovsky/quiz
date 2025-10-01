@@ -600,7 +600,7 @@ tasks:
       - |
         echo "Finding all Artillery test files..."
         # Find all .yml files in artillery directory (excluding processors.js and Dockerfile)
-        TEST_FILES=$(find artillery -name "*.yml" -type f -path "artillery/tests/*" | sort)
+        TEST_FILES=$(find artillery -name "*.yml" -type f -path "artillery/*tests/*" | sort)
         if [ -z "$TEST_FILES" ]; then
           echo "❌ No Artillery test files found in artillery/ directory"
           exit 1
@@ -616,7 +616,7 @@ tasks:
             docker run --rm -it -v ${HOST_PROJECT_PATH}/artillery:/scripts \
               -e NODE_OPTIONS="--no-deprecation" \
               quiz-artillery \
-              artillery run -q --config /scripts/config.yaml -e ${ENVIRONMENT} "/scripts/tests/$(basename "$test_file")"
+              artillery run -q --config /scripts/config.yaml -e ${ENVIRONMENT} "/scripts/$(basename "$(dirname "$test_file")")/$(basename "$test_file")"
             echo ""
             COUNTER=$((COUNTER + 1))
           fi
