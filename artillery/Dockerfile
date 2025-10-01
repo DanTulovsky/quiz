@@ -1,7 +1,7 @@
-FROM node:18-alpine
+FROM node:24-alpine
 
-# Install Artillery globally
-RUN npm install -g artillery
+# Install Artillery globally (latest version compatible with Node 22)
+RUN npm install -g artillery@latest
 
 # Install Artillery plugins
 RUN npm install -g artillery-plugin-fuzzer
