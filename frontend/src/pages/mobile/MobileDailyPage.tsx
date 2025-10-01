@@ -17,7 +17,11 @@ import {
   Progress,
   Tooltip,
   LoadingOverlay,
+  Box,
+  Modal,
+  Textarea,
 } from '@mantine/core';
+import { useAuth } from '../../hooks/useAuth';
 import { IconCheck, IconX, IconCalendar } from '@tabler/icons-react';
 import { Volume2, VolumeX } from 'lucide-react';
 import { useDailyQuestions } from '../../hooks/useDailyQuestions';
@@ -26,6 +30,11 @@ import DailyDatePicker from '../../components/DailyDatePicker';
 import { useMantineTheme } from '@mantine/core';
 import { useTTS } from '../../hooks/useTTS';
 import { defaultVoiceForLanguage } from '../../utils/tts';
+import {
+  usePostV1QuizQuestionIdReport,
+  usePostV1QuizQuestionIdMarkKnown,
+} from '../../api/api';
+import { showNotificationWithClean } from '../../notifications';
 
 const MobileDailyPage: React.FC = () => {
   const { date: dateParam } = useParams();
@@ -108,6 +117,82 @@ const MobileDailyPage: React.FC = () => {
   const handleTTSStop = () => {
     stopTTS();
   };
+
+  const { isAuthenticated } = useAuth();
+
+  const handleReport = async () => {
+    if (isReported || reportMutation.isPending || !currentQuestion?.question_id) return;
+
+    if (!isAuthenticated) {
+      showNotificationWithClean({ title: 'Error', message: 'You must be logged in to report a question.', color: 'red' });
+      return;
+    }
+
+    setShowReportModal(true);
+  };
+
+  const handleSubmitReport = async () => {
+    if (!currentQuestion?.question_id) return;
+    setIsReporting(true);
+    try {
+      reportMutation.mutate({ id: currentQuestion.question_id, data: { report_reason: reportReason } });
+    } finally {
+      setIsReporting(false);
+    }
+  };
+
+  const handleMarkAsKnown = async () => {
+    if (!currentQuestion?.question_id || !confidenceLevel) return;
+    setIsMarkingKnown(true);
+    try {
+      markKnownMutation.mutate({ id: currentQuestion.question_id, data: { confidence_level: confidenceLevel } });
+    } finally {
+      setIsMarkingKnown(false);
+    }
+  };
+
+  // Reporting & mark-known state (mobile parity)
+  const [isReported, setIsReported] = useState(false);
+  const [showMarkKnownModal, setShowMarkKnownModal] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportReason, setReportReason] = useState('');
+  const [isReporting, setIsReporting] = useState(false);
+  const [confidenceLevel, setConfidenceLevel] = useState<number | null>(null);
+  const [isMarkingKnown, setIsMarkingKnown] = useState(false);
+
+  const reportMutation = usePostV1QuizQuestionIdReport({
+    mutation: {
+      onSuccess: () => {
+        setIsReported(true);
+        setShowReportModal(false);
+        setReportReason('');
+        showNotificationWithClean({ title: 'Success', message: 'Question reported successfully. Thank you for your feedback!', color: 'green' });
+      },
+      onError: error => {
+        showNotificationWithClean({ title: 'Error', message: error?.error || 'Failed to report question.', color: 'red' });
+      },
+    },
+  });
+
+  const markKnownMutation = usePostV1QuizQuestionIdMarkKnown({
+    mutation: {
+      onSuccess: () => {
+        setShowMarkKnownModal(false);
+        const confidence = confidenceLevel;
+        setConfidenceLevel(null);
+        let message = 'Preference saved.';
+        if (confidence === 1) message = 'Saved with low confidence. You will see this question more often.';
+        if (confidence === 2) message = 'Saved with some confidence. You will see this question a bit more often.';
+        if (confidence === 3) message = 'Saved with neutral confidence. No change to how often you will see this question.';
+        if (confidence === 4) message = 'Saved with high confidence. You will see this question less often.';
+        if (confidence === 5) message = 'Saved with complete confidence. You will rarely see this question.';
+        showNotificationWithClean({ title: 'Success', message, color: 'green' });
+      },
+      onError: error => {
+        showNotificationWithClean({ title: 'Error', message: error?.error || 'Failed to mark question as known.', color: 'red' });
+      },
+    },
+  });
 
   // Handle answer submission
   const handleAnswerSubmit = useCallback(async () => {
@@ -460,6 +545,57 @@ const MobileDailyPage: React.FC = () => {
             </Button>
           )}
         </Group>
+        {/* Fixed bottom row: report issue (left), mark-known (right) */}
+        <Box
+          style={{
+            position: 'fixed',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            borderTop: '1px solid var(--mantine-color-default-border)',
+            padding: '10px 16px',
+            backgroundColor: 'var(--mantine-color-body)',
+          }}
+        >
+          <Group position='apart'>
+            <Button onClick={() => handleReport()} disabled={isReported || reportMutation.isPending} variant='subtle' color='gray' size='xs' data-testid='report-question-btn'>
+              {isReported ? 'Reported' : 'Report issue with question'}
+            </Button>
+
+            <Button onClick={() => setShowMarkKnownModal(true)} variant='subtle' color='blue' size='xs' data-testid='mark-known-btn'>Adjust question frequency</Button>
+          </Group>
+        </Box>
+
+        {/* Mark Known Modal */}
+        <Modal opened={showMarkKnownModal} onClose={() => setShowMarkKnownModal(false)} title='Adjust Question Frequency' size='sm' closeOnClickOutside={false} closeOnEscape={false}>
+          <Stack gap='md'>
+            <Text size='sm' c='dimmed'>Choose how often you want to see this question in future quizzes: 1–2 show it more, 3 no change, 4–5 show it less.</Text>
+            <Text size='sm' fw={500}>How confident are you about this question?</Text>
+            <Group gap='xs' justify='space-between'>
+              {[1, 2, 3, 4, 5].map(level => (
+                <Button key={level} variant={confidenceLevel === level ? 'filled' : 'light'} color={confidenceLevel === level ? 'teal' : 'gray'} onClick={() => setConfidenceLevel(level)} style={{ flex: 1, minHeight: '56px' }} data-testid={`confidence-level-${level}`}>
+                  {level}
+                </Button>
+              ))}
+            </Group>
+            <Group justify='space-between'>
+              <Button variant='subtle' onClick={() => { setShowMarkKnownModal(false); setConfidenceLevel(null); }} data-testid='cancel-mark-known'>Cancel</Button>
+              <Button onClick={() => { if (!currentQuestion?.question_id || !confidenceLevel) return; setIsMarkingKnown(true); markKnownMutation.mutate({ id: currentQuestion.question_id, data: { confidence_level: confidenceLevel } }); }} disabled={!confidenceLevel} loading={isMarkingKnown} color='teal' data-testid='submit-mark-known'>Save</Button>
+            </Group>
+          </Stack>
+        </Modal>
+
+        {/* Report Modal */}
+        <Modal opened={showReportModal} onClose={() => { setShowReportModal(false); setReportReason(''); }} title='Report Issue with Question' size='sm' closeOnClickOutside={false} closeOnEscape={false}>
+          <Stack gap='md'>
+            <Text size='sm' c='dimmed'>Please let us know what's wrong with this question. Your feedback helps us improve the quality of our content.</Text>
+            <Textarea placeholder='Describe the issue (optional, max 512 characters)...' value={reportReason} onChange={e => setReportReason(e.target.value)} maxLength={512} minRows={4} data-testid='report-reason-input' id='report-reason-textarea' />
+            <Group justify='space-between'>
+              <Button variant='subtle' onClick={() => { setShowReportModal(false); setReportReason(''); }} data-testid='cancel-report'>Cancel</Button>
+              <Button onClick={() => { if (!currentQuestion?.question_id) return; setIsReporting(true); reportMutation.mutate({ id: currentQuestion.question_id, data: { report_reason: reportReason } }); }} disabled={isReporting} loading={isReporting} color='red' data-testid='submit-report'>Report Question</Button>
+            </Group>
+          </Stack>
+        </Modal>
       </Stack>
     </Container>
   );
