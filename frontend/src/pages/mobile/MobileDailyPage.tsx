@@ -220,6 +220,30 @@ const MobileDailyPage: React.FC = () => {
               </Badge>
             </Group>
 
+            {/* Show passage for reading comprehension questions */}
+            {currentQuestion.question.type === 'reading_comprehension' &&
+              currentQuestion.question.content?.passage && (
+                <Paper
+                  p='md'
+                  bg='var(--mantine-color-gray-0)'
+                  radius='md'
+                  withBorder
+                  style={{ marginBottom: 8 }}
+                >
+                  <Text
+                    size='sm'
+                    style={{
+                      whiteSpace: 'pre-line',
+                      lineHeight: 1.6,
+                      fontWeight: 400,
+                      letterSpacing: 0.1,
+                    }}
+                  >
+                    {currentQuestion.question.content.passage}
+                  </Text>
+                </Paper>
+              )}
+
             <Text size='lg' fw={500}>
               {currentQuestion.question.content?.question}
             </Text>
