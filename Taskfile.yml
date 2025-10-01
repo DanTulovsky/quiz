@@ -566,10 +566,14 @@ tasks:
         fi
       - 'echo "Running Artillery test: {{.TEST_NAME}}"'
       - |
+        CONFIG_FILE="/scripts/config.yaml"
+        if [[ "{{.TEST_NAME}}" == *"fuzzer"* ]]; then
+          CONFIG_FILE="/scripts/config.fuzzer.yaml"
+        fi
         docker run --rm -it -v ${HOST_PROJECT_PATH}/artillery:/scripts \
           -e NODE_OPTIONS="--no-deprecation" \
           quiz-artillery \
-          artillery run --config /scripts/config.yaml -e ${ENVIRONMENT} /scripts/tests/{{.TEST_NAME}}.yml
+          artillery run --config "$CONFIG_FILE" -e ${ENVIRONMENT} /scripts/tests/{{.TEST_NAME}}.yml
       - |
         if [ "$(cat {{.TASKFILE_DIR}}/.test_keep_running 2>/dev/null || echo '0')" != "1" ]; then
           echo "Stopping test servers..."
@@ -613,10 +617,15 @@ tasks:
         for test_file in $TEST_FILES; do
           if [ -n "$test_file" ]; then
             echo "=== $COUNTER. $(basename "$test_file" .yml) ==="
+            CONFIG_FILE="/scripts/config.yaml"
+            if [[ "$(basename "$test_file")" == *"fuzzer"* ]]; then
+              CONFIG_FILE="/scripts/config.fuzzer.yaml"
+            fi
+            echo "Config file: $CONFIG_FILE"
             docker run --rm -it -v ${HOST_PROJECT_PATH}/artillery:/scripts \
               -e NODE_OPTIONS="--no-deprecation" \
               quiz-artillery \
-              artillery run -q --config /scripts/config.yaml -e ${ENVIRONMENT} "/scripts/$(basename "$(dirname "$test_file")")/$(basename "$test_file")"
+              artillery run -q --config "$CONFIG_FILE" -e ${ENVIRONMENT} "/scripts/$(basename "$(dirname "$test_file")")/$(basename "$test_file")"
             echo ""
             COUNTER=$((COUNTER + 1))
           fi
