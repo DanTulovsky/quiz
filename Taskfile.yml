@@ -529,7 +529,7 @@ tasks:
       - task setup-test-db
       - echo "✅ Test environment ready!"
 
-  test-artillery-run:
+  test-artillery-run-single-test:
     desc: "Run Artillery test by name (TEST_NAME=test-name, SOLO=1 for single request)"
     deps: [build-artillery]
     env:
@@ -558,7 +558,7 @@ tasks:
         # Check if test environment is running, start if not
         if ! docker compose -f docker-compose.test.from.images.yml ps --format table | grep -q "Up"; then
           echo "Starting test environment..."
-          task start-test-environment
+          task start-test-environment-from-images
           echo "0" > {{.TASKFILE_DIR}}/.test_keep_running
         else
           echo "Test environment already running"
@@ -567,13 +567,15 @@ tasks:
       - 'echo "Running Artillery test: {{.TEST_NAME}}"'
       - |
         CONFIG_FILE="/scripts/config.yaml"
+        TEST_DIR="tests"
         if [[ "{{.TEST_NAME}}" == *"fuzzer"* ]]; then
           CONFIG_FILE="/scripts/config.fuzzer.yaml"
+          TEST_DIR="fuzzer_tests"
         fi
         docker run --rm -it -v ${HOST_PROJECT_PATH}/artillery:/scripts \
           -e NODE_OPTIONS="--no-deprecation" \
           quiz-artillery \
-          artillery run --config "$CONFIG_FILE" -e ${ENVIRONMENT} /scripts/tests/{{.TEST_NAME}}.yml
+          artillery run -q --config "$CONFIG_FILE" -e ${ENVIRONMENT} "/scripts/${TEST_DIR}/{{.TEST_NAME}}.yml"
       - |
         if [ "$(cat {{.TASKFILE_DIR}}/.test_keep_running 2>/dev/null || echo '0')" != "1" ]; then
           echo "Stopping test servers..."
@@ -595,7 +597,7 @@ tasks:
         # Check if test environment is running, start if not
         if ! docker compose -f docker-compose.test.from.images.yml ps --format table | grep -q "Up"; then
           echo "Starting test environment..."
-          task start-test-environment
+          task start-test-environment-from-images
           echo "0" > {{.TASKFILE_DIR}}/.test_keep_running
         else
           echo "Test environment already running"
@@ -648,7 +650,7 @@ tasks:
         # Check if test environment is running, start if not
         if ! docker compose -f docker-compose.test.from.images.yml ps --format table | grep -q "Up"; then
           echo "Starting test environment..."
-          task start-test-environment
+          task start-test-environment-from-images
           echo "0" > {{.TASKFILE_DIR}}/.test_keep_running
         else
           echo "Test environment already running"
