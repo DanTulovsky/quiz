@@ -45,6 +45,7 @@ type AdminIntegrationTestSuite struct {
 	cfg           *config.Config
 	worker        *worker.Worker
 	userService   *services.UserService
+	mockAIService services.AIServiceInterface // Added for mocking AI calls
 }
 
 func (suite *AdminIntegrationTestSuite) SetupSuite() {
@@ -76,7 +77,11 @@ func (suite *AdminIntegrationTestSuite) SetupSuite() {
 	userService := services.NewUserServiceWithLogger(db, suite.cfg, logger)
 	learningService := services.NewLearningServiceWithLogger(db, suite.cfg, logger)
 	questionService := services.NewQuestionServiceWithLogger(db, learningService, suite.cfg, logger)
-	aiService := services.NewAIService(suite.cfg, logger)
+
+	// Create mock AI service for testing (faster than real external calls)
+	mockAIService := handlers.NewMockAIService(suite.cfg, logger)
+	suite.mockAIService = mockAIService
+
 	workerService := services.NewWorkerServiceWithLogger(db, logger)
 	dailyQuestionService := services.NewDailyQuestionService(db, logger, questionService, learningService)
 	oauthService := services.NewOAuthServiceWithLogger(suite.cfg, logger)
@@ -88,7 +93,7 @@ func (suite *AdminIntegrationTestSuite) SetupSuite() {
 		userService,
 		questionService,
 		learningService,
-		aiService,
+		suite.mockAIService, // Use mock AI service for faster tests
 		workerService,
 		dailyQuestionService,
 		oauthService,
@@ -124,7 +129,7 @@ func (suite *AdminIntegrationTestSuite) SetupSuite() {
 
 	// --- Background Worker ---
 	emailService := services.NewEmailService(suite.cfg, logger)
-	bgWorker := worker.NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, emailService, nil, "default", suite.cfg, logger)
+	bgWorker := worker.NewWorker(userService, questionService, suite.mockAIService, learningService, workerService, dailyQuestionService, emailService, nil, "default", suite.cfg, logger)
 	suite.worker = bgWorker
 	go bgWorker.Start(context.Background())
 
@@ -132,7 +137,7 @@ func (suite *AdminIntegrationTestSuite) SetupSuite() {
 	workerAdminHandler := handlers.NewWorkerAdminHandlerWithLogger(
 		userService,
 		questionService,
-		aiService,
+		suite.mockAIService,
 		suite.cfg,
 		bgWorker,
 		workerService,

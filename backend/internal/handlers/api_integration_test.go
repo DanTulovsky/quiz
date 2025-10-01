@@ -34,11 +34,12 @@ import (
 
 type APIIntegrationTestSuite struct {
 	suite.Suite
-	Router      *gin.Engine
-	db          *sql.DB
-	testUser    *models.User
-	userService *services.UserService
-	cfg         *config.Config
+	Router        *gin.Engine
+	db            *sql.DB
+	testUser      *models.User
+	userService   *services.UserService
+	cfg           *config.Config
+	mockAIService services.AIServiceInterface // Added for mocking AI calls
 }
 
 func (suite *APIIntegrationTestSuite) SetupSuite() {
@@ -71,7 +72,11 @@ func (suite *APIIntegrationTestSuite) SetupSuite() {
 	suite.userService = userService
 	learningService := services.NewLearningServiceWithLogger(db, cfg, logger)
 	questionService := services.NewQuestionServiceWithLogger(db, learningService, cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
-	aiService := services.NewAIService(cfg, logger)
+
+	// Create mock AI service for testing (faster than real external calls)
+	mockAIService := handlers.NewMockAIService(cfg, logger)
+	suite.mockAIService = mockAIService
+
 	workerService := services.NewWorkerServiceWithLogger(db, logger)
 	oauthService := services.NewOAuthServiceWithLogger(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
@@ -80,7 +85,7 @@ func (suite *APIIntegrationTestSuite) SetupSuite() {
 
 	// Use the new router factory
 	generationHintService := services.NewGenerationHintService(suite.db, logger)
-	router := handlers.NewRouter(cfg, userService, questionService, learningService, aiService, workerService, dailyQuestionService, oauthService, generationHintService, logger)
+	router := handlers.NewRouter(cfg, userService, questionService, learningService, suite.mockAIService, workerService, dailyQuestionService, oauthService, generationHintService, logger)
 	suite.Router = router
 }
 

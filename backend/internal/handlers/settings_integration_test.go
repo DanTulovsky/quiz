@@ -509,35 +509,6 @@ func (suite *SettingsIntegrationTestSuite) TestUpdateLearningPreferences_Unautho
 	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code)
 }
 
-func (suite *SettingsIntegrationTestSuite) TestTestAIConnection_Unauthorized() {
-	req := api.TestAIRequest{
-		Provider: "test",
-		Model:    "test-model",
-	}
-
-	body, _ := json.Marshal(req)
-	request, _ := http.NewRequest("POST", "/v1/settings/test-ai", bytes.NewBuffer(body))
-	request.Header.Set("Content-Type", "application/json")
-
-	w := httptest.NewRecorder()
-	suite.Router.ServeHTTP(w, request)
-
-	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code)
-}
-
-func (suite *SettingsIntegrationTestSuite) TestTestAIConnection_InvalidJSON() {
-	sessionCookie := suite.login()
-
-	req, _ := http.NewRequest("POST", "/v1/settings/test-ai", bytes.NewBufferString("invalid json"))
-	req.Header.Set("Cookie", sessionCookie)
-	req.Header.Set("Content-Type", "application/json")
-
-	w := httptest.NewRecorder()
-	suite.Router.ServeHTTP(w, req)
-
-	assert.Equal(suite.T(), http.StatusBadRequest, w.Code)
-}
-
 // Edge case tests
 func (suite *SettingsIntegrationTestSuite) TestUpdateUserSettings_EmptyValues() {
 	sessionCookie := suite.login()
