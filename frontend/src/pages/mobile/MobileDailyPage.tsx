@@ -11,12 +11,15 @@ import {
   Badge,
   ActionIcon,
   Popover,
+  Box,
   Alert,
   Loader,
   Center,
   Progress,
   Tooltip,
   LoadingOverlay,
+  Modal,
+  Textarea,
 } from '@mantine/core';
 import { IconCheck, IconX, IconCalendar } from '@tabler/icons-react';
 import { Volume2, VolumeX } from 'lucide-react';
@@ -26,6 +29,9 @@ import DailyDatePicker from '../../components/DailyDatePicker';
 import { useMantineTheme } from '@mantine/core';
 import { useTTS } from '../../hooks/useTTS';
 import { defaultVoiceForLanguage } from '../../utils/tts';
+import { useAuth } from '../../hooks/useAuth';
+import { usePostV1QuizQuestionIdReport } from '../../api/api';
+import { showNotificationWithClean } from '../../notifications';
 
 const MobileDailyPage: React.FC = () => {
   const { date: dateParam } = useParams();
@@ -134,6 +140,61 @@ const MobileDailyPage: React.FC = () => {
     goToNextQuestion();
   }, [goToNextQuestion]);
 
+  const { isAuthenticated } = useAuth();
+
+  const [isReported, setIsReported] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportReason, setReportReason] = useState('');
+  const [isReporting, setIsReporting] = useState(false);
+
+  const reportMutation = usePostV1QuizQuestionIdReport({
+    mutation: {
+      onSuccess: () => {
+        setIsReported(true);
+        setShowReportModal(false);
+        setReportReason('');
+        showNotificationWithClean({
+          title: 'Success',
+          message: 'Question reported successfully. Thank you for your feedback!',
+          color: 'green',
+        });
+      },
+      onError: (error: any) => {
+        showNotificationWithClean({
+          title: 'Error',
+          message: error?.error || 'Failed to report question.',
+          color: 'red',
+        });
+      },
+    },
+  });
+
+  const handleReport = async () => {
+    if (isReported || reportMutation.isPending || !currentQuestion?.question?.id) return;
+
+    if (!isAuthenticated) {
+      showNotificationWithClean({
+        title: 'Error',
+        message: 'You must be logged in to report a question.',
+        color: 'red',
+      });
+      return;
+    }
+
+    setShowReportModal(true);
+  };
+
+  const handleSubmitReport = async () => {
+    if (!currentQuestion?.question?.id) return;
+
+    setIsReporting(true);
+    try {
+      reportMutation.mutate({ id: currentQuestion.question_id, data: { report_reason: reportReason } });
+    } finally {
+      setIsReporting(false);
+    }
+  };
+
   // Handle previous question
   const handlePrevQuestion = useCallback(() => {
     setSelectedAnswerLocal(null);
@@ -167,6 +228,9 @@ const MobileDailyPage: React.FC = () => {
       : 0;
 
   const theme = useMantineTheme();
+  // Ensure Box is available in this file
+  // Import already provides Box via @mantine/core in other files; add a local alias if missing
+  // (No-op here; Box is used in JSX and resolved from imports above)
 
   return (
     <Container size='sm'>
@@ -184,7 +248,7 @@ const MobileDailyPage: React.FC = () => {
                 {/* Date picker popover */}
                 <Popover
                   opened={pickerOpened}
-                  onChange={opened => {
+                  onChange={(opened: boolean) => {
                     if (!opened) closePicker();
                   }}
                   position='bottom'
@@ -222,7 +286,7 @@ const MobileDailyPage: React.FC = () => {
                     <DailyDatePicker
                       dropdownType='modal'
                       selectedDate={selectedDate}
-                      onDateSelect={date => {
+                      onDateSelect={(date: string | null) => {
                         if (date) {
                           setSelectedDate(date);
                           closePicker();
@@ -460,6 +524,70 @@ const MobileDailyPage: React.FC = () => {
             </Button>
           )}
         </Group>
+        {/* Report button for mobile daily */}
+        <Group position='left' mt='sm'>
+          <Button
+            onClick={handleReport}
+            disabled={isReported || reportMutation.isPending}
+            variant='subtle'
+            color='gray'
+            size='sm'
+            data-testid='report-question-btn'
+          >
+            {isReported ? 'Reported' : 'Report issue with question'}{' '}
+            <Badge ml={6} size='xs' color='gray' variant='filled' radius='sm'>
+              R
+            </Badge>
+          </Button>
+        </Group>
+
+        {/* Report Modal */}
+        <Modal
+          opened={showReportModal}
+          onClose={() => {
+            setShowReportModal(false);
+            setReportReason('');
+          }}
+          title='Report Issue with Question'
+          size='sm'
+          closeOnClickOutside={false}
+          closeOnEscape={false}
+        >
+          <Stack gap='md'>
+            <Text size='sm' c='dimmed'>
+              Please let us know what's wrong with this question. Your feedback helps us improve the quality of our content.
+            </Text>
+
+            <Box pos='relative'>
+              <Textarea
+                placeholder='Describe the issue (optional, max 512 characters)...'
+                value={reportReason}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setReportReason(e.target.value)}
+                maxLength={512}
+                minRows={4}
+                data-testid='report-reason-input'
+                id='report-reason-textarea'
+              />
+              <Badge
+                size='xs'
+                variant='light'
+                color='gray'
+                style={{ position: 'absolute', top: '8px', right: '8px', zIndex: 1, pointerEvents: 'none' }}
+              >
+                I
+              </Badge>
+            </Box>
+
+            <Group position='right' mt='md'>
+              <Button variant='subtle' onClick={() => { setShowReportModal(false); setReportReason(''); }} data-testid='cancel-report'>
+                Cancel <Badge ml={6} size='xs' color='gray' variant='filled' radius='sm'>Esc</Badge>
+              </Button>
+              <Button onClick={handleSubmitReport} disabled={isReporting} loading={isReporting} color='red' data-testid='submit-report'>
+                Report Question <Badge ml={6} size='xs' color='gray' variant='filled' radius='sm'>↵</Badge>
+              </Button>
+            </Group>
+          </Stack>
+        </Modal>
       </Stack>
     </Container>
   );

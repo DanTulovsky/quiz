@@ -18,12 +18,17 @@ import {
   Tooltip,
   ActionIcon,
   LoadingOverlay,
+  Modal,
+  Textarea,
 } from '@mantine/core';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { Volume2, VolumeX } from 'lucide-react';
 import { useQuestionFlow } from '../hooks/useQuestionFlow';
 import { useTTS } from '../hooks/useTTS';
 import { defaultVoiceForLanguage } from '../utils/tts';
+import { useAuth } from '../hooks/useAuth';
+import { usePostV1QuizQuestionIdReport } from '../api/api';
+import { showNotificationWithClean } from '../notifications';
 
 export type QuestionMode = 'quiz' | 'reading' | 'vocabulary';
 
@@ -56,6 +61,62 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
 
   const { question, isLoading, error, forceFetchNextQuestion } =
     useQuestionFlow({ mode, questionId });
+
+  const { isAuthenticated } = useAuth();
+
+  // Report state for mobile
+  const [isReported, setIsReported] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportReason, setReportReason] = useState('');
+  const [isReporting, setIsReporting] = useState(false);
+
+  const reportMutation = usePostV1QuizQuestionIdReport({
+    mutation: {
+      onSuccess: () => {
+        setIsReported(true);
+        setShowReportModal(false);
+        setReportReason('');
+        showNotificationWithClean({
+          title: 'Success',
+          message: 'Question reported successfully. Thank you for your feedback!',
+          color: 'green',
+        });
+      },
+      onError: (error: any) => {
+        showNotificationWithClean({
+          title: 'Error',
+          message: error?.error || 'Failed to report question.',
+          color: 'red',
+        });
+      },
+    },
+  });
+
+  const handleReport = async () => {
+    if (isReported || reportMutation.isPending || !question?.id) return;
+
+    if (!isAuthenticated) {
+      showNotificationWithClean({
+        title: 'Error',
+        message: 'You must be logged in to report a question.',
+        color: 'red',
+      });
+      return;
+    }
+
+    setShowReportModal(true);
+  };
+
+  const handleSubmitReport = async () => {
+    if (!question?.id) return;
+
+    setIsReporting(true);
+    try {
+      reportMutation.mutate({ id: question.id, data: { report_reason: reportReason } });
+    } finally {
+      setIsReporting(false);
+    }
+  };
 
   // URL state management for question navigation
   useQuestionUrlState({
@@ -385,6 +446,70 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
             Next Question
           </Button>
         )}
+        {/* Report button for mobile */}
+        <Group position='left' mt='sm'>
+          <Button
+            onClick={handleReport}
+            disabled={isReported || reportMutation.isPending}
+            variant='subtle'
+            color='gray'
+            size='sm'
+            data-testid='report-question-btn'
+          >
+            {isReported ? 'Reported' : 'Report issue with question'}{' '}
+            <Badge ml={6} size='xs' color='gray' variant='filled' radius='sm'>
+              R
+            </Badge>
+          </Button>
+        </Group>
+
+        {/* Report Modal */}
+        <Modal
+          opened={showReportModal}
+          onClose={() => {
+            setShowReportModal(false);
+            setReportReason('');
+          }}
+          title='Report Issue with Question'
+          size='sm'
+          closeOnClickOutside={false}
+          closeOnEscape={false}
+        >
+          <Stack gap='md'>
+            <Text size='sm' c='dimmed'>
+              Please let us know what's wrong with this question. Your feedback helps us improve the quality of our content.
+            </Text>
+
+            <Box pos='relative'>
+              <Textarea
+                placeholder='Describe the issue (optional, max 512 characters)...'
+                value={reportReason}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setReportReason(e.target.value)}
+                maxLength={512}
+                minRows={4}
+                data-testid='report-reason-input'
+                id='report-reason-textarea'
+              />
+              <Badge
+                size='xs'
+                variant='light'
+                color='gray'
+                style={{ position: 'absolute', top: '8px', right: '8px', zIndex: 1, pointerEvents: 'none' }}
+              >
+                I
+              </Badge>
+            </Box>
+
+            <Group position='right' mt='md'>
+              <Button variant='subtle' onClick={() => { setShowReportModal(false); setReportReason(''); }} data-testid='cancel-report'>
+                Cancel <Badge ml={6} size='xs' color='gray' variant='filled' radius='sm'>Esc</Badge>
+              </Button>
+              <Button onClick={handleSubmitReport} disabled={isReporting} loading={isReporting} color='red' data-testid='submit-report'>
+                Report Question <Badge ml={6} size='xs' color='gray' variant='filled' radius='sm'>↵</Badge>
+              </Button>
+            </Group>
+          </Stack>
+        </Modal>
       </Stack>
     </Container>
   );
