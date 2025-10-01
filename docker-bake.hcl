@@ -27,7 +27,7 @@ variable "BUILD_TIME" {
 target "backend" {
   context = "."
   dockerfile = "Dockerfile.backend"
-  platforms = ["linux/amd64", "linux/arm64"]
+  platforms = ["linux/arm64"]
   args = { APP_VERSION = "${APP_VERSION}", COMMIT_HASH = "${COMMIT_HASH}", BUILD_TIME = "${BUILD_TIME}" }
   tags = ["mrwetsnow/quiz-backend:${APP_VERSION}", "mrwetsnow/quiz-backend:latest"]
 }
@@ -35,7 +35,7 @@ target "backend" {
 target "worker" {
   context = "."
   dockerfile = "Dockerfile.worker"
-  platforms = ["linux/amd64", "linux/arm64"]
+  platforms = ["linux/arm64"]
   args = { APP_VERSION = "${APP_VERSION}", COMMIT_HASH = "${COMMIT_HASH}", BUILD_TIME = "${BUILD_TIME}" }
   tags = ["mrwetsnow/quiz-worker:${APP_VERSION}", "mrwetsnow/quiz-worker:latest"]
 }
@@ -43,7 +43,7 @@ target "worker" {
 target "frontend" {
   context = "."
   dockerfile = "Dockerfile.frontend"
-  platforms = ["linux/amd64", "linux/arm64"]
+  platforms = ["linux/arm64"]
   args = { APP_VERSION = "${APP_VERSION}", COMMIT_HASH = "${COMMIT_HASH}", BUILD_TIME = "${BUILD_TIME}" }
   tags = ["mrwetsnow/quiz-frontend:${APP_VERSION}", "mrwetsnow/quiz-frontend:latest"]
 }

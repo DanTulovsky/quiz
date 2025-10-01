@@ -47,7 +47,7 @@ jobs:
         tts-image: ${{ vars.TTS_IMAGE }}
 
   release:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-24.04-arm
     needs: test
 
     steps:
