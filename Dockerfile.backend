@@ -30,6 +30,8 @@ RUN --mount=type=cache,id=quiz-backend-gomod,sharing=locked,target=/go/pkg/mod \
     --mount=type=cache,id=quiz-backend-gobuild,sharing=locked,target=/root/.cache/go-build \
     CGO_ENABLED=1 \
     CGO_CFLAGS="-D_LARGEFILE64_SOURCE" \
+    GOOS=${TARGETOS} \
+    GOARCH=${TARGETARCH} \
     go build \
     -a \
     -installsuffix cgo \
