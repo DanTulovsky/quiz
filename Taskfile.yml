@@ -1518,13 +1518,13 @@ tasks:
       - |
         set -e
         # compute next semver tag and other meta via helper (prints shell assignments)
-        NEW_TAG=$(./scripts/compute-next-release.sh)
-        COMMIT_HASH=$(git rev-parse --short HEAD)
+        LATEST_TAG=$(./scripts/compute-current-tag.sh)
+        COMMIT_HASH=$(git rev-parse --short $LATEST_TAG)
         BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
         APP_VERSION="prod"
-        echo "Release version: $NEW_TAG"
-        echo "Calling parallel release build script with tag: $NEW_TAG"
-        bash ./scripts/release-build-parallel.sh "$NEW_TAG" "$COMMIT_HASH" "$BUILD_TIME" "$APP_VERSION"
+        echo "Release version: $LATEST_TAG"
+        echo "Calling parallel release build script with tag: $LATEST_TAG"
+        bash ./scripts/release-build-parallel.sh "$LATEST_TAG" "$COMMIT_HASH" "$BUILD_TIME" "$APP_VERSION"
 
   release-tag:
     desc: "Create and push the git tag for the next semantic version"
