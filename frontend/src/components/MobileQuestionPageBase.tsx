@@ -120,6 +120,17 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
     setFeedback(null);
   }, [question?.id, setFeedback]);
 
+  // Scroll to top when a new question is loaded (mobile)
+  useEffect(() => {
+    // Only scroll when we have a question id (i.e., a new question finished loading)
+    if (!question?.id) return;
+    try {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (e) {
+      // ignore (e.g., server-side rendering or environments without window.scrollTo)
+    }
+  }, [question?.id]);
+
   if (isLoading && !question) {
     return (
       <Center h='100%'>
