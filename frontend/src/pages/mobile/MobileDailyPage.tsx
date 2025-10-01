@@ -147,7 +147,7 @@ const MobileDailyPage: React.FC = () => {
     }
   }, []);
 
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
 
   const handleReport = async () => {
     if (isReported || reportMutation.isPending || !currentQuestion?.question_id)
@@ -312,7 +312,7 @@ const MobileDailyPage: React.FC = () => {
               </Badge>
 
               {/* Right side: date picker icon and question counter */}
-              <Group gap='sm' align='center'>
+            <Group gap='sm' align='center'>
                 {/* Direct date picker - no intermediate popup */}
                 <DailyDatePicker
                   dropdownType='modal'
@@ -336,6 +336,11 @@ const MobileDailyPage: React.FC = () => {
 
                 <Badge variant='outline'>
                   {currentQuestionIndex + 1} of {questions.length}
+                </Badge>
+
+                {/* Show language + level on the header (use user level when available to match desktop) */}
+                <Badge variant='outline' color='blue' data-testid='header-language-level-badge'>
+                  {currentQuestion?.question.language} - {user?.current_level || currentQuestion?.question.level}
                 </Badge>
               </Group>
             </Group>
