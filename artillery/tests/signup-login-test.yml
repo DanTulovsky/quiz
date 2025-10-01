@@ -40,7 +40,7 @@ scenarios:
 
       # Step 4: Test some authenticated endpoints
       - get:
-          url: "/v1/userz/profile"
+          url: "/v1/quiz/progress"
           expect:
             - statusCode: [200, 401]
       - think: 1
