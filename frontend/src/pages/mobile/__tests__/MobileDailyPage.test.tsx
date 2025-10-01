@@ -3,6 +3,20 @@ import { screen } from '@testing-library/react';
 import MobileDailyPage from '../MobileDailyPage';
 import { renderWithProviders } from '../../../test-utils';
 
+// Mock auth hook
+vi.mock('../../../hooks/useAuth', () => ({
+  useAuth: () => ({
+    user: { id: 1, email: 'test@example.com' },
+    isAuthenticated: true,
+  }),
+}));
+
+// Mock tanstack-query mutation hooks used in component
+vi.mock('../../../api/api', () => ({
+  usePostV1QuizQuestionIdReport: () => ({ mutate: vi.fn(), isPending: false }),
+  usePostV1QuizQuestionIdMarkKnown: () => ({ mutate: vi.fn(), isPending: false }),
+}));
+
 const mockSubmitAnswer = vi.fn();
 const mockGoToNextQuestion = vi.fn();
 const mockGoToPreviousQuestion = vi.fn();

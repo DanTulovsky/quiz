@@ -7,6 +7,7 @@ import { renderWithProviders } from '../../test-utils';
 vi.mock('../../hooks/useAuth', () => ({
   useAuth: () => ({
     user: { id: 1, email: 'test@example.com' },
+    isAuthenticated: true,
   }),
 }));
 
@@ -64,6 +65,9 @@ vi.mock('../../api/api', () => ({
       explanation: 'Correct! "Bene" means "good/well"',
     })
   ),
+  // Add mocks for tanstack-query mutation hooks used in component
+  usePostV1QuizQuestionIdReport: () => ({ mutate: vi.fn(), isPending: false }),
+  usePostV1QuizQuestionIdMarkKnown: () => ({ mutate: vi.fn(), isPending: false }),
 }));
 
 const renderComponent = (mode: 'quiz' | 'reading' | 'vocabulary') => {
