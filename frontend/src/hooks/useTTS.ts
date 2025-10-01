@@ -114,7 +114,8 @@ export const useTTS = (): TTSHookReturn => {
   }, []);
 
   const prebufferTTS = useCallback(
-    async (text: string, voice?: string, source: PrebufferSource = 'other') => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async (text: string, voice?: string, _source: PrebufferSource = 'other') => {
       if (!text) return;
       const key = `${voice ?? ''}::${text}`;
       if (sharedDecodedCache.has(key)) return;

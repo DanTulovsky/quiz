@@ -225,7 +225,7 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
     if (!question?.id) return;
     try {
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    } catch (e) {
+    } catch {
       // ignore (e.g., server-side rendering or environments without window.scrollTo)
     }
   }, [question?.id]);
@@ -484,40 +484,35 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
             Next Question
           </Button>
         )}
-        {/* Fixed bottom row: report issue (left), mark-known and stats (right) */}
+        {/* Bottom section: report issue and adjust frequency */}
         <Box
           style={{
-            position: 'fixed',
-            bottom: 0,
-            left: 0,
-            right: 0,
             borderTop: '1px solid var(--mantine-color-default-border)',
             padding: '10px 16px',
             backgroundColor: 'var(--mantine-color-body)',
+            marginTop: '16px',
           }}
         >
-          <Group position='apart'>
-            <Group>
-              <Button
-                onClick={handleReport}
-                disabled={isReported || reportMutation.isPending}
-                variant='subtle'
-                color='gray'
-                size='xs'
-                data-testid='report-question-btn'
-              >
-                {isReported ? 'Reported' : 'Report issue with question'}{' '}
-              </Button>
-              <Button
-                onClick={() => setShowMarkKnownModal(true)}
-                variant='subtle'
-                color='blue'
-                size='xs'
-                data-testid='mark-known-btn'
-              >
-                Adjust question frequency
-              </Button>
-            </Group>
+          <Group justify='space-between'>
+            <Button
+              onClick={handleReport}
+              disabled={isReported || reportMutation.isPending}
+              variant='subtle'
+              color='gray'
+              size='xs'
+              data-testid='report-question-btn'
+            >
+              {isReported ? 'Reported' : 'Report issue with question'}
+            </Button>
+            <Button
+              onClick={() => setShowMarkKnownModal(true)}
+              variant='subtle'
+              color='blue'
+              size='xs'
+              data-testid='mark-known-btn'
+            >
+              Adjust question frequency
+            </Button>
           </Group>
         </Box>
 

@@ -118,7 +118,7 @@ const MobileDailyPage: React.FC = () => {
     if (!currentQuestion?.id) return;
     try {
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    } catch (e) {
+    } catch {
       // ignore in non-browser environments
     }
   }, [currentQuestion?.id]);
@@ -152,25 +152,6 @@ const MobileDailyPage: React.FC = () => {
     setShowReportModal(true);
   };
 
-  const handleSubmitReport = async () => {
-    if (!currentQuestion?.question_id) return;
-    setIsReporting(true);
-    try {
-      reportMutation.mutate({ id: currentQuestion.question_id, data: { report_reason: reportReason } });
-    } finally {
-      setIsReporting(false);
-    }
-  };
-
-  const handleMarkAsKnown = async () => {
-    if (!currentQuestion?.question_id || !confidenceLevel) return;
-    setIsMarkingKnown(true);
-    try {
-      markKnownMutation.mutate({ id: currentQuestion.question_id, data: { confidence_level: confidenceLevel } });
-    } finally {
-      setIsMarkingKnown(false);
-    }
-  };
 
   // Reporting & mark-known state (mobile parity)
   const [isReported, setIsReported] = useState(false);
@@ -596,19 +577,16 @@ const MobileDailyPage: React.FC = () => {
             </Button>
           )}
         </Group>
-        {/* Fixed bottom row: report issue (left), mark-known (right) */}
+        {/* Bottom section: report issue and adjust frequency */}
         <Box
           style={{
-            position: 'fixed',
-            bottom: 0,
-            left: 0,
-            right: 0,
             borderTop: '1px solid var(--mantine-color-default-border)',
             padding: '10px 16px',
             backgroundColor: 'var(--mantine-color-body)',
+            marginTop: '16px',
           }}
         >
-          <Group position='apart'>
+          <Group justify='space-between'>
             <Button onClick={() => handleReport()} disabled={isReported || reportMutation.isPending} variant='subtle' color='gray' size='xs' data-testid='report-question-btn'>
               {isReported ? 'Reported' : 'Report issue with question'}
             </Button>

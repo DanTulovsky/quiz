@@ -41,6 +41,11 @@ jobs:
       with:
         tts-image: ${{ vars.TTS_IMAGE }}
 
+    - name: Run e2e API Tests
+      uses: ./.github/actions/run-e2e-api-tests
+      with:
+        tts-image: ${{ vars.TTS_IMAGE }}
+
     - name: Upload test artifacts
       if: always()
       uses: actions/upload-artifact@v4

@@ -81,28 +81,3 @@ runs:
         DOCKER_BUILDKIT_NO_PROVENANCE: 1
         COMPOSE_BAKE: true
       shell: bash
-
-    - name: Run tests (e2e API only)
-      run: |
-        echo "Running e2e API test suite with 'task test-e2e-api'..."
-
-        # Set up test environment variables
-        export SHELL=/bin/bash
-        export SESSION_SECRET=test_session_secret_for_e2e
-        export TTS_IMAGE=${{ inputs.tts-image }}
-
-        # Run the complete test suite
-        task test-e2e-api
-
-      env:
-        # Database configuration for tests
-        DYNAMIC_TEST_DB_URL: "postgres://quiz_user:quiz_password@localhost:5433/quiz_test_db?sslmode=disable"
-        DYNAMIC_DB_URL: "postgres://quiz_user:quiz_password@localhost:5432/quiz_db?sslmode=disable"
-        DYNAMIC_TEST_BASE_URL: "http://localhost:3001"
-
-        # Docker configuration
-        DOCKER_BUILDKIT: 1
-        COMPOSE_DOCKER_CLI_BUILD: 1
-        DOCKER_BUILDKIT_NO_PROVENANCE: 1
-        COMPOSE_BAKE: true
-      shell: bash

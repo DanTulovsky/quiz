@@ -12,7 +12,7 @@ const (
 	WorkerShutdownTimeout = 30 * time.Second
 	CLIWorkerTimeout      = 10 * time.Minute
 	TestTimeout           = 100 * time.Millisecond
-	AITestTimeout         = 5 * time.Second
+	AITestTimeout         = 1 * time.Second
 
 	// Database timeouts
 	DatabaseConnMaxLifetime = 5 * time.Minute
@@ -24,7 +24,7 @@ const (
 	WorkerCheckInterval     = 15 * time.Second
 	WorkerHeartbeatInterval = 30 * time.Second
 	WorkerTriggerThrottle   = 30 * time.Second
-	WorkerSleepDuration     = 2 * time.Second
+	WorkerSleepDuration     = 100 * time.Millisecond
 
 	// Quiz timeouts
 	QuizStreamTimeout = 60 * time.Second
