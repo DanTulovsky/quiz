@@ -93,6 +93,11 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
 
     try {
       await forceFetchNextQuestion();
+
+      // Smoothly scroll to top on mobile after the new question is loaded
+      if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     } finally {
       setIsTransitioning(false);
     }
