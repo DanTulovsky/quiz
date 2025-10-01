@@ -402,10 +402,14 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
             {/* For vocabulary, show sentence context */}
             {question.type === 'vocabulary' && question.content?.sentence && (
               <>
-                <Text size='sm' c='dimmed' fs='italic'>
+                <Text
+                  size='md'
+                  c='dimmed'
+                  style={{ fontStyle: 'normal', marginBottom: 4 }}
+                >
                   "{question.content.sentence}"
                 </Text>
-                <Text size='lg' fw={500}>
+                <Text size='xl' fw={600}>
                   {question.content?.question}
                 </Text>
               </>
