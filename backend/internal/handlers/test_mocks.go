@@ -12,7 +12,7 @@ import (
 	"quizapp/internal/models"
 	"quizapp/internal/observability"
 	"quizapp/internal/services"
-	"quizapp/internal/utils/contextutils"
+	contextutils "quizapp/internal/utils"
 )
 
 // MockAIService implements AIServiceInterface for testing
