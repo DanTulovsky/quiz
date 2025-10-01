@@ -581,17 +581,17 @@ const MobileDailyPage: React.FC = () => {
         <Box
           style={{
             borderTop: '1px solid var(--mantine-color-default-border)',
-            padding: '10px 16px',
-            backgroundColor: 'var(--mantine-color-body)',
+            padding: '4px 16px',
+            backgroundColor: 'var(--mantine-color-gray-0)',
             marginTop: '16px',
           }}
         >
-          <Group justify='space-between'>
-            <Button onClick={() => handleReport()} disabled={isReported || reportMutation.isPending} variant='subtle' color='gray' size='xs' data-testid='report-question-btn'>
-              {isReported ? 'Reported' : 'Report issue with question'}
+          <Group justify='space-between' gap='xs'>
+            <Button onClick={() => handleReport()} disabled={isReported || reportMutation.isPending} variant='subtle' color='gray' size='xs' data-testid='report-question-btn' style={{ flex: 1 }}>
+              {isReported ? 'Reported' : 'Report issue'}
             </Button>
 
-            <Button onClick={() => setShowMarkKnownModal(true)} variant='subtle' color='blue' size='xs' data-testid='mark-known-btn'>Adjust question frequency</Button>
+            <Button onClick={() => setShowMarkKnownModal(true)} variant='subtle' color='gray' size='xs' data-testid='mark-known-btn' style={{ flex: 1 }}>Adjust frequency</Button>
           </Group>
         </Box>
 

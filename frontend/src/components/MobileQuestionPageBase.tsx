@@ -488,12 +488,12 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
         <Box
           style={{
             borderTop: '1px solid var(--mantine-color-default-border)',
-            padding: '10px 16px',
-            backgroundColor: 'var(--mantine-color-body)',
+            padding: '4px 16px',
+            backgroundColor: 'var(--mantine-color-gray-0)',
             marginTop: '16px',
           }}
         >
-          <Group justify='space-between'>
+          <Group justify='space-between' gap='xs'>
             <Button
               onClick={handleReport}
               disabled={isReported || reportMutation.isPending}
@@ -501,17 +501,19 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
               color='gray'
               size='xs'
               data-testid='report-question-btn'
+              style={{ flex: 1 }}
             >
-              {isReported ? 'Reported' : 'Report issue with question'}
+              {isReported ? 'Reported' : 'Report issue'}
             </Button>
             <Button
               onClick={() => setShowMarkKnownModal(true)}
               variant='subtle'
-              color='blue'
+              color='gray'
               size='xs'
               data-testid='mark-known-btn'
+              style={{ flex: 1 }}
             >
-              Adjust question frequency
+              Adjust frequency
             </Button>
           </Group>
         </Box>
