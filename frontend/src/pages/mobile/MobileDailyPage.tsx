@@ -272,6 +272,7 @@ const MobileDailyPage: React.FC = () => {
                   onChange={opened => {
                     if (!opened) closePicker();
                   }}
+                  closeOnClickOutside={false}
                   position='bottom'
                   offset={4}
                 >
