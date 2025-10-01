@@ -15,12 +15,17 @@ import {
   Loader,
   Center,
   Progress,
+  Tooltip,
+  LoadingOverlay,
 } from '@mantine/core';
 import { IconCheck, IconX, IconCalendar } from '@tabler/icons-react';
+import { Volume2, VolumeX } from 'lucide-react';
 import { useDailyQuestions } from '../../hooks/useDailyQuestions';
 import { useDisclosure } from '@mantine/hooks';
 import DailyDatePicker from '../../components/DailyDatePicker';
 import { useMantineTheme } from '@mantine/core';
+import { useTTS } from '../../hooks/useTTS';
+import { defaultVoiceForLanguage } from '../../utils/tts';
 
 const MobileDailyPage: React.FC = () => {
   const { date: dateParam } = useParams();
@@ -56,6 +61,14 @@ const MobileDailyPage: React.FC = () => {
     explanation?: string;
   } | null>(null);
 
+  // TTS state for reading comprehension passages
+  const {
+    isLoading: isTTSLoading,
+    isPlaying: isTTSPlaying,
+    playTTS,
+    stopTTS,
+  } = useTTS();
+
   // Set date from URL param
   useEffect(() => {
     if (dateParam && dateParam !== selectedDate) {
@@ -69,6 +82,22 @@ const MobileDailyPage: React.FC = () => {
     setIsSubmittedLocal(false);
     setFeedbackLocal(null);
   }, [currentQuestion?.id]);
+
+  // TTS handler functions
+  const handleTTSPlay = async (text: string) => {
+    if (!text) return;
+
+    // Determine the best voice: default for question.language -> fallback to 'echo'
+    const finalVoice =
+      defaultVoiceForLanguage(currentQuestion?.question.language || 'en') ||
+      'echo';
+
+    await playTTS(text, finalVoice);
+  };
+
+  const handleTTSStop = () => {
+    stopTTS();
+  };
 
   // Handle answer submission
   const handleAnswerSubmit = useCallback(async () => {
@@ -213,11 +242,46 @@ const MobileDailyPage: React.FC = () => {
         {/* Current Question */}
         <Paper p='md' radius='md' withBorder>
           <Stack gap='md'>
-            <Group>
+            <Group justify='space-between'>
               <Badge color='blue'>
                 {currentQuestion.question.language} -{' '}
                 {currentQuestion.question.level}
               </Badge>
+
+              {/* TTS button for reading comprehension */}
+              {currentQuestion.question.type === 'reading_comprehension' &&
+                currentQuestion.question.content?.passage && (
+                  <Tooltip
+                    label={isTTSPlaying ? 'Stop audio' : 'Listen to passage'}
+                  >
+                    <ActionIcon
+                      size='sm'
+                      variant='subtle'
+                      color={isTTSPlaying ? 'red' : 'blue'}
+                      onClick={() => {
+                        if (isTTSPlaying || isTTSLoading) {
+                          handleTTSStop();
+                        } else {
+                          handleTTSPlay(
+                            currentQuestion.question.content?.passage || ''
+                          );
+                        }
+                      }}
+                      disabled={false}
+                      aria-label={
+                        isTTSPlaying || isTTSLoading
+                          ? 'Stop audio'
+                          : 'Listen to passage'
+                      }
+                    >
+                      {isTTSPlaying || isTTSLoading ? (
+                        <VolumeX size={16} />
+                      ) : (
+                        <Volume2 size={16} />
+                      )}
+                    </ActionIcon>
+                  </Tooltip>
+                )}
             </Group>
 
             {/* Show passage for reading comprehension questions */}
@@ -228,15 +292,20 @@ const MobileDailyPage: React.FC = () => {
                   bg='var(--mantine-color-gray-0)'
                   radius='md'
                   withBorder
-                  style={{ marginBottom: 8 }}
+                  style={{ marginBottom: 8, position: 'relative' }}
                 >
+                  <LoadingOverlay
+                    visible={isTTSLoading}
+                    overlayProps={{ backgroundOpacity: 0.35, blur: 1 }}
+                    zIndex={5}
+                  />
                   <Text
-                    size='sm'
+                    size='md'
                     style={{
                       whiteSpace: 'pre-line',
-                      lineHeight: 1.6,
+                      lineHeight: 1.7,
                       fontWeight: 400,
-                      letterSpacing: 0.1,
+                      letterSpacing: 0.2,
                     }}
                   >
                     {currentQuestion.question.content.passage}

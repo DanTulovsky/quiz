@@ -190,55 +190,42 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
                       zIndex: 10,
                     }}
                   >
-                    <Group gap={4} align='center'>
-                      <Badge
-                        size='xs'
-                        color='gray'
-                        variant='filled'
-                        radius='sm'
-                        title='Shortcut: P'
-                      >
-                        P
-                      </Badge>
-                      <Tooltip
-                        label={
-                          isTTSPlaying ? 'Stop audio' : 'Listen to passage'
+                    <Tooltip
+                      label={isTTSPlaying ? 'Stop audio' : 'Listen to passage'}
+                    >
+                      <ActionIcon
+                        size='sm'
+                        variant='subtle'
+                        color={isTTSPlaying ? 'red' : 'blue'}
+                        onClick={() => {
+                          if (isTTSPlaying || isTTSLoading) {
+                            handleTTSStop();
+                          } else {
+                            handleTTSPlay(question.content?.passage || '');
+                          }
+                        }}
+                        disabled={false}
+                        aria-label={
+                          isTTSPlaying || isTTSLoading
+                            ? 'Stop audio'
+                            : 'Listen to passage'
                         }
                       >
-                        <ActionIcon
-                          size='sm'
-                          variant='subtle'
-                          color={isTTSPlaying ? 'red' : 'blue'}
-                          onClick={() => {
-                            if (isTTSPlaying || isTTSLoading) {
-                              handleTTSStop();
-                            } else {
-                              handleTTSPlay(question.content?.passage || '');
-                            }
-                          }}
-                          disabled={false}
-                          aria-label={
-                            isTTSPlaying || isTTSLoading
-                              ? 'Stop audio'
-                              : 'Listen to passage'
-                          }
-                        >
-                          {isTTSPlaying || isTTSLoading ? (
-                            <VolumeX size={16} />
-                          ) : (
-                            <Volume2 size={16} />
-                          )}
-                        </ActionIcon>
-                      </Tooltip>
-                    </Group>
+                        {isTTSPlaying || isTTSLoading ? (
+                          <VolumeX size={16} />
+                        ) : (
+                          <Volume2 size={16} />
+                        )}
+                      </ActionIcon>
+                    </Tooltip>
                   </Box>
                   <Text
-                    size='sm'
+                    size='md'
                     style={{
                       whiteSpace: 'pre-line',
-                      lineHeight: 1.6,
+                      lineHeight: 1.7,
                       fontWeight: 400,
-                      letterSpacing: 0.1,
+                      letterSpacing: 0.2,
                     }}
                   >
                     {question.content.passage}
