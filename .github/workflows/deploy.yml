@@ -1,0 +1,34 @@
+name: Deploy
+
+on:
+  workflow_dispatch: # Allow manual trigger
+#   workflow_run:
+#     workflows: ["Release"]
+#     types:
+#       - completed
+
+# Cancel any in-progress deployment for the same ref if a new one starts
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    # Ensure we only run when Release completed successfully
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-24.04-arm
+
+    steps:
+      - name: Deploy to production via SSH and restart services
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ vars.PROD_SERVER_HOST }}
+          username: ${{ vars.PROD_SERVER_USER }}
+          key: ${{ secrets.PROD_SSH_KEY }}
+          # Optional: specify a non-default SSH port via repository variable `PROD_SERVER_PORT`.
+          # If the variable is unset, the appleboy/ssh-action will default to port 22.
+          port: ${{ vars.PROD_SERVER_PORT }}
+          script: |
+            set -euo pipefail
+            echo "Running \`task restart-prod\` on $HOSTNAME ..."
+            task restart-prod
