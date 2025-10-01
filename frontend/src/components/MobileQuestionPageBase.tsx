@@ -33,6 +33,27 @@ import {
 } from '../api/api';
 import { showNotificationWithClean } from '../notifications';
 
+// Utility to bold the target vocabulary word inside the sentence (same as desktop)
+function highlightTargetWord(sentence: string, target: string) {
+  if (!target) return sentence;
+  const regex = new RegExp(`\\b${target.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')}\\b`, 'gi');
+  const parts = sentence.split(regex);
+  const matches = sentence.match(regex);
+  if (!matches) return sentence;
+  const result: React.ReactNode[] = [];
+  for (let i = 0; i < parts.length; i++) {
+    result.push(parts[i]);
+    if (i < matches.length) {
+      result.push(
+        <strong key={i} style={{ color: '#1976d2', fontWeight: 700 }}>
+          {matches[i]}
+        </strong>
+      );
+    }
+  }
+  return result;
+}
+
 export type QuestionMode = 'quiz' | 'reading' | 'vocabulary';
 
 interface Props {
@@ -402,11 +423,16 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
             {/* For vocabulary, show sentence context */}
             {question.type === 'vocabulary' && question.content?.sentence && (
               <>
-                <Text size='sm' c='dimmed' fs='italic'>
-                  "{question.content.sentence}"
+                {/* Vocabulary sentence regular weight */}
+                <Text size='lg' data-testid='vocab-sentence' mb={4}>
+                  {highlightTargetWord(
+                    question.content.sentence,
+                    question.content.question
+                  )}
                 </Text>
-                <Text size='lg' fw={500}>
-                  {question.content?.question}
+                {/* Prompt: What does X mean in this context? */}
+                <Text size='sm' c='dimmed' mt={-6} mb={8} style={{ fontWeight: 500 }}>
+                  What does <strong>{question.content.question}</strong> mean in this context?
                 </Text>
               </>
             )}
