@@ -25,6 +25,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useMobileDetection } from '../hooks/useMobileDetection';
 import { useTheme } from '../contexts/ThemeContext';
 import { useNavigate, useLocation } from 'react-router-dom';
+import VersionDisplay from './VersionDisplay';
 
 interface MobileLayoutProps {
   children: React.ReactNode;
@@ -182,6 +183,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
       {/* Removed footer displaying active section label */}
 
       <AppShell.Main>{children}</AppShell.Main>
+      <VersionDisplay />
     </AppShell>
   );
 };
