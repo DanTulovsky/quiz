@@ -254,6 +254,37 @@ tasks:
 
   # --- End Database Migration Tasks ---
 
+  start-test-environment:
+    desc: "Start test servers and setup database for Artillery/E2E tests"
+    deps: [stop-test-servers, clean-test]
+    env:
+      DATABASE_URL: "{{.DYNAMIC_TEST_DB_URL}}"
+      TEST_BASE_URL: "{{.DYNAMIC_TEST_BASE_URL}}"
+      KEEP_RUNNING: 1
+      DOCKER_BUILDKIT: 1
+      COMPOSE_DOCKER_CLI_BUILD: 1
+      DOCKER_BUILDKIT_NO_PROVENANCE: 1
+      COMPOSE_BAKE: true
+      ENVIRONMENT: "{{.ENVIRONMENT}}"
+    cmds:
+      - echo "Starting test servers..."
+      - |
+        COMPOSE_FILE="docker-compose.test.yml"
+
+        echo "Starting containers with $COMPOSE_FILE..."
+        docker compose -f "$COMPOSE_FILE" up -d --build --wait
+
+        if docker compose -f "$COMPOSE_FILE" ps --format table | grep -q "Up"; then
+          echo "✅ All test containers started successfully"
+        else
+          echo "❌ Some containers failed to start. Showing logs:"
+          docker compose -f "$COMPOSE_FILE" logs
+          exit 1
+        fi
+      - echo "Setting up test database with golden data..."
+      - task setup-test-db
+      - echo "✅ Test environment ready!"
+
   test-e2e:
     desc: "E2E tests (run against dockerized app with test database)"
     dir: frontend
