@@ -215,11 +215,18 @@ quiz/
 
 ### Production Deployment
 
-```bash
-# Start production services
-task start-prod
+#### Automatic
+Run
 
-# Or restart if already running
+```bash
+task release-tag
+```
+
+This will create and push a new tag.  Github Actions will build and then ssh into `vm0` to deploy.
+
+#### Manual
+
+```bash
 task restart-prod
 ```
 
