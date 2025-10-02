@@ -15,7 +15,7 @@ on:
 jobs:
   deploy:
     # Ensure we only run when Release completed successfully
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    # if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-24.04-arm
 
     steps:
