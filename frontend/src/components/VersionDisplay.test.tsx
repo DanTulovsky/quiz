@@ -73,14 +73,15 @@ describe('VersionDisplay', () => {
 
     const versionElement = screen.getByTestId('app-version');
 
-    await act(async () => {
-      fireEvent.click(versionElement);
-    });
+    // First click opens popover
+    fireEvent.click(versionElement);
 
-    // Wait for the async operation to complete
-    await act(async () => {
-      await new Promise(resolve => setTimeout(resolve, 0));
-    });
+    // Now click inside the popover to copy
+    const copyHint = await screen.findByText(/copy all version info/i);
+    fireEvent.click(copyHint);
+
+    // Wait for async clipboard copy
+    await new Promise(r => setTimeout(r, 0));
 
     expect(mockWriteText).toHaveBeenCalledWith(
       expect.stringContaining('"frontend"')

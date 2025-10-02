@@ -97,7 +97,10 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
       }}
       header={{ height: { base: 50, md: 70 } }}
     >
-      <AppShell.Navbar p='md'>
+      <AppShell.Navbar
+        p='md'
+        style={{ display: 'flex', flexDirection: 'column' }}
+      >
         <AppShell.Section grow>
           <Stack gap='md'>
             <Text fw={500}>Menu</Text>
@@ -146,6 +149,9 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
             </Button>
           </Stack>
         </AppShell.Section>
+        {/* Spacer pushes version to bottom */}
+        <div style={{ flexGrow: 1 }} />
+        <VersionDisplay copyOnClick={false} position='static' />
       </AppShell.Navbar>
 
       <AppShell.Header p='md' className='mobile-safe-header'>
@@ -183,7 +189,6 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
       {/* Removed footer displaying active section label */}
 
       <AppShell.Main>{children}</AppShell.Main>
-      <VersionDisplay />
     </AppShell>
   );
 };

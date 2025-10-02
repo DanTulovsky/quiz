@@ -72,6 +72,9 @@ const MobileDailyPage: React.FC = () => {
     currentQuestionIndex,
     questions,
     availableDates,
+    hasPreviousQuestion,
+    goToPreviousQuestion,
+    isAllCompleted,
   } = useDailyQuestions();
 
   // Local UI state
@@ -104,12 +107,45 @@ const MobileDailyPage: React.FC = () => {
     }
   }, [dateParam, selectedDate, setSelectedDate]);
 
-  // Reset state when question changes
+  // Initialize local state when the current question changes. If the question
+  // is already completed (e.g. user answered it on desktop first), pre-populate
+  // the local state so the mobile UI reflects the completed status instead of
+  // showing an empty unanswered question.
   useEffect(() => {
-    setSelectedAnswerLocal(null);
-    setIsSubmittedLocal(false);
-    setFeedbackLocal(null);
-  }, [currentQuestion?.id]);
+    if (!currentQuestion) {
+      setSelectedAnswerLocal(null);
+      setIsSubmittedLocal(false);
+      setFeedbackLocal(null);
+      return;
+    }
+
+    if (currentQuestion.is_completed) {
+      // Pre-fill with the user ’s previous answer so the radio buttons and UI
+      // reflect the completed state.
+      const prevAnswerIdx = currentQuestion.user_answer_index ?? null;
+
+      setSelectedAnswerLocal(prevAnswerIdx);
+      setIsSubmittedLocal(true);
+
+      if (
+        prevAnswerIdx !== null &&
+        typeof currentQuestion.question.correct_answer === 'number'
+      ) {
+        setFeedbackLocal({
+          is_correct: prevAnswerIdx === currentQuestion.question.correct_answer,
+          correct_answer_index: currentQuestion.question.correct_answer,
+          explanation: currentQuestion.question.explanation,
+        });
+      } else {
+        setFeedbackLocal(null);
+      }
+    } else {
+      // Not completed – reset to blank state
+      setSelectedAnswerLocal(null);
+      setIsSubmittedLocal(false);
+      setFeedbackLocal(null);
+    }
+  }, [currentQuestion?.id, currentQuestion?.is_completed]);
 
   // Scroll to top when a new daily question is loaded (mobile)
   useEffect(() => {
@@ -274,6 +310,11 @@ const MobileDailyPage: React.FC = () => {
     goToNextQuestion();
   }, [goToNextQuestion]);
 
+  // Handle previous question (only used after completion)
+  const handlePreviousQuestion = useCallback(() => {
+    goToPreviousQuestion();
+  }, [goToPreviousQuestion]);
+
   if (isLoading && !currentQuestion) {
     return (
       <Center h='100%'>
@@ -357,7 +398,6 @@ const MobileDailyPage: React.FC = () => {
         <Paper p='md' radius='md' withBorder>
           <Stack gap='md'>
             <Group justify='space-between'>
-
               {/* TTS button for reading comprehension */}
               {currentQuestion.question.type === 'reading_comprehension' &&
                 currentQuestion.question.content?.passage && (
@@ -428,22 +468,27 @@ const MobileDailyPage: React.FC = () => {
               (() => {
                 const { sentence, question: qWord } =
                   currentQuestion.question.content || {};
-                if (sentence && qWord && sentence.trim() && qWord.trim()) {
+                const baseSentence =
+                  sentence || currentQuestion.question.content?.question || '';
+                if (
+                  baseSentence &&
+                  qWord &&
+                  baseSentence.trim() &&
+                  qWord.trim()
+                ) {
                   // If the sentence equals the target word, skip highlighting to keep text contiguous
                   const shouldHighlight =
-                    sentence.trim().toLowerCase() !==
+                    baseSentence.trim().toLowerCase() !==
                     qWord.trim().toLowerCase();
                   return (
                     <>
                       {/* Make sentence/title sizing match desktop QuestionCard */}
                       <Text size='lg' fw={500}>
                         {shouldHighlight
-                          ? highlightTargetWord(sentence, qWord)
-                          : sentence}
+                          ? highlightTargetWord(baseSentence, qWord)
+                          : baseSentence}
                       </Text>
-                      <Text size='lg' fw={500} mt={8}>
-                        {qWord}
-                      </Text>
+                      {/* Standalone vocabulary word removed to avoid duplicate display */}
                       {shouldHighlight && (
                         <Text
                           size='sm'
@@ -465,6 +510,15 @@ const MobileDailyPage: React.FC = () => {
                   </Text>
                 );
               })()}
+
+            {/* Fallback: show the main question text when it hasn't been shown by specific handlers above */}
+            {currentQuestion.question.content?.question &&
+              currentQuestion.question.type !== 'vocabulary' &&
+              currentQuestion.question.type !== 'reading_comprehension' && (
+                <Text size='lg' fw={500} style={{ whiteSpace: 'pre-line' }}>
+                  {currentQuestion.question.content.question}
+                </Text>
+              )}
 
             {/* Answer Options */}
             <Stack gap='sm'>
@@ -579,7 +633,8 @@ const MobileDailyPage: React.FC = () => {
 
         {/* Action Buttons */}
         <Group grow>
-          {!isSubmittedLocal ? (
+          {/* Show Submit button until the answer is submitted */}
+          {!isSubmittedLocal && (
             <Button
               ref={submitButtonRef}
               variant='filled'
@@ -589,15 +644,38 @@ const MobileDailyPage: React.FC = () => {
             >
               Submit Answer
             </Button>
-          ) : (
+          )}
+
+          {/* After submission */}
+          {isSubmittedLocal && !isAllCompleted && (
             <Button
               ref={nextButtonRef}
-              variant='filled'
+              variant='light'
               onClick={handleNextQuestion}
               disabled={!hasNextQuestion}
             >
               Next Question
             </Button>
+          )}
+
+          {/* When all completed, allow navigating back and forth */}
+          {isAllCompleted && (
+            <>
+              <Button
+                variant='light'
+                onClick={handlePreviousQuestion}
+                disabled={!hasPreviousQuestion}
+              >
+                Previous
+              </Button>
+              <Button
+                variant='light'
+                onClick={handleNextQuestion}
+                disabled={!hasNextQuestion}
+              >
+                Next
+              </Button>
+            </>
           )}
         </Group>
         {/* Bottom section: report issue and adjust frequency */}

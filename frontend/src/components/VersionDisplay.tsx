@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Text, Tooltip, Loader, Stack, Group, Badge } from '@mantine/core';
+import {
+  Text,
+  Popover,
+  Loader,
+  Stack,
+  Group,
+  Badge,
+  useMantineTheme,
+  useMantineColorScheme,
+} from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { getAppVersion, formatVersion } from '../utils/version';
 
@@ -40,10 +50,31 @@ function toAppVersion(sv: ServiceVersion): {
   };
 }
 
-const VersionDisplay: React.FC = () => {
+interface VersionDisplayProps {
+  /**
+   * When true (default), clicking copies the version JSON to clipboard.
+   * For mobile hamburger menu, we disable this.
+   */
+  copyOnClick?: boolean;
+  /**
+   * Whether the component should be `fixed` (bottom-left of viewport) or rely on normal flow (`static`).
+   * Defaults to `fixed`.
+   */
+  position?: 'fixed' | 'static';
+}
+
+const VersionDisplay: React.FC<VersionDisplayProps> = ({
+  copyOnClick = true,
+  position = 'fixed',
+}) => {
   const frontend = getAppVersion();
+  const theme = useMantineTheme();
+  const { colorScheme } = useMantineColorScheme();
   const [backend, setBackend] = useState<ServiceVersion | null | undefined>();
   const [worker, setWorker] = useState<ServiceVersion | null | undefined>();
+
+  // Control tooltip manually for mobile where we disable copy
+  const [opened, { close, open }] = useDisclosure(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -123,7 +154,7 @@ const VersionDisplay: React.FC = () => {
     }
   };
 
-  const tooltipContent = (
+  const infoContent = (
     <Stack gap={4} style={{ minWidth: 260 }}>
       <Group gap={8}>
         <Badge size='xs'>frontend</Badge>
@@ -187,32 +218,87 @@ const VersionDisplay: React.FC = () => {
           </Text>
         </>
       )}
-      <Text size='xs' c='dimmed' mt={8} ta='center'>
-        Click to copy all version info
-      </Text>
     </Stack>
   );
 
+  const onTextClick: React.MouseEventHandler = e => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    if (!opened) {
+      open();
+    }
+  };
+
+  // Desktop / default behaviour (copy on click + popover for better theming)
+  if (copyOnClick) {
+    return (
+      <Popover opened={opened} withArrow shadow='md' width='auto'>
+        <Popover.Target>
+          <Text
+            size='xs'
+            c='dimmed'
+            style={{
+              position,
+              ...(position === 'fixed'
+                ? { bottom: '8px', left: '8px', zIndex: 1000 }
+                : {}),
+              userSelect: 'none',
+              pointerEvents: 'auto',
+              cursor: 'pointer',
+            }}
+            data-testid='app-version'
+            onClick={onTextClick}
+          >
+            {formatVersion(frontend)}
+          </Text>
+        </Popover.Target>
+        <Popover.Dropdown
+          style={{
+            backgroundColor:
+              colorScheme === 'dark' ? theme.colors.dark[6] : theme.white,
+            cursor: 'pointer',
+          }}
+          onClick={() => {
+            handleVersionClick();
+            close();
+          }}
+        >
+          {infoContent}
+          <Text size='xs' c='dimmed' mt={8} ta='center'>
+            Click to copy all version info
+          </Text>
+        </Popover.Dropdown>
+      </Popover>
+    );
+  }
+
+  // Mobile / popover behaviour
   return (
-    <Tooltip label={tooltipContent} position='top' multiline w={320}>
-      <Text
-        size='xs'
-        c='dimmed'
-        style={{
-          position: 'fixed',
-          bottom: '8px',
-          left: '8px',
-          zIndex: 1000,
-          userSelect: 'none',
-          pointerEvents: 'auto',
-          cursor: 'pointer',
+    <Popover opened={opened} withArrow shadow='md' width='auto'>
+      <Popover.Target>
+        <Text
+          size='xs'
+          c='dimmed'
+          style={{ cursor: 'pointer' }}
+          onClick={onTextClick}
+        >
+          {formatVersion(frontend)}
+        </Text>
+      </Popover.Target>
+      <Popover.Dropdown
+        onClick={() => {
+          handleVersionClick();
+          close();
         }}
-        data-testid='app-version'
-        onClick={handleVersionClick}
+        style={{ cursor: 'pointer' }}
       >
-        {formatVersion(frontend)}
-      </Text>
-    </Tooltip>
+        {infoContent}
+        <Text size='xs' c='dimmed' mt={8} ta='center'>
+          Tap to copy all version info
+        </Text>
+      </Popover.Dropdown>
+    </Popover>
   );
 };
 
