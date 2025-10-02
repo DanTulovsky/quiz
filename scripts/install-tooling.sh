@@ -926,6 +926,18 @@ install_go_tools() {
     else
         log_info "staticcheck already installed"
     fi
+
+    # Install covreport (coverage reporting tool)
+    if ! command_exists covreport || [[ "$force_reinstall" == "true" ]]; then
+        log_info "Installing covreport..."
+        if [[ "$DRY_RUN" == "true" ]]; then
+            log_dry_run "Would run: go install github.com/cancue/covreport@latest"
+        else
+            go install github.com/cancue/covreport@latest
+        fi
+    else
+        log_info "covreport already installed"
+    fi
 }
 
 # Install Node.js tools
