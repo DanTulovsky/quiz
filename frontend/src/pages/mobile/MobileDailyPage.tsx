@@ -147,7 +147,7 @@ const MobileDailyPage: React.FC = () => {
     }
   }, []);
 
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
 
   const handleReport = async () => {
     if (isReported || reportMutation.isPending || !currentQuestion?.question_id)
@@ -306,38 +306,47 @@ const MobileDailyPage: React.FC = () => {
         {/* Daily Progress Header */}
         <Paper p='md' radius='md' withBorder>
           <Stack gap='xs'>
+            {/* Top row: Daily Challenge (left) and language-level (right) */}
             <Group justify='space-between' align='center'>
               <Badge variant='light' color='orange'>
                 Daily Challenge
               </Badge>
 
-              {/* Right side: date picker icon and question counter */}
-              <Group gap='sm' align='center'>
-                {/* Direct date picker - no intermediate popup */}
-                <DailyDatePicker
-                  dropdownType='modal'
-                  selectedDate={selectedDate}
-                  onDateSelect={date => {
-                    if (date) {
-                      setSelectedDate(date);
-                    }
-                  }}
-                  availableDates={availableDates}
-                  maxDate={new Date()}
-                  size='xs'
-                  clearable={false}
-                  hideOutsideDates
-                  withCellSpacing={false}
-                  firstDayOfWeek={1}
-                  style={{
-                    width: '180px',
-                  }}
-                />
+              {/* Language + level badge right aligned */}
+              <Badge
+                variant='outline'
+                color='blue'
+                data-testid='header-language-level-badge'
+              >
+                {currentQuestion?.question.language} -{' '}
+                {user?.current_level || currentQuestion?.question.level}
+              </Badge>
+            </Group>
 
-                <Badge variant='outline'>
-                  {currentQuestionIndex + 1} of {questions.length}
-                </Badge>
-              </Group>
+            {/* Second row: date picker and question counter */}
+            <Group gap='sm' align='center' justify='space-between'>
+              {/* Direct date picker - no intermediate popup */}
+              <DailyDatePicker
+                dropdownType='modal'
+                selectedDate={selectedDate}
+                onDateSelect={date => {
+                  if (date) {
+                    setSelectedDate(date);
+                  }
+                }}
+                availableDates={availableDates}
+                maxDate={new Date()}
+                size='xs'
+                clearable={false}
+                hideOutsideDates
+                withCellSpacing={false}
+                firstDayOfWeek={1}
+                style={{ width: '180px' }}
+              />
+
+              <Badge variant='outline'>
+                {currentQuestionIndex + 1} of {questions.length}
+              </Badge>
             </Group>
             {/* Removed redundant Daily Questions label */}
             <Progress value={progressValue} color='orange' />
