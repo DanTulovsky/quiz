@@ -1,4 +1,6 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react';
+import { splitIntoParagraphs } from '../utils/passage';
+import { useMediaQuery } from '@mantine/hooks';
 import { useParams } from 'react-router-dom';
 import { useQuestion } from '../contexts/useQuestion';
 import { useQuestionUrlState } from '../hooks/useQuestionUrlState';
@@ -401,17 +403,33 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
                       </ActionIcon>
                     </Tooltip>
                   </Box>
-                  <Text
-                    size='md'
-                    style={{
-                      whiteSpace: 'pre-line',
-                      lineHeight: 1.7,
-                      fontWeight: 400,
-                      letterSpacing: 0.2,
-                    }}
-                  >
-                    {question.content.passage}
-                  </Text>
+                  {(() => {
+                    const isSmall = useMediaQuery('(max-width: 768px)');
+                    const per = isSmall ? 3 : 5; // mobile component used on narrow screens but keep parity
+                    const paras = splitIntoParagraphs(
+                      question.content.passage,
+                      per
+                    );
+                    return (
+                      <div>
+                        {paras.map((p, i) => (
+                          <Text
+                            key={i}
+                            size='md'
+                            style={{
+                              whiteSpace: 'pre-line',
+                              lineHeight: 1.7,
+                              fontWeight: 400,
+                              letterSpacing: 0.2,
+                              marginBottom: i === paras.length - 1 ? 0 : 10,
+                            }}
+                          >
+                            {p}
+                          </Text>
+                        ))}
+                      </div>
+                    );
+                  })()}
                 </Paper>
               )}
 

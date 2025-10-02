@@ -1,4 +1,6 @@
 import React, { useState, useMemo } from 'react';
+import { useMediaQuery } from '@mantine/hooks';
+import { splitIntoParagraphs } from '../utils/passage';
 import {
   Check,
   X,
@@ -993,18 +995,35 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                       </Box>
                     </Group>
                   </Box>
-                  <Text
-                    size='lg'
-                    style={{
-                      whiteSpace: 'pre-line',
-                      lineHeight: 1.8,
-                      fontWeight: 500,
-                      letterSpacing: 0.1,
-                    }}
-                    className='reading-passage-text'
-                  >
-                    {question.content.passage}
-                  </Text>
+                  <div className='reading-passage-text'>
+                    {(() => {
+                      const isSmall = useMediaQuery('(max-width: 768px)');
+                      const per = isSmall ? 3 : 5;
+                      const paras = splitIntoParagraphs(
+                        question.content.passage,
+                        per
+                      );
+                      return (
+                        <div>
+                          {paras.map((p, idx) => (
+                            <Text
+                              key={idx}
+                              size='lg'
+                              style={{
+                                whiteSpace: 'pre-line',
+                                lineHeight: 1.8,
+                                fontWeight: 500,
+                                letterSpacing: 0.1,
+                                marginBottom: idx === paras.length - 1 ? 0 : 12,
+                              }}
+                            >
+                              {p}
+                            </Text>
+                          ))}
+                        </div>
+                      );
+                    })()}
+                  </div>
                 </Paper>
               )}
 

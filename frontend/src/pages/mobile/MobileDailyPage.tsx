@@ -22,6 +22,8 @@ import {
 import { useAuth } from '../../hooks/useAuth';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { Volume2, VolumeX } from 'lucide-react';
+import { splitIntoParagraphs } from '../../utils/passage';
+import { useMediaQuery } from '@mantine/hooks';
 import { useDailyQuestions } from '../../hooks/useDailyQuestions';
 import DailyDatePicker from '../../components/DailyDatePicker';
 import { useMantineTheme } from '@mantine/core';
@@ -449,17 +451,33 @@ const MobileDailyPage: React.FC = () => {
                     overlayProps={{ backgroundOpacity: 0.35, blur: 1 }}
                     zIndex={5}
                   />
-                  <Text
-                    size='md'
-                    style={{
-                      whiteSpace: 'pre-line',
-                      lineHeight: 1.7,
-                      fontWeight: 400,
-                      letterSpacing: 0.2,
-                    }}
-                  >
-                    {currentQuestion.question.content.passage}
-                  </Text>
+                  {(() => {
+                    const isSmall = useMediaQuery('(max-width: 768px)');
+                    const per = isSmall ? 3 : 5;
+                    const paras = splitIntoParagraphs(
+                      currentQuestion.question.content.passage,
+                      per
+                    );
+                    return (
+                      <div>
+                        {paras.map((p, i) => (
+                          <Text
+                            key={i}
+                            size='md'
+                            style={{
+                              whiteSpace: 'pre-line',
+                              lineHeight: 1.7,
+                              fontWeight: 400,
+                              letterSpacing: 0.2,
+                              marginBottom: i === paras.length - 1 ? 0 : 10,
+                            }}
+                          >
+                            {p}
+                          </Text>
+                        ))}
+                      </div>
+                    );
+                  })()}
                 </Paper>
               )}
 
