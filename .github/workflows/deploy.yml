@@ -24,7 +24,7 @@ jobs:
         with:
           host: ${{ vars.PROD_SERVER_HOST }}
           username: ${{ vars.PROD_SERVER_USER }}
-          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          key: ${{ secrets.PROD_SSH_KEY }}
           # Optional: specify a non-default SSH port via repository variable `PROD_SERVER_PORT`.
           # If the variable is unset, the appleboy/ssh-action will default to port 22.
           port: ${{ vars.PROD_SERVER_PORT }}
