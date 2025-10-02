@@ -156,17 +156,12 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
             justifyContent: 'space-between',
           }}
         >
-          <Group>
-            <Burger
-              opened={opened}
-              onClick={toggle}
-              size='sm'
-              color={theme.colors.gray[6]}
-            />
-            <Text fw={600} tt='capitalize'>
-              {navItems.find(n => n.key === activeTab)?.label}
-            </Text>
-          </Group>
+          <Burger
+            opened={opened}
+            onClick={toggle}
+            size='sm'
+            color={theme.colors.gray[6]}
+          />
 
           <Group>
             <ActionIcon
