@@ -24,12 +24,14 @@ jobs:
         with:
           host: ${{ vars.PROD_SERVER_HOST }}
           username: ${{ vars.PROD_SERVER_USER }}
-          key: ${{ secrets.PROD_SSH_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           # Optional: specify a non-default SSH port via repository variable `PROD_SERVER_PORT`.
           # If the variable is unset, the appleboy/ssh-action will default to port 22.
           port: ${{ vars.PROD_SERVER_PORT }}
           script: |
-            set -euo pipefail
-            echo "Running \`task restart-prod\` on $HOSTNAME ..."
+            # appleboy/ssh-action executes this in the login shell configured for the
+            # remote user (fish on our prod host). The standard Bash `set -euo pipefail`
+            # flags are not understood by fish, so we avoid them here.
+            cd ~/src/quiz
+            echo "Running \`task restart-prod\` in $(pwd) on $HOSTNAME ..."
             task restart-prod
