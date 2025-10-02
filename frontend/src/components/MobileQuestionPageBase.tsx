@@ -36,7 +36,10 @@ import { showNotificationWithClean } from '../notifications';
 // Utility to bold the target vocabulary word inside the sentence (same as desktop)
 function highlightTargetWord(sentence: string, target: string) {
   if (!target) return sentence;
-  const regex = new RegExp(`\\b${target.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')}\\b`, 'gi');
+  const regex = new RegExp(
+    `\\b${target.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')}\\b`,
+    'gi'
+  );
   const parts = sentence.split(regex);
   const matches = sentence.match(regex);
   if (!matches) return sentence;
@@ -431,8 +434,15 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
                   )}
                 </Text>
                 {/* Prompt: What does X mean in this context? */}
-                <Text size='sm' c='dimmed' mt={-6} mb={8} style={{ fontWeight: 500 }}>
-                  What does <strong>{question.content.question}</strong> mean in this context?
+                <Text
+                  size='sm'
+                  c='dimmed'
+                  mt={-6}
+                  mb={8}
+                  style={{ fontWeight: 500 }}
+                >
+                  What does <strong>{question.content.question}</strong> mean in
+                  this context?
                 </Text>
               </>
             )}

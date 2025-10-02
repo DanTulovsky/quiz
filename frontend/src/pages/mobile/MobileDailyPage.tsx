@@ -449,8 +449,14 @@ const MobileDailyPage: React.FC = () => {
                         {qWord}
                       </Text>
                       {shouldHighlight && (
-                        <Text size='sm' c='dimmed' mt={4} style={{ fontWeight: 500 }}>
-                          What does <strong>{qWord}</strong> mean in this context?
+                        <Text
+                          size='sm'
+                          c='dimmed'
+                          mt={4}
+                          style={{ fontWeight: 500 }}
+                        >
+                          What does <strong>{qWord}</strong> mean in this
+                          context?
                         </Text>
                       )}
                     </>
