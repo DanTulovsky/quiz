@@ -357,10 +357,6 @@ const MobileDailyPage: React.FC = () => {
         <Paper p='md' radius='md' withBorder>
           <Stack gap='md'>
             <Group justify='space-between'>
-              <Badge color='blue'>
-                {currentQuestion.question.language} -{' '}
-                {currentQuestion.question.level}
-              </Badge>
 
               {/* TTS button for reading comprehension */}
               {currentQuestion.question.type === 'reading_comprehension' &&

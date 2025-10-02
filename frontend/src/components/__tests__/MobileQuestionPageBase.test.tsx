@@ -101,25 +101,7 @@ describe('MobileQuestionPageBase', () => {
     expect(screen.getByText('Benissimo')).toBeInTheDocument();
   });
 
-  it('shows correct mode label for quiz', () => {
-    renderComponent('quiz');
-    expect(screen.getByText('Quiz')).toBeInTheDocument();
-  });
-
-  it('shows correct mode label for vocabulary', () => {
-    renderComponent('vocabulary');
-    expect(screen.getByText('Vocabulary')).toBeInTheDocument();
-  });
-
-  it('shows correct mode label for reading', () => {
-    renderComponent('reading');
-    expect(screen.getByText('Reading')).toBeInTheDocument();
-  });
-
-  it('shows language and level badges', () => {
-    renderComponent('quiz');
-    expect(screen.getByText('Italian - A1')).toBeInTheDocument();
-  });
+  // Mode and badge headers removed in mobile design
 
   it('shows submit button', () => {
     renderComponent('quiz');

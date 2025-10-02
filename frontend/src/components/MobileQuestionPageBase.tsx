@@ -349,7 +349,6 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
                 {question.language} - {question.level}
               </Badge>
             </Group>
-
             {/* Show passage for reading comprehension questions */}
             {question.type === 'reading_comprehension' &&
               question.content?.passage && (
