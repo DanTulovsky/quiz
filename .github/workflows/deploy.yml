@@ -2,20 +2,20 @@ name: Deploy
 
 on:
   workflow_dispatch: # Allow manual trigger
-#   workflow_run:
-#     workflows: ["Release"]
-#     types:
-#       - completed
+  workflow_run:
+    workflows: ["Release"]
+    types:
+      - completed
 
 # Cancel any in-progress deployment for the same ref if a new one starts
-# concurrency:
-#   group: ${{ github.workflow }}-${{ github.ref }}
-#   cancel-in-progress: true
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   deploy:
     # Ensure we only run when Release completed successfully
-    # if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-24.04-arm
 
     steps:
