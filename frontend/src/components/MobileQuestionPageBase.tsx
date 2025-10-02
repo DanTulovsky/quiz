@@ -27,6 +27,7 @@ import { Volume2, VolumeX } from 'lucide-react';
 import { useQuestionFlow } from '../hooks/useQuestionFlow';
 import { useTTS } from '../hooks/useTTS';
 import { defaultVoiceForLanguage } from '../utils/tts';
+import { splitIntoParagraphs } from '../utils/reading';
 import {
   usePostV1QuizQuestionIdReport,
   usePostV1QuizQuestionIdMarkKnown,
@@ -410,7 +411,23 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
                       letterSpacing: 0.2,
                     }}
                   >
-                    {question.content.passage}
+                    {(() => {
+                      try {
+                        const { splitIntoParagraphs } = require('../utils/reading');
+                        const paras = splitIntoParagraphs(
+                          question.content.passage,
+                          3 // mobile: 3 sentences per paragraph
+                        );
+                        return paras.map((p: string, idx: number) => (
+                          <div key={idx} style={{ marginBottom: idx < paras.length - 1 ? 12 : 0 }}>
+                            {p}
+                            {idx < paras.length - 1 ? <br /> : null}
+                          </div>
+                        ));
+                      } catch (e) {
+                        return question.content.passage;
+                      }
+                    })()}
                   </Text>
                 </Paper>
               )}

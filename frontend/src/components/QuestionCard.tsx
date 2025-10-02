@@ -47,6 +47,7 @@ import { useHotkeys } from 'react-hotkeys-hook';
 // Tabler icons package provides named exports under '@tabler/icons-react' in this repo's setup.
 // Keep the import but fall back to a lightweight local mapping when types are missing.
 import * as TablerIcons from '@tabler/icons-react';
+import { splitIntoParagraphs } from '../utils/reading';
 
 const tablerIconMap = TablerIcons as unknown as Record<
   string,
@@ -1003,7 +1004,24 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                     }}
                     className='reading-passage-text'
                   >
-                    {question.content.passage}
+                    {(() => {
+                      // On desktop (QuestionCard) split every 5 sentences
+                      try {
+                        const { splitIntoParagraphs } = require('../utils/reading');
+                        const paras = splitIntoParagraphs(
+                          question.content.passage,
+                          5
+                        );
+                        return paras.map((p: string, idx: number) => (
+                          <div key={idx} style={{ marginBottom: idx < paras.length - 1 ? 12 : 0 }}>
+                            {p}
+                            {idx < paras.length - 1 ? <br /> : null}
+                          </div>
+                        ));
+                      } catch (e) {
+                        return question.content.passage;
+                      }
+                    })()}
                   </Text>
                 </Paper>
               )}
