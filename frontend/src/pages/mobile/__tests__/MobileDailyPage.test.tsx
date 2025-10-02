@@ -108,13 +108,13 @@ describe('MobileDailyPage', () => {
   it('renders current question', () => {
     renderComponent();
     // Should still have header badge but not duplicate within question card
-    expect(screen.queryByText('Italian - A1')).toBeNull();
+    expect(screen.getAllByText('Italian - A1').length).toBe(1);
     expect(screen.getByText('Bene')).toBeInTheDocument();
   });
 
   it('shows language and level badge', () => {
     renderComponent();
-    expect(screen.queryByText('Italian - A1')).toBeNull();
+    expect(screen.getAllByText('Italian - A1').length).toBe(1);
   });
 
   it('renders all answer options', () => {
