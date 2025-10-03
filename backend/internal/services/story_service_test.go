@@ -17,11 +17,9 @@ type StoryServiceTestSuite struct {
 	suite.Suite
 	db           *sql.DB
 	storyService StoryServiceInterface
-	userService  UserServiceInterface
 	config       *config.Config
 	logger       *observability.Logger
 	testUserID   uint
-	testStoryID  uint
 }
 
 // SetupSuite runs once before all tests in the suite
@@ -45,7 +43,7 @@ func (suite *StoryServiceTestSuite) SetupSuite() {
 // TearDownSuite runs once after all tests in the suite
 func (suite *StoryServiceTestSuite) TearDownSuite() {
 	if suite.db != nil {
-		suite.db.Close()
+		_ = suite.db.Close()
 	}
 }
 

@@ -112,29 +112,6 @@ describe('StoryReadingView', () => {
     });
   });
 
-  describe('View Mode Toggle', () => {
-    it('displays current view mode correctly', () => {
-      renderComponent({ viewMode: 'reading' });
-
-      const readingViewButton = screen.getByRole('button', {
-        name: /Reading View/,
-      });
-      expect(readingViewButton).toBeInTheDocument();
-    });
-
-    it('calls onViewModeChange when toggle is clicked', () => {
-      const mockOnViewModeChange = vi.fn();
-      renderComponent({ onViewModeChange: mockOnViewModeChange });
-
-      const readingViewButton = screen.getByRole('button', {
-        name: /Reading View/,
-      });
-      fireEvent.click(readingViewButton);
-
-      expect(mockOnViewModeChange).toHaveBeenCalled();
-    });
-  });
-
   describe('Empty States', () => {
     it('displays empty state when no story provided', () => {
       renderComponent({ story: null });
@@ -202,14 +179,6 @@ describe('StoryReadingView', () => {
       // Should have proper heading structure
       expect(screen.getByRole('heading', { level: 3 })).toBeInTheDocument();
       expect(screen.getByRole('heading', { level: 5 })).toBeInTheDocument();
-    });
-
-    it('has accessible button labels', () => {
-      renderComponent();
-
-      expect(
-        screen.getByRole('button', { name: /Reading View/ })
-      ).toBeInTheDocument();
     });
   });
 

@@ -115,17 +115,6 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
             Next
           </Button>
         </Group>
-
-        {/* View Mode Toggle */}
-        <Group position='center' mt='sm'>
-          <Button
-            variant={viewMode === 'section' ? 'filled' : 'light'}
-            size='xs'
-            onClick={() => onViewModeChange()}
-          >
-            {viewMode === 'section' ? 'Section View' : 'Reading View'}
-          </Button>
-        </Group>
       </Paper>
 
       {/* Section Content */}

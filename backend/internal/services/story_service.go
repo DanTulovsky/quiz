@@ -241,11 +241,75 @@ func (s *StoryService) ArchiveStory(ctx context.Context, storyID, userID uint) e
 		return err
 	}
 
-	// Archive the story and unset is_current flag in one transaction
+	// Use a transaction to ensure atomicity and handle is_current flag properly
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return contextutils.WrapErrorf(err, "failed to begin transaction")
+	}
+	defer func() { _ = tx.Rollback() }()
+
+	// First, check if the story being archived is the current story
+	var isCurrentlyCurrent bool
+	checkQuery := "SELECT is_current FROM stories WHERE id = $1"
+	err = tx.QueryRowContext(ctx, checkQuery, storyID).Scan(&isCurrentlyCurrent)
+	if err != nil {
+		return contextutils.WrapErrorf(err, "failed to check if story is current")
+	}
+
+	// Archive the story and unset is_current flag
 	query := "UPDATE stories SET status = $1, is_current = $2, updated_at = NOW() WHERE id = $3"
-	_, err := s.db.ExecContext(ctx, query, models.StoryStatusArchived, false, storyID)
+	_, err = tx.ExecContext(ctx, query, models.StoryStatusArchived, false, storyID)
 	if err != nil {
 		return contextutils.WrapErrorf(err, "failed to archive story")
+	}
+
+	// If the archived story was the current story, ensure no other story is marked as current
+	// This handles the case where there might be constraint violations due to race conditions
+	if isCurrentlyCurrent {
+		// Count how many stories are still marked as current for this user
+		var currentCount int
+		countQuery := "SELECT COUNT(*) FROM stories WHERE user_id = $1 AND is_current = true"
+		err = tx.QueryRowContext(ctx, countQuery, userID).Scan(&currentCount)
+		if err != nil {
+			return contextutils.WrapErrorf(err, "failed to count current stories")
+		}
+
+		// If there are multiple current stories (which shouldn't happen), unset all but one
+		if currentCount > 1 {
+			// Find the most recently updated active story to keep as current
+			// If no active stories exist, that's fine - no story will be current
+			var activeStoryID *uint
+			selectQuery := `
+				SELECT id FROM stories
+				WHERE user_id = $1 AND status = 'active'
+				ORDER BY updated_at DESC
+				LIMIT 1`
+			err = tx.QueryRowContext(ctx, selectQuery, userID).Scan(&activeStoryID)
+			if err != nil && err != sql.ErrNoRows {
+				return contextutils.WrapErrorf(err, "failed to find active story to set as current")
+			}
+
+			// Unset all current stories for this user
+			unsetQuery := "UPDATE stories SET is_current = false, updated_at = NOW() WHERE user_id = $1 AND is_current = true"
+			_, err = tx.ExecContext(ctx, unsetQuery, userID)
+			if err != nil {
+				return contextutils.WrapErrorf(err, "failed to unset current stories")
+			}
+
+			// If we found an active story, set it as current
+			if activeStoryID != nil {
+				setCurrentQuery := "UPDATE stories SET is_current = true, updated_at = NOW() WHERE id = $1"
+				_, err = tx.ExecContext(ctx, setCurrentQuery, *activeStoryID)
+				if err != nil {
+					return contextutils.WrapErrorf(err, "failed to set new current story")
+				}
+			}
+		}
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return contextutils.WrapErrorf(err, "failed to commit transaction")
 	}
 
 	s.logger.Info(context.Background(), "Story archived successfully",

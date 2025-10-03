@@ -73,15 +73,6 @@ const StoryReadingView: React.FC<StoryReadingViewProps> = ({
               )}
             </Group>
           </div>
-
-          <Button
-            variant={viewMode === 'reading' ? 'filled' : 'light'}
-            size='xs'
-            leftIcon={<IconEye size={16} />}
-            onClick={() => onViewModeChange()}
-          >
-            {viewMode === 'reading' ? 'Reading View' : 'Section View'}
-          </Button>
         </Group>
       </Paper>
 

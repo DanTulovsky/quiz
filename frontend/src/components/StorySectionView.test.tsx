@@ -159,29 +159,6 @@ describe('StorySectionView', () => {
     });
   });
 
-  describe('View Mode Toggle', () => {
-    it('displays current view mode correctly', () => {
-      renderComponent({ viewMode: 'section' });
-
-      const sectionViewButton = screen.getByRole('button', {
-        name: /Section View/,
-      });
-      expect(sectionViewButton).toBeInTheDocument();
-    });
-
-    it('calls onViewModeChange when toggle is clicked', () => {
-      const mockOnViewModeChange = vi.fn();
-      renderComponent({ onViewModeChange: mockOnViewModeChange });
-
-      const sectionViewButton = screen.getByRole('button', {
-        name: /Section View/,
-      });
-      fireEvent.click(sectionViewButton);
-
-      expect(mockOnViewModeChange).toHaveBeenCalled();
-    });
-  });
-
   describe('Question Display', () => {
     it('displays questions when available', () => {
       renderComponent();
