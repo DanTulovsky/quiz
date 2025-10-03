@@ -4,31 +4,19 @@ import {
   Title,
   Text,
   Group,
-  Button,
   Badge,
   Stack,
   Divider,
   ScrollArea,
 } from '@mantine/core';
-import {
-  IconBook,
-  IconLanguage,
-  IconFileText,
-  IconEye,
-} from '@tabler/icons-react';
+import { IconBook, IconLanguage, IconFileText } from '@tabler/icons-react';
 import { StoryWithSections } from '../api/storyApi';
 
 interface StoryReadingViewProps {
   story: StoryWithSections | null;
-  onViewModeChange: () => void;
-  viewMode: 'section' | 'reading';
 }
 
-const StoryReadingView: React.FC<StoryReadingViewProps> = ({
-  story,
-  onViewModeChange,
-  viewMode,
-}) => {
+const StoryReadingView: React.FC<StoryReadingViewProps> = ({ story }) => {
   if (!story) {
     return (
       <Paper p='xl' radius='md' style={{ textAlign: 'center' }}>

@@ -33,8 +33,6 @@ interface StorySectionViewProps {
   onGenerateNext: () => void;
   onPrevious: () => void;
   onNext: () => void;
-  onViewModeChange: () => void;
-  viewMode: 'section' | 'reading';
 }
 
 const StorySectionView: React.FC<StorySectionViewProps> = ({
@@ -47,8 +45,6 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
   onGenerateNext,
   onPrevious,
   onNext,
-  onViewModeChange,
-  viewMode,
 }) => {
   if (!section) {
     return (

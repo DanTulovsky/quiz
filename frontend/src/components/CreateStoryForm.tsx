@@ -99,7 +99,7 @@ const CreateStoryForm: React.FC<CreateStoryFormProps> = ({
     try {
       // Filter out null values for optional fields
       const filteredData: CreateStoryRequest = Object.fromEntries(
-        Object.entries(formData).filter(([_, value]) => value !== null)
+        Object.entries(formData).filter(([, value]) => value !== null)
       ) as CreateStoryRequest;
       await onSubmit(filteredData);
     } catch {
