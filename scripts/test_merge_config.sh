@@ -37,7 +37,7 @@ if [ ! -f "$MERGE_SCRIPT" ]; then
     exit 1
 fi
 
-"$MERGE_SCRIPT" main.yaml local.yaml merged.yaml
+bash "$MERGE_SCRIPT" main.yaml local.yaml merged.yaml
 
 grep -q 'foo: override' merged.yaml || {
     echo "FAIL: foo not overridden"
@@ -100,7 +100,7 @@ providers:
         max_tokens: 1000
 EOF
 
-"$MERGE_SCRIPT" main.yaml local.yaml merged.yaml
+bash "$MERGE_SCRIPT" main.yaml local.yaml merged.yaml
 
 # Check that system.auth.signups_disabled is overridden
 if grep -A2 'system:' merged.yaml | grep -A1 'auth:' | grep -q 'signups_disabled: false'; then
