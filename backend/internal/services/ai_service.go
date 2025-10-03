@@ -736,7 +736,6 @@ func (s *AIService) GenerateStorySection(ctx context.Context, userConfig *UserAI
 		storyResult, storyErr = s.callOpenAI(ctx, userConfig, prompt, "")
 		return storyErr
 	})
-
 	if err != nil {
 		return "", err
 	}
@@ -768,12 +767,11 @@ func (s *AIService) GenerateStoryQuestions(ctx context.Context, userConfig *User
 		// Parse the JSON response into question data
 		questionsResult, questionsErr = s.parseStoryQuestionsResponse(response)
 		if questionsErr != nil {
-			return fmt.Errorf("failed to parse story questions response: %w", questionsErr)
+			return contextutils.WrapErrorf(questionsErr, "failed to parse story questions response")
 		}
 
 		return nil
 	})
-
 	if err != nil {
 		return nil, err
 	}
@@ -801,7 +799,7 @@ PreviousSections: %s`,
 	template, err := s.templateManager.RenderTemplate("story_section_prompt.tmpl", templateData)
 	if err != nil {
 		// No fallback - error out if template not found
-		panic(fmt.Errorf("failed to render story section template: %w", err))
+		panic(contextutils.WrapErrorf(err, "failed to render story section template"))
 	}
 
 	return template
@@ -824,7 +822,7 @@ QuestionCount: %d`,
 	template, err := s.templateManager.RenderTemplate("story_questions_prompt.tmpl", templateData)
 	if err != nil {
 		// No fallback - error out if template not found
-		panic(fmt.Errorf("failed to render story questions template: %w", err))
+		panic(contextutils.WrapErrorf(err, "failed to render story questions template"))
 	}
 
 	return template
@@ -871,19 +869,19 @@ func (s *AIService) parseStoryQuestionsResponse(response string) ([]*models.Stor
 
 	var questions []*models.StorySectionQuestionData
 	if err := json.Unmarshal([]byte(response), &questions); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal questions JSON: %w", err)
+		return nil, contextutils.WrapErrorf(err, "failed to unmarshal questions JSON")
 	}
 
 	// Validate the questions
 	for i, q := range questions {
 		if q.QuestionText == "" {
-			return nil, fmt.Errorf("question %d: missing question text", i)
+			return nil, contextutils.ErrorWithContextf("question %d: missing question text", i)
 		}
 		if len(q.Options) != 4 {
-			return nil, fmt.Errorf("question %d: must have exactly 4 options, got %d", i, len(q.Options))
+			return nil, contextutils.ErrorWithContextf("question %d: must have exactly 4 options, got %d", i, len(q.Options))
 		}
 		if q.CorrectAnswerIndex < 0 || q.CorrectAnswerIndex >= 4 {
-			return nil, fmt.Errorf("question %d: correct_answer_index must be 0-3, got %d", i, q.CorrectAnswerIndex)
+			return nil, contextutils.ErrorWithContextf("question %d: correct_answer_index must be 0-3, got %d", i, q.CorrectAnswerIndex)
 		}
 	}
 

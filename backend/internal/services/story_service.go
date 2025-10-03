@@ -11,6 +11,7 @@ import (
 	"quizapp/internal/config"
 	"quizapp/internal/models"
 	"quizapp/internal/observability"
+	contextutils "quizapp/internal/utils"
 )
 
 // StoryServiceInterface defines the interface for story operations
@@ -18,14 +19,14 @@ type StoryServiceInterface interface {
 	CreateStory(ctx context.Context, userID uint, language string, req *models.CreateStoryRequest) (*models.Story, error)
 	GetUserStories(ctx context.Context, userID uint, includeArchived bool) ([]models.Story, error)
 	GetCurrentStory(ctx context.Context, userID uint) (*models.StoryWithSections, error)
-	GetStory(ctx context.Context, storyID uint, userID uint) (*models.StoryWithSections, error)
-	ArchiveStory(ctx context.Context, storyID uint, userID uint) error
-	CompleteStory(ctx context.Context, storyID uint, userID uint) error
-	SetCurrentStory(ctx context.Context, storyID uint, userID uint) error
-	DeleteStory(ctx context.Context, storyID uint, userID uint) error
+	GetStory(ctx context.Context, storyID, userID uint) (*models.StoryWithSections, error)
+	ArchiveStory(ctx context.Context, storyID, userID uint) error
+	CompleteStory(ctx context.Context, storyID, userID uint) error
+	SetCurrentStory(ctx context.Context, storyID, userID uint) error
+	DeleteStory(ctx context.Context, storyID, userID uint) error
 	GetStorySections(ctx context.Context, storyID uint) ([]models.StorySection, error)
-	GetSection(ctx context.Context, sectionID uint, userID uint) (*models.StorySectionWithQuestions, error)
-	CreateSection(ctx context.Context, storyID uint, content string, level string, wordCount int) (*models.StorySection, error)
+	GetSection(ctx context.Context, sectionID, userID uint) (*models.StorySectionWithQuestions, error)
+	CreateSection(ctx context.Context, storyID uint, content, level string, wordCount int) (*models.StorySection, error)
 	GetLatestSection(ctx context.Context, storyID uint) (*models.StorySection, error)
 	GetAllSectionsText(ctx context.Context, storyID uint) (string, error)
 	GetSectionQuestions(ctx context.Context, sectionID uint) ([]models.StorySectionQuestion, error)
@@ -34,7 +35,7 @@ type StoryServiceInterface interface {
 	CanGenerateSection(ctx context.Context, storyID uint) (bool, error)
 	UpdateLastGenerationTime(ctx context.Context, storyID uint) error
 	GetSectionLengthTarget(level string, lengthPref *models.SectionLength) int
-	GetSectionLengthTargetWithLanguage(language string, level string, lengthPref *models.SectionLength) int
+	GetSectionLengthTargetWithLanguage(language, level string, lengthPref *models.SectionLength) int
 	SanitizeInput(input string) string
 }
 
@@ -57,23 +58,23 @@ func NewStoryService(db *sql.DB, config *config.Config, logger *observability.Lo
 // CreateStory creates a new story for the user
 func (s *StoryService) CreateStory(ctx context.Context, userID uint, language string, req *models.CreateStoryRequest) (*models.Story, error) {
 	if err := req.Validate(); err != nil {
-		return nil, fmt.Errorf("invalid story request: %w", err)
+		return nil, contextutils.WrapErrorf(err, "invalid story request")
 	}
 
 	// Check if user has reached the archived story limit
 	archivedCount, err := s.getArchivedStoryCount(ctx, userID)
 	if err != nil {
-		return nil, fmt.Errorf("failed to check archived story count: %w", err)
+		return nil, contextutils.WrapErrorf(err, "failed to check archived story count")
 	}
 
 	if archivedCount >= s.config.Story.MaxArchivedPerUser {
-		return nil, fmt.Errorf("maximum archived stories limit reached (%d)", s.config.Story.MaxArchivedPerUser)
+		return nil, contextutils.ErrorWithContextf("maximum archived stories limit reached (%d)", s.config.Story.MaxArchivedPerUser)
 	}
 
 	// Get user's current language level (stored for potential future use)
 	_, err = s.getUserCurrentLevel(ctx, userID)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get user level: %w", err)
+		return nil, contextutils.WrapErrorf(err, "failed to get user level")
 	}
 
 	// Create the story
@@ -96,7 +97,7 @@ func (s *StoryService) CreateStory(ctx context.Context, userID uint, language st
 	}
 
 	if err := s.createStory(ctx, story); err != nil {
-		return nil, fmt.Errorf("failed to create story: %w", err)
+		return nil, contextutils.WrapErrorf(err, "failed to create story")
 	}
 
 	s.logger.Info(context.Background(), "Story created successfully",
@@ -131,7 +132,7 @@ func (s *StoryService) GetUserStories(ctx context.Context, userID uint, includeA
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	var stories []models.Story
 	for rows.Next() {
@@ -169,18 +170,17 @@ func (s *StoryService) GetCurrentStory(ctx context.Context, userID uint) (*model
 		&story.Status, &story.IsCurrent, &story.LastSectionGeneratedAt,
 		&story.CreatedAt, &story.UpdatedAt,
 	)
-
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil // No current story
 		}
-		return nil, fmt.Errorf("failed to get current story: %w", err)
+		return nil, contextutils.WrapErrorf(err, "failed to get current story")
 	}
 
 	// Load sections
 	sections, err := s.GetStorySections(ctx, story.ID)
 	if err != nil {
-		return nil, fmt.Errorf("failed to load story sections: %w", err)
+		return nil, contextutils.WrapErrorf(err, "failed to load story sections")
 	}
 
 	return &models.StoryWithSections{
@@ -190,7 +190,7 @@ func (s *StoryService) GetCurrentStory(ctx context.Context, userID uint) (*model
 }
 
 // GetStory retrieves a specific story with ownership verification
-func (s *StoryService) GetStory(ctx context.Context, storyID uint, userID uint) (*models.StoryWithSections, error) {
+func (s *StoryService) GetStory(ctx context.Context, storyID, userID uint) (*models.StoryWithSections, error) {
 	query := `
 		SELECT id, user_id, title, language, subject, author_style, time_period, genre, tone,
 		       character_names, custom_instructions, section_length_override, status, is_current,
@@ -206,18 +206,17 @@ func (s *StoryService) GetStory(ctx context.Context, storyID uint, userID uint) 
 		&story.Status, &story.IsCurrent, &story.LastSectionGeneratedAt,
 		&story.CreatedAt, &story.UpdatedAt,
 	)
-
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, fmt.Errorf("story not found or access denied")
+			return nil, contextutils.ErrorWithContextf("story not found or access denied")
 		}
-		return nil, fmt.Errorf("failed to get story: %w", err)
+		return nil, contextutils.WrapErrorf(err, "failed to get story")
 	}
 
 	// Load sections
 	sections, err := s.GetStorySections(ctx, story.ID)
 	if err != nil {
-		return nil, fmt.Errorf("failed to load story sections: %w", err)
+		return nil, contextutils.WrapErrorf(err, "failed to load story sections")
 	}
 
 	return &models.StoryWithSections{
@@ -227,7 +226,7 @@ func (s *StoryService) GetStory(ctx context.Context, storyID uint, userID uint) 
 }
 
 // ArchiveStory changes a story's status to archived
-func (s *StoryService) ArchiveStory(ctx context.Context, storyID uint, userID uint) error {
+func (s *StoryService) ArchiveStory(ctx context.Context, storyID, userID uint) error {
 	if err := s.validateStoryOwnership(ctx, storyID, userID); err != nil {
 		return err
 	}
@@ -235,7 +234,7 @@ func (s *StoryService) ArchiveStory(ctx context.Context, storyID uint, userID ui
 	query := "UPDATE stories SET status = $1, updated_at = NOW() WHERE id = $2"
 	_, err := s.db.ExecContext(ctx, query, models.StoryStatusArchived, storyID)
 	if err != nil {
-		return fmt.Errorf("failed to archive story: %w", err)
+		return contextutils.WrapErrorf(err, "failed to archive story")
 	}
 
 	s.logger.Info(context.Background(), "Story archived successfully",
@@ -248,7 +247,7 @@ func (s *StoryService) ArchiveStory(ctx context.Context, storyID uint, userID ui
 }
 
 // CompleteStory changes a story's status to completed
-func (s *StoryService) CompleteStory(ctx context.Context, storyID uint, userID uint) error {
+func (s *StoryService) CompleteStory(ctx context.Context, storyID, userID uint) error {
 	if err := s.validateStoryOwnership(ctx, storyID, userID); err != nil {
 		return err
 	}
@@ -256,7 +255,7 @@ func (s *StoryService) CompleteStory(ctx context.Context, storyID uint, userID u
 	query := "UPDATE stories SET status = $1, updated_at = NOW() WHERE id = $2"
 	_, err := s.db.ExecContext(ctx, query, models.StoryStatusCompleted, storyID)
 	if err != nil {
-		return fmt.Errorf("failed to complete story: %w", err)
+		return contextutils.WrapErrorf(err, "failed to complete story")
 	}
 
 	s.logger.Info(context.Background(), "Story completed successfully",
@@ -269,7 +268,7 @@ func (s *StoryService) CompleteStory(ctx context.Context, storyID uint, userID u
 }
 
 // SetCurrentStory sets a story as the current active story for the user
-func (s *StoryService) SetCurrentStory(ctx context.Context, storyID uint, userID uint) error {
+func (s *StoryService) SetCurrentStory(ctx context.Context, storyID, userID uint) error {
 	if err := s.validateStoryOwnership(ctx, storyID, userID); err != nil {
 		return err
 	}
@@ -277,29 +276,29 @@ func (s *StoryService) SetCurrentStory(ctx context.Context, storyID uint, userID
 	// Use a transaction to ensure atomicity
 	tx, err := s.db.BeginTx(ctx, nil)
 	if err != nil {
-		return fmt.Errorf("failed to begin transaction: %w", err)
+		return contextutils.WrapErrorf(err, "failed to begin transaction")
 	}
-	defer tx.Rollback()
+	defer func() { _ = tx.Rollback() }()
 
 	// First, unset all current stories for this user
 	query1 := "UPDATE stories SET is_current = false, updated_at = NOW() WHERE user_id = $1 AND is_current = true"
 	_, err = tx.ExecContext(ctx, query1, userID)
 	if err != nil {
-		return fmt.Errorf("failed to unset current stories: %w", err)
+		return contextutils.WrapErrorf(err, "failed to unset current stories")
 	}
 
 	// Then set the specified story as current
 	query2 := "UPDATE stories SET is_current = true, updated_at = NOW() WHERE id = $1"
 	_, err = tx.ExecContext(ctx, query2, storyID)
 	if err != nil {
-		return fmt.Errorf("failed to set current story: %w", err)
+		return contextutils.WrapErrorf(err, "failed to set current story")
 	}
 
 	return tx.Commit()
 }
 
 // DeleteStory permanently deletes a story (only allowed for archived stories)
-func (s *StoryService) DeleteStory(ctx context.Context, storyID uint, userID uint) error {
+func (s *StoryService) DeleteStory(ctx context.Context, storyID, userID uint) error {
 	// Verify story exists and user owns it
 	query := `
 		SELECT id, user_id, title, language, subject, author_style, time_period, genre, tone,
@@ -316,45 +315,44 @@ func (s *StoryService) DeleteStory(ctx context.Context, storyID uint, userID uin
 		&story.Status, &story.IsCurrent, &story.LastSectionGeneratedAt,
 		&story.CreatedAt, &story.UpdatedAt,
 	)
-
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return fmt.Errorf("story not found or access denied")
+			return contextutils.ErrorWithContextf("story not found or access denied")
 		}
-		return fmt.Errorf("failed to get story: %w", err)
+		return contextutils.WrapErrorf(err, "failed to get story")
 	}
 
 	// Only allow deletion of archived or completed stories
 	if story.Status != models.StoryStatusArchived && story.Status != models.StoryStatusCompleted {
-		return fmt.Errorf("cannot delete active story")
+		return contextutils.ErrorWithContextf("cannot delete active story")
 	}
 
 	// Use transaction for atomic deletion
 	tx, err := s.db.BeginTx(ctx, nil)
 	if err != nil {
-		return fmt.Errorf("failed to begin transaction: %w", err)
+		return contextutils.WrapErrorf(err, "failed to begin transaction")
 	}
-	defer tx.Rollback()
+	defer func() { _ = tx.Rollback() }()
 
 	// Delete questions first (due to foreign key constraints)
 	query1 := "DELETE FROM story_section_questions WHERE section_id IN (SELECT id FROM story_sections WHERE story_id = $1)"
 	_, err = tx.ExecContext(ctx, query1, storyID)
 	if err != nil {
-		return fmt.Errorf("failed to delete story questions: %w", err)
+		return contextutils.WrapErrorf(err, "failed to delete story questions")
 	}
 
 	// Delete sections
 	query2 := "DELETE FROM story_sections WHERE story_id = $1"
 	_, err = tx.ExecContext(ctx, query2, storyID)
 	if err != nil {
-		return fmt.Errorf("failed to delete story sections: %w", err)
+		return contextutils.WrapErrorf(err, "failed to delete story sections")
 	}
 
 	// Delete story
 	query3 := "DELETE FROM stories WHERE id = $1"
 	_, err = tx.ExecContext(ctx, query3, storyID)
 	if err != nil {
-		return fmt.Errorf("failed to delete story: %w", err)
+		return contextutils.WrapErrorf(err, "failed to delete story")
 	}
 
 	return tx.Commit()
@@ -371,9 +369,9 @@ func (s *StoryService) GetStorySections(ctx context.Context, storyID uint) ([]mo
 
 	rows, err := s.db.QueryContext(ctx, query, storyID)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get story sections: %w", err)
+		return nil, contextutils.WrapErrorf(err, "failed to get story sections")
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	var sections []models.StorySection
 	for rows.Next() {
@@ -383,7 +381,7 @@ func (s *StoryService) GetStorySections(ctx context.Context, storyID uint) ([]mo
 			&section.LanguageLevel, &section.WordCount, &section.GeneratedAt, &section.GenerationDate,
 		)
 		if err != nil {
-			return nil, fmt.Errorf("failed to scan story section: %w", err)
+			return nil, contextutils.WrapErrorf(err, "failed to scan story section")
 		}
 		sections = append(sections, section)
 	}
@@ -392,7 +390,7 @@ func (s *StoryService) GetStorySections(ctx context.Context, storyID uint) ([]mo
 }
 
 // GetSection retrieves a specific section with ownership verification
-func (s *StoryService) GetSection(ctx context.Context, sectionID uint, userID uint) (*models.StorySectionWithQuestions, error) {
+func (s *StoryService) GetSection(ctx context.Context, sectionID, userID uint) (*models.StorySectionWithQuestions, error) {
 	query := `
 		SELECT ss.id, ss.story_id, ss.section_number, ss.content, ss.language_level, ss.word_count,
 		       ss.generated_at, ss.generation_date
@@ -405,18 +403,17 @@ func (s *StoryService) GetSection(ctx context.Context, sectionID uint, userID ui
 		&section.ID, &section.StoryID, &section.SectionNumber, &section.Content,
 		&section.LanguageLevel, &section.WordCount, &section.GeneratedAt, &section.GenerationDate,
 	)
-
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, fmt.Errorf("section not found or access denied")
+			return nil, contextutils.ErrorWithContextf("section not found or access denied")
 		}
-		return nil, fmt.Errorf("failed to get section: %w", err)
+		return nil, contextutils.WrapErrorf(err, "failed to get section")
 	}
 
 	// Load questions
 	questions, err := s.GetSectionQuestions(ctx, section.ID)
 	if err != nil {
-		return nil, fmt.Errorf("failed to load section questions: %w", err)
+		return nil, contextutils.WrapErrorf(err, "failed to load section questions")
 	}
 
 	return &models.StorySectionWithQuestions{
@@ -426,13 +423,13 @@ func (s *StoryService) GetSection(ctx context.Context, sectionID uint, userID ui
 }
 
 // CreateSection adds a new section to a story
-func (s *StoryService) CreateSection(ctx context.Context, storyID uint, content string, level string, wordCount int) (*models.StorySection, error) {
+func (s *StoryService) CreateSection(ctx context.Context, storyID uint, content, level string, wordCount int) (*models.StorySection, error) {
 	// Get the next section number
 	var maxSectionNumber int
 	query := "SELECT COALESCE(MAX(section_number), 0) FROM story_sections WHERE story_id = $1"
 	err := s.db.QueryRowContext(ctx, query, storyID).Scan(&maxSectionNumber)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get max section number: %w", err)
+		return nil, contextutils.WrapErrorf(err, "failed to get max section number")
 	}
 
 	section := &models.StorySection{
@@ -446,7 +443,7 @@ func (s *StoryService) CreateSection(ctx context.Context, storyID uint, content 
 	}
 
 	if err := s.createSection(ctx, section); err != nil {
-		return nil, fmt.Errorf("failed to create section: %w", err)
+		return nil, contextutils.WrapErrorf(err, "failed to create section")
 	}
 
 	return section, nil
@@ -467,12 +464,11 @@ func (s *StoryService) GetLatestSection(ctx context.Context, storyID uint) (*mod
 		&section.ID, &section.StoryID, &section.SectionNumber, &section.Content,
 		&section.LanguageLevel, &section.WordCount, &section.GeneratedAt, &section.GenerationDate,
 	)
-
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil // No sections yet
 		}
-		return nil, fmt.Errorf("failed to get latest section: %w", err)
+		return nil, contextutils.WrapErrorf(err, "failed to get latest section")
 	}
 
 	return &section, nil
@@ -505,9 +501,9 @@ func (s *StoryService) GetSectionQuestions(ctx context.Context, sectionID uint) 
 
 	rows, err := s.db.QueryContext(ctx, query, sectionID)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get section questions: %w", err)
+		return nil, contextutils.WrapErrorf(err, "failed to get section questions")
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	var questions []models.StorySectionQuestion
 	for rows.Next() {
@@ -517,7 +513,7 @@ func (s *StoryService) GetSectionQuestions(ctx context.Context, sectionID uint) 
 			&question.CorrectAnswerIndex, &question.Explanation, &question.CreatedAt,
 		)
 		if err != nil {
-			return nil, fmt.Errorf("failed to scan question: %w", err)
+			return nil, contextutils.WrapErrorf(err, "failed to scan question")
 		}
 		questions = append(questions, question)
 	}
@@ -533,9 +529,9 @@ func (s *StoryService) CreateSectionQuestions(ctx context.Context, sectionID uin
 
 	tx, err := s.db.BeginTx(ctx, nil)
 	if err != nil {
-		return fmt.Errorf("failed to begin transaction: %w", err)
+		return contextutils.WrapErrorf(err, "failed to begin transaction")
 	}
-	defer tx.Rollback()
+	defer func() { _ = tx.Rollback() }()
 
 	for _, q := range questions {
 		query := `
@@ -547,7 +543,7 @@ func (s *StoryService) CreateSectionQuestions(ctx context.Context, sectionID uin
 			sectionID, q.QuestionText, q.Options, q.CorrectAnswerIndex, q.Explanation, time.Now(),
 		)
 		if err != nil {
-			return fmt.Errorf("failed to insert question: %w", err)
+			return contextutils.WrapErrorf(err, "failed to insert question")
 		}
 	}
 
@@ -565,9 +561,9 @@ func (s *StoryService) GetRandomQuestions(ctx context.Context, sectionID uint, c
 
 	rows, err := s.db.QueryContext(ctx, query, sectionID, count)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get random questions: %w", err)
+		return nil, contextutils.WrapErrorf(err, "failed to get random questions")
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	var questions []models.StorySectionQuestion
 	for rows.Next() {
@@ -577,7 +573,7 @@ func (s *StoryService) GetRandomQuestions(ctx context.Context, sectionID uint, c
 			&question.CorrectAnswerIndex, &question.Explanation, &question.CreatedAt,
 		)
 		if err != nil {
-			return nil, fmt.Errorf("failed to scan question: %w", err)
+			return nil, contextutils.WrapErrorf(err, "failed to scan question")
 		}
 		questions = append(questions, question)
 	}
@@ -599,9 +595,9 @@ func (s *StoryService) CanGenerateSection(ctx context.Context, storyID uint) (bo
 	err := s.db.QueryRowContext(ctx, query, storyID).Scan(&status, &isCurrent, &lastGen)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return false, fmt.Errorf("story not found")
+			return false, contextutils.ErrorWithContextf("story not found")
 		}
-		return false, fmt.Errorf("failed to get story: %w", err)
+		return false, contextutils.WrapErrorf(err, "failed to get story")
 	}
 
 	// Check if story generation is enabled globally
@@ -631,7 +627,7 @@ func (s *StoryService) UpdateLastGenerationTime(ctx context.Context, storyID uin
 	query := "UPDATE stories SET last_section_generated_at = $1, updated_at = NOW() WHERE id = $2"
 	_, err := s.db.ExecContext(ctx, query, time.Now(), storyID)
 	if err != nil {
-		return fmt.Errorf("failed to update generation time: %w", err)
+		return contextutils.WrapErrorf(err, "failed to update generation time")
 	}
 
 	return nil
@@ -657,27 +653,27 @@ func (s *StoryService) getUserCurrentLevel(ctx context.Context, userID uint) (st
 	var level sql.NullString
 	err := s.db.QueryRowContext(ctx, query, userID).Scan(&level)
 	if err != nil {
-		return "", fmt.Errorf("failed to get user: %w", err)
+		return "", contextutils.WrapErrorf(err, "failed to get user")
 	}
 
 	if !level.Valid {
-		return "", fmt.Errorf("user has no current level set")
+		return "", contextutils.ErrorWithContextf("user has no current level set")
 	}
 
 	return level.String, nil
 }
 
 // validateStoryOwnership verifies that a user owns a story
-func (s *StoryService) validateStoryOwnership(ctx context.Context, storyID uint, userID uint) error {
+func (s *StoryService) validateStoryOwnership(ctx context.Context, storyID, userID uint) error {
 	query := "SELECT COUNT(*) FROM stories WHERE id = $1 AND user_id = $2"
 	var count int
 	err := s.db.QueryRowContext(ctx, query, storyID, userID).Scan(&count)
 	if err != nil {
-		return fmt.Errorf("failed to validate story ownership: %w", err)
+		return contextutils.WrapErrorf(err, "failed to validate story ownership")
 	}
 
 	if count == 0 {
-		return fmt.Errorf("story not found or access denied")
+		return contextutils.ErrorWithContextf("story not found or access denied")
 	}
 
 	return nil
@@ -689,7 +685,7 @@ func (s *StoryService) GetSectionLengthTarget(level string, lengthPref *models.S
 }
 
 // GetSectionLengthTargetWithLanguage returns the target word count with language-specific overrides
-func (s *StoryService) GetSectionLengthTargetWithLanguage(language string, level string, lengthPref *models.SectionLength) int {
+func (s *StoryService) GetSectionLengthTargetWithLanguage(language, level string, lengthPref *models.SectionLength) int {
 	// Check for language-specific overrides in config
 	if languageOverrides, exists := s.config.Story.SectionLengths.Overrides[language]; exists {
 		if levelTargets, exists := languageOverrides[level]; exists {

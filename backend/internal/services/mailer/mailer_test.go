@@ -17,17 +17,17 @@ type MockMailer struct {
 	IsEnabledResult              bool
 }
 
-func (m *MockMailer) SendDailyReminder(ctx context.Context, user *models.User) error {
+func (m *MockMailer) SendDailyReminder(_ context.Context, _ *models.User) error {
 	m.SendDailyReminderCalled = true
 	return nil
 }
 
-func (m *MockMailer) SendEmail(ctx context.Context, to, subject, templateName string, data map[string]interface{}) error {
+func (m *MockMailer) SendEmail(_ context.Context, _, _, _ string, _ map[string]interface{}) error {
 	m.SendEmailCalled = true
 	return nil
 }
 
-func (m *MockMailer) RecordSentNotification(ctx context.Context, userID int, notificationType, subject, templateName, status, errorMessage string) error {
+func (m *MockMailer) RecordSentNotification(_ context.Context, _ int, _, _, _, _, _ string) error {
 	m.RecordSentNotificationCalled = true
 	return nil
 }

@@ -30,32 +30,11 @@ func TestServiceContainerIntegrationTestSuite(t *testing.T) {
 }
 
 func (suite *ServiceContainerIntegrationTestSuite) SetupSuite() {
-	// Set environment variables before loading config
-	originalConfigFile := os.Getenv("QUIZ_CONFIG_FILE")
-	originalTestDB := os.Getenv("TEST_DATABASE_URL")
-	originalDB := os.Getenv("DATABASE_URL")
+	os.Setenv("TEST_DATABASE_URL", "postgres://quiz_user:quiz_password@localhost:5433/quiz_test_db?sslmode=disable")
+	os.Setenv("DATABASE_URL", "postgres://quiz_user:quiz_password@localhost:5433/quiz_test_db?sslmode=disable")
 
-	os.Setenv("QUIZ_CONFIG_FILE", "/workspaces/quiz/config.yaml")
-	os.Setenv("TEST_DATABASE_URL", "postgres://quiz_user:quiz_password@host.docker.internal:5433/quiz_test_db?sslmode=disable")
-	os.Setenv("DATABASE_URL", "postgres://quiz_user:quiz_password@host.docker.internal:5433/quiz_test_db?sslmode=disable")
-
-	defer func() {
-		if originalConfigFile != "" {
-			os.Setenv("QUIZ_CONFIG_FILE", originalConfigFile)
-		} else {
-			os.Unsetenv("QUIZ_CONFIG_FILE")
-		}
-		if originalTestDB != "" {
-			os.Setenv("TEST_DATABASE_URL", originalTestDB)
-		} else {
-			os.Unsetenv("TEST_DATABASE_URL")
-		}
-		if originalDB != "" {
-			os.Setenv("DATABASE_URL", originalDB)
-		} else {
-			os.Unsetenv("DATABASE_URL")
-		}
-	}()
+	// Initialize logger
+	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
 
 	// Load configuration
 	cfg, err := config.NewConfig()
@@ -63,7 +42,7 @@ func (suite *ServiceContainerIntegrationTestSuite) SetupSuite() {
 	suite.Config = cfg
 
 	// Setup observability with noop telemetry for tests
-	suite.Logger = observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+	suite.Logger = logger
 
 	// Initialize dependency injection container
 	suite.Container = NewServiceContainer(cfg, suite.Logger)

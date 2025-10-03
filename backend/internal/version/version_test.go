@@ -28,9 +28,9 @@ func TestVersion_DefaultValues(t *testing.T) {
 
 func TestVersion_VariableTypes(t *testing.T) {
 	// Test that variables are of correct types
-	var version string = Version
-	var commit string = Commit
-	var buildTime string = BuildTime
+	version := Version
+	commit := Commit
+	buildTime := BuildTime
 
 	// These should compile and assign correctly
 	assert.IsType(t, "", version)

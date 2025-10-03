@@ -335,22 +335,22 @@ type DailyReminderConfig struct {
 
 // StorySectionLengthsConfig represents section length configuration by proficiency level
 type StorySectionLengthsConfig struct {
-	Beginner          map[string]int                 `json:"beginner" yaml:"beginner"`
-	Elementary        map[string]int                 `json:"elementary" yaml:"elementary"`
-	Intermediate      map[string]int                 `json:"intermediate" yaml:"intermediate"`
-	UpperIntermediate map[string]int                 `json:"upper_intermediate" yaml:"upper_intermediate"`
-	Advanced          map[string]int                 `json:"advanced" yaml:"advanced"`
-	Proficient        map[string]int                 `json:"proficient" yaml:"proficient"`
+	Beginner          map[string]int                       `json:"beginner" yaml:"beginner"`
+	Elementary        map[string]int                       `json:"elementary" yaml:"elementary"`
+	Intermediate      map[string]int                       `json:"intermediate" yaml:"intermediate"`
+	UpperIntermediate map[string]int                       `json:"upper_intermediate" yaml:"upper_intermediate"`
+	Advanced          map[string]int                       `json:"advanced" yaml:"advanced"`
+	Proficient        map[string]int                       `json:"proficient" yaml:"proficient"`
 	Overrides         map[string]map[string]map[string]int `json:"overrides" yaml:"overrides"`
 }
 
 // StoryConfig represents story mode configuration
 type StoryConfig struct {
-	MaxArchivedPerUser   int                        `json:"max_archived_per_user" yaml:"max_archived_per_user"`
-	GenerationEnabled    bool                       `json:"generation_enabled" yaml:"generation_enabled"`
-	SectionLengths       StorySectionLengthsConfig `json:"section_lengths" yaml:"section_lengths"`
-	QuestionsPerSection  int                        `json:"questions_per_section" yaml:"questions_per_section"`
-	QuestionsShown       int                        `json:"questions_shown" yaml:"questions_shown"`
+	MaxArchivedPerUser  int                       `json:"max_archived_per_user" yaml:"max_archived_per_user"`
+	GenerationEnabled   bool                      `json:"generation_enabled" yaml:"generation_enabled"`
+	SectionLengths      StorySectionLengthsConfig `json:"section_lengths" yaml:"section_lengths"`
+	QuestionsPerSection int                       `json:"questions_per_section" yaml:"questions_per_section"`
+	QuestionsShown      int                       `json:"questions_shown" yaml:"questions_shown"`
 }
 
 // NewConfig loads configuration from YAML file first, then overrides with environment variables

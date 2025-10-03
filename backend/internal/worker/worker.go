@@ -741,7 +741,7 @@ func (w *Worker) checkForStoryGenerations(ctx context.Context) error {
 	// Get all users with current active stories
 	users, err := w.getUsersWithActiveStories(ctx)
 	if err != nil {
-		return fmt.Errorf("failed to get users with active stories: %w", err)
+		return contextutils.WrapErrorf(err, "failed to get users with active stories")
 	}
 
 	w.logger.Info(ctx, "Found users with active stories",
@@ -787,7 +787,7 @@ func (w *Worker) generateStorySection(ctx context.Context, user models.User) err
 	// Get the user's current story
 	story, err := w.storyService.GetCurrentStory(ctx, uint(user.ID))
 	if err != nil {
-		return fmt.Errorf("failed to get current story for user %d: %w", user.ID, err)
+		return contextutils.WrapErrorf(err, "failed to get current story for user %d", user.ID)
 	}
 	if story == nil {
 		// No current story, skip
@@ -797,7 +797,7 @@ func (w *Worker) generateStorySection(ctx context.Context, user models.User) err
 	// Check if we can generate a section today
 	canGenerate, err := w.storyService.CanGenerateSection(ctx, story.ID)
 	if err != nil {
-		return fmt.Errorf("failed to check if section can be generated: %w", err)
+		return contextutils.WrapErrorf(err, "failed to check if section can be generated")
 	}
 	if !canGenerate {
 		// Already generated today or story is not active
@@ -807,7 +807,7 @@ func (w *Worker) generateStorySection(ctx context.Context, user models.User) err
 	// Get all previous sections for context
 	previousSections, err := w.storyService.GetAllSectionsText(ctx, story.ID)
 	if err != nil {
-		return fmt.Errorf("failed to get previous sections: %w", err)
+		return contextutils.WrapErrorf(err, "failed to get previous sections")
 	}
 
 	// Get user's current language level
@@ -846,7 +846,7 @@ func (w *Worker) generateStorySection(ctx context.Context, user models.User) err
 	// Generate the story section
 	sectionContent, err := w.aiService.GenerateStorySection(ctx, userConfig, genReq)
 	if err != nil {
-		return fmt.Errorf("failed to generate story section: %w", err)
+		return contextutils.WrapErrorf(err, "failed to generate story section")
 	}
 
 	// Count words in the generated content
@@ -855,7 +855,7 @@ func (w *Worker) generateStorySection(ctx context.Context, user models.User) err
 	// Create the section in the database
 	section, err := w.storyService.CreateSection(ctx, story.ID, sectionContent, userLevel, wordCount)
 	if err != nil {
-		return fmt.Errorf("failed to create story section: %w", err)
+		return contextutils.WrapErrorf(err, "failed to create story section")
 	}
 
 	// Generate comprehension questions for the section
@@ -922,7 +922,7 @@ func (w *Worker) getUsersWithActiveStories(ctx context.Context) ([]models.User, 
 	// Get all users first
 	allUsers, err := w.userService.GetAllUsers(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get all users: %w", err)
+		return nil, contextutils.WrapErrorf(err, "failed to get all users")
 	}
 
 	// Filter to only users with current active stories and AI enabled
@@ -953,13 +953,6 @@ func (w *Worker) getUsersWithActiveStories(ctx context.Context) ([]models.User, 
 	}
 
 	return filteredUsers, nil
-}
-
-// hasValidAPIKeys checks if a user has valid API keys for their provider
-func (w *Worker) hasValidAPIKeys(user models.User) bool {
-	// For now, assume users with AI enabled and provider/model configured have valid keys
-	// In a real implementation, you might want to check the actual API key validity
-	return user.AIEnabled.Valid && user.AIEnabled.Bool && user.AIProvider.Valid && user.AIModel.Valid
 }
 
 // GetActivityLogs returns recent activity logs

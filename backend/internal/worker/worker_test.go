@@ -66,27 +66,27 @@ func (m *mockStoryService) GetCurrentStory(ctx context.Context, userID uint) (*m
 	return args.Get(0).(*models.StoryWithSections), args.Error(1)
 }
 
-func (m *mockStoryService) GetStory(ctx context.Context, storyID uint, userID uint) (*models.StoryWithSections, error) {
+func (m *mockStoryService) GetStory(ctx context.Context, storyID, userID uint) (*models.StoryWithSections, error) {
 	args := m.Called(ctx, storyID, userID)
 	return args.Get(0).(*models.StoryWithSections), args.Error(1)
 }
 
-func (m *mockStoryService) ArchiveStory(ctx context.Context, storyID uint, userID uint) error {
+func (m *mockStoryService) ArchiveStory(ctx context.Context, storyID, userID uint) error {
 	args := m.Called(ctx, storyID, userID)
 	return args.Error(0)
 }
 
-func (m *mockStoryService) CompleteStory(ctx context.Context, storyID uint, userID uint) error {
+func (m *mockStoryService) CompleteStory(ctx context.Context, storyID, userID uint) error {
 	args := m.Called(ctx, storyID, userID)
 	return args.Error(0)
 }
 
-func (m *mockStoryService) SetCurrentStory(ctx context.Context, storyID uint, userID uint) error {
+func (m *mockStoryService) SetCurrentStory(ctx context.Context, storyID, userID uint) error {
 	args := m.Called(ctx, storyID, userID)
 	return args.Error(0)
 }
 
-func (m *mockStoryService) DeleteStory(ctx context.Context, storyID uint, userID uint) error {
+func (m *mockStoryService) DeleteStory(ctx context.Context, storyID, userID uint) error {
 	args := m.Called(ctx, storyID, userID)
 	return args.Error(0)
 }
@@ -96,12 +96,12 @@ func (m *mockStoryService) GetStorySections(ctx context.Context, storyID uint) (
 	return args.Get(0).([]models.StorySection), args.Error(1)
 }
 
-func (m *mockStoryService) GetSection(ctx context.Context, sectionID uint, userID uint) (*models.StorySectionWithQuestions, error) {
+func (m *mockStoryService) GetSection(ctx context.Context, sectionID, userID uint) (*models.StorySectionWithQuestions, error) {
 	args := m.Called(ctx, sectionID, userID)
 	return args.Get(0).(*models.StorySectionWithQuestions), args.Error(1)
 }
 
-func (m *mockStoryService) CreateSection(ctx context.Context, storyID uint, content string, level string, wordCount int) (*models.StorySection, error) {
+func (m *mockStoryService) CreateSection(ctx context.Context, storyID uint, content, level string, wordCount int) (*models.StorySection, error) {
 	args := m.Called(ctx, storyID, content, level, wordCount)
 	return args.Get(0).(*models.StorySection), args.Error(1)
 }
@@ -149,7 +149,7 @@ func (m *mockStoryService) GetSectionLengthTarget(level string, lengthPref *mode
 	return args.Int(0)
 }
 
-func (m *mockStoryService) GetSectionLengthTargetWithLanguage(language string, level string, lengthPref *models.SectionLength) int {
+func (m *mockStoryService) GetSectionLengthTargetWithLanguage(language, level string, lengthPref *models.SectionLength) int {
 	args := m.Called(language, level, lengthPref)
 	return args.Int(0)
 }

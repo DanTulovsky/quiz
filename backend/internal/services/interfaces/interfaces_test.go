@@ -17,17 +17,17 @@ type MockEmailService struct {
 	IsEnabledResult              bool
 }
 
-func (m *MockEmailService) SendDailyReminder(ctx context.Context, user *models.User) error {
+func (m *MockEmailService) SendDailyReminder(_ context.Context, _ *models.User) error {
 	m.SendDailyReminderCalled = true
 	return nil
 }
 
-func (m *MockEmailService) SendEmail(ctx context.Context, to, subject, templateName string, data map[string]interface{}) error {
+func (m *MockEmailService) SendEmail(_ context.Context, _, _, _ string, _ map[string]interface{}) error {
 	m.SendEmailCalled = true
 	return nil
 }
 
-func (m *MockEmailService) RecordSentNotification(ctx context.Context, userID int, notificationType, subject, templateName, status, errorMessage string) error {
+func (m *MockEmailService) RecordSentNotification(_ context.Context, _ int, _, _, _, _, _ string) error {
 	m.RecordSentNotificationCalled = true
 	return nil
 }
@@ -43,12 +43,12 @@ type MockLifecycleService struct {
 	IsReadyResult  bool
 }
 
-func (m *MockLifecycleService) Startup(ctx context.Context) error {
+func (m *MockLifecycleService) Startup(_ context.Context) error {
 	m.StartupCalled = true
 	return nil
 }
 
-func (m *MockLifecycleService) Shutdown(ctx context.Context) error {
+func (m *MockLifecycleService) Shutdown(_ context.Context) error {
 	m.ShutdownCalled = true
 	return nil
 }
