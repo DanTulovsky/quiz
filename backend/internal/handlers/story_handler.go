@@ -157,7 +157,9 @@ func (h *StoryHandler) GetCurrentStory(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, story)
+	// Convert to API types to ensure proper serialization
+	apiStory := convertStoryWithSectionsToAPI(story)
+	c.JSON(http.StatusOK, apiStory)
 }
 
 // GetStory handles GET /v1/story/:id
@@ -194,7 +196,9 @@ func (h *StoryHandler) GetStory(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, story)
+	// Convert to API types to ensure proper serialization
+	apiStory := convertStoryWithSectionsToAPI(story)
+	c.JSON(http.StatusOK, apiStory)
 }
 
 // GetSection handles GET /v1/story/section/:id
@@ -231,7 +235,9 @@ func (h *StoryHandler) GetSection(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, section)
+	// Convert to API types to ensure proper serialization
+	apiSection := convertStorySectionWithQuestionsToAPI(section)
+	c.JSON(http.StatusOK, apiSection)
 }
 
 // GenerateNextSection handles POST /v1/story/:id/generate
@@ -408,7 +414,9 @@ func (h *StoryHandler) GenerateNextSection(c *gin.Context) {
 		attribute.Int("word_count", wordCount),
 	)
 
-	c.JSON(http.StatusCreated, section)
+	// Convert to API types to ensure proper serialization
+	apiSection := convertStorySectionToAPI(section)
+	c.JSON(http.StatusCreated, apiSection)
 }
 
 // ArchiveStory handles POST /v1/story/:id/archive

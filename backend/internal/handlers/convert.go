@@ -35,6 +35,19 @@ func intPtr(i int) *int {
 	return &i
 }
 
+func uintPtr(u uint) *uint {
+	return &u
+}
+
+func int64FromUint(u uint) *int64 {
+	i64 := int64(u)
+	return &i64
+}
+
+func timePtr(t time.Time) *time.Time {
+	return &t
+}
+
 // formatTimePtr formats a time.Time into an RFC3339 string pointer
 func formatTimePtr(t time.Time) *string {
 	s := t.In(time.UTC).Format(time.RFC3339)
@@ -450,4 +463,142 @@ func convertDailyProgressToAPI(progress *models.DailyProgress) api.DailyProgress
 		Completed: progress.Completed,
 		Total:     progress.Total,
 	}
+}
+
+// Convert models.StorySection to api.StorySection
+func convertStorySectionToAPI(section *models.StorySection) api.StorySection {
+	apiSection := api.StorySection{
+		Id:            int64FromUint(section.ID),
+		StoryId:       int64FromUint(section.StoryID),
+		SectionNumber: intPtr(section.SectionNumber),
+		Content:       stringPtr(section.Content),
+		LanguageLevel: stringPtr(section.LanguageLevel),
+		WordCount:     intPtr(section.WordCount),
+	}
+
+	if !section.GeneratedAt.IsZero() {
+		apiSection.GeneratedAt = timePtr(section.GeneratedAt)
+	}
+
+	// Convert time.Time to openapi_types.Date for generation_date
+	if !section.GenerationDate.IsZero() {
+		generationDate := openapi_types.Date{Time: section.GenerationDate}
+		apiSection.GenerationDate = &generationDate
+	}
+
+	return apiSection
+}
+
+// Convert models.StoryWithSections to api.StoryWithSections
+func convertStoryWithSectionsToAPI(story *models.StoryWithSections) api.StoryWithSections {
+	apiStory := api.StoryWithSections{
+		Id:        int64FromUint(story.ID),
+		UserId:    int64FromUint(story.UserID),
+		Title:     stringPtr(story.Title),
+		Language:  stringPtr(story.Language),
+		Status:    (*api.StoryWithSectionsStatus)(stringPtr(string(story.Status))),
+		IsCurrent: boolPtr(story.IsCurrent),
+	}
+
+	if story.Subject != nil {
+		apiStory.Subject = story.Subject
+	}
+	if story.AuthorStyle != nil {
+		apiStory.AuthorStyle = story.AuthorStyle
+	}
+	if story.TimePeriod != nil {
+		apiStory.TimePeriod = story.TimePeriod
+	}
+	if story.Genre != nil {
+		apiStory.Genre = story.Genre
+	}
+	if story.Tone != nil {
+		apiStory.Tone = story.Tone
+	}
+	if story.CharacterNames != nil {
+		apiStory.CharacterNames = story.CharacterNames
+	}
+	if story.CustomInstructions != nil {
+		apiStory.CustomInstructions = story.CustomInstructions
+	}
+	if story.SectionLengthOverride != nil {
+		lengthOverride := api.StoryWithSectionsSectionLengthOverride(*story.SectionLengthOverride)
+		apiStory.SectionLengthOverride = &lengthOverride
+	}
+
+	if !story.CreatedAt.IsZero() {
+		apiStory.CreatedAt = timePtr(story.CreatedAt)
+	}
+	if !story.UpdatedAt.IsZero() {
+		apiStory.UpdatedAt = timePtr(story.UpdatedAt)
+	}
+	if story.LastSectionGeneratedAt != nil {
+		apiStory.LastSectionGeneratedAt = timePtr(*story.LastSectionGeneratedAt)
+	}
+
+	// Convert sections using the section conversion function
+	if len(story.Sections) > 0 {
+		apiSections := make([]api.StorySection, len(story.Sections))
+		for i, section := range story.Sections {
+			apiSections[i] = convertStorySectionToAPI(&section)
+		}
+		apiStory.Sections = &apiSections
+	}
+
+	return apiStory
+}
+
+// Convert slice of models.StorySection to []api.StorySection
+func convertStorySectionsToAPI(sections []models.StorySection) []api.StorySection {
+	if len(sections) == 0 {
+		return []api.StorySection{}
+	}
+	apiSections := make([]api.StorySection, len(sections))
+	for i, section := range sections {
+		apiSections[i] = convertStorySectionToAPI(&section)
+	}
+	return apiSections
+}
+
+// Convert models.StorySectionWithQuestions to api.StorySectionWithQuestions
+func convertStorySectionWithQuestionsToAPI(sectionWithQuestions *models.StorySectionWithQuestions) api.StorySectionWithQuestions {
+	apiSectionWithQuestions := api.StorySectionWithQuestions{
+		Id:            int64FromUint(sectionWithQuestions.ID),
+		StoryId:       int64FromUint(sectionWithQuestions.StoryID),
+		SectionNumber: intPtr(sectionWithQuestions.SectionNumber),
+		Content:       stringPtr(sectionWithQuestions.Content),
+		LanguageLevel: stringPtr(sectionWithQuestions.LanguageLevel),
+		WordCount:     intPtr(sectionWithQuestions.WordCount),
+	}
+
+	if !sectionWithQuestions.GeneratedAt.IsZero() {
+		apiSectionWithQuestions.GeneratedAt = timePtr(sectionWithQuestions.GeneratedAt)
+	}
+
+	// Convert time.Time to openapi_types.Date for generation_date
+	if !sectionWithQuestions.GenerationDate.IsZero() {
+		generationDate := openapi_types.Date{Time: sectionWithQuestions.GenerationDate}
+		apiSectionWithQuestions.GenerationDate = &generationDate
+	}
+
+	// Convert questions
+	if len(sectionWithQuestions.Questions) > 0 {
+		apiQuestions := make([]api.StorySectionQuestion, len(sectionWithQuestions.Questions))
+		for i, question := range sectionWithQuestions.Questions {
+			apiQuestions[i] = api.StorySectionQuestion{
+				Id:                 int64FromUint(question.ID),
+				SectionId:          int64FromUint(question.SectionID),
+				QuestionText:       stringPtr(question.QuestionText),
+				Options:            &question.Options,
+				CorrectAnswerIndex: intPtr(question.CorrectAnswerIndex),
+				CreatedAt:          timePtr(question.CreatedAt),
+			}
+			if question.Explanation != nil {
+				apiQuestions[i].Explanation = question.Explanation
+			}
+		}
+		apiSectionWithQuestions.Questions = &apiQuestions
+	}
+
+	return apiSectionWithQuestions
 }
