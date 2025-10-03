@@ -266,7 +266,7 @@ type CreateStoryRequest struct {
 	CharacterNames        *string                                  `json:"character_names"`
 	CustomInstructions    *string                                  `json:"custom_instructions"`
 	Genre                 *string                                  `json:"genre"`
-	SectionLengthOverride *CreateStoryRequestSectionLengthOverride `json:"section_length_override"`
+	SectionLengthOverride *CreateStoryRequestSectionLengthOverride `json:"section_length_override,omitempty"`
 	Subject               *string                                  `json:"subject"`
 	TimePeriod            *string                                  `json:"time_period"`
 	Title                 string                                   `json:"title"`
@@ -763,7 +763,7 @@ type Story struct {
 	IsCurrent              *bool                       `json:"is_current,omitempty"`
 	Language               *string                     `json:"language,omitempty"`
 	LastSectionGeneratedAt *time.Time                  `json:"last_section_generated_at"`
-	SectionLengthOverride  *StorySectionLengthOverride `json:"section_length_override"`
+	SectionLengthOverride  *StorySectionLengthOverride `json:"section_length_override,omitempty"`
 	Status                 *StoryStatus                `json:"status,omitempty"`
 	Subject                *string                     `json:"subject"`
 	TimePeriod             *string                     `json:"time_period"`
@@ -826,7 +826,7 @@ type StoryWithSections struct {
 	IsCurrent              *bool                                   `json:"is_current,omitempty"`
 	Language               *string                                 `json:"language,omitempty"`
 	LastSectionGeneratedAt *time.Time                              `json:"last_section_generated_at"`
-	SectionLengthOverride  *StoryWithSectionsSectionLengthOverride `json:"section_length_override"`
+	SectionLengthOverride  *StoryWithSectionsSectionLengthOverride `json:"section_length_override,omitempty"`
 	Sections               *[]StorySection                         `json:"sections,omitempty"`
 	Status                 *StoryWithSectionsStatus                `json:"status,omitempty"`
 	Subject                *string                                 `json:"subject"`

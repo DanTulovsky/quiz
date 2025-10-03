@@ -5517,7 +5517,6 @@ components:
         section_length_override:
           type: string
           enum: [short, medium, long]
-          nullable: true
           example: "medium"
         status:
           type: string
@@ -5675,7 +5674,6 @@ components:
         section_length_override:
           type: string
           enum: [short, medium, long]
-          nullable: true
           example: "medium"
 
   securitySchemes:

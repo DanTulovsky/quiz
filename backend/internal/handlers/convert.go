@@ -493,8 +493,8 @@ func convertStoryToAPI(story *models.Story) api.Story {
 	if story.CustomInstructions != nil {
 		apiStory.CustomInstructions = story.CustomInstructions
 	}
+	// Handle enum field - only set if not nil (will be omitted from JSON due to omitempty)
 	if story.SectionLengthOverride != nil {
-		// Convert from models.SectionLength to api.StorySectionLengthOverride
 		lengthOverride := api.StorySectionLengthOverride(*story.SectionLengthOverride)
 		apiStory.SectionLengthOverride = &lengthOverride
 	}
@@ -568,9 +568,8 @@ func convertStoryWithSectionsToAPI(story *models.StoryWithSections) api.StoryWit
 	if story.CustomInstructions != nil {
 		apiStory.CustomInstructions = story.CustomInstructions
 	}
+	// Handle enum field - only set if not nil (will be omitted from JSON due to omitempty)
 	if story.SectionLengthOverride != nil {
-		// Convert from models.SectionLength to api.StoryWithSectionsSectionLengthOverride
-		// Both are string types underneath, so we can assign directly
 		lengthOverride := api.StoryWithSectionsSectionLengthOverride(*story.SectionLengthOverride)
 		apiStory.SectionLengthOverride = &lengthOverride
 	}
