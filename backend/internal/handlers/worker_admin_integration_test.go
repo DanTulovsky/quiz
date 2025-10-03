@@ -41,6 +41,7 @@ type WorkerAdminIntegrationTestSuite struct {
 func (suite *WorkerAdminIntegrationTestSuite) SetupSuite() {
 	// Use shared test database setup
 	db := services.SharedTestDBSetup(suite.T())
+	suite.DB = db
 
 	// Load config
 	cfg, err := config.NewConfig()
