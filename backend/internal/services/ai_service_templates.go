@@ -69,6 +69,20 @@ type AITemplateData struct {
 	FocusOnWeakAreas     bool
 	FreshQuestionRatio   float64
 	PriorityDistribution map[string]int
+
+	// Story generation fields
+	Title              string
+	Subject            string
+	AuthorStyle        string
+	TimePeriod         string
+	Genre              string
+	Tone               string
+	CharacterNames     string
+	CustomInstructions string
+	TargetWords        int
+	TargetSentences    int
+	IsFirstSection     bool
+	PreviousSections   string
 }
 
 // ChatMessage represents a chat message for templates

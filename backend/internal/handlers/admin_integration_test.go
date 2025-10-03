@@ -131,7 +131,6 @@ func (suite *AdminIntegrationTestSuite) SetupSuite() {
 
 	// --- Background Worker ---
 	emailService := services.NewEmailService(suite.cfg, logger)
-	storyService := services.NewStoryService(suite.db, suite.cfg, logger)
 	bgWorker := worker.NewWorker(userService, questionService, suite.mockAIService, learningService, workerService, dailyQuestionService, storyService, emailService, generationHintService, "default", suite.cfg, logger)
 	suite.worker = bgWorker
 	go bgWorker.Start(context.Background())

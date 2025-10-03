@@ -69,11 +69,12 @@ func TestStoryHandler_CreateStory_Integration(t *testing.T) {
 	}
 
 	router := gin.New()
+	store := cookie.NewStore([]byte("secret"))
+	router.Use(sessions.Sessions("test_session", store))
+
 	router.Use(func(c *gin.Context) {
-		store := cookie.NewStore([]byte("secret"))
-		session := sessions.NewSession(store, "test_session")
+		session := sessions.Default(c)
 		session.Set("user_id", user.ID)
-		c.Set("session", session)
 		c.Next()
 	})
 

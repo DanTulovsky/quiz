@@ -80,6 +80,13 @@ func (s *StoryService) CreateStory(ctx context.Context, userID uint, language st
 		return nil, contextutils.WrapErrorf(err, "failed to get user level")
 	}
 
+	// Unset any existing current story first
+	unsetQuery := "UPDATE stories SET is_current = $1, updated_at = NOW() WHERE user_id = $2 AND is_current = $3"
+	_, err = s.db.ExecContext(ctx, unsetQuery, false, userID, true)
+	if err != nil {
+		return nil, contextutils.WrapErrorf(err, "failed to unset existing current story")
+	}
+
 	// Create the story
 	story := &models.Story{
 		UserID:                userID,
@@ -94,7 +101,7 @@ func (s *StoryService) CreateStory(ctx context.Context, userID uint, language st
 		CustomInstructions:    req.CustomInstructions,
 		SectionLengthOverride: req.SectionLengthOverride,
 		Status:                models.StoryStatusActive,
-		IsCurrent:             true, // This will unset any existing current story via BeforeCreate hook
+		IsCurrent:             true,
 		CreatedAt:             time.Now(),
 		UpdatedAt:             time.Now(),
 	}
@@ -163,10 +170,10 @@ func (s *StoryService) GetCurrentStory(ctx context.Context, userID uint) (*model
 		       character_names, custom_instructions, section_length_override, status, is_current,
 		       last_section_generated_at, created_at, updated_at
 		FROM stories
-		WHERE user_id = $1 AND is_current = $2`
+		WHERE user_id = $1 AND is_current = $2 AND status != $3`
 
 	var story models.Story
-	err := s.db.QueryRowContext(ctx, query, userID, true).Scan(
+	err := s.db.QueryRowContext(ctx, query, userID, true, models.StoryStatusArchived).Scan(
 		&story.ID, &story.UserID, &story.Title, &story.Language, &story.Subject,
 		&story.AuthorStyle, &story.TimePeriod, &story.Genre, &story.Tone,
 		&story.CharacterNames, &story.CustomInstructions, &story.SectionLengthOverride,
@@ -234,8 +241,9 @@ func (s *StoryService) ArchiveStory(ctx context.Context, storyID, userID uint) e
 		return err
 	}
 
-	query := "UPDATE stories SET status = $1, updated_at = NOW() WHERE id = $2"
-	_, err := s.db.ExecContext(ctx, query, models.StoryStatusArchived, storyID)
+	// Archive the story and unset is_current flag in one transaction
+	query := "UPDATE stories SET status = $1, is_current = $2, updated_at = NOW() WHERE id = $3"
+	_, err := s.db.ExecContext(ctx, query, models.StoryStatusArchived, false, storyID)
 	if err != nil {
 		return contextutils.WrapErrorf(err, "failed to archive story")
 	}

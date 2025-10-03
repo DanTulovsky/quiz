@@ -1157,3 +1157,86 @@ func TestAIService_BuildChatPrompt_QuestionWithoutPassage(t *testing.T) {
 	assert.Contains(t, prompt, "sono")
 	assert.Contains(t, prompt, "siamo")
 }
+
+func TestAIService_BuildStorySectionPrompt(t *testing.T) {
+	cfg := &config.Config{
+		Server: config.ServerConfig{
+			MaxAIConcurrent: 5,
+			MaxAIPerUser:    2,
+		},
+	}
+
+	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+
+	t.Run("StorySectionPrompt_WithAllFields", func(t *testing.T) {
+		// Test with all optional fields populated
+		subject := "A day in the life"
+		authorStyle := "Hemingway-style"
+		timePeriod := "Modern day"
+		genre := "Drama"
+		tone := "Reflective"
+		characterNames := "Maria, Carlos"
+		customInstructions := "Focus on daily routines"
+
+		req := &models.StoryGenerationRequest{
+			Language:           "spanish",
+			Level:              "intermediate",
+			Title:              "Mi Día Perfecto",
+			Subject:            &subject,
+			AuthorStyle:        &authorStyle,
+			TimePeriod:         &timePeriod,
+			Genre:              &genre,
+			Tone:               &tone,
+			CharacterNames:     &characterNames,
+			CustomInstructions: &customInstructions,
+			SectionLength:      models.SectionLengthMedium,
+			PreviousSections:   "Previously: Maria woke up early...",
+			IsFirstSection:     false,
+			TargetWords:        150,
+			TargetSentences:    10,
+		}
+
+		prompt := service.buildStorySectionPrompt(req)
+
+		// Verify that the prompt doesn't panic and contains expected content
+		assert.NotEmpty(t, prompt)
+		assert.Contains(t, prompt, "You are an expert Hemingway-style specializing in spanish")
+		assert.Contains(t, prompt, "spanish language learning content")
+		assert.Contains(t, prompt, "spanish at intermediate proficiency level")
+		assert.Contains(t, prompt, "Title: Mi Día Perfecto")
+		assert.Contains(t, prompt, "Subject: A day in the life")
+		assert.Contains(t, prompt, "Time Period: Modern day")
+		assert.Contains(t, prompt, "Genre: Drama")
+		assert.Contains(t, prompt, "Tone: Reflective")
+		assert.Contains(t, prompt, "Main Characters: Maria, Carlos")
+		assert.Contains(t, prompt, "Custom Instructions: Focus on daily routines")
+		assert.Contains(t, prompt, "Target approximately 10 sentences (150 words)")
+		assert.Contains(t, prompt, "Continue the story naturally from previous sections")
+		assert.Contains(t, prompt, "Previously: Maria woke up early...")
+	})
+
+	t.Run("StorySectionPrompt_MinimalFields", func(t *testing.T) {
+		// Test with minimal fields (similar to what was causing the panic)
+		req := &models.StoryGenerationRequest{
+			Language:         "french",
+			Level:            "beginner",
+			Title:            "Simple Story",
+			SectionLength:    models.SectionLengthShort,
+			PreviousSections: "",
+			IsFirstSection:   true,
+			TargetWords:      100,
+			TargetSentences:  8,
+		}
+
+		prompt := service.buildStorySectionPrompt(req)
+
+		// Verify that the prompt doesn't panic and contains expected content
+		assert.NotEmpty(t, prompt)
+		assert.Contains(t, prompt, "You are an expert creative writer specializing in french")
+		assert.Contains(t, prompt, "french at beginner proficiency level")
+		assert.Contains(t, prompt, "Title: Simple Story")
+		assert.Contains(t, prompt, "This is the beginning of a new story.")
+		assert.Contains(t, prompt, "Target approximately 8 sentences (100 words)")
+		assert.Contains(t, prompt, "Introduce the main characters and setting")
+	})
+}

@@ -778,23 +778,33 @@ func (s *AIService) GenerateStoryQuestions(ctx context.Context, userConfig *User
 	return questionsResult, questionsErr
 }
 
+// stringPtrToString converts a *string to string, returning empty string if nil
+func stringPtrToString(ptr *string) string {
+	if ptr == nil {
+		return ""
+	}
+	return *ptr
+}
+
 // buildStorySectionPrompt builds the prompt for story section generation
 func (s *AIService) buildStorySectionPrompt(req *models.StoryGenerationRequest) string {
 	// Create template data from the request
 	templateData := AITemplateData{
-		Language: req.Language,
-		Level:    req.Level,
+		Language:           req.Language,
+		Level:              req.Level,
+		Title:              req.Title,
+		Subject:            stringPtrToString(req.Subject),
+		AuthorStyle:        stringPtrToString(req.AuthorStyle),
+		TimePeriod:         stringPtrToString(req.TimePeriod),
+		Genre:              stringPtrToString(req.Genre),
+		Tone:               stringPtrToString(req.Tone),
+		CharacterNames:     stringPtrToString(req.CharacterNames),
+		CustomInstructions: stringPtrToString(req.CustomInstructions),
+		TargetWords:        req.TargetWords,
+		TargetSentences:    req.TargetSentences,
+		IsFirstSection:     req.IsFirstSection,
+		PreviousSections:   req.PreviousSections,
 	}
-
-	// Add story-specific fields to AdditionalContext for template access
-	context := s.buildStoryContext(req)
-	templateData.AdditionalContext = fmt.Sprintf(`Title: %s
-%s
-TargetWords: %d
-TargetSentences: %d
-IsFirstSection: %t
-PreviousSections: %s`,
-		req.Title, context, req.TargetWords, req.TargetWords/15, req.IsFirstSection, req.PreviousSections)
 
 	template, err := s.templateManager.RenderTemplate("story_section_prompt.tmpl", templateData)
 	if err != nil {
@@ -826,35 +836,6 @@ QuestionCount: %d`,
 	}
 
 	return template
-}
-
-// buildStoryContext builds the context string for story generation
-func (s *AIService) buildStoryContext(req *models.StoryGenerationRequest) string {
-	var context strings.Builder
-
-	if req.Subject != nil && *req.Subject != "" {
-		context.WriteString(fmt.Sprintf("Subject: %s\n", *req.Subject))
-	}
-	if req.AuthorStyle != nil && *req.AuthorStyle != "" {
-		context.WriteString(fmt.Sprintf("Author Style: %s\n", *req.AuthorStyle))
-	}
-	if req.TimePeriod != nil && *req.TimePeriod != "" {
-		context.WriteString(fmt.Sprintf("Time Period: %s\n", *req.TimePeriod))
-	}
-	if req.Genre != nil && *req.Genre != "" {
-		context.WriteString(fmt.Sprintf("Genre: %s\n", *req.Genre))
-	}
-	if req.Tone != nil && *req.Tone != "" {
-		context.WriteString(fmt.Sprintf("Tone: %s\n", *req.Tone))
-	}
-	if req.CharacterNames != nil && *req.CharacterNames != "" {
-		context.WriteString(fmt.Sprintf("Characters: %s\n", *req.CharacterNames))
-	}
-	if req.CustomInstructions != nil && *req.CustomInstructions != "" {
-		context.WriteString(fmt.Sprintf("Instructions: %s\n", *req.CustomInstructions))
-	}
-
-	return context.String()
 }
 
 // parseStoryQuestionsResponse parses the AI response into question data
