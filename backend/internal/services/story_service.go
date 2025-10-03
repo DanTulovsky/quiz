@@ -48,6 +48,9 @@ type StoryService struct {
 
 // NewStoryService creates a new StoryService instance
 func NewStoryService(db *sql.DB, config *config.Config, logger *observability.Logger) *StoryService {
+	if db == nil {
+		panic("StoryService requires a valid database connection")
+	}
 	return &StoryService{
 		db:     db,
 		config: config,
@@ -373,7 +376,7 @@ func (s *StoryService) GetStorySections(ctx context.Context, storyID uint) ([]mo
 	}
 	defer func() { _ = rows.Close() }()
 
-	var sections []models.StorySection
+	sections := make([]models.StorySection, 0)
 	for rows.Next() {
 		var section models.StorySection
 		err := rows.Scan(

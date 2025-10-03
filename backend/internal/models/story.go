@@ -39,7 +39,7 @@ type Story struct {
 	Tone                   *string        `json:"tone"`
 	CharacterNames         *string        `json:"character_names"`
 	CustomInstructions     *string        `json:"custom_instructions"`
-	SectionLengthOverride  *SectionLength `json:"section_length_override"`
+	SectionLengthOverride  *SectionLength `json:"section_length_override,omitempty"`
 	Status                 StoryStatus    `json:"status"`
 	IsCurrent              bool           `json:"is_current"`
 	LastSectionGeneratedAt *time.Time     `json:"last_section_generated_at"`
