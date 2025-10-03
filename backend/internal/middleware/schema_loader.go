@@ -224,7 +224,12 @@ func (sl *SchemaLoader) ValidateData(data interface{}, schemaName string) error 
 	if !result.Valid() {
 		var validationErrors []string
 		for _, validationErr := range result.Errors() {
-			validationErrors = append(validationErrors, fmt.Sprintf("%s: %s", validationErr.Field(), validationErr.Description()))
+			errorMsg := fmt.Sprintf("%s: %s", validationErr.Field(), validationErr.Description())
+			// Include the actual value that failed validation if available
+			if validationErr.Value() != nil {
+				errorMsg += fmt.Sprintf(" (received: %v)", validationErr.Value())
+			}
+			validationErrors = append(validationErrors, errorMsg)
 		}
 		return contextutils.ErrorWithContextf("schema validation failed: %s", strings.Join(validationErrors, "; "))
 	}

@@ -461,6 +461,57 @@ func convertDailyProgressToAPI(progress *models.DailyProgress) api.DailyProgress
 	}
 }
 
+// Convert models.Story to api.Story
+func convertStoryToAPI(story *models.Story) api.Story {
+	apiStory := api.Story{
+		Id:        int64FromUint(story.ID),
+		UserId:    int64FromUint(story.UserID),
+		Title:     stringPtr(story.Title),
+		Language:  stringPtr(story.Language),
+		Status:    (*api.StoryStatus)(stringPtr(string(story.Status))),
+		IsCurrent: boolPtr(story.IsCurrent),
+	}
+
+	if story.Subject != nil {
+		apiStory.Subject = story.Subject
+	}
+	if story.AuthorStyle != nil {
+		apiStory.AuthorStyle = story.AuthorStyle
+	}
+	if story.TimePeriod != nil {
+		apiStory.TimePeriod = story.TimePeriod
+	}
+	if story.Genre != nil {
+		apiStory.Genre = story.Genre
+	}
+	if story.Tone != nil {
+		apiStory.Tone = story.Tone
+	}
+	if story.CharacterNames != nil {
+		apiStory.CharacterNames = story.CharacterNames
+	}
+	if story.CustomInstructions != nil {
+		apiStory.CustomInstructions = story.CustomInstructions
+	}
+	if story.SectionLengthOverride != nil {
+		// Convert from models.SectionLength to api.StorySectionLengthOverride
+		lengthOverride := api.StorySectionLengthOverride(*story.SectionLengthOverride)
+		apiStory.SectionLengthOverride = &lengthOverride
+	}
+
+	if !story.CreatedAt.IsZero() {
+		apiStory.CreatedAt = timePtr(story.CreatedAt)
+	}
+	if !story.UpdatedAt.IsZero() {
+		apiStory.UpdatedAt = timePtr(story.UpdatedAt)
+	}
+	if story.LastSectionGeneratedAt != nil {
+		apiStory.LastSectionGeneratedAt = timePtr(*story.LastSectionGeneratedAt)
+	}
+
+	return apiStory
+}
+
 // Convert models.StorySection to api.StorySection
 func convertStorySectionToAPI(section *models.StorySection) api.StorySection {
 	apiSection := api.StorySection{

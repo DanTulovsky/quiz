@@ -102,7 +102,9 @@ func (h *StoryHandler) CreateStory(c *gin.Context) {
 		attribute.String("user.language", language),
 	)
 
-	c.JSON(http.StatusCreated, story)
+	// Convert to API types to ensure proper serialization
+	apiStory := convertStoryToAPI(story)
+	c.JSON(http.StatusCreated, apiStory)
 }
 
 // GetUserStories handles GET /v1/story
