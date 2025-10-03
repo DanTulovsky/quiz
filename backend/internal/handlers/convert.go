@@ -35,10 +35,6 @@ func intPtr(i int) *int {
 	return &i
 }
 
-func uintPtr(u uint) *uint {
-	return &u
-}
-
 func int64FromUint(u uint) *int64 {
 	i64 := int64(u)
 	return &i64
@@ -522,6 +518,8 @@ func convertStoryWithSectionsToAPI(story *models.StoryWithSections) api.StoryWit
 		apiStory.CustomInstructions = story.CustomInstructions
 	}
 	if story.SectionLengthOverride != nil {
+		// Convert from models.SectionLength to api.StoryWithSectionsSectionLengthOverride
+		// Both are string types underneath, so we can assign directly
 		lengthOverride := api.StoryWithSectionsSectionLengthOverride(*story.SectionLengthOverride)
 		apiStory.SectionLengthOverride = &lengthOverride
 	}
@@ -546,18 +544,6 @@ func convertStoryWithSectionsToAPI(story *models.StoryWithSections) api.StoryWit
 	}
 
 	return apiStory
-}
-
-// Convert slice of models.StorySection to []api.StorySection
-func convertStorySectionsToAPI(sections []models.StorySection) []api.StorySection {
-	if len(sections) == 0 {
-		return []api.StorySection{}
-	}
-	apiSections := make([]api.StorySection, len(sections))
-	for i, section := range sections {
-		apiSections[i] = convertStorySectionToAPI(&section)
-	}
-	return apiSections
 }
 
 // Convert models.StorySectionWithQuestions to api.StorySectionWithQuestions
