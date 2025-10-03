@@ -40,6 +40,125 @@ type mockLearningService struct {
 	mock.Mock
 }
 
+// mockStoryService implements services.StoryService for testing
+type mockStoryService struct {
+	mock.Mock
+}
+
+func (m *mockStoryService) CreateStory(ctx context.Context, userID uint, language string, req *models.CreateStoryRequest) (*models.Story, error) {
+	args := m.Called(ctx, userID, language, req)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*models.Story), args.Error(1)
+}
+
+func (m *mockStoryService) GetUserStories(ctx context.Context, userID uint, includeArchived bool) ([]models.Story, error) {
+	args := m.Called(ctx, userID, includeArchived)
+	return args.Get(0).([]models.Story), args.Error(1)
+}
+
+func (m *mockStoryService) GetCurrentStory(ctx context.Context, userID uint) (*models.StoryWithSections, error) {
+	args := m.Called(ctx, userID)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*models.StoryWithSections), args.Error(1)
+}
+
+func (m *mockStoryService) GetStory(ctx context.Context, storyID uint, userID uint) (*models.StoryWithSections, error) {
+	args := m.Called(ctx, storyID, userID)
+	return args.Get(0).(*models.StoryWithSections), args.Error(1)
+}
+
+func (m *mockStoryService) ArchiveStory(ctx context.Context, storyID uint, userID uint) error {
+	args := m.Called(ctx, storyID, userID)
+	return args.Error(0)
+}
+
+func (m *mockStoryService) CompleteStory(ctx context.Context, storyID uint, userID uint) error {
+	args := m.Called(ctx, storyID, userID)
+	return args.Error(0)
+}
+
+func (m *mockStoryService) SetCurrentStory(ctx context.Context, storyID uint, userID uint) error {
+	args := m.Called(ctx, storyID, userID)
+	return args.Error(0)
+}
+
+func (m *mockStoryService) DeleteStory(ctx context.Context, storyID uint, userID uint) error {
+	args := m.Called(ctx, storyID, userID)
+	return args.Error(0)
+}
+
+func (m *mockStoryService) GetStorySections(ctx context.Context, storyID uint) ([]models.StorySection, error) {
+	args := m.Called(ctx, storyID)
+	return args.Get(0).([]models.StorySection), args.Error(1)
+}
+
+func (m *mockStoryService) GetSection(ctx context.Context, sectionID uint, userID uint) (*models.StorySectionWithQuestions, error) {
+	args := m.Called(ctx, sectionID, userID)
+	return args.Get(0).(*models.StorySectionWithQuestions), args.Error(1)
+}
+
+func (m *mockStoryService) CreateSection(ctx context.Context, storyID uint, content string, level string, wordCount int) (*models.StorySection, error) {
+	args := m.Called(ctx, storyID, content, level, wordCount)
+	return args.Get(0).(*models.StorySection), args.Error(1)
+}
+
+func (m *mockStoryService) GetLatestSection(ctx context.Context, storyID uint) (*models.StorySection, error) {
+	args := m.Called(ctx, storyID)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*models.StorySection), args.Error(1)
+}
+
+func (m *mockStoryService) GetAllSectionsText(ctx context.Context, storyID uint) (string, error) {
+	args := m.Called(ctx, storyID)
+	return args.String(0), args.Error(1)
+}
+
+func (m *mockStoryService) GetSectionQuestions(ctx context.Context, sectionID uint) ([]models.StorySectionQuestion, error) {
+	args := m.Called(ctx, sectionID)
+	return args.Get(0).([]models.StorySectionQuestion), args.Error(1)
+}
+
+func (m *mockStoryService) CreateSectionQuestions(ctx context.Context, sectionID uint, questions []models.StorySectionQuestionData) error {
+	args := m.Called(ctx, sectionID, questions)
+	return args.Error(0)
+}
+
+func (m *mockStoryService) GetRandomQuestions(ctx context.Context, sectionID uint, count int) ([]models.StorySectionQuestion, error) {
+	args := m.Called(ctx, sectionID, count)
+	return args.Get(0).([]models.StorySectionQuestion), args.Error(1)
+}
+
+func (m *mockStoryService) CanGenerateSection(ctx context.Context, storyID uint) (bool, error) {
+	args := m.Called(ctx, storyID)
+	return args.Bool(0), args.Error(1)
+}
+
+func (m *mockStoryService) UpdateLastGenerationTime(ctx context.Context, storyID uint) error {
+	args := m.Called(ctx, storyID)
+	return args.Error(0)
+}
+
+func (m *mockStoryService) GetSectionLengthTarget(level string, lengthPref *models.SectionLength) int {
+	args := m.Called(level, lengthPref)
+	return args.Int(0)
+}
+
+func (m *mockStoryService) GetSectionLengthTargetWithLanguage(language string, level string, lengthPref *models.SectionLength) int {
+	args := m.Called(language, level, lengthPref)
+	return args.Int(0)
+}
+
+func (m *mockStoryService) SanitizeInput(input string) string {
+	args := m.Called(input)
+	return args.String(0)
+}
+
 func (m *mockLearningService) RecordAnswerWithPriorityReturningID(ctx context.Context, userID, questionID, answerIndex int, isCorrect bool, responseTime int) (int, error) {
 	args := m.Called(ctx, userID, questionID, answerIndex, isCorrect, responseTime)
 	if args.Get(0) == nil {
@@ -88,6 +207,25 @@ func (m *mockDailyQuestionService) MarkQuestionCompleted(ctx context.Context, us
 
 func (m *mockDailyQuestionService) ResetQuestionCompleted(ctx context.Context, userID, questionID int, date time.Time) error {
 	args := m.Called(ctx, userID, questionID, date)
+	return args.Error(0)
+}
+
+type mockGenerationHintService struct {
+	mock.Mock
+}
+
+func (m *mockGenerationHintService) UpsertHint(ctx context.Context, userID int, language, level string, qType models.QuestionType, ttl time.Duration) error {
+	args := m.Called(ctx, userID, language, level, qType, ttl)
+	return args.Error(0)
+}
+
+func (m *mockGenerationHintService) GetActiveHintsForUser(ctx context.Context, userID int) ([]services.GenerationHint, error) {
+	args := m.Called(ctx, userID)
+	return args.Get(0).([]services.GenerationHint), args.Error(1)
+}
+
+func (m *mockGenerationHintService) ClearHint(ctx context.Context, userID int, language, level string, qType models.QuestionType) error {
+	args := m.Called(ctx, userID, language, level, qType)
 	return args.Error(0)
 }
 
@@ -161,8 +299,9 @@ func newWorkerWithFakeTime(_ *testing.T, fakeTime time.Time, cfg *config.Config)
 	workerService := &mockWorkerService{}
 	dailyQuestionService := &mockDailyQuestionService{}
 	emailService := &mockEmailService{}
+	storyService := &mockStoryService{}
 
-	w := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, emailService, nil, "test-instance", cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, storyService, emailService, nil, "test-instance", cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	// Override the time function to return our fake time
 	w.timeNow = func() time.Time {
@@ -180,9 +319,10 @@ func TestNewWorker_InitializesFields(t *testing.T) {
 	workerService := &mockWorkerService{}
 	dailyQuestionService := &mockDailyQuestionService{}
 	emailService := &mockEmailService{}
+	storyService := &mockStoryService{}
 	cfg := testWorkerConfig()
 
-	w := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, emailService, nil, "test-instance", cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, storyService, emailService, nil, "test-instance", cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	assert.Equal(t, userService, w.userService)
 	assert.Equal(t, questionService, w.questionService)
@@ -204,10 +344,11 @@ func TestNewWorker_DefaultInstance(t *testing.T) {
 	learningService := &mockLearningService{}
 	workerService := &mockWorkerService{}
 	dailyQuestionService := &mockDailyQuestionService{}
+	emailService := &mockEmailService{}
+	storyService := &mockStoryService{}
 	cfg := testWorkerConfig()
 
-	emailService := &mockEmailService{}
-	w := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, emailService, nil, "", cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, storyService, emailService, nil, "", cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	assert.Equal(t, "default", w.instance)
 }
@@ -258,7 +399,7 @@ func TestGetEnvBool_WithEmptyValue(t *testing.T) {
 
 func TestGetStatus_ReturnsCopy(t *testing.T) {
 	emailService := &mockEmailService{}
-	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, emailService, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockStoryService{}, emailService, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	// Set some status
 	w.status.IsRunning = true
@@ -271,7 +412,7 @@ func TestGetStatus_ReturnsCopy(t *testing.T) {
 
 func TestGetHistory_ReturnsCopy(t *testing.T) {
 	emailService := &mockEmailService{}
-	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, emailService, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockStoryService{}, emailService, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	// Add some history
 	w.history = []RunRecord{
@@ -284,7 +425,7 @@ func TestGetHistory_ReturnsCopy(t *testing.T) {
 }
 
 func TestGetActivityLogs_ReturnsCopy(t *testing.T) {
-	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockStoryService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	// Add some activity logs
 	w.activityLogs = []ActivityLog{
@@ -297,14 +438,14 @@ func TestGetActivityLogs_ReturnsCopy(t *testing.T) {
 }
 
 func TestGetInstance(t *testing.T) {
-	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockEmailService{}, nil, "test-instance", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockStoryService{}, &mockEmailService{}, nil, "test-instance", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	instance := w.GetInstance()
 	assert.Equal(t, "test-instance", instance)
 }
 
 func TestTriggerManualRun_SendsToChannel(t *testing.T) {
-	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockStoryService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	// Trigger should not block
 	w.TriggerManualRun()
@@ -319,7 +460,7 @@ func TestTriggerManualRun_SendsToChannel(t *testing.T) {
 }
 
 func TestTriggerManualRun_HandlesFullChannel(_ *testing.T) {
-	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockStoryService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	// Fill the channel
 	w.manualTrigger <- true
@@ -333,7 +474,7 @@ func TestPause_UpdatesStatusAndDatabase(t *testing.T) {
 	workerService.On("PauseWorker", mock.Anything, "test-instance").Return(nil)
 	workerService.On("UpdateWorkerStatus", mock.Anything, "test-instance", mock.AnythingOfType("*models.WorkerStatus")).Return(nil)
 
-	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, workerService, &mockDailyQuestionService{}, &mockEmailService{}, nil, "test-instance", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, workerService, &mockDailyQuestionService{}, &mockStoryService{}, &mockEmailService{}, nil, "test-instance", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	w.Pause(context.Background())
 
@@ -346,7 +487,7 @@ func TestPause_HandlesDatabaseError(t *testing.T) {
 	workerService.On("PauseWorker", mock.Anything, "test-instance").Return(assert.AnError)
 	workerService.On("UpdateWorkerStatus", mock.Anything, "test-instance", mock.AnythingOfType("*models.WorkerStatus")).Return(nil)
 
-	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, workerService, &mockDailyQuestionService{}, &mockEmailService{}, nil, "test-instance", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, workerService, &mockDailyQuestionService{}, &mockStoryService{}, &mockEmailService{}, nil, "test-instance", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	// Should not panic
 	w.Pause(context.Background())
@@ -360,7 +501,7 @@ func TestResume_UpdatesStatusAndDatabase(t *testing.T) {
 	workerService.On("ResumeWorker", mock.Anything, "test-instance").Return(nil)
 	workerService.On("UpdateWorkerStatus", mock.Anything, "test-instance", mock.AnythingOfType("*models.WorkerStatus")).Return(nil)
 
-	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, workerService, &mockDailyQuestionService{}, &mockEmailService{}, nil, "test-instance", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, workerService, &mockDailyQuestionService{}, &mockStoryService{}, &mockEmailService{}, nil, "test-instance", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 	w.status.IsPaused = true
 
 	w.Resume(context.Background())
@@ -374,7 +515,7 @@ func TestResume_HandlesDatabaseError(t *testing.T) {
 	workerService.On("ResumeWorker", mock.Anything, "test-instance").Return(assert.AnError)
 	workerService.On("UpdateWorkerStatus", mock.Anything, "test-instance", mock.AnythingOfType("*models.WorkerStatus")).Return(nil)
 
-	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, workerService, &mockDailyQuestionService{}, &mockEmailService{}, nil, "test-instance", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, workerService, &mockDailyQuestionService{}, &mockStoryService{}, &mockEmailService{}, nil, "test-instance", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 	w.status.IsPaused = true
 
 	// Should not panic
@@ -385,7 +526,7 @@ func TestResume_HandlesDatabaseError(t *testing.T) {
 }
 
 func TestUpdateActivity(t *testing.T) {
-	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockStoryService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	w.updateActivity("test activity")
 
@@ -395,7 +536,7 @@ func TestUpdateActivity(t *testing.T) {
 func TestLogActivity_AddsToLogs(t *testing.T) {
 	cfg := testWorkerConfig()
 	cfg.Server.MaxActivityLogs = 100
-	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockEmailService{}, nil, "test", cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockStoryService{}, &mockEmailService{}, nil, "test", cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	userID := 123
 	username := "testuser"
@@ -413,7 +554,7 @@ func TestLogActivity_AddsToLogs(t *testing.T) {
 func TestLogActivity_CircularBuffer(t *testing.T) {
 	cfg := testWorkerConfig()
 	cfg.Server.MaxActivityLogs = 100
-	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockEmailService{}, nil, "test", cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockStoryService{}, &mockEmailService{}, nil, "test", cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	// Add more than maxActivityLogs entries
 	for i := 0; i < 110; i++ {
@@ -426,14 +567,14 @@ func TestLogActivity_CircularBuffer(t *testing.T) {
 }
 
 func TestShouldRetryUser_NoFailures(t *testing.T) {
-	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockStoryService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	result := w.shouldRetryUser(123)
 	assert.True(t, result)
 }
 
 func TestShouldRetryUser_WithFailuresButTimePassed(t *testing.T) {
-	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockStoryService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	// Record a failure in the past
 	w.userFailures[123] = &UserFailureInfo{
@@ -447,7 +588,7 @@ func TestShouldRetryUser_WithFailuresButTimePassed(t *testing.T) {
 }
 
 func TestShouldRetryUser_WithFailuresAndTimeNotPassed(t *testing.T) {
-	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockStoryService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	// Record a failure with future retry time
 	w.userFailures[123] = &UserFailureInfo{
@@ -461,7 +602,7 @@ func TestShouldRetryUser_WithFailuresAndTimeNotPassed(t *testing.T) {
 }
 
 func TestRecordUserFailure_FirstFailure(t *testing.T) {
-	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockStoryService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	w.recordUserFailure(context.Background(), 123, "testuser")
 
@@ -471,7 +612,7 @@ func TestRecordUserFailure_FirstFailure(t *testing.T) {
 }
 
 func TestRecordUserFailure_MultipleFailures(t *testing.T) {
-	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockStoryService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	// Record multiple failures
 	w.recordUserFailure(context.Background(), 123, "testuser")
@@ -484,7 +625,7 @@ func TestRecordUserFailure_MultipleFailures(t *testing.T) {
 }
 
 func TestRecordUserSuccess_ClearsFailures(t *testing.T) {
-	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockStoryService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	// Record a failure first
 	w.recordUserFailure(context.Background(), 123, "testuser")
@@ -498,7 +639,7 @@ func TestRecordUserSuccess_ClearsFailures(t *testing.T) {
 }
 
 func TestRecordUserSuccess_NoFailures(t *testing.T) {
-	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockStoryService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	// Should not panic
 	w.recordUserSuccess(context.Background(), 123, "testuser")
@@ -551,6 +692,8 @@ func TestSaveGeneratedQuestions_PopulatesVarietyFields(t *testing.T) {
 	mockAIService := &mockAIService{}
 	mockLearningService := &mockLearningService{}
 	mockWorkerService := &mockWorkerService{}
+	mockStoryService := &mockStoryService{}
+	mockGenerationHintService := &mockGenerationHintService{}
 
 	// Create worker
 	worker := NewWorker(
@@ -560,8 +703,9 @@ func TestSaveGeneratedQuestions_PopulatesVarietyFields(t *testing.T) {
 		mockLearningService,
 		mockWorkerService,
 		&mockDailyQuestionService{},
+		mockStoryService,
 		&mockEmailService{},
-		nil,
+		mockGenerationHintService,
 		"test-worker",
 		testWorkerConfig(),
 		observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}),
@@ -641,6 +785,8 @@ func TestSaveGeneratedQuestions_NilVarietyElements(t *testing.T) {
 	mockAIService := &mockAIService{}
 	mockLearningService := &mockLearningService{}
 	mockWorkerService := &mockWorkerService{}
+	mockStoryService := &mockStoryService{}
+	mockGenerationHintService := &mockGenerationHintService{}
 
 	// Create worker
 	worker := NewWorker(
@@ -650,8 +796,9 @@ func TestSaveGeneratedQuestions_NilVarietyElements(t *testing.T) {
 		mockLearningService,
 		mockWorkerService,
 		&mockDailyQuestionService{},
+		mockStoryService,
 		&mockEmailService{},
-		nil,
+		mockGenerationHintService,
 		"test-worker",
 		testWorkerConfig(),
 		observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}),
@@ -709,6 +856,8 @@ func TestSaveGeneratedQuestions_PartialVarietyElements(t *testing.T) {
 	mockAIService := &mockAIService{}
 	mockLearningService := &mockLearningService{}
 	mockWorkerService := &mockWorkerService{}
+	mockStoryService := &mockStoryService{}
+	mockGenerationHintService := &mockGenerationHintService{}
 
 	// Create worker
 	worker := NewWorker(
@@ -718,8 +867,9 @@ func TestSaveGeneratedQuestions_PartialVarietyElements(t *testing.T) {
 		mockLearningService,
 		mockWorkerService,
 		&mockDailyQuestionService{},
+		mockStoryService,
 		&mockEmailService{},
-		nil,
+		mockGenerationHintService,
 		"test-worker",
 		testWorkerConfig(),
 		observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}),
@@ -1131,6 +1281,16 @@ func (m *mockAIService) GenerateChatResponseStream(ctx context.Context, userConf
 	return args.Error(0)
 }
 
+func (m *mockAIService) GenerateStorySection(ctx context.Context, userConfig *services.UserAIConfig, req *models.StoryGenerationRequest) (string, error) {
+	args := m.Called(ctx, userConfig, req)
+	return args.String(0), args.Error(1)
+}
+
+func (m *mockAIService) GenerateStoryQuestions(ctx context.Context, userConfig *services.UserAIConfig, req *models.StoryQuestionsRequest) ([]*models.StorySectionQuestionData, error) {
+	args := m.Called(ctx, userConfig, req)
+	return args.Get(0).([]*models.StorySectionQuestionData), args.Error(1)
+}
+
 func (m *mockAIService) TestConnection(ctx context.Context, provider, model, apiKey string) error {
 	args := m.Called(ctx, provider, model, apiKey)
 	return args.Error(0)
@@ -1457,7 +1617,7 @@ func (m *mockWorkerService) CreateTestSentNotification(ctx context.Context, user
 func TestGetEligibleAIUsers_FiltersCorrectly(t *testing.T) {
 	userService := &mockUserService{}
 	workerService := &mockWorkerService{}
-	w := NewWorker(userService, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, workerService, &mockDailyQuestionService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(userService, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, workerService, &mockDailyQuestionService{}, &mockStoryService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	users := []models.User{
 		{ID: 1, Username: "ai1", AIEnabled: sql.NullBool{Bool: true, Valid: true}, AIProvider: sql.NullString{String: "openai", Valid: true}},
@@ -1478,7 +1638,7 @@ func TestGetEligibleAIUsers_FiltersCorrectly(t *testing.T) {
 }
 
 func TestShouldProcessUser_ExponentialBackoff(t *testing.T) {
-	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockStoryService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 	user := &models.User{ID: 1, Username: "testuser"}
 	w.userFailures[1] = &UserFailureInfo{ConsecutiveFailures: 2, NextRetryTime: time.Now().Add(1 * time.Hour)}
 	ok, reason := w.shouldProcessUser(context.Background(), user)
@@ -1489,7 +1649,7 @@ func TestShouldProcessUser_ExponentialBackoff(t *testing.T) {
 func TestShouldProcessUser_GlobalPause(t *testing.T) {
 	workerService := &mockWorkerService{}
 	workerService.On("IsGlobalPaused", mock.Anything).Return(true, nil)
-	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, workerService, &mockDailyQuestionService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, workerService, &mockDailyQuestionService{}, &mockStoryService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 	user := &models.User{ID: 1, Username: "testuser"}
 	ok, reason := w.shouldProcessUser(context.Background(), user)
 	assert.False(t, ok)
@@ -1500,7 +1660,7 @@ func TestShouldProcessUser_InstancePause(t *testing.T) {
 	workerService := &mockWorkerService{}
 	workerService.On("IsGlobalPaused", mock.Anything).Return(false, nil)
 	workerService.On("GetWorkerStatus", mock.Anything, "test").Return(&models.WorkerStatus{IsPaused: true}, nil)
-	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, workerService, &mockDailyQuestionService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, workerService, &mockDailyQuestionService{}, &mockStoryService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 	user := &models.User{ID: 1, Username: "testuser"}
 	ok, reason := w.shouldProcessUser(context.Background(), user)
 	assert.False(t, ok)
@@ -1511,7 +1671,7 @@ func TestShouldProcessUser_Shutdown(t *testing.T) {
 	workerService := &mockWorkerService{}
 	workerService.On("IsGlobalPaused", mock.Anything).Return(false, nil)
 	workerService.On("GetWorkerStatus", mock.Anything, "test").Return(&models.WorkerStatus{IsPaused: false}, nil)
-	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, workerService, &mockDailyQuestionService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, workerService, &mockDailyQuestionService{}, &mockStoryService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 	user := &models.User{ID: 1, Username: "testuser"}
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
@@ -1521,7 +1681,7 @@ func TestShouldProcessUser_Shutdown(t *testing.T) {
 }
 
 func TestSummarizeRunActions(t *testing.T) {
-	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockStoryService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 	// No actions, all users in backoff
 	result := w.summarizeRunActions([]string{}, []string{"a"}, []string{}, false, false)
 	assert.Contains(t, result, "All users in exponential backoff")
@@ -1576,7 +1736,7 @@ func TestBuildAIQuestionGenRequest(t *testing.T) {
 
 func TestGetUserAIConfig(t *testing.T) {
 	userService := &mockUserService{}
-	w := NewWorker(userService, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(userService, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockStoryService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 	user := &models.User{ID: 1, Username: "bob", AIProvider: sql.NullString{String: "openai", Valid: true}, AIModel: sql.NullString{String: "gpt-4", Valid: true}}
 	userService.On("GetUserAPIKey", mock.Anything, 1, "openai").Return("key", nil)
 	cfg := w.getUserAIConfig(context.Background(), user)
@@ -1589,7 +1749,7 @@ func TestGetUserAIConfig(t *testing.T) {
 func TestCheckPauseStatus_GlobalPause(t *testing.T) {
 	workerService := &mockWorkerService{}
 	workerService.On("IsGlobalPaused", mock.Anything).Return(true, nil)
-	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, workerService, &mockDailyQuestionService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, workerService, &mockDailyQuestionService{}, &mockStoryService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 	paused, reason := w.checkPauseStatus(context.Background())
 	assert.True(t, paused)
 	assert.Contains(t, reason, "Globally paused")
@@ -1598,7 +1758,7 @@ func TestCheckPauseStatus_GlobalPause(t *testing.T) {
 func TestRecordRunHistory_AppendsAndTrims(t *testing.T) {
 	cfg := testWorkerConfig()
 	cfg.Server.MaxHistory = 50
-	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockEmailService{}, nil, "test", cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockStoryService{}, &mockEmailService{}, nil, "test", cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 	w.status.LastRunStart = time.Now()
 	w.status.LastRunFinish = time.Now().Add(1 * time.Second)
 	for i := 0; i < 55; i++ {
@@ -1612,7 +1772,7 @@ func TestRecordRunHistory_AppendsAndTrims(t *testing.T) {
 func TestHandleStartupPause_SetsPause(t *testing.T) {
 	workerService := &mockWorkerService{}
 	workerService.On("SetGlobalPause", mock.Anything, true).Return(nil)
-	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, workerService, &mockDailyQuestionService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, workerService, &mockDailyQuestionService{}, &mockStoryService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 	w.workerCfg.StartWorkerPaused = true
 	w.handleStartupPause(context.Background())
 	workerService.AssertCalled(t, "SetGlobalPause", mock.Anything, true)
@@ -1622,7 +1782,7 @@ func TestGetInitialWorkerStatus(t *testing.T) {
 	workerService := &mockWorkerService{}
 	workerService.On("IsGlobalPaused", mock.Anything).Return(false, nil)
 	workerService.On("GetWorkerStatus", mock.Anything, "test").Return(&models.WorkerStatus{IsPaused: true}, nil)
-	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, workerService, &mockDailyQuestionService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, workerService, &mockDailyQuestionService{}, &mockStoryService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 	status := w.getInitialWorkerStatus(context.Background())
 	assert.Contains(t, status, "paused (instance)")
 }
@@ -1630,7 +1790,7 @@ func TestGetInitialWorkerStatus(t *testing.T) {
 func TestUpdateHeartbeat_CallsService(t *testing.T) {
 	workerService := &mockWorkerService{}
 	workerService.On("UpdateHeartbeat", mock.Anything, "test").Return(nil)
-	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, workerService, &mockDailyQuestionService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(&mockUserService{}, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, workerService, &mockDailyQuestionService{}, &mockStoryService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 	w.updateHeartbeat(context.Background())
 	workerService.AssertCalled(t, "UpdateHeartbeat", mock.Anything, "test")
 }
@@ -2152,7 +2312,7 @@ func TestWorker_DailyReminderIntegration(t *testing.T) {
 	dailyQuestionService := &mockDailyQuestionService{}
 	cfg := testWorkerConfig()
 
-	w := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, &mockEmailService{}, nil, "test-instance", cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, &mockStoryService{}, &mockEmailService{}, nil, "test-instance", cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	// Test user with daily reminder enabled
 	userWithReminder := &models.User{
@@ -2290,7 +2450,7 @@ func TestWorker_CheckForDailyReminders_WrongHour(t *testing.T) {
 	cfg.Email.DailyReminder.Hour = 9
 	cfg.Email.DailyReminder.Enabled = true
 
-	w := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, emailService, nil, "test-instance", cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, &mockStoryService{}, emailService, nil, "test-instance", cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	// Mock current time to be 2 PM (not 9 AM)
 	// We can't easily mock time.Now() in unit tests, so we'll test the logic
@@ -2320,7 +2480,7 @@ func TestWorker_CheckForDailyReminders_Disabled(t *testing.T) {
 	// Disable daily reminders
 	cfg.Email.DailyReminder.Enabled = false
 
-	w := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, emailService, nil, "test-instance", cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, &mockStoryService{}, emailService, nil, "test-instance", cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	// Test the daily reminder check
 	ctx := context.Background()
@@ -2514,6 +2674,8 @@ func TestCheckForDailyQuestionAssignments(t *testing.T) {
 			// Setup mocks
 			mockUserSvc := &mockUserService{}
 			mockDailyQuestionSvc := &mockDailyQuestionService{}
+			mockStorySvc := &mockStoryService{}
+			mockGenerationHintSvc := &mockGenerationHintService{}
 
 			// Mock the GetAllUsers call
 			mockUserSvc.On("GetAllUsers", mock.Anything).Return(tt.users, nil)
@@ -2532,8 +2694,9 @@ func TestCheckForDailyQuestionAssignments(t *testing.T) {
 				&mockLearningService{},
 				&mockWorkerService{},
 				mockDailyQuestionSvc,
+				mockStorySvc,
 				&mockEmailService{},
-				nil,
+				mockGenerationHintSvc,
 				"test",
 				testWorkerConfig(),
 				observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}),
@@ -2644,6 +2807,8 @@ func TestGetUsersEligibleForDailyQuestions(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			// Setup mocks
 			mockUserSvc := &mockUserService{}
+			mockStorySvc := &mockStoryService{}
+			mockGenerationHintSvc := &mockGenerationHintService{}
 
 			// Mock the GetAllUsers call
 			mockUserSvc.On("GetAllUsers", mock.Anything).Return(tt.users, tt.getUsersError)
@@ -2656,8 +2821,9 @@ func TestGetUsersEligibleForDailyQuestions(t *testing.T) {
 				&mockLearningService{},
 				&mockWorkerService{},
 				&mockDailyQuestionService{},
+				mockStorySvc,
 				&mockEmailService{},
-				nil,
+				mockGenerationHintSvc,
 				"test",
 				testWorkerConfig(),
 				observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}),
@@ -2761,8 +2927,9 @@ func createTestWorkerWithConfig(cfg *config.Config) *Worker {
 		&mockLearningService{},
 		&mockWorkerService{},
 		&mockDailyQuestionService{},
+		&mockStoryService{},
 		&mockEmailService{},
-		nil,
+		&mockGenerationHintService{},
 		"test",
 		cfg,
 		logger,

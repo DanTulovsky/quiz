@@ -231,8 +231,11 @@ func main() {
 	// Create daily question service
 	dailyQuestionService := services.NewDailyQuestionService(db, logger, questionService, learningService)
 
+	// Create story service
+	storyService := services.NewStoryService(db, cfg, logger)
+
 	// Create a minimal worker instance for question generation
-	workerInstance := worker.NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, emailService, nil, "cli", cfg, logger)
+	workerInstance := worker.NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, storyService, emailService, nil, "cli", cfg, logger)
 
 	// Create context with timeout
 	ctx, cancel := context.WithTimeout(ctx, config.CLIWorkerTimeout)

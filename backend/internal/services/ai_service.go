@@ -101,6 +101,8 @@ type AIServiceInterface interface {
 	GenerateQuestionsStream(ctx context.Context, userConfig *UserAIConfig, req *models.AIQuestionGenRequest, progress chan<- *models.Question, variety *VarietyElements) error
 	GenerateChatResponse(ctx context.Context, userConfig *UserAIConfig, req *models.AIChatRequest) (string, error)
 	GenerateChatResponseStream(ctx context.Context, userConfig *UserAIConfig, req *models.AIChatRequest, chunks chan<- string) error
+	GenerateStorySection(ctx context.Context, userConfig *UserAIConfig, req *models.StoryGenerationRequest) (string, error)
+	GenerateStoryQuestions(ctx context.Context, userConfig *UserAIConfig, req *models.StoryQuestionsRequest) ([]*models.StorySectionQuestionData, error)
 	TestConnection(ctx context.Context, provider, model, apiKey string) error
 	GetConcurrencyStats() ConcurrencyStats
 	GetQuestionBatchSize(provider string) int
@@ -711,6 +713,181 @@ func (s *AIService) GenerateChatResponseStream(ctx context.Context, userConfig *
 		// No grammar constraint for open-ended chat
 		return s.callOpenAIStream(ctx, userConfig, prompt, "", chunks)
 	})
+}
+
+// GenerateStorySection generates a story section using AI
+func (s *AIService) GenerateStorySection(ctx context.Context, userConfig *UserAIConfig, req *models.StoryGenerationRequest) (result string, err error) {
+	ctx, span := observability.TraceAIFunction(ctx, "generate_story_section",
+		attribute.String("user.username", userConfig.Username),
+		attribute.String("ai.provider", userConfig.Provider),
+		attribute.String("ai.model", userConfig.Model),
+		attribute.String("story.title", req.Title),
+		attribute.String("story.language", req.Language),
+		attribute.String("story.level", req.Level),
+		attribute.Bool("story.is_first_section", req.IsFirstSection),
+	)
+	defer observability.FinishSpan(span, &err)
+
+	var storyResult string
+	var storyErr error
+
+	err = s.withConcurrencyControl(ctx, userConfig.Username, func() error {
+		prompt := s.buildStorySectionPrompt(req)
+		storyResult, storyErr = s.callOpenAI(ctx, userConfig, prompt, "")
+		return storyErr
+	})
+
+	if err != nil {
+		return "", err
+	}
+	return storyResult, storyErr
+}
+
+// GenerateStoryQuestions generates comprehension questions for a story section
+func (s *AIService) GenerateStoryQuestions(ctx context.Context, userConfig *UserAIConfig, req *models.StoryQuestionsRequest) (result []*models.StorySectionQuestionData, err error) {
+	ctx, span := observability.TraceAIFunction(ctx, "generate_story_questions",
+		attribute.String("user.username", userConfig.Username),
+		attribute.String("ai.provider", userConfig.Provider),
+		attribute.String("ai.model", userConfig.Model),
+		attribute.String("story.language", req.Language),
+		attribute.String("story.level", req.Level),
+		attribute.Int("questions.count", req.QuestionCount),
+	)
+	defer observability.FinishSpan(span, &err)
+
+	var questionsResult []*models.StorySectionQuestionData
+	var questionsErr error
+
+	err = s.withConcurrencyControl(ctx, userConfig.Username, func() error {
+		prompt := s.buildStoryQuestionsPrompt(req)
+		response, responseErr := s.callOpenAI(ctx, userConfig, prompt, "")
+		if responseErr != nil {
+			return responseErr
+		}
+
+		// Parse the JSON response into question data
+		questionsResult, questionsErr = s.parseStoryQuestionsResponse(response)
+		if questionsErr != nil {
+			return fmt.Errorf("failed to parse story questions response: %w", questionsErr)
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+	return questionsResult, questionsErr
+}
+
+// buildStorySectionPrompt builds the prompt for story section generation
+func (s *AIService) buildStorySectionPrompt(req *models.StoryGenerationRequest) string {
+	// Create template data from the request
+	templateData := AITemplateData{
+		Language: req.Language,
+		Level:    req.Level,
+	}
+
+	// Add story-specific fields to AdditionalContext for template access
+	context := s.buildStoryContext(req)
+	templateData.AdditionalContext = fmt.Sprintf(`Title: %s
+%s
+TargetWords: %d
+TargetSentences: %d
+IsFirstSection: %t
+PreviousSections: %s`,
+		req.Title, context, req.TargetWords, req.TargetWords/15, req.IsFirstSection, req.PreviousSections)
+
+	template, err := s.templateManager.RenderTemplate("story_section_prompt.tmpl", templateData)
+	if err != nil {
+		// No fallback - error out if template not found
+		panic(fmt.Errorf("failed to render story section template: %w", err))
+	}
+
+	return template
+}
+
+// buildStoryQuestionsPrompt builds the prompt for story questions generation
+func (s *AIService) buildStoryQuestionsPrompt(req *models.StoryQuestionsRequest) string {
+	// Create template data from the request
+	templateData := AITemplateData{
+		Language: req.Language,
+		Level:    req.Level,
+		Count:    req.QuestionCount,
+	}
+
+	// Add story-specific fields to AdditionalContext for template access
+	templateData.AdditionalContext = fmt.Sprintf(`SectionText: %s
+QuestionCount: %d`,
+		req.SectionText, req.QuestionCount)
+
+	template, err := s.templateManager.RenderTemplate("story_questions_prompt.tmpl", templateData)
+	if err != nil {
+		// No fallback - error out if template not found
+		panic(fmt.Errorf("failed to render story questions template: %w", err))
+	}
+
+	return template
+}
+
+// buildStoryContext builds the context string for story generation
+func (s *AIService) buildStoryContext(req *models.StoryGenerationRequest) string {
+	var context strings.Builder
+
+	if req.Subject != nil && *req.Subject != "" {
+		context.WriteString(fmt.Sprintf("Subject: %s\n", *req.Subject))
+	}
+	if req.AuthorStyle != nil && *req.AuthorStyle != "" {
+		context.WriteString(fmt.Sprintf("Author Style: %s\n", *req.AuthorStyle))
+	}
+	if req.TimePeriod != nil && *req.TimePeriod != "" {
+		context.WriteString(fmt.Sprintf("Time Period: %s\n", *req.TimePeriod))
+	}
+	if req.Genre != nil && *req.Genre != "" {
+		context.WriteString(fmt.Sprintf("Genre: %s\n", *req.Genre))
+	}
+	if req.Tone != nil && *req.Tone != "" {
+		context.WriteString(fmt.Sprintf("Tone: %s\n", *req.Tone))
+	}
+	if req.CharacterNames != nil && *req.CharacterNames != "" {
+		context.WriteString(fmt.Sprintf("Characters: %s\n", *req.CharacterNames))
+	}
+	if req.CustomInstructions != nil && *req.CustomInstructions != "" {
+		context.WriteString(fmt.Sprintf("Instructions: %s\n", *req.CustomInstructions))
+	}
+
+	return context.String()
+}
+
+// parseStoryQuestionsResponse parses the AI response into question data
+func (s *AIService) parseStoryQuestionsResponse(response string) ([]*models.StorySectionQuestionData, error) {
+	// Clean the response (remove markdown code blocks if present)
+	response = strings.TrimSpace(response)
+	if strings.HasPrefix(response, "```json") {
+		response = strings.TrimPrefix(response, "```json")
+		response = strings.TrimSuffix(response, "```")
+		response = strings.TrimSpace(response)
+	}
+
+	var questions []*models.StorySectionQuestionData
+	if err := json.Unmarshal([]byte(response), &questions); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal questions JSON: %w", err)
+	}
+
+	// Validate the questions
+	for i, q := range questions {
+		if q.QuestionText == "" {
+			return nil, fmt.Errorf("question %d: missing question text", i)
+		}
+		if len(q.Options) != 4 {
+			return nil, fmt.Errorf("question %d: must have exactly 4 options, got %d", i, len(q.Options))
+		}
+		if q.CorrectAnswerIndex < 0 || q.CorrectAnswerIndex >= 4 {
+			return nil, fmt.Errorf("question %d: correct_answer_index must be 0-3, got %d", i, q.CorrectAnswerIndex)
+		}
+	}
+
+	return questions, nil
 }
 
 // TestConnection tests the connection to the AI service

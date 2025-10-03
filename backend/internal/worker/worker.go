@@ -85,6 +85,7 @@ type Worker struct {
 	learningService      services.LearningServiceInterface
 	workerService        services.WorkerServiceInterface
 	dailyQuestionService services.DailyQuestionServiceInterface
+	storyService         services.StoryServiceInterface
 	emailService         mailer.Mailer
 	hintService          services.GenerationHintServiceInterface
 	instance             string
@@ -439,7 +440,7 @@ func (w *Worker) getUsersEligibleForDailyQuestions(ctx context.Context) ([]model
 }
 
 // NewWorker creates a new Worker instance
-func NewWorker(userService services.UserServiceInterface, questionService services.QuestionServiceInterface, aiService services.AIServiceInterface, learningService services.LearningServiceInterface, workerService services.WorkerServiceInterface, dailyQuestionService services.DailyQuestionServiceInterface, emailService mailer.Mailer, hintService services.GenerationHintServiceInterface, instance string, cfg *config.Config, logger *observability.Logger) *Worker {
+func NewWorker(userService services.UserServiceInterface, questionService services.QuestionServiceInterface, aiService services.AIServiceInterface, learningService services.LearningServiceInterface, workerService services.WorkerServiceInterface, dailyQuestionService services.DailyQuestionServiceInterface, storyService services.StoryServiceInterface, emailService mailer.Mailer, hintService services.GenerationHintServiceInterface, instance string, cfg *config.Config, logger *observability.Logger) *Worker {
 	if instance == "" {
 		instance = "default"
 	}
@@ -459,6 +460,7 @@ func NewWorker(userService services.UserServiceInterface, questionService servic
 		learningService:      learningService,
 		workerService:        workerService,
 		dailyQuestionService: dailyQuestionService,
+		storyService:         storyService,
 		emailService:         emailService,
 		hintService:          hintService,
 		instance:             instance,
@@ -636,6 +638,13 @@ func (w *Worker) run() {
 		})
 	}
 
+	// Generate story sections for users with active stories
+	if err := w.checkForStoryGenerations(ctx); err != nil {
+		w.logger.Error(ctx, "Failed to check story generations", err, map[string]interface{}{
+			"instance": w.instance,
+		})
+	}
+
 	// Check for daily email reminders
 	if err := w.checkForDailyReminders(ctx); err != nil {
 		w.logger.Error(ctx, "Failed to check daily reminders", err, map[string]interface{}{
@@ -718,6 +727,239 @@ func (w *Worker) GetHistory() []RunRecord {
 	history := make([]RunRecord, len(w.history))
 	copy(history, w.history)
 	return history
+}
+
+// checkForStoryGenerations checks for users with active stories and generates new sections
+func (w *Worker) checkForStoryGenerations(ctx context.Context) error {
+	ctx, span := observability.TraceWorkerFunction(ctx, "check_story_generations",
+		attribute.String("worker.instance", w.instance),
+	)
+	defer observability.FinishSpan(span, nil)
+
+	w.updateActivity("Checking for story generations...")
+
+	// Get all users with current active stories
+	users, err := w.getUsersWithActiveStories(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to get users with active stories: %w", err)
+	}
+
+	w.logger.Info(ctx, "Found users with active stories",
+		map[string]interface{}{
+			"count":    len(users),
+			"instance": w.instance,
+		})
+
+	processed := 0
+	for _, user := range users {
+		if err := w.generateStorySection(ctx, user); err != nil {
+			w.logger.Error(ctx, "Failed to generate story section for user",
+				err, map[string]interface{}{
+					"user_id":  user.ID,
+					"username": user.Username,
+					"instance": w.instance,
+				})
+			continue
+		}
+		processed++
+	}
+
+	w.updateActivity(fmt.Sprintf("Generated story sections for %d users", processed))
+	w.logger.Info(ctx, "Story generation completed",
+		map[string]interface{}{
+			"processed": processed,
+			"total":     len(users),
+			"instance":  w.instance,
+		})
+
+	return nil
+}
+
+// generateStorySection generates a new section for a user's current story
+func (w *Worker) generateStorySection(ctx context.Context, user models.User) error {
+	ctx, span := observability.TraceWorkerFunction(ctx, "generate_story_section",
+		attribute.String("worker.instance", w.instance),
+		attribute.String("user.username", user.Username),
+		attribute.Int("user.id", int(user.ID)),
+	)
+	defer observability.FinishSpan(span, nil)
+
+	// Get the user's current story
+	story, err := w.storyService.GetCurrentStory(ctx, uint(user.ID))
+	if err != nil {
+		return fmt.Errorf("failed to get current story for user %d: %w", user.ID, err)
+	}
+	if story == nil {
+		// No current story, skip
+		return nil
+	}
+
+	// Check if we can generate a section today
+	canGenerate, err := w.storyService.CanGenerateSection(ctx, story.ID)
+	if err != nil {
+		return fmt.Errorf("failed to check if section can be generated: %w", err)
+	}
+	if !canGenerate {
+		// Already generated today or story is not active
+		return nil
+	}
+
+	// Get all previous sections for context
+	previousSections, err := w.storyService.GetAllSectionsText(ctx, story.ID)
+	if err != nil {
+		return fmt.Errorf("failed to get previous sections: %w", err)
+	}
+
+	// Get user's current language level
+	userLevel := "intermediate" // Default fallback
+	if user.CurrentLevel.Valid {
+		userLevel = user.CurrentLevel.String
+	}
+
+	// Determine target length for this user's level
+	targetWords := w.storyService.GetSectionLengthTarget(userLevel, story.SectionLengthOverride)
+
+	// Get user's AI configuration
+	userConfig := w.getUserAIConfig(ctx, &user)
+
+	// Build the generation request
+	genReq := &models.StoryGenerationRequest{
+		UserID:             uint(user.ID),
+		StoryID:            story.ID,
+		Language:           story.Language,
+		Level:              userLevel,
+		Title:              story.Title,
+		Subject:            story.Subject,
+		AuthorStyle:        story.AuthorStyle,
+		TimePeriod:         story.TimePeriod,
+		Genre:              story.Genre,
+		Tone:               story.Tone,
+		CharacterNames:     story.CharacterNames,
+		CustomInstructions: story.CustomInstructions,
+		SectionLength:      models.SectionLengthMedium, // Use medium as default
+		PreviousSections:   previousSections,
+		IsFirstSection:     len(story.Sections) == 0,
+		TargetWords:        targetWords,
+		TargetSentences:    targetWords / 15, // Rough estimate
+	}
+
+	// Generate the story section
+	sectionContent, err := w.aiService.GenerateStorySection(ctx, userConfig, genReq)
+	if err != nil {
+		return fmt.Errorf("failed to generate story section: %w", err)
+	}
+
+	// Count words in the generated content
+	wordCount := len(strings.Fields(sectionContent))
+
+	// Create the section in the database
+	section, err := w.storyService.CreateSection(ctx, story.ID, sectionContent, userLevel, wordCount)
+	if err != nil {
+		return fmt.Errorf("failed to create story section: %w", err)
+	}
+
+	// Generate comprehension questions for the section
+	questionsReq := &models.StoryQuestionsRequest{
+		UserID:        uint(user.ID),
+		SectionID:     section.ID,
+		Language:      story.Language,
+		Level:         userLevel,
+		SectionText:   sectionContent,
+		QuestionCount: w.cfg.Story.QuestionsPerSection,
+	}
+
+	questions, err := w.aiService.GenerateStoryQuestions(ctx, userConfig, questionsReq)
+	if err != nil {
+		w.logger.Warn(ctx, "Failed to generate questions for story section",
+			map[string]interface{}{
+				"section_id": section.ID,
+				"user_id":    user.ID,
+				"error":      err.Error(),
+			})
+		// Continue anyway - questions are nice to have but not critical
+	} else {
+		// Convert to database model slice
+		dbQuestions := make([]models.StorySectionQuestionData, len(questions))
+		for i, q := range questions {
+			dbQuestions[i] = *q
+		}
+
+		// Save the questions to the database
+		if err := w.storyService.CreateSectionQuestions(ctx, section.ID, dbQuestions); err != nil {
+			w.logger.Warn(ctx, "Failed to save story questions",
+				map[string]interface{}{
+					"section_id": section.ID,
+					"user_id":    user.ID,
+					"error":      err.Error(),
+				})
+		}
+	}
+
+	// Update the story's last generation time
+	if err := w.storyService.UpdateLastGenerationTime(ctx, story.ID); err != nil {
+		w.logger.Warn(ctx, "Failed to update story generation time",
+			map[string]interface{}{
+				"story_id": story.ID,
+				"user_id":  user.ID,
+				"error":    err.Error(),
+			})
+	}
+
+	w.logger.Info(ctx, "Story section generated successfully",
+		map[string]interface{}{
+			"story_id":       story.ID,
+			"section_id":     section.ID,
+			"user_id":        user.ID,
+			"word_count":     wordCount,
+			"question_count": len(questions),
+		})
+
+	return nil
+}
+
+// getUsersWithActiveStories retrieves all users who have current active stories
+func (w *Worker) getUsersWithActiveStories(ctx context.Context) ([]models.User, error) {
+	// Get all users first
+	allUsers, err := w.userService.GetAllUsers(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get all users: %w", err)
+	}
+
+	// Filter to only users with current active stories and AI enabled
+	var filteredUsers []models.User
+	for _, user := range allUsers {
+		// Check if user has AI enabled
+		if !user.AIEnabled.Valid || !user.AIEnabled.Bool {
+			continue
+		}
+
+		// Check if user has valid AI provider and model
+		if !user.AIProvider.Valid || !user.AIModel.Valid {
+			continue
+		}
+
+		// Check if user has a current active story
+		story, err := w.storyService.GetCurrentStory(ctx, uint(user.ID))
+		if err != nil || story == nil {
+			continue
+		}
+
+		// Check if story is active
+		if story.Status != models.StoryStatusActive {
+			continue
+		}
+
+		filteredUsers = append(filteredUsers, user)
+	}
+
+	return filteredUsers, nil
+}
+
+// hasValidAPIKeys checks if a user has valid API keys for their provider
+func (w *Worker) hasValidAPIKeys(user models.User) bool {
+	// For now, assume users with AI enabled and provider/model configured have valid keys
+	// In a real implementation, you might want to check the actual API key validity
+	return user.AIEnabled.Valid && user.AIEnabled.Bool && user.AIProvider.Valid && user.AIModel.Valid
 }
 
 // GetActivityLogs returns recent activity logs

@@ -116,6 +116,65 @@ database:
   max_idle_conns: 5
   conn_max_lifetime_minutes: 5
 
+# Story mode configuration
+story:
+  max_archived_per_user: 20
+  generation_enabled: true
+
+  # Section length defaults by proficiency level (in words)
+  # These levels are language-agnostic and can be mapped to any framework
+  section_lengths:
+    beginner:          # Maps to: A1, JLPT N5, HSK 1-2, etc.
+      short: 50
+      medium: 80
+      long: 120
+    elementary:        # Maps to: A2, JLPT N4, HSK 3, etc.
+      short: 80
+      medium: 120
+      long: 180
+    intermediate:      # Maps to: B1, JLPT N3, HSK 4, etc.
+      short: 150
+      medium: 220
+      long: 300
+    upper_intermediate: # Maps to: B2, JLPT N2, HSK 5, etc.
+      short: 250
+      medium: 350
+      long: 450
+    advanced:          # Maps to: C1, JLPT N1, HSK 6, etc.
+      short: 350
+      medium: 500
+      long: 650
+    proficient:        # Maps to: C2, native-like proficiency
+      short: 500
+      medium: 700
+      long: 900
+
+    # Language-specific overrides (optional)
+    # Example: For languages with different writing systems or reading patterns
+    overrides:
+      ja:  # Japanese - adjust for kanji complexity
+        beginner:
+          short: 40
+          medium: 60
+          long: 90
+        elementary:
+          short: 60
+          medium: 90
+          long: 130
+      zh:  # Chinese - adjust for character density
+        beginner:
+          short: 30
+          medium: 50
+          long: 80
+        elementary:
+          short: 50
+          medium: 80
+          long: 120
+
+  # Number of comprehension questions
+  questions_per_section: 12  # Generate this many
+  questions_shown: 5        # Show this many randomly
+
 # OpenTelemetry Configuration
 #
 # Observability settings for tracing, metrics, and logging

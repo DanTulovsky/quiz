@@ -64,11 +64,12 @@ func (suite *WorkerAdminIntegrationTestSuite) SetupSuite() {
 	// Create worker instance
 	emailService := services.NewEmailService(cfg, logger)
 	dailyQuestionService := services.NewDailyQuestionService(suite.DB, logger, questionService, learningService)
-	workerInstance := worker.NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, emailService, nil, "test-instance", cfg, logger)
+	storyService := services.NewStoryService(suite.DB, cfg, logger)
+	generationHintService := services.NewGenerationHintService(suite.DB, logger)
+	workerInstance := worker.NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, storyService, emailService, generationHintService, "test-instance", cfg, logger)
 	suite.Worker = workerInstance
 
 	// Use the real application router
-	generationHintService := services.NewGenerationHintService(suite.DB, logger)
 	suite.Router = NewRouter(
 		cfg,
 		userService,
