@@ -105,9 +105,9 @@ func (suite *StoryHandlerIntegrationTestSuite) TestStoryHandler_CreateStory_Inte
 	}
 
 	err = suite.Container.GetDatabase().QueryRowContext(ctx,
-		`INSERT INTO users (username, email, preferred_language, created_at, updated_at)
-		 VALUES ($1, $2, $3, NOW(), NOW()) RETURNING id`,
-		user.Username, user.Email, user.PreferredLanguage).Scan(&user.ID)
+		`INSERT INTO users (username, email, preferred_language, current_level, created_at, updated_at)
+		 VALUES ($1, $2, $3, $4, NOW(), NOW()) RETURNING id`,
+		user.Username, user.Email, user.PreferredLanguage, "B1").Scan(&user.ID)
 	require.NoError(suite.T(), err)
 
 	// Create handler with real services
@@ -144,17 +144,28 @@ func (suite *StoryHandlerIntegrationTestSuite) TestStoryHandler_CreateStory_Inte
 		var response models.Story
 		err := json.Unmarshal(w.Body.Bytes(), &response)
 		assert.NoError(suite.T(), err)
+
 		assert.Equal(suite.T(), "Test Story", response.Title)
-		assert.Equal(suite.T(), user.ID, response.UserID)
+		assert.Equal(suite.T(), uint(user.ID), response.UserID)
 	})
 
 	suite.Run("should get current story successfully", func() {
-		// Create a story in the database first
-		_, err := suite.Container.GetDatabase().ExecContext(ctx,
-			`INSERT INTO stories (user_id, title, language, status, is_current, created_at, updated_at)
-			 VALUES ($1, $2, $3, $4, $5, NOW(), NOW())`,
-			user.ID, "Test Story Current", "en", "active", true)
+		// The story from the first test should already be the current story
+		// If not, we need to ensure there's a current story for this user
+		var storyCount int
+		err := suite.Container.GetDatabase().QueryRowContext(ctx,
+			"SELECT COUNT(*) FROM stories WHERE user_id = $1 AND is_current = true",
+			user.ID).Scan(&storyCount)
 		require.NoError(suite.T(), err)
+
+		if storyCount == 0 {
+			// Create a current story if none exists
+			_, err = suite.Container.GetDatabase().ExecContext(ctx,
+				`INSERT INTO stories (user_id, title, language, status, is_current, created_at, updated_at)
+				 VALUES ($1, $2, $3, $4, $5, NOW(), NOW())`,
+				user.ID, "Test Story Current", "en", "active", true)
+			require.NoError(suite.T(), err)
+		}
 
 		// Create handler for GET request
 		router.GET("/v1/story/current", handler.GetCurrentStory)
@@ -171,7 +182,7 @@ func (suite *StoryHandlerIntegrationTestSuite) TestStoryHandler_CreateStory_Inte
 		var response models.Story
 		err = json.Unmarshal(w.Body.Bytes(), &response)
 		assert.NoError(suite.T(), err)
-		assert.Equal(suite.T(), "Test Story Current", response.Title)
-		assert.Equal(suite.T(), user.ID, response.UserID)
+		assert.Equal(suite.T(), "Test Story", response.Title) // Should be the story from the first test
+		assert.Equal(suite.T(), uint(user.ID), response.UserID)
 	})
 }
