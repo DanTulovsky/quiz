@@ -1170,6 +1170,16 @@ func (m *MockAIServiceForHandler) GenerateChatResponseStream(ctx context.Context
 	return args.Error(0)
 }
 
+func (m *MockAIServiceForHandler) GenerateStoryQuestions(ctx context.Context, userConfig *services.UserAIConfig, req *models.StoryQuestionsRequest) ([]*models.StorySectionQuestionData, error) {
+	args := m.Called(ctx, userConfig, req)
+	return args.Get(0).([]*models.StorySectionQuestionData), args.Error(1)
+}
+
+func (m *MockAIServiceForHandler) GenerateStorySection(ctx context.Context, userConfig *services.UserAIConfig, req *models.StoryGenerationRequest) (string, error) {
+	args := m.Called(ctx, userConfig, req)
+	return args.String(0), args.Error(1)
+}
+
 func (m *MockAIServiceForHandler) TestConnection(ctx context.Context, provider, model, apiKey string) error {
 	args := m.Called(ctx, provider, model, apiKey)
 	return args.Error(0)

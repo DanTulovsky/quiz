@@ -32,8 +32,14 @@ func TestCheckForDailyQuestionAssignments_CreatesTwoDayHorizonAssignments(t *tes
 	dailyQuestionService := services.NewDailyQuestionService(db, logger, questionService, learningService)
 	workerService := services.NewWorkerServiceWithLogger(db, logger)
 
+	// Create story service
+	storyService := services.NewStoryService(db, cfg, logger)
+
+	// Create generation hint service
+	generationHintService := services.NewGenerationHintService(db, logger)
+
 	// Create worker with defaults (DailyHorizonDays defaults to 2)
-	w := NewWorker(userService, questionService, services.NewAIService(cfg, logger), learningService, workerService, dailyQuestionService, nil, nil, "test", cfg, logger)
+	w := NewWorker(userService, questionService, services.NewAIService(cfg, logger), learningService, workerService, dailyQuestionService, storyService, nil, generationHintService, "test", cfg, logger)
 	// Ensure horizon is explicitly 2 for the test
 	w.workerCfg.DailyHorizonDays = 2
 

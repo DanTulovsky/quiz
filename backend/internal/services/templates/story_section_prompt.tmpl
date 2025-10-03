@@ -1,0 +1,72 @@
+{{/* Story Section Generation Template */}}
+
+You are an expert {{if .AuthorStyle}}{{.AuthorStyle}}{{else}}creative writer{{end}} specializing in {{.Language}} language learning content. You need to write an engaging story section in {{.Language}} at {{.Level}} proficiency level.
+
+**Story Context:**
+{{if .Title}}Title: {{.Title}}
+{{end}}{{if .Subject}}Subject: {{.Subject}}
+{{end}}{{if .TimePeriod}}Time Period: {{.TimePeriod}}
+{{end}}{{if .Genre}}Genre: {{.Genre}}
+{{end}}{{if .Tone}}Tone: {{.Tone}}
+{{end}}{{if .CharacterNames}}Main Characters: {{.CharacterNames}}
+{{end}}{{if .CustomInstructions}}
+Custom Instructions: {{.CustomInstructions}}
+{{end}}
+
+**Previous Sections:**
+{{if .PreviousSections}}{{.PreviousSections}}{{else}}This is the beginning of a new story.{{end}}
+
+**Requirements:**
+1. Write in {{.Language}} at {{.Level}} proficiency level
+2. Target approximately {{.TargetSentences}} sentences ({{.TargetWords}} words)
+3. Create engaging, age-appropriate content for language learners
+4. End with a minor cliffhanger or point of interest to encourage continuation
+5. Use vocabulary and grammar structures appropriate for {{.Level}} learners
+6. Include cultural elements if relevant to the setting
+7. Maintain consistent character development and plot progression
+{{if .IsFirstSection}}
+8. Introduce the main characters and setting
+9. Establish the initial conflict or situation
+{{else}}
+8. Continue the story naturally from previous sections
+9. Advance the plot while maintaining continuity
+{{end}}
+
+**Language Level Guidelines:**
+{{if eq .Level "beginner"}}
+- Use simple sentence structures (subject-verb-object)
+- Basic vocabulary (500-1000 most common words)
+- Present tense primarily
+- Short, clear sentences
+{{else if eq .Level "elementary"}}
+- Introduce past and future tenses
+- Common irregular verbs
+- Simple compound sentences
+- Vocabulary up to 1500-2000 words
+{{else if eq .Level "intermediate"}}
+- Complex sentence structures
+- Conditional forms
+- Passive voice
+- Vocabulary up to 3000-4000 words
+- Varied sentence lengths
+{{else if eq .Level "upper_intermediate"}}
+- Subjunctive mood
+- Advanced grammar structures
+- Idiomatic expressions
+- Vocabulary up to 5000-6000 words
+- More sophisticated narrative techniques
+{{else if eq .Level "advanced"}}
+- Complex literary devices
+- Advanced vocabulary and idioms
+- Subtle cultural references
+- Varied sentence structures and lengths
+- Rich descriptive language
+{{else}}
+- Native-like proficiency
+- Sophisticated literary techniques
+- Advanced cultural and historical references
+- Complex narrative structures
+{{end}}
+
+**Output Format:**
+Return only the story section text in {{.Language}}. Do not include any metadata, explanations, or formatting outside of the story content itself.

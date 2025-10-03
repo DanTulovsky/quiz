@@ -53,7 +53,7 @@ func (suite *CLIWorkerIntegrationTestSuite) SetupSuite() {
 		testDBURL = "postgres://quiz_user:quiz_password@localhost:5433/quiz_test_db?sslmode=disable"
 	}
 
-	// Initialize database connection
+	// Initialize database connection (this will run migrations if needed)
 	db, err := dbManager.InitDB(testDBURL)
 	require.NoError(suite.T(), err)
 	suite.DB = db

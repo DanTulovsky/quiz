@@ -343,6 +343,17 @@ CREATE TABLE IF NOT EXISTS daily_assignment_responses (
     UNIQUE(user_response_id)
 );
 CREATE INDEX IF NOT EXISTS idx_daily_assignment_responses_assignment_id ON daily_assignment_responses(assignment_id);
+-- Stories table indexes
+CREATE INDEX IF NOT EXISTS idx_stories_user_id ON stories(user_id);
+CREATE INDEX IF NOT EXISTS idx_stories_status ON stories(status);
+CREATE INDEX IF NOT EXISTS idx_stories_user_current ON stories(user_id, is_current);
+CREATE INDEX IF NOT EXISTS idx_stories_user_status ON stories(user_id, status);
+-- Story sections table indexes
+CREATE INDEX IF NOT EXISTS idx_story_sections_story_id ON story_sections(story_id);
+CREATE INDEX IF NOT EXISTS idx_story_sections_number ON story_sections(story_id, section_number);
+CREATE INDEX IF NOT EXISTS idx_story_sections_date ON story_sections(generation_date);
+-- Story section questions table indexes
+CREATE INDEX IF NOT EXISTS idx_story_section_questions_section_id ON story_section_questions(section_id);
 -- Create materialized view for analytics performance
 CREATE MATERIALIZED VIEW IF NOT EXISTS user_performance_analytics AS
 SELECT u.id as user_id,
@@ -388,4 +399,53 @@ VALUES ('global_pause', 'false'),
 -- Insert default worker status
 INSERT INTO worker_status (worker_instance, is_running, is_paused)
 VALUES ('default', false, false) ON CONFLICT (worker_instance) DO NOTHING;
+-- Stories table - stores user-created stories with metadata
+CREATE TABLE IF NOT EXISTS stories (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    title VARCHAR(200) NOT NULL,
+    language VARCHAR(10) NOT NULL,
+    subject TEXT,
+    author_style TEXT,
+    time_period TEXT,
+    genre TEXT,
+    tone TEXT,
+    character_names TEXT,
+    custom_instructions TEXT,
+    section_length_override VARCHAR(10) CHECK (section_length_override IN ('short', 'medium', 'long')),
+    status VARCHAR(20) NOT NULL CHECK (status IN ('active', 'archived', 'completed')) DEFAULT 'active',
+    is_current BOOLEAN NOT NULL DEFAULT FALSE,
+    last_section_generated_at TIMESTAMP WITH TIME ZONE,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+
+    CONSTRAINT unique_current_story_per_user UNIQUE (user_id, is_current) DEFERRABLE INITIALLY DEFERRED
+);
+
+-- Story sections table - stores individual sections of stories
+CREATE TABLE IF NOT EXISTS story_sections (
+    id SERIAL PRIMARY KEY,
+    story_id INTEGER NOT NULL REFERENCES stories(id) ON DELETE CASCADE,
+    section_number INTEGER NOT NULL,
+    content TEXT NOT NULL,
+    language_level VARCHAR(5) NOT NULL,
+    word_count INTEGER NOT NULL,
+    generated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    generation_date DATE NOT NULL DEFAULT CURRENT_DATE,
+
+    CONSTRAINT unique_story_section_number UNIQUE (story_id, section_number) DEFERRABLE INITIALLY DEFERRED,
+    CONSTRAINT unique_story_generation_date UNIQUE (story_id, generation_date) DEFERRABLE INITIALLY DEFERRED
+);
+
+-- Story section questions table - stores comprehension questions for each section
+CREATE TABLE IF NOT EXISTS story_section_questions (
+    id SERIAL PRIMARY KEY,
+    section_id INTEGER NOT NULL REFERENCES story_sections(id) ON DELETE CASCADE,
+    question_text TEXT NOT NULL,
+    options JSONB NOT NULL,
+    correct_answer_index INTEGER NOT NULL CHECK (correct_answer_index >= 0 AND correct_answer_index <= 3),
+    explanation TEXT,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+);
+
 -- Insert default roles and assign them to existing users via migration files

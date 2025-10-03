@@ -141,6 +141,29 @@ func (m *MockAIService) TemplateManager() *services.AITemplateManager {
 	return nil
 }
 
+func (m *MockAIService) GenerateStoryQuestions(ctx context.Context, userConfig *services.UserAIConfig, req *models.StoryQuestionsRequest) ([]*models.StorySectionQuestionData, error) {
+	if m.realService != nil {
+		return m.realService.GenerateStoryQuestions(ctx, userConfig, req)
+	}
+	// Return mock data for testing
+	return []*models.StorySectionQuestionData{
+		{
+			QuestionText:       "What is the main character doing?",
+			Options:            []string{"Reading", "Writing", "Running", "Swimming"},
+			CorrectAnswerIndex: 0,
+			Explanation:        stringPtr("The main character is reading a book"),
+		},
+	}, nil
+}
+
+func (m *MockAIService) GenerateStorySection(ctx context.Context, userConfig *services.UserAIConfig, req *models.StoryGenerationRequest) (string, error) {
+	if m.realService != nil {
+		return m.realService.GenerateStorySection(ctx, userConfig, req)
+	}
+	// Return mock data for testing
+	return "Once upon a time, there was a brave knight who lived in a castle...", nil
+}
+
 func (m *MockAIService) SupportsGrammarField(provider string) bool {
 	if m.realService != nil {
 		return m.realService.SupportsGrammarField(provider)

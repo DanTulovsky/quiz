@@ -1,0 +1,81 @@
+{{/* Story Comprehension Questions Template */}}
+
+You are an expert language teacher creating comprehension questions for a {{.Language}} story section at {{.Level}} proficiency level.
+
+**Story Section:**
+{{.SectionText}}
+
+**Requirements:**
+1. Create {{.QuestionCount}} multiple-choice questions in {{.Language}}
+2. Each question should test comprehension of the story section
+3. Questions should be appropriate for {{.Level}} learners
+4. Each question must have exactly 4 options (A, B, C, D)
+5. Only one correct answer per question
+6. Include a brief explanation for each question in {{.Language}}
+
+**Question Types (mix these appropriately for the level):**
+{{if eq .Level "beginner"}}
+- Basic who, what, where questions
+- Simple factual recall
+- Yes/no questions about story events
+{{else if eq .Level "elementary"}}
+- When/why questions about story events
+- Simple character motivations
+- Basic inferences from explicit information
+{{else if eq .Level "intermediate"}}
+- Character feelings and motivations
+- Cause and effect relationships
+- Moderate inferences requiring some reasoning
+{{else if eq .Level "upper_intermediate"}}
+- Complex inferences and predictions
+- Character relationships and conflicts
+- Thematic elements and symbolism (if present)
+{{else}}
+- Deep analysis of themes, motifs, and character development
+- Cultural and historical context questions
+- Advanced literary analysis
+{{end}}
+
+**Language Level Guidelines:**
+{{if eq .Level "beginner"}}
+- Simple sentence structures
+- Basic vocabulary
+- Clear, direct questions
+{{else if eq .Level "elementary"}}
+- Some compound sentences
+- Common vocabulary
+- Questions that require basic reasoning
+{{else if eq .Level "intermediate"}}
+- Complex sentence structures
+- Varied vocabulary
+- Questions requiring inference and analysis
+{{else if eq .Level "upper_intermediate"}}
+- Advanced grammar and vocabulary
+- Questions requiring critical thinking
+- Cultural context awareness
+{{else}}
+- Sophisticated language use
+- Deep analytical questions
+- Cultural and literary nuance
+{{end}}
+
+**Output Format:**
+Return a JSON array of question objects, each with this exact structure:
+{
+  "question_text": "Question in {{.Language}}?",
+  "options": ["Option A", "Option B", "Option C", "Option D"],
+  "correct_answer_index": 0,
+  "explanation": "Brief explanation in {{.Language}}"
+}
+
+Example:
+[
+  {
+    "question_text": "¿Dónde vive María?",
+    "options": ["En una casa grande", "En un apartamento pequeño", "En el campo", "En la ciudad"],
+    "correct_answer_index": 1,
+    "explanation": "María vive en un apartamento pequeño según el texto."
+  }
+]
+
+Return only the JSON array, no additional text or formatting.
