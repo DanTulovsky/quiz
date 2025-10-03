@@ -30,9 +30,6 @@ func TestServiceContainerIntegrationTestSuite(t *testing.T) {
 }
 
 func (suite *ServiceContainerIntegrationTestSuite) SetupSuite() {
-	os.Setenv("TEST_DATABASE_URL", "postgres://quiz_user:quiz_password@localhost:5433/quiz_test_db?sslmode=disable")
-	os.Setenv("DATABASE_URL", "postgres://quiz_user:quiz_password@localhost:5433/quiz_test_db?sslmode=disable")
-
 	// Initialize logger
 	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
 
@@ -40,6 +37,12 @@ func (suite *ServiceContainerIntegrationTestSuite) SetupSuite() {
 	cfg, err := config.NewConfig()
 	require.NoError(suite.T(), err)
 	suite.Config = cfg
+
+	// Override database URL for integration tests
+	testDatabaseURL := os.Getenv("TEST_DATABASE_URL")
+	if testDatabaseURL != "" {
+		suite.Config.Database.URL = testDatabaseURL
+	}
 
 	// Setup observability with noop telemetry for tests
 	suite.Logger = logger

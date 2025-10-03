@@ -12,9 +12,10 @@ import (
 	"net/http/httptest"
 	"os"
 	"testing"
+	"time"
 
 	"quizapp/internal/config"
-	"quizapp/internal/database"
+	"quizapp/internal/di"
 	"quizapp/internal/models"
 	"quizapp/internal/observability"
 
@@ -23,50 +24,94 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestStoryHandler_CreateStory_Integration(t *testing.T) {
-	// This is an integration test that tests the full flow from HTTP request to database
-	// It requires a test database to be set up
+// StoryHandlerIntegrationTestSuite provides comprehensive integration tests for the StoryHandler
+type StoryHandlerIntegrationTestSuite struct {
+	suite.Suite
+	Config    *config.Config
+	Logger    *observability.Logger
+	Container di.ServiceContainerInterface
+}
 
+func TestStoryHandlerIntegrationTestSuite(t *testing.T) {
+	suite.Run(t, new(StoryHandlerIntegrationTestSuite))
+}
+
+func (suite *StoryHandlerIntegrationTestSuite) SetupSuite() {
+	// Set up test database URL
 	testDatabaseURL := os.Getenv("TEST_DATABASE_URL")
 	if testDatabaseURL == "" {
 		testDatabaseURL = "postgres://quiz_user:quiz_password@localhost:5433/quiz_test_db?sslmode=disable"
 	}
+	os.Setenv("DATABASE_URL", testDatabaseURL)
 
-	// Set up database
-	dbManager := database.NewManager(observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
-	db, err := dbManager.InitDB(testDatabaseURL)
-	require.NoError(t, err)
-	require.NotNil(t, db)
-	defer db.Close()
+	// Set config file path to project root
+	os.Setenv("QUIZ_CONFIG_FILE", "../../../config.yaml")
 
-	// Set up test data - create a user
+	// Initialize logger
+	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+
+	// Load configuration
+	cfg, err := config.NewConfig()
+	require.NoError(suite.T(), err)
+	suite.Config = cfg
+
+	// Setup observability with noop telemetry for tests
+	suite.Logger = logger
+
+	// Initialize dependency injection container
+	suite.Container = di.NewServiceContainer(cfg, suite.Logger)
+
+	// Initialize all services
+	ctx := context.Background()
+	err = suite.Container.Initialize(ctx)
+	require.NoError(suite.T(), err)
+
+	// Ensure admin user exists
+	err = suite.Container.EnsureAdminUser(ctx)
+	require.NoError(suite.T(), err)
+}
+
+func (suite *StoryHandlerIntegrationTestSuite) TearDownSuite() {
+	if suite.Container != nil {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		suite.Container.Shutdown(ctx)
+	}
+}
+
+func (suite *StoryHandlerIntegrationTestSuite) TestStoryHandler_CreateStory_Integration() {
+	// Get services from DI container
+	userService, err := suite.Container.GetUserService()
+	require.NoError(suite.T(), err)
+	require.NotNil(suite.T(), userService)
+
+	storyService, err := suite.Container.GetStoryService()
+	require.NoError(suite.T(), err)
+	require.NotNil(suite.T(), storyService)
+
+	aiService, err := suite.Container.GetAIService()
+	require.NoError(suite.T(), err)
+	require.NotNil(suite.T(), aiService)
+
+	// Create a test user
+	ctx := context.Background()
 	user := models.User{
-		Username:          "testuser",
-		Email:             sql.NullString{String: "test@example.com", Valid: true},
+		Username:          "testuser_story",
+		Email:             sql.NullString{String: "test_story@example.com", Valid: true},
 		PreferredLanguage: sql.NullString{String: "en", Valid: true},
 	}
 
-	err = db.QueryRowContext(context.Background(),
+	err = suite.Container.GetDatabase().QueryRowContext(ctx,
 		`INSERT INTO users (username, email, preferred_language, created_at, updated_at)
 		 VALUES ($1, $2, $3, NOW(), NOW()) RETURNING id`,
 		user.Username, user.Email, user.PreferredLanguage).Scan(&user.ID)
-	require.NoError(t, err)
+	require.NoError(suite.T(), err)
 
-	// Set up handler with real database
-	cfg := &config.Config{}
-	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
-
-	// We need to set up the DI container or create services with the test database
-	// For now, this is a basic setup - in a real implementation, you'd use the DI container
-	handler := &StoryHandler{
-		storyService: nil, // TODO: Set up real story service with test database
-		userService:  nil, // TODO: Set up real user service with test database
-		aiService:    nil, // TODO: Set up real AI service with test database
-		cfg:          cfg,
-		logger:       logger,
-	}
+	// Create handler with real services
+	handler := NewStoryHandler(storyService, userService, aiService, suite.Config, suite.Logger)
 
 	router := gin.New()
 	store := cookie.NewStore([]byte("secret"))
@@ -80,7 +125,7 @@ func TestStoryHandler_CreateStory_Integration(t *testing.T) {
 
 	router.POST("/v1/story", handler.CreateStory)
 
-	t.Run("should create story successfully", func(t *testing.T) {
+	suite.Run("should create story successfully", func() {
 		reqData := models.CreateStoryRequest{
 			Title: "Test Story",
 		}
@@ -92,26 +137,41 @@ func TestStoryHandler_CreateStory_Integration(t *testing.T) {
 
 		router.ServeHTTP(w, req)
 
-		// For now, we expect unauthorized since services aren't set up
-		// In a full implementation, this would test the complete flow
-		assert.Equal(t, http.StatusUnauthorized, w.Code) // TODO: Change to StatusCreated when services are set up
+		// Should succeed with real services
+		assert.Equal(suite.T(), http.StatusCreated, w.Code)
+
+		// Verify response structure
+		var response models.Story
+		err := json.Unmarshal(w.Body.Bytes(), &response)
+		assert.NoError(suite.T(), err)
+		assert.Equal(suite.T(), "Test Story", response.Title)
+		assert.Equal(suite.T(), user.ID, response.UserID)
 	})
 
-	t.Run("should get current story successfully", func(t *testing.T) {
+	suite.Run("should get current story successfully", func() {
 		// Create a story in the database first
-		_, err := db.ExecContext(context.Background(),
+		_, err := suite.Container.GetDatabase().ExecContext(ctx,
 			`INSERT INTO stories (user_id, title, language, status, is_current, created_at, updated_at)
 			 VALUES ($1, $2, $3, $4, $5, NOW(), NOW())`,
-			user.ID, "Test Story", "en", "active", true)
-		require.NoError(t, err)
+			user.ID, "Test Story Current", "en", "active", true)
+		require.NoError(suite.T(), err)
+
+		// Create handler for GET request
+		router.GET("/v1/story/current", handler.GetCurrentStory)
 
 		w := httptest.NewRecorder()
 		req, _ := http.NewRequest("GET", "/v1/story/current", nil)
 
 		router.ServeHTTP(w, req)
 
-		// For now, we expect unauthorized since services aren't set up
-		// TODO: Set up real services with test database for full integration testing
-		assert.Equal(t, http.StatusUnauthorized, w.Code) // Should be StatusOK when services are properly initialized
+		// Should succeed with real services
+		assert.Equal(suite.T(), http.StatusOK, w.Code)
+
+		// Verify response structure
+		var response models.Story
+		err = json.Unmarshal(w.Body.Bytes(), &response)
+		assert.NoError(suite.T(), err)
+		assert.Equal(suite.T(), "Test Story Current", response.Title)
+		assert.Equal(suite.T(), user.ID, response.UserID)
 	})
 }

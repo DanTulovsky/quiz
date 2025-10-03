@@ -83,6 +83,7 @@ type AITemplateData struct {
 	TargetSentences    int
 	IsFirstSection     bool
 	PreviousSections   string
+	SectionText        string
 }
 
 // ChatMessage represents a chat message for templates

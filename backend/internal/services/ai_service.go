@@ -819,15 +819,11 @@ func (s *AIService) buildStorySectionPrompt(req *models.StoryGenerationRequest) 
 func (s *AIService) buildStoryQuestionsPrompt(req *models.StoryQuestionsRequest) string {
 	// Create template data from the request
 	templateData := AITemplateData{
-		Language: req.Language,
-		Level:    req.Level,
-		Count:    req.QuestionCount,
+		Language:    req.Language,
+		Level:       req.Level,
+		Count:       req.QuestionCount,
+		SectionText: req.SectionText,
 	}
-
-	// Add story-specific fields to AdditionalContext for template access
-	templateData.AdditionalContext = fmt.Sprintf(`SectionText: %s
-QuestionCount: %d`,
-		req.SectionText, req.QuestionCount)
 
 	template, err := s.templateManager.RenderTemplate("story_questions_prompt.tmpl", templateData)
 	if err != nil {
