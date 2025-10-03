@@ -1426,6 +1426,154 @@ export interface DailyQuestionHistory {
   submitted_at?: string | null;
 }
 
+/**
+ * @nullable
+ */
+export type StorySectionLengthOverride = typeof StorySectionLengthOverride[keyof typeof StorySectionLengthOverride] | null;
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const StorySectionLengthOverride = {
+  short: 'short',
+  medium: 'medium',
+  long: 'long',
+} as const;
+
+export type StoryStatus = typeof StoryStatus[keyof typeof StoryStatus];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const StoryStatus = {
+  active: 'active',
+  archived: 'archived',
+  completed: 'completed',
+} as const;
+
+export interface Story {
+  id?: number;
+  user_id?: number;
+  title?: string;
+  language?: string;
+  /** @nullable */
+  subject?: string | null;
+  /** @nullable */
+  author_style?: string | null;
+  /** @nullable */
+  time_period?: string | null;
+  /** @nullable */
+  genre?: string | null;
+  /** @nullable */
+  tone?: string | null;
+  /** @nullable */
+  character_names?: string | null;
+  /** @nullable */
+  custom_instructions?: string | null;
+  /** @nullable */
+  section_length_override?: StorySectionLengthOverride;
+  status?: StoryStatus;
+  is_current?: boolean;
+  /** @nullable */
+  last_section_generated_at?: string | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface StorySection {
+  id?: number;
+  story_id?: number;
+  section_number?: number;
+  content?: string;
+  language_level?: string;
+  word_count?: number;
+  generated_at?: string;
+  generation_date?: string;
+}
+
+export interface StorySectionQuestion {
+  id?: number;
+  section_id?: number;
+  question_text?: string;
+  options?: string[];
+  /**
+   * @minimum 0
+   * @maximum 3
+   */
+  correct_answer_index?: number;
+  /** @nullable */
+  explanation?: string | null;
+  created_at?: string;
+}
+
+export type StoryWithSectionsAllOf = {
+  sections?: StorySection[];
+};
+
+export type StoryWithSections = Story & StoryWithSectionsAllOf;
+
+export type StorySectionWithQuestionsAllOf = {
+  questions?: StorySectionQuestion[];
+};
+
+export type StorySectionWithQuestions = StorySection & StorySectionWithQuestionsAllOf;
+
+/**
+ * @nullable
+ */
+export type CreateStoryRequestSectionLengthOverride = typeof CreateStoryRequestSectionLengthOverride[keyof typeof CreateStoryRequestSectionLengthOverride] | null;
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CreateStoryRequestSectionLengthOverride = {
+  short: 'short',
+  medium: 'medium',
+  long: 'long',
+} as const;
+
+export interface CreateStoryRequest {
+  /**
+   * @minLength 1
+   * @maxLength 200
+   */
+  title: string;
+  /**
+   * @maxLength 500
+   * @nullable
+   */
+  subject?: string | null;
+  /**
+   * @maxLength 200
+   * @nullable
+   */
+  author_style?: string | null;
+  /**
+   * @maxLength 200
+   * @nullable
+   */
+  time_period?: string | null;
+  /**
+   * @maxLength 100
+   * @nullable
+   */
+  genre?: string | null;
+  /**
+   * @maxLength 100
+   * @nullable
+   */
+  tone?: string | null;
+  /**
+   * @maxLength 1000
+   * @nullable
+   */
+  character_names?: string | null;
+  /**
+   * @maxLength 2000
+   * @nullable
+   */
+  custom_instructions?: string | null;
+  /** @nullable */
+  section_length_override?: CreateStoryRequestSectionLengthOverride;
+}
+
 export type GetV1AuthSignupStatus200 = {
   /** Whether user signups are currently disabled */
   signups_disabled: boolean;
@@ -2093,6 +2241,13 @@ export type PostV1DailyQuestionsDateAnswerQuestionId200 = AnswerResponse & PostV
 
 export type GetV1DailyHistoryQuestionId200 = {
   history?: DailyQuestionHistory[];
+};
+
+export type GetV1StoryParams = {
+/**
+ * Include archived stories in the response
+ */
+include_archived?: boolean;
 };
 
 /**
@@ -8087,6 +8242,838 @@ export function useGetV1DailyHistoryQuestionId<TData = Awaited<ReturnType<typeof
 
 
 /**
+ * Create a new story for the authenticated user. The story will automatically become their current active story.
+ * @summary Create a new story
+ */
+export const postV1Story = (
+    createStoryRequest: CreateStoryRequest,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<Story>(
+      {url: `/v1/story`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: createStoryRequest, signal
+    },
+      options);
+    }
+  
+
+
+export const getPostV1StoryMutationOptions = <TError = ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1Story>>, TError,{data: CreateStoryRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof postV1Story>>, TError,{data: CreateStoryRequest}, TContext> => {
+
+const mutationKey = ['postV1Story'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1Story>>, {data: CreateStoryRequest}> = (props) => {
+          const {data} = props ?? {};
+
+          return  postV1Story(data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostV1StoryMutationResult = NonNullable<Awaited<ReturnType<typeof postV1Story>>>
+    export type PostV1StoryMutationBody = CreateStoryRequest
+    export type PostV1StoryMutationError = ErrorResponse
+
+    /**
+ * @summary Create a new story
+ */
+export const usePostV1Story = <TError = ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1Story>>, TError,{data: CreateStoryRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postV1Story>>,
+        TError,
+        {data: CreateStoryRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getPostV1StoryMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * Retrieve all stories for the authenticated user, optionally including archived stories.
+ * @summary Get user stories
+ */
+export const getV1Story = (
+    params?: GetV1StoryParams,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<Story[]>(
+      {url: `/v1/story`, method: 'GET',
+        params, signal
+    },
+      options);
+    }
+  
+
+export const getGetV1StoryQueryKey = (params?: GetV1StoryParams,) => {
+    return [`/v1/story`, ...(params ? [params]: [])] as const;
+    }
+
+    
+export const getGetV1StoryQueryOptions = <TData = Awaited<ReturnType<typeof getV1Story>>, TError = ErrorResponse>(params?: GetV1StoryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Story>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetV1StoryQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1Story>>> = ({ signal }) => getV1Story(params, requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getV1Story>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetV1StoryQueryResult = NonNullable<Awaited<ReturnType<typeof getV1Story>>>
+export type GetV1StoryQueryError = ErrorResponse
+
+
+export function useGetV1Story<TData = Awaited<ReturnType<typeof getV1Story>>, TError = ErrorResponse>(
+ params: undefined |  GetV1StoryParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Story>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1Story>>,
+          TError,
+          Awaited<ReturnType<typeof getV1Story>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1Story<TData = Awaited<ReturnType<typeof getV1Story>>, TError = ErrorResponse>(
+ params?: GetV1StoryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Story>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1Story>>,
+          TError,
+          Awaited<ReturnType<typeof getV1Story>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1Story<TData = Awaited<ReturnType<typeof getV1Story>>, TError = ErrorResponse>(
+ params?: GetV1StoryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Story>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get user stories
+ */
+
+export function useGetV1Story<TData = Awaited<ReturnType<typeof getV1Story>>, TError = ErrorResponse>(
+ params?: GetV1StoryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Story>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetV1StoryQueryOptions(params,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * Retrieve the user's current active story with all sections.
+ * @summary Get current story
+ */
+export const getV1StoryCurrent = (
+    
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<StoryWithSections>(
+      {url: `/v1/story/current`, method: 'GET', signal
+    },
+      options);
+    }
+  
+
+export const getGetV1StoryCurrentQueryKey = () => {
+    return [`/v1/story/current`] as const;
+    }
+
+    
+export const getGetV1StoryCurrentQueryOptions = <TData = Awaited<ReturnType<typeof getV1StoryCurrent>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryCurrent>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetV1StoryCurrentQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1StoryCurrent>>> = ({ signal }) => getV1StoryCurrent(requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getV1StoryCurrent>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetV1StoryCurrentQueryResult = NonNullable<Awaited<ReturnType<typeof getV1StoryCurrent>>>
+export type GetV1StoryCurrentQueryError = ErrorResponse
+
+
+export function useGetV1StoryCurrent<TData = Awaited<ReturnType<typeof getV1StoryCurrent>>, TError = ErrorResponse>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryCurrent>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1StoryCurrent>>,
+          TError,
+          Awaited<ReturnType<typeof getV1StoryCurrent>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1StoryCurrent<TData = Awaited<ReturnType<typeof getV1StoryCurrent>>, TError = ErrorResponse>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryCurrent>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1StoryCurrent>>,
+          TError,
+          Awaited<ReturnType<typeof getV1StoryCurrent>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1StoryCurrent<TData = Awaited<ReturnType<typeof getV1StoryCurrent>>, TError = ErrorResponse>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryCurrent>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get current story
+ */
+
+export function useGetV1StoryCurrent<TData = Awaited<ReturnType<typeof getV1StoryCurrent>>, TError = ErrorResponse>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryCurrent>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetV1StoryCurrentQueryOptions(options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * Retrieve a specific story by ID with all sections.
+ * @summary Get a specific story
+ */
+export const getV1StoryId = (
+    id: number,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<StoryWithSections>(
+      {url: `/v1/story/${id}`, method: 'GET', signal
+    },
+      options);
+    }
+  
+
+export const getGetV1StoryIdQueryKey = (id: number,) => {
+    return [`/v1/story/${id}`] as const;
+    }
+
+    
+export const getGetV1StoryIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1StoryId>>, TError = ErrorResponse>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetV1StoryIdQueryKey(id);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1StoryId>>> = ({ signal }) => getV1StoryId(id, requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getV1StoryId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetV1StoryIdQueryResult = NonNullable<Awaited<ReturnType<typeof getV1StoryId>>>
+export type GetV1StoryIdQueryError = ErrorResponse
+
+
+export function useGetV1StoryId<TData = Awaited<ReturnType<typeof getV1StoryId>>, TError = ErrorResponse>(
+ id: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryId>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1StoryId>>,
+          TError,
+          Awaited<ReturnType<typeof getV1StoryId>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1StoryId<TData = Awaited<ReturnType<typeof getV1StoryId>>, TError = ErrorResponse>(
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryId>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1StoryId>>,
+          TError,
+          Awaited<ReturnType<typeof getV1StoryId>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1StoryId<TData = Awaited<ReturnType<typeof getV1StoryId>>, TError = ErrorResponse>(
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get a specific story
+ */
+
+export function useGetV1StoryId<TData = Awaited<ReturnType<typeof getV1StoryId>>, TError = ErrorResponse>(
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetV1StoryIdQueryOptions(id,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * Delete a story. Only archived or completed stories can be deleted.
+ * @summary Delete a story
+ */
+export const deleteV1StoryId = (
+    id: number,
+ options?: SecondParameter<typeof customInstance>,) => {
+      
+      
+      return customInstance<void>(
+      {url: `/v1/story/${id}`, method: 'DELETE'
+    },
+      options);
+    }
+  
+
+
+export const getDeleteV1StoryIdMutationOptions = <TError = ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1StoryId>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteV1StoryId>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['deleteV1StoryId'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteV1StoryId>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteV1StoryId(id,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteV1StoryIdMutationResult = NonNullable<Awaited<ReturnType<typeof deleteV1StoryId>>>
+    
+    export type DeleteV1StoryIdMutationError = ErrorResponse
+
+    /**
+ * @summary Delete a story
+ */
+export const useDeleteV1StoryId = <TError = ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1StoryId>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteV1StoryId>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+
+      const mutationOptions = getDeleteV1StoryIdMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * Manually generate the next section for a story. Only allowed once per day.
+ * @summary Generate next section
+ */
+export const postV1StoryIdGenerate = (
+    id: number,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<StorySection>(
+      {url: `/v1/story/${id}/generate`, method: 'POST', signal
+    },
+      options);
+    }
+  
+
+
+export const getPostV1StoryIdGenerateMutationOptions = <TError = ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdGenerate>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdGenerate>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['postV1StoryIdGenerate'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1StoryIdGenerate>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  postV1StoryIdGenerate(id,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostV1StoryIdGenerateMutationResult = NonNullable<Awaited<ReturnType<typeof postV1StoryIdGenerate>>>
+    
+    export type PostV1StoryIdGenerateMutationError = ErrorResponse
+
+    /**
+ * @summary Generate next section
+ */
+export const usePostV1StoryIdGenerate = <TError = ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdGenerate>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postV1StoryIdGenerate>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+
+      const mutationOptions = getPostV1StoryIdGenerateMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * Archive a story, removing it from the current active story.
+ * @summary Archive a story
+ */
+export const postV1StoryIdArchive = (
+    id: number,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<void>(
+      {url: `/v1/story/${id}/archive`, method: 'POST', signal
+    },
+      options);
+    }
+  
+
+
+export const getPostV1StoryIdArchiveMutationOptions = <TError = ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdArchive>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdArchive>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['postV1StoryIdArchive'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1StoryIdArchive>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  postV1StoryIdArchive(id,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostV1StoryIdArchiveMutationResult = NonNullable<Awaited<ReturnType<typeof postV1StoryIdArchive>>>
+    
+    export type PostV1StoryIdArchiveMutationError = ErrorResponse
+
+    /**
+ * @summary Archive a story
+ */
+export const usePostV1StoryIdArchive = <TError = ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdArchive>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postV1StoryIdArchive>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+
+      const mutationOptions = getPostV1StoryIdArchiveMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * Mark a story as completed.
+ * @summary Complete a story
+ */
+export const postV1StoryIdComplete = (
+    id: number,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<void>(
+      {url: `/v1/story/${id}/complete`, method: 'POST', signal
+    },
+      options);
+    }
+  
+
+
+export const getPostV1StoryIdCompleteMutationOptions = <TError = ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdComplete>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdComplete>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['postV1StoryIdComplete'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1StoryIdComplete>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  postV1StoryIdComplete(id,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostV1StoryIdCompleteMutationResult = NonNullable<Awaited<ReturnType<typeof postV1StoryIdComplete>>>
+    
+    export type PostV1StoryIdCompleteMutationError = ErrorResponse
+
+    /**
+ * @summary Complete a story
+ */
+export const usePostV1StoryIdComplete = <TError = ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdComplete>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postV1StoryIdComplete>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+
+      const mutationOptions = getPostV1StoryIdCompleteMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * Set a story as the user's current active story.
+ * @summary Set story as current
+ */
+export const postV1StoryIdSetCurrent = (
+    id: number,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<void>(
+      {url: `/v1/story/${id}/set-current`, method: 'POST', signal
+    },
+      options);
+    }
+  
+
+
+export const getPostV1StoryIdSetCurrentMutationOptions = <TError = ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdSetCurrent>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdSetCurrent>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['postV1StoryIdSetCurrent'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1StoryIdSetCurrent>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  postV1StoryIdSetCurrent(id,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostV1StoryIdSetCurrentMutationResult = NonNullable<Awaited<ReturnType<typeof postV1StoryIdSetCurrent>>>
+    
+    export type PostV1StoryIdSetCurrentMutationError = ErrorResponse
+
+    /**
+ * @summary Set story as current
+ */
+export const usePostV1StoryIdSetCurrent = <TError = ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdSetCurrent>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postV1StoryIdSetCurrent>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+
+      const mutationOptions = getPostV1StoryIdSetCurrentMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * Retrieve a specific story section with its questions.
+ * @summary Get a story section
+ */
+export const getV1StorySectionId = (
+    id: number,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<StorySectionWithQuestions>(
+      {url: `/v1/story/section/${id}`, method: 'GET', signal
+    },
+      options);
+    }
+  
+
+export const getGetV1StorySectionIdQueryKey = (id: number,) => {
+    return [`/v1/story/section/${id}`] as const;
+    }
+
+    
+export const getGetV1StorySectionIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1StorySectionId>>, TError = ErrorResponse>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StorySectionId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetV1StorySectionIdQueryKey(id);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1StorySectionId>>> = ({ signal }) => getV1StorySectionId(id, requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getV1StorySectionId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetV1StorySectionIdQueryResult = NonNullable<Awaited<ReturnType<typeof getV1StorySectionId>>>
+export type GetV1StorySectionIdQueryError = ErrorResponse
+
+
+export function useGetV1StorySectionId<TData = Awaited<ReturnType<typeof getV1StorySectionId>>, TError = ErrorResponse>(
+ id: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StorySectionId>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1StorySectionId>>,
+          TError,
+          Awaited<ReturnType<typeof getV1StorySectionId>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1StorySectionId<TData = Awaited<ReturnType<typeof getV1StorySectionId>>, TError = ErrorResponse>(
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StorySectionId>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1StorySectionId>>,
+          TError,
+          Awaited<ReturnType<typeof getV1StorySectionId>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1StorySectionId<TData = Awaited<ReturnType<typeof getV1StorySectionId>>, TError = ErrorResponse>(
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StorySectionId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get a story section
+ */
+
+export function useGetV1StorySectionId<TData = Awaited<ReturnType<typeof getV1StorySectionId>>, TError = ErrorResponse>(
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StorySectionId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetV1StorySectionIdQueryOptions(id,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * Generate and download a PDF file containing the complete story.
+ * @summary Export story as PDF
+ */
+export const getV1StoryIdExport = (
+    id: number,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<Blob>(
+      {url: `/v1/story/${id}/export`, method: 'GET',
+        responseType: 'blob', signal
+    },
+      options);
+    }
+  
+
+export const getGetV1StoryIdExportQueryKey = (id: number,) => {
+    return [`/v1/story/${id}/export`] as const;
+    }
+
+    
+export const getGetV1StoryIdExportQueryOptions = <TData = Awaited<ReturnType<typeof getV1StoryIdExport>>, TError = ErrorResponse>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryIdExport>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetV1StoryIdExportQueryKey(id);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1StoryIdExport>>> = ({ signal }) => getV1StoryIdExport(id, requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getV1StoryIdExport>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetV1StoryIdExportQueryResult = NonNullable<Awaited<ReturnType<typeof getV1StoryIdExport>>>
+export type GetV1StoryIdExportQueryError = ErrorResponse
+
+
+export function useGetV1StoryIdExport<TData = Awaited<ReturnType<typeof getV1StoryIdExport>>, TError = ErrorResponse>(
+ id: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryIdExport>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1StoryIdExport>>,
+          TError,
+          Awaited<ReturnType<typeof getV1StoryIdExport>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1StoryIdExport<TData = Awaited<ReturnType<typeof getV1StoryIdExport>>, TError = ErrorResponse>(
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryIdExport>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1StoryIdExport>>,
+          TError,
+          Awaited<ReturnType<typeof getV1StoryIdExport>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1StoryIdExport<TData = Awaited<ReturnType<typeof getV1StoryIdExport>>, TError = ErrorResponse>(
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryIdExport>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Export story as PDF
+ */
+
+export function useGetV1StoryIdExport<TData = Awaited<ReturnType<typeof getV1StoryIdExport>>, TError = ErrorResponse>(
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryIdExport>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetV1StoryIdExportQueryOptions(id,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
  * Retrieve the current user's learning preferences
  * @summary Get user learning preferences
  */
@@ -8851,6 +9838,20 @@ export const getPostV1DailyQuestionsDateAnswerQuestionIdResponseMock = (): PostV
 export const getGetV1DailyProgressDateResponseMock = (overrideResponse: Partial< DailyProgress > = {}): DailyProgress => ({date: faker.date.past().toISOString().split('T')[0], completed: faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), total: faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), ...overrideResponse})
 
 export const getGetV1DailyHistoryQuestionIdResponseMock = (overrideResponse: Partial< GetV1DailyHistoryQuestionId200 > = {}): GetV1DailyHistoryQuestionId200 => ({history: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({assignment_date: faker.string.alpha({length: {min: 10, max: 20}}), is_completed: faker.datatype.boolean(), is_correct: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), submitted_at: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined])})), undefined]), ...overrideResponse})
+
+export const getPostV1StoryResponseMock = (overrideResponse: Partial< Story > = {}): Story => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), title: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), subject: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), author_style: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), time_period: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), genre: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), tone: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), character_names: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), custom_instructions: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), section_length_override: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.helpers.arrayElement(['short','medium','long'] as const), null]), undefined]), status: faker.helpers.arrayElement([faker.helpers.arrayElement(['active','archived','completed'] as const), undefined]), is_current: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), last_section_generated_at: faker.helpers.arrayElement([faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, null]), undefined]), created_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), updated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), ...overrideResponse})
+
+export const getGetV1StoryResponseMock = (): Story[] => (Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), title: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), subject: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), author_style: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), time_period: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), genre: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), tone: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), character_names: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), custom_instructions: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), section_length_override: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.helpers.arrayElement(['short','medium','long'] as const), null]), undefined]), status: faker.helpers.arrayElement([faker.helpers.arrayElement(['active','archived','completed'] as const), undefined]), is_current: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), last_section_generated_at: faker.helpers.arrayElement([faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, null]), undefined]), created_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), updated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined])})))
+
+export const getGetV1StoryCurrentResponseMock = (): StoryWithSections => ({...{id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), title: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), subject: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), author_style: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), time_period: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), genre: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), tone: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), character_names: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), custom_instructions: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), section_length_override: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.helpers.arrayElement(['short','medium','long'] as const), null]), undefined]), status: faker.helpers.arrayElement([faker.helpers.arrayElement(['active','archived','completed'] as const), undefined]), is_current: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), last_section_generated_at: faker.helpers.arrayElement([faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, null]), undefined]), created_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), updated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined])},...{sections: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), story_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), section_number: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), content: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), language_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), word_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), generated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), generation_date: faker.helpers.arrayElement([faker.date.past().toISOString().split('T')[0], undefined])})), undefined])},})
+
+export const getGetV1StoryIdResponseMock = (): StoryWithSections => ({...{id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), title: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), subject: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), author_style: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), time_period: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), genre: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), tone: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), character_names: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), custom_instructions: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), section_length_override: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.helpers.arrayElement(['short','medium','long'] as const), null]), undefined]), status: faker.helpers.arrayElement([faker.helpers.arrayElement(['active','archived','completed'] as const), undefined]), is_current: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), last_section_generated_at: faker.helpers.arrayElement([faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, null]), undefined]), created_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), updated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined])},...{sections: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), story_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), section_number: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), content: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), language_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), word_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), generated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), generation_date: faker.helpers.arrayElement([faker.date.past().toISOString().split('T')[0], undefined])})), undefined])},})
+
+export const getPostV1StoryIdGenerateResponseMock = (overrideResponse: Partial< StorySection > = {}): StorySection => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), story_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), section_number: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), content: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), language_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), word_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), generated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), generation_date: faker.helpers.arrayElement([faker.date.past().toISOString().split('T')[0], undefined]), ...overrideResponse})
+
+export const getGetV1StorySectionIdResponseMock = (): StorySectionWithQuestions => ({...{id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), story_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), section_number: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), content: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), language_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), word_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), generated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), generation_date: faker.helpers.arrayElement([faker.date.past().toISOString().split('T')[0], undefined])},...{questions: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), section_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), question_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), options: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 10, max: 20}}))), undefined]), correct_answer_index: faker.helpers.arrayElement([faker.number.int({min: 0, max: 3, multipleOf: undefined}), undefined]), explanation: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), created_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined])})), undefined])},})
+
+export const getGetV1StoryIdExportResponseMock = (): Blob => (new Blob(faker.helpers.arrayElements(faker.word.words(10).split(' '))))
 
 export const getGetV1PreferencesLearningResponseMock = (overrideResponse: Partial< UserLearningPreferences > = {}): UserLearningPreferences => ({focus_on_weak_areas: faker.datatype.boolean(), fresh_question_ratio: faker.number.float({min: 0, max: 1, fractionDigits: 2}), known_question_penalty: faker.number.float({min: 0, max: 1, fractionDigits: 2}), review_interval_days: faker.number.int({min: 1, max: 60, multipleOf: undefined}), weak_area_boost: faker.number.float({min: 1, max: 5, fractionDigits: 2}), daily_reminder_enabled: faker.datatype.boolean(), tts_voice: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), daily_goal: faker.helpers.arrayElement([faker.number.int({min: 1, max: undefined, multipleOf: undefined}), undefined]), ...overrideResponse})
 
@@ -9779,6 +10780,130 @@ export const getGetV1DailyHistoryQuestionIdMockHandler = (overrideResponse?: Get
   })
 }
 
+export const getPostV1StoryMockHandler = (overrideResponse?: Story | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<Story> | Story)) => {
+  return http.post('*/v1/story', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getPostV1StoryResponseMock()),
+      { status: 201,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
+export const getGetV1StoryMockHandler = (overrideResponse?: Story[] | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<Story[]> | Story[])) => {
+  return http.get('*/v1/story', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetV1StoryResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
+export const getGetV1StoryCurrentMockHandler = (overrideResponse?: StoryWithSections | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<StoryWithSections> | StoryWithSections)) => {
+  return http.get('*/v1/story/current', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetV1StoryCurrentResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
+export const getGetV1StoryIdMockHandler = (overrideResponse?: StoryWithSections | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<StoryWithSections> | StoryWithSections)) => {
+  return http.get('*/v1/story/:id', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetV1StoryIdResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
+export const getDeleteV1StoryIdMockHandler = (overrideResponse?: void | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<void> | void)) => {
+  return http.delete('*/v1/story/:id', async (info) => {await delay(1000);
+  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
+    return new HttpResponse(null,
+      { status: 204,
+        
+      })
+  })
+}
+
+export const getPostV1StoryIdGenerateMockHandler = (overrideResponse?: StorySection | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<StorySection> | StorySection)) => {
+  return http.post('*/v1/story/:id/generate', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getPostV1StoryIdGenerateResponseMock()),
+      { status: 201,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
+export const getPostV1StoryIdArchiveMockHandler = (overrideResponse?: void | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void)) => {
+  return http.post('*/v1/story/:id/archive', async (info) => {await delay(1000);
+  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
+    return new HttpResponse(null,
+      { status: 200,
+        
+      })
+  })
+}
+
+export const getPostV1StoryIdCompleteMockHandler = (overrideResponse?: void | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void)) => {
+  return http.post('*/v1/story/:id/complete', async (info) => {await delay(1000);
+  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
+    return new HttpResponse(null,
+      { status: 200,
+        
+      })
+  })
+}
+
+export const getPostV1StoryIdSetCurrentMockHandler = (overrideResponse?: void | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void)) => {
+  return http.post('*/v1/story/:id/set-current', async (info) => {await delay(1000);
+  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
+    return new HttpResponse(null,
+      { status: 200,
+        
+      })
+  })
+}
+
+export const getGetV1StorySectionIdMockHandler = (overrideResponse?: StorySectionWithQuestions | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<StorySectionWithQuestions> | StorySectionWithQuestions)) => {
+  return http.get('*/v1/story/section/:id', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetV1StorySectionIdResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
+export const getGetV1StoryIdExportMockHandler = (overrideResponse?: Blob | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<Blob> | Blob)) => {
+  return http.get('*/v1/story/:id/export', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetV1StoryIdExportResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
 export const getGetV1PreferencesLearningMockHandler = (overrideResponse?: UserLearningPreferences | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<UserLearningPreferences> | UserLearningPreferences)) => {
   return http.get('*/v1/preferences/learning', async (info) => {await delay(1000);
   
@@ -9939,6 +11064,17 @@ export const getQuizApplicationAPIMock = () => [
   getPostV1DailyQuestionsDateAnswerQuestionIdMockHandler(),
   getGetV1DailyProgressDateMockHandler(),
   getGetV1DailyHistoryQuestionIdMockHandler(),
+  getPostV1StoryMockHandler(),
+  getGetV1StoryMockHandler(),
+  getGetV1StoryCurrentMockHandler(),
+  getGetV1StoryIdMockHandler(),
+  getDeleteV1StoryIdMockHandler(),
+  getPostV1StoryIdGenerateMockHandler(),
+  getPostV1StoryIdArchiveMockHandler(),
+  getPostV1StoryIdCompleteMockHandler(),
+  getPostV1StoryIdSetCurrentMockHandler(),
+  getGetV1StorySectionIdMockHandler(),
+  getGetV1StoryIdExportMockHandler(),
   getGetV1PreferencesLearningMockHandler(),
   getPutV1PreferencesLearningMockHandler(),
   getGetV1VersionMockHandler(),

@@ -78,6 +78,7 @@ func (suite *WorkerAdminIntegrationTestSuite) SetupSuite() {
 		aiService,
 		workerService,
 		dailyQuestionService,
+		storyService,
 		oauthService,
 		generationHintService,
 		logger,

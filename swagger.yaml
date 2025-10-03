@@ -3263,6 +3263,389 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /v1/story:
+    post:
+      tags:
+        - Story
+      summary: Create a new story
+      description: Create a new story for the authenticated user. The story will automatically become their current active story.
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateStoryRequest"
+      responses:
+        "201":
+          description: Story created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Story"
+        "400":
+          description: Invalid request format or validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Maximum archived stories limit reached
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    get:
+      tags:
+        - Story
+      summary: Get user stories
+      description: Retrieve all stories for the authenticated user, optionally including archived stories.
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: include_archived
+          in: query
+          required: false
+          description: Include archived stories in the response
+          schema:
+            type: boolean
+            default: false
+      responses:
+        "200":
+          description: Stories retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Story"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/story/current:
+    get:
+      tags:
+        - Story
+      summary: Get current story
+      description: Retrieve the user's current active story with all sections.
+      security:
+        - cookieAuth: []
+      responses:
+        "200":
+          description: Current story retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StoryWithSections"
+        "404":
+          description: No current story found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/story/{id}:
+    get:
+      tags:
+        - Story
+      summary: Get a specific story
+      description: Retrieve a specific story by ID with all sections.
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the story to retrieve
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Story retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StoryWithSections"
+        "404":
+          description: Story not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      tags:
+        - Story
+      summary: Delete a story
+      description: Delete a story. Only archived or completed stories can be deleted.
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the story to delete
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: Story deleted successfully
+        "404":
+          description: Story not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Cannot delete current story
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/story/{id}/generate:
+    post:
+      tags:
+        - Story
+      summary: Generate next section
+      description: Manually generate the next section for a story. Only allowed once per day.
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the story to generate a section for
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "201":
+          description: Section generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StorySection"
+        "404":
+          description: Story not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Section already generated today or story is not active
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/story/{id}/archive:
+    post:
+      tags:
+        - Story
+      summary: Archive a story
+      description: Archive a story, removing it from the current active story.
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the story to archive
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Story archived successfully
+        "404":
+          description: Story not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/story/{id}/complete:
+    post:
+      tags:
+        - Story
+      summary: Complete a story
+      description: Mark a story as completed.
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the story to complete
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Story completed successfully
+        "404":
+          description: Story not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/story/{id}/set-current:
+    post:
+      tags:
+        - Story
+      summary: Set story as current
+      description: Set a story as the user's current active story.
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the story to set as current
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Story set as current successfully
+        "404":
+          description: Story not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/story/section/{id}:
+    get:
+      tags:
+        - Story
+      summary: Get a story section
+      description: Retrieve a specific story section with its questions.
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the section to retrieve
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Section retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StorySectionWithQuestions"
+        "404":
+          description: Section not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/story/{id}/export:
+    get:
+      tags:
+        - Story
+      summary: Export story as PDF
+      description: Generate and download a PDF file containing the complete story.
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the story to export
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: PDF generated successfully
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        "404":
+          description: Story not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /v1/preferences/learning:
     get:
       tags:
@@ -5084,6 +5467,216 @@ components:
       required:
         - assignment_date
         - is_completed
+
+    # Story schemas
+    Story:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        user_id:
+          type: integer
+          format: int64
+          example: 1
+        title:
+          type: string
+          example: "The Mystery of the Old Manor"
+        language:
+          type: string
+          example: "en"
+        subject:
+          type: string
+          nullable: true
+          example: "A detective solving crimes in Victorian England"
+        author_style:
+          type: string
+          nullable: true
+          example: "Agatha Christie"
+        time_period:
+          type: string
+          nullable: true
+          example: "1920s"
+        genre:
+          type: string
+          nullable: true
+          example: "mystery"
+        tone:
+          type: string
+          nullable: true
+          example: "suspenseful"
+        character_names:
+          type: string
+          nullable: true
+          example: "Detective Smith, Lady Blackwood, Mr. Jones"
+        custom_instructions:
+          type: string
+          nullable: true
+          example: "Focus on psychological tension and plot twists"
+        section_length_override:
+          type: string
+          enum: [short, medium, long]
+          nullable: true
+          example: "medium"
+        status:
+          type: string
+          enum: [active, archived, completed]
+          example: "active"
+        is_current:
+          type: boolean
+          example: true
+        last_section_generated_at:
+          type: string
+          format: date-time
+          nullable: true
+          example: "2025-01-15T10:30:00Z"
+        created_at:
+          type: string
+          format: date-time
+          example: "2025-01-15T10:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2025-01-15T10:00:00Z"
+
+    StorySection:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        story_id:
+          type: integer
+          format: int64
+          example: 1
+        section_number:
+          type: integer
+          example: 1
+        content:
+          type: string
+          example: "In the quiet town of Willow Creek, Detective Sarah Johnson received a mysterious letter..."
+        language_level:
+          type: string
+          example: "intermediate"
+        word_count:
+          type: integer
+          example: 150
+        generated_at:
+          type: string
+          format: date-time
+          example: "2025-01-15T10:30:00Z"
+        generation_date:
+          type: string
+          format: date
+          example: "2025-01-15"
+
+    StorySectionQuestion:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        section_id:
+          type: integer
+          format: int64
+          example: 1
+        question_text:
+          type: string
+          example: "What was the detective's first clue?"
+        options:
+          type: array
+          items:
+            type: string
+          example: ["A mysterious letter", "A phone call", "A visit from a stranger", "A newspaper article"]
+        correct_answer_index:
+          type: integer
+          minimum: 0
+          maximum: 3
+          example: 0
+        explanation:
+          type: string
+          nullable: true
+          example: "The mysterious letter was the first clue mentioned in the story."
+        created_at:
+          type: string
+          format: date-time
+          example: "2025-01-15T10:30:00Z"
+
+    StoryWithSections:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/Story"
+        - type: object
+          properties:
+            sections:
+              type: array
+              items:
+                $ref: "#/components/schemas/StorySection"
+
+    StorySectionWithQuestions:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/StorySection"
+        - type: object
+          properties:
+            questions:
+              type: array
+              items:
+                $ref: "#/components/schemas/StorySectionQuestion"
+
+    CreateStoryRequest:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+          example: "The Mystery of the Old Manor"
+        subject:
+          type: string
+          maxLength: 500
+          nullable: true
+          example: "A detective solving crimes in Victorian England"
+        author_style:
+          type: string
+          maxLength: 200
+          nullable: true
+          example: "Agatha Christie"
+        time_period:
+          type: string
+          maxLength: 200
+          nullable: true
+          example: "1920s"
+        genre:
+          type: string
+          maxLength: 100
+          nullable: true
+          example: "mystery"
+        tone:
+          type: string
+          maxLength: 100
+          nullable: true
+          example: "suspenseful"
+        character_names:
+          type: string
+          maxLength: 1000
+          nullable: true
+          example: "Detective Smith, Lady Blackwood, Mr. Jones"
+        custom_instructions:
+          type: string
+          maxLength: 2000
+          nullable: true
+          example: "Focus on psychological tension and plot twists"
+        section_length_override:
+          type: string
+          enum: [short, medium, long]
+          nullable: true
+          example: "medium"
 
   securitySchemes:
     cookieAuth:

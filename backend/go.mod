@@ -21,6 +21,7 @@ require (
 
 require (
 	github.com/go-playground/validator/v10 v10.27.0
+	github.com/jung-kurt/gofpdf v1.16.2
 	github.com/oapi-codegen/runtime v1.1.2
 	github.com/spf13/cobra v1.10.1
 	go.opentelemetry.io/contrib/bridges/otelzap v0.13.0

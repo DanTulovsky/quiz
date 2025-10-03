@@ -36,6 +36,7 @@ func NewRouter(
 	aiService services.AIServiceInterface,
 	workerService services.WorkerServiceInterface,
 	dailyQuestionService services.DailyQuestionServiceInterface,
+	storyService services.StoryServiceInterface,
 	oauthService *services.OAuthService,
 	generationHintService services.GenerationHintServiceInterface,
 	logger *observability.Logger,
@@ -170,6 +171,7 @@ func NewRouter(
 	settingsHandler := NewSettingsHandler(userService, aiService, learningService, emailService, cfg, logger)
 	quizHandler := NewQuizHandler(userService, questionService, aiService, learningService, workerService, generationHintService, cfg, logger)
 	dailyQuestionHandler := NewDailyQuestionHandler(userService, dailyQuestionService, cfg, logger)
+	storyHandler := NewStoryHandler(storyService, userService, aiService, cfg, logger)
 	adminHandler := NewAdminHandlerWithLogger(userService, questionService, aiService, cfg, learningService, workerService, logger)
 	userAdminHandler := NewUserAdminHandler(userService, cfg, logger)
 
@@ -248,6 +250,23 @@ func NewRouter(
 			daily.GET("/dates", dailyQuestionHandler.GetAvailableDates)
 			daily.GET("/progress/:date", dailyQuestionHandler.GetDailyProgress)
 			// Note: Assignment is handled automatically by the worker
+		}
+
+		story := v1.Group("/story")
+		story.Use(middleware.RequireAuth())
+		story.Use(middleware.RequestValidationMiddleware(logger))
+		{
+			story.POST("", storyHandler.CreateStory)
+			story.GET("", storyHandler.GetUserStories)
+			story.GET("/current", storyHandler.GetCurrentStory)
+			story.GET("/:id", storyHandler.GetStory)
+			story.GET("/section/:id", storyHandler.GetSection)
+			story.POST("/:id/generate", storyHandler.GenerateNextSection)
+			story.POST("/:id/archive", storyHandler.ArchiveStory)
+			story.POST("/:id/complete", storyHandler.CompleteStory)
+			story.POST("/:id/set-current", storyHandler.SetCurrentStory)
+			story.DELETE("/:id", storyHandler.DeleteStory)
+			story.GET("/:id/export", storyHandler.ExportStory)
 		}
 		settings := v1.Group("/settings")
 		{

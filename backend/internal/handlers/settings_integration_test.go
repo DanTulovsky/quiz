@@ -61,6 +61,7 @@ func (suite *SettingsIntegrationTestSuite) SetupSuite() {
 	// Use the real application router
 	dailyQuestionService := services.NewDailyQuestionService(db, logger, questionService, learningService)
 	generationHintService := services.NewGenerationHintService(suite.DB, logger)
+	storyService := services.NewStoryService(db, cfg, logger)
 	suite.Router = NewRouter(
 		cfg,
 		userService,
@@ -69,6 +70,7 @@ func (suite *SettingsIntegrationTestSuite) SetupSuite() {
 		aiService,
 		workerService,
 		dailyQuestionService,
+		storyService,
 		oauthService,
 		generationHintService,
 		logger,

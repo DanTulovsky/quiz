@@ -58,6 +58,11 @@ func NewApplication(container di.ServiceContainerInterface) (*Application, error
 		return nil, contextutils.WrapError(err, "failed to get daily question service")
 	}
 
+	storyService, err := container.GetStoryService()
+	if err != nil {
+		return nil, contextutils.WrapError(err, "failed to get story service")
+	}
+
 	oauthService, err := container.GetOAuthService()
 	if err != nil {
 		return nil, contextutils.WrapError(err, "failed to get OAuth service")
@@ -77,6 +82,7 @@ func NewApplication(container di.ServiceContainerInterface) (*Application, error
 		aiService,
 		workerService,
 		dailyQuestionService,
+		storyService,
 		oauthService,
 		generationHintService,
 		container.GetLogger(),

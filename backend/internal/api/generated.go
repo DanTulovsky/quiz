@@ -6,6 +6,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/oapi-codegen/runtime"
 	openapi_types "github.com/oapi-codegen/runtime/types"
@@ -20,6 +21,13 @@ const (
 const (
 	ChatMessageRoleAssistant ChatMessageRole = "assistant"
 	ChatMessageRoleUser      ChatMessageRole = "user"
+)
+
+// Defines values for CreateStoryRequestSectionLengthOverride.
+const (
+	CreateStoryRequestSectionLengthOverrideLong   CreateStoryRequestSectionLengthOverride = "long"
+	CreateStoryRequestSectionLengthOverrideMedium CreateStoryRequestSectionLengthOverride = "medium"
+	CreateStoryRequestSectionLengthOverrideShort  CreateStoryRequestSectionLengthOverride = "short"
 )
 
 // Defines values for NotificationErrorErrorType.
@@ -39,8 +47,8 @@ const (
 
 // Defines values for QuestionStatus.
 const (
-	Active   QuestionStatus = "active"
-	Reported QuestionStatus = "reported"
+	QuestionStatusActive   QuestionStatus = "active"
+	QuestionStatusReported QuestionStatus = "reported"
 )
 
 // Defines values for QuestionType.
@@ -62,6 +70,34 @@ const (
 	SentNotificationStatusBounced SentNotificationStatus = "bounced"
 	SentNotificationStatusFailed  SentNotificationStatus = "failed"
 	SentNotificationStatusSent    SentNotificationStatus = "sent"
+)
+
+// Defines values for StorySectionLengthOverride.
+const (
+	StorySectionLengthOverrideLong   StorySectionLengthOverride = "long"
+	StorySectionLengthOverrideMedium StorySectionLengthOverride = "medium"
+	StorySectionLengthOverrideShort  StorySectionLengthOverride = "short"
+)
+
+// Defines values for StoryStatus.
+const (
+	StoryStatusActive    StoryStatus = "active"
+	StoryStatusArchived  StoryStatus = "archived"
+	StoryStatusCompleted StoryStatus = "completed"
+)
+
+// Defines values for StoryWithSectionsSectionLengthOverride.
+const (
+	Long   StoryWithSectionsSectionLengthOverride = "long"
+	Medium StoryWithSectionsSectionLengthOverride = "medium"
+	Short  StoryWithSectionsSectionLengthOverride = "short"
+)
+
+// Defines values for StoryWithSectionsStatus.
+const (
+	Active    StoryWithSectionsStatus = "active"
+	Archived  StoryWithSectionsStatus = "archived"
+	Completed StoryWithSectionsStatus = "completed"
 )
 
 // Defines values for TTSRequestStreamFormat.
@@ -223,6 +259,22 @@ type ChatMessage struct {
 
 // ChatMessageRole The role of the message sender
 type ChatMessageRole string
+
+// CreateStoryRequest defines model for CreateStoryRequest.
+type CreateStoryRequest struct {
+	AuthorStyle           *string                                  `json:"author_style"`
+	CharacterNames        *string                                  `json:"character_names"`
+	CustomInstructions    *string                                  `json:"custom_instructions"`
+	Genre                 *string                                  `json:"genre"`
+	SectionLengthOverride *CreateStoryRequestSectionLengthOverride `json:"section_length_override"`
+	Subject               *string                                  `json:"subject"`
+	TimePeriod            *string                                  `json:"time_period"`
+	Title                 string                                   `json:"title"`
+	Tone                  *string                                  `json:"tone"`
+}
+
+// CreateStoryRequestSectionLengthOverride defines model for CreateStoryRequest.SectionLengthOverride.
+type CreateStoryRequestSectionLengthOverride string
 
 // DailyProgress defines model for DailyProgress.
 type DailyProgress struct {
@@ -699,6 +751,97 @@ type ServiceVersion struct {
 	// Version Version string (e.g., git tag or 'dev')
 	Version string `json:"version"`
 }
+
+// Story defines model for Story.
+type Story struct {
+	AuthorStyle            *string                     `json:"author_style"`
+	CharacterNames         *string                     `json:"character_names"`
+	CreatedAt              *time.Time                  `json:"created_at,omitempty"`
+	CustomInstructions     *string                     `json:"custom_instructions"`
+	Genre                  *string                     `json:"genre"`
+	Id                     *int64                      `json:"id,omitempty"`
+	IsCurrent              *bool                       `json:"is_current,omitempty"`
+	Language               *string                     `json:"language,omitempty"`
+	LastSectionGeneratedAt *time.Time                  `json:"last_section_generated_at"`
+	SectionLengthOverride  *StorySectionLengthOverride `json:"section_length_override"`
+	Status                 *StoryStatus                `json:"status,omitempty"`
+	Subject                *string                     `json:"subject"`
+	TimePeriod             *string                     `json:"time_period"`
+	Title                  *string                     `json:"title,omitempty"`
+	Tone                   *string                     `json:"tone"`
+	UpdatedAt              *time.Time                  `json:"updated_at,omitempty"`
+	UserId                 *int64                      `json:"user_id,omitempty"`
+}
+
+// StorySectionLengthOverride defines model for Story.SectionLengthOverride.
+type StorySectionLengthOverride string
+
+// StoryStatus defines model for Story.Status.
+type StoryStatus string
+
+// StorySection defines model for StorySection.
+type StorySection struct {
+	Content        *string             `json:"content,omitempty"`
+	GeneratedAt    *time.Time          `json:"generated_at,omitempty"`
+	GenerationDate *openapi_types.Date `json:"generation_date,omitempty"`
+	Id             *int64              `json:"id,omitempty"`
+	LanguageLevel  *string             `json:"language_level,omitempty"`
+	SectionNumber  *int                `json:"section_number,omitempty"`
+	StoryId        *int64              `json:"story_id,omitempty"`
+	WordCount      *int                `json:"word_count,omitempty"`
+}
+
+// StorySectionQuestion defines model for StorySectionQuestion.
+type StorySectionQuestion struct {
+	CorrectAnswerIndex *int       `json:"correct_answer_index,omitempty"`
+	CreatedAt          *time.Time `json:"created_at,omitempty"`
+	Explanation        *string    `json:"explanation"`
+	Id                 *int64     `json:"id,omitempty"`
+	Options            *[]string  `json:"options,omitempty"`
+	QuestionText       *string    `json:"question_text,omitempty"`
+	SectionId          *int64     `json:"section_id,omitempty"`
+}
+
+// StorySectionWithQuestions defines model for StorySectionWithQuestions.
+type StorySectionWithQuestions struct {
+	Content        *string                 `json:"content,omitempty"`
+	GeneratedAt    *time.Time              `json:"generated_at,omitempty"`
+	GenerationDate *openapi_types.Date     `json:"generation_date,omitempty"`
+	Id             *int64                  `json:"id,omitempty"`
+	LanguageLevel  *string                 `json:"language_level,omitempty"`
+	Questions      *[]StorySectionQuestion `json:"questions,omitempty"`
+	SectionNumber  *int                    `json:"section_number,omitempty"`
+	StoryId        *int64                  `json:"story_id,omitempty"`
+	WordCount      *int                    `json:"word_count,omitempty"`
+}
+
+// StoryWithSections defines model for StoryWithSections.
+type StoryWithSections struct {
+	AuthorStyle            *string                                 `json:"author_style"`
+	CharacterNames         *string                                 `json:"character_names"`
+	CreatedAt              *time.Time                              `json:"created_at,omitempty"`
+	CustomInstructions     *string                                 `json:"custom_instructions"`
+	Genre                  *string                                 `json:"genre"`
+	Id                     *int64                                  `json:"id,omitempty"`
+	IsCurrent              *bool                                   `json:"is_current,omitempty"`
+	Language               *string                                 `json:"language,omitempty"`
+	LastSectionGeneratedAt *time.Time                              `json:"last_section_generated_at"`
+	SectionLengthOverride  *StoryWithSectionsSectionLengthOverride `json:"section_length_override"`
+	Sections               *[]StorySection                         `json:"sections,omitempty"`
+	Status                 *StoryWithSectionsStatus                `json:"status,omitempty"`
+	Subject                *string                                 `json:"subject"`
+	TimePeriod             *string                                 `json:"time_period"`
+	Title                  *string                                 `json:"title,omitempty"`
+	Tone                   *string                                 `json:"tone"`
+	UpdatedAt              *time.Time                              `json:"updated_at,omitempty"`
+	UserId                 *int64                                  `json:"user_id,omitempty"`
+}
+
+// StoryWithSectionsSectionLengthOverride defines model for StoryWithSections.SectionLengthOverride.
+type StoryWithSectionsSectionLengthOverride string
+
+// StoryWithSectionsStatus defines model for StoryWithSections.Status.
+type StoryWithSectionsStatus string
 
 // SuccessResponse defines model for SuccessResponse.
 type SuccessResponse struct {
@@ -1339,6 +1482,12 @@ type GetV1SettingsLevelsParams struct {
 	Language *string `form:"language,omitempty" json:"language,omitempty"`
 }
 
+// GetV1StoryParams defines parameters for GetV1Story.
+type GetV1StoryParams struct {
+	// IncludeArchived Include archived stories in the response
+	IncludeArchived *bool `form:"include_archived,omitempty" json:"include_archived,omitempty"`
+}
+
 // PutV1AdminBackendQuestionsIdJSONRequestBody defines body for PutV1AdminBackendQuestionsId for application/json ContentType.
 type PutV1AdminBackendQuestionsIdJSONRequestBody PutV1AdminBackendQuestionsIdJSONBody
 
@@ -1404,6 +1553,9 @@ type PutV1SettingsJSONRequestBody = UserSettings
 
 // PostV1SettingsTestAiJSONRequestBody defines body for PostV1SettingsTestAi for application/json ContentType.
 type PostV1SettingsTestAiJSONRequestBody = TestAIRequest
+
+// PostV1StoryJSONRequestBody defines body for PostV1Story for application/json ContentType.
+type PostV1StoryJSONRequestBody = CreateStoryRequest
 
 // PutV1UserzProfileJSONRequestBody defines body for PutV1UserzProfile for application/json ContentType.
 type PutV1UserzProfileJSONRequestBody = UserUpdateRequest

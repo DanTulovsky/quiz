@@ -88,6 +88,7 @@ func (suite *AdminIntegrationTestSuite) SetupSuite() {
 
 	// Use the real application router
 	generationHintService := services.NewGenerationHintService(db, logger)
+	storyService := services.NewStoryService(db, suite.cfg, logger)
 	suite.BackendRouter = handlers.NewRouter(
 		suite.cfg,
 		userService,
@@ -96,6 +97,7 @@ func (suite *AdminIntegrationTestSuite) SetupSuite() {
 		suite.mockAIService, // Use mock AI service for faster tests
 		workerService,
 		dailyQuestionService,
+		storyService,
 		oauthService,
 		generationHintService,
 		logger,

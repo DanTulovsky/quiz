@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"strings"
 	"time"
 )
 
@@ -188,7 +189,7 @@ func (r *CreateStoryRequest) Validate() error {
 func SanitizeInput(input string) string {
 	// Basic sanitization - remove control characters and trim whitespace
 	// In a production system, you might want more sophisticated sanitization
-	result := input
+	result := strings.TrimSpace(input)
 
 	// Remove null bytes and control characters
 	for i := 0; i < len(result); i++ {
@@ -199,6 +200,13 @@ func SanitizeInput(input string) string {
 	}
 
 	return result
+}
+
+// UserAIConfig holds per-user AI configuration
+type UserAIConfig struct {
+	Provider string
+	Model    string
+	APIKey   string
 }
 
 // GetSectionLengthTarget returns the target word count for a story section

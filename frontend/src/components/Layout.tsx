@@ -20,6 +20,7 @@ import {
   Divider,
 } from '@mantine/core';
 import {
+  IconBook,
   IconBook2,
   IconChartBar,
   IconSettings,
@@ -103,6 +104,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         icon: IconCalendar,
         testId: 'nav-daily',
       },
+      {
+        name: 'Story',
+        href: '/story',
+        icon: IconBook,
+        testId: 'nav-story',
+      },
     ];
 
     const adminNav = isAdmin
@@ -162,6 +169,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       e.preventDefault();
       if (mainNav[3] && mainNav[3].href !== location.pathname) {
         navigate(mainNav[3].href);
+      }
+    },
+    { enableOnFormTags: false, preventDefault: true }
+  );
+
+  useHotkeys(
+    'shift+5',
+    e => {
+      e.preventDefault();
+      if (mainNav[4] && mainNav[4].href !== location.pathname) {
+        navigate(mainNav[4].href);
       }
     },
     { enableOnFormTags: false, preventDefault: true }

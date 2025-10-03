@@ -22,6 +22,7 @@ type ServiceContainerInterface interface {
 	GetAIService() (services.AIServiceInterface, error)
 	GetWorkerService() (services.WorkerServiceInterface, error)
 	GetDailyQuestionService() (services.DailyQuestionServiceInterface, error)
+	GetStoryService() (services.StoryServiceInterface, error)
 	GetOAuthService() (*services.OAuthService, error)
 	GetGenerationHintService() (services.GenerationHintServiceInterface, error)
 	GetEmailService() (services.EmailServiceInterface, error)
@@ -139,6 +140,11 @@ func (sc *ServiceContainer) GetDailyQuestionService() (services.DailyQuestionSer
 	return GetServiceAs[services.DailyQuestionServiceInterface](sc, "daily_question")
 }
 
+// GetStoryService returns the story service
+func (sc *ServiceContainer) GetStoryService() (services.StoryServiceInterface, error) {
+	return GetServiceAs[services.StoryServiceInterface](sc, "story")
+}
+
 // GetOAuthService returns the OAuth service
 func (sc *ServiceContainer) GetOAuthService() (*services.OAuthService, error) {
 	service, err := sc.GetService("oauth")
@@ -247,6 +253,10 @@ func (sc *ServiceContainer) initializeServices(_ context.Context) {
 	// Daily question service depends on question and learning services
 	dailyQuestionService := services.NewDailyQuestionService(sc.db, sc.logger, questionService, learningService)
 	sc.services["daily_question"] = dailyQuestionService
+
+	// Story service
+	storyService := services.NewStoryService(sc.db, sc.cfg, sc.logger)
+	sc.services["story"] = storyService
 
 	// AI service
 	aiService := services.NewAIService(sc.cfg, sc.logger)

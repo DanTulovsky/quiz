@@ -85,7 +85,8 @@ func (suite *APIIntegrationTestSuite) SetupSuite() {
 
 	// Use the new router factory
 	generationHintService := services.NewGenerationHintService(suite.db, logger)
-	router := handlers.NewRouter(cfg, userService, questionService, learningService, suite.mockAIService, workerService, dailyQuestionService, oauthService, generationHintService, logger)
+	storyService := services.NewStoryService(suite.db, cfg, logger)
+	router := handlers.NewRouter(cfg, userService, questionService, learningService, suite.mockAIService, workerService, dailyQuestionService, storyService, oauthService, generationHintService, logger)
 	suite.Router = router
 }
 
