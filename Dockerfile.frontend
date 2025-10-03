@@ -101,6 +101,11 @@ COPY --from=nonce /app/dist /usr/share/nginx/html
 # Copy the self-hosted fonts
 COPY --from=builder /app/public/fonts /usr/share/nginx/html/fonts
 
+# Fix permissions for nginx to serve static assets
+RUN chmod -R 644 /usr/share/nginx/html/assets/* /usr/share/nginx/html/*.svg /usr/share/nginx/html/fonts/* && \
+    chmod 755 /usr/share/nginx/html/fonts && \
+    find /usr/share/nginx/html -type d -exec chmod 755 {} \;
+
 # Copy the nginx configuration
 COPY --from=nonce /app/nginx.conf /etc/nginx/nginx.conf
 # Copy rate-limit snippet includes (enabled by default)
