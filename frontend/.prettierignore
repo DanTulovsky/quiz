@@ -1,11 +1,5 @@
-# Generated files - do not format
-src/types/api.ts
-src/types/schema.ts
-src/api/api.ts
-
-# Build output
+# Ignore generated API files
+src/api/**
 dist/
 build/
-
-# Node modules
 node_modules/
