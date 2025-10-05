@@ -177,6 +177,17 @@ const StoryPage: React.FC = () => {
     );
   }
 
+  // Show generating state (informational, not an error)
+  if (isGenerating && currentStory && 'message' in currentStory) {
+    return (
+      <Container size='lg' py='xl'>
+        <Alert color='blue' variant='light'>
+          <Text>{currentStory.message}</Text>
+        </Alert>
+      </Container>
+    );
+  }
+
   // Show main story interface
   return (
     <Container size='lg' py='lg'>

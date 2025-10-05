@@ -18,7 +18,6 @@ import {
   StorySection,
   CreateStoryRequest,
   Story,
-  GeneratingResponse,
 } from '../api/storyApi';
 import { showNotificationWithClean } from '../notifications';
 import logger from '../utils/logger';
@@ -90,15 +89,20 @@ export const useStory = (): UseStoryReturn => {
   useEffect(() => {
     currentStoryRef.current = currentStory;
 
-    // Check if we received a generating response
-    if (
-      currentStory &&
-      typeof currentStory === 'object' &&
-      'status' in currentStory &&
-      currentStory.status === 'generating'
-    ) {
+    // Check if we received a generating response or if story has no sections yet
+    const isGeneratingState =
+      (currentStory &&
+        typeof currentStory === 'object' &&
+        'status' in currentStory &&
+        currentStory.status === 'generating') ||
+      (currentStory &&
+        typeof currentStory === 'object' &&
+        'sections' in currentStory &&
+        (!currentStory.sections || currentStory.sections.length === 0));
+
+    if (isGeneratingState) {
       setIsGenerating(true);
-      setError(currentStory.message || null);
+      // Don't set as error - this is informational
       startPolling();
     } else {
       setIsGenerating(false);
