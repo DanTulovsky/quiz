@@ -800,26 +800,6 @@ func (s *StoryService) UpdateLastGenerationTime(ctx context.Context, storyID uin
 
 // Helper methods
 
-// getUserByID retrieves a user by their ID
-func (s *StoryService) getUserByID(ctx context.Context, userID uint) (*models.User, error) {
-	query := "SELECT id, username, email, preferred_language, current_level, ai_provider, ai_model, ai_api_key, created_at, updated_at FROM users WHERE id = $1"
-
-	var user models.User
-	err := s.db.QueryRowContext(ctx, query, userID).Scan(
-		&user.ID, &user.Username, &user.Email, &user.PreferredLanguage,
-		&user.CurrentLevel, &user.AIProvider, &user.AIModel, &user.AIAPIKey,
-		&user.CreatedAt, &user.UpdatedAt,
-	)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, nil // User not found
-		}
-		return nil, contextutils.WrapErrorf(err, "failed to get user")
-	}
-
-	return &user, nil
-}
-
 // getArchivedStoryCount counts archived stories for a user
 func (s *StoryService) getArchivedStoryCount(ctx context.Context, userID uint) (int, error) {
 	query := "SELECT COUNT(*) FROM stories WHERE user_id = $1 AND status = $2"

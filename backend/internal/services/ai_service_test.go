@@ -1240,3 +1240,92 @@ func TestAIService_BuildStorySectionPrompt(t *testing.T) {
 		assert.Contains(t, prompt, "Introduce the main characters and setting")
 	})
 }
+
+func TestAIService_BuildStoryQuestionsPrompt(t *testing.T) {
+	templateManager, err := NewAITemplateManager()
+	if err != nil {
+		t.Fatalf("Failed to create template manager: %v", err)
+	}
+
+	service := &AIService{
+		templateManager: templateManager,
+	}
+
+	t.Run("StoryQuestionsPrompt", func(t *testing.T) {
+		req := &models.StoryQuestionsRequest{
+			Language:      "Spanish",
+			Level:         "intermediate",
+			SectionText:   "María caminaba por el parque cuando vio a su amigo Juan.",
+			QuestionCount: 3,
+		}
+
+		prompt := service.buildStoryQuestionsPrompt(req)
+
+		// Verify that the prompt doesn't panic and contains expected content
+		assert.NotEmpty(t, prompt)
+		assert.Contains(t, prompt, "expert language teacher creating comprehension questions")
+		assert.Contains(t, prompt, "Spanish story section at intermediate proficiency level")
+		assert.Contains(t, prompt, "Create 3 multiple-choice questions")
+		assert.Contains(t, prompt, "María caminaba por el parque cuando vio a su amigo Juan.")
+		assert.Contains(t, prompt, "Character feelings and motivations")
+		assert.Contains(t, prompt, "Complex sentence structures")
+		assert.Contains(t, prompt, "Questions requiring inference and analysis")
+	})
+}
+
+func TestAIService_BuildJSONStructureGuidance(t *testing.T) {
+	templateManager, err := NewAITemplateManager()
+	if err != nil {
+		t.Fatalf("Failed to create template manager: %v", err)
+	}
+
+	t.Run("JSONStructureGuidance", func(t *testing.T) {
+		templateData := AITemplateData{
+			SchemaForPrompt: `{"type": "object", "properties": {"test": {"type": "string"}}}`,
+		}
+
+		guidance, err := templateManager.RenderTemplate(JSONStructureGuidanceTemplate, templateData)
+		if err != nil {
+			t.Fatalf("Failed to render JSON structure guidance template: %v", err)
+		}
+
+		// Verify that the guidance contains expected content
+		assert.NotEmpty(t, guidance)
+		assert.Contains(t, guidance, "CRITICAL JSON STRUCTURE REQUIREMENTS")
+		assert.Contains(t, guidance, "You MUST respond with ONLY valid JSON")
+		assert.Contains(t, guidance, `{"type": "object", "properties": {"test": {"type": "string"}}}`)
+		assert.Contains(t, guidance, "Do NOT include any text before or after the JSON")
+		assert.Contains(t, guidance, "Start your response directly with [ and end with ]")
+	})
+}
+
+func TestAIService_BuildAIFixPrompt(t *testing.T) {
+	templateManager, err := NewAITemplateManager()
+	if err != nil {
+		t.Fatalf("Failed to create template manager: %v", err)
+	}
+
+	t.Run("AIFixPrompt", func(t *testing.T) {
+		templateData := AITemplateData{
+			CurrentQuestionJSON: `{"question": "What is the capital of France?", "options": ["London", "Berlin", "Paris", "Madrid"], "correct_answer": 2, "explanation": "Paris is the capital of France."}`,
+			ReportReasons:       []string{"Incorrect answer"},
+			AdditionalContext:   "This question was reported as having wrong information",
+			ExampleContent:      `{"content": {"question": "What is 2+2?", "options": ["3", "4", "5", "6"], "correct_answer": 1}, "explanation": "2+2 equals 4", "change_reason": "Fixed incorrect options"}`,
+			SchemaForPrompt:     `{"type": "object", "properties": {"content": {"type": "object"}, "correct_answer": {"type": "integer"}, "explanation": {"type": "string"}, "change_reason": {"type": "string"}}}`,
+		}
+
+		prompt, err := templateManager.RenderTemplate(AIFixPromptTemplate, templateData)
+		if err != nil {
+			t.Fatalf("Failed to render AI fix prompt template: %v", err)
+		}
+
+		// Verify that the prompt contains expected content
+		assert.NotEmpty(t, prompt)
+		assert.Contains(t, prompt, "review and, if necessary, improve a single quiz question")
+		assert.Contains(t, prompt, "What is the capital of France?")
+		assert.Contains(t, prompt, "Incorrect answer")
+		assert.Contains(t, prompt, "This question was reported as having wrong information")
+		assert.Contains(t, prompt, "CRITICAL: Return only the JSON object and nothing else")
+		assert.Contains(t, prompt, "change_reason")
+	})
+}
