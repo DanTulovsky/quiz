@@ -21,6 +21,7 @@ import (
 // SettingsHandler handles user settings related HTTP requests
 type SettingsHandler struct {
 	userService     services.UserServiceInterface
+    storyService    services.StoryServiceInterface
 	aiService       services.AIServiceInterface
 	learningService services.LearningServiceInterface
 	emailService    mailer.Mailer
@@ -29,15 +30,16 @@ type SettingsHandler struct {
 }
 
 // NewSettingsHandler creates a new SettingsHandler instance
-func NewSettingsHandler(userService services.UserServiceInterface, aiService services.AIServiceInterface, learningService services.LearningServiceInterface, emailService mailer.Mailer, cfg *config.Config, logger *observability.Logger) *SettingsHandler {
-	return &SettingsHandler{
-		userService:     userService,
-		aiService:       aiService,
-		learningService: learningService,
-		emailService:    emailService,
-		cfg:             cfg,
-		logger:          logger,
-	}
+func NewSettingsHandler(userService services.UserServiceInterface, storyService services.StoryServiceInterface, aiService services.AIServiceInterface, learningService services.LearningServiceInterface, emailService mailer.Mailer, cfg *config.Config, logger *observability.Logger) *SettingsHandler {
+    return &SettingsHandler{
+        userService:     userService,
+        storyService:    storyService,
+        aiService:       aiService,
+        learningService: learningService,
+        emailService:    emailService,
+        cfg:             cfg,
+        logger:          logger,
+    }
 }
 
 // UpdateUserSettings handles updating user settings
@@ -406,4 +408,76 @@ func (h *SettingsHandler) SendTestEmail(c *gin.Context) {
 	})
 
 	c.JSON(http.StatusOK, api.SuccessResponse{Success: true, Message: stringPtr("Test email sent successfully")})
+}
+
+// ClearAllStories deletes all stories belonging to the current user
+func (h *SettingsHandler) ClearAllStories(c *gin.Context) {
+    ctx, span := observability.TraceHandlerFunction(c.Request.Context(), "clear_all_stories")
+    defer observability.FinishSpan(span, nil)
+    session := sessions.Default(c)
+    userID, ok := session.Get(middleware.UserIDKey).(int)
+    if !ok {
+        HandleAppError(c, contextutils.ErrUnauthorized)
+        return
+    }
+    // Use the story service to delete all stories for this user
+    if h.storyService == nil {
+        h.logger.Warn(ctx, "Story service not available for ClearAllStories")
+        HandleAppError(c, contextutils.NewAppErrorWithCause(
+            contextutils.ErrorCodeInvalidInput,
+            contextutils.SeverityWarn,
+            "Clear all stories not available",
+            "",
+            nil,
+        ))
+        return
+    }
+
+    if err := h.storyService.DeleteAllStoriesForUser(ctx, uint(userID)); err != nil {
+        h.logger.Error(ctx, "Failed to delete all stories for user", err, map[string]interface{}{"user_id": userID})
+        HandleAppError(c, contextutils.WrapError(err, "failed to delete all stories for user"))
+        return
+    }
+
+    c.JSON(http.StatusOK, gin.H{"success": true, "message": "All stories deleted successfully"})
+}
+
+// ResetAccount deletes all stories and clears user-specific data (questions, stats)
+func (h *SettingsHandler) ResetAccount(c *gin.Context) {
+    ctx, span := observability.TraceHandlerFunction(c.Request.Context(), "reset_account")
+    defer observability.FinishSpan(span, nil)
+    session := sessions.Default(c)
+    userID, ok := session.Get(middleware.UserIDKey).(int)
+    if !ok {
+        HandleAppError(c, contextutils.ErrUnauthorized)
+        return
+    }
+    // Reset account: clear user data (questions, responses, metrics) and delete stories
+    // First, clear user data (uses userService)
+    if err := h.userService.ClearUserDataForUser(ctx, userID); err != nil {
+        h.logger.Error(ctx, "Failed to clear user data for user during reset", err, map[string]interface{}{"user_id": userID})
+        HandleAppError(c, contextutils.WrapError(err, "failed to clear user data"))
+        return
+    }
+
+    // Then delete all stories
+    if h.storyService == nil {
+        h.logger.Warn(ctx, "Story service not available for ResetAccount")
+        HandleAppError(c, contextutils.NewAppErrorWithCause(
+            contextutils.ErrorCodeInvalidInput,
+            contextutils.SeverityWarn,
+            "Reset account not available",
+            "",
+            nil,
+        ))
+        return
+    }
+
+    if err := h.storyService.DeleteAllStoriesForUser(ctx, uint(userID)); err != nil {
+        h.logger.Error(ctx, "Failed to delete stories during reset account", err, map[string]interface{}{"user_id": userID})
+        HandleAppError(c, contextutils.WrapError(err, "failed to delete stories during reset"))
+        return
+    }
+
+    c.JSON(http.StatusOK, gin.H{"success": true, "message": "Account reset successfully"})
 }
