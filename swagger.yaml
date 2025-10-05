@@ -738,6 +738,62 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/settings/clear-stories:
+    post:
+      tags:
+        - Settings
+      summary: Delete all stories for the authenticated user
+      description: Permanently deletes all stories, sections, and story-generated questions belonging to the authenticated user. This action is irreversible.
+      security:
+        - cookieAuth: []
+      responses:
+        "200":
+          description: Stories deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Server error while deleting stories
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/settings/reset-account:
+    post:
+      tags:
+        - Settings
+      summary: Reset the authenticated user's account
+      description: Clears the authenticated user's activity (questions, responses, performance metrics) and deletes all stories. This is irreversible.
+      security:
+        - cookieAuth: []
+      responses:
+        "200":
+          description: Account reset successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Server error while resetting account
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "403":
           description: User not authorized (admin required)
           content:

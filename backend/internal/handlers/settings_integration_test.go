@@ -380,6 +380,77 @@ func (suite *SettingsIntegrationTestSuite) TestGetLanguages_Success() {
 	assert.NotEmpty(suite.T(), languages)
 }
 
+func (suite *SettingsIntegrationTestSuite) TestClearAllStoriesEndpoint() {
+    sessionCookie := suite.login()
+
+    // Create a story for the test user
+    logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+    storyService := services.NewStoryService(suite.DB, suite.Config, logger)
+
+    req := models.CreateStoryRequest{
+        Title: "ClearStories Test",
+    }
+    story, err := storyService.CreateStory(context.Background(), uint(suite.TestUserID), "english", &req)
+    suite.Require().NoError(err)
+
+    // Add a section and a question to ensure related rows exist
+    section, err := storyService.CreateSection(context.Background(), story.ID, "Section content", "A1", 10)
+    suite.Require().NoError(err)
+    questions := []models.StorySectionQuestionData{{QuestionText: "Q1", Options: []string{"a","b"}, CorrectAnswerIndex: 0, Explanation: ""}}
+    err = storyService.CreateSectionQuestions(context.Background(), section.ID, questions)
+    suite.Require().NoError(err)
+
+    // Verify story exists
+    var cnt int
+    err = suite.DB.QueryRow("SELECT COUNT(*) FROM stories WHERE user_id = $1", suite.TestUserID).Scan(&cnt)
+    suite.Require().NoError(err)
+    suite.Require().Equal(1, cnt)
+
+    // Call clear-stories endpoint
+    reqHTTP, _ := http.NewRequest("POST", "/v1/settings/clear-stories", nil)
+    reqHTTP.Header.Set("Cookie", sessionCookie)
+    w := httptest.NewRecorder()
+    suite.Router.ServeHTTP(w, reqHTTP)
+
+    suite.Require().Equal(http.StatusOK, w.Code)
+
+    // Verify stories deleted
+    err = suite.DB.QueryRow("SELECT COUNT(*) FROM stories WHERE user_id = $1", suite.TestUserID).Scan(&cnt)
+    suite.Require().NoError(err)
+    suite.Require().Equal(0, cnt)
+}
+
+func (suite *SettingsIntegrationTestSuite) TestResetAccountEndpoint() {
+    sessionCookie := suite.login()
+
+    // Create a story for the test user
+    logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+    storyService := services.NewStoryService(suite.DB, suite.Config, logger)
+
+    req := models.CreateStoryRequest{Title: "ResetAccount Test"}
+    story, err := storyService.CreateStory(context.Background(), uint(suite.TestUserID), "english", &req)
+    suite.Require().NoError(err)
+
+    // Verify story exists
+    var cnt int
+    err = suite.DB.QueryRow("SELECT COUNT(*) FROM stories WHERE user_id = $1", suite.TestUserID).Scan(&cnt)
+    suite.Require().NoError(err)
+    suite.Require().Equal(1, cnt)
+
+    // Call reset-account endpoint
+    reqHTTP, _ := http.NewRequest("POST", "/v1/settings/reset-account", nil)
+    reqHTTP.Header.Set("Cookie", sessionCookie)
+    w := httptest.NewRecorder()
+    suite.Router.ServeHTTP(w, reqHTTP)
+
+    suite.Require().Equal(http.StatusOK, w.Code)
+
+    // Verify stories deleted and user data cleared (at least stories)
+    err = suite.DB.QueryRow("SELECT COUNT(*) FROM stories WHERE user_id = $1", suite.TestUserID).Scan(&cnt)
+    suite.Require().NoError(err)
+    suite.Require().Equal(0, cnt)
+}
+
 func (suite *SettingsIntegrationTestSuite) TestCheckAPIKeyAvailability_NoKey() {
 	sessionCookie := suite.login()
 
