@@ -106,19 +106,19 @@ export const useStory = (): UseStoryReturn => {
       setError(null);
       // Don't set as error - this is informational
       startPolling();
-    } else {
+    } else if (
+      currentStory &&
+      'sections' in currentStory &&
+      currentStory.sections &&
+      currentStory.sections.length > 0
+    ) {
+      // Only stop generating if we have a story with actual sections
       setIsGenerating(false);
       stopPolling();
-      // If we have a story with sections, clear any error state
-      if (
-        currentStory &&
-        'sections' in currentStory &&
-        currentStory.sections &&
-        currentStory.sections.length > 0
-      ) {
-        setError(null);
-      }
+      setError(null);
     }
+    // If currentStory is null or undefined, don't change the generating state
+    // (it might be in the process of being fetched after story creation)
   }, [currentStory, error]);
 
   // Polling functions
@@ -495,6 +495,6 @@ export const useStory = (): UseStoryReturn => {
     hasCurrentStory,
     currentSection,
     currentSectionWithQuestions,
-    isGenerating: generateNextSectionMutation.isPending,
+    isGeneratingNextSection: generateNextSectionMutation.isPending,
   };
 };

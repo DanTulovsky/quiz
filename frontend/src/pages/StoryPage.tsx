@@ -177,12 +177,16 @@ const StoryPage: React.FC = () => {
     );
   }
 
-  // Show generating state (informational, not an error)
-  if (isGenerating && currentStory && 'message' in currentStory) {
+  // Show generating state (informational, not an error) - check this before main interface
+  if (isGenerating) {
+    const message =
+      currentStory && 'message' in currentStory
+        ? currentStory.message
+        : 'Story created successfully. The first section is being generated. Please check back shortly.';
     return (
       <Container size='lg' py='xl'>
         <Alert color='blue' variant='light'>
-          <Text>{currentStory.message}</Text>
+          <Text>{message}</Text>
         </Alert>
       </Container>
     );
