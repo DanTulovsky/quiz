@@ -80,6 +80,8 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
     null
   );
   const [isSubmittedLocal, setIsSubmittedLocal] = useState(false);
+  // Local submitting state to avoid leaving the UI disabled if the network fails
+  const [isSubmittingLocal, setIsSubmittingLocal] = useState(false);
 
   // Refs for buttons to enable scrolling
   const submitButtonRef = useRef<HTMLButtonElement>(null);
@@ -128,7 +130,9 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
   const handleAnswerSubmit = useCallback(async () => {
     if (!question || selectedAnswerLocal === null) return;
 
-    setIsSubmittedLocal(true);
+    // Prevent duplicate submissions and show loading state
+    if (isSubmittingLocal) return;
+    setIsSubmittingLocal(true);
 
     try {
       const response = await postV1QuizAnswer({
@@ -137,6 +141,8 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
       });
 
       setFeedback(response);
+      // Mark as submitted only on success so the options remain selectable on failure
+      setIsSubmittedLocal(true);
 
       // Scroll to next question button after feedback is shown
       setTimeout(() => {
@@ -149,8 +155,17 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
       }, 300); // Delay to allow feedback animation to complete
     } catch (error) {
       console.error('Failed to submit answer:', error);
+      showNotificationWithClean({
+        title: 'Error',
+        message: 'Failed to submit answer. Please try again.',
+        color: 'red',
+      });
+      // Ensure we do not leave the UI in a submitted/disabled state
+      setIsSubmittedLocal(false);
+    } finally {
+      setIsSubmittingLocal(false);
     }
-  }, [question, selectedAnswerLocal, setFeedback]);
+  }, [question, selectedAnswerLocal, setFeedback, isSubmittingLocal]);
 
   // Handle next question
   const handleNextQuestion = useCallback(async () => {
@@ -332,7 +347,8 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
     );
   }
 
-  const canSubmit = selectedAnswerLocal !== null && !isSubmittedLocal;
+  const canSubmit =
+    selectedAnswerLocal !== null && !isSubmittedLocal && !isSubmittingLocal;
   const showFeedback = isSubmittedLocal && feedback;
 
   const modeLabel =
@@ -492,7 +508,7 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
                     color={isIncorrect ? 'red' : isCorrect ? 'green' : 'blue'}
                     size='lg'
                     onClick={() => {
-                      if (!isSubmittedLocal) {
+                      if (!isSubmittedLocal && !isSubmittingLocal) {
                         setSelectedAnswerLocal(index);
                         // Scroll to submit button in mobile view after a brief delay
                         // to ensure the selection state has been updated
@@ -501,7 +517,7 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
                         }, 100);
                       }
                     }}
-                    disabled={isSubmittedLocal}
+                    disabled={isSubmittedLocal || isSubmittingLocal}
                     fullWidth
                     justify='flex-start'
                     leftSection={
