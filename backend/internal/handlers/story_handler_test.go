@@ -224,4 +224,192 @@ func (suite *StoryHandlerIntegrationTestSuite) TestStoryHandler_CreateStory_Inte
 		assert.Equal(suite.T(), models.StoryStatusArchived, archivedStory.Status)
 		assert.False(suite.T(), archivedStory.IsCurrent)
 	})
+
+	suite.Run("should handle language-based story filtering", func() {
+		// Get services from DI container
+		userService, err := suite.Container.GetUserService()
+		require.NoError(suite.T(), err)
+
+		storyService, err := suite.Container.GetStoryService()
+		require.NoError(suite.T(), err)
+
+		aiService, err := suite.Container.GetAIService()
+		require.NoError(suite.T(), err)
+
+		// Create a test user with Italian as initial language
+		ctx := context.Background()
+		user := models.User{
+			Username:          "testuser_language_switch",
+			Email:             sql.NullString{String: "test_language_switch@example.com", Valid: true},
+			PreferredLanguage: sql.NullString{String: "it", Valid: true}, // Italian
+		}
+
+		err = suite.Container.GetDatabase().QueryRowContext(ctx,
+			`INSERT INTO users (username, email, preferred_language, current_level, created_at, updated_at)
+			 VALUES ($1, $2, $3, $4, NOW(), NOW()) RETURNING id`,
+			user.Username, user.Email, user.PreferredLanguage, "B1").Scan(&user.ID)
+		require.NoError(suite.T(), err)
+
+		handler := NewStoryHandler(storyService, userService, aiService, suite.Config, suite.Logger)
+
+		router := gin.New()
+		store := cookie.NewStore([]byte("secret"))
+		router.Use(sessions.Sessions("test_session", store))
+
+		// Helper function to set user session
+		setUserSession := func(c *gin.Context) {
+			session := sessions.Default(c)
+			session.Set("user_id", user.ID)
+			c.Next()
+		}
+
+		router.Use(setUserSession)
+		router.POST("/v1/story", handler.CreateStory)
+		router.GET("/v1/story/current", handler.GetCurrentStory)
+
+		// Step 1: Create a story in Italian
+		reqData := models.CreateStoryRequest{
+			Title: "Storia Italiana",
+		}
+
+		body, _ := json.Marshal(reqData)
+		w := httptest.NewRecorder()
+		req, _ := http.NewRequest("POST", "/v1/story", bytes.NewBuffer(body))
+		req.Header.Set("Content-Type", "application/json")
+
+		router.ServeHTTP(w, req)
+		assert.Equal(suite.T(), http.StatusCreated, w.Code)
+
+		var italianStory models.Story
+		err = json.Unmarshal(w.Body.Bytes(), &italianStory)
+		require.NoError(suite.T(), err)
+		assert.Equal(suite.T(), "Storia Italiana", italianStory.Title)
+		assert.Equal(suite.T(), "it", italianStory.Language)
+		assert.True(suite.T(), italianStory.IsCurrent)
+
+		// Step 2: Verify current story returns the Italian story
+		w = httptest.NewRecorder()
+		req, _ = http.NewRequest("GET", "/v1/story/current", nil)
+		router.ServeHTTP(w, req)
+
+		assert.Equal(suite.T(), http.StatusOK, w.Code)
+		var currentStory models.Story
+		err = json.Unmarshal(w.Body.Bytes(), &currentStory)
+		require.NoError(suite.T(), err)
+		assert.Equal(suite.T(), "Storia Italiana", currentStory.Title)
+
+		// Step 3: Change user's language to Russian
+		_, err = suite.Container.GetDatabase().ExecContext(ctx,
+			"UPDATE users SET preferred_language = $1, updated_at = NOW() WHERE id = $2",
+			"ru", user.ID)
+		require.NoError(suite.T(), err)
+
+		// Step 4: Verify current story now returns null (no Russian story exists)
+		w = httptest.NewRecorder()
+		req, _ = http.NewRequest("GET", "/v1/story/current", nil)
+		router.ServeHTTP(w, req)
+
+		assert.Equal(suite.T(), http.StatusNotFound, w.Code)
+
+		// Step 5: Create a story in Russian
+		reqData = models.CreateStoryRequest{
+			Title: "Русская История",
+		}
+
+		body, _ = json.Marshal(reqData)
+		w = httptest.NewRecorder()
+		req, _ = http.NewRequest("POST", "/v1/story", bytes.NewBuffer(body))
+		req.Header.Set("Content-Type", "application/json")
+
+		router.ServeHTTP(w, req)
+		assert.Equal(suite.T(), http.StatusCreated, w.Code)
+
+		var russianStory models.Story
+		err = json.Unmarshal(w.Body.Bytes(), &russianStory)
+		require.NoError(suite.T(), err)
+		assert.Equal(suite.T(), "Русская История", russianStory.Title)
+		assert.Equal(suite.T(), "ru", russianStory.Language)
+		assert.True(suite.T(), russianStory.IsCurrent)
+
+		// Step 6: Verify current story returns the Russian story
+		w = httptest.NewRecorder()
+		req, _ = http.NewRequest("GET", "/v1/story/current", nil)
+		router.ServeHTTP(w, req)
+
+		assert.Equal(suite.T(), http.StatusOK, w.Code)
+		err = json.Unmarshal(w.Body.Bytes(), &currentStory)
+		require.NoError(suite.T(), err)
+		assert.Equal(suite.T(), "Русская История", currentStory.Title)
+
+		// Step 7: Switch back to Italian
+		_, err = suite.Container.GetDatabase().ExecContext(ctx,
+			"UPDATE users SET preferred_language = $1, updated_at = NOW() WHERE id = $2",
+			"it", user.ID)
+		require.NoError(suite.T(), err)
+
+		// Step 8: Verify current story returns the Italian story again
+		w = httptest.NewRecorder()
+		req, _ = http.NewRequest("GET", "/v1/story/current", nil)
+		router.ServeHTTP(w, req)
+
+		assert.Equal(suite.T(), http.StatusOK, w.Code)
+		err = json.Unmarshal(w.Body.Bytes(), &currentStory)
+		require.NoError(suite.T(), err)
+		assert.Equal(suite.T(), "Storia Italiana", currentStory.Title)
+
+		// Step 9: Verify both stories exist in the database
+		var storyCount int
+		err = suite.Container.GetDatabase().QueryRowContext(ctx,
+			"SELECT COUNT(*) FROM stories WHERE user_id = $1", user.ID).Scan(&storyCount)
+		require.NoError(suite.T(), err)
+		assert.Equal(suite.T(), 2, storyCount)
+
+		// Step 10: Verify both stories are current (one per language)
+		var stories []struct {
+			ID        uint
+			Title     string
+			Language  string
+			IsCurrent bool
+		}
+		rows, err := suite.Container.GetDatabase().QueryContext(ctx,
+			"SELECT id, title, language, is_current FROM stories WHERE user_id = $1", user.ID)
+		require.NoError(suite.T(), err)
+		defer rows.Close()
+
+		for rows.Next() {
+			var story struct {
+				ID        uint
+				Title     string
+				Language  string
+				IsCurrent bool
+			}
+			err = rows.Scan(&story.ID, &story.Title, &story.Language, &story.IsCurrent)
+			require.NoError(suite.T(), err)
+			stories = append(stories, story)
+		}
+
+		// Debug: Print the stories
+		for _, story := range stories {
+			suite.T().Logf("Story: ID=%d, Title=%s, Language=%s, IsCurrent=%v", story.ID, story.Title, story.Language, story.IsCurrent)
+		}
+
+		var currentCount int
+		err = suite.Container.GetDatabase().QueryRowContext(ctx,
+			"SELECT COUNT(*) FROM stories WHERE user_id = $1 AND is_current = true", user.ID).Scan(&currentCount)
+		require.NoError(suite.T(), err)
+		assert.Equal(suite.T(), 2, currentCount) // Both Italian and Russian stories should be current in their respective languages
+
+		// Verify we have current stories in both languages
+		var italianCurrent, russianCurrent bool
+		for _, story := range stories {
+			if story.Language == "it" && story.IsCurrent {
+				italianCurrent = true
+			}
+			if story.Language == "ru" && story.IsCurrent {
+				russianCurrent = true
+			}
+		}
+		assert.True(suite.T(), italianCurrent, "Italian story should be current")
+		assert.True(suite.T(), russianCurrent, "Russian story should be current")
+	})
 }

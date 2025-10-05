@@ -69,7 +69,7 @@ export const useStory = (): UseStoryReturn => {
     isLoading: isLoadingCurrentStory,
     error: currentStoryError,
   } = useQuery({
-    queryKey: ['currentStory', user?.id],
+    queryKey: ['currentStory', user?.id, user?.preferred_language],
     queryFn: apiGetCurrentStory,
     enabled: !!user?.id,
     retry: false, // Don't retry 404s
@@ -79,7 +79,9 @@ export const useStory = (): UseStoryReturn => {
   const createStoryMutation = useMutation({
     mutationFn: apiCreateStory,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['currentStory'] });
+      queryClient.invalidateQueries({
+        queryKey: ['currentStory', user?.id, user?.preferred_language],
+      });
       queryClient.invalidateQueries({ queryKey: ['userStories'] });
       showNotificationWithClean({
         title: 'Story Created',
@@ -100,7 +102,9 @@ export const useStory = (): UseStoryReturn => {
   const archiveStoryMutation = useMutation({
     mutationFn: apiArchiveStory,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['currentStory'] });
+      queryClient.invalidateQueries({
+        queryKey: ['currentStory', user?.id, user?.preferred_language],
+      });
       queryClient.invalidateQueries({ queryKey: ['userStories'] });
       setCurrentSectionIndex(0);
       setViewMode('section');
@@ -123,7 +127,9 @@ export const useStory = (): UseStoryReturn => {
   const completeStoryMutation = useMutation({
     mutationFn: apiCompleteStory,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['currentStory'] });
+      queryClient.invalidateQueries({
+        queryKey: ['currentStory', user?.id, user?.preferred_language],
+      });
       queryClient.invalidateQueries({ queryKey: ['userStories'] });
       showNotificationWithClean({
         title: 'Story Completed',
@@ -145,7 +151,9 @@ export const useStory = (): UseStoryReturn => {
   const setCurrentStoryMutation = useMutation({
     mutationFn: apiSetCurrentStory,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['currentStory'] });
+      queryClient.invalidateQueries({
+        queryKey: ['currentStory', user?.id, user?.preferred_language],
+      });
       queryClient.invalidateQueries({ queryKey: ['userStories'] });
       setCurrentSectionIndex(0);
       setViewMode('section');
@@ -169,7 +177,9 @@ export const useStory = (): UseStoryReturn => {
   const generateNextSectionMutation = useMutation({
     mutationFn: apiGenerateNextSection,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['currentStory'] });
+      queryClient.invalidateQueries({
+        queryKey: ['currentStory', user?.id, user?.preferred_language],
+      });
       queryClient.invalidateQueries({
         queryKey: ['sectionWithQuestions', currentSection?.id],
       });
@@ -198,7 +208,9 @@ export const useStory = (): UseStoryReturn => {
   const deleteStoryMutation = useMutation({
     mutationFn: apiDeleteStory,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['currentStory'] });
+      queryClient.invalidateQueries({
+        queryKey: ['currentStory', user?.id, user?.preferred_language],
+      });
       queryClient.invalidateQueries({ queryKey: ['userStories'] });
       showNotificationWithClean({
         title: 'Story Deleted',
@@ -254,8 +266,7 @@ export const useStory = (): UseStoryReturn => {
   const canGenerateToday =
     hasCurrentStory &&
     currentStory.status === 'active' &&
-    (currentStory.sections.length === 0 ||
-      currentSectionIndex === sections.length - 1);
+    (sections.length === 0 || currentSectionIndex === sections.length - 1);
 
   // Query for current section with questions
   const { data: currentSectionWithQuestions } = useQuery({

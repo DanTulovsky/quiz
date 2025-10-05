@@ -81,9 +81,9 @@ func (s *StoryService) CreateStory(ctx context.Context, userID uint, language st
 		return nil, contextutils.WrapErrorf(err, "failed to get user level")
 	}
 
-	// Unset any existing current story first
-	unsetQuery := "UPDATE stories SET is_current = $1, updated_at = NOW() WHERE user_id = $2 AND is_current = $3"
-	_, err = s.db.ExecContext(ctx, unsetQuery, false, userID, true)
+	// Unset any existing current story in the same language first
+	unsetQuery := "UPDATE stories SET is_current = $1, updated_at = NOW() WHERE user_id = $2 AND language = $3 AND is_current = $4"
+	_, err = s.db.ExecContext(ctx, unsetQuery, false, userID, language, true)
 	if err != nil {
 		return nil, contextutils.WrapErrorf(err, "failed to unset existing current story")
 	}
@@ -164,17 +164,32 @@ func (s *StoryService) GetUserStories(ctx context.Context, userID uint, includeA
 	return stories, rows.Err()
 }
 
-// GetCurrentStory retrieves the current active story for a user
+// GetCurrentStory retrieves the current active story for a user in their current language
 func (s *StoryService) GetCurrentStory(ctx context.Context, userID uint) (*models.StoryWithSections, error) {
+	// Get user's current language preference
+	user, err := s.getUserByID(ctx, userID)
+	if err != nil {
+		return nil, contextutils.WrapErrorf(err, "failed to get user")
+	}
+
+	if user == nil {
+		return nil, contextutils.ErrorWithContextf("user not found: %d", userID)
+	}
+
+	language := "en" // default
+	if user.PreferredLanguage.Valid {
+		language = user.PreferredLanguage.String
+	}
+
 	query := `
 		SELECT id, user_id, title, language, subject, author_style, time_period, genre, tone,
 		       character_names, custom_instructions, section_length_override, status, is_current,
 		       last_section_generated_at, created_at, updated_at
 		FROM stories
-		WHERE user_id = $1 AND is_current = $2 AND status != $3`
+		WHERE user_id = $1 AND language = $2 AND is_current = $3 AND status != $4`
 
 	var story models.Story
-	err := s.db.QueryRowContext(ctx, query, userID, true, models.StoryStatusArchived).Scan(
+	err = s.db.QueryRowContext(ctx, query, userID, language, true, models.StoryStatusArchived).Scan(
 		&story.ID, &story.UserID, &story.Title, &story.Language, &story.Subject,
 		&story.AuthorStyle, &story.TimePeriod, &story.Genre, &story.Tone,
 		&story.CharacterNames, &story.CustomInstructions, &story.SectionLengthOverride,
@@ -183,7 +198,7 @@ func (s *StoryService) GetCurrentStory(ctx context.Context, userID uint) (*model
 	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, nil // No current story
+			return nil, nil // No current story in user's language
 		}
 		return nil, contextutils.WrapErrorf(err, "failed to get current story")
 	}
@@ -326,10 +341,21 @@ func (s *StoryService) CompleteStory(ctx context.Context, storyID, userID uint) 
 	return nil
 }
 
-// SetCurrentStory sets a story as the current active story for the user
+// SetCurrentStory sets a story as the current active story for the user in its language
 func (s *StoryService) SetCurrentStory(ctx context.Context, storyID, userID uint) error {
 	if err := s.validateStoryOwnership(ctx, storyID, userID); err != nil {
 		return err
+	}
+
+	// Get the story's language
+	query := "SELECT language FROM stories WHERE id = $1 AND user_id = $2"
+	var language string
+	err := s.db.QueryRowContext(ctx, query, storyID, userID).Scan(&language)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return contextutils.ErrorWithContextf("story not found or access denied")
+		}
+		return contextutils.WrapErrorf(err, "failed to get story language")
 	}
 
 	// Use a transaction to ensure atomicity
@@ -339,16 +365,16 @@ func (s *StoryService) SetCurrentStory(ctx context.Context, storyID, userID uint
 	}
 	defer func() { _ = tx.Rollback() }()
 
-	// First, unset ALL current stories for this user to avoid constraint violations
-	unsetAllQuery := "UPDATE stories SET is_current = false, updated_at = NOW() WHERE user_id = $1 AND is_current = true"
-	_, err = tx.ExecContext(ctx, unsetAllQuery, userID)
+	// First, unset current stories in the same language for this user to avoid constraint violations
+	unsetQuery := "UPDATE stories SET is_current = false, updated_at = NOW() WHERE user_id = $1 AND language = $2 AND is_current = true"
+	_, err = tx.ExecContext(ctx, unsetQuery, userID, language)
 	if err != nil {
 		return contextutils.WrapErrorf(err, "failed to unset current stories")
 	}
 
 	// Set the specified story as current
-	query := "UPDATE stories SET is_current = true, updated_at = NOW() WHERE id = $1"
-	_, err = tx.ExecContext(ctx, query, storyID)
+	setQuery := "UPDATE stories SET is_current = true, updated_at = NOW() WHERE id = $1"
+	_, err = tx.ExecContext(ctx, setQuery, storyID)
 	if err != nil {
 		return contextutils.WrapErrorf(err, "failed to set current story")
 	}
@@ -356,57 +382,58 @@ func (s *StoryService) SetCurrentStory(ctx context.Context, storyID, userID uint
 	return tx.Commit()
 }
 
-// FixCurrentStoryConstraint fixes any constraint violations where multiple stories are marked as current for the same user
+// FixCurrentStoryConstraint fixes any constraint violations where multiple stories are marked as current for the same user in the same language
 func (s *StoryService) FixCurrentStoryConstraint(ctx context.Context) error {
-	// Find all users who have multiple current stories
+	// Find all users who have multiple current stories in the same language
 	query := `
-		SELECT user_id, COUNT(*) as current_count
+		SELECT user_id, language, COUNT(*) as current_count
 		FROM stories
 		WHERE is_current = true
-		GROUP BY user_id
+		GROUP BY user_id, language
 		HAVING COUNT(*) > 1`
 
 	rows, err := s.db.QueryContext(ctx, query)
 	if err != nil {
-		return contextutils.WrapErrorf(err, "failed to find users with multiple current stories")
+		return contextutils.WrapErrorf(err, "failed to find users with multiple current stories in same language")
 	}
 	defer func() { _ = rows.Close() }()
 
 	for rows.Next() {
 		var userID uint
+		var language string
 		var currentCount int
 
-		if err := rows.Scan(&userID, &currentCount); err != nil {
+		if err := rows.Scan(&userID, &language, &currentCount); err != nil {
 			return contextutils.WrapErrorf(err, "failed to scan user constraint violation")
 		}
 
-		// Fix constraint violation for this user
-		if err := s.fixUserCurrentStoryConstraint(ctx, userID); err != nil {
-			return contextutils.WrapErrorf(err, "failed to fix constraint for user %d", userID)
+		// Fix constraint violation for this user and language
+		if err := s.fixUserCurrentStoryConstraint(ctx, userID, language); err != nil {
+			return contextutils.WrapErrorf(err, "failed to fix constraint for user %d in language %s", userID, language)
 		}
 	}
 
 	return rows.Err()
 }
 
-// fixUserCurrentStoryConstraint fixes constraint violations for a specific user
-func (s *StoryService) fixUserCurrentStoryConstraint(ctx context.Context, userID uint) error {
+// fixUserCurrentStoryConstraint fixes constraint violations for a specific user in a specific language
+func (s *StoryService) fixUserCurrentStoryConstraint(ctx context.Context, userID uint, language string) error {
 	tx, err := s.db.BeginTx(ctx, nil)
 	if err != nil {
 		return contextutils.WrapErrorf(err, "failed to begin transaction")
 	}
 	defer func() { _ = tx.Rollback() }()
 
-	// Find all current stories for this user, ordered by most recently updated
+	// Find all current stories for this user in this language, ordered by most recently updated
 	var currentStories []uint
 	selectQuery := `
 		SELECT id FROM stories
-		WHERE user_id = $1 AND is_current = true
+		WHERE user_id = $1 AND language = $2 AND is_current = true
 		ORDER BY updated_at DESC`
 
-	rows, err := tx.QueryContext(ctx, selectQuery, userID)
+	rows, err := tx.QueryContext(ctx, selectQuery, userID, language)
 	if err != nil {
-		return contextutils.WrapErrorf(err, "failed to find current stories for user")
+		return contextutils.WrapErrorf(err, "failed to find current stories for user in language")
 	}
 	defer func() { _ = rows.Close() }()
 
@@ -419,7 +446,7 @@ func (s *StoryService) fixUserCurrentStoryConstraint(ctx context.Context, userID
 	}
 
 	if len(currentStories) <= 1 {
-		// No constraint violation for this user
+		// No constraint violation for this user in this language
 		return tx.Commit()
 	}
 
@@ -772,6 +799,26 @@ func (s *StoryService) UpdateLastGenerationTime(ctx context.Context, storyID uin
 }
 
 // Helper methods
+
+// getUserByID retrieves a user by their ID
+func (s *StoryService) getUserByID(ctx context.Context, userID uint) (*models.User, error) {
+	query := "SELECT id, username, email, preferred_language, current_level, ai_provider, ai_model, ai_api_key, created_at, updated_at FROM users WHERE id = $1"
+
+	var user models.User
+	err := s.db.QueryRowContext(ctx, query, userID).Scan(
+		&user.ID, &user.Username, &user.Email, &user.PreferredLanguage,
+		&user.CurrentLevel, &user.AIProvider, &user.AIModel, &user.AIAPIKey,
+		&user.CreatedAt, &user.UpdatedAt,
+	)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil // User not found
+		}
+		return nil, contextutils.WrapErrorf(err, "failed to get user")
+	}
+
+	return &user, nil
+}
 
 // getArchivedStoryCount counts archived stories for a user
 func (s *StoryService) getArchivedStoryCount(ctx context.Context, userID uint) (int, error) {
