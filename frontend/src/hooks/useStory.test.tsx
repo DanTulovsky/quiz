@@ -331,6 +331,7 @@ describe('useStory', () => {
 
       // Story is active and has sections, and we're at the last section (index 0 for single section)
       expect(result.current.canGenerateToday).toBe(true);
+      expect(result.current.generationDisabledReason).toBe('');
 
       // If we were at the last section, it should be true
       act(() => {
@@ -339,6 +340,7 @@ describe('useStory', () => {
 
       // For a story with one section, should allow generation if it's the last section
       expect(result.current.canGenerateToday).toBe(true);
+      expect(result.current.generationDisabledReason).toBe('');
     });
 
     it('generates next section', async () => {

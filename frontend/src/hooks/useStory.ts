@@ -382,7 +382,7 @@ export const useStory = (): UseStoryReturn => {
     hasCurrentStory &&
     currentStory.status === 'active' &&
     (sections.length === 0 || currentSectionIndex === sections.length - 1) &&
-    currentStory.extra_generations_today < 1;
+    (currentStory.extra_generations_today ?? 0) < 1;
 
   // Get reason why generation might be disabled
   const getGenerationDisabledReason = (): string => {
@@ -392,12 +392,16 @@ export const useStory = (): UseStoryReturn => {
     if (currentStory.status !== 'active') {
       return 'Story is not active';
     }
-    if (sections.length > 0 && currentSectionIndex !== sections.length - 1) {
-      return 'Not at the latest section';
-    }
     if (currentStory.extra_generations_today >= 1) {
       return 'Daily generation limit reached (2 sections per day)';
     }
+    if (sections.length === 0) {
+      return 'Ready to generate first section';
+    }
+    if (currentSectionIndex !== sections.length - 1) {
+      return 'Navigate to the latest section to generate the next part';
+    }
+    // If we reach here, generation should be allowed
     return '';
   };
 

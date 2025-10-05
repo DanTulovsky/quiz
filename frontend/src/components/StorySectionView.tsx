@@ -162,23 +162,25 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
           </div>
           <Tooltip
             label={
-              generationDisabledReason ||
-              'Generate the next section of your story'
+              !canGenerateToday && !isGenerating
+                ? generationDisabledReason || 'Unable to generate section'
+                : 'Generate the next section of your story'
             }
-            disabled={canGenerateToday || isGenerating}
             position='top'
             withArrow
           >
-            <Button
-              leftIcon={<IconPlus size={16} />}
-              onClick={onGenerateNext}
-              loading={isGenerating}
-              disabled={!canGenerateToday || isGenerating}
-              color='blue'
-              variant={canGenerateToday ? 'filled' : 'light'}
-            >
-              {isGenerating ? 'Generating...' : 'Generate Next Section'}
-            </Button>
+            <span>
+              <Button
+                leftIcon={<IconPlus size={16} />}
+                onClick={onGenerateNext}
+                loading={isGenerating}
+                disabled={!canGenerateToday || isGenerating}
+                color='blue'
+                variant={canGenerateToday ? 'filled' : 'light'}
+              >
+                {isGenerating ? 'Generating...' : 'Generate Next Section'}
+              </Button>
+            </span>
           </Tooltip>
         </Group>
       </Paper>
