@@ -281,23 +281,23 @@ func (suite *StoryHandlerIntegrationTestSuite) TestStoryHandler_CreateStory_Inte
 		router.ServeHTTP(w, req)
 		assert.Equal(suite.T(), http.StatusCreated, w.Code)
 
-		var italianStory models.Story
+		var italianStory api.Story
 		err = json.Unmarshal(w.Body.Bytes(), &italianStory)
 		require.NoError(suite.T(), err)
-		assert.Equal(suite.T(), "Storia Italiana", italianStory.Title)
-		assert.Equal(suite.T(), "it", italianStory.Language)
-		assert.True(suite.T(), italianStory.IsCurrent)
+		assert.Equal(suite.T(), "Storia Italiana", *italianStory.Title)
+		assert.Equal(suite.T(), "it", *italianStory.Language)
+		assert.True(suite.T(), *italianStory.IsCurrent)
 
 		// Step 2: Verify current story returns the Italian story
 		w = httptest.NewRecorder()
 		req, _ = http.NewRequest("GET", "/v1/story/current", nil)
 		router.ServeHTTP(w, req)
 
-		assert.Equal(suite.T(), http.StatusOK, w.Code)
-		var currentStory models.Story
-		err = json.Unmarshal(w.Body.Bytes(), &currentStory)
+		assert.Equal(suite.T(), http.StatusAccepted, w.Code) // 202 because story has no sections yet
+		var italianResponse api.GeneratingResponse
+		err = json.Unmarshal(w.Body.Bytes(), &italianResponse)
 		require.NoError(suite.T(), err)
-		assert.Equal(suite.T(), "Storia Italiana", currentStory.Title)
+		assert.Equal(suite.T(), "generating", *italianResponse.Status)
 
 		// Step 3: Change user's language to Russian
 		_, err = suite.Container.GetDatabase().ExecContext(ctx,
@@ -325,22 +325,23 @@ func (suite *StoryHandlerIntegrationTestSuite) TestStoryHandler_CreateStory_Inte
 		router.ServeHTTP(w, req)
 		assert.Equal(suite.T(), http.StatusCreated, w.Code)
 
-		var russianStory models.Story
+		var russianStory api.Story
 		err = json.Unmarshal(w.Body.Bytes(), &russianStory)
 		require.NoError(suite.T(), err)
-		assert.Equal(suite.T(), "Русская История", russianStory.Title)
-		assert.Equal(suite.T(), "ru", russianStory.Language)
-		assert.True(suite.T(), russianStory.IsCurrent)
+		assert.Equal(suite.T(), "Русская История", *russianStory.Title)
+		assert.Equal(suite.T(), "ru", *russianStory.Language)
+		assert.True(suite.T(), *russianStory.IsCurrent)
 
 		// Step 6: Verify current story returns the Russian story
 		w = httptest.NewRecorder()
 		req, _ = http.NewRequest("GET", "/v1/story/current", nil)
 		router.ServeHTTP(w, req)
 
-		assert.Equal(suite.T(), http.StatusOK, w.Code)
-		err = json.Unmarshal(w.Body.Bytes(), &currentStory)
+		assert.Equal(suite.T(), http.StatusAccepted, w.Code) // 202 because story has no sections yet
+		var russianResponse api.GeneratingResponse
+		err = json.Unmarshal(w.Body.Bytes(), &russianResponse)
 		require.NoError(suite.T(), err)
-		assert.Equal(suite.T(), "Русская История", currentStory.Title)
+		assert.Equal(suite.T(), "generating", *russianResponse.Status)
 
 		// Step 7: Switch back to Italian
 		_, err = suite.Container.GetDatabase().ExecContext(ctx,
@@ -353,10 +354,11 @@ func (suite *StoryHandlerIntegrationTestSuite) TestStoryHandler_CreateStory_Inte
 		req, _ = http.NewRequest("GET", "/v1/story/current", nil)
 		router.ServeHTTP(w, req)
 
-		assert.Equal(suite.T(), http.StatusOK, w.Code)
-		err = json.Unmarshal(w.Body.Bytes(), &currentStory)
+		assert.Equal(suite.T(), http.StatusAccepted, w.Code) // 202 because story has no sections yet
+		var finalResponse api.GeneratingResponse
+		err = json.Unmarshal(w.Body.Bytes(), &finalResponse)
 		require.NoError(suite.T(), err)
-		assert.Equal(suite.T(), "Storia Italiana", currentStory.Title)
+		assert.Equal(suite.T(), "generating", *finalResponse.Status)
 
 		// Step 9: Verify both stories exist in the database
 		var storyCount int
