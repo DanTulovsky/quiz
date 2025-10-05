@@ -168,7 +168,7 @@ func NewRouter(
 	// Initialize handlers
 	authHandler := NewAuthHandler(userService, oauthService, cfg, logger)
 	emailService := services.CreateEmailService(cfg, logger)
-	settingsHandler := NewSettingsHandler(userService, aiService, learningService, emailService, cfg, logger)
+    settingsHandler := NewSettingsHandler(userService, storyService, aiService, learningService, emailService, cfg, logger)
 	quizHandler := NewQuizHandler(userService, questionService, aiService, learningService, workerService, generationHintService, cfg, logger)
 	dailyQuestionHandler := NewDailyQuestionHandler(userService, dailyQuestionService, cfg, logger)
 	storyHandler := NewStoryHandler(storyService, userService, aiService, cfg, logger)
@@ -277,6 +277,8 @@ func NewRouter(
 			settings.POST("/test-email", middleware.RequireAuth(), middleware.RequestValidationMiddleware(logger), settingsHandler.SendTestEmail)
 			settings.PUT("", middleware.RequireAuth(), middleware.RequestValidationMiddleware(logger), settingsHandler.UpdateUserSettings)
 			settings.GET("/api-key/:provider", middleware.RequireAuth(), settingsHandler.CheckAPIKeyAvailability)
+			settings.POST("/delete-all-stories", middleware.RequireAuth(), middleware.RequestValidationMiddleware(logger), settingsHandler.DeleteAllStories)
+			settings.POST("/reset-account", middleware.RequireAuth(), middleware.RequestValidationMiddleware(logger), settingsHandler.ResetAccount)
 		}
 		preferences := v1.Group("/preferences")
 		preferences.Use(middleware.RequireAuth())

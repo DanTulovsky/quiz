@@ -38,6 +38,8 @@ type StoryServiceInterface interface {
 	GetSectionLengthTarget(level string, lengthPref *models.SectionLength) int
 	GetSectionLengthTargetWithLanguage(language, level string, lengthPref *models.SectionLength) int
 	SanitizeInput(input string) string
+	// DeleteAllUserStories deletes all stories (and their sections/questions) for a user
+	DeleteAllUserStories(ctx context.Context, userID uint) error
 }
 
 // StoryService handles all story-related operations
@@ -941,6 +943,35 @@ func (s *StoryService) GetSectionLengthTargetWithLanguage(language, level string
 // SanitizeInput sanitizes user input for safe use in AI prompts
 func (s *StoryService) SanitizeInput(input string) string {
 	return models.SanitizeInput(input)
+}
+
+// DeleteAllUserStories deletes all stories and dependent rows for a user.
+func (s *StoryService) DeleteAllUserStories(ctx context.Context, userID uint) error {
+    tx, err := s.db.BeginTx(ctx, nil)
+    if err != nil {
+        return contextutils.WrapErrorf(err, "failed to begin transaction")
+    }
+    defer func() { _ = tx.Rollback() }()
+
+    // Delete questions for all sections of user's stories
+    q1 := `DELETE FROM story_section_questions WHERE section_id IN (SELECT id FROM story_sections WHERE story_id IN (SELECT id FROM stories WHERE user_id = $1))`
+    if _, err := tx.ExecContext(ctx, q1, userID); err != nil {
+        return contextutils.WrapErrorf(err, "failed to delete story questions for user %d", userID)
+    }
+
+    // Delete sections
+    q2 := `DELETE FROM story_sections WHERE story_id IN (SELECT id FROM stories WHERE user_id = $1)`
+    if _, err := tx.ExecContext(ctx, q2, userID); err != nil {
+        return contextutils.WrapErrorf(err, "failed to delete story sections for user %d", userID)
+    }
+
+    // Delete stories
+    q3 := `DELETE FROM stories WHERE user_id = $1`
+    if _, err := tx.ExecContext(ctx, q3, userID); err != nil {
+        return contextutils.WrapErrorf(err, "failed to delete stories for user %d", userID)
+    }
+
+    return tx.Commit()
 }
 
 // Database helper methods using sql.DB

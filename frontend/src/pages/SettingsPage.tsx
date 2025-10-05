@@ -450,6 +450,31 @@ const SettingsPage: React.FC = () => {
     }
   };
 
+  // Dangerous actions
+  const deleteAllStories = async () => {
+    if (!confirm('Permanently delete ALL your stories? This cannot be undone.')) return;
+    try {
+      const res = await fetch('/v1/settings/delete-all-stories', { method: 'POST' });
+      if (!res.ok) throw new Error('Failed to delete stories');
+      showNotificationWithClean({ title: 'Success', message: 'All stories deleted', color: 'green' });
+      // Optionally refresh relevant caches
+    } catch (e) {
+      showNotificationWithClean({ title: 'Error', message: String(e), color: 'red' });
+    }
+  };
+
+  const resetAccount = async () => {
+    if (!confirm('Reset your account? This will delete your questions and stats.')) return;
+    try {
+      const res = await fetch('/v1/settings/reset-account', { method: 'POST' });
+      if (!res.ok) throw new Error('Failed to reset account');
+      showNotificationWithClean({ title: 'Success', message: 'Account reset', color: 'green' });
+      await refreshUser();
+    } catch (e) {
+      showNotificationWithClean({ title: 'Error', message: String(e), color: 'red' });
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     let errorMsg = '';
@@ -1212,6 +1237,26 @@ const SettingsPage: React.FC = () => {
           </Group>
         </Stack>
       </form>
+
+      {/* Dangerous Data Management */}
+      <Card shadow='sm' padding='lg' radius='md' withBorder mt='md'>
+        <Stack gap='md'>
+          <Group>
+            <Title order={2}>Danger Zone</Title>
+          </Group>
+          <Text c='dimmed' size='sm'>
+            Permanent actions. Use with caution.
+          </Text>
+          <Group>
+            <Button color='red' variant='outline' onClick={deleteAllStories}>
+              Delete all stories
+            </Button>
+            <Button color='red' onClick={resetAccount}>
+              Reset account
+            </Button>
+          </Group>
+        </Stack>
+      </Card>
 
       {/* Error Modal */}
       <ErrorModal

@@ -1,26 +1,28 @@
 package handlers
 
 import (
-	"fmt"
-	"net/http"
+    "database/sql"
+    "fmt"
+    "net/http"
 
-	"quizapp/internal/api"
-	"quizapp/internal/config"
-	"quizapp/internal/middleware"
-	"quizapp/internal/models"
-	"quizapp/internal/observability"
-	"quizapp/internal/services"
-	"quizapp/internal/services/mailer"
-	contextutils "quizapp/internal/utils"
+    "quizapp/internal/api"
+    "quizapp/internal/config"
+    "quizapp/internal/middleware"
+    "quizapp/internal/models"
+    "quizapp/internal/observability"
+    "quizapp/internal/services"
+    "quizapp/internal/services/mailer"
+    contextutils "quizapp/internal/utils"
 
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-gonic/gin"
-	"go.opentelemetry.io/otel/attribute"
+    "github.com/gin-contrib/sessions"
+    "github.com/gin-gonic/gin"
+    "go.opentelemetry.io/otel/attribute"
 )
 
 // SettingsHandler handles user settings related HTTP requests
 type SettingsHandler struct {
 	userService     services.UserServiceInterface
+    storyService    services.StoryServiceInterface
 	aiService       services.AIServiceInterface
 	learningService services.LearningServiceInterface
 	emailService    mailer.Mailer
@@ -29,15 +31,16 @@ type SettingsHandler struct {
 }
 
 // NewSettingsHandler creates a new SettingsHandler instance
-func NewSettingsHandler(userService services.UserServiceInterface, aiService services.AIServiceInterface, learningService services.LearningServiceInterface, emailService mailer.Mailer, cfg *config.Config, logger *observability.Logger) *SettingsHandler {
-	return &SettingsHandler{
-		userService:     userService,
-		aiService:       aiService,
-		learningService: learningService,
-		emailService:    emailService,
-		cfg:             cfg,
-		logger:          logger,
-	}
+func NewSettingsHandler(userService services.UserServiceInterface, storyService services.StoryServiceInterface, aiService services.AIServiceInterface, learningService services.LearningServiceInterface, emailService mailer.Mailer, cfg *config.Config, logger *observability.Logger) *SettingsHandler {
+    return &SettingsHandler{
+        userService:     userService,
+        storyService:    storyService,
+        aiService:       aiService,
+        learningService: learningService,
+        emailService:    emailService,
+        cfg:             cfg,
+        logger:          logger,
+    }
 }
 
 // UpdateUserSettings handles updating user settings
@@ -242,6 +245,58 @@ func (h *SettingsHandler) GetLanguages(c *gin.Context) {
 	_, span := observability.TraceHandlerFunction(c.Request.Context(), "get_languages")
 	defer observability.FinishSpan(span, nil)
 	c.JSON(http.StatusOK, h.cfg.GetLanguages())
+}
+
+// DeleteAllStories deletes all stories for the current user
+func (h *SettingsHandler) DeleteAllStories(c *gin.Context) {
+    ctx, span := observability.TraceHandlerFunction(c.Request.Context(), "delete_all_stories")
+    defer observability.FinishSpan(span, nil)
+
+    session := sessions.Default(c)
+    userID, ok := session.Get(middleware.UserIDKey).(int)
+    if !ok {
+        HandleAppError(c, contextutils.ErrUnauthorized)
+        return
+    }
+
+    // Prefer storyService.DeleteAllUserStories when available
+    if h.storyService != nil {
+        if err := h.storyService.DeleteAllUserStories(c.Request.Context(), uint(userID)); err != nil {
+            h.logger.Error(c.Request.Context(), "Failed to delete all stories", err, map[string]interface{}{"user_id": userID})
+            HandleAppError(c, contextutils.WrapError(err, "failed to delete all stories"))
+            return
+        }
+    } else {
+        // Fallback: clear user data which includes story-related rows
+        if err := h.userService.ClearUserDataForUser(c.Request.Context(), userID); err != nil {
+            h.logger.Error(c.Request.Context(), "Failed to clear user data for delete all stories", err, map[string]interface{}{"user_id": userID})
+            HandleAppError(c, contextutils.WrapError(err, "failed to delete all stories"))
+            return
+        }
+    }
+
+    c.JSON(http.StatusOK, api.SuccessResponse{Success: true, Message: stringPtr("All stories deleted")})
+}
+
+// ResetAccount completely resets the account for the current user (deletes questions/stats)
+func (h *SettingsHandler) ResetAccount(c *gin.Context) {
+    ctx, span := observability.TraceHandlerFunction(c.Request.Context(), "reset_account")
+    defer observability.FinishSpan(span, nil)
+
+    session := sessions.Default(c)
+    userID, ok := session.Get(middleware.UserIDKey).(int)
+    if !ok {
+        HandleAppError(c, contextutils.ErrUnauthorized)
+        return
+    }
+
+    if err := h.userService.ClearUserDataForUser(c.Request.Context(), userID); err != nil {
+        h.logger.Error(c.Request.Context(), "Failed to reset account", err, map[string]interface{}{"user_id": userID})
+        HandleAppError(c, contextutils.WrapError(err, "failed to reset account"))
+        return
+    }
+
+    c.JSON(http.StatusOK, api.SuccessResponse{Success: true, Message: stringPtr("Account reset successfully")})
 }
 
 // CheckAPIKeyAvailability checks if the user has a saved API key for the specified provider
