@@ -501,14 +501,9 @@ func getEnvBool(key string, defaultValue bool) bool {
 
 // Start begins the worker's background processing loop
 func (w *Worker) Start(ctx context.Context) {
-	w.status.IsRunning = true
-
-	// Wait for the worker schema (tables) to be available to avoid race with migrations
-	w.waitForWorkerSchema(ctx)
-
-	w.updateDatabaseStatus(ctx)
-
-	w.handleStartupPause(ctx)
+    w.status.IsRunning = true
+    w.updateDatabaseStatus(ctx)
+    w.handleStartupPause(ctx)
 
 	// Start heartbeat goroutine
 	go w.heartbeatLoop(ctx)
@@ -551,43 +546,9 @@ func (w *Worker) Start(ctx context.Context) {
 
 // waitForWorkerSchema polls the database until worker tables are available or context is done
 func (w *Worker) waitForWorkerSchema(ctx context.Context) {
-	// Quick check first
-	_, err := w.workerService.GetWorkerStatus(ctx, w.instance)
-	if err == nil {
-		return
-	}
-
-	// Poll with backoff until tables exist or ctx canceled
-	backoff := 500 * time.Millisecond
-	maxBackoff := 5 * time.Second
-	for i := 0; ; i++ {
-		select {
-		case <-ctx.Done():
-			w.logger.Warn(ctx, "Context canceled while waiting for worker schema", map[string]interface{}{"instance": w.instance})
-			return
-		default:
-		}
-
-		_, err := w.workerService.GetWorkerStatus(ctx, w.instance)
-		if err == nil {
-			return
-		}
-		// If error mentions missing relation, keep waiting
-		if strings.Contains(err.Error(), "relation \"worker_status\" does not exist") || strings.Contains(err.Error(), "relation \"worker_settings\" does not exist") {
-			if i%5 == 0 {
-				w.logger.Info(ctx, "Waiting for worker schema to be applied", map[string]interface{}{"instance": w.instance, "attempt": i + 1})
-			}
-			time.Sleep(backoff)
-			backoff *= 2
-			if backoff > maxBackoff {
-				backoff = maxBackoff
-			}
-			continue
-		}
-		// For other errors, log and stop waiting
-		w.logger.Error(ctx, "Error while checking worker schema", err, map[string]interface{}{"instance": w.instance})
-		return
-	}
+    // No-op: removed schema polling. If tables are missing at this point
+    // it indicates a deeper problem and should be surfaced immediately.
+    return
 }
 
 // handleStartupPause sets global pause if configured
@@ -1119,25 +1080,11 @@ func (w *Worker) updateDatabaseStatus(ctx context.Context) {
 		TotalRuns:               len(w.history),
 	}
 
-	if err := w.workerService.UpdateWorkerStatus(ctx, w.instance, dbStatus); err != nil {
-		// If the error indicates missing tables (schema not yet applied), wait and retry a few times
-		if strings.Contains(err.Error(), "relation \"worker_status\" does not exist") || strings.Contains(err.Error(), "relation \"worker_settings\" does not exist") {
-			w.logger.Warn(ctx, "Worker DB tables missing, retrying updateDatabaseStatus", map[string]interface{}{"instance": w.instance})
-			// Retry loop with backoff
-			backoff := time.Second
-			for i := 0; i < 5; i++ {
-				time.Sleep(backoff)
-				if retryErr := w.workerService.UpdateWorkerStatus(ctx, w.instance, dbStatus); retryErr == nil {
-					w.logger.Info(ctx, "Worker status updated after retry", map[string]interface{}{"instance": w.instance, "attempt": i + 1})
-					return
-				}
-				backoff *= 2
-			}
-		}
-		w.logger.Error(ctx, "Failed to update worker status in database", err, map[string]interface{}{
-			"instance": w.instance,
-		})
-	}
+    if err := w.workerService.UpdateWorkerStatus(ctx, w.instance, dbStatus); err != nil {
+        w.logger.Error(ctx, "Failed to update worker status in database", err, map[string]interface{}{
+            "instance": w.instance,
+        })
+    }
 }
 
 // getTotalQuestionsGenerated calculates total questions generated from run history
