@@ -71,6 +71,12 @@ func main() {
 	if err != nil {
 		fatalIfErr(ctx, logger, "Failed to initialize database", err, map[string]interface{}{"db_url": cfg.Database.URL})
 	}
+	// Ensure minimal worker-specific schema exists so worker can start even when
+	// full application migrations haven't been applied.
+	if err := dbManager.EnsureWorkerSchema(db); err != nil {
+		// Non-fatal: log a warning but continue (worker may still operate without DB features)
+		logger.Warn(ctx, "Warning: failed to ensure worker schema", map[string]interface{}{"error": err.Error()})
+	}
 	defer func() {
 		if err := db.Close(); err != nil {
 			logger.Warn(ctx, "Warning: failed to close database", map[string]interface{}{"error": err.Error(), "db_url": cfg.Database.URL})

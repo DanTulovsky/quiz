@@ -524,3 +524,84 @@ func (dm *Manager) GetMigrationsPath() (result0 string, err error) {
 		currentDir = parentDir
 	}
 }
+
+// EnsureWorkerSchema creates the minimal tables/indexes required by the worker
+// This is intentionally small and safe to run in environments where full
+// application migrations are handled elsewhere.
+func (dm *Manager) EnsureWorkerSchema(db *sql.DB) (err error) {
+	_, span := observability.TraceDatabaseFunction(context.Background(), "EnsureWorkerSchema",
+		attribute.String("db.system", "postgresql"),
+	)
+	defer observability.FinishSpan(span, &err)
+
+	// Create worker_settings table
+	_, err = db.ExecContext(context.Background(), `
+        CREATE TABLE IF NOT EXISTS worker_settings (
+            id SERIAL PRIMARY KEY,
+            setting_key VARCHAR(255) UNIQUE NOT NULL,
+            setting_value TEXT NOT NULL,
+            created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+        )
+    `)
+	if err != nil {
+		dm.logger.Error(context.Background(), "Failed to create worker_settings table", err)
+		return contextutils.WrapError(err, "failed to create worker_settings table")
+	}
+
+	// Create worker_status table
+	_, err = db.ExecContext(context.Background(), `
+        CREATE TABLE IF NOT EXISTS worker_status (
+            id SERIAL PRIMARY KEY,
+            worker_instance VARCHAR(255) NOT NULL DEFAULT 'default',
+            is_running BOOLEAN NOT NULL DEFAULT false,
+            is_paused BOOLEAN NOT NULL DEFAULT false,
+            current_activity TEXT,
+            last_heartbeat TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+            last_run_start TIMESTAMPTZ,
+            last_run_finish TIMESTAMPTZ,
+            last_run_error TEXT,
+            total_questions_generated INTEGER DEFAULT 0,
+            total_runs INTEGER DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE(worker_instance)
+        )
+    `)
+	if err != nil {
+		dm.logger.Error(context.Background(), "Failed to create worker_status table", err)
+		return contextutils.WrapError(err, "failed to create worker_status table")
+	}
+
+	// Create useful indexes
+	if _, err = db.ExecContext(context.Background(), `CREATE INDEX IF NOT EXISTS idx_worker_settings_key ON worker_settings(setting_key)`); err != nil {
+		dm.logger.Error(context.Background(), "Failed to create index on worker_settings", err)
+		return contextutils.WrapError(err, "failed to create index idx_worker_settings_key")
+	}
+	if _, err = db.ExecContext(context.Background(), `CREATE INDEX IF NOT EXISTS idx_worker_status_instance ON worker_status(worker_instance)`); err != nil {
+		dm.logger.Error(context.Background(), "Failed to create index on worker_status", err)
+		return contextutils.WrapError(err, "failed to create index idx_worker_status_instance")
+	}
+
+	// Insert default rows if missing
+	if _, err = db.ExecContext(context.Background(), `
+        INSERT INTO worker_settings (setting_key, setting_value)
+        VALUES ('global_pause', 'false'), ('heartbeat_interval_seconds', '30'), ('max_heartbeat_age_minutes', '5')
+        ON CONFLICT (setting_key) DO NOTHING
+    `); err != nil {
+		dm.logger.Error(context.Background(), "Failed to insert default worker_settings", err)
+		return contextutils.WrapError(err, "failed to insert default worker_settings")
+	}
+
+	if _, err = db.ExecContext(context.Background(), `
+        INSERT INTO worker_status (worker_instance, is_running, is_paused)
+        VALUES ('default', false, false)
+        ON CONFLICT (worker_instance) DO NOTHING
+    `); err != nil {
+		dm.logger.Error(context.Background(), "Failed to insert default worker_status", err)
+		return contextutils.WrapError(err, "failed to insert default worker_status")
+	}
+
+	dm.logger.Info(context.Background(), "Ensured worker schema is present", nil)
+	return nil
+}
