@@ -116,6 +116,9 @@ export const useStory = (): UseStoryReturn => {
       queryClient.invalidateQueries({
         queryKey: ['currentStory', user?.id, user?.preferred_language],
       });
+      queryClient.invalidateQueries({
+        queryKey: ['archivedStories', user?.id, user?.preferred_language],
+      });
       queryClient.invalidateQueries({ queryKey: ['userStories'] });
       setCurrentSectionIndex(0);
       setViewMode('section');
@@ -163,7 +166,7 @@ export const useStory = (): UseStoryReturn => {
     mutationFn: apiSetCurrentStory,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['currentStory', user?.id, user?.preferred_language],
+        queryKey: ['currentStory', user?.id],
       });
       queryClient.invalidateQueries({ queryKey: ['userStories'] });
       setCurrentSectionIndex(0);

@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Container,
   Title,
   Text,
-  Card,
   Group,
   Button,
   Stack,
   Badge,
   Alert,
   Loader,
+  TextInput,
+  ScrollArea,
 } from '@mantine/core';
 import {
   IconArchive,
@@ -17,6 +18,7 @@ import {
   IconRestore,
   IconCalendar,
   IconLanguage,
+  IconSearch,
 } from '@tabler/icons-react';
 import { Story } from '../api/storyApi';
 
@@ -33,6 +35,17 @@ const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
   onUnarchive,
   onCreateNew,
 }) => {
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Filter stories based on search query
+  const filteredStories = archivedStories.filter(
+    story =>
+      story.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      story.language?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      story.genre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      story.subject?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   if (isLoading) {
     return (
       <Container size='sm' py='xl'>
@@ -82,7 +95,19 @@ const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
 
   return (
     <Container size='md' py='xl'>
-      <Stack spacing='lg'>
+      <Stack spacing='md'>
+        {/* Create New Story Button - Moved to top */}
+        <Group position='center'>
+          <Button
+            leftIcon={<IconBook size={16} />}
+            size='lg'
+            onClick={onCreateNew}
+          >
+            Create New Story
+          </Button>
+        </Group>
+
+        {/* Archived Stories Section */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <IconArchive size={24} />
           <Title order={2}>Archived Stories</Title>
@@ -94,63 +119,94 @@ const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
           any of these to continue reading or create a new story.
         </Text>
 
-        <Stack spacing='md'>
-          {archivedStories.map(story => (
-            <Card
-              key={story.id}
-              shadow='sm'
-              padding='lg'
-              radius='md'
-              withBorder
-            >
-              <Group position='apart' mb='xs'>
-                <Title order={4}>{story.title}</Title>
-                <Badge color='gray' variant='light'>
-                  {story.status}
-                </Badge>
-              </Group>
+        {/* Search Input */}
+        <TextInput
+          placeholder='Search stories by title, language, genre, or subject...'
+          leftSection={<IconSearch size={16} />}
+          value={searchQuery}
+          onChange={event => setSearchQuery(event.currentTarget.value)}
+          size='md'
+        />
 
-              <Stack spacing='xs'>
-                <Group spacing='xs'>
-                  <IconLanguage size={16} />
-                  <Text size='sm' color='dimmed'>
-                    Language: {story.language}
-                  </Text>
-                </Group>
+        {/* Scrollable Stories Area */}
+        <div style={{ height: '500px' }}>
+          <ScrollArea h='100%' type='auto'>
+            <Stack spacing='xs'>
+              {filteredStories.length === 0 ? (
+                <Text color='dimmed' align='center' py='xl'>
+                  {searchQuery
+                    ? 'No stories match your search.'
+                    : 'No archived stories found.'}
+                </Text>
+              ) : (
+                filteredStories.map((story, index) => (
+                  <Group
+                    key={story.id}
+                    position='apart'
+                    align='center'
+                    p='sm'
+                    sx={theme => ({
+                      backgroundColor:
+                        index % 2 === 0 ? theme.colors.gray[0] : 'transparent',
+                      '&:hover': {
+                        backgroundColor: theme.colors.gray[1],
+                      },
+                    })}
+                  >
+                    <div style={{ flex: 1 }}>
+                      <Group position='apart' mb='xs'>
+                        <Title order={4} style={{ margin: 0 }}>
+                          {story.title}
+                        </Title>
+                        <Badge color='gray' variant='light'>
+                          {story.status}
+                        </Badge>
+                      </Group>
 
-                <Group spacing='xs'>
-                  <IconCalendar size={16} />
-                  <Text size='sm' color='dimmed'>
-                    Created: {new Date(story.created_at).toLocaleDateString()}
-                  </Text>
-                </Group>
+                      <Group spacing='lg'>
+                        <Group spacing='xs'>
+                          <IconLanguage size={14} />
+                          <Text size='sm' color='dimmed'>
+                            {story.language}
+                          </Text>
+                        </Group>
 
-                {story.genre && (
-                  <Text size='sm' color='dimmed'>
-                    Genre: {story.genre}
-                  </Text>
-                )}
+                        <Group spacing='xs'>
+                          <IconCalendar size={14} />
+                          <Text size='sm' color='dimmed'>
+                            {new Date(story.created_at).toLocaleDateString()}
+                          </Text>
+                        </Group>
 
-                {story.subject && (
-                  <Text size='sm' color='dimmed'>
-                    Subject: {story.subject}
-                  </Text>
-                )}
-              </Stack>
+                        {story.genre && (
+                          <Text size='sm' color='dimmed'>
+                            • {story.genre}
+                          </Text>
+                        )}
 
-              <Group position='right' mt='md'>
-                <Button
-                  variant='light'
-                  leftIcon={<IconRestore size={16} />}
-                  onClick={() => onUnarchive(story.id!)}
-                  color='green'
-                >
-                  Restore Story
-                </Button>
-              </Group>
-            </Card>
-          ))}
-        </Stack>
+                        {story.subject && (
+                          <Text size='sm' color='dimmed'>
+                            • {story.subject}
+                          </Text>
+                        )}
+                      </Group>
+                    </div>
+
+                    <Button
+                      variant='light'
+                      leftIcon={<IconRestore size={16} />}
+                      onClick={() => onUnarchive(story.id!)}
+                      color='green'
+                      size='sm'
+                    >
+                      Restore
+                    </Button>
+                  </Group>
+                ))
+              )}
+            </Stack>
+          </ScrollArea>
+        </div>
 
         <Alert color='blue' variant='light'>
           <Text size='sm'>
@@ -158,17 +214,6 @@ const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
             active story. You can then continue reading from where you left off.
           </Text>
         </Alert>
-
-        <Group position='center'>
-          <Button
-            variant='outline'
-            leftIcon={<IconBook size={16} />}
-            onClick={onCreateNew}
-            size='md'
-          >
-            Create New Story Instead
-          </Button>
-        </Group>
       </Stack>
     </Container>
   );
