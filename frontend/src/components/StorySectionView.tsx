@@ -165,7 +165,7 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
               generationDisabledReason ||
               'Generate the next section of your story'
             }
-            disabled={canGenerateToday && !isGenerating}
+            disabled={canGenerateToday || isGenerating}
             position='top'
             withArrow
           >
