@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -377,7 +378,7 @@ func (h *StoryHandler) GenerateNextSection(c *gin.Context) {
 	}
 
 	// Generate the section
-	sectionContent, err := h.aiService.GenerateStorySection(ctx, h.convertToServicesAIConfig(user), genReq)
+	sectionContent, err := h.aiService.GenerateStorySection(ctx, h.convertToServicesAIConfig(ctx, user), genReq)
 	if err != nil {
 		h.logger.Error(ctx, "Failed to generate story section", err, map[string]interface{}{
 			"story_id": storyID,
@@ -411,7 +412,7 @@ func (h *StoryHandler) GenerateNextSection(c *gin.Context) {
 		QuestionCount: h.cfg.Story.QuestionsPerSection,
 	}
 
-	questions, err := h.aiService.GenerateStoryQuestions(ctx, h.convertToServicesAIConfig(user), questionsReq)
+	questions, err := h.aiService.GenerateStoryQuestions(ctx, h.convertToServicesAIConfig(ctx, user), questionsReq)
 	if err != nil {
 		h.logger.Warn(ctx, "Failed to generate questions for story section", map[string]interface{}{
 			"section_id": section.ID,
@@ -711,7 +712,7 @@ func (h *StoryHandler) ExportStory(c *gin.Context) {
 }
 
 // convertToServicesAIConfig creates AI config for the user in services format
-func (h *StoryHandler) convertToServicesAIConfig(user *models.User) *services.UserAIConfig {
+func (h *StoryHandler) convertToServicesAIConfig(ctx context.Context, user *models.User) *services.UserAIConfig {
 	// Handle sql.NullString fields
 	aiProvider := ""
 	if user.AIProvider.Valid {
@@ -724,8 +725,11 @@ func (h *StoryHandler) convertToServicesAIConfig(user *models.User) *services.Us
 	}
 
 	apiKey := ""
-	if user.AIAPIKey.Valid {
-		apiKey = user.AIAPIKey.String
+	if aiProvider != "" {
+		savedKey, err := h.userService.GetUserAPIKey(ctx, user.ID, aiProvider)
+		if err == nil && savedKey != "" {
+			apiKey = savedKey
+		}
 	}
 
 	return &services.UserAIConfig{
