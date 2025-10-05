@@ -5,6 +5,7 @@ import { useAuth } from './useAuth';
 import {
   createStory as apiCreateStory,
   getCurrentStory as apiGetCurrentStory,
+  getUserStories as apiGetUserStories,
   getSection as apiGetSection,
   generateNextSection as apiGenerateNextSection,
   archiveStory as apiArchiveStory,
@@ -16,6 +17,7 @@ import {
   StorySectionWithQuestions,
   StorySection,
   CreateStoryRequest,
+  Story,
 } from '../api/storyApi';
 import { showNotificationWithClean } from '../notifications';
 import logger from '../utils/logger';
@@ -25,10 +27,12 @@ export type ViewMode = 'section' | 'reading';
 export interface UseStoryReturn {
   // State
   currentStory: StoryWithSections | null;
+  archivedStories: Story[] | undefined;
   sections: StorySection[];
   currentSectionIndex: number;
   viewMode: ViewMode;
   isLoading: boolean;
+  isLoadingArchivedStories: boolean;
   error: string | null;
 
   // Actions
@@ -74,6 +78,13 @@ export const useStory = (): UseStoryReturn => {
     enabled: !!user?.id,
     retry: false, // Don't retry 404s
   });
+
+  const { data: archivedStories, isLoading: isLoadingArchivedStories } =
+    useQuery({
+      queryKey: ['archivedStories', user?.id, user?.preferred_language],
+      queryFn: () => apiGetUserStories(true), // includeArchived = true
+      enabled: !!user?.id && !currentStory, // Only fetch if no current story
+    });
 
   // Mutations
   const createStoryMutation = useMutation({
@@ -376,10 +387,12 @@ export const useStory = (): UseStoryReturn => {
   return {
     // State
     currentStory,
+    archivedStories,
     sections,
     currentSectionIndex,
     viewMode,
-    isLoading: isLoadingCurrentStory,
+    isLoading: isLoadingCurrentStory || isLoadingArchivedStories,
+    isLoadingArchivedStories,
     error,
 
     // Actions

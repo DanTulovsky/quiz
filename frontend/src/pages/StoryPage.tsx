@@ -20,16 +20,19 @@ import {
 
 import { useStory } from '../hooks/useStory';
 import CreateStoryForm from '../components/CreateStoryForm';
+import ArchivedStoriesView from '../components/ArchivedStoriesView';
 import StorySectionView from '../components/StorySectionView';
 import StoryReadingView from '../components/StoryReadingView';
 
 const StoryPage: React.FC = () => {
   const {
     currentStory,
+    archivedStories,
     sections,
     currentSectionIndex,
     viewMode,
     isLoading,
+    isLoadingArchivedStories,
     error,
     hasCurrentStory,
     currentSection,
@@ -38,6 +41,7 @@ const StoryPage: React.FC = () => {
     isGenerating,
     createStory,
     archiveStory,
+    setCurrentStory,
     generateNextSection,
     exportStoryPDF,
     goToNextSection,
@@ -74,6 +78,10 @@ const StoryPage: React.FC = () => {
     }
   };
 
+  const handleUnarchiveStory = async (storyId: number) => {
+    await setCurrentStory(storyId);
+  };
+
   const handleExportStory = async () => {
     if (currentStory) {
       await exportStoryPDF(currentStory.id!);
@@ -84,8 +92,29 @@ const StoryPage: React.FC = () => {
     setViewMode(viewMode === 'section' ? 'reading' : 'section');
   };
 
-  // Show create form if no current story
-  if (!hasCurrentStory && !isLoading) {
+  // Show archived stories if no current story but archived stories exist
+  if (
+    !hasCurrentStory &&
+    !isLoading &&
+    archivedStories &&
+    archivedStories.length > 0
+  ) {
+    return (
+      <ArchivedStoriesView
+        archivedStories={archivedStories}
+        isLoading={isLoadingArchivedStories}
+        onUnarchive={handleUnarchiveStory}
+        onCreateNew={() => setShowCreateModal(true)}
+      />
+    );
+  }
+
+  // Show create form if no current story and no archived stories
+  if (
+    !hasCurrentStory &&
+    !isLoading &&
+    (!archivedStories || archivedStories.length === 0)
+  ) {
     return (
       <Container size='sm' py='xl'>
         <Stack spacing='lg' align='center'>
@@ -248,21 +277,21 @@ const StoryPage: React.FC = () => {
           />
         )}
       </Stack>
-
-      {/* Create Story Modal */}
-      <Modal
-        opened={showCreateModal}
-        onClose={() => setShowCreateModal(false)}
-        title='Create New Story'
-        size='lg'
-      >
-        <CreateStoryForm
-          onSubmit={handleCreateStory}
-          loading={isCreatingStory}
-        />
-      </Modal>
     </Container>
   );
+
+  {/* Create Story Modal */}
+  <Modal
+    opened={showCreateModal}
+    onClose={() => setShowCreateModal(false)}
+    title='Create New Story'
+    size='lg'
+  >
+    <CreateStoryForm
+      onSubmit={handleCreateStory}
+      loading={isCreatingStory}
+    />
+  </Modal>
 };
 
 export default StoryPage;

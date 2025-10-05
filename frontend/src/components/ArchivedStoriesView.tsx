@@ -1,0 +1,177 @@
+import React from 'react';
+import {
+  Container,
+  Title,
+  Text,
+  Card,
+  Group,
+  Button,
+  Stack,
+  Badge,
+  Alert,
+  Loader,
+} from '@mantine/core';
+import {
+  IconArchive,
+  IconBook,
+  IconRestore,
+  IconCalendar,
+  IconLanguage,
+} from '@tabler/icons-react';
+import { Story } from '../api/storyApi';
+
+interface ArchivedStoriesViewProps {
+  archivedStories: Story[];
+  isLoading: boolean;
+  onUnarchive: (storyId: number) => Promise<void>;
+  onCreateNew: () => void;
+}
+
+const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
+  archivedStories,
+  isLoading,
+  onUnarchive,
+  onCreateNew,
+}) => {
+  if (isLoading) {
+    return (
+      <Container size='sm' py='xl'>
+        <Stack spacing='md' align='center'>
+          <Loader size='lg' />
+          <Text color='dimmed'>Loading archived stories...</Text>
+        </Stack>
+      </Container>
+    );
+  }
+
+  if (!archivedStories || archivedStories.length === 0) {
+    return (
+      <Container size='sm' py='xl'>
+        <Stack spacing='lg' align='center'>
+          <Group position='center' spacing='xs'>
+            <IconBook size={32} />
+            <Title order={2}>Story Mode</Title>
+          </Group>
+
+          <Text size='lg' color='dimmed' align='center'>
+            Create personalized stories in your target language at your
+            proficiency level. Each story is generated daily with comprehension
+            questions to test your understanding.
+          </Text>
+
+          <Alert color='blue' variant='light'>
+            <Text size='sm'>
+              <strong>How it works:</strong> Create a story with custom
+              parameters, then read new sections daily. Each section includes
+              comprehension questions to help you learn and practice your target
+              language.
+            </Text>
+          </Alert>
+
+          <Button
+            leftIcon={<IconBook size={16} />}
+            size='lg'
+            onClick={onCreateNew}
+          >
+            Create New Story
+          </Button>
+        </Stack>
+      </Container>
+    );
+  }
+
+  return (
+    <Container size='md' py='xl'>
+      <Stack spacing='lg'>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <IconArchive size={24} />
+          <Title order={2}>Archived Stories</Title>
+        </div>
+
+        <Text color='dimmed' size='sm'>
+          You have {archivedStories.length} archived{' '}
+          {archivedStories.length === 1 ? 'story' : 'stories'}. You can restore
+          any of these to continue reading or create a new story.
+        </Text>
+
+        <Stack spacing='md'>
+          {archivedStories.map(story => (
+            <Card
+              key={story.id}
+              shadow='sm'
+              padding='lg'
+              radius='md'
+              withBorder
+            >
+              <Group position='apart' mb='xs'>
+                <Title order={4}>{story.title}</Title>
+                <Badge color='gray' variant='light'>
+                  {story.status}
+                </Badge>
+              </Group>
+
+              <Stack spacing='xs'>
+                <Group spacing='xs'>
+                  <IconLanguage size={16} />
+                  <Text size='sm' color='dimmed'>
+                    Language: {story.language}
+                  </Text>
+                </Group>
+
+                <Group spacing='xs'>
+                  <IconCalendar size={16} />
+                  <Text size='sm' color='dimmed'>
+                    Created: {new Date(story.created_at).toLocaleDateString()}
+                  </Text>
+                </Group>
+
+                {story.genre && (
+                  <Text size='sm' color='dimmed'>
+                    Genre: {story.genre}
+                  </Text>
+                )}
+
+                {story.subject && (
+                  <Text size='sm' color='dimmed'>
+                    Subject: {story.subject}
+                  </Text>
+                )}
+              </Stack>
+
+              <Group position='right' mt='md'>
+                <Button
+                  variant='light'
+                  leftIcon={<IconRestore size={16} />}
+                  onClick={() => onUnarchive(story.id!)}
+                  color='green'
+                >
+                  Restore Story
+                </Button>
+              </Group>
+            </Card>
+          ))}
+        </Stack>
+
+        <Alert color='blue' variant='light'>
+          <Text size='sm'>
+            <strong>Tip:</strong> Restoring a story will make it your current
+            active story. You can then continue reading from where you left off.
+          </Text>
+        </Alert>
+
+        <Group position='center'>
+          <Button
+            variant='outline'
+            leftIcon={<IconBook size={16} />}
+            onClick={onCreateNew}
+            size='md'
+          >
+            Create New Story Instead
+          </Button>
+        </Group>
+      </Stack>
+    </Container>
+  );
+};
+
+export default ArchivedStoriesView;
