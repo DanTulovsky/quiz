@@ -121,19 +121,34 @@ func (s *StoryService) CreateStory(ctx context.Context, userID uint, language st
 	return story, nil
 }
 
-// GetUserStories retrieves all stories for a user
+// GetUserStories retrieves all stories for a user in their preferred language
 func (s *StoryService) GetUserStories(ctx context.Context, userID uint, includeArchived bool) ([]models.Story, error) {
+	// Get user's preferred language
+	user, err := s.getUserByID(ctx, userID)
+	if err != nil {
+		return nil, contextutils.WrapErrorf(err, "failed to get user")
+	}
+
+	if user == nil {
+		return nil, contextutils.ErrorWithContextf("user not found: %d", userID)
+	}
+
+	language := "en" // default
+	if user.PreferredLanguage.Valid {
+		language = user.PreferredLanguage.String
+	}
+
 	query := `
 		SELECT id, user_id, title, language, subject, author_style, time_period, genre, tone,
 		       character_names, custom_instructions, section_length_override, status, is_current,
 		       last_section_generated_at, created_at, updated_at
 		FROM stories
-		WHERE user_id = $1`
+		WHERE user_id = $1 AND language = $2`
 
-	args := []interface{}{userID}
+	args := []interface{}{userID, language}
 
 	if !includeArchived {
-		query += " AND status != $2"
+		query += " AND status != $3"
 		args = append(args, models.StoryStatusArchived)
 	}
 
@@ -264,12 +279,18 @@ func (s *StoryService) ArchiveStory(ctx context.Context, storyID, userID uint) e
 	}
 	defer func() { _ = tx.Rollback() }()
 
-	// First, check if the story being archived is the current story
+	// First, check if the story is completed (completed stories cannot be archived)
+	var status string
 	var isCurrentlyCurrent bool
-	checkQuery := "SELECT is_current FROM stories WHERE id = $1"
-	err = tx.QueryRowContext(ctx, checkQuery, storyID).Scan(&isCurrentlyCurrent)
+	checkQuery := "SELECT status, is_current FROM stories WHERE id = $1"
+	err = tx.QueryRowContext(ctx, checkQuery, storyID).Scan(&status, &isCurrentlyCurrent)
 	if err != nil {
-		return contextutils.WrapErrorf(err, "failed to check if story is current")
+		return contextutils.WrapErrorf(err, "failed to check story status")
+	}
+
+	// Prevent archiving completed stories
+	if status == string(models.StoryStatusCompleted) {
+		return contextutils.ErrorWithContextf("cannot archive completed stories")
 	}
 
 	// Archive the story and unset is_current flag
@@ -326,7 +347,7 @@ func (s *StoryService) CompleteStory(ctx context.Context, storyID, userID uint) 
 		return err
 	}
 
-	query := "UPDATE stories SET status = $1, updated_at = NOW() WHERE id = $2"
+	query := "UPDATE stories SET status = $1, is_current = false, updated_at = NOW() WHERE id = $2"
 	_, err := s.db.ExecContext(ctx, query, models.StoryStatusCompleted, storyID)
 	if err != nil {
 		return contextutils.WrapErrorf(err, "failed to complete story")
@@ -347,15 +368,41 @@ func (s *StoryService) SetCurrentStory(ctx context.Context, storyID, userID uint
 		return err
 	}
 
-	// Get the story's language
-	query := "SELECT language FROM stories WHERE id = $1 AND user_id = $2"
+	// Get the story's language and status
+	query := "SELECT language, status FROM stories WHERE id = $1 AND user_id = $2"
 	var language string
-	err := s.db.QueryRowContext(ctx, query, storyID, userID).Scan(&language)
+	var status models.StoryStatus
+	err := s.db.QueryRowContext(ctx, query, storyID, userID).Scan(&language, &status)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return contextutils.ErrorWithContextf("story not found or access denied")
 		}
-		return contextutils.WrapErrorf(err, "failed to get story language")
+		return contextutils.WrapErrorf(err, "failed to get story language and status")
+	}
+
+	// Only allow restoring active stories (not completed ones)
+	if status == models.StoryStatusCompleted {
+		return contextutils.ErrorWithContextf("cannot restore completed stories")
+	}
+
+	// Get the user's preferred language
+	user, err := s.getUserByID(ctx, userID)
+	if err != nil {
+		return contextutils.WrapErrorf(err, "failed to get user")
+	}
+
+	if user == nil {
+		return contextutils.ErrorWithContextf("user not found")
+	}
+
+	userPreferredLanguage := "en" // default
+	if user.PreferredLanguage.Valid {
+		userPreferredLanguage = user.PreferredLanguage.String
+	}
+
+	// Check if the story's language matches the user's preferred language
+	if language != userPreferredLanguage {
+		return contextutils.ErrorWithContextf("cannot restore story in different language than preferred language")
 	}
 
 	// Use a transaction to ensure atomicity
@@ -372,9 +419,9 @@ func (s *StoryService) SetCurrentStory(ctx context.Context, storyID, userID uint
 		return contextutils.WrapErrorf(err, "failed to unset current stories")
 	}
 
-	// Set the specified story as current
-	setQuery := "UPDATE stories SET is_current = true, updated_at = NOW() WHERE id = $1"
-	_, err = tx.ExecContext(ctx, setQuery, storyID)
+	// Set the specified story as current and active
+	setQuery := "UPDATE stories SET is_current = true, status = $1, updated_at = NOW() WHERE id = $2"
+	_, err = tx.ExecContext(ctx, setQuery, models.StoryStatusActive, storyID)
 	if err != nil {
 		return contextutils.WrapErrorf(err, "failed to set current story")
 	}
@@ -799,6 +846,26 @@ func (s *StoryService) UpdateLastGenerationTime(ctx context.Context, storyID uin
 }
 
 // Helper methods
+
+// getUserByID retrieves a user by their ID
+func (s *StoryService) getUserByID(ctx context.Context, userID uint) (*models.User, error) {
+	query := "SELECT id, username, email, preferred_language, current_level, ai_provider, ai_model, ai_api_key, created_at, updated_at FROM users WHERE id = $1"
+
+	var user models.User
+	err := s.db.QueryRowContext(ctx, query, userID).Scan(
+		&user.ID, &user.Username, &user.Email, &user.PreferredLanguage,
+		&user.CurrentLevel, &user.AIProvider, &user.AIModel, &user.AIAPIKey,
+		&user.CreatedAt, &user.UpdatedAt,
+	)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil // User not found
+		}
+		return nil, contextutils.WrapErrorf(err, "failed to get user")
+	}
+
+	return &user, nil
+}
 
 // getArchivedStoryCount counts archived stories for a user
 func (s *StoryService) getArchivedStoryCount(ctx context.Context, userID uint) (int, error) {
