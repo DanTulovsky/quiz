@@ -189,12 +189,15 @@ describe('StorySectionView', () => {
       ).toBeInTheDocument();
     });
 
-    it('hides generate button when cannot generate today', () => {
+    it('disables generate button when cannot generate today', () => {
       renderComponent({ canGenerateToday: false });
 
-      expect(
-        screen.queryByRole('button', { name: /Generate Next Section/ })
-      ).not.toBeInTheDocument();
+      const generateButton = screen.getByRole('button', {
+        name: /Generate Next Section/,
+      });
+
+      expect(generateButton).toBeInTheDocument();
+      expect(generateButton).toBeDisabled();
     });
 
     it('calls onGenerateNext when button is clicked', () => {

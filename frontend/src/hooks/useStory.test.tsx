@@ -36,6 +36,7 @@ describe('useStory', () => {
     language: 'en',
     status: 'active' as const,
     is_current: true,
+    extra_generations_today: 0,
     sections: [
       {
         id: 1,

@@ -8,6 +8,7 @@ import {
   Badge,
   Stack,
   Alert,
+  Tooltip,
 } from '@mantine/core';
 import {
   IconChevronLeft,
@@ -30,6 +31,7 @@ interface StorySectionViewProps {
   totalSections: number;
   canGenerateToday: boolean;
   isGenerating: boolean;
+  generationDisabledReason?: string;
   onGenerateNext: () => void;
   onPrevious: () => void;
   onNext: () => void;
@@ -42,6 +44,7 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
   totalSections,
   canGenerateToday,
   isGenerating,
+  generationDisabledReason,
   onGenerateNext,
   onPrevious,
   onNext,
@@ -149,27 +152,36 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
       )}
 
       {/* Generate Next Section */}
-      {canGenerateToday && (
-        <Paper p='md' radius='md'>
-          <Group position='apart' align='center'>
-            <div>
-              <Title order={5}>Continue the Story</Title>
-              <Text size='sm' color='dimmed'>
-                Generate the next section of your story
-              </Text>
-            </div>
+      <Paper p='md' radius='md'>
+        <Group position='apart' align='center'>
+          <div>
+            <Title order={5}>Continue the Story</Title>
+            <Text size='sm' color='dimmed'>
+              Generate the next section of your story
+            </Text>
+          </div>
+          <Tooltip
+            label={
+              generationDisabledReason ||
+              'Generate the next section of your story'
+            }
+            disabled={canGenerateToday && !isGenerating}
+            position='top'
+            withArrow
+          >
             <Button
               leftIcon={<IconPlus size={16} />}
               onClick={onGenerateNext}
               loading={isGenerating}
-              disabled={isGenerating}
+              disabled={!canGenerateToday || isGenerating}
               color='blue'
+              variant={canGenerateToday ? 'filled' : 'light'}
             >
               {isGenerating ? 'Generating...' : 'Generate Next Section'}
             </Button>
-          </Group>
-        </Paper>
-      )}
+          </Tooltip>
+        </Group>
+      </Paper>
     </Stack>
   );
 };

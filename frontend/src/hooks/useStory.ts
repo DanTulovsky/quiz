@@ -68,6 +68,10 @@ export const useStory = (): UseStoryReturn => {
   const [viewMode, setViewMode] = useState<ViewMode>('section');
   const [error, setError] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [generationErrorModal, setGenerationErrorModal] = useState<{
+    isOpen: boolean;
+    errorMessage: string;
+  }>({ isOpen: false, errorMessage: '' });
 
   // Polling
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -292,8 +296,20 @@ export const useStory = (): UseStoryReturn => {
         type: 'success',
       });
     },
-    onError: (error: Error) => {
+    onError: (error: Error & { status?: number }) => {
       logger.error('Failed to generate next section', error);
+
+      // Check if it's a 409 conflict error (generation limit reached)
+      if (error.status === 409) {
+        setGenerationErrorModal({
+          isOpen: true,
+          errorMessage:
+            error.message || 'Cannot generate new section at this time.',
+        });
+        return;
+      }
+
+      // For other errors, show the notification as before
       showNotificationWithClean({
         title: 'Error',
         message:
@@ -361,11 +377,29 @@ export const useStory = (): UseStoryReturn => {
   const hasCurrentStory = !!currentStory;
   const currentSection = sections[currentSectionIndex] || null;
 
-  // Check if generation is allowed today (simplified logic)
+  // Check if generation is allowed today (including extra generations limit)
   const canGenerateToday =
     hasCurrentStory &&
     currentStory.status === 'active' &&
-    (sections.length === 0 || currentSectionIndex === sections.length - 1);
+    (sections.length === 0 || currentSectionIndex === sections.length - 1) &&
+    currentStory.extra_generations_today < 1;
+
+  // Get reason why generation might be disabled
+  const getGenerationDisabledReason = (): string => {
+    if (!hasCurrentStory) {
+      return 'No active story';
+    }
+    if (currentStory.status !== 'active') {
+      return 'Story is not active';
+    }
+    if (sections.length > 0 && currentSectionIndex !== sections.length - 1) {
+      return 'Not at the latest section';
+    }
+    if (currentStory.extra_generations_today >= 1) {
+      return 'Daily generation limit reached (2 sections per day)';
+    }
+    return '';
+  };
 
   // Query for current section with questions
   const { data: currentSectionWithQuestions } = useQuery({
@@ -432,6 +466,10 @@ export const useStory = (): UseStoryReturn => {
     },
     [generateNextSectionMutation]
   );
+
+  const closeGenerationErrorModal = useCallback(() => {
+    setGenerationErrorModal({ isOpen: false, errorMessage: '' });
+  }, []);
 
   const deleteStoryAction = useCallback(
     async (storyId: number) => {
@@ -505,5 +543,13 @@ export const useStory = (): UseStoryReturn => {
     currentSection,
     currentSectionWithQuestions,
     isGeneratingNextSection: generateNextSectionMutation.isPending,
+    generationDisabledReason: getGenerationDisabledReason(),
+
+    // Modal state
+    generationErrorModal: {
+      isOpen: generationErrorModal.isOpen,
+      errorMessage: generationErrorModal.errorMessage,
+    },
+    closeGenerationErrorModal,
   };
 };

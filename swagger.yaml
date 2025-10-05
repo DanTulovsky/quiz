@@ -5544,6 +5544,10 @@ components:
           type: string
           format: date-time
           example: "2025-01-15T10:00:00Z"
+        extra_generations_today:
+          type: integer
+          minimum: 0
+          example: 0
 
     StorySection:
       type: object

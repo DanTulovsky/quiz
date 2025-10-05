@@ -796,15 +796,16 @@ func (s *StoryService) GetRandomQuestions(ctx context.Context, sectionID uint, c
 // CanGenerateSection checks if a new section can be generated for a story today
 func (s *StoryService) CanGenerateSection(ctx context.Context, storyID uint) (bool, error) {
 	query := `
-		SELECT status, is_current, last_section_generated_at
+		SELECT status, is_current, last_section_generated_at, extra_generations_today
 		FROM stories
 		WHERE id = $1`
 
 	var status string
 	var isCurrent bool
 	var lastGen *time.Time
+	var extraGenerationsToday int
 
-	err := s.db.QueryRowContext(ctx, query, storyID).Scan(&status, &isCurrent, &lastGen)
+	err := s.db.QueryRowContext(ctx, query, storyID).Scan(&status, &isCurrent, &lastGen, &extraGenerationsToday)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return false, contextutils.ErrorWithContextf("story not found")
@@ -822,12 +823,15 @@ func (s *StoryService) CanGenerateSection(ctx context.Context, storyID uint) (bo
 		return false, nil
 	}
 
-	// Check if already generated today
+	// Check if already generated today and no extra generations available
 	if lastGen != nil {
 		today := time.Now().Truncate(24 * time.Hour)
 		lastGenTime := lastGen.Truncate(24 * time.Hour)
 		if lastGenTime.Equal(today) {
-			return false, nil
+			// Allow one extra generation per day
+			if extraGenerationsToday >= 1 {
+				return false, nil
+			}
 		}
 	}
 
@@ -836,8 +840,40 @@ func (s *StoryService) CanGenerateSection(ctx context.Context, storyID uint) (bo
 
 // UpdateLastGenerationTime sets the last section generation time for a story
 func (s *StoryService) UpdateLastGenerationTime(ctx context.Context, storyID uint) error {
-	query := "UPDATE stories SET last_section_generated_at = $1, updated_at = NOW() WHERE id = $2"
-	_, err := s.db.ExecContext(ctx, query, time.Now(), storyID)
+	// Check if this is an extra generation (second generation today)
+	query := `
+		SELECT last_section_generated_at, extra_generations_today
+		FROM stories
+		WHERE id = $1`
+
+	var lastGen *time.Time
+	var extraGenerationsToday int
+
+	err := s.db.QueryRowContext(ctx, query, storyID).Scan(&lastGen, &extraGenerationsToday)
+	if err != nil {
+		return contextutils.WrapErrorf(err, "failed to get current generation info")
+	}
+
+	now := time.Now()
+	today := now.Truncate(24 * time.Hour)
+
+	// If we already generated today, this is an extra generation
+	if lastGen != nil {
+		lastGenTime := lastGen.Truncate(24 * time.Hour)
+		if lastGenTime.Equal(today) {
+			// This is the second generation today, increment extra counter
+			updateQuery := "UPDATE stories SET extra_generations_today = extra_generations_today + 1, last_section_generated_at = $1, updated_at = NOW() WHERE id = $2"
+			_, err = s.db.ExecContext(ctx, updateQuery, now, storyID)
+			if err != nil {
+				return contextutils.WrapErrorf(err, "failed to update generation time for extra generation")
+			}
+			return nil
+		}
+	}
+
+	// First generation today, just update timestamp
+	updateQuery := "UPDATE stories SET last_section_generated_at = $1, updated_at = NOW() WHERE id = $2"
+	_, err = s.db.ExecContext(ctx, updateQuery, now, storyID)
 	if err != nil {
 		return contextutils.WrapErrorf(err, "failed to update generation time")
 	}

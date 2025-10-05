@@ -39,6 +39,7 @@ const StoryPage: React.FC = () => {
     currentSectionWithQuestions,
     canGenerateToday,
     isGenerating,
+    generationDisabledReason,
     createStory,
     archiveStory,
     setCurrentStory,
@@ -47,6 +48,8 @@ const StoryPage: React.FC = () => {
     goToNextSection,
     goToPreviousSection,
     setViewMode,
+    generationErrorModal,
+    closeGenerationErrorModal,
   } = useStory();
 
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -276,6 +279,7 @@ const StoryPage: React.FC = () => {
             totalSections={sections.length}
             canGenerateToday={canGenerateToday}
             isGenerating={isGenerating}
+            generationDisabledReason={generationDisabledReason}
             onGenerateNext={() =>
               currentStory && generateNextSection(currentStory.id!)
             }
@@ -301,6 +305,13 @@ const StoryPage: React.FC = () => {
           loading={isCreatingStory}
         />
       </Modal>
+
+      {/* Story Generation Error Modal */}
+      <StoryGenerationErrorModal
+        isOpen={generationErrorModal.isOpen}
+        onClose={closeGenerationErrorModal}
+        errorMessage={generationErrorModal.errorMessage}
+      />
     </Container>
   );
 };

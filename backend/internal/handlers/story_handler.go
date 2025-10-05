@@ -297,7 +297,26 @@ func (h *StoryHandler) GenerateNextSection(c *gin.Context) {
 	}
 
 	if !canGenerate {
-		c.JSON(http.StatusConflict, api.ErrorResponse{Error: stringPtr("section already generated today or story is not active")})
+		// Provide more specific error messages
+		story, err := h.storyService.GetStory(ctx, uint(storyID), uint(userID))
+		if err != nil {
+			c.JSON(http.StatusConflict, api.ErrorResponse{Error: stringPtr("cannot generate section: story is not active or you have reached the daily generation limit")})
+			return
+		}
+
+		// Check if story is not active
+		if story.Status != models.StoryStatusActive || !story.IsCurrent {
+			c.JSON(http.StatusConflict, api.ErrorResponse{Error: stringPtr("cannot generate section: story is not active")})
+			return
+		}
+
+		// Check if extra generations are available
+		if story.ExtraGenerationsToday >= 1 {
+			c.JSON(http.StatusConflict, api.ErrorResponse{Error: stringPtr("daily generation limit reached: you have already generated 2 sections today for this story. Please try again tomorrow.")})
+			return
+		}
+
+		c.JSON(http.StatusConflict, api.ErrorResponse{Error: stringPtr("cannot generate section: please try again tomorrow")})
 		return
 	}
 

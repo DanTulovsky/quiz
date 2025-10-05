@@ -758,6 +758,7 @@ type Story struct {
 	CharacterNames         *string                     `json:"character_names"`
 	CreatedAt              *time.Time                  `json:"created_at,omitempty"`
 	CustomInstructions     *string                     `json:"custom_instructions"`
+	ExtraGenerationsToday  *int                        `json:"extra_generations_today,omitempty"`
 	Genre                  *string                     `json:"genre"`
 	Id                     *int64                      `json:"id,omitempty"`
 	IsCurrent              *bool                       `json:"is_current,omitempty"`
@@ -821,6 +822,7 @@ type StoryWithSections struct {
 	CharacterNames         *string                                 `json:"character_names"`
 	CreatedAt              *time.Time                              `json:"created_at,omitempty"`
 	CustomInstructions     *string                                 `json:"custom_instructions"`
+	ExtraGenerationsToday  *int                                    `json:"extra_generations_today,omitempty"`
 	Genre                  *string                                 `json:"genre"`
 	Id                     *int64                                  `json:"id,omitempty"`
 	IsCurrent              *bool                                   `json:"is_current,omitempty"`
