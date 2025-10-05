@@ -159,6 +159,15 @@ func (h *StoryHandler) GetCurrentStory(c *gin.Context) {
 		return
 	}
 
+	// If story exists but has no sections, it's generating the first section
+	if len(story.Sections) == 0 {
+		c.JSON(http.StatusAccepted, api.GeneratingResponse{
+			Status:  stringPtr("generating"),
+			Message: stringPtr("Story created successfully. The first section is being generated. Please check back shortly."),
+		})
+		return
+	}
+
 	// Convert to API types to ensure proper serialization
 	apiStory := convertStoryWithSectionsToAPI(story)
 	c.JSON(http.StatusOK, apiStory)

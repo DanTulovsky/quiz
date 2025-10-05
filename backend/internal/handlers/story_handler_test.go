@@ -15,6 +15,7 @@ import (
 	"testing"
 	"time"
 
+	"quizapp/internal/api"
 	"quizapp/internal/config"
 	"quizapp/internal/di"
 	"quizapp/internal/models"
@@ -176,15 +177,15 @@ func (suite *StoryHandlerIntegrationTestSuite) TestStoryHandler_CreateStory_Inte
 
 		router.ServeHTTP(w, req)
 
-		// Should succeed with real services
-		assert.Equal(suite.T(), http.StatusOK, w.Code)
+		// Should return 202 Accepted since story exists but has no sections yet
+		assert.Equal(suite.T(), http.StatusAccepted, w.Code)
 
-		// Verify response structure
-		var response models.Story
-		err = json.Unmarshal(w.Body.Bytes(), &response)
+		// Verify response structure for generating status
+		var generatingResponse api.GeneratingResponse
+		err = json.Unmarshal(w.Body.Bytes(), &generatingResponse)
 		assert.NoError(suite.T(), err)
-		assert.Equal(suite.T(), "Test Story", response.Title) // Should be the story from the first test
-		assert.Equal(suite.T(), uint(user.ID), response.UserID)
+		assert.Equal(suite.T(), "generating", *generatingResponse.Status)
+		assert.Contains(suite.T(), *generatingResponse.Message, "Story created successfully")
 	})
 
 	suite.Run("should archive story successfully", func() {

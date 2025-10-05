@@ -3339,7 +3339,7 @@ paths:
       tags:
         - Story
       summary: Get current story
-      description: Retrieve the user's current active story with all sections.
+      description: Retrieve the user's current active story with all sections. If a story exists but has no sections yet, returns 202 with generating status as the first section is being created.
       security:
         - cookieAuth: []
       responses:
@@ -3349,6 +3349,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/StoryWithSections"
+        "202":
+          description: Story exists but first section is being generated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneratingResponse"
         "404":
           description: No current story found
           content:

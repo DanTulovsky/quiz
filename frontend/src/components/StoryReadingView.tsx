@@ -8,15 +8,26 @@ import {
   Stack,
   Divider,
   ScrollArea,
+  Loader,
+  Center,
 } from '@mantine/core';
-import { IconBook, IconLanguage, IconFileText } from '@tabler/icons-react';
+import {
+  IconBook,
+  IconLanguage,
+  IconFileText,
+  IconRefresh,
+} from '@tabler/icons-react';
 import { StoryWithSections } from '../api/storyApi';
 
 interface StoryReadingViewProps {
   story: StoryWithSections | null;
+  isGenerating?: boolean;
 }
 
-const StoryReadingView: React.FC<StoryReadingViewProps> = ({ story }) => {
+const StoryReadingView: React.FC<StoryReadingViewProps> = ({
+  story,
+  isGenerating = false,
+}) => {
   if (!story) {
     return (
       <Paper p='xl' radius='md' style={{ textAlign: 'center' }}>
@@ -28,15 +39,40 @@ const StoryReadingView: React.FC<StoryReadingViewProps> = ({ story }) => {
   }
 
   if (story.sections.length === 0) {
-    return (
-      <Paper p='xl' radius='md' style={{ textAlign: 'center' }}>
-        <IconBook size={48} style={{ opacity: 0.5, marginBottom: 16 }} />
-        <Title order={4}>Story in Progress</Title>
-        <Text color='dimmed'>
-          Your story is being prepared. Check back soon for the first section!
-        </Text>
-      </Paper>
-    );
+    if (isGenerating) {
+      return (
+        <Paper p='xl' radius='md' style={{ textAlign: 'center' }}>
+          <Center>
+            <Stack spacing='md' align='center'>
+              <Loader size='lg' />
+              <IconBook size={48} style={{ opacity: 0.5 }} />
+              <Title order={4}>Generating Your Story</Title>
+              <Text color='dimmed' align='center'>
+                We're creating the first section of your story.
+                <br />
+                This should only take a few moments...
+              </Text>
+              <Group spacing='xs'>
+                <IconRefresh size={16} />
+                <Text size='sm' color='dimmed'>
+                  Checking for updates...
+                </Text>
+              </Group>
+            </Stack>
+          </Center>
+        </Paper>
+      );
+    } else {
+      return (
+        <Paper p='xl' radius='md' style={{ textAlign: 'center' }}>
+          <IconBook size={48} style={{ opacity: 0.5, marginBottom: 16 }} />
+          <Title order={4}>Story in Progress</Title>
+          <Text color='dimmed'>
+            Your story is being prepared. Check back soon for the first section!
+          </Text>
+        </Paper>
+      );
+    }
   }
 
   return (

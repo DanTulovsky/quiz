@@ -100,27 +100,12 @@ const StoryPage: React.FC = () => {
     archivedStories.length > 0
   ) {
     return (
-      <>
-        <ArchivedStoriesView
-          archivedStories={archivedStories}
-          isLoading={isLoadingArchivedStories}
-          onUnarchive={handleUnarchiveStory}
-          onCreateNew={() => setShowCreateModal(true)}
-        />
-
-        {/* Create Story Modal - Available when viewing archived stories */}
-        <Modal
-          opened={showCreateModal}
-          onClose={() => setShowCreateModal(false)}
-          title='Create New Story'
-          size='lg'
-        >
-          <CreateStoryForm
-            onSubmit={handleCreateStory}
-            loading={isCreatingStory}
-          />
-        </Modal>
-      </>
+      <ArchivedStoriesView
+        archivedStories={archivedStories}
+        isLoading={isLoadingArchivedStories}
+        onUnarchive={handleUnarchiveStory}
+        onCreateNew={() => setShowCreateModal(true)}
+      />
     );
   }
 
@@ -285,13 +270,22 @@ const StoryPage: React.FC = () => {
             viewMode={viewMode}
           />
         ) : (
-          <StoryReadingView
-            story={currentStory}
-            onViewModeChange={handleViewModeChange}
-            viewMode={viewMode}
-          />
+          <StoryReadingView story={currentStory} isGenerating={isGenerating} />
         )}
       </Stack>
+
+      {/* Create Story Modal - Available in all story states */}
+      <Modal
+        opened={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        title='Create New Story'
+        size='lg'
+      >
+        <CreateStoryForm
+          onSubmit={handleCreateStory}
+          loading={isCreatingStory}
+        />
+      </Modal>
     </Container>
   );
 };

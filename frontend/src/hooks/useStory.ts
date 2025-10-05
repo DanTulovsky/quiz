@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { useAuth } from './useAuth';
@@ -18,6 +18,7 @@ import {
   StorySection,
   CreateStoryRequest,
   Story,
+  GeneratingResponse,
 } from '../api/storyApi';
 import { showNotificationWithClean } from '../notifications';
 import logger from '../utils/logger';
@@ -34,6 +35,7 @@ export interface UseStoryReturn {
   isLoading: boolean;
   isLoadingArchivedStories: boolean;
   error: string | null;
+  isGenerating: boolean;
 
   // Actions
   createStory: (data: CreateStoryRequest) => Promise<void>;
@@ -66,6 +68,11 @@ export const useStory = (): UseStoryReturn => {
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
   const [viewMode, setViewMode] = useState<ViewMode>('section');
   const [error, setError] = useState<string | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  // Polling
+  const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const currentStoryRef = useRef<StoryWithSections | null>(null);
 
   // Queries
   const {
@@ -78,6 +85,56 @@ export const useStory = (): UseStoryReturn => {
     enabled: !!user?.id,
     retry: false, // Don't retry 404s
   });
+
+  // Handle generating status and polling
+  useEffect(() => {
+    currentStoryRef.current = currentStory;
+
+    // Check if we received a generating response
+    if (
+      currentStory &&
+      typeof currentStory === 'object' &&
+      'status' in currentStory &&
+      currentStory.status === 'generating'
+    ) {
+      setIsGenerating(true);
+      setError(currentStory.message || null);
+      startPolling();
+    } else {
+      setIsGenerating(false);
+      stopPolling();
+    }
+  }, [currentStory]);
+
+  // Polling functions
+  const stopPolling = useCallback(() => {
+    if (pollingIntervalRef.current) {
+      clearInterval(pollingIntervalRef.current);
+      pollingIntervalRef.current = null;
+    }
+  }, []);
+
+  const startPolling = useCallback(() => {
+    stopPolling(); // Clear any existing interval
+
+    pollingIntervalRef.current = setInterval(async () => {
+      try {
+        // Only poll if we're currently generating and have a user
+        if (isGenerating && user && currentStoryRef.current) {
+          queryClient.invalidateQueries({
+            queryKey: ['currentStory', user.id, user.preferred_language],
+          });
+        }
+      } catch {
+        // swallow; next tick will retry
+      }
+    }, 3000); // Poll every 3 seconds
+  }, [isGenerating, user, queryClient]);
+
+  // Cleanup polling on unmount
+  useEffect(() => {
+    return () => stopPolling();
+  }, [stopPolling]);
 
   const { data: archivedStories, isLoading: isLoadingArchivedStories } =
     useQuery({
@@ -99,6 +156,9 @@ export const useStory = (): UseStoryReturn => {
         message: 'Your story has been created successfully!',
         type: 'success',
       });
+      // Start polling for the first section
+      setIsGenerating(true);
+      startPolling();
     },
     onError: (error: Error) => {
       logger.error('Failed to create story', error);
@@ -397,6 +457,7 @@ export const useStory = (): UseStoryReturn => {
     isLoading: isLoadingCurrentStory || isLoadingArchivedStories,
     isLoadingArchivedStories,
     error,
+    isGenerating,
 
     // Actions
     createStory,
