@@ -417,10 +417,13 @@ CREATE TABLE IF NOT EXISTS stories (
     is_current BOOLEAN NOT NULL DEFAULT FALSE,
     last_section_generated_at TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-
-    CONSTRAINT unique_current_story_per_user UNIQUE (user_id, is_current) DEFERRABLE INITIALLY DEFERRED
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
+
+-- Create partial unique index to ensure only one current story per user
+CREATE UNIQUE INDEX IF NOT EXISTS unique_current_story_per_user
+ON stories (user_id)
+WHERE is_current = true;
 
 -- Story sections table - stores individual sections of stories
 CREATE TABLE IF NOT EXISTS story_sections (

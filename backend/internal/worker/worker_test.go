@@ -81,6 +81,11 @@ func (m *mockStoryService) CompleteStory(ctx context.Context, storyID, userID ui
 	return args.Error(0)
 }
 
+func (m *mockStoryService) FixCurrentStoryConstraint(ctx context.Context) error {
+	args := m.Called(ctx)
+	return args.Error(0)
+}
+
 func (m *mockStoryService) SetCurrentStory(ctx context.Context, storyID, userID uint) error {
 	args := m.Called(ctx, storyID, userID)
 	return args.Error(0)

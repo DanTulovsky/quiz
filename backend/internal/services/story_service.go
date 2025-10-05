@@ -24,6 +24,7 @@ type StoryServiceInterface interface {
 	CompleteStory(ctx context.Context, storyID, userID uint) error
 	SetCurrentStory(ctx context.Context, storyID, userID uint) error
 	DeleteStory(ctx context.Context, storyID, userID uint) error
+	FixCurrentStoryConstraint(ctx context.Context) error
 	GetStorySections(ctx context.Context, storyID uint) ([]models.StorySection, error)
 	GetSection(ctx context.Context, sectionID, userID uint) (*models.StorySectionWithQuestions, error)
 	CreateSection(ctx context.Context, storyID uint, content, level string, wordCount int) (*models.StorySection, error)
@@ -263,48 +264,31 @@ func (s *StoryService) ArchiveStory(ctx context.Context, storyID, userID uint) e
 		return contextutils.WrapErrorf(err, "failed to archive story")
 	}
 
-	// If the archived story was the current story, ensure no other story is marked as current
-	// This handles the case where there might be constraint violations due to race conditions
+	// If the archived story was the current story, ensure exactly one story is current
+	// This handles constraint violations by ensuring only one current story per user
 	if isCurrentlyCurrent {
-		// Count how many stories are still marked as current for this user
-		var currentCount int
-		countQuery := "SELECT COUNT(*) FROM stories WHERE user_id = $1 AND is_current = true"
-		err = tx.QueryRowContext(ctx, countQuery, userID).Scan(&currentCount)
-		if err != nil {
-			return contextutils.WrapErrorf(err, "failed to count current stories")
+		// Find any other active story to promote as current
+		// If none exists, that's fine - no story will be current
+		var activeStoryID *uint
+		selectQuery := `
+			SELECT id FROM stories
+			WHERE user_id = $1 AND status = 'active' AND id != $2
+			ORDER BY updated_at DESC
+			LIMIT 1`
+		err = tx.QueryRowContext(ctx, selectQuery, userID, storyID).Scan(&activeStoryID)
+		if err != nil && err != sql.ErrNoRows {
+			return contextutils.WrapErrorf(err, "failed to find active story to set as current")
 		}
 
-		// If there are multiple current stories (which shouldn't happen), unset all but one
-		if currentCount > 1 {
-			// Find the most recently updated active story to keep as current
-			// If no active stories exist, that's fine - no story will be current
-			var activeStoryID *uint
-			selectQuery := `
-				SELECT id FROM stories
-				WHERE user_id = $1 AND status = 'active'
-				ORDER BY updated_at DESC
-				LIMIT 1`
-			err = tx.QueryRowContext(ctx, selectQuery, userID).Scan(&activeStoryID)
-			if err != nil && err != sql.ErrNoRows {
-				return contextutils.WrapErrorf(err, "failed to find active story to set as current")
-			}
-
-			// Unset all current stories for this user
-			unsetQuery := "UPDATE stories SET is_current = false, updated_at = NOW() WHERE user_id = $1 AND is_current = true"
-			_, err = tx.ExecContext(ctx, unsetQuery, userID)
+		// If we found an active story, set it as current
+		if activeStoryID != nil {
+			setCurrentQuery := "UPDATE stories SET is_current = true, updated_at = NOW() WHERE id = $1"
+			_, err = tx.ExecContext(ctx, setCurrentQuery, *activeStoryID)
 			if err != nil {
-				return contextutils.WrapErrorf(err, "failed to unset current stories")
-			}
-
-			// If we found an active story, set it as current
-			if activeStoryID != nil {
-				setCurrentQuery := "UPDATE stories SET is_current = true, updated_at = NOW() WHERE id = $1"
-				_, err = tx.ExecContext(ctx, setCurrentQuery, *activeStoryID)
-				if err != nil {
-					return contextutils.WrapErrorf(err, "failed to set new current story")
-				}
+				return contextutils.WrapErrorf(err, "failed to set new current story")
 			}
 		}
+		// If no active story exists, that's fine - no story will be current
 	}
 
 	err = tx.Commit()
@@ -355,18 +339,97 @@ func (s *StoryService) SetCurrentStory(ctx context.Context, storyID, userID uint
 	}
 	defer func() { _ = tx.Rollback() }()
 
-	// First, unset all current stories for this user
-	query1 := "UPDATE stories SET is_current = false, updated_at = NOW() WHERE user_id = $1 AND is_current = true"
-	_, err = tx.ExecContext(ctx, query1, userID)
+	// First, unset ALL current stories for this user to avoid constraint violations
+	unsetAllQuery := "UPDATE stories SET is_current = false, updated_at = NOW() WHERE user_id = $1 AND is_current = true"
+	_, err = tx.ExecContext(ctx, unsetAllQuery, userID)
 	if err != nil {
 		return contextutils.WrapErrorf(err, "failed to unset current stories")
 	}
 
-	// Then set the specified story as current
-	query2 := "UPDATE stories SET is_current = true, updated_at = NOW() WHERE id = $1"
-	_, err = tx.ExecContext(ctx, query2, storyID)
+	// Set the specified story as current
+	query := "UPDATE stories SET is_current = true, updated_at = NOW() WHERE id = $1"
+	_, err = tx.ExecContext(ctx, query, storyID)
 	if err != nil {
 		return contextutils.WrapErrorf(err, "failed to set current story")
+	}
+
+	return tx.Commit()
+}
+
+// FixCurrentStoryConstraint fixes any constraint violations where multiple stories are marked as current for the same user
+func (s *StoryService) FixCurrentStoryConstraint(ctx context.Context) error {
+	// Find all users who have multiple current stories
+	query := `
+		SELECT user_id, COUNT(*) as current_count
+		FROM stories
+		WHERE is_current = true
+		GROUP BY user_id
+		HAVING COUNT(*) > 1`
+
+	rows, err := s.db.QueryContext(ctx, query)
+	if err != nil {
+		return contextutils.WrapErrorf(err, "failed to find users with multiple current stories")
+	}
+	defer func() { _ = rows.Close() }()
+
+	for rows.Next() {
+		var userID uint
+		var currentCount int
+
+		if err := rows.Scan(&userID, &currentCount); err != nil {
+			return contextutils.WrapErrorf(err, "failed to scan user constraint violation")
+		}
+
+		// Fix constraint violation for this user
+		if err := s.fixUserCurrentStoryConstraint(ctx, userID); err != nil {
+			return contextutils.WrapErrorf(err, "failed to fix constraint for user %d", userID)
+		}
+	}
+
+	return rows.Err()
+}
+
+// fixUserCurrentStoryConstraint fixes constraint violations for a specific user
+func (s *StoryService) fixUserCurrentStoryConstraint(ctx context.Context, userID uint) error {
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return contextutils.WrapErrorf(err, "failed to begin transaction")
+	}
+	defer func() { _ = tx.Rollback() }()
+
+	// Find all current stories for this user, ordered by most recently updated
+	var currentStories []uint
+	selectQuery := `
+		SELECT id FROM stories
+		WHERE user_id = $1 AND is_current = true
+		ORDER BY updated_at DESC`
+
+	rows, err := tx.QueryContext(ctx, selectQuery, userID)
+	if err != nil {
+		return contextutils.WrapErrorf(err, "failed to find current stories for user")
+	}
+	defer func() { _ = rows.Close() }()
+
+	for rows.Next() {
+		var storyID uint
+		if err := rows.Scan(&storyID); err != nil {
+			return contextutils.WrapErrorf(err, "failed to scan story ID")
+		}
+		currentStories = append(currentStories, storyID)
+	}
+
+	if len(currentStories) <= 1 {
+		// No constraint violation for this user
+		return tx.Commit()
+	}
+
+	// Unset all current stories except the most recently updated one
+	for i := 1; i < len(currentStories); i++ {
+		unsetQuery := "UPDATE stories SET is_current = false, updated_at = NOW() WHERE id = $1"
+		_, err = tx.ExecContext(ctx, unsetQuery, currentStories[i])
+		if err != nil {
+			return contextutils.WrapErrorf(err, "failed to unset current story %d", currentStories[i])
+		}
 	}
 
 	return tx.Commit()

@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"strconv"
 	"testing"
 	"time"
 
@@ -184,5 +185,43 @@ func (suite *StoryHandlerIntegrationTestSuite) TestStoryHandler_CreateStory_Inte
 		assert.NoError(suite.T(), err)
 		assert.Equal(suite.T(), "Test Story", response.Title) // Should be the story from the first test
 		assert.Equal(suite.T(), uint(user.ID), response.UserID)
+	})
+
+	suite.Run("should archive story successfully", func() {
+		// First, ensure there's a current story for this user
+		var storyID uint
+		err := suite.Container.GetDatabase().QueryRowContext(ctx,
+			"SELECT id FROM stories WHERE user_id = $1 AND is_current = true LIMIT 1",
+			user.ID).Scan(&storyID)
+		if err != nil || storyID == 0 {
+			// Create a current story if none exists
+			err = suite.Container.GetDatabase().QueryRowContext(ctx,
+				`INSERT INTO stories (user_id, title, language, status, is_current, created_at, updated_at)
+				 VALUES ($1, $2, $3, $4, $5, NOW(), NOW()) RETURNING id`,
+				user.ID, "Story to Archive", "en", "active", true).Scan(&storyID)
+			require.NoError(suite.T(), err)
+		}
+
+		// Create handler for archive request
+		router.POST("/v1/story/:id/archive", handler.ArchiveStory)
+
+		// Archive the story
+		w := httptest.NewRecorder()
+		req, _ := http.NewRequest("POST", "/v1/story/"+strconv.Itoa(int(storyID))+"/archive", nil)
+
+		router.ServeHTTP(w, req)
+
+		// Should succeed
+		assert.Equal(suite.T(), http.StatusOK, w.Code)
+
+		// Verify the story is now archived and not current
+		var archivedStory models.Story
+		err = suite.Container.GetDatabase().QueryRowContext(ctx,
+			"SELECT id, status, is_current FROM stories WHERE id = $1",
+			storyID).Scan(&archivedStory.ID, &archivedStory.Status, &archivedStory.IsCurrent)
+		require.NoError(suite.T(), err)
+
+		assert.Equal(suite.T(), models.StoryStatusArchived, archivedStory.Status)
+		assert.False(suite.T(), archivedStory.IsCurrent)
 	})
 }

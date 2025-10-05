@@ -318,6 +318,12 @@ func (h *StoryHandler) GenerateNextSection(c *gin.Context) {
 		userLanguage = user.PreferredLanguage.String
 	}
 
+	// Get the user's current language level (handle sql.NullString)
+	userLevel := "B1" // default
+	if user.CurrentLevel.Valid {
+		userLevel = user.CurrentLevel.String
+	}
+
 	// Determine target length
 	targetWords := h.storyService.GetSectionLengthTarget(userLanguage, story.SectionLengthOverride)
 
@@ -326,7 +332,7 @@ func (h *StoryHandler) GenerateNextSection(c *gin.Context) {
 		UserID:             uint(userID),
 		StoryID:            uint(storyID),
 		Language:           story.Language,
-		Level:              userLanguage,
+		Level:              userLevel,
 		Title:              story.Title,
 		Subject:            story.Subject,
 		AuthorStyle:        story.AuthorStyle,
@@ -357,7 +363,7 @@ func (h *StoryHandler) GenerateNextSection(c *gin.Context) {
 	wordCount := len(strings.Fields(sectionContent))
 
 	// Create the section
-	section, err := h.storyService.CreateSection(ctx, uint(storyID), sectionContent, userLanguage, wordCount)
+	section, err := h.storyService.CreateSection(ctx, uint(storyID), sectionContent, userLevel, wordCount)
 	if err != nil {
 		h.logger.Error(ctx, "Failed to create story section", err, map[string]interface{}{
 			"story_id":   storyID,
@@ -372,7 +378,7 @@ func (h *StoryHandler) GenerateNextSection(c *gin.Context) {
 		UserID:        uint(userID),
 		SectionID:     section.ID,
 		Language:      story.Language,
-		Level:         userLanguage,
+		Level:         userLevel,
 		SectionText:   sectionContent,
 		QuestionCount: h.cfg.Story.QuestionsPerSection,
 	}

@@ -153,13 +153,19 @@ const StoryPage: React.FC = () => {
     <Container size='lg' py='lg'>
       <Stack spacing='lg'>
         {/* Header */}
-        <Group position='apart' align='center'>
-          <Group spacing='xs'>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <IconBook size={24} />
             <Title order={3}>{currentStory?.title}</Title>
-          </Group>
+          </div>
 
-          <Group spacing='xs'>
+          <div style={{ display: 'flex', gap: '8px' }}>
             {/* Export Button */}
             {currentStory && (
               <Button
@@ -194,8 +200,8 @@ const StoryPage: React.FC = () => {
             >
               New Story
             </Button>
-          </Group>
-        </Group>
+          </div>
+        </div>
 
         {/* View Mode Toggle */}
         <Group position='center'>
