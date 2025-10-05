@@ -63,11 +63,11 @@ func main() {
 		"debug":    cfg.Server.Debug,
 	})
 
-	// Initialize database manager with logger
-	dbManager := database.NewManager(logger)
+    // Initialize database manager with logger
+    dbManager := database.NewManager(logger)
 
-	// Initialize database connection and run migrations so worker tables exist
-	db, err := dbManager.InitDBWithConfig(cfg.Database)
+    // Initialize database connection without running migrations (migrations are managed elsewhere)
+    db, err := dbManager.InitDBWithoutMigrations(cfg.Database)
 	if err != nil {
 		fatalIfErr(ctx, logger, "Failed to initialize database", err, map[string]interface{}{"db_url": cfg.Database.URL})
 	}
