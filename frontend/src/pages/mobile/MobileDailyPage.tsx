@@ -277,6 +277,9 @@ const MobileDailyPage: React.FC = () => {
   const handleAnswerSubmit = useCallback(async () => {
     if (!currentQuestion || selectedAnswerLocal === null) return;
 
+    // Optimistically mark as submitted while the network request is in-flight
+    // so the UI shows a loading state. If the request fails we must revert
+    // this so options become selectable again.
     setIsSubmittedLocal(true);
 
     try {
@@ -301,6 +304,8 @@ const MobileDailyPage: React.FC = () => {
       }, 300); // Delay to allow feedback animation to complete
     } catch (error) {
       console.error('Failed to submit answer:', error);
+      // Re-enable options so the user can try again
+      setIsSubmittedLocal(false);
     }
   }, [currentQuestion, selectedAnswerLocal, submitAnswer]);
 
