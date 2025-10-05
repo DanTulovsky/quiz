@@ -102,13 +102,24 @@ export const useStory = (): UseStoryReturn => {
 
     if (isGeneratingState) {
       setIsGenerating(true);
+      // Clear any previous errors since we're in generating state
+      setError(null);
       // Don't set as error - this is informational
       startPolling();
     } else {
       setIsGenerating(false);
       stopPolling();
+      // If we have a story with sections, clear any error state
+      if (
+        currentStory &&
+        'sections' in currentStory &&
+        currentStory.sections &&
+        currentStory.sections.length > 0
+      ) {
+        setError(null);
+      }
     }
-  }, [currentStory]);
+  }, [currentStory, error]);
 
   // Polling functions
   const stopPolling = useCallback(() => {
@@ -123,17 +134,18 @@ export const useStory = (): UseStoryReturn => {
 
     pollingIntervalRef.current = setInterval(async () => {
       try {
-        // Only poll if we're currently generating and have a user
-        if (isGenerating && user && currentStoryRef.current) {
+        // Only poll if we have a user
+        if (user) {
           queryClient.invalidateQueries({
             queryKey: ['currentStory', user.id, user.preferred_language],
           });
         }
-      } catch {
+      } catch (error) {
+        console.error('Polling error:', error);
         // swallow; next tick will retry
       }
     }, 3000); // Poll every 3 seconds
-  }, [isGenerating, user, queryClient]);
+  }, [user, queryClient]);
 
   // Cleanup polling on unmount
   useEffect(() => {
