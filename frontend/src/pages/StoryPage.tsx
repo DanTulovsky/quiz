@@ -23,6 +23,7 @@ import CreateStoryForm from '../components/CreateStoryForm';
 import ArchivedStoriesView from '../components/ArchivedStoriesView';
 import StorySectionView from '../components/StorySectionView';
 import StoryReadingView from '../components/StoryReadingView';
+import StoryGenerationErrorModal from '../components/StoryGenerationErrorModal';
 
 const StoryPage: React.FC = () => {
   const {
