@@ -156,7 +156,7 @@ export const useStory = (): UseStoryReturn => {
     useQuery({
       queryKey: ['archivedStories', user?.id, user?.preferred_language],
       queryFn: () => apiGetUserStories(true), // includeArchived = true
-      enabled: !!user?.id && !currentStory, // Only fetch if no current story
+      enabled: !!user?.id, // Always fetch if user exists
     });
 
   // Mutations
@@ -189,6 +189,10 @@ export const useStory = (): UseStoryReturn => {
   const archiveStoryMutation = useMutation({
     mutationFn: apiArchiveStory,
     onSuccess: () => {
+      // Remove current story from cache to force immediate UI update
+      queryClient.removeQueries({
+        queryKey: ['currentStory', user?.id, user?.preferred_language],
+      });
       queryClient.invalidateQueries({
         queryKey: ['currentStory', user?.id, user?.preferred_language],
       });
@@ -196,6 +200,11 @@ export const useStory = (): UseStoryReturn => {
         queryKey: ['archivedStories', user?.id, user?.preferred_language],
       });
       queryClient.invalidateQueries({ queryKey: ['userStories'] });
+
+      // Also refetch archived stories immediately
+      queryClient.refetchQueries({
+        queryKey: ['archivedStories', user?.id, user?.preferred_language],
+      });
       setCurrentSectionIndex(0);
       setViewMode('section');
       showNotificationWithClean({
