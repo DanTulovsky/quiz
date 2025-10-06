@@ -823,16 +823,22 @@ func (s *StoryService) CanGenerateSection(ctx context.Context, storyID uint) (bo
 		return false, nil
 	}
 
-	// Check if already generated today and no extra generations available
-	if lastGen != nil {
-		today := time.Now().Truncate(24 * time.Hour)
-		lastGenTime := lastGen.Truncate(24 * time.Hour)
-		if lastGenTime.Equal(today) {
-			// Allow one extra generation per day
-			if extraGenerationsToday >= 1 {
-				return false, nil
-			}
-		}
+	// Check if already generated a section today
+	today := time.Now().Truncate(24 * time.Hour)
+	var sectionCount int
+	sectionQuery := `
+		SELECT COUNT(*)
+		FROM story_sections
+		WHERE story_id = $1 AND generation_date = $2`
+
+	err = s.db.QueryRowContext(ctx, sectionQuery, storyID, today).Scan(&sectionCount)
+	if err != nil {
+		return false, contextutils.WrapErrorf(err, "failed to check existing sections today")
+	}
+
+	// If there's already a section today and no extra generations are allowed, deny generation
+	if sectionCount > 0 && extraGenerationsToday < 1 {
+		return false, nil
 	}
 
 	return true, nil

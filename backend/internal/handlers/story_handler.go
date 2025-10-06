@@ -15,6 +15,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jung-kurt/gofpdf"
+	"github.com/lib/pq"
 	"go.opentelemetry.io/otel/attribute"
 )
 
@@ -394,6 +395,16 @@ func (h *StoryHandler) GenerateNextSection(c *gin.Context) {
 	// Create the section
 	section, err := h.storyService.CreateSection(ctx, uint(storyID), sectionContent, userLevel, wordCount)
 	if err != nil {
+		// Check if this is a constraint violation (duplicate generation today)
+		if pqErr, ok := err.(*pq.Error); ok && pqErr.Code == "23505" {
+			h.logger.Warn(ctx, "Attempted to generate duplicate story section today", map[string]interface{}{
+				"story_id":   storyID,
+				"word_count": wordCount,
+			})
+			c.JSON(http.StatusConflict, api.ErrorResponse{Error: stringPtr("you have already generated a story section today. Please try again tomorrow.")})
+			return
+		}
+
 		h.logger.Error(ctx, "Failed to create story section", err, map[string]interface{}{
 			"story_id":   storyID,
 			"word_count": wordCount,
