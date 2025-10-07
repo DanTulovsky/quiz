@@ -501,9 +501,9 @@ func getEnvBool(key string, defaultValue bool) bool {
 
 // Start begins the worker's background processing loop
 func (w *Worker) Start(ctx context.Context) {
-    w.status.IsRunning = true
-    w.updateDatabaseStatus(ctx)
-    w.handleStartupPause(ctx)
+	w.status.IsRunning = true
+	w.updateDatabaseStatus(ctx)
+	w.handleStartupPause(ctx)
 
 	// Start heartbeat goroutine
 	go w.heartbeatLoop(ctx)
@@ -542,13 +542,6 @@ func (w *Worker) Start(ctx context.Context) {
 			w.run()
 		}
 	}
-}
-
-// waitForWorkerSchema polls the database until worker tables are available or context is done
-func (w *Worker) waitForWorkerSchema(ctx context.Context) {
-    // No-op: removed schema polling. If tables are missing at this point
-    // it indicates a deeper problem and should be surfaced immediately.
-    return
 }
 
 // handleStartupPause sets global pause if configured
@@ -1080,11 +1073,11 @@ func (w *Worker) updateDatabaseStatus(ctx context.Context) {
 		TotalRuns:               len(w.history),
 	}
 
-    if err := w.workerService.UpdateWorkerStatus(ctx, w.instance, dbStatus); err != nil {
-        w.logger.Error(ctx, "Failed to update worker status in database", err, map[string]interface{}{
-            "instance": w.instance,
-        })
-    }
+	if err := w.workerService.UpdateWorkerStatus(ctx, w.instance, dbStatus); err != nil {
+		w.logger.Error(ctx, "Failed to update worker status in database", err, map[string]interface{}{
+			"instance": w.instance,
+		})
+	}
 }
 
 // getTotalQuestionsGenerated calculates total questions generated from run history

@@ -2244,6 +2244,8 @@ export type GetV1StoryParams = {
 include_archived?: boolean;
 };
 
+export type PostV1StoryIdGenerateBody = { [key: string]: unknown };
+
 /**
  * Health status of the service
  */
@@ -8638,12 +8640,15 @@ export const useDeleteV1StoryId = <TError = ErrorResponse | ErrorResponse | Erro
  */
 export const postV1StoryIdGenerate = (
     id: number,
+    postV1StoryIdGenerateBody?: PostV1StoryIdGenerateBody,
  options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<StorySection>(
-      {url: `/v1/story/${id}/generate`, method: 'POST', signal
+      {url: `/v1/story/${id}/generate`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: postV1StoryIdGenerateBody, signal
     },
       options);
     }
@@ -8651,8 +8656,8 @@ export const postV1StoryIdGenerate = (
 
 
 export const getPostV1StoryIdGenerateMutationOptions = <TError = ErrorResponse | ErrorResponse | ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdGenerate>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdGenerate>>, TError,{id: number}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdGenerate>>, TError,{id: number;data: PostV1StoryIdGenerateBody}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdGenerate>>, TError,{id: number;data: PostV1StoryIdGenerateBody}, TContext> => {
 
 const mutationKey = ['postV1StoryIdGenerate'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -8664,10 +8669,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1StoryIdGenerate>>, {id: number}> = (props) => {
-          const {id} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1StoryIdGenerate>>, {id: number;data: PostV1StoryIdGenerateBody}> = (props) => {
+          const {id,data} = props ?? {};
 
-          return  postV1StoryIdGenerate(id,requestOptions)
+          return  postV1StoryIdGenerate(id,data,requestOptions)
         }
 
         
@@ -8676,18 +8681,18 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PostV1StoryIdGenerateMutationResult = NonNullable<Awaited<ReturnType<typeof postV1StoryIdGenerate>>>
-    
+    export type PostV1StoryIdGenerateMutationBody = PostV1StoryIdGenerateBody
     export type PostV1StoryIdGenerateMutationError = ErrorResponse | ErrorResponse | ErrorResponse
 
     /**
  * @summary Generate next section
  */
 export const usePostV1StoryIdGenerate = <TError = ErrorResponse | ErrorResponse | ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdGenerate>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdGenerate>>, TError,{id: number;data: PostV1StoryIdGenerateBody}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1StoryIdGenerate>>,
         TError,
-        {id: number},
+        {id: number;data: PostV1StoryIdGenerateBody},
         TContext
       > => {
 

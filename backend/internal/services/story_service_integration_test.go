@@ -83,7 +83,6 @@ func TestStoryService_CanGenerateSection_Integration(t *testing.T) {
 	canGenerate, err = storyService.CanGenerateSection(ctx, otherStory.ID)
 	require.NoError(t, err)
 	assert.True(t, canGenerate, "Should be able to generate section for different story")
-
 }
 
 // TestStoryService_CreateSection_Integration tests section creation

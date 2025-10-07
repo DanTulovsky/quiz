@@ -1490,6 +1490,9 @@ type GetV1StoryParams struct {
 	IncludeArchived *bool `form:"include_archived,omitempty" json:"include_archived,omitempty"`
 }
 
+// PostV1StoryIdGenerateJSONBody defines parameters for PostV1StoryIdGenerate.
+type PostV1StoryIdGenerateJSONBody = map[string]interface{}
+
 // PutV1AdminBackendQuestionsIdJSONRequestBody defines body for PutV1AdminBackendQuestionsId for application/json ContentType.
 type PutV1AdminBackendQuestionsIdJSONRequestBody PutV1AdminBackendQuestionsIdJSONBody
 
@@ -1558,6 +1561,9 @@ type PostV1SettingsTestAiJSONRequestBody = TestAIRequest
 
 // PostV1StoryJSONRequestBody defines body for PostV1Story for application/json ContentType.
 type PostV1StoryJSONRequestBody = CreateStoryRequest
+
+// PostV1StoryIdGenerateJSONRequestBody defines body for PostV1StoryIdGenerate for application/json ContentType.
+type PostV1StoryIdGenerateJSONRequestBody = PostV1StoryIdGenerateJSONBody
 
 // PutV1UserzProfileJSONRequestBody defines body for PutV1UserzProfile for application/json ContentType.
 type PutV1UserzProfileJSONRequestBody = UserUpdateRequest

@@ -3457,6 +3457,13 @@ paths:
           schema:
             type: integer
             format: int64
+      requestBody:
+        description: No request body required for this endpoint
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
       responses:
         "201":
           description: Section generated successfully

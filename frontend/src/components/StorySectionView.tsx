@@ -153,7 +153,13 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
 
       {/* Generate Next Section */}
       <Paper p='md' radius='md'>
-        <Group position='apart' align='center'>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
           <div>
             <Title order={5}>Continue the Story</Title>
             <Text size='sm' color='dimmed'>
@@ -169,20 +175,18 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
             position='top'
             withArrow
           >
-            <span>
-              <Button
-                leftIcon={<IconPlus size={16} />}
-                onClick={onGenerateNext}
-                loading={isGenerating}
-                disabled={!canGenerateToday || isGenerating}
-                color='blue'
-                variant={canGenerateToday ? 'filled' : 'light'}
-              >
-                {isGenerating ? 'Generating...' : 'Generate Next Section'}
-              </Button>
-            </span>
+            <Button
+              leftIcon={<IconPlus size={16} />}
+              onClick={onGenerateNext}
+              loading={isGenerating}
+              disabled={!canGenerateToday || isGenerating}
+              color='blue'
+              variant={canGenerateToday ? 'filled' : 'light'}
+            >
+              {isGenerating ? 'Generating...' : 'Generate Next Section'}
+            </Button>
           </Tooltip>
-        </Group>
+        </div>
       </Paper>
     </Stack>
   );
