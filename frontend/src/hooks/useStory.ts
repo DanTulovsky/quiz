@@ -125,7 +125,6 @@ export const useStory = (): UseStoryReturn => {
     // (it might be in the process of being fetched after story creation)
   }, [currentStory, error]);
 
-
   // Polling functions
   const stopPolling = useCallback(() => {
     if (pollingIntervalRef.current) {

@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strings"
@@ -720,13 +721,22 @@ func (s *StoryService) GetSectionQuestions(ctx context.Context, sectionID uint) 
 	var questions []models.StorySectionQuestion
 	for rows.Next() {
 		var question models.StorySectionQuestion
+		var optionsJSON []byte
+
 		err := rows.Scan(
-			&question.ID, &question.SectionID, &question.QuestionText, &question.Options,
+			&question.ID, &question.SectionID, &question.QuestionText, &optionsJSON,
 			&question.CorrectAnswerIndex, &question.Explanation, &question.CreatedAt,
 		)
 		if err != nil {
 			return nil, contextutils.WrapErrorf(err, "failed to scan question")
 		}
+
+		// Unmarshal JSON options back to []string
+		err = json.Unmarshal(optionsJSON, &question.Options)
+		if err != nil {
+			return nil, contextutils.WrapErrorf(err, "failed to unmarshal options from JSON")
+		}
+
 		questions = append(questions, question)
 	}
 
@@ -751,8 +761,14 @@ func (s *StoryService) CreateSectionQuestions(ctx context.Context, sectionID uin
 				section_id, question_text, options, correct_answer_index, explanation, created_at
 			) VALUES ($1, $2, $3, $4, $5, $6)`
 
-		_, err := tx.ExecContext(ctx, query,
-			sectionID, q.QuestionText, q.Options, q.CorrectAnswerIndex, q.Explanation, time.Now(),
+		// Convert []string options to JSON for PostgreSQL JSONB column
+		optionsJSON, err := json.Marshal(q.Options)
+		if err != nil {
+			return contextutils.WrapErrorf(err, "failed to marshal options to JSON")
+		}
+
+		_, err = tx.ExecContext(ctx, query,
+			sectionID, q.QuestionText, optionsJSON, q.CorrectAnswerIndex, q.Explanation, time.Now(),
 		)
 		if err != nil {
 			return contextutils.WrapErrorf(err, "failed to insert question")
@@ -780,13 +796,22 @@ func (s *StoryService) GetRandomQuestions(ctx context.Context, sectionID uint, c
 	var questions []models.StorySectionQuestion
 	for rows.Next() {
 		var question models.StorySectionQuestion
+		var optionsJSON []byte
+
 		err := rows.Scan(
-			&question.ID, &question.SectionID, &question.QuestionText, &question.Options,
+			&question.ID, &question.SectionID, &question.QuestionText, &optionsJSON,
 			&question.CorrectAnswerIndex, &question.Explanation, &question.CreatedAt,
 		)
 		if err != nil {
 			return nil, contextutils.WrapErrorf(err, "failed to scan question")
 		}
+
+		// Unmarshal JSON options back to []string
+		err = json.Unmarshal(optionsJSON, &question.Options)
+		if err != nil {
+			return nil, contextutils.WrapErrorf(err, "failed to unmarshal options from JSON")
+		}
+
 		questions = append(questions, question)
 	}
 

@@ -280,3 +280,97 @@ func TestStoryService_GetLatestSection_Integration(t *testing.T) {
 	assert.Equal(t, section2.ID, latestSection.ID)
 	assert.Equal(t, 2, latestSection.SectionNumber)
 }
+
+// TestStoryService_CreateSectionQuestions_Integration tests the CreateSectionQuestions functionality
+func TestStoryService_CreateSectionQuestions_Integration(t *testing.T) {
+	db := SharedTestDBSetup(t)
+	defer db.Close()
+
+	cfg, err := config.NewConfig()
+	require.NoError(t, err)
+	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+	userService := NewUserServiceWithLogger(db, cfg, logger)
+	storyService := NewStoryService(db, cfg, logger)
+
+	ctx := context.Background()
+
+	// Create a test user
+	username := fmt.Sprintf("testuser_%d", time.Now().UnixNano())
+	user, err := userService.CreateUser(ctx, username, "italian", "A1")
+	require.NoError(t, err)
+
+	// Create a test story
+	story, err := storyService.CreateStory(ctx, uint(user.ID), "italian", &models.CreateStoryRequest{
+		Title:   "Test Story",
+		Subject: stringPtr("Test Subject"),
+	})
+	require.NoError(t, err)
+
+	// Create a test section
+	section, err := storyService.CreateSection(ctx, story.ID, "This is a test section with some content to test questions.", "A1", 50)
+	require.NoError(t, err)
+	require.NotNil(t, section)
+
+	// Create test questions data (this is what would come from the AI service)
+	questions := []models.StorySectionQuestionData{
+		{
+			QuestionText:       "What is the main topic of this section?",
+			Options:            []string{"Adventure", "Romance", "Mystery", "History"},
+			CorrectAnswerIndex: 2,
+			Explanation:        stringPtr("The section is about a mysterious adventure."),
+		},
+		{
+			QuestionText:       "Who is the main character?",
+			Options:            []string{"Alice", "Bob", "Charlie", "Diana"},
+			CorrectAnswerIndex: 0,
+			Explanation:        stringPtr("Alice is clearly the main character in this section."),
+		},
+		{
+			QuestionText:       "Where does the story take place?",
+			Options:            []string{"Forest", "City", "Mountain", "Ocean"},
+			CorrectAnswerIndex: 1,
+			Explanation:        stringPtr("The story takes place in a bustling city."),
+		},
+	}
+
+	// Test creating questions - this should not fail with the original error
+	err = storyService.CreateSectionQuestions(ctx, section.ID, questions)
+	require.NoError(t, err, "CreateSectionQuestions should succeed with properly formatted options")
+
+	// Verify that questions were saved correctly by retrieving them
+	savedQuestions, err := storyService.GetSectionQuestions(ctx, section.ID)
+	require.NoError(t, err)
+	require.Len(t, savedQuestions, 3, "Should have saved 3 questions")
+
+	// Verify the first question details
+	firstQuestion := savedQuestions[0]
+	assert.Equal(t, section.ID, firstQuestion.SectionID)
+	assert.Equal(t, "What is the main topic of this section?", firstQuestion.QuestionText)
+	assert.Equal(t, []string{"Adventure", "Romance", "Mystery", "History"}, firstQuestion.Options)
+	assert.Equal(t, 2, firstQuestion.CorrectAnswerIndex)
+	assert.Equal(t, "The section is about a mysterious adventure.", *firstQuestion.Explanation)
+	assert.NotEmpty(t, firstQuestion.CreatedAt)
+
+	// Verify the second question details
+	secondQuestion := savedQuestions[1]
+	assert.Equal(t, section.ID, secondQuestion.SectionID)
+	assert.Equal(t, "Who is the main character?", secondQuestion.QuestionText)
+	assert.Equal(t, []string{"Alice", "Bob", "Charlie", "Diana"}, secondQuestion.Options)
+	assert.Equal(t, 0, secondQuestion.CorrectAnswerIndex)
+	assert.Equal(t, "Alice is clearly the main character in this section.", *secondQuestion.Explanation)
+
+	// Verify the third question details
+	thirdQuestion := savedQuestions[2]
+	assert.Equal(t, section.ID, thirdQuestion.SectionID)
+	assert.Equal(t, "Where does the story take place?", thirdQuestion.QuestionText)
+	assert.Equal(t, []string{"Forest", "City", "Mountain", "Ocean"}, thirdQuestion.Options)
+	assert.Equal(t, 1, thirdQuestion.CorrectAnswerIndex)
+	assert.Equal(t, "The story takes place in a bustling city.", *thirdQuestion.Explanation)
+
+	// Test that GetRandomQuestions also works with the saved questions
+	randomQuestions, err := storyService.GetRandomQuestions(ctx, section.ID, 2)
+	require.NoError(t, err)
+	require.Len(t, randomQuestions, 2, "Should return 2 random questions")
+	assert.NotEmpty(t, randomQuestions[0].Options, "Random questions should have options")
+	assert.NotEmpty(t, randomQuestions[1].Options, "Random questions should have options")
+}
