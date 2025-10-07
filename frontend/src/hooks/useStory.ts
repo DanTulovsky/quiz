@@ -377,12 +377,12 @@ export const useStory = (): UseStoryReturn => {
   const hasCurrentStory = !!currentStory;
   const currentSection = sections[currentSectionIndex] || null;
 
-  // Check if generation is allowed today (including extra generations limit)
+  // Check if generation is allowed today (basic client-side checks)
+  // The backend will do the final validation and return appropriate errors
   const canGenerateToday =
     hasCurrentStory &&
     currentStory.status === 'active' &&
-    (sections.length === 0 || currentSectionIndex === sections.length - 1) &&
-    (currentStory.extra_generations_today ?? 0) < 1;
+    (sections.length === 0 || currentSectionIndex === sections.length - 1);
 
   // Get reason why generation might be disabled
   const getGenerationDisabledReason = (): string => {
@@ -392,16 +392,13 @@ export const useStory = (): UseStoryReturn => {
     if (currentStory.status !== 'active') {
       return 'Story is not active';
     }
-    if (currentStory.extra_generations_today >= 1) {
-      return 'Daily generation limit reached (2 sections per day)';
-    }
     if (sections.length === 0) {
       return 'Ready to generate first section';
     }
     if (currentSectionIndex !== sections.length - 1) {
       return 'Navigate to the latest section to generate the next part';
     }
-    // If we reach here, generation should be allowed
+    // If we reach here, generation should be allowed (backend will validate)
     return '';
   };
 

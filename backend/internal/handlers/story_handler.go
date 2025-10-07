@@ -312,9 +312,9 @@ func (h *StoryHandler) GenerateNextSection(c *gin.Context) {
 			return
 		}
 
-		// Check if extra generations are available
-		if story.ExtraGenerationsToday >= 1 {
-			c.JSON(http.StatusConflict, api.ErrorResponse{Error: stringPtr("daily generation limit reached: you have already generated 2 sections today for this story. Please try again tomorrow.")})
+		// Check if daily generation limit is reached (no extra generations available)
+		if story.ExtraGenerationsToday < 1 {
+			c.JSON(http.StatusConflict, api.ErrorResponse{Error: stringPtr("daily generation limit reached: you have already generated a section today for this story. Please try again tomorrow.")})
 			return
 		}
 
