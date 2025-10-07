@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"quizapp/internal/api"
 	"quizapp/internal/config"
@@ -166,6 +167,23 @@ func (h *StoryHandler) GetCurrentStory(c *gin.Context) {
 		c.JSON(http.StatusAccepted, api.GeneratingResponse{
 			Status:  stringPtr("generating"),
 			Message: stringPtr("Story created successfully. The first section is being generated. Please check back shortly."),
+		})
+		return
+	}
+
+	// If story exists and has sections, check if a section is currently being generated today
+	today := time.Now().Truncate(24 * time.Hour)
+	sectionsToday := 0
+	for _, section := range story.Sections {
+		if section.GenerationDate.Truncate(24 * time.Hour).Equal(today) {
+			sectionsToday++
+		}
+	}
+
+	if sectionsToday == 0 {
+		c.JSON(http.StatusAccepted, api.GeneratingResponse{
+			Status:  stringPtr("generating"),
+			Message: stringPtr("The next section is being generated. Please check back shortly."),
 		})
 		return
 	}
@@ -378,93 +396,96 @@ func (h *StoryHandler) GenerateNextSection(c *gin.Context) {
 		TargetSentences:    targetWords / 15,
 	}
 
-	// Generate the section
-	sectionContent, err := h.aiService.GenerateStorySection(ctx, h.convertToServicesAIConfig(ctx, user), genReq)
-	if err != nil {
-		h.logger.Error(ctx, "Failed to generate story section", err, map[string]interface{}{
-			"story_id": storyID,
-			"user_id":  uint(userID),
-		})
-		c.JSON(http.StatusInternalServerError, api.ErrorResponse{Error: stringPtr("failed to generate story section")})
-		return
-	}
+	// Return generating response immediately
+	c.JSON(http.StatusAccepted, api.GeneratingResponse{
+		Status:  stringPtr("generating"),
+		Message: stringPtr("The next section is being generated. Please check back shortly."),
+	})
 
-	// Count words in generated content
-	wordCount := len(strings.Fields(sectionContent))
-
-	// Create the section
-	section, err := h.storyService.CreateSection(ctx, uint(storyID), sectionContent, userLevel, wordCount)
-	if err != nil {
-		// Check if this is a constraint violation (duplicate generation today)
-		if pqErr, ok := err.(*pq.Error); ok && pqErr.Code == "23505" {
-			h.logger.Warn(ctx, "Attempted to generate duplicate story section today", map[string]interface{}{
-				"story_id":   storyID,
-				"word_count": wordCount,
+	// Generate the section in the background
+	go func() {
+		bgCtx := context.Background()
+		sectionContent, err := h.aiService.GenerateStorySection(bgCtx, h.convertToServicesAIConfig(bgCtx, user), genReq)
+		if err != nil {
+			h.logger.Error(bgCtx, "Failed to generate story section", err, map[string]interface{}{
+				"story_id": storyID,
+				"user_id":  uint(userID),
 			})
-			c.JSON(http.StatusConflict, api.ErrorResponse{Error: stringPtr("you have already generated a story section today. Please try again tomorrow.")})
 			return
 		}
 
-		h.logger.Error(ctx, "Failed to create story section", err, map[string]interface{}{
-			"story_id":   storyID,
-			"word_count": wordCount,
-		})
-		c.JSON(http.StatusInternalServerError, api.ErrorResponse{Error: stringPtr("failed to save story section")})
-		return
-	}
+		// Count words in generated content
+		wordCount := len(strings.Fields(sectionContent))
 
-	// Generate questions for the section
-	questionsReq := &models.StoryQuestionsRequest{
-		UserID:        uint(userID),
-		SectionID:     section.ID,
-		Language:      story.Language,
-		Level:         userLevel,
-		SectionText:   sectionContent,
-		QuestionCount: h.cfg.Story.QuestionsPerSection,
-	}
+		// Create the section
+		section, err := h.storyService.CreateSection(bgCtx, uint(storyID), sectionContent, userLevel, wordCount)
+		if err != nil {
+			// Check if this is a constraint violation (duplicate generation today)
+			if pqErr, ok := err.(*pq.Error); ok && pqErr.Code == "23505" {
+				h.logger.Warn(bgCtx, "Attempted to generate duplicate story section today", map[string]interface{}{
+					"story_id":   storyID,
+					"word_count": wordCount,
+				})
+				return
+			}
 
-	questions, err := h.aiService.GenerateStoryQuestions(ctx, h.convertToServicesAIConfig(ctx, user), questionsReq)
-	if err != nil {
-		h.logger.Warn(ctx, "Failed to generate questions for story section", map[string]interface{}{
-			"section_id": section.ID,
-			"story_id":   storyID,
-			"error":      err.Error(),
-		})
-		// Continue anyway - questions are nice to have but not critical
-	} else {
-		// Convert to database model slice
-		dbQuestions := make([]models.StorySectionQuestionData, len(questions))
-		for i, q := range questions {
-			dbQuestions[i] = *q
+			h.logger.Error(bgCtx, "Failed to create story section", err, map[string]interface{}{
+				"story_id":   storyID,
+				"word_count": wordCount,
+			})
+			return
 		}
 
-		// Save the questions
-		if err := h.storyService.CreateSectionQuestions(ctx, section.ID, dbQuestions); err != nil {
-			h.logger.Warn(ctx, "Failed to save story questions", map[string]interface{}{
+		// Generate questions for the section
+		questionsReq := &models.StoryQuestionsRequest{
+			UserID:        uint(userID),
+			SectionID:     section.ID,
+			Language:      story.Language,
+			Level:         userLevel,
+			SectionText:   sectionContent,
+			QuestionCount: h.cfg.Story.QuestionsPerSection,
+		}
+
+		questions, err := h.aiService.GenerateStoryQuestions(bgCtx, h.convertToServicesAIConfig(bgCtx, user), questionsReq)
+		if err != nil {
+			h.logger.Warn(bgCtx, "Failed to generate questions for story section", map[string]interface{}{
 				"section_id": section.ID,
 				"story_id":   storyID,
 				"error":      err.Error(),
 			})
+			// Continue anyway - questions are nice to have but not critical
+		} else {
+			// Convert to database model slice
+			dbQuestions := make([]models.StorySectionQuestionData, len(questions))
+			for i, q := range questions {
+				dbQuestions[i] = *q
+			}
+
+			// Save the questions
+			if err := h.storyService.CreateSectionQuestions(bgCtx, section.ID, dbQuestions); err != nil {
+				h.logger.Warn(bgCtx, "Failed to save story questions", map[string]interface{}{
+					"section_id": section.ID,
+					"story_id":   storyID,
+					"error":      err.Error(),
+				})
+			}
 		}
-	}
 
-	// Update the story's last generation time (user generation)
-	if err := h.storyService.UpdateLastGenerationTime(ctx, uint(storyID), true); err != nil {
-		h.logger.Warn(ctx, "Failed to update story generation time", map[string]interface{}{
-			"story_id": storyID,
-			"error":    err.Error(),
+		// Update the story's last generation time (user generation)
+		if err := h.storyService.UpdateLastGenerationTime(bgCtx, uint(storyID), true); err != nil {
+			h.logger.Warn(bgCtx, "Failed to update story generation time", map[string]interface{}{
+				"story_id": storyID,
+				"error":    err.Error(),
+			})
+		}
+
+		h.logger.Info(bgCtx, "Story section generated successfully in background", map[string]interface{}{
+			"story_id":       storyID,
+			"section_id":     section.ID,
+			"section_number": section.SectionNumber,
+			"word_count":     wordCount,
 		})
-	}
-
-	span.SetAttributes(
-		attribute.Int("story.id", int(storyID)),
-		attribute.Int("section.id", int(section.ID)),
-		attribute.Int("word_count", wordCount),
-	)
-
-	// Convert to API types to ensure proper serialization
-	apiSection := convertStorySectionToAPI(section)
-	c.JSON(http.StatusCreated, apiSection)
+	}()
 }
 
 // ArchiveStory handles POST /v1/story/:id/archive
