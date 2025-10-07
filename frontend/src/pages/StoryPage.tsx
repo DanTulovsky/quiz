@@ -48,6 +48,8 @@ const StoryPage: React.FC = () => {
     exportStoryPDF,
     goToNextSection,
     goToPreviousSection,
+    goToFirstSection,
+    goToLastSection,
     setViewMode,
     generationErrorModal,
     closeGenerationErrorModal,
@@ -90,10 +92,6 @@ const StoryPage: React.FC = () => {
     if (currentStory) {
       await exportStoryPDF(currentStory.id!);
     }
-  };
-
-  const handleViewModeChange = () => {
-    setViewMode(viewMode === 'section' ? 'reading' : 'section');
   };
 
   // Show archived stories if no current story but archived stories exist
@@ -286,8 +284,8 @@ const StoryPage: React.FC = () => {
             }
             onPrevious={goToPreviousSection}
             onNext={goToNextSection}
-            onViewModeChange={handleViewModeChange}
-            viewMode={viewMode}
+            onFirst={goToFirstSection}
+            onLast={goToLastSection}
           />
         ) : (
           <StoryReadingView story={currentStory} isGenerating={isGenerating} />

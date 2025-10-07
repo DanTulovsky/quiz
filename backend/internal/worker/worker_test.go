@@ -144,8 +144,8 @@ func (m *mockStoryService) CanGenerateSection(ctx context.Context, storyID uint)
 	return args.Bool(0), args.Error(1)
 }
 
-func (m *mockStoryService) UpdateLastGenerationTime(ctx context.Context, storyID uint) error {
-	args := m.Called(ctx, storyID)
+func (m *mockStoryService) UpdateLastGenerationTime(ctx context.Context, storyID uint, isUserGeneration bool) error {
+	args := m.Called(ctx, storyID, isUserGeneration)
 	return args.Error(0)
 }
 

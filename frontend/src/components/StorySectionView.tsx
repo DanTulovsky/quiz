@@ -13,6 +13,8 @@ import {
 import {
   IconChevronLeft,
   IconChevronRight,
+  IconChevronsLeft,
+  IconChevronsRight,
   IconPlus,
   IconBook,
   IconLanguage,
@@ -35,6 +37,8 @@ interface StorySectionViewProps {
   onGenerateNext: () => void;
   onPrevious: () => void;
   onNext: () => void;
+  onFirst: () => void;
+  onLast: () => void;
 }
 
 const StorySectionView: React.FC<StorySectionViewProps> = ({
@@ -48,6 +52,8 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
   onGenerateNext,
   onPrevious,
   onNext,
+  onFirst,
+  onLast,
 }) => {
   if (!section) {
     return (
@@ -89,7 +95,17 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
         </Group>
 
         {/* Section Navigation */}
-        <Group position='center' mt='md'>
+        <Group position='center' mt='md' spacing='xs'>
+          <Button
+            variant='light'
+            leftIcon={<IconChevronsLeft size={16} />}
+            onClick={onFirst}
+            disabled={sectionIndex === 0}
+            size='sm'
+          >
+            First
+          </Button>
+
           <Button
             variant='light'
             leftIcon={<IconChevronLeft size={16} />}
@@ -100,7 +116,11 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
             Previous
           </Button>
 
-          <Text size='sm' color='dimmed'>
+          <Text
+            size='sm'
+            color='dimmed'
+            style={{ minWidth: '80px', textAlign: 'center' }}
+          >
             {sectionIndex + 1} of {totalSections}
           </Text>
 
@@ -112,6 +132,16 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
             size='sm'
           >
             Next
+          </Button>
+
+          <Button
+            variant='light'
+            rightIcon={<IconChevronsRight size={16} />}
+            onClick={onLast}
+            disabled={sectionIndex >= totalSections - 1}
+            size='sm'
+          >
+            Last
           </Button>
         </Group>
       </Paper>

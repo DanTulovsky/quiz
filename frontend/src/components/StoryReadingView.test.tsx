@@ -72,8 +72,8 @@ describe('StoryReadingView', () => {
     it('displays all sections in order', () => {
       renderComponent();
 
-      expect(screen.getByText('Section 1')).toBeInTheDocument();
-      expect(screen.getByText('Section 2')).toBeInTheDocument();
+      // StoryReadingView shows continuous text without section headers
+      expect(screen.getByText('Test Mystery Story')).toBeInTheDocument();
       expect(
         screen.getByText(/In the quiet town of Willow Creek/)
       ).toBeInTheDocument();
@@ -82,17 +82,16 @@ describe('StoryReadingView', () => {
       ).toBeInTheDocument();
     });
 
-    it('displays section metadata for each section', () => {
+    it('displays story status and continuous reading experience', () => {
       renderComponent();
 
-      // Check first section metadata - look for the specific format in badges
-      const firstSectionBadges = screen.getAllByText('intermediate');
-      expect(firstSectionBadges.length).toBeGreaterThan(0);
-      expect(screen.getByText('18 words')).toBeInTheDocument();
-
-      // Check second section metadata
-      expect(firstSectionBadges.length).toBeGreaterThanOrEqual(1);
-      expect(screen.getByText('20 words')).toBeInTheDocument();
+      // StoryReadingView shows continuous text without individual section metadata
+      expect(screen.getByText('Test Mystery Story')).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          'This story is ongoing. New sections will be added daily!'
+        )
+      ).toBeInTheDocument();
     });
 
     it('shows story details when available', () => {
@@ -193,12 +192,22 @@ describe('StoryReadingView', () => {
       expect(scrollViewport).toBeInTheDocument();
     });
 
-    it('displays sections with proper spacing', () => {
+    it('displays story content in scrollable area with proper spacing', () => {
       renderComponent();
 
-      // Should have proper spacing between sections
-      const sections = screen.getAllByText(/Section \d/);
-      expect(sections).toHaveLength(2);
+      // StoryReadingView shows continuous text in a scrollable area
+      const scrollViewport = document.querySelector(
+        '.mantine-ScrollArea-viewport'
+      );
+      expect(scrollViewport).toBeInTheDocument();
+
+      // Should contain all story content
+      expect(
+        screen.getByText(/In the quiet town of Willow Creek/)
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(/The letter contained a cryptic message/)
+      ).toBeInTheDocument();
     });
   });
 });

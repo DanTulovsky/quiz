@@ -180,11 +180,27 @@ export const useStory = (): UseStoryReturn => {
       setIsGenerating(true);
       startPolling();
     },
-    onError: (error: Error) => {
+    onError: (error: unknown) => {
       logger.error('Failed to create story', error);
+      let errorMessage = 'Failed to create story. Please try again.';
+
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === 'object' && error !== null) {
+        const axiosError = error as {
+          response?: { data?: { error?: string } };
+          message?: string;
+        };
+        if (axiosError.response?.data?.error) {
+          errorMessage = axiosError.response.data.error;
+        } else if (axiosError.message) {
+          errorMessage = axiosError.message;
+        }
+      }
+
       showNotificationWithClean({
         title: 'Error',
-        message: error?.message || 'Failed to create story. Please try again.',
+        message: errorMessage,
         type: 'error',
       });
     },
@@ -217,11 +233,27 @@ export const useStory = (): UseStoryReturn => {
         type: 'success',
       });
     },
-    onError: (error: Error) => {
+    onError: (error: unknown) => {
       logger.error('Failed to archive story', error);
+      let errorMessage = 'Failed to archive story. Please try again.';
+
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === 'object' && error !== null) {
+        const axiosError = error as {
+          response?: { data?: { error?: string } };
+          message?: string;
+        };
+        if (axiosError.response?.data?.error) {
+          errorMessage = axiosError.response.data.error;
+        } else if (axiosError.message) {
+          errorMessage = axiosError.message;
+        }
+      }
+
       showNotificationWithClean({
         title: 'Error',
-        message: error?.message || 'Failed to archive story. Please try again.',
+        message: errorMessage,
         type: 'error',
       });
     },
@@ -240,12 +272,27 @@ export const useStory = (): UseStoryReturn => {
         type: 'success',
       });
     },
-    onError: (error: Error) => {
+    onError: (error: unknown) => {
       logger.error('Failed to complete story', error);
+      let errorMessage = 'Failed to complete story. Please try again.';
+
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === 'object' && error !== null) {
+        const axiosError = error as {
+          response?: { data?: { error?: string } };
+          message?: string;
+        };
+        if (axiosError.response?.data?.error) {
+          errorMessage = axiosError.response.data.error;
+        } else if (axiosError.message) {
+          errorMessage = axiosError.message;
+        }
+      }
+
       showNotificationWithClean({
         title: 'Error',
-        message:
-          error?.message || 'Failed to complete story. Please try again.',
+        message: errorMessage,
         type: 'error',
       });
     },
@@ -266,12 +313,27 @@ export const useStory = (): UseStoryReturn => {
         type: 'success',
       });
     },
-    onError: (error: Error) => {
+    onError: (error: unknown) => {
       logger.error('Failed to set current story', error);
+      let errorMessage = 'Failed to set current story. Please try again.';
+
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === 'object' && error !== null) {
+        const axiosError = error as {
+          response?: { data?: { error?: string } };
+          message?: string;
+        };
+        if (axiosError.response?.data?.error) {
+          errorMessage = axiosError.response.data.error;
+        } else if (axiosError.message) {
+          errorMessage = axiosError.message;
+        }
+      }
+
       showNotificationWithClean({
         title: 'Error',
-        message:
-          error?.message || 'Failed to set current story. Please try again.',
+        message: errorMessage,
         type: 'error',
       });
     },
@@ -296,15 +358,32 @@ export const useStory = (): UseStoryReturn => {
         type: 'success',
       });
     },
-    onError: (error: Error & { status?: number }) => {
+    onError: (error: unknown) => {
       logger.error('Failed to generate next section', error);
 
+      let errorMessage = 'Failed to generate next section. Please try again.';
+      let status = 0;
+
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === 'object' && error !== null) {
+        const axiosError = error as {
+          response?: { data?: { error?: string }; status?: number };
+          message?: string;
+        };
+        if (axiosError.response?.data?.error) {
+          errorMessage = axiosError.response.data.error;
+        } else if (axiosError.message) {
+          errorMessage = axiosError.message;
+        }
+        status = axiosError.response?.status || 0;
+      }
+
       // Check if it's a 409 conflict error (generation limit reached)
-      if (error.status === 409) {
+      if (status === 409) {
         setGenerationErrorModal({
           isOpen: true,
-          errorMessage:
-            error.message || 'Cannot generate new section at this time.',
+          errorMessage,
         });
         return;
       }
@@ -312,9 +391,7 @@ export const useStory = (): UseStoryReturn => {
       // For other errors, show the notification as before
       showNotificationWithClean({
         title: 'Error',
-        message:
-          error?.message ||
-          'Failed to generate next section. Please try again.',
+        message: errorMessage,
         type: 'error',
       });
     },
@@ -333,11 +410,27 @@ export const useStory = (): UseStoryReturn => {
         type: 'success',
       });
     },
-    onError: (error: Error) => {
+    onError: (error: unknown) => {
       logger.error('Failed to delete story', error);
+      let errorMessage = 'Failed to delete story. Please try again.';
+
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === 'object' && error !== null) {
+        const axiosError = error as {
+          response?: { data?: { error?: string } };
+          message?: string;
+        };
+        if (axiosError.response?.data?.error) {
+          errorMessage = axiosError.response.data.error;
+        } else if (axiosError.message) {
+          errorMessage = axiosError.message;
+        }
+      }
+
       showNotificationWithClean({
         title: 'Error',
-        message: error?.message || 'Failed to delete story. Please try again.',
+        message: errorMessage,
         type: 'error',
       });
     },
@@ -362,11 +455,27 @@ export const useStory = (): UseStoryReturn => {
         type: 'success',
       });
     },
-    onError: (error: Error) => {
+    onError: (error: unknown) => {
       logger.error('Failed to export story PDF', error);
+      let errorMessage = 'Failed to export story. Please try again.';
+
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === 'object' && error !== null) {
+        const axiosError = error as {
+          response?: { data?: { error?: string } };
+          message?: string;
+        };
+        if (axiosError.response?.data?.error) {
+          errorMessage = axiosError.response.data.error;
+        } else if (axiosError.message) {
+          errorMessage = axiosError.message;
+        }
+      }
+
       showNotificationWithClean({
         title: 'Error',
-        message: error?.message || 'Failed to export story. Please try again.',
+        message: errorMessage,
         type: 'error',
       });
     },
@@ -415,20 +524,38 @@ export const useStory = (): UseStoryReturn => {
   // Error handling
   useEffect(() => {
     if (currentStoryError) {
-      const errorMessage =
-        currentStoryError instanceof Error
-          ? currentStoryError.message
-          : 'Failed to load current story';
+      let errorMessage = 'Failed to load current story';
+
+      if (currentStoryError instanceof Error) {
+        errorMessage = currentStoryError.message;
+      } else if (
+        typeof currentStoryError === 'object' &&
+        currentStoryError !== null
+      ) {
+        // Handle axios-like error objects
+        const axiosError = currentStoryError as {
+          response?: { data?: { error?: string } };
+          message?: string;
+        };
+        if (axiosError.response?.data?.error) {
+          errorMessage = axiosError.response.data.error;
+        } else if (axiosError.message) {
+          errorMessage = axiosError.message;
+        }
+      } else if (typeof currentStoryError === 'string') {
+        errorMessage = currentStoryError;
+      }
+
       setError(errorMessage);
     } else {
       setError(null);
     }
   }, [currentStoryError]);
 
-  // Reset section index when story changes
+  // Reset section index when story changes - start at last section
   useEffect(() => {
-    if (currentStory) {
-      setCurrentSectionIndex(0);
+    if (currentStory && currentStory.sections.length > 0) {
+      setCurrentSectionIndex(currentStory.sections.length - 1);
     }
   }, [currentStory?.id]);
 
@@ -507,6 +634,16 @@ export const useStory = (): UseStoryReturn => {
     }
   }, [currentSectionIndex]);
 
+  const goToFirstSection = useCallback(() => {
+    setCurrentSectionIndex(0);
+  }, []);
+
+  const goToLastSection = useCallback(() => {
+    if (sections.length > 0) {
+      setCurrentSectionIndex(sections.length - 1);
+    }
+  }, [sections.length]);
+
   const setViewModeAction = useCallback((mode: ViewMode) => {
     setViewMode(mode);
   }, []);
@@ -536,6 +673,8 @@ export const useStory = (): UseStoryReturn => {
     goToSection,
     goToNextSection,
     goToPreviousSection,
+    goToFirstSection,
+    goToLastSection,
     setViewMode: setViewModeAction,
 
     // Computed

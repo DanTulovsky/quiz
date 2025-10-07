@@ -72,6 +72,9 @@ func cleanupDatabase(db *sql.DB, logger *observability.Logger) {
 		"TRUNCATE TABLE upcoming_notifications CASCADE",
 		"TRUNCATE TABLE sent_notifications CASCADE",
 		"TRUNCATE TABLE daily_question_assignments CASCADE",
+		"TRUNCATE TABLE story_sections CASCADE",
+		"TRUNCATE TABLE story_section_questions CASCADE",
+		"TRUNCATE TABLE stories CASCADE",
 		"TRUNCATE TABLE users CASCADE",
 	}
 

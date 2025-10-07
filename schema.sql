@@ -436,8 +436,7 @@ CREATE TABLE IF NOT EXISTS story_sections (
     generated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     generation_date DATE NOT NULL DEFAULT CURRENT_DATE,
 
-    CONSTRAINT unique_story_section_number UNIQUE (story_id, section_number) DEFERRABLE INITIALLY DEFERRED,
-    CONSTRAINT unique_story_generation_date UNIQUE (story_id, generation_date) DEFERRABLE INITIALLY DEFERRED
+    CONSTRAINT unique_story_section_number UNIQUE (story_id, section_number) DEFERRABLE INITIALLY DEFERRED
 );
 
 -- Story section questions table - stores comprehension questions for each section

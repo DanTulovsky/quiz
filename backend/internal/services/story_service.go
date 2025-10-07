@@ -836,8 +836,9 @@ func (s *StoryService) CanGenerateSection(ctx context.Context, storyID uint) (bo
 		return false, contextutils.WrapErrorf(err, "failed to check existing sections today")
 	}
 
-	// If there's already a section today and no extra generations are allowed, deny generation
-	if sectionCount > 0 && extraGenerationsToday < 1 {
+	// If user has already generated sections today, check the limit
+	// But allow generation if only worker sections exist (extra_generations_today = 0)
+	if extraGenerationsToday >= 1 {
 		return false, nil
 	}
 
@@ -886,11 +887,21 @@ func (s *StoryService) UpdateLastGenerationTime(ctx context.Context, storyID uin
 		}
 	}
 
-	// First generation today, just update timestamp
-	updateQuery := "UPDATE stories SET last_section_generated_at = $1, updated_at = NOW() WHERE id = $2"
-	_, err = s.db.ExecContext(ctx, updateQuery, now, storyID)
-	if err != nil {
-		return contextutils.WrapErrorf(err, "failed to update generation time")
+	// First generation today
+	// If this is a user generation, increment the extra counter (first generation counts as extra for users)
+	if isUserGeneration {
+		updateQuery := "UPDATE stories SET extra_generations_today = extra_generations_today + 1, last_section_generated_at = $1, updated_at = NOW() WHERE id = $2"
+		_, err = s.db.ExecContext(ctx, updateQuery, now, storyID)
+		if err != nil {
+			return contextutils.WrapErrorf(err, "failed to update generation time for first user generation")
+		}
+	} else {
+		// Worker generation - just update timestamp without incrementing extra counter
+		updateQuery := "UPDATE stories SET last_section_generated_at = $1, updated_at = NOW() WHERE id = $2"
+		_, err = s.db.ExecContext(ctx, updateQuery, now, storyID)
+		if err != nil {
+			return contextutils.WrapErrorf(err, "failed to update generation time for first worker generation")
+		}
 	}
 
 	return nil
