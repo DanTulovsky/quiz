@@ -34,7 +34,7 @@ type StoryServiceInterface interface {
 	CreateSectionQuestions(ctx context.Context, sectionID uint, questions []models.StorySectionQuestionData) error
 	GetRandomQuestions(ctx context.Context, sectionID uint, count int) ([]models.StorySectionQuestion, error)
 	CanGenerateSection(ctx context.Context, storyID uint) (bool, error)
-	UpdateLastGenerationTime(ctx context.Context, storyID uint) error
+	UpdateLastGenerationTime(ctx context.Context, storyID uint, isUserGeneration bool) error
 	GetSectionLengthTarget(level string, lengthPref *models.SectionLength) int
 	GetSectionLengthTargetWithLanguage(language, level string, lengthPref *models.SectionLength) int
 	SanitizeInput(input string) string
@@ -845,7 +845,7 @@ func (s *StoryService) CanGenerateSection(ctx context.Context, storyID uint) (bo
 }
 
 // UpdateLastGenerationTime sets the last section generation time for a story
-func (s *StoryService) UpdateLastGenerationTime(ctx context.Context, storyID uint) error {
+func (s *StoryService) UpdateLastGenerationTime(ctx context.Context, storyID uint, isUserGeneration bool) error {
 	// Check if this is an extra generation (second generation today)
 	query := `
 		SELECT last_section_generated_at, extra_generations_today
@@ -863,15 +863,24 @@ func (s *StoryService) UpdateLastGenerationTime(ctx context.Context, storyID uin
 	now := time.Now()
 	today := now.Truncate(24 * time.Hour)
 
-	// If we already generated today, this is an extra generation
+	// If we already generated today, check if this is an extra user generation
 	if lastGen != nil {
 		lastGenTime := lastGen.Truncate(24 * time.Hour)
 		if lastGenTime.Equal(today) {
-			// This is the second generation today, increment extra counter
-			updateQuery := "UPDATE stories SET extra_generations_today = extra_generations_today + 1, last_section_generated_at = $1, updated_at = NOW() WHERE id = $2"
-			_, err = s.db.ExecContext(ctx, updateQuery, now, storyID)
-			if err != nil {
-				return contextutils.WrapErrorf(err, "failed to update generation time for extra generation")
+			// If this is a user generation, increment the extra counter
+			if isUserGeneration {
+				updateQuery := "UPDATE stories SET extra_generations_today = extra_generations_today + 1, last_section_generated_at = $1, updated_at = NOW() WHERE id = $2"
+				_, err = s.db.ExecContext(ctx, updateQuery, now, storyID)
+				if err != nil {
+					return contextutils.WrapErrorf(err, "failed to update generation time for extra generation")
+				}
+			} else {
+				// Worker generation - just update timestamp without incrementing extra counter
+				updateQuery := "UPDATE stories SET last_section_generated_at = $1, updated_at = NOW() WHERE id = $2"
+				_, err = s.db.ExecContext(ctx, updateQuery, now, storyID)
+				if err != nil {
+					return contextutils.WrapErrorf(err, "failed to update generation time for worker generation")
+				}
 			}
 			return nil
 		}

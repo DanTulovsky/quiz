@@ -894,8 +894,8 @@ func (w *Worker) generateStorySection(ctx context.Context, user models.User) err
 		}
 	}
 
-	// Update the story's last generation time
-	if err := w.storyService.UpdateLastGenerationTime(ctx, story.ID); err != nil {
+	// Update the story's last generation time (worker generation)
+	if err := w.storyService.UpdateLastGenerationTime(ctx, story.ID, false); err != nil {
 		w.logger.Warn(ctx, "Failed to update story generation time",
 			map[string]interface{}{
 				"story_id": story.ID,

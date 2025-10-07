@@ -448,8 +448,8 @@ func (h *StoryHandler) GenerateNextSection(c *gin.Context) {
 		}
 	}
 
-	// Update the story's last generation time
-	if err := h.storyService.UpdateLastGenerationTime(ctx, uint(storyID)); err != nil {
+	// Update the story's last generation time (user generation)
+	if err := h.storyService.UpdateLastGenerationTime(ctx, uint(storyID), true); err != nil {
 		h.logger.Warn(ctx, "Failed to update story generation time", map[string]interface{}{
 			"story_id": storyID,
 			"error":    err.Error(),
