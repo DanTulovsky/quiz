@@ -134,42 +134,17 @@ const StoryReadingView: React.FC<StoryReadingViewProps> = ({
             {/* Story Sections */}
             {story.sections.map((section, index) => (
               <div key={section.id || index}>
-                {/* Section Header */}
-                <Group position='apart' align='center' mb='sm'>
-                  <Group spacing='xs'>
-                    <Badge variant='light' color='blue'>
-                      Section {section.section_number}
-                    </Badge>
-                    <Badge variant='outline'>
-                      <Group spacing={4}>
-                        <IconLanguage size={12} />
-                        {section.language_level}
-                      </Group>
-                    </Badge>
-                  </Group>
-
-                  <Badge variant='outline'>
-                    <Group spacing={4}>
-                      <IconFileText size={12} />
-                      {section.word_count} words
-                    </Group>
-                  </Badge>
-                </Group>
-
                 {/* Section Content */}
                 <div
                   style={{
                     lineHeight: 1.7,
                     fontSize: '16px',
                     whiteSpace: 'pre-wrap',
-                    marginBottom: '2rem',
+                    marginBottom: index < story.sections.length - 1 ? '1.5rem' : '1rem',
                   }}
                 >
                   {section.content}
                 </div>
-
-                {/* Divider between sections (except for the last one) */}
-                {index < story.sections.length - 1 && <Divider my='xl' />}
               </div>
             ))}
 
