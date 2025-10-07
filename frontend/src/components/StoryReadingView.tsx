@@ -11,12 +11,7 @@ import {
   Loader,
   Center,
 } from '@mantine/core';
-import {
-  IconBook,
-  IconLanguage,
-  IconFileText,
-  IconRefresh,
-} from '@tabler/icons-react';
+import { IconBook, IconRefresh } from '@tabler/icons-react';
 import { StoryWithSections } from '../api/storyApi';
 
 interface StoryReadingViewProps {
@@ -140,7 +135,8 @@ const StoryReadingView: React.FC<StoryReadingViewProps> = ({
                     lineHeight: 1.7,
                     fontSize: '16px',
                     whiteSpace: 'pre-wrap',
-                    marginBottom: index < story.sections.length - 1 ? '1.5rem' : '1rem',
+                    marginBottom:
+                      index < story.sections.length - 1 ? '1.5rem' : '1rem',
                   }}
                 >
                   {section.content}
