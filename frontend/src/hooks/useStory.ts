@@ -125,6 +125,7 @@ export const useStory = (): UseStoryReturn => {
     // (it might be in the process of being fetched after story creation)
   }, [currentStory, error]);
 
+
   // Polling functions
   const stopPolling = useCallback(() => {
     if (pollingIntervalRef.current) {
@@ -341,6 +342,10 @@ export const useStory = (): UseStoryReturn => {
 
   const generateNextSectionMutation = useMutation({
     mutationFn: apiGenerateNextSection,
+    onMutate: () => {
+      // Set generating state when mutation starts
+      setIsGenerating(true);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['currentStory', user?.id, user?.preferred_language],
@@ -357,12 +362,13 @@ export const useStory = (): UseStoryReturn => {
         message: 'A new section has been added to your story!',
         type: 'success',
       });
+      // Stop generating state on success
+      setIsGenerating(false);
     },
     onError: (error: unknown) => {
       logger.error('Failed to generate next section', error);
 
       let errorMessage = 'Failed to generate next section. Please try again.';
-      let status = 0;
 
       if (error instanceof Error) {
         errorMessage = error.message;
@@ -376,24 +382,15 @@ export const useStory = (): UseStoryReturn => {
         } else if (axiosError.message) {
           errorMessage = axiosError.message;
         }
-        status = axiosError.response?.status || 0;
       }
 
-      // Check if it's a 409 conflict error (generation limit reached)
-      if (status === 409) {
-        setGenerationErrorModal({
-          isOpen: true,
-          errorMessage,
-        });
-        return;
-      }
-
-      // For other errors, show the notification as before
-      showNotificationWithClean({
-        title: 'Error',
-        message: errorMessage,
-        type: 'error',
+      // Show error modal for all generation errors
+      setGenerationErrorModal({
+        isOpen: true,
+        errorMessage,
       });
+      // Stop generating state on error
+      setIsGenerating(false);
     },
   });
 
