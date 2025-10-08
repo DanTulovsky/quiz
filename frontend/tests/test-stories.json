@@ -1,9 +1,15 @@
 {
   "apitestuser2_Active Test Story": {
-    "id": 2,
+    "id": 3,
     "username": "apitestuser2",
     "title": "Active Test Story",
     "status": "active"
+  },
+  "apitestuserstory1_Archived Test Story": {
+    "id": 2,
+    "username": "apitestuserstory1",
+    "title": "Archived Test Story",
+    "status": "archived"
   },
   "apitestuserstory1_test_value": {
     "id": 1,

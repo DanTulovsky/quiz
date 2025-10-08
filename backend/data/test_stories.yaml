@@ -27,6 +27,13 @@ stories:
             correct_answer_index: 2
             explanation: "The story mentions 'The sun was shining brightly'"
 
+  - username: "apitestuserstory1"
+    title: "Archived Test Story"
+    language: "italian"
+    subject: "A story to be archived for deletion testing"
+    author_style: "simple and clear"
+    status: "archived"
+
   - username: "apitestuser2"
     title: "Active Test Story"
     language: "italian"
