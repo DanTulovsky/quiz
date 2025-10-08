@@ -352,6 +352,7 @@ CREATE INDEX IF NOT EXISTS idx_stories_user_status ON stories(user_id, status);
 CREATE INDEX IF NOT EXISTS idx_story_sections_story_id ON story_sections(story_id);
 CREATE INDEX IF NOT EXISTS idx_story_sections_number ON story_sections(story_id, section_number);
 CREATE INDEX IF NOT EXISTS idx_story_sections_date ON story_sections(generation_date);
+CREATE INDEX IF NOT EXISTS idx_story_sections_generated_by ON story_sections(story_id, generated_by, generation_date);
 -- Story section questions table indexes
 CREATE INDEX IF NOT EXISTS idx_story_section_questions_section_id ON story_section_questions(section_id);
 -- Create materialized view for analytics performance
@@ -433,6 +434,7 @@ CREATE TABLE IF NOT EXISTS story_sections (
     content TEXT NOT NULL,
     language_level VARCHAR(5) NOT NULL,
     word_count INTEGER NOT NULL,
+    generated_by VARCHAR(10) NOT NULL DEFAULT 'user' CHECK (generated_by IN ('worker', 'user')),
     generated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     generation_date DATE NOT NULL DEFAULT CURRENT_DATE,
 

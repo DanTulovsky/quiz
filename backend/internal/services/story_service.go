@@ -31,13 +31,13 @@ type StoryServiceInterface interface {
 	FixCurrentStoryConstraint(ctx context.Context) error
 	GetStorySections(ctx context.Context, storyID uint) ([]models.StorySection, error)
 	GetSection(ctx context.Context, sectionID, userID uint) (*models.StorySectionWithQuestions, error)
-	CreateSection(ctx context.Context, storyID uint, content, level string, wordCount int) (*models.StorySection, error)
+	CreateSection(ctx context.Context, storyID uint, content, level string, wordCount int, generatedBy models.GeneratorType) (*models.StorySection, error)
 	GetLatestSection(ctx context.Context, storyID uint) (*models.StorySection, error)
 	GetAllSectionsText(ctx context.Context, storyID uint) (string, error)
 	GetSectionQuestions(ctx context.Context, sectionID uint) ([]models.StorySectionQuestion, error)
 	CreateSectionQuestions(ctx context.Context, sectionID uint, questions []models.StorySectionQuestionData) error
 	GetRandomQuestions(ctx context.Context, sectionID uint, count int) ([]models.StorySectionQuestion, error)
-	UpdateLastGenerationTime(ctx context.Context, storyID uint) error
+	UpdateLastGenerationTime(ctx context.Context, storyID uint, generatorType models.GeneratorType) error
 	GetSectionLengthTarget(level string, lengthPref *models.SectionLength) int
 	GetSectionLengthTargetWithLanguage(language, level string, lengthPref *models.SectionLength) int
 	SanitizeInput(input string) string
@@ -628,7 +628,7 @@ func (s *StoryService) GetStorySections(ctx context.Context, storyID uint) ([]mo
 		var section models.StorySection
 		err := rows.Scan(
 			&section.ID, &section.StoryID, &section.SectionNumber, &section.Content,
-			&section.LanguageLevel, &section.WordCount, &section.GeneratedAt, &section.GenerationDate,
+			&section.LanguageLevel, &section.WordCount, &section.GeneratedBy, &section.GeneratedAt, &section.GenerationDate,
 		)
 		if err != nil {
 			return nil, contextutils.WrapErrorf(err, "failed to scan story section")
@@ -673,7 +673,7 @@ func (s *StoryService) GetSection(ctx context.Context, sectionID, userID uint) (
 }
 
 // CreateSection adds a new section to a story
-func (s *StoryService) CreateSection(ctx context.Context, storyID uint, content, level string, wordCount int) (*models.StorySection, error) {
+func (s *StoryService) CreateSection(ctx context.Context, storyID uint, content, level string, wordCount int, generatedBy models.GeneratorType) (*models.StorySection, error) {
 	// Get the next section number
 	var maxSectionNumber int
 	query := "SELECT COALESCE(MAX(section_number), 0) FROM story_sections WHERE story_id = $1"
@@ -688,6 +688,7 @@ func (s *StoryService) CreateSection(ctx context.Context, storyID uint, content,
 		Content:        content,
 		LanguageLevel:  level,
 		WordCount:      wordCount,
+		GeneratedBy:    generatedBy,
 		GeneratedAt:    time.Now(),
 		GenerationDate: time.Now().Truncate(24 * time.Hour),
 	}
@@ -703,7 +704,7 @@ func (s *StoryService) CreateSection(ctx context.Context, storyID uint, content,
 func (s *StoryService) GetLatestSection(ctx context.Context, storyID uint) (*models.StorySection, error) {
 	query := `
 		SELECT id, story_id, section_number, content, language_level, word_count,
-		       generated_at, generation_date
+		       generated_by, generated_at, generation_date
 		FROM story_sections
 		WHERE story_id = $1
 		ORDER BY section_number DESC
@@ -712,7 +713,7 @@ func (s *StoryService) GetLatestSection(ctx context.Context, storyID uint) (*mod
 	var section models.StorySection
 	err := s.db.QueryRowContext(ctx, query, storyID).Scan(
 		&section.ID, &section.StoryID, &section.SectionNumber, &section.Content,
-		&section.LanguageLevel, &section.WordCount, &section.GeneratedAt, &section.GenerationDate,
+		&section.LanguageLevel, &section.WordCount, &section.GeneratedBy, &section.GeneratedAt, &section.GenerationDate,
 	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -855,8 +856,8 @@ func (s *StoryService) GetRandomQuestions(ctx context.Context, sectionID uint, c
 	return questions, rows.Err()
 }
 
-// canGenerateSection checks if a new section can be generated for a story today
-func (s *StoryService) canGenerateSection(ctx context.Context, storyID uint) (*models.StoryGenerationEligibilityResponse, error) {
+// canGenerateSection checks if a new section can be generated for a story today by a specific generator
+func (s *StoryService) canGenerateSection(ctx context.Context, storyID uint, generatorType models.GeneratorType) (*models.StoryGenerationEligibilityResponse, error) {
 	query := `
 		SELECT status, is_current, last_section_generated_at, extra_generations_today
 		FROM stories
@@ -894,44 +895,53 @@ func (s *StoryService) canGenerateSection(ctx context.Context, storyID uint) (*m
 		}, nil
 	}
 
-	// Check if already generated a section today
+	// Check generation count for today by generator type
 	today := time.Now().Truncate(24 * time.Hour)
 	var sectionCount int
 	sectionQuery := `
 		SELECT COUNT(*)
 		FROM story_sections
-		WHERE story_id = $1 AND generation_date = $2`
+		WHERE story_id = $1 AND generation_date = $2 AND generated_by = $3`
 
-	err = s.db.QueryRowContext(ctx, sectionQuery, storyID, today).Scan(&sectionCount)
+	err = s.db.QueryRowContext(ctx, sectionQuery, storyID, today, generatorType).Scan(&sectionCount)
 	if err != nil {
-		return nil, contextutils.WrapErrorf(err, "failed to check existing sections today")
+		return nil, contextutils.WrapErrorf(err, "failed to check existing sections today by generator type")
 	}
 
-	// If no sections exist today, allow worker generation
-	if sectionCount == 0 {
-		return &models.StoryGenerationEligibilityResponse{
-			CanGenerate: true,
-		}, nil
-	}
-
-	// If sections exist today, check if we've reached the limit
-	// The limit is 1 worker generation + MaxExtraGenerationsPerDay user generations
-	maxTotal := s.config.Story.MaxExtraGenerationsPerDay + 1
-	if extraGenerationsToday >= maxTotal {
+	// Check limits based on generator type
+	switch generatorType {
+	case models.GeneratorTypeWorker:
+		// Worker can generate exactly 1 section per day
+		if sectionCount >= 1 {
+			return &models.StoryGenerationEligibilityResponse{
+				CanGenerate: false,
+				Reason:      "worker has already generated a section today",
+			}, nil
+		}
+	case models.GeneratorTypeUser:
+		// User can generate MaxExtraGenerationsPerDay + 1 sections per day (includes 1 free generation)
+		maxUserGenerations := s.config.Story.MaxExtraGenerationsPerDay + 1
+		if sectionCount >= maxUserGenerations {
+			return &models.StoryGenerationEligibilityResponse{
+				CanGenerate: false,
+				Reason:      "user has reached daily generation limit",
+			}, nil
+		}
+	default:
 		return &models.StoryGenerationEligibilityResponse{
 			CanGenerate: false,
-			Reason:      "daily generation limit reached",
+			Reason:      "invalid generator type",
 		}, nil
 	}
 
-	// Allow generation if we haven't reached the limit
+	// Allow generation if within limits
 	return &models.StoryGenerationEligibilityResponse{
 		CanGenerate: true,
 	}, nil
 }
 
 // UpdateLastGenerationTime sets the last section generation time for a story
-func (s *StoryService) UpdateLastGenerationTime(ctx context.Context, storyID uint) error {
+func (s *StoryService) UpdateLastGenerationTime(ctx context.Context, storyID uint, generatorType models.GeneratorType) error {
 	// Check if this is an extra generation (second generation today)
 	query := `
 		SELECT last_section_generated_at, extra_generations_today
@@ -953,16 +963,25 @@ func (s *StoryService) UpdateLastGenerationTime(ctx context.Context, storyID uin
 		lastGenTime := lastGen.Truncate(24 * time.Hour)
 		today := now.Truncate(24 * time.Hour)
 		if lastGenTime.Equal(today) {
-			// If we haven't reached the limit, increment the counter
-			maxTotal := s.config.Story.MaxExtraGenerationsPerDay + 1
-			if extraGenerationsToday < maxTotal {
-				updateQuery := "UPDATE stories SET extra_generations_today = extra_generations_today + 1, last_section_generated_at = $1, updated_at = NOW() WHERE id = $2"
-				_, err = s.db.ExecContext(ctx, updateQuery, now, storyID)
-				if err != nil {
-					return contextutils.WrapErrorf(err, "failed to update generation time")
+			// Only increment counter for user generations
+			if generatorType == models.GeneratorTypeUser {
+				maxTotal := s.config.Story.MaxExtraGenerationsPerDay + 1
+				if extraGenerationsToday < maxTotal {
+					updateQuery := "UPDATE stories SET extra_generations_today = extra_generations_today + 1, last_section_generated_at = $1, updated_at = NOW() WHERE id = $2"
+					_, err = s.db.ExecContext(ctx, updateQuery, now, storyID)
+					if err != nil {
+						return contextutils.WrapErrorf(err, "failed to update generation time")
+					}
+				} else {
+					// Limit reached - just update timestamp
+					updateQuery := "UPDATE stories SET last_section_generated_at = $1, updated_at = NOW() WHERE id = $2"
+					_, err = s.db.ExecContext(ctx, updateQuery, now, storyID)
+					if err != nil {
+						return contextutils.WrapErrorf(err, "failed to update generation time")
+					}
 				}
 			} else {
-				// Limit reached - just update timestamp
+				// Worker generation - just update timestamp
 				updateQuery := "UPDATE stories SET last_section_generated_at = $1, updated_at = NOW() WHERE id = $2"
 				_, err = s.db.ExecContext(ctx, updateQuery, now, storyID)
 				if err != nil {
@@ -973,12 +992,20 @@ func (s *StoryService) UpdateLastGenerationTime(ctx context.Context, storyID uin
 		}
 	}
 
-	// First generation today
-	// Both worker and user generations count against the daily limit
-	updateQuery := "UPDATE stories SET extra_generations_today = extra_generations_today + 1, last_section_generated_at = $1, updated_at = NOW() WHERE id = $2"
-	_, err = s.db.ExecContext(ctx, updateQuery, now, storyID)
-	if err != nil {
-		return contextutils.WrapErrorf(err, "failed to update generation time for first generation")
+	// First generation today - only increment counter for user generations
+	if generatorType == models.GeneratorTypeUser {
+		updateQuery := "UPDATE stories SET extra_generations_today = extra_generations_today + 1, last_section_generated_at = $1, updated_at = NOW() WHERE id = $2"
+		_, err = s.db.ExecContext(ctx, updateQuery, now, storyID)
+		if err != nil {
+			return contextutils.WrapErrorf(err, "failed to update generation time for first generation")
+		}
+	} else {
+		// Worker generation - just update timestamp
+		updateQuery := "UPDATE stories SET last_section_generated_at = $1, updated_at = NOW() WHERE id = $2"
+		_, err = s.db.ExecContext(ctx, updateQuery, now, storyID)
+		if err != nil {
+			return contextutils.WrapErrorf(err, "failed to update generation time for first generation")
+		}
 	}
 
 	return nil
@@ -1108,14 +1135,14 @@ func (s *StoryService) createStory(ctx context.Context, story *models.Story) err
 func (s *StoryService) createSection(ctx context.Context, section *models.StorySection) error {
 	query := `
 		INSERT INTO story_sections (
-			story_id, section_number, content, language_level, word_count,
+			story_id, section_number, content, language_level, word_count, generated_by,
 			generated_at, generation_date
-		) VALUES ($1, $2, $3, $4, $5, $6, $7)
+		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 		RETURNING id`
 
 	err := s.db.QueryRowContext(ctx, query,
 		section.StoryID, section.SectionNumber, section.Content, section.LanguageLevel,
-		section.WordCount, section.GeneratedAt, section.GenerationDate,
+		section.WordCount, section.GeneratedBy, section.GeneratedAt, section.GenerationDate,
 	).Scan(&section.ID)
 
 	return err
@@ -1135,8 +1162,15 @@ func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID
 		return nil, contextutils.WrapErrorf(err, "failed to get story for generation")
 	}
 
-	// Check if generation is allowed today (needed for both HTTP handler and worker)
-	eligibility, err := s.canGenerateSection(ctx, storyID)
+	// Determine generator type based on context
+	// For now, we'll assume worker if userAIConfig is nil or if it's a worker context
+	generatorType := models.GeneratorTypeUser
+	if userAIConfig == nil {
+		generatorType = models.GeneratorTypeWorker
+	}
+
+	// Check if generation is allowed today by this generator type
+	eligibility, err := s.canGenerateSection(ctx, storyID, generatorType)
 	if err != nil {
 		return nil, contextutils.WrapErrorf(err, "failed to check generation eligibility")
 	}
@@ -1160,20 +1194,19 @@ func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID
 	}
 
 	// Get the user's current language level (handle sql.NullString)
-	userLevel := "B1" // default
-	if user.CurrentLevel.Valid {
-		userLevel = user.CurrentLevel.String
+	if !user.CurrentLevel.Valid {
+		return nil, contextutils.ErrorWithContextf("user level not found")
 	}
 
 	// Determine target length for this user's level
-	targetWords := s.GetSectionLengthTarget(userLevel, story.SectionLengthOverride)
+	targetWords := s.GetSectionLengthTarget(user.CurrentLevel.String, story.SectionLengthOverride)
 
 	// Build the generation request
 	genReq := &models.StoryGenerationRequest{
 		UserID:             userID,
 		StoryID:            storyID,
 		Language:           story.Language,
-		Level:              userLevel,
+		Level:              user.CurrentLevel.String,
 		Title:              story.Title,
 		Subject:            story.Subject,
 		AuthorStyle:        story.AuthorStyle,
@@ -1199,7 +1232,7 @@ func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID
 	wordCount := len(strings.Fields(sectionContent))
 
 	// Create the section in the database
-	section, err := s.CreateSection(ctx, storyID, sectionContent, userLevel, wordCount)
+	section, err := s.CreateSection(ctx, storyID, sectionContent, user.CurrentLevel.String, wordCount, generatorType)
 	if err != nil {
 		return nil, contextutils.WrapErrorf(err, "failed to create story section")
 	}
@@ -1209,7 +1242,7 @@ func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID
 		UserID:        userID,
 		SectionID:     section.ID,
 		Language:      story.Language,
-		Level:         userLevel,
+		Level:         user.CurrentLevel.String,
 		SectionText:   sectionContent,
 		QuestionCount: s.config.Story.QuestionsPerSection,
 	}
@@ -1244,7 +1277,7 @@ func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID
 	}
 
 	// Update the story's last generation time
-	if err := s.UpdateLastGenerationTime(ctx, storyID); err != nil {
+	if err := s.UpdateLastGenerationTime(ctx, storyID, generatorType); err != nil {
 		s.logger.Warn(ctx, "Failed to update story generation time",
 			map[string]interface{}{
 				"story_id": storyID,

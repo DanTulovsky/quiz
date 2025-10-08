@@ -106,8 +106,8 @@ func (m *mockStoryService) GetSection(ctx context.Context, sectionID, userID uin
 	return args.Get(0).(*models.StorySectionWithQuestions), args.Error(1)
 }
 
-func (m *mockStoryService) CreateSection(ctx context.Context, storyID uint, content, level string, wordCount int) (*models.StorySection, error) {
-	args := m.Called(ctx, storyID, content, level, wordCount)
+func (m *mockStoryService) CreateSection(ctx context.Context, storyID uint, content, level string, wordCount int, generatedBy models.GeneratorType) (*models.StorySection, error) {
+	args := m.Called(ctx, storyID, content, level, wordCount, generatedBy)
 	return args.Get(0).(*models.StorySection), args.Error(1)
 }
 
@@ -139,13 +139,13 @@ func (m *mockStoryService) GetRandomQuestions(ctx context.Context, sectionID uin
 	return args.Get(0).([]models.StorySectionQuestion), args.Error(1)
 }
 
-func (m *mockStoryService) CanGenerateSection(ctx context.Context, storyID uint) (*models.StoryGenerationEligibilityResponse, error) {
-	args := m.Called(ctx, storyID)
+func (m *mockStoryService) CanGenerateSection(ctx context.Context, storyID uint, generatorType models.GeneratorType) (*models.StoryGenerationEligibilityResponse, error) {
+	args := m.Called(ctx, storyID, generatorType)
 	return args.Get(0).(*models.StoryGenerationEligibilityResponse), args.Error(1)
 }
 
-func (m *mockStoryService) UpdateLastGenerationTime(ctx context.Context, storyID uint) error {
-	args := m.Called(ctx, storyID)
+func (m *mockStoryService) UpdateLastGenerationTime(ctx context.Context, storyID uint, generatorType models.GeneratorType) error {
+	args := m.Called(ctx, storyID, generatorType)
 	return args.Error(0)
 }
 

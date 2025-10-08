@@ -26,6 +26,15 @@ const (
 	SectionLengthLong   SectionLength = "long"   // SectionLengthLong represents a long section length
 )
 
+// GeneratorType represents who generated a story section
+type GeneratorType string
+
+// Generator type constants
+const (
+	GeneratorTypeWorker GeneratorType = "worker" // GeneratorTypeWorker represents worker-generated sections
+	GeneratorTypeUser   GeneratorType = "user"   // GeneratorTypeUser represents user-generated sections
+)
+
 // Story represents a user-created story with metadata
 type Story struct {
 	ID                     uint           `json:"id"`
@@ -54,14 +63,15 @@ type Story struct {
 
 // StorySection represents an individual section of a story
 type StorySection struct {
-	ID             uint      `json:"id"`
-	StoryID        uint      `json:"story_id"`
-	SectionNumber  int       `json:"section_number"`
-	Content        string    `json:"content"`
-	LanguageLevel  string    `json:"language_level"`
-	WordCount      int       `json:"word_count"`
-	GeneratedAt    time.Time `json:"generated_at"`
-	GenerationDate time.Time `json:"generation_date"`
+	ID             uint          `json:"id"`
+	StoryID        uint          `json:"story_id"`
+	SectionNumber  int           `json:"section_number"`
+	Content        string        `json:"content"`
+	LanguageLevel  string        `json:"language_level"`
+	WordCount      int           `json:"word_count"`
+	GeneratedBy    GeneratorType `json:"generated_by"`
+	GeneratedAt    time.Time     `json:"generated_at"`
+	GenerationDate time.Time     `json:"generation_date"`
 
 	// Relationships
 	Story     Story                  `json:"story,omitempty"`

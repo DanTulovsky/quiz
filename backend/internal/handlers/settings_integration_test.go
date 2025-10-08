@@ -394,7 +394,7 @@ func (suite *SettingsIntegrationTestSuite) TestClearAllStoriesEndpoint() {
 	suite.Require().NoError(err)
 
 	// Add a section and a question to ensure related rows exist
-	section, err := storyService.CreateSection(context.Background(), story.ID, "Section content", "A1", 10)
+	section, err := storyService.CreateSection(context.Background(), story.ID, "Section content", "A1", 10, models.GeneratorTypeUser)
 	suite.Require().NoError(err)
 	questions := []models.StorySectionQuestionData{{QuestionText: "Q1", Options: []string{"a", "b"}, CorrectAnswerIndex: 0, Explanation: stringPtr("")}}
 	err = storyService.CreateSectionQuestions(context.Background(), section.ID, questions)
