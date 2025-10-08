@@ -155,6 +155,101 @@ func TestStoryService_UpdateLastGenerationTime_Integration(t *testing.T) {
 	assert.Equal(t, 2, extraGenerations, "Third generation should not increment extra_generations_today beyond 2")
 }
 
+// TestStoryService_StoryGenerationLimits_Integration tests that story generation is properly limited
+func TestStoryService_StoryGenerationLimits_Integration(t *testing.T) {
+	db := SharedTestDBSetup(t)
+	defer db.Close()
+
+	// Create a config with story limits
+	cfg, err := config.NewConfig()
+	require.NoError(t, err)
+	cfg.Story.MaxArchivedPerUser = 20
+	cfg.Story.GenerationEnabled = true
+	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+	storyService := NewStoryService(db, cfg, logger)
+
+	// Create a test user
+	user := createTestUser(t, db)
+
+	// Clean up any existing stories for the test user
+	_, err = db.ExecContext(context.Background(), "DELETE FROM stories WHERE user_id = $1", user.ID)
+	require.NoError(t, err)
+
+	// Create a story
+	story, err := storyService.CreateStory(context.Background(), uint(user.ID), "italian", &models.CreateStoryRequest{
+		Title:   "Test Story",
+		Subject: stringPtr("Test Subject"),
+	})
+	require.NoError(t, err)
+	require.NotNil(t, story)
+
+	// Test 1: Initially, should be able to generate (no sections exist today)
+	canGenerate, err := storyService.CanGenerateSection(context.Background(), story.ID)
+	require.NoError(t, err)
+	assert.True(t, canGenerate, "Should be able to generate section initially")
+
+	// Test 2: Create first section (worker generation)
+	section, err := storyService.CreateSection(context.Background(), story.ID, "Worker section", "A1", 50)
+	require.NoError(t, err)
+	require.NotNil(t, section)
+
+	// Update generation time for worker generation
+	err = storyService.UpdateLastGenerationTime(context.Background(), story.ID, false) // isUserGeneration = false
+	require.NoError(t, err)
+
+	var extraGenerations int
+	err = db.QueryRowContext(context.Background(), "SELECT extra_generations_today FROM stories WHERE id = $1", story.ID).Scan(&extraGenerations)
+	require.NoError(t, err)
+	assert.Equal(t, 1, extraGenerations, "Worker generation should increment extra_generations_today to 1")
+
+	// Debug: Check what values we have
+	var sectionCount int
+	today := time.Now().Truncate(24 * time.Hour)
+	err = db.QueryRowContext(context.Background(), "SELECT COUNT(*) FROM story_sections WHERE story_id = $1 AND generation_date = $2", story.ID, today).Scan(&sectionCount)
+	require.NoError(t, err)
+
+	err = db.QueryRowContext(context.Background(), "SELECT extra_generations_today FROM stories WHERE id = $1", story.ID).Scan(&extraGenerations)
+	require.NoError(t, err)
+
+	t.Logf("After worker generation: sectionCount=%d, extraGenerationsToday=%d", sectionCount, extraGenerations)
+
+	// Test 3: Should not be able to generate more sections (worker limit reached)
+	canGenerate, err = storyService.CanGenerateSection(context.Background(), story.ID)
+	require.NoError(t, err)
+	t.Logf("CanGenerateSection returned: %v (expected false)", canGenerate)
+	assert.False(t, canGenerate, "Should not be able to generate more sections after worker generation")
+
+	// Test 4: But users should be able to generate one extra section
+	// Reset the story state to simulate a new day or reset the counter
+	_, err = db.ExecContext(context.Background(), "UPDATE stories SET extra_generations_today = 0 WHERE id = $1", story.ID)
+	require.NoError(t, err)
+
+	// Create a section to simulate worker generation
+	_, err = storyService.CreateSection(context.Background(), story.ID, "Worker section", "A1", 50)
+	require.NoError(t, err)
+
+	// Test 5: Should be able to generate user section (extra_generations_today is 0)
+	canGenerate, err = storyService.CanGenerateSection(context.Background(), story.ID)
+	require.NoError(t, err)
+	assert.True(t, canGenerate, "Should be able to generate user section after worker generation")
+
+	// Test 6: Create user section and update generation time
+	_, err = storyService.CreateSection(context.Background(), story.ID, "User section", "A1", 40)
+	require.NoError(t, err)
+
+	err = storyService.UpdateLastGenerationTime(context.Background(), story.ID, true) // isUserGeneration = true
+	require.NoError(t, err)
+
+	err = db.QueryRowContext(context.Background(), "SELECT extra_generations_today FROM stories WHERE id = $1", story.ID).Scan(&extraGenerations)
+	require.NoError(t, err)
+	assert.Equal(t, 1, extraGenerations, "User generation should increment extra_generations_today to 1")
+
+	// Test 7: Should not be able to generate third section (limit reached)
+	canGenerate, err = storyService.CanGenerateSection(context.Background(), story.ID)
+	require.NoError(t, err)
+	assert.False(t, canGenerate, "Should not be able to generate third section after user generation")
+}
+
 // TestStoryService_CreateSection_Integration tests section creation
 func TestStoryService_CreateSection_Integration(t *testing.T) {
 	db := SharedTestDBSetup(t)

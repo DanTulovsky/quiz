@@ -899,12 +899,18 @@ func (s *StoryService) CanGenerateSection(ctx context.Context, storyID uint) (bo
 		return false, contextutils.WrapErrorf(err, "failed to check existing sections today")
 	}
 
-	// Allow generation if no sections exist today (worker generation)
-	if sectionCount == 0 {
+	// If we've already reached the daily limit, block all generation
+	if extraGenerationsToday >= 2 {
+		return false, nil
+	}
+
+	// If no sections exist today and no worker generation has happened, allow worker generation
+	if sectionCount == 0 && extraGenerationsToday == 0 {
 		return true, nil
 	}
 
-	// If sections exist today, only allow user generation if they haven't used their extra generation yet
+	// If sections exist today or worker has already generated, only allow user generation if they haven't used their extra generation yet
+	// Allow 1 extra user generation per day beyond the worker's daily section
 	if extraGenerationsToday < 1 {
 		return true, nil
 	}
@@ -932,16 +938,16 @@ func (s *StoryService) UpdateLastGenerationTime(ctx context.Context, storyID uin
 	now := time.Now()
 	today := now.Truncate(24 * time.Hour)
 
-	// If we already generated today, check if this is an extra generation
+	// Check if we already generated today and update accordingly
 	if lastGen != nil {
 		lastGenTime := lastGen.Truncate(24 * time.Hour)
 		if lastGenTime.Equal(today) {
-			// If this is a user generation and we haven't reached the limit, increment the extra counter
-			if isUserGeneration && extraGenerationsToday < 1 {
+			// If this is a user generation and we haven't reached the limit, increment the counter
+			if isUserGeneration && extraGenerationsToday < 2 {
 				updateQuery := "UPDATE stories SET extra_generations_today = extra_generations_today + 1, last_section_generated_at = $1, updated_at = NOW() WHERE id = $2"
 				_, err = s.db.ExecContext(ctx, updateQuery, now, storyID)
 				if err != nil {
-					return contextutils.WrapErrorf(err, "failed to update generation time for extra user generation")
+					return contextutils.WrapErrorf(err, "failed to update generation time for extra generation")
 				}
 			} else {
 				// Worker generation or user generation limit reached - just update timestamp
@@ -957,7 +963,6 @@ func (s *StoryService) UpdateLastGenerationTime(ctx context.Context, storyID uin
 
 	// First generation today
 	// Both worker and user generations count against the daily limit
-	// Worker gets one free generation per day, users get one additional generation per day
 	updateQuery := "UPDATE stories SET extra_generations_today = extra_generations_today + 1, last_section_generated_at = $1, updated_at = NOW() WHERE id = $2"
 	_, err = s.db.ExecContext(ctx, updateQuery, now, storyID)
 	if err != nil {

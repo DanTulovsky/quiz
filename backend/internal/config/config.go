@@ -350,7 +350,6 @@ type StoryConfig struct {
 	GenerationEnabled   bool                      `json:"generation_enabled" yaml:"generation_enabled"`
 	SectionLengths      StorySectionLengthsConfig `json:"section_lengths" yaml:"section_lengths"`
 	QuestionsPerSection int                       `json:"questions_per_section" yaml:"questions_per_section"`
-	QuestionsShown      int                       `json:"questions_shown" yaml:"questions_shown"`
 }
 
 // NewConfig loads configuration from YAML file first, then overrides with environment variables

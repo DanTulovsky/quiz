@@ -172,8 +172,7 @@ story:
           long: 120
 
   # Number of comprehension questions
-  questions_per_section: 12  # Generate this many
-  questions_shown: 5        # Show this many randomly
+  questions_per_section: 3  # Generate this many
 
 # OpenTelemetry Configuration
 #
