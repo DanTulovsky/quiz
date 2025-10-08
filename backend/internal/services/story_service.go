@@ -612,7 +612,7 @@ func (s *StoryService) DeleteAllStoriesForUser(ctx context.Context, userID uint)
 func (s *StoryService) GetStorySections(ctx context.Context, storyID uint) ([]models.StorySection, error) {
 	query := `
 		SELECT id, story_id, section_number, content, language_level, word_count,
-		       generated_at, generation_date
+		       generated_by, generated_at, generation_date
 		FROM story_sections
 		WHERE story_id = $1
 		ORDER BY section_number ASC`
@@ -643,7 +643,7 @@ func (s *StoryService) GetStorySections(ctx context.Context, storyID uint) ([]mo
 func (s *StoryService) GetSection(ctx context.Context, sectionID, userID uint) (*models.StorySectionWithQuestions, error) {
 	query := `
 		SELECT ss.id, ss.story_id, ss.section_number, ss.content, ss.language_level, ss.word_count,
-		       ss.generated_at, ss.generation_date
+		       ss.generated_by, ss.generated_at, ss.generation_date
 		FROM story_sections ss
 		JOIN stories s ON ss.story_id = s.id
 		WHERE ss.id = $1 AND s.user_id = $2`
@@ -651,7 +651,7 @@ func (s *StoryService) GetSection(ctx context.Context, sectionID, userID uint) (
 	var section models.StorySection
 	err := s.db.QueryRowContext(ctx, query, sectionID, userID).Scan(
 		&section.ID, &section.StoryID, &section.SectionNumber, &section.Content,
-		&section.LanguageLevel, &section.WordCount, &section.GeneratedAt, &section.GenerationDate,
+		&section.LanguageLevel, &section.WordCount, &section.GeneratedBy, &section.GeneratedAt, &section.GenerationDate,
 	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
