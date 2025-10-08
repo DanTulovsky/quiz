@@ -1568,6 +1568,19 @@ export interface CreateStoryRequest {
   section_length_override?: CreateStoryRequestSectionLengthOverride;
 }
 
+/**
+ * Empty request body for endpoints that don't require request data
+ */
+export interface EmptyRequest { [key: string]: unknown }
+
+export interface UserIdRequest {
+  /**
+   * ID of the user
+   * @minimum 1
+   */
+  user_id: number;
+}
+
 export type GetV1AuthSignupStatus200 = {
   /** Whether user signups are currently disabled */
   signups_disabled: boolean;
@@ -1841,18 +1854,8 @@ export type GetV1AdminWorkerUsers200 = {
   users?: GetV1AdminWorkerUsers200UsersItem[];
 };
 
-export type PostV1AdminWorkerUsersPauseBody = {
-  /** ID of the user to pause */
-  user_id: number;
-};
-
 export type PostV1AdminWorkerUsersPause200 = {
   message?: string;
-};
-
-export type PostV1AdminWorkerUsersResumeBody = {
-  /** ID of the user to resume */
-  user_id: number;
 };
 
 export type PostV1AdminWorkerUsersResume200 = {
@@ -2243,8 +2246,6 @@ export type GetV1StoryParams = {
  */
 include_archived?: boolean;
 };
-
-export type PostV1StoryIdGenerateBody = { [key: string]: unknown };
 
 /**
  * Health status of the service
@@ -5895,7 +5896,7 @@ export function useGetV1AdminWorkerUsers<TData = Awaited<ReturnType<typeof getV1
  * @summary Pause worker for a specific user
  */
 export const postV1AdminWorkerUsersPause = (
-    postV1AdminWorkerUsersPauseBody: PostV1AdminWorkerUsersPauseBody,
+    userIdRequest: UserIdRequest,
  options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
@@ -5903,7 +5904,7 @@ export const postV1AdminWorkerUsersPause = (
       return customInstance<PostV1AdminWorkerUsersPause200>(
       {url: `/v1/admin/worker/users/pause`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
-      data: postV1AdminWorkerUsersPauseBody, signal
+      data: userIdRequest, signal
     },
       options);
     }
@@ -5911,8 +5912,8 @@ export const postV1AdminWorkerUsersPause = (
 
 
 export const getPostV1AdminWorkerUsersPauseMutationOptions = <TError = ErrorResponse | ErrorResponse | ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerUsersPause>>, TError,{data: PostV1AdminWorkerUsersPauseBody}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerUsersPause>>, TError,{data: PostV1AdminWorkerUsersPauseBody}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerUsersPause>>, TError,{data: UserIdRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerUsersPause>>, TError,{data: UserIdRequest}, TContext> => {
 
 const mutationKey = ['postV1AdminWorkerUsersPause'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -5924,7 +5925,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AdminWorkerUsersPause>>, {data: PostV1AdminWorkerUsersPauseBody}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AdminWorkerUsersPause>>, {data: UserIdRequest}> = (props) => {
           const {data} = props ?? {};
 
           return  postV1AdminWorkerUsersPause(data,requestOptions)
@@ -5936,18 +5937,18 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PostV1AdminWorkerUsersPauseMutationResult = NonNullable<Awaited<ReturnType<typeof postV1AdminWorkerUsersPause>>>
-    export type PostV1AdminWorkerUsersPauseMutationBody = PostV1AdminWorkerUsersPauseBody
+    export type PostV1AdminWorkerUsersPauseMutationBody = UserIdRequest
     export type PostV1AdminWorkerUsersPauseMutationError = ErrorResponse | ErrorResponse | ErrorResponse
 
     /**
  * @summary Pause worker for a specific user
  */
 export const usePostV1AdminWorkerUsersPause = <TError = ErrorResponse | ErrorResponse | ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerUsersPause>>, TError,{data: PostV1AdminWorkerUsersPauseBody}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerUsersPause>>, TError,{data: UserIdRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1AdminWorkerUsersPause>>,
         TError,
-        {data: PostV1AdminWorkerUsersPauseBody},
+        {data: UserIdRequest},
         TContext
       > => {
 
@@ -5961,7 +5962,7 @@ export const usePostV1AdminWorkerUsersPause = <TError = ErrorResponse | ErrorRes
  * @summary Resume worker for a specific user
  */
 export const postV1AdminWorkerUsersResume = (
-    postV1AdminWorkerUsersResumeBody: PostV1AdminWorkerUsersResumeBody,
+    userIdRequest: UserIdRequest,
  options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
@@ -5969,7 +5970,7 @@ export const postV1AdminWorkerUsersResume = (
       return customInstance<PostV1AdminWorkerUsersResume200>(
       {url: `/v1/admin/worker/users/resume`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
-      data: postV1AdminWorkerUsersResumeBody, signal
+      data: userIdRequest, signal
     },
       options);
     }
@@ -5977,8 +5978,8 @@ export const postV1AdminWorkerUsersResume = (
 
 
 export const getPostV1AdminWorkerUsersResumeMutationOptions = <TError = ErrorResponse | ErrorResponse | ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerUsersResume>>, TError,{data: PostV1AdminWorkerUsersResumeBody}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerUsersResume>>, TError,{data: PostV1AdminWorkerUsersResumeBody}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerUsersResume>>, TError,{data: UserIdRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerUsersResume>>, TError,{data: UserIdRequest}, TContext> => {
 
 const mutationKey = ['postV1AdminWorkerUsersResume'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -5990,7 +5991,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AdminWorkerUsersResume>>, {data: PostV1AdminWorkerUsersResumeBody}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AdminWorkerUsersResume>>, {data: UserIdRequest}> = (props) => {
           const {data} = props ?? {};
 
           return  postV1AdminWorkerUsersResume(data,requestOptions)
@@ -6002,18 +6003,18 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PostV1AdminWorkerUsersResumeMutationResult = NonNullable<Awaited<ReturnType<typeof postV1AdminWorkerUsersResume>>>
-    export type PostV1AdminWorkerUsersResumeMutationBody = PostV1AdminWorkerUsersResumeBody
+    export type PostV1AdminWorkerUsersResumeMutationBody = UserIdRequest
     export type PostV1AdminWorkerUsersResumeMutationError = ErrorResponse | ErrorResponse | ErrorResponse
 
     /**
  * @summary Resume worker for a specific user
  */
 export const usePostV1AdminWorkerUsersResume = <TError = ErrorResponse | ErrorResponse | ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerUsersResume>>, TError,{data: PostV1AdminWorkerUsersResumeBody}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerUsersResume>>, TError,{data: UserIdRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1AdminWorkerUsersResume>>,
         TError,
-        {data: PostV1AdminWorkerUsersResumeBody},
+        {data: UserIdRequest},
         TContext
       > => {
 
@@ -8768,7 +8769,7 @@ export const useDeleteV1StoryId = <TError = ErrorResponse | ErrorResponse | Erro
  */
 export const postV1StoryIdGenerate = (
     id: number,
-    postV1StoryIdGenerateBody?: PostV1StoryIdGenerateBody,
+    emptyRequest?: EmptyRequest,
  options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
@@ -8776,7 +8777,7 @@ export const postV1StoryIdGenerate = (
       return customInstance<StorySection>(
       {url: `/v1/story/${id}/generate`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
-      data: postV1StoryIdGenerateBody, signal
+      data: emptyRequest, signal
     },
       options);
     }
@@ -8784,8 +8785,8 @@ export const postV1StoryIdGenerate = (
 
 
 export const getPostV1StoryIdGenerateMutationOptions = <TError = ErrorResponse | ErrorResponse | ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdGenerate>>, TError,{id: number;data: PostV1StoryIdGenerateBody}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdGenerate>>, TError,{id: number;data: PostV1StoryIdGenerateBody}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdGenerate>>, TError,{id: number;data: EmptyRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdGenerate>>, TError,{id: number;data: EmptyRequest}, TContext> => {
 
 const mutationKey = ['postV1StoryIdGenerate'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -8797,7 +8798,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1StoryIdGenerate>>, {id: number;data: PostV1StoryIdGenerateBody}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1StoryIdGenerate>>, {id: number;data: EmptyRequest}> = (props) => {
           const {id,data} = props ?? {};
 
           return  postV1StoryIdGenerate(id,data,requestOptions)
@@ -8809,18 +8810,18 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PostV1StoryIdGenerateMutationResult = NonNullable<Awaited<ReturnType<typeof postV1StoryIdGenerate>>>
-    export type PostV1StoryIdGenerateMutationBody = PostV1StoryIdGenerateBody
+    export type PostV1StoryIdGenerateMutationBody = EmptyRequest
     export type PostV1StoryIdGenerateMutationError = ErrorResponse | ErrorResponse | ErrorResponse
 
     /**
  * @summary Generate next section
  */
 export const usePostV1StoryIdGenerate = <TError = ErrorResponse | ErrorResponse | ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdGenerate>>, TError,{id: number;data: PostV1StoryIdGenerateBody}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdGenerate>>, TError,{id: number;data: EmptyRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1StoryIdGenerate>>,
         TError,
-        {id: number;data: PostV1StoryIdGenerateBody},
+        {id: number;data: EmptyRequest},
         TContext
       > => {
 

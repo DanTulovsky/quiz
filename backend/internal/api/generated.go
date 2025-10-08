@@ -363,6 +363,9 @@ type DashboardUser struct {
 	User          *UserProfile       `json:"user,omitempty"`
 }
 
+// EmptyRequest Empty request body for endpoints that don't require request data
+type EmptyRequest = map[string]interface{}
+
 // ErrorResponse defines model for ErrorResponse.
 type ErrorResponse struct {
 	Details *string `json:"details,omitempty"`
@@ -965,6 +968,12 @@ type UserCreateRequest struct {
 	Username string `json:"username"`
 }
 
+// UserIdRequest defines model for UserIdRequest.
+type UserIdRequest struct {
+	// UserId ID of the user
+	UserId int64 `json:"user_id"`
+}
+
 // UserLearningPreferences defines model for UserLearningPreferences.
 type UserLearningPreferences struct {
 	// DailyGoal User-configurable number of daily questions
@@ -1424,18 +1433,6 @@ type GetV1AdminWorkerNotificationsSentParamsNotificationType string
 // GetV1AdminWorkerNotificationsSentParamsStatus defines parameters for GetV1AdminWorkerNotificationsSent.
 type GetV1AdminWorkerNotificationsSentParamsStatus string
 
-// PostV1AdminWorkerUsersPauseJSONBody defines parameters for PostV1AdminWorkerUsersPause.
-type PostV1AdminWorkerUsersPauseJSONBody struct {
-	// UserId ID of the user to pause
-	UserId int `json:"user_id"`
-}
-
-// PostV1AdminWorkerUsersResumeJSONBody defines parameters for PostV1AdminWorkerUsersResume.
-type PostV1AdminWorkerUsersResumeJSONBody struct {
-	// UserId ID of the user to resume
-	UserId int `json:"user_id"`
-}
-
 // GetV1AuthGoogleCallbackParams defines parameters for GetV1AuthGoogleCallback.
 type GetV1AuthGoogleCallbackParams struct {
 	// Code Authorization code from Google
@@ -1490,9 +1487,6 @@ type GetV1StoryParams struct {
 	IncludeArchived *bool `form:"include_archived,omitempty" json:"include_archived,omitempty"`
 }
 
-// PostV1StoryIdGenerateJSONBody defines parameters for PostV1StoryIdGenerate.
-type PostV1StoryIdGenerateJSONBody = map[string]interface{}
-
 // PutV1AdminBackendQuestionsIdJSONRequestBody defines body for PutV1AdminBackendQuestionsId for application/json ContentType.
 type PutV1AdminBackendQuestionsIdJSONRequestBody PutV1AdminBackendQuestionsIdJSONBody
 
@@ -1521,10 +1515,10 @@ type PostV1AdminBackendUserzIdRolesJSONRequestBody PostV1AdminBackendUserzIdRole
 type PostV1AdminWorkerNotificationsForceSendJSONRequestBody PostV1AdminWorkerNotificationsForceSendJSONBody
 
 // PostV1AdminWorkerUsersPauseJSONRequestBody defines body for PostV1AdminWorkerUsersPause for application/json ContentType.
-type PostV1AdminWorkerUsersPauseJSONRequestBody PostV1AdminWorkerUsersPauseJSONBody
+type PostV1AdminWorkerUsersPauseJSONRequestBody = UserIdRequest
 
 // PostV1AdminWorkerUsersResumeJSONRequestBody defines body for PostV1AdminWorkerUsersResume for application/json ContentType.
-type PostV1AdminWorkerUsersResumeJSONRequestBody PostV1AdminWorkerUsersResumeJSONBody
+type PostV1AdminWorkerUsersResumeJSONRequestBody = UserIdRequest
 
 // PostV1AudioSpeechJSONRequestBody defines body for PostV1AudioSpeech for application/json ContentType.
 type PostV1AudioSpeechJSONRequestBody = TTSRequest
@@ -1563,7 +1557,7 @@ type PostV1SettingsTestAiJSONRequestBody = TestAIRequest
 type PostV1StoryJSONRequestBody = CreateStoryRequest
 
 // PostV1StoryIdGenerateJSONRequestBody defines body for PostV1StoryIdGenerate for application/json ContentType.
-type PostV1StoryIdGenerateJSONRequestBody = PostV1StoryIdGenerateJSONBody
+type PostV1StoryIdGenerateJSONRequestBody = EmptyRequest
 
 // PutV1UserzProfileJSONRequestBody defines body for PutV1UserzProfile for application/json ContentType.
 type PutV1UserzProfileJSONRequestBody = UserUpdateRequest

@@ -1664,13 +1664,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - user_id
-              properties:
-                user_id:
-                  type: integer
-                  description: ID of the user to pause
+              $ref: "#/components/schemas/UserIdRequest"
       responses:
         "200":
           description: User paused successfully
@@ -1713,13 +1707,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - user_id
-              properties:
-                user_id:
-                  type: integer
-                  description: ID of the user to resume
+              $ref: "#/components/schemas/UserIdRequest"
       responses:
         "200":
           description: User resumed successfully
@@ -3519,7 +3507,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: "#/components/schemas/EmptyRequest"
       responses:
         "201":
           description: Section generated successfully
@@ -5748,6 +5736,21 @@ components:
           type: string
           enum: [short, medium, long]
           example: "medium"
+
+    EmptyRequest:
+      type: object
+      description: Empty request body for endpoints that don't require request data
+
+    UserIdRequest:
+      type: object
+      required:
+        - user_id
+      properties:
+        user_id:
+          type: integer
+          format: int64
+          minimum: 1
+          description: ID of the user
 
   securitySchemes:
     cookieAuth:
