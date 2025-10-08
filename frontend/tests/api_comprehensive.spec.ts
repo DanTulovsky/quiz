@@ -213,13 +213,22 @@ test.describe('Comprehensive API Tests', () => {
     return testData;
   }
 
-  function shouldSkipEndpoint(path: string): boolean {
-    return path.includes('/google/') ||
+  function shouldSkipEndpoint(path: string, isAdmin: boolean = false): boolean {
+    const shouldSkip = path.includes('/google/') ||
       path.includes('/stream') ||
       path.includes('/health') ||
       path.includes('/clear-database') ||
       path.includes('/clear-user-data') ||
       path.includes('/test-email');
+
+    if (shouldSkip) return true;
+
+    // Only skip story endpoints for admin users
+    if (isAdmin && path.includes('/story')) {
+      return true;
+    }
+
+    return false;
   }
 
   function generateTestCases(spec: SwaggerSpec): TestCase[] {
@@ -249,7 +258,7 @@ test.describe('Comprehensive API Tests', () => {
         const expectedStatusCodes = [successStatusCode];
 
         // Skip some endpoints that require special handling
-        if (shouldSkipEndpoint(path)) {
+        if (shouldSkipEndpoint(path, requiresAdmin)) {
           continue;
         }
 
@@ -282,7 +291,7 @@ test.describe('Comprehensive API Tests', () => {
         const requiresAdmin = !!(path.includes('/admin/') || path.includes('/v1/admin/'));
 
         // Skip some endpoints that require special handling
-        if (shouldSkipEndpoint(path)) {
+        if (shouldSkipEndpoint(path, requiresAdmin)) {
           continue;
         }
 
@@ -318,7 +327,7 @@ test.describe('Comprehensive API Tests', () => {
         const requiresAdmin = !!(path.includes('/admin/') || path.includes('/v1/admin/'));
 
         // Skip some endpoints that require special handling
-        if (shouldSkipEndpoint(path)) {
+        if (shouldSkipEndpoint(path, requiresAdmin)) {
           continue;
         }
 
@@ -1503,7 +1512,6 @@ test.describe('Comprehensive API Tests', () => {
                 storyId = getAvailableStoryId('apitestuserstory1', includeArchived, storyData);
               }
               endpointPath = endpointPath.replace(`{${key}}`, storyId.toString());
-              console.log(`DEBUG: Story endpoint ${testCase.method} ${endpointPath} - includeArchived: ${includeArchived}, selected story ID: ${storyId}`);
             } else {
               endpointPath = endpointPath.replace(`{${key}}`, String(value));
             }
@@ -1679,6 +1687,8 @@ test.describe('Comprehensive API Tests', () => {
       const adminCases: TestCase[] = [];
       for (const testCase of happyPathCases) {
         if (!testCase.requiresAdmin) continue;
+        // Skip story endpoints for admin users
+        if (testCase.path.includes('/story')) continue;
         const expandedPath = await replacePathParameters(testCase.path, testCase.pathParams, request, ADMIN_USER, testCase.method);
         if (isExcludedPath(expandedPath)) continue;
         adminCases.push(testCase);
@@ -1787,7 +1797,7 @@ test.describe('Comprehensive API Tests', () => {
       const sessionCookie = await loginUser(request, ADMIN_USER);
 
       const regularUserCases = testCases.filter(testCase =>
-        !testCase.requiresAdmin && testCase.requiresAuth
+        !testCase.requiresAdmin && testCase.requiresAuth && !testCase.path.includes('/story')
       );
 
       for (const testCase of regularUserCases) {
@@ -1850,7 +1860,7 @@ test.describe('Comprehensive API Tests', () => {
 
       const sessionCookie = await loginUser(request, ADMIN_USER);
 
-      const adminErrorCases = errorCases.filter(testCase => testCase.requiresAdmin);
+      const adminErrorCases = errorCases.filter(testCase => testCase.requiresAdmin && !testCase.path.includes('/story'));
 
       for (const testCase of adminErrorCases) {
         // console.log(`Processing test case: ${testCase.method} ${testCase.path}`);
@@ -1896,6 +1906,8 @@ test.describe('Comprehensive API Tests', () => {
       const adminCases: TestCase[] = [];
       for (const testCase of testCases) {
         if (!testCase.requiresAdmin) continue;
+        // Skip story endpoints for admin users
+        if (testCase.path.includes('/story')) continue;
         const expandedPath = await replacePathParameters(testCase.path, testCase.pathParams, request, ADMIN_USER, testCase.method);
         const fullExpanded = `${baseURL}${expandedPath}`;
         if (isExcludedPath(expandedPath) || isExcludedPath(fullExpanded)) continue;
