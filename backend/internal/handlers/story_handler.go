@@ -55,7 +55,7 @@ func (h *StoryHandler) CreateStory(c *gin.Context) {
 
 	userID, exists := GetUserIDFromSession(c)
 	if !exists {
-		c.JSON(http.StatusUnauthorized, api.ErrorResponse{Error: stringPtr("unauthorized")})
+		StandardizeHTTPError(c, http.StatusUnauthorized, "Unauthorized", "User session not found or invalid")
 		return
 	}
 
@@ -64,7 +64,7 @@ func (h *StoryHandler) CreateStory(c *gin.Context) {
 	var req models.CreateStoryRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		h.logger.Error(ctx, "Failed to bind story creation request", err, nil)
-		c.JSON(http.StatusBadRequest, api.ErrorResponse{Error: stringPtr("invalid request format")})
+		StandardizeHTTPError(c, http.StatusBadRequest, "Invalid request format", err.Error())
 		return
 	}
 
@@ -74,7 +74,7 @@ func (h *StoryHandler) CreateStory(c *gin.Context) {
 		h.logger.Error(ctx, "Failed to get user", err, map[string]interface{}{
 			"user_id": userID,
 		})
-		c.JSON(http.StatusInternalServerError, api.ErrorResponse{Error: stringPtr("failed to get user information")})
+		StandardizeHTTPError(c, http.StatusInternalServerError, "Failed to get user information", err.Error())
 		return
 	}
 
@@ -93,11 +93,11 @@ func (h *StoryHandler) CreateStory(c *gin.Context) {
 
 		// Handle specific error cases
 		if strings.Contains(err.Error(), "maximum archived stories limit reached") {
-			c.JSON(http.StatusForbidden, api.ErrorResponse{Error: stringPtr(err.Error())})
+			StandardizeHTTPError(c, http.StatusForbidden, "Maximum archived stories limit reached", err.Error())
 			return
 		}
 
-		c.JSON(http.StatusInternalServerError, api.ErrorResponse{Error: stringPtr("failed to create story")})
+		StandardizeHTTPError(c, http.StatusInternalServerError, "Failed to create story", err.Error())
 		return
 	}
 
@@ -119,7 +119,7 @@ func (h *StoryHandler) GetUserStories(c *gin.Context) {
 
 	userID, exists := GetUserIDFromSession(c)
 	if !exists {
-		c.JSON(http.StatusUnauthorized, api.ErrorResponse{Error: stringPtr("unauthorized")})
+		StandardizeHTTPError(c, http.StatusUnauthorized, "Unauthorized", "User session not found or invalid")
 		return
 	}
 
@@ -132,7 +132,7 @@ func (h *StoryHandler) GetUserStories(c *gin.Context) {
 			"user_id":          uint(userID),
 			"include_archived": includeArchived,
 		})
-		c.JSON(http.StatusInternalServerError, api.ErrorResponse{Error: stringPtr("failed to get stories")})
+		StandardizeHTTPError(c, http.StatusInternalServerError, "Failed to get stories", err.Error())
 		return
 	}
 
@@ -146,7 +146,7 @@ func (h *StoryHandler) GetCurrentStory(c *gin.Context) {
 
 	userID, exists := GetUserIDFromSession(c)
 	if !exists {
-		c.JSON(http.StatusUnauthorized, api.ErrorResponse{Error: stringPtr("unauthorized")})
+		StandardizeHTTPError(c, http.StatusUnauthorized, "Unauthorized", "User session not found or invalid")
 		return
 	}
 
@@ -155,12 +155,12 @@ func (h *StoryHandler) GetCurrentStory(c *gin.Context) {
 		h.logger.Error(ctx, "Failed to get current story", err, map[string]interface{}{
 			"user_id": uint(userID),
 		})
-		c.JSON(http.StatusInternalServerError, api.ErrorResponse{Error: stringPtr("failed to get current story")})
+		StandardizeHTTPError(c, http.StatusInternalServerError, "Failed to get current story", err.Error())
 		return
 	}
 
 	if story == nil {
-		c.JSON(http.StatusNotFound, api.ErrorResponse{Error: stringPtr("no current story found")})
+		StandardizeHTTPError(c, http.StatusNotFound, "No current story found", "User has no active story")
 		return
 	}
 
@@ -202,14 +202,14 @@ func (h *StoryHandler) GetStory(c *gin.Context) {
 
 	userID, exists := GetUserIDFromSession(c)
 	if !exists {
-		c.JSON(http.StatusUnauthorized, api.ErrorResponse{Error: stringPtr("unauthorized")})
+		StandardizeHTTPError(c, http.StatusUnauthorized, "Unauthorized", "User session not found or invalid")
 		return
 	}
 
 	storyIDStr := c.Param("id")
 	storyID, err := strconv.ParseUint(storyIDStr, 10, 32)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, api.ErrorResponse{Error: stringPtr("invalid story ID")})
+		StandardizeHTTPError(c, http.StatusBadRequest, "Invalid story ID", "Story ID must be a valid number")
 		return
 	}
 
@@ -221,11 +221,11 @@ func (h *StoryHandler) GetStory(c *gin.Context) {
 		})
 
 		if strings.Contains(err.Error(), "not found") || strings.Contains(err.Error(), "unauthorized") {
-			c.JSON(http.StatusNotFound, api.ErrorResponse{Error: stringPtr("story not found")})
+			StandardizeHTTPError(c, http.StatusNotFound, "Story not found", "The requested story does not exist or you don't have access to it")
 			return
 		}
 
-		c.JSON(http.StatusInternalServerError, api.ErrorResponse{Error: stringPtr("failed to get story")})
+		StandardizeHTTPError(c, http.StatusInternalServerError, "Failed to get story", err.Error())
 		return
 	}
 
@@ -241,14 +241,14 @@ func (h *StoryHandler) GetSection(c *gin.Context) {
 
 	userID, exists := GetUserIDFromSession(c)
 	if !exists {
-		c.JSON(http.StatusUnauthorized, api.ErrorResponse{Error: stringPtr("unauthorized")})
+		StandardizeHTTPError(c, http.StatusUnauthorized, "Unauthorized", "User session not found or invalid")
 		return
 	}
 
 	sectionIDStr := c.Param("id")
 	sectionID, err := strconv.ParseUint(sectionIDStr, 10, 32)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, api.ErrorResponse{Error: stringPtr("invalid section ID")})
+		StandardizeHTTPError(c, http.StatusBadRequest, "Invalid section ID", "Section ID must be a valid number")
 		return
 	}
 
@@ -260,11 +260,11 @@ func (h *StoryHandler) GetSection(c *gin.Context) {
 		})
 
 		if strings.Contains(err.Error(), "not found") || strings.Contains(err.Error(), "unauthorized") {
-			c.JSON(http.StatusNotFound, api.ErrorResponse{Error: stringPtr("section not found")})
+			StandardizeHTTPError(c, http.StatusNotFound, "Section not found", "The requested section does not exist or you don't have access to it")
 			return
 		}
 
-		c.JSON(http.StatusInternalServerError, api.ErrorResponse{Error: stringPtr("failed to get section")})
+		StandardizeHTTPError(c, http.StatusInternalServerError, "Failed to get section", err.Error())
 		return
 	}
 
@@ -280,14 +280,14 @@ func (h *StoryHandler) GenerateNextSection(c *gin.Context) {
 
 	userID, exists := GetUserIDFromSession(c)
 	if !exists {
-		c.JSON(http.StatusUnauthorized, api.ErrorResponse{Error: stringPtr("unauthorized")})
+		StandardizeHTTPError(c, http.StatusUnauthorized, "Unauthorized", "User session not found or invalid")
 		return
 	}
 
 	storyIDStr := c.Param("id")
 	storyID, err := strconv.ParseUint(storyIDStr, 10, 32)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, api.ErrorResponse{Error: stringPtr("invalid story ID")})
+		StandardizeHTTPError(c, http.StatusBadRequest, "Invalid story ID", "Story ID must be a valid number")
 		return
 	}
 
@@ -299,7 +299,7 @@ func (h *StoryHandler) GenerateNextSection(c *gin.Context) {
 		h.logger.Error(ctx, "Failed to check generation eligibility", err, map[string]interface{}{
 			"story_id": storyID,
 		})
-		c.JSON(http.StatusInternalServerError, api.ErrorResponse{Error: stringPtr("failed to check generation eligibility")})
+		StandardizeHTTPError(c, http.StatusInternalServerError, "Failed to check generation eligibility", err.Error())
 		return
 	}
 
@@ -307,23 +307,23 @@ func (h *StoryHandler) GenerateNextSection(c *gin.Context) {
 		// Provide more specific error messages
 		story, err := h.storyService.GetStory(ctx, uint(storyID), uint(userID))
 		if err != nil {
-			c.JSON(http.StatusConflict, api.ErrorResponse{Error: stringPtr("cannot generate section: story is not active or you have reached the daily generation limit")})
+			StandardizeHTTPError(c, http.StatusConflict, "Cannot generate section", "Story is not active or you have reached the daily generation limit")
 			return
 		}
 
 		// Check if story is not active
 		if story.Status != models.StoryStatusActive || !story.IsCurrent {
-			c.JSON(http.StatusConflict, api.ErrorResponse{Error: stringPtr("cannot generate section: story is not active")})
+			StandardizeHTTPError(c, http.StatusConflict, "Cannot generate section", "Story is not active")
 			return
 		}
 
 		// Check if daily generation limit is reached (no extra generations available)
-		if story.ExtraGenerationsToday > h.cfg.Story.MaxExtraGenerationsPerDay {
-			c.JSON(http.StatusConflict, api.ErrorResponse{Error: stringPtr("daily generation limit reached: you have already generated a section today for this story. Please try again tomorrow.")})
+		if story.ExtraGenerationsToday >= h.cfg.Story.MaxExtraGenerationsPerDay {
+			StandardizeHTTPError(c, http.StatusConflict, "Daily generation limit reached", "You have already generated a section today for this story. Please try again tomorrow.")
 			return
 		}
 
-		c.JSON(http.StatusConflict, api.ErrorResponse{Error: stringPtr("cannot generate section: please try again tomorrow")})
+		StandardizeHTTPError(c, http.StatusConflict, "Cannot generate section", "Please try again tomorrow")
 		return
 	}
 
@@ -333,7 +333,7 @@ func (h *StoryHandler) GenerateNextSection(c *gin.Context) {
 		h.logger.Error(ctx, "Failed to get user for generation", err, map[string]interface{}{
 			"user_id": uint(userID),
 		})
-		c.JSON(http.StatusInternalServerError, api.ErrorResponse{Error: stringPtr("failed to get user information")})
+		StandardizeHTTPError(c, http.StatusInternalServerError, "Failed to get user information", err.Error())
 		return
 	}
 
@@ -349,7 +349,7 @@ func (h *StoryHandler) GenerateNextSection(c *gin.Context) {
 				"story_id": storyID,
 				"user_id":  uint(userID),
 			})
-			c.JSON(http.StatusConflict, api.ErrorResponse{Error: stringPtr("daily generation limit reached: you have already generated a section today for this story. Please try again tomorrow.")})
+			StandardizeHTTPError(c, http.StatusConflict, "Daily generation limit reached", "You have already generated a section today for this story. Please try again tomorrow.")
 			return
 		}
 
@@ -360,11 +360,11 @@ func (h *StoryHandler) GenerateNextSection(c *gin.Context) {
 
 		// Check if this is a constraint violation (duplicate generation today)
 		if pqErr, ok := err.(*pq.Error); ok && pqErr.Code == "23505" {
-			c.JSON(http.StatusConflict, api.ErrorResponse{Error: stringPtr("cannot generate section: you have already generated a section today for this story. Please try again tomorrow.")})
+			StandardizeHTTPError(c, http.StatusConflict, "Cannot generate section", "You have already generated a section today for this story. Please try again tomorrow.")
 			return
 		}
 
-		c.JSON(http.StatusInternalServerError, api.ErrorResponse{Error: stringPtr("failed to generate story section")})
+		StandardizeHTTPError(c, http.StatusInternalServerError, "Failed to generate story section", err.Error())
 		return
 	}
 
@@ -380,14 +380,14 @@ func (h *StoryHandler) ArchiveStory(c *gin.Context) {
 
 	userID, exists := GetUserIDFromSession(c)
 	if !exists {
-		c.JSON(http.StatusUnauthorized, api.ErrorResponse{Error: stringPtr("unauthorized")})
+		StandardizeHTTPError(c, http.StatusUnauthorized, "Unauthorized", "User session not found or invalid")
 		return
 	}
 
 	storyIDStr := c.Param("id")
 	storyID, err := strconv.ParseUint(storyIDStr, 10, 32)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, api.ErrorResponse{Error: stringPtr("invalid story ID")})
+		StandardizeHTTPError(c, http.StatusBadRequest, "Invalid story ID", "Story ID must be a valid number")
 		return
 	}
 
@@ -399,11 +399,11 @@ func (h *StoryHandler) ArchiveStory(c *gin.Context) {
 		})
 
 		if strings.Contains(err.Error(), "not found") || strings.Contains(err.Error(), "unauthorized") {
-			c.JSON(http.StatusNotFound, api.ErrorResponse{Error: stringPtr("story not found")})
+			StandardizeHTTPError(c, http.StatusNotFound, "Story not found", "The requested story does not exist or you don't have access to it")
 			return
 		}
 
-		c.JSON(http.StatusInternalServerError, api.ErrorResponse{Error: stringPtr("failed to archive story")})
+		StandardizeHTTPError(c, http.StatusInternalServerError, "Failed to archive story", err.Error())
 		return
 	}
 
@@ -417,14 +417,14 @@ func (h *StoryHandler) CompleteStory(c *gin.Context) {
 
 	userID, exists := GetUserIDFromSession(c)
 	if !exists {
-		c.JSON(http.StatusUnauthorized, api.ErrorResponse{Error: stringPtr("unauthorized")})
+		StandardizeHTTPError(c, http.StatusUnauthorized, "Unauthorized", "User session not found or invalid")
 		return
 	}
 
 	storyIDStr := c.Param("id")
 	storyID, err := strconv.ParseUint(storyIDStr, 10, 32)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, api.ErrorResponse{Error: stringPtr("invalid story ID")})
+		StandardizeHTTPError(c, http.StatusBadRequest, "Invalid story ID", "Story ID must be a valid number")
 		return
 	}
 
@@ -436,11 +436,11 @@ func (h *StoryHandler) CompleteStory(c *gin.Context) {
 		})
 
 		if strings.Contains(err.Error(), "not found") || strings.Contains(err.Error(), "unauthorized") {
-			c.JSON(http.StatusNotFound, api.ErrorResponse{Error: stringPtr("story not found")})
+			StandardizeHTTPError(c, http.StatusNotFound, "Story not found", "The requested story does not exist or you don't have access to it")
 			return
 		}
 
-		c.JSON(http.StatusInternalServerError, api.ErrorResponse{Error: stringPtr("failed to complete story")})
+		StandardizeHTTPError(c, http.StatusInternalServerError, "Failed to complete story", err.Error())
 		return
 	}
 
@@ -454,14 +454,14 @@ func (h *StoryHandler) SetCurrentStory(c *gin.Context) {
 
 	userID, exists := GetUserIDFromSession(c)
 	if !exists {
-		c.JSON(http.StatusUnauthorized, api.ErrorResponse{Error: stringPtr("unauthorized")})
+		StandardizeHTTPError(c, http.StatusUnauthorized, "Unauthorized", "User session not found or invalid")
 		return
 	}
 
 	storyIDStr := c.Param("id")
 	storyID, err := strconv.ParseUint(storyIDStr, 10, 32)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, api.ErrorResponse{Error: stringPtr("invalid story ID")})
+		StandardizeHTTPError(c, http.StatusBadRequest, "Invalid story ID", "Story ID must be a valid number")
 		return
 	}
 
@@ -473,11 +473,11 @@ func (h *StoryHandler) SetCurrentStory(c *gin.Context) {
 		})
 
 		if strings.Contains(err.Error(), "not found") || strings.Contains(err.Error(), "unauthorized") {
-			c.JSON(http.StatusNotFound, api.ErrorResponse{Error: stringPtr("story not found")})
+			StandardizeHTTPError(c, http.StatusNotFound, "Story not found", "The requested story does not exist or you don't have access to it")
 			return
 		}
 
-		c.JSON(http.StatusInternalServerError, api.ErrorResponse{Error: stringPtr("failed to set current story")})
+		StandardizeHTTPError(c, http.StatusInternalServerError, "Failed to set current story", err.Error())
 		return
 	}
 
@@ -491,14 +491,14 @@ func (h *StoryHandler) DeleteStory(c *gin.Context) {
 
 	userID, exists := GetUserIDFromSession(c)
 	if !exists {
-		c.JSON(http.StatusUnauthorized, api.ErrorResponse{Error: stringPtr("unauthorized")})
+		StandardizeHTTPError(c, http.StatusUnauthorized, "Unauthorized", "User session not found or invalid")
 		return
 	}
 
 	storyIDStr := c.Param("id")
 	storyID, err := strconv.ParseUint(storyIDStr, 10, 32)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, api.ErrorResponse{Error: stringPtr("invalid story ID")})
+		StandardizeHTTPError(c, http.StatusBadRequest, "Invalid story ID", "Story ID must be a valid number")
 		return
 	}
 
@@ -510,16 +510,16 @@ func (h *StoryHandler) DeleteStory(c *gin.Context) {
 		})
 
 		if strings.Contains(err.Error(), "not found") || strings.Contains(err.Error(), "unauthorized") {
-			c.JSON(http.StatusNotFound, api.ErrorResponse{Error: stringPtr("story not found")})
+			StandardizeHTTPError(c, http.StatusNotFound, "Story not found", "The requested story does not exist or you don't have access to it")
 			return
 		}
 
 		if strings.Contains(err.Error(), "cannot delete current story") {
-			c.JSON(http.StatusConflict, api.ErrorResponse{Error: stringPtr("cannot delete current story")})
+			StandardizeHTTPError(c, http.StatusConflict, "Cannot delete current story", "You cannot delete a story that is currently set as your active story")
 			return
 		}
 
-		c.JSON(http.StatusInternalServerError, api.ErrorResponse{Error: stringPtr("failed to delete story")})
+		StandardizeHTTPError(c, http.StatusInternalServerError, "Failed to delete story", err.Error())
 		return
 	}
 
@@ -533,14 +533,14 @@ func (h *StoryHandler) ExportStory(c *gin.Context) {
 
 	userID, exists := GetUserIDFromSession(c)
 	if !exists {
-		c.JSON(http.StatusUnauthorized, api.ErrorResponse{Error: stringPtr("unauthorized")})
+		StandardizeHTTPError(c, http.StatusUnauthorized, "Unauthorized", "User session not found or invalid")
 		return
 	}
 
 	storyIDStr := c.Param("id")
 	storyID, err := strconv.ParseUint(storyIDStr, 10, 32)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, api.ErrorResponse{Error: stringPtr("invalid story ID")})
+		StandardizeHTTPError(c, http.StatusBadRequest, "Invalid story ID", "Story ID must be a valid number")
 		return
 	}
 
@@ -553,11 +553,11 @@ func (h *StoryHandler) ExportStory(c *gin.Context) {
 		})
 
 		if strings.Contains(err.Error(), "not found") || strings.Contains(err.Error(), "unauthorized") {
-			c.JSON(http.StatusNotFound, api.ErrorResponse{Error: stringPtr("story not found")})
+			StandardizeHTTPError(c, http.StatusNotFound, "Story not found", "The requested story does not exist or you don't have access to it")
 			return
 		}
 
-		c.JSON(http.StatusInternalServerError, api.ErrorResponse{Error: stringPtr("failed to get story")})
+		StandardizeHTTPError(c, http.StatusInternalServerError, "Failed to get story", err.Error())
 		return
 	}
 
@@ -621,7 +621,7 @@ func (h *StoryHandler) ExportStory(c *gin.Context) {
 		h.logger.Error(ctx, "Failed to generate PDF", err, map[string]interface{}{
 			"story_id": storyID,
 		})
-		c.JSON(http.StatusInternalServerError, api.ErrorResponse{Error: stringPtr("failed to generate PDF")})
+		StandardizeHTTPError(c, http.StatusInternalServerError, "Failed to generate PDF", err.Error())
 		return
 	}
 
