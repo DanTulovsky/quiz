@@ -293,7 +293,7 @@ tasks:
       # Exclude endpoints that require external AI backend (e.g., /ai-fix)
       # This prevents flaky CI failures when an AI server (ollama/openai) isn't available.
       # Use a regex to match variable question IDs (e.g. /v1/admin/backend/questions/2/ai-fix)
-      E2E_EXCLUDE_PATHS: "re:/v1/admin/backend/questions/[0-9]+/ai-fix"
+      E2E_EXCLUDE_PATHS: "re:/v1/admin/backend/questions/[0-9]+/ai-fix,re:/v1/story/[0-9]+/generate"
       TEST_BASE_URL: "{{.DYNAMIC_TEST_BASE_URL}}"
       DOCKER_BUILDKIT: 1
       COMPOSE_DOCKER_CLI_BUILD: 1
@@ -320,7 +320,7 @@ tasks:
       # Exclude endpoints that require external AI backend (e.g., /ai-fix)
       # This prevents flaky CI failures when an AI server (ollama/openai) isn't available.
       # Use a regex to match variable question IDs (e.g. /v1/admin/backend/questions/2/ai-fix)
-      E2E_EXCLUDE_PATHS: "re:/v1/admin/backend/questions/[0-9]+/ai-fix"
+      E2E_EXCLUDE_PATHS: "re:/v1/admin/backend/questions/[0-9]+/ai-fix,re:/v1/story/[0-9]+/generate"
       TEST_BASE_URL: "{{.DYNAMIC_TEST_BASE_URL}}"
       DOCKER_BUILDKIT: 1
       COMPOSE_DOCKER_CLI_BUILD: 1
@@ -347,7 +347,7 @@ tasks:
       # Exclude endpoints that require external AI backend (e.g., /ai-fix)
       # This prevents flaky CI failures when an AI server (ollama/openai) isn't available.
       # Use a regex to match variable question IDs (e.g. /v1/admin/backend/questions/2/ai-fix)
-      E2E_EXCLUDE_PATHS: "re:/v1/admin/backend/questions/[0-9]+/ai-fix"
+      E2E_EXCLUDE_PATHS: "re:/v1/admin/backend/questions/[0-9]+/ai-fix,re:/v1/story/[0-9]+/generate"
       TEST_BASE_URL: "{{.DYNAMIC_TEST_BASE_URL}}"
       DOCKER_BUILDKIT: 1
       COMPOSE_DOCKER_CLI_BUILD: 1
@@ -366,7 +366,7 @@ tasks:
       # Exclude endpoints that require external AI backend (e.g., /ai-fix)
       # This prevents flaky CI failures when an AI server (ollama/openai) isn't available.
       # Use a regex to match variable question IDs (e.g. /v1/admin/backend/questions/2/ai-fix)
-      E2E_EXCLUDE_PATHS: "re:/v1/admin/backend/questions/[0-9]+/ai-fix"
+      E2E_EXCLUDE_PATHS: "re:/v1/admin/backend/questions/[0-9]+/ai-fix,re:/v1/story/[0-9]+/generate"
       DATABASE_URL: "{{.DYNAMIC_TEST_DB_URL}}"
       TEST_BASE_URL: "{{.DYNAMIC_TEST_BASE_URL}}"
       SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"
@@ -434,7 +434,7 @@ tasks:
       # Exclude endpoints that require external AI backend (e.g., /ai-fix)
       # This prevents flaky CI failures when an AI server (ollama/openai) isn't available.
       # Use a regex to match variable question IDs (e.g. /v1/admin/backend/questions/2/ai-fix)
-      E2E_EXCLUDE_PATHS: "re:/v1/admin/backend/questions/[0-9]+/ai-fix"
+      E2E_EXCLUDE_PATHS: "re:/v1/admin/backend/questions/[0-9]+/ai-fix,re:/v1/story/[0-9]+/generate"
       TEST_BASE_URL: "{{.DYNAMIC_TEST_BASE_URL}}"
       KEEP_RUNNING: 1
       DOCKER_BUILDKIT: 1
@@ -453,7 +453,7 @@ tasks:
     env:
       # Exclude endpoints that require external AI backend (e.g., /ai-fix)
       # This prevents flaky CI failures when an AI server (ollama/openai) isn't available.
-      E2E_EXCLUDE_PATHS: "/questions/ai-fix"
+      E2E_EXCLUDE_PATHS: "/questions/ai-fix,/v1/story/*/generate"
       DATABASE_URL: "{{.DYNAMIC_TEST_DB_URL}}"
       TEST_BASE_URL: "{{.DYNAMIC_TEST_BASE_URL}}"
       SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"
@@ -477,7 +477,7 @@ tasks:
     env:
       # Exclude endpoints that require external AI backend (e.g., /ai-fix)
       # This prevents flaky CI failures when an AI server (ollama/openai) isn't available.
-      E2E_EXCLUDE_PATHS: "/questions/ai-fix"
+      E2E_EXCLUDE_PATHS: "/questions/ai-fix,/v1/story/*/generate"
       TEST_BASE_URL: "{{.DYNAMIC_TEST_BASE_URL}}"
       SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"
       DOCKER_BUILDKIT: 1

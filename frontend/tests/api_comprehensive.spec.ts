@@ -1449,6 +1449,10 @@ test.describe('Comprehensive API Tests', () => {
       );
 
       for (const testCase of regularUserCases) {
+        // Check if this endpoint should be excluded
+        const expandedPath = await replacePathParameters(testCase.path, testCase.pathParams, request, REGULAR_USER, testCase.method);
+        if (isExcludedPath(expandedPath)) continue;
+
         let endpointPath = testCase.path;
 
         // Determine which user to use for this test case
@@ -1519,6 +1523,10 @@ test.describe('Comprehensive API Tests', () => {
       const publicCases = testCases.filter(testCase => !testCase.requiresAuth);
 
       for (const testCase of publicCases) {
+        // Check if this endpoint should be excluded
+        const expandedPath = await replacePathParameters(testCase.path, testCase.pathParams, request, REGULAR_USER, testCase.method);
+        if (isExcludedPath(expandedPath)) continue;
+
         let endpointPath = testCase.path;
 
         // Add path parameters
@@ -1570,6 +1578,10 @@ test.describe('Comprehensive API Tests', () => {
       const regularUserErrorCases = errorCases.filter(testCase => !testCase.requiresAdmin);
 
       for (const testCase of regularUserErrorCases) {
+        // Check if this endpoint should be excluded
+        const expandedPath = await replacePathParameters(testCase.path, testCase.pathParams, request, REGULAR_USER, testCase.method);
+        if (isExcludedPath(expandedPath)) continue;
+
         let endpointPath = testCase.path;
 
         // Add path parameters
