@@ -810,6 +810,15 @@ func (w *Worker) generateStorySection(ctx context.Context, user models.User) err
 	// Generate the story section using the shared service method (worker generation)
 	_, err = w.storyService.GenerateStorySection(ctx, story.ID, uint(user.ID), w.aiService, userConfig)
 	if err != nil {
+		// Check if this is a generation limit reached error (normal case for worker)
+		if errors.Is(err, contextutils.ErrGenerationLimitReached) {
+			w.logger.Info(ctx, "User reached daily generation limit, skipping",
+				map[string]interface{}{
+					"user_id":  user.ID,
+					"story_id": story.ID,
+				})
+			return nil // Skip this user, not an error
+		}
 		return contextutils.WrapErrorf(err, "failed to generate story section")
 	}
 

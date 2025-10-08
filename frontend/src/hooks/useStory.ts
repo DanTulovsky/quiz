@@ -209,7 +209,7 @@ export const useStory = (): UseStoryReturn => {
             typeof axiosError.response.data === 'object' &&
             'error' in axiosError.response.data
           ) {
-            // Handle case where response.data is the error object itself
+            // Handle case where response.data is the ErrorResponse structure
             errorMessage = (axiosError.response.data as { error: string })
               .error;
           } else if (
@@ -291,7 +291,7 @@ export const useStory = (): UseStoryReturn => {
             typeof axiosError.response.data === 'object' &&
             'error' in axiosError.response.data
           ) {
-            // Handle case where response.data is the error object itself
+            // Handle case where response.data is the ErrorResponse structure
             errorMessage = (axiosError.response.data as { error: string })
               .error;
           } else if (
@@ -359,7 +359,7 @@ export const useStory = (): UseStoryReturn => {
             typeof axiosError.response.data === 'object' &&
             'error' in axiosError.response.data
           ) {
-            // Handle case where response.data is the error object itself
+            // Handle case where response.data is the ErrorResponse structure
             errorMessage = (axiosError.response.data as { error: string })
               .error;
           } else if (
@@ -429,7 +429,7 @@ export const useStory = (): UseStoryReturn => {
             typeof axiosError.response.data === 'object' &&
             'error' in axiosError.response.data
           ) {
-            // Handle case where response.data is the error object itself
+            // Handle case where response.data is the ErrorResponse structure
             errorMessage = (axiosError.response.data as { error: string })
               .error;
           } else if (
@@ -529,7 +529,7 @@ export const useStory = (): UseStoryReturn => {
             typeof axiosError.response.data === 'object' &&
             'error' in axiosError.response.data
           ) {
-            // Handle case where response.data is the error object itself
+            // Handle case where response.data is the ErrorResponse structure
             errorMessage = (axiosError.response.data as { error: string })
               .error;
           } else if (
@@ -599,7 +599,7 @@ export const useStory = (): UseStoryReturn => {
             typeof axiosError.response.data === 'object' &&
             'error' in axiosError.response.data
           ) {
-            // Handle case where response.data is the error object itself
+            // Handle case where response.data is the ErrorResponse structure
             errorMessage = (axiosError.response.data as { error: string })
               .error;
           } else if (
@@ -673,7 +673,7 @@ export const useStory = (): UseStoryReturn => {
             typeof axiosError.response.data === 'object' &&
             'error' in axiosError.response.data
           ) {
-            // Handle case where response.data is the error object itself
+            // Handle case where response.data is the ErrorResponse structure
             errorMessage = (axiosError.response.data as { error: string })
               .error;
           } else if (
@@ -775,7 +775,7 @@ export const useStory = (): UseStoryReturn => {
             typeof axiosError.response.data === 'object' &&
             'error' in axiosError.response.data
           ) {
-            // Handle case where response.data is the error object itself
+            // Handle case where response.data is the ErrorResponse structure
             errorMessage = (axiosError.response.data as { error: string })
               .error;
           } else if (

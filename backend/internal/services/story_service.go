@@ -37,7 +37,6 @@ type StoryServiceInterface interface {
 	GetSectionQuestions(ctx context.Context, sectionID uint) ([]models.StorySectionQuestion, error)
 	CreateSectionQuestions(ctx context.Context, sectionID uint, questions []models.StorySectionQuestionData) error
 	GetRandomQuestions(ctx context.Context, sectionID uint, count int) ([]models.StorySectionQuestion, error)
-	CanGenerateSection(ctx context.Context, storyID uint) (*models.StoryGenerationEligibilityResponse, error)
 	UpdateLastGenerationTime(ctx context.Context, storyID uint) error
 	GetSectionLengthTarget(level string, lengthPref *models.SectionLength) int
 	GetSectionLengthTargetWithLanguage(language, level string, lengthPref *models.SectionLength) int
@@ -856,8 +855,8 @@ func (s *StoryService) GetRandomQuestions(ctx context.Context, sectionID uint, c
 	return questions, rows.Err()
 }
 
-// CanGenerateSection checks if a new section can be generated for a story today
-func (s *StoryService) CanGenerateSection(ctx context.Context, storyID uint) (*models.StoryGenerationEligibilityResponse, error) {
+// canGenerateSection checks if a new section can be generated for a story today
+func (s *StoryService) canGenerateSection(ctx context.Context, storyID uint) (*models.StoryGenerationEligibilityResponse, error) {
 	query := `
 		SELECT status, is_current, last_section_generated_at, extra_generations_today
 		FROM stories
@@ -1136,8 +1135,8 @@ func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID
 		return nil, contextutils.WrapErrorf(err, "failed to get story for generation")
 	}
 
-	// Check if generation is allowed today
-	eligibility, err := s.CanGenerateSection(ctx, storyID)
+	// Check if generation is allowed today (needed for both HTTP handler and worker)
+	eligibility, err := s.canGenerateSection(ctx, storyID)
 	if err != nil {
 		return nil, contextutils.WrapErrorf(err, "failed to check generation eligibility")
 	}

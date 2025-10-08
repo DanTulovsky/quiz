@@ -291,45 +291,6 @@ func (h *StoryHandler) GenerateNextSection(c *gin.Context) {
 		return
 	}
 
-	// Verify story ownership (this is done inside GenerateStorySection, but we need to check beforehand for early return)
-
-	// Check if generation is allowed today
-	eligibility, err := h.storyService.CanGenerateSection(ctx, uint(storyID))
-	if err != nil {
-		h.logger.Error(ctx, "Failed to check generation eligibility", err, map[string]interface{}{
-			"story_id": storyID,
-		})
-		StandardizeHTTPError(c, http.StatusInternalServerError, "Failed to check generation eligibility", err.Error())
-		return
-	}
-
-	if !eligibility.CanGenerate {
-		// The service already provided the specific reason, use it
-		var statusCode int
-		var message string
-
-		switch eligibility.Reason {
-		case "story not found":
-			statusCode = http.StatusNotFound
-			message = "Story not found"
-		case "story generation is disabled globally":
-			statusCode = http.StatusConflict
-			message = "Story generation is currently disabled"
-		case "story is not active":
-			statusCode = http.StatusConflict
-			message = "Story is not active"
-		case "daily generation limit reached":
-			statusCode = http.StatusConflict
-			message = "You have already generated a section today for this story. Please try again tomorrow."
-		default:
-			statusCode = http.StatusConflict
-			message = "Cannot generate section"
-		}
-
-		StandardizeHTTPError(c, statusCode, message, eligibility.Reason)
-		return
-	}
-
 	// Get user for AI config
 	user, err := h.userService.GetUserByID(ctx, userID)
 	if err != nil {
@@ -352,7 +313,11 @@ func (h *StoryHandler) GenerateNextSection(c *gin.Context) {
 				"story_id": storyID,
 				"user_id":  uint(userID),
 			})
-			StandardizeHTTPError(c, http.StatusConflict, "Daily generation limit reached", "You have already generated a section today for this story. Please try again tomorrow.")
+			// Return 200 OK with business logic error instead of 409 Conflict
+			c.JSON(http.StatusOK, api.ErrorResponse{
+				Error:   stringPtr("You have already generated a section today for this story. Please try again tomorrow."),
+				Details: stringPtr("daily generation limit reached"),
+			})
 			return
 		}
 
