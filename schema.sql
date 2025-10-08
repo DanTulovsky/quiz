@@ -346,7 +346,6 @@ CREATE INDEX IF NOT EXISTS idx_daily_assignment_responses_assignment_id ON daily
 -- Stories table indexes
 CREATE INDEX IF NOT EXISTS idx_stories_user_id ON stories(user_id);
 CREATE INDEX IF NOT EXISTS idx_stories_status ON stories(status);
-CREATE INDEX IF NOT EXISTS idx_stories_user_current ON stories(user_id, is_current);
 CREATE INDEX IF NOT EXISTS idx_stories_user_status ON stories(user_id, status);
 -- Story sections table indexes
 CREATE INDEX IF NOT EXISTS idx_story_sections_story_id ON story_sections(story_id);
@@ -415,7 +414,6 @@ CREATE TABLE IF NOT EXISTS stories (
     custom_instructions TEXT,
     section_length_override VARCHAR(10) CHECK (section_length_override IN ('short', 'medium', 'long')),
     status VARCHAR(20) NOT NULL CHECK (status IN ('active', 'archived', 'completed')) DEFAULT 'active',
-    is_current BOOLEAN NOT NULL DEFAULT FALSE,
     last_section_generated_at TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
