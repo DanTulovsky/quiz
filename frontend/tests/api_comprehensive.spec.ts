@@ -973,6 +973,15 @@ test.describe('Comprehensive API Tests', () => {
       throw new Error('No available story IDs. Test data setup may have failed.');
     }
 
+    // Load story data if not provided
+    if (!storyData) {
+      const storyDataPath = path.join(process.cwd(), 'tests', 'test-stories.json');
+      if (fs.existsSync(storyDataPath)) {
+        const storyDataContent = fs.readFileSync(storyDataPath, 'utf8');
+        storyData = JSON.parse(storyDataContent);
+      }
+    }
+
     if (username) {
       const userStoryIds = usernameToStoryIds[username];
       if (userStoryIds && userStoryIds.length > 0) {
