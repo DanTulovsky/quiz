@@ -371,12 +371,12 @@ func (w *Worker) checkForDailyQuestionAssignments(ctx context.Context) error {
 				})
 			} else {
 				successfulAssignments++
-				w.logger.Info(ctx, "Successfully assigned daily questions", map[string]interface{}{
-					"user_id":  user.ID,
-					"username": user.Username,
-					"timezone": timezone,
-					"date":     target.Format("2006-01-02"),
-				})
+				// 	w.logger.Info(ctx, "Successfully assigned daily questions", map[string]interface{}{
+				// 		"user_id":  user.ID,
+				// 		"username": user.Username,
+				// 		"timezone": timezone,
+				// 		"date":     target.Format("2006-01-02"),
+				// 	})
 			}
 		}
 	}
@@ -808,7 +808,7 @@ func (w *Worker) generateStorySection(ctx context.Context, user models.User) err
 	userConfig := w.getUserAIConfig(ctx, &user)
 
 	// Generate the story section using the shared service method (worker generation)
-	_, err = w.storyService.GenerateStorySection(ctx, story.ID, uint(user.ID), w.aiService, userConfig)
+	_, err = w.storyService.GenerateStorySection(ctx, story.ID, uint(user.ID), w.aiService, userConfig, models.GeneratorTypeWorker)
 	if err != nil {
 		// Check if this is a generation limit reached error (normal case for worker)
 		if errors.Is(err, contextutils.ErrGenerationLimitReached) {

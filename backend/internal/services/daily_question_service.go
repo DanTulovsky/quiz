@@ -102,12 +102,12 @@ func (s *DailyQuestionService) AssignDailyQuestions(ctx context.Context, userID 
 		return contextutils.WrapError(err, "failed to check existing assignments")
 	}
 	if existingCount >= goal {
-		s.logger.Info(ctx, "Daily questions already assigned for date", map[string]interface{}{
-			"user_id": userID,
-			"date":    date.Format("2006-01-02"),
-			"count":   existingCount,
-			"goal":    goal,
-		})
+		// s.logger.Info(ctx, "Daily questions already assigned for date", map[string]interface{}{
+		// 	"user_id": userID,
+		// 	"date":    date.Format("2006-01-02"),
+		// 	"count":   existingCount,
+		// 	"goal":    goal,
+		// })
 		return nil // Already assigned
 	}
 

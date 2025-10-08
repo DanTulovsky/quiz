@@ -41,7 +41,7 @@ type StoryServiceInterface interface {
 	GetSectionLengthTarget(level string, lengthPref *models.SectionLength) int
 	GetSectionLengthTargetWithLanguage(language, level string, lengthPref *models.SectionLength) int
 	SanitizeInput(input string) string
-	GenerateStorySection(ctx context.Context, storyID, userID uint, aiService AIServiceInterface, userAIConfig *models.UserAIConfig) (*models.StorySectionWithQuestions, error)
+	GenerateStorySection(ctx context.Context, storyID, userID uint, aiService AIServiceInterface, userAIConfig *models.UserAIConfig, generatorType models.GeneratorType) (*models.StorySectionWithQuestions, error)
 }
 
 // StoryService handles all story-related operations
@@ -134,7 +134,8 @@ func (s *StoryService) GetUserStories(ctx context.Context, userID uint, includeA
 	}
 
 	if user == nil {
-		return nil, contextutils.ErrorWithContextf("user not found: %d", userID)
+		// Return empty slice for non-existent user instead of error
+		return []models.Story{}, nil
 	}
 
 	language := "en" // default
@@ -1149,7 +1150,7 @@ func (s *StoryService) createSection(ctx context.Context, section *models.StoryS
 }
 
 // GenerateStorySection generates a new section for a story using AI
-func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID uint, aiService AIServiceInterface, userAIConfig *models.UserAIConfig) (*models.StorySectionWithQuestions, error) {
+func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID uint, aiService AIServiceInterface, userAIConfig *models.UserAIConfig, generatorType models.GeneratorType) (*models.StorySectionWithQuestions, error) {
 	ctx, span := observability.TraceFunction(ctx, "story_service", "generate_section",
 		attribute.Int("story.id", int(storyID)),
 		observability.AttributeUserID(int(userID)),
@@ -1160,13 +1161,6 @@ func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID
 	story, err := s.GetStory(ctx, storyID, userID)
 	if err != nil {
 		return nil, contextutils.WrapErrorf(err, "failed to get story for generation")
-	}
-
-	// Determine generator type based on context
-	// For now, we'll assume worker if userAIConfig is nil or if it's a worker context
-	generatorType := models.GeneratorTypeUser
-	if userAIConfig == nil {
-		generatorType = models.GeneratorTypeWorker
 	}
 
 	// Check if generation is allowed today by this generator type

@@ -305,7 +305,7 @@ func (h *StoryHandler) GenerateNextSection(c *gin.Context) {
 	userAIConfig := h.convertToServicesAIConfig(ctx, user)
 
 	// Generate the story section using the shared service method (user generation)
-	sectionWithQuestions, err := h.storyService.GenerateStorySection(ctx, uint(storyID), uint(userID), h.aiService, userAIConfig)
+	sectionWithQuestions, err := h.storyService.GenerateStorySection(ctx, uint(storyID), uint(userID), h.aiService, userAIConfig, models.GeneratorTypeUser)
 	if err != nil {
 		// Check if this is a generation limit reached error (normal business case)
 		if errors.Is(err, contextutils.ErrGenerationLimitReached) {

@@ -561,3 +561,342 @@ func TestStoryService_CreateSectionQuestions_Integration(t *testing.T) {
 	assert.NotEmpty(t, randomQuestions[0].Options, "Random questions should have options")
 	assert.NotEmpty(t, randomQuestions[1].Options, "Random questions should have options")
 }
+
+// TestStoryService_GetStorySections_Integration tests the GetStorySections functionality
+func TestStoryService_GetStorySections_Integration(t *testing.T) {
+	db := SharedTestDBSetup(t)
+	defer db.Close()
+
+	cfg, err := config.NewConfig()
+	require.NoError(t, err)
+	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+	userService := NewUserServiceWithLogger(db, cfg, logger)
+	storyService := NewStoryService(db, cfg, logger)
+
+	ctx := context.Background()
+
+	// Create a test user
+	username := fmt.Sprintf("testuser_%d", time.Now().UnixNano())
+	user, err := userService.CreateUser(ctx, username, "italian", "A1")
+	require.NoError(t, err)
+
+	// Create a test story
+	story, err := storyService.CreateStory(ctx, uint(user.ID), "italian", &models.CreateStoryRequest{
+		Title:       "Test Story for Sections",
+		Subject:     stringPtr("Test Subject"),
+		AuthorStyle: stringPtr("Simple"),
+	})
+	require.NoError(t, err)
+	require.NotNil(t, story)
+
+	// Initially, story should have no sections
+	sections, err := storyService.GetStorySections(ctx, story.ID)
+	require.NoError(t, err)
+	assert.Len(t, sections, 0, "New story should have no sections")
+
+	// Create a test section
+	section, err := storyService.CreateSection(ctx, story.ID, "This is the first section of the story.", "A1", 50, models.GeneratorTypeUser)
+	require.NoError(t, err)
+	require.NotNil(t, section)
+	assert.Equal(t, 1, section.SectionNumber)
+	assert.Equal(t, "This is the first section of the story.", section.Content)
+	assert.Equal(t, "A1", section.LanguageLevel)
+	assert.Equal(t, 50, section.WordCount)
+	assert.Equal(t, models.GeneratorTypeUser, section.GeneratedBy)
+
+	// Now get sections and verify we have one
+	sections, err = storyService.GetStorySections(ctx, story.ID)
+	require.NoError(t, err)
+	require.Len(t, sections, 1, "Should have one section after creation")
+
+	retrievedSection := sections[0]
+	assert.Equal(t, section.ID, retrievedSection.ID)
+	assert.Equal(t, story.ID, retrievedSection.StoryID)
+	assert.Equal(t, 1, retrievedSection.SectionNumber)
+	assert.Equal(t, "This is the first section of the story.", retrievedSection.Content)
+	assert.Equal(t, "A1", retrievedSection.LanguageLevel)
+	assert.Equal(t, 50, retrievedSection.WordCount)
+	assert.Equal(t, models.GeneratorTypeUser, retrievedSection.GeneratedBy)
+	assert.NotZero(t, retrievedSection.GeneratedAt)
+	assert.NotZero(t, retrievedSection.GenerationDate)
+
+	// Create a second section
+	section2, err := storyService.CreateSection(ctx, story.ID, "This is the second section of the story.", "A1", 45, models.GeneratorTypeWorker)
+	require.NoError(t, err)
+	require.NotNil(t, section2)
+	assert.Equal(t, 2, section2.SectionNumber)
+
+	// Get sections again and verify we have two, in correct order
+	sections, err = storyService.GetStorySections(ctx, story.ID)
+	require.NoError(t, err)
+	require.Len(t, sections, 2, "Should have two sections after creating second")
+
+	// Verify order (should be by section_number ASC)
+	assert.Equal(t, 1, sections[0].SectionNumber)
+	assert.Equal(t, 2, sections[1].SectionNumber)
+
+	// Test with non-existent story ID
+	nonExistentSections, err := storyService.GetStorySections(ctx, 999999)
+	require.NoError(t, err)
+	assert.Len(t, nonExistentSections, 0, "Non-existent story should return empty slice")
+}
+
+// TestStoryService_GetSection_Integration tests the GetSection functionality
+func TestStoryService_GetSection_Integration(t *testing.T) {
+	db := SharedTestDBSetup(t)
+	defer db.Close()
+
+	cfg, err := config.NewConfig()
+	require.NoError(t, err)
+	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+	userService := NewUserServiceWithLogger(db, cfg, logger)
+	storyService := NewStoryService(db, cfg, logger)
+
+	ctx := context.Background()
+
+	// Create a test user
+	username := fmt.Sprintf("testuser_%d", time.Now().UnixNano())
+	user, err := userService.CreateUser(ctx, username, "italian", "A1")
+	require.NoError(t, err)
+
+	// Create a test story
+	story, err := storyService.CreateStory(ctx, uint(user.ID), "italian", &models.CreateStoryRequest{
+		Title:       "Test Story for GetSection",
+		Subject:     stringPtr("Test Subject"),
+		AuthorStyle: stringPtr("Simple"),
+	})
+	require.NoError(t, err)
+	require.NotNil(t, story)
+
+	// Create a test section
+	section, err := storyService.CreateSection(ctx, story.ID, "This is the first section of the story.", "A1", 50, models.GeneratorTypeUser)
+	require.NoError(t, err)
+	require.NotNil(t, section)
+
+	// Create some questions for the section
+	questions := []models.StorySectionQuestionData{
+		{
+			QuestionText:       "What is the main topic?",
+			Options:            []string{"Topic A", "Topic B", "Topic C", "Topic D"},
+			CorrectAnswerIndex: 0,
+			Explanation:        stringPtr("The main topic is clearly stated"),
+		},
+		{
+			QuestionText:       "Where does this take place?",
+			Options:            []string{"Place A", "Place B", "Place C", "Place D"},
+			CorrectAnswerIndex: 1,
+			Explanation:        stringPtr("The location is mentioned early"),
+		},
+	}
+	err = storyService.CreateSectionQuestions(ctx, section.ID, questions)
+	require.NoError(t, err)
+
+	// Test GetSection with valid section and user
+	sectionWithQuestions, err := storyService.GetSection(ctx, section.ID, uint(user.ID))
+	require.NoError(t, err)
+	require.NotNil(t, sectionWithQuestions)
+
+	// Verify section data
+	assert.Equal(t, section.ID, sectionWithQuestions.StorySection.ID)
+	assert.Equal(t, story.ID, sectionWithQuestions.StorySection.StoryID)
+	assert.Equal(t, 1, sectionWithQuestions.StorySection.SectionNumber)
+	assert.Equal(t, "This is the first section of the story.", sectionWithQuestions.StorySection.Content)
+	assert.Equal(t, "A1", sectionWithQuestions.StorySection.LanguageLevel)
+	assert.Equal(t, 50, sectionWithQuestions.StorySection.WordCount)
+	assert.Equal(t, models.GeneratorTypeUser, sectionWithQuestions.StorySection.GeneratedBy)
+
+	// Verify questions
+	require.Len(t, sectionWithQuestions.Questions, 2, "Should have 2 questions")
+	firstQuestion := sectionWithQuestions.Questions[0]
+	assert.Equal(t, "What is the main topic?", firstQuestion.QuestionText)
+	assert.Equal(t, []string{"Topic A", "Topic B", "Topic C", "Topic D"}, firstQuestion.Options)
+	assert.Equal(t, 0, firstQuestion.CorrectAnswerIndex)
+	assert.Equal(t, "The main topic is clearly stated", *firstQuestion.Explanation)
+
+	// Test GetSection with non-existent section ID
+	_, err = storyService.GetSection(ctx, 999999, uint(user.ID))
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "section not found or access denied")
+
+	// Test GetSection with valid section but wrong user ID (access denied)
+	anotherUser, err := userService.CreateUser(ctx, fmt.Sprintf("anotheruser_%d", time.Now().UnixNano()), "italian", "A1")
+	require.NoError(t, err)
+
+	_, err = storyService.GetSection(ctx, section.ID, uint(anotherUser.ID))
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "section not found or access denied")
+}
+
+// TestStoryService_GetCurrentStory_Integration tests the GetCurrentStory functionality
+func TestStoryService_GetCurrentStory_Integration(t *testing.T) {
+	db := SharedTestDBSetup(t)
+	defer db.Close()
+
+	cfg, err := config.NewConfig()
+	require.NoError(t, err)
+	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+	userService := NewUserServiceWithLogger(db, cfg, logger)
+	storyService := NewStoryService(db, cfg, logger)
+
+	ctx := context.Background()
+
+	// Create a test user
+	username := fmt.Sprintf("testuser_%d", time.Now().UnixNano())
+	user, err := userService.CreateUser(ctx, username, "italian", "A1")
+	require.NoError(t, err)
+
+	// Initially, user should have no current story
+	currentStory, err := storyService.GetCurrentStory(ctx, uint(user.ID))
+	require.NoError(t, err)
+	assert.Nil(t, currentStory, "User should have no current story initially")
+
+	// Create a test story (should be set as current automatically)
+	story, err := storyService.CreateStory(ctx, uint(user.ID), "italian", &models.CreateStoryRequest{
+		Title:       "Test Current Story",
+		Subject:     stringPtr("Test Subject"),
+		AuthorStyle: stringPtr("Simple"),
+	})
+	require.NoError(t, err)
+	require.NotNil(t, story)
+	assert.True(t, story.IsCurrent, "New story should be set as current")
+
+	// Create a section for the story
+	section, err := storyService.CreateSection(ctx, story.ID, "This is the first section of the current story.", "A1", 50, models.GeneratorTypeUser)
+	require.NoError(t, err)
+	require.NotNil(t, section)
+
+	// Now get current story and verify it includes the section
+	currentStory, err = storyService.GetCurrentStory(ctx, uint(user.ID))
+	require.NoError(t, err)
+	require.NotNil(t, currentStory, "User should now have a current story")
+
+	// Verify story data
+	assert.Equal(t, story.ID, currentStory.Story.ID)
+	assert.Equal(t, "Test Current Story", currentStory.Story.Title)
+	assert.Equal(t, "italian", currentStory.Story.Language)
+	assert.True(t, currentStory.Story.IsCurrent)
+
+	// Verify section data
+	require.Len(t, currentStory.Sections, 1, "Current story should have one section")
+	assert.Equal(t, section.ID, currentStory.Sections[0].ID)
+	assert.Equal(t, 1, currentStory.Sections[0].SectionNumber)
+	assert.Equal(t, "This is the first section of the current story.", currentStory.Sections[0].Content)
+	assert.Equal(t, models.GeneratorTypeUser, currentStory.Sections[0].GeneratedBy)
+
+	// Create another story in the same language (should become current, replacing the first)
+	anotherStory, err := storyService.CreateStory(ctx, uint(user.ID), "italian", &models.CreateStoryRequest{
+		Title:       "Another Story",
+		Subject:     stringPtr("Another Subject"),
+		AuthorStyle: stringPtr("Simple"),
+	})
+	require.NoError(t, err)
+	require.NotNil(t, anotherStory)
+	assert.True(t, anotherStory.IsCurrent, "Second story should become current")
+	// Note: story.IsCurrent is not updated in memory, so we don't check it
+
+	// Current story should now be the second one
+	currentStory, err = storyService.GetCurrentStory(ctx, uint(user.ID))
+	require.NoError(t, err)
+	require.NotNil(t, currentStory)
+	assert.Equal(t, anotherStory.ID, currentStory.Story.ID, "Second story should now be current")
+
+	// Archive the current story (second story) and create a third story to test setting current
+	err = storyService.ArchiveStory(ctx, anotherStory.ID, uint(user.ID))
+	require.NoError(t, err)
+
+	// Now create a third story which should become current
+	thirdStory, err := storyService.CreateStory(ctx, uint(user.ID), "italian", &models.CreateStoryRequest{
+		Title:       "Third Story",
+		Subject:     stringPtr("Third Subject"),
+		AuthorStyle: stringPtr("Simple"),
+	})
+	require.NoError(t, err)
+	require.NotNil(t, thirdStory)
+	assert.True(t, thirdStory.IsCurrent, "Third story should become current")
+
+	// Current story should now be the third one
+	currentStory, err = storyService.GetCurrentStory(ctx, uint(user.ID))
+	require.NoError(t, err)
+	require.NotNil(t, currentStory)
+	assert.Equal(t, thirdStory.ID, currentStory.Story.ID, "Third story should now be current")
+	// Note: anotherStory.IsCurrent is not updated in memory, so we don't check it
+
+	// Test with user who has no stories in their preferred language
+	user2, err := userService.CreateUser(ctx, fmt.Sprintf("user2_%d", time.Now().UnixNano()), "french", "A1")
+	require.NoError(t, err)
+
+	currentStory, err = storyService.GetCurrentStory(ctx, uint(user2.ID))
+	require.NoError(t, err)
+	assert.Nil(t, currentStory, "User with different language should have no current story")
+}
+
+// TestStoryService_GetUserStories_Integration tests the GetUserStories functionality
+func TestStoryService_GetUserStories_Integration(t *testing.T) {
+	db := SharedTestDBSetup(t)
+	defer db.Close()
+
+	cfg, err := config.NewConfig()
+	require.NoError(t, err)
+	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+	userService := NewUserServiceWithLogger(db, cfg, logger)
+	storyService := NewStoryService(db, cfg, logger)
+
+	ctx := context.Background()
+
+	// Create a test user
+	username := fmt.Sprintf("testuser_%d", time.Now().UnixNano())
+	user, err := userService.CreateUser(ctx, username, "italian", "A1")
+	require.NoError(t, err)
+
+	// Initially, user should have no stories
+	stories, err := storyService.GetUserStories(ctx, uint(user.ID), false)
+	require.NoError(t, err)
+	assert.Len(t, stories, 0, "User should have no stories initially")
+
+	// Create first story
+	story1, err := storyService.CreateStory(ctx, uint(user.ID), "italian", &models.CreateStoryRequest{
+		Title:       "First Story",
+		Subject:     stringPtr("First Subject"),
+		AuthorStyle: stringPtr("Simple"),
+	})
+	require.NoError(t, err)
+	require.NotNil(t, story1)
+
+	// Create second story
+	story2, err := storyService.CreateStory(ctx, uint(user.ID), "italian", &models.CreateStoryRequest{
+		Title:       "Second Story",
+		Subject:     stringPtr("Second Subject"),
+		AuthorStyle: stringPtr("Simple"),
+	})
+	require.NoError(t, err)
+	require.NotNil(t, story2)
+
+	// Get all stories (should return both)
+	allStories, err := storyService.GetUserStories(ctx, uint(user.ID), false)
+	require.NoError(t, err)
+	assert.Len(t, allStories, 2, "User should have 2 stories")
+
+	// Stories should be ordered by is_current DESC, created_at DESC
+	assert.Equal(t, story2.ID, allStories[0].ID, "Second story (current) should be first")
+	assert.Equal(t, story1.ID, allStories[1].ID, "First story should be second")
+
+	// Archive the first story
+	err = storyService.ArchiveStory(ctx, story1.ID, uint(user.ID))
+	require.NoError(t, err)
+
+	// Get stories excluding archived (should return only second story)
+	activeStories, err := storyService.GetUserStories(ctx, uint(user.ID), false)
+	require.NoError(t, err)
+	assert.Len(t, activeStories, 1, "Should have 1 active story after archiving first")
+	assert.Equal(t, story2.ID, activeStories[0].ID, "Should return the current active story")
+
+	// Get stories including archived (should return both)
+	allStoriesWithArchived, err := storyService.GetUserStories(ctx, uint(user.ID), true)
+	require.NoError(t, err)
+	assert.Len(t, allStoriesWithArchived, 2, "Should have 2 stories including archived")
+
+	// Test with non-existent user
+	emptyStories, err := storyService.GetUserStories(ctx, 999999, false)
+	require.NoError(t, err)
+	assert.Len(t, emptyStories, 0, "Non-existent user should return empty slice")
+}
