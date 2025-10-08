@@ -5,7 +5,7 @@
     "email": "adminuser@example.com"
   },
   "apitestadmin": {
-    "id": 107,
+    "id": 108,
     "username": "apitestadmin",
     "email": "apitestadmin@example.com"
   },
@@ -13,6 +13,11 @@
     "id": 106,
     "username": "apitestuser",
     "email": "apitestuser@example.com"
+  },
+  "apitestuser2": {
+    "id": 107,
+    "username": "apitestuser2",
+    "email": "apitestuser2@example.com"
   },
   "googleuser": {
     "id": 5,
@@ -525,7 +530,7 @@
     "email": "reminderuser@example.com"
   },
   "roletestuser": {
-    "id": 108,
+    "id": 109,
     "username": "roletestuser",
     "email": "roletestuser@example.com"
   },
