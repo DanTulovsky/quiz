@@ -11,11 +11,11 @@ import {
 } from '@mantine/core';
 import {
   IconBook,
-  IconPlus,
   IconArchive,
-  IconFileDownload,
   IconEye,
-  IconList,
+  IconLayoutList,
+  IconDownload,
+  IconPlus,
 } from '@tabler/icons-react';
 
 import { useStory } from '../hooks/useStory';
@@ -93,12 +93,36 @@ const StoryPage: React.FC = () => {
     archivedStories.length > 0
   ) {
     return (
-      <ArchivedStoriesView
-        archivedStories={archivedStories}
-        isLoading={isLoadingArchivedStories}
-        onUnarchive={handleUnarchiveStory}
-        onCreateNew={() => setShowCreateModal(true)}
-      />
+      <>
+        <ArchivedStoriesView
+          archivedStories={archivedStories}
+          isLoading={isLoadingArchivedStories}
+          onUnarchive={handleUnarchiveStory}
+          onCreateNew={() => setShowCreateModal(true)}
+        />
+        {/* Create Story Modal - Available when showing archived stories */}
+        {showCreateModal && (
+          <Modal
+            opened={true}
+            onClose={() => setShowCreateModal(false)}
+            title='Create New Story'
+            size='xl'
+            centered
+          >
+            <CreateStoryForm
+              onSubmit={handleCreateStory}
+              loading={isCreatingStory}
+            />
+          </Modal>
+        )}
+
+        {/* Generation Error Modal */}
+        <StoryGenerationErrorModal
+          isOpen={generationErrorModal.isOpen}
+          onClose={closeGenerationErrorModal}
+          errorMessage={generationErrorModal.errorMessage}
+        />
+      </>
     );
   }
 
@@ -110,13 +134,13 @@ const StoryPage: React.FC = () => {
   ) {
     return (
       <Container size='sm' py='xl'>
-        <Stack spacing='lg' align='center'>
-          <Group position='center' spacing='xs'>
+        <Stack gap='lg' align='center'>
+          <Group justify='center' gap='xs'>
             <IconBook size={32} />
             <Title order={2}>Story Mode</Title>
           </Group>
 
-          <Text size='lg' color='dimmed' align='center'>
+          <Text size='lg' c='dimmed' ta='center'>
             Create personalized stories in your target language at your
             proficiency level. Each story is generated daily with comprehension
             questions to test your understanding.
@@ -144,9 +168,9 @@ const StoryPage: React.FC = () => {
   if (isLoading) {
     return (
       <Container size='lg' py='xl'>
-        <Stack spacing='md' align='center'>
+        <Stack gap='md'>
           <Title order={3}>Loading Story...</Title>
-          <Text color='dimmed'>Please wait while we load your story.</Text>
+          <Text c='dimmed'>Please wait while we load your story.</Text>
         </Stack>
       </Container>
     );
@@ -172,9 +196,9 @@ const StoryPage: React.FC = () => {
 
   // Show generating state (informational, not an error) - check this before main interface
   if (isGenerating) {
-    const message =
+    const message: string =
       currentStory && 'message' in currentStory
-        ? currentStory.message
+        ? (currentStory.message as string)
         : 'Story created successfully. The first section is being generated. Please check back shortly.';
     return (
       <Container size='lg' py='xl'>
@@ -188,7 +212,7 @@ const StoryPage: React.FC = () => {
   // Show main story interface
   return (
     <Container size='lg' py='lg'>
-      <Stack spacing='lg'>
+      <Stack gap='lg'>
         {/* Header */}
         <div
           style={{
@@ -207,7 +231,7 @@ const StoryPage: React.FC = () => {
             {currentStory && (
               <Button
                 variant='light'
-                leftIcon={<IconFileDownload size={16} />}
+                leftSection={<IconDownload size={16} />}
                 onClick={handleExportStory}
                 size='sm'
               >
@@ -219,7 +243,7 @@ const StoryPage: React.FC = () => {
             {currentStory && (
               <Button
                 variant='outline'
-                leftIcon={<IconArchive size={16} />}
+                leftSection={<IconArchive size={16} />}
                 onClick={handleArchiveStory}
                 size='sm'
                 color='orange'
@@ -231,7 +255,7 @@ const StoryPage: React.FC = () => {
             {/* New Story Button */}
             <Button
               variant='outline'
-              leftIcon={<IconPlus size={16} />}
+              leftSection={<IconPlus size={16} />}
               onClick={() => setShowCreateModal(true)}
               size='sm'
             >
@@ -241,10 +265,10 @@ const StoryPage: React.FC = () => {
         </div>
 
         {/* View Mode Toggle */}
-        <Group position='center'>
+        <Group justify='center'>
           <Button
             variant={viewMode === 'section' ? 'filled' : 'light'}
-            leftIcon={<IconList size={16} />}
+            leftSection={<IconLayoutList size={16} />}
             onClick={() => setViewMode('section')}
             size='sm'
           >
@@ -252,7 +276,7 @@ const StoryPage: React.FC = () => {
           </Button>
           <Button
             variant={viewMode === 'reading' ? 'filled' : 'light'}
-            leftIcon={<IconEye size={16} />}
+            leftSection={<IconEye size={16} />}
             onClick={() => setViewMode('reading')}
             size='sm'
           >
@@ -283,21 +307,7 @@ const StoryPage: React.FC = () => {
         )}
       </Stack>
 
-      {/* Create Story Modal - Available in all story states */}
-      <Modal
-        opened={showCreateModal}
-        onClose={() => setShowCreateModal(false)}
-        title='Create New Story'
-        size='lg'
-        centered
-      >
-        <CreateStoryForm
-          onSubmit={handleCreateStory}
-          loading={isCreatingStory}
-        />
-      </Modal>
-
-      {/* Story Generation Error Modal */}
+      {/* Generation Error Modal - Main story interface */}
       <StoryGenerationErrorModal
         isOpen={generationErrorModal.isOpen}
         onClose={closeGenerationErrorModal}

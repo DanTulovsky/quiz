@@ -49,6 +49,8 @@ export interface UseStoryReturn {
   goToSection: (index: number) => void;
   goToNextSection: () => void;
   goToPreviousSection: () => void;
+  goToFirstSection: () => void;
+  goToLastSection: () => void;
   setViewMode: (mode: ViewMode) => void;
 
   // Computed
@@ -56,7 +58,14 @@ export interface UseStoryReturn {
   hasCurrentStory: boolean;
   currentSection: StorySection | null;
   currentSectionWithQuestions: StorySectionWithQuestions | null;
-  isGenerating: boolean;
+  generationDisabledReason: string;
+
+  // Modal state
+  generationErrorModal: {
+    isOpen: boolean;
+    errorMessage: string;
+  };
+  closeGenerationErrorModal: () => void;
 }
 
 export const useStory = (): UseStoryReturn => {
@@ -413,13 +422,19 @@ export const useStory = (): UseStoryReturn => {
       queryClient.invalidateQueries({
         queryKey: ['currentStory', user?.id, user?.preferred_language],
       });
-      queryClient.invalidateQueries({
-        queryKey: ['sectionWithQuestions', currentSection?.id],
-      });
-      // Go to the new section
+
+      // Go to the new section first so currentSection is updated
       if (currentStory && currentStory.sections) {
         setCurrentSectionIndex(currentStory.sections.length);
       }
+
+      // Invalidate the sectionWithQuestions query for the new section after state updates
+      setTimeout(() => {
+        queryClient.invalidateQueries({
+          queryKey: ['sectionWithQuestions'],
+        });
+      }, 0);
+
       showNotificationWithClean({
         title: 'Section Generated',
         message: 'A new section has been added to your story!',
