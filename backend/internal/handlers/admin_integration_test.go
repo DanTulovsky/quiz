@@ -1060,22 +1060,10 @@ func (suite *AdminIntegrationTestSuite) TestAdmin_GetQuestion() {
 	sessionCookie := suite.authenticateAsAdmin()
 
 	questionID := suite.createTestQuestion()
-	suite.T().Logf("Created question with ID: %d", questionID)
-
-	// Verify the question exists in the database
-	var dbQuestionID int
-	err := suite.db.QueryRow("SELECT id FROM questions WHERE id = $1", questionID).Scan(&dbQuestionID)
-	if err != nil {
-		suite.T().Fatalf("Question not found in database: %v", err)
-	}
-	suite.T().Logf("Verified question exists in database with ID: %d", dbQuestionID)
-
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/v1/admin/backend/questions/"+strconv.Itoa(questionID), nil)
 	req.AddCookie(sessionCookie)
 	suite.BackendRouter.ServeHTTP(w, req)
-
-	suite.T().Logf("GET request returned status: %d, body: %s", w.Code, w.Body.String())
 	assert.Equal(suite.T(), http.StatusOK, w.Code)
 }
 
