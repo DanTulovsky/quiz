@@ -1,0 +1,699 @@
+import React, { useState } from 'react';
+import {
+  Container,
+  Title,
+  Text,
+  Group,
+  Button,
+  Modal,
+  Stack,
+  Alert,
+  Paper,
+  Badge,
+  Divider,
+  ScrollArea,
+} from '@mantine/core';
+import {
+  IconBook,
+  IconChevronLeft,
+  IconChevronRight,
+  IconPlus,
+  IconEye,
+  IconLayoutList,
+} from '@tabler/icons-react';
+
+import { useStory } from '../../hooks/useStory';
+import CreateStoryForm from '../../components/CreateStoryForm';
+import ArchivedStoriesView from '../../components/ArchivedStoriesView';
+import StoryGenerationErrorModal from '../../components/StoryGenerationErrorModal';
+import { CreateStoryRequest } from '../../api/storyApi';
+
+const MobileStoryPage: React.FC = () => {
+  const {
+    currentStory,
+    archivedStories,
+    sections,
+    currentSectionIndex,
+    viewMode,
+    isLoading,
+    isLoadingArchivedStories,
+    error,
+    hasCurrentStory,
+    currentSection,
+    currentSectionWithQuestions,
+    canGenerateToday,
+    isGenerating,
+    generationDisabledReason,
+    createStory,
+    archiveStory,
+    setCurrentStory,
+    generateNextSection,
+    goToNextSection,
+    goToPreviousSection,
+    goToFirstSection,
+    goToLastSection,
+    setViewMode,
+    generationErrorModal,
+    closeGenerationErrorModal,
+  } = useStory();
+
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [isCreatingStory, setIsCreatingStory] = useState(false);
+
+  const handleCreateStory = async (data: CreateStoryRequest) => {
+    setIsCreatingStory(true);
+    try {
+      await createStory(data);
+      setShowCreateModal(false);
+    } finally {
+      setIsCreatingStory(false);
+    }
+  };
+
+  const handleArchiveStory = async () => {
+    if (currentStory) {
+      await archiveStory(currentStory.id!);
+    }
+  };
+
+  const handleUnarchiveStory = async (storyId: number) => {
+    await setCurrentStory(storyId);
+  };
+
+  // Show archived stories if no current story but archived stories exist
+  if (
+    !hasCurrentStory &&
+    !isLoading &&
+    archivedStories &&
+    archivedStories.length > 0
+  ) {
+    return (
+      <>
+        <ArchivedStoriesView
+          archivedStories={archivedStories}
+          isLoading={isLoadingArchivedStories}
+          onUnarchive={handleUnarchiveStory}
+          onCreateNew={() => setShowCreateModal(true)}
+        />
+        {/* Create Story Modal - Available when showing archived stories */}
+        {showCreateModal && (
+          <Modal
+            opened={true}
+            onClose={() => setShowCreateModal(false)}
+            title='Create New Story'
+            size='xl'
+            centered
+          >
+            <CreateStoryForm
+              onSubmit={handleCreateStory}
+              loading={isCreatingStory}
+            />
+          </Modal>
+        )}
+
+        {/* Generation Error Modal */}
+        <StoryGenerationErrorModal
+          isOpen={generationErrorModal.isOpen}
+          onClose={closeGenerationErrorModal}
+          errorMessage={generationErrorModal.errorMessage}
+        />
+      </>
+    );
+  }
+
+  // Show create form if no current story and no archived stories
+  if (
+    !hasCurrentStory &&
+    !isLoading &&
+    (!archivedStories || archivedStories.length === 0)
+  ) {
+    return (
+      <Container size='sm' py='xl'>
+        <Stack gap='lg' align='center'>
+          <Group justify='center' gap='xs'>
+            <IconBook size={32} />
+            <Title order={2}>Story Mode</Title>
+          </Group>
+
+          <Text size='lg' c='dimmed' ta='center'>
+            Create personalized stories in your target language at your
+            proficiency level. Each story is generated daily with comprehension
+            questions to test your understanding.
+          </Text>
+
+          <CreateStoryForm
+            onSubmit={handleCreateStory}
+            loading={isCreatingStory}
+          />
+
+          <Alert color='blue' variant='light'>
+            <Text size='sm'>
+              <strong>How it works:</strong> Create a story with custom
+              parameters, then read new sections daily. Each section includes
+              comprehension questions to help you learn and practice your target
+              language.
+            </Text>
+          </Alert>
+        </Stack>
+      </Container>
+    );
+  }
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <Container size='lg' py='xl'>
+        <Stack gap='md'>
+          <Title order={3}>Loading Story...</Title>
+          <Text c='dimmed'>Please wait while we load your story.</Text>
+        </Stack>
+      </Container>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <Container size='lg' py='xl'>
+        <Alert color='red' variant='light' title='Error'>
+          <Text>{error}</Text>
+          <Button
+            variant='light'
+            onClick={() => window.location.reload()}
+            mt='sm'
+          >
+            Try Again
+          </Button>
+        </Alert>
+      </Container>
+    );
+  }
+
+  // Show generating state (informational, not an error) - check this before main interface
+  if (isGenerating) {
+    const message: string =
+      currentStory && 'message' in currentStory
+        ? (currentStory.message as string)
+        : 'Story created successfully. The first section is being generated. Please check back shortly.';
+    return (
+      <Container size='lg' py='xl'>
+        <Alert color='blue' variant='light'>
+          <Text>{message}</Text>
+        </Alert>
+      </Container>
+    );
+  }
+
+  // Show main story interface
+  return (
+    <Container size='lg' py='lg'>
+      <Stack gap='lg'>
+        {/* Header */}
+        <Paper p='md' radius='md'>
+          <Group justify='space-between' align='center'>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <IconBook size={24} />
+              <Title order={4}>{currentStory?.title}</Title>
+            </div>
+
+            <Group gap='xs'>
+              {/* View Mode Toggle */}
+              <Group gap={4}>
+                <Button
+                  variant={viewMode === 'section' ? 'filled' : 'light'}
+                  size='xs'
+                  onClick={() => setViewMode('section')}
+                  leftSection={<IconLayoutList size={14} />}
+                >
+                  Section
+                </Button>
+                <Button
+                  variant={viewMode === 'reading' ? 'filled' : 'light'}
+                  size='xs'
+                  onClick={() => setViewMode('reading')}
+                  leftSection={<IconEye size={14} />}
+                >
+                  Reading
+                </Button>
+              </Group>
+            </Group>
+          </Group>
+        </Paper>
+
+        {/* Story Content */}
+        {viewMode === 'section' ? (
+          <MobileStorySectionView
+            section={currentSection}
+            sectionWithQuestions={currentSectionWithQuestions}
+            sectionIndex={currentSectionIndex}
+            totalSections={sections.length}
+            canGenerateToday={canGenerateToday}
+            isGenerating={isGenerating}
+            generationDisabledReason={generationDisabledReason}
+            onGenerateNext={() =>
+              currentStory && generateNextSection(currentStory.id!)
+            }
+            onPrevious={goToPreviousSection}
+            onNext={goToNextSection}
+            onFirst={goToFirstSection}
+            onLast={goToLastSection}
+          />
+        ) : (
+          <MobileStoryReadingView
+            story={currentStory}
+            isGenerating={isGenerating}
+          />
+        )}
+
+        {/* Archive Button */}
+        {currentStory && (
+          <Paper p='md' radius='md'>
+            <Group justify='center'>
+              <Button
+                variant='outline'
+                color='orange'
+                onClick={handleArchiveStory}
+                size='md'
+              >
+                Archive Story
+              </Button>
+              <Button
+                variant='outline'
+                onClick={() => setShowCreateModal(true)}
+                size='md'
+              >
+                New Story
+              </Button>
+            </Group>
+          </Paper>
+        )}
+      </Stack>
+
+      {/* Generation Error Modal - Main story interface */}
+      <StoryGenerationErrorModal
+        isOpen={generationErrorModal.isOpen}
+        onClose={closeGenerationErrorModal}
+        errorMessage={generationErrorModal.errorMessage}
+      />
+
+      {/* Create Story Modal */}
+      {showCreateModal && (
+        <Modal
+          opened={true}
+          onClose={() => setShowCreateModal(false)}
+          title='Create New Story'
+          size='xl'
+          centered
+        >
+          <CreateStoryForm
+            onSubmit={handleCreateStory}
+            loading={isCreatingStory}
+          />
+        </Modal>
+      )}
+    </Container>
+  );
+};
+
+interface MobileStorySectionViewProps {
+  section: any;
+  sectionWithQuestions: any;
+  sectionIndex: number;
+  totalSections: number;
+  canGenerateToday: boolean;
+  isGenerating: boolean;
+  generationDisabledReason?: string;
+  onGenerateNext: () => void;
+  onPrevious: () => void;
+  onNext: () => void;
+  onFirst: () => void;
+  onLast: () => void;
+}
+
+const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
+  section,
+  sectionWithQuestions,
+  sectionIndex,
+  totalSections,
+  canGenerateToday,
+  isGenerating,
+  generationDisabledReason,
+  onGenerateNext,
+  onPrevious,
+  onNext,
+  onFirst,
+  onLast,
+}) => {
+  if (!section) {
+    return (
+      <Paper p='xl' radius='md' style={{ textAlign: 'center' }}>
+        <IconBook size={48} style={{ opacity: 0.5, marginBottom: 16 }} />
+        <Title order={4}>No section to display</Title>
+        <Text color='dimmed'>
+          Create a new story or select a section to view.
+        </Text>
+      </Paper>
+    );
+  }
+
+  return (
+    <Stack gap='md'>
+      {/* Section Header */}
+      <Paper p='md' radius='md'>
+        <Group justify='space-between' align='center'>
+          <Group gap='xs'>
+            <Badge variant='light' color='blue'>
+              Section {section.section_number}
+            </Badge>
+            <Badge variant='outline'>{section.language_level}</Badge>
+          </Group>
+          <Badge variant='outline'>{section.word_count} words</Badge>
+        </Group>
+
+        {/* Section Navigation */}
+        <Group justify='center' mt='md' gap='xs'>
+          <Button
+            variant='light'
+            size='xs'
+            onClick={onFirst}
+            disabled={sectionIndex === 0}
+            leftSection={<IconChevronLeft size={14} />}
+          >
+            First
+          </Button>
+
+          <Button
+            variant='light'
+            size='xs'
+            onClick={onPrevious}
+            disabled={sectionIndex === 0}
+            leftSection={<IconChevronLeft size={14} />}
+          >
+            Previous
+          </Button>
+
+          <Text
+            size='sm'
+            color='dimmed'
+            style={{ minWidth: '60px', textAlign: 'center' }}
+          >
+            {sectionIndex + 1} / {totalSections}
+          </Text>
+
+          <Button
+            variant='light'
+            size='xs'
+            onClick={onNext}
+            disabled={sectionIndex >= totalSections - 1}
+            rightSection={<IconChevronRight size={14} />}
+          >
+            Next
+          </Button>
+
+          <Button
+            variant='light'
+            size='xs'
+            onClick={onLast}
+            disabled={sectionIndex >= totalSections - 1}
+            rightSection={<IconChevronRight size={14} />}
+          >
+            Last
+          </Button>
+        </Group>
+      </Paper>
+
+      {/* Section Content */}
+      <Paper p='lg' radius='md'>
+        <ScrollArea style={{ maxHeight: '50vh' }}>
+          <div
+            style={{
+              lineHeight: 1.6,
+              fontSize: '16px',
+              whiteSpace: 'pre-wrap',
+            }}
+          >
+            {section.content}
+          </div>
+        </ScrollArea>
+      </Paper>
+
+      {/* Comprehension Questions */}
+      {sectionWithQuestions?.questions &&
+      sectionWithQuestions.questions.length > 0 ? (
+        <Paper p='md' radius='md'>
+          <Title order={5} mb='sm'>
+            Comprehension Questions
+          </Title>
+          <Stack gap='sm'>
+            {sectionWithQuestions.questions.map(
+              (question: any, index: number) => (
+                <MobileStoryQuestionCard
+                  key={question.id || index}
+                  question={question}
+                />
+              )
+            )}
+          </Stack>
+        </Paper>
+      ) : (
+        <Alert color='gray' variant='light'>
+          No questions available for this section yet.
+        </Alert>
+      )}
+
+      {/* Generate Next Section */}
+      <Paper p='md' radius='md'>
+        <Group justify='space-between' align='center'>
+          <div>
+            <Title order={5}>Continue the Story</Title>
+            <Text size='sm' color='dimmed'>
+              Generate the next section of your story
+            </Text>
+          </div>
+          <Button
+            size='sm'
+            onClick={onGenerateNext}
+            loading={isGenerating}
+            disabled={!canGenerateToday || isGenerating}
+            color='blue'
+            leftSection={<IconPlus size={14} />}
+          >
+            {isGenerating ? 'Generating...' : 'Generate Next Section'}
+          </Button>
+        </Group>
+        {!canGenerateToday && generationDisabledReason && (
+          <Text size='xs' color='dimmed' mt='xs'>
+            {generationDisabledReason}
+          </Text>
+        )}
+      </Paper>
+    </Stack>
+  );
+};
+
+// Simplified question component for mobile
+interface MobileStoryQuestionCardProps {
+  question: any;
+}
+
+const MobileStoryQuestionCard: React.FC<MobileStoryQuestionCardProps> = ({
+  question,
+}) => {
+  const [selectedAnswer, setSelectedAnswer] = React.useState<number | null>(
+    null
+  );
+  const [showResult, setShowResult] = React.useState(false);
+
+  const handleSubmit = () => {
+    setShowResult(true);
+  };
+
+  const handleReset = () => {
+    setSelectedAnswer(null);
+    setShowResult(false);
+  };
+
+  return (
+    <Paper p='sm' radius='sm' style={{ backgroundColor: '#f8f9fa' }}>
+      <Text size='sm' fw={500} mb='xs'>
+        {question.question_text}
+      </Text>
+
+      <Stack gap='xs'>
+        {question.options.map((option: string, index: number) => (
+          <div key={index}>
+            <input
+              type='radio'
+              id={`option-${index}`}
+              name={`question-${question.id}`}
+              value={index}
+              checked={selectedAnswer === index}
+              onChange={() => setSelectedAnswer(index)}
+              disabled={showResult}
+            />
+            <label
+              htmlFor={`option-${index}`}
+              style={{ marginLeft: 8, fontSize: '14px' }}
+            >
+              {option}
+            </label>
+          </div>
+        ))}
+      </Stack>
+
+      <Group justify='space-between' mt='xs'>
+        {!showResult ? (
+          <Button
+            size='xs'
+            onClick={handleSubmit}
+            disabled={selectedAnswer === null}
+          >
+            Submit Answer
+          </Button>
+        ) : (
+          <>
+            <Text
+              size='xs'
+              color={
+                selectedAnswer === question.correct_answer_index
+                  ? 'green'
+                  : 'red'
+              }
+            >
+              {selectedAnswer === question.correct_answer_index
+                ? '✓ Correct!'
+                : '✗ Incorrect'}
+            </Text>
+            <Button size='xs' variant='light' onClick={handleReset}>
+              Try Again
+            </Button>
+          </>
+        )}
+      </Group>
+
+      {showResult && question.explanation && (
+        <Alert color='blue' variant='light' mt='xs'>
+          <Text size='xs'>{question.explanation}</Text>
+        </Alert>
+      )}
+    </Paper>
+  );
+};
+
+interface MobileStoryReadingViewProps {
+  story: any;
+  isGenerating?: boolean;
+}
+
+const MobileStoryReadingView: React.FC<MobileStoryReadingViewProps> = ({
+  story,
+  isGenerating = false,
+}) => {
+  if (!story) {
+    return (
+      <Paper p='xl' radius='md' style={{ textAlign: 'center' }}>
+        <IconBook size={48} style={{ opacity: 0.5, marginBottom: 16 }} />
+        <Title order={4}>No story to display</Title>
+        <Text color='dimmed'>Create a new story to start reading.</Text>
+      </Paper>
+    );
+  }
+
+  if (story.sections.length === 0) {
+    if (isGenerating) {
+      return (
+        <Paper p='xl' radius='md' style={{ textAlign: 'center' }}>
+          <Stack gap='md' align='center'>
+            <IconBook size={48} style={{ opacity: 0.5 }} />
+            <Title order={4}>Generating Your Story</Title>
+            <Text color='dimmed' align='center'>
+              We're creating the first section of your story.
+            </Text>
+          </Stack>
+        </Paper>
+      );
+    } else {
+      return (
+        <Paper p='xl' radius='md' style={{ textAlign: 'center' }}>
+          <IconBook size={48} style={{ opacity: 0.5, marginBottom: 16 }} />
+          <Title order={4}>Story in Progress</Title>
+          <Text color='dimmed'>
+            Your story is being prepared. Check back soon for the first section!
+          </Text>
+        </Paper>
+      );
+    }
+  }
+
+  return (
+    <Stack gap='md'>
+      {/* Story Header */}
+      <Paper p='md' radius='md'>
+        <Group justify='space-between' align='center'>
+          <div>
+            <Title order={4}>{story.title}</Title>
+            <Group gap='xs' mt='xs'>
+              <Badge variant='light' color='blue'>
+                {story.language.toUpperCase()}
+              </Badge>
+              <Badge variant='outline'>{story.sections.length} sections</Badge>
+              {story.status && (
+                <Badge
+                  variant='outline'
+                  color={story.status === 'active' ? 'green' : 'gray'}
+                >
+                  {story.status}
+                </Badge>
+              )}
+            </Group>
+          </div>
+        </Group>
+      </Paper>
+
+      {/* Story Content */}
+      <Paper p='lg' radius='md'>
+        <ScrollArea style={{ maxHeight: '60vh' }}>
+          <Stack gap='lg'>
+            {/* Story Sections */}
+            {story.sections.map((section: any, index: number) => (
+              <div key={section.id || index}>
+                <Divider my='md' />
+                <div
+                  style={{
+                    lineHeight: 1.7,
+                    fontSize: '16px',
+                    whiteSpace: 'pre-wrap',
+                    marginBottom:
+                      index < story.sections.length - 1 ? '1.5rem' : '1rem',
+                  }}
+                >
+                  {section.content}
+                </div>
+              </div>
+            ))}
+
+            {/* Story End Notice */}
+            <Paper
+              p='md'
+              radius='sm'
+              style={{
+                backgroundColor: '#f0f9ff',
+                border: '1px solid #e0f2fe',
+              }}
+            >
+              <Text size='sm' color='blue' align='center'>
+                {story.status === 'active'
+                  ? 'This story is ongoing. New sections will be added daily!'
+                  : story.status === 'completed'
+                    ? 'This story has been completed.'
+                    : 'This story has been archived.'}
+              </Text>
+            </Paper>
+          </Stack>
+        </ScrollArea>
+      </Paper>
+    </Stack>
+  );
+};
+
+export default MobileStoryPage;

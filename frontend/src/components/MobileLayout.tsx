@@ -59,6 +59,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
     if (path.startsWith('/m/quiz')) return 'quiz';
     if (path.startsWith('/m/vocabulary')) return 'vocabulary';
     if (path.startsWith('/m/reading-comprehension')) return 'reading';
+    if (path.startsWith('/m/story')) return 'story';
     if (path.startsWith('/m/daily')) return 'daily';
     return 'quiz';
   };
@@ -79,6 +80,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
       icon: IconMessage,
       path: '/m/reading-comprehension',
     },
+    { key: 'story', label: 'Story', icon: IconBook2, path: '/m/story' },
     { key: 'daily', label: 'Daily', icon: IconCalendar, path: '/m/daily' },
   ];
 
