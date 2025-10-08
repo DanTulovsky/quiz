@@ -34,6 +34,13 @@ stories:
     author_style: "simple and clear"
     status: "archived"
 
+  - username: "apitestuserstory1"
+    title: "Another Archived Story"
+    language: "italian"
+    subject: "Another story to be archived for set-current testing"
+    author_style: "simple and clear"
+    status: "archived"
+
   - username: "apitestuser2"
     title: "Active Test Story"
     language: "italian"

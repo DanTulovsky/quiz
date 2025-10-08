@@ -1170,8 +1170,8 @@ test.describe('Comprehensive API Tests', () => {
       // Check if this is a story-related endpoint
       if (path.includes('/story/')) {
         // Use the dedicated story test user for story operations
-        // For DELETE operations, we need an archived story
-        const includeArchived = method === 'DELETE';
+        // For DELETE and set-current operations, we need an archived story
+        const includeArchived = method === 'DELETE' || path.includes('/set-current');
         const storyId = getAvailableStoryId('apitestuserstory1', includeArchived);
         return {value: storyId, type: 'story'};
       }
@@ -1478,6 +1478,7 @@ test.describe('Comprehensive API Tests', () => {
               // console.log(`Replaced {${key}} with question ID ${questionId} in path: ${endpointPath}`);
             } else if (key === 'id' && value === 'STORY_ID_PLACEHOLDER') {
               // For story endpoints, use appropriate story ID based on operation
+              // DELETE operations need archived stories, set-current needs active stories
               const includeArchived = testCase.method === 'DELETE';
               // Load story data for synchronous access
               const storyDataPath = path.join(process.cwd(), 'tests', 'test-stories.json');
@@ -1486,7 +1487,21 @@ test.describe('Comprehensive API Tests', () => {
                 const storyDataContent = fs.readFileSync(storyDataPath, 'utf8');
                 storyData = JSON.parse(storyDataContent);
               }
-              const storyId = getAvailableStoryId('apitestuserstory1', includeArchived, storyData);
+              let storyId;
+              if (endpointPath.includes('/set-current')) {
+                // For set-current, use a different story than the one that gets deleted
+                // Find all archived stories for this user and pick the second one if available
+                const userStories = Object.values(storyData).filter((s: any) =>
+                  s.username === 'apitestuserstory1' && s.status === 'archived'
+                );
+                if (userStories.length > 1) {
+                  storyId = userStories[1].id; // Use the second archived story
+                } else {
+                  storyId = getAvailableStoryId('apitestuserstory1', includeArchived, storyData);
+                }
+              } else {
+                storyId = getAvailableStoryId('apitestuserstory1', includeArchived, storyData);
+              }
               endpointPath = endpointPath.replace(`{${key}}`, storyId.toString());
               console.log(`DEBUG: Story endpoint ${testCase.method} ${endpointPath} - includeArchived: ${includeArchived}, selected story ID: ${storyId}`);
             } else {
@@ -1675,6 +1690,7 @@ test.describe('Comprehensive API Tests', () => {
 
         // Replace path parameters with appropriate IDs
         const path = await replacePathParameters(testCase.path, testCase.pathParams, request, REGULAR_USER, testCase.method);
+        const endpointPath = path;
 
         const url = new URL(`${baseURL}${endpointPath}`);
 
@@ -1779,6 +1795,7 @@ test.describe('Comprehensive API Tests', () => {
 
         // Replace path parameters with appropriate IDs
         const path = await replacePathParameters(testCase.path, testCase.pathParams, request, REGULAR_USER, testCase.method);
+        const endpointPath = path;
 
         const url = new URL(`${baseURL}${endpointPath}`);
 
@@ -1840,6 +1857,7 @@ test.describe('Comprehensive API Tests', () => {
 
         // Replace path parameters with appropriate IDs
         const path = await replacePathParameters(testCase.path, testCase.pathParams, request, REGULAR_USER, testCase.method);
+        const endpointPath = path;
 
         const url = new URL(`${baseURL}${endpointPath}`);
 
@@ -1889,6 +1907,7 @@ test.describe('Comprehensive API Tests', () => {
 
         // Replace path parameters with appropriate IDs
         const path = await replacePathParameters(testCase.path, testCase.pathParams, request, REGULAR_USER, testCase.method);
+        const endpointPath = path;
 
         const url = new URL(`${baseURL}${endpointPath}`);
 
@@ -2041,6 +2060,7 @@ test.describe('Comprehensive API Tests', () => {
 
         // Replace path parameters without triggering any authenticated calls
         const path = replacePathParametersUnauthenticated(testCase.path, testCase.pathParams);
+        const endpointPath = path;
 
         const url = new URL(`${baseURL}${endpointPath}`);
 
