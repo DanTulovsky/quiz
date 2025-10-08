@@ -1660,6 +1660,13 @@ tasks:
     cmds:
       - task: release-build
 
+  pre-release:
+    desc: "Run all linting and tests to make sure release works"
+    cmds:
+      - task: lint
+      - task: test
+      - task: test-e2e-api
+
   build-all-with-version:
     desc: "Build all Docker images with version, commit, and build time injected from git."
     deps: [setup-cache-dirs]

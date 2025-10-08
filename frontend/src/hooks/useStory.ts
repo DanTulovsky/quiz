@@ -133,11 +133,11 @@ export const useStory = (): UseStoryReturn => {
       setIsGenerating(false);
       setGenerationType(null);
       stopPolling();
-      setError(null);
+      // Don't clear error here - let the error handling useEffect manage error state
     }
     // If currentStory is null or undefined, don't change the generating state
     // (it might be in the process of being fetched after story creation)
-  }, [currentStory, error]);
+  }, [currentStory]);
 
   // Polling functions
   const stopPolling = useCallback(() => {
