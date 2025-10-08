@@ -17,7 +17,10 @@ import (
 	contextutils "quizapp/internal/utils"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jung-kurt/gofpdf"
+    "github.com/jung-kurt/gofpdf"
+    "bytes"
+    "path/filepath"
+    "os"
 	"github.com/lib/pq"
 	"go.opentelemetry.io/otel/attribute"
 )
@@ -534,10 +537,26 @@ func (h *StoryHandler) ExportStory(c *gin.Context) {
 		return
 	}
 
-	// Create PDF
-	pdf := gofpdf.New("P", "mm", "A4", "")
-	pdf.AddPage()
-	pdf.SetFont("Arial", "B", 16)
+    // Create PDF
+    pdf := gofpdf.New("P", "mm", "A4", "")
+
+    // Ensure UTF-8 support by adding a TTF font that supports wide unicode glyphs.
+    // Prefer DejaVu Sans if available in the project; otherwise fall back to core fonts.
+    dejavuPath := filepath.Join("frontend", "public", "fonts", "DejaVuSans.ttf")
+    chosenFont := "Arial"
+    if _, err := os.Stat(dejavuPath); err == nil {
+        // Attempt to register DejaVu under family name "DejaVu".
+        if err := pdf.AddUTF8Font("DejaVu", "", dejavuPath); err == nil {
+            chosenFont = "DejaVu"
+        } else {
+            // Log registration failure to server logs (not returned to client)
+            h.logger.Warn(ctx, "Failed to register DejaVu font for PDF, falling back to core fonts", map[string]interface{}{"error": err.Error()})
+        }
+    }
+
+    pdf.AddPage()
+    // Use the chosen font consistently; size will be overridden for headings where needed
+    pdf.SetFont(chosenFont, "B", 16)
 
 	// Add title
 	pdf.Cell(40, 10, story.Title)
@@ -587,9 +606,9 @@ func (h *StoryHandler) ExportStory(c *gin.Context) {
 	c.Header("Content-Type", "application/pdf")
 	c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=%s", filename))
 
-	// Output PDF to response
-	var buf strings.Builder
-	err = pdf.Output(&buf)
+    // Output PDF to response using bytes.Buffer (avoids UTF-8 corruption from string conversions)
+    var buf bytes.Buffer
+    err = pdf.Output(&buf)
 	if err != nil {
 		h.logger.Error(ctx, "Failed to generate PDF", err, map[string]interface{}{
 			"story_id": storyID,
@@ -598,7 +617,7 @@ func (h *StoryHandler) ExportStory(c *gin.Context) {
 		return
 	}
 
-	c.Data(http.StatusOK, "application/pdf", []byte(buf.String()))
+    c.Data(http.StatusOK, "application/pdf", buf.Bytes())
 }
 
 // convertToServicesAIConfig creates AI config for the user in services format
