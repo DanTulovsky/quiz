@@ -193,9 +193,7 @@ export const useStory = (): UseStoryReturn => {
       logger.error('Failed to create story', error);
       let errorMessage = 'Failed to create story. Please try again.';
 
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      } else if (typeof error === 'object' && error !== null) {
+      if (typeof error === 'object' && error !== null) {
         // Check if error has response structure (axios-like error)
         const hasResponse = 'response' in error || 'message' in error;
         if (hasResponse) {
@@ -214,13 +212,28 @@ export const useStory = (): UseStoryReturn => {
             // Handle case where response.data is the error object itself
             errorMessage = (axiosError.response.data as { error: string })
               .error;
+          } else if (
+            axiosError.response?.data &&
+            typeof axiosError.response.data === 'object' &&
+            'message' in axiosError.response.data
+          ) {
+            // Handle case where the error message is in the 'message' field
+            errorMessage = (axiosError.response.data as { message: string })
+              .message;
           } else if (axiosError.message) {
             errorMessage = axiosError.message;
           }
+        } else if (error instanceof Error) {
+          // If it's an Error but doesn't have response structure, use the message
+          errorMessage = error.message;
         } else {
-          // If error doesn't have response structure, convert to string
+          // If error doesn't have response structure and isn't an Error, convert to string
           errorMessage = String(error);
         }
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      } else {
+        errorMessage = String(error);
       }
 
       showNotificationWithClean({
@@ -262,9 +275,7 @@ export const useStory = (): UseStoryReturn => {
       logger.error('Failed to archive story', error);
       let errorMessage = 'Failed to archive story. Please try again.';
 
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      } else if (typeof error === 'object' && error !== null) {
+      if (typeof error === 'object' && error !== null) {
         // Check if error has response structure (axios-like error)
         const hasResponse = 'response' in error || 'message' in error;
         if (hasResponse) {
@@ -283,13 +294,28 @@ export const useStory = (): UseStoryReturn => {
             // Handle case where response.data is the error object itself
             errorMessage = (axiosError.response.data as { error: string })
               .error;
+          } else if (
+            axiosError.response?.data &&
+            typeof axiosError.response.data === 'object' &&
+            'message' in axiosError.response.data
+          ) {
+            // Handle case where the error message is in the 'message' field
+            errorMessage = (axiosError.response.data as { message: string })
+              .message;
           } else if (axiosError.message) {
             errorMessage = axiosError.message;
           }
+        } else if (error instanceof Error) {
+          // If it's an Error but doesn't have response structure, use the message
+          errorMessage = error.message;
         } else {
-          // If error doesn't have response structure, convert to string
+          // If error doesn't have response structure and isn't an Error, convert to string
           errorMessage = String(error);
         }
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      } else {
+        errorMessage = String(error);
       }
 
       showNotificationWithClean({
@@ -317,9 +343,7 @@ export const useStory = (): UseStoryReturn => {
       logger.error('Failed to complete story', error);
       let errorMessage = 'Failed to complete story. Please try again.';
 
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      } else if (typeof error === 'object' && error !== null) {
+      if (typeof error === 'object' && error !== null) {
         // Check if error has response structure (axios-like error)
         const hasResponse = 'response' in error || 'message' in error;
         if (hasResponse) {
@@ -338,13 +362,28 @@ export const useStory = (): UseStoryReturn => {
             // Handle case where response.data is the error object itself
             errorMessage = (axiosError.response.data as { error: string })
               .error;
+          } else if (
+            axiosError.response?.data &&
+            typeof axiosError.response.data === 'object' &&
+            'message' in axiosError.response.data
+          ) {
+            // Handle case where the error message is in the 'message' field
+            errorMessage = (axiosError.response.data as { message: string })
+              .message;
           } else if (axiosError.message) {
             errorMessage = axiosError.message;
           }
+        } else if (error instanceof Error) {
+          // If it's an Error but doesn't have response structure, use the message
+          errorMessage = error.message;
         } else {
-          // If error doesn't have response structure, convert to string
+          // If error doesn't have response structure and isn't an Error, convert to string
           errorMessage = String(error);
         }
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      } else {
+        errorMessage = String(error);
       }
 
       showNotificationWithClean({
@@ -374,9 +413,7 @@ export const useStory = (): UseStoryReturn => {
       logger.error('Failed to set current story', error);
       let errorMessage = 'Failed to set current story. Please try again.';
 
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      } else if (typeof error === 'object' && error !== null) {
+      if (typeof error === 'object' && error !== null) {
         // Check if error has response structure (axios-like error)
         const hasResponse = 'response' in error || 'message' in error;
         if (hasResponse) {
@@ -395,13 +432,28 @@ export const useStory = (): UseStoryReturn => {
             // Handle case where response.data is the error object itself
             errorMessage = (axiosError.response.data as { error: string })
               .error;
+          } else if (
+            axiosError.response?.data &&
+            typeof axiosError.response.data === 'object' &&
+            'message' in axiosError.response.data
+          ) {
+            // Handle case where the error message is in the 'message' field
+            errorMessage = (axiosError.response.data as { message: string })
+              .message;
           } else if (axiosError.message) {
             errorMessage = axiosError.message;
           }
+        } else if (error instanceof Error) {
+          // If it's an Error but doesn't have response structure, use the message
+          errorMessage = error.message;
         } else {
-          // If error doesn't have response structure, convert to string
+          // If error doesn't have response structure and isn't an Error, convert to string
           errorMessage = String(error);
         }
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      } else {
+        errorMessage = String(error);
       }
 
       showNotificationWithClean({
@@ -413,7 +465,15 @@ export const useStory = (): UseStoryReturn => {
   });
 
   const generateNextSectionMutation = useMutation({
-    mutationFn: apiGenerateNextSection,
+    mutationFn: async (storyId: number) => {
+      try {
+        return await apiGenerateNextSection(storyId);
+      } catch (error) {
+        // Log the error for debugging
+        logger.error('API call failed in mutationFn:', error);
+        throw error;
+      }
+    },
     onMutate: () => {
       // Set generating state when mutation starts
       setIsGenerating(true);
@@ -448,9 +508,7 @@ export const useStory = (): UseStoryReturn => {
 
       let errorMessage = 'Failed to generate next section. Please try again.';
 
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      } else if (typeof error === 'object' && error !== null) {
+      if (typeof error === 'object' && error !== null) {
         // Check if error has response structure (axios-like error)
         const hasResponse = 'response' in error || 'message' in error;
         if (hasResponse) {
@@ -469,13 +527,28 @@ export const useStory = (): UseStoryReturn => {
             // Handle case where response.data is the error object itself
             errorMessage = (axiosError.response.data as { error: string })
               .error;
+          } else if (
+            axiosError.response?.data &&
+            typeof axiosError.response.data === 'object' &&
+            'message' in axiosError.response.data
+          ) {
+            // Handle case where the error message is in the 'message' field
+            errorMessage = (axiosError.response.data as { message: string })
+              .message;
           } else if (axiosError.message) {
             errorMessage = axiosError.message;
           }
+        } else if (error instanceof Error) {
+          // If it's an Error but doesn't have response structure, use the message
+          errorMessage = error.message;
         } else {
-          // If error doesn't have response structure, convert to string
+          // If error doesn't have response structure and isn't an Error, convert to string
           errorMessage = String(error);
         }
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      } else {
+        errorMessage = String(error);
       }
 
       // Show error modal for all generation errors
@@ -505,9 +578,7 @@ export const useStory = (): UseStoryReturn => {
       logger.error('Failed to delete story', error);
       let errorMessage = 'Failed to delete story. Please try again.';
 
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      } else if (typeof error === 'object' && error !== null) {
+      if (typeof error === 'object' && error !== null) {
         // Check if error has response structure (axios-like error)
         const hasResponse = 'response' in error || 'message' in error;
         if (hasResponse) {
@@ -526,13 +597,28 @@ export const useStory = (): UseStoryReturn => {
             // Handle case where response.data is the error object itself
             errorMessage = (axiosError.response.data as { error: string })
               .error;
+          } else if (
+            axiosError.response?.data &&
+            typeof axiosError.response.data === 'object' &&
+            'message' in axiosError.response.data
+          ) {
+            // Handle case where the error message is in the 'message' field
+            errorMessage = (axiosError.response.data as { message: string })
+              .message;
           } else if (axiosError.message) {
             errorMessage = axiosError.message;
           }
+        } else if (error instanceof Error) {
+          // If it's an Error but doesn't have response structure, use the message
+          errorMessage = error.message;
         } else {
-          // If error doesn't have response structure, convert to string
+          // If error doesn't have response structure and isn't an Error, convert to string
           errorMessage = String(error);
         }
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      } else {
+        errorMessage = String(error);
       }
 
       showNotificationWithClean({
@@ -566,9 +652,7 @@ export const useStory = (): UseStoryReturn => {
       logger.error('Failed to export story PDF', error);
       let errorMessage = 'Failed to export story. Please try again.';
 
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      } else if (typeof error === 'object' && error !== null) {
+      if (typeof error === 'object' && error !== null) {
         // Check if error has response structure (axios-like error)
         const hasResponse = 'response' in error || 'message' in error;
         if (hasResponse) {
@@ -587,13 +671,28 @@ export const useStory = (): UseStoryReturn => {
             // Handle case where response.data is the error object itself
             errorMessage = (axiosError.response.data as { error: string })
               .error;
+          } else if (
+            axiosError.response?.data &&
+            typeof axiosError.response.data === 'object' &&
+            'message' in axiosError.response.data
+          ) {
+            // Handle case where the error message is in the 'message' field
+            errorMessage = (axiosError.response.data as { message: string })
+              .message;
           } else if (axiosError.message) {
             errorMessage = axiosError.message;
           }
+        } else if (error instanceof Error) {
+          // If it's an Error but doesn't have response structure, use the message
+          errorMessage = error.message;
         } else {
-          // If error doesn't have response structure, convert to string
+          // If error doesn't have response structure and isn't an Error, convert to string
           errorMessage = String(error);
         }
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      } else {
+        errorMessage = String(error);
       }
 
       showNotificationWithClean({
@@ -674,6 +773,14 @@ export const useStory = (): UseStoryReturn => {
             // Handle case where response.data is the error object itself
             errorMessage = (axiosError.response.data as { error: string })
               .error;
+          } else if (
+            axiosError.response?.data &&
+            typeof axiosError.response.data === 'object' &&
+            'message' in axiosError.response.data
+          ) {
+            // Handle case where the error message is in the 'message' field
+            errorMessage = (axiosError.response.data as { message: string })
+              .message;
           } else if (axiosError.message) {
             errorMessage = axiosError.message;
           }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Button, Group, Text, Stack, Alert } from '@mantine/core';
-import { IconAlertCircle, IconInfoCircle } from '@tabler/icons-react';
+import { IconAlertCircle } from '@tabler/icons-react';
 
 interface StoryGenerationErrorModalProps {
   isOpen: boolean;
@@ -13,24 +13,11 @@ const StoryGenerationErrorModal: React.FC<StoryGenerationErrorModalProps> = ({
   onClose,
   errorMessage,
 }) => {
-  // Determine if this is a limit exceeded error or other error
-  const isLimitError =
-    errorMessage.includes('daily generation limit reached') ||
-    errorMessage.includes('already generated') ||
-    errorMessage.includes('try again tomorrow');
+  // For now, just use the error message as-is
+  // The error parsing should happen in the useStory hook
+  const actualErrorMessage = errorMessage;
 
   const getErrorDetails = () => {
-    if (isLimitError) {
-      return {
-        title: 'Daily Generation Limit Reached',
-        icon: <IconInfoCircle size={20} color='var(--mantine-color-blue)' />,
-        variant: 'light' as const,
-        description:
-          'You can generate up to 2 sections per day for each story. The daily limit resets at midnight.',
-        suggestion:
-          'Try again tomorrow, or work on a different story in the meantime.',
-      };
-    }
     return {
       title: 'Cannot Generate Section',
       icon: <IconAlertCircle size={20} color='var(--mantine-color-error)' />,
@@ -61,18 +48,12 @@ const StoryGenerationErrorModal: React.FC<StoryGenerationErrorModalProps> = ({
       <Stack gap='md'>
         <Alert
           variant={errorDetails.variant}
-          color={isLimitError ? 'blue' : 'red'}
+          color='red'
           title={errorDetails.title}
           icon={errorDetails.icon}
         >
-          {errorDetails.description}
+          {actualErrorMessage}
         </Alert>
-
-        {!isLimitError && (
-          <Text size='sm' c='dimmed' style={{ fontFamily: 'monospace' }}>
-            <strong>Error details:</strong> {errorMessage}
-          </Text>
-        )}
 
         <Text size='sm' c='dimmed'>
           {errorDetails.suggestion}
