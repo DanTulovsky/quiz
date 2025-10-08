@@ -796,8 +796,8 @@ func (w *Worker) generateStorySection(ctx context.Context, user models.User) err
 	// Get user's AI configuration
 	userConfig := w.getUserAIConfig(ctx, &user)
 
-	// Generate the story section using the shared service method
-	_, err = w.storyService.GenerateStorySection(ctx, story.ID, uint(user.ID), w.aiService, userConfig)
+	// Generate the story section using the shared service method (worker generation)
+	_, err = w.storyService.GenerateStorySection(ctx, story.ID, uint(user.ID), w.aiService, userConfig, false)
 	if err != nil {
 		return contextutils.WrapErrorf(err, "failed to generate story section")
 	}

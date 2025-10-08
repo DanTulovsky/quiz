@@ -1230,6 +1230,26 @@ const SettingsPage: React.FC = () => {
                       return;
                     try {
                       await clearAllStories();
+
+                      // Invalidate story queries to ensure UI updates immediately
+                      queryClient.invalidateQueries({
+                        queryKey: [
+                          'currentStory',
+                          user?.id,
+                          user?.preferred_language,
+                        ],
+                      });
+                      queryClient.invalidateQueries({
+                        queryKey: [
+                          'archivedStories',
+                          user?.id,
+                          user?.preferred_language,
+                        ],
+                      });
+                      queryClient.invalidateQueries({
+                        queryKey: ['userStories'],
+                      });
+
                       showNotificationWithClean({
                         title: 'Success',
                         message: 'All stories deleted',
@@ -1258,6 +1278,26 @@ const SettingsPage: React.FC = () => {
                       return;
                     try {
                       await resetAccount();
+
+                      // Invalidate story queries to ensure UI updates immediately
+                      queryClient.invalidateQueries({
+                        queryKey: [
+                          'currentStory',
+                          user?.id,
+                          user?.preferred_language,
+                        ],
+                      });
+                      queryClient.invalidateQueries({
+                        queryKey: [
+                          'archivedStories',
+                          user?.id,
+                          user?.preferred_language,
+                        ],
+                      });
+                      queryClient.invalidateQueries({
+                        queryKey: ['userStories'],
+                      });
+
                       showNotificationWithClean({
                         title: 'Success',
                         message: 'Account reset',

@@ -338,8 +338,8 @@ func (h *StoryHandler) GenerateNextSection(c *gin.Context) {
 	// Get user's AI configuration
 	userAIConfig := h.convertToServicesAIConfig(ctx, user)
 
-	// Generate the story section using the shared service method
-	sectionWithQuestions, err := h.storyService.GenerateStorySection(ctx, uint(storyID), uint(userID), h.aiService, userAIConfig)
+	// Generate the story section using the shared service method (user generation)
+	sectionWithQuestions, err := h.storyService.GenerateStorySection(ctx, uint(storyID), uint(userID), h.aiService, userAIConfig, true)
 	if err != nil {
 		h.logger.Error(ctx, "Failed to generate story section", err, map[string]interface{}{
 			"story_id": storyID,

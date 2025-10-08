@@ -129,30 +129,30 @@ func TestStoryService_UpdateLastGenerationTime_Integration(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, story)
 
-	// Test 1: First generation today (worker generation) - should not increment extra_generations_today
+	// Test 1: First generation today (worker generation) - should increment extra_generations_today to 1
 	err = storyService.UpdateLastGenerationTime(ctx, story.ID, false) // isUserGeneration = false
 	require.NoError(t, err)
 
 	var extraGenerations int
 	err = db.QueryRowContext(ctx, "SELECT extra_generations_today FROM stories WHERE id = $1", story.ID).Scan(&extraGenerations)
 	require.NoError(t, err)
-	assert.Equal(t, 0, extraGenerations, "Worker generation should not increment extra_generations_today")
+	assert.Equal(t, 1, extraGenerations, "Worker generation should increment extra_generations_today to 1")
 
-	// Test 2: Second generation today (user generation) - should increment extra_generations_today
+	// Test 2: Second generation today (user generation) - should increment extra_generations_today to 2
 	err = storyService.UpdateLastGenerationTime(ctx, story.ID, true) // isUserGeneration = true
 	require.NoError(t, err)
 
 	err = db.QueryRowContext(ctx, "SELECT extra_generations_today FROM stories WHERE id = $1", story.ID).Scan(&extraGenerations)
 	require.NoError(t, err)
-	assert.Equal(t, 1, extraGenerations, "User generation should increment extra_generations_today")
+	assert.Equal(t, 2, extraGenerations, "User generation should increment extra_generations_today to 2")
 
-	// Test 3: Third generation today (user generation) - should increment extra_generations_today again
+	// Test 3: Third generation today (user generation) - should not increment extra_generations_today (limit reached)
 	err = storyService.UpdateLastGenerationTime(ctx, story.ID, true) // isUserGeneration = true
 	require.NoError(t, err)
 
 	err = db.QueryRowContext(ctx, "SELECT extra_generations_today FROM stories WHERE id = $1", story.ID).Scan(&extraGenerations)
 	require.NoError(t, err)
-	assert.Equal(t, 2, extraGenerations, "Second user generation should increment extra_generations_today to 2")
+	assert.Equal(t, 2, extraGenerations, "Third generation should not increment extra_generations_today beyond 2")
 }
 
 // TestStoryService_CreateSection_Integration tests section creation
