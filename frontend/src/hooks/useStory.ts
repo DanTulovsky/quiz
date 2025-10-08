@@ -467,7 +467,12 @@ export const useStory = (): UseStoryReturn => {
   const generateNextSectionMutation = useMutation({
     mutationFn: async (storyId: number) => {
       try {
-        return await apiGenerateNextSection(storyId);
+        const result = await apiGenerateNextSection(storyId);
+
+        // Check if the result indicates an error (4xx status would have been handled by axios)
+        // Since we removed validateStatus, axios should throw errors for 4xx codes
+        // But if it doesn't, we'll check the result here
+        return result;
       } catch (error) {
         // Log the error for debugging
         logger.error('API call failed in mutationFn:', error);

@@ -10,19 +10,7 @@ export const AXIOS_INSTANCE = Axios.create({
   baseURL: import.meta.env.VITE_API_URL,
 });
 
-// Add response interceptor to handle errors properly
-AXIOS_INSTANCE.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    // If error has response data with error/message fields, return the error object
-    // This allows our error handling logic to work properly
-    if (error.response?.data) {
-      return Promise.reject(error);
-    }
-    // For other errors, return the original error
-    return Promise.reject(error);
-  }
-);
+// Response interceptor removed since we're handling errors in customInstance
 
 export function customInstance<T>(
   config: AxiosRequestConfig,
@@ -34,15 +22,14 @@ export function customInstance<T>(
     ...options,
     cancelToken: source.token,
   })
-    .then(({ data }) => data)
+    .then((response) => {
+      // For successful responses, return the data
+      return response.data;
+    })
     .catch((error) => {
-      // If the error has response data, we want to preserve the original error
-      // so that our error handling logic can parse it properly
-      if (error.response?.data) {
-        throw error;
-      }
-      // For other errors, throw the original error
-      throw error;
+      // For all errors, return a rejected promise with the error
+      // Axios errors already have isAxiosError property set by axios
+      return Promise.reject(error);
     }) as CancelablePromise<T>;
 
   promise.cancel = () => {

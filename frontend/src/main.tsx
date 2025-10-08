@@ -21,8 +21,32 @@ const queryClient = new QueryClient({
       staleTime: 5 * 60 * 1000, // 5 minutes
       refetchOnWindowFocus: false,
     },
+    mutations: {
+      retry: false,
+    },
   },
 });
+
+// Add global error handler for unhandled promise rejections
+if (typeof window !== 'undefined') {
+  window.addEventListener('unhandledrejection', event => {
+    // Only prevent default for axios errors to avoid console noise
+    if (
+      event.reason &&
+      typeof event.reason === 'object' &&
+      event.reason.isAxiosError
+    ) {
+      console.warn(
+        'Axios error caught by global handler:',
+        event.reason.message
+      );
+      event.preventDefault();
+      return;
+    }
+    // Let other errors through for debugging
+    console.error('Unhandled promise rejection:', event.reason);
+  });
+}
 
 // Detect the nonce from the first <style nonce> tag in the document
 const nonce =
