@@ -1,9 +1,9 @@
 import { test, expect } from '@playwright/test';
+import { execSync } from 'child_process';
 
 test.describe('Report Question Functionality', () => {
   test.beforeAll(async () => {
     // Reset test database to ensure clean state
-    const { execSync } = require('child_process');
     execSync('task reset-test-db', { stdio: 'inherit' });
   });
   test.beforeEach(async ({ page }) => {

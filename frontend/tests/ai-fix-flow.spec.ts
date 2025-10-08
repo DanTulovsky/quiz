@@ -1,9 +1,9 @@
 import {test, expect} from '@playwright/test';
+import {execSync} from 'child_process';
 
 test.describe('Admin AI Fix flow', () => {
     test.beforeAll(() => {
         // reset test DB to a known state
-        const {execSync} = require('child_process');
         execSync('task reset-test-db', {stdio: 'inherit'});
     });
 
