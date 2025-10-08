@@ -1,0 +1,76 @@
+stories:
+  - username: "apitestuser"
+    title: "Test Story 1"
+    language: "en"
+    subject: "A simple adventure story"
+    author_style: "engaging and descriptive"
+    time_period: "modern"
+    genre: "adventure"
+    tone: "exciting"
+    character_names: "Alex, Jordan, Taylor"
+    custom_instructions: "Keep the story appropriate for language learners"
+    section_length_override: "medium"
+    status: "archived"
+    is_current: false
+    sections:
+      - section_number: 1
+        content: "Once upon a time in a bustling city, Alex woke up with a sense of adventure in their heart. The sun was shining brightly through the window, and birds were singing cheerful songs outside. Today felt like the perfect day to explore something new."
+        language_level: "B1"
+        word_count: 75
+        generated_by: "user"
+        questions:
+          - question_text: "How did Alex feel when they woke up?"
+            options: ["Tired", "Adventurous", "Sad", "Angry"]
+            correct_answer_index: 1
+            explanation: "The story says Alex woke up with 'a sense of adventure in their heart'"
+          - question_text: "What was the weather like?"
+            options: ["Rainy", "Cloudy", "Sunny", "Snowy"]
+            correct_answer_index: 2
+            explanation: "The story mentions 'The sun was shining brightly'"
+
+  - username: "apitestuser"
+    title: "Test Story 2"
+    language: "en"
+    subject: "A mystery story"
+    author_style: "suspenseful and intriguing"
+    time_period: "contemporary"
+    genre: "mystery"
+    tone: "suspenseful"
+    character_names: "Detective Smith, The Butler, The Maid"
+    custom_instructions: "Build suspense gradually"
+    status: "completed"
+    is_current: false
+    sections:
+      - section_number: 1
+        content: "Detective Smith arrived at the old mansion just as the rain began to fall. The butler opened the door with a nervous glance over his shoulder. Something was definitely wrong in this house, and the detective was determined to find out what."
+        language_level: "B2"
+        word_count: 85
+        generated_by: "user"
+        questions:
+          - question_text: "Who is the main character?"
+            options: ["The Butler", "The Maid", "Detective Smith", "The Owner"]
+            correct_answer_index: 2
+            explanation: "The story focuses on Detective Smith as the main character"
+          - question_text: "What was the weather like when Detective Smith arrived?"
+            options: ["Sunny", "Snowy", "Rainy", "Windy"]
+            correct_answer_index: 2
+            explanation: "The story says 'just as the rain began to fall'"
+
+  - username: "apitestuser2"
+    title: "Active Test Story"
+    language: "en"
+    subject: "A story in progress"
+    author_style: "casual and friendly"
+    status: "active"
+    is_current: true
+    sections:
+      - section_number: 1
+        content: "Sarah walked into the coffee shop and immediately noticed the person sitting in the corner. They looked familiar, but she couldn't quite place where she had seen them before. As she ordered her coffee, she kept stealing glances in their direction."
+        language_level: "B1"
+        word_count: 70
+        generated_by: "user"
+        questions:
+          - question_text: "Where did Sarah go?"
+            options: ["Library", "Coffee shop", "Park", "Store"]
+            correct_answer_index: 1
+            explanation: "The story says Sarah 'walked into the coffee shop'"

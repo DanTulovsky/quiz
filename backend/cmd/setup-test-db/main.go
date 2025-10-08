@@ -111,6 +111,38 @@ type TestDailyAssignments struct {
 	} `yaml:"daily_assignments"`
 }
 
+// TestStories represents a collection of test stories
+type TestStories struct {
+	Stories []struct {
+		Username              string  `yaml:"username"`
+		Title                 string  `yaml:"title"`
+		Language              string  `yaml:"language"`
+		Subject               *string `yaml:"subject"`
+		AuthorStyle           *string `yaml:"author_style"`
+		TimePeriod            *string `yaml:"time_period"`
+		Genre                 *string `yaml:"genre"`
+		Tone                  *string `yaml:"tone"`
+		CharacterNames        *string `yaml:"character_names"`
+		CustomInstructions    *string `yaml:"custom_instructions"`
+		SectionLengthOverride *string `yaml:"section_length_override"`
+		Status                string  `yaml:"status"`
+		IsCurrent             bool    `yaml:"is_current"`
+		Sections              []struct {
+			SectionNumber int    `yaml:"section_number"`
+			Content       string `yaml:"content"`
+			LanguageLevel string `yaml:"language_level"`
+			WordCount     int    `yaml:"word_count"`
+			GeneratedBy   string `yaml:"generated_by"`
+			Questions     []struct {
+				QuestionText       string   `yaml:"question_text"`
+				Options            []string `yaml:"options"`
+				CorrectAnswerIndex int      `yaml:"correct_answer_index"`
+				Explanation        *string  `yaml:"explanation"`
+			} `yaml:"questions"`
+		} `yaml:"sections"`
+	} `yaml:"stories"`
+}
+
 func resetTestDatabase(databaseURL, testDB string, logger *observability.Logger) error {
 	ctx := context.Background()
 
@@ -366,6 +398,11 @@ func setupTestData(ctx context.Context, rootDir string, userService *services.Us
 	// 6. Load and create daily assignments
 	if err := loadAndCreateDailyAssignments(ctx, filepath.Join(dataDir, "test_daily_assignments.yaml"), users, questions, db, logger); err != nil {
 		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup daily assignments: %w", err)
+	}
+
+	// 7. Load and create stories
+	if err := loadAndCreateStories(ctx, filepath.Join(dataDir, "test_stories.yaml"), users, db, logger); err != nil {
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup stories: %w", err)
 	}
 
 	return users, nil
@@ -830,6 +867,156 @@ func loadAndCreateDailyAssignments(ctx context.Context, filePath string, users m
 			"username": assignmentData.Username,
 			"date":     assignmentData.Date,
 			"count":    len(assignmentData.QuestionIDs),
+		})
+	}
+
+	return nil
+}
+
+func loadAndCreateStories(ctx context.Context, filePath string, users map[string]*models.User, db *sql.DB, logger *observability.Logger) error {
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		// Stories file is optional, so just return if it doesn't exist
+		logger.Info(ctx, "Stories file not found, skipping", map[string]interface{}{
+			"file_path": filePath,
+		})
+		return nil
+	}
+
+	var testStories TestStories
+	if err := yaml.Unmarshal(data, &testStories); err != nil {
+		return contextutils.WrapError(err, "failed to parse stories data")
+	}
+
+	for i, storyData := range testStories.Stories {
+		user, exists := users[storyData.Username]
+		if !exists {
+			return contextutils.ErrorWithContextf("user not found for story: %s", storyData.Username)
+		}
+
+		// Parse section length override if provided
+		var sectionLengthOverride *models.SectionLength
+		if storyData.SectionLengthOverride != nil {
+			switch *storyData.SectionLengthOverride {
+			case "short":
+				sl := models.SectionLengthShort
+				sectionLengthOverride = &sl
+			case "medium":
+				sl := models.SectionLengthMedium
+				sectionLengthOverride = &sl
+			case "long":
+				sl := models.SectionLengthLong
+				sectionLengthOverride = &sl
+			}
+		}
+
+		// Create story
+		story := &models.Story{
+			UserID:                uint(user.ID),
+			Title:                 storyData.Title,
+			Language:              storyData.Language,
+			Subject:               storyData.Subject,
+			AuthorStyle:           storyData.AuthorStyle,
+			TimePeriod:            storyData.TimePeriod,
+			Genre:                 storyData.Genre,
+			Tone:                  storyData.Tone,
+			CharacterNames:        storyData.CharacterNames,
+			CustomInstructions:    storyData.CustomInstructions,
+			SectionLengthOverride: sectionLengthOverride,
+			Status:                models.StoryStatus(storyData.Status),
+			IsCurrent:             storyData.IsCurrent,
+			CreatedAt:             time.Now(),
+			UpdatedAt:             time.Now(),
+		}
+
+		// Insert story directly into database
+		_, err := db.Exec(`
+			INSERT INTO stories (user_id, title, language, subject, author_style, time_period, genre, tone,
+			                     character_names, custom_instructions, section_length_override, status, is_current,
+			                     created_at, updated_at)
+			VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+		`, story.UserID, story.Title, story.Language, story.Subject, story.AuthorStyle, story.TimePeriod,
+			story.Genre, story.Tone, story.CharacterNames, story.CustomInstructions, story.SectionLengthOverride,
+			string(story.Status), story.IsCurrent, story.CreatedAt, story.UpdatedAt)
+		if err != nil {
+			return contextutils.WrapErrorf(err, "failed to insert story %d", i)
+		}
+
+		// Get the story ID (we need to query it back since we don't have RETURNING)
+		var storyID int
+		err = db.QueryRow(`
+			SELECT id FROM stories WHERE user_id = $1 AND title = $2 ORDER BY created_at DESC LIMIT 1
+		`, story.UserID, story.Title).Scan(&storyID)
+		if err != nil {
+			return contextutils.WrapErrorf(err, "failed to get story ID for story %d", i)
+		}
+
+		// Create sections for this story
+		for j, sectionData := range storyData.Sections {
+			section := &models.StorySection{
+				StoryID:        uint(storyID),
+				SectionNumber:  sectionData.SectionNumber,
+				Content:        sectionData.Content,
+				LanguageLevel:  sectionData.LanguageLevel,
+				WordCount:      sectionData.WordCount,
+				GeneratedBy:    models.GeneratorType(sectionData.GeneratedBy),
+				GeneratedAt:    time.Now(),
+				GenerationDate: time.Now(),
+			}
+
+			// Insert section
+			_, err := db.Exec(`
+				INSERT INTO story_sections (story_id, section_number, content, language_level, word_count,
+				                           generated_by, generated_at, generation_date)
+				VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+			`, section.StoryID, section.SectionNumber, section.Content, section.LanguageLevel,
+				section.WordCount, string(section.GeneratedBy), section.GeneratedAt, section.GenerationDate)
+			if err != nil {
+				return contextutils.WrapErrorf(err, "failed to insert section %d for story %d", j, i)
+			}
+
+			// Get the section ID
+			var sectionID int
+			err = db.QueryRow(`
+				SELECT id FROM story_sections WHERE story_id = $1 AND section_number = $2
+			`, section.StoryID, section.SectionNumber).Scan(&sectionID)
+			if err != nil {
+				return contextutils.WrapErrorf(err, "failed to get section ID for section %d of story %d", j, i)
+			}
+
+			// Create questions for this section
+			for k, questionData := range sectionData.Questions {
+				question := &models.StorySectionQuestion{
+					SectionID:          uint(sectionID),
+					QuestionText:       questionData.QuestionText,
+					Options:            questionData.Options,
+					CorrectAnswerIndex: questionData.CorrectAnswerIndex,
+					Explanation:        questionData.Explanation,
+					CreatedAt:          time.Now(),
+				}
+
+				// Convert options to JSON for database storage
+				optionsJSON, err := json.Marshal(question.Options)
+				if err != nil {
+					return contextutils.WrapErrorf(err, "failed to marshal options for question %d for section %d of story %d", k, j, i)
+				}
+
+				// Insert question
+				_, err = db.Exec(`
+					INSERT INTO story_section_questions (section_id, question_text, options, correct_answer_index, explanation, created_at)
+					VALUES ($1, $2, $3, $4, $5, $6)
+				`, question.SectionID, question.QuestionText, optionsJSON, question.CorrectAnswerIndex,
+					question.Explanation, question.CreatedAt)
+				if err != nil {
+					return contextutils.WrapErrorf(err, "failed to insert question %d for section %d of story %d", k, j, i)
+				}
+			}
+		}
+
+		logger.Info(ctx, "Created test story", map[string]interface{}{
+			"username": storyData.Username,
+			"title":    storyData.Title,
+			"story_id": storyID,
 		})
 	}
 

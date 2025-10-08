@@ -482,8 +482,8 @@ func (h *StoryHandler) DeleteStory(c *gin.Context) {
 			return
 		}
 
-		if strings.Contains(err.Error(), "cannot delete current story") {
-			StandardizeHTTPError(c, http.StatusConflict, "Cannot delete current story", "You cannot delete a story that is currently set as your active story")
+		if strings.Contains(err.Error(), "cannot delete active story") {
+			StandardizeHTTPError(c, http.StatusConflict, "Cannot delete active story", "You cannot delete a story that is currently active")
 			return
 		}
 
