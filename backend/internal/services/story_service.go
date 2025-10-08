@@ -817,6 +817,35 @@ func (s *StoryService) CreateSectionQuestions(ctx context.Context, sectionID uin
 	return tx.Commit()
 }
 
+// createSectionQuestionsInTx creates questions within an existing database transaction
+func (s *StoryService) createSectionQuestionsInTx(ctx context.Context, tx *sql.Tx, sectionID uint, questions []models.StorySectionQuestionData) error {
+	if len(questions) == 0 {
+		return nil
+	}
+
+	for _, q := range questions {
+		query := `
+			INSERT INTO story_section_questions (
+				section_id, question_text, options, correct_answer_index, explanation, created_at
+			) VALUES ($1, $2, $3, $4, $5, $6)`
+
+		// Convert []string options to JSON for PostgreSQL JSONB column
+		optionsJSON, err := json.Marshal(q.Options)
+		if err != nil {
+			return contextutils.WrapErrorf(err, "failed to marshal options to JSON")
+		}
+
+		_, err = tx.ExecContext(ctx, query,
+			sectionID, q.QuestionText, optionsJSON, q.CorrectAnswerIndex, q.Explanation, time.Now(),
+		)
+		if err != nil {
+			return contextutils.WrapErrorf(err, "failed to insert question")
+		}
+	}
+
+	return nil
+}
+
 // GetRandomQuestions retrieves N random questions for a section
 func (s *StoryService) GetRandomQuestions(ctx context.Context, sectionID uint, count int) ([]models.StorySectionQuestion, error) {
 	query := `
@@ -1149,6 +1178,23 @@ func (s *StoryService) createSection(ctx context.Context, section *models.StoryS
 	return err
 }
 
+// createSectionInTx creates a section within an existing database transaction
+func (s *StoryService) createSectionInTx(ctx context.Context, tx *sql.Tx, section *models.StorySection) error {
+	query := `
+		INSERT INTO story_sections (
+			story_id, section_number, content, language_level, word_count, generated_by,
+			generated_at, generation_date
+		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+		RETURNING id`
+
+	err := tx.QueryRowContext(ctx, query,
+		section.StoryID, section.SectionNumber, section.Content, section.LanguageLevel,
+		section.WordCount, section.GeneratedBy, section.GeneratedAt, section.GenerationDate,
+	).Scan(&section.ID)
+
+	return err
+}
+
 // GenerateStorySection generates a new section for a story using AI
 func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID uint, aiService AIServiceInterface, userAIConfig *models.UserAIConfig, generatorType models.GeneratorType) (*models.StorySectionWithQuestions, error) {
 	ctx, span := observability.TraceFunction(ctx, "story_service", "generate_section",
@@ -1225,9 +1271,36 @@ func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID
 	// Count words in the generated content
 	wordCount := len(strings.Fields(sectionContent))
 
-	// Create the section in the database
-	section, err := s.CreateSection(ctx, storyID, sectionContent, user.CurrentLevel.String, wordCount, generatorType)
+	// Start a database transaction to ensure atomicity of section and questions creation
+	tx, err := s.db.BeginTx(ctx, nil)
 	if err != nil {
+		return nil, contextutils.WrapErrorf(err, "failed to begin transaction")
+	}
+	defer func() { _ = tx.Rollback() }()
+
+	// Create the section within the transaction
+	section := &models.StorySection{
+		StoryID:        storyID,
+		SectionNumber:  0, // Will be set by createSectionInTx
+		Content:        sectionContent,
+		LanguageLevel:  user.CurrentLevel.String,
+		WordCount:      wordCount,
+		GeneratedBy:    generatorType,
+		GeneratedAt:    time.Now(),
+		GenerationDate: time.Now().Truncate(24 * time.Hour),
+	}
+
+	// Get the next section number within the transaction
+	var maxSectionNumber int
+	query := "SELECT COALESCE(MAX(section_number), 0) FROM story_sections WHERE story_id = $1"
+	err = tx.QueryRowContext(ctx, query, storyID).Scan(&maxSectionNumber)
+	if err != nil {
+		return nil, contextutils.WrapErrorf(err, "failed to get max section number")
+	}
+	section.SectionNumber = maxSectionNumber + 1
+
+	// Create the section in the database within the transaction
+	if err := s.createSectionInTx(ctx, tx, section); err != nil {
 		return nil, contextutils.WrapErrorf(err, "failed to create story section")
 	}
 
@@ -1241,7 +1314,8 @@ func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID
 		QuestionCount: s.config.Story.QuestionsPerSection,
 	}
 
-	questions, err := aiService.GenerateStoryQuestions(ctx, userAIConfig, questionsReq)
+	var questions []*models.StorySectionQuestionData
+	questions, err = aiService.GenerateStoryQuestions(ctx, userAIConfig, questionsReq)
 	if err != nil {
 		s.logger.Warn(ctx, "Failed to generate questions for story section",
 			map[string]interface{}{
@@ -1252,14 +1326,14 @@ func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID
 			})
 		// Continue anyway - questions are nice to have but not critical
 	} else {
-		// Convert to database model slice
+		// Convert to database model slice (dereference pointers)
 		dbQuestions := make([]models.StorySectionQuestionData, len(questions))
 		for i, q := range questions {
 			dbQuestions[i] = *q
 		}
 
-		// Save the questions to the database
-		if err := s.CreateSectionQuestions(ctx, section.ID, dbQuestions); err != nil {
+		// Save the questions to the database within the same transaction
+		if err := s.createSectionQuestionsInTx(ctx, tx, section.ID, dbQuestions); err != nil {
 			s.logger.Warn(ctx, "Failed to save story questions",
 				map[string]interface{}{
 					"section_id": section.ID,
@@ -1268,6 +1342,11 @@ func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID
 					"error":      err.Error(),
 				})
 		}
+	}
+
+	// Commit the transaction
+	if err := tx.Commit(); err != nil {
+		return nil, contextutils.WrapErrorf(err, "failed to commit transaction")
 	}
 
 	// Update the story's last generation time
