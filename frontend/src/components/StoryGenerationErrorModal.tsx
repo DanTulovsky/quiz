@@ -62,11 +62,17 @@ const StoryGenerationErrorModal: React.FC<StoryGenerationErrorModalProps> = ({
         <Alert
           variant={errorDetails.variant}
           color={isLimitError ? 'blue' : 'red'}
-          title={errorMessage}
+          title={errorDetails.title}
           icon={errorDetails.icon}
         >
           {errorDetails.description}
         </Alert>
+
+        {!isLimitError && (
+          <Text size='sm' c='dimmed' style={{ fontFamily: 'monospace' }}>
+            <strong>Error details:</strong> {errorMessage}
+          </Text>
+        )}
 
         <Text size='sm' c='dimmed'>
           {errorDetails.suggestion}
