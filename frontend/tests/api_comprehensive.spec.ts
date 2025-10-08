@@ -762,6 +762,11 @@ test.describe('Comprehensive API Tests', () => {
           // For question-related endpoints, use a placeholder that will be replaced during test execution
           if (path.includes('/questions/') && path.includes('/ai-fix')) {
             pathParams[param.name] = 'QUESTION_ID_PLACEHOLDER';
+          } else if (path.includes('/story/')) {
+            // For story endpoints, use a valid story ID based on the operation
+            // We need to determine if this is a DELETE operation to use archived stories
+            // For now, default to active story (will be overridden in custom replacement logic)
+            pathParams[param.name] = 'STORY_ID_PLACEHOLDER';
           } else {
             pathParams[param.name] = 1; // Default ID, will be overridden if needed
           }
@@ -963,7 +968,7 @@ test.describe('Comprehensive API Tests', () => {
     return availableUserIds[0]; // Use the first available ID
   }
 
-  function getAvailableStoryId(username?: string): number {
+  function getAvailableStoryId(username?: string, includeArchived: boolean = false, storyData?: any): number {
     if (availableStoryIds.length === 0) {
       throw new Error('No available story IDs. Test data setup may have failed.');
     }
@@ -971,46 +976,50 @@ test.describe('Comprehensive API Tests', () => {
     if (username) {
       const userStoryIds = usernameToStoryIds[username];
       if (userStoryIds && userStoryIds.length > 0) {
-        // Filter for active stories only (archived stories are not accessible via API)
-        const activeUserStoryIds = userStoryIds.filter(storyId => {
-          const storyDataPath = path.join(process.cwd(), 'tests', 'test-stories.json');
-          if (fs.existsSync(storyDataPath)) {
-            const storyDataContent = fs.readFileSync(storyDataPath, 'utf8');
-            const storyData = JSON.parse(storyDataContent) as Record<string, TestStoryData>;
-            const story = Object.values(storyData).find((s: TestStoryData) => s.id === storyId);
-            return story && story.status === 'active';
+        // Filter for stories based on status
+        const filteredUserStoryIds = userStoryIds.filter(storyId => {
+          if (storyData) {
+            const story = Object.values(storyData).find((s: any) => (s as TestStoryData).id === storyId);
+            if (includeArchived) {
+              return story && (story as TestStoryData).status === 'archived';
+            } else {
+              return story && (story as TestStoryData).status === 'active';
+            }
           }
           return false; // If we can't read the data, assume it's not active
         });
 
-        if (activeUserStoryIds.length > 0) {
-          return activeUserStoryIds[0]; // Return the first active story ID for this user
+        if (filteredUserStoryIds.length > 0) {
+          return filteredUserStoryIds[0]; // Return the first story ID matching the criteria
         } else {
-          throw new Error(`No active stories found for user '${username}'. They may have only archived stories.`);
+          const statusType = includeArchived ? 'archived' : 'active';
+          throw new Error(`No ${statusType} stories found for user '${username}'.`);
         }
       } else {
         throw new Error(`No stories found for user '${username}'. Available users with stories: ${Object.keys(usernameToStoryIds).join(', ')}`);
       }
     }
 
-    // Filter for active stories only (archived stories are not accessible via API)
-    const activeStoryIds = availableStoryIds.filter(storyId => {
-      const storyDataPath = path.join(process.cwd(), 'tests', 'test-stories.json');
-      if (fs.existsSync(storyDataPath)) {
-        const storyDataContent = fs.readFileSync(storyDataPath, 'utf8');
-        const storyData = JSON.parse(storyDataContent) as Record<string, TestStoryData>;
-        const story = Object.values(storyData).find((s: TestStoryData) => s.id === storyId);
-        return story && story.status === 'active';
+    // Filter for stories based on status
+    const filteredStoryIds = availableStoryIds.filter(storyId => {
+      if (storyData) {
+        const story = Object.values(storyData).find((s: any) => (s as TestStoryData).id === storyId);
+        if (includeArchived) {
+          return story && (story as TestStoryData).status === 'archived';
+        } else {
+          return story && (story as TestStoryData).status === 'active';
+        }
       }
       return false; // If we can't read the data, assume it's not active
     });
 
-    if (activeStoryIds.length === 0) {
-      throw new Error('No active story IDs available. All stories may be archived.');
+    if (filteredStoryIds.length === 0) {
+      const statusType = includeArchived ? 'archived' : 'active';
+      throw new Error(`No ${statusType} story IDs available.`);
     }
 
-    // Fallback to the first active story ID
-    return activeStoryIds[0];
+    // Fallback to the first story ID matching the criteria
+    return filteredStoryIds[0];
   }
 
   function getUserIdWithDailyAssignments(date: string = '2025-08-04'): number {
@@ -1110,7 +1119,7 @@ test.describe('Comprehensive API Tests', () => {
   }
 
   // Helper function to determine what type of ID we need and get the appropriate value
-  async function getReplacementId(path: string, paramKey: string, request: any, userContext?: {username: string}): Promise<{value: number | string; type: 'user' | 'question' | 'daily_user' | 'date' | 'role' | 'provider' | 'story'}> {
+  async function getReplacementId(path: string, paramKey: string, request: any, userContext?: {username: string}, method?: string): Promise<{value: number | string; type: 'user' | 'question' | 'daily_user' | 'date' | 'role' | 'provider' | 'story'}> {
     if (paramKey === 'userId') {
       return {value: getUserIdWithDailyAssignments(), type: 'daily_user'};
     }
@@ -1152,7 +1161,9 @@ test.describe('Comprehensive API Tests', () => {
       // Check if this is a story-related endpoint
       if (path.includes('/story/')) {
         // Use the dedicated story test user for story operations
-        const storyId = getAvailableStoryId('apitestuserstory1');
+        // For DELETE operations, we need an archived story
+        const includeArchived = method === 'DELETE';
+        const storyId = getAvailableStoryId('apitestuserstory1', includeArchived);
         return {value: storyId, type: 'story'};
       }
 
@@ -1217,12 +1228,12 @@ test.describe('Comprehensive API Tests', () => {
   }
 
   // Helper function to replace path parameters with appropriate IDs
-  async function replacePathParameters(path: string, pathParams: Record<string, any> | undefined, request: any, userContext?: {username: string}): Promise<string> {
+  async function replacePathParameters(path: string, pathParams: Record<string, any> | undefined, request: any, userContext?: {username: string}, method?: string): Promise<string> {
     if (!pathParams) return path;
 
     let resultPath = path;
     for (const [key, value] of Object.entries(pathParams)) {
-      const replacement = await getReplacementId(path, key, request, userContext);
+      const replacement = await getReplacementId(path, key, request, userContext, method);
       resultPath = resultPath.replace(`{${key}}`, replacement.value.toString());
       // console.log(`Replaced {${key}} with ${replacement.value} (${replacement.type}) in path: ${resultPath}`);
     }
@@ -1438,10 +1449,10 @@ test.describe('Comprehensive API Tests', () => {
       );
 
       for (const testCase of regularUserCases) {
-        let path = testCase.path;
+        let endpointPath = testCase.path;
 
         // Determine which user to use for this test case
-        const isStoryEndpoint = path.includes('/story/');
+        const isStoryEndpoint = endpointPath.includes('/story/');
         const currentUser = isStoryEndpoint ? STORY_TEST_USER : REGULAR_USER;
         const currentSessionCookie = await loginUser(request, currentUser);
 
@@ -1450,15 +1461,28 @@ test.describe('Comprehensive API Tests', () => {
           for (const [key, value] of Object.entries(testCase.pathParams)) {
             if (key === 'questionId') {
               const questionId = await getAvailableQuestionId(request);
-              path = path.replace(`{${key}}`, questionId.toString());
-              // console.log(`Replaced {${key}} with question ID ${questionId} in path: ${path}`);
+              endpointPath = endpointPath.replace(`{${key}}`, questionId.toString());
+              // console.log(`Replaced {${key}} with question ID ${questionId} in path: ${endpointPath}`);
+            } else if (key === 'id' && value === 'STORY_ID_PLACEHOLDER') {
+              // For story endpoints, use appropriate story ID based on operation
+              const includeArchived = testCase.method === 'DELETE';
+              // Load story data for synchronous access
+              const storyDataPath = path.join(process.cwd(), 'tests', 'test-stories.json');
+              let storyData = null;
+              if (fs.existsSync(storyDataPath)) {
+                const storyDataContent = fs.readFileSync(storyDataPath, 'utf8');
+                storyData = JSON.parse(storyDataContent);
+              }
+              const storyId = getAvailableStoryId('apitestuserstory1', includeArchived, storyData);
+              endpointPath = endpointPath.replace(`{${key}}`, storyId.toString());
+              console.log(`DEBUG: Story endpoint ${testCase.method} ${endpointPath} - includeArchived: ${includeArchived}, selected story ID: ${storyId}`);
             } else {
-              path = path.replace(`{${key}}`, String(value));
+              endpointPath = endpointPath.replace(`{${key}}`, String(value));
             }
           }
         }
 
-        const url = new URL(`${baseURL}${path}`);
+        const url = new URL(`${baseURL}${endpointPath}`);
 
         // Add query parameters
         if (testCase.queryParams) {
@@ -1495,22 +1519,22 @@ test.describe('Comprehensive API Tests', () => {
       const publicCases = testCases.filter(testCase => !testCase.requiresAuth);
 
       for (const testCase of publicCases) {
-        let path = testCase.path;
+        let endpointPath = testCase.path;
 
         // Add path parameters
         if (testCase.pathParams) {
           for (const [key, value] of Object.entries(testCase.pathParams)) {
             if (key === 'questionId') {
               const questionId = await getAvailableQuestionId(request);
-              path = path.replace(`{${key}}`, questionId.toString());
-              // console.log(`Replaced {${key}} with question ID ${questionId} in path: ${path}`);
+              endpointPath = endpointPath.replace(`{${key}}`, questionId.toString());
+              // console.log(`Replaced {${key}} with question ID ${questionId} in path: ${endpointPath}`);
             } else {
-              path = path.replace(`{${key}}`, value.toString());
+              endpointPath = endpointPath.replace(`{${key}}`, value.toString());
             }
           }
         }
 
-        const url = new URL(`${baseURL}${path}`);
+        const url = new URL(`${baseURL}${endpointPath}`);
 
         // Add query parameters
         if (testCase.queryParams) {
@@ -1546,16 +1570,16 @@ test.describe('Comprehensive API Tests', () => {
       const regularUserErrorCases = errorCases.filter(testCase => !testCase.requiresAdmin);
 
       for (const testCase of regularUserErrorCases) {
-        let path = testCase.path;
+        let endpointPath = testCase.path;
 
         // Add path parameters
         if (testCase.pathParams) {
           for (const [key, value] of Object.entries(testCase.pathParams)) {
-            path = path.replace(`{${key}}`, String(value));
+            endpointPath = endpointPath.replace(`{${key}}`, String(value));
           }
         }
 
-        const url = new URL(`${baseURL}${path}`);
+        const url = new URL(`${baseURL}${endpointPath}`);
 
         // Add query parameters
         if (testCase.queryParams) {
@@ -1619,7 +1643,7 @@ test.describe('Comprehensive API Tests', () => {
       const adminCases: TestCase[] = [];
       for (const testCase of happyPathCases) {
         if (!testCase.requiresAdmin) continue;
-        const expandedPath = await replacePathParameters(testCase.path, testCase.pathParams, request, ADMIN_USER);
+        const expandedPath = await replacePathParameters(testCase.path, testCase.pathParams, request, ADMIN_USER, testCase.method);
         if (isExcludedPath(expandedPath)) continue;
         adminCases.push(testCase);
       }
@@ -1629,9 +1653,9 @@ test.describe('Comprehensive API Tests', () => {
         // console.log(`Processing test case: ${testCase.method} ${testCase.path}`);
 
         // Replace path parameters with appropriate IDs
-        const path = await replacePathParameters(testCase.path, testCase.pathParams, request, REGULAR_USER);
+        const path = await replacePathParameters(testCase.path, testCase.pathParams, request, REGULAR_USER, testCase.method);
 
-        const url = new URL(`${baseURL}${path}`);
+        const url = new URL(`${baseURL}${endpointPath}`);
 
         // Add query parameters
         if (testCase.queryParams) {
@@ -1733,9 +1757,9 @@ test.describe('Comprehensive API Tests', () => {
         // console.log(`Processing test case: ${testCase.method} ${testCase.path}`);
 
         // Replace path parameters with appropriate IDs
-        const path = await replacePathParameters(testCase.path, testCase.pathParams, request, REGULAR_USER);
+        const path = await replacePathParameters(testCase.path, testCase.pathParams, request, REGULAR_USER, testCase.method);
 
-        const url = new URL(`${baseURL}${path}`);
+        const url = new URL(`${baseURL}${endpointPath}`);
 
         // Add query parameters
         if (testCase.queryParams) {
@@ -1794,9 +1818,9 @@ test.describe('Comprehensive API Tests', () => {
         // console.log(`Processing test case: ${testCase.method} ${testCase.path}`);
 
         // Replace path parameters with appropriate IDs
-        const path = await replacePathParameters(testCase.path, testCase.pathParams, request, REGULAR_USER);
+        const path = await replacePathParameters(testCase.path, testCase.pathParams, request, REGULAR_USER, testCase.method);
 
-        const url = new URL(`${baseURL}${path}`);
+        const url = new URL(`${baseURL}${endpointPath}`);
 
         // Add query parameters
         if (testCase.queryParams) {
@@ -1833,7 +1857,7 @@ test.describe('Comprehensive API Tests', () => {
       const adminCases: TestCase[] = [];
       for (const testCase of testCases) {
         if (!testCase.requiresAdmin) continue;
-        const expandedPath = await replacePathParameters(testCase.path, testCase.pathParams, request, ADMIN_USER);
+        const expandedPath = await replacePathParameters(testCase.path, testCase.pathParams, request, ADMIN_USER, testCase.method);
         const fullExpanded = `${baseURL}${expandedPath}`;
         if (isExcludedPath(expandedPath) || isExcludedPath(fullExpanded)) continue;
         adminCases.push(testCase);
@@ -1843,9 +1867,9 @@ test.describe('Comprehensive API Tests', () => {
         // console.log(`Processing test case: ${testCase.method} ${testCase.path}`);
 
         // Replace path parameters with appropriate IDs
-        const path = await replacePathParameters(testCase.path, testCase.pathParams, request, REGULAR_USER);
+        const path = await replacePathParameters(testCase.path, testCase.pathParams, request, REGULAR_USER, testCase.method);
 
-        const url = new URL(`${baseURL}${path}`);
+        const url = new URL(`${baseURL}${endpointPath}`);
 
         // Add query parameters
         if (testCase.queryParams) {
@@ -1921,33 +1945,33 @@ test.describe('Comprehensive API Tests', () => {
       const adminCases = testCases.filter(testCase => testCase.requiresAdmin && !testCase.path.startsWith('/v1/admin/worker'));
 
       for (const testCase of adminCases) { // Test all admin endpoints
-        let path = testCase.path;
+        let endpointPath = testCase.path;
         let userId: number | undefined;
 
         // Get an available user ID for operations that need an existing user
-        // console.log(`Processing test case: ${testCase.method} ${path}`);
-        // console.log(`Processing path: ${path}, includes /{id}: ${path.includes('/{id}')}, includes /reset-password: ${path.includes('/reset-password')}`);
+        // console.log(`Processing test case: ${testCase.method} ${endpointPath}`);
+        // console.log(`Processing path: ${endpointPath}, includes /{id}: ${endpointPath.includes('/{id}')}, includes /reset-password: ${endpointPath.includes('/reset-password')}`);
 
-        if (path.includes('/{id}') && (path.includes('/reset-password') || path.includes('/roles') || path.includes('/clear'))) {
+        if (endpointPath.includes('/{id}') && (endpointPath.includes('/reset-password') || endpointPath.includes('/roles') || endpointPath.includes('/clear'))) {
           userId = getAvailableUserId();
-          // console.log(`Using available user ID ${userId} for path: ${path}`);
+          // console.log(`Using available user ID ${userId} for path: ${endpointPath}`);
         } else {
-          // console.log(`Not getting available user ID for path: ${path}`);
+          // console.log(`Not getting available user ID for path: ${endpointPath}`);
         }
 
         // Add path parameters
         if (testCase.pathParams) {
           for (const [key, value] of Object.entries(testCase.pathParams)) {
             if (key === 'id' && userId) {
-              path = path.replace(`{${key}}`, userId.toString());
-              // console.log(`Replaced {${key}} with ${userId} in path: ${path}`);
+              endpointPath = endpointPath.replace(`{${key}}`, userId.toString());
+              // console.log(`Replaced {${key}} with ${userId} in path: ${endpointPath}`);
             } else {
-              path = path.replace(`{${key}}`, String(value));
+              endpointPath = endpointPath.replace(`{${key}}`, String(value));
             }
           }
         }
 
-        const url = new URL(`${baseURL}${path}`);
+        const url = new URL(`${baseURL}${endpointPath}`);
 
         const requestOptions: any = {
           headers: {
@@ -1997,7 +2021,7 @@ test.describe('Comprehensive API Tests', () => {
         // Replace path parameters without triggering any authenticated calls
         const path = replacePathParametersUnauthenticated(testCase.path, testCase.pathParams);
 
-        const url = new URL(`${baseURL}${path}`);
+        const url = new URL(`${baseURL}${endpointPath}`);
 
         const requestOptions: any = {};
 
