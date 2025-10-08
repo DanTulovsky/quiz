@@ -10,9 +10,16 @@ import {
   ScrollArea,
   Loader,
   Center,
+  ActionIcon,
+  Tooltip,
+  Box,
 } from '@mantine/core';
 import { IconBook, IconRefresh } from '@tabler/icons-react';
 import { StoryWithSections } from '../api/storyApi';
+import { useTTS } from '../hooks/useTTS';
+import { Volume2, VolumeX } from 'lucide-react';
+import { defaultVoiceForLanguage } from '../utils/tts';
+import * as Api from '../api/api';
 
 interface StoryReadingViewProps {
   story: StoryWithSections | null;
@@ -23,6 +30,27 @@ const StoryReadingView: React.FC<StoryReadingViewProps> = ({
   story,
   isGenerating = false,
 }) => {
+  const {
+    isLoading: isTTSLoading,
+    isPlaying: isTTSPlaying,
+    playTTS,
+    stopTTS,
+  } = useTTS();
+
+  // Safely attempt to read optional learning preferences hook for preferred voice
+  let userLearningPrefs: unknown | undefined = undefined;
+  try {
+    const maybeHook = (Api as unknown as Record<string, unknown>)[
+      'useGetV1PreferencesLearning'
+    ];
+    if (typeof maybeHook === 'function') {
+      const result = (maybeHook as () => unknown)();
+      userLearningPrefs = (result as { data?: { tts_voice?: string } })?.data;
+    }
+  } catch {
+    userLearningPrefs = undefined;
+  }
+
   if (!story) {
     return (
       <Paper p='xl' radius='md' style={{ textAlign: 'center' }}>
@@ -97,6 +125,37 @@ const StoryReadingView: React.FC<StoryReadingViewProps> = ({
 
       {/* Story Content */}
       <Paper p='lg' radius='md'>
+        <Box style={{ position: 'absolute', top: 12, right: 12, zIndex: 10 }}>
+          <Tooltip label={isTTSPlaying ? 'Stop audio' : 'Listen to story'}>
+            <ActionIcon
+              size='md'
+              variant='subtle'
+              color={isTTSPlaying ? 'red' : 'blue'}
+              onClick={() => {
+                if (isTTSPlaying || isTTSLoading) {
+                  stopTTS();
+                } else {
+                  // Combine the sections into one text blob
+                  const full = story.sections.map(s => s.content).join('\n\n');
+                  let preferredVoice: string | undefined;
+                  try {
+                    const saved = (
+                      userLearningPrefs as unknown as { tts_voice?: string } | undefined
+                    )?.tts_voice;
+                    if (saved && saved.trim()) preferredVoice = saved.trim();
+                  } catch {}
+                  const finalVoice =
+                    preferredVoice ?? defaultVoiceForLanguage(story.language) ?? 'echo';
+                  void playTTS(full, finalVoice);
+                }
+              }}
+              aria-label={isTTSPlaying ? 'Stop audio' : 'Listen to story'}
+            >
+              {isTTSPlaying || isTTSLoading ? <VolumeX size={18} /> : <Volume2 size={18} />}
+            </ActionIcon>
+          </Tooltip>
+        </Box>
+
         <ScrollArea style={{ height: '60vh' }}>
           <Stack spacing='lg'>
             {/* Story Metadata */}
