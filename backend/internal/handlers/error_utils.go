@@ -106,7 +106,7 @@ func mapErrorCodeToHTTPStatus(code contextutils.ErrorCode) int {
 		contextutils.ErrorCodeAssignmentNotFound:
 		return http.StatusNotFound
 
-	case contextutils.ErrorCodeRecordExists:
+	case contextutils.ErrorCodeRecordExists, contextutils.ErrorCodeGenerationLimitReached:
 		return http.StatusConflict
 
 	case contextutils.ErrorCodeSessionExpired, contextutils.ErrorCodeInvalidCredentials:

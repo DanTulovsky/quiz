@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -13,6 +14,7 @@ import (
 	"quizapp/internal/models"
 	"quizapp/internal/observability"
 	"quizapp/internal/services"
+	contextutils "quizapp/internal/utils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jung-kurt/gofpdf"
@@ -316,7 +318,7 @@ func (h *StoryHandler) GenerateNextSection(c *gin.Context) {
 		}
 
 		// Check if daily generation limit is reached (no extra generations available)
-		if story.ExtraGenerationsToday < 1 {
+		if story.ExtraGenerationsToday > h.cfg.Story.MaxExtraGenerationsPerDay {
 			c.JSON(http.StatusConflict, api.ErrorResponse{Error: stringPtr("daily generation limit reached: you have already generated a section today for this story. Please try again tomorrow.")})
 			return
 		}
@@ -341,6 +343,16 @@ func (h *StoryHandler) GenerateNextSection(c *gin.Context) {
 	// Generate the story section using the shared service method (user generation)
 	sectionWithQuestions, err := h.storyService.GenerateStorySection(ctx, uint(storyID), uint(userID), h.aiService, userAIConfig)
 	if err != nil {
+		// Check if this is a generation limit reached error (normal business case)
+		if errors.Is(err, contextutils.ErrGenerationLimitReached) {
+			h.logger.Info(ctx, "User reached daily generation limit", map[string]interface{}{
+				"story_id": storyID,
+				"user_id":  uint(userID),
+			})
+			c.JSON(http.StatusConflict, api.ErrorResponse{Error: stringPtr("daily generation limit reached: you have already generated a section today for this story. Please try again tomorrow.")})
+			return
+		}
+
 		h.logger.Error(ctx, "Failed to generate story section", err, map[string]interface{}{
 			"story_id": storyID,
 			"user_id":  uint(userID),

@@ -9,6 +9,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"math"
 	"os"
@@ -752,12 +753,22 @@ func (w *Worker) checkForStoryGenerations(ctx context.Context) error {
 	processed := 0
 	for _, user := range users {
 		if err := w.generateStorySection(ctx, user); err != nil {
-			w.logger.Error(ctx, "Failed to generate story section for user",
-				err, map[string]interface{}{
-					"user_id":  user.ID,
-					"username": user.Username,
-					"instance": w.instance,
-				})
+			// Check if this is a generation limit reached error (normal case for worker)
+			if errors.Is(err, contextutils.ErrGenerationLimitReached) {
+				w.logger.Info(ctx, "User reached daily generation limit, skipping",
+					map[string]interface{}{
+						"user_id":  user.ID,
+						"username": user.Username,
+						"instance": w.instance,
+					})
+			} else {
+				w.logger.Error(ctx, "Failed to generate story section for user",
+					err, map[string]interface{}{
+						"user_id":  user.ID,
+						"username": user.Username,
+						"instance": w.instance,
+					})
+			}
 			continue
 		}
 		processed++

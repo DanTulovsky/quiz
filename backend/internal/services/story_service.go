@@ -1126,7 +1126,7 @@ func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID
 		return nil, contextutils.WrapErrorf(err, "failed to check generation eligibility")
 	}
 	if !canGenerate {
-		return nil, contextutils.ErrorWithContextf("cannot generate section: story is not active or daily generation limit reached")
+		return nil, contextutils.WrapError(contextutils.ErrGenerationLimitReached, "story is not active or daily generation limit reached")
 	}
 
 	// Get user for AI configuration and language preferences

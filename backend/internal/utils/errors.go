@@ -73,6 +73,8 @@ const (
 	ErrorCodeQuestionNotFound ErrorCode = "QUESTION_NOT_FOUND"
 	// ErrorCodeInvalidAnswerIndex indicates that the answer index is invalid
 	ErrorCodeInvalidAnswerIndex ErrorCode = "INVALID_ANSWER_INDEX"
+	// ErrorCodeGenerationLimitReached indicates that the daily generation limit has been reached
+	ErrorCodeGenerationLimitReached ErrorCode = "GENERATION_LIMIT_REACHED"
 
 	// AI Service error codes
 
@@ -290,6 +292,12 @@ var (
 		Code:     ErrorCodeInvalidAnswerIndex,
 		Severity: SeverityWarn,
 		Message:  "Invalid answer index",
+	}
+
+	ErrGenerationLimitReached = &AppError{
+		Code:     ErrorCodeGenerationLimitReached,
+		Severity: SeverityInfo,
+		Message:  "Daily generation limit reached",
 	}
 
 	// AI Service errors
