@@ -9,4 +9,11 @@ END $$;
 
 -- Add index for efficient querying by story, generator type, and date
 -- Use CREATE INDEX IF NOT EXISTS to safely create index only if it doesn't exist
-CREATE INDEX IF NOT EXISTS idx_story_sections_generated_by ON story_sections(story_id, generated_by, generation_date);
+-- Only create if the generated_by column exists (for backwards compatibility)
+-- Check if column exists before creating index
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'story_sections' AND column_name = 'generated_by') THEN
+        CREATE INDEX IF NOT EXISTS idx_story_sections_generated_by ON story_sections(story_id, generated_by, generation_date);
+    END IF;
+END $$;

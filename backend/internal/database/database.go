@@ -374,8 +374,8 @@ func (dm *Manager) runApplicationSchema(db *sql.DB) (err error) {
 	for _, statement := range indexStatements {
 		_, execErr := db.Exec(statement)
 		if execErr != nil {
-			// For backwards compatibility, ignore index exists errors
-			if !dm.isTableExistsError(execErr) {
+			// For backwards compatibility, ignore index exists and column exists errors
+			if !dm.isTableExistsError(execErr) && !dm.isColumnExistsError(execErr) {
 				err = contextutils.WrapErrorf(execErr, "failed to execute index statement: %s", statement)
 				return err
 			}
@@ -490,6 +490,13 @@ func (dm *Manager) isTableExistsError(err error) bool {
 	}
 	// Fallback to string matching for backwards compatibility
 	return strings.Contains(err.Error(), "already exists")
+}
+
+// isColumnExistsError checks if the error is due to a column not existing (for index creation)
+func (dm *Manager) isColumnExistsError(err error) bool {
+	_, span := observability.TraceDatabaseFunction(context.Background(), "isColumnExistsError")
+	defer span.End()
+	return strings.Contains(err.Error(), "column") && strings.Contains(err.Error(), "does not exist")
 }
 
 // GetMigrationsPath returns the path to the migrations directory
