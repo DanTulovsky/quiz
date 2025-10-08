@@ -42,7 +42,7 @@ type StoryServiceInterface interface {
 	GetSectionLengthTarget(level string, lengthPref *models.SectionLength) int
 	GetSectionLengthTargetWithLanguage(language, level string, lengthPref *models.SectionLength) int
 	SanitizeInput(input string) string
-	GenerateStorySection(ctx context.Context, storyID, userID uint, aiService AIServiceInterface, userAIConfig *models.UserAIConfig, isUserGeneration bool) (*models.StorySectionWithQuestions, error)
+	GenerateStorySection(ctx context.Context, storyID, userID uint, aiService AIServiceInterface, userAIConfig *models.UserAIConfig) (*models.StorySectionWithQuestions, error)
 }
 
 // StoryService handles all story-related operations
@@ -1107,7 +1107,7 @@ func (s *StoryService) createSection(ctx context.Context, section *models.StoryS
 }
 
 // GenerateStorySection generates a new section for a story using AI
-func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID uint, aiService AIServiceInterface, userAIConfig *models.UserAIConfig, isUserGeneration bool) (*models.StorySectionWithQuestions, error) {
+func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID uint, aiService AIServiceInterface, userAIConfig *models.UserAIConfig) (*models.StorySectionWithQuestions, error) {
 	ctx, span := observability.TraceFunction(ctx, "story_service", "generate_section",
 		attribute.Int("story.id", int(storyID)),
 		observability.AttributeUserID(int(userID)),

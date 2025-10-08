@@ -164,8 +164,8 @@ func (m *mockStoryService) SanitizeInput(input string) string {
 	return args.String(0)
 }
 
-func (m *mockStoryService) GenerateStorySection(ctx context.Context, storyID, userID uint, aiService services.AIServiceInterface, userAIConfig *models.UserAIConfig, isUserGeneration bool) (*models.StorySectionWithQuestions, error) {
-	args := m.Called(ctx, storyID, userID, aiService, userAIConfig, isUserGeneration)
+func (m *mockStoryService) GenerateStorySection(ctx context.Context, storyID, userID uint, aiService services.AIServiceInterface, userAIConfig *models.UserAIConfig) (*models.StorySectionWithQuestions, error) {
+	args := m.Called(ctx, storyID, userID, aiService, userAIConfig)
 	return args.Get(0).(*models.StorySectionWithQuestions), args.Error(1)
 }
 
