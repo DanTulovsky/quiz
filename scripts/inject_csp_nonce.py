@@ -44,6 +44,27 @@ def update_nginx_with_nonce(nonce, nginx_file_path='nginx.conf'):
     print(f"Updated {nginx_file_path} with nonce: {nonce}")
     return True
 
+def update_security_headers_with_nonce(nonce, security_headers_path='nginx/snippets/on/security-headers.inc'):
+    """Update security-headers.inc with the extracted nonce."""
+    try:
+        with open(security_headers_path, 'r') as f:
+            content = f.read()
+    except FileNotFoundError:
+        print(f"Error: {security_headers_path} not found")
+        sys.stdout.flush()
+        os._exit(1)
+        return False
+
+    # Replace the placeholder with the actual nonce
+    new_content = content.replace('jJv1dXcHOmvbRO2xN0o2uQ==', nonce)
+
+    # Write the updated configuration
+    with open(security_headers_path, 'w') as f:
+        f.write(new_content)
+
+    print(f"Updated {security_headers_path} with nonce: {nonce}")
+    return True
+
 def main():
     """Main function to extract nonce and update nginx."""
     # Check multiple possible paths for the built HTML
@@ -92,11 +113,16 @@ def main():
 
     # Update nginx configuration
     success = update_nginx_with_nonce(nonce, nginx_file)
-    if success:
+
+    # Also update security-headers.inc if it exists
+    security_headers_updated = update_security_headers_with_nonce(nonce)
+
+    if success or security_headers_updated:
         print("CSP nonce injection completed successfully!")
         print("You can now restart nginx to apply the changes.")
         return True
     else:
+        print("Failed to update any nginx configuration files")
         return False
 
 if __name__ == "__main__":

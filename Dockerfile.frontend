@@ -87,8 +87,10 @@ COPY --from=builder /app/dist ./dist
 COPY scripts/add_nonces_to_built_html.py ./
 COPY scripts/inject_csp_nonce.py ./
 COPY nginx.conf ./
+COPY nginx/ ./nginx/
 # Run nonce scripts against built assets and nginx.conf
-RUN python3 add_nonces_to_built_html.py && python3 inject_csp_nonce.py
+RUN python3 add_nonces_to_built_html.py
+RUN python3 inject_csp_nonce.py
 
 # Stage 4: Serve the app with official NGINX (with OpenTelemetry support)
 FROM nginx:stable-otel AS nginx-base
@@ -109,7 +111,7 @@ RUN chmod -R 644 /usr/share/nginx/html/assets/* /usr/share/nginx/html/*.svg /usr
 # Copy the nginx configuration
 COPY --from=nonce /app/nginx.conf /etc/nginx/nginx.conf
 # Copy rate-limit snippet includes (enabled by default)
-COPY nginx/snippets/on/ /etc/nginx/snippets/
+COPY --from=nonce /app/nginx/snippets/on/ /etc/nginx/snippets/
 
 EXPOSE 80
 
