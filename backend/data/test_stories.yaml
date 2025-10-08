@@ -1,7 +1,7 @@
 stories:
   - username: "apitestuserstory1"
     title: "test_value"
-    language: "en"
+    language: "italian"
     subject: "A simple test story"
     author_style: "engaging and descriptive"
     time_period: "modern"
@@ -29,7 +29,7 @@ stories:
 
   - username: "apitestuser2"
     title: "Active Test Story"
-    language: "en"
+    language: "italian"
     subject: "A story in progress"
     author_style: "casual and friendly"
     status: "active"
