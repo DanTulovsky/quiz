@@ -46,9 +46,9 @@ func TestStoryService_CanGenerateSection_Integration(t *testing.T) {
 	require.NotNil(t, story)
 
 	// Test 1: Should be able to generate section initially
-	canGenerate, err := storyService.CanGenerateSection(ctx, story.ID)
+	eligibility, err := storyService.CanGenerateSection(ctx, story.ID)
 	require.NoError(t, err)
-	assert.True(t, canGenerate, "Should be able to generate section initially")
+	assert.True(t, eligibility.CanGenerate, "Should be able to generate section initially")
 
 	// Test 2: Create a section for today (user generation)
 	sectionContent := "This is a test story section."
@@ -68,10 +68,10 @@ func TestStoryService_CanGenerateSection_Integration(t *testing.T) {
 	t.Logf("Found %d sections for story %d on date %v", sectionCount, story.ID, today)
 
 	// Test 3b: Should be able to generate another section today (first section doesn't count against limit)
-	canGenerate, err = storyService.CanGenerateSection(ctx, story.ID)
+	eligibility, err = storyService.CanGenerateSection(ctx, story.ID)
 	require.NoError(t, err)
-	t.Logf("CanGenerateSection returned: %v (expected true)", canGenerate)
-	assert.True(t, canGenerate, "Should be able to generate another section today")
+	t.Logf("CanGenerateSection returned: %v (expected true)", eligibility.CanGenerate)
+	assert.True(t, eligibility.CanGenerate, "Should be able to generate another section today")
 
 	// Test 3c: Create a second section (user generation) - should work and increment extra_generations_today
 	section2, err := storyService.CreateSection(ctx, story.ID, "This is a second section.", "A1", 40)
@@ -90,10 +90,10 @@ func TestStoryService_CanGenerateSection_Integration(t *testing.T) {
 	assert.Equal(t, 2, extraGenerations, "extra_generations_today should be 2 after second user generation")
 
 	// Test 3f: Should not be able to generate a third section (limit reached after 2 sections)
-	canGenerate, err = storyService.CanGenerateSection(ctx, story.ID)
+	eligibility, err = storyService.CanGenerateSection(ctx, story.ID)
 	require.NoError(t, err)
-	t.Logf("CanGenerateSection returned: %v (expected false)", canGenerate)
-	assert.False(t, canGenerate, "Should not be able to generate third section today")
+	t.Logf("CanGenerateSection returned: %v (expected false)", eligibility.CanGenerate)
+	assert.False(t, eligibility.CanGenerate, "Should not be able to generate third section today")
 
 	// Test 4: Test with a different story (should be able to generate)
 	otherStory, err := storyService.CreateStory(ctx, uint(user.ID), "italian", &models.CreateStoryRequest{
@@ -102,9 +102,9 @@ func TestStoryService_CanGenerateSection_Integration(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	canGenerate, err = storyService.CanGenerateSection(ctx, otherStory.ID)
+	eligibility, err = storyService.CanGenerateSection(ctx, otherStory.ID)
 	require.NoError(t, err)
-	assert.True(t, canGenerate, "Should be able to generate section for different story")
+	assert.True(t, eligibility.CanGenerate, "Should be able to generate section for different story")
 }
 
 // TestStoryService_UpdateLastGenerationTime_Integration tests the UpdateLastGenerationTime functionality
@@ -190,9 +190,9 @@ func TestStoryService_StoryGenerationLimits_Integration(t *testing.T) {
 	require.NotNil(t, story)
 
 	// Test 1: Initially, should be able to generate (no sections exist today)
-	canGenerate, err := storyService.CanGenerateSection(context.Background(), story.ID)
+	eligibility, err := storyService.CanGenerateSection(context.Background(), story.ID)
 	require.NoError(t, err)
-	assert.True(t, canGenerate, "Should be able to generate section initially")
+	assert.True(t, eligibility.CanGenerate, "Should be able to generate section initially")
 
 	// Test 2: Create first section (worker generation)
 	section, err := storyService.CreateSection(context.Background(), story.ID, "Worker section", "A1", 50)
@@ -220,10 +220,10 @@ func TestStoryService_StoryGenerationLimits_Integration(t *testing.T) {
 	t.Logf("After worker generation: sectionCount=%d, extraGenerationsToday=%d", sectionCount, extraGenerations)
 
 	// Test 3: Should be able to generate user section after worker generation (worker limit not reached)
-	canGenerate, err = storyService.CanGenerateSection(context.Background(), story.ID)
+	eligibility, err = storyService.CanGenerateSection(context.Background(), story.ID)
 	require.NoError(t, err)
-	t.Logf("CanGenerateSection returned: %v (expected true)", canGenerate)
-	assert.True(t, canGenerate, "Should be able to generate user section after worker generation")
+	t.Logf("CanGenerateSection returned: %v (expected true)", eligibility.CanGenerate)
+	assert.True(t, eligibility.CanGenerate, "Should be able to generate user section after worker generation")
 
 	// Test 4: But users should be able to generate extra sections up to the configured limit
 	// Reset the story state to simulate a new day or reset the counter
@@ -239,9 +239,9 @@ func TestStoryService_StoryGenerationLimits_Integration(t *testing.T) {
 	require.NoError(t, err)
 
 	// Test 5: Should be able to generate user section (extra_generations_today is 1)
-	canGenerate, err = storyService.CanGenerateSection(context.Background(), story.ID)
+	eligibility, err = storyService.CanGenerateSection(context.Background(), story.ID)
 	require.NoError(t, err)
-	assert.True(t, canGenerate, "Should be able to generate user section after worker generation")
+	assert.True(t, eligibility.CanGenerate, "Should be able to generate user section after worker generation")
 
 	// Test 6: Create user section and update generation time
 	_, err = storyService.CreateSection(context.Background(), story.ID, "User section", "A1", 40)
@@ -256,9 +256,9 @@ func TestStoryService_StoryGenerationLimits_Integration(t *testing.T) {
 	assert.Equal(t, expectedTotal, extraGenerations, "User generation should increment extra_generations_today to 2")
 
 	// Test 7: Should not be able to generate third section (limit reached)
-	canGenerate, err = storyService.CanGenerateSection(context.Background(), story.ID)
+	eligibility, err = storyService.CanGenerateSection(context.Background(), story.ID)
 	require.NoError(t, err)
-	assert.False(t, canGenerate, "Should not be able to generate third section after user generation")
+	assert.False(t, eligibility.CanGenerate, "Should not be able to generate third section after user generation")
 
 	// Test 8: Test with MaxExtraGenerationsPerDay = 1 (allow 1 extra user generation)
 	cfg2, err := config.NewConfig()
@@ -274,9 +274,9 @@ func TestStoryService_StoryGenerationLimits_Integration(t *testing.T) {
 	require.NoError(t, err)
 
 	// Should be able to generate worker section
-	canGenerate, err = storyService2.CanGenerateSection(context.Background(), story.ID)
+	eligibility, err = storyService2.CanGenerateSection(context.Background(), story.ID)
 	require.NoError(t, err)
-	assert.True(t, canGenerate, "Should be able to generate worker section")
+	assert.True(t, eligibility.CanGenerate, "Should be able to generate worker section")
 
 	// Create worker section
 	_, err = storyService2.CreateSection(context.Background(), story.ID, "Worker section 2", "A1", 50)
@@ -287,9 +287,9 @@ func TestStoryService_StoryGenerationLimits_Integration(t *testing.T) {
 	require.NoError(t, err)
 
 	// Should be able to generate user section (extra_generations_today = 1)
-	canGenerate, err = storyService2.CanGenerateSection(context.Background(), story.ID)
+	eligibility, err = storyService2.CanGenerateSection(context.Background(), story.ID)
 	require.NoError(t, err)
-	assert.True(t, canGenerate, "Should be able to generate user section after worker generation")
+	assert.True(t, eligibility.CanGenerate, "Should be able to generate user section after worker generation")
 
 	// Create user section
 	_, err = storyService2.CreateSection(context.Background(), story.ID, "User section 2", "A1", 40)
@@ -306,9 +306,9 @@ func TestStoryService_StoryGenerationLimits_Integration(t *testing.T) {
 	assert.Equal(t, 2, extraGenerations2, "User generation should increment extra_generations_today to 2")
 
 	// Should not be able to generate third section (limit reached)
-	canGenerate, err = storyService2.CanGenerateSection(context.Background(), story.ID)
+	eligibility, err = storyService2.CanGenerateSection(context.Background(), story.ID)
 	require.NoError(t, err)
-	assert.False(t, canGenerate, "Should not be able to generate third section after user generation")
+	assert.False(t, eligibility.CanGenerate, "Should not be able to generate third section after user generation")
 }
 
 // TestStoryService_CreateSection_Integration tests section creation

@@ -211,6 +211,13 @@ type UserAIConfig struct {
 	Username string // For logging purposes
 }
 
+// StoryGenerationEligibilityResponse represents the result of checking if a story section can be generated
+type StoryGenerationEligibilityResponse struct {
+	CanGenerate bool   `json:"can_generate"`
+	Reason      string `json:"reason,omitempty"`
+	Story       *Story `json:"story,omitempty"` // Include story data when needed for additional checks
+}
+
 // GetSectionLengthTarget returns the target word count for a story section
 func GetSectionLengthTarget(level string, lengthPref *SectionLength) int {
 	// Map CEFR levels to generic proficiency levels for backward compatibility

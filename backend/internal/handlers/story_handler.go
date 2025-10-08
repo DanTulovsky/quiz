@@ -294,7 +294,7 @@ func (h *StoryHandler) GenerateNextSection(c *gin.Context) {
 	// Verify story ownership (this is done inside GenerateStorySection, but we need to check beforehand for early return)
 
 	// Check if generation is allowed today
-	canGenerate, err := h.storyService.CanGenerateSection(ctx, uint(storyID))
+	eligibility, err := h.storyService.CanGenerateSection(ctx, uint(storyID))
 	if err != nil {
 		h.logger.Error(ctx, "Failed to check generation eligibility", err, map[string]interface{}{
 			"story_id": storyID,
@@ -303,27 +303,30 @@ func (h *StoryHandler) GenerateNextSection(c *gin.Context) {
 		return
 	}
 
-	if !canGenerate {
-		// Provide more specific error messages
-		story, err := h.storyService.GetStory(ctx, uint(storyID), uint(userID))
-		if err != nil {
-			StandardizeHTTPError(c, http.StatusConflict, "Cannot generate section", "Story is not active or you have reached the daily generation limit")
-			return
+	if !eligibility.CanGenerate {
+		// The service already provided the specific reason, use it
+		var statusCode int
+		var message string
+
+		switch eligibility.Reason {
+		case "story not found":
+			statusCode = http.StatusNotFound
+			message = "Story not found"
+		case "story generation is disabled globally":
+			statusCode = http.StatusConflict
+			message = "Story generation is currently disabled"
+		case "story is not active":
+			statusCode = http.StatusConflict
+			message = "Story is not active"
+		case "daily generation limit reached":
+			statusCode = http.StatusConflict
+			message = "You have already generated a section today for this story. Please try again tomorrow."
+		default:
+			statusCode = http.StatusConflict
+			message = "Cannot generate section"
 		}
 
-		// Check if story is not active
-		if story.Status != models.StoryStatusActive || !story.IsCurrent {
-			StandardizeHTTPError(c, http.StatusConflict, "Cannot generate section", "Story is not active")
-			return
-		}
-
-		// Check if daily generation limit is reached (no extra generations available)
-		if story.ExtraGenerationsToday >= h.cfg.Story.MaxExtraGenerationsPerDay {
-			StandardizeHTTPError(c, http.StatusConflict, "Daily generation limit reached", "You have already generated a section today for this story. Please try again tomorrow.")
-			return
-		}
-
-		StandardizeHTTPError(c, http.StatusConflict, "Cannot generate section", "Please try again tomorrow")
+		StandardizeHTTPError(c, statusCode, message, eligibility.Reason)
 		return
 	}
 

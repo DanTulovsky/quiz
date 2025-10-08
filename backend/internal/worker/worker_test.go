@@ -139,9 +139,9 @@ func (m *mockStoryService) GetRandomQuestions(ctx context.Context, sectionID uin
 	return args.Get(0).([]models.StorySectionQuestion), args.Error(1)
 }
 
-func (m *mockStoryService) CanGenerateSection(ctx context.Context, storyID uint) (bool, error) {
+func (m *mockStoryService) CanGenerateSection(ctx context.Context, storyID uint) (*models.StoryGenerationEligibilityResponse, error) {
 	args := m.Called(ctx, storyID)
-	return args.Bool(0), args.Error(1)
+	return args.Get(0).(*models.StoryGenerationEligibilityResponse), args.Error(1)
 }
 
 func (m *mockStoryService) UpdateLastGenerationTime(ctx context.Context, storyID uint) error {

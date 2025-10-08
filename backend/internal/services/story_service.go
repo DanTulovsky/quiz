@@ -37,7 +37,7 @@ type StoryServiceInterface interface {
 	GetSectionQuestions(ctx context.Context, sectionID uint) ([]models.StorySectionQuestion, error)
 	CreateSectionQuestions(ctx context.Context, sectionID uint, questions []models.StorySectionQuestionData) error
 	GetRandomQuestions(ctx context.Context, sectionID uint, count int) ([]models.StorySectionQuestion, error)
-	CanGenerateSection(ctx context.Context, storyID uint) (bool, error)
+	CanGenerateSection(ctx context.Context, storyID uint) (*models.StoryGenerationEligibilityResponse, error)
 	UpdateLastGenerationTime(ctx context.Context, storyID uint) error
 	GetSectionLengthTarget(level string, lengthPref *models.SectionLength) int
 	GetSectionLengthTargetWithLanguage(language, level string, lengthPref *models.SectionLength) int
@@ -857,7 +857,7 @@ func (s *StoryService) GetRandomQuestions(ctx context.Context, sectionID uint, c
 }
 
 // CanGenerateSection checks if a new section can be generated for a story today
-func (s *StoryService) CanGenerateSection(ctx context.Context, storyID uint) (bool, error) {
+func (s *StoryService) CanGenerateSection(ctx context.Context, storyID uint) (*models.StoryGenerationEligibilityResponse, error) {
 	query := `
 		SELECT status, is_current, last_section_generated_at, extra_generations_today
 		FROM stories
@@ -871,19 +871,28 @@ func (s *StoryService) CanGenerateSection(ctx context.Context, storyID uint) (bo
 	err := s.db.QueryRowContext(ctx, query, storyID).Scan(&status, &isCurrent, &lastGen, &extraGenerationsToday)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return false, contextutils.ErrorWithContextf("story not found")
+			return &models.StoryGenerationEligibilityResponse{
+				CanGenerate: false,
+				Reason:      "story not found",
+			}, nil
 		}
-		return false, contextutils.WrapErrorf(err, "failed to get story")
+		return nil, contextutils.WrapErrorf(err, "failed to get story")
 	}
 
 	// Check if story generation is enabled globally
 	if !s.config.Story.GenerationEnabled {
-		return false, nil
+		return &models.StoryGenerationEligibilityResponse{
+			CanGenerate: false,
+			Reason:      "story generation is disabled globally",
+		}, nil
 	}
 
 	// Check if story is active and current
 	if status != string(models.StoryStatusActive) || !isCurrent {
-		return false, nil
+		return &models.StoryGenerationEligibilityResponse{
+			CanGenerate: false,
+			Reason:      "story is not active",
+		}, nil
 	}
 
 	// Check if already generated a section today
@@ -896,23 +905,30 @@ func (s *StoryService) CanGenerateSection(ctx context.Context, storyID uint) (bo
 
 	err = s.db.QueryRowContext(ctx, sectionQuery, storyID, today).Scan(&sectionCount)
 	if err != nil {
-		return false, contextutils.WrapErrorf(err, "failed to check existing sections today")
+		return nil, contextutils.WrapErrorf(err, "failed to check existing sections today")
 	}
 
 	// If no sections exist today, allow worker generation
 	if sectionCount == 0 {
-		return true, nil
+		return &models.StoryGenerationEligibilityResponse{
+			CanGenerate: true,
+		}, nil
 	}
 
 	// If sections exist today, check if we've reached the limit
 	// The limit is 1 worker generation + MaxExtraGenerationsPerDay user generations
 	maxTotal := s.config.Story.MaxExtraGenerationsPerDay + 1
 	if extraGenerationsToday >= maxTotal {
-		return false, nil
+		return &models.StoryGenerationEligibilityResponse{
+			CanGenerate: false,
+			Reason:      "daily generation limit reached",
+		}, nil
 	}
 
 	// Allow generation if we haven't reached the limit
-	return true, nil
+	return &models.StoryGenerationEligibilityResponse{
+		CanGenerate: true,
+	}, nil
 }
 
 // UpdateLastGenerationTime sets the last section generation time for a story
@@ -1121,12 +1137,12 @@ func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID
 	}
 
 	// Check if generation is allowed today
-	canGenerate, err := s.CanGenerateSection(ctx, storyID)
+	eligibility, err := s.CanGenerateSection(ctx, storyID)
 	if err != nil {
 		return nil, contextutils.WrapErrorf(err, "failed to check generation eligibility")
 	}
-	if !canGenerate {
-		return nil, contextutils.WrapError(contextutils.ErrGenerationLimitReached, "story is not active or daily generation limit reached")
+	if !eligibility.CanGenerate {
+		return nil, contextutils.WrapError(contextutils.ErrGenerationLimitReached, eligibility.Reason)
 	}
 
 	// Get user for AI configuration and language preferences
