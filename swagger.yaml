@@ -3464,7 +3464,7 @@ paths:
             type: integer
             format: int64
       responses:
-        "204":
+        "200":
           description: Story deleted successfully
         "404":
           description: Story not found

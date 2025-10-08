@@ -10987,7 +10987,7 @@ export const getDeleteV1StoryIdMockHandler = (overrideResponse?: null | ((info: 
   return http.delete('*/v1/story/:id', async (info) => {await delay(1000);
   if (typeof overrideResponse === 'function') {await overrideResponse(info); }
     return new HttpResponse(null,
-      { status: 204,
+      { status: 200,
         
       })
   })
