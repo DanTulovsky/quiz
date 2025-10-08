@@ -41,6 +41,7 @@ const StoryPage: React.FC = () => {
     currentSectionWithQuestions,
     canGenerateToday,
     isGenerating,
+    generationType,
     generationDisabledReason,
     createStory,
     archiveStory,
@@ -196,14 +197,25 @@ const StoryPage: React.FC = () => {
 
   // Show generating state (informational, not an error) - check this before main interface
   if (isGenerating) {
-    const message: string =
-      currentStory && 'message' in currentStory
-        ? (currentStory.message as string)
-        : 'Story created successfully. The first section is being generated. Please check back shortly.';
+    const getGeneratingMessage = (): string => {
+      if (currentStory && 'message' in currentStory && currentStory.message) {
+        return currentStory.message as string;
+      }
+
+      switch (generationType) {
+        case 'story':
+          return 'Story created successfully. The first section is being generated. Please check back shortly.';
+        case 'section':
+          return 'Generating the next section of your story. Please check back shortly.';
+        default:
+          return 'Generating content. Please check back shortly.';
+      }
+    };
+
     return (
       <Container size='lg' py='xl'>
         <Alert color='blue' variant='light'>
-          <Text>{message}</Text>
+          <Text>{getGeneratingMessage()}</Text>
         </Alert>
       </Container>
     );

@@ -893,11 +893,11 @@ func (s *StoryService) canGenerateSection(ctx context.Context, storyID uint, gen
 	// Check limits based on generator type
 	switch generatorType {
 	case models.GeneratorTypeWorker:
-		// Worker can generate exactly 1 section per day
-		if sectionCount >= 1 {
+		// Worker can generate MaxWorkerGenerationsPerDay sections per day
+		if sectionCount >= s.config.Story.MaxWorkerGenerationsPerDay {
 			return &models.StoryGenerationEligibilityResponse{
 				CanGenerate: false,
-				Reason:      "worker has already generated a section today",
+				Reason:      "worker has reached daily generation limit",
 			}, nil
 		}
 	case models.GeneratorTypeUser:
@@ -1228,7 +1228,12 @@ func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID
 	if err != nil {
 		return nil, contextutils.WrapErrorf(err, "failed to begin transaction")
 	}
-	defer func() { _ = tx.Rollback() }()
+	var committed bool
+	defer func() {
+		if !committed {
+			_ = tx.Rollback()
+		}
+	}()
 
 	// Create the section within the transaction
 	section := &models.StorySection{
@@ -1300,6 +1305,7 @@ func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID
 	if err := tx.Commit(); err != nil {
 		return nil, contextutils.WrapErrorf(err, "failed to commit transaction")
 	}
+	committed = true
 
 	// Update the story's last generation time
 	if err := s.UpdateLastGenerationTime(ctx, storyID, generatorType); err != nil {

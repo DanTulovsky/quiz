@@ -35,6 +35,7 @@ export interface UseStoryReturn {
   isLoadingArchivedStories: boolean;
   error: string | null;
   isGenerating: boolean;
+  generationType: 'story' | 'section' | null;
 
   // Actions
   createStory: (data: CreateStoryRequest) => Promise<void>;
@@ -77,6 +78,9 @@ export const useStory = (): UseStoryReturn => {
   const [viewMode, setViewMode] = useState<ViewMode>('section');
   const [error, setError] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [generationType, setGenerationType] = useState<
+    'story' | 'section' | null
+  >(null);
   const [generationErrorModal, setGenerationErrorModal] = useState<{
     isOpen: boolean;
     errorMessage: string;
@@ -127,6 +131,7 @@ export const useStory = (): UseStoryReturn => {
     ) {
       // Only stop generating if we have a story with actual sections
       setIsGenerating(false);
+      setGenerationType(null);
       stopPolling();
       setError(null);
     }
@@ -187,6 +192,7 @@ export const useStory = (): UseStoryReturn => {
       });
       // Start polling for the first section
       setIsGenerating(true);
+      setGenerationType('story');
       startPolling();
     },
     onError: (error: unknown) => {
@@ -241,6 +247,7 @@ export const useStory = (): UseStoryReturn => {
         message: errorMessage,
         type: 'error',
       });
+      setGenerationType(null);
     },
   });
 
@@ -469,9 +476,17 @@ export const useStory = (): UseStoryReturn => {
       try {
         const result = await apiGenerateNextSection(storyId);
 
-        // Check if the result indicates an error (4xx status would have been handled by axios)
-        // Since we removed validateStatus, axios should throw errors for 4xx codes
-        // But if it doesn't, we'll check the result here
+        // Check if the result indicates an error - this handles the case where
+        // the backend returns a 200 response with an error message in the body
+        if (result && typeof result === 'object') {
+          if ('error' in result && result.error) {
+            throw new Error(result.error);
+          }
+          if ('details' in result && result.details && 'error' in result) {
+            throw new Error(result.error);
+          }
+        }
+
         return result;
       } catch (error) {
         // Log the error for debugging
@@ -482,6 +497,7 @@ export const useStory = (): UseStoryReturn => {
     onMutate: () => {
       // Set generating state when mutation starts
       setIsGenerating(true);
+      setGenerationType('section');
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -507,6 +523,7 @@ export const useStory = (): UseStoryReturn => {
       });
       // Stop generating state on success
       setIsGenerating(false);
+      setGenerationType(null);
     },
     onError: (error: unknown) => {
       logger.error('Failed to generate next section', error);
@@ -563,6 +580,7 @@ export const useStory = (): UseStoryReturn => {
       });
       // Stop generating state on error
       setIsGenerating(false);
+      setGenerationType(null);
     },
   });
 
@@ -914,6 +932,7 @@ export const useStory = (): UseStoryReturn => {
     isLoadingArchivedStories,
     error,
     isGenerating,
+    generationType,
 
     // Actions
     createStory,

@@ -135,13 +135,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  signups_disabled:
-                    type: boolean
-                    description: Whether user signups are currently disabled
-                required:
-                  - signups_disabled
+                $ref: "#/components/schemas/SignupStatusResponse"
 
   /v1/auth/google/login:
     get:
@@ -357,12 +351,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                report_reason:
-                  type: string
-                  maxLength: 512
-                  description: Optional explanation for why the question is being reported
+              $ref: "#/components/schemas/ReportQuestionRequest"
       responses:
         "200":
           description: Question reported successfully
@@ -411,13 +400,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                confidence_level:
-                  type: integer
-                  minimum: 1
-                  maximum: 5
-                  description: User's confidence level (1-5, optional)
+              $ref: "#/components/schemas/MarkQuestionKnownRequest"
       responses:
         "200":
           description: Question marked as known successfully
@@ -4449,6 +4432,32 @@ components:
         details:
           type: string
           maxLength: 1000
+
+    SignupStatusResponse:
+      type: object
+      properties:
+        signups_disabled:
+          type: boolean
+          description: Whether user signups are currently disabled
+      required:
+        - signups_disabled
+
+    ReportQuestionRequest:
+      type: object
+      properties:
+        report_reason:
+          type: string
+          maxLength: 512
+          description: Optional explanation for why the question is being reported
+
+    MarkQuestionKnownRequest:
+      type: object
+      properties:
+        confidence_level:
+          type: integer
+          minimum: 1
+          maximum: 5
+          description: User's confidence level (1-5, optional)
 
     GeneratingResponse:
       type: object

@@ -459,6 +459,12 @@ type LoginResponse struct {
 	User        *User   `json:"user,omitempty"`
 }
 
+// MarkQuestionKnownRequest defines model for MarkQuestionKnownRequest.
+type MarkQuestionKnownRequest struct {
+	// ConfidenceLevel User's confidence level (1-5, optional)
+	ConfidenceLevel *int `json:"confidence_level,omitempty"`
+}
+
 // NotificationError defines model for NotificationError.
 type NotificationError struct {
 	// EmailAddress Email address that was being used
@@ -684,6 +690,12 @@ type QuizChatRequest struct {
 	UserMessage string `json:"user_message"`
 }
 
+// ReportQuestionRequest defines model for ReportQuestionRequest.
+type ReportQuestionRequest struct {
+	// ReportReason Optional explanation for why the question is being reported
+	ReportReason *string `json:"report_reason,omitempty"`
+}
+
 // Role defines model for Role.
 type Role struct {
 	// CreatedAt When the role was created
@@ -753,6 +765,12 @@ type ServiceVersion struct {
 
 	// Version Version string (e.g., git tag or 'dev')
 	Version string `json:"version"`
+}
+
+// SignupStatusResponse defines model for SignupStatusResponse.
+type SignupStatusResponse struct {
+	// SignupsDisabled Whether user signups are currently disabled
+	SignupsDisabled bool `json:"signups_disabled"`
 }
 
 // Story defines model for Story.
@@ -1461,18 +1479,6 @@ type GetV1QuizQuestionParams struct {
 	ExcludeType *string `form:"exclude_type,omitempty" json:"exclude_type,omitempty"`
 }
 
-// PostV1QuizQuestionIdMarkKnownJSONBody defines parameters for PostV1QuizQuestionIdMarkKnown.
-type PostV1QuizQuestionIdMarkKnownJSONBody struct {
-	// ConfidenceLevel User's confidence level (1-5, optional)
-	ConfidenceLevel *int `json:"confidence_level,omitempty"`
-}
-
-// PostV1QuizQuestionIdReportJSONBody defines parameters for PostV1QuizQuestionIdReport.
-type PostV1QuizQuestionIdReportJSONBody struct {
-	// ReportReason Optional explanation for why the question is being reported
-	ReportReason *string `json:"report_reason,omitempty"`
-}
-
 // GetV1SettingsLevelsParams defines parameters for GetV1SettingsLevels.
 type GetV1SettingsLevelsParams struct {
 	// Language Language to get levels for (optional - returns all levels if not specified)
@@ -1540,10 +1546,10 @@ type PostV1QuizAnswerJSONRequestBody = AnswerRequest
 type PostV1QuizChatStreamJSONRequestBody = QuizChatRequest
 
 // PostV1QuizQuestionIdMarkKnownJSONRequestBody defines body for PostV1QuizQuestionIdMarkKnown for application/json ContentType.
-type PostV1QuizQuestionIdMarkKnownJSONRequestBody PostV1QuizQuestionIdMarkKnownJSONBody
+type PostV1QuizQuestionIdMarkKnownJSONRequestBody = MarkQuestionKnownRequest
 
 // PostV1QuizQuestionIdReportJSONRequestBody defines body for PostV1QuizQuestionIdReport for application/json ContentType.
-type PostV1QuizQuestionIdReportJSONRequestBody PostV1QuizQuestionIdReportJSONBody
+type PostV1QuizQuestionIdReportJSONRequestBody = ReportQuestionRequest
 
 // PutV1SettingsJSONRequestBody defines body for PutV1Settings for application/json ContentType.
 type PutV1SettingsJSONRequestBody = UserSettings

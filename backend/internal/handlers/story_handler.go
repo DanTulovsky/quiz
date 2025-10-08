@@ -278,6 +278,11 @@ func (h *StoryHandler) GenerateNextSection(c *gin.Context) {
 	ctx, span := observability.TraceHandlerFunction(c.Request.Context(), "generate_next_section")
 	defer observability.FinishSpan(span, nil)
 
+	// Create a timeout context for story generation to prevent hanging requests
+	// Use a more conservative timeout since Google API seems to timeout around 7-8 seconds
+	timeoutCtx, cancel := context.WithTimeout(ctx, 45*time.Second)
+	defer cancel()
+
 	userID, exists := GetUserIDFromSession(c)
 	if !exists {
 		StandardizeHTTPError(c, http.StatusUnauthorized, "Unauthorized", "User session not found or invalid")
@@ -292,7 +297,7 @@ func (h *StoryHandler) GenerateNextSection(c *gin.Context) {
 	}
 
 	// Get user for AI config
-	user, err := h.userService.GetUserByID(ctx, userID)
+	user, err := h.userService.GetUserByID(timeoutCtx, userID)
 	if err != nil {
 		h.logger.Error(ctx, "Failed to get user for generation", err, map[string]interface{}{
 			"user_id": uint(userID),
@@ -302,10 +307,10 @@ func (h *StoryHandler) GenerateNextSection(c *gin.Context) {
 	}
 
 	// Get user's AI configuration
-	userAIConfig := h.convertToServicesAIConfig(ctx, user)
+	userAIConfig := h.convertToServicesAIConfig(timeoutCtx, user)
 
 	// Generate the story section using the shared service method (user generation)
-	sectionWithQuestions, err := h.storyService.GenerateStorySection(ctx, uint(storyID), uint(userID), h.aiService, userAIConfig, models.GeneratorTypeUser)
+	sectionWithQuestions, err := h.storyService.GenerateStorySection(timeoutCtx, uint(storyID), uint(userID), h.aiService, userAIConfig, models.GeneratorTypeUser)
 	if err != nil {
 		// Check if this is a generation limit reached error (normal business case)
 		if errors.Is(err, contextutils.ErrGenerationLimitReached) {

@@ -275,8 +275,9 @@ func NewAIService(cfg *config.Config, logger *observability.Logger) *AIService {
 	varietyService := NewVarietyServiceWithLogger(cfg, logger)
 
 	// Create instrumented HTTP client with reasonable timeouts and explicit span options
+	// Use a more conservative timeout since Google API seems to timeout around 7-8 seconds
 	httpClient := &http.Client{
-		Timeout: config.AIRequestTimeout,
+		Timeout: 40 * time.Second, // Slightly less than our context timeout of 45 seconds
 		Transport: otelhttp.NewTransport(http.DefaultTransport,
 			otelhttp.WithSpanOptions(trace.WithSpanKind(trace.SpanKindClient)),
 		),

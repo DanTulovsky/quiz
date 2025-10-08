@@ -402,6 +402,28 @@ export interface ErrorResponse {
   details?: string;
 }
 
+export interface SignupStatusResponse {
+  /** Whether user signups are currently disabled */
+  signups_disabled: boolean;
+}
+
+export interface ReportQuestionRequest {
+  /**
+   * Optional explanation for why the question is being reported
+   * @maxLength 512
+   */
+  report_reason?: string;
+}
+
+export interface MarkQuestionKnownRequest {
+  /**
+   * User's confidence level (1-5, optional)
+   * @minimum 1
+   * @maximum 5
+   */
+  confidence_level?: number;
+}
+
 export interface GeneratingResponse {
   /** @maxLength 100 */
   status?: string;
@@ -1580,11 +1602,6 @@ export interface UserIdRequest {
   user_id: number;
 }
 
-export type GetV1AuthSignupStatus200 = {
-  /** Whether user signups are currently disabled */
-  signups_disabled: boolean;
-};
-
 export type GetV1AuthGoogleCallbackParams = {
 /**
  * Authorization code from Google
@@ -1615,23 +1632,6 @@ type?: string;
  * @pattern ^[a-zA-Z_]+(,[a-zA-Z_]+)*$
  */
 exclude_type?: string;
-};
-
-export type PostV1QuizQuestionIdReportBody = {
-  /**
-   * Optional explanation for why the question is being reported
-   * @maxLength 512
-   */
-  report_reason?: string;
-};
-
-export type PostV1QuizQuestionIdMarkKnownBody = {
-  /**
-   * User's confidence level (1-5, optional)
-   * @minimum 1
-   * @maximum 5
-   */
-  confidence_level?: number;
 };
 
 export type GetV1SettingsLevelsParams = {
@@ -2676,7 +2676,7 @@ export const getV1AuthSignupStatus = (
 ) => {
       
       
-      return customInstance<GetV1AuthSignupStatus200>(
+      return customInstance<SignupStatusResponse>(
       {url: `/v1/auth/signup/status`, method: 'GET', signal
     },
       options);
@@ -3274,7 +3274,7 @@ export function useGetV1QuizProgress<TData = Awaited<ReturnType<typeof getV1Quiz
  */
 export const postV1QuizQuestionIdReport = (
     id: number,
-    postV1QuizQuestionIdReportBody?: PostV1QuizQuestionIdReportBody,
+    reportQuestionRequest?: ReportQuestionRequest,
  options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
@@ -3282,7 +3282,7 @@ export const postV1QuizQuestionIdReport = (
       return customInstance<SuccessResponse>(
       {url: `/v1/quiz/question/${id}/report`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
-      data: postV1QuizQuestionIdReportBody, signal
+      data: reportQuestionRequest, signal
     },
       options);
     }
@@ -3290,8 +3290,8 @@ export const postV1QuizQuestionIdReport = (
 
 
 export const getPostV1QuizQuestionIdReportMutationOptions = <TError = ErrorResponse | ErrorResponse | ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1QuizQuestionIdReport>>, TError,{id: number;data: PostV1QuizQuestionIdReportBody}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof postV1QuizQuestionIdReport>>, TError,{id: number;data: PostV1QuizQuestionIdReportBody}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1QuizQuestionIdReport>>, TError,{id: number;data: ReportQuestionRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof postV1QuizQuestionIdReport>>, TError,{id: number;data: ReportQuestionRequest}, TContext> => {
 
 const mutationKey = ['postV1QuizQuestionIdReport'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -3303,7 +3303,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1QuizQuestionIdReport>>, {id: number;data: PostV1QuizQuestionIdReportBody}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1QuizQuestionIdReport>>, {id: number;data: ReportQuestionRequest}> = (props) => {
           const {id,data} = props ?? {};
 
           return  postV1QuizQuestionIdReport(id,data,requestOptions)
@@ -3315,18 +3315,18 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PostV1QuizQuestionIdReportMutationResult = NonNullable<Awaited<ReturnType<typeof postV1QuizQuestionIdReport>>>
-    export type PostV1QuizQuestionIdReportMutationBody = PostV1QuizQuestionIdReportBody
+    export type PostV1QuizQuestionIdReportMutationBody = ReportQuestionRequest
     export type PostV1QuizQuestionIdReportMutationError = ErrorResponse | ErrorResponse | ErrorResponse
 
     /**
  * @summary Report question
  */
 export const usePostV1QuizQuestionIdReport = <TError = ErrorResponse | ErrorResponse | ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1QuizQuestionIdReport>>, TError,{id: number;data: PostV1QuizQuestionIdReportBody}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1QuizQuestionIdReport>>, TError,{id: number;data: ReportQuestionRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1QuizQuestionIdReport>>,
         TError,
-        {id: number;data: PostV1QuizQuestionIdReportBody},
+        {id: number;data: ReportQuestionRequest},
         TContext
       > => {
 
@@ -3341,7 +3341,7 @@ export const usePostV1QuizQuestionIdReport = <TError = ErrorResponse | ErrorResp
  */
 export const postV1QuizQuestionIdMarkKnown = (
     id: number,
-    postV1QuizQuestionIdMarkKnownBody?: PostV1QuizQuestionIdMarkKnownBody,
+    markQuestionKnownRequest?: MarkQuestionKnownRequest,
  options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
@@ -3349,7 +3349,7 @@ export const postV1QuizQuestionIdMarkKnown = (
       return customInstance<SuccessResponse>(
       {url: `/v1/quiz/question/${id}/mark-known`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
-      data: postV1QuizQuestionIdMarkKnownBody, signal
+      data: markQuestionKnownRequest, signal
     },
       options);
     }
@@ -3357,8 +3357,8 @@ export const postV1QuizQuestionIdMarkKnown = (
 
 
 export const getPostV1QuizQuestionIdMarkKnownMutationOptions = <TError = ErrorResponse | ErrorResponse | ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1QuizQuestionIdMarkKnown>>, TError,{id: number;data: PostV1QuizQuestionIdMarkKnownBody}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof postV1QuizQuestionIdMarkKnown>>, TError,{id: number;data: PostV1QuizQuestionIdMarkKnownBody}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1QuizQuestionIdMarkKnown>>, TError,{id: number;data: MarkQuestionKnownRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof postV1QuizQuestionIdMarkKnown>>, TError,{id: number;data: MarkQuestionKnownRequest}, TContext> => {
 
 const mutationKey = ['postV1QuizQuestionIdMarkKnown'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -3370,7 +3370,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1QuizQuestionIdMarkKnown>>, {id: number;data: PostV1QuizQuestionIdMarkKnownBody}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1QuizQuestionIdMarkKnown>>, {id: number;data: MarkQuestionKnownRequest}> = (props) => {
           const {id,data} = props ?? {};
 
           return  postV1QuizQuestionIdMarkKnown(id,data,requestOptions)
@@ -3382,18 +3382,18 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PostV1QuizQuestionIdMarkKnownMutationResult = NonNullable<Awaited<ReturnType<typeof postV1QuizQuestionIdMarkKnown>>>
-    export type PostV1QuizQuestionIdMarkKnownMutationBody = PostV1QuizQuestionIdMarkKnownBody
+    export type PostV1QuizQuestionIdMarkKnownMutationBody = MarkQuestionKnownRequest
     export type PostV1QuizQuestionIdMarkKnownMutationError = ErrorResponse | ErrorResponse | ErrorResponse
 
     /**
  * @summary Mark question as known
  */
 export const usePostV1QuizQuestionIdMarkKnown = <TError = ErrorResponse | ErrorResponse | ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1QuizQuestionIdMarkKnown>>, TError,{id: number;data: PostV1QuizQuestionIdMarkKnownBody}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1QuizQuestionIdMarkKnown>>, TError,{id: number;data: MarkQuestionKnownRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1QuizQuestionIdMarkKnown>>,
         TError,
-        {id: number;data: PostV1QuizQuestionIdMarkKnownBody},
+        {id: number;data: MarkQuestionKnownRequest},
         TContext
       > => {
 
@@ -9768,7 +9768,7 @@ export const getGetV1AuthStatusResponseMock = (overrideResponse: Partial< AuthSt
 
 export const getPostV1AuthSignupResponseMock = (overrideResponse: Partial< SuccessResponse > = {}): SuccessResponse => ({success: faker.datatype.boolean(), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 500}}), undefined]), ...overrideResponse})
 
-export const getGetV1AuthSignupStatusResponseMock = (overrideResponse: Partial< GetV1AuthSignupStatus200 > = {}): GetV1AuthSignupStatus200 => ({signups_disabled: faker.datatype.boolean(), ...overrideResponse})
+export const getGetV1AuthSignupStatusResponseMock = (overrideResponse: Partial< SignupStatusResponse > = {}): SignupStatusResponse => ({signups_disabled: faker.datatype.boolean(), ...overrideResponse})
 
 export const getGetV1AuthGoogleLoginResponseMock = (overrideResponse: Partial< GoogleOAuthLoginResponse > = {}): GoogleOAuthLoginResponse => ({auth_url: faker.string.alpha({length: {min: 10, max: 20}}), ...overrideResponse})
 
@@ -10059,7 +10059,7 @@ export const getPostV1AuthSignupMockHandler = (overrideResponse?: SuccessRespons
   })
 }
 
-export const getGetV1AuthSignupStatusMockHandler = (overrideResponse?: GetV1AuthSignupStatus200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1AuthSignupStatus200> | GetV1AuthSignupStatus200)) => {
+export const getGetV1AuthSignupStatusMockHandler = (overrideResponse?: SignupStatusResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<SignupStatusResponse> | SignupStatusResponse)) => {
   return http.get('*/v1/auth/signup/status', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined

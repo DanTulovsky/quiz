@@ -794,8 +794,13 @@ func (w *Worker) generateStorySection(ctx context.Context, user models.User) err
 	)
 	defer observability.FinishSpan(span, nil)
 
+	// Create a timeout context for story generation to prevent hanging requests
+	// Use a more conservative timeout since Google API seems to timeout around 7-8 seconds
+	timeoutCtx, cancel := context.WithTimeout(ctx, 45*time.Second)
+	defer cancel()
+
 	// Get the user's current story
-	story, err := w.storyService.GetCurrentStory(ctx, uint(user.ID))
+	story, err := w.storyService.GetCurrentStory(timeoutCtx, uint(user.ID))
 	if err != nil {
 		return contextutils.WrapErrorf(err, "failed to get current story for user %d", user.ID)
 	}
@@ -805,10 +810,10 @@ func (w *Worker) generateStorySection(ctx context.Context, user models.User) err
 	}
 
 	// Get user's AI configuration
-	userConfig := w.getUserAIConfig(ctx, &user)
+	userConfig := w.getUserAIConfig(timeoutCtx, &user)
 
 	// Generate the story section using the shared service method (worker generation)
-	_, err = w.storyService.GenerateStorySection(ctx, story.ID, uint(user.ID), w.aiService, userConfig, models.GeneratorTypeWorker)
+	_, err = w.storyService.GenerateStorySection(timeoutCtx, story.ID, uint(user.ID), w.aiService, userConfig, models.GeneratorTypeWorker)
 	if err != nil {
 		// Check if this is a generation limit reached error (normal case for worker)
 		if errors.Is(err, contextutils.ErrGenerationLimitReached) {
