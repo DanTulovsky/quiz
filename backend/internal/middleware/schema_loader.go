@@ -374,10 +374,19 @@ func (sl *SchemaLoader) DetermineRequestSchemaFromPath(path, method string) stri
 		paths = convertInterfaceMapToStringMap(pathsInterface)
 	}
 
-	// Look for the specific path
+	// First, try exact match
 	pathInfo, exists := paths[path]
 	if !exists {
-		return ""
+		// If exact match fails, try pattern matching for path parameters
+		for swaggerPath := range paths {
+			if sl.pathMatchesPattern(path, swaggerPath) {
+				pathInfo = paths[swaggerPath]
+				break
+			}
+		}
+		if pathInfo == nil {
+			return ""
+		}
 	}
 
 	pathMap, ok := pathInfo.(map[string]interface{})
@@ -513,10 +522,19 @@ func (sl *SchemaLoader) DetermineSchemaFromPath(path, method string) string {
 		paths = convertInterfaceMapToStringMap(pathsInterface)
 	}
 
-	// Look for the specific path
+	// First, try exact match
 	pathInfo, exists := paths[path]
 	if !exists {
-		return ""
+		// If exact match fails, try pattern matching for path parameters
+		for swaggerPath := range paths {
+			if sl.pathMatchesPattern(path, swaggerPath) {
+				pathInfo = paths[swaggerPath]
+				break
+			}
+		}
+		if pathInfo == nil {
+			return ""
+		}
 	}
 
 	pathMap, ok := pathInfo.(map[string]interface{})
