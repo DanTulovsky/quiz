@@ -346,10 +346,11 @@ type StorySectionLengthsConfig struct {
 
 // StoryConfig represents story mode configuration
 type StoryConfig struct {
-	MaxArchivedPerUser  int                       `json:"max_archived_per_user" yaml:"max_archived_per_user"`
-	GenerationEnabled   bool                      `json:"generation_enabled" yaml:"generation_enabled"`
-	SectionLengths      StorySectionLengthsConfig `json:"section_lengths" yaml:"section_lengths"`
-	QuestionsPerSection int                       `json:"questions_per_section" yaml:"questions_per_section"`
+	MaxArchivedPerUser        int                       `json:"max_archived_per_user" yaml:"max_archived_per_user"`
+	GenerationEnabled         bool                      `json:"generation_enabled" yaml:"generation_enabled"`
+	SectionLengths            StorySectionLengthsConfig `json:"section_lengths" yaml:"section_lengths"`
+	QuestionsPerSection       int                       `json:"questions_per_section" yaml:"questions_per_section"`
+	MaxExtraGenerationsPerDay int                       `json:"max_extra_generations_per_day" yaml:"max_extra_generations_per_day"`
 }
 
 // NewConfig loads configuration from YAML file first, then overrides with environment variables

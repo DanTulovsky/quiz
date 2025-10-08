@@ -120,6 +120,7 @@ database:
 story:
   max_archived_per_user: 20
   generation_enabled: true
+  max_extra_generations_per_day: 1
 
   # Section length defaults by proficiency level (in words)
   # These levels are language-agnostic and can be mapped to any framework

@@ -38,7 +38,7 @@ type StoryServiceInterface interface {
 	CreateSectionQuestions(ctx context.Context, sectionID uint, questions []models.StorySectionQuestionData) error
 	GetRandomQuestions(ctx context.Context, sectionID uint, count int) ([]models.StorySectionQuestion, error)
 	CanGenerateSection(ctx context.Context, storyID uint) (bool, error)
-	UpdateLastGenerationTime(ctx context.Context, storyID uint, isUserGeneration bool) error
+	UpdateLastGenerationTime(ctx context.Context, storyID uint) error
 	GetSectionLengthTarget(level string, lengthPref *models.SectionLength) int
 	GetSectionLengthTargetWithLanguage(language, level string, lengthPref *models.SectionLength) int
 	SanitizeInput(input string) string
@@ -899,28 +899,24 @@ func (s *StoryService) CanGenerateSection(ctx context.Context, storyID uint) (bo
 		return false, contextutils.WrapErrorf(err, "failed to check existing sections today")
 	}
 
-	// If we've already reached the daily limit, block all generation
-	if extraGenerationsToday >= 2 {
+	// If no sections exist today, allow worker generation
+	if sectionCount == 0 {
+		return true, nil
+	}
+
+	// If sections exist today, check if we've reached the limit
+	// The limit is 1 worker generation + MaxExtraGenerationsPerDay user generations
+	maxTotal := s.config.Story.MaxExtraGenerationsPerDay + 1
+	if extraGenerationsToday >= maxTotal {
 		return false, nil
 	}
 
-	// If no sections exist today and no worker generation has happened, allow worker generation
-	if sectionCount == 0 && extraGenerationsToday == 0 {
-		return true, nil
-	}
-
-	// If sections exist today or worker has already generated, only allow user generation if they haven't used their extra generation yet
-	// Allow 1 extra user generation per day beyond the worker's daily section
-	if extraGenerationsToday < 1 {
-		return true, nil
-	}
-
-	// Block all generation if user has already generated extra sections today
-	return false, nil
+	// Allow generation if we haven't reached the limit
+	return true, nil
 }
 
 // UpdateLastGenerationTime sets the last section generation time for a story
-func (s *StoryService) UpdateLastGenerationTime(ctx context.Context, storyID uint, isUserGeneration bool) error {
+func (s *StoryService) UpdateLastGenerationTime(ctx context.Context, storyID uint) error {
 	// Check if this is an extra generation (second generation today)
 	query := `
 		SELECT last_section_generated_at, extra_generations_today
@@ -936,21 +932,22 @@ func (s *StoryService) UpdateLastGenerationTime(ctx context.Context, storyID uin
 	}
 
 	now := time.Now()
-	today := now.Truncate(24 * time.Hour)
 
 	// Check if we already generated today and update accordingly
 	if lastGen != nil {
 		lastGenTime := lastGen.Truncate(24 * time.Hour)
+		today := now.Truncate(24 * time.Hour)
 		if lastGenTime.Equal(today) {
-			// If this is a user generation and we haven't reached the limit, increment the counter
-			if isUserGeneration && extraGenerationsToday < 2 {
+			// If we haven't reached the limit, increment the counter
+			maxTotal := s.config.Story.MaxExtraGenerationsPerDay + 1
+			if extraGenerationsToday < maxTotal {
 				updateQuery := "UPDATE stories SET extra_generations_today = extra_generations_today + 1, last_section_generated_at = $1, updated_at = NOW() WHERE id = $2"
 				_, err = s.db.ExecContext(ctx, updateQuery, now, storyID)
 				if err != nil {
-					return contextutils.WrapErrorf(err, "failed to update generation time for extra generation")
+					return contextutils.WrapErrorf(err, "failed to update generation time")
 				}
 			} else {
-				// Worker generation or user generation limit reached - just update timestamp
+				// Limit reached - just update timestamp
 				updateQuery := "UPDATE stories SET last_section_generated_at = $1, updated_at = NOW() WHERE id = $2"
 				_, err = s.db.ExecContext(ctx, updateQuery, now, storyID)
 				if err != nil {
@@ -1232,7 +1229,7 @@ func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID
 	}
 
 	// Update the story's last generation time
-	if err := s.UpdateLastGenerationTime(ctx, storyID, isUserGeneration); err != nil {
+	if err := s.UpdateLastGenerationTime(ctx, storyID); err != nil {
 		s.logger.Warn(ctx, "Failed to update story generation time",
 			map[string]interface{}{
 				"story_id": storyID,
