@@ -417,7 +417,7 @@ export const useStory = (): UseStoryReturn => {
         queryKey: ['sectionWithQuestions', currentSection?.id],
       });
       // Go to the new section
-      if (currentStory) {
+      if (currentStory && currentStory.sections) {
         setCurrentSectionIndex(currentStory.sections.length);
       }
       showNotificationWithClean({
@@ -636,9 +636,13 @@ export const useStory = (): UseStoryReturn => {
 
       if (currentStoryError instanceof Error) {
         errorMessage = currentStoryError.message;
-      } else if (typeof currentStoryError === 'object' && currentStoryError !== null) {
+      } else if (
+        typeof currentStoryError === 'object' &&
+        currentStoryError !== null
+      ) {
         // Check if error has response structure (axios-like error)
-        const hasResponse = 'response' in currentStoryError || 'message' in currentStoryError;
+        const hasResponse =
+          'response' in currentStoryError || 'message' in currentStoryError;
         if (hasResponse) {
           const axiosError = currentStoryError as {
             response?: { data?: { error?: string }; status?: number };
@@ -647,9 +651,14 @@ export const useStory = (): UseStoryReturn => {
 
           if (axiosError.response?.data?.error) {
             errorMessage = axiosError.response.data.error;
-          } else if (axiosError.response?.data && typeof axiosError.response.data === 'object' && 'error' in axiosError.response.data) {
+          } else if (
+            axiosError.response?.data &&
+            typeof axiosError.response.data === 'object' &&
+            'error' in axiosError.response.data
+          ) {
             // Handle case where response.data is the error object itself
-            errorMessage = (axiosError.response.data as { error: string }).error;
+            errorMessage = (axiosError.response.data as { error: string })
+              .error;
           } else if (axiosError.message) {
             errorMessage = axiosError.message;
           }
@@ -669,7 +678,11 @@ export const useStory = (): UseStoryReturn => {
 
   // Reset section index when story changes - start at last section
   useEffect(() => {
-    if (currentStory && currentStory.sections.length > 0) {
+    if (
+      currentStory &&
+      currentStory.sections &&
+      currentStory.sections.length > 0
+    ) {
       setCurrentSectionIndex(currentStory.sections.length - 1);
     }
   }, [currentStory?.id]);

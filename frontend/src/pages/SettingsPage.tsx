@@ -1213,20 +1213,35 @@ const SettingsPage: React.FC = () => {
                 <Title order={2}>Data Management</Title>
               </Group>
               <Text size='sm' c='dimmed'>
-                Dangerous actions: deleting stories or resetting your account will remove your generated stories, questions, and progress. These actions cannot be undone.
+                Dangerous actions: deleting stories or resetting your account
+                will remove your generated stories, questions, and progress.
+                These actions cannot be undone.
               </Text>
               <Group>
                 <Button
                   color='red'
                   variant='outline'
                   onClick={async () => {
-                    if (!confirm('Are you sure you want to delete ALL your stories? This cannot be undone.')) return;
+                    if (
+                      !confirm(
+                        'Are you sure you want to delete ALL your stories? This cannot be undone.'
+                      )
+                    )
+                      return;
                     try {
                       await clearAllStories();
-                      showNotificationWithClean({ title: 'Success', message: 'All stories deleted', color: 'green' });
+                      showNotificationWithClean({
+                        title: 'Success',
+                        message: 'All stories deleted',
+                        color: 'green',
+                      });
                       await refreshUser();
                     } catch (e) {
-                      showNotificationWithClean({ title: 'Error', message: String(e), color: 'red' });
+                      showNotificationWithClean({
+                        title: 'Error',
+                        message: String(e),
+                        color: 'red',
+                      });
                     }
                   }}
                 >
@@ -1235,13 +1250,26 @@ const SettingsPage: React.FC = () => {
                 <Button
                   color='red'
                   onClick={async () => {
-                    if (!confirm('Reset your account? This will delete your stories, questions, and progress. This cannot be undone.')) return;
+                    if (
+                      !confirm(
+                        'Reset your account? This will delete your stories, questions, and progress. This cannot be undone.'
+                      )
+                    )
+                      return;
                     try {
                       await resetAccount();
-                      showNotificationWithClean({ title: 'Success', message: 'Account reset', color: 'green' });
+                      showNotificationWithClean({
+                        title: 'Success',
+                        message: 'Account reset',
+                        color: 'green',
+                      });
                       await refreshUser();
                     } catch (e) {
-                      showNotificationWithClean({ title: 'Error', message: String(e), color: 'red' });
+                      showNotificationWithClean({
+                        title: 'Error',
+                        message: String(e),
+                        color: 'red',
+                      });
                     }
                   }}
                 >
