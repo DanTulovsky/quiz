@@ -26,7 +26,13 @@ import { useStory } from '../../hooks/useStory';
 import CreateStoryForm from '../../components/CreateStoryForm';
 import ArchivedStoriesView from '../../components/ArchivedStoriesView';
 import StoryGenerationErrorModal from '../../components/StoryGenerationErrorModal';
-import { CreateStoryRequest } from '../../api/storyApi';
+import {
+  CreateStoryRequest,
+  StoryWithSections,
+  StorySection,
+  StorySectionQuestion,
+  StorySectionWithQuestions,
+} from '../../api/storyApi';
 
 const MobileStoryPage: React.FC = () => {
   const {
@@ -316,8 +322,8 @@ const MobileStoryPage: React.FC = () => {
 };
 
 interface MobileStorySectionViewProps {
-  section: any;
-  sectionWithQuestions: any;
+  section: StorySection | null;
+  sectionWithQuestions: StorySectionWithQuestions | null;
   sectionIndex: number;
   totalSections: number;
   canGenerateToday: boolean;
@@ -446,7 +452,7 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
           </Title>
           <Stack gap='sm'>
             {sectionWithQuestions.questions.map(
-              (question: any, index: number) => (
+              (question: StorySectionQuestion, index: number) => (
                 <MobileStoryQuestionCard
                   key={question.id || index}
                   question={question}
@@ -493,7 +499,7 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
 
 // Simplified question component for mobile
 interface MobileStoryQuestionCardProps {
-  question: any;
+  question: StorySectionQuestion;
 }
 
 const MobileStoryQuestionCard: React.FC<MobileStoryQuestionCardProps> = ({
@@ -520,7 +526,7 @@ const MobileStoryQuestionCard: React.FC<MobileStoryQuestionCardProps> = ({
       </Text>
 
       <Stack gap='xs'>
-        {question.options.map((option: string, index: number) => (
+        {question.options?.map((option: string, index: number) => (
           <div key={index}>
             <input
               type='radio'
@@ -581,7 +587,7 @@ const MobileStoryQuestionCard: React.FC<MobileStoryQuestionCardProps> = ({
 };
 
 interface MobileStoryReadingViewProps {
-  story: any;
+  story: StoryWithSections | null;
   isGenerating?: boolean;
 }
 
@@ -599,7 +605,7 @@ const MobileStoryReadingView: React.FC<MobileStoryReadingViewProps> = ({
     );
   }
 
-  if (story.sections.length === 0) {
+  if (!story.sections || story.sections.length === 0) {
     if (isGenerating) {
       return (
         <Paper p='xl' radius='md' style={{ textAlign: 'center' }}>
@@ -634,9 +640,11 @@ const MobileStoryReadingView: React.FC<MobileStoryReadingViewProps> = ({
             <Title order={4}>{story.title}</Title>
             <Group gap='xs' mt='xs'>
               <Badge variant='light' color='blue'>
-                {story.language.toUpperCase()}
+                {story.language?.toUpperCase()}
               </Badge>
-              <Badge variant='outline'>{story.sections.length} sections</Badge>
+              <Badge variant='outline'>
+                {story.sections?.length || 0} sections
+              </Badge>
               {story.status && (
                 <Badge
                   variant='outline'
@@ -655,7 +663,7 @@ const MobileStoryReadingView: React.FC<MobileStoryReadingViewProps> = ({
         <ScrollArea style={{ maxHeight: '60vh' }}>
           <Stack gap='lg'>
             {/* Story Sections */}
-            {story.sections.map((section: any, index: number) => (
+            {story.sections?.map((section: StorySection, index: number) => (
               <div key={section.id || index}>
                 <Divider my='md' />
                 <div
@@ -664,7 +672,9 @@ const MobileStoryReadingView: React.FC<MobileStoryReadingViewProps> = ({
                     fontSize: '16px',
                     whiteSpace: 'pre-wrap',
                     marginBottom:
-                      index < story.sections.length - 1 ? '1.5rem' : '1rem',
+                      index < (story.sections?.length || 0) - 1
+                        ? '1.5rem'
+                        : '1rem',
                   }}
                 >
                   {section.content}
