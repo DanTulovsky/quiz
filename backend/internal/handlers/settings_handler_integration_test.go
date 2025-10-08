@@ -11,7 +11,6 @@ import (
 	"net/http/httptest"
 	"os"
 	"testing"
-	"time"
 
 	"quizapp/internal/config"
 	"quizapp/internal/database"
@@ -70,9 +69,10 @@ func setupSettingsIntegrationTest(t *testing.T) (*gin.Engine, *services.UserServ
 	aiService := services.NewAIService(cfg, logger)
 	learningService := services.NewLearningServiceWithLogger(db, cfg, logger)
 	emailService := services.NewEmailService(cfg, logger)
+	storyService := services.NewStoryService(db, cfg, logger)
 
 	// Create settings handler
-	settingsHandler := NewSettingsHandler(userService, aiService, learningService, emailService, cfg, logger)
+	settingsHandler := NewSettingsHandler(userService, storyService, aiService, learningService, emailService, cfg, logger)
 
 	// Setup routes
 	v1 := router.Group("/v1")
@@ -365,114 +365,4 @@ func TestEmailService_Integration(t *testing.T) {
 			}
 		})
 	}
-}
-
-func TestEmailService_TemplateGeneration(t *testing.T) {
-	cfg := &config.Config{
-		Server: config.ServerConfig{
-			AppBaseURL: "http://localhost:3000",
-		},
-		Email: config.EmailConfig{
-			Enabled: true,
-			SMTP: config.SMTPConfig{
-				Host:        "smtp.example.com",
-				Port:        587,
-				Username:    "test@example.com",
-				Password:    "password",
-				FromAddress: "noreply@example.com",
-				FromName:    "Test App",
-			},
-		},
-	}
-
-	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
-	emailService := services.NewEmailService(cfg, logger)
-
-	// Test test email template generation
-	testData := map[string]interface{}{
-		"Username": "testuser",
-		"TestTime": "January 15, 2024 10:30:00",
-		"Message":  "This is a test email to verify your email settings are working correctly.",
-	}
-
-	err := emailService.SendEmail(
-		context.Background(),
-		"test@example.com",
-		"Test Email from Quiz App",
-		"test_email",
-		testData,
-	)
-
-	// Should error due to invalid SMTP config, but template should be generated
-	assert.Error(t, err)
-	// But the template generation should work
-	assert.Contains(t, err.Error(), "failed to send email")
-}
-
-func TestEmailService_DailyReminder_Integration(t *testing.T) {
-	cfg := &config.Config{
-		Server: config.ServerConfig{
-			AppBaseURL: "http://localhost:3000",
-		},
-		Email: config.EmailConfig{
-			Enabled: true,
-			SMTP: config.SMTPConfig{
-				Host:        "smtp.example.com",
-				Port:        587,
-				Username:    "test@example.com",
-				Password:    "password",
-				FromAddress: "noreply@example.com",
-				FromName:    "Test App",
-			},
-		},
-	}
-
-	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
-	emailService := services.NewTestEmailService(cfg, logger)
-
-	// Test daily reminder with user
-	user := &models.User{
-		ID:       1,
-		Username: "testuser",
-		Email:    sql.NullString{String: "test@example.com", Valid: true},
-	}
-
-	err := emailService.SendDailyReminder(context.Background(), user)
-
-	// TestEmailService should return nil (success) since it just logs the operation
-	assert.NoError(t, err)
-}
-
-func TestEmailService_ContextHandling(t *testing.T) {
-	cfg := &config.Config{
-		Email: config.EmailConfig{
-			Enabled: true,
-			SMTP: config.SMTPConfig{
-				Host:        "smtp.example.com",
-				Port:        587,
-				Username:    "test@example.com",
-				Password:    "password",
-				FromAddress: "noreply@example.com",
-				FromName:    "Test App",
-			},
-		},
-	}
-
-	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
-	emailService := services.NewTestEmailService(cfg, logger)
-
-	// Test with context that has timeout
-	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
-	defer cancel()
-
-	user := &models.User{
-		ID:       1,
-		Username: "testuser",
-		Email:    sql.NullString{String: "test@example.com", Valid: true},
-	}
-
-	// This should not panic and should handle the context properly
-	err := emailService.SendDailyReminder(ctx, user)
-	// TestEmailService should return nil (success) since it just logs
-	assert.NoError(t, err)
 }

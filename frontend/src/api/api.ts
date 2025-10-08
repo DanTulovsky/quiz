@@ -4353,6 +4353,134 @@ export const usePostV1AdminBackendUserz = <TError = ErrorResponse | ErrorRespons
     }
     
 /**
+ * Permanently deletes all stories, sections, and story-generated questions belonging to the authenticated user. This action is irreversible.
+ * @summary Delete all stories for the authenticated user
+ */
+export const postV1SettingsClearStories = (
+    
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<SuccessResponse>(
+      {url: `/v1/settings/clear-stories`, method: 'POST', signal
+    },
+      options);
+    }
+  
+
+
+export const getPostV1SettingsClearStoriesMutationOptions = <TError = ErrorResponse | ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsClearStories>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsClearStories>>, TError,void, TContext> => {
+
+const mutationKey = ['postV1SettingsClearStories'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1SettingsClearStories>>, void> = () => {
+          
+
+          return  postV1SettingsClearStories(requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostV1SettingsClearStoriesMutationResult = NonNullable<Awaited<ReturnType<typeof postV1SettingsClearStories>>>
+    
+    export type PostV1SettingsClearStoriesMutationError = ErrorResponse | ErrorResponse
+
+    /**
+ * @summary Delete all stories for the authenticated user
+ */
+export const usePostV1SettingsClearStories = <TError = ErrorResponse | ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsClearStories>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postV1SettingsClearStories>>,
+        TError,
+        void,
+        TContext
+      > => {
+
+      const mutationOptions = getPostV1SettingsClearStoriesMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * Clears the authenticated user's activity (questions, responses, performance metrics) and deletes all stories. This is irreversible.
+ * @summary Reset the authenticated user's account
+ */
+export const postV1SettingsResetAccount = (
+    
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<SuccessResponse>(
+      {url: `/v1/settings/reset-account`, method: 'POST', signal
+    },
+      options);
+    }
+  
+
+
+export const getPostV1SettingsResetAccountMutationOptions = <TError = ErrorResponse | ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsResetAccount>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsResetAccount>>, TError,void, TContext> => {
+
+const mutationKey = ['postV1SettingsResetAccount'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1SettingsResetAccount>>, void> = () => {
+          
+
+          return  postV1SettingsResetAccount(requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostV1SettingsResetAccountMutationResult = NonNullable<Awaited<ReturnType<typeof postV1SettingsResetAccount>>>
+    
+    export type PostV1SettingsResetAccountMutationError = ErrorResponse | ErrorResponse
+
+    /**
+ * @summary Reset the authenticated user's account
+ */
+export const usePostV1SettingsResetAccount = <TError = ErrorResponse | ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsResetAccount>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postV1SettingsResetAccount>>,
+        TError,
+        void,
+        TContext
+      > => {
+
+      const mutationOptions = getPostV1SettingsResetAccountMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
  * Get paginated users with search and filtering options (admin only)
  * @summary Get paginated users with filtering
  */
@@ -9688,6 +9816,10 @@ export const getGetV1AdminBackendUserzResponseMock = (overrideResponse: Partial<
 
 export const getPostV1AdminBackendUserzResponseMock = (overrideResponse: Partial< PostV1AdminBackendUserz201 > = {}): PostV1AdminBackendUserz201 => ({message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), user: faker.helpers.arrayElement([{id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), username: faker.helpers.arrayElement([faker.helpers.fromRegExp('^[a-zA-Z0-9_@.+-]+$'), undefined]), email: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), timezone: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), last_active: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), preferred_language: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), current_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ai_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), is_paused: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), updated_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, undefined]), ...overrideResponse})
 
+export const getPostV1SettingsClearStoriesResponseMock = (overrideResponse: Partial< SuccessResponse > = {}): SuccessResponse => ({success: faker.datatype.boolean(), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 500}}), undefined]), ...overrideResponse})
+
+export const getPostV1SettingsResetAccountResponseMock = (overrideResponse: Partial< SuccessResponse > = {}): SuccessResponse => ({success: faker.datatype.boolean(), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 500}}), undefined]), ...overrideResponse})
+
 export const getGetV1AdminBackendUserzPaginatedResponseMock = (overrideResponse: Partial< GetV1AdminBackendUserzPaginated200 > = {}): GetV1AdminBackendUserzPaginated200 => ({users: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({user: faker.helpers.arrayElement([{id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), username: faker.helpers.arrayElement([faker.helpers.fromRegExp('^[a-zA-Z0-9_@.+-]+$'), undefined]), email: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), timezone: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), last_active: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), preferred_language: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), current_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ai_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), is_paused: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), updated_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, undefined]), progress: faker.helpers.arrayElement([{current_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), suggested_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), accuracy_rate: faker.helpers.arrayElement([faker.number.float({min: 0, max: 1, fractionDigits: 2}), undefined]), total_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined, multipleOf: undefined}), undefined]), correct_answers: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined, multipleOf: undefined}), undefined]), performance_by_topic: faker.helpers.arrayElement([{
         [faker.string.alphanumeric(5)]: {correct_attempts: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined, multipleOf: undefined}), undefined]), total_attempts: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined, multipleOf: undefined}), undefined]), average_response_time_ms: faker.helpers.arrayElement([faker.number.float({min: 0, max: undefined, fractionDigits: 2}), undefined]), last_updated: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}
       }, undefined]), weak_areas: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 50 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 10, max: 20}}))), undefined]), recent_activity: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 100 }) }, (_, i) => i + 1).map(() => ({question_id: faker.helpers.arrayElement([faker.number.int({min: 1, max: undefined, multipleOf: undefined}), undefined]), is_correct: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined]), worker_status: faker.helpers.arrayElement([{status: faker.helpers.arrayElement([faker.helpers.arrayElement(['idle','busy','error'] as const), undefined]), last_heartbeat: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), error_message: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined])}, undefined]), learning_preferences: faker.helpers.arrayElement([{focus_on_weak_areas: faker.datatype.boolean(), fresh_question_ratio: faker.number.float({min: 0, max: 1, fractionDigits: 2}), known_question_penalty: faker.number.float({min: 0, max: 1, fractionDigits: 2}), review_interval_days: faker.number.int({min: 1, max: 60, multipleOf: undefined}), weak_area_boost: faker.number.float({min: 1, max: 5, fractionDigits: 2}), daily_reminder_enabled: faker.datatype.boolean(), tts_voice: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), daily_goal: faker.helpers.arrayElement([faker.number.int({min: 1, max: undefined, multipleOf: undefined}), undefined])}, undefined]), priority_insights: faker.helpers.arrayElement([{total_questions_in_queue: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined, multipleOf: undefined}), undefined]), high_priority_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined, multipleOf: undefined}), undefined]), medium_priority_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined, multipleOf: undefined}), undefined]), low_priority_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined, multipleOf: undefined}), undefined])}, undefined]), generation_focus: faker.helpers.arrayElement([{current_generation_model: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), last_generation_time: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), generation_rate: faker.helpers.arrayElement([faker.number.float({min: 0, max: undefined, fractionDigits: 2}), undefined])}, undefined]), high_priority_topics: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 20 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 10, max: 20}}))), undefined]), gap_analysis: faker.helpers.arrayElement([{}, undefined]), priority_distribution: faker.helpers.arrayElement([{
@@ -10174,6 +10306,30 @@ export const getPostV1AdminBackendUserzMockHandler = (overrideResponse?: PostV1A
     ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
     : getPostV1AdminBackendUserzResponseMock()),
       { status: 201,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
+export const getPostV1SettingsClearStoriesMockHandler = (overrideResponse?: SuccessResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<SuccessResponse> | SuccessResponse)) => {
+  return http.post('*/v1/settings/clear-stories', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getPostV1SettingsClearStoriesResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
+export const getPostV1SettingsResetAccountMockHandler = (overrideResponse?: SuccessResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<SuccessResponse> | SuccessResponse)) => {
+  return http.post('*/v1/settings/reset-account', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getPostV1SettingsResetAccountResponseMock()),
+      { status: 200,
         headers: { 'Content-Type': 'application/json' }
       })
   })
@@ -11013,6 +11169,8 @@ export const getQuizApplicationAPIMock = () => [
   getGetV1AdminBackendMockHandler(),
   getGetV1AdminBackendUserzMockHandler(),
   getPostV1AdminBackendUserzMockHandler(),
+  getPostV1SettingsClearStoriesMockHandler(),
+  getPostV1SettingsResetAccountMockHandler(),
   getGetV1AdminBackendUserzPaginatedMockHandler(),
   getPutV1AdminBackendUserzIdMockHandler(),
   getDeleteV1AdminBackendUserzIdMockHandler(),

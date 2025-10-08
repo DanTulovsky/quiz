@@ -164,6 +164,11 @@ func (m *mockStoryService) SanitizeInput(input string) string {
 	return args.String(0)
 }
 
+func (m *mockStoryService) DeleteAllStoriesForUser(ctx context.Context, userID uint) error {
+	args := m.Called(ctx, userID)
+	return args.Error(0)
+}
+
 func (m *mockLearningService) RecordAnswerWithPriorityReturningID(ctx context.Context, userID, questionID, answerIndex int, isCorrect bool, responseTime int) (int, error) {
 	args := m.Called(ctx, userID, questionID, answerIndex, isCorrect, responseTime)
 	if args.Get(0) == nil {

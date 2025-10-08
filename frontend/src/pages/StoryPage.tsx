@@ -24,6 +24,7 @@ import ArchivedStoriesView from '../components/ArchivedStoriesView';
 import StorySectionView from '../components/StorySectionView';
 import StoryReadingView from '../components/StoryReadingView';
 import StoryGenerationErrorModal from '../components/StoryGenerationErrorModal';
+import { CreateStoryRequest } from '../api/storyApi';
 
 const StoryPage: React.FC = () => {
   const {
@@ -58,17 +59,7 @@ const StoryPage: React.FC = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [isCreatingStory, setIsCreatingStory] = useState(false);
 
-  const handleCreateStory = async (data: {
-    title: string;
-    subject?: string;
-    author_style?: string;
-    time_period?: string;
-    genre?: string;
-    tone?: string;
-    character_names?: string;
-    custom_instructions?: string;
-    section_length_override?: string | null;
-  }) => {
+  const handleCreateStory = async (data: CreateStoryRequest) => {
     setIsCreatingStory(true);
     try {
       await createStory(data);
@@ -298,6 +289,7 @@ const StoryPage: React.FC = () => {
         onClose={() => setShowCreateModal(false)}
         title='Create New Story'
         size='lg'
+        centered
       >
         <CreateStoryForm
           onSubmit={handleCreateStory}

@@ -25,6 +25,7 @@ type StoryServiceInterface interface {
 	CompleteStory(ctx context.Context, storyID, userID uint) error
 	SetCurrentStory(ctx context.Context, storyID, userID uint) error
 	DeleteStory(ctx context.Context, storyID, userID uint) error
+		DeleteAllStoriesForUser(ctx context.Context, userID uint) error
 	FixCurrentStoryConstraint(ctx context.Context) error
 	GetStorySections(ctx context.Context, storyID uint) ([]models.StorySection, error)
 	GetSection(ctx context.Context, sectionID, userID uint) (*models.StorySectionWithQuestions, error)
@@ -569,6 +570,40 @@ func (s *StoryService) DeleteStory(ctx context.Context, storyID, userID uint) er
 	}
 
 	return tx.Commit()
+}
+
+// DeleteAllStoriesForUser deletes all stories (and their sections/questions) for a given user
+func (s *StoryService) DeleteAllStoriesForUser(ctx context.Context, userID uint) error {
+    tx, err := s.db.BeginTx(ctx, nil)
+    if err != nil {
+        return contextutils.WrapErrorf(err, "failed to begin transaction")
+    }
+    defer func() { _ = tx.Rollback() }()
+
+    // Delete questions for all sections belonging to stories of this user
+    q1 := `DELETE FROM story_section_questions WHERE section_id IN (SELECT id FROM story_sections WHERE story_id IN (SELECT id FROM stories WHERE user_id = $1))`
+    if _, err := tx.ExecContext(ctx, q1, userID); err != nil {
+        return contextutils.WrapErrorf(err, "failed to delete story questions for user %d", userID)
+    }
+
+    // Delete sections for all stories belonging to this user
+    q2 := `DELETE FROM story_sections WHERE story_id IN (SELECT id FROM stories WHERE user_id = $1)`
+    if _, err := tx.ExecContext(ctx, q2, userID); err != nil {
+        return contextutils.WrapErrorf(err, "failed to delete story sections for user %d", userID)
+    }
+
+    // Finally delete stories
+    q3 := `DELETE FROM stories WHERE user_id = $1`
+    if _, err := tx.ExecContext(ctx, q3, userID); err != nil {
+        return contextutils.WrapErrorf(err, "failed to delete stories for user %d", userID)
+    }
+
+    if err := tx.Commit(); err != nil {
+        return contextutils.WrapErrorf(err, "failed to commit delete all stories transaction for user %d", userID)
+    }
+
+    s.logger.Info(context.Background(), "Deleted all stories for user", map[string]interface{}{"user_id": userID})
+    return nil
 }
 
 // GetStorySections retrieves all sections for a story
