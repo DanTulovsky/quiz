@@ -1157,6 +1157,7 @@ func (s *AIService) callOpenAI(ctx context.Context, userConfig *models.UserAICon
 	}
 
 	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("User-Agent", "quizapp/1.0")
 	if apiKey != "" {
 		req.Header.Set("Authorization", "Bearer "+apiKey)
 		s.logger.Debug(ctx, "Using API key authentication", map[string]interface{}{
@@ -1341,6 +1342,7 @@ func (s *AIService) callOpenAIStream(ctx context.Context, userConfig *models.Use
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "text/event-stream")
 	req.Header.Set("Cache-Control", "no-cache")
+	req.Header.Set("User-Agent", "quizapp/1.0")
 	if apiKey != "" {
 		req.Header.Set("Authorization", "Bearer "+apiKey)
 		s.logger.Info(ctx, "AI Service Using API key authentication", map[string]interface{}{

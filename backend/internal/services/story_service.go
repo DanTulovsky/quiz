@@ -1217,6 +1217,14 @@ func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID
 	// Generate the story section using AI
 	sectionContent, err := aiService.GenerateStorySection(ctx, userAIConfig, genReq)
 	if err != nil {
+		// Check if this is a context cancellation error
+		if ctx.Err() == context.DeadlineExceeded {
+			s.logger.Error(ctx, "Story section generation timed out", err, map[string]interface{}{
+				"story_id": storyID,
+				"user_id":  userID,
+			})
+			return nil, contextutils.WrapErrorf(contextutils.ErrTimeout, "story generation timed out: %w", err)
+		}
 		return nil, contextutils.WrapErrorf(err, "failed to generate story section")
 	}
 
@@ -1231,7 +1239,14 @@ func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID
 	var committed bool
 	defer func() {
 		if !committed {
-			_ = tx.Rollback()
+			if rollbackErr := tx.Rollback(); rollbackErr != nil {
+				s.logger.Warn(ctx, "Failed to rollback transaction",
+					map[string]interface{}{
+						"story_id": storyID,
+						"user_id":  userID,
+						"error":    rollbackErr.Error(),
+					})
+			}
 		}
 	}()
 
@@ -1274,13 +1289,24 @@ func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID
 	var questions []*models.StorySectionQuestionData
 	questions, err = aiService.GenerateStoryQuestions(ctx, userAIConfig, questionsReq)
 	if err != nil {
-		s.logger.Warn(ctx, "Failed to generate questions for story section",
-			map[string]interface{}{
-				"section_id": section.ID,
-				"story_id":   storyID,
-				"user_id":    userID,
-				"error":      err.Error(),
-			})
+		// Check if this is a context cancellation error
+		if ctx.Err() == context.DeadlineExceeded {
+			s.logger.Warn(ctx, "Story questions generation timed out, continuing without questions",
+				map[string]interface{}{
+					"section_id": section.ID,
+					"story_id":   storyID,
+					"user_id":    userID,
+					"error":      err.Error(),
+				})
+		} else {
+			s.logger.Warn(ctx, "Failed to generate questions for story section",
+				map[string]interface{}{
+					"section_id": section.ID,
+					"story_id":   storyID,
+					"user_id":    userID,
+					"error":      err.Error(),
+				})
+		}
 		// Continue anyway - questions are nice to have but not critical
 	} else {
 		// Convert to database model slice (dereference pointers)

@@ -14,7 +14,8 @@ import (
 
 // SchemaLoader loads JSON schemas from the Swagger specification
 type SchemaLoader struct {
-	schemas map[string]*gojsonschema.Schema
+	schemas     map[string]*gojsonschema.Schema
+	swaggerData map[string]interface{}
 }
 
 // NewSchemaLoader creates a new schema loader
@@ -32,6 +33,11 @@ func (sl *SchemaLoader) LoadSchemasFromSwagger(swaggerPath string) error {
 		return contextutils.WrapError(err, "failed to read swagger file")
 	}
 
+	return sl.LoadSchemasFromSwaggerFromData(data)
+}
+
+// LoadSchemasFromSwaggerFromData loads all schemas from swagger data bytes
+func (sl *SchemaLoader) LoadSchemasFromSwaggerFromData(data []byte) error {
 	// Parse the Swagger spec (YAML only)
 	var swagger map[string]interface{}
 
@@ -40,6 +46,9 @@ func (sl *SchemaLoader) LoadSchemasFromSwagger(swaggerPath string) error {
 	}
 
 	fmt.Printf("✅ Successfully parsed swagger file as YAML\n")
+
+	// Store the parsed swagger data for later use
+	sl.swaggerData = swagger
 
 	// Extract components/schemas
 	components, ok := swagger["components"].(map[interface{}]interface{})
@@ -65,11 +74,7 @@ func (sl *SchemaLoader) LoadSchemasFromSwagger(swaggerPath string) error {
 			continue
 		}
 
-		convertedSchema, err := convertToJSONCompatible(schemaData)
-		if err != nil {
-			fmt.Printf("Warning: failed to convert schema %s: %v\n", schemaNameStr, err)
-			continue
-		}
+		convertedSchema := convertToJSONCompatible(schemaData)
 
 		jsonCompatibleSchemas[schemaNameStr] = convertedSchema
 	}
@@ -130,25 +135,21 @@ func getKeysInterface(m map[interface{}]interface{}) []string {
 func convertInterfaceMapToStringMap(m map[interface{}]interface{}) map[string]interface{} {
 	result := make(map[string]interface{})
 	for k, v := range m {
-		if keyStr, ok := k.(string); ok {
-			result[keyStr] = v
-		}
+		keyStr := fmt.Sprintf("%v", k) // Convert any key type to string
+		result[keyStr] = convertToJSONCompatible(v)
 	}
 	return result
 }
 
 // convertToJSONCompatible converts a map[interface{}]interface{} to map[string]interface{}
-func convertToJSONCompatible(data interface{}) (interface{}, error) {
+func convertToJSONCompatible(data interface{}) interface{} {
 	switch v := data.(type) {
 	case map[interface{}]interface{}:
 		result := make(map[string]interface{})
 		hasNullable := false
 
 		for k, val := range v {
-			keyStr, ok := k.(string)
-			if !ok {
-				return nil, contextutils.ErrorWithContextf("key is not a string: %v", k)
-			}
+			keyStr := fmt.Sprintf("%v", k) // Convert any key type to string
 
 			// Check for nullable field
 			if keyStr == "nullable" {
@@ -159,10 +160,7 @@ func convertToJSONCompatible(data interface{}) (interface{}, error) {
 				}
 			}
 
-			convertedVal, err := convertToJSONCompatible(val)
-			if err != nil {
-				return nil, err
-			}
+			convertedVal := convertToJSONCompatible(val)
 			result[keyStr] = convertedVal
 		}
 
@@ -183,19 +181,16 @@ func convertToJSONCompatible(data interface{}) (interface{}, error) {
 			}
 		}
 
-		return result, nil
+		return result
 	case []interface{}:
 		result := make([]interface{}, len(v))
 		for i, val := range v {
-			convertedVal, err := convertToJSONCompatible(val)
-			if err != nil {
-				return nil, err
-			}
+			convertedVal := convertToJSONCompatible(val)
 			result[i] = convertedVal
 		}
-		return result, nil
+		return result
 	default:
-		return data, nil
+		return data
 	}
 }
 
@@ -264,26 +259,11 @@ func AutoLoadSchemas() *SchemaLoader {
 
 // IsEndpointDocumented checks if an endpoint is documented in the swagger spec
 func (sl *SchemaLoader) IsEndpointDocumented(path, method string) bool {
-	// Get swagger file path from environment variable
-	swaggerPath := os.Getenv("SWAGGER_FILE_PATH")
-	if swaggerPath == "" {
+	// Use cached swagger data if available
+	if sl.swaggerData == nil {
 		return false
 	}
-
-	if _, err := os.Stat(swaggerPath); err != nil {
-		return false
-	}
-
-	data, err := os.ReadFile(swaggerPath)
-	if err != nil {
-		return false
-	}
-
-	var swagger map[string]interface{}
-	// Parse as YAML
-	if err := yaml.Unmarshal(data, &swagger); err != nil {
-		return false
-	}
+	swagger := sl.swaggerData
 
 	// Extract paths
 	paths, ok := swagger["paths"].(map[string]interface{})
@@ -376,30 +356,11 @@ func (sl *SchemaLoader) pathMatchesPattern(requestPath, swaggerPath string) bool
 
 // DetermineRequestSchemaFromPath automatically determines the schema name from the API path and method
 func (sl *SchemaLoader) DetermineRequestSchemaFromPath(path, method string) string {
-	// Get swagger file path from environment variable
-	swaggerPath := os.Getenv("SWAGGER_FILE_PATH")
-	if swaggerPath == "" {
-		fmt.Printf("DEBUG: SWAGGER_FILE_PATH not set\n")
+	// Use cached swagger data if available
+	if sl.swaggerData == nil {
 		return ""
 	}
-
-	if _, err := os.Stat(swaggerPath); err != nil {
-		fmt.Printf("DEBUG: Swagger file not found: %s\n", swaggerPath)
-		return ""
-	}
-
-	data, err := os.ReadFile(swaggerPath)
-	if err != nil {
-		fmt.Printf("DEBUG: Failed to read swagger file: %v\n", err)
-		return ""
-	}
-
-	var swagger map[string]interface{}
-	// Parse as YAML
-	if err := yaml.Unmarshal(data, &swagger); err != nil {
-		fmt.Printf("DEBUG: Failed to parse swagger file: %v\n", err)
-		return ""
-	}
+	swagger := sl.swaggerData
 
 	// Extract paths
 	paths, ok := swagger["paths"].(map[string]interface{})
@@ -534,26 +495,11 @@ func (sl *SchemaLoader) DetermineRequestSchemaFromPath(path, method string) stri
 // DetermineSchemaFromPath determines the schema name for a given path and HTTP method
 // by parsing the swagger file and looking up the response schema for the 200 status code.
 func (sl *SchemaLoader) DetermineSchemaFromPath(path, method string) string {
-	// Get swagger file path from environment variable
-	swaggerPath := os.Getenv("SWAGGER_FILE_PATH")
-	if swaggerPath == "" {
+	// Use cached swagger data if available
+	if sl.swaggerData == nil {
 		return ""
 	}
-
-	if _, err := os.Stat(swaggerPath); err != nil {
-		return ""
-	}
-
-	data, err := os.ReadFile(swaggerPath)
-	if err != nil {
-		return ""
-	}
-
-	var swagger map[string]interface{}
-	// Parse as YAML
-	if err := yaml.Unmarshal(data, &swagger); err != nil {
-		return ""
-	}
+	swagger := sl.swaggerData
 
 	// Extract paths
 	paths, ok := swagger["paths"].(map[string]interface{})
@@ -613,16 +559,26 @@ func (sl *SchemaLoader) DetermineSchemaFromPath(path, method string) string {
 		responses = convertInterfaceMapToStringMap(responsesInterface)
 	}
 
-	// Look for 200 response
-	response200, exists := responses["200"]
-	if !exists {
+	// Look for success response (try 200, 201, etc.)
+	var successResponse interface{}
+
+	// Try common success status codes in order of preference
+	successCodes := []string{"200", "201", "202"}
+	for _, code := range successCodes {
+		if resp, exists := responses[code]; exists {
+			successResponse = resp
+			break
+		}
+	}
+
+	if successResponse == nil {
 		return ""
 	}
 
-	responseMap, ok := response200.(map[string]interface{})
+	responseMap, ok := successResponse.(map[string]interface{})
 	if !ok {
 		// Try with interface{} keys
-		responseMapInterface, ok := response200.(map[interface{}]interface{})
+		responseMapInterface, ok := successResponse.(map[interface{}]interface{})
 		if !ok {
 			return ""
 		}
