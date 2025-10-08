@@ -820,6 +820,14 @@ users:
   ai_provider: ollama
   ai_api_key: ''
   ai_model: llama3.2
+- username: apitestuserstory1
+  email: apitestuserstory1@example.com
+  password: password
+  preferred_language: italian
+  current_level: B1
+  ai_provider: ollama
+  ai_api_key: ''
+  ai_model: llama3.2
 - username: apitestuser2
   email: apitestuser2@example.com
   password: password

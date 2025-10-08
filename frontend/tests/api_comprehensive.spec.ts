@@ -15,6 +15,11 @@ const REGULAR_USER = {
   password: 'password'
 };
 
+const STORY_TEST_USER = {
+  username: 'apitestuserstory1',
+  password: 'password'
+};
+
 const ADMIN_USER = {
   username: 'apitestadmin',
   password: 'password'
@@ -1146,7 +1151,8 @@ test.describe('Comprehensive API Tests', () => {
     if (paramKey === 'id') {
       // Check if this is a story-related endpoint
       if (path.includes('/story/')) {
-        const storyId = getAvailableStoryId(userContext?.username);
+        // Use the dedicated story test user for story operations
+        const storyId = getAvailableStoryId('apitestuserstory1');
         return {value: storyId, type: 'story'};
       }
 
@@ -1434,6 +1440,11 @@ test.describe('Comprehensive API Tests', () => {
       for (const testCase of regularUserCases) {
         let path = testCase.path;
 
+        // Determine which user to use for this test case
+        const isStoryEndpoint = path.includes('/story/');
+        const currentUser = isStoryEndpoint ? STORY_TEST_USER : REGULAR_USER;
+        const currentSessionCookie = await loginUser(request, currentUser);
+
         // Add path parameters
         if (testCase.pathParams) {
           for (const [key, value] of Object.entries(testCase.pathParams)) {
@@ -1458,19 +1469,19 @@ test.describe('Comprehensive API Tests', () => {
 
         const requestOptions: any = {
           headers: {
-            'Cookie': sessionCookie
+            'Cookie': currentSessionCookie
           }
         };
 
         if (testCase.requestBody) {
-          requestOptions.data = generateRequestBodyForTest(testCase, REGULAR_USER);
+          requestOptions.data = generateRequestBodyForTest(testCase, currentUser);
           requestOptions.headers['Content-Type'] = 'application/json';
         }
 
         const response = await request[testCase.method.toLowerCase()](url.toString(), requestOptions);
 
         // Log the response details and assert status
-        await logResponse(testCase, response, 'Regular User', 'apitestuser', url.toString());
+        await logResponse(testCase, response, isStoryEndpoint ? 'Story Test User' : 'Regular User', currentUser.username, url.toString());
         await assertStatus(response, testCase.expectedStatusCodes.map(code => parseInt(code, 10)), {
           method: testCase.method,
           url: url.toString(),
