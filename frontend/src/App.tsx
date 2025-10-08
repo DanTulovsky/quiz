@@ -30,6 +30,7 @@ import MobileQuizPage from './pages/mobile/MobileQuizPage';
 import MobileVocabularyPage from './pages/mobile/MobileVocabularyPage';
 import MobileReadingComprehensionPage from './pages/mobile/MobileReadingComprehensionPage';
 import MobileDailyPage from './pages/mobile/MobileDailyPage';
+import MobileStoryPage from './pages/mobile/MobileStoryPage';
 import { Center, Loader } from '@mantine/core';
 
 function App() {
@@ -451,6 +452,20 @@ function App() {
           user ? (
             <MobileLayout>
               <MobileDailyPage />
+            </MobileLayout>
+          ) : (
+            <Navigate
+              to={`/m/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`}
+            />
+          )
+        }
+      />
+      <Route
+        path='/m/story'
+        element={
+          user ? (
+            <MobileLayout>
+              <MobileStoryPage />
             </MobileLayout>
           ) : (
             <Navigate

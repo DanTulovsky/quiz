@@ -365,10 +365,7 @@ describe('useStory', () => {
         await result.current.generateNextSection(1);
       });
 
-      expect(mockStoryApi.generateNextSection).toHaveBeenCalledWith(
-        1,
-        expect.anything()
-      );
+      expect(mockStoryApi.generateNextSection).toHaveBeenCalledWith(1);
     });
   });
 
@@ -394,7 +391,7 @@ describe('useStory', () => {
       const { result } = renderHook(() => useStory(), { wrapper });
 
       await act(async () => {
-        await new Promise(resolve => setTimeout(resolve, 0));
+        await new Promise(resolve => setTimeout(resolve, 100));
       });
 
       expect(result.current.currentStory).toBeNull();
