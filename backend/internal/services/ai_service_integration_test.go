@@ -44,7 +44,7 @@ func TestAIService_GenerateQuestion_MalformedResponse_Integration(t *testing.T) 
 	defer cleanup()
 
 	ctx := context.Background()
-	userCfg := &UserAIConfig{Provider: "testai", Model: "test-model"}
+	userCfg := &models.UserAIConfig{Provider: "testai", Model: "test-model"}
 	genReq := &models.AIQuestionGenRequest{QuestionType: models.Vocabulary, Language: "english", Level: "A1"}
 
 	q, err := service.GenerateQuestion(ctx, userCfg, genReq)
@@ -60,7 +60,7 @@ func TestAIService_GenerateQuestion_ProviderError_Integration(t *testing.T) {
 	defer cleanup()
 
 	ctx := context.Background()
-	userCfg := &UserAIConfig{Provider: "testai", Model: "test-model"}
+	userCfg := &models.UserAIConfig{Provider: "testai", Model: "test-model"}
 	genReq := &models.AIQuestionGenRequest{QuestionType: models.Vocabulary, Language: "english", Level: "A1"}
 
 	q, err := service.GenerateQuestion(ctx, userCfg, genReq)
@@ -76,7 +76,7 @@ func TestAIService_GenerateQuestions_SchemaValidationFailure_Integration(t *test
 	defer cleanup()
 
 	ctx := context.Background()
-	userCfg := &UserAIConfig{Provider: "testai", Model: "test-model"}
+	userCfg := &models.UserAIConfig{Provider: "testai", Model: "test-model"}
 	genReq := &models.AIQuestionGenRequest{QuestionType: models.Vocabulary, Language: "english", Level: "A1"}
 
 	qs, err := service.GenerateQuestions(ctx, userCfg, genReq)
@@ -95,7 +95,7 @@ func TestAIService_GenerateQuestion_ShutdownDuringRequest_Integration(t *testing
 
 	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 	defer cancel()
-	userCfg := &UserAIConfig{Provider: "testai", Model: "test-model"}
+	userCfg := &models.UserAIConfig{Provider: "testai", Model: "test-model"}
 	genReq := &models.AIQuestionGenRequest{QuestionType: models.Vocabulary, Language: "english", Level: "A1"}
 
 	done := make(chan error, 1)
@@ -170,7 +170,7 @@ func TestAIService_GenerateQuestionsStream_Integration(t *testing.T) {
 	}
 	service := NewAIService(cfg, logger)
 
-	userConfig := &UserAIConfig{
+	userConfig := &models.UserAIConfig{
 		Provider: "openai",
 		Model:    "gpt-35-turbo",
 		APIKey:   "test-key",
@@ -222,7 +222,7 @@ func TestAIService_GenerateChatResponse_Integration(t *testing.T) {
 	}
 	service := NewAIService(cfg, logger)
 
-	userConfig := &UserAIConfig{
+	userConfig := &models.UserAIConfig{
 		Provider: "openai",
 		Model:    "gpt-35-turbo",
 		APIKey:   "test-key",
@@ -262,7 +262,7 @@ func TestAIService_GenerateChatResponseStream_Integration(t *testing.T) {
 	}
 	service := NewAIService(cfg, logger)
 
-	userConfig := &UserAIConfig{
+	userConfig := &models.UserAIConfig{
 		Provider: "openai",
 		Model:    "gpt-35-turbo",
 		APIKey:   "test-key",

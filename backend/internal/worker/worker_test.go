@@ -164,6 +164,11 @@ func (m *mockStoryService) SanitizeInput(input string) string {
 	return args.String(0)
 }
 
+func (m *mockStoryService) GenerateStorySection(ctx context.Context, storyID, userID uint, aiService services.AIServiceInterface, userAIConfig *models.UserAIConfig) (*models.StorySectionWithQuestions, error) {
+	args := m.Called(ctx, storyID, userID, aiService, userAIConfig)
+	return args.Get(0).(*models.StorySectionWithQuestions), args.Error(1)
+}
+
 func (m *mockStoryService) DeleteAllStoriesForUser(ctx context.Context, userID uint) error {
 	args := m.Called(ctx, userID)
 	return args.Error(0)
@@ -1266,37 +1271,37 @@ func (m *mockQuestionService) UnassignUsersFromQuestion(ctx context.Context, que
 }
 
 // AIServiceInterface
-func (m *mockAIService) GenerateQuestion(ctx context.Context, userConfig *services.UserAIConfig, req *models.AIQuestionGenRequest) (result0 *models.Question, err error) {
+func (m *mockAIService) GenerateQuestion(ctx context.Context, userConfig *models.UserAIConfig, req *models.AIQuestionGenRequest) (result0 *models.Question, err error) {
 	args := m.Called(ctx, userConfig, req)
 	return args.Get(0).(*models.Question), args.Error(1)
 }
 
-func (m *mockAIService) GenerateQuestions(ctx context.Context, userConfig *services.UserAIConfig, req *models.AIQuestionGenRequest) (result0 []*models.Question, err error) {
+func (m *mockAIService) GenerateQuestions(ctx context.Context, userConfig *models.UserAIConfig, req *models.AIQuestionGenRequest) (result0 []*models.Question, err error) {
 	args := m.Called(ctx, userConfig, req)
 	return args.Get(0).([]*models.Question), args.Error(1)
 }
 
-func (m *mockAIService) GenerateQuestionsStream(ctx context.Context, userConfig *services.UserAIConfig, req *models.AIQuestionGenRequest, progress chan<- *models.Question, variety *services.VarietyElements) error {
+func (m *mockAIService) GenerateQuestionsStream(ctx context.Context, userConfig *models.UserAIConfig, req *models.AIQuestionGenRequest, progress chan<- *models.Question, variety *services.VarietyElements) error {
 	args := m.Called(ctx, userConfig, req, progress, variety)
 	return args.Error(0)
 }
 
-func (m *mockAIService) GenerateChatResponse(ctx context.Context, userConfig *services.UserAIConfig, req *models.AIChatRequest) (result0 string, err error) {
+func (m *mockAIService) GenerateChatResponse(ctx context.Context, userConfig *models.UserAIConfig, req *models.AIChatRequest) (result0 string, err error) {
 	args := m.Called(ctx, userConfig, req)
 	return args.String(0), args.Error(1)
 }
 
-func (m *mockAIService) GenerateChatResponseStream(ctx context.Context, userConfig *services.UserAIConfig, req *models.AIChatRequest, chunks chan<- string) error {
+func (m *mockAIService) GenerateChatResponseStream(ctx context.Context, userConfig *models.UserAIConfig, req *models.AIChatRequest, chunks chan<- string) error {
 	args := m.Called(ctx, userConfig, req, chunks)
 	return args.Error(0)
 }
 
-func (m *mockAIService) GenerateStorySection(ctx context.Context, userConfig *services.UserAIConfig, req *models.StoryGenerationRequest) (string, error) {
+func (m *mockAIService) GenerateStorySection(ctx context.Context, userConfig *models.UserAIConfig, req *models.StoryGenerationRequest) (string, error) {
 	args := m.Called(ctx, userConfig, req)
 	return args.String(0), args.Error(1)
 }
 
-func (m *mockAIService) GenerateStoryQuestions(ctx context.Context, userConfig *services.UserAIConfig, req *models.StoryQuestionsRequest) ([]*models.StorySectionQuestionData, error) {
+func (m *mockAIService) GenerateStoryQuestions(ctx context.Context, userConfig *models.UserAIConfig, req *models.StoryQuestionsRequest) ([]*models.StorySectionQuestionData, error) {
 	args := m.Called(ctx, userConfig, req)
 	return args.Get(0).([]*models.StorySectionQuestionData), args.Error(1)
 }
@@ -1336,7 +1341,7 @@ func (m *mockAIService) SupportsGrammarField(provider string) bool {
 	return args.Bool(0)
 }
 
-func (m *mockAIService) CallWithPrompt(ctx context.Context, userConfig *services.UserAIConfig, prompt, grammar string) (string, error) {
+func (m *mockAIService) CallWithPrompt(ctx context.Context, userConfig *models.UserAIConfig, prompt, grammar string) (string, error) {
 	args := m.Called(ctx, userConfig, prompt, grammar)
 	return args.String(0), args.Error(1)
 }

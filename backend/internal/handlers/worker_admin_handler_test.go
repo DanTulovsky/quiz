@@ -1145,37 +1145,37 @@ type MockAIServiceForHandler struct {
 	mock.Mock
 }
 
-func (m *MockAIServiceForHandler) GenerateQuestion(ctx context.Context, userConfig *services.UserAIConfig, req *models.AIQuestionGenRequest) (result0 *models.Question, err error) {
+func (m *MockAIServiceForHandler) GenerateQuestion(ctx context.Context, userConfig *models.UserAIConfig, req *models.AIQuestionGenRequest) (result0 *models.Question, err error) {
 	args := m.Called(ctx, userConfig, req)
 	return args.Get(0).(*models.Question), args.Error(1)
 }
 
-func (m *MockAIServiceForHandler) GenerateQuestions(ctx context.Context, userConfig *services.UserAIConfig, req *models.AIQuestionGenRequest) (result0 []*models.Question, err error) {
+func (m *MockAIServiceForHandler) GenerateQuestions(ctx context.Context, userConfig *models.UserAIConfig, req *models.AIQuestionGenRequest) (result0 []*models.Question, err error) {
 	args := m.Called(ctx, userConfig, req)
 	return args.Get(0).([]*models.Question), args.Error(1)
 }
 
-func (m *MockAIServiceForHandler) GenerateQuestionsStream(ctx context.Context, userConfig *services.UserAIConfig, req *models.AIQuestionGenRequest, progress chan<- *models.Question, variety *services.VarietyElements) error {
+func (m *MockAIServiceForHandler) GenerateQuestionsStream(ctx context.Context, userConfig *models.UserAIConfig, req *models.AIQuestionGenRequest, progress chan<- *models.Question, variety *services.VarietyElements) error {
 	args := m.Called(ctx, userConfig, req, progress, variety)
 	return args.Error(0)
 }
 
-func (m *MockAIServiceForHandler) GenerateChatResponse(ctx context.Context, userConfig *services.UserAIConfig, req *models.AIChatRequest) (result0 string, err error) {
+func (m *MockAIServiceForHandler) GenerateChatResponse(ctx context.Context, userConfig *models.UserAIConfig, req *models.AIChatRequest) (result0 string, err error) {
 	args := m.Called(ctx, userConfig, req)
 	return args.String(0), args.Error(1)
 }
 
-func (m *MockAIServiceForHandler) GenerateChatResponseStream(ctx context.Context, userConfig *services.UserAIConfig, req *models.AIChatRequest, chunks chan<- string) error {
+func (m *MockAIServiceForHandler) GenerateChatResponseStream(ctx context.Context, userConfig *models.UserAIConfig, req *models.AIChatRequest, chunks chan<- string) error {
 	args := m.Called(ctx, userConfig, req, chunks)
 	return args.Error(0)
 }
 
-func (m *MockAIServiceForHandler) GenerateStoryQuestions(ctx context.Context, userConfig *services.UserAIConfig, req *models.StoryQuestionsRequest) ([]*models.StorySectionQuestionData, error) {
+func (m *MockAIServiceForHandler) GenerateStoryQuestions(ctx context.Context, userConfig *models.UserAIConfig, req *models.StoryQuestionsRequest) ([]*models.StorySectionQuestionData, error) {
 	args := m.Called(ctx, userConfig, req)
 	return args.Get(0).([]*models.StorySectionQuestionData), args.Error(1)
 }
 
-func (m *MockAIServiceForHandler) GenerateStorySection(ctx context.Context, userConfig *services.UserAIConfig, req *models.StoryGenerationRequest) (string, error) {
+func (m *MockAIServiceForHandler) GenerateStorySection(ctx context.Context, userConfig *models.UserAIConfig, req *models.StoryGenerationRequest) (string, error) {
 	args := m.Called(ctx, userConfig, req)
 	return args.String(0), args.Error(1)
 }
@@ -1215,7 +1215,7 @@ func (m *MockAIServiceForHandler) SupportsGrammarField(provider string) bool {
 	return args.Bool(0)
 }
 
-func (m *MockAIServiceForHandler) CallWithPrompt(ctx context.Context, userConfig *services.UserAIConfig, prompt, grammar string) (string, error) {
+func (m *MockAIServiceForHandler) CallWithPrompt(ctx context.Context, userConfig *models.UserAIConfig, prompt, grammar string) (string, error) {
 	args := m.Called(ctx, userConfig, prompt, grammar)
 	return args.String(0), args.Error(1)
 }

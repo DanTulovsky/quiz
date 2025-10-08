@@ -208,6 +208,7 @@ type UserAIConfig struct {
 	Provider string
 	Model    string
 	APIKey   string
+	Username string // For logging purposes
 }
 
 // GetSectionLengthTarget returns the target word count for a story section

@@ -793,125 +793,14 @@ func (w *Worker) generateStorySection(ctx context.Context, user models.User) err
 		return nil
 	}
 
-	// Check if we can generate a section today
-	canGenerate, err := w.storyService.CanGenerateSection(ctx, story.ID)
-	if err != nil {
-		return contextutils.WrapErrorf(err, "failed to check if section can be generated")
-	}
-	if !canGenerate {
-		// Already generated today or story is not active
-		return nil
-	}
-
-	// Get all previous sections for context
-	previousSections, err := w.storyService.GetAllSectionsText(ctx, story.ID)
-	if err != nil {
-		return contextutils.WrapErrorf(err, "failed to get previous sections")
-	}
-
-	// Get user's current language level
-	userLevel := "intermediate" // Default fallback
-	if user.CurrentLevel.Valid {
-		userLevel = user.CurrentLevel.String
-	}
-
-	// Determine target length for this user's level
-	targetWords := w.storyService.GetSectionLengthTarget(userLevel, story.SectionLengthOverride)
-
 	// Get user's AI configuration
 	userConfig := w.getUserAIConfig(ctx, &user)
 
-	// Build the generation request
-	genReq := &models.StoryGenerationRequest{
-		UserID:             uint(user.ID),
-		StoryID:            story.ID,
-		Language:           story.Language,
-		Level:              userLevel,
-		Title:              story.Title,
-		Subject:            story.Subject,
-		AuthorStyle:        story.AuthorStyle,
-		TimePeriod:         story.TimePeriod,
-		Genre:              story.Genre,
-		Tone:               story.Tone,
-		CharacterNames:     story.CharacterNames,
-		CustomInstructions: story.CustomInstructions,
-		SectionLength:      models.SectionLengthMedium, // Use medium as default
-		PreviousSections:   previousSections,
-		IsFirstSection:     len(story.Sections) == 0,
-		TargetWords:        targetWords,
-		TargetSentences:    targetWords / 15, // Rough estimate
-	}
-
-	// Generate the story section
-	sectionContent, err := w.aiService.GenerateStorySection(ctx, userConfig, genReq)
+	// Generate the story section using the shared service method
+	_, err = w.storyService.GenerateStorySection(ctx, story.ID, uint(user.ID), w.aiService, userConfig)
 	if err != nil {
 		return contextutils.WrapErrorf(err, "failed to generate story section")
 	}
-
-	// Count words in the generated content
-	wordCount := len(strings.Fields(sectionContent))
-
-	// Create the section in the database
-	section, err := w.storyService.CreateSection(ctx, story.ID, sectionContent, userLevel, wordCount)
-	if err != nil {
-		return contextutils.WrapErrorf(err, "failed to create story section")
-	}
-
-	// Generate comprehension questions for the section
-	questionsReq := &models.StoryQuestionsRequest{
-		UserID:        uint(user.ID),
-		SectionID:     section.ID,
-		Language:      story.Language,
-		Level:         userLevel,
-		SectionText:   sectionContent,
-		QuestionCount: w.cfg.Story.QuestionsPerSection,
-	}
-
-	questions, err := w.aiService.GenerateStoryQuestions(ctx, userConfig, questionsReq)
-	if err != nil {
-		w.logger.Warn(ctx, "Failed to generate questions for story section",
-			map[string]interface{}{
-				"section_id": section.ID,
-				"user_id":    user.ID,
-				"error":      err.Error(),
-			})
-		// Continue anyway - questions are nice to have but not critical
-	} else {
-		// Convert to database model slice
-		dbQuestions := make([]models.StorySectionQuestionData, len(questions))
-		for i, q := range questions {
-			dbQuestions[i] = *q
-		}
-
-		// Save the questions to the database
-		if err := w.storyService.CreateSectionQuestions(ctx, section.ID, dbQuestions); err != nil {
-			w.logger.Warn(ctx, "Failed to save story questions",
-				map[string]interface{}{
-					"section_id": section.ID,
-					"user_id":    user.ID,
-					"error":      err.Error(),
-				})
-		}
-	}
-
-	// Update the story's last generation time (worker generation)
-	if err := w.storyService.UpdateLastGenerationTime(ctx, story.ID, false); err != nil {
-		w.logger.Warn(ctx, "Failed to update story generation time",
-			map[string]interface{}{
-				"story_id": story.ID,
-				"user_id":  user.ID,
-				"error":    err.Error(),
-			})
-	}
-
-	w.logger.Info(ctx, "Story section generated successfully",
-		map[string]interface{}{
-			"story_id":       story.ID,
-			"section_id":     section.ID,
-			"user_id":        user.ID,
-			"word_count":     wordCount,
-			"question_count": len(questions),
-		})
 
 	return nil
 }
@@ -1605,7 +1494,7 @@ func (w *Worker) buildAIQuestionGenRequest(ctx context.Context, user *models.Use
 }
 
 // getUserAIConfig builds the UserAIConfig struct with API key
-func (w *Worker) getUserAIConfig(ctx context.Context, user *models.User) *services.UserAIConfig {
+func (w *Worker) getUserAIConfig(ctx context.Context, user *models.User) *models.UserAIConfig {
 	ctx, span := observability.TraceWorkerFunction(ctx, "get_user_ai_config",
 		observability.AttributeUserID(user.ID),
 		attribute.String("user.username", user.Username),
@@ -1630,7 +1519,7 @@ func (w *Worker) getUserAIConfig(ctx context.Context, user *models.User) *servic
 			apiKey = savedKey
 		}
 	}
-	return &services.UserAIConfig{
+	return &models.UserAIConfig{
 		Provider: provider,
 		Model:    model,
 		APIKey:   apiKey,
@@ -1639,7 +1528,7 @@ func (w *Worker) getUserAIConfig(ctx context.Context, user *models.User) *servic
 }
 
 // handleAIQuestionStream handles the AI streaming and collects questions
-func (w *Worker) handleAIQuestionStream(ctx context.Context, userConfig *services.UserAIConfig, req *models.AIQuestionGenRequest, variety *services.VarietyElements, count int, language, level string, qType models.QuestionType, topic string, user *models.User) (result0 string, result1 []*models.Question, err error) {
+func (w *Worker) handleAIQuestionStream(ctx context.Context, userConfig *models.UserAIConfig, req *models.AIQuestionGenRequest, variety *services.VarietyElements, count int, language, level string, qType models.QuestionType, topic string, user *models.User) (result0 string, result1 []*models.Question, err error) {
 	ctx, span := observability.TraceWorkerFunction(ctx, "handle_ai_question_stream",
 		attribute.String("ai.provider", userConfig.Provider),
 		attribute.String("ai.model", userConfig.Model),

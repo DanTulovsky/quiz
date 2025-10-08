@@ -40,7 +40,7 @@ func (m *MockAIService) TestConnection(ctx context.Context, provider, model, api
 }
 
 // CallWithPrompt returns a mock response for AI fix requests, otherwise delegates to real service
-func (m *MockAIService) CallWithPrompt(ctx context.Context, userConfig *services.UserAIConfig, prompt, grammar string) (string, error) {
+func (m *MockAIService) CallWithPrompt(ctx context.Context, userConfig *models.UserAIConfig, prompt, grammar string) (string, error) {
 	// Check if this is an AI fix request by looking for fix-related keywords in the prompt
 	if strings.Contains(prompt, "fix") || strings.Contains(prompt, "Fix") ||
 		strings.Contains(prompt, "problematic") || strings.Contains(prompt, "report") {
@@ -74,35 +74,35 @@ func (m *MockAIService) CallWithPrompt(ctx context.Context, userConfig *services
 }
 
 // Implement other required methods by delegating to real service or returning defaults
-func (m *MockAIService) GenerateQuestion(ctx context.Context, userConfig *services.UserAIConfig, req *models.AIQuestionGenRequest) (*models.Question, error) {
+func (m *MockAIService) GenerateQuestion(ctx context.Context, userConfig *models.UserAIConfig, req *models.AIQuestionGenRequest) (*models.Question, error) {
 	if m.realService != nil {
 		return m.realService.GenerateQuestion(ctx, userConfig, req)
 	}
 	return nil, contextutils.ErrorWithContextf("GenerateQuestion not implemented in mock")
 }
 
-func (m *MockAIService) GenerateQuestions(ctx context.Context, userConfig *services.UserAIConfig, req *models.AIQuestionGenRequest) ([]*models.Question, error) {
+func (m *MockAIService) GenerateQuestions(ctx context.Context, userConfig *models.UserAIConfig, req *models.AIQuestionGenRequest) ([]*models.Question, error) {
 	if m.realService != nil {
 		return m.realService.GenerateQuestions(ctx, userConfig, req)
 	}
 	return nil, contextutils.ErrorWithContextf("GenerateQuestions not implemented in mock")
 }
 
-func (m *MockAIService) GenerateQuestionsStream(ctx context.Context, userConfig *services.UserAIConfig, req *models.AIQuestionGenRequest, progress chan<- *models.Question, variety *services.VarietyElements) error {
+func (m *MockAIService) GenerateQuestionsStream(ctx context.Context, userConfig *models.UserAIConfig, req *models.AIQuestionGenRequest, progress chan<- *models.Question, variety *services.VarietyElements) error {
 	if m.realService != nil {
 		return m.realService.GenerateQuestionsStream(ctx, userConfig, req, progress, variety)
 	}
 	return contextutils.ErrorWithContextf("GenerateQuestionsStream not implemented in mock")
 }
 
-func (m *MockAIService) GenerateChatResponse(ctx context.Context, userConfig *services.UserAIConfig, req *models.AIChatRequest) (string, error) {
+func (m *MockAIService) GenerateChatResponse(ctx context.Context, userConfig *models.UserAIConfig, req *models.AIChatRequest) (string, error) {
 	if m.realService != nil {
 		return m.realService.GenerateChatResponse(ctx, userConfig, req)
 	}
 	return "Mock chat response", nil
 }
 
-func (m *MockAIService) GenerateChatResponseStream(ctx context.Context, userConfig *services.UserAIConfig, req *models.AIChatRequest, chunks chan<- string) error {
+func (m *MockAIService) GenerateChatResponseStream(ctx context.Context, userConfig *models.UserAIConfig, req *models.AIChatRequest, chunks chan<- string) error {
 	if m.realService != nil {
 		return m.realService.GenerateChatResponseStream(ctx, userConfig, req, chunks)
 	}
@@ -141,7 +141,7 @@ func (m *MockAIService) TemplateManager() *services.AITemplateManager {
 	return nil
 }
 
-func (m *MockAIService) GenerateStoryQuestions(ctx context.Context, userConfig *services.UserAIConfig, req *models.StoryQuestionsRequest) ([]*models.StorySectionQuestionData, error) {
+func (m *MockAIService) GenerateStoryQuestions(ctx context.Context, userConfig *models.UserAIConfig, req *models.StoryQuestionsRequest) ([]*models.StorySectionQuestionData, error) {
 	if m.realService != nil {
 		return m.realService.GenerateStoryQuestions(ctx, userConfig, req)
 	}
@@ -156,7 +156,7 @@ func (m *MockAIService) GenerateStoryQuestions(ctx context.Context, userConfig *
 	}, nil
 }
 
-func (m *MockAIService) GenerateStorySection(ctx context.Context, userConfig *services.UserAIConfig, req *models.StoryGenerationRequest) (string, error) {
+func (m *MockAIService) GenerateStorySection(ctx context.Context, userConfig *models.UserAIConfig, req *models.StoryGenerationRequest) (string, error) {
 	if m.realService != nil {
 		return m.realService.GenerateStorySection(ctx, userConfig, req)
 	}

@@ -24,7 +24,7 @@ type MockAIService struct {
 }
 
 // GenerateQuestionsStream mocks the AI question generation
-func (m *MockAIService) GenerateQuestionsStream(ctx context.Context, userConfig *services.UserAIConfig, req *models.AIQuestionGenRequest, progress chan<- *models.Question, variety *services.VarietyElements) error {
+func (m *MockAIService) GenerateQuestionsStream(ctx context.Context, userConfig *models.UserAIConfig, req *models.AIQuestionGenRequest, progress chan<- *models.Question, variety *services.VarietyElements) error {
 	defer close(progress)
 	// Create a mock question
 	mockQuestion := &models.Question{

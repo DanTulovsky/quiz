@@ -488,7 +488,7 @@ func (h *AdminHandler) FixQuestionWithAI(c *gin.Context) {
 	// Get saved API key for the reporter's configured provider
 	savedKey, _ := h.userService.GetUserAPIKey(ctx, reporterID, reporterProvider.String)
 
-	userCfg := &services.UserAIConfig{
+	userCfg := &models.UserAIConfig{
 		Provider: reporterProvider.String,
 		Model:    reporterModel.String,
 		APIKey:   savedKey,

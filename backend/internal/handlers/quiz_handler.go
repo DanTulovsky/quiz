@@ -698,7 +698,7 @@ func (h *QuizHandler) ChatStream(c *gin.Context) {
 	}
 
 	// Create user AI configuration
-	userConfig := &services.UserAIConfig{
+	userConfig := &models.UserAIConfig{
 		Provider: "", // will be set from user settings
 		Model:    "", // use service default
 		APIKey:   "",

@@ -96,13 +96,13 @@ type UserAIConfig struct {
 
 // AIServiceInterface defines the interface for AI-powered question generation
 type AIServiceInterface interface {
-	GenerateQuestion(ctx context.Context, userConfig *UserAIConfig, req *models.AIQuestionGenRequest) (*models.Question, error)
-	GenerateQuestions(ctx context.Context, userConfig *UserAIConfig, req *models.AIQuestionGenRequest) ([]*models.Question, error)
-	GenerateQuestionsStream(ctx context.Context, userConfig *UserAIConfig, req *models.AIQuestionGenRequest, progress chan<- *models.Question, variety *VarietyElements) error
-	GenerateChatResponse(ctx context.Context, userConfig *UserAIConfig, req *models.AIChatRequest) (string, error)
-	GenerateChatResponseStream(ctx context.Context, userConfig *UserAIConfig, req *models.AIChatRequest, chunks chan<- string) error
-	GenerateStorySection(ctx context.Context, userConfig *UserAIConfig, req *models.StoryGenerationRequest) (string, error)
-	GenerateStoryQuestions(ctx context.Context, userConfig *UserAIConfig, req *models.StoryQuestionsRequest) ([]*models.StorySectionQuestionData, error)
+	GenerateQuestion(ctx context.Context, userConfig *models.UserAIConfig, req *models.AIQuestionGenRequest) (*models.Question, error)
+	GenerateQuestions(ctx context.Context, userConfig *models.UserAIConfig, req *models.AIQuestionGenRequest) ([]*models.Question, error)
+	GenerateQuestionsStream(ctx context.Context, userConfig *models.UserAIConfig, req *models.AIQuestionGenRequest, progress chan<- *models.Question, variety *VarietyElements) error
+	GenerateChatResponse(ctx context.Context, userConfig *models.UserAIConfig, req *models.AIChatRequest) (string, error)
+	GenerateChatResponseStream(ctx context.Context, userConfig *models.UserAIConfig, req *models.AIChatRequest, chunks chan<- string) error
+	GenerateStorySection(ctx context.Context, userConfig *models.UserAIConfig, req *models.StoryGenerationRequest) (string, error)
+	GenerateStoryQuestions(ctx context.Context, userConfig *models.UserAIConfig, req *models.StoryQuestionsRequest) ([]*models.StorySectionQuestionData, error)
 	TestConnection(ctx context.Context, provider, model, apiKey string) error
 	GetConcurrencyStats() ConcurrencyStats
 	GetQuestionBatchSize(provider string) int
@@ -115,7 +115,7 @@ type AIServiceInterface interface {
 	SupportsGrammarField(provider string) bool
 
 	// CallWithPrompt sends a raw prompt (and optional grammar) to the provider and returns the response
-	CallWithPrompt(ctx context.Context, userConfig *UserAIConfig, prompt, grammar string) (string, error)
+	CallWithPrompt(ctx context.Context, userConfig *models.UserAIConfig, prompt, grammar string) (string, error)
 	Shutdown(ctx context.Context) error
 }
 
@@ -469,7 +469,7 @@ func (s *AIService) addJSONStructureGuidance(prompt string, questionType models.
 }
 
 // GenerateQuestion generates a single question using AI
-func (s *AIService) GenerateQuestion(ctx context.Context, userConfig *UserAIConfig, req *models.AIQuestionGenRequest) (result0 *models.Question, err error) {
+func (s *AIService) GenerateQuestion(ctx context.Context, userConfig *models.UserAIConfig, req *models.AIQuestionGenRequest) (result0 *models.Question, err error) {
 	ctx, span := observability.TraceAIFunction(ctx, "generate_question",
 		attribute.String("user.username", userConfig.Username),
 		attribute.String("ai.provider", userConfig.Provider),
@@ -507,7 +507,7 @@ func (s *AIService) GenerateQuestion(ctx context.Context, userConfig *UserAIConf
 }
 
 // GenerateQuestions generates multiple questions in a single batch request
-func (s *AIService) GenerateQuestions(ctx context.Context, userConfig *UserAIConfig, req *models.AIQuestionGenRequest) (result0 []*models.Question, err error) {
+func (s *AIService) GenerateQuestions(ctx context.Context, userConfig *models.UserAIConfig, req *models.AIQuestionGenRequest) (result0 []*models.Question, err error) {
 	ctx, span := observability.TraceAIFunction(ctx, "generate_questions",
 		attribute.String("user.username", userConfig.Username),
 		attribute.String("ai.provider", userConfig.Provider),
@@ -546,7 +546,7 @@ func (s *AIService) GenerateQuestions(ctx context.Context, userConfig *UserAICon
 }
 
 // GenerateQuestionsStream generates questions and streams them via a channel, using the provided variety elements
-func (s *AIService) GenerateQuestionsStream(ctx context.Context, userConfig *UserAIConfig, req *models.AIQuestionGenRequest, progress chan<- *models.Question, variety *VarietyElements) (err error) {
+func (s *AIService) GenerateQuestionsStream(ctx context.Context, userConfig *models.UserAIConfig, req *models.AIQuestionGenRequest, progress chan<- *models.Question, variety *VarietyElements) (err error) {
 	ctx, span := observability.TraceAIFunction(ctx, "generate_questions_stream",
 		attribute.String("user.username", userConfig.Username),
 		attribute.String("ai.provider", userConfig.Provider),
@@ -566,7 +566,7 @@ func (s *AIService) GenerateQuestionsStream(ctx context.Context, userConfig *Use
 }
 
 // generateQuestionsInBatchesWithVariety generates questions in batches for efficiency, using the provided variety elements
-func (s *AIService) generateQuestionsInBatchesWithVariety(ctx context.Context, userConfig *UserAIConfig, req *models.AIQuestionGenRequest, progress chan<- *models.Question, batchSize int, variety *VarietyElements) (err error) {
+func (s *AIService) generateQuestionsInBatchesWithVariety(ctx context.Context, userConfig *models.UserAIConfig, req *models.AIQuestionGenRequest, progress chan<- *models.Question, batchSize int, variety *VarietyElements) (err error) {
 	ctx, span := observability.TraceAIFunction(ctx, "generate_questions_in_batches_with_variety",
 		attribute.String("ai.provider", userConfig.Provider),
 		attribute.String("ai.model", userConfig.Model),
@@ -631,7 +631,7 @@ func (s *AIService) generateQuestionsInBatchesWithVariety(ctx context.Context, u
 }
 
 // generateQuestionsWithVariety generates a batch of questions using the provided variety elements
-func (s *AIService) generateQuestionsWithVariety(ctx context.Context, userConfig *UserAIConfig, req *models.AIQuestionGenRequest, variety *VarietyElements) (result0 []*models.Question, err error) {
+func (s *AIService) generateQuestionsWithVariety(ctx context.Context, userConfig *models.UserAIConfig, req *models.AIQuestionGenRequest, variety *VarietyElements) (result0 []*models.Question, err error) {
 	ctx, span := observability.TraceAIFunction(ctx, "generate_questions_with_variety",
 		attribute.String("ai.provider", userConfig.Provider),
 		attribute.String("ai.model", userConfig.Model),
@@ -676,7 +676,7 @@ func (s *AIService) generateQuestionsWithVariety(ctx context.Context, userConfig
 }
 
 // GenerateChatResponse generates a chat response using AI
-func (s *AIService) GenerateChatResponse(ctx context.Context, userConfig *UserAIConfig, req *models.AIChatRequest) (result0 string, err error) {
+func (s *AIService) GenerateChatResponse(ctx context.Context, userConfig *models.UserAIConfig, req *models.AIChatRequest) (result0 string, err error) {
 	ctx, span := observability.TraceAIFunction(ctx, "generate_chat_response",
 		attribute.String("user.username", userConfig.Username),
 		attribute.String("ai.provider", userConfig.Provider),
@@ -699,7 +699,7 @@ func (s *AIService) GenerateChatResponse(ctx context.Context, userConfig *UserAI
 }
 
 // GenerateChatResponseStream generates a streaming chat response using AI
-func (s *AIService) GenerateChatResponseStream(ctx context.Context, userConfig *UserAIConfig, req *models.AIChatRequest, chunks chan<- string) (err error) {
+func (s *AIService) GenerateChatResponseStream(ctx context.Context, userConfig *models.UserAIConfig, req *models.AIChatRequest, chunks chan<- string) (err error) {
 	ctx, span := observability.TraceAIFunction(ctx, "generate_chat_response_stream",
 		attribute.String("user.username", userConfig.Username),
 		attribute.String("ai.provider", userConfig.Provider),
@@ -716,7 +716,7 @@ func (s *AIService) GenerateChatResponseStream(ctx context.Context, userConfig *
 }
 
 // GenerateStorySection generates a story section using AI
-func (s *AIService) GenerateStorySection(ctx context.Context, userConfig *UserAIConfig, req *models.StoryGenerationRequest) (result string, err error) {
+func (s *AIService) GenerateStorySection(ctx context.Context, userConfig *models.UserAIConfig, req *models.StoryGenerationRequest) (result string, err error) {
 	ctx, span := observability.TraceAIFunction(ctx, "generate_story_section",
 		attribute.String("user.username", userConfig.Username),
 		attribute.String("ai.provider", userConfig.Provider),
@@ -743,7 +743,7 @@ func (s *AIService) GenerateStorySection(ctx context.Context, userConfig *UserAI
 }
 
 // GenerateStoryQuestions generates comprehension questions for a story section
-func (s *AIService) GenerateStoryQuestions(ctx context.Context, userConfig *UserAIConfig, req *models.StoryQuestionsRequest) (result []*models.StorySectionQuestionData, err error) {
+func (s *AIService) GenerateStoryQuestions(ctx context.Context, userConfig *models.UserAIConfig, req *models.StoryQuestionsRequest) (result []*models.StorySectionQuestionData, err error) {
 	ctx, span := observability.TraceAIFunction(ctx, "generate_story_questions",
 		attribute.String("user.username", userConfig.Username),
 		attribute.String("ai.provider", userConfig.Provider),
@@ -897,7 +897,7 @@ func (s *AIService) TestConnection(ctx context.Context, provider, model, apiKey 
 	}
 
 	// Create a simple test configuration
-	userConfig := &UserAIConfig{
+	userConfig := &models.UserAIConfig{
 		Provider: provider,
 		Model:    model,
 		APIKey:   apiKey,
@@ -1049,7 +1049,7 @@ func (s *AIService) getMaxTokensForModel(provider, model string) int {
 }
 
 // callOpenAI makes a request to the OpenAI-compatible API
-func (s *AIService) callOpenAI(ctx context.Context, userConfig *UserAIConfig, prompt, grammar string) (result0 string, err error) {
+func (s *AIService) callOpenAI(ctx context.Context, userConfig *models.UserAIConfig, prompt, grammar string) (result0 string, err error) {
 	if userConfig == nil {
 		return "", contextutils.WrapError(contextutils.ErrAIConfigInvalid, "userConfig is required")
 	}
@@ -1231,7 +1231,7 @@ func (s *AIService) callOpenAI(ctx context.Context, userConfig *UserAIConfig, pr
 }
 
 // callOpenAIStream makes a streaming request to the OpenAI-compatible API
-func (s *AIService) callOpenAIStream(ctx context.Context, userConfig *UserAIConfig, prompt, grammar string, chunks chan<- string) error {
+func (s *AIService) callOpenAIStream(ctx context.Context, userConfig *models.UserAIConfig, prompt, grammar string, chunks chan<- string) error {
 	if userConfig == nil {
 		return contextutils.WrapError(contextutils.ErrAIConfigInvalid, "userConfig is required")
 	}
@@ -2243,6 +2243,6 @@ func (s *AIService) SupportsGrammarField(provider string) bool {
 }
 
 // CallWithPrompt sends a raw prompt (and optional grammar) to the provider and returns the response
-func (s *AIService) CallWithPrompt(ctx context.Context, userConfig *UserAIConfig, prompt, grammar string) (string, error) {
+func (s *AIService) CallWithPrompt(ctx context.Context, userConfig *models.UserAIConfig, prompt, grammar string) (string, error) {
 	return s.callOpenAI(ctx, userConfig, prompt, grammar)
 }

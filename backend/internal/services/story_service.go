@@ -13,6 +13,8 @@ import (
 	"quizapp/internal/models"
 	"quizapp/internal/observability"
 	contextutils "quizapp/internal/utils"
+
+	"go.opentelemetry.io/otel/attribute"
 )
 
 // StoryServiceInterface defines the interface for story operations
@@ -40,6 +42,7 @@ type StoryServiceInterface interface {
 	GetSectionLengthTarget(level string, lengthPref *models.SectionLength) int
 	GetSectionLengthTargetWithLanguage(language, level string, lengthPref *models.SectionLength) int
 	SanitizeInput(input string) string
+	GenerateStorySection(ctx context.Context, storyID, userID uint, aiService AIServiceInterface, userAIConfig *models.UserAIConfig) (*models.StorySectionWithQuestions, error)
 }
 
 // StoryService handles all story-related operations
@@ -1102,4 +1105,166 @@ func (s *StoryService) createSection(ctx context.Context, section *models.StoryS
 	).Scan(&section.ID)
 
 	return err
+}
+
+// GenerateStorySection generates a new section for a story using AI
+func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID uint, aiService AIServiceInterface, userAIConfig *models.UserAIConfig) (*models.StorySectionWithQuestions, error) {
+	ctx, span := observability.TraceFunction(ctx, "story_service", "generate_section",
+		attribute.Int("story.id", int(storyID)),
+		observability.AttributeUserID(int(userID)),
+	)
+	defer observability.FinishSpan(span, nil)
+
+	// Get the story to verify ownership and get details
+	story, err := s.GetStory(ctx, storyID, userID)
+	if err != nil {
+		return nil, contextutils.WrapErrorf(err, "failed to get story for generation")
+	}
+
+	// Check if generation is allowed today
+	canGenerate, err := s.CanGenerateSection(ctx, storyID)
+	if err != nil {
+		return nil, contextutils.WrapErrorf(err, "failed to check generation eligibility")
+	}
+	if !canGenerate {
+		return nil, contextutils.ErrorWithContextf("cannot generate section: story is not active or daily generation limit reached")
+	}
+
+	// Get user for AI configuration and language preferences
+	user, err := s.getUserByID(ctx, userID)
+	if err != nil {
+		return nil, contextutils.WrapErrorf(err, "failed to get user")
+	}
+	if user == nil {
+		return nil, contextutils.ErrorWithContextf("user not found")
+	}
+
+	// Get all previous sections for context
+	previousSections, err := s.GetAllSectionsText(ctx, storyID)
+	if err != nil {
+		return nil, contextutils.WrapErrorf(err, "failed to get previous sections")
+	}
+
+	// Get the user's current language level (handle sql.NullString)
+	userLevel := "B1" // default
+	if user.CurrentLevel.Valid {
+		userLevel = user.CurrentLevel.String
+	}
+
+	// Determine target length for this user's level
+	targetWords := s.GetSectionLengthTarget(userLevel, story.SectionLengthOverride)
+
+	// Build the generation request
+	genReq := &models.StoryGenerationRequest{
+		UserID:             userID,
+		StoryID:            storyID,
+		Language:           story.Language,
+		Level:              userLevel,
+		Title:              story.Title,
+		Subject:            story.Subject,
+		AuthorStyle:        story.AuthorStyle,
+		TimePeriod:         story.TimePeriod,
+		Genre:              story.Genre,
+		Tone:               story.Tone,
+		CharacterNames:     story.CharacterNames,
+		CustomInstructions: story.CustomInstructions,
+		SectionLength:      models.SectionLengthMedium, // Use medium as default
+		PreviousSections:   previousSections,
+		IsFirstSection:     len(story.Sections) == 0,
+		TargetWords:        targetWords,
+		TargetSentences:    targetWords / 15, // Rough estimate
+	}
+
+	// Generate the story section using AI
+	sectionContent, err := aiService.GenerateStorySection(ctx, userAIConfig, genReq)
+	if err != nil {
+		return nil, contextutils.WrapErrorf(err, "failed to generate story section")
+	}
+
+	// Count words in the generated content
+	wordCount := len(strings.Fields(sectionContent))
+
+	// Create the section in the database
+	section, err := s.CreateSection(ctx, storyID, sectionContent, userLevel, wordCount)
+	if err != nil {
+		return nil, contextutils.WrapErrorf(err, "failed to create story section")
+	}
+
+	// Generate comprehension questions for the section
+	questionsReq := &models.StoryQuestionsRequest{
+		UserID:        userID,
+		SectionID:     section.ID,
+		Language:      story.Language,
+		Level:         userLevel,
+		SectionText:   sectionContent,
+		QuestionCount: s.config.Story.QuestionsPerSection,
+	}
+
+	questions, err := aiService.GenerateStoryQuestions(ctx, userAIConfig, questionsReq)
+	if err != nil {
+		s.logger.Warn(ctx, "Failed to generate questions for story section",
+			map[string]interface{}{
+				"section_id": section.ID,
+				"story_id":   storyID,
+				"user_id":    userID,
+				"error":      err.Error(),
+			})
+		// Continue anyway - questions are nice to have but not critical
+	} else {
+		// Convert to database model slice
+		dbQuestions := make([]models.StorySectionQuestionData, len(questions))
+		for i, q := range questions {
+			dbQuestions[i] = *q
+		}
+
+		// Save the questions to the database
+		if err := s.CreateSectionQuestions(ctx, section.ID, dbQuestions); err != nil {
+			s.logger.Warn(ctx, "Failed to save story questions",
+				map[string]interface{}{
+					"section_id": section.ID,
+					"story_id":   storyID,
+					"user_id":    userID,
+					"error":      err.Error(),
+				})
+		}
+	}
+
+	// Update the story's last generation time (user generation)
+	if err := s.UpdateLastGenerationTime(ctx, storyID, true); err != nil {
+		s.logger.Warn(ctx, "Failed to update story generation time",
+			map[string]interface{}{
+				"story_id": storyID,
+				"user_id":  userID,
+				"error":    err.Error(),
+			})
+	}
+
+	s.logger.Info(ctx, "Story section generated successfully",
+		map[string]interface{}{
+			"story_id":       storyID,
+			"section_id":     section.ID,
+			"section_number": section.SectionNumber,
+			"user_id":        userID,
+			"word_count":     wordCount,
+			"question_count": len(questions),
+		})
+
+	// Load questions for the section
+	sectionQuestions, err := s.GetSectionQuestions(ctx, section.ID)
+	if err != nil {
+		s.logger.Warn(ctx, "Failed to load section questions after generation",
+			map[string]interface{}{
+				"section_id": section.ID,
+				"story_id":   storyID,
+				"user_id":    userID,
+				"error":      err.Error(),
+			})
+		// Return section without questions rather than failing
+		sectionQuestions = []models.StorySectionQuestion{}
+	}
+
+	return &models.StorySectionWithQuestions{
+		StorySection: *section,
+		Questions:    sectionQuestions,
+	}, nil
 }
