@@ -2,7 +2,8 @@
 -- First drop the old constraint
 DROP INDEX IF EXISTS unique_current_story_per_user;
 
--- Create new constraint for per user per language
-CREATE UNIQUE INDEX IF NOT EXISTS unique_current_story_per_user_per_language
+-- Create new constraint for per user per language based on active status
+-- (This replaces the old is_current logic)
+CREATE UNIQUE INDEX IF NOT EXISTS unique_active_story_per_user_language
 ON stories (user_id, language)
-WHERE is_current = true;
+WHERE status = 'active';

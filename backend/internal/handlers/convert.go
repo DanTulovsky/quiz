@@ -464,12 +464,11 @@ func convertDailyProgressToAPI(progress *models.DailyProgress) api.DailyProgress
 // Convert models.Story to api.Story
 func convertStoryToAPI(story *models.Story) api.Story {
 	apiStory := api.Story{
-		Id:        int64FromUint(story.ID),
-		UserId:    int64FromUint(story.UserID),
-		Title:     stringPtr(story.Title),
-		Language:  stringPtr(story.Language),
-		Status:    (*api.StoryStatus)(stringPtr(string(story.Status))),
-		IsCurrent: boolPtr(story.IsCurrent),
+		Id:       int64FromUint(story.ID),
+		UserId:   int64FromUint(story.UserID),
+		Title:    stringPtr(story.Title),
+		Language: stringPtr(story.Language),
+		Status:   (*api.StoryStatus)(stringPtr(string(story.Status))),
 	}
 
 	if story.Subject != nil {
@@ -539,12 +538,11 @@ func convertStorySectionToAPI(section *models.StorySection) api.StorySection {
 // Convert models.StoryWithSections to api.StoryWithSections
 func convertStoryWithSectionsToAPI(story *models.StoryWithSections) api.StoryWithSections {
 	apiStory := api.StoryWithSections{
-		Id:        int64FromUint(story.ID),
-		UserId:    int64FromUint(story.UserID),
-		Title:     stringPtr(story.Title),
-		Language:  stringPtr(story.Language),
-		Status:    (*api.StoryWithSectionsStatus)(stringPtr(string(story.Status))),
-		IsCurrent: boolPtr(story.IsCurrent),
+		Id:       int64FromUint(story.ID),
+		UserId:   int64FromUint(story.UserID),
+		Title:    stringPtr(story.Title),
+		Language: stringPtr(story.Language),
+		Status:   (*api.StoryWithSectionsStatus)(stringPtr(string(story.Status))),
 	}
 
 	if story.Subject != nil {

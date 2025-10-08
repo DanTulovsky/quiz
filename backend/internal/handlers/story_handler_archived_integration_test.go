@@ -155,7 +155,7 @@ func (suite *StoryHandlerArchivedIntegrationTestSuite) TestStoryHandler_Archived
 		assert.Equal(suite.T(), "Story to Archive", createdStory.Title)
 		assert.Equal(suite.T(), "en", createdStory.Language)
 		assert.Equal(suite.T(), models.StoryStatusActive, createdStory.Status)
-		assert.True(suite.T(), createdStory.IsCurrent)
+		assert.True(suite.T(), createdStory.Status == models.StoryStatusActive)
 
 		// Step 2: Archive the story
 		w = httptest.NewRecorder()
@@ -167,12 +167,12 @@ func (suite *StoryHandlerArchivedIntegrationTestSuite) TestStoryHandler_Archived
 		// Step 3: Verify the story is archived
 		var archivedStory models.Story
 		err = suite.Container.GetDatabase().QueryRowContext(ctx,
-			"SELECT id, status, is_current FROM stories WHERE id = $1",
-			createdStory.ID).Scan(&archivedStory.ID, &archivedStory.Status, &archivedStory.IsCurrent)
+			"SELECT id, status FROM stories WHERE id = $1",
+			createdStory.ID).Scan(&archivedStory.ID, &archivedStory.Status)
 		require.NoError(suite.T(), err)
 
 		assert.Equal(suite.T(), models.StoryStatusArchived, archivedStory.Status)
-		assert.False(suite.T(), archivedStory.IsCurrent)
+		assert.False(suite.T(), archivedStory.Status == models.StoryStatusActive)
 	})
 
 	suite.Run("should get archived stories successfully", func() {
@@ -246,11 +246,11 @@ func (suite *StoryHandlerArchivedIntegrationTestSuite) TestStoryHandler_Archived
 		// Verify it's archived
 		var archivedStory models.Story
 		err = suite.Container.GetDatabase().QueryRowContext(ctx,
-			"SELECT id, status, is_current FROM stories WHERE id = $1",
-			story.ID).Scan(&archivedStory.ID, &archivedStory.Status, &archivedStory.IsCurrent)
+			"SELECT id, status FROM stories WHERE id = $1",
+			story.ID).Scan(&archivedStory.ID, &archivedStory.Status)
 		require.NoError(suite.T(), err)
 		assert.Equal(suite.T(), models.StoryStatusArchived, archivedStory.Status)
-		assert.False(suite.T(), archivedStory.IsCurrent)
+		assert.False(suite.T(), archivedStory.Status == models.StoryStatusActive)
 
 		// Restore the story
 		w = httptest.NewRecorder()
@@ -262,12 +262,12 @@ func (suite *StoryHandlerArchivedIntegrationTestSuite) TestStoryHandler_Archived
 		// Verify the story is now current
 		var restoredStory models.Story
 		err = suite.Container.GetDatabase().QueryRowContext(ctx,
-			"SELECT id, status, is_current FROM stories WHERE id = $1",
-			story.ID).Scan(&restoredStory.ID, &restoredStory.Status, &restoredStory.IsCurrent)
+			"SELECT id, status FROM stories WHERE id = $1",
+			story.ID).Scan(&restoredStory.ID, &restoredStory.Status)
 		require.NoError(suite.T(), err)
 
 		assert.Equal(suite.T(), models.StoryStatusActive, restoredStory.Status)
-		assert.True(suite.T(), restoredStory.IsCurrent)
+		assert.True(suite.T(), restoredStory.Status == models.StoryStatusActive)
 	})
 
 	suite.Run("should prevent archiving completed stories", func() {
@@ -304,12 +304,12 @@ func (suite *StoryHandlerArchivedIntegrationTestSuite) TestStoryHandler_Archived
 		// Verify the story is still completed
 		var stillCompletedStory models.Story
 		err = suite.Container.GetDatabase().QueryRowContext(ctx,
-			"SELECT id, status, is_current FROM stories WHERE id = $1",
-			story.ID).Scan(&stillCompletedStory.ID, &stillCompletedStory.Status, &stillCompletedStory.IsCurrent)
+			"SELECT id, status FROM stories WHERE id = $1",
+			story.ID).Scan(&stillCompletedStory.ID, &stillCompletedStory.Status)
 		require.NoError(suite.T(), err)
 
 		assert.Equal(suite.T(), models.StoryStatusCompleted, stillCompletedStory.Status)
-		assert.False(suite.T(), stillCompletedStory.IsCurrent)
+		assert.False(suite.T(), stillCompletedStory.Status == models.StoryStatusActive)
 	})
 
 	suite.Run("should filter archived stories by user's preferred language", func() {

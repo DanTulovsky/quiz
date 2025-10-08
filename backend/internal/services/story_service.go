@@ -85,9 +85,9 @@ func (s *StoryService) CreateStory(ctx context.Context, userID uint, language st
 		return nil, contextutils.WrapErrorf(err, "failed to get user level")
 	}
 
-	// Unset any existing current story in the same language first
-	unsetQuery := "UPDATE stories SET is_current = $1, updated_at = NOW() WHERE user_id = $2 AND language = $3 AND is_current = $4"
-	_, err = s.db.ExecContext(ctx, unsetQuery, false, userID, language, true)
+	// Unset any existing active story in the same language first
+	unsetQuery := "UPDATE stories SET status = $1, updated_at = NOW() WHERE user_id = $2 AND language = $3 AND status = $4"
+	_, err = s.db.ExecContext(ctx, unsetQuery, models.StoryStatusArchived, userID, language, models.StoryStatusActive)
 	if err != nil {
 		return nil, contextutils.WrapErrorf(err, "failed to unset existing current story")
 	}
@@ -106,7 +106,6 @@ func (s *StoryService) CreateStory(ctx context.Context, userID uint, language st
 		CustomInstructions:    req.CustomInstructions,
 		SectionLengthOverride: req.SectionLengthOverride,
 		Status:                models.StoryStatusActive,
-		IsCurrent:             true,
 		CreatedAt:             time.Now(),
 		UpdatedAt:             time.Now(),
 	}
@@ -145,7 +144,7 @@ func (s *StoryService) GetUserStories(ctx context.Context, userID uint, includeA
 
 	query := `
 		SELECT id, user_id, title, language, subject, author_style, time_period, genre, tone,
-		       character_names, custom_instructions, section_length_override, status, is_current,
+		       character_names, custom_instructions, section_length_override, status,
 		       last_section_generated_at, created_at, updated_at
 		FROM stories
 		WHERE user_id = $1 AND language = $2`
@@ -157,7 +156,7 @@ func (s *StoryService) GetUserStories(ctx context.Context, userID uint, includeA
 		args = append(args, models.StoryStatusArchived)
 	}
 
-	query += " ORDER BY is_current DESC, created_at DESC"
+	query += " ORDER BY status = 'active' DESC, created_at DESC"
 
 	rows, err := s.db.QueryContext(ctx, query, args...)
 	if err != nil {
@@ -172,7 +171,7 @@ func (s *StoryService) GetUserStories(ctx context.Context, userID uint, includeA
 			&story.ID, &story.UserID, &story.Title, &story.Language, &story.Subject,
 			&story.AuthorStyle, &story.TimePeriod, &story.Genre, &story.Tone,
 			&story.CharacterNames, &story.CustomInstructions, &story.SectionLengthOverride,
-			&story.Status, &story.IsCurrent, &story.LastSectionGeneratedAt,
+			&story.Status, &story.LastSectionGeneratedAt,
 			&story.CreatedAt, &story.UpdatedAt,
 		)
 		if err != nil {
@@ -203,17 +202,17 @@ func (s *StoryService) GetCurrentStory(ctx context.Context, userID uint) (*model
 
 	query := `
 		SELECT id, user_id, title, language, subject, author_style, time_period, genre, tone,
-		       character_names, custom_instructions, section_length_override, status, is_current,
+		       character_names, custom_instructions, section_length_override, status,
 		       last_section_generated_at, created_at, updated_at
 		FROM stories
-		WHERE user_id = $1 AND language = $2 AND is_current = $3 AND status != $4`
+		WHERE user_id = $1 AND language = $2 AND status = $3 AND status != $4`
 
 	var story models.Story
-	err = s.db.QueryRowContext(ctx, query, userID, language, true, models.StoryStatusArchived).Scan(
+	err = s.db.QueryRowContext(ctx, query, userID, language, models.StoryStatusActive, models.StoryStatusArchived).Scan(
 		&story.ID, &story.UserID, &story.Title, &story.Language, &story.Subject,
 		&story.AuthorStyle, &story.TimePeriod, &story.Genre, &story.Tone,
 		&story.CharacterNames, &story.CustomInstructions, &story.SectionLengthOverride,
-		&story.Status, &story.IsCurrent, &story.LastSectionGeneratedAt,
+		&story.Status, &story.LastSectionGeneratedAt,
 		&story.CreatedAt, &story.UpdatedAt,
 	)
 	if err != nil {
@@ -239,7 +238,7 @@ func (s *StoryService) GetCurrentStory(ctx context.Context, userID uint) (*model
 func (s *StoryService) GetStory(ctx context.Context, storyID, userID uint) (*models.StoryWithSections, error) {
 	query := `
 		SELECT id, user_id, title, language, subject, author_style, time_period, genre, tone,
-		       character_names, custom_instructions, section_length_override, status, is_current,
+		       character_names, custom_instructions, section_length_override, status,
 		       last_section_generated_at, created_at, updated_at
 		FROM stories
 		WHERE id = $1 AND user_id = $2`
@@ -249,7 +248,7 @@ func (s *StoryService) GetStory(ctx context.Context, storyID, userID uint) (*mod
 		&story.ID, &story.UserID, &story.Title, &story.Language, &story.Subject,
 		&story.AuthorStyle, &story.TimePeriod, &story.Genre, &story.Tone,
 		&story.CharacterNames, &story.CustomInstructions, &story.SectionLengthOverride,
-		&story.Status, &story.IsCurrent, &story.LastSectionGeneratedAt,
+		&story.Status, &story.LastSectionGeneratedAt,
 		&story.CreatedAt, &story.UpdatedAt,
 	)
 	if err != nil {
@@ -277,18 +276,10 @@ func (s *StoryService) ArchiveStory(ctx context.Context, storyID, userID uint) e
 		return err
 	}
 
-	// Use a transaction to ensure atomicity and handle is_current flag properly
-	tx, err := s.db.BeginTx(ctx, nil)
-	if err != nil {
-		return contextutils.WrapErrorf(err, "failed to begin transaction")
-	}
-	defer func() { _ = tx.Rollback() }()
-
 	// First, check if the story is completed (completed stories cannot be archived)
 	var status string
-	var isCurrentlyCurrent bool
-	checkQuery := "SELECT status, is_current FROM stories WHERE id = $1"
-	err = tx.QueryRowContext(ctx, checkQuery, storyID).Scan(&status, &isCurrentlyCurrent)
+	checkQuery := "SELECT status FROM stories WHERE id = $1"
+	err := s.db.QueryRowContext(ctx, checkQuery, storyID).Scan(&status)
 	if err != nil {
 		return contextutils.WrapErrorf(err, "failed to check story status")
 	}
@@ -298,43 +289,11 @@ func (s *StoryService) ArchiveStory(ctx context.Context, storyID, userID uint) e
 		return contextutils.ErrorWithContextf("cannot archive completed stories")
 	}
 
-	// Archive the story and unset is_current flag
-	query := "UPDATE stories SET status = $1, is_current = $2, updated_at = NOW() WHERE id = $3"
-	_, err = tx.ExecContext(ctx, query, models.StoryStatusArchived, false, storyID)
+	// Archive the story (this automatically removes it from being current since only active stories are current)
+	query := "UPDATE stories SET status = $1, updated_at = NOW() WHERE id = $2"
+	_, err = s.db.ExecContext(ctx, query, models.StoryStatusArchived, storyID)
 	if err != nil {
 		return contextutils.WrapErrorf(err, "failed to archive story")
-	}
-
-	// If the archived story was the current story, ensure exactly one story is current
-	// This handles constraint violations by ensuring only one current story per user
-	if isCurrentlyCurrent {
-		// Find any other active story to promote as current
-		// If none exists, that's fine - no story will be current
-		var activeStoryID *uint
-		selectQuery := `
-			SELECT id FROM stories
-			WHERE user_id = $1 AND status = 'active' AND id != $2
-			ORDER BY updated_at DESC
-			LIMIT 1`
-		err = tx.QueryRowContext(ctx, selectQuery, userID, storyID).Scan(&activeStoryID)
-		if err != nil && err != sql.ErrNoRows {
-			return contextutils.WrapErrorf(err, "failed to find active story to set as current")
-		}
-
-		// If we found an active story, set it as current
-		if activeStoryID != nil {
-			setCurrentQuery := "UPDATE stories SET is_current = true, updated_at = NOW() WHERE id = $1"
-			_, err = tx.ExecContext(ctx, setCurrentQuery, *activeStoryID)
-			if err != nil {
-				return contextutils.WrapErrorf(err, "failed to set new current story")
-			}
-		}
-		// If no active story exists, that's fine - no story will be current
-	}
-
-	err = tx.Commit()
-	if err != nil {
-		return contextutils.WrapErrorf(err, "failed to commit transaction")
 	}
 
 	s.logger.Info(context.Background(), "Story archived successfully",
@@ -352,7 +311,7 @@ func (s *StoryService) CompleteStory(ctx context.Context, storyID, userID uint) 
 		return err
 	}
 
-	query := "UPDATE stories SET status = $1, is_current = false, updated_at = NOW() WHERE id = $2"
+	query := "UPDATE stories SET status = $1, updated_at = NOW() WHERE id = $2"
 	_, err := s.db.ExecContext(ctx, query, models.StoryStatusCompleted, storyID)
 	if err != nil {
 		return contextutils.WrapErrorf(err, "failed to complete story")
@@ -376,8 +335,8 @@ func (s *StoryService) SetCurrentStory(ctx context.Context, storyID, userID uint
 	// Get the story's language and status
 	query := "SELECT language, status FROM stories WHERE id = $1 AND user_id = $2"
 	var language string
-	var status models.StoryStatus
-	err := s.db.QueryRowContext(ctx, query, storyID, userID).Scan(&language, &status)
+	var storyStatus models.StoryStatus
+	err := s.db.QueryRowContext(ctx, query, storyID, userID).Scan(&language, &storyStatus)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return contextutils.ErrorWithContextf("story not found or access denied")
@@ -386,7 +345,7 @@ func (s *StoryService) SetCurrentStory(ctx context.Context, storyID, userID uint
 	}
 
 	// Only allow restoring active stories (not completed ones)
-	if status == models.StoryStatusCompleted {
+	if storyStatus == models.StoryStatusCompleted {
 		return contextutils.ErrorWithContextf("cannot restore completed stories")
 	}
 
@@ -410,52 +369,46 @@ func (s *StoryService) SetCurrentStory(ctx context.Context, storyID, userID uint
 		return contextutils.ErrorWithContextf("cannot restore story in different language than preferred language")
 	}
 
-	// Use a transaction to ensure atomicity
-	tx, err := s.db.BeginTx(ctx, nil)
+	// Archive any existing active story in the same language for this user
+	// (since only one story can be active per user per language)
+	unsetQuery := "UPDATE stories SET status = $1, updated_at = NOW() WHERE user_id = $2 AND language = $3 AND status = $4"
+	_, err = s.db.ExecContext(ctx, unsetQuery, models.StoryStatusArchived, userID, language, models.StoryStatusActive)
 	if err != nil {
-		return contextutils.WrapErrorf(err, "failed to begin transaction")
-	}
-	defer func() { _ = tx.Rollback() }()
-
-	// First, unset current stories in the same language for this user to avoid constraint violations
-	unsetQuery := "UPDATE stories SET is_current = false, updated_at = NOW() WHERE user_id = $1 AND language = $2 AND is_current = true"
-	_, err = tx.ExecContext(ctx, unsetQuery, userID, language)
-	if err != nil {
-		return contextutils.WrapErrorf(err, "failed to unset current stories")
+		return contextutils.WrapErrorf(err, "failed to unset existing active story")
 	}
 
-	// Set the specified story as current and active
-	setQuery := "UPDATE stories SET is_current = true, status = $1, updated_at = NOW() WHERE id = $2"
-	_, err = tx.ExecContext(ctx, setQuery, models.StoryStatusActive, storyID)
+	// Set the specified story as active (which makes it current)
+	setQuery := "UPDATE stories SET status = $1, updated_at = NOW() WHERE id = $2"
+	_, err = s.db.ExecContext(ctx, setQuery, models.StoryStatusActive, storyID)
 	if err != nil {
 		return contextutils.WrapErrorf(err, "failed to set current story")
 	}
 
-	return tx.Commit()
+	return nil
 }
 
-// FixCurrentStoryConstraint fixes any constraint violations where multiple stories are marked as current for the same user in the same language
+// FixCurrentStoryConstraint fixes any constraint violations where multiple stories are marked as active for the same user in the same language
 func (s *StoryService) FixCurrentStoryConstraint(ctx context.Context) error {
-	// Find all users who have multiple current stories in the same language
+	// Find all users who have multiple active stories in the same language
 	query := `
-		SELECT user_id, language, COUNT(*) as current_count
+		SELECT user_id, language, COUNT(*) as active_count
 		FROM stories
-		WHERE is_current = true
+		WHERE status = 'active'
 		GROUP BY user_id, language
 		HAVING COUNT(*) > 1`
 
 	rows, err := s.db.QueryContext(ctx, query)
 	if err != nil {
-		return contextutils.WrapErrorf(err, "failed to find users with multiple current stories in same language")
+		return contextutils.WrapErrorf(err, "failed to find users with multiple active stories in same language")
 	}
 	defer func() { _ = rows.Close() }()
 
 	for rows.Next() {
 		var userID uint
 		var language string
-		var currentCount int
+		var activeCount int
 
-		if err := rows.Scan(&userID, &language, &currentCount); err != nil {
+		if err := rows.Scan(&userID, &language, &activeCount); err != nil {
 			return contextutils.WrapErrorf(err, "failed to scan user constraint violation")
 		}
 
@@ -476,16 +429,16 @@ func (s *StoryService) fixUserCurrentStoryConstraint(ctx context.Context, userID
 	}
 	defer func() { _ = tx.Rollback() }()
 
-	// Find all current stories for this user in this language, ordered by most recently updated
-	var currentStories []uint
+	// Find all active stories for this user in this language, ordered by most recently updated
+	var activeStories []uint
 	selectQuery := `
 		SELECT id FROM stories
-		WHERE user_id = $1 AND language = $2 AND is_current = true
+		WHERE user_id = $1 AND language = $2 AND status = 'active'
 		ORDER BY updated_at DESC`
 
 	rows, err := tx.QueryContext(ctx, selectQuery, userID, language)
 	if err != nil {
-		return contextutils.WrapErrorf(err, "failed to find current stories for user in language")
+		return contextutils.WrapErrorf(err, "failed to find active stories for user in language")
 	}
 	defer func() { _ = rows.Close() }()
 
@@ -494,20 +447,20 @@ func (s *StoryService) fixUserCurrentStoryConstraint(ctx context.Context, userID
 		if err := rows.Scan(&storyID); err != nil {
 			return contextutils.WrapErrorf(err, "failed to scan story ID")
 		}
-		currentStories = append(currentStories, storyID)
+		activeStories = append(activeStories, storyID)
 	}
 
-	if len(currentStories) <= 1 {
+	if len(activeStories) <= 1 {
 		// No constraint violation for this user in this language
 		return tx.Commit()
 	}
 
-	// Unset all current stories except the most recently updated one
-	for i := 1; i < len(currentStories); i++ {
-		unsetQuery := "UPDATE stories SET is_current = false, updated_at = NOW() WHERE id = $1"
-		_, err = tx.ExecContext(ctx, unsetQuery, currentStories[i])
+	// Archive all active stories except the most recently updated one
+	for i := 1; i < len(activeStories); i++ {
+		unsetQuery := "UPDATE stories SET status = $1, updated_at = NOW() WHERE id = $2"
+		_, err = tx.ExecContext(ctx, unsetQuery, models.StoryStatusArchived, activeStories[i])
 		if err != nil {
-			return contextutils.WrapErrorf(err, "failed to unset current story %d", currentStories[i])
+			return contextutils.WrapErrorf(err, "failed to unset active story %d", activeStories[i])
 		}
 	}
 
@@ -519,7 +472,7 @@ func (s *StoryService) DeleteStory(ctx context.Context, storyID, userID uint) er
 	// Verify story exists and user owns it
 	query := `
 		SELECT id, user_id, title, language, subject, author_style, time_period, genre, tone,
-		       character_names, custom_instructions, section_length_override, status, is_current,
+		       character_names, custom_instructions, section_length_override, status,
 		       last_section_generated_at, created_at, updated_at
 		FROM stories
 		WHERE id = $1 AND user_id = $2`
@@ -529,7 +482,7 @@ func (s *StoryService) DeleteStory(ctx context.Context, storyID, userID uint) er
 		&story.ID, &story.UserID, &story.Title, &story.Language, &story.Subject,
 		&story.AuthorStyle, &story.TimePeriod, &story.Genre, &story.Tone,
 		&story.CharacterNames, &story.CustomInstructions, &story.SectionLengthOverride,
-		&story.Status, &story.IsCurrent, &story.LastSectionGeneratedAt,
+		&story.Status, &story.LastSectionGeneratedAt,
 		&story.CreatedAt, &story.UpdatedAt,
 	)
 	if err != nil {
@@ -889,16 +842,15 @@ func (s *StoryService) GetRandomQuestions(ctx context.Context, sectionID uint, c
 // canGenerateSection checks if a new section can be generated for a story today by a specific generator
 func (s *StoryService) canGenerateSection(ctx context.Context, storyID uint, generatorType models.GeneratorType) (*models.StoryGenerationEligibilityResponse, error) {
 	query := `
-		SELECT status, is_current, last_section_generated_at, extra_generations_today
+		SELECT status, last_section_generated_at, extra_generations_today
 		FROM stories
 		WHERE id = $1`
 
 	var status string
-	var isCurrent bool
 	var lastGen *time.Time
 	var extraGenerationsToday int
 
-	err := s.db.QueryRowContext(ctx, query, storyID).Scan(&status, &isCurrent, &lastGen, &extraGenerationsToday)
+	err := s.db.QueryRowContext(ctx, query, storyID).Scan(&status, &lastGen, &extraGenerationsToday)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return &models.StoryGenerationEligibilityResponse{
@@ -917,8 +869,8 @@ func (s *StoryService) canGenerateSection(ctx context.Context, storyID uint, gen
 		}, nil
 	}
 
-	// Check if story is active and current
-	if status != string(models.StoryStatusActive) || !isCurrent {
+	// Check if story is active (active stories are by definition current)
+	if status != string(models.StoryStatusActive) {
 		return &models.StoryGenerationEligibilityResponse{
 			CanGenerate: false,
 			Reason:      "story is not active",
@@ -1146,16 +1098,16 @@ func (s *StoryService) createStory(ctx context.Context, story *models.Story) err
 	query := `
 		INSERT INTO stories (
 			user_id, title, language, subject, author_style, time_period, genre, tone,
-			character_names, custom_instructions, section_length_override, status, is_current,
+			character_names, custom_instructions, section_length_override, status,
 			created_at, updated_at
-		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
 		RETURNING id`
 
 	err := s.db.QueryRowContext(ctx, query,
 		story.UserID, story.Title, story.Language, story.Subject, story.AuthorStyle,
 		story.TimePeriod, story.Genre, story.Tone, story.CharacterNames,
 		story.CustomInstructions, story.SectionLengthOverride, story.Status,
-		story.IsCurrent, story.CreatedAt, story.UpdatedAt,
+		story.CreatedAt, story.UpdatedAt,
 	).Scan(&story.ID)
 
 	return err

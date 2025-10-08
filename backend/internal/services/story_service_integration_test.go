@@ -758,7 +758,7 @@ func TestStoryService_GetCurrentStory_Integration(t *testing.T) {
 	})
 	require.NoError(t, err)
 	require.NotNil(t, story)
-	assert.True(t, story.IsCurrent, "New story should be set as current")
+	assert.True(t, story.Status == models.StoryStatusActive, "New story should be set as current")
 
 	// Create a section for the story
 	section, err := storyService.CreateSection(ctx, story.ID, "This is the first section of the current story.", "A1", 50, models.GeneratorTypeUser)
@@ -774,7 +774,7 @@ func TestStoryService_GetCurrentStory_Integration(t *testing.T) {
 	assert.Equal(t, story.ID, currentStory.Story.ID)
 	assert.Equal(t, "Test Current Story", currentStory.Story.Title)
 	assert.Equal(t, "italian", currentStory.Story.Language)
-	assert.True(t, currentStory.Story.IsCurrent)
+	assert.True(t, currentStory.Story.Status == models.StoryStatusActive)
 
 	// Verify section data
 	require.Len(t, currentStory.Sections, 1, "Current story should have one section")
@@ -791,8 +791,8 @@ func TestStoryService_GetCurrentStory_Integration(t *testing.T) {
 	})
 	require.NoError(t, err)
 	require.NotNil(t, anotherStory)
-	assert.True(t, anotherStory.IsCurrent, "Second story should become current")
-	// Note: story.IsCurrent is not updated in memory, so we don't check it
+	assert.True(t, anotherStory.Status == models.StoryStatusActive, "Second story should become current")
+	// Note: story.Status == models.StoryStatusActive is not updated in memory, so we don't check it
 
 	// Current story should now be the second one
 	currentStory, err = storyService.GetCurrentStory(ctx, uint(user.ID))
@@ -812,14 +812,14 @@ func TestStoryService_GetCurrentStory_Integration(t *testing.T) {
 	})
 	require.NoError(t, err)
 	require.NotNil(t, thirdStory)
-	assert.True(t, thirdStory.IsCurrent, "Third story should become current")
+	assert.True(t, thirdStory.Status == models.StoryStatusActive, "Third story should become current")
 
 	// Current story should now be the third one
 	currentStory, err = storyService.GetCurrentStory(ctx, uint(user.ID))
 	require.NoError(t, err)
 	require.NotNil(t, currentStory)
 	assert.Equal(t, thirdStory.ID, currentStory.Story.ID, "Third story should now be current")
-	// Note: anotherStory.IsCurrent is not updated in memory, so we don't check it
+	// Note: anotherStory.Status == models.StoryStatusActive is not updated in memory, so we don't check it
 
 	// Test with user who has no stories in their preferred language
 	user2, err := userService.CreateUser(ctx, fmt.Sprintf("user2_%d", time.Now().UnixNano()), "french", "A1")
@@ -871,8 +871,8 @@ func TestStoryService_GetUserStories_Integration(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, story2)
 
-	// Get all stories (should return both)
-	allStories, err := storyService.GetUserStories(ctx, uint(user.ID), false)
+	// Get all stories (should return both, including archived)
+	allStories, err := storyService.GetUserStories(ctx, uint(user.ID), true)
 	require.NoError(t, err)
 	assert.Len(t, allStories, 2, "User should have 2 stories")
 

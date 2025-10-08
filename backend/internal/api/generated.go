@@ -764,7 +764,6 @@ type Story struct {
 	ExtraGenerationsToday  *int                        `json:"extra_generations_today,omitempty"`
 	Genre                  *string                     `json:"genre"`
 	Id                     *int64                      `json:"id,omitempty"`
-	IsCurrent              *bool                       `json:"is_current,omitempty"`
 	Language               *string                     `json:"language,omitempty"`
 	LastSectionGeneratedAt *time.Time                  `json:"last_section_generated_at"`
 	SectionLengthOverride  *StorySectionLengthOverride `json:"section_length_override,omitempty"`
@@ -828,7 +827,6 @@ type StoryWithSections struct {
 	ExtraGenerationsToday  *int                                    `json:"extra_generations_today,omitempty"`
 	Genre                  *string                                 `json:"genre"`
 	Id                     *int64                                  `json:"id,omitempty"`
-	IsCurrent              *bool                                   `json:"is_current,omitempty"`
 	Language               *string                                 `json:"language,omitempty"`
 	LastSectionGeneratedAt *time.Time                              `json:"last_section_generated_at"`
 	SectionLengthOverride  *StoryWithSectionsSectionLengthOverride `json:"section_length_override,omitempty"`

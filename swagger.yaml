@@ -5579,9 +5579,6 @@ components:
           type: string
           enum: [active, archived, completed]
           example: "active"
-        is_current:
-          type: boolean
-          example: true
         last_section_generated_at:
           type: string
           format: date-time

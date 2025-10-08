@@ -156,16 +156,16 @@ func (suite *StoryHandlerIntegrationTestSuite) TestStoryHandler_CreateStory_Inte
 		// If not, we need to ensure there's a current story for this user
 		var storyCount int
 		err := suite.Container.GetDatabase().QueryRowContext(ctx,
-			"SELECT COUNT(*) FROM stories WHERE user_id = $1 AND is_current = true",
+			"SELECT COUNT(*) FROM stories WHERE user_id = $1 AND status = 'active'",
 			user.ID).Scan(&storyCount)
 		require.NoError(suite.T(), err)
 
 		if storyCount == 0 {
 			// Create a current story if none exists
 			_, err = suite.Container.GetDatabase().ExecContext(ctx,
-				`INSERT INTO stories (user_id, title, language, status, is_current, created_at, updated_at)
-				 VALUES ($1, $2, $3, $4, $5, NOW(), NOW())`,
-				user.ID, "Test Story Current", "en", "active", true)
+				`INSERT INTO stories (user_id, title, language, status, created_at, updated_at)
+				 VALUES ($1, $2, $3, $4, NOW(), NOW())`,
+				user.ID, "Test Story Current", "en", "active")
 			require.NoError(suite.T(), err)
 		}
 
@@ -192,14 +192,14 @@ func (suite *StoryHandlerIntegrationTestSuite) TestStoryHandler_CreateStory_Inte
 		// First, ensure there's a current story for this user
 		var storyID uint
 		err := suite.Container.GetDatabase().QueryRowContext(ctx,
-			"SELECT id FROM stories WHERE user_id = $1 AND is_current = true LIMIT 1",
+			"SELECT id FROM stories WHERE user_id = $1 AND status = 'active' LIMIT 1",
 			user.ID).Scan(&storyID)
 		if err != nil || storyID == 0 {
 			// Create a current story if none exists
 			err = suite.Container.GetDatabase().QueryRowContext(ctx,
-				`INSERT INTO stories (user_id, title, language, status, is_current, created_at, updated_at)
-				 VALUES ($1, $2, $3, $4, $5, NOW(), NOW()) RETURNING id`,
-				user.ID, "Story to Archive", "en", "active", true).Scan(&storyID)
+				`INSERT INTO stories (user_id, title, language, status, created_at, updated_at)
+				 VALUES ($1, $2, $3, $4, NOW(), NOW()) RETURNING id`,
+				user.ID, "Story to Archive", "en", "active").Scan(&storyID)
 			require.NoError(suite.T(), err)
 		}
 
@@ -218,12 +218,12 @@ func (suite *StoryHandlerIntegrationTestSuite) TestStoryHandler_CreateStory_Inte
 		// Verify the story is now archived and not current
 		var archivedStory models.Story
 		err = suite.Container.GetDatabase().QueryRowContext(ctx,
-			"SELECT id, status, is_current FROM stories WHERE id = $1",
-			storyID).Scan(&archivedStory.ID, &archivedStory.Status, &archivedStory.IsCurrent)
+			"SELECT id, status FROM stories WHERE id = $1",
+			storyID).Scan(&archivedStory.ID, &archivedStory.Status)
 		require.NoError(suite.T(), err)
 
 		assert.Equal(suite.T(), models.StoryStatusArchived, archivedStory.Status)
-		assert.False(suite.T(), archivedStory.IsCurrent)
+		assert.False(suite.T(), archivedStory.Status == models.StoryStatusActive)
 	})
 
 	suite.Run("should handle language-based story filtering", func() {
@@ -286,7 +286,7 @@ func (suite *StoryHandlerIntegrationTestSuite) TestStoryHandler_CreateStory_Inte
 		require.NoError(suite.T(), err)
 		assert.Equal(suite.T(), "Storia Italiana", *italianStory.Title)
 		assert.Equal(suite.T(), "it", *italianStory.Language)
-		assert.True(suite.T(), *italianStory.IsCurrent)
+		// IsCurrent field removed - active stories are current by definition
 
 		// Step 2: Verify current story returns the Italian story
 		w = httptest.NewRecorder()
@@ -330,7 +330,7 @@ func (suite *StoryHandlerIntegrationTestSuite) TestStoryHandler_CreateStory_Inte
 		require.NoError(suite.T(), err)
 		assert.Equal(suite.T(), "Русская История", *russianStory.Title)
 		assert.Equal(suite.T(), "ru", *russianStory.Language)
-		assert.True(suite.T(), *russianStory.IsCurrent)
+		// IsCurrent field removed - active stories are current by definition
 
 		// Step 6: Verify current story returns the Russian story
 		w = httptest.NewRecorder()
@@ -369,50 +369,48 @@ func (suite *StoryHandlerIntegrationTestSuite) TestStoryHandler_CreateStory_Inte
 
 		// Step 10: Verify both stories are current (one per language)
 		var stories []struct {
-			ID        uint
-			Title     string
-			Language  string
-			IsCurrent bool
+			ID       uint
+			Title    string
+			Language string
 		}
 		rows, err := suite.Container.GetDatabase().QueryContext(ctx,
-			"SELECT id, title, language, is_current FROM stories WHERE user_id = $1", user.ID)
+			"SELECT id, title, language FROM stories WHERE user_id = $1 AND status = 'active'", user.ID)
 		require.NoError(suite.T(), err)
 		defer rows.Close()
 
 		for rows.Next() {
 			var story struct {
-				ID        uint
-				Title     string
-				Language  string
-				IsCurrent bool
+				ID       uint
+				Title    string
+				Language string
 			}
-			err = rows.Scan(&story.ID, &story.Title, &story.Language, &story.IsCurrent)
+			err = rows.Scan(&story.ID, &story.Title, &story.Language)
 			require.NoError(suite.T(), err)
 			stories = append(stories, story)
 		}
 
 		// Debug: Print the stories
 		for _, story := range stories {
-			suite.T().Logf("Story: ID=%d, Title=%s, Language=%s, IsCurrent=%v", story.ID, story.Title, story.Language, story.IsCurrent)
+			suite.T().Logf("Story: ID=%d, Title=%s, Language=%s", story.ID, story.Title, story.Language)
 		}
 
 		var currentCount int
 		err = suite.Container.GetDatabase().QueryRowContext(ctx,
-			"SELECT COUNT(*) FROM stories WHERE user_id = $1 AND is_current = true", user.ID).Scan(&currentCount)
+			"SELECT COUNT(*) FROM stories WHERE user_id = $1 AND status = 'active'", user.ID).Scan(&currentCount)
 		require.NoError(suite.T(), err)
-		assert.Equal(suite.T(), 2, currentCount) // Both Italian and Russian stories should be current in their respective languages
+		assert.Equal(suite.T(), 2, currentCount) // Both Italian and Russian stories should be active in their respective languages
 
-		// Verify we have current stories in both languages
-		var italianCurrent, russianCurrent bool
+		// Verify we have active stories in both languages (active = current)
+		var italianActive, russianActive bool
 		for _, story := range stories {
-			if story.Language == "it" && story.IsCurrent {
-				italianCurrent = true
+			if story.Language == "it" {
+				italianActive = true
 			}
-			if story.Language == "ru" && story.IsCurrent {
-				russianCurrent = true
+			if story.Language == "ru" {
+				russianActive = true
 			}
 		}
-		assert.True(suite.T(), italianCurrent, "Italian story should be current")
-		assert.True(suite.T(), russianCurrent, "Russian story should be current")
+		assert.True(suite.T(), italianActive, "Italian story should be active")
+		assert.True(suite.T(), russianActive, "Russian story should be active")
 	})
 }

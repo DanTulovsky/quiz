@@ -421,10 +421,11 @@ CREATE TABLE IF NOT EXISTS stories (
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
--- Create partial unique index to ensure only one current story per user per language
-CREATE UNIQUE INDEX IF NOT EXISTS unique_current_story_per_user_per_language
+-- Create partial unique index to ensure only one active story per user per language
+-- (This replaces the old is_current logic)
+CREATE UNIQUE INDEX IF NOT EXISTS unique_active_story_per_user_language
 ON stories (user_id, language)
-WHERE is_current = true;
+WHERE status = 'active';
 
 -- Story sections table - stores individual sections of stories
 CREATE TABLE IF NOT EXISTS story_sections (

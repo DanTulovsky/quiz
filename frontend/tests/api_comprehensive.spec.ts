@@ -93,6 +93,13 @@ interface TestRoleData {
   description: string;
 }
 
+interface TestStoryData {
+  id: number;
+  username: string;
+  title: string;
+  status: string;
+}
+
 interface TestRolesData {
   [roleName: string]: TestRoleData;
 }
@@ -154,6 +161,9 @@ test.describe('Comprehensive API Tests', () => {
 
     // Initialize available user IDs
     initializeAvailableUserIds();
+
+    // Initialize available story IDs
+    initializeAvailableStoryIds();
     initializeAvailableQuestionIds();
 
     // Generate test cases from swagger spec
@@ -801,8 +811,10 @@ test.describe('Comprehensive API Tests', () => {
   // Track available user IDs from test data
   let availableUserIds: number[] = [];
   let availableQuestionIds: number[] = [];
+  let availableStoryIds: number[] = [];
 
   let userIdToUsername: Record<number, string> = {};
+  let usernameToStoryIds: Record<string, number[]> = {};
 
   function initializeAvailableUserIds() {
     // Load actual user IDs from the JSON file created by the test data setup
@@ -822,6 +834,37 @@ test.describe('Comprehensive API Tests', () => {
       userIdToUsername[(user as any).id] = (user as any).username;
     });
     console.log(`Loaded ${availableUserIds.length} user IDs from test data:`, availableUserIds.slice(0, 5));
+  }
+
+  function initializeAvailableStoryIds() {
+    // Load actual story IDs from the JSON file created by the test data setup
+    const storyDataPath = path.join(process.cwd(), 'tests', 'test-stories.json');
+
+    if (!fs.existsSync(storyDataPath)) {
+      throw new Error(`test-stories.json not found at ${storyDataPath}. Test data setup may have failed.`);
+    }
+
+    const storyDataContent = fs.readFileSync(storyDataPath, 'utf8');
+    const storyData = JSON.parse(storyDataContent);
+
+    // Extract story IDs and build username-to-story-IDs mapping
+    availableStoryIds = [];
+    usernameToStoryIds = {};
+
+    Object.values(storyData).forEach((story: any) => {
+      const storyId = story.id;
+      const username = story.username;
+
+      availableStoryIds.push(storyId);
+
+      if (!usernameToStoryIds[username]) {
+        usernameToStoryIds[username] = [];
+      }
+      usernameToStoryIds[username].push(storyId);
+    });
+
+    console.log(`Loaded ${availableStoryIds.length} story IDs from test data:`, availableStoryIds);
+    console.log(`Story ownership mapping:`, usernameToStoryIds);
   }
 
   // Helper to get a user ID by username from tests/test-users.json
@@ -913,6 +956,56 @@ test.describe('Comprehensive API Tests', () => {
       throw new Error('No available user IDs for testing');
     }
     return availableUserIds[0]; // Use the first available ID
+  }
+
+  function getAvailableStoryId(username?: string): number {
+    if (availableStoryIds.length === 0) {
+      throw new Error('No available story IDs. Test data setup may have failed.');
+    }
+
+    if (username) {
+      const userStoryIds = usernameToStoryIds[username];
+      if (userStoryIds && userStoryIds.length > 0) {
+        // Filter for active stories only (archived stories are not accessible via API)
+        const activeUserStoryIds = userStoryIds.filter(storyId => {
+          const storyDataPath = path.join(process.cwd(), 'tests', 'test-stories.json');
+          if (fs.existsSync(storyDataPath)) {
+            const storyDataContent = fs.readFileSync(storyDataPath, 'utf8');
+            const storyData = JSON.parse(storyDataContent) as Record<string, TestStoryData>;
+            const story = Object.values(storyData).find((s: TestStoryData) => s.id === storyId);
+            return story && story.status === 'active';
+          }
+          return false; // If we can't read the data, assume it's not active
+        });
+
+        if (activeUserStoryIds.length > 0) {
+          return activeUserStoryIds[0]; // Return the first active story ID for this user
+        } else {
+          throw new Error(`No active stories found for user '${username}'. They may have only archived stories.`);
+        }
+      } else {
+        throw new Error(`No stories found for user '${username}'. Available users with stories: ${Object.keys(usernameToStoryIds).join(', ')}`);
+      }
+    }
+
+    // Filter for active stories only (archived stories are not accessible via API)
+    const activeStoryIds = availableStoryIds.filter(storyId => {
+      const storyDataPath = path.join(process.cwd(), 'tests', 'test-stories.json');
+      if (fs.existsSync(storyDataPath)) {
+        const storyDataContent = fs.readFileSync(storyDataPath, 'utf8');
+        const storyData = JSON.parse(storyDataContent) as Record<string, TestStoryData>;
+        const story = Object.values(storyData).find((s: TestStoryData) => s.id === storyId);
+        return story && story.status === 'active';
+      }
+      return false; // If we can't read the data, assume it's not active
+    });
+
+    if (activeStoryIds.length === 0) {
+      throw new Error('No active story IDs available. All stories may be archived.');
+    }
+
+    // Fallback to the first active story ID
+    return activeStoryIds[0];
   }
 
   function getUserIdWithDailyAssignments(date: string = '2025-08-04'): number {
@@ -1012,7 +1105,7 @@ test.describe('Comprehensive API Tests', () => {
   }
 
   // Helper function to determine what type of ID we need and get the appropriate value
-  async function getReplacementId(path: string, paramKey: string, request: any): Promise<{value: number | string; type: 'user' | 'question' | 'daily_user' | 'date' | 'role' | 'provider'}> {
+  async function getReplacementId(path: string, paramKey: string, request: any, userContext?: {username: string}): Promise<{value: number | string; type: 'user' | 'question' | 'daily_user' | 'date' | 'role' | 'provider' | 'story'}> {
     if (paramKey === 'userId') {
       return {value: getUserIdWithDailyAssignments(), type: 'daily_user'};
     }
@@ -1051,6 +1144,12 @@ test.describe('Comprehensive API Tests', () => {
     }
 
     if (paramKey === 'id') {
+      // Check if this is a story-related endpoint
+      if (path.includes('/story/')) {
+        const storyId = getAvailableStoryId(userContext?.username);
+        return {value: storyId, type: 'story'};
+      }
+
       // Check if this is a question-related endpoint
       if (path.includes('/questions/') || path.includes('/quiz/question/')) {
         const questionId = await getAvailableQuestionId(request);
@@ -1112,12 +1211,12 @@ test.describe('Comprehensive API Tests', () => {
   }
 
   // Helper function to replace path parameters with appropriate IDs
-  async function replacePathParameters(path: string, pathParams: Record<string, any> | undefined, request: any): Promise<string> {
+  async function replacePathParameters(path: string, pathParams: Record<string, any> | undefined, request: any, userContext?: {username: string}): Promise<string> {
     if (!pathParams) return path;
 
     let resultPath = path;
     for (const [key, value] of Object.entries(pathParams)) {
-      const replacement = await getReplacementId(path, key, request);
+      const replacement = await getReplacementId(path, key, request, userContext);
       resultPath = resultPath.replace(`{${key}}`, replacement.value.toString());
       // console.log(`Replaced {${key}} with ${replacement.value} (${replacement.type}) in path: ${resultPath}`);
     }
@@ -1259,7 +1358,16 @@ test.describe('Comprehensive API Tests', () => {
       else if (key === 'roleId') value = 1;
       else if (key === 'questionId') value = 1;
       else if (key === 'userId') value = 1;
-      else if (key === 'id') value = 1;
+      else if (key === 'id') {
+        // Check if this is a story-related endpoint
+        if (path.includes('/story/')) {
+          // For unauthenticated path replacement, we need an active story ID that exists
+          // but we want to test 404 scenarios, so we'll use a large number that doesn't exist
+          value = 999999999;
+        } else {
+          value = 1;
+        }
+      }
       result = result.replace(`{${key}}`, String(value));
     }
     return result;
@@ -1500,7 +1608,7 @@ test.describe('Comprehensive API Tests', () => {
       const adminCases: TestCase[] = [];
       for (const testCase of happyPathCases) {
         if (!testCase.requiresAdmin) continue;
-        const expandedPath = await replacePathParameters(testCase.path, testCase.pathParams, request);
+        const expandedPath = await replacePathParameters(testCase.path, testCase.pathParams, request, ADMIN_USER);
         if (isExcludedPath(expandedPath)) continue;
         adminCases.push(testCase);
       }
@@ -1510,7 +1618,7 @@ test.describe('Comprehensive API Tests', () => {
         // console.log(`Processing test case: ${testCase.method} ${testCase.path}`);
 
         // Replace path parameters with appropriate IDs
-        const path = await replacePathParameters(testCase.path, testCase.pathParams, request);
+        const path = await replacePathParameters(testCase.path, testCase.pathParams, request, REGULAR_USER);
 
         const url = new URL(`${baseURL}${path}`);
 
@@ -1614,7 +1722,7 @@ test.describe('Comprehensive API Tests', () => {
         // console.log(`Processing test case: ${testCase.method} ${testCase.path}`);
 
         // Replace path parameters with appropriate IDs
-        const path = await replacePathParameters(testCase.path, testCase.pathParams, request);
+        const path = await replacePathParameters(testCase.path, testCase.pathParams, request, REGULAR_USER);
 
         const url = new URL(`${baseURL}${path}`);
 
@@ -1675,7 +1783,7 @@ test.describe('Comprehensive API Tests', () => {
         // console.log(`Processing test case: ${testCase.method} ${testCase.path}`);
 
         // Replace path parameters with appropriate IDs
-        const path = await replacePathParameters(testCase.path, testCase.pathParams, request);
+        const path = await replacePathParameters(testCase.path, testCase.pathParams, request, REGULAR_USER);
 
         const url = new URL(`${baseURL}${path}`);
 
@@ -1714,7 +1822,7 @@ test.describe('Comprehensive API Tests', () => {
       const adminCases: TestCase[] = [];
       for (const testCase of testCases) {
         if (!testCase.requiresAdmin) continue;
-        const expandedPath = await replacePathParameters(testCase.path, testCase.pathParams, request);
+        const expandedPath = await replacePathParameters(testCase.path, testCase.pathParams, request, ADMIN_USER);
         const fullExpanded = `${baseURL}${expandedPath}`;
         if (isExcludedPath(expandedPath) || isExcludedPath(fullExpanded)) continue;
         adminCases.push(testCase);
@@ -1724,7 +1832,7 @@ test.describe('Comprehensive API Tests', () => {
         // console.log(`Processing test case: ${testCase.method} ${testCase.path}`);
 
         // Replace path parameters with appropriate IDs
-        const path = await replacePathParameters(testCase.path, testCase.pathParams, request);
+        const path = await replacePathParameters(testCase.path, testCase.pathParams, request, REGULAR_USER);
 
         const url = new URL(`${baseURL}${path}`);
 

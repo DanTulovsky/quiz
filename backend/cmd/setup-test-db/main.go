@@ -111,6 +111,14 @@ type TestDailyAssignments struct {
 	} `yaml:"daily_assignments"`
 }
 
+// TestStoryData represents story data for E2E tests
+type TestStoryData struct {
+	ID       int    `json:"id"`
+	Username string `json:"username"`
+	Title    string `json:"title"`
+	Status   string `json:"status"`
+}
+
 // TestStories represents a collection of test stories
 type TestStories struct {
 	Stories []struct {
@@ -401,8 +409,14 @@ func setupTestData(ctx context.Context, rootDir string, userService *services.Us
 	}
 
 	// 7. Load and create stories
-	if err := loadAndCreateStories(ctx, filepath.Join(dataDir, "test_stories.yaml"), users, db, logger); err != nil {
+	stories, err := loadAndCreateStories(ctx, filepath.Join(dataDir, "test_stories.yaml"), users, db, logger)
+	if err != nil {
 		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup stories: %w", err)
+	}
+
+	// Output story data for E2E tests
+	if err := outputStoryDataForTests(stories, rootDir, logger); err != nil {
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to output story data: %w", err)
 	}
 
 	return users, nil
@@ -873,25 +887,26 @@ func loadAndCreateDailyAssignments(ctx context.Context, filePath string, users m
 	return nil
 }
 
-func loadAndCreateStories(ctx context.Context, filePath string, users map[string]*models.User, db *sql.DB, logger *observability.Logger) error {
+func loadAndCreateStories(ctx context.Context, filePath string, users map[string]*models.User, db *sql.DB, logger *observability.Logger) (map[string]TestStoryData, error) {
+	stories := make(map[string]TestStoryData)
 	data, err := os.ReadFile(filePath)
 	if err != nil {
 		// Stories file is optional, so just return if it doesn't exist
 		logger.Info(ctx, "Stories file not found, skipping", map[string]interface{}{
 			"file_path": filePath,
 		})
-		return nil
+		return stories, nil
 	}
 
 	var testStories TestStories
 	if err := yaml.Unmarshal(data, &testStories); err != nil {
-		return contextutils.WrapError(err, "failed to parse stories data")
+		return stories, contextutils.WrapError(err, "failed to parse stories data")
 	}
 
 	for i, storyData := range testStories.Stories {
 		user, exists := users[storyData.Username]
 		if !exists {
-			return contextutils.ErrorWithContextf("user not found for story: %s", storyData.Username)
+			return stories, contextutils.ErrorWithContextf("user not found for story: %s", storyData.Username)
 		}
 
 		// Parse section length override if provided
@@ -924,7 +939,6 @@ func loadAndCreateStories(ctx context.Context, filePath string, users map[string
 			CustomInstructions:    storyData.CustomInstructions,
 			SectionLengthOverride: sectionLengthOverride,
 			Status:                models.StoryStatus(storyData.Status),
-			IsCurrent:             storyData.IsCurrent,
 			CreatedAt:             time.Now(),
 			UpdatedAt:             time.Now(),
 		}
@@ -932,14 +946,14 @@ func loadAndCreateStories(ctx context.Context, filePath string, users map[string
 		// Insert story directly into database
 		_, err := db.Exec(`
 			INSERT INTO stories (user_id, title, language, subject, author_style, time_period, genre, tone,
-			                     character_names, custom_instructions, section_length_override, status, is_current,
+			                     character_names, custom_instructions, section_length_override, status,
 			                     created_at, updated_at)
-			VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+			VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
 		`, story.UserID, story.Title, story.Language, story.Subject, story.AuthorStyle, story.TimePeriod,
 			story.Genre, story.Tone, story.CharacterNames, story.CustomInstructions, story.SectionLengthOverride,
-			string(story.Status), story.IsCurrent, story.CreatedAt, story.UpdatedAt)
+			string(story.Status), story.CreatedAt, story.UpdatedAt)
 		if err != nil {
-			return contextutils.WrapErrorf(err, "failed to insert story %d", i)
+			return stories, contextutils.WrapErrorf(err, "failed to insert story %d", i)
 		}
 
 		// Get the story ID (we need to query it back since we don't have RETURNING)
@@ -948,7 +962,16 @@ func loadAndCreateStories(ctx context.Context, filePath string, users map[string
 			SELECT id FROM stories WHERE user_id = $1 AND title = $2 ORDER BY created_at DESC LIMIT 1
 		`, story.UserID, story.Title).Scan(&storyID)
 		if err != nil {
-			return contextutils.WrapErrorf(err, "failed to get story ID for story %d", i)
+			return stories, contextutils.WrapErrorf(err, "failed to get story ID for story %d", i)
+		}
+
+		// Store story data for test output
+		storyKey := fmt.Sprintf("%s_%s", storyData.Username, storyData.Title)
+		stories[storyKey] = TestStoryData{
+			ID:       storyID,
+			Username: storyData.Username,
+			Title:    storyData.Title,
+			Status:   storyData.Status,
 		}
 
 		// Create sections for this story
@@ -972,7 +995,7 @@ func loadAndCreateStories(ctx context.Context, filePath string, users map[string
 			`, section.StoryID, section.SectionNumber, section.Content, section.LanguageLevel,
 				section.WordCount, string(section.GeneratedBy), section.GeneratedAt, section.GenerationDate)
 			if err != nil {
-				return contextutils.WrapErrorf(err, "failed to insert section %d for story %d", j, i)
+				return stories, contextutils.WrapErrorf(err, "failed to insert section %d for story %d", j, i)
 			}
 
 			// Get the section ID
@@ -981,7 +1004,7 @@ func loadAndCreateStories(ctx context.Context, filePath string, users map[string
 				SELECT id FROM story_sections WHERE story_id = $1 AND section_number = $2
 			`, section.StoryID, section.SectionNumber).Scan(&sectionID)
 			if err != nil {
-				return contextutils.WrapErrorf(err, "failed to get section ID for section %d of story %d", j, i)
+				return stories, contextutils.WrapErrorf(err, "failed to get section ID for section %d of story %d", j, i)
 			}
 
 			// Create questions for this section
@@ -998,7 +1021,7 @@ func loadAndCreateStories(ctx context.Context, filePath string, users map[string
 				// Convert options to JSON for database storage
 				optionsJSON, err := json.Marshal(question.Options)
 				if err != nil {
-					return contextutils.WrapErrorf(err, "failed to marshal options for question %d for section %d of story %d", k, j, i)
+					return stories, contextutils.WrapErrorf(err, "failed to marshal options for question %d for section %d of story %d", k, j, i)
 				}
 
 				// Insert question
@@ -1008,7 +1031,7 @@ func loadAndCreateStories(ctx context.Context, filePath string, users map[string
 				`, question.SectionID, question.QuestionText, optionsJSON, question.CorrectAnswerIndex,
 					question.Explanation, question.CreatedAt)
 				if err != nil {
-					return contextutils.WrapErrorf(err, "failed to insert question %d for section %d of story %d", k, j, i)
+					return stories, contextutils.WrapErrorf(err, "failed to insert question %d for section %d of story %d", k, j, i)
 				}
 			}
 		}
@@ -1020,7 +1043,7 @@ func loadAndCreateStories(ctx context.Context, filePath string, users map[string
 		})
 	}
 
-	return nil
+	return stories, nil
 }
 
 // outputUserDataForTests outputs the created user data to a JSON file for E2E tests to read
@@ -1064,6 +1087,36 @@ func outputUserDataForTests(users map[string]*models.User, rootDir string, logge
 	logger.Info(context.Background(), "Output user data for E2E tests", map[string]interface{}{
 		"file_path":  outputPath,
 		"user_count": len(userData),
+	})
+
+	return nil
+}
+
+// outputStoryDataForTests outputs the created story data to a JSON file for E2E tests to read
+func outputStoryDataForTests(stories map[string]TestStoryData, rootDir string, logger *observability.Logger) error {
+	// Write to JSON file in the frontend/tests directory
+	outputPath := filepath.Join(rootDir, "..", "frontend", "tests", "test-stories.json")
+
+	// Ensure the directory exists
+	outputDir := filepath.Dir(outputPath)
+	if err := os.MkdirAll(outputDir, 0o755); err != nil {
+		return contextutils.WrapErrorf(err, "failed to create output directory: %s", outputDir)
+	}
+
+	// Marshal to JSON with pretty printing
+	jsonData, err := json.MarshalIndent(stories, "", "  ")
+	if err != nil {
+		return contextutils.WrapErrorf(err, "failed to marshal stories data to JSON")
+	}
+
+	// Write to file
+	if err := os.WriteFile(outputPath, jsonData, 0o644); err != nil {
+		return contextutils.WrapErrorf(err, "failed to write stories data to file: %s", outputPath)
+	}
+
+	logger.Info(context.Background(), "Output stories data for E2E tests", map[string]interface{}{
+		"file_path":     outputPath,
+		"stories_count": len(stories),
 	})
 
 	return nil

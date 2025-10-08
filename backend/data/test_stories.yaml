@@ -11,7 +11,6 @@ stories:
     custom_instructions: "Keep the story appropriate for language learners"
     section_length_override: "medium"
     status: "archived"
-    is_current: false
     sections:
       - section_number: 1
         content: "Once upon a time in a bustling city, Alex woke up with a sense of adventure in their heart. The sun was shining brightly through the window, and birds were singing cheerful songs outside. Today felt like the perfect day to explore something new."
@@ -38,8 +37,7 @@ stories:
     tone: "suspenseful"
     character_names: "Detective Smith, The Butler, The Maid"
     custom_instructions: "Build suspense gradually"
-    status: "completed"
-    is_current: false
+    status: "active"
     sections:
       - section_number: 1
         content: "Detective Smith arrived at the old mansion just as the rain began to fall. The butler opened the door with a nervous glance over his shoulder. Something was definitely wrong in this house, and the detective was determined to find out what."
@@ -62,7 +60,6 @@ stories:
     subject: "A story in progress"
     author_style: "casual and friendly"
     status: "active"
-    is_current: true
     sections:
       - section_number: 1
         content: "Sarah walked into the coffee shop and immediately noticed the person sitting in the corner. They looked familiar, but she couldn't quite place where she had seen them before. As she ordered her coffee, she kept stealing glances in their direction."
