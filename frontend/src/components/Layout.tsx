@@ -424,11 +424,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   </Group>
                 }
                 leftSection={<item.icon size={20} />}
-                active={
-                  item.name === 'Daily'
-                    ? location.pathname.startsWith(item.href)
-                    : location.pathname === item.href
-                }
+                active={location.pathname.startsWith(item.href)}
                 data-testid={item.testId}
                 title={`${item.name} (Shift+${index + 1})`}
               />
@@ -478,11 +474,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     </Group>
                   }
                   leftSection={<item.icon size={20} />}
-                  active={
-                    item.name === 'Admin'
-                      ? location.pathname.startsWith(item.href)
-                      : location.pathname === item.href
-                  }
+                  active={location.pathname.startsWith(item.href)}
                   data-testid={item.testId}
                   title={`${item.name} (Shift+${index + 4})`}
                 />
