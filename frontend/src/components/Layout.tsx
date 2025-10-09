@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback } from 'react';
+import React, { ReactNode, useCallback, useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useGetV1SettingsLevels } from '../api/api';
@@ -35,9 +35,11 @@ import {
   IconCalendar,
   IconAbc,
   IconDeviceMobile,
+  IconQuestionMark,
 } from '@tabler/icons-react';
 import WorkerStatus from './WorkerStatus';
 import VersionDisplay from './VersionDisplay';
+import HelpModal from './HelpModal';
 
 interface LayoutProps {
   children: ReactNode;
@@ -81,6 +83,21 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   // Check if user has admin role
   const isAdmin = user?.roles?.some(role => role.name === 'admin') || false;
+
+  // Help modal state
+  const [helpModalOpened, setHelpModalOpened] = useState(false);
+
+  // Check if user has seen help modal before (first login detection)
+  useEffect(() => {
+    if (user) {
+      const hasSeenHelp = localStorage.getItem(`hasSeenHelp-${user.id}`);
+      if (!hasSeenHelp) {
+        // Show help modal on first login
+        setHelpModalOpened(true);
+        localStorage.setItem(`hasSeenHelp-${user.id}`, 'true');
+      }
+    }
+  }, [user]);
 
   // Use useCallback to prevent recreation of navigation array
   const navigation = useCallback(() => {
@@ -331,6 +348,20 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   </Tooltip>
                 )}
                 <Tooltip
+                  label='Help and information about the system'
+                  position='bottom'
+                  withArrow
+                >
+                  <ActionIcon
+                    onClick={() => setHelpModalOpened(true)}
+                    variant='subtle'
+                    size='lg'
+                    aria-label='Help'
+                  >
+                    <IconQuestionMark size={20} />
+                  </ActionIcon>
+                </Tooltip>
+                <Tooltip
                   label='Manage your account settings and preferences'
                   position='bottom'
                   withArrow
@@ -486,6 +517,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
       <AppShell.Main>{children}</AppShell.Main>
       <VersionDisplay />
+      <HelpModal
+        opened={helpModalOpened}
+        onClose={() => setHelpModalOpened(false)}
+      />
     </AppShell>
   );
 };

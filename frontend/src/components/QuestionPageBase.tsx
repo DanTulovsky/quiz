@@ -308,7 +308,25 @@ export const QuestionPageBase: React.FC<Props> = ({ mode }) => {
   }
 
   if (isGenerating) {
-    if (user && user.ai_enabled === false) {
+    return (
+      <Center h={300}>
+        <Stack align='center' gap='xs'>
+          <LoadingSpinner />
+          <Text>
+            Generating your personalized{' '}
+            {mode === 'reading' ? 'reading comprehension ' : ''}question...
+          </Text>
+          <Text size='sm' c='dimmed'>
+            This may take a moment
+          </Text>
+        </Stack>
+      </Center>
+    );
+  }
+
+  if (error && !isGenerating) {
+    // Special handling for AI disabled error
+    if (error === 'Enable AI in settings to generate questions') {
       return (
         <Center h='100vh'>
           <Paper
@@ -320,8 +338,7 @@ export const QuestionPageBase: React.FC<Props> = ({ mode }) => {
           >
             <Stack align='center' gap='lg'>
               <Text fw={600} size='lg'>
-                No {mode === 'reading' ? 'reading comprehension ' : ''}questions
-                available.
+                No questions available.
               </Text>
               <Text c='dimmed' size='md'>
                 Enable AI in your{' '}
@@ -349,23 +366,6 @@ export const QuestionPageBase: React.FC<Props> = ({ mode }) => {
         </Center>
       );
     }
-    return (
-      <Center h={300}>
-        <Stack align='center' gap='xs'>
-          <LoadingSpinner />
-          <Text>
-            Generating your personalized{' '}
-            {mode === 'reading' ? 'reading comprehension ' : ''}question...
-          </Text>
-          <Text size='sm' c='dimmed'>
-            This may take a moment
-          </Text>
-        </Stack>
-      </Center>
-    );
-  }
-
-  if (error && !isGenerating) {
     return (
       <Center h={300}>
         <Paper p='lg' radius='md' withBorder shadow='sm'>

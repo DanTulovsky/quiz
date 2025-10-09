@@ -76,7 +76,7 @@ export function useQuestionFlow(
 
     pollingIntervalRef.current = setInterval(async () => {
       try {
-        if (!currentQuestionRef.current && user) {
+        if (!currentQuestionRef.current && user && user.ai_enabled !== false) {
           await fetchQuestion(true);
         }
       } catch {
@@ -147,6 +147,13 @@ export function useQuestionFlow(
         sharedInflight.delete(inflightKey);
 
         if ((data as { status?: string })?.status === 'generating') {
+          // If AI is disabled, don't show generating state - go directly to "no questions available"
+          if (user?.ai_enabled === false) {
+            setIsGenerating(false);
+            setError('Enable AI in settings to generate questions');
+            setQuestion(null);
+            return;
+          }
           setIsGenerating(true);
           setError((data as { message?: string })?.message || null);
           setQuestion(null);

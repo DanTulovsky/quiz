@@ -67,11 +67,11 @@ func TestStoryService_CanGenerateSection_Integration(t *testing.T) {
 	require.NoError(t, err)
 	t.Logf("Found %d sections for story %d on date %v", sectionCount, story.ID, today)
 
-	// Test 3b: Should still be able to generate another section today (first user section doesn't reach limit with MaxExtraGenerationsPerDay=1)
+	// Test 3b: Should not be able to generate another section today
 	eligibility, err = storyService.canGenerateSection(ctx, story.ID, models.GeneratorTypeUser)
 	require.NoError(t, err)
-	t.Logf("CanGenerateSection returned: %v (expected true)", eligibility.CanGenerate)
-	assert.True(t, eligibility.CanGenerate, "Should still be able to generate another user section today")
+	t.Logf("CanGenerateSection returned: %v (expected false)", eligibility.CanGenerate)
+	assert.False(t, eligibility.CanGenerate, "Should not be able to generate another user section today")
 
 	// Test 3c: Create a second section (should work with MaxExtraGenerationsPerDay=1)
 	section2, err := storyService.CreateSection(ctx, story.ID, "Second test story section.", "A1", 50, models.GeneratorTypeUser)
@@ -258,10 +258,10 @@ func TestStoryService_StoryGenerationLimits_Integration(t *testing.T) {
 	expectedTotal := 1 // User generation increments to 1 (only user generations count)
 	assert.Equal(t, expectedTotal, extraGenerations, "User generation should increment extra_generations_today to 1")
 
-	// Test 7: Should still be able to generate second section (limit not reached after 1 user section with MaxExtraGenerationsPerDay=1)
+	// Test 7: Should not be able to generate second section
 	eligibility, err = storyService.canGenerateSection(context.Background(), story.ID, models.GeneratorTypeUser)
 	require.NoError(t, err)
-	assert.True(t, eligibility.CanGenerate, "Should still be able to generate second section after user generation")
+	assert.False(t, eligibility.CanGenerate, "Should not be able to generate second section after user generation")
 
 	// Create second user section
 	_, err = storyService.CreateSection(context.Background(), story.ID, "Second user section", "A1", 40, models.GeneratorTypeUser)
@@ -280,7 +280,7 @@ func TestStoryService_StoryGenerationLimits_Integration(t *testing.T) {
 	require.NoError(t, err)
 	cfg2.Story.MaxArchivedPerUser = 20
 	cfg2.Story.GenerationEnabled = true
-	cfg2.Story.MaxExtraGenerationsPerDay = 1
+	cfg2.Story.MaxExtraGenerationsPerDay = 2
 	logger2 := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
 	storyService2 := NewStoryService(db, cfg2, logger2)
 
@@ -323,7 +323,7 @@ func TestStoryService_StoryGenerationLimits_Integration(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, 1, extraGenerations2, "User generation should increment extra_generations_today to 1")
 
-	// Should be able to generate second user section (limit not reached after 1 user section with MaxExtraGenerationsPerDay=1)
+	// Should be able to generate second user section (limit not reached with MaxExtraGenerationsPerDay=2)
 	eligibility, err = storyService2.canGenerateSection(context.Background(), story.ID, models.GeneratorTypeUser)
 	require.NoError(t, err)
 	assert.True(t, eligibility.CanGenerate, "Should be able to generate second user section after first user section")
@@ -336,7 +336,7 @@ func TestStoryService_StoryGenerationLimits_Integration(t *testing.T) {
 	err = storyService2.UpdateLastGenerationTime(context.Background(), story.ID, models.GeneratorTypeUser)
 	require.NoError(t, err)
 
-	// Should not be able to generate third user section (limit reached after 2 user sections with MaxExtraGenerationsPerDay=1)
+	// Should not be able to generate third user section
 	eligibility, err = storyService2.canGenerateSection(context.Background(), story.ID, models.GeneratorTypeUser)
 	require.NoError(t, err)
 	assert.False(t, eligibility.CanGenerate, "Should not be able to generate third user section (limit reached)")
