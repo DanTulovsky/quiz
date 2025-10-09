@@ -376,13 +376,36 @@ type AIExplanationRequest struct {
 
 // MarshalContentToJSON serializes the question content to JSON string
 func (q *Question) MarshalContentToJSON() (result0 string, err error) {
+	// Clean up fields that should be at the top level, not in content
+	// Remove fields that are not allowed in QuestionContent according to OpenAPI schema
+	if q.Content != nil {
+		// Always remove correct_answer from content as it should be at top level
+		delete(q.Content, "correct_answer")
+		// Always remove explanation from content as it should be at top level
+		delete(q.Content, "explanation")
+	}
+
 	data, err := json.Marshal(q.Content)
 	return string(data), err
 }
 
 // UnmarshalContentFromJSON deserializes JSON string into question content
 func (q *Question) UnmarshalContentFromJSON(data string) error {
-	return json.Unmarshal([]byte(data), &q.Content)
+	err := json.Unmarshal([]byte(data), &q.Content)
+	if err != nil {
+		return err
+	}
+
+	// Clean up fields that should be at the top level, not in content
+	// Remove fields that are not allowed in QuestionContent according to OpenAPI schema
+	if q.Content != nil {
+		// Always remove correct_answer from content as it should be at top level
+		delete(q.Content, "correct_answer")
+		// Always remove explanation from content as it should be at top level
+		delete(q.Content, "explanation")
+	}
+
+	return nil
 }
 
 // WorkerSettings represents worker configuration settings stored in database

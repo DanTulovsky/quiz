@@ -502,6 +502,69 @@ func TestNullValueHelpers(t *testing.T) {
 	})
 }
 
+func TestQuestion_ContentCleanup(t *testing.T) {
+	// Test that correct_answer and explanation are always removed from content during unmarshaling
+	// according to OpenAPI schema constraints (QuestionContent doesn't allow these fields)
+	contentWithWrongFields := `{
+		"question": "What is 2+2?",
+		"options": ["3", "4", "5", "6"],
+		"correct_answer": 1,
+		"explanation": "2+2 equals 4"
+	}`
+
+	q := Question{
+		CorrectAnswer: 0,
+		Explanation:   "",
+	}
+	err := q.UnmarshalContentFromJSON(contentWithWrongFields)
+	require.NoError(t, err)
+
+	// Verify that correct_answer and explanation were removed from content
+	_, hasCorrectAnswer := q.Content["correct_answer"]
+	_, hasExplanation := q.Content["explanation"]
+
+	assert.False(t, hasCorrectAnswer, "correct_answer should be removed from content (not allowed in QuestionContent)")
+	assert.False(t, hasExplanation, "explanation should be removed from content (not allowed in QuestionContent)")
+
+	// Verify that other fields are still present
+	assert.Equal(t, "What is 2+2?", q.Content["question"])
+	assert.Equal(t, []interface{}{"3", "4", "5", "6"}, q.Content["options"])
+}
+
+func TestQuestion_MarshalContentCleanup(t *testing.T) {
+	// Test that correct_answer and explanation are always removed from content during marshaling
+	// according to OpenAPI schema constraints (QuestionContent doesn't allow these fields)
+	q := Question{
+		CorrectAnswer: 0,
+		Explanation:   "",
+		Content: map[string]interface{}{
+			"question":       "What is 2+2?",
+			"options":        []string{"3", "4", "5", "6"},
+			"correct_answer": 1,
+			"explanation":    "2+2 equals 4",
+		},
+	}
+
+	jsonData, err := q.MarshalContentToJSON()
+	require.NoError(t, err)
+
+	// Parse the JSON back to verify cleanup
+	var content map[string]interface{}
+	err = json.Unmarshal([]byte(jsonData), &content)
+	require.NoError(t, err)
+
+	// Verify that correct_answer and explanation were removed
+	_, hasCorrectAnswer := content["correct_answer"]
+	_, hasExplanation := content["explanation"]
+
+	assert.False(t, hasCorrectAnswer, "correct_answer should be removed from marshaled content (not allowed in QuestionContent)")
+	assert.False(t, hasExplanation, "explanation should be removed from marshaled content (not allowed in QuestionContent)")
+
+	// Verify that other fields are still present
+	assert.Equal(t, "What is 2+2?", content["question"])
+	assert.Equal(t, []interface{}{"3", "4", "5", "6"}, content["options"])
+}
+
 func TestQuestionTypeConstants(t *testing.T) {
 	assert.Equal(t, QuestionType("vocabulary"), Vocabulary)
 	assert.Equal(t, QuestionType("fill_blank"), FillInBlank)

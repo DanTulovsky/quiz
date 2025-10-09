@@ -328,9 +328,10 @@ func TestQuestion_ContentMarshalUnmarshal_EmptyContent_Integration(t *testing.T)
 	}
 
 	// Test marshaling empty content
+	// Explanation should be removed from content according to OpenAPI schema
 	jsonData, err := question.MarshalContentToJSON()
 	require.NoError(t, err)
-	assert.Equal(t, "{\"explanation\":\"No content.\"}", jsonData)
+	assert.Equal(t, "{}", jsonData) // Should be empty after removing explanation
 
 	// Test unmarshaling empty content
 	var newQuestion Question
