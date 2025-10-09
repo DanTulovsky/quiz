@@ -7,7 +7,7 @@ const (
 	// HTTP timeouts
 	DefaultHTTPTimeout    = 60 * time.Second
 	OAuthHTTPTimeout      = 10 * time.Second
-	AIRequestTimeout      = 120 * time.Second
+	AIRequestTimeout      = 3 * time.Minute
 	AIShutdownTimeout     = 30 * time.Second
 	WorkerShutdownTimeout = 30 * time.Second
 	CLIWorkerTimeout      = 10 * time.Minute
