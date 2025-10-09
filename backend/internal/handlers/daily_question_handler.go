@@ -85,6 +85,25 @@ func (h *DailyQuestionHandler) GetDailyQuestions(c *gin.Context) {
 		attribute.String("timezone", timezone),
 	)
 
+	// Get user to check current language preferences
+	user, err := h.userService.GetUserByID(ctx, userID)
+	if err != nil {
+		h.logger.Error(ctx, "Failed to get user for language preference check", err, map[string]interface{}{
+			"user_id": userID,
+		})
+		HandleAppError(c, contextutils.WrapError(err, "failed to get user information"))
+		return
+	}
+
+	// Check if user has valid language and level preferences
+	if !user.PreferredLanguage.Valid || !user.CurrentLevel.Valid {
+		HandleAppError(c, contextutils.ErrMissingRequired)
+		return
+	}
+
+	currentLanguage := user.PreferredLanguage.String
+	currentLevel := user.CurrentLevel.String
+
 	// Get daily questions for the date
 	questions, err := h.dailyQuestionService.GetDailyQuestions(ctx, userID, date)
 	if err != nil {
@@ -95,6 +114,75 @@ func (h *DailyQuestionHandler) GetDailyQuestions(c *gin.Context) {
 		})
 		HandleAppError(c, contextutils.WrapError(err, "failed to get daily questions"))
 		return
+	}
+
+	// Check if existing questions match current language preferences
+	needsRegeneration := false
+	var oldLanguage, oldLevel string
+
+	if len(questions) == 0 {
+		// No questions exist, need to generate them
+		needsRegeneration = true
+	} else {
+		// Check if existing questions match current preferences
+		oldLanguage = questions[0].Question.Language
+		oldLevel = questions[0].Question.Level
+
+		for _, assignment := range questions {
+			if assignment.Question.Language != currentLanguage || assignment.Question.Level != currentLevel {
+				needsRegeneration = true
+				break
+			}
+		}
+	}
+
+	// If questions don't match current preferences, regenerate them
+	if needsRegeneration {
+		h.logger.Info(ctx, "Regenerating daily questions due to language preference change", map[string]interface{}{
+			"user_id":      userID,
+			"date":         dateStr,
+			"old_language": oldLanguage,
+			"old_level":    oldLevel,
+			"new_language": currentLanguage,
+			"new_level":    currentLevel,
+		})
+
+		// Regenerate daily questions with current preferences
+		err = h.dailyQuestionService.RegenerateDailyQuestions(ctx, userID, date)
+		if err != nil {
+			// Check if this is a "no questions available" error
+			if contextutils.IsError(err, contextutils.ErrNoQuestionsAvailable) {
+				h.logger.Warn(ctx, "No questions available in preferred language, keeping existing questions", map[string]interface{}{
+					"user_id":  userID,
+					"date":     dateStr,
+					"language": currentLanguage,
+					"level":    currentLevel,
+					"error":    err.Error(),
+				})
+				// Continue with existing questions rather than failing completely
+			} else {
+				h.logger.Error(ctx, "Failed to regenerate daily questions", err, map[string]interface{}{
+					"user_id": userID,
+					"date":    dateStr,
+				})
+				// Continue with existing questions rather than failing completely
+				h.logger.Warn(ctx, "Continuing with existing questions due to regeneration failure", map[string]interface{}{
+					"user_id": userID,
+					"date":    dateStr,
+				})
+			}
+		} else {
+			// Get the regenerated questions
+			questions, err = h.dailyQuestionService.GetDailyQuestions(ctx, userID, date)
+			if err != nil {
+				h.logger.Error(ctx, "Failed to get regenerated daily questions", err, map[string]interface{}{
+					"user_id": userID,
+					"date":    dateStr,
+				})
+				HandleAppError(c, contextutils.WrapError(err, "failed to get daily questions"))
+				return
+			}
+		}
 	}
 
 	// Convert to API types using shared converter
