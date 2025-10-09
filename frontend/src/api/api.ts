@@ -395,11 +395,39 @@ export interface DailyProgress {
   total: number;
 }
 
+/**
+ * Severity level of the error
+ */
+export type ErrorResponseSeverity = typeof ErrorResponseSeverity[keyof typeof ErrorResponseSeverity];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ErrorResponseSeverity = {
+  info: 'info',
+  warn: 'warn',
+  error: 'error',
+  fatal: 'fatal',
+} as const;
+
 export interface ErrorResponse {
-  /** @maxLength 500 */
+  /** Error code identifying the type of error */
+  code?: string;
+  /** Human-readable error message */
+  message?: string;
+  /**
+   * Error message (for backward compatibility)
+   * @maxLength 500
+   */
   error?: string;
-  /** @maxLength 1000 */
+  /**
+   * Additional error details
+   * @maxLength 1000
+   */
   details?: string;
+  /** Whether the operation can be retried */
+  retryable?: boolean;
+  /** Severity level of the error */
+  severity?: ErrorResponseSeverity;
 }
 
 export interface SignupStatusResponse {

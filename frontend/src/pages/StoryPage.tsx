@@ -122,6 +122,7 @@ const StoryPage: React.FC = () => {
           isOpen={generationErrorModal.isOpen}
           onClose={closeGenerationErrorModal}
           errorMessage={generationErrorModal.errorMessage}
+          errorDetails={generationErrorModal.errorDetails}
         />
       </>
     );
@@ -324,6 +325,7 @@ const StoryPage: React.FC = () => {
         isOpen={generationErrorModal.isOpen}
         onClose={closeGenerationErrorModal}
         errorMessage={generationErrorModal.errorMessage}
+        errorDetails={generationErrorModal.errorDetails}
       />
     </Container>
   );

@@ -1,23 +1,49 @@
 import React from 'react';
-import { Modal, Button, Group, Text, Stack, Alert } from '@mantine/core';
-import { IconAlertCircle } from '@tabler/icons-react';
+import {
+  Modal,
+  Button,
+  Group,
+  Text,
+  Stack,
+  Alert,
+  Tooltip,
+  Box,
+} from '@mantine/core';
+import { IconAlertCircle, IconInfoCircle } from '@tabler/icons-react';
+import { ErrorResponse } from '../api/api';
 
 interface StoryGenerationErrorModalProps {
   isOpen: boolean;
   onClose: () => void;
   errorMessage: string;
+  errorDetails?: ErrorResponse;
 }
 
 const StoryGenerationErrorModal: React.FC<StoryGenerationErrorModalProps> = ({
   isOpen,
   onClose,
   errorMessage,
+  errorDetails,
 }) => {
-  // For now, just use the error message as-is
-  // The error parsing should happen in the useStory hook
-  const actualErrorMessage = errorMessage;
+  // Use the provided error details or fall back to parsing the error message
+  const errorResponse = errorDetails;
 
-  const getErrorDetails = () => {
+  // Use structured error response if available, otherwise fall back to the original message
+  const displayErrorMessage =
+    errorResponse?.message || errorResponse?.error || errorMessage;
+
+  // Format detailed error information for the tooltip
+  const getDetailedErrorInfo = () => {
+    if (!errorResponse || !errorResponse.details) {
+      return null;
+    }
+
+    return errorResponse.details;
+  };
+
+  const detailedErrorInfo = getDetailedErrorInfo();
+
+  const getErrorConfig = () => {
     return {
       title: 'Cannot Generate Section',
       icon: <IconAlertCircle size={20} color='var(--mantine-color-error)' />,
@@ -28,7 +54,7 @@ const StoryGenerationErrorModal: React.FC<StoryGenerationErrorModalProps> = ({
     };
   };
 
-  const errorDetails = getErrorDetails();
+  const errorConfig = getErrorConfig();
 
   return (
     <Modal
@@ -36,9 +62,9 @@ const StoryGenerationErrorModal: React.FC<StoryGenerationErrorModalProps> = ({
       onClose={onClose}
       title={
         <Group gap='sm'>
-          {errorDetails.icon}
+          {errorConfig.icon}
           <Text fw={500} size='lg'>
-            {errorDetails.title}
+            {errorConfig.title}
           </Text>
         </Group>
       }
@@ -47,17 +73,43 @@ const StoryGenerationErrorModal: React.FC<StoryGenerationErrorModalProps> = ({
     >
       <Stack gap='md'>
         <Alert
-          variant={errorDetails.variant}
+          variant={errorConfig.variant}
           color='red'
-          title={errorDetails.title}
-          icon={errorDetails.icon}
+          title={errorConfig.title}
+          icon={errorConfig.icon}
         >
-          {actualErrorMessage}
+          <Group gap='xs' align='center'>
+            <Text>{displayErrorMessage}</Text>
+            {detailedErrorInfo && (
+              <Tooltip label={detailedErrorInfo} multiline withArrow w={400}>
+                <Box>
+                  <IconInfoCircle
+                    size={16}
+                    color='var(--mantine-color-blue-6)'
+                    style={{ cursor: 'help' }}
+                  />
+                </Box>
+              </Tooltip>
+            )}
+          </Group>
         </Alert>
 
         <Text size='sm' c='dimmed'>
-          {errorDetails.suggestion}
+          {errorConfig.suggestion}
         </Text>
+
+        {errorResponse?.retryable === false && (
+          <Alert
+            color='orange'
+            variant='light'
+            icon={<IconAlertCircle size={16} />}
+          >
+            <Text size='sm'>
+              This error cannot be automatically retried. Please wait a moment
+              and try again manually.
+            </Text>
+          </Alert>
+        )}
 
         <Group justify='flex-end' mt='md'>
           <Button onClick={onClose}>Close</Button>

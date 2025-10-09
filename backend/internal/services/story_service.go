@@ -840,7 +840,13 @@ func (s *StoryService) GetRandomQuestions(ctx context.Context, sectionID uint, c
 }
 
 // canGenerateSection checks if a new section can be generated for a story today by a specific generator
-func (s *StoryService) canGenerateSection(ctx context.Context, storyID uint, generatorType models.GeneratorType) (*models.StoryGenerationEligibilityResponse, error) {
+func (s *StoryService) canGenerateSection(ctx context.Context, storyID uint, generatorType models.GeneratorType) (response *models.StoryGenerationEligibilityResponse, err error) {
+	ctx, span := observability.TraceFunction(ctx, "story_service", "can_generate_section",
+		attribute.Int("story.id", int(storyID)),
+		observability.AttributeGenerationType(generatorType),
+	)
+	defer observability.FinishSpan(span, &err)
+
 	query := `
 		SELECT status, last_section_generated_at, extra_generations_today
 		FROM stories
@@ -850,7 +856,7 @@ func (s *StoryService) canGenerateSection(ctx context.Context, storyID uint, gen
 	var lastGen *time.Time
 	var extraGenerationsToday int
 
-	err := s.db.QueryRowContext(ctx, query, storyID).Scan(&status, &lastGen, &extraGenerationsToday)
+	err = s.db.QueryRowContext(ctx, query, storyID).Scan(&status, &lastGen, &extraGenerationsToday)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return &models.StoryGenerationEligibilityResponse{
@@ -889,6 +895,9 @@ func (s *StoryService) canGenerateSection(ctx context.Context, storyID uint, gen
 	if err != nil {
 		return nil, contextutils.WrapErrorf(err, "failed to check existing sections today by generator type")
 	}
+	span.SetAttributes(attribute.Int(fmt.Sprintf("section_count_%s", generatorType), sectionCount))
+	span.SetAttributes(attribute.Int("max_worker_generations_per_day", s.config.Story.MaxWorkerGenerationsPerDay))
+	span.SetAttributes(attribute.Int("max_user_generations_per_day", s.config.Story.MaxExtraGenerationsPerDay))
 
 	// Check limits based on generator type
 	switch generatorType {
@@ -897,16 +906,14 @@ func (s *StoryService) canGenerateSection(ctx context.Context, storyID uint, gen
 		if sectionCount >= s.config.Story.MaxWorkerGenerationsPerDay {
 			return &models.StoryGenerationEligibilityResponse{
 				CanGenerate: false,
-				Reason:      "worker has reached daily generation limit",
+				Reason:      fmt.Sprintf("worker has reached daily generation limit (%d)", s.config.Story.MaxWorkerGenerationsPerDay),
 			}, nil
 		}
 	case models.GeneratorTypeUser:
-		// User can generate MaxExtraGenerationsPerDay + 1 sections per day (includes 1 free generation)
-		maxUserGenerations := s.config.Story.MaxExtraGenerationsPerDay + 1
-		if sectionCount >= maxUserGenerations {
+		if sectionCount >= s.config.Story.MaxExtraGenerationsPerDay {
 			return &models.StoryGenerationEligibilityResponse{
 				CanGenerate: false,
-				Reason:      "user has reached daily generation limit",
+				Reason:      fmt.Sprintf("user has reached daily generation limit (%d)", s.config.Story.MaxExtraGenerationsPerDay),
 			}, nil
 		}
 	default:
@@ -923,7 +930,12 @@ func (s *StoryService) canGenerateSection(ctx context.Context, storyID uint, gen
 }
 
 // UpdateLastGenerationTime sets the last section generation time for a story
-func (s *StoryService) UpdateLastGenerationTime(ctx context.Context, storyID uint, generatorType models.GeneratorType) error {
+func (s *StoryService) UpdateLastGenerationTime(ctx context.Context, storyID uint, generatorType models.GeneratorType) (err error) {
+	ctx, span := observability.TraceFunction(ctx, "story_service", "update_last_generation_time",
+		attribute.Int("story.id", int(storyID)),
+		observability.AttributeGenerationType(generatorType),
+	)
+	defer observability.FinishSpan(span, &err)
 	// Check if this is an extra generation (second generation today)
 	query := `
 		SELECT last_section_generated_at, extra_generations_today
@@ -933,7 +945,7 @@ func (s *StoryService) UpdateLastGenerationTime(ctx context.Context, storyID uin
 	var lastGen *time.Time
 	var extraGenerationsToday int
 
-	err := s.db.QueryRowContext(ctx, query, storyID).Scan(&lastGen, &extraGenerationsToday)
+	err = s.db.QueryRowContext(ctx, query, storyID).Scan(&lastGen, &extraGenerationsToday)
 	if err != nil {
 		return contextutils.WrapErrorf(err, "failed to get current generation info")
 	}
@@ -1152,6 +1164,10 @@ func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID
 	ctx, span := observability.TraceFunction(ctx, "story_service", "generate_section",
 		attribute.Int("story.id", int(storyID)),
 		observability.AttributeUserID(int(userID)),
+		observability.AttributeGenerationType(generatorType),
+		attribute.String("model", userAIConfig.Model),
+		attribute.String("provider", userAIConfig.Provider),
+		attribute.String("username", userAIConfig.Username),
 	)
 	defer observability.FinishSpan(span, nil)
 
@@ -1160,6 +1176,16 @@ func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID
 	if err != nil {
 		return nil, contextutils.WrapErrorf(err, "failed to get story for generation")
 	}
+	span.SetAttributes(attribute.String("story.title", story.Title))
+	span.SetAttributes(attribute.String("story.language", story.Language))
+	span.SetAttributes(attribute.String("story.section_length_override", string(*story.SectionLengthOverride)))
+	span.SetAttributes(attribute.String("story.subject", stringPtrToString(story.Subject)))
+	span.SetAttributes(attribute.String("story.author_style", stringPtrToString(story.AuthorStyle)))
+	span.SetAttributes(attribute.String("story.time_period", stringPtrToString(story.TimePeriod)))
+	span.SetAttributes(attribute.String("story.genre", stringPtrToString(story.Genre)))
+	span.SetAttributes(attribute.String("story.tone", stringPtrToString(story.Tone)))
+	span.SetAttributes(attribute.String("story.character_names", stringPtrToString(story.CharacterNames)))
+	span.SetAttributes(attribute.String("story.custom_instructions", stringPtrToString(story.CustomInstructions)))
 
 	// Check if generation is allowed today by this generator type
 	eligibility, err := s.canGenerateSection(ctx, storyID, generatorType)
@@ -1189,6 +1215,7 @@ func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID
 	if !user.CurrentLevel.Valid {
 		return nil, contextutils.ErrorWithContextf("user level not found")
 	}
+	span.SetAttributes(attribute.String("story.level", user.CurrentLevel.String))
 
 	// Determine target length for this user's level
 	targetWords := s.GetSectionLengthTarget(user.CurrentLevel.String, story.SectionLengthOverride)
@@ -1236,6 +1263,8 @@ func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID
 	if err != nil {
 		return nil, contextutils.WrapErrorf(err, "failed to begin transaction")
 	}
+	span.AddEvent("transaction_began")
+
 	var committed bool
 	defer func() {
 		if !committed {
@@ -1247,6 +1276,7 @@ func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID
 						"error":    rollbackErr.Error(),
 					})
 			}
+			span.AddEvent("transaction_rolled_back")
 		}
 	}()
 
@@ -1270,11 +1300,13 @@ func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID
 		return nil, contextutils.WrapErrorf(err, "failed to get max section number")
 	}
 	section.SectionNumber = maxSectionNumber + 1
+	span.SetAttributes(attribute.Int("section.number", section.SectionNumber))
 
 	// Create the section in the database within the transaction
 	if err := s.createSectionInTx(ctx, tx, section); err != nil {
 		return nil, contextutils.WrapErrorf(err, "failed to create story section")
 	}
+	span.AddEvent("section_created")
 
 	// Generate comprehension questions for the section
 	questionsReq := &models.StoryQuestionsRequest{
@@ -1306,6 +1338,7 @@ func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID
 					"user_id":    userID,
 					"error":      err.Error(),
 				})
+			span.AddEvent("failed_to_generate_questions")
 		}
 		// Continue anyway - questions are nice to have but not critical
 	} else {
@@ -1324,14 +1357,18 @@ func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID
 					"user_id":    userID,
 					"error":      err.Error(),
 				})
+			span.AddEvent("failed_to_save_questions")
 		}
+		span.AddEvent("questions_saved")
 	}
 
 	// Commit the transaction
 	if err := tx.Commit(); err != nil {
+		span.AddEvent("failed_to_commit_transaction")
 		return nil, contextutils.WrapErrorf(err, "failed to commit transaction")
 	}
 	committed = true
+	span.AddEvent("transaction_committed")
 
 	// Update the story's last generation time
 	if err := s.UpdateLastGenerationTime(ctx, storyID, generatorType); err != nil {

@@ -1395,7 +1395,7 @@ func (suite *APIIntegrationTestSuite) TestGetProgress_EnhancedWithWorkerInfo() {
 		// The actual status may vary, so we check if it's a valid status or just that it exists
 		if status := progressResp.WorkerStatus.Status; status != nil {
 			// Status should be one of the valid enum values
-			validStatuses := []api.WorkerStatusStatus{api.WorkerStatusStatusBusy, api.WorkerStatusStatusIdle}
+			validStatuses := []api.WorkerStatusStatus{api.Busy, api.Idle}
 			assert.Contains(suite.T(), validStatuses, *status)
 		}
 	}

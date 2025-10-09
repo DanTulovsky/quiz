@@ -950,11 +950,11 @@ func (h *QuizHandler) getWorkerStatusForUser(ctx context.Context, userID int) (*
 	var errorMessage *string
 
 	if globalPaused {
-		status = api.WorkerStatusStatusIdle // Use idle for paused state
+		status = api.Idle // Use idle for paused state
 	} else if userPaused {
-		status = api.WorkerStatusStatusIdle // Use idle for paused state
+		status = api.Idle // Use idle for paused state
 	} else {
-		status = api.WorkerStatusStatusIdle // Default to idle
+		status = api.Idle // Default to idle
 		// Check for worker errors and actual activity
 		if workerInstances, ok := workerHealth["worker_instances"].([]map[string]interface{}); ok {
 			for _, instance := range workerInstances {
@@ -962,7 +962,7 @@ func (h *QuizHandler) getWorkerStatusForUser(ctx context.Context, userID int) (*
 				if lastError, hasError := instance["last_run_error"]; hasError && lastError != nil {
 					if errorStr, ok := lastError.(string); ok && errorStr != "" {
 						// For errors, we'll use idle status but set the error message
-						status = api.WorkerStatusStatusIdle
+						status = api.Idle
 						errorMessage = &errorStr
 						break
 					}
@@ -977,7 +977,7 @@ func (h *QuizHandler) getWorkerStatusForUser(ctx context.Context, userID int) (*
 							if heartbeat, err := time.Parse(time.RFC3339, heartbeatStr); err == nil {
 								// Consider busy if heartbeat is very recent (within last 30 seconds)
 								if time.Since(heartbeat) < 30*time.Second {
-									status = api.WorkerStatusStatusBusy
+									status = api.Busy
 								}
 							}
 						}

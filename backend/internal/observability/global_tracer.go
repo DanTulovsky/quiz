@@ -130,6 +130,11 @@ func AttributeLanguage(lang string) attribute.KeyValue {
 	return attribute.String("language", lang)
 }
 
+// AttributeGenerationType returns a tracing attribute for a generation type.
+func AttributeGenerationType(generationType models.GeneratorType) attribute.KeyValue {
+	return attribute.String("generation_type", string(generationType))
+}
+
 // AttributeLevel returns a tracing attribute for a level.
 func AttributeLevel(level string) attribute.KeyValue {
 	return attribute.String("level", level)

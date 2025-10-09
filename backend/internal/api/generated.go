@@ -30,6 +30,14 @@ const (
 	CreateStoryRequestSectionLengthOverrideShort  CreateStoryRequestSectionLengthOverride = "short"
 )
 
+// Defines values for ErrorResponseSeverity.
+const (
+	ErrorResponseSeverityError ErrorResponseSeverity = "error"
+	ErrorResponseSeverityFatal ErrorResponseSeverity = "fatal"
+	ErrorResponseSeverityInfo  ErrorResponseSeverity = "info"
+	ErrorResponseSeverityWarn  ErrorResponseSeverity = "warn"
+)
+
 // Defines values for NotificationErrorErrorType.
 const (
 	NotificationErrorErrorTypeEmailDisabled NotificationErrorErrorType = "email_disabled"
@@ -116,9 +124,9 @@ const (
 
 // Defines values for WorkerStatusStatus.
 const (
-	WorkerStatusStatusBusy  WorkerStatusStatus = "busy"
-	WorkerStatusStatusError WorkerStatusStatus = "error"
-	WorkerStatusStatusIdle  WorkerStatusStatus = "idle"
+	Busy  WorkerStatusStatus = "busy"
+	Error WorkerStatusStatus = "error"
+	Idle  WorkerStatusStatus = "idle"
 )
 
 // Defines values for GetV1AdminBackendUserzPaginatedParamsAiEnabled.
@@ -368,9 +376,27 @@ type EmptyRequest = map[string]interface{}
 
 // ErrorResponse defines model for ErrorResponse.
 type ErrorResponse struct {
+	// Code Error code identifying the type of error
+	Code *string `json:"code,omitempty"`
+
+	// Details Additional error details
 	Details *string `json:"details,omitempty"`
-	Error   *string `json:"error,omitempty"`
+
+	// Error Error message (for backward compatibility)
+	Error *string `json:"error,omitempty"`
+
+	// Message Human-readable error message
+	Message *string `json:"message,omitempty"`
+
+	// Retryable Whether the operation can be retried
+	Retryable *bool `json:"retryable,omitempty"`
+
+	// Severity Severity level of the error
+	Severity *ErrorResponseSeverity `json:"severity,omitempty"`
 }
+
+// ErrorResponseSeverity Severity level of the error
+type ErrorResponseSeverity string
 
 // ForceSendNotificationResponse defines model for ForceSendNotificationResponse.
 type ForceSendNotificationResponse struct {

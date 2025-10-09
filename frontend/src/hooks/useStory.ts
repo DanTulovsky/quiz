@@ -22,6 +22,22 @@ import {
 import { showNotificationWithClean } from '../notifications';
 import logger from '../utils/logger';
 
+// Error type interfaces
+interface ErrorWithResponse extends Error {
+  response?: {
+    data?: unknown;
+    status?: number;
+  };
+}
+
+interface AxiosError {
+  response?: {
+    data?: unknown;
+    status?: number;
+  };
+  message?: string;
+}
+
 export type ViewMode = 'section' | 'reading';
 
 export interface UseStoryReturn {
@@ -65,6 +81,7 @@ export interface UseStoryReturn {
   generationErrorModal: {
     isOpen: boolean;
     errorMessage: string;
+    errorDetails?: ErrorResponse;
   };
   closeGenerationErrorModal: () => void;
 }
@@ -84,6 +101,7 @@ export const useStory = (): UseStoryReturn => {
   const [generationErrorModal, setGenerationErrorModal] = useState<{
     isOpen: boolean;
     errorMessage: string;
+    errorDetails?: ErrorResponse;
   }>({ isOpen: false, errorMessage: '' });
 
   // Polling
@@ -480,10 +498,10 @@ export const useStory = (): UseStoryReturn => {
         // the backend returns a 200 response with an error message in the body
         if (result && typeof result === 'object') {
           if ('error' in result && result.error) {
-            throw new Error(result.error);
-          }
-          if ('details' in result && result.details && 'error' in result) {
-            throw new Error(result.error);
+            // Preserve the full error response object for error details extraction
+            const errorWithDetails: ErrorWithResponse = new Error(result.error);
+            errorWithDetails.response = { data: result };
+            throw errorWithDetails;
           }
         }
 
@@ -529,54 +547,208 @@ export const useStory = (): UseStoryReturn => {
       logger.error('Failed to generate next section', error);
 
       let errorMessage = 'Failed to generate next section. Please try again.';
+      let errorDetails: ErrorResponse | undefined;
 
-      if (typeof error === 'object' && error !== null) {
-        // Check if error has response structure (axios-like error)
-        const hasResponse = 'response' in error || 'message' in error;
-        if (hasResponse) {
-          const axiosError = error as {
-            response?: { data?: { error?: string }; status?: number };
-            message?: string;
-          };
+      // Log the error for debugging
+      logger.error('Story generation error details:', error);
+      console.log('Full error object:', error);
+      console.log('Error type:', typeof error);
+      console.log(
+        'Error keys:',
+        error && typeof error === 'object'
+          ? Object.keys(error)
+          : 'not an object'
+      );
 
-          if (axiosError.response?.data?.error) {
-            errorMessage = axiosError.response.data.error;
-          } else if (
-            axiosError.response?.data &&
-            typeof axiosError.response.data === 'object' &&
-            'error' in axiosError.response.data
-          ) {
-            // Handle case where response.data is the ErrorResponse structure
-            errorMessage = (axiosError.response.data as { error: string })
-              .error;
-          } else if (
-            axiosError.response?.data &&
-            typeof axiosError.response.data === 'object' &&
-            'message' in axiosError.response.data
-          ) {
-            // Handle case where the error message is in the 'message' field
-            errorMessage = (axiosError.response.data as { message: string })
-              .message;
-          } else if (axiosError.message) {
-            errorMessage = axiosError.message;
+      // First, try to parse the error itself as JSON if it's a string
+      if (typeof error === 'string') {
+        errorMessage = error;
+
+        // Try to parse as JSON in case it contains structured error data
+        try {
+          const parsedError = JSON.parse(error);
+          if (typeof parsedError === 'object' && parsedError !== null) {
+            if (
+              'code' in parsedError ||
+              'message' in parsedError ||
+              'error' in parsedError ||
+              'details' in parsedError
+            ) {
+              errorDetails = parsedError as ErrorResponse;
+              errorMessage =
+                parsedError.message || parsedError.error || errorMessage;
+            }
           }
-        } else if (error instanceof Error) {
-          // If it's an Error but doesn't have response structure, use the message
-          errorMessage = error.message;
-        } else {
-          // If error doesn't have response structure and isn't an Error, convert to string
-          errorMessage = String(error);
+        } catch {
+          // Not JSON, use as plain error message
+        }
+      }
+
+      // Handle different error formats
+      if (error && typeof error === 'object' && 'response' in error) {
+        // Handle axios error structure
+        const axiosError = error as AxiosError;
+
+        console.log('Axios error structure:', {
+          hasResponse: !!axiosError.response,
+          responseData: axiosError.response?.data,
+          responseStatus: axiosError.response?.status,
+          axiosMessage: axiosError.message,
+        });
+
+        if (axiosError.response?.data) {
+          const responseData = axiosError.response.data;
+
+          if (typeof responseData === 'string') {
+            // If it's a string, it might be just an error message, or it might contain JSON
+            errorMessage = responseData;
+
+            // Try to parse as JSON in case it contains structured error data
+            try {
+              const parsedError = JSON.parse(responseData);
+              if (typeof parsedError === 'object' && parsedError !== null) {
+                console.log('Parsed JSON from string:', parsedError);
+                if (
+                  'code' in parsedError ||
+                  'message' in parsedError ||
+                  'error' in parsedError ||
+                  'details' in parsedError
+                ) {
+                  errorDetails = parsedError as ErrorResponse;
+                  errorMessage =
+                    parsedError.message || parsedError.error || errorMessage;
+                  console.log(
+                    'Successfully extracted error details from JSON string'
+                  );
+                }
+              }
+            } catch (parseError) {
+              console.log('Failed to parse response data as JSON:', parseError);
+              // Not JSON, use as plain error message
+            }
+          } else if (
+            typeof responseData === 'object' &&
+            responseData !== null
+          ) {
+            console.log(
+              'Response data is object with keys:',
+              Object.keys(responseData)
+            );
+
+            // Check if it has the expected ErrorResponse structure
+            if (
+              'code' in responseData ||
+              'message' in responseData ||
+              'error' in responseData ||
+              'details' in responseData
+            ) {
+              errorDetails = responseData as ErrorResponse;
+              errorMessage =
+                (responseData as ErrorResponse).message ||
+                (responseData as ErrorResponse).error ||
+                errorMessage;
+              console.log('Successfully extracted error details from object');
+            } else if ('error' in responseData) {
+              // Handle case where response.data.error exists but it's not the full structure
+              errorMessage = (responseData as { error: string }).error;
+            } else {
+              // Fallback: try to extract any meaningful error message
+              errorMessage = String(responseData);
+            }
+          } else {
+            errorMessage = String(responseData);
+          }
+        } else if (axiosError.message) {
+          errorMessage = axiosError.message;
         }
       } else if (error instanceof Error) {
+        // If it's an Error but doesn't have response structure, use the message
         errorMessage = error.message;
+
+        // Try to parse the error message as JSON in case it contains structured error data
+        try {
+          const parsedError = JSON.parse(error.message);
+          if (typeof parsedError === 'object' && parsedError !== null) {
+            if (
+              'code' in parsedError ||
+              'message' in parsedError ||
+              'error' in parsedError ||
+              'details' in parsedError
+            ) {
+              errorDetails = parsedError as ErrorResponse;
+              errorMessage =
+                parsedError.message || parsedError.error || errorMessage;
+              console.log(
+                'Successfully extracted error details from Error message'
+              );
+            }
+          }
+        } catch {
+          // Not JSON, use as plain error message
+        }
+      } else if (typeof error === 'string') {
+        // Handle string errors directly
+        errorMessage = error;
+
+        // Try to parse as JSON in case it contains structured error data
+        try {
+          const parsedError = JSON.parse(error);
+          if (typeof parsedError === 'object' && parsedError !== null) {
+            console.log('Parsed JSON from error string:', parsedError);
+            if (
+              'code' in parsedError ||
+              'message' in parsedError ||
+              'error' in parsedError ||
+              'details' in parsedError
+            ) {
+              errorDetails = parsedError as ErrorResponse;
+              errorMessage =
+                parsedError.message || parsedError.error || errorMessage;
+              console.log('Successfully extracted error details from string');
+            }
+          }
+        } catch {
+          // Not JSON, use as plain error message
+        }
       } else {
-        errorMessage = String(error);
+        // For any other error type, convert to string and try to parse
+        const errorString = String(error);
+        errorMessage = errorString;
+
+        try {
+          const parsedError = JSON.parse(errorString);
+          if (typeof parsedError === 'object' && parsedError !== null) {
+            if (
+              'code' in parsedError ||
+              'message' in parsedError ||
+              'error' in parsedError ||
+              'details' in parsedError
+            ) {
+              errorDetails = parsedError as ErrorResponse;
+              errorMessage =
+                parsedError.message || parsedError.error || errorMessage;
+              console.log(
+                'Successfully extracted error details from String(error)'
+              );
+            }
+          }
+        } catch {
+          // Not JSON, use as plain error message
+        }
       }
 
       // Show error modal for all generation errors
+      console.log('Setting error modal with:', {
+        errorMessage,
+        errorDetails,
+        errorDetailsType: typeof errorDetails,
+        errorDetailsKeys: errorDetails ? Object.keys(errorDetails) : 'none',
+      });
+
       setGenerationErrorModal({
         isOpen: true,
         errorMessage,
+        errorDetails,
       });
       // Stop generating state on error
       setIsGenerating(false);
@@ -869,7 +1041,11 @@ export const useStory = (): UseStoryReturn => {
   );
 
   const closeGenerationErrorModal = useCallback(() => {
-    setGenerationErrorModal({ isOpen: false, errorMessage: '' });
+    setGenerationErrorModal({
+      isOpen: false,
+      errorMessage: '',
+      errorDetails: undefined,
+    });
   }, []);
 
   const deleteStoryAction = useCallback(
@@ -963,6 +1139,7 @@ export const useStory = (): UseStoryReturn => {
     generationErrorModal: {
       isOpen: generationErrorModal.isOpen,
       errorMessage: generationErrorModal.errorMessage,
+      errorDetails: generationErrorModal.errorDetails,
     },
     closeGenerationErrorModal,
   };

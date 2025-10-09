@@ -4426,12 +4426,27 @@ components:
     ErrorResponse:
       type: object
       properties:
+        code:
+          type: string
+          description: Error code identifying the type of error
+        message:
+          type: string
+          description: Human-readable error message
         error:
           type: string
           maxLength: 500
+          description: Error message (for backward compatibility)
         details:
           type: string
           maxLength: 1000
+          description: Additional error details
+        retryable:
+          type: boolean
+          description: Whether the operation can be retried
+        severity:
+          type: string
+          enum: [info, warn, error, fatal]
+          description: Severity level of the error
 
     SignupStatusResponse:
       type: object
