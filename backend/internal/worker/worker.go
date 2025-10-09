@@ -795,8 +795,8 @@ func (w *Worker) generateStorySection(ctx context.Context, user models.User) err
 	defer observability.FinishSpan(span, nil)
 
 	// Create a timeout context for story generation to prevent hanging requests
-	// Use a more conservative timeout since Google API seems to timeout around 7-8 seconds
-	timeoutCtx, cancel := context.WithTimeout(ctx, 45*time.Second)
+	// Use the configured AI request timeout for consistency with other AI operations
+	timeoutCtx, cancel := context.WithTimeout(ctx, config.AIRequestTimeout)
 	defer cancel()
 
 	// Get the user's current story
