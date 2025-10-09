@@ -627,6 +627,307 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /v1/ai/conversations:
+    post:
+      tags:
+        - AI Conversations
+      summary: Create a new AI conversation
+      description: Create a new AI conversation for the authenticated user
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateConversationRequest"
+      responses:
+        "201":
+          description: Conversation created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Conversation"
+        "400":
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    get:
+      tags:
+        - AI Conversations
+      summary: List user's AI conversations
+      description: Retrieve a list of all AI conversations for the authenticated user
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: limit
+          in: query
+          description: Maximum number of conversations to return
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          description: Number of conversations to skip
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: Conversations retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  conversations:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Conversation"
+                  total:
+                    type: integer
+                    description: Total number of conversations
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/ai/conversations/{id}:
+    get:
+      tags:
+        - AI Conversations
+      summary: Get AI conversation with messages
+      description: Retrieve a specific AI conversation and all its associated messages
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Conversation UUID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Conversation retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Conversation"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Conversation not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    put:
+      tags:
+        - AI Conversations
+      summary: Update AI conversation
+      description: Update an AI conversation (e.g., change its title)
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Conversation UUID
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateConversationRequest"
+      responses:
+        "200":
+          description: Conversation updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Conversation"
+        "400":
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Conversation not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      tags:
+        - AI Conversations
+      summary: Delete AI conversation
+      description: Delete an AI conversation and all its associated messages
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Conversation UUID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Conversation deleted successfully
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Conversation not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/ai/conversations/{conversationId}/messages:
+    post:
+      tags:
+        - AI Conversations
+      summary: Add message to conversation
+      description: Add a new AI chat message to an existing conversation
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: conversationId
+          in: path
+          required: true
+          description: Conversation UUID
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateMessageRequest"
+      responses:
+        "201":
+          description: Message added successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatMessage"
+        "400":
+          description: Invalid request data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Conversation not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/ai/search:
+    get:
+      tags:
+        - AI Conversations
+      summary: Search AI messages
+      description: Search across all AI chat messages belonging to the authenticated user
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: Search query string
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 255
+        - name: limit
+          in: query
+          description: Maximum number of results to return
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          description: Number of results to skip
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: Search results retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  messages:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ChatMessage"
+                  total:
+                    type: integer
+                    description: Total number of matching messages
+        "400":
+          description: Invalid search query
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /v1/userz/profile:
     put:
       tags:
@@ -3942,6 +4243,123 @@ paths:
 
 components:
   schemas:
+    CreateConversationRequest:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Title for the conversation
+
+    UpdateConversationRequest:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: New title for the conversation
+
+    CreateMessageRequest:
+      type: object
+      required:
+        - role
+        - content
+      properties:
+        role:
+          type: string
+          enum: ["user", "assistant"]
+          description: Role of the message sender
+        content:
+          type: string
+          description: Message content
+        question_id:
+          type: integer
+          description: Optional question ID if this message relates to a specific question
+
+    Conversation:
+      type: object
+      required:
+        - id
+        - user_id
+        - title
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Conversation UUID
+        user_id:
+          type: integer
+          description: ID of the user who owns this conversation
+        title:
+          type: string
+          description: Conversation title
+        created_at:
+          type: string
+          format: date-time
+          description: When the conversation was created
+        updated_at:
+          type: string
+          format: date-time
+          description: When the conversation was last updated
+        messages:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChatMessage"
+          description: Array of messages in this conversation (optional, only included when requested)
+
+    ChatMessage:
+      type: object
+      required:
+        - id
+        - conversation_id
+        - role
+        - content
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Message UUID
+        conversation_id:
+          type: string
+          format: uuid
+          description: ID of the conversation this message belongs to
+        question_id:
+          type: integer
+          description: Optional question ID if this message relates to a specific question
+        role:
+          type: string
+          enum: ["user", "assistant"]
+          description: Role of the message sender
+        content:
+          type: string
+          description: Message content
+        bookmarked:
+          type: boolean
+          description: Whether this message is bookmarked
+        created_at:
+          type: string
+          format: date-time
+          description: When the message was created
+        updated_at:
+          type: string
+          format: date-time
+          description: When the message was last updated
+        conversation_title:
+          type: string
+          description: Title of the conversation (optional, included in search results)
+
+
+
     LoginRequest:
       type: object
       required:
@@ -4581,22 +4999,6 @@ components:
         ai_response:
           type: string
           description: "The response from the AI tutor."
-
-    ChatMessage:
-      type: object
-      properties:
-        role:
-          type: string
-          description: "The role of the message sender"
-          enum: ["user", "assistant"]
-        content:
-          type: string
-          description: "The message content"
-          minLength: 1
-          maxLength: 5000
-      required:
-        - role
-        - content
 
     UserProfile:
       type: object

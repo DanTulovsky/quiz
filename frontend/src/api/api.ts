@@ -35,6 +35,93 @@ import {
 } from 'msw';
 
 import { customInstance } from './axios';
+export interface CreateConversationRequest {
+  /**
+   * Title for the conversation
+   * @minLength 1
+   * @maxLength 255
+   */
+  title: string;
+}
+
+export interface UpdateConversationRequest {
+  /**
+   * New title for the conversation
+   * @minLength 1
+   * @maxLength 255
+   */
+  title: string;
+}
+
+/**
+ * Role of the message sender
+ */
+export type CreateMessageRequestRole = typeof CreateMessageRequestRole[keyof typeof CreateMessageRequestRole];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CreateMessageRequestRole = {
+  user: 'user',
+  assistant: 'assistant',
+} as const;
+
+export interface CreateMessageRequest {
+  /** Role of the message sender */
+  role: CreateMessageRequestRole;
+  /** Message content */
+  content: string;
+  /** Optional question ID if this message relates to a specific question */
+  question_id?: number;
+}
+
+export interface Conversation {
+  /** Conversation UUID */
+  id: string;
+  /** ID of the user who owns this conversation */
+  user_id: number;
+  /** Conversation title */
+  title: string;
+  /** When the conversation was created */
+  created_at: string;
+  /** When the conversation was last updated */
+  updated_at: string;
+  /** Array of messages in this conversation (optional, only included when requested) */
+  messages?: ChatMessage[];
+}
+
+/**
+ * Role of the message sender
+ */
+export type ChatMessageRole = typeof ChatMessageRole[keyof typeof ChatMessageRole];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const ChatMessageRole = {
+  user: 'user',
+  assistant: 'assistant',
+} as const;
+
+export interface ChatMessage {
+  /** Message UUID */
+  id: string;
+  /** ID of the conversation this message belongs to */
+  conversation_id: string;
+  /** Optional question ID if this message relates to a specific question */
+  question_id?: number;
+  /** Role of the message sender */
+  role: ChatMessageRole;
+  /** Message content */
+  content: string;
+  /** Whether this message is bookmarked */
+  bookmarked?: boolean;
+  /** When the message was created */
+  created_at: string;
+  /** When the message was last updated */
+  updated_at: string;
+  /** Title of the conversation (optional, included in search results) */
+  conversation_title?: string;
+}
+
 export interface LoginRequest {
   /**
    * Username (1-100 characters, alphanumeric + underscore + email characters, cannot be empty or whitespace-only)
@@ -544,29 +631,6 @@ export interface QuizChatRequest {
 export interface QuizChatResponse {
   /** The response from the AI tutor. */
   ai_response?: string;
-}
-
-/**
- * The role of the message sender
- */
-export type ChatMessageRole = typeof ChatMessageRole[keyof typeof ChatMessageRole];
-
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const ChatMessageRole = {
-  user: 'user',
-  assistant: 'assistant',
-} as const;
-
-export interface ChatMessage {
-  /** The role of the message sender */
-  role: ChatMessageRole;
-  /**
-   * The message content
-   * @minLength 1
-   * @maxLength 5000
-   */
-  content: string;
 }
 
 export interface UserProfile {
@@ -1667,6 +1731,52 @@ export type GetV1SettingsLevelsParams = {
  * Language to get levels for (optional - returns all levels if not specified)
  */
 language?: string;
+};
+
+export type GetV1AiConversationsParams = {
+/**
+ * Maximum number of conversations to return
+ * @minimum 1
+ * @maximum 100
+ */
+limit?: number;
+/**
+ * Number of conversations to skip
+ * @minimum 0
+ */
+offset?: number;
+};
+
+export type GetV1AiConversations200 = {
+  conversations?: Conversation[];
+  /** Total number of conversations */
+  total?: number;
+};
+
+export type GetV1AiSearchParams = {
+/**
+ * Search query string
+ * @minLength 1
+ * @maxLength 255
+ */
+q: string;
+/**
+ * Maximum number of results to return
+ * @minimum 1
+ * @maximum 100
+ */
+limit?: number;
+/**
+ * Number of results to skip
+ * @minimum 0
+ */
+offset?: number;
+};
+
+export type GetV1AiSearch200 = {
+  messages?: ChatMessage[];
+  /** Total number of matching messages */
+  total?: number;
 };
 
 export type PutV1UserzProfile200 = {
@@ -4060,6 +4170,537 @@ export function useGetV1SettingsApiKeyProvider<TData = Awaited<ReturnType<typeof
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getGetV1SettingsApiKeyProviderQueryOptions(provider,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * Create a new AI conversation for the authenticated user
+ * @summary Create a new AI conversation
+ */
+export const postV1AiConversations = (
+    createConversationRequest: CreateConversationRequest,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<Conversation>(
+      {url: `/v1/ai/conversations`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: createConversationRequest, signal
+    },
+      options);
+    }
+  
+
+
+export const getPostV1AiConversationsMutationOptions = <TError = ErrorResponse | ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AiConversations>>, TError,{data: CreateConversationRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof postV1AiConversations>>, TError,{data: CreateConversationRequest}, TContext> => {
+
+const mutationKey = ['postV1AiConversations'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AiConversations>>, {data: CreateConversationRequest}> = (props) => {
+          const {data} = props ?? {};
+
+          return  postV1AiConversations(data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostV1AiConversationsMutationResult = NonNullable<Awaited<ReturnType<typeof postV1AiConversations>>>
+    export type PostV1AiConversationsMutationBody = CreateConversationRequest
+    export type PostV1AiConversationsMutationError = ErrorResponse | ErrorResponse
+
+    /**
+ * @summary Create a new AI conversation
+ */
+export const usePostV1AiConversations = <TError = ErrorResponse | ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AiConversations>>, TError,{data: CreateConversationRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postV1AiConversations>>,
+        TError,
+        {data: CreateConversationRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getPostV1AiConversationsMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * Retrieve a list of all AI conversations for the authenticated user
+ * @summary List user's AI conversations
+ */
+export const getV1AiConversations = (
+    params?: GetV1AiConversationsParams,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<GetV1AiConversations200>(
+      {url: `/v1/ai/conversations`, method: 'GET',
+        params, signal
+    },
+      options);
+    }
+  
+
+export const getGetV1AiConversationsQueryKey = (params?: GetV1AiConversationsParams,) => {
+    return [`/v1/ai/conversations`, ...(params ? [params]: [])] as const;
+    }
+
+    
+export const getGetV1AiConversationsQueryOptions = <TData = Awaited<ReturnType<typeof getV1AiConversations>>, TError = ErrorResponse>(params?: GetV1AiConversationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiConversations>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetV1AiConversationsQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AiConversations>>> = ({ signal }) => getV1AiConversations(params, requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getV1AiConversations>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetV1AiConversationsQueryResult = NonNullable<Awaited<ReturnType<typeof getV1AiConversations>>>
+export type GetV1AiConversationsQueryError = ErrorResponse
+
+
+export function useGetV1AiConversations<TData = Awaited<ReturnType<typeof getV1AiConversations>>, TError = ErrorResponse>(
+ params: undefined |  GetV1AiConversationsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiConversations>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1AiConversations>>,
+          TError,
+          Awaited<ReturnType<typeof getV1AiConversations>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1AiConversations<TData = Awaited<ReturnType<typeof getV1AiConversations>>, TError = ErrorResponse>(
+ params?: GetV1AiConversationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiConversations>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1AiConversations>>,
+          TError,
+          Awaited<ReturnType<typeof getV1AiConversations>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1AiConversations<TData = Awaited<ReturnType<typeof getV1AiConversations>>, TError = ErrorResponse>(
+ params?: GetV1AiConversationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiConversations>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List user's AI conversations
+ */
+
+export function useGetV1AiConversations<TData = Awaited<ReturnType<typeof getV1AiConversations>>, TError = ErrorResponse>(
+ params?: GetV1AiConversationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiConversations>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetV1AiConversationsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * Retrieve a specific AI conversation and all its associated messages
+ * @summary Get AI conversation with messages
+ */
+export const getV1AiConversationsId = (
+    id: string,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<Conversation>(
+      {url: `/v1/ai/conversations/${id}`, method: 'GET', signal
+    },
+      options);
+    }
+  
+
+export const getGetV1AiConversationsIdQueryKey = (id?: string,) => {
+    return [`/v1/ai/conversations/${id}`] as const;
+    }
+
+    
+export const getGetV1AiConversationsIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1AiConversationsId>>, TError = ErrorResponse | ErrorResponse>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiConversationsId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetV1AiConversationsIdQueryKey(id);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AiConversationsId>>> = ({ signal }) => getV1AiConversationsId(id, requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getV1AiConversationsId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetV1AiConversationsIdQueryResult = NonNullable<Awaited<ReturnType<typeof getV1AiConversationsId>>>
+export type GetV1AiConversationsIdQueryError = ErrorResponse | ErrorResponse
+
+
+export function useGetV1AiConversationsId<TData = Awaited<ReturnType<typeof getV1AiConversationsId>>, TError = ErrorResponse | ErrorResponse>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiConversationsId>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1AiConversationsId>>,
+          TError,
+          Awaited<ReturnType<typeof getV1AiConversationsId>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1AiConversationsId<TData = Awaited<ReturnType<typeof getV1AiConversationsId>>, TError = ErrorResponse | ErrorResponse>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiConversationsId>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1AiConversationsId>>,
+          TError,
+          Awaited<ReturnType<typeof getV1AiConversationsId>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1AiConversationsId<TData = Awaited<ReturnType<typeof getV1AiConversationsId>>, TError = ErrorResponse | ErrorResponse>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiConversationsId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get AI conversation with messages
+ */
+
+export function useGetV1AiConversationsId<TData = Awaited<ReturnType<typeof getV1AiConversationsId>>, TError = ErrorResponse | ErrorResponse>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiConversationsId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetV1AiConversationsIdQueryOptions(id,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * Update an AI conversation (e.g., change its title)
+ * @summary Update AI conversation
+ */
+export const putV1AiConversationsId = (
+    id: string,
+    updateConversationRequest: UpdateConversationRequest,
+ options?: SecondParameter<typeof customInstance>,) => {
+      
+      
+      return customInstance<Conversation>(
+      {url: `/v1/ai/conversations/${id}`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: updateConversationRequest
+    },
+      options);
+    }
+  
+
+
+export const getPutV1AiConversationsIdMutationOptions = <TError = ErrorResponse | ErrorResponse | ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1AiConversationsId>>, TError,{id: string;data: UpdateConversationRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof putV1AiConversationsId>>, TError,{id: string;data: UpdateConversationRequest}, TContext> => {
+
+const mutationKey = ['putV1AiConversationsId'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putV1AiConversationsId>>, {id: string;data: UpdateConversationRequest}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  putV1AiConversationsId(id,data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PutV1AiConversationsIdMutationResult = NonNullable<Awaited<ReturnType<typeof putV1AiConversationsId>>>
+    export type PutV1AiConversationsIdMutationBody = UpdateConversationRequest
+    export type PutV1AiConversationsIdMutationError = ErrorResponse | ErrorResponse | ErrorResponse
+
+    /**
+ * @summary Update AI conversation
+ */
+export const usePutV1AiConversationsId = <TError = ErrorResponse | ErrorResponse | ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1AiConversationsId>>, TError,{id: string;data: UpdateConversationRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof putV1AiConversationsId>>,
+        TError,
+        {id: string;data: UpdateConversationRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getPutV1AiConversationsIdMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * Delete an AI conversation and all its associated messages
+ * @summary Delete AI conversation
+ */
+export const deleteV1AiConversationsId = (
+    id: string,
+ options?: SecondParameter<typeof customInstance>,) => {
+      
+      
+      return customInstance<null>(
+      {url: `/v1/ai/conversations/${id}`, method: 'DELETE'
+    },
+      options);
+    }
+  
+
+
+export const getDeleteV1AiConversationsIdMutationOptions = <TError = ErrorResponse | ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AiConversationsId>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteV1AiConversationsId>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['deleteV1AiConversationsId'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteV1AiConversationsId>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteV1AiConversationsId(id,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteV1AiConversationsIdMutationResult = NonNullable<Awaited<ReturnType<typeof deleteV1AiConversationsId>>>
+    
+    export type DeleteV1AiConversationsIdMutationError = ErrorResponse | ErrorResponse
+
+    /**
+ * @summary Delete AI conversation
+ */
+export const useDeleteV1AiConversationsId = <TError = ErrorResponse | ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AiConversationsId>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteV1AiConversationsId>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+
+      const mutationOptions = getDeleteV1AiConversationsIdMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * Add a new AI chat message to an existing conversation
+ * @summary Add message to conversation
+ */
+export const postV1AiConversationsConversationIdMessages = (
+    conversationId: string,
+    createMessageRequest: CreateMessageRequest,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<ChatMessage>(
+      {url: `/v1/ai/conversations/${conversationId}/messages`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: createMessageRequest, signal
+    },
+      options);
+    }
+  
+
+
+export const getPostV1AiConversationsConversationIdMessagesMutationOptions = <TError = ErrorResponse | ErrorResponse | ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AiConversationsConversationIdMessages>>, TError,{conversationId: string;data: CreateMessageRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof postV1AiConversationsConversationIdMessages>>, TError,{conversationId: string;data: CreateMessageRequest}, TContext> => {
+
+const mutationKey = ['postV1AiConversationsConversationIdMessages'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AiConversationsConversationIdMessages>>, {conversationId: string;data: CreateMessageRequest}> = (props) => {
+          const {conversationId,data} = props ?? {};
+
+          return  postV1AiConversationsConversationIdMessages(conversationId,data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostV1AiConversationsConversationIdMessagesMutationResult = NonNullable<Awaited<ReturnType<typeof postV1AiConversationsConversationIdMessages>>>
+    export type PostV1AiConversationsConversationIdMessagesMutationBody = CreateMessageRequest
+    export type PostV1AiConversationsConversationIdMessagesMutationError = ErrorResponse | ErrorResponse | ErrorResponse
+
+    /**
+ * @summary Add message to conversation
+ */
+export const usePostV1AiConversationsConversationIdMessages = <TError = ErrorResponse | ErrorResponse | ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AiConversationsConversationIdMessages>>, TError,{conversationId: string;data: CreateMessageRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postV1AiConversationsConversationIdMessages>>,
+        TError,
+        {conversationId: string;data: CreateMessageRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getPostV1AiConversationsConversationIdMessagesMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * Search across all AI chat messages belonging to the authenticated user
+ * @summary Search AI messages
+ */
+export const getV1AiSearch = (
+    params: GetV1AiSearchParams,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<GetV1AiSearch200>(
+      {url: `/v1/ai/search`, method: 'GET',
+        params, signal
+    },
+      options);
+    }
+  
+
+export const getGetV1AiSearchQueryKey = (params?: GetV1AiSearchParams,) => {
+    return [`/v1/ai/search`, ...(params ? [params]: [])] as const;
+    }
+
+    
+export const getGetV1AiSearchQueryOptions = <TData = Awaited<ReturnType<typeof getV1AiSearch>>, TError = ErrorResponse | ErrorResponse>(params: GetV1AiSearchParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiSearch>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetV1AiSearchQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AiSearch>>> = ({ signal }) => getV1AiSearch(params, requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getV1AiSearch>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetV1AiSearchQueryResult = NonNullable<Awaited<ReturnType<typeof getV1AiSearch>>>
+export type GetV1AiSearchQueryError = ErrorResponse | ErrorResponse
+
+
+export function useGetV1AiSearch<TData = Awaited<ReturnType<typeof getV1AiSearch>>, TError = ErrorResponse | ErrorResponse>(
+ params: GetV1AiSearchParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiSearch>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1AiSearch>>,
+          TError,
+          Awaited<ReturnType<typeof getV1AiSearch>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1AiSearch<TData = Awaited<ReturnType<typeof getV1AiSearch>>, TError = ErrorResponse | ErrorResponse>(
+ params: GetV1AiSearchParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiSearch>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1AiSearch>>,
+          TError,
+          Awaited<ReturnType<typeof getV1AiSearch>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1AiSearch<TData = Awaited<ReturnType<typeof getV1AiSearch>>, TError = ErrorResponse | ErrorResponse>(
+ params: GetV1AiSearchParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiSearch>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Search AI messages
+ */
+
+export function useGetV1AiSearch<TData = Awaited<ReturnType<typeof getV1AiSearch>>, TError = ErrorResponse | ErrorResponse>(
+ params: GetV1AiSearchParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiSearch>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetV1AiSearchQueryOptions(params,options)
 
   const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -9836,6 +10477,18 @@ export const getGetV1SettingsLanguagesResponseMock = (): LanguagesResponse => (A
 
 export const getGetV1SettingsApiKeyProviderResponseMock = (overrideResponse: Partial< APIKeyAvailabilityResponse > = {}): APIKeyAvailabilityResponse => ({has_api_key: faker.datatype.boolean(), ...overrideResponse})
 
+export const getPostV1AiConversationsResponseMock = (overrideResponse: Partial< Conversation > = {}): Conversation => ({id: faker.string.uuid(), user_id: faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), title: faker.string.alpha({length: {min: 10, max: 20}}), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, messages: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.string.uuid(), conversation_id: faker.string.uuid(), question_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), role: faker.helpers.arrayElement(['user','assistant'] as const), content: faker.string.alpha({length: {min: 10, max: 20}}), bookmarked: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, conversation_title: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined]), ...overrideResponse})
+
+export const getGetV1AiConversationsResponseMock = (overrideResponse: Partial< GetV1AiConversations200 > = {}): GetV1AiConversations200 => ({conversations: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.string.uuid(), user_id: faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), title: faker.string.alpha({length: {min: 10, max: 20}}), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, messages: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.string.uuid(), conversation_id: faker.string.uuid(), question_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), role: faker.helpers.arrayElement(['user','assistant'] as const), content: faker.string.alpha({length: {min: 10, max: 20}}), bookmarked: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, conversation_title: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined])})), undefined]), total: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), ...overrideResponse})
+
+export const getGetV1AiConversationsIdResponseMock = (overrideResponse: Partial< Conversation > = {}): Conversation => ({id: faker.string.uuid(), user_id: faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), title: faker.string.alpha({length: {min: 10, max: 20}}), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, messages: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.string.uuid(), conversation_id: faker.string.uuid(), question_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), role: faker.helpers.arrayElement(['user','assistant'] as const), content: faker.string.alpha({length: {min: 10, max: 20}}), bookmarked: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, conversation_title: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined]), ...overrideResponse})
+
+export const getPutV1AiConversationsIdResponseMock = (overrideResponse: Partial< Conversation > = {}): Conversation => ({id: faker.string.uuid(), user_id: faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), title: faker.string.alpha({length: {min: 10, max: 20}}), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, messages: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.string.uuid(), conversation_id: faker.string.uuid(), question_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), role: faker.helpers.arrayElement(['user','assistant'] as const), content: faker.string.alpha({length: {min: 10, max: 20}}), bookmarked: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, conversation_title: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined]), ...overrideResponse})
+
+export const getPostV1AiConversationsConversationIdMessagesResponseMock = (overrideResponse: Partial< ChatMessage > = {}): ChatMessage => ({id: faker.string.uuid(), conversation_id: faker.string.uuid(), question_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), role: faker.helpers.arrayElement(['user','assistant'] as const), content: faker.string.alpha({length: {min: 10, max: 20}}), bookmarked: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, conversation_title: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
+
+export const getGetV1AiSearchResponseMock = (overrideResponse: Partial< GetV1AiSearch200 > = {}): GetV1AiSearch200 => ({messages: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.string.uuid(), conversation_id: faker.string.uuid(), question_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), role: faker.helpers.arrayElement(['user','assistant'] as const), content: faker.string.alpha({length: {min: 10, max: 20}}), bookmarked: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, conversation_title: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined]), total: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), ...overrideResponse})
+
 export const getPutV1UserzProfileResponseMock = (overrideResponse: Partial< PutV1UserzProfile200 > = {}): PutV1UserzProfile200 => ({message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), user: faker.helpers.arrayElement([{id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), username: faker.helpers.arrayElement([faker.helpers.fromRegExp('^[a-zA-Z0-9_@.+-]+$'), undefined]), email: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), timezone: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), last_active: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), preferred_language: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), current_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ai_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), is_paused: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), updated_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, undefined]), ...overrideResponse})
 
 export const getGetV1AdminBackendResponseMock = (): string => (faker.word.sample())
@@ -10285,6 +10938,88 @@ export const getGetV1SettingsApiKeyProviderMockHandler = (overrideResponse?: API
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
     ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
     : getGetV1SettingsApiKeyProviderResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
+export const getPostV1AiConversationsMockHandler = (overrideResponse?: Conversation | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<Conversation> | Conversation)) => {
+  return http.post('*/v1/ai/conversations', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getPostV1AiConversationsResponseMock()),
+      { status: 201,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
+export const getGetV1AiConversationsMockHandler = (overrideResponse?: GetV1AiConversations200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1AiConversations200> | GetV1AiConversations200)) => {
+  return http.get('*/v1/ai/conversations', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetV1AiConversationsResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
+export const getGetV1AiConversationsIdMockHandler = (overrideResponse?: Conversation | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<Conversation> | Conversation)) => {
+  return http.get('*/v1/ai/conversations/:id', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetV1AiConversationsIdResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
+export const getPutV1AiConversationsIdMockHandler = (overrideResponse?: Conversation | ((info: Parameters<Parameters<typeof http.put>[1]>[0]) => Promise<Conversation> | Conversation)) => {
+  return http.put('*/v1/ai/conversations/:id', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getPutV1AiConversationsIdResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
+export const getDeleteV1AiConversationsIdMockHandler = (overrideResponse?: null | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<null> | null)) => {
+  return http.delete('*/v1/ai/conversations/:id', async (info) => {await delay(1000);
+  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
+    return new HttpResponse(null,
+      { status: 204,
+        
+      })
+  })
+}
+
+export const getPostV1AiConversationsConversationIdMessagesMockHandler = (overrideResponse?: ChatMessage | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<ChatMessage> | ChatMessage)) => {
+  return http.post('*/v1/ai/conversations/:conversationId/messages', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getPostV1AiConversationsConversationIdMessagesResponseMock()),
+      { status: 201,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
+export const getGetV1AiSearchMockHandler = (overrideResponse?: GetV1AiSearch200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1AiSearch200> | GetV1AiSearch200)) => {
+  return http.get('*/v1/ai/search', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetV1AiSearchResponseMock()),
       { status: 200,
         headers: { 'Content-Type': 'application/json' }
       })
@@ -11193,6 +11928,13 @@ export const getQuizApplicationAPIMock = () => [
   getGetV1SettingsLevelsMockHandler(),
   getGetV1SettingsLanguagesMockHandler(),
   getGetV1SettingsApiKeyProviderMockHandler(),
+  getPostV1AiConversationsMockHandler(),
+  getGetV1AiConversationsMockHandler(),
+  getGetV1AiConversationsIdMockHandler(),
+  getPutV1AiConversationsIdMockHandler(),
+  getDeleteV1AiConversationsIdMockHandler(),
+  getPostV1AiConversationsConversationIdMessagesMockHandler(),
+  getGetV1AiSearchMockHandler(),
   getPutV1UserzProfileMockHandler(),
   getGetV1AdminBackendMockHandler(),
   getGetV1AdminBackendUserzMockHandler(),

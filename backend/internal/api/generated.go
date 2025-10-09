@@ -23,6 +23,12 @@ const (
 	ChatMessageRoleUser      ChatMessageRole = "user"
 )
 
+// Defines values for CreateMessageRequestRole.
+const (
+	CreateMessageRequestRoleAssistant CreateMessageRequestRole = "assistant"
+	CreateMessageRequestRoleUser      CreateMessageRequestRole = "user"
+)
+
 // Defines values for CreateStoryRequestSectionLengthOverride.
 const (
 	CreateStoryRequestSectionLengthOverrideLong   CreateStoryRequestSectionLengthOverride = "long"
@@ -258,15 +264,78 @@ type AuthStatusResponse struct {
 
 // ChatMessage defines model for ChatMessage.
 type ChatMessage struct {
-	// Content The message content
+	// Bookmarked Whether this message is bookmarked
+	Bookmarked *bool `json:"bookmarked,omitempty"`
+
+	// Content Message content
 	Content string `json:"content"`
 
-	// Role The role of the message sender
+	// ConversationId ID of the conversation this message belongs to
+	ConversationId openapi_types.UUID `json:"conversation_id"`
+
+	// ConversationTitle Title of the conversation (optional, included in search results)
+	ConversationTitle *string `json:"conversation_title,omitempty"`
+
+	// CreatedAt When the message was created
+	CreatedAt time.Time `json:"created_at"`
+
+	// Id Message UUID
+	Id openapi_types.UUID `json:"id"`
+
+	// QuestionId Optional question ID if this message relates to a specific question
+	QuestionId *int `json:"question_id,omitempty"`
+
+	// Role Role of the message sender
 	Role ChatMessageRole `json:"role"`
+
+	// UpdatedAt When the message was last updated
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
-// ChatMessageRole The role of the message sender
+// ChatMessageRole Role of the message sender
 type ChatMessageRole string
+
+// Conversation defines model for Conversation.
+type Conversation struct {
+	// CreatedAt When the conversation was created
+	CreatedAt time.Time `json:"created_at"`
+
+	// Id Conversation UUID
+	Id openapi_types.UUID `json:"id"`
+
+	// Messages Array of messages in this conversation (optional, only included when requested)
+	Messages *[]ChatMessage `json:"messages,omitempty"`
+
+	// Title Conversation title
+	Title string `json:"title"`
+
+	// UpdatedAt When the conversation was last updated
+	UpdatedAt time.Time `json:"updated_at"`
+
+	// UserId ID of the user who owns this conversation
+	UserId int `json:"user_id"`
+}
+
+// CreateConversationRequest defines model for CreateConversationRequest.
+type CreateConversationRequest struct {
+	// Title Title for the conversation
+	Title string `json:"title"`
+}
+
+// CreateMessageRequest defines model for CreateMessageRequest.
+type CreateMessageRequest struct {
+	// Content Message content
+	Content string `json:"content"`
+
+	// QuestionId Optional question ID if this message relates to a specific question
+	QuestionId *int `json:"question_id,omitempty"`
+
+	// Role Role of the message sender
+	Role CreateMessageRequestRole `json:"role"`
+}
+
+// CreateMessageRequestRole Role of the message sender
+type CreateMessageRequestRole string
 
 // CreateStoryRequest defines model for CreateStoryRequest.
 type CreateStoryRequest struct {
@@ -959,6 +1028,12 @@ type TestAIRequest struct {
 	Provider string `json:"provider"`
 }
 
+// UpdateConversationRequest defines model for UpdateConversationRequest.
+type UpdateConversationRequest struct {
+	// Title New title for the conversation
+	Title string `json:"title"`
+}
+
 // User defines model for User.
 type User struct {
 	// AiEnabled Whether AI features are enabled for this user
@@ -1475,6 +1550,27 @@ type GetV1AdminWorkerNotificationsSentParamsNotificationType string
 // GetV1AdminWorkerNotificationsSentParamsStatus defines parameters for GetV1AdminWorkerNotificationsSent.
 type GetV1AdminWorkerNotificationsSentParamsStatus string
 
+// GetV1AiConversationsParams defines parameters for GetV1AiConversations.
+type GetV1AiConversationsParams struct {
+	// Limit Maximum number of conversations to return
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Offset Number of conversations to skip
+	Offset *int `form:"offset,omitempty" json:"offset,omitempty"`
+}
+
+// GetV1AiSearchParams defines parameters for GetV1AiSearch.
+type GetV1AiSearchParams struct {
+	// Q Search query string
+	Q string `form:"q" json:"q"`
+
+	// Limit Maximum number of results to return
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Offset Number of results to skip
+	Offset *int `form:"offset,omitempty" json:"offset,omitempty"`
+}
+
 // GetV1AuthGoogleCallbackParams defines parameters for GetV1AuthGoogleCallback.
 type GetV1AuthGoogleCallbackParams struct {
 	// Code Authorization code from Google
@@ -1549,6 +1645,15 @@ type PostV1AdminWorkerUsersPauseJSONRequestBody = UserIdRequest
 
 // PostV1AdminWorkerUsersResumeJSONRequestBody defines body for PostV1AdminWorkerUsersResume for application/json ContentType.
 type PostV1AdminWorkerUsersResumeJSONRequestBody = UserIdRequest
+
+// PostV1AiConversationsJSONRequestBody defines body for PostV1AiConversations for application/json ContentType.
+type PostV1AiConversationsJSONRequestBody = CreateConversationRequest
+
+// PostV1AiConversationsConversationIdMessagesJSONRequestBody defines body for PostV1AiConversationsConversationIdMessages for application/json ContentType.
+type PostV1AiConversationsConversationIdMessagesJSONRequestBody = CreateMessageRequest
+
+// PutV1AiConversationsIdJSONRequestBody defines body for PutV1AiConversationsId for application/json ContentType.
+type PutV1AiConversationsIdJSONRequestBody = UpdateConversationRequest
 
 // PostV1AudioSpeechJSONRequestBody defines body for PostV1AudioSpeech for application/json ContentType.
 type PostV1AudioSpeechJSONRequestBody = TTSRequest
