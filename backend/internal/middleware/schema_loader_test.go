@@ -134,7 +134,7 @@ func TestSchemaLoader_Integration(t *testing.T) {
 	}{
 		{"/v1/auth/login", "POST", true, true, "LoginRequest", "LoginResponse"},
 		{"/v1/story", "POST", true, true, "CreateStoryRequest", "Story"},
-		{"/v1/story", "GET", false, true, "", "Story"}, // Test GET /v1/story (returns array of Story)
+		{"/v1/story", "GET", false, true, "", "StoryArray"}, // Test GET /v1/story (returns array of Story)
 		{"/v1/quiz/question", "GET", false, true, "", "Question"},
 		{"/v1/settings", "PUT", true, true, "UserSettings", "SuccessResponse"},
 		{"/v1/settings/languages", "GET", false, true, "", "LanguagesResponse"},

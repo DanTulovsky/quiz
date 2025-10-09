@@ -14,14 +14,16 @@ import (
 
 // SchemaLoader loads JSON schemas from the Swagger specification
 type SchemaLoader struct {
-	schemas     map[string]*gojsonschema.Schema
-	swaggerData map[string]interface{}
+	schemas               map[string]*gojsonschema.Schema
+	jsonCompatibleSchemas map[string]interface{}
+	swaggerData           map[string]interface{}
 }
 
 // NewSchemaLoader creates a new schema loader
 func NewSchemaLoader() *SchemaLoader {
 	return &SchemaLoader{
-		schemas: make(map[string]*gojsonschema.Schema),
+		schemas:               make(map[string]*gojsonschema.Schema),
+		jsonCompatibleSchemas: make(map[string]interface{}),
 	}
 }
 
@@ -78,6 +80,9 @@ func (sl *SchemaLoader) LoadSchemasFromSwaggerFromData(data []byte) error {
 
 		jsonCompatibleSchemas[schemaNameStr] = convertedSchema
 	}
+
+	// Store jsonCompatibleSchemas for creating array schemas later
+	sl.jsonCompatibleSchemas = jsonCompatibleSchemas
 
 	// Load each schema
 	for schemaNameStr := range jsonCompatibleSchemas {
@@ -680,8 +685,44 @@ func (sl *SchemaLoader) DetermineSchemaFromPath(path, method string) string {
 					if refStr, ok := ref.(string); ok {
 						// Extract schema name from $ref (e.g., "#/components/schemas/Story")
 						if strings.HasPrefix(refStr, "#/components/schemas/") {
-							schemaName := strings.TrimPrefix(refStr, "#/components/schemas/")
-							return schemaName
+							itemSchemaName := strings.TrimPrefix(refStr, "#/components/schemas/")
+
+							// For array responses, we need to create a synthetic schema that validates arrays
+							arraySchemaName := fmt.Sprintf("%sArray", itemSchemaName)
+
+							// Check if we've already created this array schema
+							if _, exists := sl.schemas[arraySchemaName]; !exists {
+								// Create array schema with full context for $ref resolution
+								arraySchema := map[string]interface{}{
+									"$schema": "http://json-schema.org/draft-07/schema#",
+									"components": map[string]interface{}{
+										"schemas": sl.jsonCompatibleSchemas,
+									},
+									"type": "array",
+									"items": map[string]interface{}{
+										"$ref": fmt.Sprintf("#/components/schemas/%s", itemSchemaName),
+									},
+								}
+
+								// Load the array schema
+								schemaBytes, err := json.Marshal(arraySchema)
+								if err != nil {
+									fmt.Printf("Warning: failed to marshal array schema %s: %v\n", arraySchemaName, err)
+									return itemSchemaName // Fallback to item schema
+								}
+
+								schemaLoader := gojsonschema.NewBytesLoader(schemaBytes)
+								schema, err := gojsonschema.NewSchema(schemaLoader)
+								if err != nil {
+									fmt.Printf("Warning: failed to load array schema %s: %v\n", arraySchemaName, err)
+									return itemSchemaName // Fallback to item schema
+								}
+
+								sl.schemas[arraySchemaName] = schema
+								fmt.Printf("✅ Created array schema: %s\n", arraySchemaName)
+							}
+
+							return arraySchemaName
 						}
 					}
 				}

@@ -374,6 +374,7 @@ describe('useStory', () => {
       mockStoryApi.getCurrentStory.mockRejectedValue(
         new Error('Failed to load story')
       );
+      mockStoryApi.getUserStories.mockResolvedValue([]);
 
       const { result } = renderHook(() => useStory(), { wrapper });
 
