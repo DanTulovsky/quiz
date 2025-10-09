@@ -134,6 +134,7 @@ func TestSchemaLoader_Integration(t *testing.T) {
 	}{
 		{"/v1/auth/login", "POST", true, true, "LoginRequest", "LoginResponse"},
 		{"/v1/story", "POST", true, true, "CreateStoryRequest", "Story"},
+		{"/v1/story", "GET", false, true, "", "Story"}, // Test GET /v1/story (returns array of Story)
 		{"/v1/quiz/question", "GET", false, true, "", "Question"},
 		{"/v1/settings", "PUT", true, true, "UserSettings", "SuccessResponse"},
 		{"/v1/settings/languages", "GET", false, true, "", "LanguagesResponse"},
@@ -267,6 +268,27 @@ func TestSchemaLoader_Integration(t *testing.T) {
 					responseSchema := loader.DetermineSchemaFromPath(path, method)
 					if responseSchema != "" {
 						assert.Contains(t, loader.schemas, responseSchema, "Response schema %s should be loaded", responseSchema)
+					} else {
+						// Check if this endpoint should have a response schema by examining the swagger definition
+						// Some endpoints legitimately don't have response bodies (204 No Content, etc.)
+						t.Logf("No response schema found for %s %s - checking if this is expected...", method, path)
+
+						// Check if the endpoint has any response definitions in swagger
+						if paths, ok := loader.swaggerData["paths"].(map[string]interface{}); ok {
+							if pathInfo, exists := paths[path]; exists {
+								if pathMap, ok := pathInfo.(map[string]interface{}); ok {
+									if methodInfo, exists := pathMap[strings.ToLower(method)]; exists {
+										if methodMap, ok := methodInfo.(map[string]interface{}); ok {
+											if _, exists := methodMap["responses"]; exists {
+												t.Errorf("❌ Endpoint %s %s has responses defined in swagger but no schema detected - this indicates a bug in schema detection logic", method, path)
+											} else {
+												t.Logf("  Endpoint %s %s has no responses section in swagger - this is expected", method, path)
+											}
+										}
+									}
+								}
+							}
+						}
 					}
 				})
 			}

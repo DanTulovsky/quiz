@@ -650,21 +650,43 @@ func (sl *SchemaLoader) DetermineSchemaFromPath(path, method string) string {
 		schemaMap = convertInterfaceMapToStringMap(schemaMapInterface)
 	}
 
-	// Extract $ref
-	ref, exists := schemaMap["$ref"]
-	if !exists {
-		return ""
+	// Extract $ref directly
+	if ref, exists := schemaMap["$ref"]; exists {
+		if refStr, ok := ref.(string); ok {
+			// Extract schema name from $ref (e.g., "#/components/schemas/DashboardResponse")
+			if strings.HasPrefix(refStr, "#/components/schemas/") {
+				schemaName := strings.TrimPrefix(refStr, "#/components/schemas/")
+				return schemaName
+			}
+		}
 	}
 
-	refStr, ok := ref.(string)
-	if !ok {
-		return ""
-	}
+	// Handle array schemas - check if it's an array with items that have a $ref
+	if schemaType, exists := schemaMap["type"]; exists {
+		if typeStr, ok := schemaType.(string); ok && typeStr == "array" {
+			// Check for items.$ref
+			if items, exists := schemaMap["items"]; exists {
+				itemsMap, ok := items.(map[string]interface{})
+				if !ok {
+					// Try with interface{} keys
+					itemsMapInterface, ok := items.(map[interface{}]interface{})
+					if !ok {
+						return ""
+					}
+					itemsMap = convertInterfaceMapToStringMap(itemsMapInterface)
+				}
 
-	// Extract schema name from $ref (e.g., "#/components/schemas/DashboardResponse")
-	if strings.HasPrefix(refStr, "#/components/schemas/") {
-		schemaName := strings.TrimPrefix(refStr, "#/components/schemas/")
-		return schemaName
+				if ref, exists := itemsMap["$ref"]; exists {
+					if refStr, ok := ref.(string); ok {
+						// Extract schema name from $ref (e.g., "#/components/schemas/Story")
+						if strings.HasPrefix(refStr, "#/components/schemas/") {
+							schemaName := strings.TrimPrefix(refStr, "#/components/schemas/")
+							return schemaName
+						}
+					}
+				}
+			}
+		}
 	}
 
 	return ""
