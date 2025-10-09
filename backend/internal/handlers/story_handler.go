@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -536,7 +537,16 @@ func (h *StoryHandler) ExportStory(c *gin.Context) {
 
 	// Create PDF
 	pdf := gofpdf.New("P", "mm", "A4", "")
+
+	// Use Arial (core font) for PDF generation
+	// Note: For proper Unicode support with non-Latin characters, we would need to:
+	// 1. Add a TTF font file (e.g., DejaVu Sans) to frontend/public/fonts/
+	// 2. Generate a .json font definition file using gofpdf's makefont utility
+	// 3. Register the font using pdf.AddUTF8Font()
+	// For now, Arial provides basic support and the buffer change prevents encoding issues
+
 	pdf.AddPage()
+	// Use Arial consistently; size will be overridden for headings where needed
 	pdf.SetFont("Arial", "B", 16)
 
 	// Add title
@@ -587,8 +597,7 @@ func (h *StoryHandler) ExportStory(c *gin.Context) {
 	c.Header("Content-Type", "application/pdf")
 	c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=%s", filename))
 
-	// Output PDF to response
-	var buf strings.Builder
+	var buf bytes.Buffer
 	err = pdf.Output(&buf)
 	if err != nil {
 		h.logger.Error(ctx, "Failed to generate PDF", err, map[string]interface{}{
@@ -598,7 +607,7 @@ func (h *StoryHandler) ExportStory(c *gin.Context) {
 		return
 	}
 
-	c.Data(http.StatusOK, "application/pdf", []byte(buf.String()))
+	c.Data(http.StatusOK, "application/pdf", buf.Bytes())
 }
 
 // convertToServicesAIConfig creates AI config for the user in services format
