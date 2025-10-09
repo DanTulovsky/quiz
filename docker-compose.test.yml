@@ -146,6 +146,8 @@ services:
         - type=local,src=/tmp/.buildx-cache-frontend
       cache_to:
         - type=local,dest=/tmp/.buildx-cache-frontend-new,mode=max
+      x-bake:
+        provenance: false
     ports:
       - "${FRONTEND_PORT:-3001}:80"
     volumes:
