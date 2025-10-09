@@ -1311,52 +1311,52 @@ func (s *QuestionService) GetAdaptiveQuestionsForDaily(ctx context.Context, user
 		selectedQuestions = selectedQuestions[:limit]
 	}
 
-    // Final duplicate check - this should never happen but provides extra safety
-    finalSelectedQuestions := make([]*QuestionWithStats, 0, len(selectedQuestions))
-    finalSelectedIDs := make(map[int]bool)
+	// Final duplicate check - this should never happen but provides extra safety
+	finalSelectedQuestions := make([]*QuestionWithStats, 0, len(selectedQuestions))
+	finalSelectedIDs := make(map[int]bool)
 
-    for _, q := range selectedQuestions {
-        if !finalSelectedIDs[q.ID] {
-            finalSelectedQuestions = append(finalSelectedQuestions, q)
-            finalSelectedIDs[q.ID] = true
-        } else {
-            s.logger.Warn(ctx, "Duplicate question detected in final selection", map[string]interface{}{
-                "user_id": userID, "question_id": q.ID,
-            })
-        }
-    }
+	for _, q := range selectedQuestions {
+		if !finalSelectedIDs[q.ID] {
+			finalSelectedQuestions = append(finalSelectedQuestions, q)
+			finalSelectedIDs[q.ID] = true
+		} else {
+			s.logger.Warn(ctx, "Duplicate question detected in final selection", map[string]interface{}{
+				"user_id": userID, "question_id": q.ID,
+			})
+		}
+	}
 
-    // Interleave selected questions by type to avoid bias toward types that were
-    // selected earlier in the algorithm. This ensures that when callers slice the
-    // returned list (e.g., to meet a smaller goal), later types like
-    // ReadingComprehension are not systematically excluded.
-    typeBuckets := make(map[models.QuestionType][]*QuestionWithStats)
-    var typeOrder []models.QuestionType
-    for _, q := range finalSelectedQuestions {
-        if _, ok := typeBuckets[q.Type]; !ok {
-            typeOrder = append(typeOrder, q.Type)
-        }
-        typeBuckets[q.Type] = append(typeBuckets[q.Type], q)
-    }
+	// Interleave selected questions by type to avoid bias toward types that were
+	// selected earlier in the algorithm. This ensures that when callers slice the
+	// returned list (e.g., to meet a smaller goal), later types like
+	// ReadingComprehension are not systematically excluded.
+	typeBuckets := make(map[models.QuestionType][]*QuestionWithStats)
+	var typeOrder []models.QuestionType
+	for _, q := range finalSelectedQuestions {
+		if _, ok := typeBuckets[q.Type]; !ok {
+			typeOrder = append(typeOrder, q.Type)
+		}
+		typeBuckets[q.Type] = append(typeBuckets[q.Type], q)
+	}
 
-    interleaved := make([]*QuestionWithStats, 0, len(finalSelectedQuestions))
-    for len(interleaved) < len(finalSelectedQuestions) {
-        added := false
-        for _, t := range typeOrder {
-            if len(typeBuckets[t]) > 0 {
-                interleaved = append(interleaved, typeBuckets[t][0])
-                typeBuckets[t] = typeBuckets[t][1:]
-                added = true
-                if len(interleaved) >= len(finalSelectedQuestions) {
-                    break
-                }
-            }
-        }
-        if !added {
-            break
-        }
-    }
-    finalSelectedQuestions = interleaved
+	interleaved := make([]*QuestionWithStats, 0, len(finalSelectedQuestions))
+	for len(interleaved) < len(finalSelectedQuestions) {
+		added := false
+		for _, t := range typeOrder {
+			if len(typeBuckets[t]) > 0 {
+				interleaved = append(interleaved, typeBuckets[t][0])
+				typeBuckets[t] = typeBuckets[t][1:]
+				added = true
+				if len(interleaved) >= len(finalSelectedQuestions) {
+					break
+				}
+			}
+		}
+		if !added {
+			break
+		}
+	}
+	finalSelectedQuestions = interleaved
 
 	s.logger.Info(ctx, "Selected adaptive questions for daily assignment", map[string]interface{}{
 		"user_id":            userID,
