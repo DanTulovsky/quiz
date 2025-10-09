@@ -13,16 +13,10 @@ import {
   Divider,
   ScrollArea,
 } from '@mantine/core';
-import {
-  IconBook,
-  IconChevronLeft,
-  IconChevronRight,
-  IconPlus,
-  IconEye,
-  IconLayoutList,
-} from '@tabler/icons-react';
+import { IconBook, IconBook2, IconMessage } from '@tabler/icons-react';
 
 import { useStory } from '../../hooks/useStory';
+import { splitIntoParagraphs } from '../../utils/passage';
 import CreateStoryForm from '../../components/CreateStoryForm';
 import ArchivedStoriesView from '../../components/ArchivedStoriesView';
 import StoryGenerationErrorModal from '../../components/StoryGenerationErrorModal';
@@ -212,36 +206,49 @@ const MobileStoryPage: React.FC = () => {
 
   // Show main story interface
   return (
-    <Container size='lg' py='lg'>
-      <Stack gap='lg'>
+    <Container
+      size='lg'
+      py='lg'
+      style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}
+    >
+      <Stack
+        gap='lg'
+        style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
+      >
         {/* Header */}
-        <Paper p='md' radius='md'>
+        <Paper p='sm' radius='md'>
           <Group justify='space-between' align='center'>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <IconBook size={24} />
-              <Title order={4}>{currentStory?.title}</Title>
+              <IconBook size={20} />
+              <Title order={5}>{currentStory?.title}</Title>
             </div>
 
-            <Group gap='xs'>
+            <Group gap={2}>
               {/* View Mode Toggle */}
-              <Group gap={4}>
-                <Button
-                  variant={viewMode === 'section' ? 'filled' : 'light'}
-                  size='xs'
-                  onClick={() => setViewMode('section')}
-                  leftSection={<IconLayoutList size={14} />}
-                >
-                  Section
-                </Button>
-                <Button
-                  variant={viewMode === 'reading' ? 'filled' : 'light'}
-                  size='xs'
-                  onClick={() => setViewMode('reading')}
-                  leftSection={<IconEye size={14} />}
-                >
-                  Reading
-                </Button>
-              </Group>
+              <Button
+                variant={viewMode === 'section' ? 'filled' : 'light'}
+                size='xs'
+                onClick={() => setViewMode('section')}
+                leftSection={<IconBook2 size={12} />}
+                styles={{
+                  root: { fontSize: '12px', padding: '1px 8px' },
+                  label: { fontSize: '12px' },
+                }}
+              >
+                Section
+              </Button>
+              <Button
+                variant={viewMode === 'reading' ? 'filled' : 'light'}
+                size='xs'
+                onClick={() => setViewMode('reading')}
+                leftSection={<IconMessage size={12} />}
+                styles={{
+                  root: { fontSize: '12px', padding: '1px 8px' },
+                  label: { fontSize: '12px' },
+                }}
+              >
+                Reading
+              </Button>
             </Group>
           </Group>
         </Paper>
@@ -365,27 +372,34 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
   return (
     <Stack gap='md'>
       {/* Section Header */}
-      <Paper p='md' radius='md'>
+      <Paper p='sm' radius='md'>
         <Group justify='space-between' align='center'>
           <Group gap='xs'>
-            <Badge variant='light' color='blue'>
+            <Badge variant='light' color='blue' size='sm'>
               Section {section.section_number}
             </Badge>
-            <Badge variant='outline'>{section.language_level}</Badge>
+            <Badge variant='outline' size='sm'>
+              {section.language_level}
+            </Badge>
           </Group>
-          <Badge variant='outline'>{section.word_count} words</Badge>
+          <Badge variant='outline' size='sm'>
+            {section.word_count} words
+          </Badge>
         </Group>
 
         {/* Section Navigation */}
-        <Group justify='center' mt='md' gap='xs'>
+        <Group justify='center' mt='sm' gap={4}>
           <Button
             variant='light'
             size='xs'
             onClick={onFirst}
             disabled={sectionIndex === 0}
-            leftSection={<IconChevronLeft size={14} />}
+            styles={{
+              root: { fontSize: '11px', padding: '2px 6px', minHeight: '28px' },
+              label: { fontSize: '11px' },
+            }}
           >
-            First
+            «
           </Button>
 
           <Button
@@ -393,15 +407,18 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
             size='xs'
             onClick={onPrevious}
             disabled={sectionIndex === 0}
-            leftSection={<IconChevronLeft size={14} />}
+            styles={{
+              root: { fontSize: '11px', padding: '2px 6px', minHeight: '28px' },
+              label: { fontSize: '11px' },
+            }}
           >
-            Previous
+            ‹
           </Button>
 
           <Text
-            size='sm'
+            size='xs'
             color='dimmed'
-            style={{ minWidth: '60px', textAlign: 'center' }}
+            style={{ minWidth: '50px', textAlign: 'center' }}
           >
             {sectionIndex + 1} / {totalSections}
           </Text>
@@ -411,9 +428,12 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
             size='xs'
             onClick={onNext}
             disabled={sectionIndex >= totalSections - 1}
-            rightSection={<IconChevronRight size={14} />}
+            styles={{
+              root: { fontSize: '11px', padding: '2px 6px', minHeight: '28px' },
+              label: { fontSize: '11px' },
+            }}
           >
-            Next
+            ›
           </Button>
 
           <Button
@@ -421,24 +441,42 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
             size='xs'
             onClick={onLast}
             disabled={sectionIndex >= totalSections - 1}
-            rightSection={<IconChevronRight size={14} />}
+            styles={{
+              root: { fontSize: '11px', padding: '2px 6px', minHeight: '28px' },
+              label: { fontSize: '11px' },
+            }}
           >
-            Last
+            »
           </Button>
         </Group>
       </Paper>
 
       {/* Section Content */}
-      <Paper p='lg' radius='md'>
-        <ScrollArea style={{ maxHeight: '50vh' }}>
-          <div
-            style={{
-              lineHeight: 1.6,
-              fontSize: '16px',
-              whiteSpace: 'pre-wrap',
-            }}
-          >
-            {section.content}
+      <Paper p='lg' radius='md' style={{ flex: 1, overflow: 'hidden' }}>
+        <ScrollArea style={{ height: '100%' }}>
+          <div style={{ padding: '1rem 0' }}>
+            {(() => {
+              const paragraphs = splitIntoParagraphs(section.content, 2);
+              return (
+                <div>
+                  {paragraphs.map((paragraph, index) => (
+                    <div key={index}>
+                      <div
+                        style={{
+                          lineHeight: 1.6,
+                          fontSize: '16px',
+                          whiteSpace: 'pre-wrap',
+                          marginBottom:
+                            index < paragraphs.length - 1 ? '1rem' : 0,
+                        }}
+                      >
+                        {paragraph}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
           </div>
         </ScrollArea>
       </Paper>
@@ -482,7 +520,7 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
             loading={isGenerating}
             disabled={!canGenerateToday || isGenerating}
             color='blue'
-            leftSection={<IconPlus size={14} />}
+            leftSection={<IconBook size={14} />}
           >
             {isGenerating ? 'Generating...' : 'Generate Next Section'}
           </Button>
@@ -612,7 +650,7 @@ const MobileStoryReadingView: React.FC<MobileStoryReadingViewProps> = ({
           <Stack gap='md' align='center'>
             <IconBook size={48} style={{ opacity: 0.5 }} />
             <Title order={4}>Generating Your Story</Title>
-            <Text color='dimmed' align='center'>
+            <Text color='dimmed' ta='center'>
               We're creating the first section of your story.
             </Text>
           </Stack>
@@ -659,47 +697,61 @@ const MobileStoryReadingView: React.FC<MobileStoryReadingViewProps> = ({
       </Paper>
 
       {/* Story Content */}
-      <Paper p='lg' radius='md'>
-        <ScrollArea style={{ maxHeight: '60vh' }}>
-          <Stack gap='lg'>
-            {/* Story Sections */}
-            {story.sections?.map((section: StorySection, index: number) => (
-              <div key={section.id || index}>
-                <Divider my='md' />
-                <div
-                  style={{
-                    lineHeight: 1.7,
-                    fontSize: '16px',
-                    whiteSpace: 'pre-wrap',
-                    marginBottom:
-                      index < (story.sections?.length || 0) - 1
-                        ? '1.5rem'
-                        : '1rem',
-                  }}
-                >
-                  {section.content}
+      <Paper p='lg' radius='md' style={{ flex: 1, overflow: 'hidden' }}>
+        <ScrollArea style={{ height: '100%' }}>
+          <div style={{ padding: '1rem 0' }}>
+            <Stack gap='lg'>
+              {/* Story Sections */}
+              {story.sections?.map((section: StorySection, index: number) => (
+                <div key={section.id || index}>
+                  <Divider my='md' />
+                  {(() => {
+                    const paragraphs = splitIntoParagraphs(section.content, 3);
+                    return (
+                      <div>
+                        {paragraphs.map((paragraph, paraIndex) => (
+                          <div
+                            key={paraIndex}
+                            style={{
+                              lineHeight: 1.7,
+                              fontSize: '16px',
+                              whiteSpace: 'pre-wrap',
+                              marginBottom:
+                                paraIndex < paragraphs.length - 1
+                                  ? '1.5rem'
+                                  : index < (story.sections?.length || 0) - 1
+                                    ? '1.5rem'
+                                    : '1rem',
+                            }}
+                          >
+                            {paragraph}
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  })()}
                 </div>
-              </div>
-            ))}
+              ))}
 
-            {/* Story End Notice */}
-            <Paper
-              p='md'
-              radius='sm'
-              style={{
-                backgroundColor: '#f0f9ff',
-                border: '1px solid #e0f2fe',
-              }}
-            >
-              <Text size='sm' color='blue' align='center'>
-                {story.status === 'active'
-                  ? 'This story is ongoing. New sections will be added daily!'
-                  : story.status === 'completed'
-                    ? 'This story has been completed.'
-                    : 'This story has been archived.'}
-              </Text>
-            </Paper>
-          </Stack>
+              {/* Story End Notice */}
+              <Paper
+                p='md'
+                radius='sm'
+                style={{
+                  backgroundColor: '#f0f9ff',
+                  border: '1px solid #e0f2fe',
+                }}
+              >
+                <Text size='sm' color='blue' ta='center'>
+                  {story.status === 'active'
+                    ? 'This story is ongoing. New sections will be added daily!'
+                    : story.status === 'completed'
+                      ? 'This story has been completed.'
+                      : 'This story has been archived.'}
+                </Text>
+              </Paper>
+            </Stack>
+          </div>
         </ScrollArea>
       </Paper>
     </Stack>

@@ -30,11 +30,21 @@ html {
     padding-right: env(safe-area-inset-right);
   }
 
-  /* Ensure touch targets are at least 44px */
-  button,
+  /* Ensure touch targets are at least 40px for most buttons, but avoid forcing
+     icon-only controls (ActionIcon, Burger) to expand and increase header height.
+     We scope the rule to mantine Button roots which have padding indicating text
+     presence, and explicitly limit styles for icon-only components. */
   .mantine-Button-root {
-    min-height: 44px;
-    min-width: 44px;
+    min-height: 40px;
+    min-width: 40px;
+  }
+
+  /* Keep ActionIcon and native icon buttons compact */
+  .mantine-ActionIcon-root,
+  button[aria-label],
+  .mantine-Burger-root {
+    min-height: unset;
+    min-width: unset;
   }
 
   /* Improve text readability on mobile */
@@ -63,11 +73,12 @@ html {
 /* iOS safe area support */
 @supports (padding: max(0px)) {
   .mobile-safe-header {
-    padding-top: max(1rem, env(safe-area-inset-top));
+    /* reduce the extra vertical padding so header doesn't take excessive space */
+    padding-top: max(0.5rem, env(safe-area-inset-top));
   }
 
   .mobile-safe-footer {
-    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
   }
 }
 
