@@ -46,19 +46,19 @@ type MockStoryService struct {
 	err   error
 }
 
-func (m *MockStoryService) CreateStory(ctx context.Context, userID uint, language string, req *models.CreateStoryRequest) (*models.Story, error) {
+func (m *MockStoryService) CreateStory(_ context.Context, _ uint, _ string, _ *models.CreateStoryRequest) (*models.Story, error) {
 	return nil, nil
 }
 
-func (m *MockStoryService) GetUserStories(ctx context.Context, userID uint, includeArchived bool) ([]models.Story, error) {
+func (m *MockStoryService) GetUserStories(_ context.Context, _ uint, _ bool) ([]models.Story, error) {
 	return nil, nil
 }
 
-func (m *MockStoryService) GetCurrentStory(ctx context.Context, userID uint) (*models.StoryWithSections, error) {
+func (m *MockStoryService) GetCurrentStory(_ context.Context, _ uint) (*models.StoryWithSections, error) {
 	return m.story, m.err
 }
 
-func (m *MockStoryService) GetStory(ctx context.Context, storyID, userID uint) (*models.StoryWithSections, error) {
+func (m *MockStoryService) GetStory(_ context.Context, storyID, _ uint) (*models.StoryWithSections, error) {
 	if m.err != nil {
 		return nil, m.err
 	}
@@ -68,74 +68,74 @@ func (m *MockStoryService) GetStory(ctx context.Context, storyID, userID uint) (
 	return nil, contextutils.ErrorWithContextf("story not found or access denied")
 }
 
-func (m *MockStoryService) ArchiveStory(ctx context.Context, storyID, userID uint) error {
+func (m *MockStoryService) ArchiveStory(_ context.Context, _, _ uint) error {
 	return nil
 }
 
-func (m *MockStoryService) CompleteStory(ctx context.Context, storyID, userID uint) error {
+func (m *MockStoryService) CompleteStory(_ context.Context, _, _ uint) error {
 	return nil
 }
 
-func (m *MockStoryService) SetCurrentStory(ctx context.Context, storyID, userID uint) error {
+func (m *MockStoryService) SetCurrentStory(_ context.Context, _, _ uint) error {
 	return nil
 }
 
-func (m *MockStoryService) DeleteStory(ctx context.Context, storyID, userID uint) error {
+func (m *MockStoryService) DeleteStory(_ context.Context, _, _ uint) error {
 	return nil
 }
 
-func (m *MockStoryService) DeleteAllStoriesForUser(ctx context.Context, userID uint) error {
+func (m *MockStoryService) DeleteAllStoriesForUser(_ context.Context, _ uint) error {
 	return nil
 }
 
-func (m *MockStoryService) FixCurrentStoryConstraint(ctx context.Context) error {
+func (m *MockStoryService) FixCurrentStoryConstraint(_ context.Context) error {
 	return nil
 }
 
-func (m *MockStoryService) GetStorySections(ctx context.Context, storyID uint) ([]models.StorySection, error) {
+func (m *MockStoryService) GetStorySections(_ context.Context, storyID uint) ([]models.StorySection, error) {
 	if m.story != nil && m.story.ID == storyID {
 		return m.story.Sections, nil
 	}
 	return nil, nil
 }
 
-func (m *MockStoryService) GetSection(ctx context.Context, sectionID, userID uint) (*models.StorySectionWithQuestions, error) {
+func (m *MockStoryService) GetSection(_ context.Context, _, _ uint) (*models.StorySectionWithQuestions, error) {
 	return nil, nil
 }
 
-func (m *MockStoryService) CreateSection(ctx context.Context, storyID uint, content, level string, wordCount int, generatedBy models.GeneratorType) (*models.StorySection, error) {
+func (m *MockStoryService) CreateSection(_ context.Context, _ uint, _, _ string, _ int, _ models.GeneratorType) (*models.StorySection, error) {
 	return nil, nil
 }
 
-func (m *MockStoryService) GetLatestSection(ctx context.Context, storyID uint) (*models.StorySection, error) {
+func (m *MockStoryService) GetLatestSection(_ context.Context, _ uint) (*models.StorySection, error) {
 	return nil, nil
 }
 
-func (m *MockStoryService) GetAllSectionsText(ctx context.Context, storyID uint) (string, error) {
+func (m *MockStoryService) GetAllSectionsText(_ context.Context, _ uint) (string, error) {
 	return "", nil
 }
 
-func (m *MockStoryService) GetSectionQuestions(ctx context.Context, sectionID uint) ([]models.StorySectionQuestion, error) {
+func (m *MockStoryService) GetSectionQuestions(_ context.Context, _ uint) ([]models.StorySectionQuestion, error) {
 	return nil, nil
 }
 
-func (m *MockStoryService) CreateSectionQuestions(ctx context.Context, sectionID uint, questions []models.StorySectionQuestionData) error {
+func (m *MockStoryService) CreateSectionQuestions(_ context.Context, _ uint, _ []models.StorySectionQuestionData) error {
 	return nil
 }
 
-func (m *MockStoryService) GetRandomQuestions(ctx context.Context, sectionID uint, count int) ([]models.StorySectionQuestion, error) {
+func (m *MockStoryService) GetRandomQuestions(_ context.Context, _ uint, _ int) ([]models.StorySectionQuestion, error) {
 	return nil, nil
 }
 
-func (m *MockStoryService) UpdateLastGenerationTime(ctx context.Context, storyID uint, generatorType models.GeneratorType) error {
+func (m *MockStoryService) UpdateLastGenerationTime(_ context.Context, _ uint, _ models.GeneratorType) error {
 	return nil
 }
 
-func (m *MockStoryService) GetSectionLengthTarget(level string, lengthPref *models.SectionLength) int {
+func (m *MockStoryService) GetSectionLengthTarget(_ string, _ *models.SectionLength) int {
 	return 150
 }
 
-func (m *MockStoryService) GetSectionLengthTargetWithLanguage(language, level string, lengthPref *models.SectionLength) int {
+func (m *MockStoryService) GetSectionLengthTargetWithLanguage(_, _ string, _ *models.SectionLength) int {
 	return 150
 }
 
@@ -143,7 +143,7 @@ func (m *MockStoryService) SanitizeInput(input string) string {
 	return input
 }
 
-func (m *MockStoryService) GenerateStorySection(ctx context.Context, storyID, userID uint, aiService services.AIServiceInterface, userAIConfig *models.UserAIConfig, generatorType models.GeneratorType) (*models.StorySectionWithQuestions, error) {
+func (m *MockStoryService) GenerateStorySection(_ context.Context, _, _ uint, _ services.AIServiceInterface, _ *models.UserAIConfig, _ models.GeneratorType) (*models.StorySectionWithQuestions, error) {
 	return nil, nil
 }
 
@@ -297,40 +297,40 @@ func TestExportStoryPDF_FontFallback(t *testing.T) {
 // SimpleMockAIService for testing - implements AIServiceInterface
 type SimpleMockAIService struct{}
 
-func (m *SimpleMockAIService) GenerateStorySection(ctx context.Context, userAIConfig *models.UserAIConfig, req *models.StoryGenerationRequest) (string, error) {
+func (m *SimpleMockAIService) GenerateStorySection(_ context.Context, _ *models.UserAIConfig, _ *models.StoryGenerationRequest) (string, error) {
 	return "Mock story section", nil
 }
 
-func (m *SimpleMockAIService) GenerateStoryQuestions(ctx context.Context, userAIConfig *models.UserAIConfig, req *models.StoryQuestionsRequest) ([]*models.StorySectionQuestionData, error) {
+func (m *SimpleMockAIService) GenerateStoryQuestions(_ context.Context, _ *models.UserAIConfig, _ *models.StoryQuestionsRequest) ([]*models.StorySectionQuestionData, error) {
 	return []*models.StorySectionQuestionData{}, nil
 }
 
-func (m *SimpleMockAIService) CallWithPrompt(ctx context.Context, userAIConfig *models.UserAIConfig, prompt, systemPrompt string) (string, error) {
+func (m *SimpleMockAIService) CallWithPrompt(_ context.Context, _ *models.UserAIConfig, _, _ string) (string, error) {
 	return "Mock response", nil
 }
 
-func (m *SimpleMockAIService) GenerateChatResponse(ctx context.Context, userAIConfig *models.UserAIConfig, req *models.AIChatRequest) (string, error) {
+func (m *SimpleMockAIService) GenerateChatResponse(_ context.Context, _ *models.UserAIConfig, _ *models.AIChatRequest) (string, error) {
 	return "Mock chat response", nil
 }
 
-func (m *SimpleMockAIService) GenerateChatResponseStream(ctx context.Context, userAIConfig *models.UserAIConfig, req *models.AIChatRequest, callback chan<- string) error {
+func (m *SimpleMockAIService) GenerateChatResponseStream(_ context.Context, _ *models.UserAIConfig, _ *models.AIChatRequest, callback chan<- string) error {
 	callback <- "Mock streaming response"
 	return nil
 }
 
-func (m *SimpleMockAIService) GenerateQuestion(ctx context.Context, userAIConfig *models.UserAIConfig, req *models.AIQuestionGenRequest) (*models.Question, error) {
+func (m *SimpleMockAIService) GenerateQuestion(_ context.Context, _ *models.UserAIConfig, _ *models.AIQuestionGenRequest) (*models.Question, error) {
 	return &models.Question{}, nil
 }
 
-func (m *SimpleMockAIService) GenerateQuestions(ctx context.Context, userConfig *models.UserAIConfig, req *models.AIQuestionGenRequest) ([]*models.Question, error) {
+func (m *SimpleMockAIService) GenerateQuestions(_ context.Context, _ *models.UserAIConfig, _ *models.AIQuestionGenRequest) ([]*models.Question, error) {
 	return []*models.Question{}, nil
 }
 
-func (m *SimpleMockAIService) GenerateQuestionsStream(ctx context.Context, userConfig *models.UserAIConfig, req *models.AIQuestionGenRequest, progress chan<- *models.Question, variety *services.VarietyElements) error {
+func (m *SimpleMockAIService) GenerateQuestionsStream(_ context.Context, _ *models.UserAIConfig, _ *models.AIQuestionGenRequest, _ chan<- *models.Question, _ *services.VarietyElements) error {
 	return nil
 }
 
-func (m *SimpleMockAIService) TestConnection(ctx context.Context, provider, model, apiKey string) error {
+func (m *SimpleMockAIService) TestConnection(_ context.Context, _, _, _ string) error {
 	return nil
 }
 
@@ -338,7 +338,7 @@ func (m *SimpleMockAIService) GetConcurrencyStats() services.ConcurrencyStats {
 	return services.ConcurrencyStats{}
 }
 
-func (m *SimpleMockAIService) GetQuestionBatchSize(provider string) int {
+func (m *SimpleMockAIService) GetQuestionBatchSize(_ string) int {
 	return 1
 }
 
@@ -350,11 +350,11 @@ func (m *SimpleMockAIService) TemplateManager() *services.AITemplateManager {
 	return &services.AITemplateManager{}
 }
 
-func (m *SimpleMockAIService) SupportsGrammarField(provider string) bool {
+func (m *SimpleMockAIService) SupportsGrammarField(_ string) bool {
 	return false
 }
 
-func (m *SimpleMockAIService) Shutdown(ctx context.Context) error {
+func (m *SimpleMockAIService) Shutdown(_ context.Context) error {
 	return nil
 }
 
