@@ -127,6 +127,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         icon: IconBook,
         testId: 'nav-story',
       },
+      {
+        name: 'AI Conversations',
+        href: '/conversations',
+        icon: IconBrain,
+        testId: 'nav-conversations',
+      },
     ];
 
     const adminNav = isAdmin
@@ -203,7 +209,18 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   );
 
   useHotkeys(
-    'shift+5',
+    'shift+6',
+    e => {
+      e.preventDefault();
+      if (mainNav[5] && mainNav[5].href !== location.pathname) {
+        navigate(mainNav[5].href);
+      }
+    },
+    { enableOnFormTags: false, preventDefault: true }
+  );
+
+  useHotkeys(
+    'shift+0',
     e => {
       e.preventDefault();
       if (adminNav[0] && adminNav[0].href !== location.pathname) {

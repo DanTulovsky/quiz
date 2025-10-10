@@ -699,6 +699,12 @@ paths:
                   total:
                     type: integer
                     description: Total number of conversations
+                  limit:
+                    type: integer
+                    description: Number of conversations returned
+                  offset:
+                    type: integer
+                    description: Number of conversations skipped
         "401":
           description: User not authenticated
           content:
@@ -912,9 +918,18 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/ChatMessage"
+                  query:
+                    type: string
+                    description: The search query that was used
                   total:
                     type: integer
                     description: Total number of matching messages
+                  limit:
+                    type: integer
+                    description: Number of messages returned
+                  offset:
+                    type: integer
+                    description: Number of messages skipped
         "400":
           description: Invalid search query
           content:

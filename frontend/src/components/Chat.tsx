@@ -7,11 +7,14 @@ import {
   Square,
   Trash2,
   ChevronDown,
+  Save,
 } from 'lucide-react';
 import {
   AnswerResponse,
   Question,
   useGetV1SettingsAiProviders,
+  usePostV1AiConversations,
+  usePostV1AiConversationsConversationIdMessages,
 } from '../api/api';
 import LoadingSpinner from './LoadingSpinner';
 import ConfirmationModal from './ConfirmationModal';
@@ -20,6 +23,7 @@ import remarkGfm from 'remark-gfm';
 import ReactMarkdown from 'react-markdown';
 import { useAuth } from '../hooks/useAuth';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { useMutation } from '@tanstack/react-query';
 import {
   Paper,
   Stack,
@@ -89,7 +93,12 @@ const suggestedPrompts = [
 // };
 
 // Shared message bubble for consistent formatting
-const MessageBubble: React.FC<{ msg: Message }> = ({ msg }) => (
+const MessageBubble: React.FC<{
+  msg: Message;
+  onSave?: (messageText: string, messageIndex: number) => void;
+  messageIndex: number;
+  isLoading?: boolean;
+}> = ({ msg, onSave, messageIndex, isLoading }) => (
   <Box
     p='sm'
     mb='xs'
@@ -143,6 +152,19 @@ const MessageBubble: React.FC<{ msg: Message }> = ({ msg }) => (
       >
         {msg.text}
       </ReactMarkdown>
+      {msg.sender === 'ai' && onSave && (
+        <Group justify='flex-end' mt='xs'>
+          <Button
+            variant='light'
+            size='xs'
+            leftSection={<Save size={14} />}
+            onClick={() => onSave(msg.text, messageIndex)}
+            disabled={isLoading}
+          >
+            Save
+          </Button>
+        </Group>
+      )}
     </Box>
   </Box>
 );
@@ -161,7 +183,12 @@ interface ChatPanelProps {
   setInput: (v: string) => void;
   inputRef: React.RefObject<HTMLInputElement | HTMLTextAreaElement>;
   messages: Message[];
-  MessageBubble: React.FC<{ msg: Message }>;
+  MessageBubble: React.FC<{
+    msg: Message;
+    onSave?: (messageText: string, messageIndex: number) => void;
+    messageIndex: number;
+    isLoading?: boolean;
+  }>;
   bottomRef: React.RefObject<HTMLDivElement>;
   error: string | null;
   isThinking: boolean;
@@ -174,6 +201,9 @@ interface ChatPanelProps {
   setShowClearConfirm: (v: boolean) => void;
   selectedSuggestionIndex: number;
   setSelectedSuggestionIndex: (index: number) => void;
+  onSaveMessage?: (messageText: string, messageIndex: number) => void;
+  onSaveConversation?: () => void;
+  currentConversationId?: string | null;
 }
 
 // Helper to get the last AI message index
@@ -212,6 +242,9 @@ const ChatPanel: React.FC<
   setShowClearConfirm,
   selectedSuggestionIndex,
   setSelectedSuggestionIndex,
+  onSaveMessage,
+  onSaveConversation,
+  currentConversationId,
   onInputFocus,
   onInputBlur,
 }) => {
@@ -221,7 +254,12 @@ const ChatPanel: React.FC<
     if (msg.sender === 'ai' && index === lastAIIndex) {
       return (
         <Box key={index}>
-          <MessageBubble msg={msg} />
+          <MessageBubble
+            msg={msg}
+            onSave={onSaveMessage}
+            messageIndex={index}
+            isLoading={isLoading}
+          />
           {(isLoading || isThinking) && (
             <Group justify='center' align='center' gap={4}>
               <LoadingSpinner />
@@ -233,7 +271,15 @@ const ChatPanel: React.FC<
         </Box>
       );
     }
-    return <MessageBubble key={index} msg={msg} />;
+    return (
+      <MessageBubble
+        key={index}
+        msg={msg}
+        onSave={onSaveMessage}
+        messageIndex={index}
+        isLoading={isLoading}
+      />
+    );
   });
 
   return (
@@ -378,6 +424,19 @@ const ChatPanel: React.FC<
           </Box>
         </Group>
         <Group gap={2}>
+          <Button
+            variant='subtle'
+            c='gray'
+            size='xs'
+            onClick={onSaveConversation}
+            title='Save Conversation'
+            disabled={!currentConversationId || messages.length === 0}
+          >
+            <Save size={16} />
+            <Badge ml={4} size='xs' color='gray' variant='filled' radius='sm'>
+              S
+            </Badge>
+          </Button>
           <Button
             variant='subtle'
             c='gray'
@@ -605,6 +664,15 @@ export const Chat: React.FC<ChatProps> = ({
   const { data: providersData } = useGetV1SettingsAiProviders();
   const providers = providersData?.providers;
 
+  // API mutations for saving conversations
+  const createConversationMutation = useMutation({
+    mutationFn: usePostV1AiConversations().mutateAsync,
+  });
+
+  const addMessageMutation = useMutation({
+    mutationFn: usePostV1AiConversationsConversationIdMessages().mutateAsync,
+  });
+
   // Get current provider and model names
   const currentProvider = providers?.find(p => p.code === user?.ai_provider);
   const currentModel = currentProvider?.models?.find(
@@ -621,6 +689,10 @@ export const Chat: React.FC<ChatProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [isThinking, setIsThinking] = useState(false);
   const [showSuggestionsInternal, setShowSuggestionsInternal] = useState(false);
+  const [currentConversationId, setCurrentConversationId] = useState<
+    string | null
+  >(null);
+  const [, setIsSaving] = useState(false);
   const showSuggestions =
     showSuggestionsProp !== undefined
       ? showSuggestionsProp
@@ -1132,6 +1204,111 @@ export const Chat: React.FC<ChatProps> = ({
     setShowClearConfirm(false); // Always close the modal after clearing
   };
 
+  const handleSaveMessage = async (
+    messageText: string,
+    messageIndex: number
+  ) => {
+    if (!user?.id || !question?.id) return;
+
+    setIsSaving(true);
+    try {
+      // Find the corresponding user message for context
+      const userMessageIndex = messageIndex - 1;
+      const userMessage =
+        userMessageIndex >= 0 ? messages[userMessageIndex] : null;
+
+      // Create or use existing conversation
+      let conversationId = currentConversationId;
+      if (!conversationId) {
+        const conversation = await createConversationMutation.mutateAsync({
+          data: {
+            title: `AI Chat - ${question.question_text?.substring(0, 50)}...`,
+          },
+        });
+        conversationId = conversation.id;
+        setCurrentConversationId(conversationId);
+      }
+
+      // Save the message
+      await addMessageMutation.mutateAsync({
+        conversationId,
+        data: {
+          question_id: question.id,
+          role: 'assistant',
+          content: {
+            text: messageText,
+            question_context: {
+              question_text: question.question_text,
+              explanation: question.explanation,
+              correct_answer: question.correct_answer,
+              options: question.options,
+            },
+            user_question: userMessage?.text || '',
+          },
+        },
+      });
+
+      // Show success feedback
+      // You could add a toast notification here
+    } catch (error) {
+      logger.error('Failed to save message:', error);
+      // You could add error feedback here
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleSaveConversation = async () => {
+    if (!user?.id || messages.length === 0) return;
+
+    setIsSaving(true);
+    try {
+      // Create a new conversation or use existing one
+      let conversationId = currentConversationId;
+      if (!conversationId) {
+        const conversation = await createConversationMutation.mutateAsync({
+          data: {
+            title: `AI Chat - ${question.question_text?.substring(0, 50)}...`,
+          },
+        });
+        conversationId = conversation.id;
+        setCurrentConversationId(conversationId);
+      }
+
+      // Save all messages to the conversation
+      for (let i = 0; i < messages.length; i++) {
+        const msg = messages[i];
+        await addMessageMutation.mutateAsync({
+          conversationId,
+          data: {
+            question_id: question.id,
+            role: msg.sender === 'user' ? 'user' : 'assistant',
+            content: {
+              text: msg.text,
+              question_context:
+                i === 0
+                  ? {
+                      question_text: question.question_text,
+                      explanation: question.explanation,
+                      correct_answer: question.correct_answer,
+                      options: question.options,
+                    }
+                  : undefined,
+            },
+          },
+        });
+      }
+
+      // Show success feedback
+      // You could add a toast notification here
+    } catch (error) {
+      logger.error('Failed to save conversation:', error);
+      // You could add error feedback here
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   // Render ChatPanel inside Modal for maximized, or Paper for compact
   if (isMaximized) {
     return (
@@ -1188,6 +1365,9 @@ export const Chat: React.FC<ChatProps> = ({
           setShowClearConfirm={setShowClearConfirm}
           selectedSuggestionIndex={selectedSuggestionIndex}
           setSelectedSuggestionIndex={setSelectedSuggestionIndex}
+          onSaveMessage={handleSaveMessage}
+          onSaveConversation={handleSaveConversation}
+          currentConversationId={currentConversationId}
           onInputFocus={onInputFocus}
           onInputBlur={onInputBlur}
         />
@@ -1238,6 +1418,9 @@ export const Chat: React.FC<ChatProps> = ({
           setShowClearConfirm={setShowClearConfirm}
           selectedSuggestionIndex={selectedSuggestionIndex}
           setSelectedSuggestionIndex={setSelectedSuggestionIndex}
+          onSaveMessage={handleSaveMessage}
+          onSaveConversation={handleSaveConversation}
+          currentConversationId={currentConversationId}
           onInputFocus={onInputFocus}
           onInputBlur={onInputBlur}
         />
