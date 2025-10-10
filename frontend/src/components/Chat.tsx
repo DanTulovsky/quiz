@@ -668,7 +668,7 @@ export const Chat: React.FC<ChatProps> = ({
   const addMessageMutation = usePostV1AiConversationsConversationIdMessages();
 
   // Auto-save functionality
-  const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
+  const [autoSaveEnabled] = useState(true);
 
   // Get current provider and model names
   const currentProvider = providers?.find(p => p.code === user?.ai_provider);
@@ -1146,7 +1146,13 @@ export const Chat: React.FC<ChatProps> = ({
               });
 
               // Auto-save AI response if enabled (only save complete response)
-              if (autoSaveEnabled && user?.id && question?.id && conversationId && done) {
+              if (
+                autoSaveEnabled &&
+                user?.id &&
+                question?.id &&
+                conversationId &&
+                done
+              ) {
                 try {
                   await addMessageMutation.mutateAsync({
                     conversationId,
@@ -1252,17 +1258,13 @@ export const Chat: React.FC<ChatProps> = ({
 
   const handleSaveMessage = async (
     messageText: string,
-    messageIndex: number
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _messageIndex: number
   ) => {
     if (!user?.id || !question?.id) return;
 
     setIsSaving(true);
     try {
-      // Find the corresponding user message for context
-      const userMessageIndex = messageIndex - 1;
-      const userMessage =
-        userMessageIndex >= 0 ? messages[userMessageIndex] : null;
-
       // Create or use existing conversation
       let conversationId = currentConversationId;
       if (!conversationId) {

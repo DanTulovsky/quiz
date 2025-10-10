@@ -103,6 +103,10 @@ func (s *ConversationService) GetConversation(ctx context.Context, conversationI
 		return nil, contextutils.WrapError(err, "failed to get conversation messages")
 	}
 
+	// Ensure messages is never nil - always point to a valid slice
+	if messages == nil {
+		messages = []api.ChatMessage{}
+	}
 	conversation.Messages = &messages
 
 	return &conversation, nil

@@ -156,7 +156,7 @@ func (suite *ConversationServiceIntegrationTestSuite) TestGetConversationWithMes
 	// Add messages to the conversation
 	for i := 0; i < 2; i++ {
 		msgReq := &api.CreateMessageRequest{
-			Role:    api.CreateMessageRequestRoleUser,
+			Role: api.CreateMessageRequestRoleUser,
 			Content: struct {
 				Text *string `json:"text,omitempty"`
 			}{
@@ -246,7 +246,7 @@ func (suite *ConversationServiceIntegrationTestSuite) TestAddMessage() {
 
 	// Add a user message
 	msgReq := &api.CreateMessageRequest{
-		Role:    api.CreateMessageRequestRoleUser,
+		Role: api.CreateMessageRequestRoleUser,
 		Content: struct {
 			Text *string `json:"text,omitempty"`
 		}{
@@ -266,12 +266,12 @@ func (suite *ConversationServiceIntegrationTestSuite) TestAddMessage() {
 	// Add an assistant message
 	msg := "Hello! How can I help you today?"
 	assistantMsgReq := &api.CreateMessageRequest{
-		Role:    api.CreateMessageRequestRoleAssistant,
-				Content: struct {
-					Text *string `json:"text,omitempty"`
-				}{
-					Text: &msg,
-				},
+		Role: api.CreateMessageRequestRoleAssistant,
+		Content: struct {
+			Text *string `json:"text,omitempty"`
+		}{
+			Text: &msg,
+		},
 	}
 	fmt.Println(assistantMsgReq.Content)
 	err = suite.conversationSvc.AddMessage(ctx, conversation.Id.String(), uint(suite.testUser.ID), assistantMsgReq)
@@ -360,7 +360,7 @@ func (suite *ConversationServiceIntegrationTestSuite) TestSearchMessages() {
 	suite.Assert().Len(frenchResults, 1)
 	suite.Require().NotNil(frenchResults[0].ConversationTitle)
 	suite.Assert().NotEmpty(*frenchResults[0].ConversationTitle)
-		suite.Assert().Contains(*frenchResults[0].Content.Text, "French")
+	suite.Assert().Contains(*frenchResults[0].Content.Text, "French")
 }
 
 // TestMain runs the test suite

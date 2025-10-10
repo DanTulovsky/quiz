@@ -1182,7 +1182,8 @@ tasks:
     cmds:
       - echo "Running frontend unit tests..."
       - npm ci --legacy-peer-deps
-      - npm test -- --reporter=verbose --logHeapUsage
+      # - npm test -- --reporter=verbose --logHeapUsage
+      - npm test
 
   format:
     desc: "Format all code (Prettier for frontend, gofmt for backend)"
