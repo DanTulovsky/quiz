@@ -931,7 +931,7 @@ tasks:
 
   start-dev:
     desc: "Start development instance (preserves data, builds locally)"
-    deps: [build-all-with-version, merge-config, generate-api-types]
+    deps: [build-all-with-version, merge-config, generate-api-types, update-vite-proxy]
     env:
       DOCKER_BUILDKIT: 1
       COMPOSE_DOCKER_CLI_BUILD: 1
@@ -1815,3 +1815,26 @@ tasks:
       - docker compose -f docker-compose.prod.yml pull
       - task: stop-prod
       - task: start-prod
+
+  # --- Vite Proxy Update Task ---
+  update-vite-proxy:
+    desc: "Update vite.config.ts proxy configuration to match nginx.conf routes using ports from docker-compose.yml"
+    cmds:
+      - echo "🔄 Updating Vite proxy config based on nginx.conf and docker-compose.yml..."
+      - |
+        # Activate the pyenv virtual environment if available
+        if command -v pyenv >/dev/null 2>&1 && [ -n "$PYENV_VERSION" ]; then
+          eval "$(pyenv init -)"
+          pyenv activate quiz
+        fi
+        python scripts/update_vite_proxy.py
+      - echo "✅ Vite proxy updated! Test with 'npm run dev'."
+
+  # --- Frontend Dev Server Task ---
+  dev-frontend:
+    desc: "Start npm dev server for frontend (updates proxy config first)"
+    deps: [update-vite-proxy]
+    dir: frontend
+    cmds:
+      - echo "🚀 Starting npm dev server..."
+      - npm run dev
