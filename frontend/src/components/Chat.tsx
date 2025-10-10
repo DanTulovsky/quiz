@@ -1034,7 +1034,7 @@ export const Chat: React.FC<ChatProps> = ({
         if (!conversationId) {
           const conversation = await createConversationMutation.mutateAsync({
             data: {
-              title: `AI Chat - ${question.question_text?.substring(0, 50)}...`,
+              title: `AI Chat - ${question.content?.question?.substring(0, 50) || 'New Chat'}...`,
             },
           });
           conversationId = conversation.id;

@@ -262,6 +262,7 @@ func (h *DailyQuestionHandler) MarkQuestionCompleted(c *gin.Context) {
 
 	c.JSON(http.StatusOK, api.SuccessResponse{
 		Message: stringPtr("Question marked as completed"),
+		Success: true,
 	})
 }
 
@@ -333,6 +334,7 @@ func (h *DailyQuestionHandler) ResetQuestionCompleted(c *gin.Context) {
 
 	c.JSON(http.StatusOK, api.SuccessResponse{
 		Message: stringPtr("Question completion reset"),
+		Success: true,
 	})
 }
 

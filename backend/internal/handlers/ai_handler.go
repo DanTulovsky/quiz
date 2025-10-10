@@ -285,6 +285,7 @@ func (h *AIConversationHandler) DeleteConversation(c *gin.Context) {
 
 	c.JSON(http.StatusOK, api.SuccessResponse{
 		Message: stringPtr("Conversation deleted successfully"),
+		Success: true,
 	})
 }
 
@@ -354,6 +355,7 @@ func (h *AIConversationHandler) AddMessage(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, api.SuccessResponse{
 		Message: stringPtr("Message added successfully"),
+		Success: true,
 	})
 }
 
