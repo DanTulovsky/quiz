@@ -213,12 +213,17 @@ export const SavedConversationsPage: React.FC = () => {
     offset: 0,
   });
 
-  // Fetch search results
-  const { data: searchData, isLoading: isSearching } = useGetV1AiSearch({
-    q: searchQuery,
-    limit: 50,
-    offset: 0,
-  });
+  // Fetch search results - only when there's a search query
+  const { data: searchData, isLoading: isSearching } = useGetV1AiSearch(
+    {
+      q: searchQuery,
+      limit: 50,
+      offset: 0,
+    },
+    {
+      enabled: searchQuery.length > 0,
+    }
+  );
 
   // Mutations
   const deleteConversationMutation = useMutation({
