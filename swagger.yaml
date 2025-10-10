@@ -878,8 +878,8 @@ paths:
     get:
       tags:
         - AI Conversations
-      summary: Search AI messages
-      description: Search across all AI chat messages belonging to the authenticated user
+      summary: Search AI conversations
+      description: Search across all AI conversations belonging to the authenticated user
       security:
         - cookieAuth: []
       parameters:
@@ -914,22 +914,22 @@ paths:
               schema:
                 type: object
                 properties:
-                  messages:
+                  conversations:
                     type: array
                     items:
-                      $ref: "#/components/schemas/ChatMessage"
+                      $ref: "#/components/schemas/Conversation"
                   query:
                     type: string
                     description: The search query that was used
                   total:
                     type: integer
-                    description: Total number of matching messages
+                    description: Total number of matching conversations
                   limit:
                     type: integer
-                    description: Number of messages returned
+                    description: Number of conversations returned
                   offset:
                     type: integer
-                    description: Number of messages skipped
+                    description: Number of conversations skipped
         "400":
           description: Invalid search query
           content:

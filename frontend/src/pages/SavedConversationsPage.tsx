@@ -1,4 +1,10 @@
-import React, { useState } from 'react';
+import React, {
+  useState,
+  useRef,
+  useMemo,
+  useCallback,
+  useEffect,
+} from 'react';
 import {
   Container,
   Title,
@@ -9,24 +15,16 @@ import {
   Button,
   TextInput,
   Stack,
-  Box,
   Divider,
   ActionIcon,
   Menu,
   Modal,
 } from '@mantine/core';
-import {
-  Search,
-  Edit,
-  Trash2,
-  MessageCircle,
-  Calendar,
-  Filter,
-  SortDesc,
-} from 'lucide-react';
+import { Search, Edit, Trash2, MessageCircle, Calendar } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import {
   useGetV1AiConversations,
+  useGetV1AiConversationsId,
   useGetV1AiSearch,
   useDeleteV1AiConversationsId,
   usePutV1AiConversationsId,
@@ -101,18 +99,21 @@ const ConversationCard: React.FC<ConversationCardProps> = ({
           {format(new Date(conversation.created_at), 'MMM d, yyyy')}
         </Badge>
         <Badge variant='light' color='green'>
-          {conversation.message_count || 0} messages
+          {conversation.messages?.length || 0} messages
         </Badge>
       </Group>
 
-      {conversation.preview_message && (
+      {conversation.messages && conversation.messages.length > 0 && (
         <Text size='sm' c='dimmed' lineClamp={isExpanded ? undefined : 2}>
-          {conversation.preview_message}
+          {conversation.messages[0]?.content?.substring(0, 200) ||
+            'No preview available'}
         </Text>
       )}
 
-      {conversation.preview_message &&
-        conversation.preview_message.length > 100 && (
+      {conversation.messages &&
+        conversation.messages.length > 0 &&
+        conversation.messages[0]?.content &&
+        conversation.messages[0].content.length > 100 && (
           <Button
             variant='subtle'
             size='xs'
@@ -163,7 +164,7 @@ const ConversationDetailModal: React.FC<ConversationDetailModalProps> = ({
         },
       }}
     >
-      <Box style={{ flex: 1, overflow: 'auto', maxHeight: '60vh' }}>
+      <div style={{ flex: 1, overflow: 'auto', maxHeight: '60vh' }}>
         <Stack gap='sm'>
           {messages.map((message, index) => (
             <Card key={message.id || index} padding='md' radius='sm' withBorder>
@@ -186,7 +187,7 @@ const ConversationDetailModal: React.FC<ConversationDetailModalProps> = ({
             </Card>
           ))}
         </Stack>
-      </Box>
+      </div>
     </Modal>
   );
 };
@@ -194,6 +195,7 @@ const ConversationDetailModal: React.FC<ConversationDetailModalProps> = ({
 export const SavedConversationsPage: React.FC = () => {
   const {} = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeSearchQuery, setActiveSearchQuery] = useState('');
   const [selectedConversation, setSelectedConversation] =
     useState<Conversation | null>(null);
   const [conversationMessages, setConversationMessages] = useState<
@@ -206,24 +208,61 @@ export const SavedConversationsPage: React.FC = () => {
   const [editTitle, setEditTitle] = useState('');
 
   const queryClient = useQueryClient();
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
-  // Fetch conversations
-  const { data: conversationsData, isLoading } = useGetV1AiConversations({
+  // Fetch conversations or search results
+  const { data: conversationsData, isLoading: conversationsLoading } = useGetV1AiConversations({
     limit: 50,
     offset: 0,
+  }, {
+    query: {
+      enabled: !activeSearchQuery.trim(),
+    },
   });
 
-  // Fetch search results - only when there's a search query
-  const { data: searchData, isLoading: isSearching } = useGetV1AiSearch(
-    {
-      q: searchQuery,
-      limit: 50,
-      offset: 0,
+  const { data: searchData, isLoading: searchLoading } = useGetV1AiSearch({
+    q: activeSearchQuery,
+    limit: 50,
+    offset: 0,
+  }, {
+    query: {
+      enabled: !!activeSearchQuery.trim(),
     },
-    {
-      enabled: searchQuery.length > 0,
+  });
+
+  const isLoading = conversationsLoading || searchLoading;
+
+  // Search is now only triggered manually via the search button
+
+  // Get conversations or search results
+  const filteredConversations = useMemo(() => {
+    if (activeSearchQuery.trim()) {
+      // When searching, use search results directly
+      return searchData?.conversations || [];
+    } else {
+      return conversationsData?.conversations || [];
     }
+  }, [conversationsData?.conversations, searchData?.conversations, activeSearchQuery]);
+
+  // Handle search input change
+  const handleSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchQuery(e.target.value);
+    },
+    []
   );
+
+  // Handle Enter key press - no longer triggers search automatically
+
+  // Clear search
+  const handleClearSearch = () => {
+    setSearchQuery('');
+    setActiveSearchQuery('');
+    // Focus back to search input
+    setTimeout(() => {
+      searchInputRef.current?.focus();
+    }, 0);
+  };
 
   // Mutations
   const deleteConversationMutation = useMutation({
@@ -231,7 +270,6 @@ export const SavedConversationsPage: React.FC = () => {
       useDeleteV1AiConversationsId().mutateAsync({ id: conversationId }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['aiConversations'] });
-      queryClient.invalidateQueries({ queryKey: ['aiSearch'] });
     },
   });
 
@@ -245,27 +283,38 @@ export const SavedConversationsPage: React.FC = () => {
     }) => usePutV1AiConversationsId().mutateAsync({ id: conversationId, data }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['aiConversations'] });
-      queryClient.invalidateQueries({ queryKey: ['aiSearch'] });
       setEditModalOpen(false);
       setEditingConversation(null);
       setEditTitle('');
     },
   });
 
-  const conversations = searchQuery
-    ? searchData?.conversations || []
-    : conversationsData?.conversations || [];
-  const totalCount = searchQuery
-    ? searchData?.total_count || 0
-    : conversationsData?.total_count || 0;
+  const totalCount = activeSearchQuery.trim()
+    ? searchData?.total || filteredConversations.length
+    : conversationsData?.total || filteredConversations.length;
 
-  const handleViewConversation = async (conversation: Conversation) => {
-    // For now, we'll just show the conversation in a modal with existing data
-    // In a real implementation, you'd fetch the full conversation with messages
+  // Hook to fetch conversation with messages
+  const { data: conversationWithMessages } = useGetV1AiConversationsId(
+    selectedConversation?.id || '',
+    {
+      query: {
+        enabled: !!selectedConversation?.id && detailModalOpen,
+      },
+    }
+  );
+
+  const handleViewConversation = (conversation: Conversation) => {
     setSelectedConversation(conversation);
-    setConversationMessages([]); // Would fetch messages here
+    setConversationMessages([]);
     setDetailModalOpen(true);
   };
+
+  // Update messages when conversation data is loaded
+  useEffect(() => {
+    if (conversationWithMessages) {
+      setConversationMessages(conversationWithMessages.messages || []);
+    }
+  }, [conversationWithMessages]);
 
   const handleEditConversation = (conversation: Conversation) => {
     setEditingConversation(conversation);
@@ -314,20 +363,31 @@ export const SavedConversationsPage: React.FC = () => {
         <Card padding='lg' radius='md' withBorder>
           <Group gap='md' mb='lg'>
             <TextInput
-              placeholder='Search conversations...'
+              ref={searchInputRef}
+              placeholder='Type to prepare search query...'
               value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
+              onChange={handleSearchChange}
               leftSection={<Search size={16} />}
               style={{ flex: 1 }}
-              disabled={isLoading || isSearching}
+              disabled={isLoading}
             />
             <Group gap='xs'>
-              <Button variant='outline' leftSection={<Filter size={16} />}>
-                Filter
+              <Button
+                variant='filled'
+                leftSection={<Search size={16} />}
+                onClick={() => {
+                  // Trigger search immediately by setting active search query
+                  setActiveSearchQuery(searchQuery);
+                }}
+                disabled={!searchQuery.trim() || isLoading}
+              >
+                Search
               </Button>
-              <Button variant='outline' leftSection={<SortDesc size={16} />}>
-                Sort
-              </Button>
+              {(searchQuery || activeSearchQuery) && (
+                <Button variant='subtle' onClick={handleClearSearch}>
+                  Clear
+                </Button>
+              )}
             </Group>
           </Group>
 
@@ -335,15 +395,15 @@ export const SavedConversationsPage: React.FC = () => {
             <Text ta='center' py='xl' c='dimmed'>
               Loading conversations...
             </Text>
-          ) : conversations.length === 0 ? (
+          ) : filteredConversations.length === 0 ? (
             <Text ta='center' py='xl' c='dimmed'>
-              {searchQuery
+              {activeSearchQuery
                 ? 'No conversations found matching your search.'
                 : 'No saved conversations yet.'}
             </Text>
           ) : (
             <Stack gap='md'>
-              {conversations.map(conversation => (
+              {filteredConversations.map(conversation => (
                 <ConversationCard
                   key={conversation.id}
                   conversation={conversation}
@@ -383,7 +443,9 @@ export const SavedConversationsPage: React.FC = () => {
           <TextInput
             label='Title'
             value={editTitle}
-            onChange={e => setEditTitle(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setEditTitle(e.target.value)
+            }
             placeholder='Enter conversation title...'
           />
           <Group justify='flex-end' gap='sm'>

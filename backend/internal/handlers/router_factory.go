@@ -295,7 +295,7 @@ func NewRouter(
 			ai.PUT("/conversations/:id", aiConversationHandler.UpdateConversation)
 			ai.DELETE("/conversations/:id", aiConversationHandler.DeleteConversation)
 			ai.POST("/conversations/:conversationId/messages", aiConversationHandler.AddMessage)
-			ai.GET("/search", aiConversationHandler.SearchMessages)
+			ai.GET("/search", aiConversationHandler.SearchConversations)
 		}
 		preferences := v1.Group("/preferences")
 		preferences.Use(middleware.RequireAuth())

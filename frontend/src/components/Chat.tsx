@@ -23,7 +23,6 @@ import remarkGfm from 'remark-gfm';
 import ReactMarkdown from 'react-markdown';
 import { useAuth } from '../hooks/useAuth';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { useMutation } from '@tanstack/react-query';
 import {
   Paper,
   Stack,
@@ -665,13 +664,8 @@ export const Chat: React.FC<ChatProps> = ({
   const providers = providersData?.providers;
 
   // API mutations for saving conversations
-  const createConversationMutation = useMutation({
-    mutationFn: usePostV1AiConversations().mutateAsync,
-  });
-
-  const addMessageMutation = useMutation({
-    mutationFn: usePostV1AiConversationsConversationIdMessages().mutateAsync,
-  });
+  const createConversationMutation = usePostV1AiConversations();
+  const addMessageMutation = usePostV1AiConversationsConversationIdMessages();
 
   // Get current provider and model names
   const currentProvider = providers?.find(p => p.code === user?.ai_provider);

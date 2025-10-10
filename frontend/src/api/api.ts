@@ -1778,14 +1778,14 @@ offset?: number;
 };
 
 export type GetV1AiSearch200 = {
-  messages?: ChatMessage[];
+  conversations?: Conversation[];
   /** The search query that was used */
   query?: string;
-  /** Total number of matching messages */
+  /** Total number of matching conversations */
   total?: number;
-  /** Number of messages returned */
+  /** Number of conversations returned */
   limit?: number;
-  /** Number of messages skipped */
+  /** Number of conversations skipped */
   offset?: number;
 };
 
@@ -4633,8 +4633,8 @@ export const usePostV1AiConversationsConversationIdMessages = <TError = ErrorRes
     }
     
 /**
- * Search across all AI chat messages belonging to the authenticated user
- * @summary Search AI messages
+ * Search across all AI conversations belonging to the authenticated user
+ * @summary Search AI conversations
  */
 export const getV1AiSearch = (
     params: GetV1AiSearchParams,
@@ -4702,7 +4702,7 @@ export function useGetV1AiSearch<TData = Awaited<ReturnType<typeof getV1AiSearch
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Search AI messages
+ * @summary Search AI conversations
  */
 
 export function useGetV1AiSearch<TData = Awaited<ReturnType<typeof getV1AiSearch>>, TError = ErrorResponse | ErrorResponse>(
@@ -10497,7 +10497,7 @@ export const getPutV1AiConversationsIdResponseMock = (overrideResponse: Partial<
 
 export const getPostV1AiConversationsConversationIdMessagesResponseMock = (overrideResponse: Partial< ChatMessage > = {}): ChatMessage => ({id: faker.string.uuid(), conversation_id: faker.string.uuid(), question_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), role: faker.helpers.arrayElement(['user','assistant'] as const), content: faker.string.alpha({length: {min: 10, max: 20}}), bookmarked: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, conversation_title: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
 
-export const getGetV1AiSearchResponseMock = (overrideResponse: Partial< GetV1AiSearch200 > = {}): GetV1AiSearch200 => ({messages: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.string.uuid(), conversation_id: faker.string.uuid(), question_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), role: faker.helpers.arrayElement(['user','assistant'] as const), content: faker.string.alpha({length: {min: 10, max: 20}}), bookmarked: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, conversation_title: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined]), query: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), total: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), limit: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), offset: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), ...overrideResponse})
+export const getGetV1AiSearchResponseMock = (overrideResponse: Partial< GetV1AiSearch200 > = {}): GetV1AiSearch200 => ({conversations: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.string.uuid(), user_id: faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), title: faker.string.alpha({length: {min: 10, max: 20}}), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, messages: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.string.uuid(), conversation_id: faker.string.uuid(), question_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), role: faker.helpers.arrayElement(['user','assistant'] as const), content: faker.string.alpha({length: {min: 10, max: 20}}), bookmarked: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, conversation_title: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined])})), undefined]), query: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), total: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), limit: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), offset: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), ...overrideResponse})
 
 export const getPutV1UserzProfileResponseMock = (overrideResponse: Partial< PutV1UserzProfile200 > = {}): PutV1UserzProfile200 => ({message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), user: faker.helpers.arrayElement([{id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), username: faker.helpers.arrayElement([faker.helpers.fromRegExp('^[a-zA-Z0-9_@.+-]+$'), undefined]), email: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), timezone: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), last_active: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), preferred_language: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), current_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ai_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), is_paused: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), updated_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, undefined]), ...overrideResponse})
 

@@ -13,7 +13,6 @@ import {
   Badge,
   Stack,
   Alert,
-  Tooltip,
   Loader,
 } from '@mantine/core';
 import {

@@ -64,6 +64,7 @@ COPY frontend/src ./src
 COPY frontend/public ./public
 COPY frontend/index.html ./
 COPY frontend/vite.config.ts ./
+COPY frontend/vite.proxy.config.ts ./
 COPY frontend/tsconfig.json ./
 COPY frontend/tsconfig.node.json ./
 # Copy frontend scripts (build helpers) so npm postbuild scripts can run inside container

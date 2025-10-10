@@ -415,11 +415,197 @@ func (suite *AIConversationIntegrationTestSuite) TestAddMessage_Success() {
 	assert.Equal(suite.T(), http.StatusCreated, w.Code)
 }
 
-// TestSearchMessages_Success tests successful message search
-func (suite *AIConversationIntegrationTestSuite) TestSearchMessages_Success() {
+// TestSearchConversations_Success tests successful conversation search
+func (suite *AIConversationIntegrationTestSuite) TestSearchConversations_Success() {
 	sessionCookie := suite.login()
 
 	// Create a conversation first
+	createReq := api.CreateConversationRequest{
+		Title: "Spanish Learning Conversation",
+	}
+	body, _ := json.Marshal(createReq)
+	req, _ := http.NewRequest("POST", "/v1/ai/conversations", bytes.NewBuffer(body))
+	req.Header.Set("Cookie", sessionCookie)
+	req.Header.Set("Content-Type", "application/json")
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+	require.Equal(suite.T(), http.StatusCreated, w.Code)
+
+	var conversation api.Conversation
+	err := json.Unmarshal(w.Body.Bytes(), &conversation)
+	require.NoError(suite.T(), err)
+
+	// Add a message containing "Spanish"
+	messageReq := api.CreateMessageRequest{
+		Role:    api.CreateMessageRequestRoleUser,
+		Content: "Hello, I love learning Spanish!",
+	}
+	msgBody, _ := json.Marshal(messageReq)
+	req, _ = http.NewRequest("POST", fmt.Sprintf("/v1/ai/conversations/%s/messages", conversation.Id.String()), bytes.NewBuffer(msgBody))
+	req.Header.Set("Cookie", sessionCookie)
+	req.Header.Set("Content-Type", "application/json")
+
+	w = httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+	require.Equal(suite.T(), http.StatusCreated, w.Code)
+
+	// Search for conversations containing "Spanish"
+	req, _ = http.NewRequest("GET", "/v1/ai/search?q=Spanish", nil)
+	req.Header.Set("Cookie", sessionCookie)
+
+	w = httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusOK, w.Code)
+
+	var response map[string]interface{}
+	err = json.Unmarshal(w.Body.Bytes(), &response)
+	assert.NoError(suite.T(), err)
+
+	conversations, ok := response["conversations"].([]interface{})
+	assert.True(suite.T(), ok)
+	assert.Len(suite.T(), conversations, 1)
+}
+
+// TestSearchConversations_NoQuery tests search without query parameter
+func (suite *AIConversationIntegrationTestSuite) TestSearchConversations_NoQuery() {
+	sessionCookie := suite.login()
+
+	req, _ := http.NewRequest("GET", "/v1/ai/search", nil)
+	req.Header.Set("Cookie", sessionCookie)
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusBadRequest, w.Code)
+}
+
+// TestSearchConversations_Unauthorized tests search without authentication
+func (suite *AIConversationIntegrationTestSuite) TestSearchConversations_Unauthorized() {
+	req, _ := http.NewRequest("GET", "/v1/ai/search?q=test", nil)
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code)
+}
+
+// TestSearchConversations_ByTitle tests searching conversations by title
+func (suite *AIConversationIntegrationTestSuite) TestSearchConversations_ByTitle() {
+	sessionCookie := suite.login()
+
+	// Create conversations with different titles
+	conversations := []string{
+		"French Grammar Help",
+		"Spanish Vocabulary Practice",
+		"German Pronunciation Tips",
+	}
+
+	var createdConversations []api.Conversation
+	for _, title := range conversations {
+		createReq := api.CreateConversationRequest{
+			Title: title,
+		}
+		body, _ := json.Marshal(createReq)
+		req, _ := http.NewRequest("POST", "/v1/ai/conversations", bytes.NewBuffer(body))
+		req.Header.Set("Cookie", sessionCookie)
+		req.Header.Set("Content-Type", "application/json")
+
+		w := httptest.NewRecorder()
+		suite.Router.ServeHTTP(w, req)
+		require.Equal(suite.T(), http.StatusCreated, w.Code)
+
+		var conversation api.Conversation
+		err := json.Unmarshal(w.Body.Bytes(), &conversation)
+		require.NoError(suite.T(), err)
+		createdConversations = append(createdConversations, conversation)
+	}
+
+	// Search for conversations containing "Vocabulary"
+	req, _ := http.NewRequest("GET", "/v1/ai/search?q=Vocabulary", nil)
+	req.Header.Set("Cookie", sessionCookie)
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusOK, w.Code)
+
+	var response map[string]interface{}
+	err := json.Unmarshal(w.Body.Bytes(), &response)
+	assert.NoError(suite.T(), err)
+
+	foundConversations, ok := response["conversations"].([]interface{})
+	assert.True(suite.T(), ok)
+	assert.Len(suite.T(), foundConversations, 1)
+}
+
+// TestSearchConversations_ByMessageContent tests searching conversations by message content
+func (suite *AIConversationIntegrationTestSuite) TestSearchConversations_ByMessageContent() {
+	sessionCookie := suite.login()
+
+	// Create a conversation
+	createReq := api.CreateConversationRequest{
+		Title: "Test Conversation",
+	}
+	body, _ := json.Marshal(createReq)
+	req, _ := http.NewRequest("POST", "/v1/ai/conversations", bytes.NewBuffer(body))
+	req.Header.Set("Cookie", sessionCookie)
+	req.Header.Set("Content-Type", "application/json")
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+	require.Equal(suite.T(), http.StatusCreated, w.Code)
+
+	var conversation api.Conversation
+	err := json.Unmarshal(w.Body.Bytes(), &conversation)
+	require.NoError(suite.T(), err)
+
+	// Add messages with different content
+	messages := []string{
+		"I need help with irregular verbs",
+		"Can you explain past participles?",
+		"What about future tense?",
+	}
+
+	for _, content := range messages {
+		messageReq := api.CreateMessageRequest{
+			Role:    api.CreateMessageRequestRoleUser,
+			Content: content,
+		}
+		msgBody, _ := json.Marshal(messageReq)
+		req, _ = http.NewRequest("POST", fmt.Sprintf("/v1/ai/conversations/%s/messages", conversation.Id.String()), bytes.NewBuffer(msgBody))
+		req.Header.Set("Cookie", sessionCookie)
+		req.Header.Set("Content-Type", "application/json")
+
+		w = httptest.NewRecorder()
+		suite.Router.ServeHTTP(w, req)
+		require.Equal(suite.T(), http.StatusCreated, w.Code)
+	}
+
+	// Search for conversations containing "participles"
+	req, _ = http.NewRequest("GET", "/v1/ai/search?q=participles", nil)
+	req.Header.Set("Cookie", sessionCookie)
+
+	w = httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusOK, w.Code)
+
+	var response map[string]interface{}
+	err = json.Unmarshal(w.Body.Bytes(), &response)
+	assert.NoError(suite.T(), err)
+
+	foundConversations, ok := response["conversations"].([]interface{})
+	assert.True(suite.T(), ok)
+	assert.Len(suite.T(), foundConversations, 1)
+}
+
+// TestSearchConversations_NoResults tests search with no matching results
+func (suite *AIConversationIntegrationTestSuite) TestSearchConversations_NoResults() {
+	sessionCookie := suite.login()
+
+	// Create a conversation with some content
 	createReq := api.CreateConversationRequest{
 		Title: "Test Conversation",
 	}
@@ -439,7 +625,7 @@ func (suite *AIConversationIntegrationTestSuite) TestSearchMessages_Success() {
 	// Add a message
 	messageReq := api.CreateMessageRequest{
 		Role:    api.CreateMessageRequestRoleUser,
-		Content: "Hello, I love learning Spanish!",
+		Content: "Hello, I love learning!",
 	}
 	msgBody, _ := json.Marshal(messageReq)
 	req, _ = http.NewRequest("POST", fmt.Sprintf("/v1/ai/conversations/%s/messages", conversation.Id.String()), bytes.NewBuffer(msgBody))
@@ -450,8 +636,8 @@ func (suite *AIConversationIntegrationTestSuite) TestSearchMessages_Success() {
 	suite.Router.ServeHTTP(w, req)
 	require.Equal(suite.T(), http.StatusCreated, w.Code)
 
-	// Search for messages containing "Spanish"
-	req, _ = http.NewRequest("GET", "/v1/ai/search?q=Spanish", nil)
+	// Search for something that won't match
+	req, _ = http.NewRequest("GET", "/v1/ai/search?q=nonexistentterm", nil)
 	req.Header.Set("Cookie", sessionCookie)
 
 	w = httptest.NewRecorder()
@@ -463,30 +649,7 @@ func (suite *AIConversationIntegrationTestSuite) TestSearchMessages_Success() {
 	err = json.Unmarshal(w.Body.Bytes(), &response)
 	assert.NoError(suite.T(), err)
 
-	messages, ok := response["messages"].([]interface{})
+	foundConversations, ok := response["conversations"].([]interface{})
 	assert.True(suite.T(), ok)
-	assert.Len(suite.T(), messages, 1)
-}
-
-// TestSearchMessages_NoQuery tests search without query parameter
-func (suite *AIConversationIntegrationTestSuite) TestSearchMessages_NoQuery() {
-	sessionCookie := suite.login()
-
-	req, _ := http.NewRequest("GET", "/v1/ai/search", nil)
-	req.Header.Set("Cookie", sessionCookie)
-
-	w := httptest.NewRecorder()
-	suite.Router.ServeHTTP(w, req)
-
-	assert.Equal(suite.T(), http.StatusBadRequest, w.Code)
-}
-
-// TestSearchMessages_Unauthorized tests search without authentication
-func (suite *AIConversationIntegrationTestSuite) TestSearchMessages_Unauthorized() {
-	req, _ := http.NewRequest("GET", "/v1/ai/search?q=test", nil)
-
-	w := httptest.NewRecorder()
-	suite.Router.ServeHTTP(w, req)
-
-	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code)
+	assert.Len(suite.T(), foundConversations, 0)
 }

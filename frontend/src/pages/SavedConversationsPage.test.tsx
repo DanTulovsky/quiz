@@ -37,6 +37,29 @@ vi.mock('../api/api', () => ({
     data: { conversations: [], total_count: 0 },
     isLoading: false,
   })),
+  useGetV1AiConversationsId: vi.fn(() => ({
+    data: {
+      id: 'conv-1',
+      title: 'Grammar Questions',
+      created_at: '2025-01-15T10:30:00Z',
+      updated_at: '2025-01-15T10:30:00Z',
+      messages: [
+        {
+          id: 'msg-1',
+          role: 'user',
+          content: 'Explain this grammar rule',
+          created_at: '2025-01-15T10:30:00Z',
+        },
+        {
+          id: 'msg-2',
+          role: 'assistant',
+          content: 'This grammar rule explains...',
+          created_at: '2025-01-15T10:30:01Z',
+        },
+      ],
+    },
+    isLoading: false,
+  })),
   useDeleteV1AiConversationsId: vi.fn(() => ({
     mutateAsync: vi.fn(),
   })),
@@ -107,7 +130,7 @@ describe('SavedConversationsPage', () => {
       </QueryClientProvider>
     );
 
-    const searchInput = screen.getByPlaceholderText('Search conversations...');
+    const searchInput = screen.getByPlaceholderText('Type to prepare search query...');
     expect(searchInput).toBeInTheDocument();
   });
 

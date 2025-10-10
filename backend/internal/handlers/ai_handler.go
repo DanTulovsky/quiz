@@ -351,9 +351,9 @@ func (h *AIConversationHandler) AddMessage(c *gin.Context) {
 	})
 }
 
-// SearchMessages handles GET /v1/ai/search
-func (h *AIConversationHandler) SearchMessages(c *gin.Context) {
-	ctx, span := observability.TraceHandlerFunction(c.Request.Context(), "search_ai_messages")
+// SearchConversations handles GET /v1/ai/search
+func (h *AIConversationHandler) SearchConversations(c *gin.Context) {
+	ctx, span := observability.TraceHandlerFunction(c.Request.Context(), "search_ai_conversations")
 	defer observability.FinishSpan(span, nil)
 
 	userID, exists := GetUserIDFromSession(c)
@@ -365,7 +365,7 @@ func (h *AIConversationHandler) SearchMessages(c *gin.Context) {
 	// Parse query parameters
 	query := c.Query("q")
 	if query == "" {
-		HandleAppError(c, contextutils.ErrMissingRequired)
+		HandleAppError(c, contextutils.ErrInvalidInput)
 		return
 	}
 
@@ -392,26 +392,26 @@ func (h *AIConversationHandler) SearchMessages(c *gin.Context) {
 		attribute.Int("offset", offset),
 	)
 
-	// Search messages
-	messages, total, err := h.conversationService.SearchMessages(ctx, uint(userID), query, limit, offset)
+	// Search conversations
+	conversations, total, err := h.conversationService.SearchConversations(ctx, uint(userID), query, limit, offset)
 	if err != nil {
-		h.logger.Error(ctx, "Failed to search messages", err, map[string]interface{}{
+		h.logger.Error(ctx, "Failed to search conversations", err, map[string]interface{}{
 			"user_id": userID,
 			"query":   query,
 			"limit":   limit,
 			"offset":  offset,
 		})
-		HandleAppError(c, contextutils.WrapError(err, "failed to search messages"))
+		HandleAppError(c, contextutils.WrapError(err, "failed to search conversations"))
 		return
 	}
 
 	// Add total count to response
 	response := gin.H{
-		"messages": messages,
-		"query":    query,
-		"total":    total,
-		"limit":    limit,
-		"offset":   offset,
+		"conversations": conversations,
+		"query":         query,
+		"total":         total,
+		"limit":         limit,
+		"offset":        offset,
 	}
 
 	c.JSON(http.StatusOK, response)

@@ -29,6 +29,7 @@ type ConversationServiceInterface interface {
 
 	// Search operations
 	SearchMessages(ctx context.Context, userID uint, query string, limit, offset int) ([]api.ChatMessage, int, error)
+	SearchConversations(ctx context.Context, userID uint, query string, limit, offset int) ([]api.Conversation, int, error)
 }
 
 // ConversationService handles all AI conversation-related operations
@@ -429,4 +430,92 @@ func (s *ConversationService) SearchMessages(ctx context.Context, userID uint, q
 	}
 
 	return messages, total, nil
+}
+
+// SearchConversations searches across all conversations for a user
+func (s *ConversationService) SearchConversations(ctx context.Context, userID uint, query string, limit, offset int) ([]api.Conversation, int, error) {
+	// Clean and prepare the search query
+	searchQuery := strings.TrimSpace(query)
+	if searchQuery == "" {
+		return nil, 0, contextutils.ErrorWithContextf("search query cannot be empty")
+	}
+
+	// Search in both conversation titles and message content
+	searchTerm := fmt.Sprintf("%%%s%%", strings.ToLower(searchQuery))
+
+	// Get total count of matching conversations
+	countQuery := `
+		SELECT COUNT(DISTINCT c.id)
+		FROM ai_conversations c
+		LEFT JOIN ai_chat_messages m ON c.id = m.conversation_id
+		WHERE c.user_id = $1
+		AND (LOWER(c.title) LIKE $2 OR LOWER(m.answer_json::text) LIKE $2)`
+
+	var total int
+	err := s.db.QueryRowContext(ctx, countQuery, userID, searchTerm).Scan(&total)
+	if err != nil {
+		return nil, 0, contextutils.WrapError(err, "failed to count search results")
+	}
+
+	// Get conversations with their latest message info
+	querySQL := `
+		SELECT DISTINCT c.id, c.title, c.created_at, c.updated_at,
+		       (SELECT COUNT(*) FROM ai_chat_messages WHERE conversation_id = c.id) as message_count,
+		       (SELECT answer_json::text FROM ai_chat_messages WHERE conversation_id = c.id ORDER BY created_at ASC LIMIT 1) as first_message,
+		       (SELECT answer_json::text FROM ai_chat_messages WHERE conversation_id = c.id ORDER BY created_at DESC LIMIT 1) as last_message
+		FROM ai_conversations c
+		LEFT JOIN ai_chat_messages m ON c.id = m.conversation_id
+		WHERE c.user_id = $1
+		AND (LOWER(c.title) LIKE $2 OR LOWER(m.answer_json::text) LIKE $2)
+		ORDER BY c.updated_at DESC
+		LIMIT $3 OFFSET $4`
+
+	rows, err := s.db.QueryContext(ctx, querySQL, userID, searchTerm, limit, offset)
+	if err != nil {
+		return nil, 0, contextutils.WrapError(err, "failed to search conversations")
+	}
+	defer func() { _ = rows.Close() }()
+
+	var conversations []api.Conversation
+	for rows.Next() {
+		var conv api.Conversation
+		var firstMessagePtr, lastMessagePtr *string
+		var messageCount int
+
+		err := rows.Scan(
+			&conv.Id,
+			&conv.Title,
+			&conv.CreatedAt,
+			&conv.UpdatedAt,
+			&messageCount,
+			&firstMessagePtr,
+			&lastMessagePtr,
+		)
+		if err != nil {
+			return nil, 0, contextutils.WrapError(err, "failed to scan search result")
+		}
+
+		// Set the preview message to the last message if available, otherwise the first message
+		previewMessage := ""
+		if lastMessagePtr != nil {
+			previewMessage = *lastMessagePtr
+		} else if firstMessagePtr != nil {
+			previewMessage = *firstMessagePtr
+		}
+
+		// Add preview_message field for frontend compatibility
+		conv.Messages = &[]api.ChatMessage{
+			{
+				Content: previewMessage,
+			},
+		}
+
+		conversations = append(conversations, conv)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, 0, contextutils.WrapError(err, "error iterating search results")
+	}
+
+	return conversations, total, nil
 }
