@@ -14,5 +14,12 @@ export const resetAccount = async () => {
   return res.data;
 };
 
+export const clearAllAIChats = async () => {
+  const res = await AXIOS_INSTANCE.post('/v1/settings/clear-ai-chats', {}, {
+    headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+  });
+  return res.data;
+};
+
 
 

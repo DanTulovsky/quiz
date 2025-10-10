@@ -96,7 +96,7 @@ const ConversationCard: React.FC<ConversationCardProps> = ({
           color='blue'
           leftSection={<Calendar size={12} />}
         >
-          {format(new Date(conversation.created_at), 'MMM d, yyyy')}
+          {format(new Date(conversation.created_at), 'MMM d, h:mm a')}
         </Badge>
         <Badge variant='light' color='green'>
           {conversation.messages?.length || 0} messages
@@ -105,14 +105,15 @@ const ConversationCard: React.FC<ConversationCardProps> = ({
 
       {conversation.messages && conversation.messages.length > 0 && (
         <Text size='sm' c='dimmed' lineClamp={isExpanded ? undefined : 2}>
-          {conversation.messages[0]?.content?.substring(0, 200) ||
-            'No preview available'}
+          {typeof conversation.messages[0]?.content === 'string'
+            ? conversation.messages[0].content.substring(0, 200)
+            : 'No preview available'}
         </Text>
       )}
 
       {conversation.messages &&
         conversation.messages.length > 0 &&
-        conversation.messages[0]?.content &&
+        typeof conversation.messages[0]?.content === 'string' &&
         conversation.messages[0].content.length > 100 && (
           <Button
             variant='subtle'

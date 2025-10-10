@@ -1027,7 +1027,7 @@ export const Chat: React.FC<ChatProps> = ({
     setError(null);
     setShowSuggestions(false); // Close suggestions dropdown when sending
 
-    // Auto-save user message if enabled
+    // Create or get conversation ID for this chat session
     let conversationId = currentConversationId;
     if (autoSaveEnabled && user?.id && question?.id) {
       try {
@@ -1040,8 +1040,17 @@ export const Chat: React.FC<ChatProps> = ({
           conversationId = conversation.id;
           setCurrentConversationId(conversationId);
         }
+      } catch (error) {
+        logger.error('Failed to create conversation:', error);
+      }
+    }
 
-        // Save user message
+    // Use existing conversation ID or create a temporary one for this request
+    const requestConversationId = conversationId || crypto.randomUUID();
+
+    // Save user message if auto-save is enabled (but don't wait for it)
+    if (autoSaveEnabled && user?.id && question?.id && conversationId) {
+      try {
         await addMessageMutation.mutateAsync({
           conversationId,
           data: {
@@ -1072,10 +1081,16 @@ export const Chat: React.FC<ChatProps> = ({
     abortControllerRef.current = abortController;
 
     try {
+      const now = new Date().toISOString();
+
       // Convert current messages to conversation history format
       const conversationHistory: ChatMessage[] = messages.map(msg => ({
+        id: crypto.randomUUID(),
+        conversation_id: requestConversationId,
         role: msg.sender === 'user' ? 'user' : 'assistant',
-        content: msg.text,
+        content: { text: msg.text },
+        created_at: now,
+        updated_at: now,
       }));
 
       // Use fetch with streaming for Server-Sent Events

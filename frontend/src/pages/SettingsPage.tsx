@@ -49,7 +49,7 @@ import {
   Slider,
   Tooltip,
 } from '@mantine/core';
-import { clearAllStories, resetAccount } from '../api/settingsApi';
+import { clearAllStories, resetAccount, clearAllAIChats } from '../api/settingsApi';
 import {
   IconUser,
   IconBrain,
@@ -1213,8 +1213,8 @@ const SettingsPage: React.FC = () => {
                 <Title order={2}>Data Management</Title>
               </Group>
               <Text size='sm' c='dimmed'>
-                Dangerous actions: deleting stories or resetting your account
-                will remove your generated stories, questions, and progress.
+                Dangerous actions: deleting stories, AI chats, or resetting your account
+                will remove your generated stories, AI conversations, questions, and progress.
                 These actions cannot be undone.
               </Text>
               <Group>
@@ -1266,6 +1266,44 @@ const SettingsPage: React.FC = () => {
                   }}
                 >
                   Delete All Stories
+                </Button>
+                <Button
+                  color='red'
+                  variant='outline'
+                  onClick={async () => {
+                    if (
+                      !confirm(
+                        'Are you sure you want to delete ALL your AI chats? This cannot be undone.'
+                      )
+                    )
+                      return;
+                    try {
+                      await clearAllAIChats();
+
+                      // Invalidate AI conversation queries to ensure UI updates immediately
+                      queryClient.invalidateQueries({
+                        queryKey: ['aiConversations'],
+                      });
+                      queryClient.invalidateQueries({
+                        queryKey: ['aiConversations', user?.id],
+                      });
+
+                      showNotificationWithClean({
+                        title: 'Success',
+                        message: 'All AI chats deleted',
+                        color: 'green',
+                      });
+                      await refreshUser();
+                    } catch (e) {
+                      showNotificationWithClean({
+                        title: 'Error',
+                        message: String(e),
+                        color: 'red',
+                      });
+                    }
+                  }}
+                >
+                  Delete All AI Chats
                 </Button>
                 <Button
                   color='red'

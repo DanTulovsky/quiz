@@ -169,7 +169,7 @@ func NewRouter(
 	// Initialize handlers
 	authHandler := NewAuthHandler(userService, oauthService, cfg, logger)
 	emailService := services.CreateEmailService(cfg, logger)
-	settingsHandler := NewSettingsHandler(userService, storyService, aiService, learningService, emailService, cfg, logger)
+	settingsHandler := NewSettingsHandler(userService, storyService, conversationService, aiService, learningService, emailService, cfg, logger)
 	quizHandler := NewQuizHandler(userService, questionService, aiService, learningService, workerService, generationHintService, cfg, logger)
 	dailyQuestionHandler := NewDailyQuestionHandler(userService, dailyQuestionService, cfg, logger)
 	storyHandler := NewStoryHandler(storyService, userService, aiService, cfg, logger)
@@ -280,6 +280,7 @@ func NewRouter(
 			settings.PUT("", middleware.RequireAuth(), middleware.RequestValidationMiddleware(logger), settingsHandler.UpdateUserSettings)
 			// User data management endpoints
 			settings.POST("/clear-stories", middleware.RequireAuth(), middleware.RequestValidationMiddleware(logger), settingsHandler.ClearAllStories)
+			settings.POST("/clear-ai-chats", middleware.RequireAuth(), middleware.RequestValidationMiddleware(logger), settingsHandler.ClearAllAIChats)
 			settings.POST("/reset-account", middleware.RequireAuth(), middleware.RequestValidationMiddleware(logger), settingsHandler.ResetAccount)
 			settings.GET("/api-key/:provider", middleware.RequireAuth(), settingsHandler.CheckAPIKeyAvailability)
 		}

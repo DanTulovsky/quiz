@@ -20,25 +20,27 @@ import (
 
 // SettingsHandler handles user settings related HTTP requests
 type SettingsHandler struct {
-	userService     services.UserServiceInterface
-	storyService    services.StoryServiceInterface
-	aiService       services.AIServiceInterface
-	learningService services.LearningServiceInterface
-	emailService    mailer.Mailer
-	cfg             *config.Config
-	logger          *observability.Logger
+	userService         services.UserServiceInterface
+	storyService        services.StoryServiceInterface
+	conversationService services.ConversationServiceInterface
+	aiService           services.AIServiceInterface
+	learningService     services.LearningServiceInterface
+	emailService        mailer.Mailer
+	cfg                 *config.Config
+	logger              *observability.Logger
 }
 
 // NewSettingsHandler creates a new SettingsHandler instance
-func NewSettingsHandler(userService services.UserServiceInterface, storyService services.StoryServiceInterface, aiService services.AIServiceInterface, learningService services.LearningServiceInterface, emailService mailer.Mailer, cfg *config.Config, logger *observability.Logger) *SettingsHandler {
+func NewSettingsHandler(userService services.UserServiceInterface, storyService services.StoryServiceInterface, conversationService services.ConversationServiceInterface, aiService services.AIServiceInterface, learningService services.LearningServiceInterface, emailService mailer.Mailer, cfg *config.Config, logger *observability.Logger) *SettingsHandler {
 	return &SettingsHandler{
-		userService:     userService,
-		storyService:    storyService,
-		aiService:       aiService,
-		learningService: learningService,
-		emailService:    emailService,
-		cfg:             cfg,
-		logger:          logger,
+		userService:         userService,
+		storyService:        storyService,
+		conversationService: conversationService,
+		aiService:           aiService,
+		learningService:     learningService,
+		emailService:        emailService,
+		cfg:                 cfg,
+		logger:              logger,
 	}
 }
 
@@ -480,4 +482,63 @@ func (h *SettingsHandler) ResetAccount(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"success": true, "message": "Account reset successfully"})
+}
+
+// ClearAllAIChats deletes all AI conversations and messages for the current user
+func (h *SettingsHandler) ClearAllAIChats(c *gin.Context) {
+	ctx, span := observability.TraceHandlerFunction(c.Request.Context(), "clear_all_ai_chats")
+	defer observability.FinishSpan(span, nil)
+	session := sessions.Default(c)
+	userID, ok := session.Get(middleware.UserIDKey).(int)
+	if !ok {
+		HandleAppError(c, contextutils.ErrUnauthorized)
+		return
+	}
+
+	// Use the conversation service to delete all conversations for this user
+	if h.conversationService == nil {
+		h.logger.Warn(ctx, "Conversation service not available for ClearAllAIChats")
+		HandleAppError(c, contextutils.NewAppErrorWithCause(
+			contextutils.ErrorCodeInvalidInput,
+			contextutils.SeverityWarn,
+			"Clear all AI chats not available",
+			"",
+			nil,
+		))
+		return
+	}
+
+	// Get all conversation IDs for this user
+	conversations, _, err := h.conversationService.GetUserConversations(ctx, uint(userID), 1000, 0) // Get max 1000 to avoid issues
+	if err != nil {
+		h.logger.Error(ctx, "Failed to get user conversations for deletion", err, map[string]interface{}{"user_id": userID})
+		HandleAppError(c, contextutils.WrapError(err, "failed to get user conversations for deletion"))
+		return
+	}
+
+	// Delete each conversation
+	deletedCount := 0
+	for _, conversation := range conversations {
+		err := h.conversationService.DeleteConversation(ctx, fmt.Sprintf("%s", conversation.Id), uint(userID))
+		if err != nil {
+			h.logger.Error(ctx, "Failed to delete conversation", err, map[string]interface{}{
+				"user_id":         userID,
+				"conversation_id": fmt.Sprintf("%s", conversation.Id),
+			})
+			// Continue with other conversations even if one fails
+		} else {
+			deletedCount++
+		}
+	}
+
+	h.logger.Info(ctx, "Deleted AI conversations for user", map[string]interface{}{
+		"user_id":       userID,
+		"deleted_count": deletedCount,
+		"total_count":   len(conversations),
+	})
+
+	c.JSON(http.StatusOK, api.SuccessResponse{
+		Message: stringPtr(fmt.Sprintf("Deleted %d AI conversations successfully", deletedCount)),
+		Success: true,
+	})
 }

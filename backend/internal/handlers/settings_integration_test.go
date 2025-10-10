@@ -8,6 +8,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -71,7 +72,7 @@ func (suite *SettingsIntegrationTestSuite) SetupSuite() {
 		workerService,
 		dailyQuestionService,
 		storyService,
-		services.NewConversationService(suite.DB),
+		services.NewConversationService(db),
 		oauthService,
 		generationHintService,
 		logger,
@@ -450,6 +451,95 @@ func (suite *SettingsIntegrationTestSuite) TestResetAccountEndpoint() {
 	err = suite.DB.QueryRow("SELECT COUNT(*) FROM stories WHERE user_id = $1", suite.TestUserID).Scan(&cnt)
 	suite.Require().NoError(err)
 	suite.Require().Equal(0, cnt)
+}
+
+func (suite *SettingsIntegrationTestSuite) TestClearAllAIChatsEndpoint() {
+	sessionCookie := suite.login()
+
+	// Create AI conversations and messages for the test user
+	conversationService := services.NewConversationService(suite.DB)
+
+	// Create first conversation
+	createReq1 := api.CreateConversationRequest{Title: "Test Conversation 1"}
+	conversation1, err := conversationService.CreateConversation(context.Background(), uint(suite.TestUserID), &createReq1)
+	suite.Require().NoError(err)
+
+	// Add a message to the first conversation
+	messageReq1 := api.CreateMessageRequest{
+		Role: api.CreateMessageRequestRoleUser,
+		Content: struct {
+			Text *string `json:"text,omitempty"`
+		}{
+			Text: stringPtr("Test message 1"),
+		},
+	}
+	err = conversationService.AddMessage(context.Background(), fmt.Sprintf("%s", conversation1.Id), uint(suite.TestUserID), &messageReq1)
+	suite.Require().NoError(err)
+
+	// Create second conversation
+	createReq2 := api.CreateConversationRequest{Title: "Test Conversation 2"}
+	conversation2, err := conversationService.CreateConversation(context.Background(), uint(suite.TestUserID), &createReq2)
+	suite.Require().NoError(err)
+
+	// Add two messages to the second conversation
+	messageReq2 := api.CreateMessageRequest{
+		Role: api.CreateMessageRequestRoleUser,
+		Content: struct {
+			Text *string `json:"text,omitempty"`
+		}{
+			Text: stringPtr("Test message 2a"),
+		},
+	}
+	err = conversationService.AddMessage(context.Background(), fmt.Sprintf("%s", conversation2.Id), uint(suite.TestUserID), &messageReq2)
+	suite.Require().NoError(err)
+
+	messageReq3 := api.CreateMessageRequest{
+		Role: api.CreateMessageRequestRoleAssistant,
+		Content: struct {
+			Text *string `json:"text,omitempty"`
+		}{
+			Text: stringPtr("Test message 2b"),
+		},
+	}
+	err = conversationService.AddMessage(context.Background(), fmt.Sprintf("%s", conversation2.Id), uint(suite.TestUserID), &messageReq3)
+	suite.Require().NoError(err)
+
+	// Verify conversations exist
+	var conversationCount int
+	err = suite.DB.QueryRow("SELECT COUNT(*) FROM ai_conversations WHERE user_id = $1", suite.TestUserID).Scan(&conversationCount)
+	suite.Require().NoError(err)
+	suite.Require().Equal(2, conversationCount)
+
+	// Verify messages exist
+	var messageCount int
+	err = suite.DB.QueryRow("SELECT COUNT(*) FROM ai_chat_messages WHERE conversation_id IN (SELECT id FROM ai_conversations WHERE user_id = $1)", suite.TestUserID).Scan(&messageCount)
+	suite.Require().NoError(err)
+	suite.Require().Equal(3, messageCount)
+
+	// Call clear-ai-chats endpoint
+	reqHTTP, _ := http.NewRequest("POST", "/v1/settings/clear-ai-chats", nil)
+	reqHTTP.Header.Set("Cookie", sessionCookie)
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, reqHTTP)
+
+	suite.Require().Equal(http.StatusOK, w.Code)
+
+	// Verify success response
+	var response api.SuccessResponse
+	err = json.Unmarshal(w.Body.Bytes(), &response)
+	suite.Require().NoError(err)
+	suite.Require().True(response.Success)
+	suite.Require().Contains(*response.Message, "Deleted")
+
+	// Verify conversations are deleted
+	err = suite.DB.QueryRow("SELECT COUNT(*) FROM ai_conversations WHERE user_id = $1", suite.TestUserID).Scan(&conversationCount)
+	suite.Require().NoError(err)
+	suite.Require().Equal(0, conversationCount)
+
+	// Verify messages are deleted (CASCADE should handle this)
+	err = suite.DB.QueryRow("SELECT COUNT(*) FROM ai_chat_messages WHERE conversation_id IN (SELECT id FROM ai_conversations WHERE user_id = $1)", suite.TestUserID).Scan(&messageCount)
+	suite.Require().NoError(err)
+	suite.Require().Equal(0, messageCount)
 }
 
 func (suite *SettingsIntegrationTestSuite) TestCheckAPIKeyAvailability_NoKey() {
