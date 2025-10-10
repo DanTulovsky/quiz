@@ -25,6 +25,7 @@ type ServiceContainerInterface interface {
 	GetStoryService() (services.StoryServiceInterface, error)
 	GetOAuthService() (*services.OAuthService, error)
 	GetGenerationHintService() (services.GenerationHintServiceInterface, error)
+	GetConversationService() (services.ConversationServiceInterface, error)
 	GetEmailService() (services.EmailServiceInterface, error)
 	GetDatabase() *sql.DB
 	GetConfig() *config.Config
@@ -163,6 +164,11 @@ func (sc *ServiceContainer) GetGenerationHintService() (services.GenerationHintS
 	return GetServiceAs[services.GenerationHintServiceInterface](sc, "generation_hint")
 }
 
+// GetConversationService returns the conversation service
+func (sc *ServiceContainer) GetConversationService() (services.ConversationServiceInterface, error) {
+	return GetServiceAs[services.ConversationServiceInterface](sc, "conversation")
+}
+
 // GetEmailService returns the email service
 func (sc *ServiceContainer) GetEmailService() (services.EmailServiceInterface, error) {
 	return GetServiceAs[services.EmailServiceInterface](sc, "email")
@@ -273,6 +279,10 @@ func (sc *ServiceContainer) initializeServices(_ context.Context) {
 	// OAuth service
 	oauthService := services.NewOAuthServiceWithLogger(sc.cfg, sc.logger)
 	sc.services["oauth"] = oauthService
+
+	// Conversation service
+	conversationService := services.NewConversationService(sc.db)
+	sc.services["conversation"] = conversationService
 
 	// Email service
 	emailService := services.CreateEmailService(sc.cfg, sc.logger)

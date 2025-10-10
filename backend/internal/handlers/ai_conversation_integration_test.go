@@ -1,0 +1,492 @@
+//go:build integration
+// +build integration
+
+package handlers
+
+import (
+	"bytes"
+	"context"
+	"database/sql"
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"net/http/httptest"
+
+	"quizapp/internal/api"
+	"quizapp/internal/config"
+	"quizapp/internal/observability"
+	"quizapp/internal/services"
+
+	"github.com/gin-gonic/gin"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/suite"
+)
+
+// AIConversationIntegrationTestSuite tests the AI conversation handler with real database interactions
+type AIConversationIntegrationTestSuite struct {
+	suite.Suite
+	Router          *gin.Engine
+	UserService     *services.UserService
+	LearningService *services.LearningService
+	Config          *config.Config
+	TestUserID      int
+	DB              *sql.DB
+}
+
+func (suite *AIConversationIntegrationTestSuite) SetupSuite() {
+	// Use shared test database setup
+	db := services.SharedTestDBSetup(suite.T())
+
+	// Load config
+	cfg, err := config.NewConfig()
+	require.NoError(suite.T(), err)
+	suite.Config = cfg
+
+	// Create services
+	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+	userService := services.NewUserServiceWithLogger(db, cfg, logger)
+	learningService := services.NewLearningServiceWithLogger(db, cfg, logger)
+	questionService := services.NewQuestionServiceWithLogger(db, learningService, cfg, logger)
+	aiService := services.NewAIService(cfg, logger)
+	workerService := services.NewWorkerServiceWithLogger(db, logger)
+	dailyQuestionService := services.NewDailyQuestionService(db, logger, questionService, learningService)
+	storyService := services.NewStoryService(db, cfg, logger)
+	oauthService := services.NewOAuthServiceWithLogger(cfg, logger)
+	generationHintService := services.NewGenerationHintService(db, logger)
+
+	// Create test user
+	createdUser, err := userService.CreateUserWithPassword(context.Background(), "testuser_ai", "testpass", "english", "A1")
+	suite.Require().NoError(err)
+	suite.TestUserID = createdUser.ID
+
+	// Use the real application router
+	suite.Router = NewRouter(
+		suite.Config,
+		userService,
+		questionService,
+		learningService,
+		aiService,
+		workerService,
+		dailyQuestionService,
+		storyService,
+		services.NewConversationService(db),
+		oauthService,
+		generationHintService,
+		logger,
+	)
+
+	suite.UserService = userService
+	suite.LearningService = learningService
+	suite.DB = db
+}
+
+func (suite *AIConversationIntegrationTestSuite) TearDownSuite() {
+	// Cleanup test data
+	suite.UserService.DeleteUser(context.Background(), suite.TestUserID)
+	// Close database connection
+	if suite.DB != nil {
+		suite.DB.Close()
+	}
+}
+
+func (suite *AIConversationIntegrationTestSuite) SetupTest() {
+	// Clean database before each test
+	suite.cleanupDatabase()
+}
+
+func (suite *AIConversationIntegrationTestSuite) cleanupDatabase() {
+	// Use the shared database cleanup function
+	services.CleanupTestDatabase(suite.DB, suite.T())
+
+	// Recreate test user
+	createdUser, err := suite.UserService.CreateUserWithPassword(context.Background(), "testuser_ai", "testpass", "english", "A1")
+	suite.Require().NoError(err)
+	suite.TestUserID = createdUser.ID
+}
+
+func (suite *AIConversationIntegrationTestSuite) login() string {
+	loginReq := api.LoginRequest{
+		Username: "testuser_ai",
+		Password: "testpass",
+	}
+	reqBody, _ := json.Marshal(loginReq)
+
+	req, _ := http.NewRequest("POST", "/v1/auth/login", bytes.NewBuffer(reqBody))
+	req.Header.Set("Content-Type", "application/json")
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	// Extract cookie from response
+	cookies := w.Result().Cookies()
+	var sessionCookie string
+	for _, cookie := range cookies {
+		if cookie.Name == config.SessionName {
+			sessionCookie = cookie.String()
+			break
+		}
+	}
+	require.NotEmpty(suite.T(), sessionCookie)
+	return sessionCookie
+}
+
+// TestCreateConversation_Success tests successful conversation creation
+func (suite *AIConversationIntegrationTestSuite) TestCreateConversation_Success() {
+	sessionCookie := suite.login()
+
+	createReq := api.CreateConversationRequest{
+		Title: "Test Conversation",
+	}
+
+	body, _ := json.Marshal(createReq)
+	req, _ := http.NewRequest("POST", "/v1/ai/conversations", bytes.NewBuffer(body))
+	req.Header.Set("Cookie", sessionCookie)
+	req.Header.Set("Content-Type", "application/json")
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusCreated, w.Code)
+
+	var response api.Conversation
+	err := json.Unmarshal(w.Body.Bytes(), &response)
+	assert.NoError(suite.T(), err)
+	assert.Equal(suite.T(), "Test Conversation", response.Title)
+	assert.Equal(suite.T(), suite.TestUserID, response.UserId)
+}
+
+// TestCreateConversation_Unauthorized tests conversation creation without authentication
+func (suite *AIConversationIntegrationTestSuite) TestCreateConversation_Unauthorized() {
+	createReq := api.CreateConversationRequest{
+		Title: "Test Conversation",
+	}
+
+	body, _ := json.Marshal(createReq)
+	req, _ := http.NewRequest("POST", "/v1/ai/conversations", bytes.NewBuffer(body))
+	req.Header.Set("Content-Type", "application/json")
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code)
+}
+
+// TestCreateConversation_InvalidJSON tests conversation creation with invalid JSON
+func (suite *AIConversationIntegrationTestSuite) TestCreateConversation_InvalidJSON() {
+	sessionCookie := suite.login()
+
+	req, _ := http.NewRequest("POST", "/v1/ai/conversations", bytes.NewBufferString("invalid json"))
+	req.Header.Set("Cookie", sessionCookie)
+	req.Header.Set("Content-Type", "application/json")
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusBadRequest, w.Code)
+}
+
+// TestGetConversations_Success tests successful conversation listing
+func (suite *AIConversationIntegrationTestSuite) TestGetConversations_Success() {
+	sessionCookie := suite.login()
+
+	// Create a conversation first
+	createReq := api.CreateConversationRequest{
+		Title: "Test Conversation",
+	}
+	body, _ := json.Marshal(createReq)
+	req, _ := http.NewRequest("POST", "/v1/ai/conversations", bytes.NewBuffer(body))
+	req.Header.Set("Cookie", sessionCookie)
+	req.Header.Set("Content-Type", "application/json")
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+	require.Equal(suite.T(), http.StatusCreated, w.Code)
+
+	// Now get conversations
+	req, _ = http.NewRequest("GET", "/v1/ai/conversations", nil)
+	req.Header.Set("Cookie", sessionCookie)
+
+	w = httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusOK, w.Code)
+
+	var response map[string]interface{}
+	err := json.Unmarshal(w.Body.Bytes(), &response)
+	assert.NoError(suite.T(), err)
+
+	conversations, ok := response["conversations"].([]interface{})
+	assert.True(suite.T(), ok)
+	assert.Len(suite.T(), conversations, 1)
+}
+
+// TestGetConversations_Unauthorized tests conversation listing without authentication
+func (suite *AIConversationIntegrationTestSuite) TestGetConversations_Unauthorized() {
+	req, _ := http.NewRequest("GET", "/v1/ai/conversations", nil)
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code)
+}
+
+// TestGetConversation_Success tests successful conversation retrieval with messages
+func (suite *AIConversationIntegrationTestSuite) TestGetConversation_Success() {
+	sessionCookie := suite.login()
+
+	// Create a conversation first
+	createReq := api.CreateConversationRequest{
+		Title: "Test Conversation",
+	}
+	body, _ := json.Marshal(createReq)
+	req, _ := http.NewRequest("POST", "/v1/ai/conversations", bytes.NewBuffer(body))
+	req.Header.Set("Cookie", sessionCookie)
+	req.Header.Set("Content-Type", "application/json")
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+	require.Equal(suite.T(), http.StatusCreated, w.Code)
+
+	var conversation api.Conversation
+	err := json.Unmarshal(w.Body.Bytes(), &conversation)
+	require.NoError(suite.T(), err)
+
+	// Add a message to the conversation
+	messageReq := api.CreateMessageRequest{
+		Role:    api.CreateMessageRequestRoleUser,
+		Content: "Hello, AI!",
+	}
+	msgBody, _ := json.Marshal(messageReq)
+	req, _ = http.NewRequest("POST", fmt.Sprintf("/v1/ai/conversations/%s/messages", conversation.Id.String()), bytes.NewBuffer(msgBody))
+	req.Header.Set("Cookie", sessionCookie)
+	req.Header.Set("Content-Type", "application/json")
+
+	w = httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+	require.Equal(suite.T(), http.StatusCreated, w.Code)
+
+	// Now get the conversation with messages
+	req, _ = http.NewRequest("GET", fmt.Sprintf("/v1/ai/conversations/%s", conversation.Id.String()), nil)
+	req.Header.Set("Cookie", sessionCookie)
+
+	w = httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusOK, w.Code)
+
+	var response api.Conversation
+	err = json.Unmarshal(w.Body.Bytes(), &response)
+	assert.NoError(suite.T(), err)
+	assert.Equal(suite.T(), conversation.Id, response.Id)
+	require.NotNil(suite.T(), response.Messages)
+	assert.Len(suite.T(), *response.Messages, 1)
+	assert.Equal(suite.T(), "Hello, AI!", (*response.Messages)[0].Content)
+}
+
+// TestGetConversation_NotFound tests getting a non-existent conversation
+func (suite *AIConversationIntegrationTestSuite) TestGetConversation_NotFound() {
+	sessionCookie := suite.login()
+
+	req, _ := http.NewRequest("GET", "/v1/ai/conversations/550e8400-e29b-41d4-a716-446655440000", nil)
+	req.Header.Set("Cookie", sessionCookie)
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusNotFound, w.Code)
+}
+
+// TestUpdateConversation_Success tests successful conversation update
+func (suite *AIConversationIntegrationTestSuite) TestUpdateConversation_Success() {
+	sessionCookie := suite.login()
+
+	// Create a conversation first
+	createReq := api.CreateConversationRequest{
+		Title: "Original Title",
+	}
+	body, _ := json.Marshal(createReq)
+	req, _ := http.NewRequest("POST", "/v1/ai/conversations", bytes.NewBuffer(body))
+	req.Header.Set("Cookie", sessionCookie)
+	req.Header.Set("Content-Type", "application/json")
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+	require.Equal(suite.T(), http.StatusCreated, w.Code)
+
+	var conversation api.Conversation
+	err := json.Unmarshal(w.Body.Bytes(), &conversation)
+	require.NoError(suite.T(), err)
+
+	// Update the conversation
+	updateReq := api.UpdateConversationRequest{
+		Title: "Updated Title",
+	}
+	updateBody, _ := json.Marshal(updateReq)
+	req, _ = http.NewRequest("PUT", fmt.Sprintf("/v1/ai/conversations/%s", conversation.Id.String()), bytes.NewBuffer(updateBody))
+	req.Header.Set("Cookie", sessionCookie)
+	req.Header.Set("Content-Type", "application/json")
+
+	w = httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusOK, w.Code)
+
+	var response api.Conversation
+	err = json.Unmarshal(w.Body.Bytes(), &response)
+	assert.NoError(suite.T(), err)
+	assert.Equal(suite.T(), "Updated Title", response.Title)
+}
+
+// TestDeleteConversation_Success tests successful conversation deletion
+func (suite *AIConversationIntegrationTestSuite) TestDeleteConversation_Success() {
+	sessionCookie := suite.login()
+
+	// Create a conversation first
+	createReq := api.CreateConversationRequest{
+		Title: "Test Conversation",
+	}
+	body, _ := json.Marshal(createReq)
+	req, _ := http.NewRequest("POST", "/v1/ai/conversations", bytes.NewBuffer(body))
+	req.Header.Set("Cookie", sessionCookie)
+	req.Header.Set("Content-Type", "application/json")
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+	require.Equal(suite.T(), http.StatusCreated, w.Code)
+
+	var conversation api.Conversation
+	err := json.Unmarshal(w.Body.Bytes(), &conversation)
+	require.NoError(suite.T(), err)
+
+	// Delete the conversation
+	req, _ = http.NewRequest("DELETE", fmt.Sprintf("/v1/ai/conversations/%s", conversation.Id.String()), nil)
+	req.Header.Set("Cookie", sessionCookie)
+
+	w = httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusOK, w.Code)
+
+	// Verify conversation is deleted by trying to get it
+	req, _ = http.NewRequest("GET", fmt.Sprintf("/v1/ai/conversations/%s", conversation.Id.String()), nil)
+	req.Header.Set("Cookie", sessionCookie)
+
+	w = httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusNotFound, w.Code)
+}
+
+// TestAddMessage_Success tests successful message addition
+func (suite *AIConversationIntegrationTestSuite) TestAddMessage_Success() {
+	sessionCookie := suite.login()
+
+	// Create a conversation first
+	createReq := api.CreateConversationRequest{
+		Title: "Test Conversation",
+	}
+	body, _ := json.Marshal(createReq)
+	req, _ := http.NewRequest("POST", "/v1/ai/conversations", bytes.NewBuffer(body))
+	req.Header.Set("Cookie", sessionCookie)
+	req.Header.Set("Content-Type", "application/json")
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+	require.Equal(suite.T(), http.StatusCreated, w.Code)
+
+	var conversation api.Conversation
+	err := json.Unmarshal(w.Body.Bytes(), &conversation)
+	require.NoError(suite.T(), err)
+
+	// Add a message
+	messageReq := api.CreateMessageRequest{
+		Role:    api.CreateMessageRequestRoleUser,
+		Content: "Hello, AI!",
+	}
+	msgBody, _ := json.Marshal(messageReq)
+	req, _ = http.NewRequest("POST", fmt.Sprintf("/v1/ai/conversations/%s/messages", conversation.Id.String()), bytes.NewBuffer(msgBody))
+	req.Header.Set("Cookie", sessionCookie)
+	req.Header.Set("Content-Type", "application/json")
+
+	w = httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusCreated, w.Code)
+}
+
+// TestSearchMessages_Success tests successful message search
+func (suite *AIConversationIntegrationTestSuite) TestSearchMessages_Success() {
+	sessionCookie := suite.login()
+
+	// Create a conversation first
+	createReq := api.CreateConversationRequest{
+		Title: "Test Conversation",
+	}
+	body, _ := json.Marshal(createReq)
+	req, _ := http.NewRequest("POST", "/v1/ai/conversations", bytes.NewBuffer(body))
+	req.Header.Set("Cookie", sessionCookie)
+	req.Header.Set("Content-Type", "application/json")
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+	require.Equal(suite.T(), http.StatusCreated, w.Code)
+
+	var conversation api.Conversation
+	err := json.Unmarshal(w.Body.Bytes(), &conversation)
+	require.NoError(suite.T(), err)
+
+	// Add a message
+	messageReq := api.CreateMessageRequest{
+		Role:    api.CreateMessageRequestRoleUser,
+		Content: "Hello, I love learning Spanish!",
+	}
+	msgBody, _ := json.Marshal(messageReq)
+	req, _ = http.NewRequest("POST", fmt.Sprintf("/v1/ai/conversations/%s/messages", conversation.Id.String()), bytes.NewBuffer(msgBody))
+	req.Header.Set("Cookie", sessionCookie)
+	req.Header.Set("Content-Type", "application/json")
+
+	w = httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+	require.Equal(suite.T(), http.StatusCreated, w.Code)
+
+	// Search for messages containing "Spanish"
+	req, _ = http.NewRequest("GET", "/v1/ai/search?q=Spanish", nil)
+	req.Header.Set("Cookie", sessionCookie)
+
+	w = httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusOK, w.Code)
+
+	var response map[string]interface{}
+	err = json.Unmarshal(w.Body.Bytes(), &response)
+	assert.NoError(suite.T(), err)
+
+	messages, ok := response["messages"].([]interface{})
+	assert.True(suite.T(), ok)
+	assert.Len(suite.T(), messages, 1)
+}
+
+// TestSearchMessages_NoQuery tests search without query parameter
+func (suite *AIConversationIntegrationTestSuite) TestSearchMessages_NoQuery() {
+	sessionCookie := suite.login()
+
+	req, _ := http.NewRequest("GET", "/v1/ai/search", nil)
+	req.Header.Set("Cookie", sessionCookie)
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusBadRequest, w.Code)
+}
+
+// TestSearchMessages_Unauthorized tests search without authentication
+func (suite *AIConversationIntegrationTestSuite) TestSearchMessages_Unauthorized() {
+	req, _ := http.NewRequest("GET", "/v1/ai/search?q=test", nil)
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code)
+}

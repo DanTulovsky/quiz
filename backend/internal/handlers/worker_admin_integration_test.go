@@ -80,6 +80,7 @@ func (suite *WorkerAdminIntegrationTestSuite) SetupSuite() {
 		workerService,
 		dailyQuestionService,
 		storyService,
+		services.NewConversationService(db),
 		oauthService,
 		generationHintService,
 		logger,

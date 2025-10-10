@@ -37,6 +37,7 @@ func NewRouter(
 	workerService services.WorkerServiceInterface,
 	dailyQuestionService services.DailyQuestionServiceInterface,
 	storyService services.StoryServiceInterface,
+	conversationService services.ConversationServiceInterface,
 	oauthService *services.OAuthService,
 	generationHintService services.GenerationHintServiceInterface,
 	logger *observability.Logger,
@@ -172,6 +173,7 @@ func NewRouter(
 	quizHandler := NewQuizHandler(userService, questionService, aiService, learningService, workerService, generationHintService, cfg, logger)
 	dailyQuestionHandler := NewDailyQuestionHandler(userService, dailyQuestionService, cfg, logger)
 	storyHandler := NewStoryHandler(storyService, userService, aiService, cfg, logger)
+	aiConversationHandler := NewAIConversationHandler(conversationService, cfg, logger)
 	adminHandler := NewAdminHandlerWithLogger(userService, questionService, aiService, cfg, learningService, workerService, logger)
 	userAdminHandler := NewUserAdminHandler(userService, cfg, logger)
 
@@ -280,6 +282,20 @@ func NewRouter(
 			settings.POST("/clear-stories", middleware.RequireAuth(), middleware.RequestValidationMiddleware(logger), settingsHandler.ClearAllStories)
 			settings.POST("/reset-account", middleware.RequireAuth(), middleware.RequestValidationMiddleware(logger), settingsHandler.ResetAccount)
 			settings.GET("/api-key/:provider", middleware.RequireAuth(), settingsHandler.CheckAPIKeyAvailability)
+		}
+
+		// AI conversation endpoints
+		ai := v1.Group("/ai")
+		ai.Use(middleware.RequireAuth())
+		ai.Use(middleware.RequestValidationMiddleware(logger))
+		{
+			ai.GET("/conversations", aiConversationHandler.GetConversations)
+			ai.POST("/conversations", aiConversationHandler.CreateConversation)
+			ai.GET("/conversations/:id", aiConversationHandler.GetConversation)
+			ai.PUT("/conversations/:id", aiConversationHandler.UpdateConversation)
+			ai.DELETE("/conversations/:id", aiConversationHandler.DeleteConversation)
+			ai.POST("/conversations/:conversationId/messages", aiConversationHandler.AddMessage)
+			ai.GET("/search", aiConversationHandler.SearchMessages)
 		}
 		preferences := v1.Group("/preferences")
 		preferences.Use(middleware.RequireAuth())

@@ -70,7 +70,7 @@ func (suite *AuthIntegrationTestSuite) SetupSuite() {
 	dailyQuestionService := services.NewDailyQuestionService(suite.db, logger, questionService, learningService)
 	generationHintService := services.NewGenerationHintService(suite.db, logger)
 	storyService := services.NewStoryService(suite.db, suite.cfg, logger)
-	suite.Router = NewRouter(suite.cfg, userService, questionService, learningService, aiService, workerService, dailyQuestionService, storyService, oauthService, generationHintService, logger)
+	suite.Router = NewRouter(suite.cfg, userService, questionService, learningService, aiService, workerService, dailyQuestionService, storyService, services.NewConversationService(db), oauthService, generationHintService, logger)
 }
 
 func (suite *AuthIntegrationTestSuite) TearDownSuite() {

@@ -98,6 +98,7 @@ func (suite *AdminIntegrationTestSuite) SetupSuite() {
 		workerService,
 		dailyQuestionService,
 		storyService,
+		services.NewConversationService(db),
 		oauthService,
 		generationHintService,
 		logger,

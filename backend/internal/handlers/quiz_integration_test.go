@@ -85,7 +85,7 @@ func (suite *QuizIntegrationTestSuite) SetupSuite() {
 
 	// Use the real application router
 	storyService := services.NewStoryService(db, cfg, logger)
-	router := handlers.NewRouter(cfg, userService, questionService, learningService, aiService, workerService, dailyQuestionService, storyService, oauthService, generationHintService, logger)
+	router := handlers.NewRouter(cfg, userService, questionService, learningService, aiService, workerService, dailyQuestionService, storyService, services.NewConversationService(db), oauthService, generationHintService, logger)
 	suite.Router = router
 }
 
