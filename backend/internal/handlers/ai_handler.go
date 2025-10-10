@@ -319,12 +319,18 @@ func (h *AIConversationHandler) AddMessage(c *gin.Context) {
 		return
 	}
 
+	// Calculate content length for observability
+	contentLength := 0
+	if req.Content.Text != nil {
+		contentLength = len(*req.Content.Text)
+	}
+
 	// Add span attributes for observability
 	span.SetAttributes(
 		observability.AttributeUserID(userID),
 		attribute.String("conversation_id", conversationID),
 		attribute.String("message_role", string(req.Role)),
-		attribute.String("message_content_length", strconv.Itoa(len(req.Content))),
+		attribute.Int("message_content_length", contentLength),
 	)
 
 	// Add message to conversation

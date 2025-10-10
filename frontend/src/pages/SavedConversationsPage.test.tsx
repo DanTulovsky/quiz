@@ -130,7 +130,9 @@ describe('SavedConversationsPage', () => {
       </QueryClientProvider>
     );
 
-    const searchInput = screen.getByPlaceholderText('Type to prepare search query...');
+    const searchInput = screen.getByPlaceholderText(
+      'Type to prepare search query...'
+    );
     expect(searchInput).toBeInTheDocument();
   });
 

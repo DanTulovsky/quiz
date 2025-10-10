@@ -667,6 +667,9 @@ export const Chat: React.FC<ChatProps> = ({
   const createConversationMutation = usePostV1AiConversations();
   const addMessageMutation = usePostV1AiConversationsConversationIdMessages();
 
+  // Auto-save functionality
+  const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
+
   // Get current provider and model names
   const currentProvider = providers?.find(p => p.code === user?.ai_provider);
   const currentModel = currentProvider?.models?.find(
@@ -1023,6 +1026,37 @@ export const Chat: React.FC<ChatProps> = ({
     setIsLoading(true);
     setError(null);
     setShowSuggestions(false); // Close suggestions dropdown when sending
+
+    // Auto-save user message if enabled
+    let conversationId = currentConversationId;
+    if (autoSaveEnabled && user?.id && question?.id) {
+      try {
+        if (!conversationId) {
+          const conversation = await createConversationMutation.mutateAsync({
+            data: {
+              title: `AI Chat - ${question.question_text?.substring(0, 50)}...`,
+            },
+          });
+          conversationId = conversation.id;
+          setCurrentConversationId(conversationId);
+        }
+
+        // Save user message
+        await addMessageMutation.mutateAsync({
+          conversationId,
+          data: {
+            question_id: question.id,
+            role: 'user',
+            content: {
+              text: textToSend,
+            },
+          },
+        });
+      } catch (error) {
+        logger.error('Failed to auto-save user message:', error);
+      }
+    }
+
     // Refocus input after sending
     setTimeout(() => {
       inputRef.current?.focus();
@@ -1110,6 +1144,24 @@ export const Chat: React.FC<ChatProps> = ({
                 };
                 return newMessages;
               });
+
+              // Auto-save AI response if enabled (only save complete response)
+              if (autoSaveEnabled && user?.id && question?.id && conversationId && done) {
+                try {
+                  await addMessageMutation.mutateAsync({
+                    conversationId,
+                    data: {
+                      question_id: question.id,
+                      role: 'assistant',
+                      content: {
+                        text: streamedText,
+                      },
+                    },
+                  });
+                } catch (error) {
+                  logger.error('Failed to auto-save AI response:', error);
+                }
+              }
 
               // Scroll to bottom during streaming with requestAnimationFrame for smoother performance
               requestAnimationFrame(scrollToTopOfNewResponse);
@@ -1231,13 +1283,6 @@ export const Chat: React.FC<ChatProps> = ({
           role: 'assistant',
           content: {
             text: messageText,
-            question_context: {
-              question_text: question.question_text,
-              explanation: question.explanation,
-              correct_answer: question.correct_answer,
-              options: question.options,
-            },
-            user_question: userMessage?.text || '',
           },
         },
       });
@@ -1279,15 +1324,6 @@ export const Chat: React.FC<ChatProps> = ({
             role: msg.sender === 'user' ? 'user' : 'assistant',
             content: {
               text: msg.text,
-              question_context:
-                i === 0
-                  ? {
-                      question_text: question.question_text,
-                      explanation: question.explanation,
-                      correct_answer: question.correct_answer,
-                      options: question.options,
-                    }
-                  : undefined,
             },
           },
         });

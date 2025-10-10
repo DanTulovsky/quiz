@@ -268,7 +268,10 @@ type ChatMessage struct {
 	Bookmarked *bool `json:"bookmarked,omitempty"`
 
 	// Content Message content
-	Content string `json:"content"`
+	Content struct {
+		// Text The actual message text
+		Text *string `json:"text,omitempty"`
+	} `json:"content"`
 
 	// ConversationId ID of the conversation this message belongs to
 	ConversationId openapi_types.UUID `json:"conversation_id"`
@@ -325,7 +328,10 @@ type CreateConversationRequest struct {
 // CreateMessageRequest defines model for CreateMessageRequest.
 type CreateMessageRequest struct {
 	// Content Message content
-	Content string `json:"content"`
+	Content struct {
+		// Text The actual message text
+		Text *string `json:"text,omitempty"`
+	} `json:"content"`
 
 	// QuestionId Optional question ID if this message relates to a specific question
 	QuestionId *int `json:"question_id,omitempty"`

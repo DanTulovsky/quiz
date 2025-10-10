@@ -255,6 +255,7 @@ func (s *ConversationService) AddMessage(ctx context.Context, conversationID str
 		return contextutils.WrapError(err, "failed to marshal message content")
 	}
 
+	var contentBytes []byte
 	err = s.db.QueryRowContext(ctx, query,
 		messageID,
 		conversationID,
@@ -269,7 +270,7 @@ func (s *ConversationService) AddMessage(ctx context.Context, conversationID str
 		&message.ConversationId,
 		&message.QuestionId,
 		&message.Role,
-		&message.Content,
+		&contentBytes,
 		&message.Bookmarked,
 		&message.CreatedAt,
 		&message.UpdatedAt,
@@ -277,6 +278,16 @@ func (s *ConversationService) AddMessage(ctx context.Context, conversationID str
 	if err != nil {
 		return contextutils.WrapError(err, "failed to add message")
 	}
+
+	// Unmarshal the content from bytes
+	var contentObj struct {
+		Text *string `json:"text,omitempty"`
+	}
+	err = json.Unmarshal(contentBytes, &contentObj)
+	if err != nil {
+		return contextutils.WrapError(err, "failed to unmarshal message content")
+	}
+	message.Content = contentObj
 
 	return nil
 }
@@ -314,13 +325,13 @@ func (s *ConversationService) GetConversationMessages(ctx context.Context, conve
 		var msg api.ChatMessage
 		var questionIDPtr *int
 
-		var answerText string
+		var answerBytes []byte
 		err := rows.Scan(
 			&msg.Id,
 			&msg.ConversationId,
 			&questionIDPtr,
 			&msg.Role,
-			&answerText,
+			&answerBytes,
 			&msg.Bookmarked,
 			&msg.CreatedAt,
 			&msg.UpdatedAt,
@@ -329,7 +340,15 @@ func (s *ConversationService) GetConversationMessages(ctx context.Context, conve
 			return nil, contextutils.WrapError(err, "failed to scan message")
 		}
 
-		err = json.Unmarshal([]byte(answerText), &msg.Content)
+		// Content is now stored as an object, unmarshal accordingly
+		var contentObj struct {
+			Text *string `json:"text,omitempty"`
+		}
+		err = json.Unmarshal(answerBytes, &contentObj)
+		if err != nil {
+			return nil, contextutils.WrapError(err, "failed to unmarshal message content")
+		}
+		msg.Content = contentObj
 		if err != nil {
 			return nil, contextutils.WrapError(err, "failed to unmarshal message content")
 		}
@@ -394,13 +413,13 @@ func (s *ConversationService) SearchMessages(ctx context.Context, userID uint, q
 		var questionIDPtr *int
 		var conversationTitle string
 
-		var answerText string
+		var answerBytes []byte
 		err := rows.Scan(
 			&msg.Id,
 			&msg.ConversationId,
 			&questionIDPtr,
 			&msg.Role,
-			&answerText,
+			&answerBytes,
 			&msg.Bookmarked,
 			&msg.CreatedAt,
 			&msg.UpdatedAt,
@@ -410,8 +429,15 @@ func (s *ConversationService) SearchMessages(ctx context.Context, userID uint, q
 			return nil, 0, contextutils.WrapError(err, "failed to scan search result")
 		}
 
-		// Since we're storing as plain text in JSONB, just use it directly
-		msg.Content = answerText
+		// Content is now stored as an object, unmarshal accordingly
+		var contentObj struct {
+			Text *string `json:"text,omitempty"`
+		}
+		err = json.Unmarshal(answerBytes, &contentObj)
+		if err != nil {
+			return nil, 0, contextutils.WrapError(err, "failed to unmarshal message content")
+		}
+		msg.Content = contentObj
 
 		if questionIDPtr != nil {
 			msg.QuestionId = questionIDPtr
@@ -503,10 +529,17 @@ func (s *ConversationService) SearchConversations(ctx context.Context, userID ui
 			previewMessage = *firstMessagePtr
 		}
 
+		// For search results, we need to create a minimal content object
+		contentObj := struct {
+			Text *string `json:"text,omitempty"`
+		}{
+			Text: &previewMessage,
+		}
+
 		// Add preview_message field for frontend compatibility
 		conv.Messages = &[]api.ChatMessage{
 			{
-				Content: previewMessage,
+				Content: contentObj,
 			},
 		}
 

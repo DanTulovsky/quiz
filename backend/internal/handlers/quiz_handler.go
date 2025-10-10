@@ -690,9 +690,14 @@ func (h *QuizHandler) ChatStream(c *gin.Context) {
 	if req.ConversationHistory != nil {
 		aiReq.ConversationHistory = make([]models.ChatMessage, len(*req.ConversationHistory))
 		for i, msg := range *req.ConversationHistory {
+			// Extract text content from the object
+			contentText := ""
+			if msg.Content.Text != nil {
+				contentText = *msg.Content.Text
+			}
 			aiReq.ConversationHistory[i] = models.ChatMessage{
 				Role:    msg.Role,
-				Content: msg.Content,
+				Content: contentText,
 			}
 		}
 	}

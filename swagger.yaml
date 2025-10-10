@@ -4291,8 +4291,12 @@ components:
           enum: ["user", "assistant"]
           description: Role of the message sender
         content:
-          type: string
+          type: object
           description: Message content
+          properties:
+            text:
+              type: string
+              description: The actual message text
         question_id:
           type: integer
           description: Optional question ID if this message relates to a specific question
@@ -4356,8 +4360,12 @@ components:
           enum: ["user", "assistant"]
           description: Role of the message sender
         content:
-          type: string
+          type: object
           description: Message content
+          properties:
+            text:
+              type: string
+              description: The actual message text
         bookmarked:
           type: boolean
           description: Whether this message is bookmarked

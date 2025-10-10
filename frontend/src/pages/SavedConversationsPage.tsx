@@ -211,24 +211,31 @@ export const SavedConversationsPage: React.FC = () => {
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Fetch conversations or search results
-  const { data: conversationsData, isLoading: conversationsLoading } = useGetV1AiConversations({
-    limit: 50,
-    offset: 0,
-  }, {
-    query: {
-      enabled: !activeSearchQuery.trim(),
-    },
-  });
+  const { data: conversationsData, isLoading: conversationsLoading } =
+    useGetV1AiConversations(
+      {
+        limit: 50,
+        offset: 0,
+      },
+      {
+        query: {
+          enabled: !activeSearchQuery.trim(),
+        },
+      }
+    );
 
-  const { data: searchData, isLoading: searchLoading } = useGetV1AiSearch({
-    q: activeSearchQuery,
-    limit: 50,
-    offset: 0,
-  }, {
-    query: {
-      enabled: !!activeSearchQuery.trim(),
+  const { data: searchData, isLoading: searchLoading } = useGetV1AiSearch(
+    {
+      q: activeSearchQuery,
+      limit: 50,
+      offset: 0,
     },
-  });
+    {
+      query: {
+        enabled: !!activeSearchQuery.trim(),
+      },
+    }
+  );
 
   const isLoading = conversationsLoading || searchLoading;
 
@@ -242,7 +249,11 @@ export const SavedConversationsPage: React.FC = () => {
     } else {
       return conversationsData?.conversations || [];
     }
-  }, [conversationsData?.conversations, searchData?.conversations, activeSearchQuery]);
+  }, [
+    conversationsData?.conversations,
+    searchData?.conversations,
+    activeSearchQuery,
+  ]);
 
   // Handle search input change
   const handleSearchChange = useCallback(
@@ -252,7 +263,15 @@ export const SavedConversationsPage: React.FC = () => {
     []
   );
 
-  // Handle Enter key press - no longer triggers search automatically
+  // Handle Enter key press to trigger search
+  const handleKeyPress = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter' && searchQuery.trim()) {
+        setActiveSearchQuery(searchQuery);
+      }
+    },
+    [searchQuery]
+  );
 
   // Clear search
   const handleClearSearch = () => {
@@ -367,6 +386,7 @@ export const SavedConversationsPage: React.FC = () => {
               placeholder='Type to prepare search query...'
               value={searchQuery}
               onChange={handleSearchChange}
+              onKeyDown={handleKeyPress}
               leftSection={<Search size={16} />}
               style={{ flex: 1 }}
               disabled={isLoading}

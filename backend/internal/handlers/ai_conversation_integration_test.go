@@ -255,7 +255,11 @@ func (suite *AIConversationIntegrationTestSuite) TestGetConversation_Success() {
 	// Add a message to the conversation
 	messageReq := api.CreateMessageRequest{
 		Role:    api.CreateMessageRequestRoleUser,
-		Content: "Hello, AI!",
+				Content: struct {
+					Text *string `json:"text,omitempty"`
+				}{
+					Text: stringPtr("Hello, AI!"),
+				},
 	}
 	msgBody, _ := json.Marshal(messageReq)
 	req, _ = http.NewRequest("POST", fmt.Sprintf("/v1/ai/conversations/%s/messages", conversation.Id.String()), bytes.NewBuffer(msgBody))
@@ -402,7 +406,11 @@ func (suite *AIConversationIntegrationTestSuite) TestAddMessage_Success() {
 	// Add a message
 	messageReq := api.CreateMessageRequest{
 		Role:    api.CreateMessageRequestRoleUser,
-		Content: "Hello, AI!",
+				Content: struct {
+					Text *string `json:"text,omitempty"`
+				}{
+					Text: stringPtr("Hello, AI!"),
+				},
 	}
 	msgBody, _ := json.Marshal(messageReq)
 	req, _ = http.NewRequest("POST", fmt.Sprintf("/v1/ai/conversations/%s/messages", conversation.Id.String()), bytes.NewBuffer(msgBody))
@@ -439,7 +447,11 @@ func (suite *AIConversationIntegrationTestSuite) TestSearchConversations_Success
 	// Add a message containing "Spanish"
 	messageReq := api.CreateMessageRequest{
 		Role:    api.CreateMessageRequestRoleUser,
-		Content: "Hello, I love learning Spanish!",
+				Content: struct {
+					Text *string `json:"text,omitempty"`
+				}{
+					Text: stringPtr("Hello, I love learning Spanish!"),
+				},
 	}
 	msgBody, _ := json.Marshal(messageReq)
 	req, _ = http.NewRequest("POST", fmt.Sprintf("/v1/ai/conversations/%s/messages", conversation.Id.String()), bytes.NewBuffer(msgBody))
@@ -571,7 +583,11 @@ func (suite *AIConversationIntegrationTestSuite) TestSearchConversations_ByMessa
 	for _, content := range messages {
 		messageReq := api.CreateMessageRequest{
 			Role:    api.CreateMessageRequestRoleUser,
-			Content: content,
+				Content: struct {
+					Text *string `json:"text,omitempty"`
+				}{
+					Text: &content,
+				},
 		}
 		msgBody, _ := json.Marshal(messageReq)
 		req, _ = http.NewRequest("POST", fmt.Sprintf("/v1/ai/conversations/%s/messages", conversation.Id.String()), bytes.NewBuffer(msgBody))
@@ -625,7 +641,11 @@ func (suite *AIConversationIntegrationTestSuite) TestSearchConversations_NoResul
 	// Add a message
 	messageReq := api.CreateMessageRequest{
 		Role:    api.CreateMessageRequestRoleUser,
-		Content: "Hello, I love learning!",
+				Content: struct {
+					Text *string `json:"text,omitempty"`
+				}{
+					Text: stringPtr("Hello, I love learning!"),
+				},
 	}
 	msgBody, _ := json.Marshal(messageReq)
 	req, _ = http.NewRequest("POST", fmt.Sprintf("/v1/ai/conversations/%s/messages", conversation.Id.String()), bytes.NewBuffer(msgBody))

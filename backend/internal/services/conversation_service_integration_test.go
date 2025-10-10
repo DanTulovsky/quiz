@@ -157,7 +157,11 @@ func (suite *ConversationServiceIntegrationTestSuite) TestGetConversationWithMes
 	for i := 0; i < 2; i++ {
 		msgReq := &api.CreateMessageRequest{
 			Role:    api.CreateMessageRequestRoleUser,
-			Content: fmt.Sprintf("Test message %d", i+1),
+			Content: struct {
+				Text *string `json:"text,omitempty"`
+			}{
+				Text: stringPtr(fmt.Sprintf("Test message %d", i+1)),
+			},
 		}
 		err := suite.conversationSvc.AddMessage(ctx, conversation.Id.String(), uint(suite.testUser.ID), msgReq)
 		suite.Require().NoError(err)
@@ -177,7 +181,7 @@ func (suite *ConversationServiceIntegrationTestSuite) TestGetConversationWithMes
 	suite.Require().NotNil(retrieved.Messages)
 	suite.Assert().Len(*retrieved.Messages, 2)
 	suite.Assert().Equal(api.ChatMessageRoleUser, (*retrieved.Messages)[0].Role)
-	suite.Assert().Equal("Test message 1", (*retrieved.Messages)[0].Content)
+	suite.Assert().Equal("Test message 1", *(*retrieved.Messages)[0].Content.Text)
 }
 
 // TestUpdateConversation tests updating a conversation
@@ -243,7 +247,11 @@ func (suite *ConversationServiceIntegrationTestSuite) TestAddMessage() {
 	// Add a user message
 	msgReq := &api.CreateMessageRequest{
 		Role:    api.CreateMessageRequestRoleUser,
-		Content: "Hello, AI!",
+		Content: struct {
+			Text *string `json:"text,omitempty"`
+		}{
+			Text: stringPtr("Hello, AI!"),
+		},
 	}
 	err = suite.conversationSvc.AddMessage(ctx, conversation.Id.String(), uint(suite.testUser.ID), msgReq)
 	suite.Require().NoError(err)
@@ -253,13 +261,17 @@ func (suite *ConversationServiceIntegrationTestSuite) TestAddMessage() {
 	suite.Require().NoError(err)
 	suite.Require().Len(messages, 1)
 	suite.Assert().Equal(api.ChatMessageRoleUser, messages[0].Role)
-	suite.Assert().Equal("Hello, AI!", messages[0].Content)
+	suite.Assert().Equal("Hello, AI!", *messages[0].Content.Text)
 
 	// Add an assistant message
 	msg := "Hello! How can I help you today?"
 	assistantMsgReq := &api.CreateMessageRequest{
 		Role:    api.CreateMessageRequestRoleAssistant,
-		Content: msg,
+				Content: struct {
+					Text *string `json:"text,omitempty"`
+				}{
+					Text: &msg,
+				},
 	}
 	fmt.Println(assistantMsgReq.Content)
 	err = suite.conversationSvc.AddMessage(ctx, conversation.Id.String(), uint(suite.testUser.ID), assistantMsgReq)
@@ -273,7 +285,7 @@ func (suite *ConversationServiceIntegrationTestSuite) TestAddMessage() {
 	// Check that the assistant message is present
 	found := false
 	for _, m := range messages {
-		if m.Role == api.ChatMessageRoleAssistant && m.Content == msg {
+		if m.Role == api.ChatMessageRoleAssistant && m.Content.Text != nil && *m.Content.Text == msg {
 			found = true
 			break
 		}
@@ -295,15 +307,36 @@ func (suite *ConversationServiceIntegrationTestSuite) TestSearchMessages() {
 	suite.Require().NoError(err)
 
 	// Add messages with searchable content
-	msg1Req := &api.CreateMessageRequest{Role: api.CreateMessageRequestRoleUser, Content: "I love learning Spanish"}
+	msg1Req := &api.CreateMessageRequest{
+		Role: api.CreateMessageRequestRoleUser,
+		Content: struct {
+			Text *string `json:"text,omitempty"`
+		}{
+			Text: stringPtr("I love learning Spanish"),
+		},
+	}
 	err = suite.conversationSvc.AddMessage(ctx, conv1.Id.String(), uint(suite.testUser.ID), msg1Req)
 	suite.Require().NoError(err)
 
-	msg2Req := &api.CreateMessageRequest{Role: api.CreateMessageRequestRoleAssistant, Content: "Spanish grammar can be challenging"}
+	msg2Req := &api.CreateMessageRequest{
+		Role: api.CreateMessageRequestRoleAssistant,
+		Content: struct {
+			Text *string `json:"text,omitempty"`
+		}{
+			Text: stringPtr("Spanish grammar can be challenging"),
+		},
+	}
 	err = suite.conversationSvc.AddMessage(ctx, conv1.Id.String(), uint(suite.testUser.ID), msg2Req)
 	suite.Require().NoError(err)
 
-	msg3Req := &api.CreateMessageRequest{Role: api.CreateMessageRequestRoleUser, Content: "I want to learn French instead"}
+	msg3Req := &api.CreateMessageRequest{
+		Role: api.CreateMessageRequestRoleUser,
+		Content: struct {
+			Text *string `json:"text,omitempty"`
+		}{
+			Text: stringPtr("I want to learn French instead"),
+		},
+	}
 	err = suite.conversationSvc.AddMessage(ctx, conv2.Id.String(), uint(suite.testUser.ID), msg3Req)
 	suite.Require().NoError(err)
 
@@ -317,7 +350,7 @@ func (suite *ConversationServiceIntegrationTestSuite) TestSearchMessages() {
 	for _, result := range results {
 		suite.Require().NotNil(result.ConversationTitle) // Should be populated in search results
 		suite.Assert().NotEmpty(*result.ConversationTitle)
-		suite.Assert().Contains(result.Content, "Spanish")
+		suite.Assert().Contains(*result.Content.Text, "Spanish")
 	}
 
 	// Search for "French" (should find 1 message)
@@ -327,7 +360,7 @@ func (suite *ConversationServiceIntegrationTestSuite) TestSearchMessages() {
 	suite.Assert().Len(frenchResults, 1)
 	suite.Require().NotNil(frenchResults[0].ConversationTitle)
 	suite.Assert().NotEmpty(*frenchResults[0].ConversationTitle)
-	suite.Assert().Contains(frenchResults[0].Content, "French")
+		suite.Assert().Contains(*frenchResults[0].Content.Text, "French")
 }
 
 // TestMain runs the test suite
