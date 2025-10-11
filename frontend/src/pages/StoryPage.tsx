@@ -327,6 +327,22 @@ const StoryPage: React.FC = () => {
         errorMessage={generationErrorModal.errorMessage}
         errorDetails={generationErrorModal.errorDetails}
       />
+
+      {/* Create Story Modal - Main story interface */}
+      {showCreateModal && (
+        <Modal
+          opened={true}
+          onClose={() => setShowCreateModal(false)}
+          title='Create New Story'
+          size='xl'
+          centered
+        >
+          <CreateStoryForm
+            onSubmit={handleCreateStory}
+            loading={isCreatingStory}
+          />
+        </Modal>
+      )}
     </Container>
   );
 };
