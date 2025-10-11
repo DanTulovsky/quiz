@@ -698,10 +698,11 @@ const MobileDailyPage: React.FC = () => {
         </Group>
         {/* Bottom section: report issue and adjust frequency */}
         <Box
+          className='mobile-safe-footer'
+          bg='var(--mantine-color-body)'
           style={{
             borderTop: '1px solid var(--mantine-color-default-border)',
             padding: '4px 16px',
-            backgroundColor: 'var(--mantine-color-gray-0)',
             marginTop: '16px',
           }}
         >
