@@ -42,6 +42,10 @@ type StoryServiceInterface interface {
 	GetSectionLengthTargetWithLanguage(language, level string, lengthPref *models.SectionLength) int
 	SanitizeInput(input string) string
 	GenerateStorySection(ctx context.Context, storyID, userID uint, aiService AIServiceInterface, userAIConfig *models.UserAIConfig, generatorType models.GeneratorType) (*models.StorySectionWithQuestions, error)
+  // Admin-only helpers (no ownership checks)
+  GetStoriesPaginated(ctx context.Context, page, pageSize int, search, language, status string, userID *uint) ([]models.Story, int, error)
+  GetStoryAdmin(ctx context.Context, storyID uint) (*models.StoryWithSections, error)
+  GetSectionAdmin(ctx context.Context, sectionID uint) (*models.StorySectionWithQuestions, error)
 }
 
 // StoryService handles all story-related operations
@@ -1123,6 +1127,146 @@ func (s *StoryService) createStory(ctx context.Context, story *models.Story) err
 	).Scan(&story.ID)
 
 	return err
+}
+
+// Admin-only methods (no ownership checks)
+
+// GetStoriesPaginated returns stories with optional filters for admin views
+func (s *StoryService) GetStoriesPaginated(ctx context.Context, page, pageSize int, search, language, status string, userID *uint) ([]models.Story, int, error) {
+    if page <= 0 {
+        page = 1
+    }
+    if pageSize <= 0 || pageSize > 100 {
+        pageSize = 20
+    }
+
+    // Build WHERE clauses dynamically
+    where := []string{"1=1"}
+    args := []interface{}{}
+    argIdx := 1
+    if search != "" {
+        where = append(where, fmt.Sprintf("(LOWER(title) LIKE $%d)", argIdx))
+        args = append(args, "%"+strings.ToLower(search)+"%")
+        argIdx++
+    }
+    if language != "" {
+        where = append(where, fmt.Sprintf("language = $%d", argIdx))
+        args = append(args, language)
+        argIdx++
+    }
+    if status != "" {
+        where = append(where, fmt.Sprintf("status = $%d", argIdx))
+        args = append(args, status)
+        argIdx++
+    }
+    if userID != nil {
+        where = append(where, fmt.Sprintf("user_id = $%d", argIdx))
+        args = append(args, *userID)
+        argIdx++
+    }
+
+    whereClause := strings.Join(where, " AND ")
+
+    // Count total
+    countQuery := "SELECT COUNT(*) FROM stories WHERE " + whereClause
+    var total int
+    if err := s.db.QueryRowContext(ctx, countQuery, args...).Scan(&total); err != nil {
+        return nil, 0, contextutils.WrapErrorf(err, "failed to count stories")
+    }
+
+    // Fetch rows
+    offset := (page - 1) * pageSize
+    listQuery := `
+        SELECT id, user_id, title, language, subject, author_style, time_period, genre, tone,
+               character_names, custom_instructions, section_length_override, status,
+               last_section_generated_at, created_at, updated_at
+        FROM stories
+        WHERE ` + whereClause + `
+        ORDER BY created_at DESC
+        LIMIT $` + fmt.Sprint(argIdx) + ` OFFSET $` + fmt.Sprint(argIdx+1)
+
+    args = append(args, pageSize, offset)
+
+    rows, err := s.db.QueryContext(ctx, listQuery, args...)
+    if err != nil {
+        return nil, 0, contextutils.WrapErrorf(err, "failed to query stories")
+    }
+    defer func() { _ = rows.Close() }()
+
+    var stories []models.Story
+    for rows.Next() {
+        var story models.Story
+        if err := rows.Scan(
+            &story.ID, &story.UserID, &story.Title, &story.Language, &story.Subject,
+            &story.AuthorStyle, &story.TimePeriod, &story.Genre, &story.Tone,
+            &story.CharacterNames, &story.CustomInstructions, &story.SectionLengthOverride,
+            &story.Status, &story.LastSectionGeneratedAt,
+            &story.CreatedAt, &story.UpdatedAt,
+        ); err != nil {
+            return nil, 0, contextutils.WrapErrorf(err, "failed to scan story")
+        }
+        stories = append(stories, story)
+    }
+
+    return stories, total, rows.Err()
+}
+
+// GetStoryAdmin returns story with sections for admin (no ownership checks)
+func (s *StoryService) GetStoryAdmin(ctx context.Context, storyID uint) (*models.StoryWithSections, error) {
+    query := `
+        SELECT id, user_id, title, language, subject, author_style, time_period, genre, tone,
+               character_names, custom_instructions, section_length_override, status,
+               last_section_generated_at, created_at, updated_at
+        FROM stories
+        WHERE id = $1`
+
+    var story models.Story
+    if err := s.db.QueryRowContext(ctx, query, storyID).Scan(
+        &story.ID, &story.UserID, &story.Title, &story.Language, &story.Subject,
+        &story.AuthorStyle, &story.TimePeriod, &story.Genre, &story.Tone,
+        &story.CharacterNames, &story.CustomInstructions, &story.SectionLengthOverride,
+        &story.Status, &story.LastSectionGeneratedAt,
+        &story.CreatedAt, &story.UpdatedAt,
+    ); err != nil {
+        if errors.Is(err, sql.ErrNoRows) {
+            return nil, contextutils.ErrorWithContextf("story not found")
+        }
+        return nil, contextutils.WrapErrorf(err, "failed to get story")
+    }
+
+    sections, err := s.GetStorySections(ctx, story.ID)
+    if err != nil {
+        return nil, contextutils.WrapErrorf(err, "failed to load story sections")
+    }
+
+    return &models.StoryWithSections{Story: story, Sections: sections}, nil
+}
+
+// GetSectionAdmin returns section with questions for admin (no ownership checks)
+func (s *StoryService) GetSectionAdmin(ctx context.Context, sectionID uint) (*models.StorySectionWithQuestions, error) {
+    query := `
+        SELECT id, story_id, section_number, content, language_level, word_count,
+               generated_by, generated_at, generation_date
+        FROM story_sections
+        WHERE id = $1`
+
+    var section models.StorySection
+    if err := s.db.QueryRowContext(ctx, query, sectionID).Scan(
+        &section.ID, &section.StoryID, &section.SectionNumber, &section.Content,
+        &section.LanguageLevel, &section.WordCount, &section.GeneratedBy, &section.GeneratedAt, &section.GenerationDate,
+    ); err != nil {
+        if errors.Is(err, sql.ErrNoRows) {
+            return nil, contextutils.ErrorWithContextf("section not found")
+        }
+        return nil, contextutils.WrapErrorf(err, "failed to get section")
+    }
+
+    questions, err := s.GetSectionQuestions(ctx, section.ID)
+    if err != nil {
+        return nil, contextutils.WrapErrorf(err, "failed to load section questions")
+    }
+
+    return &models.StorySectionWithQuestions{StorySection: section, Questions: questions}, nil
 }
 
 // createSection inserts a new section into the database

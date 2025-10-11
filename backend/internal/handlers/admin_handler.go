@@ -33,6 +33,7 @@ type AdminHandler struct {
 	learningService services.LearningServiceInterface
 	workerService   services.WorkerServiceInterface
 	logger          *observability.Logger
+  storyService    services.StoryServiceInterface
 }
 
 // NewAdminHandlerWithLogger creates a new AdminHandler with the provided services and logger.
@@ -45,7 +46,7 @@ func NewAdminHandlerWithLogger(userService services.UserServiceInterface, questi
 		templates:       nil,
 		learningService: learningService,
 		workerService:   workerService,
-		logger:          logger,
+    logger:          logger,
 	}
 }
 
@@ -644,6 +645,102 @@ func (h *AdminHandler) GetAIConcurrencyStats(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"ai_concurrency": stats,
 	})
+}
+
+// --- Story Explorer (Admin) ---
+
+// GetStoriesPaginated returns paginated stories with filters
+func (h *AdminHandler) GetStoriesPaginated(c *gin.Context) {
+    if h.storyService == nil {
+        HandleAppError(c, contextutils.ErrInternal)
+        return
+    }
+    page, pageSize := ParsePagination(c, 1, 20, 100)
+    f := ParseFilters(c, "search", "language", "status")
+    search := f["search"]
+    language := f["language"]
+    status := f["status"]
+
+    var userID *uint
+    if u := c.Query("user_id"); u != "" {
+        if parsed, err := strconv.Atoi(u); err == nil && parsed > 0 {
+            tmp := uint(parsed)
+            userID = &tmp
+        } else {
+            HandleAppError(c, contextutils.ErrInvalidFormat)
+            return
+        }
+    }
+
+    stories, total, err := h.storyService.GetStoriesPaginated(c.Request.Context(), page, pageSize, search, language, status, userID)
+    if err != nil {
+        h.logger.Error(c.Request.Context(), "Failed to get stories", err, map[string]interface{}{"page": page, "size": pageSize})
+        HandleAppError(c, contextutils.WrapError(err, "failed to get stories"))
+        return
+    }
+
+    // Map directly; convert to API struct for consistency
+    storyMaps := make([]map[string]interface{}, 0, len(stories))
+    for _, s := range stories {
+        apiS := convertStoryToAPI(&s)
+        m := map[string]interface{}{}
+        if b, err := json.Marshal(apiS); err == nil {
+            _ = json.Unmarshal(b, &m)
+        }
+        storyMaps = append(storyMaps, m)
+    }
+
+    c.JSON(http.StatusOK, gin.H{
+        "stories": storyMaps,
+        "pagination": gin.H{
+            "page":        page,
+            "page_size":   pageSize,
+            "total":       total,
+            "total_pages": int(math.Ceil(float64(total) / float64(pageSize))),
+        },
+    })
+}
+
+// GetStoryAdmin returns a full story with sections by ID
+func (h *AdminHandler) GetStoryAdmin(c *gin.Context) {
+    if h.storyService == nil {
+        HandleAppError(c, contextutils.ErrInternal)
+        return
+    }
+    idStr := c.Param("id")
+    id, err := strconv.Atoi(idStr)
+    if err != nil || id <= 0 {
+        HandleAppError(c, contextutils.ErrInvalidFormat)
+        return
+    }
+    story, err := h.storyService.GetStoryAdmin(c.Request.Context(), uint(id))
+    if err != nil {
+        h.logger.Error(c.Request.Context(), "Failed to get story", err, map[string]interface{}{"story_id": id})
+        HandleAppError(c, contextutils.WrapError(err, "failed to get story"))
+        return
+    }
+    c.JSON(http.StatusOK, convertStoryWithSectionsToAPI(story))
+}
+
+// GetSectionAdmin returns a section with questions by ID
+func (h *AdminHandler) GetSectionAdmin(c *gin.Context) {
+    if h.storyService == nil {
+        HandleAppError(c, contextutils.ErrInternal)
+        return
+    }
+    idStr := c.Param("id")
+    id, err := strconv.Atoi(idStr)
+    if err != nil || id <= 0 {
+        HandleAppError(c, contextutils.ErrInvalidFormat)
+        return
+    }
+    section, err := h.storyService.GetSectionAdmin(c.Request.Context(), uint(id))
+    if err != nil {
+        h.logger.Error(c.Request.Context(), "Failed to get section", err, map[string]interface{}{"section_id": id})
+        HandleAppError(c, contextutils.WrapError(err, "failed to get section"))
+        return
+    }
+    c.JSON(http.StatusOK, convertStorySectionWithQuestionsToAPI(section))
 }
 
 // ClearUserData removes all user activity data but keeps the users themselves

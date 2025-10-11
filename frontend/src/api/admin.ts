@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AXIOS_INSTANCE } from './axios';
-import { Role } from './api';
+import { Role, Story, StoryWithSections, StorySectionWithQuestions } from './api';
 
 // Types for admin data
 export interface UserWithProgress {

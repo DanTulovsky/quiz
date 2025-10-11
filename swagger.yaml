@@ -3249,6 +3249,177 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/admin/backend/stories:
+    get:
+      tags:
+        - Admin
+      summary: Get all stories with pagination and filtering
+      description: Get all user stories with pagination, search, and filtering options (admin only)
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: Page number (1-based)
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: page_size
+          in: query
+          description: Number of stories per page
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: search
+          in: query
+          description: Search term for story title
+          schema:
+            type: string
+        - name: language
+          in: query
+          description: Filter by language
+          schema:
+            $ref: "#/components/schemas/Language"
+        - name: status
+          in: query
+          description: Filter by story status
+          schema:
+            $ref: "#/components/schemas/StoryStatus"
+        - name: user_id
+          in: query
+          description: Filter by user ID (optional)
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        "200":
+          description: Stories retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  stories:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Story"
+                  pagination:
+                    $ref: "#/components/schemas/PaginationInfo"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: User not authorized (admin required)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/admin/backend/stories/{id}:
+    get:
+      tags:
+        - Admin
+      summary: Get a single story by ID (with sections)
+      description: Get a specific story with its sections (admin only)
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Story ID
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        "200":
+          description: Story retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StoryWithSections"
+        "400":
+          description: Invalid story ID format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: User not authorized (admin required)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Story not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/admin/backend/story-sections/{id}:
+    get:
+      tags:
+        - Admin
+      summary: Get a story section with questions by ID
+      description: Get a specific story section and its questions (admin only)
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Story section ID
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        "200":
+          description: Story section retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StorySectionWithQuestions"
+        "400":
+          description: Invalid section ID format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: User not authorized (admin required)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Story section not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "403":
           description: User not authorized (admin required)
           content:
