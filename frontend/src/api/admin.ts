@@ -733,3 +733,72 @@ export const useUsersPaginated = ({
     retryDelay: 1000,
   });
 };
+
+// --- Story Explorer (Admin) ---
+
+type StoriesPaginatedResponse = {
+  stories: Story[];
+  pagination: {
+    page: number;
+    page_size: number;
+    total: number;
+    total_pages: number;
+  };
+};
+
+export const useAdminStories = (
+  page: number = 1,
+  pageSize: number = 20,
+  search?: string,
+  language?: string,
+  status?: string,
+  userId?: number
+) => {
+  return useQuery({
+    queryKey: ['admin-stories', page, pageSize, search, language, status, userId],
+    queryFn: async (): Promise<StoriesPaginatedResponse> => {
+      const params = new URLSearchParams({
+        page: String(page),
+        page_size: String(pageSize),
+      });
+      if (search) params.append('search', search);
+      if (language) params.append('language', language);
+      if (status) params.append('status', status);
+      if (userId) params.append('user_id', String(userId));
+      const resp = await AXIOS_INSTANCE.get(`/v1/admin/backend/stories?${params.toString()}`, {
+        headers: { Accept: 'application/json' },
+      });
+      return resp.data as StoriesPaginatedResponse;
+    },
+    placeholderData: previous => previous,
+    staleTime: 30000,
+  });
+};
+
+export const useAdminStory = (storyId: number | null) => {
+  return useQuery({
+    queryKey: ['admin-story', storyId],
+    enabled: !!storyId,
+    queryFn: async (): Promise<StoryWithSections> => {
+      const resp = await AXIOS_INSTANCE.get(`/v1/admin/backend/stories/${storyId}`, {
+        headers: { Accept: 'application/json' },
+      });
+      return resp.data as StoryWithSections;
+    },
+    staleTime: 30000,
+  });
+};
+
+export const useAdminStorySection = (sectionId: number | null) => {
+  return useQuery({
+    queryKey: ['admin-story-section', sectionId],
+    enabled: !!sectionId,
+    queryFn: async (): Promise<StorySectionWithQuestions> => {
+      const resp = await AXIOS_INSTANCE.get(`/v1/admin/backend/story-sections/${sectionId}`, {
+        headers: { Accept: 'application/json' },
+      });
+      return resp.data as StorySectionWithQuestions;
+    },
+    staleTime: 30000,
+  });
+};
