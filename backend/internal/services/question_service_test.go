@@ -124,3 +124,53 @@ func TestQuestionService_GetAdaptiveQuestionsForDaily_NoDuplicates(t *testing.T)
 		}
 	})
 }
+
+// New test to verify interleaving of question types in adaptive selection
+func TestQuestionService_GetAdaptiveQuestionsForDaily_Interleaving(t *testing.T) {
+	db := SharedTestDBSetup(t)
+	defer CleanupTestDatabase(db, t)
+
+	cfg, err := config.NewConfig()
+	require.NoError(t, err)
+	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+	userService := NewUserServiceWithLogger(db, cfg, logger)
+	learningService := NewLearningServiceWithLogger(db, cfg, logger)
+	questionService := NewQuestionServiceWithLogger(db, learningService, cfg, logger)
+
+	ctx := context.Background()
+
+	// Create a test user
+	user, err := userService.CreateUser(ctx, "interleave_user", "italian", "B1")
+	require.NoError(t, err)
+
+	// Create a pool of 20 questions, arranged so each consecutive group cycles types
+	createTestQuestionsForDaily(t, db, user.ID, 20)
+
+	// Request 10 questions
+	questions, err := questionService.GetAdaptiveQuestionsForDaily(ctx, user.ID, "italian", "B1", 10)
+	require.NoError(t, err)
+	require.Len(t, questions, 10)
+
+	// Extract types in order
+	var observedTypes []models.QuestionType
+	for _, q := range questions {
+		observedTypes = append(observedTypes, q.Type)
+	}
+
+	// Ensure that at least two different types alternate in the first 8 items
+	typeSeen := make(map[models.QuestionType]int)
+	for i, tpe := range observedTypes {
+		typeSeen[tpe]++
+		// check that no single type dominates the prefix
+		if i < 8 {
+			if typeSeen[tpe] > 4 {
+				t.Fatalf("Type %s appears too frequently in prefix: %d", tpe, typeSeen[tpe])
+			}
+		}
+	}
+
+	// Verify that reading comprehension appears at least once in the 10
+	if typeSeen[models.ReadingComprehension] == 0 {
+		t.Fatalf("Expected at least one reading comprehension question in selection, got none. Types: %v", observedTypes)
+	}
+}
