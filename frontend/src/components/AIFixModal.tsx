@@ -158,8 +158,6 @@ const AIFixModal: React.FC<AIFixModalProps> = ({
                     setApplying(true);
                     await Promise.resolve(onApply());
                   } catch (errUnknown) {
-                    // parent will show error notifications; log here for debugging
-                    logger.error('Apply suggestion failed', errUnknown);
                   } finally {
                     setApplying(false);
                   }

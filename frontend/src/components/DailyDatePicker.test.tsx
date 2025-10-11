@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MantineProvider } from '@mantine/core';
 import DailyDatePicker from './DailyDatePicker';
@@ -49,16 +49,18 @@ describe('DailyDatePicker local-time behavior', () => {
     const user = userEvent.setup();
     const mockOnDateSelect = vi.fn();
 
-    render(
-      <TestWrapper>
-        <DailyDatePicker
-          selectedDate='2025-08-03'
-          onDateSelect={mockOnDateSelect}
-          availableDates={['2025-08-03']}
-          progressData={{}}
-        />
-      </TestWrapper>
-    );
+    act(() => {
+      render(
+        <TestWrapper>
+          <DailyDatePicker
+            selectedDate='2025-08-03'
+            onDateSelect={mockOnDateSelect}
+            availableDates={['2025-08-03']}
+            progressData={{}}
+          />
+        </TestWrapper>
+      );
+    });
 
     // Click the date picker button to trigger the onChange
     const pickerButton = screen.getByRole('button', {
@@ -81,32 +83,38 @@ describe('DailyDatePicker', () => {
   };
 
   it('renders with correct placeholder', () => {
-    render(
-      <TestWrapper>
-        <DailyDatePicker {...defaultProps} placeholder='Select date' />
-      </TestWrapper>
-    );
+    act(() => {
+      render(
+        <TestWrapper>
+          <DailyDatePicker {...defaultProps} placeholder='Select date' />
+        </TestWrapper>
+      );
+    });
 
     expect(screen.getByTestId('date-picker')).toBeInTheDocument();
   });
 
   it('shows available dates with indicators', () => {
-    render(
-      <TestWrapper>
-        <DailyDatePicker {...defaultProps} />
-      </TestWrapper>
-    );
+    act(() => {
+      render(
+        <TestWrapper>
+          <DailyDatePicker {...defaultProps} />
+        </TestWrapper>
+      );
+    });
 
     // Check that available dates are marked
     expect(screen.getByTestId('day-2025-08-03')).toBeInTheDocument();
   });
 
   it('marks selected date correctly', () => {
-    render(
-      <TestWrapper>
-        <DailyDatePicker {...defaultProps} selectedDate='2024-01-01' />
-      </TestWrapper>
-    );
+    act(() => {
+      render(
+        <TestWrapper>
+          <DailyDatePicker {...defaultProps} selectedDate='2024-01-01' />
+        </TestWrapper>
+      );
+    });
 
     expect(screen.getByTestId('day-2025-08-03')).toBeInTheDocument();
   });
@@ -117,11 +125,13 @@ describe('DailyDatePicker', () => {
       '2024-01-02': { completed: 2, total: 5 },
     };
 
-    render(
-      <TestWrapper>
-        <DailyDatePicker {...defaultProps} progressData={progressData} />
-      </TestWrapper>
-    );
+    act(() => {
+      render(
+        <TestWrapper>
+          <DailyDatePicker {...defaultProps} progressData={progressData} />
+        </TestWrapper>
+      );
+    });
 
     // Check that available dates are marked correctly
     expect(screen.getByTestId('day-2025-08-03')).toBeInTheDocument();
@@ -131,11 +141,13 @@ describe('DailyDatePicker', () => {
     const user = userEvent.setup();
     const mockOnDateSelect = vi.fn();
 
-    render(
-      <TestWrapper>
-        <DailyDatePicker {...defaultProps} onDateSelect={mockOnDateSelect} />
-      </TestWrapper>
-    );
+    act(() => {
+      render(
+        <TestWrapper>
+          <DailyDatePicker {...defaultProps} onDateSelect={mockOnDateSelect} />
+        </TestWrapper>
+      );
+    });
 
     const pickerButton = screen.getByRole('button', {
       name: /pick 2025-08-03/i,
@@ -146,45 +158,53 @@ describe('DailyDatePicker', () => {
   });
 
   it('handles null value correctly', () => {
-    render(
-      <TestWrapper>
-        <DailyDatePicker {...defaultProps} selectedDate={null} />
-      </TestWrapper>
-    );
+    act(() => {
+      render(
+        <TestWrapper>
+          <DailyDatePicker {...defaultProps} selectedDate={null} />
+        </TestWrapper>
+      );
+    });
 
     expect(screen.getByTestId('date-picker')).toBeInTheDocument();
   });
 
   it('applies custom props correctly', () => {
-    render(
-      <TestWrapper>
-        <DailyDatePicker
-          {...defaultProps}
-          size='lg'
-          style={{ backgroundColor: 'red' }}
-        />
-      </TestWrapper>
-    );
+    act(() => {
+      render(
+        <TestWrapper>
+          <DailyDatePicker
+            {...defaultProps}
+            size='lg'
+            style={{ backgroundColor: 'red' }}
+          />
+        </TestWrapper>
+      );
+    });
 
     expect(screen.getByTestId('date-picker')).toBeInTheDocument();
   });
 
   it('handles empty availableDates gracefully', () => {
-    render(
-      <TestWrapper>
-        <DailyDatePicker {...defaultProps} availableDates={[]} />
-      </TestWrapper>
-    );
+    act(() => {
+      render(
+        <TestWrapper>
+          <DailyDatePicker {...defaultProps} availableDates={[]} />
+        </TestWrapper>
+      );
+    });
 
     expect(screen.getByTestId('date-picker')).toBeInTheDocument();
   });
 
   it('handles empty progressData gracefully', () => {
-    render(
-      <TestWrapper>
-        <DailyDatePicker {...defaultProps} progressData={{}} />
-      </TestWrapper>
-    );
+    act(() => {
+      render(
+        <TestWrapper>
+          <DailyDatePicker {...defaultProps} progressData={{}} />
+        </TestWrapper>
+      );
+    });
 
     // Should still show available dates but without progress indicators
     expect(screen.getByTestId('day-2025-08-03')).toBeInTheDocument();

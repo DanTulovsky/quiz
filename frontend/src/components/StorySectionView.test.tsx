@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { MantineProvider } from '@mantine/core';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import StorySectionView from './StorySectionView';
@@ -100,11 +100,13 @@ describe('StorySectionView', () => {
   const renderComponent = (props = {}) => {
     const allProps = { ...defaultProps, ...props };
 
-    return render(
-      <MantineProvider>
-        <StorySectionView {...allProps} />
-      </MantineProvider>
-    );
+    return act(() => {
+      render(
+        <MantineProvider>
+          <StorySectionView {...allProps} />
+        </MantineProvider>
+      );
+    });
   };
 
   beforeEach(() => {

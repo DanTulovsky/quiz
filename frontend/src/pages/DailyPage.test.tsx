@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { AllProviders } from '../test-utils';
@@ -170,7 +170,9 @@ describe('DailyPage', () => {
 
   describe('Basic Rendering', () => {
     it('should render without crashing', () => {
-      renderWithProviders(<DailyPage />);
+      act(() => {
+        renderWithProviders(<DailyPage />);
+      });
       expect(screen.getByText('Daily Questions')).toBeInTheDocument();
     });
 
@@ -182,7 +184,9 @@ describe('DailyPage', () => {
         isLoading: false,
       });
 
-      renderWithProviders(<DailyPage />);
+      act(() => {
+        renderWithProviders(<DailyPage />);
+      });
       expect(
         screen.getByText('Please log in to access daily questions.')
       ).toBeInTheDocument();
@@ -194,7 +198,9 @@ describe('DailyPage', () => {
         isLoading: true,
       });
 
-      renderWithProviders(<DailyPage />);
+      act(() => {
+        renderWithProviders(<DailyPage />);
+      });
       expect(screen.getByTestId('loading-spinner')).toBeInTheDocument();
     });
   });
@@ -211,7 +217,9 @@ describe('DailyPage', () => {
         currentQuestion: mockQuestions[0], // First completed question
       });
 
-      renderWithProviders(<DailyPage />);
+      act(() => {
+        renderWithProviders(<DailyPage />);
+      });
 
       // The feedback should be automatically set for completed questions
       await waitFor(() => {
@@ -232,7 +240,9 @@ describe('DailyPage', () => {
         currentQuestion: questionWithNullAnswer,
       });
 
-      renderWithProviders(<DailyPage />);
+      act(() => {
+        renderWithProviders(<DailyPage />);
+      });
       // Should not crash when user_answer_index is null
       expect(screen.getByText('Daily Questions')).toBeInTheDocument();
     });
@@ -254,7 +264,9 @@ describe('DailyPage', () => {
         currentQuestion: questionWithMissingOptions,
       });
 
-      renderWithProviders(<DailyPage />);
+      act(() => {
+        renderWithProviders(<DailyPage />);
+      });
       // Should not crash when options are missing
       expect(screen.getByText('Daily Questions')).toBeInTheDocument();
     });
@@ -292,7 +304,9 @@ describe('DailyPage', () => {
         isAllCompleted: true,
       });
 
-      renderWithProviders(<DailyPage />);
+      act(() => {
+        renderWithProviders(<DailyPage />);
+      });
 
       // For id=1 mapping, original 2 -> shuffled 1
       const expectedShuffled = 1;
@@ -345,7 +359,9 @@ describe('DailyPage', () => {
         isAllCompleted: true,
       });
 
-      renderWithProviders(<DailyPage />);
+      act(() => {
+        renderWithProviders(<DailyPage />);
+      });
 
       // Relaxed assertion: ensure a radio is checked, and if an option
       // contains either badge text, that option is the checked one
@@ -405,7 +421,9 @@ describe('DailyPage', () => {
         setShowExplanation: vi.fn(),
       } as unknown as ReturnType<typeof useQuestion>);
 
-      renderWithProviders(<DailyPage />);
+      act(() => {
+        renderWithProviders(<DailyPage />);
+      });
 
       await waitFor(() => {
         const radios = screen.getAllByRole('radio') as HTMLInputElement[];
@@ -426,7 +444,9 @@ describe('DailyPage', () => {
         isAllCompleted: true,
       });
 
-      renderWithProviders(<DailyPage />);
+      act(() => {
+        renderWithProviders(<DailyPage />);
+      });
 
       const nextButton = screen.getByRole('button', { name: /next/i });
       await userEvent.click(nextButton);
@@ -447,7 +467,9 @@ describe('DailyPage', () => {
         isAllCompleted: true,
       });
 
-      renderWithProviders(<DailyPage />);
+      act(() => {
+        renderWithProviders(<DailyPage />);
+      });
 
       const previousButton = screen.getByRole('button', { name: /previous/i });
       await userEvent.click(previousButton);
@@ -465,7 +487,9 @@ describe('DailyPage', () => {
         isAllCompleted: true,
       });
 
-      renderWithProviders(<DailyPage />);
+      act(() => {
+        renderWithProviders(<DailyPage />);
+      });
 
       const previousButton = screen.getByRole('button', { name: /previous/i });
       expect(previousButton).toBeDisabled();
@@ -478,7 +502,9 @@ describe('DailyPage', () => {
         isAllCompleted: true,
       });
 
-      renderWithProviders(<DailyPage />);
+      act(() => {
+        renderWithProviders(<DailyPage />);
+      });
 
       const nextButton = screen.getByRole('button', { name: /next/i });
       expect(nextButton).toBeDisabled();
@@ -504,7 +530,9 @@ describe('DailyPage', () => {
         },
       });
 
-      renderWithProviders(<DailyPage />);
+      act(() => {
+        renderWithProviders(<DailyPage />);
+      });
 
       // Simulate answer selection and submission
       // This would typically be done through the QuestionCard component
@@ -522,7 +550,9 @@ describe('DailyPage', () => {
         setCurrentQuestionIndex: mockSetCurrentQuestionIndex,
       });
 
-      renderWithProviders(<DailyPage />);
+      act(() => {
+        renderWithProviders(<DailyPage />);
+      });
 
       // When question index changes, feedback should be reset
       // This is handled by the useEffect in DailyPage
@@ -538,7 +568,9 @@ describe('DailyPage', () => {
         progress: undefined,
       });
 
-      renderWithProviders(<DailyPage />);
+      act(() => {
+        renderWithProviders(<DailyPage />);
+      });
 
       // Should still render without crashing
       expect(
@@ -553,7 +585,9 @@ describe('DailyPage', () => {
         progress: undefined,
       });
 
-      renderWithProviders(<DailyPage />);
+      act(() => {
+        renderWithProviders(<DailyPage />);
+      });
 
       expect(
         screen.getByText('No Daily Questions Available')

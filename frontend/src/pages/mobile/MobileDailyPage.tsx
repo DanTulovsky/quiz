@@ -300,7 +300,7 @@ const MobileDailyPage: React.FC = () => {
         }
       }, 300); // Delay to allow feedback animation to complete
     } catch (error) {
-      console.error('Failed to submit answer:', error);
+      // console.error('Failed to submit answer:', error);
     }
   }, [currentQuestion, selectedAnswerLocal, submitAnswer]);
 

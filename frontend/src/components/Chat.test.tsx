@@ -3,7 +3,11 @@ import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 import { Chat } from './Chat';
 import { useAuth } from '../hooks/useAuth';
-import { useGetV1SettingsAiProviders } from '../api/api';
+import {
+  useGetV1SettingsAiProviders,
+  usePostV1AiConversations,
+  usePostV1AiConversationsConversationIdMessages,
+} from '../api/api';
 import { renderWithProviders } from '../test-utils';
 
 // Mock the dependencies
@@ -17,6 +21,16 @@ const mockUseAuth = useAuth as vi.MockedFunction<typeof useAuth>;
 const mockUseGetV1SettingsAiProviders =
   useGetV1SettingsAiProviders as vi.MockedFunction<
     typeof useGetV1SettingsAiProviders
+  >;
+
+const mockUsePostV1AiConversations =
+  usePostV1AiConversations as vi.MockedFunction<
+    typeof usePostV1AiConversations
+  >;
+
+const mockUsePostV1AiConversationsConversationIdMessages =
+  usePostV1AiConversationsConversationIdMessages as vi.MockedFunction<
+    typeof usePostV1AiConversationsConversationIdMessages
   >;
 
 // Mock fetch for streaming
@@ -72,6 +86,18 @@ describe('Chat Component', () => {
 
     mockUseGetV1SettingsAiProviders.mockReturnValue({
       data: mockProvidersData,
+      isLoading: false,
+      error: null,
+    });
+
+    mockUsePostV1AiConversations.mockReturnValue({
+      mutateAsync: vi.fn().mockResolvedValue({ id: 'test-conversation-id' }),
+      isLoading: false,
+      error: null,
+    });
+
+    mockUsePostV1AiConversationsConversationIdMessages.mockReturnValue({
+      mutateAsync: vi.fn().mockResolvedValue({}),
       isLoading: false,
       error: null,
     });

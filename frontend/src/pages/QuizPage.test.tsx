@@ -1,4 +1,4 @@
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent, act } from '@testing-library/react';
 import { vi, Mock } from 'vitest';
 import QuizPage from './QuizPage';
 import * as useAuthModule from '../hooks/useAuth';
@@ -54,17 +54,19 @@ describe('QuizPage - GeneratingResponse UI', () => {
       message: 'No questions available.',
     });
 
-    render(
-      <QueryClientProvider client={createTestQueryClient()}>
-        <MantineProvider>
-          <MemoryRouter>
-            <QuestionProvider>
-              <QuizPage />
-            </QuestionProvider>
-          </MemoryRouter>
-        </MantineProvider>
-      </QueryClientProvider>
-    );
+    act(() => {
+      render(
+        <QueryClientProvider client={createTestQueryClient()}>
+          <MantineProvider>
+            <MemoryRouter>
+              <QuestionProvider>
+                <QuizPage />
+              </QuestionProvider>
+            </MemoryRouter>
+          </MantineProvider>
+        </QueryClientProvider>
+      );
+    });
 
     // Wait for the spinner and message
     await waitFor(() => {
@@ -82,17 +84,19 @@ describe('QuizPage - GeneratingResponse UI', () => {
       message: 'No questions available.',
     });
 
-    render(
-      <QueryClientProvider client={createTestQueryClient()}>
-        <MantineProvider>
-          <MemoryRouter>
-            <QuestionProvider>
-              <QuizPage />
-            </QuestionProvider>
-          </MemoryRouter>
-        </MantineProvider>
-      </QueryClientProvider>
-    );
+    act(() => {
+      render(
+        <QueryClientProvider client={createTestQueryClient()}>
+          <MantineProvider>
+            <MemoryRouter>
+              <QuestionProvider>
+                <QuizPage />
+              </QuestionProvider>
+            </MemoryRouter>
+          </MantineProvider>
+        </QueryClientProvider>
+      );
+    });
 
     // Wait for the custom message
     await waitFor(() => {
@@ -146,17 +150,21 @@ describe('QuizPage - Level Change', () => {
     // Mock API to return the question
     (api.getV1QuizQuestion as Mock).mockResolvedValue(question);
 
-    const { rerender } = render(
-      <QueryClientProvider client={createTestQueryClient()}>
-        <MantineProvider>
-          <MemoryRouter>
-            <QuestionProvider>
-              <QuizPage />
-            </QuestionProvider>
-          </MemoryRouter>
-        </MantineProvider>
-      </QueryClientProvider>
-    );
+    let rerender: (ui: React.ReactElement) => void;
+    act(() => {
+      const renderResult = render(
+        <QueryClientProvider client={createTestQueryClient()}>
+          <MantineProvider>
+            <MemoryRouter>
+              <QuestionProvider>
+                <QuizPage />
+              </QuestionProvider>
+            </MemoryRouter>
+          </MantineProvider>
+        </QueryClientProvider>
+      );
+      rerender = renderResult.rerender;
+    });
 
     // Wait for the question to be loaded
     await waitFor(() => {
@@ -172,17 +180,19 @@ describe('QuizPage - Level Change', () => {
     mockUseAuth(updatedUser);
 
     // Rerender with the updated user
-    rerender(
-      <QueryClientProvider client={createTestQueryClient()}>
-        <MantineProvider>
-          <MemoryRouter>
-            <QuestionProvider>
-              <QuizPage />
-            </QuestionProvider>
-          </MemoryRouter>
-        </MantineProvider>
-      </QueryClientProvider>
-    );
+    act(() => {
+      rerender(
+        <QueryClientProvider client={createTestQueryClient()}>
+          <MantineProvider>
+            <MemoryRouter>
+              <QuestionProvider>
+                <QuizPage />
+              </QuestionProvider>
+            </MemoryRouter>
+          </MantineProvider>
+        </QueryClientProvider>
+      );
+    });
 
     // The question should be cleared and we should see the loading state
     await waitFor(() => {
@@ -212,17 +222,21 @@ describe('QuizPage - Level Change', () => {
     // Mock API to return the question
     (api.getV1QuizQuestion as Mock).mockResolvedValue(question);
 
-    const { rerender } = render(
-      <QueryClientProvider client={createTestQueryClient()}>
-        <MantineProvider>
-          <MemoryRouter>
-            <QuestionProvider>
-              <QuizPage />
-            </QuestionProvider>
-          </MemoryRouter>
-        </MantineProvider>
-      </QueryClientProvider>
-    );
+    let rerender: (ui: React.ReactElement) => void;
+    act(() => {
+      const renderResult = render(
+        <QueryClientProvider client={createTestQueryClient()}>
+          <MantineProvider>
+            <MemoryRouter>
+              <QuestionProvider>
+                <QuizPage />
+              </QuestionProvider>
+            </MemoryRouter>
+          </MantineProvider>
+        </QueryClientProvider>
+      );
+      rerender = renderResult.rerender;
+    });
 
     // Wait for the question to be loaded
     await waitFor(() => {
@@ -238,17 +252,19 @@ describe('QuizPage - Level Change', () => {
     mockUseAuth(updatedUser);
 
     // Rerender with the updated user
-    rerender(
-      <QueryClientProvider client={createTestQueryClient()}>
-        <MantineProvider>
-          <MemoryRouter>
-            <QuestionProvider>
-              <QuizPage />
-            </QuestionProvider>
-          </MemoryRouter>
-        </MantineProvider>
-      </QueryClientProvider>
-    );
+    act(() => {
+      rerender(
+        <QueryClientProvider client={createTestQueryClient()}>
+          <MantineProvider>
+            <MemoryRouter>
+              <QuestionProvider>
+                <QuizPage />
+              </QuestionProvider>
+            </MemoryRouter>
+          </MantineProvider>
+        </QueryClientProvider>
+      );
+    });
 
     // The question should still be displayed
     await waitFor(() => {
@@ -291,17 +307,19 @@ describe('QuizPage - Answer Submission', () => {
       explanation: 'Test explanation',
     });
 
-    render(
-      <QueryClientProvider client={createTestQueryClient()}>
-        <MantineProvider>
-          <MemoryRouter>
-            <QuestionProvider>
-              <QuizPage />
-            </QuestionProvider>
-          </MemoryRouter>
-        </MantineProvider>
-      </QueryClientProvider>
-    );
+    act(() => {
+      render(
+        <QueryClientProvider client={createTestQueryClient()}>
+          <MantineProvider>
+            <MemoryRouter>
+              <QuestionProvider>
+                <QuizPage />
+              </QuestionProvider>
+            </MemoryRouter>
+          </MantineProvider>
+        </QueryClientProvider>
+      );
+    });
 
     // Wait for the question to be loaded
     await waitFor(() => {
@@ -351,17 +369,19 @@ describe('QuizPage - URL State Management', () => {
     // Mock API to return the question
     (api.getV1QuizQuestion as Mock).mockResolvedValue(question);
 
-    render(
-      <QueryClientProvider client={createTestQueryClient()}>
-        <MantineProvider>
-          <MemoryRouter>
-            <QuestionProvider>
-              <QuizPage />
-            </QuestionProvider>
-          </MemoryRouter>
-        </MantineProvider>
-      </QueryClientProvider>
-    );
+    act(() => {
+      render(
+        <QueryClientProvider client={createTestQueryClient()}>
+          <MantineProvider>
+            <MemoryRouter>
+              <QuestionProvider>
+                <QuizPage />
+              </QuestionProvider>
+            </MemoryRouter>
+          </MantineProvider>
+        </QueryClientProvider>
+      );
+    });
 
     // Wait for the question to be loaded
     await waitFor(() => {
@@ -402,17 +422,19 @@ describe('QuizPage - Confidence Level Display', () => {
     // Mock API to return the question
     (api.getV1QuizQuestion as Mock).mockResolvedValue(question);
 
-    render(
-      <QueryClientProvider client={createTestQueryClient()}>
-        <MantineProvider>
-          <MemoryRouter>
-            <QuestionProvider>
-              <QuizPage />
-            </QuestionProvider>
-          </MemoryRouter>
-        </MantineProvider>
-      </QueryClientProvider>
-    );
+    act(() => {
+      render(
+        <QueryClientProvider client={createTestQueryClient()}>
+          <MantineProvider>
+            <MemoryRouter>
+              <QuestionProvider>
+                <QuizPage />
+              </QuestionProvider>
+            </MemoryRouter>
+          </MantineProvider>
+        </QueryClientProvider>
+      );
+    });
 
     // Wait for the question to be loaded
     await waitFor(() => {
@@ -450,17 +472,19 @@ describe('QuizPage - Confidence Level Display', () => {
     // Mock API to return the question
     (api.getV1QuizQuestion as Mock).mockResolvedValue(question);
 
-    render(
-      <QueryClientProvider client={createTestQueryClient()}>
-        <MantineProvider>
-          <MemoryRouter>
-            <QuestionProvider>
-              <QuizPage />
-            </QuestionProvider>
-          </MemoryRouter>
-        </MantineProvider>
-      </QueryClientProvider>
-    );
+    act(() => {
+      render(
+        <QueryClientProvider client={createTestQueryClient()}>
+          <MantineProvider>
+            <MemoryRouter>
+              <QuestionProvider>
+                <QuizPage />
+              </QuestionProvider>
+            </MemoryRouter>
+          </MantineProvider>
+        </QueryClientProvider>
+      );
+    });
 
     // Wait for the question to be loaded
     await waitFor(() => {

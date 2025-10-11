@@ -770,8 +770,7 @@ export const useStory = (): UseStoryReturn => {
       });
     },
     onError: (error: unknown) => {
-      logger.error('Failed to delete story', error);
-      let errorMessage = 'Failed to delete story. Please try again.';
+      let errorMessage = 'Failed to delete story. Please try again. ' + error;
 
       if (typeof error === 'object' && error !== null) {
         // Check if error has response structure (axios-like error)

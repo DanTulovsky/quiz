@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import { vi, Mock } from 'vitest';
 import QuizPage from '../pages/QuizPage';
 import * as useAuthModule from '../hooks/useAuth';
@@ -52,24 +52,26 @@ describe('Question + URL integration', () => {
     (api.getV1QuizQuestionId as Mock).mockResolvedValue(question);
     (api.getV1QuizQuestion as Mock).mockResolvedValue({});
 
-    render(
-      <QueryClientProvider client={createTestQueryClient()}>
-        <MantineProvider>
-          <MemoryRouter initialEntries={['/quiz/34']}>
-            <Routes>
-              <Route
-                path='/quiz/:questionId'
-                element={
-                  <QuestionProvider>
-                    <QuizPage />
-                  </QuestionProvider>
-                }
-              />
-            </Routes>
-          </MemoryRouter>
-        </MantineProvider>
-      </QueryClientProvider>
-    );
+    act(() => {
+      render(
+        <QueryClientProvider client={createTestQueryClient()}>
+          <MantineProvider>
+            <MemoryRouter initialEntries={['/quiz/34']}>
+              <Routes>
+                <Route
+                  path='/quiz/:questionId'
+                  element={
+                    <QuestionProvider>
+                      <QuizPage />
+                    </QuestionProvider>
+                  }
+                />
+              </Routes>
+            </MemoryRouter>
+          </MantineProvider>
+        </QueryClientProvider>
+      );
+    });
 
     await waitFor(() =>
       expect(screen.getByText('Question 34?')).toBeInTheDocument()
@@ -91,24 +93,26 @@ describe('Question + URL integration', () => {
     (api.getV1QuizQuestion as Mock).mockResolvedValue(nextQuestion);
     (api.getV1QuizQuestionId as Mock).mockResolvedValue({});
 
-    render(
-      <QueryClientProvider client={createTestQueryClient()}>
-        <MantineProvider>
-          <MemoryRouter initialEntries={['/quiz']}>
-            <Routes>
-              <Route
-                path='/quiz'
-                element={
-                  <QuestionProvider>
-                    <QuizPage />
-                  </QuestionProvider>
-                }
-              />
-            </Routes>
-          </MemoryRouter>
-        </MantineProvider>
-      </QueryClientProvider>
-    );
+    act(() => {
+      render(
+        <QueryClientProvider client={createTestQueryClient()}>
+          <MantineProvider>
+            <MemoryRouter initialEntries={['/quiz']}>
+              <Routes>
+                <Route
+                  path='/quiz'
+                  element={
+                    <QuestionProvider>
+                      <QuizPage />
+                    </QuestionProvider>
+                  }
+                />
+              </Routes>
+            </MemoryRouter>
+          </MantineProvider>
+        </QueryClientProvider>
+      );
+    });
 
     await waitFor(() =>
       expect(screen.getByText('Question 7?')).toBeInTheDocument()

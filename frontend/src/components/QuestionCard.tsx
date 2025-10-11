@@ -568,7 +568,6 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
         setLocalFeedback(feedbackData);
         setIsSubmitted(true);
       } catch (error) {
-        logger.error('Failed to submit answer:', error);
       } finally {
         setIsLoading(false);
       }

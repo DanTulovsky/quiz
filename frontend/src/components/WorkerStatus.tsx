@@ -48,10 +48,8 @@ const WorkerStatus: React.FC = () => {
         const data = await response.json();
         setStatus(data);
       } else {
-        logger.error('Failed to fetch worker status:', response.status);
       }
     } catch (error) {
-      logger.error('Error fetching worker status:', error);
     }
   }, [isAuthenticated]);
 

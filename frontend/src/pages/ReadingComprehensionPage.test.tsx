@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, act, waitFor } from '@testing-library/react';
 import { vi, Mock } from 'vitest';
 import ReadingComprehensionPage from './ReadingComprehensionPage';
 import * as useAuthModule from '../hooks/useAuth';
@@ -50,20 +50,29 @@ describe('ReadingComprehensionPage - lifecycle safety', () => {
       message: 'No questions available.',
     });
 
-    render(
-      <QueryClientProvider client={createTestQueryClient()}>
-        <MantineProvider>
-          <MemoryRouter>
-            <QuestionProvider>
-              <ReadingComprehensionPage />
-            </QuestionProvider>
-          </MemoryRouter>
-        </MantineProvider>
-      </QueryClientProvider>
-    );
+    let unmount: () => void;
+    act(() => {
+      const renderResult = render(
+        <QueryClientProvider client={createTestQueryClient()}>
+          <MantineProvider>
+            <MemoryRouter>
+              <QuestionProvider>
+                <ReadingComprehensionPage />
+              </QuestionProvider>
+            </MemoryRouter>
+          </MantineProvider>
+        </QueryClientProvider>
+      );
+      unmount = renderResult.unmount;
+    });
 
-    // The page should render a loading/generating UI without throwing runtime errors
-    expect(screen.getByTestId('loading-spinner')).toBeInTheDocument();
+    // Wait for the loading/generating UI to appear
+    await waitFor(() => {
+      expect(screen.getByTestId('loading-spinner')).toBeInTheDocument();
+    });
+
+    // Clean up to prevent polling timers from causing warnings
+    unmount();
   });
 
   it('unmounts cleanly without calling undefined cleanup (regression for stopPolling)', () => {
@@ -79,17 +88,21 @@ describe('ReadingComprehensionPage - lifecycle safety', () => {
     };
     (api.getV1QuizQuestion as Mock).mockResolvedValue(question);
 
-    const { unmount } = render(
-      <QueryClientProvider client={createTestQueryClient()}>
-        <MantineProvider>
-          <MemoryRouter>
-            <QuestionProvider>
-              <ReadingComprehensionPage />
-            </QuestionProvider>
-          </MemoryRouter>
-        </MantineProvider>
-      </QueryClientProvider>
-    );
+    let unmount: () => void;
+    act(() => {
+      const renderResult = render(
+        <QueryClientProvider client={createTestQueryClient()}>
+          <MantineProvider>
+            <MemoryRouter>
+              <QuestionProvider>
+                <ReadingComprehensionPage />
+              </QuestionProvider>
+            </MemoryRouter>
+          </MantineProvider>
+        </QueryClientProvider>
+      );
+      unmount = renderResult.unmount;
+    });
 
     expect(() => unmount()).not.toThrow();
   });

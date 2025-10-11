@@ -250,10 +250,9 @@ const AnalyticsPage: React.FC = () => {
       const data = await response.json();
       setUserAnalytics(data);
     } catch (error) {
-      logger.error('Error loading user analytics:', error);
       notifications.show({
         title: 'Error',
-        message: 'Failed to load user analytics',
+        message: 'Failed to load user analytics: ' + error,
         color: 'red',
       });
     } finally {
@@ -287,10 +286,9 @@ const AnalyticsPage: React.FC = () => {
         weakAreasByTopic: weakData.weakAreas || [],
       });
     } catch (error) {
-      logger.error('Error loading aggregate analytics:', error);
       notifications.show({
         title: 'Error',
-        message: 'Failed to load aggregate analytics',
+        message: 'Failed to load aggregate analytics: ' + error,
         color: 'red',
       });
     } finally {
@@ -311,10 +309,9 @@ const AnalyticsPage: React.FC = () => {
       const data = await response.json();
       setComparisonData(data.comparison || []);
     } catch (error) {
-      logger.error('Error loading comparison:', error);
       notifications.show({
         title: 'Error',
-        message: 'Failed to load comparison data',
+        message: 'Failed to load comparison data: ' + error,
         color: 'red',
       });
     } finally {
@@ -359,10 +356,9 @@ const AnalyticsPage: React.FC = () => {
 
   useEffect(() => {
     if (usersError) {
-      logger.error('Error loading users:', usersError);
       notifications.show({
         title: 'Error',
-        message: 'Failed to load users',
+        message: 'Failed to load users: ' + usersError,
         color: 'red',
       });
     }
@@ -433,7 +429,6 @@ const AnalyticsPage: React.FC = () => {
                 onChange={setSelectedUser}
                 searchable
                 clearable
-                nothingFound='No users found'
                 style={{ minWidth: 200 }}
               />
               <Button

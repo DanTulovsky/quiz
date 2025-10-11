@@ -967,7 +967,6 @@ const DataExplorerPage: React.FC = () => {
               }
               searchable
               clearable
-              {...({ nothingFound: 'No users found' } as any)}
               disabled={isLoadingUsers}
               size='xs'
               style={{ minWidth: 180 }}

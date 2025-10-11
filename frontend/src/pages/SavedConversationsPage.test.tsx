@@ -1,4 +1,4 @@
-import { render, screen, cleanup } from '@testing-library/react';
+import { render, screen, cleanup, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -131,15 +131,17 @@ describe('SavedConversationsPage', () => {
     queryClient.clear();
   });
   it('should render the page title and description', () => {
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MantineProvider>
-          <BrowserRouter>
-            <SavedConversationsPage />
-          </BrowserRouter>
-        </MantineProvider>
-      </QueryClientProvider>
-    );
+    act(() => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MantineProvider>
+            <BrowserRouter>
+              <SavedConversationsPage />
+            </BrowserRouter>
+          </MantineProvider>
+        </QueryClientProvider>
+      );
+    });
 
     expect(screen.getByText('Saved AI Conversations')).toBeInTheDocument();
     expect(
@@ -148,15 +150,17 @@ describe('SavedConversationsPage', () => {
   });
 
   it('should render search input', () => {
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MantineProvider>
-          <BrowserRouter>
-            <SavedConversationsPage />
-          </BrowserRouter>
-        </MantineProvider>
-      </QueryClientProvider>
-    );
+    act(() => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MantineProvider>
+            <BrowserRouter>
+              <SavedConversationsPage />
+            </BrowserRouter>
+          </MantineProvider>
+        </QueryClientProvider>
+      );
+    });
 
     const searchInput = screen.getByPlaceholderText(
       'Type to prepare search query...'
@@ -165,15 +169,17 @@ describe('SavedConversationsPage', () => {
   });
 
   it('should render conversation cards', () => {
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MantineProvider>
-          <BrowserRouter>
-            <SavedConversationsPage />
-          </BrowserRouter>
-        </MantineProvider>
-      </QueryClientProvider>
-    );
+    act(() => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MantineProvider>
+            <BrowserRouter>
+              <SavedConversationsPage />
+            </BrowserRouter>
+          </MantineProvider>
+        </QueryClientProvider>
+      );
+    });
 
     expect(screen.getByText('Grammar Questions')).toBeInTheDocument();
     expect(screen.getByText('Vocabulary Help')).toBeInTheDocument();

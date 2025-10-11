@@ -57,7 +57,6 @@ const GoogleOAuthButton: React.FC<GoogleOAuthButtonProps> = ({
         onSuccess();
       }
     } catch (error) {
-      logger.error('Google OAuth error:', error);
       if (onError) {
         onError(error instanceof Error ? error.message : 'Unknown error');
       }

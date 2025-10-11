@@ -48,7 +48,6 @@ export function QuestionHistoryChart({
       const dateB = dayjs.utc(b.assignment_date);
       return dateA.isAfter(dateB) ? 1 : -1;
     } catch (err) {
-      logger.error('Failed to sort history dates', { error: String(err) });
       return 0;
     }
   });
@@ -70,10 +69,6 @@ export function QuestionHistoryChart({
     try {
       return dayjs.utc(dateString).format('MMM D, YYYY');
     } catch (err) {
-      logger.error('Failed to format full date', {
-        dateString,
-        error: String(err),
-      });
       return dateString;
     }
   };

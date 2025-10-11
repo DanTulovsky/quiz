@@ -131,7 +131,6 @@ const OAuthCallbackPage: React.FC = () => {
           throw new Error(data.message || 'Authentication failed');
         }
       } catch (error) {
-        logger.error('OAuth callback error:', error);
         setStatus('error');
         // Surface a consistent, user-facing error message for tests and UX
         setMessage('Authentication failed. Please try again.');

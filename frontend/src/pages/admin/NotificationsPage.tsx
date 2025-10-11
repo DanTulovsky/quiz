@@ -138,10 +138,9 @@ const NotificationsPage: React.FC = () => {
       const data = await response.json();
       setStats(data);
     } catch (error) {
-      logger.error('Error fetching notification stats:', error);
       notifications.show({
         title: 'Error',
-        message: 'Failed to load notification statistics',
+        message: 'Failed to load notification statistics: ' + error,
         color: 'red',
       });
     }
@@ -177,13 +176,12 @@ const NotificationsPage: React.FC = () => {
       // Clear the selected username
       setSelectedUsername('');
     } catch (error) {
-      logger.error('Error sending notification:', error);
       notifications.show({
         title: 'Error',
         message:
           error instanceof Error
             ? error.message
-            : 'Failed to send notification',
+            : 'Failed to send notification: ' + error,
         color: 'red',
       });
     } finally {
@@ -223,10 +221,9 @@ const NotificationsPage: React.FC = () => {
           setErrors(data.errors || []);
           setErrorsPagination(prev => data.pagination || prev);
         } catch (error) {
-          logger.error('Error fetching notification errors:', error);
           notifications.show({
             title: 'Error',
-            message: 'Failed to load notification errors',
+            message: 'Failed to load notification errors: ' + error,
             color: 'red',
           });
         }
@@ -264,10 +261,9 @@ const NotificationsPage: React.FC = () => {
           setSent(data.notifications || []);
           setSentPagination(prev => data.pagination || prev);
         } catch (error) {
-          logger.error('Error fetching sent notifications:', error);
           notifications.show({
             title: 'Error',
-            message: 'Failed to load sent notifications',
+            message: 'Failed to load sent notifications: ' + error,
             color: 'red',
           });
         }

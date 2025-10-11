@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -174,16 +174,20 @@ describe('SettingsPage', () => {
   });
 
   it('should render with providers', () => {
-    const { container } = render(
-      <QueryClientProvider client={queryClient}>
-        <MantineProvider>
-          <BrowserRouter>
-            <div>Test with providers</div>
-          </BrowserRouter>
-        </MantineProvider>
-      </QueryClientProvider>
-    );
-    expect(container.textContent).toContain('Test with providers');
+    let container: HTMLElement;
+    act(() => {
+      const renderResult = render(
+        <QueryClientProvider client={queryClient}>
+          <MantineProvider>
+            <BrowserRouter>
+              <div>Test with providers</div>
+            </BrowserRouter>
+          </MantineProvider>
+        </QueryClientProvider>
+      );
+      container = renderResult.container;
+    });
+    expect(container!.textContent).toContain('Test with providers');
   });
 
   it('should render with mocked contexts', () => {
@@ -200,15 +204,17 @@ describe('SettingsPage', () => {
   });
 
   it('should correctly display user current level in dropdown', async () => {
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MantineProvider>
-          <BrowserRouter>
-            <SettingsPage />
-          </BrowserRouter>
-        </MantineProvider>
-      </QueryClientProvider>
-    );
+    act(() => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MantineProvider>
+            <BrowserRouter>
+              <SettingsPage />
+            </BrowserRouter>
+          </MantineProvider>
+        </QueryClientProvider>
+      );
+    });
 
     // Wait for the component to load and initialize
     await waitFor(() => {
@@ -238,22 +244,33 @@ describe('SettingsPage', () => {
       ok: true,
       json: () => Promise.resolve(voicesPayload),
     });
-    // @ts-expect-error override global
+
+    // Set up the mock before rendering
     global.fetch = mockFetch;
 
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MantineProvider>
-          <BrowserRouter>
-            <SettingsPage />
-          </BrowserRouter>
-        </MantineProvider>
-      </QueryClientProvider>
-    );
+    // Render the component - wrap in act to handle initial render
+    await act(async () => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MantineProvider>
+            <BrowserRouter>
+              <SettingsPage />
+            </BrowserRouter>
+          </MantineProvider>
+        </QueryClientProvider>
+      );
+    });
 
     // Wait for preferences section and voice select to be in the DOM
     await waitFor(() => {
       expect(screen.getByText('Learning Preferences')).toBeInTheDocument();
+    });
+
+    // Wait for the voices to be loaded and state to be updated
+    await waitFor(() => {
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringContaining('/v1/voices?language=it-IT')
+      );
     });
 
     // Voice select should now have options (value not required, but options rendered)
@@ -264,21 +281,12 @@ describe('SettingsPage', () => {
     const sampleButton = screen.getByTestId('tts-sample-button');
     expect(sampleButton).toBeInTheDocument();
 
-    // Open the dropdown and verify an item shows up
-    voiceSelect.focus();
-    // Mantine requires click to open dropdown; simulate by clicking label via keyboard or programmatic action
-    // We assert fetch was called with locale query
+    // Verify the voice select has the expected voices populated
+    // The select should have the voices from the API response
     await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalled();
+      // Check that the voices are available in the select data
+      // We can verify this by checking if the select is enabled (not disabled due to no voices)
+      expect(voiceSelect).not.toBeDisabled();
     });
-
-    // Verify our preferred Italian voice appears in data by reading internal value list via aria
-    // Since testing internal dropdown DOM is brittle, confirm that selecting a value updates the state via onChange
-    // which is indirectly tested in e2e; here, ensure we set a value programmatically
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (voiceSelect as any).value = 'it-IT-IsabellaNeural';
-    expect((voiceSelect as HTMLInputElement).value).toBe(
-      'it-IT-IsabellaNeural'
-    );
   });
 });

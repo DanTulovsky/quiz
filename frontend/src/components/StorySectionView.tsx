@@ -113,7 +113,7 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
         <Group position='center' mt='md' spacing='xs'>
           <Button
             variant='light'
-            leftIcon={<IconChevronsLeft size={16} />}
+            leftSection={<IconChevronsLeft size={16} />}
             onClick={onFirst}
             disabled={sectionIndex === 0}
             size='sm'
@@ -123,7 +123,7 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
 
           <Button
             variant='light'
-            leftIcon={<IconChevronLeft size={16} />}
+            leftSection={<IconChevronLeft size={16} />}
             onClick={onPrevious}
             disabled={sectionIndex === 0}
             size='sm'
@@ -141,7 +141,7 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
 
           <Button
             variant='light'
-            rightIcon={<IconChevronRight size={16} />}
+            rightSection={<IconChevronRight size={16} />}
             onClick={onNext}
             disabled={sectionIndex >= totalSections - 1}
             size='sm'
@@ -151,7 +151,7 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
 
           <Button
             variant='light'
-            rightIcon={<IconChevronsRight size={16} />}
+            rightSection={<IconChevronsRight size={16} />}
             onClick={onLast}
             disabled={sectionIndex >= totalSections - 1}
             size='sm'
@@ -274,7 +274,7 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
             withArrow
           >
             <Button
-              leftIcon={<IconPlus size={16} />}
+              leftSection={<IconPlus size={16} />}
               onClick={onGenerateNext}
               loading={isGenerating}
               disabled={!canGenerateToday || isGenerating}

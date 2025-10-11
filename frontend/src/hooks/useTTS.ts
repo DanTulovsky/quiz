@@ -245,7 +245,6 @@ export const useTTS = (): TTSHookReturn => {
         const isAbort =
           name === 'AbortError' || /aborted|abort(ed)?/i.test(message || '');
         if (!isAbort) {
-          logger.error('Prebuffer TTS error:', e);
           throw e;
         }
       } finally {
@@ -293,7 +292,6 @@ export const useTTS = (): TTSHookReturn => {
             cached = sharedDecodedCache.get(key);
           } catch (e) {
             prebufferError = e;
-            logger.error('Prebuffer attempt failed before playback', e);
           }
         }
 
@@ -350,7 +348,6 @@ export const useTTS = (): TTSHookReturn => {
             setIsPlaying(true);
             return;
           } catch (e) {
-            logger.error('Failed to play cached TTS buffer', e);
           }
         }
 
@@ -364,7 +361,6 @@ export const useTTS = (): TTSHookReturn => {
         const isAbort =
           name === 'AbortError' || /aborted|abort(ed)?/i.test(message || '');
         if (!isAbort) {
-          logger.error('TTS error:', error);
           showNotificationWithClean({
             title: 'TTS Error',
             message:

@@ -262,13 +262,11 @@ const WorkerAdminPage: React.FC = () => {
           setAiConcurrency(aiData.ai_concurrency || {});
         }
       } catch (error) {
-        logger.error('Error fetching AI concurrency stats:', error);
       }
     } catch (error) {
-      logger.error('Error updating dashboard:', error);
       notifications.show({
         title: 'Error',
-        message: 'Failed to load dashboard data',
+        message: 'Failed to load dashboard data: ' + error,
         color: 'red',
       });
     }
@@ -283,7 +281,6 @@ const WorkerAdminPage: React.FC = () => {
       const data = await response.json();
       setActivityLogs(data.logs || []);
     } catch (error) {
-      logger.error('Error fetching activity logs:', error);
     }
   }, [logPaused]);
 
@@ -296,7 +293,6 @@ const WorkerAdminPage: React.FC = () => {
       const data = await response.json();
       setPriorityAnalytics(data);
     } catch (error) {
-      logger.error('Error updating priority analytics:', error);
     }
   }, []);
 
@@ -310,7 +306,6 @@ const WorkerAdminPage: React.FC = () => {
       const data = await response.json();
       setUserPerformanceAnalytics(data);
     } catch (error) {
-      logger.error('Error updating user performance analytics:', error);
     }
   }, []);
 
@@ -324,7 +319,6 @@ const WorkerAdminPage: React.FC = () => {
       const data = await response.json();
       setGenerationIntelligence(data);
     } catch (error) {
-      logger.error('Error updating generation intelligence:', error);
     }
   }, []);
 
@@ -336,7 +330,6 @@ const WorkerAdminPage: React.FC = () => {
       const data = await response.json();
       setSystemHealthAnalytics(data);
     } catch (error) {
-      logger.error('Error updating system health analytics:', error);
     }
   }, []);
 
@@ -361,10 +354,9 @@ const WorkerAdminPage: React.FC = () => {
               color: 'green',
             });
           } catch (error) {
-            logger.error(`Error during ${actionName}:`, error);
             notifications.show({
               title: 'Error',
-              message: `Failed to ${actionName.toLowerCase()}.`,
+              message: `Failed to ${actionName.toLowerCase()}: ` + error,
               color: 'red',
             });
           } finally {

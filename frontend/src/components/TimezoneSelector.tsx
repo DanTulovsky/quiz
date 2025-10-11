@@ -29,7 +29,6 @@ const TimezoneSelector: React.FC<TimezoneSelectorProps> = ({
           Intl.DateTimeFormat().resolvedOptions().timeZone;
         onChange(detectedTimezone);
       } catch (error) {
-        logger.error('Error detecting timezone:', error);
         onChange('UTC');
       }
     }

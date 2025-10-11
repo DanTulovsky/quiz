@@ -79,7 +79,7 @@ beforeEach(() => {
     // Print to stdout so test runners capture it in their logs
     // Use a clear prefix so it's easy to grep in logs
     // eslint-disable-next-line no-console
-    console.log(`>>> RUNNING TEST: ${currentTestName}`);
+    // console.log(`>>> RUNNING TEST: ${currentTestName}`);
   } catch (e) {
     // ignore errors when retrieving test name
   }

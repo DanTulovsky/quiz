@@ -1181,7 +1181,7 @@ tasks:
       NODE_OPTIONS: "--max-old-space-size=16384 --no-deprecation"
     cmds:
       - echo "Running frontend unit tests..."
-      - npm ci --legacy-peer-deps
+      # - npm ci --legacy-peer-deps
       # - npm test -- --reporter=verbose --logHeapUsage
       - npm test
 

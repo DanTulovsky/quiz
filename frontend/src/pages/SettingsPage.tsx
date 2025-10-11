@@ -278,7 +278,6 @@ const SettingsPage: React.FC = () => {
             Intl.DateTimeFormat().resolvedOptions().timeZone;
           setTimezone(detectedTimezone);
         } catch (error) {
-          logger.error('Error detecting timezone:', error);
           setTimezone('UTC');
         }
       }
@@ -347,7 +346,6 @@ const SettingsPage: React.FC = () => {
       });
       return result;
     } catch (error) {
-      logger.error('Error updating settings:', error);
       throw error;
     }
   };
@@ -407,7 +405,6 @@ const SettingsPage: React.FC = () => {
         });
       }
     } catch (error: unknown) {
-      logger.error('Test connection failed:', error);
       const message =
         (error as ApiError)?.response?.data?.error ||
         (error as ApiError)?.response?.data?.details ||
@@ -438,7 +435,6 @@ const SettingsPage: React.FC = () => {
         });
       }
     } catch (error: unknown) {
-      logger.error('Test email failed:', error);
       const message =
         (error as ApiError)?.response?.data?.error ||
         (error as ApiError)?.response?.data?.details ||

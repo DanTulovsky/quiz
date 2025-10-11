@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { MantineProvider } from '@mantine/core';
 import AIFixModal from './AIFixModal';
 
@@ -20,17 +20,19 @@ describe('AIFixModal', () => {
     const onClose = vi.fn();
     const onApply = vi.fn();
 
-    render(
-      <MantineProvider>
-        <AIFixModal
-          opened={true}
-          original={original}
-          suggestion={suggestion}
-          onClose={onClose}
-          onApply={onApply}
-        />
-      </MantineProvider>
-    );
+    act(() => {
+      render(
+        <MantineProvider>
+          <AIFixModal
+            opened={true}
+            original={original}
+            suggestion={suggestion}
+            onClose={onClose}
+            onApply={onApply}
+          />
+        </MantineProvider>
+      );
+    });
 
     // Modal title should render and Apply button should be present
     expect(screen.getByText(/AI Suggestion/i)).toBeInTheDocument();

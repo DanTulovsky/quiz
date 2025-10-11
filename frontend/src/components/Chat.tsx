@@ -1041,7 +1041,6 @@ export const Chat: React.FC<ChatProps> = ({
           setCurrentConversationId(conversationId);
         }
       } catch (error) {
-        logger.error('Failed to create conversation:', error);
       }
     }
 
@@ -1062,7 +1061,6 @@ export const Chat: React.FC<ChatProps> = ({
           },
         });
       } catch (error) {
-        logger.error('Failed to auto-save user message:', error);
       }
     }
 
@@ -1180,18 +1178,12 @@ export const Chat: React.FC<ChatProps> = ({
                     },
                   });
                 } catch (error) {
-                  logger.error('Failed to auto-save AI response:', error);
                 }
               }
 
               // Scroll to bottom during streaming with requestAnimationFrame for smoother performance
               requestAnimationFrame(scrollToTopOfNewResponse);
             } catch (e) {
-              logger.error(
-                'Failed to parse streaming data chunk as JSON:',
-                rawData,
-                e
-              );
             }
           } else if (line.startsWith('event: error')) {
             // Handle error events
@@ -1307,7 +1299,6 @@ export const Chat: React.FC<ChatProps> = ({
       // Show success feedback
       // You could add a toast notification here
     } catch (error) {
-      logger.error('Failed to save message:', error);
       // You could add error feedback here
     } finally {
       setIsSaving(false);
@@ -1349,7 +1340,6 @@ export const Chat: React.FC<ChatProps> = ({
       // Show success feedback
       // You could add a toast notification here
     } catch (error) {
-      logger.error('Failed to save conversation:', error);
       // You could add error feedback here
     } finally {
       setIsSaving(false);

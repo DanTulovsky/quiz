@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ThemeProvider, useTheme } from './ThemeContext';
 import { Button } from '@mantine/core';
@@ -36,13 +36,15 @@ describe('ThemeContext', () => {
 
   it('provides default theme', () => {
     localStorageMock.getItem.mockReturnValue(undefined); // Ensure no theme is set
-    render(
-      <AllProviders>
-        <ThemeProvider>
-          <TestComponent />
-        </ThemeProvider>
-      </AllProviders>
-    );
+    act(() => {
+      render(
+        <AllProviders>
+          <ThemeProvider>
+            <TestComponent />
+          </ThemeProvider>
+        </AllProviders>
+      );
+    });
 
     expect(screen.getByTestId('current-theme')).toHaveTextContent('blue');
     expect(screen.getByTestId('theme-count')).toHaveTextContent('10');
@@ -51,26 +53,30 @@ describe('ThemeContext', () => {
   it('loads theme from localStorage on mount', () => {
     localStorageMock.getItem.mockReturnValue('green');
 
-    render(
-      <AllProviders>
-        <ThemeProvider>
-          <TestComponent />
-        </ThemeProvider>
-      </AllProviders>
-    );
+    act(() => {
+      render(
+        <AllProviders>
+          <ThemeProvider>
+            <TestComponent />
+          </ThemeProvider>
+        </AllProviders>
+      );
+    });
 
     expect(screen.getByTestId('current-theme')).toHaveTextContent('green');
   });
 
   it('changes theme and saves to localStorage', () => {
     localStorageMock.getItem.mockReturnValue(undefined); // Ensure no theme is set
-    render(
-      <AllProviders>
-        <ThemeProvider>
-          <TestComponent />
-        </ThemeProvider>
-      </AllProviders>
-    );
+    act(() => {
+      render(
+        <AllProviders>
+          <ThemeProvider>
+            <TestComponent />
+          </ThemeProvider>
+        </AllProviders>
+      );
+    });
 
     // Initially blue
     expect(screen.getByTestId('current-theme')).toHaveTextContent('blue');
@@ -92,13 +98,15 @@ describe('ThemeContext', () => {
   it('ignores invalid theme from localStorage', () => {
     localStorageMock.getItem.mockReturnValue('invalid-theme');
 
-    render(
-      <AllProviders>
-        <ThemeProvider>
-          <TestComponent />
-        </ThemeProvider>
-      </AllProviders>
-    );
+    act(() => {
+      render(
+        <AllProviders>
+          <ThemeProvider>
+            <TestComponent />
+          </ThemeProvider>
+        </AllProviders>
+      );
+    });
 
     // Should fall back to default blue theme
     expect(screen.getByTestId('current-theme')).toHaveTextContent('blue');

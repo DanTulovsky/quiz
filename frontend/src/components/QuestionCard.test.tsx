@@ -2197,20 +2197,8 @@ describe('Keyboard and mouse answer selection edge cases', () => {
 
     renderWithProviders(<Wrapper />);
 
-    // Debug: Log what options are actually displayed
-    const radioButtons = screen.getAllByRole('radio');
-    console.log(
-      'Radio button values:',
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      radioButtons.map((rb: any) => rb.value)
-    );
-
     // Get the actual displayed options in their shuffled order
-    const displayedOptions = screen.getAllByText(/prenotare/);
-    console.log(
-      'Displayed options:',
-      displayedOptions.map(opt => opt.textContent)
-    );
+    screen.getAllByText(/prenotare/);
 
     // The real issue: The frontend should show:
     // - "dovavamo prenotare" with "YOUR ANSWER" badge (user_answer_index: 0)

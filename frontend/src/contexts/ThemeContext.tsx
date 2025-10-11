@@ -52,7 +52,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   // Save theme to localStorage when it changes
   const setTheme = (theme: ThemeName) => {
     if (!themes[theme]) {
-      logger.error('Invalid theme:', theme);
       return;
     }
     setCurrentTheme(theme);

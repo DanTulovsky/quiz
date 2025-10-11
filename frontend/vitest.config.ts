@@ -23,5 +23,13 @@ export default defineConfig({
         resources: 'usable',
       },
     },
+    reporters: [
+      [
+        'default',
+        {
+          summary: false
+        }
+      ]
+    ],
   },
 })

@@ -139,12 +139,6 @@ const RecentActivityItem: React.FC<RecentActivityItemProps> = ({
         // Only show tooltip once we have content
         setOpened(true);
       } catch (error) {
-        logger.error(
-          'Error fetching question text for ID',
-          activity.question_id,
-          ':',
-          error
-        );
         const errorText = 'Failed to load question';
         setQuestionText(errorText);
         setOpened(true);

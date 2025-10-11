@@ -347,7 +347,6 @@ export const SavedConversationsPage: React.FC = () => {
       try {
         await deleteConversationMutation.mutateAsync({ conversationId });
       } catch (error) {
-        logger.error('Failed to delete conversation:', error);
       }
     }
   };
@@ -361,7 +360,6 @@ export const SavedConversationsPage: React.FC = () => {
         data: { title: editTitle },
       });
     } catch (error) {
-      logger.error('Failed to update conversation:', error);
     }
   };
 

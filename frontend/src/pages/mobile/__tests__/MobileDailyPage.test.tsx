@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent, act } from '@testing-library/react';
 import MobileDailyPage from '../MobileDailyPage';
 import { renderWithProviders } from '../../../test-utils';
 
@@ -89,36 +89,48 @@ describe('MobileDailyPage', () => {
   });
 
   it('renders without crashing', () => {
-    renderComponent();
+    act(() => {
+      renderComponent();
+    });
     expect(screen.getByText('Daily Challenge')).toBeInTheDocument();
   });
 
   it('renders daily challenge header', () => {
-    renderComponent();
+    act(() => {
+      renderComponent();
+    });
     expect(screen.getByText('Daily Challenge')).toBeInTheDocument();
   });
 
   it('shows question counter', () => {
-    renderComponent();
+    act(() => {
+      renderComponent();
+    });
     expect(screen.getByText('1 of 2')).toBeInTheDocument();
   });
 
   // Removed test for Daily Questions title which no longer exists
 
   it('renders current question', () => {
-    renderComponent();
+    act(() => {
+      renderComponent();
+    });
     // Should still have header badge but not duplicate within question card
     expect(screen.getAllByText('Italian - A1').length).toBe(1);
     expect(screen.getByText('Bene')).toBeInTheDocument();
   });
 
   it('shows language and level badge', () => {
-    renderComponent();
+    act(() => {
+      renderComponent();
+    });
     expect(screen.getAllByText('Italian - A1').length).toBe(1);
   });
 
   it('renders all answer options', () => {
-    renderComponent();
+    act(() => {
+      renderComponent();
+    });
 
     expect(screen.getByText('Bene')).toBeInTheDocument();
     expect(screen.getByText('Male')).toBeInTheDocument();
@@ -127,21 +139,27 @@ describe('MobileDailyPage', () => {
   });
 
   it('shows submit button', () => {
-    renderComponent();
+    act(() => {
+      renderComponent();
+    });
     expect(
       screen.getByRole('button', { name: /Submit Answer/i })
     ).toBeInTheDocument();
   });
 
   it('shows submit and next navigation', () => {
-    renderComponent();
+    act(() => {
+      renderComponent();
+    });
     expect(
       screen.getByRole('button', { name: /Submit Answer/i })
     ).toBeInTheDocument();
   });
 
   it('shows next button after submitting answer', () => {
-    renderComponent();
+    act(() => {
+      renderComponent();
+    });
 
     // First select an answer option (look for Italian answer options)
     const answerOptions = screen.getAllByRole('button');

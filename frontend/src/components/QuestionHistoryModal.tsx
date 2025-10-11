@@ -39,18 +39,11 @@ export function QuestionHistoryModal({
       // Per contract, the backend MUST return timezone-aware timestamps. Treat
       // date-only strings as a backend error and log with context. Display the
       // raw date string for now but surface the issue to developers via logs.
-      logger.error(
-        'Backend returned date-only string; expected timezone-aware timestamp',
-        {
-          assignment_date: dateString,
-        }
-      );
       // Throw to make testable behavior; in production we still want UI to show
       // something rather than crash, so fall back to formatted local date as a last resort.
       try {
         throw new Error('date-only timestamp received from backend');
       } catch (err) {
-        logger.error('Enforcing timezone-aware timestamps in frontend', err);
       }
       return dayjs(dateString).format('MMM D, YYYY');
     }
@@ -60,10 +53,6 @@ export function QuestionHistoryModal({
     try {
       return dayjs.utc(dateString).format('MMM D, YYYY');
     } catch (err) {
-      logger.error('Failed to parse assignment_date', {
-        assignment_date: dateString,
-        error: String(err),
-      });
       // As a last resort, return the raw string so something is displayed.
       return dateString;
     }
@@ -170,11 +159,6 @@ export function QuestionHistoryModal({
                   } catch (err) {
                     // Log parse/compare errors for observability and fall back
                     // to a stable string comparison so UI still renders.
-                    logger.error('Failed to compare assignment_date', {
-                      a: a.assignment_date,
-                      b: b.assignment_date,
-                      error: String(err),
-                    });
                     return b.assignment_date.localeCompare(a.assignment_date);
                   }
                 });

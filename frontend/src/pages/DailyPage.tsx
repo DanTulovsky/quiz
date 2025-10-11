@@ -188,10 +188,9 @@ const DailyPage: React.FC = () => {
 
         return response;
       } catch (error) {
-        logger.error('Failed to submit answer:', error);
         showNotificationWithClean({
           title: 'Error',
-          message: 'Failed to submit answer. Please try again.',
+          message: 'Failed to submit answer: ' + error,
           color: 'red',
         });
         throw error;

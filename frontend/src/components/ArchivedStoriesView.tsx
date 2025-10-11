@@ -82,7 +82,7 @@ const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
           </Alert>
 
           <Button
-            leftIcon={<IconBook size={16} />}
+            leftSection={<IconBook size={16} />}
             size='lg'
             onClick={onCreateNew}
           >
@@ -99,7 +99,7 @@ const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
         {/* Create New Story Button - Moved to top */}
         <Group position='center'>
           <Button
-            leftIcon={<IconBook size={16} />}
+            leftSection={<IconBook size={16} />}
             size='lg'
             onClick={onCreateNew}
           >
@@ -194,7 +194,7 @@ const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
 
                     <Button
                       variant='light'
-                      leftIcon={<IconRestore size={16} />}
+                      leftSection={<IconRestore size={16} />}
                       onClick={() => onUnarchive(story.id!)}
                       color='green'
                       size='sm'
