@@ -1,11 +1,35 @@
+// Mock React Query hooks before importing useStory
+vi.mock('@tanstack/react-query', () => {
+  const mockQueryClient = {
+    invalidateQueries: vi.fn(),
+    removeQueries: vi.fn(),
+    refetchQueries: vi.fn(),
+  };
+  return {
+    useQueryClient: vi.fn(() => mockQueryClient),
+    useQuery: vi.fn(),
+    useMutation: vi.fn(),
+  };
+});
+
 import { renderHook, act, waitFor } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { useStory } from './useStory';
 import { useAuth } from './useAuth';
 import * as storyApi from '../api/storyApi';
 
+// Mock React Query hooks
+const mockUseQuery = vi.fn();
+const mockUseMutation = vi.fn();
+const mockUseQueryClient = vi.fn();
+
 // Mock dependencies
+vi.mock('@tanstack/react-query', () => ({
+  useQueryClient: () => mockUseQueryClient(),
+  useQuery: mockUseQuery,
+  useMutation: mockUseMutation,
+}));
+
 vi.mock('./useAuth');
 vi.mock('../api/storyApi');
 vi.mock('../notifications', () => ({
@@ -22,8 +46,6 @@ const mockUseAuth = useAuth as vi.MockedFunction<typeof useAuth>;
 const mockStoryApi = storyApi as vi.Mocked<typeof storyApi>;
 
 describe('useStory', () => {
-  let queryClient: QueryClient;
-
   const mockUser = {
     id: 1,
     username: 'testuser',
@@ -50,20 +72,6 @@ describe('useStory', () => {
     ],
   };
 
-  const createWrapper = () => {
-    if (!queryClient) {
-      queryClient = new QueryClient({
-        defaultOptions: {
-          queries: {
-            retry: false,
-          },
-        },
-      });
-    }
-    return ({ children }: { children: React.ReactNode }) => (
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    );
-  };
 
   beforeEach(() => {
     // Mock window.URL for PDF export test
@@ -110,7 +118,7 @@ describe('useStory', () => {
 
   describe('Initialization', () => {
     it('initializes with correct default state', () => {
-      const { result } = renderHook(() => useStory(), { wrapper: createWrapper() });
+      const { result } = renderHook(() => useStory());
 
       expect(result.current.currentStory).toBeUndefined();
       expect(result.current.sections).toEqual([]);
@@ -124,7 +132,7 @@ describe('useStory', () => {
     it('loads current story when user is authenticated', async () => {
       mockStoryApi.getCurrentStory.mockResolvedValue(mockStory);
 
-      const { result } = renderHook(() => useStory(), { wrapper: createWrapper() });
+      const { result } = renderHook(() => useStory());
 
       // Wait for the query to complete and currentStory to be loaded
       await waitFor(() => {
@@ -141,7 +149,7 @@ describe('useStory', () => {
       const newStory = { ...mockStory, id: 2, title: 'New Story' };
       mockStoryApi.createStory.mockResolvedValue(newStory);
 
-      const { result } = renderHook(() => useStory(), { wrapper: createWrapper() });
+      const { result } = renderHook(() => useStory());
 
       await act(async () => {
         await result.current.createStory({
@@ -157,7 +165,7 @@ describe('useStory', () => {
     });
 
     it('sets generating state when story is created', async () => {
-      const { result } = renderHook(() => useStory(), { wrapper: createWrapper() });
+      const { result } = renderHook(() => useStory());
 
       // Initially should not be generating
       expect(result.current.isGenerating).toBe(false);
@@ -182,7 +190,7 @@ describe('useStory', () => {
       mockStoryApi.getCurrentStory.mockResolvedValue(mockStory);
       mockStoryApi.archiveStory.mockResolvedValue();
 
-      const { result } = renderHook(() => useStory(), { wrapper: createWrapper() });
+      const { result } = renderHook(() => useStory());
 
       // Wait for initial load
       await waitFor(() => {
@@ -203,7 +211,7 @@ describe('useStory', () => {
       mockStoryApi.getCurrentStory.mockResolvedValue(mockStory);
       mockStoryApi.completeStory.mockResolvedValue();
 
-      const { result } = renderHook(() => useStory(), { wrapper: createWrapper() });
+      const { result } = renderHook(() => useStory());
 
       await waitFor(() => {
         expect(result.current.currentStory).toEqual(mockStory);
@@ -223,7 +231,7 @@ describe('useStory', () => {
       mockStoryApi.getCurrentStory.mockResolvedValue(mockStory);
       mockStoryApi.setCurrentStory.mockResolvedValue();
 
-      const { result } = renderHook(() => useStory(), { wrapper: createWrapper() });
+      const { result } = renderHook(() => useStory());
 
       await waitFor(() => {
         expect(result.current.currentStory).toEqual(mockStory);
@@ -243,7 +251,7 @@ describe('useStory', () => {
       mockStoryApi.getCurrentStory.mockResolvedValue(mockStory);
       mockStoryApi.deleteStory.mockResolvedValue();
 
-      const { result } = renderHook(() => useStory(), { wrapper: createWrapper() });
+      const { result } = renderHook(() => useStory());
 
       await waitFor(() => {
         expect(result.current.currentStory).toEqual(mockStory);
@@ -264,7 +272,7 @@ describe('useStory', () => {
       const mockBlob = new Blob(['pdf content'], { type: 'application/pdf' });
       mockStoryApi.exportStoryPDF.mockResolvedValue(mockBlob);
 
-      const { result } = renderHook(() => useStory(), { wrapper: createWrapper() });
+      const { result } = renderHook(() => useStory());
 
       await waitFor(() => {
         expect(result.current.currentStory).toEqual(mockStory);
@@ -293,7 +301,7 @@ describe('useStory', () => {
     });
 
     it('navigates to next section', async () => {
-      const { result } = renderHook(() => useStory(), { wrapper: createWrapper() });
+      const { result } = renderHook(() => useStory());
 
       await waitFor(() => {
         expect(result.current.currentStory).toEqual(mockStory);
@@ -308,7 +316,7 @@ describe('useStory', () => {
     });
 
     it('navigates to previous section', async () => {
-      const { result } = renderHook(() => useStory(), { wrapper: createWrapper() });
+      const { result } = renderHook(() => useStory());
 
       await waitFor(() => {
         expect(result.current.currentStory).toEqual(mockStory);
@@ -323,7 +331,7 @@ describe('useStory', () => {
     });
 
     it('changes view mode', async () => {
-      const { result } = renderHook(() => useStory(), { wrapper: createWrapper() });
+      const { result } = renderHook(() => useStory());
 
       await waitFor(() => {
         expect(result.current.currentStory).toEqual(mockStory);
@@ -337,7 +345,7 @@ describe('useStory', () => {
     });
 
     it('goes to specific section', async () => {
-      const { result } = renderHook(() => useStory(), { wrapper: createWrapper() });
+      const { result } = renderHook(() => useStory());
 
       await waitFor(() => {
         expect(result.current.currentStory).toEqual(mockStory);
@@ -355,7 +363,7 @@ describe('useStory', () => {
     it('determines if generation is allowed today', async () => {
       mockStoryApi.getCurrentStory.mockResolvedValue(mockStory);
 
-      const { result } = renderHook(() => useStory(), { wrapper: createWrapper() });
+      const { result } = renderHook(() => useStory());
 
       await waitFor(() => {
         expect(result.current.currentStory).toEqual(mockStory);
@@ -387,7 +395,7 @@ describe('useStory', () => {
         generation_date: '2025-01-15',
       });
 
-      const { result } = renderHook(() => useStory(), { wrapper: createWrapper() });
+      const { result } = renderHook(() => useStory());
 
       await waitFor(() => {
         expect(result.current.currentStory).toEqual(mockStory);
@@ -408,7 +416,7 @@ describe('useStory', () => {
       );
       mockStoryApi.getUserStories.mockResolvedValue([]);
 
-      const { result } = renderHook(() => useStory(), { wrapper: createWrapper() });
+      const { result } = renderHook(() => useStory());
 
       await waitFor(() => {
         expect(result.current.error).toBe('Failed to load story');
@@ -420,7 +428,7 @@ describe('useStory', () => {
     it('handles no current story gracefully', async () => {
       mockStoryApi.getCurrentStory.mockResolvedValue(null);
 
-      const { result } = renderHook(() => useStory(), { wrapper: createWrapper() });
+      const { result } = renderHook(() => useStory());
 
       await waitFor(() => {
         expect(result.current.currentStory).toBeNull();
