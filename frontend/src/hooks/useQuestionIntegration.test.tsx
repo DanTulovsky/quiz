@@ -119,6 +119,14 @@ describe('Question + URL integration', () => {
                     </QuestionProvider>
                   }
                 />
+                <Route
+                  path='/quiz/:questionId'
+                  element={
+                    <QuestionProvider>
+                      <QuizPage />
+                    </QuestionProvider>
+                  }
+                />
               </Routes>
             </MemoryRouter>
           </MantineProvider>
