@@ -221,6 +221,12 @@ describe('SettingsPage', () => {
       expect(screen.getByText('Settings')).toBeInTheDocument();
     });
 
+    // Wait for the learning language to be set from user data and levels to load
+    await waitFor(() => {
+      const levelSelect = screen.getByTestId('level-select');
+      expect(levelSelect).toBeInTheDocument();
+    });
+
     // Check that the level dropdown shows the correct value
     // The user has current_level: 'B1', so the dropdown should show "B1 — Intermediate"
     const levelSelect = screen.getByTestId('level-select');

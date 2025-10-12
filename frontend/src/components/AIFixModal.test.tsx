@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
 import { MantineProvider } from '@mantine/core';
 import AIFixModal from './AIFixModal';
 
@@ -34,6 +34,11 @@ describe('AIFixModal', () => {
       );
     });
 
+    // Wait for component to stabilize and modal to be fully rendered
+    await waitFor(() => {
+      expect(screen.getByText(/AI Suggestion/i)).toBeInTheDocument();
+    });
+
     // Modal title should render and Apply button should be present
     expect(screen.getByText(/AI Suggestion/i)).toBeInTheDocument();
     // Ensure the passage and question text are present in the modal
@@ -49,7 +54,9 @@ describe('AIFixModal', () => {
 
     // Click Apply
     const apply = screen.getByRole('button', { name: /Apply Suggestion/i });
-    fireEvent.click(apply);
+    act(() => {
+      fireEvent.click(apply);
+    });
     expect(onApply).toHaveBeenCalled();
   });
 });

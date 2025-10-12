@@ -184,7 +184,6 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
           color: 'green',
         });
       } catch (error) {
-        logger.error('Failed to complete question:', error);
         showNotificationWithClean({
           title: 'Error',
           message: 'Failed to mark question as completed. Please try again.',
@@ -229,7 +228,6 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
           color: 'blue',
         });
       } catch (error) {
-        logger.error('Failed to reset question:', error);
         showNotificationWithClean({
           title: 'Error',
           message: 'Failed to reset question. Please try again.',
@@ -260,7 +258,6 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
         // which will fetch the (now invalidated) data.
         setHistoryQuestionId(questionId);
       } catch (error) {
-        logger.error('Failed to get question history:', error);
         showNotificationWithClean({
           title: 'Error',
           message: 'Failed to load question history. Please try again.',
@@ -302,7 +299,6 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
 
         return response;
       } catch (error) {
-        logger.error('Failed to submit answer:', error);
         showNotificationWithClean({
           title: 'Error',
           message: 'Failed to submit answer. Please try again.',

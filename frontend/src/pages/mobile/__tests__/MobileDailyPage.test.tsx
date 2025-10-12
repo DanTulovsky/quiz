@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { screen, fireEvent, act } from '@testing-library/react';
+import { screen, fireEvent, act, waitFor } from '@testing-library/react';
 import MobileDailyPage from '../MobileDailyPage';
 import { renderWithProviders } from '../../../test-utils';
 
@@ -88,77 +88,87 @@ describe('MobileDailyPage', () => {
     });
   });
 
-  it('renders without crashing', () => {
-    act(() => {
-      renderComponent();
+  it('renders without crashing', async () => {
+    renderComponent();
+
+    await waitFor(() => {
+      expect(screen.getByText('Daily Challenge')).toBeInTheDocument();
     });
-    expect(screen.getByText('Daily Challenge')).toBeInTheDocument();
   });
 
-  it('renders daily challenge header', () => {
-    act(() => {
-      renderComponent();
+  it('renders daily challenge header', async () => {
+    renderComponent();
+
+    await waitFor(() => {
+      expect(screen.getByText('Daily Challenge')).toBeInTheDocument();
     });
-    expect(screen.getByText('Daily Challenge')).toBeInTheDocument();
   });
 
-  it('shows question counter', () => {
-    act(() => {
-      renderComponent();
+  it('shows question counter', async () => {
+    renderComponent();
+
+    await waitFor(() => {
+      expect(screen.getByText('1 of 2')).toBeInTheDocument();
     });
-    expect(screen.getByText('1 of 2')).toBeInTheDocument();
   });
 
   // Removed test for Daily Questions title which no longer exists
 
-  it('renders current question', () => {
-    act(() => {
-      renderComponent();
+  it('renders current question', async () => {
+    renderComponent();
+
+    await waitFor(() => {
+      // Should still have header badge but not duplicate within question card
+      expect(screen.getAllByText('Italian - A1').length).toBe(1);
+      expect(screen.getByText('Bene')).toBeInTheDocument();
     });
-    // Should still have header badge but not duplicate within question card
-    expect(screen.getAllByText('Italian - A1').length).toBe(1);
-    expect(screen.getByText('Bene')).toBeInTheDocument();
   });
 
-  it('shows language and level badge', () => {
-    act(() => {
-      renderComponent();
+  it('shows language and level badge', async () => {
+    renderComponent();
+
+    await waitFor(() => {
+      expect(screen.getAllByText('Italian - A1').length).toBe(1);
     });
-    expect(screen.getAllByText('Italian - A1').length).toBe(1);
   });
 
-  it('renders all answer options', () => {
-    act(() => {
-      renderComponent();
-    });
+  it('renders all answer options', async () => {
+    renderComponent();
 
-    expect(screen.getByText('Bene')).toBeInTheDocument();
-    expect(screen.getByText('Male')).toBeInTheDocument();
-    expect(screen.getByText('Così così')).toBeInTheDocument();
-    expect(screen.getByText('Benissimo')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Bene')).toBeInTheDocument();
+      expect(screen.getByText('Male')).toBeInTheDocument();
+      expect(screen.getByText('Così così')).toBeInTheDocument();
+      expect(screen.getByText('Benissimo')).toBeInTheDocument();
+    });
   });
 
-  it('shows submit button', () => {
-    act(() => {
-      renderComponent();
+  it('shows submit button', async () => {
+    renderComponent();
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: /Submit Answer/i })
+      ).toBeInTheDocument();
     });
-    expect(
-      screen.getByRole('button', { name: /Submit Answer/i })
-    ).toBeInTheDocument();
   });
 
-  it('shows submit and next navigation', () => {
-    act(() => {
-      renderComponent();
+  it('shows submit and next navigation', async () => {
+    renderComponent();
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: /Submit Answer/i })
+      ).toBeInTheDocument();
     });
-    expect(
-      screen.getByRole('button', { name: /Submit Answer/i })
-    ).toBeInTheDocument();
   });
 
-  it('shows next button after submitting answer', () => {
-    act(() => {
-      renderComponent();
+  it('shows next button after submitting answer', async () => {
+    renderComponent();
+
+    // Wait for component to render
+    await waitFor(() => {
+      expect(screen.getByText('Daily Challenge')).toBeInTheDocument();
     });
 
     // First select an answer option (look for Italian answer options)
@@ -179,8 +189,10 @@ describe('MobileDailyPage', () => {
     const submitButton = screen.getByRole('button', { name: /Submit Answer/i });
     fireEvent.click(submitButton);
 
-    expect(
-      screen.getByRole('button', { name: /Next Question/i })
-    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: /Next Question/i })
+      ).toBeInTheDocument();
+    });
   });
 });

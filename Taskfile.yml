@@ -1774,9 +1774,9 @@ tasks:
           echo "You must provide FILE=src/components/Chat.test.tsx (relative to frontend/)"
           exit 1
         fi
-        task clean-test
+        # task clean-test
         echo "Running single frontend unit test file: $FILE ..."
-        npm ci --legacy-peer-deps
+        # npm ci --legacy-peer-deps
         npm test -- $(basename $FILE)
 
   tidy:

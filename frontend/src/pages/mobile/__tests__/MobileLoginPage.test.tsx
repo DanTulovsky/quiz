@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect, vi } from 'vitest';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -43,27 +43,30 @@ describe('MobileLoginPage', () => {
     vi.clearAllMocks();
   });
 
-  it('should render the login form', () => {
-    act(() => {
-      renderWithProviders(<MobileLoginPage />);
-    });
+  it('should render the login form', async () => {
+    renderWithProviders(<MobileLoginPage />);
 
-    expect(screen.getByText('AI Language Quiz')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('AI Language Quiz')).toBeInTheDocument();
+    });
     expect(screen.getByText('Sign in to start learning')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('admin')).toBeInTheDocument(); // Username input
     expect(screen.getByPlaceholderText('••••••••')).toBeInTheDocument(); // Password input
     expect(screen.getByRole('button', { name: 'Sign In' })).toBeInTheDocument();
   });
 
-  it('should allow entering username and password', () => {
-    act(() => {
-      renderWithProviders(<MobileLoginPage />);
+  it('should allow entering username and password', async () => {
+    renderWithProviders(<MobileLoginPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText('AI Language Quiz')).toBeInTheDocument();
     });
 
     const usernameInput = screen.getByPlaceholderText('admin');
     const passwordInput = screen.getByPlaceholderText('••••••••');
 
-    act(() => {
+    // Wrap form interactions in act and wait for state updates
+    await act(async () => {
       fireEvent.change(usernameInput, { target: { value: 'testuser' } });
       fireEvent.change(passwordInput, { target: { value: 'testpass' } });
     });
@@ -72,34 +75,37 @@ describe('MobileLoginPage', () => {
     expect(passwordInput).toHaveValue('testpass');
   });
 
-  it('should show signup link when signups are enabled', () => {
-    act(() => {
-      renderWithProviders(<MobileLoginPage />);
-    });
+  it('should show signup link when signups are enabled', async () => {
+    renderWithProviders(<MobileLoginPage />);
 
-    expect(screen.getByText("Don't have an account?")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText("Don't have an account?")).toBeInTheDocument();
+    });
     expect(screen.getByText('Sign up here')).toBeInTheDocument();
   });
 
-  it('should render Google OAuth button', () => {
-    act(() => {
-      renderWithProviders(<MobileLoginPage />);
-    });
+  it('should render Google OAuth button', async () => {
+    renderWithProviders(<MobileLoginPage />);
 
-    // The Google OAuth button should be present
-    expect(screen.getByTestId('oauth-divider')).toBeInTheDocument();
+    await waitFor(() => {
+      // The Google OAuth button should be present
+      expect(screen.getByTestId('oauth-divider')).toBeInTheDocument();
+    });
   });
 
-  it('should handle form submission', () => {
-    act(() => {
-      renderWithProviders(<MobileLoginPage />);
+  it('should handle form submission', async () => {
+    renderWithProviders(<MobileLoginPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText('AI Language Quiz')).toBeInTheDocument();
     });
 
     const usernameInput = screen.getByPlaceholderText('admin');
     const passwordInput = screen.getByPlaceholderText('••••••••');
     const submitButton = screen.getByRole('button', { name: 'Sign In' });
 
-    act(() => {
+    // Wrap form interactions in act and wait for state updates
+    await act(async () => {
       fireEvent.change(usernameInput, { target: { value: 'testuser' } });
       fireEvent.change(passwordInput, { target: { value: 'testpass' } });
       fireEvent.click(submitButton);
@@ -111,13 +117,13 @@ describe('MobileLoginPage', () => {
     expect(passwordInput).toHaveValue('testpass');
   });
 
-  it('should render within mobile layout', () => {
-    act(() => {
-      renderWithProviders(<MobileLoginPage />);
-    });
+  it('should render within mobile layout', async () => {
+    renderWithProviders(<MobileLoginPage />);
 
-    // Should have mobile layout elements (but mobile login page doesn't use MobileLayout)
-    // Just verify the page renders correctly
-    expect(screen.getByText('AI Language Quiz')).toBeInTheDocument();
+    await waitFor(() => {
+      // Should have mobile layout elements (but mobile login page doesn't use MobileLayout)
+      // Just verify the page renders correctly
+      expect(screen.getByText('AI Language Quiz')).toBeInTheDocument();
+    });
   });
 });

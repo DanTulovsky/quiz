@@ -33,14 +33,17 @@ describe('OAuthCallbackPage', () => {
     );
   };
 
-  it('shows loading state initially', () => {
-      act(() => {
-      renderOAuthCallback('?code=test-code&state=test-state');
-    });
+  it('shows loading state initially', async () => {
+    // Mock a fetch that doesn't resolve to keep loading state
+    mockFetch.mockImplementation(() => new Promise(() => {}));
 
-    expect(
-      screen.getByText('Processing authentication...')
-    ).toBeInTheDocument();
+    renderOAuthCallback('?code=test-code&state=test-state');
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('Processing authentication...')
+      ).toBeInTheDocument();
+    });
     expect(screen.getByTestId('loader')).toBeInTheDocument();
   });
 
@@ -63,9 +66,7 @@ describe('OAuthCallbackPage', () => {
       json: async () => mockResponse,
     });
 
-    act(() => {
-      renderOAuthCallback('?code=test-code&state=test-state');
-    });
+    renderOAuthCallback('?code=test-code&state=test-state');
 
     await waitFor(() => {
       expect(
@@ -94,9 +95,7 @@ describe('OAuthCallbackPage', () => {
       json: async () => mockResponse,
     });
 
-    act(() => {
-      renderOAuthCallback('?code=test-code&state=test-state');
-    });
+    renderOAuthCallback('?code=test-code&state=test-state');
 
     await waitFor(() => {
       expect(
@@ -113,9 +112,7 @@ describe('OAuthCallbackPage', () => {
       json: async () => ({ error: 'Authentication failed' }),
     });
 
-    act(() => {
-      renderOAuthCallback('?code=test-code&state=test-state');
-    });
+    renderOAuthCallback('?code=test-code&state=test-state');
 
     await waitFor(() => {
       expect(
@@ -125,9 +122,7 @@ describe('OAuthCallbackPage', () => {
   });
 
   it('handles missing code parameter', async () => {
-    act(() => {
-      renderOAuthCallback('?state=test-state');
-    });
+    renderOAuthCallback('?state=test-state');
 
     await waitFor(() => {
       expect(
@@ -137,9 +132,7 @@ describe('OAuthCallbackPage', () => {
   });
 
   it('handles missing state parameter', async () => {
-    act(() => {
-      renderOAuthCallback('?code=test-code');
-    });
+    renderOAuthCallback('?code=test-code');
 
     await waitFor(() => {
       expect(
@@ -149,9 +142,7 @@ describe('OAuthCallbackPage', () => {
   });
 
   it('handles OAuth error parameter', async () => {
-    act(() => {
-      renderOAuthCallback('?error=access_denied');
-    });
+    renderOAuthCallback('?error=access_denied');
 
     await waitFor(() => {
       expect(
@@ -166,9 +157,7 @@ describe('OAuthCallbackPage', () => {
       json: async () => ({ error: 'invalid_grant' }),
     });
 
-    act(() => {
-      renderOAuthCallback('?code=test-code&state=test-state');
-    });
+    renderOAuthCallback('?code=test-code&state=test-state');
 
     await waitFor(() => {
       expect(
@@ -182,9 +171,7 @@ describe('OAuthCallbackPage', () => {
   it('handles network errors', async () => {
     mockFetch.mockRejectedValueOnce(new Error('Network error'));
 
-    act(() => {
-      renderOAuthCallback('?code=test-code&state=test-state');
-    });
+    renderOAuthCallback('?code=test-code&state=test-state');
 
     await waitFor(() => {
       expect(
@@ -212,9 +199,7 @@ describe('OAuthCallbackPage', () => {
       json: async () => mockResponse,
     });
 
-    act(() => {
-      renderOAuthCallback('?code=test-code&state=test-state');
-    });
+    renderOAuthCallback('?code=test-code&state=test-state');
 
     // Wait for the first request to complete
     await waitFor(() => {

@@ -214,8 +214,7 @@ export const useStory = (): UseStoryReturn => {
       startPolling();
     },
     onError: (error: unknown) => {
-      logger.error('Failed to create story', error);
-      let errorMessage = 'Failed to create story. Please try again.';
+      let errorMessage = 'Failed to create story. Please try again.' + error;
 
       if (typeof error === 'object' && error !== null) {
         // Check if error has response structure (axios-like error)
@@ -297,8 +296,7 @@ export const useStory = (): UseStoryReturn => {
       });
     },
     onError: (error: unknown) => {
-      logger.error('Failed to archive story', error);
-      let errorMessage = 'Failed to archive story. Please try again.';
+      let errorMessage = 'Failed to archive story. Please try again.' + error;
 
       if (typeof error === 'object' && error !== null) {
         // Check if error has response structure (axios-like error)
@@ -365,8 +363,7 @@ export const useStory = (): UseStoryReturn => {
       });
     },
     onError: (error: unknown) => {
-      logger.error('Failed to complete story', error);
-      let errorMessage = 'Failed to complete story. Please try again.';
+      let errorMessage = 'Failed to complete story. Please try again.' + error;
 
       if (typeof error === 'object' && error !== null) {
         // Check if error has response structure (axios-like error)
@@ -435,8 +432,7 @@ export const useStory = (): UseStoryReturn => {
       });
     },
     onError: (error: unknown) => {
-      logger.error('Failed to set current story', error);
-      let errorMessage = 'Failed to set current story. Please try again.';
+      let errorMessage = 'Failed to set current story. Please try again.' + error;
 
       if (typeof error === 'object' && error !== null) {
         // Check if error has response structure (axios-like error)
@@ -508,7 +504,6 @@ export const useStory = (): UseStoryReturn => {
         return result;
       } catch (error) {
         // Log the error for debugging
-        logger.error('API call failed in mutationFn:', error);
         throw error;
       }
     },
@@ -544,21 +539,10 @@ export const useStory = (): UseStoryReturn => {
       setGenerationType(null);
     },
     onError: (error: unknown) => {
-      logger.error('Failed to generate next section', error);
 
       let errorMessage = 'Failed to generate next section. Please try again.';
-      let errorDetails: ErrorResponse | undefined;
+      let errorDetails: unknown | undefined;
 
-      // Log the error for debugging
-      logger.error('Story generation error details:', error);
-      console.log('Full error object:', error);
-      console.log('Error type:', typeof error);
-      console.log(
-        'Error keys:',
-        error && typeof error === 'object'
-          ? Object.keys(error)
-          : 'not an object'
-      );
 
       // First, try to parse the error itself as JSON if it's a string
       if (typeof error === 'string') {
@@ -843,7 +827,6 @@ export const useStory = (): UseStoryReturn => {
       });
     },
     onError: (error: unknown) => {
-      logger.error('Failed to export story PDF', error);
       let errorMessage = 'Failed to export story. Please try again.';
 
       if (typeof error === 'object' && error !== null) {
