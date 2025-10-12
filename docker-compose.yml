@@ -203,8 +203,10 @@ services:
   tts:
     container_name: openai-edge-tts
     restart: unless-stopped
-    # image: travisvn/openai-edge-tts:latest
-    image: mrwetsnow/openai-edge-tts:latest
+    # Select image via TTS_IMAGE env var so platform-specific image can be used.
+    # amd64:    # image: travisvn/openai-edge-tts:latest
+    # arm64:    # image: mrwetsnow/openai-edge-tts:latest
+    image: ${TTS_IMAGE:-mrwetsnow/openai-edge-tts:latest}
     ports:
       - '${TTS_PORT:-5050}:5050'
     env_file:

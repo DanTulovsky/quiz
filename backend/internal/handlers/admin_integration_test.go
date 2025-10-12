@@ -1446,6 +1446,391 @@ func (suite *AdminIntegrationTestSuite) TestAdmin_GetUsersForQuestion_Success() 
 	assert.Len(suite.T(), users, 2)
 }
 
+// --- Story Explorer Tests ---
+
+func (suite *AdminIntegrationTestSuite) TestAdmin_GetStoriesPaginated() {
+	suite.SetupTest()
+
+	// Authenticate as admin
+	sessionCookie := suite.authenticateAsAdmin()
+
+	// Create test stories
+	storyService := services.NewStoryService(suite.db, suite.cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+
+	// Create a test story for our test user
+	_, err := storyService.CreateStory(context.Background(), uint(suite.testUser.ID), "italian", &models.CreateStoryRequest{
+		Title:   "Test Story 1",
+		Subject: stringPtr("Test subject 1"),
+	})
+	suite.Require().NoError(err)
+
+	// Create another story
+	_, err = storyService.CreateStory(context.Background(), uint(suite.testUser.ID), "spanish", &models.CreateStoryRequest{
+		Title:   "Test Story 2",
+		Subject: stringPtr("Test subject 2"),
+	})
+	suite.Require().NoError(err)
+
+	// Test GetStoriesPaginated without filters
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/v1/admin/backend/stories?page=1&page_size=10", nil)
+	req.AddCookie(sessionCookie)
+	suite.BackendRouter.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusOK, w.Code)
+
+	var response map[string]interface{}
+	err = json.Unmarshal(w.Body.Bytes(), &response)
+	suite.Require().NoError(err)
+
+	stories := response["stories"].([]interface{})
+	assert.GreaterOrEqual(suite.T(), len(stories), 2)
+
+	pagination := response["pagination"].(map[string]interface{})
+	assert.Equal(suite.T(), float64(1), pagination["page"])
+	assert.Equal(suite.T(), float64(10), pagination["page_size"])
+	assert.GreaterOrEqual(suite.T(), int(pagination["total"].(float64)), 2)
+}
+
+func (suite *AdminIntegrationTestSuite) TestAdmin_GetStoriesPaginated_WithFilters() {
+	suite.SetupTest()
+
+	// Authenticate as admin
+	sessionCookie := suite.authenticateAsAdmin()
+
+	// Create test stories
+	storyService := services.NewStoryService(suite.db, suite.cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+
+	// Create a test story for our test user
+	_, err := storyService.CreateStory(context.Background(), uint(suite.testUser.ID), "italian", &models.CreateStoryRequest{
+		Title:   "Italian Adventure",
+		Subject: stringPtr("Adventure story"),
+	})
+	suite.Require().NoError(err)
+
+	// Create another story in Spanish
+	_, err = storyService.CreateStory(context.Background(), uint(suite.testUser.ID), "spanish", &models.CreateStoryRequest{
+		Title:   "Spanish Mystery",
+		Subject: stringPtr("Mystery story"),
+	})
+	suite.Require().NoError(err)
+
+	// Test filtering by language
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/v1/admin/backend/stories?page=1&page_size=10&language=italian", nil)
+	req.AddCookie(sessionCookie)
+	suite.BackendRouter.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusOK, w.Code)
+
+	var response map[string]interface{}
+	err = json.Unmarshal(w.Body.Bytes(), &response)
+	suite.Require().NoError(err)
+
+	suite.T().Logf("Response: %+v", response)
+
+	stories := response["stories"].([]interface{})
+	suite.T().Logf("Found %d stories", len(stories))
+	suite.Require().Len(stories, 1)
+
+	firstStory := stories[0].(map[string]interface{})
+	suite.T().Logf("First story: %+v", firstStory)
+	assert.Equal(suite.T(), "Italian Adventure", firstStory["title"])
+	assert.Equal(suite.T(), "italian", firstStory["language"])
+
+	// Test filtering by status
+	w = httptest.NewRecorder()
+	req, _ = http.NewRequest("GET", "/v1/admin/backend/stories?page=1&page_size=10&status=archived", nil)
+	req.AddCookie(sessionCookie)
+	suite.BackendRouter.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusOK, w.Code)
+
+	err = json.Unmarshal(w.Body.Bytes(), &response)
+	suite.Require().NoError(err)
+
+	stories = response["stories"].([]interface{})
+	assert.Len(suite.T(), stories, 1)
+
+	firstStory = stories[0].(map[string]interface{})
+	assert.Equal(suite.T(), "Spanish Mystery", firstStory["title"])
+	assert.Equal(suite.T(), "spanish", firstStory["language"])
+}
+
+func (suite *AdminIntegrationTestSuite) TestAdmin_GetStoriesPaginated_WithUserFilter() {
+	suite.SetupTest()
+
+	// Create another test user
+	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+	userService := services.NewUserServiceWithLogger(suite.db, suite.cfg, logger)
+	testUser2, err := userService.CreateUserWithPassword(context.Background(), "testuser2", "password", "french", "B1")
+	suite.Require().NoError(err)
+
+	// Authenticate as admin
+	sessionCookie := suite.authenticateAsAdmin()
+
+	// Create test stories
+	storyService := services.NewStoryService(suite.db, suite.cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+
+	// Create a story for testUser1
+	_, err = storyService.CreateStory(context.Background(), uint(suite.testUser.ID), "italian", &models.CreateStoryRequest{
+		Title:   "User1 Story",
+		Subject: stringPtr("User1 subject"),
+	})
+	suite.Require().NoError(err)
+
+	// Create a story for testUser2
+	_, err = storyService.CreateStory(context.Background(), uint(testUser2.ID), "french", &models.CreateStoryRequest{
+		Title:   "User2 Story",
+		Subject: stringPtr("User2 subject"),
+	})
+	suite.Require().NoError(err)
+
+	// Test filtering by user_id
+	w := httptest.NewRecorder()
+	url := fmt.Sprintf("/v1/admin/backend/stories?page=1&page_size=10&user_id=%d", testUser2.ID)
+	req, _ := http.NewRequest("GET", url, nil)
+	req.AddCookie(sessionCookie)
+	suite.BackendRouter.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusOK, w.Code)
+
+	var response map[string]interface{}
+	err = json.Unmarshal(w.Body.Bytes(), &response)
+	suite.Require().NoError(err)
+
+	stories := response["stories"].([]interface{})
+	assert.Len(suite.T(), stories, 1)
+
+	firstStory := stories[0].(map[string]interface{})
+	assert.Equal(suite.T(), "User2 Story", firstStory["title"])
+	assert.Equal(suite.T(), float64(testUser2.ID), firstStory["user_id"])
+}
+
+func (suite *AdminIntegrationTestSuite) TestAdmin_GetStoryAdmin() {
+	suite.SetupTest()
+
+	// Authenticate as admin
+	sessionCookie := suite.authenticateAsAdmin()
+
+	// Create a test story with sections
+	storyService := services.NewStoryService(suite.db, suite.cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+
+	var storyID uint
+	_, err := storyService.CreateStory(context.Background(), uint(suite.testUser.ID), "italian", &models.CreateStoryRequest{
+		Title:   "Story with Sections",
+		Subject: stringPtr("Test story with sections"),
+	})
+	suite.Require().NoError(err)
+
+	// Get the story ID from the database
+	var createdStory models.Story
+	err = suite.db.QueryRow("SELECT id, title FROM stories WHERE title = 'Story with Sections'").Scan(&createdStory.ID, &createdStory.Title)
+	suite.Require().NoError(err)
+	storyID = createdStory.ID
+
+	// Add a section to the story
+	section := &models.StorySection{
+		StoryID:        uint(storyID),
+		SectionNumber:  1,
+		Content:        "This is the first section of the story.",
+		LanguageLevel:  "A1",
+		WordCount:      8,
+		GeneratedBy:    models.GeneratorTypeUser,
+		GeneratedAt:    time.Now(),
+		GenerationDate: time.Now().Truncate(24 * time.Hour),
+	}
+	_, err = suite.db.Exec(`
+		INSERT INTO story_sections (story_id, section_number, content, language_level, word_count, generated_by, generated_at, generation_date)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+		section.StoryID, section.SectionNumber, section.Content, section.LanguageLevel,
+		section.WordCount, string(section.GeneratedBy), section.GeneratedAt, section.GenerationDate)
+	suite.Require().NoError(err)
+
+	// Test GetStoryAdmin
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/v1/admin/backend/stories/"+strconv.Itoa(int(storyID)), nil)
+	req.AddCookie(sessionCookie)
+	suite.BackendRouter.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusOK, w.Code)
+
+	var response map[string]interface{}
+	err = json.Unmarshal(w.Body.Bytes(), &response)
+	suite.Require().NoError(err)
+
+	// Verify story data
+	assert.Equal(suite.T(), "Story with Sections", response["title"])
+	assert.Equal(suite.T(), "italian", response["language"])
+	assert.Equal(suite.T(), "active", response["status"])
+
+	// Verify sections are included
+	sections, ok := response["sections"].([]interface{})
+	suite.Require().True(ok)
+	assert.Len(suite.T(), sections, 1)
+
+	firstSection := sections[0].(map[string]interface{})
+	assert.Equal(suite.T(), "This is the first section of the story.", firstSection["content"])
+	assert.Equal(suite.T(), float64(1), firstSection["section_number"])
+}
+
+func (suite *AdminIntegrationTestSuite) TestAdmin_GetStoryAdmin_NotFound() {
+	suite.SetupTest()
+
+	// Authenticate as admin
+	sessionCookie := suite.authenticateAsAdmin()
+
+	// Test with non-existent story ID
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/v1/admin/backend/stories/999999", nil)
+	req.AddCookie(sessionCookie)
+	suite.BackendRouter.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusNotFound, w.Code)
+}
+
+func (suite *AdminIntegrationTestSuite) TestAdmin_GetSectionAdmin() {
+	suite.SetupTest()
+
+	// Authenticate as admin
+	sessionCookie := suite.authenticateAsAdmin()
+
+	// Create a test story and section
+	storyService := services.NewStoryService(suite.db, suite.cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+
+	_, err := storyService.CreateStory(context.Background(), uint(suite.testUser.ID), "italian", &models.CreateStoryRequest{
+		Title:   "Story for Section Test",
+		Subject: stringPtr("Test story"),
+	})
+	suite.Require().NoError(err)
+
+	// Get the story ID
+	var storyID int
+	err = suite.db.QueryRow("SELECT id FROM stories WHERE title = 'Story for Section Test'").Scan(&storyID)
+	suite.Require().NoError(err)
+
+	// Create a section
+	section := &models.StorySection{
+		StoryID:        uint(storyID),
+		SectionNumber:  1,
+		Content:        "This is a test section for admin viewing.",
+		LanguageLevel:  "A1",
+		WordCount:      9,
+		GeneratedBy:    models.GeneratorTypeUser,
+		GeneratedAt:    time.Now(),
+		GenerationDate: time.Now().Truncate(24 * time.Hour),
+	}
+	_, err = suite.db.Exec(`
+		INSERT INTO story_sections (story_id, section_number, content, language_level, word_count, generated_by, generated_at, generation_date)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+		section.StoryID, section.SectionNumber, section.Content, section.LanguageLevel,
+		section.WordCount, string(section.GeneratedBy), section.GeneratedAt, section.GenerationDate)
+	suite.Require().NoError(err)
+
+	// Get the section ID
+	var sectionID uint
+	err = suite.db.QueryRow("SELECT id FROM story_sections WHERE story_id = $1", storyID).Scan(&sectionID)
+	suite.Require().NoError(err)
+
+	// Add a question to the section
+	_, err = suite.db.Exec(`
+		INSERT INTO story_section_questions (section_id, question_text, options, correct_answer_index, explanation, created_at)
+		VALUES ($1, $2, $3, $4, $5, $6)`,
+		sectionID, "What is the main topic?", `["Topic A", "Topic B", "Topic C"]`, 0, "Topic A is correct", time.Now())
+	suite.Require().NoError(err)
+
+	// Test GetSectionAdmin
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/v1/admin/backend/story-sections/"+strconv.Itoa(int(sectionID)), nil)
+	req.AddCookie(sessionCookie)
+	suite.BackendRouter.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusOK, w.Code)
+
+	var response map[string]interface{}
+	err = json.Unmarshal(w.Body.Bytes(), &response)
+	suite.Require().NoError(err)
+
+	// Verify section data
+	assert.Equal(suite.T(), "This is a test section for admin viewing.", response["content"])
+	assert.Equal(suite.T(), float64(1), response["section_number"])
+	assert.Equal(suite.T(), "A1", response["language_level"])
+
+	// Verify questions are included
+	questions, ok := response["questions"].([]interface{})
+	suite.Require().True(ok)
+	assert.Len(suite.T(), questions, 1)
+
+	firstQuestion := questions[0].(map[string]interface{})
+	assert.Equal(suite.T(), "What is the main topic?", firstQuestion["question_text"])
+}
+
+func (suite *AdminIntegrationTestSuite) TestAdmin_GetSectionAdmin_NotFound() {
+	suite.SetupTest()
+
+	// Authenticate as admin
+	sessionCookie := suite.authenticateAsAdmin()
+
+	// Test with non-existent section ID
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/v1/admin/backend/story-sections/999999", nil)
+	req.AddCookie(sessionCookie)
+	suite.BackendRouter.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusNotFound, w.Code)
+}
+
+func (suite *AdminIntegrationTestSuite) TestAdmin_StoriesEndpoints_Unauthenticated() {
+	suite.SetupTest()
+
+	// Test without authentication
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/v1/admin/backend/stories", nil)
+	suite.BackendRouter.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code)
+}
+
+func (suite *AdminIntegrationTestSuite) TestAdmin_StoriesEndpoints_NonAdminUser() {
+	suite.SetupTest()
+
+	// Create a non-admin user
+	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+	userService := services.NewUserServiceWithLogger(suite.db, suite.cfg, logger)
+	_, err := userService.CreateUserWithPassword(context.Background(), "nonadmin", "password", "english", "A1")
+	suite.Require().NoError(err)
+
+	// Login as non-admin user
+	loginReq := api.LoginRequest{
+		Username: "nonadmin",
+		Password: "password",
+	}
+	loginBody, _ := json.Marshal(loginReq)
+	loginReqObj, _ := http.NewRequest("POST", "/v1/auth/login", bytes.NewBuffer(loginBody))
+	loginReqObj.Header.Set("Content-Type", "application/json")
+	loginW := httptest.NewRecorder()
+	suite.BackendRouter.ServeHTTP(loginW, loginReqObj)
+
+	// Get the session cookie
+	cookies := loginW.Result().Cookies()
+	var sessionCookie *http.Cookie
+	for _, cookie := range cookies {
+		if cookie.Name == config.SessionName {
+			sessionCookie = cookie
+			break
+		}
+	}
+	suite.Require().NotNil(sessionCookie)
+
+	// Try to access admin endpoint as non-admin
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/v1/admin/backend/stories", nil)
+	req.AddCookie(sessionCookie)
+	suite.BackendRouter.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusForbidden, w.Code)
+}
+
 // Helper to authenticate as admin and return session cookie
 func (suite *AdminIntegrationTestSuite) authenticateAsAdmin() *http.Cookie {
 	loginReq := api.LoginRequest{

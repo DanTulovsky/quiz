@@ -1,182 +1,264 @@
-import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { renderHook, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactNode } from 'react';
+import {
+  useAdminStories,
+  useAdminStory,
+  useAdminStorySection,
+} from './admin';
 
-// Mock the React Query functions
-const mockUseMutation = vi.fn();
-const mockUseQueryClient = vi.fn(() => ({
-  invalidateQueries: vi.fn(),
+// Mock axios
+vi.mock('./axios', () => ({
+  AXIOS_INSTANCE: {
+    get: vi.fn(),
+  },
 }));
 
-vi.mock('@tanstack/react-query', () => ({
-  useMutation: mockUseMutation,
-  useQueryClient: mockUseQueryClient,
-}));
+import { AXIOS_INSTANCE } from './axios';
 
-// Mock the axios instance
-const mockAxiosPost = vi.fn();
-const mockAxiosInstance = {
-  post: mockAxiosPost,
-  get: vi.fn(),
+const mockAxios = AXIOS_INSTANCE as ReturnType<typeof vi.fn>;
+
+const createWrapper = () => {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: { retry: false },
+      mutations: { retry: false },
+    },
+  });
+
+  return ({ children }: { children: ReactNode }) => (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  );
 };
 
-// Mock the AXIOS_INSTANCE directly
-vi.mock('./axios', () => ({
-  AXIOS_INSTANCE: mockAxiosInstance,
-}));
-
-// Mock the admin module
-const mockUsePauseUser = vi.fn();
-const mockUseResumeUser = vi.fn();
-
-vi.mock('./admin', () => ({
-  usePauseUser: mockUsePauseUser,
-  useResumeUser: mockUseResumeUser,
-}));
-
-// Import will be done in test functions
-
-describe('Admin API Functions', () => {
+describe('Admin Hooks', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-
-    // Set up the mock functions to return proper mutation objects
-    mockUsePauseUser.mockReturnValue({
-      mutate: vi.fn(),
-      mutateAsync: mockAxiosPost,
-      isPending: false,
-      data: undefined,
-      error: null,
-    });
-
-    mockUseResumeUser.mockReturnValue({
-      mutate: vi.fn(),
-      mutateAsync: mockAxiosPost,
-      isPending: false,
-      data: undefined,
-      error: null,
-    });
   });
 
-  afterEach(() => {
-    vi.clearAllMocks();
-  });
-
-  describe('usePauseUser', () => {
-    it('should be a function that returns a mutation', () => {
-      // The function should exist and be callable
-      expect(typeof mockUsePauseUser).toBe('function');
-
-      // Mock the return values
-      const mockMutation = {
-        mutate: vi.fn(),
-        mutateAsync: vi.fn(),
-        isPending: false,
-        data: undefined,
-        error: null,
+  describe('useAdminStories', () => {
+    it('fetches stories successfully', async () => {
+      const mockData = {
+        stories: [
+          {
+            id: 1,
+            title: 'Test Story',
+            language: 'italian',
+            status: 'active',
+            user_id: 1,
+          },
+        ],
+        pagination: {
+          page: 1,
+          page_size: 20,
+          total: 1,
+          total_pages: 1,
+        },
       };
-      mockUseMutation.mockReturnValue(mockMutation);
 
-      // Call the function to get the mutation
-      const mutation = mockUsePauseUser();
+      mockAxios.get.mockResolvedValueOnce({ data: mockData });
 
-      // Should have mutate and mutateAsync methods
-      expect(typeof mutation.mutate).toBe('function');
-      expect(typeof mutation.mutateAsync).toBe('function');
-    });
+      const { result } = renderHook(
+        () => useAdminStories(1, 20, '', 'italian', 'active', 1),
+        { wrapper: createWrapper() }
+      );
 
-    it('should make correct API call when mutation is called', async () => {
-      const mockMutateAsync = vi
-        .fn()
-        .mockResolvedValue({ message: 'User paused successfully' });
-      const mockInvalidateQueries = vi.fn();
-
-      // Mock the return values
-      const mockMutation = {
-        mutate: vi.fn(),
-        mutateAsync: mockMutateAsync,
-        isPending: false,
-        data: undefined,
-        error: null,
-      };
-      mockUseMutation.mockReturnValue(mockMutation);
-      mockUseQueryClient.mockReturnValue({
-        invalidateQueries: mockInvalidateQueries,
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
       });
 
-      // Reset the mock to ensure clean state
-      mockAxiosPost.mockClear();
+      expect(result.current.data).toEqual(mockData);
+      expect(mockAxios.get).toHaveBeenCalledWith(
+        '/v1/admin/backend/stories?page=1&page_size=20&language=italian&status=active&user_id=1',
+        { headers: { Accept: 'application/json' } }
+      );
+    });
 
-      // The mutateAsync function is already mocked to be mockAxiosPost
-      const { mutateAsync } = mockUsePauseUser();
+    it('handles API errors', async () => {
+      mockAxios.get.mockRejectedValueOnce(new Error('API Error'));
 
-      // Call the mutation
-      await mutateAsync(123);
+      const { result } = renderHook(
+        () => useAdminStories(1, 20),
+        { wrapper: createWrapper() }
+      );
 
-      // Verify the API call was made correctly
-      // Based on the actual implementation, the function calls AXIOS_INSTANCE.post with just the user ID
-      expect(mockAxiosPost).toHaveBeenCalledWith(123);
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
 
-      // Note: Cache invalidation testing is skipped due to React Query mocking complexity
-      // The main functionality (API calls) is working correctly
+      expect(result.current.error).toBeTruthy();
+      expect(result.current.data).toBeUndefined();
+    });
+
+    it('applies filters correctly', async () => {
+      const mockData = {
+        stories: [],
+        pagination: { page: 1, page_size: 20, total: 0, total_pages: 0 },
+      };
+
+      mockAxios.get.mockResolvedValueOnce({ data: mockData });
+
+      renderHook(
+        () => useAdminStories(1, 20, 'search term', 'spanish', 'archived'),
+        { wrapper: createWrapper() }
+      );
+
+      await waitFor(() => {
+        expect(mockAxios.get).toHaveBeenCalledWith(
+          '/v1/admin/backend/stories?page=1&page_size=20&search=search%20term&language=spanish&status=archived',
+          { headers: { Accept: 'application/json' } }
+        );
+      });
     });
   });
 
-  describe('useResumeUser', () => {
-    it('should be a function that returns a mutation', () => {
-      // The function should exist and be callable
-      expect(typeof mockUseResumeUser).toBe('function');
-
-      // Mock the return values
-      const mockMutation = {
-        mutate: vi.fn(),
-        mutateAsync: vi.fn(),
-        isPending: false,
-        data: undefined,
-        error: null,
+  describe('useAdminStory', () => {
+    it('fetches a single story successfully', async () => {
+      const mockStory = {
+        id: 1,
+        title: 'Test Story',
+        language: 'italian',
+        status: 'active',
+        sections: [],
       };
-      mockUseMutation.mockReturnValue(mockMutation);
 
-      // Call the function to get the mutation
-      const mutation = mockUseResumeUser();
+      mockAxios.get.mockResolvedValueOnce({ data: mockStory });
 
-      // Should have mutate and mutateAsync methods
-      expect(typeof mutation.mutate).toBe('function');
-      expect(typeof mutation.mutateAsync).toBe('function');
-    });
+      const { result } = renderHook(
+        () => useAdminStory(1),
+        { wrapper: createWrapper() }
+      );
 
-    it('should make correct API call when mutation is called', async () => {
-      const mockMutateAsync = vi
-        .fn()
-        .mockResolvedValue({ message: 'User resumed successfully' });
-      const mockInvalidateQueries = vi.fn();
-
-      // Mock the return values
-      const mockMutation = {
-        mutate: vi.fn(),
-        mutateAsync: mockMutateAsync,
-        isPending: false,
-        data: undefined,
-        error: null,
-      };
-      mockUseMutation.mockReturnValue(mockMutation);
-      mockUseQueryClient.mockReturnValue({
-        invalidateQueries: mockInvalidateQueries,
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
       });
 
-      // Reset the mock to ensure clean state
-      mockAxiosPost.mockClear();
+      expect(result.current.data).toEqual(mockStory);
+      expect(mockAxios.get).toHaveBeenCalledWith(
+        '/v1/admin/backend/stories/1',
+        { headers: { Accept: 'application/json' } }
+      );
+    });
 
-      // The mutateAsync function is already mocked to be mockAxiosPost
-      const { mutateAsync } = mockUseResumeUser();
+    it('returns undefined when storyId is null', () => {
+      const { result } = renderHook(
+        () => useAdminStory(null),
+        { wrapper: createWrapper() }
+      );
 
-      // Call the mutation
-      await mutateAsync(456);
+      expect(result.current.isLoading).toBe(false);
+      expect(result.current.data).toBeUndefined();
+      expect(mockAxios.get).not.toHaveBeenCalled();
+    });
 
-      // Verify the API call was made correctly
-      // Based on the actual implementation, the function calls AXIOS_INSTANCE.post with just the user ID
-      expect(mockAxiosPost).toHaveBeenCalledWith(456);
+    it('handles not found error', async () => {
+      mockAxios.get.mockRejectedValueOnce({ status: 404 });
 
-      // Note: Cache invalidation testing is skipped due to React Query mocking complexity
-      // The main functionality (API calls) is working correctly
+      const { result } = renderHook(
+        () => useAdminStory(999),
+        { wrapper: createWrapper() }
+      );
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      expect(result.current.error).toBeTruthy();
+      expect(result.current.data).toBeUndefined();
+    });
+  });
+
+  describe('useAdminStorySection', () => {
+    it('fetches a story section successfully', async () => {
+      const mockSection = {
+        id: 1,
+        story_id: 1,
+        section_number: 1,
+        content: 'Test content',
+        questions: [],
+      };
+
+      mockAxios.get.mockResolvedValueOnce({ data: mockSection });
+
+      const { result } = renderHook(
+        () => useAdminStorySection(1),
+        { wrapper: createWrapper() }
+      );
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      expect(result.current.data).toEqual(mockSection);
+      expect(mockAxios.get).toHaveBeenCalledWith(
+        '/v1/admin/backend/story-sections/1',
+        { headers: { Accept: 'application/json' } }
+      );
+    });
+
+    it('returns undefined when sectionId is null', () => {
+      const { result } = renderHook(
+        () => useAdminStorySection(null),
+        { wrapper: createWrapper() }
+      );
+
+      expect(result.current.isLoading).toBe(false);
+      expect(result.current.data).toBeUndefined();
+      expect(mockAxios.get).not.toHaveBeenCalled();
+    });
+
+    it('handles not found error', async () => {
+      mockAxios.get.mockRejectedValueOnce({ status: 404 });
+
+      const { result } = renderHook(
+        () => useAdminStorySection(999),
+        { wrapper: createWrapper() }
+      );
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+      });
+
+      expect(result.current.error).toBeTruthy();
+      expect(result.current.data).toBeUndefined();
+    });
+  });
+
+  describe('Query Key Generation', () => {
+    it('generates correct query keys for useAdminStories', () => {
+      const { result } = renderHook(
+        () => useAdminStories(2, 10, 'search', 'italian', 'active', 5),
+        { wrapper: createWrapper() }
+      );
+
+      expect(result.current.queryKey).toEqual([
+        'admin-stories',
+        2,
+        10,
+        'search',
+        'italian',
+        'active',
+        5,
+      ]);
+    });
+
+    it('generates correct query keys for useAdminStory', () => {
+      const { result } = renderHook(
+        () => useAdminStory(42),
+        { wrapper: createWrapper() }
+      );
+
+      expect(result.current.queryKey).toEqual(['admin-story', 42]);
+    });
+
+    it('generates correct query keys for useAdminStorySection', () => {
+      const { result } = renderHook(
+        () => useAdminStorySection(123),
+        { wrapper: createWrapper() }
+      );
+
+      expect(result.current.queryKey).toEqual(['admin-story-section', 123]);
     });
   });
 });

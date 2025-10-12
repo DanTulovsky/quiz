@@ -175,6 +175,8 @@ func NewRouter(
 	storyHandler := NewStoryHandler(storyService, userService, aiService, cfg, logger)
 	aiConversationHandler := NewAIConversationHandler(conversationService, cfg, logger)
 	adminHandler := NewAdminHandlerWithLogger(userService, questionService, aiService, cfg, learningService, workerService, logger)
+	// Inject story service into admin handler via exported field
+	adminHandler.storyService = storyService
 	userAdminHandler := NewUserAdminHandler(userService, cfg, logger)
 
 	// V1 routes (matching swagger spec)
@@ -357,6 +359,11 @@ func NewRouter(
 				backend.POST("/clear-user-data", adminHandler.ClearUserData)
 				backend.POST("/clear-database", adminHandler.ClearDatabase)
 				backend.POST("/userz/:id/clear", adminHandler.ClearUserDataForUser)
+
+				// Story explorer (admin)
+				backend.GET("/stories", adminHandler.GetStoriesPaginated)
+				backend.GET("/stories/:id", adminHandler.GetStoryAdmin)
+				backend.GET("/story-sections/:id", adminHandler.GetSectionAdmin)
 			}
 
 		}

@@ -17,6 +17,7 @@ import AdminPage from './pages/AdminPage';
 import BackendAdminPage from './pages/admin/BackendAdminPage';
 import UserManagementPage from './pages/admin/UserManagementPage';
 import DataExplorerPage from './pages/admin/DataExplorerPage';
+import StoryExplorerPage from './pages/admin/StoryExplorerPage';
 import WorkerAdminPage from './pages/admin/WorkerAdminPage';
 import AnalyticsPage from './pages/admin/AnalyticsPage';
 import NotificationsPage from './pages/admin/NotificationsPage';
@@ -286,6 +287,21 @@ function App() {
           user ? (
             <AdminLayout>
               <DataExplorerPage />
+            </AdminLayout>
+          ) : (
+            <Navigate
+              to={`/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`}
+            />
+          )
+        }
+      />
+
+      <Route
+        path='/admin/backend/story-explorer'
+        element={
+          user ? (
+            <AdminLayout>
+              <StoryExplorerPage />
             </AdminLayout>
           ) : (
             <Navigate

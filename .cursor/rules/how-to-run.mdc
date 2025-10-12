@@ -25,12 +25,6 @@ FORMAT and LINT
 - To lint files run: task lint
 - To find dead code run: task deadcode
 
-START, STOP and RESTART Prod
-
-- To restart prod run: task restart-prod
-- To start prod run: task start-prod
-- To stop prod run: task stop-prod
-
 START, STOP and RESTART Test
 
 - To stop test servers run: task stop-test-servers

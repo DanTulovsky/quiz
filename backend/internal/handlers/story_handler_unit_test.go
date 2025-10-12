@@ -147,6 +147,19 @@ func (m *MockStoryService) GenerateStorySection(_ context.Context, _, _ uint, _ 
 	return nil, nil
 }
 
+// Admin-only methods (no ownership checks)
+func (m *MockStoryService) GetStoriesPaginated(_ context.Context, _, _ int, _, _, _ string, _ *uint) ([]models.Story, int, error) {
+	return []models.Story{}, 0, nil
+}
+
+func (m *MockStoryService) GetStoryAdmin(_ context.Context, _ uint) (*models.StoryWithSections, error) {
+	return nil, nil
+}
+
+func (m *MockStoryService) GetSectionAdmin(_ context.Context, _ uint) (*models.StorySectionWithQuestions, error) {
+	return nil, nil
+}
+
 // TestExportStoryPDF_UnicodeHandling tests the PDF export functionality with Unicode characters
 // This test verifies that Unicode characters are properly handled in PDF generation
 func TestExportStoryPDF_UnicodeHandling(t *testing.T) {

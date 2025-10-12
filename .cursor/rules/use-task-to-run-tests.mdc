@@ -1,0 +1,5 @@
+---
+alwaysApply: true
+---
+Use "task test-<foo>" to run tests.
+When working on a single file, use the single file variant (available in Tasikfile.yaml) to speed up development.

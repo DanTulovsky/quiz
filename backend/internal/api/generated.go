@@ -1427,6 +1427,27 @@ type GetV1AdminBackendReportedQuestionsParams struct {
 	Level *Level `form:"level,omitempty" json:"level,omitempty"`
 }
 
+// GetV1AdminBackendStoriesParams defines parameters for GetV1AdminBackendStories.
+type GetV1AdminBackendStoriesParams struct {
+	// Page Page number (1-based)
+	Page *int `form:"page,omitempty" json:"page,omitempty"`
+
+	// PageSize Number of stories per page
+	PageSize *int `form:"page_size,omitempty" json:"page_size,omitempty"`
+
+	// Search Search term for story title
+	Search *string `form:"search,omitempty" json:"search,omitempty"`
+
+	// Language Filter by language
+	Language *Language `form:"language,omitempty" json:"language,omitempty"`
+
+	// Status Filter by story status
+	Status *StoryStatus `form:"status,omitempty" json:"status,omitempty"`
+
+	// UserId Filter by user ID (optional)
+	UserId *int64 `form:"user_id,omitempty" json:"user_id,omitempty"`
+}
+
 // PostV1AdminBackendUserzJSONBody defines parameters for PostV1AdminBackendUserz.
 type PostV1AdminBackendUserzJSONBody struct {
 	// AiEnabled Whether AI is enabled for this user

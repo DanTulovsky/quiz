@@ -174,6 +174,28 @@ func (m *mockStoryService) DeleteAllStoriesForUser(ctx context.Context, userID u
 	return args.Error(0)
 }
 
+// Admin-only methods (no ownership checks)
+func (m *mockStoryService) GetStoriesPaginated(ctx context.Context, page, pageSize int, search, language, status string, userID *uint) ([]models.Story, int, error) {
+	args := m.Called(ctx, page, pageSize, search, language, status, userID)
+	return args.Get(0).([]models.Story), args.Int(1), args.Error(2)
+}
+
+func (m *mockStoryService) GetStoryAdmin(ctx context.Context, storyID uint) (*models.StoryWithSections, error) {
+	args := m.Called(ctx, storyID)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*models.StoryWithSections), args.Error(1)
+}
+
+func (m *mockStoryService) GetSectionAdmin(ctx context.Context, sectionID uint) (*models.StorySectionWithQuestions, error) {
+	args := m.Called(ctx, sectionID)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*models.StorySectionWithQuestions), args.Error(1)
+}
+
 func (m *mockLearningService) RecordAnswerWithPriorityReturningID(ctx context.Context, userID, questionID, answerIndex int, isCorrect bool, responseTime int) (int, error) {
 	args := m.Called(ctx, userID, questionID, answerIndex, isCorrect, responseTime)
 	if args.Get(0) == nil {
