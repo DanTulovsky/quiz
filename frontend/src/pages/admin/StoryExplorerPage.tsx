@@ -113,7 +113,7 @@ const StoryExplorerPage: React.FC = () => {
     return (
       <Container size='xl' py='md'>
         <Group justify='center' mih={400}>
-          <Loader size='lg' />
+          <Loader size='lg' data-testid='loader' />
         </Group>
       </Container>
     );
