@@ -19,6 +19,7 @@ import {
   IconArrowLeft,
   IconBell,
   IconCalendar,
+  IconBook,
 } from '@tabler/icons-react';
 import { useAuth } from '../hooks/useAuth';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
@@ -47,6 +48,11 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       label: 'Data Explorer',
       icon: <IconDatabase size={16} />,
       path: '/admin/backend/data-explorer',
+    },
+    {
+      label: 'Story Explorer',
+      icon: <IconBook size={16} />,
+      path: '/admin/backend/story-explorer',
     },
   ];
 
