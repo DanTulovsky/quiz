@@ -850,7 +850,7 @@ describe('QuestionCard', () => {
     await waitFor(() => {
       expect(showNotificationWithClean).toHaveBeenCalledWith({
         title: 'TTS Error',
-        message: 'TTS request failed: 500',
+        message: 'Failed to generate speech',
         color: 'red',
       });
     });

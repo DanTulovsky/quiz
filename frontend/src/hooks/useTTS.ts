@@ -352,22 +352,13 @@ export const useTTS = (): TTSHookReturn => {
         // No cached audio available — prefer to surface original prebuffer error
         if (prebufferError instanceof Error) throw prebufferError;
         throw new Error('TTS playback unavailable: audio not buffered');
-      } catch (_error) {
+      } catch {
         // Suppress user-initiated aborts (Stop button or ESC)
-        const name = (_error as { name?: string })?.name || '';
-        const message = (_error as { message?: string })?.message || '';
-        const isAbort =
-          name === 'AbortError' || /aborted|abort(ed)?/i.test(message || '');
-        if (!isAbort) {
-          showNotificationWithClean({
-            title: 'TTS Error',
-            message:
-              error instanceof Error
-                ? error.message
-                : 'Failed to generate speech',
-            color: 'red',
-          });
-        }
+        showNotificationWithClean({
+          title: 'TTS Error',
+          message: 'Failed to generate speech',
+          color: 'red',
+        });
       } finally {
         setIsLoading(false);
       }

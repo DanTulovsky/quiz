@@ -182,12 +182,13 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
           message: 'Great job! Question marked as completed.',
           color: 'green',
         });
-      } catch {
+      } catch (error) {
         showNotificationWithClean({
           title: 'Error',
           message: 'Failed to mark question as completed. Please try again.',
           color: 'red',
         });
+        throw error;
       }
     },
     [
@@ -226,12 +227,13 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
           message: 'Question has been reset. You can answer it again.',
           color: 'blue',
         });
-      } catch {
+      } catch (error) {
         showNotificationWithClean({
           title: 'Error',
           message: 'Failed to reset question. Please try again.',
           color: 'red',
         });
+        throw error;
       }
     },
     [
@@ -297,12 +299,13 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
         });
 
         return response;
-      } catch {
+      } catch (error) {
         showNotificationWithClean({
           title: 'Error',
           message: 'Failed to submit answer. Please try again.',
           color: 'red',
         });
+        throw error;
         throw error;
       }
     },
