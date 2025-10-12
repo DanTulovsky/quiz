@@ -30,7 +30,6 @@ import DailyDatePicker from '../components/DailyDatePicker';
 import DailyCompletionScreen from '../components/DailyCompletionScreen';
 import { QuestionHistoryModal } from '../components/QuestionHistoryModal';
 import { SUGGESTED_QUIZ_PROMPTS } from '../constants/prompts';
-import logger from '../utils/logger';
 import QuestionPanel from '../components/QuestionPanel';
 import QuestionHeader from '../components/QuestionHeader';
 

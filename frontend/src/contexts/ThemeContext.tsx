@@ -9,7 +9,6 @@ import React, {
 import { ThemeName, ColorScheme } from '../theme/theme';
 import { themes, themeNames } from '../theme/theme';
 import { ThemeContextType } from './ThemeContext.types';
-import logger from '../utils/logger';
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 

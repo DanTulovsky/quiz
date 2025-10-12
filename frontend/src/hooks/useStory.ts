@@ -20,7 +20,6 @@ import {
   Story,
 } from '../api/storyApi';
 import { showNotificationWithClean } from '../notifications';
-import logger from '../utils/logger';
 
 // Error type interfaces
 interface ErrorWithResponse extends Error {
@@ -432,7 +431,8 @@ export const useStory = (): UseStoryReturn => {
       });
     },
     onError: (error: unknown) => {
-      let errorMessage = 'Failed to set current story. Please try again.' + error;
+      let errorMessage =
+        'Failed to set current story. Please try again.' + error;
 
       if (typeof error === 'object' && error !== null) {
         // Check if error has response structure (axios-like error)
@@ -539,10 +539,8 @@ export const useStory = (): UseStoryReturn => {
       setGenerationType(null);
     },
     onError: (error: unknown) => {
-
       let errorMessage = 'Failed to generate next section. Please try again.';
       let errorDetails: unknown | undefined;
-
 
       // First, try to parse the error itself as JSON if it's a string
       if (typeof error === 'string') {

@@ -33,7 +33,6 @@ import {
   IconInfoCircle,
 } from '@tabler/icons-react';
 import { getV1QuizQuestionId } from '../api/api';
-import logger from '../utils/logger';
 
 interface LocalUserProgress {
   current_level: string;
@@ -138,7 +137,7 @@ const RecentActivityItem: React.FC<RecentActivityItemProps> = ({
 
         // Only show tooltip once we have content
         setOpened(true);
-      } catch (error) {
+      } catch {
         const errorText = 'Failed to load question';
         setQuestionText(errorText);
         setOpened(true);

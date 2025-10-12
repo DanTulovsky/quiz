@@ -35,7 +35,6 @@ import { useAuth } from '../../hooks/useAuth';
 import { Navigate } from 'react-router-dom';
 import { notifications } from '@mantine/notifications';
 import { useUsersPaginated } from '../../api/admin';
-import logger from '../../utils/logger';
 
 interface NotificationStats {
   total_notifications_sent: number;

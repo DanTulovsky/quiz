@@ -10,7 +10,6 @@ import {
   Paper,
 } from '@mantine/core';
 import ReactDiffViewer from 'react-diff-viewer-continued';
-import logger from '../utils/logger';
 
 interface AIFixModalProps {
   opened: boolean;
@@ -157,7 +156,7 @@ const AIFixModal: React.FC<AIFixModalProps> = ({
                   try {
                     setApplying(true);
                     await Promise.resolve(onApply());
-                  } catch (errUnknown) {
+                  } catch {
                   } finally {
                     setApplying(false);
                   }

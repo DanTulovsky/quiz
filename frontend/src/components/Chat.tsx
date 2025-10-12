@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import logger from '../utils/logger';
 import { PaperPlaneIcon, ExclamationTriangleIcon } from '@radix-ui/react-icons';
 import {
   Maximize2,
@@ -1040,8 +1039,7 @@ export const Chat: React.FC<ChatProps> = ({
           conversationId = conversation.id;
           setCurrentConversationId(conversationId);
         }
-      } catch (error) {
-      }
+      } catch {}
     }
 
     // Use existing conversation ID or create a temporary one for this request
@@ -1060,8 +1058,7 @@ export const Chat: React.FC<ChatProps> = ({
             },
           },
         });
-      } catch (error) {
-      }
+      } catch {}
     }
 
     // Refocus input after sending
@@ -1177,14 +1174,12 @@ export const Chat: React.FC<ChatProps> = ({
                       },
                     },
                   });
-                } catch (error) {
-                }
+                } catch {}
               }
 
               // Scroll to bottom during streaming with requestAnimationFrame for smoother performance
               requestAnimationFrame(scrollToTopOfNewResponse);
-            } catch (e) {
-            }
+            } catch {}
           } else if (line.startsWith('event: error')) {
             // Handle error events
             throw new Error('Streaming error occurred');
@@ -1298,7 +1293,7 @@ export const Chat: React.FC<ChatProps> = ({
 
       // Show success feedback
       // You could add a toast notification here
-    } catch (error) {
+    } catch {
       // You could add error feedback here
     } finally {
       setIsSaving(false);
@@ -1339,7 +1334,7 @@ export const Chat: React.FC<ChatProps> = ({
 
       // Show success feedback
       // You could add a toast notification here
-    } catch (error) {
+    } catch {
       // You could add error feedback here
     } finally {
       setIsSaving(false);

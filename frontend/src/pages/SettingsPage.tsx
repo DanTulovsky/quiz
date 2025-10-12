@@ -18,7 +18,6 @@ import { showNotificationWithClean } from '../notifications';
 import ErrorModal from '../components/ErrorModal';
 import { useQueryClient } from '@tanstack/react-query';
 import { getGetV1PreferencesLearningQueryKey } from '../api/api';
-import logger from '../utils/logger';
 import TimezoneSelector from '../components/TimezoneSelector';
 import { useTheme } from '../contexts/ThemeContext';
 import {
@@ -49,7 +48,11 @@ import {
   Slider,
   Tooltip,
 } from '@mantine/core';
-import { clearAllStories, resetAccount, clearAllAIChats } from '../api/settingsApi';
+import {
+  clearAllStories,
+  resetAccount,
+  clearAllAIChats,
+} from '../api/settingsApi';
 import {
   IconUser,
   IconBrain,
@@ -277,7 +280,7 @@ const SettingsPage: React.FC = () => {
           const detectedTimezone =
             Intl.DateTimeFormat().resolvedOptions().timeZone;
           setTimezone(detectedTimezone);
-        } catch (error) {
+        } catch {
           setTimezone('UTC');
         }
       }
@@ -1209,9 +1212,9 @@ const SettingsPage: React.FC = () => {
                 <Title order={2}>Data Management</Title>
               </Group>
               <Text size='sm' c='dimmed'>
-                Dangerous actions: deleting stories, AI chats, or resetting your account
-                will remove your generated stories, AI conversations, questions, and progress.
-                These actions cannot be undone.
+                Dangerous actions: deleting stories, AI chats, or resetting your
+                account will remove your generated stories, AI conversations,
+                questions, and progress. These actions cannot be undone.
               </Text>
               <Group>
                 <Button

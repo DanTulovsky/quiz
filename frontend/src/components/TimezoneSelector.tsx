@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import logger from '../utils/logger';
 import { Box, Input, Select } from '@mantine/core';
 import { useTimezoneSelect } from 'react-timezone-select';
 
@@ -28,7 +27,7 @@ const TimezoneSelector: React.FC<TimezoneSelectorProps> = ({
         const detectedTimezone =
           Intl.DateTimeFormat().resolvedOptions().timeZone;
         onChange(detectedTimezone);
-      } catch (error) {
+      } catch {
         onChange('UTC');
       }
     }

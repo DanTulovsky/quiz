@@ -519,11 +519,11 @@ func (h *SettingsHandler) ClearAllAIChats(c *gin.Context) {
 	// Delete each conversation
 	deletedCount := 0
 	for _, conversation := range conversations {
-		err := h.conversationService.DeleteConversation(ctx, fmt.Sprintf("%s", conversation.Id), uint(userID))
+		err := h.conversationService.DeleteConversation(ctx, conversation.Id.String(), uint(userID))
 		if err != nil {
 			h.logger.Error(ctx, "Failed to delete conversation", err, map[string]interface{}{
 				"user_id":         userID,
-				"conversation_id": fmt.Sprintf("%s", conversation.Id),
+				"conversation_id": conversation.Id.String(),
 			})
 			// Continue with other conversations even if one fails
 		} else {

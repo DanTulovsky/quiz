@@ -24,7 +24,6 @@ import {
 import { useAuth } from '../../hooks/useAuth';
 import { Navigate } from 'react-router-dom';
 import { notifications } from '@mantine/notifications';
-import logger from '../../utils/logger';
 
 interface WorkerStatus {
   id: number;
@@ -261,12 +260,11 @@ const WorkerAdminPage: React.FC = () => {
           const aiData = await aiResponse.json();
           setAiConcurrency(aiData.ai_concurrency || {});
         }
-      } catch (error) {
-      }
-    } catch (error) {
+      } catch {}
+    } catch {
       notifications.show({
         title: 'Error',
-        message: 'Failed to load dashboard data: ' + error,
+        message: 'Failed to load dashboard data',
         color: 'red',
       });
     }
@@ -280,8 +278,7 @@ const WorkerAdminPage: React.FC = () => {
       if (!response.ok) throw new Error('Network response was not ok');
       const data = await response.json();
       setActivityLogs(data.logs || []);
-    } catch (error) {
-    }
+    } catch {}
   }, [logPaused]);
 
   const updatePriorityAnalytics = useCallback(async () => {
@@ -292,8 +289,7 @@ const WorkerAdminPage: React.FC = () => {
       if (!response.ok) throw new Error('Failed to fetch priority analytics');
       const data = await response.json();
       setPriorityAnalytics(data);
-    } catch (error) {
-    }
+    } catch {}
   }, []);
 
   const updateUserPerformanceAnalytics = useCallback(async () => {
@@ -305,8 +301,7 @@ const WorkerAdminPage: React.FC = () => {
         throw new Error('Failed to fetch user performance analytics');
       const data = await response.json();
       setUserPerformanceAnalytics(data);
-    } catch (error) {
-    }
+    } catch {}
   }, []);
 
   const updateGenerationIntelligence = useCallback(async () => {
@@ -318,8 +313,7 @@ const WorkerAdminPage: React.FC = () => {
         throw new Error('Failed to fetch generation intelligence');
       const data = await response.json();
       setGenerationIntelligence(data);
-    } catch (error) {
-    }
+    } catch {}
   }, []);
 
   const updateSystemHealthAnalytics = useCallback(async () => {
@@ -329,8 +323,7 @@ const WorkerAdminPage: React.FC = () => {
         throw new Error('Failed to fetch system health analytics');
       const data = await response.json();
       setSystemHealthAnalytics(data);
-    } catch (error) {
-    }
+    } catch {}
   }, []);
 
   const postAction = useCallback(
@@ -353,10 +346,10 @@ const WorkerAdminPage: React.FC = () => {
               message: data.message,
               color: 'green',
             });
-          } catch (error) {
+          } catch {
             notifications.show({
               title: 'Error',
-              message: `Failed to ${actionName.toLowerCase()}: ` + error,
+              message: `Failed to ${actionName.toLowerCase()}`,
               color: 'red',
             });
           } finally {

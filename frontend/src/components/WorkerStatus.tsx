@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import logger from '../utils/logger';
 import { useAuth } from '../hooks/useAuth';
 import {
   Badge,
@@ -49,8 +48,7 @@ const WorkerStatus: React.FC = () => {
         setStatus(data);
       } else {
       }
-    } catch (error) {
-    }
+    } catch {}
   }, [isAuthenticated]);
 
   useEffect(() => {

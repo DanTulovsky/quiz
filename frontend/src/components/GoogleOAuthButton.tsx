@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import logger from '../utils/logger';
 import { Button } from '@mantine/core';
 import { IconBrandGoogle } from '@tabler/icons-react';
 

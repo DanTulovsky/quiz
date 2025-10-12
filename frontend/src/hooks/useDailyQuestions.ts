@@ -16,7 +16,6 @@ import {
   useGetV1DailyHistoryQuestionId,
 } from '../api/api';
 import { showNotificationWithClean } from '../notifications';
-import logger from '../utils/logger';
 
 export interface UseDailyQuestionsReturn {
   // State
@@ -183,7 +182,7 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
           message: 'Great job! Question marked as completed.',
           color: 'green',
         });
-      } catch (error) {
+      } catch {
         showNotificationWithClean({
           title: 'Error',
           message: 'Failed to mark question as completed. Please try again.',
@@ -227,7 +226,7 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
           message: 'Question has been reset. You can answer it again.',
           color: 'blue',
         });
-      } catch (error) {
+      } catch {
         showNotificationWithClean({
           title: 'Error',
           message: 'Failed to reset question. Please try again.',
@@ -257,7 +256,7 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
         // Setting the historyQuestionId enables the generated query hook
         // which will fetch the (now invalidated) data.
         setHistoryQuestionId(questionId);
-      } catch (error) {
+      } catch {
         showNotificationWithClean({
           title: 'Error',
           message: 'Failed to load question history. Please try again.',
@@ -298,7 +297,7 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
         });
 
         return response;
-      } catch (error) {
+      } catch {
         showNotificationWithClean({
           title: 'Error',
           message: 'Failed to submit answer. Please try again.',

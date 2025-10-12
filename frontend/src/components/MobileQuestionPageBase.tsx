@@ -153,7 +153,7 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
           });
         }
       }, 300); // Delay to allow feedback animation to complete
-    } catch (error) {
+    } catch {
       showNotificationWithClean({
         title: 'Error',
         message: 'Failed to submit answer. Please try again.',

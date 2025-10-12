@@ -1,4 +1,10 @@
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  act,
+} from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import GoogleOAuthButton from './GoogleOAuthButton';
 import { MantineProvider } from '@mantine/core';

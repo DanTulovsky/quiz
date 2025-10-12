@@ -32,7 +32,6 @@ import {
   ChatMessage,
 } from '../api/api';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import logger from '../utils/logger';
 import { format } from 'date-fns';
 
 interface ConversationCardProps {
@@ -346,8 +345,7 @@ export const SavedConversationsPage: React.FC = () => {
     if (window.confirm('Are you sure you want to delete this conversation?')) {
       try {
         await deleteConversationMutation.mutateAsync({ conversationId });
-      } catch (error) {
-      }
+      } catch {}
     }
   };
 
@@ -359,8 +357,7 @@ export const SavedConversationsPage: React.FC = () => {
         conversationId: editingConversation.id,
         data: { title: editTitle },
       });
-    } catch (error) {
-    }
+    } catch {}
   };
 
   return (

@@ -1,4 +1,10 @@
-import { render, screen, waitFor, fireEvent, act } from '@testing-library/react';
+import {
+  render,
+  screen,
+  waitFor,
+  fireEvent,
+  act,
+} from '@testing-library/react';
 import { vi, Mock } from 'vitest';
 import QuizPage from './QuizPage';
 import * as useAuthModule from '../hooks/useAuth';

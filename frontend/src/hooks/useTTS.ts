@@ -1,7 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore - library ships without types
-import logger from '../utils/logger';
 import { TTSRequest } from '../api/api';
 import { showNotificationWithClean } from '../notifications';
 
@@ -347,17 +346,16 @@ export const useTTS = (): TTSHookReturn => {
             bufferSourceRef.current = source;
             setIsPlaying(true);
             return;
-          } catch (e) {
-          }
+          } catch {}
         }
 
         // No cached audio available — prefer to surface original prebuffer error
         if (prebufferError instanceof Error) throw prebufferError;
         throw new Error('TTS playback unavailable: audio not buffered');
-      } catch (error) {
+      } catch (_error) {
         // Suppress user-initiated aborts (Stop button or ESC)
-        const name = (error as { name?: string })?.name || '';
-        const message = (error as { message?: string })?.message || '';
+        const name = (_error as { name?: string })?.name || '';
+        const message = (_error as { message?: string })?.message || '';
         const isAbort =
           name === 'AbortError' || /aborted|abort(ed)?/i.test(message || '');
         if (!isAbort) {

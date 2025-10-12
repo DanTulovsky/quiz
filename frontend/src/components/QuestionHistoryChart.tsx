@@ -2,7 +2,6 @@ import React from 'react';
 import { Group, Text, Tooltip, Box, LoadingOverlay } from '@mantine/core';
 import { DailyQuestionHistory } from '../api/api';
 import dayjs from 'dayjs';
-import logger from '../utils/logger';
 
 // Extend with UTC plugin if available (for production)
 try {
@@ -47,7 +46,7 @@ export function QuestionHistoryChart({
       const dateA = dayjs.utc(a.assignment_date);
       const dateB = dayjs.utc(b.assignment_date);
       return dateA.isAfter(dateB) ? 1 : -1;
-    } catch (err) {
+    } catch {
       return 0;
     }
   });
@@ -68,7 +67,7 @@ export function QuestionHistoryChart({
   const formatFullDate = (dateString: string) => {
     try {
       return dayjs.utc(dateString).format('MMM D, YYYY');
-    } catch (err) {
+    } catch {
       return dateString;
     }
   };

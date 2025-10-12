@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { screen, fireEvent, act, waitFor } from '@testing-library/react';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import MobileDailyPage from '../MobileDailyPage';
 import { renderWithProviders } from '../../../test-utils';
 

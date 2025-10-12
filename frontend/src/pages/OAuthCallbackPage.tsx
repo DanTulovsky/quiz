@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import logger from '../utils/logger';
 import { useAuth } from '../hooks/useAuth';
 import { Container, Paper, Stack, Text, Loader, Alert } from '@mantine/core';
 import { IconCheck, IconX } from '@tabler/icons-react';
@@ -130,7 +129,7 @@ const OAuthCallbackPage: React.FC = () => {
         } else {
           throw new Error(data.message || 'Authentication failed');
         }
-      } catch (error) {
+      } catch {
         setStatus('error');
         // Surface a consistent, user-facing error message for tests and UX
         setMessage('Authentication failed. Please try again.');

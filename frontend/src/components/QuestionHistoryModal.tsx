@@ -11,7 +11,6 @@ import {
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 dayjs.extend(utc);
-import logger from '../utils/logger';
 import type { DailyQuestionHistory as ApiDailyQuestionHistory } from '../api/api';
 
 interface QuestionHistoryModalProps {
@@ -43,8 +42,7 @@ export function QuestionHistoryModal({
       // something rather than crash, so fall back to formatted local date as a last resort.
       try {
         throw new Error('date-only timestamp received from backend');
-      } catch (err) {
-      }
+      } catch {}
       return dayjs(dateString).format('MMM D, YYYY');
     }
 
@@ -52,7 +50,7 @@ export function QuestionHistoryModal({
     // format in UTC to keep tests deterministic (avoid local TZ shifts).
     try {
       return dayjs.utc(dateString).format('MMM D, YYYY');
-    } catch (err) {
+    } catch {
       // As a last resort, return the raw string so something is displayed.
       return dateString;
     }
@@ -156,7 +154,7 @@ export function QuestionHistoryModal({
                     if (ta.isBefore(tb)) return 1;
                     if (ta.isAfter(tb)) return -1;
                     return 0;
-                  } catch (err) {
+                  } catch {
                     // Log parse/compare errors for observability and fall back
                     // to a stable string comparison so UI still renders.
                     return b.assignment_date.localeCompare(a.assignment_date);

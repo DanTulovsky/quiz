@@ -567,7 +567,7 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
         );
         setLocalFeedback(feedbackData);
         setIsSubmitted(true);
-      } catch (error) {
+      } catch {
       } finally {
         setIsLoading(false);
       }

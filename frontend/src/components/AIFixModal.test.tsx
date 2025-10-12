@@ -1,5 +1,11 @@
 import React from 'react';
-import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
+import {
+  render,
+  screen,
+  fireEvent,
+  act,
+  waitFor,
+} from '@testing-library/react';
 import { MantineProvider } from '@mantine/core';
 import AIFixModal from './AIFixModal';
 
@@ -20,43 +26,47 @@ describe('AIFixModal', () => {
     const onClose = vi.fn();
     const onApply = vi.fn();
 
-    act(() => {
-      render(
-        <MantineProvider>
-          <AIFixModal
-            opened={true}
-            original={original}
-            suggestion={suggestion}
-            onClose={onClose}
-            onApply={onApply}
-          />
-        </MantineProvider>
-      );
-    });
+    // Render the component first
+    render(
+      <MantineProvider>
+        <AIFixModal
+          opened={true}
+          original={original}
+          suggestion={suggestion}
+          onClose={onClose}
+          onApply={onApply}
+        />
+      </MantineProvider>
+    );
 
     // Wait for component to stabilize and modal to be fully rendered
     await waitFor(() => {
       expect(screen.getByText(/AI Suggestion/i)).toBeInTheDocument();
     });
 
-    // Modal title should render and Apply button should be present
-    expect(screen.getByText(/AI Suggestion/i)).toBeInTheDocument();
-    // Ensure the passage and question text are present in the modal
-    const passageNodes = screen.getAllByText(/Passage text about apples\./);
-    expect(passageNodes.length).toBeGreaterThanOrEqual(1);
-    // ReactDiffViewer may split JSON into multiple nodes; search entire body text
-    const bodyText = document.body.textContent || '';
-    expect(/Old\?/.test(bodyText)).toBe(true);
-    // The JSON diff must not include the change_reason key (it's shown above the diff only)
-    const modalContainer = passageNodes[0].closest('div');
-    const modalText = modalContainer?.textContent || '';
-    expect(modalText).not.toContain('"change_reason"');
+    // Wrap all interactions and assertions in act to handle state updates
+    await act(async () => {
+      // Modal title should render and Apply button should be present
+      expect(screen.getByText(/AI Suggestion/i)).toBeInTheDocument();
 
-    // Click Apply
-    const apply = screen.getByRole('button', { name: /Apply Suggestion/i });
-    act(() => {
+      // Ensure the passage and question text are present in the modal
+      const passageNodes = screen.getAllByText(/Passage text about apples\./);
+      expect(passageNodes.length).toBeGreaterThanOrEqual(1);
+
+      // ReactDiffViewer may split JSON into multiple nodes; search entire body text
+      const bodyText = document.body.textContent || '';
+      expect(/Old\?/.test(bodyText)).toBe(true);
+
+      // The JSON diff must not include the change_reason key (it's shown above the diff only)
+      const modalContainer = passageNodes[0].closest('div');
+      const modalText = modalContainer?.textContent || '';
+      expect(modalText).not.toContain('"change_reason"');
+
+      // Click Apply
+      const apply = screen.getByRole('button', { name: /Apply Suggestion/i });
       fireEvent.click(apply);
     });
+
     expect(onApply).toHaveBeenCalled();
   });
 });

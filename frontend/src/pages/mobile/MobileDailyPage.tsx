@@ -299,8 +299,8 @@ const MobileDailyPage: React.FC = () => {
           });
         }
       }, 300); // Delay to allow feedback animation to complete
-    } catch (error) {
-      // console.error('Failed to submit answer:', error);
+    } catch {
+      // console.error('Failed to submit answer:', _error);
     }
   }, [currentQuestion, selectedAnswerLocal, submitAnswer]);
 
