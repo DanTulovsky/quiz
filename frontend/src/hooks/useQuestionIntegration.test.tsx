@@ -56,7 +56,13 @@ describe('Question + URL integration', () => {
       render(
         <QueryClientProvider client={createTestQueryClient()}>
           <MantineProvider>
-            <MemoryRouter initialEntries={['/quiz/34']}>
+            <MemoryRouter
+              initialEntries={['/quiz/34']}
+              future={{
+                v7_startTransition: false,
+                v7_relativeSplatPath: false,
+              }}
+            >
               <Routes>
                 <Route
                   path='/quiz/:questionId'
@@ -97,7 +103,13 @@ describe('Question + URL integration', () => {
       render(
         <QueryClientProvider client={createTestQueryClient()}>
           <MantineProvider>
-            <MemoryRouter initialEntries={['/quiz']}>
+            <MemoryRouter
+              initialEntries={['/quiz']}
+              future={{
+                v7_startTransition: false,
+                v7_relativeSplatPath: false,
+              }}
+            >
               <Routes>
                 <Route
                   path='/quiz'

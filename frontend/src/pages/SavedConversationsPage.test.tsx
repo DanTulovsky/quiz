@@ -135,7 +135,12 @@ describe('SavedConversationsPage', () => {
       render(
         <QueryClientProvider client={queryClient}>
           <MantineProvider>
-            <BrowserRouter>
+            <BrowserRouter
+              future={{
+                v7_startTransition: false,
+                v7_relativeSplatPath: false,
+              }}
+            >
               <SavedConversationsPage />
             </BrowserRouter>
           </MantineProvider>
@@ -154,7 +159,12 @@ describe('SavedConversationsPage', () => {
       render(
         <QueryClientProvider client={queryClient}>
           <MantineProvider>
-            <BrowserRouter>
+            <BrowserRouter
+              future={{
+                v7_startTransition: false,
+                v7_relativeSplatPath: false,
+              }}
+            >
               <SavedConversationsPage />
             </BrowserRouter>
           </MantineProvider>
@@ -173,7 +183,12 @@ describe('SavedConversationsPage', () => {
       render(
         <QueryClientProvider client={queryClient}>
           <MantineProvider>
-            <BrowserRouter>
+            <BrowserRouter
+              future={{
+                v7_startTransition: false,
+                v7_relativeSplatPath: false,
+              }}
+            >
               <SavedConversationsPage />
             </BrowserRouter>
           </MantineProvider>

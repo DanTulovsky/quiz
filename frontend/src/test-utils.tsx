@@ -28,7 +28,12 @@ const ThemedProviders: React.FC<ProvidersProps> = ({ children }) => {
     <MantineProvider theme={themes[currentTheme]}>
       <Notifications />
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
+        <BrowserRouter
+          future={{
+            v7_startTransition: false,
+            v7_relativeSplatPath: false,
+          }}
+        >
           <QuestionProvider>{children}</QuestionProvider>
         </BrowserRouter>
       </QueryClientProvider>

@@ -134,7 +134,12 @@ const renderDataExplorerPage = () => {
   return render(
     <QueryClientProvider client={queryClient}>
       <MantineProvider>
-        <BrowserRouter>
+        <BrowserRouter
+          future={{
+            v7_startTransition: false,
+            v7_relativeSplatPath: false,
+          }}
+        >
           <DataExplorerPage />
         </BrowserRouter>
       </MantineProvider>

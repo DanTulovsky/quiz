@@ -37,7 +37,12 @@ const renderWithProviders = (children: React.ReactNode) => {
 
   return render(
     <QueryClientProvider client={queryClient}>
-      <MemoryRouter>
+      <MemoryRouter
+        future={{
+          v7_startTransition: false,
+          v7_relativeSplatPath: false,
+        }}
+      >
         <MantineProvider>{children}</MantineProvider>
       </MemoryRouter>
     </QueryClientProvider>

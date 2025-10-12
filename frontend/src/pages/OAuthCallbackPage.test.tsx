@@ -24,7 +24,13 @@ describe('OAuthCallbackPage', () => {
   const renderOAuthCallback = (searchParams = '') => {
     return render(
       <MantineProvider>
-        <MemoryRouter initialEntries={[`/oauth-callback${searchParams}`]}>
+        <MemoryRouter
+          initialEntries={[`/oauth-callback${searchParams}`]}
+          future={{
+            v7_startTransition: false,
+            v7_relativeSplatPath: false,
+          }}
+        >
           <Routes>
             <Route path='/oauth-callback' element={<OAuthCallbackPage />} />
           </Routes>

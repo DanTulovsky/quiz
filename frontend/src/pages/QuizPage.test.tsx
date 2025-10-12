@@ -64,7 +64,12 @@ describe('QuizPage - GeneratingResponse UI', () => {
       render(
         <QueryClientProvider client={createTestQueryClient()}>
           <MantineProvider>
-            <MemoryRouter>
+            <MemoryRouter
+              future={{
+                v7_startTransition: false,
+                v7_relativeSplatPath: false,
+              }}
+            >
               <QuestionProvider>
                 <QuizPage />
               </QuestionProvider>
@@ -94,7 +99,12 @@ describe('QuizPage - GeneratingResponse UI', () => {
       render(
         <QueryClientProvider client={createTestQueryClient()}>
           <MantineProvider>
-            <MemoryRouter>
+            <MemoryRouter
+              future={{
+                v7_startTransition: false,
+                v7_relativeSplatPath: false,
+              }}
+            >
               <QuestionProvider>
                 <QuizPage />
               </QuestionProvider>
@@ -161,7 +171,12 @@ describe('QuizPage - Level Change', () => {
       const renderResult = render(
         <QueryClientProvider client={createTestQueryClient()}>
           <MantineProvider>
-            <MemoryRouter>
+            <MemoryRouter
+              future={{
+                v7_startTransition: false,
+                v7_relativeSplatPath: false,
+              }}
+            >
               <QuestionProvider>
                 <QuizPage />
               </QuestionProvider>
@@ -190,7 +205,12 @@ describe('QuizPage - Level Change', () => {
       rerender(
         <QueryClientProvider client={createTestQueryClient()}>
           <MantineProvider>
-            <MemoryRouter>
+            <MemoryRouter
+              future={{
+                v7_startTransition: false,
+                v7_relativeSplatPath: false,
+              }}
+            >
               <QuestionProvider>
                 <QuizPage />
               </QuestionProvider>
@@ -233,7 +253,12 @@ describe('QuizPage - Level Change', () => {
       const renderResult = render(
         <QueryClientProvider client={createTestQueryClient()}>
           <MantineProvider>
-            <MemoryRouter>
+            <MemoryRouter
+              future={{
+                v7_startTransition: false,
+                v7_relativeSplatPath: false,
+              }}
+            >
               <QuestionProvider>
                 <QuizPage />
               </QuestionProvider>
@@ -262,7 +287,12 @@ describe('QuizPage - Level Change', () => {
       rerender(
         <QueryClientProvider client={createTestQueryClient()}>
           <MantineProvider>
-            <MemoryRouter>
+            <MemoryRouter
+              future={{
+                v7_startTransition: false,
+                v7_relativeSplatPath: false,
+              }}
+            >
               <QuestionProvider>
                 <QuizPage />
               </QuestionProvider>
@@ -317,7 +347,12 @@ describe('QuizPage - Answer Submission', () => {
       render(
         <QueryClientProvider client={createTestQueryClient()}>
           <MantineProvider>
-            <MemoryRouter>
+            <MemoryRouter
+              future={{
+                v7_startTransition: false,
+                v7_relativeSplatPath: false,
+              }}
+            >
               <QuestionProvider>
                 <QuizPage />
               </QuestionProvider>
@@ -379,7 +414,12 @@ describe('QuizPage - URL State Management', () => {
       render(
         <QueryClientProvider client={createTestQueryClient()}>
           <MantineProvider>
-            <MemoryRouter>
+            <MemoryRouter
+              future={{
+                v7_startTransition: false,
+                v7_relativeSplatPath: false,
+              }}
+            >
               <QuestionProvider>
                 <QuizPage />
               </QuestionProvider>
@@ -432,7 +472,12 @@ describe('QuizPage - Confidence Level Display', () => {
       render(
         <QueryClientProvider client={createTestQueryClient()}>
           <MantineProvider>
-            <MemoryRouter>
+            <MemoryRouter
+              future={{
+                v7_startTransition: false,
+                v7_relativeSplatPath: false,
+              }}
+            >
               <QuestionProvider>
                 <QuizPage />
               </QuestionProvider>
@@ -482,7 +527,12 @@ describe('QuizPage - Confidence Level Display', () => {
       render(
         <QueryClientProvider client={createTestQueryClient()}>
           <MantineProvider>
-            <MemoryRouter>
+            <MemoryRouter
+              future={{
+                v7_startTransition: false,
+                v7_relativeSplatPath: false,
+              }}
+            >
               <QuestionProvider>
                 <QuizPage />
               </QuestionProvider>

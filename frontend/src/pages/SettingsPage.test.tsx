@@ -179,7 +179,12 @@ describe('SettingsPage', () => {
       const renderResult = render(
         <QueryClientProvider client={queryClient}>
           <MantineProvider>
-            <BrowserRouter>
+            <BrowserRouter
+              future={{
+                v7_startTransition: false,
+                v7_relativeSplatPath: false,
+              }}
+            >
               <div>Test with providers</div>
             </BrowserRouter>
           </MantineProvider>
@@ -208,7 +213,12 @@ describe('SettingsPage', () => {
       render(
         <QueryClientProvider client={queryClient}>
           <MantineProvider>
-            <BrowserRouter>
+            <BrowserRouter
+              future={{
+                v7_startTransition: false,
+                v7_relativeSplatPath: false,
+              }}
+            >
               <SettingsPage />
             </BrowserRouter>
           </MantineProvider>
@@ -259,7 +269,12 @@ describe('SettingsPage', () => {
       render(
         <QueryClientProvider client={queryClient}>
           <MantineProvider>
-            <BrowserRouter>
+            <BrowserRouter
+              future={{
+                v7_startTransition: false,
+                v7_relativeSplatPath: false,
+              }}
+            >
               <SettingsPage />
             </BrowserRouter>
           </MantineProvider>

@@ -6,7 +6,14 @@ import StoryPage from '../StoryPage';
 
 // Mock the story hook
 const mockUseStory = {
-  currentStory: { id: 1, title: 'Existing Story', sections: [], status: 'active', language: 'en', is_current: true },
+  currentStory: {
+    id: 1,
+    title: 'Existing Story',
+    sections: [],
+    status: 'active',
+    language: 'en',
+    is_current: true,
+  },
   archivedStories: [],
   sections: [],
   currentSectionIndex: 0,
@@ -41,13 +48,21 @@ vi.mock('../../hooks/useStory', () => ({
 
 // Silence TTS hooks used by children
 vi.mock('../../hooks/useTTS', () => ({
-  useTTS: () => ({ isLoading: false, isPlaying: false, playTTS: vi.fn(), stopTTS: vi.fn() }),
+  useTTS: () => ({
+    isLoading: false,
+    isPlaying: false,
+    playTTS: vi.fn(),
+    stopTTS: vi.fn(),
+  }),
 }));
 
 // Preferences hook used by children
 vi.mock('../../api/api', async () => {
   const actual = await vi.importActual('../../api/api');
-  return { ...actual, useGetV1PreferencesLearning: vi.fn(() => ({ data: {} })) };
+  return {
+    ...actual,
+    useGetV1PreferencesLearning: vi.fn(() => ({ data: {} })),
+  };
 });
 
 const renderPage = () =>
@@ -74,4 +89,3 @@ describe('StoryPage - New Story button', () => {
     expect(screen.getByLabelText(/Story Title/i)).toBeInTheDocument();
   });
 });
-

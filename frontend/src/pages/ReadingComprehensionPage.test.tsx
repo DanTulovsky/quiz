@@ -55,7 +55,12 @@ describe('ReadingComprehensionPage - lifecycle safety', () => {
       const renderResult = render(
         <QueryClientProvider client={createTestQueryClient()}>
           <MantineProvider>
-            <MemoryRouter>
+            <MemoryRouter
+              future={{
+                v7_startTransition: false,
+                v7_relativeSplatPath: false,
+              }}
+            >
               <QuestionProvider>
                 <ReadingComprehensionPage />
               </QuestionProvider>
@@ -93,7 +98,12 @@ describe('ReadingComprehensionPage - lifecycle safety', () => {
       const renderResult = render(
         <QueryClientProvider client={createTestQueryClient()}>
           <MantineProvider>
-            <MemoryRouter>
+            <MemoryRouter
+              future={{
+                v7_startTransition: false,
+                v7_relativeSplatPath: false,
+              }}
+            >
               <QuestionProvider>
                 <ReadingComprehensionPage />
               </QuestionProvider>
