@@ -145,7 +145,7 @@ const StoryReadingView: React.FC<StoryReadingViewProps> = ({
         </Box>
 
         <ScrollArea style={{ height: '60vh' }}>
-          <div style={{ paddingRight: '20px' }}>
+          <div style={{ paddingRight: '56px' }}>
             <Stack spacing='lg'>
               {/* Story Metadata */}
               {(story.subject || story.author_style || story.genre) && (
@@ -183,6 +183,8 @@ const StoryReadingView: React.FC<StoryReadingViewProps> = ({
                       lineHeight: 1.7,
                       fontSize: '16px',
                       whiteSpace: 'pre-wrap',
+                      // Space for the TTS icon so text doesn't overlap
+                      paddingRight: '4px',
                       marginBottom:
                         index < story.sections.length - 1 ? '1.5rem' : '1rem',
                     }}
