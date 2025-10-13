@@ -435,6 +435,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               {item.name === 'Daily' && (
                 <Divider my='xs' label='Practice' labelPosition='center' />
               )}
+              {item.name === 'AI Conversations' && (
+                <Divider my='xs' label='History' labelPosition='center' />
+              )}
               <NavLink
                 component={Link}
                 to={item.href}
