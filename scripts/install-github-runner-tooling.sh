@@ -137,6 +137,15 @@ install_go_tools() {
     else
         log_info "goimports already installed"
     fi
+
+    # Install gotestsum
+    if ! command_exists gotestsum; then
+        log_info "Installing gotestsum..."
+        go install gotest.tools/gotestsum@latest
+        log_success "gotestsum installed successfully"
+    else
+        log_info "gotestsum already installed"
+    fi
 }
 
 # Install Node.js development tools
