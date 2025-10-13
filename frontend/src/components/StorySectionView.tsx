@@ -221,6 +221,8 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
             lineHeight: 1.6,
             fontSize: '16px',
             whiteSpace: 'pre-wrap',
+            // Ensure text never overlaps the TTS icon in the top-right
+            paddingRight: '56px',
           }}
         >
           {section.content}
