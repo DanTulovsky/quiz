@@ -1590,6 +1590,11 @@ test.describe('Comprehensive API Tests', () => {
                 storyId = getAvailableStoryId('apitestuserstory1', includeArchived, storyData);
               }
               endpointPath = endpointPath.replace(`{${key}}`, storyId.toString());
+            } else if (key === 'id' && endpointPath.includes('/conversations/') && !endpointPath.includes('/messages')) {
+              // For conversation endpoints, use a valid conversation UUID from test data
+              const conversationId = getAvailableConversationId(currentUser.username);
+              endpointPath = endpointPath.replace(`{${key}}`, conversationId);
+              // console.log(`Replaced {${key}} with conversation ID ${conversationId} in path: ${endpointPath}`);
             } else {
               endpointPath = endpointPath.replace(`{${key}}`, String(value));
             }

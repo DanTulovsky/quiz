@@ -12,6 +12,7 @@ import (
 	contextutils "quizapp/internal/utils"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"go.opentelemetry.io/otel/attribute"
 )
 
@@ -154,6 +155,12 @@ func (h *AIConversationHandler) GetConversation(c *gin.Context) {
 		return
 	}
 
+	// Validate UUID format
+	if _, err := uuid.Parse(conversationID); err != nil {
+		HandleAppError(c, contextutils.ErrInvalidFormat)
+		return
+	}
+
 	// Add span attributes for observability
 	span.SetAttributes(
 		observability.AttributeUserID(userID),
@@ -196,6 +203,12 @@ func (h *AIConversationHandler) UpdateConversation(c *gin.Context) {
 	conversationID := c.Param("id")
 	if conversationID == "" {
 		HandleAppError(c, contextutils.ErrMissingRequired)
+		return
+	}
+
+	// Validate UUID format
+	if _, err := uuid.Parse(conversationID); err != nil {
+		HandleAppError(c, contextutils.ErrInvalidFormat)
 		return
 	}
 
@@ -259,6 +272,12 @@ func (h *AIConversationHandler) DeleteConversation(c *gin.Context) {
 		return
 	}
 
+	// Validate UUID format
+	if _, err := uuid.Parse(conversationID); err != nil {
+		HandleAppError(c, contextutils.ErrInvalidFormat)
+		return
+	}
+
 	// Add span attributes for observability
 	span.SetAttributes(
 		observability.AttributeUserID(userID),
@@ -283,10 +302,7 @@ func (h *AIConversationHandler) DeleteConversation(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, api.SuccessResponse{
-		Message: stringPtr("Conversation deleted successfully"),
-		Success: true,
-	})
+	c.Status(http.StatusNoContent)
 }
 
 // AddMessage handles POST /v1/ai/conversations/{conversationId}/messages
@@ -304,6 +320,12 @@ func (h *AIConversationHandler) AddMessage(c *gin.Context) {
 	conversationID := c.Param("conversationId")
 	if conversationID == "" {
 		HandleAppError(c, contextutils.ErrMissingRequired)
+		return
+	}
+
+	// Validate UUID format
+	if _, err := uuid.Parse(conversationID); err != nil {
+		HandleAppError(c, contextutils.ErrInvalidFormat)
 		return
 	}
 
