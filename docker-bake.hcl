@@ -24,7 +24,7 @@ variable "BUILD_TIME" {
 }
 
 variable "TARGETARCH" {
-  default = env("TARGETARCH", "arm64")
+  default = "arm64"
 }
 
 

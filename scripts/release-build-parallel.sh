@@ -43,6 +43,18 @@ if command -v docker >/dev/null 2>&1; then
   export COMMIT_HASH="$COMMIT_HASH"
   export BUILD_TIME="$BUILD_TIME"
 
+  # Determine host architecture and map to Docker TARGETARCH (amd64/arm64)
+  TARGETARCH="$(uname -m)"
+  case "$TARGETARCH" in
+    x86_64|x86-64|x64)
+      TARGETARCH="amd64" ;;
+    aarch64|arm64)
+      TARGETARCH="arm64" ;;
+    *)
+      TARGETARCH="amd64" ;;
+  esac
+  export TARGETARCH
+
   # Ensure bake file exists
   if [ ! -f docker-bake.hcl ]; then
     echo "docker-bake.hcl not found; aborting" >&2
@@ -60,6 +72,7 @@ if command -v docker >/dev/null 2>&1; then
     --set "*.cache-to=type=registry,ref=mrwetsnow/quiz-backend:buildcache,mode=max" \
     --set "*.cache-to=type=registry,ref=mrwetsnow/quiz-worker:buildcache,mode=max" \
     --set "*.cache-to=type=registry,ref=mrwetsnow/quiz-frontend:buildcache,mode=max" \
+    --set "TARGETARCH=$TARGETARCH" \
     default || {
     echo "One or more bake targets failed" >&2
     exit 1
