@@ -42,6 +42,7 @@ runs:
         export SESSION_SECRET=test_session_secret_for_e2e
 
         # Run the complete test suite
+        task setup-frontend
         task test-frontend
 
       env:
