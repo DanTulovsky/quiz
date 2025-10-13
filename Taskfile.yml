@@ -382,7 +382,7 @@ tasks:
       - echo "Setting up test database with golden data..."
       - task setup-test-db
       - echo "Running Playwright E2E tests..."
-      - npm ci
+      # - npm ci
       - npx playwright test --grep "api_" --workers=1
 
   test-e2e-api-single:

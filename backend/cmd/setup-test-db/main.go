@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	"quizapp/internal/api"
 	"quizapp/internal/config"
 	"quizapp/internal/database"
 	"quizapp/internal/models"
@@ -109,6 +110,39 @@ type TestDailyAssignments struct {
 		QuestionIDs        []int  `yaml:"question_ids"`
 		CompletedQuestions []int  `yaml:"completed_questions"`
 	} `yaml:"daily_assignments"`
+}
+
+// TestMessageData represents message data for E2E tests
+type TestMessageData struct {
+	ID             string `json:"id"`
+	ConversationID string `json:"conversation_id"`
+	Role           string `json:"role"`
+	Content        string `json:"content"`
+	Bookmarked     bool   `json:"bookmarked"`
+	QuestionID     *int   `json:"question_id,omitempty"`
+	CreatedAt      string `json:"created_at"`
+	UpdatedAt      string `json:"updated_at"`
+}
+
+// TestConversationData represents conversation data for E2E tests
+type TestConversationData struct {
+	ID       string            `json:"id"`
+	Username string            `json:"username"`
+	Title    string            `json:"title"`
+	Messages []TestMessageData `json:"messages"`
+}
+
+// TestConversations represents a collection of test conversations
+type TestConversations struct {
+	Conversations []struct {
+		Username string `yaml:"username"`
+		Title    string `yaml:"title"`
+		Messages []struct {
+			Role       string `yaml:"role"`
+			Content    string `yaml:"content"`
+			QuestionID *int   `yaml:"question_id"`
+		} `yaml:"messages"`
+	} `yaml:"conversations"`
 }
 
 // TestStoryData represents story data for E2E tests
@@ -417,6 +451,17 @@ func setupTestData(ctx context.Context, rootDir string, userService *services.Us
 	// Output story data for E2E tests
 	if err := outputStoryDataForTests(stories, rootDir, logger); err != nil {
 		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to output story data: %w", err)
+	}
+
+	// 8. Load and create conversations
+	conversations, err := loadAndCreateConversations(ctx, filepath.Join(dataDir, "test_conversations.yaml"), users, db, logger)
+	if err != nil {
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup conversations: %w", err)
+	}
+
+	// Output conversation data for E2E tests
+	if err := outputConversationDataForTests(conversations, rootDir, logger); err != nil {
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to output conversation data: %w", err)
 	}
 
 	return users, nil
@@ -1187,6 +1232,151 @@ func outputRolesDataForTests(db *sql.DB, rootDir string, logger *observability.L
 	logger.Info(context.Background(), "Output roles data for E2E tests", map[string]interface{}{
 		"file_path":   outputPath,
 		"roles_count": len(roleData),
+	})
+
+	return nil
+}
+
+func loadAndCreateConversations(ctx context.Context, filePath string, users map[string]*models.User, db *sql.DB, logger *observability.Logger) (map[string]TestConversationData, error) {
+	conversations := make(map[string]TestConversationData)
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		// Conversations file is optional, so just return if it doesn't exist
+		logger.Info(ctx, "Conversations file not found, skipping", map[string]interface{}{
+			"file_path": filePath,
+		})
+		return conversations, nil
+	}
+
+	var testConversations TestConversations
+	if err := yaml.Unmarshal(data, &testConversations); err != nil {
+		return conversations, contextutils.WrapError(err, "failed to parse conversations data")
+	}
+
+	// Create conversation service
+	conversationService := services.NewConversationService(db)
+
+	for i, convData := range testConversations.Conversations {
+		user, exists := users[convData.Username]
+		if !exists {
+			return conversations, contextutils.ErrorWithContextf("user not found for conversation: %s", convData.Username)
+		}
+
+		// Create conversation
+		createReq := &api.CreateConversationRequest{
+			Title: convData.Title,
+		}
+
+		conversation, err := conversationService.CreateConversation(ctx, uint(user.ID), createReq)
+		if err != nil {
+			return conversations, contextutils.WrapErrorf(err, "failed to create conversation %d", i)
+		}
+
+		// Store conversation data for test output (messages will be added below)
+		convKey := fmt.Sprintf("%s_%s", convData.Username, convData.Title)
+		conversations[convKey] = TestConversationData{
+			ID:       conversation.Id.String(),
+			Username: convData.Username,
+			Title:    convData.Title,
+			Messages: []TestMessageData{},
+		}
+
+		// Create messages for this conversation
+		var messageIDs []string
+		for j, msgData := range convData.Messages {
+			content := struct {
+				Text *string `json:"text,omitempty"`
+			}{
+				Text: &msgData.Content,
+			}
+
+			createMsgReq := &api.CreateMessageRequest{
+				Content:    content,
+				Role:       api.CreateMessageRequestRole(msgData.Role),
+				QuestionId: msgData.QuestionID,
+			}
+
+			err := conversationService.AddMessage(ctx, conversation.Id.String(), uint(user.ID), createMsgReq)
+			if err != nil {
+				return conversations, contextutils.WrapErrorf(err, "failed to add message %d for conversation %d", j, i)
+			}
+
+			// Store message ID for later retrieval (we need to get the actual message from DB to get its UUID and timestamps)
+			messageIDs = append(messageIDs, "temp") // We'll get the actual IDs from DB query
+		}
+
+		// Now retrieve all messages for this conversation to get their actual data
+		messages, err := conversationService.GetConversationMessages(ctx, conversation.Id.String(), uint(user.ID))
+		if err != nil {
+			return conversations, contextutils.WrapErrorf(err, "failed to get messages for conversation %d", i)
+		}
+
+		// Convert messages to our test data format
+		var testMessages []TestMessageData
+		for _, msg := range messages {
+			testMsg := TestMessageData{
+				ID:             msg.Id.String(),
+				ConversationID: msg.ConversationId.String(),
+				Role:           string(msg.Role),
+				Bookmarked:     false, // Default value
+				CreatedAt:      msg.CreatedAt.Format(time.RFC3339),
+				UpdatedAt:      msg.UpdatedAt.Format(time.RFC3339),
+			}
+
+			if msg.QuestionId != nil {
+				testMsg.QuestionID = msg.QuestionId
+			}
+
+			if msg.Content.Text != nil {
+				testMsg.Content = *msg.Content.Text
+			}
+
+			testMessages = append(testMessages, testMsg)
+		}
+
+		// Update the conversation with the actual messages
+		conversations[convKey] = TestConversationData{
+			ID:       conversation.Id.String(),
+			Username: convData.Username,
+			Title:    convData.Title,
+			Messages: testMessages,
+		}
+
+		logger.Info(ctx, "Created test conversation", map[string]interface{}{
+			"username":        convData.Username,
+			"title":           convData.Title,
+			"conversation_id": conversation.Id,
+		})
+	}
+
+	return conversations, nil
+}
+
+// outputConversationDataForTests outputs the created conversation data to a JSON file for E2E tests to read
+func outputConversationDataForTests(conversations map[string]TestConversationData, rootDir string, logger *observability.Logger) error {
+	// Write to JSON file in the frontend/tests directory
+	outputPath := filepath.Join(rootDir, "..", "frontend", "tests", "test-conversations.json")
+
+	// Ensure the directory exists
+	outputDir := filepath.Dir(outputPath)
+	if err := os.MkdirAll(outputDir, 0o755); err != nil {
+		return contextutils.WrapErrorf(err, "failed to create output directory: %s", outputDir)
+	}
+
+	// Marshal to JSON with pretty printing
+	jsonData, err := json.MarshalIndent(conversations, "", "  ")
+	if err != nil {
+		return contextutils.WrapErrorf(err, "failed to marshal conversations data to JSON")
+	}
+
+	// Write to file
+	if err := os.WriteFile(outputPath, jsonData, 0o644); err != nil {
+		return contextutils.WrapErrorf(err, "failed to write conversations data to file: %s", outputPath)
+	}
+
+	logger.Info(context.Background(), "Output conversations data for E2E tests", map[string]interface{}{
+		"file_path":           outputPath,
+		"conversations_count": len(conversations),
 	})
 
 	return nil

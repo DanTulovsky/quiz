@@ -1303,6 +1303,7 @@ func (s *StoryService) createSectionInTx(ctx context.Context, tx *sql.Tx, sectio
 	return err
 }
 
+
 // GenerateStorySection generates a new section for a story using AI
 func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID uint, aiService AIServiceInterface, userAIConfig *models.UserAIConfig, generatorType models.GeneratorType) (*models.StorySectionWithQuestions, error) {
 	ctx, span := observability.TraceFunction(ctx, "story_service", "generate_section",
@@ -1322,7 +1323,7 @@ func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID
 	}
 	span.SetAttributes(attribute.String("story.title", story.Title))
 	span.SetAttributes(attribute.String("story.language", story.Language))
-	span.SetAttributes(attribute.String("story.section_length_override", string(*story.SectionLengthOverride)))
+	span.SetAttributes(attribute.String("story.section_length_override", story.GetSectionLengthOverride()))
 	span.SetAttributes(attribute.String("story.subject", stringPtrToString(story.Subject)))
 	span.SetAttributes(attribute.String("story.author_style", stringPtrToString(story.AuthorStyle)))
 	span.SetAttributes(attribute.String("story.time_period", stringPtrToString(story.TimePeriod)))

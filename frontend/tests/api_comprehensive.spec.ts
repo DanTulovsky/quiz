@@ -109,6 +109,16 @@ interface TestRolesData {
   [roleName: string]: TestRoleData;
 }
 
+interface TestConversationData {
+  id: string;
+  username: string;
+  title: string;
+}
+
+interface TestConversationsData {
+  [conversationKey: string]: TestConversationData;
+}
+
 
 /**
  * Comprehensive API E2E tests that dynamically build test cases from swagger.yaml
@@ -123,6 +133,7 @@ test.describe('Comprehensive API Tests', () => {
   let errorCases: TestCase[] = [];
   let testData: TestData;
   let testRolesData: TestRolesData;
+  let testConversationsData: TestConversationsData;
 
   test.beforeAll(async () => {
     // Load swagger.yaml
@@ -162,6 +173,27 @@ test.describe('Comprehensive API Tests', () => {
         'admin': {id: 1, name: 'admin', description: 'Administrator role'},
         'user': {id: 2, name: 'user', description: 'Regular user role'}
       };
+    }
+
+    // Load conversations data
+    const conversationsPath = path.join(path.dirname(fileURLToPath(import.meta.url)), 'test-conversations.json');
+    console.log(`Attempting to load conversations from: ${conversationsPath}`);
+    console.log(`Current working directory: ${process.cwd()}`);
+    console.log(`File exists: ${fs.existsSync(conversationsPath)}`);
+
+    if (fs.existsSync(conversationsPath)) {
+      try {
+        const conversationsContent = fs.readFileSync(conversationsPath, 'utf8');
+        testConversationsData = JSON.parse(conversationsContent);
+        console.log(`Loaded ${Object.keys(testConversationsData).length} conversations from test data`);
+        console.log(`Sample conversation: ${JSON.stringify(Object.values(testConversationsData)[0], null, 2)}`);
+      } catch (error) {
+        console.error('Error loading conversations data:', error);
+        testConversationsData = {};
+      }
+    } else {
+      console.warn('test-conversations.json not found, using empty conversations data');
+      testConversationsData = {};
     }
 
     // Initialize available user IDs
@@ -977,6 +1009,37 @@ test.describe('Comprehensive API Tests', () => {
     return availableUserIds[0]; // Use the first available ID
   }
 
+  function getAvailableConversationId(username?: string): string {
+    console.log(`getAvailableConversationId called with username: ${username}`);
+    console.log(`testConversationsData keys: ${Object.keys(testConversationsData)}`);
+    console.log(`testConversationsData length: ${Object.keys(testConversationsData).length}`);
+
+    if (!testConversationsData || Object.keys(testConversationsData).length === 0) {
+      console.error('No conversation data available!');
+      throw new Error('No conversation data available. Test conversations may not have been created during setup.');
+    }
+
+    // Find a conversation for the given username or any conversation if no username specified
+    const conversationKeys = Object.keys(testConversationsData);
+    for (const key of conversationKeys) {
+      const conversation = testConversationsData[key];
+      console.log(`Checking conversation ${key}: username=${conversation.username}, id=${conversation.id}`);
+      if (!username || conversation.username === username) {
+        console.log(`Found matching conversation: ${conversation.id}`);
+        return conversation.id;
+      }
+    }
+
+    // If no conversation found for the specific username, use any conversation
+    if (conversationKeys.length > 0) {
+      const id = testConversationsData[conversationKeys[0]].id;
+      console.log(`Using fallback conversation: ${id}`);
+      return id;
+    }
+
+    throw new Error(`No conversations found for user '${username}'. Available conversations: ${conversationKeys.join(', ')}`);
+  }
+
   function getAvailableStoryId(username?: string, includeArchived: boolean = false, storyData?: any): number {
     if (availableStoryIds.length === 0) {
       throw new Error('No available story IDs. Test data setup may have failed.');
@@ -1137,7 +1200,7 @@ test.describe('Comprehensive API Tests', () => {
   }
 
   // Helper function to determine what type of ID we need and get the appropriate value
-  async function getReplacementId(path: string, paramKey: string, request: any, userContext?: {username: string}, method?: string): Promise<{value: number | string; type: 'user' | 'question' | 'daily_user' | 'date' | 'role' | 'provider' | 'story'}> {
+  async function getReplacementId(path: string, paramKey: string, request: any, userContext?: {username: string}, method?: string): Promise<{value: number | string; type: 'user' | 'question' | 'daily_user' | 'date' | 'role' | 'provider' | 'story' | 'conversation'}> {
     if (paramKey === 'userId') {
       return {value: getUserIdWithDailyAssignments(), type: 'daily_user'};
     }
@@ -1176,6 +1239,18 @@ test.describe('Comprehensive API Tests', () => {
     }
 
     if (paramKey === 'id') {
+      console.log(`Processing path: ${path}, paramKey: ${paramKey}, userContext: ${userContext?.username}`);
+      // Check if this is a conversation-related endpoint
+      if (path.includes('/conversations/') && !path.includes('/messages')) {
+        console.log(`Processing conversation endpoint: ${path}, userContext: ${userContext?.username}`);
+        // Use a conversation UUID from test data
+        const conversationId = getAvailableConversationId(userContext?.username);
+        console.log(`Using conversation ID: ${conversationId}`);
+        return {value: conversationId, type: 'conversation'};
+      } else {
+        console.log(`Path ${path} does not match conversation endpoint pattern`);
+      }
+
       // Check if this is a story-related endpoint
       if (path.includes('/story/')) {
         // Use the dedicated story test user for story operations
@@ -1394,8 +1469,11 @@ test.describe('Comprehensive API Tests', () => {
       else if (key === 'questionId') value = 1;
       else if (key === 'userId') value = 1;
       else if (key === 'id') {
-        // Check if this is a story-related endpoint
-        if (path.includes('/story/')) {
+        // Check if this is a conversation-related endpoint
+        if (path.includes('/conversations/') && !path.includes('/messages')) {
+          // For conversation endpoints, use an invalid UUID to test 404 scenarios
+          value = '00000000-0000-0000-0000-000000000001';
+        } else if (path.includes('/story/')) {
           // For unauthenticated path replacement, we need an active story ID that exists
           // but we want to test 404 scenarios, so we'll use a large number that doesn't exist
           value = 999999999;

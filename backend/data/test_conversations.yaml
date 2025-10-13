@@ -1,0 +1,46 @@
+conversations:
+- username: apitestuser
+  title: "Italian Language Learning"
+  messages:
+  - role: user
+    content: "Ciao! I'm learning Italian and I need help with basic greetings. Can you help me?"
+    question_id: null
+  - role: assistant
+    content: "Ciao! Certo che posso aiutarti con i saluti italiani! Ecco alcuni saluti di base:\n\n- Ciao = Hello (informal)\n- Buongiorno = Good morning/Good day\n- Buonasera = Good evening\n- Buonanotte = Good night\n- Come stai? = How are you?\n- Bene, grazie! = Fine, thank you!\n\nVuoi che ti dia più esempi o hai domande specifiche?"
+    question_id: null
+  - role: user
+    content: "Thanks! Can you explain the difference between 'ciao' and 'salve'?"
+    question_id: null
+  - role: assistant
+    content: "Certo! Ecco la differenza:\n\n**Ciao**: È un saluto informale usato con amici, familiari, e persone che conosci bene. È anche usato per salutare quando ci si incontra e quando ci si saluta. È molto comune tra i giovani.\n\n**Salve**: È un saluto più formale e neutrale. Si usa con persone che non conosci bene o in situazioni professionali. È meno personale di 'ciao' e si usa principalmente per salutare, non per accomiatarsi.\n\nIn generale:\n- Usa 'Ciao' con amici e familiari\n- Usa 'Salve' con estranei o in contesti formali\n- 'Buongiorno' è sempre appropriato fino al tardo pomeriggio"
+    question_id: null
+
+- username: apitestuserstory1
+  title: "Story Writing Discussion"
+  messages:
+  - role: user
+    content: "I'm writing a story in Italian and need help with vocabulary for describing emotions. Can you help?"
+    question_id: null
+  - role: assistant
+    content: "Assolutamente! Ecco alcuni vocaboli utili per descrivere le emozioni in italiano:\n\n**Emozioni positive:**\n- Felice (happy)\n- Gioioso/a (joyful)\n- Entusiasta (enthusiastic)\n- Eccitato/a (excited)\n- Tranquillo/a (calm)\n- Rilassato/a (relaxed)\n- Contento/a (content)\n\n**Emozioni negative:**\n- Triste (sad)\n- Arrabbiato/a (angry)\n- Preoccupato/a (worried)\n- Nervoso/a (nervous)\n- Spaventato/a (scared)\n- Confuso/a (confused)\n- Frustrato/a (frustrated)\n\n**Espressioni utili:**\n- Sono felice di vederti = I'm happy to see you\n- Mi sento triste oggi = I feel sad today\n- È molto arrabbiato = He is very angry\n\nVuoi esempi di frasi o altri tipi di emozioni?"
+    question_id: null
+
+- username: testuser
+  title: "General Language Questions"
+  messages:
+  - role: user
+    content: "What's the difference between 'essere' and 'stare' in Italian?"
+    question_id: null
+  - role: assistant
+    content: "Ottima domanda! 'Essere' e 'stare' sono entrambi verbi che significano 'to be' in inglese, ma hanno usi diversi:\n\n**Essere** (permanente):\n- Identità: Sono Marco (I am Marco)\n- Nazionalità: Sono italiano (I am Italian)\n- Professione: Sono un insegnante (I am a teacher)\n- Caratteristiche permanenti: Sono alto (I am tall)\n\n**Stare** (temporaneo):\n- Stato di salute: Sto bene (I am well/I feel fine)\n- Posizione: Sto seduto (I am sitting)\n- Condizioni temporanee: Sto studiando (I am studying)\n- Espressioni idiomatiche: Come stai? (How are you?)\n\nLa regola generale è: usa 'essere' per caratteristiche permanenti e 'stare' per stati temporanei o posizioni."
+    question_id: null
+
+- username: apitestadmin
+  title: "Admin Discussion"
+  messages:
+  - role: user
+    content: "As an admin, I need to understand the system better. Can you explain the user roles system?"
+    question_id: null
+  - role: assistant
+    content: "Certo! Ecco come funziona il sistema dei ruoli nel quiz:\n\n**Ruoli disponibili:**\n- **admin**: Accesso completo a tutte le funzionalità amministrative\n- **user**: Ruolo standard per gli utenti normali\n- **moderator**: (se implementato) accesso moderato alle funzionalità\n\n**Permessi admin:**\n- Gestione utenti (creazione, modifica, eliminazione)\n- Gestione domande (aggiunta, modifica, approvazione)\n- Visualizzazione statistiche avanzate\n- Accesso a endpoint amministrativi\n- Gestione ruoli utente\n\n**Permessi user:**\n- Rispondere alle domande\n- Visualizzare il proprio progresso\n- Modificare le proprie impostazioni\n- Utilizzare funzionalità AI (se abilitate)\n- Creare storie (se implementato)\n\nIl sistema usa cookie di sessione per l'autenticazione e verifica i ruoli per ogni richiesta."
+    question_id: null

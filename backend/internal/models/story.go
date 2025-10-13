@@ -60,6 +60,14 @@ type Story struct {
 	Sections []StorySection `json:"sections,omitempty"`
 }
 
+// GetSectionLengthOverride returns the section length override as a string, handling nil pointers
+func (s *Story) GetSectionLengthOverride() string {
+	if s.SectionLengthOverride == nil {
+		return ""
+	}
+	return string(*s.SectionLengthOverride)
+}
+
 // StorySection represents an individual section of a story
 type StorySection struct {
 	ID             uint          `json:"id"`
