@@ -44,3 +44,33 @@ conversations:
   - role: assistant
     content: "Certo! Ecco come funziona il sistema dei ruoli nel quiz:\n\n**Ruoli disponibili:**\n- **admin**: Accesso completo a tutte le funzionalità amministrative\n- **user**: Ruolo standard per gli utenti normali\n- **moderator**: (se implementato) accesso moderato alle funzionalità\n\n**Permessi admin:**\n- Gestione utenti (creazione, modifica, eliminazione)\n- Gestione domande (aggiunta, modifica, approvazione)\n- Visualizzazione statistiche avanzate\n- Accesso a endpoint amministrativi\n- Gestione ruoli utente\n\n**Permessi user:**\n- Rispondere alle domande\n- Visualizzare il proprio progresso\n- Modificare le proprie impostazioni\n- Utilizzare funzionalità AI (se abilitate)\n- Creare storie (se implementato)\n\nIl sistema usa cookie di sessione per l'autenticazione e verifica i ruoli per ogni richiesta."
     question_id: null
+
+- username: apitestuser
+  title: "Italian Language Learning - To Be Deleted"
+  messages:
+  - role: user
+    content: "I want to delete this conversation after testing the delete functionality."
+    question_id: null
+  - role: assistant
+    content: "This conversation is specifically created for testing the delete functionality. You can safely delete it without affecting other tests."
+    question_id: null
+
+- username: apitestuserstory1
+  title: "Story Writing Discussion - To Be Deleted"
+  messages:
+  - role: user
+    content: "I want to delete this conversation after testing the delete functionality."
+    question_id: null
+  - role: assistant
+    content: "This conversation is specifically created for testing the delete functionality. You can safely delete it without affecting other tests."
+    question_id: null
+
+- username: testuser
+  title: "General Language Questions - To Be Deleted"
+  messages:
+  - role: user
+    content: "I want to delete this conversation after testing the delete functionality."
+    question_id: null
+  - role: assistant
+    content: "This conversation is specifically created for testing the delete functionality. You can safely delete it without affecting other tests."
+    question_id: null

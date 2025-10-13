@@ -930,12 +930,6 @@ paths:
                   offset:
                     type: integer
                     description: Number of conversations skipped
-        "400":
-          description: Invalid search query
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
         "401":
           description: User not authenticated
           content:

@@ -1282,7 +1282,6 @@ func loadAndCreateConversations(ctx context.Context, filePath string, users map[
 		}
 
 		// Create messages for this conversation
-		var messageIDs []string
 		for j, msgData := range convData.Messages {
 			content := struct {
 				Text *string `json:"text,omitempty"`
@@ -1300,9 +1299,6 @@ func loadAndCreateConversations(ctx context.Context, filePath string, users map[
 			if err != nil {
 				return conversations, contextutils.WrapErrorf(err, "failed to add message %d for conversation %d", j, i)
 			}
-
-			// Store message ID for later retrieval (we need to get the actual message from DB to get its UUID and timestamps)
-			messageIDs = append(messageIDs, "temp") // We'll get the actual IDs from DB query
 		}
 
 		// Now retrieve all messages for this conversation to get their actual data

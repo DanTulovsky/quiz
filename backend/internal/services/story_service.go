@@ -1303,7 +1303,6 @@ func (s *StoryService) createSectionInTx(ctx context.Context, tx *sql.Tx, sectio
 	return err
 }
 
-
 // GenerateStorySection generates a new section for a story using AI
 func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID uint, aiService AIServiceInterface, userAIConfig *models.UserAIConfig, generatorType models.GeneratorType) (*models.StorySectionWithQuestions, error) {
 	ctx, span := observability.TraceFunction(ctx, "story_service", "generate_section",

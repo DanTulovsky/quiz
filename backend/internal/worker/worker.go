@@ -1451,7 +1451,7 @@ func (w *Worker) GenerateQuestionsForUser(ctx context.Context, user *models.User
 			"instance": w.instance,
 			"error":    err.Error(),
 		})
-		recentQuestions = []string{}
+		return "", fmt.Errorf("failed to build AI request: %w", err)
 	}
 	aiReq.RecentQuestionHistory = recentQuestions
 
