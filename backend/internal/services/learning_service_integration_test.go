@@ -1042,47 +1042,6 @@ func TestLearningService_GetBackgroundJobsStatus_Integration(t *testing.T) {
 	assert.NotNil(t, status)
 }
 
-func TestLearningService_IsForeignKeyConstraintViolation_Integration(t *testing.T) {
-	db := SharedTestDBSetup(t)
-	defer db.Close()
-
-	_, err := config.NewConfig()
-	require.NoError(t, err)
-	_ = observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
-
-	// Test with various error types
-	testCases := []struct {
-		name     string
-		err      error
-		expected bool
-	}{
-		{
-			name:     "nil error",
-			err:      nil,
-			expected: false,
-		},
-		{
-			name:     "foreign key constraint error",
-			err:      fmt.Errorf("pq: insert or update on table \"user_responses\" violates foreign key constraint \"user_responses_user_id_fkey\""),
-			expected: true,
-		},
-		{
-			name:     "other error",
-			err:      fmt.Errorf("some other error"),
-			expected: false,
-		},
-	}
-
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			// Note: isForeignKeyConstraintViolation is a private function, not a method
-			// This test is testing the private function indirectly through public methods
-			// For now, we'll skip this test since we can't access the private function directly
-			t.Skip("isForeignKeyConstraintViolation is a private function")
-		})
-	}
-}
-
 func TestLearningService_UpdatePriorityScoreAsync_Integration(t *testing.T) {
 	db := SharedTestDBSetup(t)
 	defer db.Close()
