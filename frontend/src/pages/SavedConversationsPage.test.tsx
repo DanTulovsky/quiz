@@ -1,4 +1,4 @@
-import { render, screen, cleanup, act } from '@testing-library/react';
+import { render, screen, cleanup, act, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -198,5 +198,58 @@ describe('SavedConversationsPage', () => {
 
     expect(screen.getByText('Grammar Questions')).toBeInTheDocument();
     expect(screen.getByText('Vocabulary Help')).toBeInTheDocument();
+  });
+
+  it('allows editing a conversation title via Save', async () => {
+    const mutateAsync = vi.fn().mockResolvedValue({});
+    vi.mocked(apiModule.usePutV1AiConversationsId).mockReturnValue({
+      mutateAsync,
+    } as unknown as ReturnType<typeof apiModule.usePutV1AiConversationsId>);
+
+    await act(async () => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MantineProvider>
+            <BrowserRouter
+              future={{
+                v7_startTransition: false,
+                v7_relativeSplatPath: false,
+              }}
+            >
+              <SavedConversationsPage />
+            </BrowserRouter>
+          </MantineProvider>
+        </QueryClientProvider>
+      );
+    });
+
+    // Open actions menu for the first conversation
+    const actionButtons = screen.getAllByRole('button', {
+      name: 'Conversation actions',
+    });
+    expect(actionButtons.length).toBeGreaterThan(0);
+    await act(async () => {
+      actionButtons[0].click();
+    });
+
+    // Click Edit Title
+    const editItem = await screen.findByText('Edit Title');
+    await act(async () => {
+      editItem.click();
+    });
+
+    // Change input value
+    const titleInput = await screen.findByLabelText('Title');
+    await act(async () => {
+      fireEvent.change(titleInput, { target: { value: 'New Title' } });
+    });
+
+    // Click Save
+    const saveButton = await screen.findByText('Save');
+    await act(async () => {
+      saveButton.click();
+    });
+
+    expect(mutateAsync).toHaveBeenCalled();
   });
 });

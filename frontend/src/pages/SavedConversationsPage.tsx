@@ -28,10 +28,11 @@ import {
   useGetV1AiSearch,
   useDeleteV1AiConversationsId,
   usePutV1AiConversationsId,
+  getGetV1AiConversationsQueryKey,
   Conversation,
   ChatMessage,
 } from '../api/api';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
 
 interface ConversationCardProps {
@@ -61,7 +62,7 @@ const ConversationCard: React.FC<ConversationCardProps> = ({
         </Title>
         <Menu shadow='md' width={120}>
           <Menu.Target>
-            <ActionIcon variant='subtle' color='gray'>
+            <ActionIcon aria-label='Conversation actions' variant='subtle' color='gray'>
               <Edit size={16} />
             </ActionIcon>
           </Menu.Target>
@@ -283,30 +284,35 @@ export const SavedConversationsPage: React.FC = () => {
     }, 0);
   };
 
-  // Mutations
-  const deleteConversationMutation = useMutation({
-    mutationFn: ({ conversationId }: { conversationId: string }) =>
-      useDeleteV1AiConversationsId().mutateAsync({ id: conversationId }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['aiConversations'] });
+  // Mutations (use generated hooks directly; avoid creating hooks inside callbacks)
+  const deleteConversationMutation = useDeleteV1AiConversationsId(
+    {
+      mutation: {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: getGetV1AiConversationsQueryKey({ limit: 50, offset: 0 }),
+          });
+        },
+      },
     },
-  });
+    queryClient
+  );
 
-  const updateConversationMutation = useMutation({
-    mutationFn: ({
-      conversationId,
-      data,
-    }: {
-      conversationId: string;
-      data: { title: string };
-    }) => usePutV1AiConversationsId().mutateAsync({ id: conversationId, data }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['aiConversations'] });
-      setEditModalOpen(false);
-      setEditingConversation(null);
-      setEditTitle('');
+  const updateConversationMutation = usePutV1AiConversationsId(
+    {
+      mutation: {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: getGetV1AiConversationsQueryKey({ limit: 50, offset: 0 }),
+          });
+          setEditModalOpen(false);
+          setEditingConversation(null);
+          setEditTitle('');
+        },
+      },
     },
-  });
+    queryClient
+  );
 
   const totalCount = activeSearchQuery.trim()
     ? searchData?.total || filteredConversations.length
@@ -344,7 +350,7 @@ export const SavedConversationsPage: React.FC = () => {
   const handleDeleteConversation = async (conversationId: string) => {
     if (window.confirm('Are you sure you want to delete this conversation?')) {
       try {
-        await deleteConversationMutation.mutateAsync({ conversationId });
+        await deleteConversationMutation.mutateAsync({ id: conversationId });
       } catch {}
     }
   };
@@ -354,7 +360,7 @@ export const SavedConversationsPage: React.FC = () => {
 
     try {
       await updateConversationMutation.mutateAsync({
-        conversationId: editingConversation.id,
+        id: editingConversation.id,
         data: { title: editTitle },
       });
     } catch {}
