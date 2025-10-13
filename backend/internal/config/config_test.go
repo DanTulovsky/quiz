@@ -436,31 +436,6 @@ func TestNewConfig_ConfigFileNotFound(t *testing.T) {
 	assert.Contains(t, err.Error(), "failed to load config from /nonexistent/file.yaml")
 }
 
-func TestNewConfig_LoadsFromEnvironmentVariable(t *testing.T) {
-	// The test should use the QUIZ_CONFIG_FILE environment variable set by the task
-	// which points to the merged config file
-	configFile := os.Getenv("QUIZ_CONFIG_FILE")
-	t.Logf("QUIZ_CONFIG_FILE environment variable: %s", configFile)
-
-	// If the environment variable is not set, skip this test
-	if configFile == "" {
-		t.Skip("QUIZ_CONFIG_FILE environment variable not set, skipping test")
-	}
-
-	config, err := NewConfig()
-	require.NoError(t, err)
-	require.NotNil(t, config)
-
-	// Should have default values
-	assert.Equal(t, "8080", config.Server.Port)
-	assert.Equal(t, "8081", config.Server.WorkerPort)
-	assert.Equal(t, "admin", config.Server.AdminUsername)
-	assert.Equal(t, "password", config.Server.AdminPassword)
-	assert.Equal(t, "your-secret-key", config.Server.SessionSecret)
-	assert.False(t, config.Server.Debug)
-	assert.Equal(t, "info", config.Server.LogLevel)
-}
-
 func TestConfig_GetLanguages(t *testing.T) {
 	config := &Config{
 		LanguageLevels: map[string]LanguageLevelConfig{

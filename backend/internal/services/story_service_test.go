@@ -54,16 +54,6 @@ func (suite *StoryServiceTestSuite) SetupTest() {
 	suite.testUserID = 1
 }
 
-// TestCreateStory tests story creation functionality
-func (suite *StoryServiceTestSuite) TestCreateStory() {
-	suite.T().Skip("Test requires database setup - service creation panics with nil database")
-}
-
-// TestCreateStoryValidation tests input validation
-func (suite *StoryServiceTestSuite) TestCreateStoryValidation() {
-	suite.T().Skip("Test requires database setup - service creation panics with nil database")
-}
-
 // TestGetSectionLengthTarget tests section length calculation
 func (suite *StoryServiceTestSuite) TestGetSectionLengthTarget() {
 	// Test A1 level defaults
@@ -87,11 +77,6 @@ func (suite *StoryServiceTestSuite) TestGetSectionLengthTarget() {
 	// Test unknown level defaults to intermediate
 	length = models.GetSectionLengthTarget("unknown", nil)
 	assert.Equal(suite.T(), 220, length) // Medium length for intermediate
-}
-
-// TestCanGenerateSection tests generation eligibility logic
-func (suite *StoryServiceTestSuite) TestCanGenerateSection() {
-	suite.T().Skip("Test requires database setup - service creation panics with nil database")
 }
 
 // TestSanitizeInput tests input sanitization

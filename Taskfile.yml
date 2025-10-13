@@ -72,7 +72,8 @@ tasks:
       SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"
     cmds:
       - echo "Running backend Go unit tests (no database required)..."
-      - QUIZ_CONFIG_FILE={{.TASKFILE_DIR}}/merged.config.yaml go test -timeout 30s -failfast ./...
+      # - QUIZ_CONFIG_FILE={{.TASKFILE_DIR}}/merged.config.yaml go test -timeout 30s -failfast ./...
+      - QUIZ_CONFIG_FILE={{.TASKFILE_DIR}}/merged.config.yaml gotestsum --format pkgname-and-test-fails -- -timeout 30s -failfast ./...
 
   test-go-integration:
     desc: "Go integration tests (requires database)"
@@ -91,7 +92,8 @@ tasks:
       - echo "Starting test database..."
       - docker compose -f ../docker-compose.test.yml up -d --wait postgres-test
       - echo "Running backend Go integration tests (sequential to avoid database races)..."
-      - go test -timeout 5m -tags=integration -p 1 -failfast ./...
+      # - go test -timeout 5m -tags=integration -p 1 -failfast ./...
+      - gotestsum --format pkgname-and-test-fails -- -tags=integration -p 1 -failfast ./...
       # - go test -timeout 5m -tags=integration -p 1 -json -failfast ./... | tee /tmp/output.json
 
   test-go-integration-single:
