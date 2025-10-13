@@ -938,6 +938,18 @@ install_go_tools() {
     else
         log_info "covreport already installed"
     fi
+
+    # Install gotestsum (test runner with better output)
+    if ! command_exists gotestsum || [[ "$force_reinstall" == "true" ]]; then
+        log_info "Installing gotestsum..."
+        if [[ "$DRY_RUN" == "true" ]]; then
+            log_dry_run "Would run: go install gotest.tools/gotestsum@latest"
+        else
+            go install gotest.tools/gotestsum@latest
+        fi
+    else
+        log_info "gotestsum already installed"
+    fi
 }
 
 # Install Node.js tools
@@ -1072,7 +1084,7 @@ install_golang_migrate() {
 verify_installations() {
     log_info "Verifying installations..."
 
-    local tools=("node" "npm" "docker" "task" "pyenv" "eslint" "prettier" "ts-prune" "orval" "pyright" "tsc" "vite" "vitest" "playwright" "artillery" "oapi-codegen" "deadcode" "golangci-lint" "revive" "goimports" "gofumpt" "staticcheck" "psql" "nginx")
+    local tools=("node" "npm" "docker" "task" "pyenv" "eslint" "prettier" "ts-prune" "orval" "pyright" "tsc" "vite" "vitest" "playwright" "artillery" "oapi-codegen" "deadcode" "golangci-lint" "revive" "goimports" "gofumpt" "staticcheck" "gotestsum" "psql" "nginx")
     local missing_tools=()
 
     # Check Go specifically for version >= 1.24

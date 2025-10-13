@@ -1538,9 +1538,9 @@ func (suite *AdminIntegrationTestSuite) TestAdmin_GetStoriesPaginated_WithFilter
 	assert.Equal(suite.T(), "Italian Adventure", firstStory["title"])
 	assert.Equal(suite.T(), "italian", firstStory["language"])
 
-	// Test filtering by status
+	// Test filtering by status (active stories)
 	w = httptest.NewRecorder()
-	req, _ = http.NewRequest("GET", "/v1/admin/backend/stories?page=1&page_size=10&status=archived", nil)
+	req, _ = http.NewRequest("GET", "/v1/admin/backend/stories?page=1&page_size=10&status=active", nil)
 	req.AddCookie(sessionCookie)
 	suite.BackendRouter.ServeHTTP(w, req)
 
@@ -1550,11 +1550,20 @@ func (suite *AdminIntegrationTestSuite) TestAdmin_GetStoriesPaginated_WithFilter
 	suite.Require().NoError(err)
 
 	stories = response["stories"].([]interface{})
-	assert.Len(suite.T(), stories, 1)
+	assert.Len(suite.T(), stories, 2)
 
-	firstStory = stories[0].(map[string]interface{})
-	assert.Equal(suite.T(), "Spanish Mystery", firstStory["title"])
-	assert.Equal(suite.T(), "spanish", firstStory["language"])
+	// Find the Spanish story in the results
+	var spanishStory map[string]interface{}
+	for _, story := range stories {
+		s := story.(map[string]interface{})
+		if s["title"] == "Spanish Mystery" {
+			spanishStory = s
+			break
+		}
+	}
+	suite.Require().NotNil(spanishStory, "Spanish Mystery story should be found in active stories")
+	assert.Equal(suite.T(), "Spanish Mystery", spanishStory["title"])
+	assert.Equal(suite.T(), "spanish", spanishStory["language"])
 }
 
 func (suite *AdminIntegrationTestSuite) TestAdmin_GetStoriesPaginated_WithUserFilter() {

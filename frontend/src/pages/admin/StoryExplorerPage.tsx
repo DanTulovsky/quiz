@@ -26,7 +26,11 @@ import {
   useAdminStorySection,
   useUsersPaginated,
 } from '../../api/admin';
-import { useGetV1SettingsLanguages } from '../../api/api';
+import {
+  useGetV1SettingsLanguages,
+  type Story,
+  type GetV1AdminBackendUserzPaginated200UsersItem,
+} from '../../api/api';
 import StoryReadingView from '../../components/StoryReadingView';
 import StorySectionView from '../../components/StorySectionView';
 
@@ -63,10 +67,10 @@ const StoryExplorerPage: React.FC = () => {
   const userOptions = useMemo(() => {
     const users = usersData?.users || [];
     return users
-      .filter((u: any) => u?.id)
-      .map((u: any) => ({
-        value: String(u.id),
-        label: u.username || `user-${u.id}`,
+      .filter((u: GetV1AdminBackendUserzPaginated200UsersItem) => u?.user?.id)
+      .map((u: GetV1AdminBackendUserzPaginated200UsersItem) => ({
+        value: String(u.user!.id),
+        label: u.user!.username || `user-${u.user!.id}`,
       }));
   }, [usersData]);
 
@@ -229,7 +233,7 @@ const StoryExplorerPage: React.FC = () => {
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
-              {stories.map((s: any) => (
+              {stories.map((s: Story) => (
                 <Table.Tr
                   key={s.id}
                   onClick={() => openView(Number(s.id))}

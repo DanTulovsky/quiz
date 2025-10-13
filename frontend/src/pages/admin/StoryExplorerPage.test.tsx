@@ -27,7 +27,9 @@ const mockUseAdminStorySection = useAdminStorySection as ReturnType<
   typeof vi.fn
 >;
 const mockUseUsersPaginated = useUsersPaginated as ReturnType<typeof vi.fn>;
-const mockUseGetV1SettingsLanguages = useGetV1SettingsLanguages as ReturnType<typeof vi.fn>;
+const mockUseGetV1SettingsLanguages = useGetV1SettingsLanguages as ReturnType<
+  typeof vi.fn
+>;
 
 const mockStories = [
   {
@@ -72,29 +74,6 @@ const mockStoryWithSections = {
       generated_by: 'user',
       generated_at: '2024-01-01T00:00:00Z',
       generation_date: '2024-01-01',
-    },
-  ],
-};
-
-const mockSectionWithQuestions = {
-  id: 1,
-  story_id: 1,
-  section_number: 1,
-  content: 'Once upon a time in Italy...',
-  language_level: 'A1',
-  word_count: 6,
-  generated_by: 'user',
-  generated_at: '2024-01-01T00:00:00Z',
-  generation_date: '2024-01-01',
-  questions: [
-    {
-      id: 1,
-      section_id: 1,
-      question_text: 'What happened in Italy?',
-      options: ['Adventure', 'Mystery', 'Romance'],
-      correct_answer_index: 0,
-      explanation: 'It was an adventure story',
-      created_at: '2024-01-01T00:00:00Z',
     },
   ],
 };
@@ -281,9 +260,7 @@ describe('StoryExplorerPage', () => {
       });
       renderStoryExplorerPage();
       expect(screen.getByText('Error')).toBeInTheDocument();
-      expect(
-        screen.getByText('API Error')
-      ).toBeInTheDocument();
+      expect(screen.getByText('API Error')).toBeInTheDocument();
     });
   });
 
