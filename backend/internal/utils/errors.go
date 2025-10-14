@@ -60,6 +60,8 @@ const (
 	ErrorCodeInternalError ErrorCode = "INTERNAL_SERVER_ERROR"
 	// ErrorCodeAssignmentNotFound indicates that a question assignment was not found
 	ErrorCodeAssignmentNotFound ErrorCode = "ASSIGNMENT_NOT_FOUND"
+	// ErrorCodeConflict indicates that an operation conflicts with the current state
+	ErrorCodeConflict ErrorCode = "CONFLICT"
 
 	// Question error codes
 
@@ -261,6 +263,12 @@ var (
 		Code:     ErrorCodeAssignmentNotFound,
 		Severity: SeverityInfo,
 		Message:  "Assignment not found",
+	}
+
+	ErrConflict = &AppError{
+		Code:     ErrorCodeConflict,
+		Severity: SeverityWarn,
+		Message:  "Operation conflicts with current state",
 	}
 
 	// Question errors

@@ -364,6 +364,7 @@ func NewRouter(
 				// Story explorer (admin)
 				backend.GET("/stories", adminHandler.GetStoriesPaginated)
 				backend.GET("/stories/:id", adminHandler.GetStoryAdmin)
+				backend.DELETE("/stories/:id", adminHandler.DeleteStoryAdmin)
 				backend.GET("/story-sections/:id", adminHandler.GetSectionAdmin)
 			}
 

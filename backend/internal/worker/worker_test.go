@@ -196,6 +196,11 @@ func (m *mockStoryService) GetSectionAdmin(ctx context.Context, sectionID uint) 
 	return args.Get(0).(*models.StorySectionWithQuestions), args.Error(1)
 }
 
+func (m *mockStoryService) DeleteStoryAdmin(ctx context.Context, storyID uint) error {
+	args := m.Called(ctx, storyID)
+	return args.Error(0)
+}
+
 func (m *mockLearningService) RecordAnswerWithPriorityReturningID(ctx context.Context, userID, questionID, answerIndex int, isCorrect bool, responseTime int) (int, error) {
 	args := m.Called(ctx, userID, questionID, answerIndex, isCorrect, responseTime)
 	if args.Get(0) == nil {

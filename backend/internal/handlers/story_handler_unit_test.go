@@ -160,6 +160,10 @@ func (m *MockStoryService) GetSectionAdmin(_ context.Context, _ uint) (*models.S
 	return nil, nil
 }
 
+func (m *MockStoryService) DeleteStoryAdmin(_ context.Context, _ uint) error {
+	return nil
+}
+
 // TestExportStoryPDF_UnicodeHandling tests the PDF export functionality with Unicode characters
 // This test verifies that Unicode characters are properly handled in PDF generation
 func TestExportStoryPDF_UnicodeHandling(t *testing.T) {

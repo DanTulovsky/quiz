@@ -11,6 +11,7 @@ import {
   useAdminStories,
   useAdminStory,
   useAdminStorySection,
+  useAdminDeleteStory,
 } from '../../api/admin';
 import { useUsersPaginated } from '../../api/admin';
 import { useGetV1SettingsLanguages } from '../../api/api';
@@ -26,6 +27,7 @@ const mockUseAdminStory = useAdminStory as ReturnType<typeof vi.fn>;
 const mockUseAdminStorySection = useAdminStorySection as ReturnType<
   typeof vi.fn
 >;
+const mockUseAdminDeleteStory = useAdminDeleteStory as ReturnType<typeof vi.fn>;
 const mockUseUsersPaginated = useUsersPaginated as ReturnType<typeof vi.fn>;
 const mockUseGetV1SettingsLanguages = useGetV1SettingsLanguages as ReturnType<
   typeof vi.fn
@@ -169,6 +171,11 @@ describe('StoryExplorerPage', () => {
       isLoading: false,
       isFetching: false,
       error: null,
+    });
+
+    mockUseAdminDeleteStory.mockReturnValue({
+      mutateAsync: vi.fn().mockResolvedValue({}),
+      isPending: false,
     });
   });
 

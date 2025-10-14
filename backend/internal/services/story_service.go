@@ -46,6 +46,8 @@ type StoryServiceInterface interface {
 	GetStoriesPaginated(ctx context.Context, page, pageSize int, search, language, status string, userID *uint) ([]models.Story, int, error)
 	GetStoryAdmin(ctx context.Context, storyID uint) (*models.StoryWithSections, error)
 	GetSectionAdmin(ctx context.Context, sectionID uint) (*models.StorySectionWithQuestions, error)
+	// Admin-only delete without ownership check
+	DeleteStoryAdmin(ctx context.Context, storyID uint) error
 }
 
 // StoryService handles all story-related operations
@@ -526,6 +528,58 @@ func (s *StoryService) DeleteStory(ctx context.Context, storyID, userID uint) er
 	query3 := "DELETE FROM stories WHERE id = $1"
 	_, err = tx.ExecContext(ctx, query3, storyID)
 	if err != nil {
+		return contextutils.WrapErrorf(err, "failed to delete story")
+	}
+
+	return tx.Commit()
+}
+
+// DeleteStoryAdmin permanently deletes a story by ID without ownership checks (admin-only).
+// Admins can delete stories regardless of status, but regular users cannot delete active stories.
+func (s *StoryService) DeleteStoryAdmin(ctx context.Context, storyID uint) error {
+	// Verify story exists
+	query := `
+        SELECT id, user_id, title, language, subject, author_style, time_period, genre, tone,
+               character_names, custom_instructions, section_length_override, status,
+               last_section_generated_at, created_at, updated_at
+        FROM stories
+        WHERE id = $1`
+
+	var story models.Story
+	if err := s.db.QueryRowContext(ctx, query, storyID).Scan(
+		&story.ID, &story.UserID, &story.Title, &story.Language, &story.Subject,
+		&story.AuthorStyle, &story.TimePeriod, &story.Genre, &story.Tone,
+		&story.CharacterNames, &story.CustomInstructions, &story.SectionLengthOverride,
+		&story.Status, &story.LastSectionGeneratedAt,
+		&story.CreatedAt, &story.UpdatedAt,
+	); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return contextutils.ErrorWithContextf("story not found")
+		}
+		return contextutils.WrapErrorf(err, "failed to get story")
+	}
+
+	// Admin can delete any story regardless of status
+
+	// Use transaction for atomic deletion
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return contextutils.WrapErrorf(err, "failed to begin transaction")
+	}
+	defer func() { _ = tx.Rollback() }()
+
+	// Delete questions first (due to foreign key constraints)
+	if _, err := tx.ExecContext(ctx, "DELETE FROM story_section_questions WHERE section_id IN (SELECT id FROM story_sections WHERE story_id = $1)", storyID); err != nil {
+		return contextutils.WrapErrorf(err, "failed to delete story questions")
+	}
+
+	// Delete sections
+	if _, err := tx.ExecContext(ctx, "DELETE FROM story_sections WHERE story_id = $1", storyID); err != nil {
+		return contextutils.WrapErrorf(err, "failed to delete story sections")
+	}
+
+	// Delete story
+	if _, err := tx.ExecContext(ctx, "DELETE FROM stories WHERE id = $1", storyID); err != nil {
 		return contextutils.WrapErrorf(err, "failed to delete story")
 	}
 

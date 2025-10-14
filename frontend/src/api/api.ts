@@ -8811,6 +8811,69 @@ export function useGetV1AdminBackendStoriesId<TData = Awaited<ReturnType<typeof 
 
 
 /**
+ * Delete a user story by ID. Admins can delete stories regardless of status. Admin only.
+ * @summary Delete a story (admin)
+ */
+export const deleteV1AdminBackendStoriesId = (
+    id: number,
+ options?: SecondParameter<typeof customInstance>,) => {
+      
+      
+      return customInstance<void>(
+      {url: `/v1/admin/backend/stories/${id}`, method: 'DELETE'
+    },
+      options);
+    }
+  
+
+
+export const getDeleteV1AdminBackendStoriesIdMutationOptions = <TError = ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendStoriesId>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendStoriesId>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['deleteV1AdminBackendStoriesId'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteV1AdminBackendStoriesId>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteV1AdminBackendStoriesId(id,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteV1AdminBackendStoriesIdMutationResult = NonNullable<Awaited<ReturnType<typeof deleteV1AdminBackendStoriesId>>>
+    
+    export type DeleteV1AdminBackendStoriesIdMutationError = ErrorResponse
+
+    /**
+ * @summary Delete a story (admin)
+ */
+export const useDeleteV1AdminBackendStoriesId = <TError = ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendStoriesId>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteV1AdminBackendStoriesId>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+
+      const mutationOptions = getDeleteV1AdminBackendStoriesIdMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
  * Get a specific story section and its questions (admin only)
  * @summary Get a story section with questions by ID
  */
@@ -12143,6 +12206,16 @@ export const getGetV1AdminBackendStoriesIdMockHandler = (overrideResponse?: Stor
   })
 }
 
+export const getDeleteV1AdminBackendStoriesIdMockHandler = (overrideResponse?: void | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<void> | void)) => {
+  return http.delete('*/v1/admin/backend/stories/:id', async (info) => {await delay(1000);
+  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
+    return new HttpResponse(null,
+      { status: 204,
+        
+      })
+  })
+}
+
 export const getGetV1AdminBackendStorySectionsIdMockHandler = (overrideResponse?: StorySectionWithQuestions | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<StorySectionWithQuestions> | StorySectionWithQuestions)) => {
   return http.get('*/v1/admin/backend/story-sections/:id', async (info) => {await delay(1000);
   
@@ -12540,6 +12613,7 @@ export const getQuizApplicationAPIMock = () => [
   getGetV1AdminBackendReportedQuestionsMockHandler(),
   getGetV1AdminBackendStoriesMockHandler(),
   getGetV1AdminBackendStoriesIdMockHandler(),
+  getDeleteV1AdminBackendStoriesIdMockHandler(),
   getGetV1AdminBackendStorySectionsIdMockHandler(),
   getPostV1QuizChatStreamMockHandler(),
   getGetV1DailyQuestionsDateMockHandler(),
