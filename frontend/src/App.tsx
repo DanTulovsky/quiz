@@ -13,6 +13,7 @@ import ProgressPage from './pages/ProgressPage';
 import SettingsPage from './pages/SettingsPage';
 import StoryPage from './pages/StoryPage';
 import SavedConversationsPage from './pages/SavedConversationsPage';
+import BookmarkedMessagesPage from './pages/BookmarkedMessagesPage';
 import AdminPage from './pages/AdminPage';
 import BackendAdminPage from './pages/admin/BackendAdminPage';
 import UserManagementPage from './pages/admin/UserManagementPage';
@@ -231,6 +232,20 @@ function App() {
           user ? (
             <Layout>
               <SavedConversationsPage />
+            </Layout>
+          ) : (
+            <Navigate
+              to={`/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`}
+            />
+          )
+        }
+      />
+      <Route
+        path='/bookmarks'
+        element={
+          user ? (
+            <Layout>
+              <BookmarkedMessagesPage />
             </Layout>
           ) : (
             <Navigate
