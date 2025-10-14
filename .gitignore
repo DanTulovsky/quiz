@@ -31,3 +31,5 @@ merged.config.yaml
 revive.log
 backend/revive.log
 .env.prod
+
+dochia-report/

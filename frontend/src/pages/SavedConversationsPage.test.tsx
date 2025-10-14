@@ -65,6 +65,7 @@ vi.mock('../api/api', () => ({
   useGetV1AiConversationsId: vi.fn(),
   useDeleteV1AiConversationsId: vi.fn(),
   usePutV1AiConversationsId: vi.fn(),
+  usePutV1AiConversationsBookmark: vi.fn(),
 }));
 
 // Mock the useAuth hook
@@ -128,6 +129,10 @@ describe('SavedConversationsPage', () => {
     });
 
     vi.mocked(apiModule.usePutV1AiConversationsId).mockReturnValue({
+      mutateAsync: vi.fn(),
+    });
+
+    vi.mocked(apiModule.usePutV1AiConversationsBookmark).mockReturnValue({
       mutateAsync: vi.fn(),
     });
   });

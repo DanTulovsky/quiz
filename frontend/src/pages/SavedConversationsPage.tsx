@@ -15,12 +15,22 @@ import {
   Button,
   TextInput,
   Stack,
-  Divider,
   ActionIcon,
   Menu,
   Modal,
+  Box,
 } from '@mantine/core';
-import { Search, Edit, Trash2, MessageCircle, Calendar } from 'lucide-react';
+import {
+  Search,
+  Edit,
+  Trash2,
+  MessageCircle,
+  Calendar,
+  Bookmark,
+} from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import SyntaxHighlighter from 'react-syntax-highlighter';
 import { useAuth } from '../hooks/useAuth';
 import {
   useGetV1AiConversations,
@@ -28,7 +38,9 @@ import {
   useGetV1AiSearch,
   useDeleteV1AiConversationsId,
   usePutV1AiConversationsId,
+  usePutV1AiConversationsBookmark,
   getGetV1AiConversationsQueryKey,
+  getGetV1AiConversationsIdQueryKey,
   Conversation,
   ChatMessage,
 } from '../api/api';
@@ -48,109 +60,100 @@ const ConversationCard: React.FC<ConversationCardProps> = ({
   onDelete,
   onView,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  // Derive count and preview from optional fields to avoid fetching messages list
+  // Derive count from optional fields to avoid fetching messages list
   const messageCount =
     (conversation as unknown as { message_count?: number }).message_count ??
     conversation.messages?.length ??
     0;
 
-  const previewMessage: string | undefined = (() => {
-    const fromMessages =
-      typeof conversation.messages?.[0]?.content === 'string'
-        ? (conversation.messages[0].content as unknown as string)
-        : undefined;
-    const fromPreviewField = (
-      conversation as unknown as {
-        preview_message?: string;
-      }
-    ).preview_message;
-    return fromMessages || fromPreviewField;
-  })();
-
   return (
-    <Card shadow='sm' padding='lg' radius='md' withBorder>
-      <Group justify='space-between' mb='xs'>
-        <Title
-          order={4}
-          style={{ cursor: 'pointer' }}
-          onClick={() => onView(conversation)}
+    <Group
+      justify='space-between'
+      align='center'
+      py='sm'
+      px='xs'
+      style={{
+        borderBottom: '1px solid var(--mantine-color-gray-2)',
+        cursor: 'pointer',
+        '&:hover': {
+          backgroundColor: 'var(--mantine-color-gray-0)',
+        },
+      }}
+      onClick={() => onView(conversation)}
+    >
+      <Group align='center' gap='md' style={{ flex: 1 }}>
+        <Text
+          size='sm'
+          fw={500}
+          style={{
+            minWidth: 0,
+            flex: 1,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
         >
           {conversation.title || 'Untitled Conversation'}
-        </Title>
-        <Menu shadow='md' width={120}>
-          <Menu.Target>
-            <ActionIcon
-              aria-label='Conversation actions'
-              variant='subtle'
-              color='gray'
-            >
-              <Edit size={16} />
-            </ActionIcon>
-          </Menu.Target>
-          <Menu.Dropdown>
-            <Menu.Item
-              leftSection={<MessageCircle size={16} />}
-              onClick={() => onView(conversation)}
-            >
-              View
-            </Menu.Item>
-            <Menu.Item
-              leftSection={<Edit size={16} />}
-              onClick={() => onEdit(conversation)}
-            >
-              Edit Title
-            </Menu.Item>
-            <Menu.Item
-              leftSection={<Trash2 size={16} />}
-              color='red'
-              onClick={() => onDelete(conversation.id)}
-            >
-              Delete
-            </Menu.Item>
-          </Menu.Dropdown>
-        </Menu>
-      </Group>
+        </Text>
 
-      <Group mb='sm'>
         <Badge
           variant='light'
           color='blue'
-          leftSection={<Calendar size={12} />}
+          size='xs'
+          leftSection={<Calendar size={10} />}
         >
           {format(new Date(conversation.created_at), 'MMM d, h:mm a')}
         </Badge>
-        <Badge variant='light' color='green'>
-          {messageCount} {messageCount === 1 ? 'message' : 'messages'}
+
+        <Badge variant='light' color='green' size='xs'>
+          {messageCount} {messageCount === 1 ? 'msg' : 'msgs'}
         </Badge>
       </Group>
 
-      {previewMessage && (
-        <Text size='sm' c='dimmed' lineClamp={isExpanded ? undefined : 2}>
-          {previewMessage.substring(0, 200)}
-        </Text>
-      )}
-
-      {previewMessage && previewMessage.length > 100 && (
-        <Button
-          variant='subtle'
-          size='xs'
-          mt='xs'
-          onClick={() => setIsExpanded(!isExpanded)}
-        >
-          {isExpanded ? 'Show Less' : 'Show More'}
-        </Button>
-      )}
-
-      <Divider my='sm' />
-
-      <Group justify='flex-end'>
-        <Button variant='light' size='xs' onClick={() => onView(conversation)}>
-          View Conversation
-        </Button>
-      </Group>
-    </Card>
+      <Menu shadow='md' width={120}>
+        <Menu.Target>
+          <ActionIcon
+            aria-label='Conversation actions'
+            variant='subtle'
+            color='gray'
+            size='sm'
+            onClick={e => e.stopPropagation()}
+          >
+            <Edit size={14} />
+          </ActionIcon>
+        </Menu.Target>
+        <Menu.Dropdown>
+          <Menu.Item
+            leftSection={<MessageCircle size={16} />}
+            onClick={e => {
+              e.stopPropagation();
+              onView(conversation);
+            }}
+          >
+            View
+          </Menu.Item>
+          <Menu.Item
+            leftSection={<Edit size={16} />}
+            onClick={e => {
+              e.stopPropagation();
+              onEdit(conversation);
+            }}
+          >
+            Edit Title
+          </Menu.Item>
+          <Menu.Item
+            leftSection={<Trash2 size={16} />}
+            color='red'
+            onClick={e => {
+              e.stopPropagation();
+              onDelete(conversation.id);
+            }}
+          >
+            Delete
+          </Menu.Item>
+        </Menu.Dropdown>
+      </Menu>
+    </Group>
   );
 };
 
@@ -159,6 +162,8 @@ interface ConversationDetailModalProps {
   opened: boolean;
   onClose: () => void;
   messages: ChatMessage[];
+  onBookmarkToggle: (messageId: string) => void;
+  isBookmarking: boolean;
 }
 
 const ConversationDetailModal: React.FC<ConversationDetailModalProps> = ({
@@ -166,6 +171,8 @@ const ConversationDetailModal: React.FC<ConversationDetailModalProps> = ({
   opened,
   onClose,
   messages,
+  onBookmarkToggle,
+  isBookmarking,
 }) => {
   if (!conversation) return null;
 
@@ -185,26 +192,89 @@ const ConversationDetailModal: React.FC<ConversationDetailModalProps> = ({
     >
       <div style={{ flex: 1, overflow: 'auto', maxHeight: '60vh' }}>
         <Stack gap='sm'>
-          {messages.map((message, index) => (
-            <Card key={message.id || index} padding='md' radius='sm' withBorder>
-              <Group mb='xs'>
-                <Badge
-                  color={message.role === 'user' ? 'blue' : 'green'}
-                  variant='filled'
-                >
-                  {message.role === 'user' ? 'You' : 'AI'}
-                </Badge>
-                <Text size='xs' c='dimmed'>
-                  {format(new Date(message.created_at), 'MMM d, h:mm a')}
-                </Text>
-              </Group>
-              <Text size='sm' style={{ whiteSpace: 'pre-wrap' }}>
-                {typeof message.content === 'string'
-                  ? message.content
-                  : JSON.stringify(message.content, null, 2)}
-              </Text>
-            </Card>
-          ))}
+          {messages.map((message, index) => {
+            const messageText =
+              typeof message.content === 'string'
+                ? message.content
+                : message.content?.text || '';
+
+            return (
+              <Card
+                key={message.id || index}
+                padding='md'
+                radius='sm'
+                withBorder
+                style={{
+                  backgroundColor:
+                    message.role === 'user'
+                      ? 'var(--mantine-primary-color-1)'
+                      : 'var(--mantine-color-body)',
+                }}
+              >
+                <Group mb='xs' justify='space-between'>
+                  <Group>
+                    <Badge
+                      color={message.role === 'user' ? 'blue' : 'green'}
+                      variant='filled'
+                    >
+                      {message.role === 'user' ? 'You' : 'AI'}
+                    </Badge>
+                    <Text size='xs' c='dimmed'>
+                      {format(new Date(message.created_at), 'MMM d, h:mm a')}
+                    </Text>
+                  </Group>
+                  {message.role === 'assistant' && (
+                    <Button
+                      variant='light'
+                      size='xs'
+                      leftSection={<Bookmark size={14} />}
+                      onClick={() => onBookmarkToggle(message.id)}
+                      disabled={isBookmarking}
+                      color={message.bookmarked ? 'blue' : undefined}
+                      style={{
+                        opacity: message.bookmarked ? 1 : 0.7,
+                      }}
+                    >
+                      {message.bookmarked ? 'Bookmarked' : 'Bookmark'}
+                    </Button>
+                  )}
+                </Group>
+                <Box size='sm' style={{ maxWidth: 'none' }}>
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      code({ className, children, ...props }: any) {
+                        const match = /language-(\w+)/.exec(className || '');
+                        return match ? (
+                          <SyntaxHighlighter
+                            className='syntax-highlighter-vsc-dark'
+                            language={match[1]}
+                            PreTag='div'
+                            {...props}
+                          >
+                            {String(children).replace(/\n$/, '')}
+                          </SyntaxHighlighter>
+                        ) : (
+                          <code className={className} {...props}>
+                            {children}
+                          </code>
+                        );
+                      },
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      p: ({ children }: any) => (
+                        <Box mb='md' component='p'>
+                          {children}
+                        </Box>
+                      ),
+                    }}
+                  >
+                    {messageText}
+                  </ReactMarkdown>
+                </Box>
+              </Card>
+            );
+          })}
         </Stack>
       </div>
     </Modal>
@@ -332,6 +402,24 @@ export const SavedConversationsPage: React.FC = () => {
     queryClient
   );
 
+  const bookmarkMessageMutation = usePutV1AiConversationsBookmark(
+    {
+      mutation: {
+        onSuccess: () => {
+          // Invalidate the conversation query to refresh the messages
+          if (selectedConversation?.id) {
+            queryClient.invalidateQueries({
+              queryKey: getGetV1AiConversationsIdQueryKey(
+                selectedConversation.id
+              ),
+            });
+          }
+        },
+      },
+    },
+    queryClient
+  );
+
   const totalCount = activeSearchQuery.trim()
     ? searchData?.total || filteredConversations.length
     : conversationsData?.total || filteredConversations.length;
@@ -380,6 +468,19 @@ export const SavedConversationsPage: React.FC = () => {
       await updateConversationMutation.mutateAsync({
         id: editingConversation.id,
         data: { title: editTitle },
+      });
+    } catch {}
+  };
+
+  const handleBookmarkToggle = async (messageId: string) => {
+    if (!selectedConversation?.id) return;
+
+    try {
+      await bookmarkMessageMutation.mutateAsync({
+        data: {
+          conversation_id: selectedConversation.id,
+          message_id: messageId,
+        },
       });
     } catch {}
   };
@@ -467,6 +568,8 @@ export const SavedConversationsPage: React.FC = () => {
           setConversationMessages([]);
         }}
         messages={conversationMessages}
+        onBookmarkToggle={handleBookmarkToggle}
+        isBookmarking={bookmarkMessageMutation.isPending}
       />
 
       {/* Edit Title Modal */}
