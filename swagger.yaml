@@ -4564,6 +4564,9 @@ components:
           type: string
           format: date-time
           description: When the conversation was last updated
+        message_count:
+          type: integer
+          description: Total number of messages in this conversation
         messages:
           type: array
           items:

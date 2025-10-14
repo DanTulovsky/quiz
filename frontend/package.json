@@ -66,7 +66,7 @@
     "js-yaml": "^4.1.0",
     "jsdom": "^26.1.0",
     "msw": "^2.10.2",
-    "prettier": "^3.5.3",
+    "prettier": "^3.6.2",
     "ts-prune": "^0.10.3",
     "typescript": "^5.2.2",
     "vite": "^7.1.7",

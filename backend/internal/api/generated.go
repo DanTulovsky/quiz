@@ -306,6 +306,9 @@ type Conversation struct {
 	// Id Conversation UUID
 	Id openapi_types.UUID `json:"id"`
 
+	// MessageCount Total number of messages in this conversation
+	MessageCount *int `json:"message_count,omitempty"`
+
 	// Messages Array of messages in this conversation (optional, only included when requested)
 	Messages *[]ChatMessage `json:"messages,omitempty"`
 
