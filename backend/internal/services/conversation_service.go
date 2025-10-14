@@ -31,6 +31,10 @@ type ConversationServiceInterface interface {
 	// Search operations
 	SearchMessages(ctx context.Context, userID uint, query string, limit, offset int) ([]api.ChatMessage, int, error)
 	SearchConversations(ctx context.Context, userID uint, query string, limit, offset int) ([]api.Conversation, int, error)
+
+	// Utility operations
+	// GetUserMessageCounts returns a map of conversation ID -> message count for the user's conversations
+	GetUserMessageCounts(ctx context.Context, userID uint) (map[string]int, error)
 }
 
 // ConversationService handles all AI conversation-related operations
@@ -125,11 +129,11 @@ func (s *ConversationService) GetUserConversations(ctx context.Context, userID u
 
 	// Get conversations with pagination
 	query := `
-		SELECT id, user_id, title, created_at, updated_at
-		FROM ai_conversations
-		WHERE user_id = $1
-		ORDER BY updated_at DESC
-		LIMIT $2 OFFSET $3`
+        SELECT id, user_id, title, created_at, updated_at
+        FROM ai_conversations
+        WHERE user_id = $1
+        ORDER BY updated_at DESC
+        LIMIT $2 OFFSET $3`
 
 	rows, err := s.db.QueryContext(ctx, query, userID, limit, offset)
 	if err != nil {
@@ -158,6 +162,36 @@ func (s *ConversationService) GetUserConversations(ctx context.Context, userID u
 	}
 
 	return conversations, total, nil
+}
+
+// GetUserMessageCounts returns message counts for all conversations for a user
+func (s *ConversationService) GetUserMessageCounts(ctx context.Context, userID uint) (map[string]int, error) {
+	query := `
+        SELECT c.id::text AS id, COUNT(m.id) AS message_count
+        FROM ai_conversations c
+        LEFT JOIN ai_chat_messages m ON m.conversation_id = c.id
+        WHERE c.user_id = $1
+        GROUP BY c.id`
+
+	rows, err := s.db.QueryContext(ctx, query, userID)
+	if err != nil {
+		return nil, contextutils.WrapError(err, "failed to query message counts")
+	}
+	defer func() { _ = rows.Close() }()
+
+	counts := make(map[string]int)
+	for rows.Next() {
+		var id string
+		var count int
+		if err := rows.Scan(&id, &count); err != nil {
+			return nil, contextutils.WrapError(err, "failed to scan message count")
+		}
+		counts[id] = count
+	}
+	if err := rows.Err(); err != nil {
+		return nil, contextutils.WrapError(err, "error iterating message counts")
+	}
+	return counts, nil
 }
 
 // UpdateConversation updates a conversation's title

@@ -221,6 +221,167 @@ func (suite *AIConversationIntegrationTestSuite) TestGetConversations_Success() 
 	assert.Len(suite.T(), conversations, 1)
 }
 
+// TestGetConversations_WithMessageCount tests that conversations include message_count field
+func (suite *AIConversationIntegrationTestSuite) TestGetConversations_WithMessageCount() {
+	sessionCookie := suite.login()
+
+	// Create a conversation
+	createReq := api.CreateConversationRequest{
+		Title: "Test Conversation with Messages",
+	}
+	body, _ := json.Marshal(createReq)
+	req, _ := http.NewRequest("POST", "/v1/ai/conversations", bytes.NewBuffer(body))
+	req.Header.Set("Cookie", sessionCookie)
+	req.Header.Set("Content-Type", "application/json")
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+	require.Equal(suite.T(), http.StatusCreated, w.Code)
+
+	var conversation api.Conversation
+	err := json.Unmarshal(w.Body.Bytes(), &conversation)
+	require.NoError(suite.T(), err)
+
+	// Add multiple messages to the conversation
+	messageContents := []string{
+		"Hello, AI!",
+		"How are you today?",
+		"Can you help me with grammar?",
+	}
+
+	for _, content := range messageContents {
+		messageReq := api.CreateMessageRequest{
+			Role: api.CreateMessageRequestRoleUser,
+			Content: struct {
+				Text *string `json:"text,omitempty"`
+			}{
+				Text: &content,
+			},
+		}
+		msgBody, _ := json.Marshal(messageReq)
+		req, _ = http.NewRequest("POST", fmt.Sprintf("/v1/ai/conversations/%s/messages", conversation.Id.String()), bytes.NewBuffer(msgBody))
+		req.Header.Set("Cookie", sessionCookie)
+		req.Header.Set("Content-Type", "application/json")
+
+		w = httptest.NewRecorder()
+		suite.Router.ServeHTTP(w, req)
+		require.Equal(suite.T(), http.StatusCreated, w.Code)
+	}
+
+	// Get conversations and verify message_count is included and accurate
+	req, _ = http.NewRequest("GET", "/v1/ai/conversations", nil)
+	req.Header.Set("Cookie", sessionCookie)
+
+	w = httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusOK, w.Code)
+
+	var response map[string]interface{}
+	err = json.Unmarshal(w.Body.Bytes(), &response)
+	assert.NoError(suite.T(), err)
+
+	conversations, ok := response["conversations"].([]interface{})
+	assert.True(suite.T(), ok)
+	assert.Len(suite.T(), conversations, 1)
+
+	// Parse the conversation response which should include message_count
+	conversationData, ok := conversations[0].(map[string]interface{})
+	assert.True(suite.T(), ok)
+
+	// Verify message_count is present and correct
+	messageCount, ok := conversationData["message_count"].(float64)
+	assert.True(suite.T(), ok)
+	assert.Equal(suite.T(), float64(len(messageContents)), messageCount)
+}
+
+// TestGetConversations_MessageCountAccuracy tests that message_count matches actual message count in database
+func (suite *AIConversationIntegrationTestSuite) TestGetConversations_MessageCountAccuracy() {
+	sessionCookie := suite.login()
+
+	// Create multiple conversations with different numbers of messages
+	testCases := []struct {
+		title        string
+		messageCount int
+	}{
+		{"Empty Conversation", 0},
+		{"Single Message", 1},
+		{"Multiple Messages", 3},
+	}
+
+	var conversationIDs []string
+
+	for _, tc := range testCases {
+		// Create conversation
+		createReq := api.CreateConversationRequest{
+			Title: tc.title,
+		}
+		body, _ := json.Marshal(createReq)
+		req, _ := http.NewRequest("POST", "/v1/ai/conversations", bytes.NewBuffer(body))
+		req.Header.Set("Cookie", sessionCookie)
+		req.Header.Set("Content-Type", "application/json")
+
+		w := httptest.NewRecorder()
+		suite.Router.ServeHTTP(w, req)
+		require.Equal(suite.T(), http.StatusCreated, w.Code)
+
+		var conversation api.Conversation
+		err := json.Unmarshal(w.Body.Bytes(), &conversation)
+		require.NoError(suite.T(), err)
+		conversationIDs = append(conversationIDs, conversation.Id.String())
+
+		// Add messages if needed
+		for i := 0; i < tc.messageCount; i++ {
+			messageReq := api.CreateMessageRequest{
+				Role: api.CreateMessageRequestRoleUser,
+				Content: struct {
+					Text *string `json:"text,omitempty"`
+				}{
+					Text: stringPtr(fmt.Sprintf("Message %d", i+1)),
+				},
+			}
+			msgBody, _ := json.Marshal(messageReq)
+			req, _ = http.NewRequest("POST", fmt.Sprintf("/v1/ai/conversations/%s/messages", conversation.Id.String()), bytes.NewBuffer(msgBody))
+			req.Header.Set("Cookie", sessionCookie)
+			req.Header.Set("Content-Type", "application/json")
+
+			w = httptest.NewRecorder()
+			suite.Router.ServeHTTP(w, req)
+			require.Equal(suite.T(), http.StatusCreated, w.Code)
+		}
+	}
+
+	// Get all conversations and verify message counts match expected values
+	req, _ := http.NewRequest("GET", "/v1/ai/conversations", nil)
+	req.Header.Set("Cookie", sessionCookie)
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusOK, w.Code)
+
+	var response map[string]interface{}
+	err := json.Unmarshal(w.Body.Bytes(), &response)
+	assert.NoError(suite.T(), err)
+
+	conversations, ok := response["conversations"].([]interface{})
+	assert.True(suite.T(), ok)
+	assert.Len(suite.T(), conversations, len(testCases))
+
+	// Check each conversation's message count
+	for i, conversationInterface := range conversations {
+		conversationData, ok := conversationInterface.(map[string]interface{})
+		assert.True(suite.T(), ok)
+
+		messageCount, ok := conversationData["message_count"].(float64)
+		assert.True(suite.T(), ok)
+
+		expectedCount := testCases[i].messageCount
+		assert.Equal(suite.T(), float64(expectedCount), messageCount,
+			"Message count mismatch for conversation %s", testCases[i].title)
+	}
+}
+
 // TestGetConversations_Unauthorized tests conversation listing without authentication
 func (suite *AIConversationIntegrationTestSuite) TestGetConversations_Unauthorized() {
 	req, _ := http.NewRequest("GET", "/v1/ai/conversations", nil)

@@ -1335,14 +1335,8 @@ export const Chat: React.FC<ChatProps> = ({
           return msg;
         })
       );
-
-      console.log('Message bookmarked successfully', {
-        messageId,
-        bookmarked: !messages[messageIndex]?.bookmarked,
-      });
-    } catch (error) {
-      console.error('Bookmark failed:', error);
-      // You could add user-facing error feedback here
+    } catch {
+      // You could add error feedback here
     }
   };
 

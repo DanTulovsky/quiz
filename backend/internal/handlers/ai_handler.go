@@ -82,9 +82,33 @@ func (h *AIConversationHandler) GetConversations(c *gin.Context) {
 		return
 	}
 
+	// Enrich with message counts to support UI badges without loading messages
+	counts, err := h.conversationService.GetUserMessageCounts(ctx, uint(userID))
+	if err != nil {
+		h.logger.Error(ctx, "Failed to get message counts", err, map[string]interface{}{
+			"user_id": userID,
+		})
+		// Not fatal; continue without counts
+		counts = map[string]int{}
+	}
+
+	// Inject message_count into each conversation via a response wrapper to keep type safety
+	type conversationWithCount struct {
+		api.Conversation
+		MessageCount int `json:"message_count"`
+	}
+	convsWithCount := make([]conversationWithCount, 0, len(conversations))
+	for _, conv := range conversations {
+		idStr := conv.Id.String()
+		convsWithCount = append(convsWithCount, conversationWithCount{
+			Conversation: conv,
+			MessageCount: counts[idStr],
+		})
+	}
+
 	// Add total count to response
 	response := gin.H{
-		"conversations": conversations,
+		"conversations": convsWithCount,
 		"total":         total,
 		"limit":         limit,
 		"offset":        offset,
