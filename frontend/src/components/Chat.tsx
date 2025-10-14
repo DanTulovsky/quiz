@@ -6,7 +6,7 @@ import {
   Square,
   Trash2,
   ChevronDown,
-  Save,
+  Bookmark,
 } from 'lucide-react';
 import {
   AnswerResponse,
@@ -14,6 +14,7 @@ import {
   useGetV1SettingsAiProviders,
   usePostV1AiConversations,
   usePostV1AiConversationsConversationIdMessages,
+  usePutV1AiConversationsBookmark,
 } from '../api/api';
 import LoadingSpinner from './LoadingSpinner';
 import ConfirmationModal from './ConfirmationModal';
@@ -56,6 +57,8 @@ interface Message {
   sender: 'user' | 'ai';
   text: string;
   isThinking?: boolean;
+  id?: string;
+  bookmarked?: boolean;
 }
 
 interface ChatMessage {
@@ -93,10 +96,11 @@ const suggestedPrompts = [
 // Shared message bubble for consistent formatting
 const MessageBubble: React.FC<{
   msg: Message;
-  onSave?: (messageText: string, messageIndex: number) => void;
+  onBookmark?: (messageText: string, messageIndex: number, messageId: string) => void;
   messageIndex: number;
   isLoading?: boolean;
-}> = ({ msg, onSave, messageIndex, isLoading }) => (
+  bookmarked?: boolean;
+}> = ({ msg, onBookmark, messageIndex, isLoading, bookmarked }) => (
   <Box
     p='sm'
     mb='xs'
@@ -150,16 +154,20 @@ const MessageBubble: React.FC<{
       >
         {msg.text}
       </ReactMarkdown>
-      {msg.sender === 'ai' && onSave && (
+      {msg.sender === 'ai' && onBookmark && (
         <Group justify='flex-end' mt='xs'>
           <Button
             variant='light'
             size='xs'
-            leftSection={<Save size={14} />}
-            onClick={() => onSave(msg.text, messageIndex)}
+            leftSection={<Bookmark size={14} />}
+            onClick={() => onBookmark(msg.text, messageIndex, msg.id || '')}
             disabled={isLoading}
+            color={bookmarked ? 'blue' : undefined}
+            style={{
+              opacity: bookmarked ? 1 : 0.7,
+            }}
           >
-            Save
+            {bookmarked ? 'Bookmarked' : 'Bookmark'}
           </Button>
         </Group>
       )}
@@ -183,9 +191,10 @@ interface ChatPanelProps {
   messages: Message[];
   MessageBubble: React.FC<{
     msg: Message;
-    onSave?: (messageText: string, messageIndex: number) => void;
+    onBookmark?: (messageText: string, messageIndex: number, messageId: string) => void;
     messageIndex: number;
     isLoading?: boolean;
+    bookmarked?: boolean;
   }>;
   bottomRef: React.RefObject<HTMLDivElement>;
   error: string | null;
@@ -202,6 +211,8 @@ interface ChatPanelProps {
   onSaveMessage?: (messageText: string, messageIndex: number) => void;
   onSaveConversation?: () => void;
   currentConversationId?: string | null;
+  // When true, disable/hide save actions to avoid duplicates (auto-save active)
+  disableSaveConversation?: boolean;
 }
 
 // Helper to get the last AI message index
@@ -245,6 +256,7 @@ const ChatPanel: React.FC<
   currentConversationId,
   onInputFocus,
   onInputBlur,
+  disableSaveConversation,
 }) => {
   // For blinking fix: always render the last AI message bubble, with spinner if needed
   const lastAIIndex = getLastAIMessageIndex(messages);
@@ -254,9 +266,10 @@ const ChatPanel: React.FC<
         <Box key={index}>
           <MessageBubble
             msg={msg}
-            onSave={onSaveMessage}
+            onBookmark={!disableSaveConversation ? onSaveMessage : undefined}
             messageIndex={index}
             isLoading={isLoading}
+            bookmarked={msg.bookmarked}
           />
           {(isLoading || isThinking) && (
             <Group justify='center' align='center' gap={4}>
@@ -273,9 +286,10 @@ const ChatPanel: React.FC<
       <MessageBubble
         key={index}
         msg={msg}
-        onSave={onSaveMessage}
+        onBookmark={!disableSaveConversation ? onSaveMessage : undefined}
         messageIndex={index}
         isLoading={isLoading}
+        bookmarked={msg.bookmarked}
       />
     );
   });
@@ -427,12 +441,14 @@ const ChatPanel: React.FC<
             c='gray'
             size='xs'
             onClick={onSaveConversation}
-            title='Save Conversation'
-            disabled={!currentConversationId || messages.length === 0}
+            title='Bookmark Message'
+            disabled={
+              !!disableSaveConversation || !currentConversationId || messages.length === 0
+            }
           >
-            <Save size={16} />
+            <Bookmark size={16} />
             <Badge ml={4} size='xs' color='gray' variant='filled' radius='sm'>
-              S
+              B
             </Badge>
           </Button>
           <Button
@@ -662,9 +678,10 @@ export const Chat: React.FC<ChatProps> = ({
   const { data: providersData } = useGetV1SettingsAiProviders();
   const providers = providersData?.providers;
 
-  // API mutations for saving conversations
+  // API mutations for saving conversations and bookmarking messages
   const createConversationMutation = usePostV1AiConversations();
   const addMessageMutation = usePostV1AiConversationsConversationIdMessages();
+  const bookmarkMessageMutation = usePutV1AiConversationsBookmark();
 
   // Auto-save functionality
   const [autoSaveEnabled] = useState(true);
@@ -1068,7 +1085,7 @@ export const Chat: React.FC<ChatProps> = ({
 
     // Add an empty AI message that we'll stream into
     const aiMessageIndex = messages.length + 1; // +1 for the user message we just added
-    const aiMessage: Message = { sender: 'ai', text: '' };
+    const aiMessage: Message = { sender: 'ai', text: '', id: crypto.randomUUID() };
     setMessages(prev => [...prev, aiMessage]);
 
     // Create abort controller for this request
@@ -1155,28 +1172,6 @@ export const Chat: React.FC<ChatProps> = ({
                 return newMessages;
               });
 
-              // Auto-save AI response if enabled (only save complete response)
-              if (
-                autoSaveEnabled &&
-                user?.id &&
-                question?.id &&
-                conversationId &&
-                done
-              ) {
-                try {
-                  await addMessageMutation.mutateAsync({
-                    conversationId,
-                    data: {
-                      question_id: question.id,
-                      role: 'assistant',
-                      content: {
-                        text: streamedText,
-                      },
-                    },
-                  });
-                } catch {}
-              }
-
               // Scroll to bottom during streaming with requestAnimationFrame for smoother performance
               requestAnimationFrame(scrollToTopOfNewResponse);
             } catch {}
@@ -1185,6 +1180,28 @@ export const Chat: React.FC<ChatProps> = ({
             throw new Error('Streaming error occurred');
           }
         }
+      }
+
+      // Streaming complete: auto-save the full AI response once
+      if (
+        autoSaveEnabled &&
+        user?.id &&
+        question?.id &&
+        conversationId &&
+        streamedText.trim().length > 0
+      ) {
+        try {
+          await addMessageMutation.mutateAsync({
+            conversationId,
+            data: {
+              question_id: question.id,
+              role: 'assistant',
+              content: {
+                text: streamedText,
+              },
+            },
+          });
+        } catch {}
       }
     } catch (e: unknown) {
       // Check if this was an abort
@@ -1195,6 +1212,7 @@ export const Chat: React.FC<ChatProps> = ({
           newMessages[aiMessageIndex] = {
             sender: 'ai',
             text: 'Response cancelled by user.',
+            id: newMessages[aiMessageIndex]?.id,
           };
           return newMessages;
         });
@@ -1210,6 +1228,7 @@ export const Chat: React.FC<ChatProps> = ({
         newMessages[aiMessageIndex] = {
           sender: 'ai',
           text: `Sorry, I encountered an error: ${errorMsg}`,
+          id: newMessages[aiMessageIndex]?.id,
         };
         return newMessages;
       });
@@ -1258,45 +1277,31 @@ export const Chat: React.FC<ChatProps> = ({
     setShowClearConfirm(false); // Always close the modal after clearing
   };
 
-  const handleSaveMessage = async (
+  const handleBookmarkMessage = async (
     messageText: string,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _messageIndex: number
+    messageIndex: number,
+    messageId: string
   ) => {
-    if (!user?.id || !question?.id) return;
+    if (!user?.id || !currentConversationId || !messageId) return;
 
-    setIsSaving(true);
     try {
-      // Create or use existing conversation
-      let conversationId = currentConversationId;
-      if (!conversationId) {
-        const conversation = await createConversationMutation.mutateAsync({
-          data: {
-            title: `AI Chat - ${question.question_text?.substring(0, 50)}...`,
-          },
-        });
-        conversationId = conversation.id;
-        setCurrentConversationId(conversationId);
-      }
-
-      // Save the message
-      await addMessageMutation.mutateAsync({
-        conversationId,
+      // Toggle the bookmark status
+      await bookmarkMessageMutation.mutateAsync({
         data: {
-          question_id: question.id,
-          role: 'assistant',
-          content: {
-            text: messageText,
-          },
+          conversation_id: currentConversationId,
+          message_id: messageId,
         },
       });
 
-      // Show success feedback
-      // You could add a toast notification here
+      // Update the local message state to reflect the new bookmark status
+      setMessages(prev => prev.map((msg, index) => {
+        if (index === messageIndex && msg.id === messageId) {
+          return { ...msg, bookmarked: !msg.bookmarked };
+        }
+        return msg;
+      }));
     } catch {
       // You could add error feedback here
-    } finally {
-      setIsSaving(false);
     }
   };
 
@@ -1397,11 +1402,12 @@ export const Chat: React.FC<ChatProps> = ({
           setShowClearConfirm={setShowClearConfirm}
           selectedSuggestionIndex={selectedSuggestionIndex}
           setSelectedSuggestionIndex={setSelectedSuggestionIndex}
-          onSaveMessage={handleSaveMessage}
+          onSaveMessage={handleBookmarkMessage}
           onSaveConversation={handleSaveConversation}
           currentConversationId={currentConversationId}
           onInputFocus={onInputFocus}
           onInputBlur={onInputBlur}
+          disableSaveConversation={autoSaveEnabled}
         />
       </Modal>
     );
@@ -1450,11 +1456,12 @@ export const Chat: React.FC<ChatProps> = ({
           setShowClearConfirm={setShowClearConfirm}
           selectedSuggestionIndex={selectedSuggestionIndex}
           setSelectedSuggestionIndex={setSelectedSuggestionIndex}
-          onSaveMessage={handleSaveMessage}
+          onSaveMessage={handleBookmarkMessage}
           onSaveConversation={handleSaveConversation}
           currentConversationId={currentConversationId}
           onInputFocus={onInputFocus}
           onInputBlur={onInputBlur}
+          disableSaveConversation={autoSaveEnabled}
         />
       </Paper>
       {/* centered shortcut badge below the AI chat pane */}

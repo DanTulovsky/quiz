@@ -298,6 +298,7 @@ func NewRouter(
 			ai.PUT("/conversations/:id", aiConversationHandler.UpdateConversation)
 			ai.DELETE("/conversations/:id", aiConversationHandler.DeleteConversation)
 			ai.POST("/conversations/:conversationId/messages", aiConversationHandler.AddMessage)
+			ai.PUT("/conversations/bookmark", aiConversationHandler.ToggleMessageBookmark)
 			ai.GET("/search", aiConversationHandler.SearchConversations)
 		}
 		preferences := v1.Group("/preferences")

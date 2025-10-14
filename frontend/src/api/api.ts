@@ -1815,6 +1815,18 @@ export type GetV1AiSearch200 = {
   offset?: number;
 };
 
+export type PutV1AiConversationsBookmarkBody = {
+  /** ID of the conversation containing the message */
+  conversation_id: string;
+  /** ID of the message to bookmark/unbookmark */
+  message_id: string;
+};
+
+export type PutV1AiConversationsBookmark200 = {
+  /** The new bookmark status of the message */
+  bookmarked?: boolean;
+};
+
 export type PutV1UserzProfile200 = {
   message?: string;
   user?: UserProfile;
@@ -4784,6 +4796,71 @@ export function useGetV1AiSearch<TData = Awaited<ReturnType<typeof getV1AiSearch
 
 
 
+/**
+ * Toggle the bookmark status of a specific message in a conversation
+ * @summary Toggle message bookmark
+ */
+export const putV1AiConversationsBookmark = (
+    putV1AiConversationsBookmarkBody: PutV1AiConversationsBookmarkBody,
+ options?: SecondParameter<typeof customInstance>,) => {
+      
+      
+      return customInstance<PutV1AiConversationsBookmark200>(
+      {url: `/v1/ai/conversations/bookmark`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: putV1AiConversationsBookmarkBody
+    },
+      options);
+    }
+  
+
+
+export const getPutV1AiConversationsBookmarkMutationOptions = <TError = ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1AiConversationsBookmark>>, TError,{data: PutV1AiConversationsBookmarkBody}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof putV1AiConversationsBookmark>>, TError,{data: PutV1AiConversationsBookmarkBody}, TContext> => {
+
+const mutationKey = ['putV1AiConversationsBookmark'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putV1AiConversationsBookmark>>, {data: PutV1AiConversationsBookmarkBody}> = (props) => {
+          const {data} = props ?? {};
+
+          return  putV1AiConversationsBookmark(data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PutV1AiConversationsBookmarkMutationResult = NonNullable<Awaited<ReturnType<typeof putV1AiConversationsBookmark>>>
+    export type PutV1AiConversationsBookmarkMutationBody = PutV1AiConversationsBookmarkBody
+    export type PutV1AiConversationsBookmarkMutationError = ErrorResponse
+
+    /**
+ * @summary Toggle message bookmark
+ */
+export const usePutV1AiConversationsBookmark = <TError = ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1AiConversationsBookmark>>, TError,{data: PutV1AiConversationsBookmarkBody}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof putV1AiConversationsBookmark>>,
+        TError,
+        {data: PutV1AiConversationsBookmarkBody},
+        TContext
+      > => {
+
+      const mutationOptions = getPutV1AiConversationsBookmarkMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
 /**
  * Update the profile of the currently authenticated user
  * @summary Update current user profile
@@ -10893,6 +10970,8 @@ export const getPostV1AiConversationsConversationIdMessagesResponseMock = (overr
 
 export const getGetV1AiSearchResponseMock = (overrideResponse: Partial< GetV1AiSearch200 > = {}): GetV1AiSearch200 => ({conversations: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.string.uuid(), user_id: faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), title: faker.string.alpha({length: {min: 10, max: 20}}), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, messages: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.string.uuid(), conversation_id: faker.string.uuid(), question_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), role: faker.helpers.arrayElement(['user','assistant'] as const), content: {text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, bookmarked: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, conversation_title: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined])})), undefined]), query: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), total: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), limit: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), offset: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), ...overrideResponse})
 
+export const getPutV1AiConversationsBookmarkResponseMock = (overrideResponse: Partial< PutV1AiConversationsBookmark200 > = {}): PutV1AiConversationsBookmark200 => ({bookmarked: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), ...overrideResponse})
+
 export const getPutV1UserzProfileResponseMock = (overrideResponse: Partial< PutV1UserzProfile200 > = {}): PutV1UserzProfile200 => ({message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), user: faker.helpers.arrayElement([{id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), username: faker.helpers.arrayElement([faker.helpers.fromRegExp('^[a-zA-Z0-9_@.+-]+$'), undefined]), email: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), timezone: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), last_active: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), preferred_language: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), current_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ai_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), is_paused: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), updated_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, undefined]), ...overrideResponse})
 
 export const getGetV1AdminBackendResponseMock = (): string => (faker.word.sample())
@@ -11432,6 +11511,18 @@ export const getGetV1AiSearchMockHandler = (overrideResponse?: GetV1AiSearch200 
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
     ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
     : getGetV1AiSearchResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
+export const getPutV1AiConversationsBookmarkMockHandler = (overrideResponse?: PutV1AiConversationsBookmark200 | ((info: Parameters<Parameters<typeof http.put>[1]>[0]) => Promise<PutV1AiConversationsBookmark200> | PutV1AiConversationsBookmark200)) => {
+  return http.put('*/v1/ai/conversations/bookmark', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getPutV1AiConversationsBookmarkResponseMock()),
       { status: 200,
         headers: { 'Content-Type': 'application/json' }
       })
@@ -12395,6 +12486,7 @@ export const getQuizApplicationAPIMock = () => [
   getDeleteV1AiConversationsIdMockHandler(),
   getPostV1AiConversationsConversationIdMessagesMockHandler(),
   getGetV1AiSearchMockHandler(),
+  getPutV1AiConversationsBookmarkMockHandler(),
   getPutV1UserzProfileMockHandler(),
   getGetV1AdminBackendMockHandler(),
   getGetV1AdminBackendUserzMockHandler(),

@@ -446,3 +446,71 @@ func (h *AIConversationHandler) SearchConversations(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response)
 }
+
+// ToggleMessageBookmark handles PUT /v1/ai/conversations/bookmark
+func (h *AIConversationHandler) ToggleMessageBookmark(c *gin.Context) {
+	ctx, span := observability.TraceHandlerFunction(c.Request.Context(), "toggle_message_bookmark")
+	defer observability.FinishSpan(span, nil)
+
+	userID, exists := GetUserIDFromSession(c)
+	if !exists {
+		HandleAppError(c, contextutils.ErrUnauthorized)
+		return
+	}
+
+	// Parse request body
+	var req struct {
+		ConversationID string `json:"conversation_id" binding:"required"`
+		MessageID      string `json:"message_id" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		HandleAppError(c, contextutils.NewAppErrorWithCause(
+			contextutils.ErrorCodeInvalidInput,
+			contextutils.SeverityWarn,
+			"Invalid request body",
+			"",
+			err,
+		))
+		return
+	}
+
+	// Validate UUID formats
+	if _, err := uuid.Parse(req.ConversationID); err != nil {
+		HandleAppError(c, contextutils.ErrInvalidFormat)
+		return
+	}
+	if _, err := uuid.Parse(req.MessageID); err != nil {
+		HandleAppError(c, contextutils.ErrInvalidFormat)
+		return
+	}
+
+	// Add span attributes for observability
+	span.SetAttributes(
+		observability.AttributeUserID(userID),
+		attribute.String("conversation_id", req.ConversationID),
+		attribute.String("message_id", req.MessageID),
+	)
+
+	// Toggle message bookmark
+	newBookmarkedStatus, err := h.conversationService.ToggleMessageBookmark(ctx, req.ConversationID, req.MessageID, uint(userID))
+	if err != nil {
+		h.logger.Error(ctx, "Failed to toggle message bookmark", err, map[string]interface{}{
+			"user_id":         userID,
+			"conversation_id": req.ConversationID,
+			"message_id":      req.MessageID,
+		})
+
+		// Check if it's a conversation or message not found error
+		if strings.Contains(err.Error(), "not found") {
+			HandleAppError(c, contextutils.ErrRecordNotFound)
+			return
+		}
+
+		HandleAppError(c, contextutils.WrapError(err, "failed to toggle message bookmark"))
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"bookmarked": newBookmarkedStatus,
+	})
+}

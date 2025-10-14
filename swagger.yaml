@@ -937,6 +937,56 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /v1/ai/conversations/bookmark:
+    put:
+      tags:
+        - AI Conversations
+      summary: Toggle message bookmark
+      description: Toggle the bookmark status of a specific message in a conversation
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - conversation_id
+                - message_id
+              properties:
+                conversation_id:
+                  type: string
+                  format: uuid
+                  description: ID of the conversation containing the message
+                message_id:
+                  type: string
+                  format: uuid
+                  description: ID of the message to bookmark/unbookmark
+      responses:
+        "200":
+          description: Message bookmark status updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  bookmarked:
+                    type: boolean
+                    description: The new bookmark status of the message
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Conversation or message not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /v1/userz/profile:
     put:
       tags:

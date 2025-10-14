@@ -1586,6 +1586,15 @@ type GetV1AiConversationsParams struct {
 	Offset *int `form:"offset,omitempty" json:"offset,omitempty"`
 }
 
+// PutV1AiConversationsBookmarkJSONBody defines parameters for PutV1AiConversationsBookmark.
+type PutV1AiConversationsBookmarkJSONBody struct {
+	// ConversationId ID of the conversation containing the message
+	ConversationId openapi_types.UUID `json:"conversation_id"`
+
+	// MessageId ID of the message to bookmark/unbookmark
+	MessageId openapi_types.UUID `json:"message_id"`
+}
+
 // GetV1AiSearchParams defines parameters for GetV1AiSearch.
 type GetV1AiSearchParams struct {
 	// Q Search query string
@@ -1675,6 +1684,9 @@ type PostV1AdminWorkerUsersResumeJSONRequestBody = UserIdRequest
 
 // PostV1AiConversationsJSONRequestBody defines body for PostV1AiConversations for application/json ContentType.
 type PostV1AiConversationsJSONRequestBody = CreateConversationRequest
+
+// PutV1AiConversationsBookmarkJSONRequestBody defines body for PutV1AiConversationsBookmark for application/json ContentType.
+type PutV1AiConversationsBookmarkJSONRequestBody PutV1AiConversationsBookmarkJSONBody
 
 // PostV1AiConversationsConversationIdMessagesJSONRequestBody defines body for PostV1AiConversationsConversationIdMessages for application/json ContentType.
 type PostV1AiConversationsConversationIdMessagesJSONRequestBody = CreateMessageRequest

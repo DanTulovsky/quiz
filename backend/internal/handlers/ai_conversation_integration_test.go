@@ -673,3 +673,138 @@ func (suite *AIConversationIntegrationTestSuite) TestSearchConversations_NoResul
 	assert.True(suite.T(), ok)
 	assert.Len(suite.T(), foundConversations, 0)
 }
+
+// TestToggleMessageBookmark_Success tests successful message bookmarking and unbookmarking
+func (suite *AIConversationIntegrationTestSuite) TestToggleMessageBookmark_Success() {
+	sessionCookie := suite.login()
+
+	// Create a conversation first
+	createReq := api.CreateConversationRequest{
+		Title: "Test Conversation",
+	}
+	body, _ := json.Marshal(createReq)
+	req, _ := http.NewRequest("POST", "/v1/ai/conversations", bytes.NewBuffer(body))
+	req.Header.Set("Cookie", sessionCookie)
+	req.Header.Set("Content-Type", "application/json")
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+	require.Equal(suite.T(), http.StatusCreated, w.Code)
+
+	var conversation api.Conversation
+	err := json.Unmarshal(w.Body.Bytes(), &conversation)
+	require.NoError(suite.T(), err)
+
+	// Add a message to the conversation
+	messageReq := api.CreateMessageRequest{
+		Role: api.CreateMessageRequestRoleUser,
+		Content: struct {
+			Text *string `json:"text,omitempty"`
+		}{
+			Text: stringPtr("Hello, AI!"),
+		},
+	}
+	msgBody, _ := json.Marshal(messageReq)
+	req, _ = http.NewRequest("POST", fmt.Sprintf("/v1/ai/conversations/%s/messages", conversation.Id.String()), bytes.NewBuffer(msgBody))
+	req.Header.Set("Cookie", sessionCookie)
+	req.Header.Set("Content-Type", "application/json")
+
+	w = httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+	require.Equal(suite.T(), http.StatusCreated, w.Code)
+
+	// Get the message details to get the message ID
+	req, _ = http.NewRequest("GET", fmt.Sprintf("/v1/ai/conversations/%s", conversation.Id.String()), nil)
+	req.Header.Set("Cookie", sessionCookie)
+
+	w = httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+	require.Equal(suite.T(), http.StatusOK, w.Code)
+
+	var conversationWithMessages api.Conversation
+	err = json.Unmarshal(w.Body.Bytes(), &conversationWithMessages)
+	require.NoError(suite.T(), err)
+	require.NotNil(suite.T(), conversationWithMessages.Messages)
+	require.Len(suite.T(), *conversationWithMessages.Messages, 1)
+
+	messageID := (*conversationWithMessages.Messages)[0].Id
+
+	// Test bookmarking the message (should start as false and become true)
+	bookmarkReq := struct {
+		ConversationID string `json:"conversation_id"`
+		MessageID      string `json:"message_id"`
+	}{
+		ConversationID: conversation.Id.String(),
+		MessageID:      messageID.String(),
+	}
+	bookmarkBody, _ := json.Marshal(bookmarkReq)
+	req, _ = http.NewRequest("PUT", "/v1/ai/conversations/bookmark", bytes.NewBuffer(bookmarkBody))
+	req.Header.Set("Cookie", sessionCookie)
+	req.Header.Set("Content-Type", "application/json")
+
+	w = httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusOK, w.Code)
+
+	var bookmarkResponse map[string]interface{}
+	err = json.Unmarshal(w.Body.Bytes(), &bookmarkResponse)
+	assert.NoError(suite.T(), err)
+	assert.Equal(suite.T(), true, bookmarkResponse["bookmarked"])
+
+	// Test unbookmarking the message (should become false)
+	req, _ = http.NewRequest("PUT", "/v1/ai/conversations/bookmark", bytes.NewBuffer(bookmarkBody))
+	req.Header.Set("Cookie", sessionCookie)
+	req.Header.Set("Content-Type", "application/json")
+
+	w = httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusOK, w.Code)
+
+	err = json.Unmarshal(w.Body.Bytes(), &bookmarkResponse)
+	assert.NoError(suite.T(), err)
+	assert.Equal(suite.T(), false, bookmarkResponse["bookmarked"])
+}
+
+// TestToggleMessageBookmark_Unauthorized tests bookmarking without authentication
+func (suite *AIConversationIntegrationTestSuite) TestToggleMessageBookmark_Unauthorized() {
+	bookmarkReq := struct {
+		ConversationID string `json:"conversation_id"`
+		MessageID      string `json:"message_id"`
+	}{
+		ConversationID: "550e8400-e29b-41d4-a716-446655440000",
+		MessageID:      "550e8400-e29b-41d4-a716-446655440001",
+	}
+	bookmarkBody, _ := json.Marshal(bookmarkReq)
+	req, _ := http.NewRequest("PUT", "/v1/ai/conversations/bookmark", bytes.NewBuffer(bookmarkBody))
+	req.Header.Set("Content-Type", "application/json")
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code)
+}
+
+// TestToggleMessageBookmark_NotFound tests bookmarking a non-existent message
+func (suite *AIConversationIntegrationTestSuite) TestToggleMessageBookmark_NotFound() {
+	sessionCookie := suite.login()
+
+	// Try to bookmark a non-existent message
+	bookmarkReq := struct {
+		ConversationID string `json:"conversation_id"`
+		MessageID      string `json:"message_id"`
+	}{
+		ConversationID: "550e8400-e29b-41d4-a716-446655440000",
+		MessageID:      "550e8400-e29b-41d4-a716-446655440001",
+	}
+	bookmarkBody, _ := json.Marshal(bookmarkReq)
+	req, _ := http.NewRequest("PUT", "/v1/ai/conversations/bookmark", bytes.NewBuffer(bookmarkBody))
+	req.Header.Set("Cookie", sessionCookie)
+	req.Header.Set("Content-Type", "application/json")
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusNotFound, w.Code)
+}

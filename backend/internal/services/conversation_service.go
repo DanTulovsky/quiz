@@ -26,6 +26,7 @@ type ConversationServiceInterface interface {
 	// Message operations
 	AddMessage(ctx context.Context, conversationID string, userID uint, req *api.CreateMessageRequest) error
 	GetConversationMessages(ctx context.Context, conversationID string, userID uint) ([]api.ChatMessage, error)
+	ToggleMessageBookmark(ctx context.Context, conversationID string, messageID string, userID uint) (bool, error)
 
 	// Search operations
 	SearchMessages(ctx context.Context, userID uint, query string, limit, offset int) ([]api.ChatMessage, int, error)
@@ -369,6 +370,46 @@ func (s *ConversationService) GetConversationMessages(ctx context.Context, conve
 	}
 
 	return messages, nil
+}
+
+// ToggleMessageBookmark toggles the bookmark status of a message
+func (s *ConversationService) ToggleMessageBookmark(ctx context.Context, conversationID string, messageID string, userID uint) (bool, error) {
+	// First verify the conversation belongs to the user
+	var ownerID uint
+	err := s.db.QueryRowContext(ctx, "SELECT user_id FROM ai_conversations WHERE id = $1", conversationID).Scan(&ownerID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return false, contextutils.ErrorWithContextf("conversation not found")
+		}
+		return false, contextutils.WrapError(err, "failed to verify conversation ownership")
+	}
+
+	if ownerID != userID {
+		return false, contextutils.ErrorWithContextf("conversation not found")
+	}
+
+	// Get current bookmark status and toggle it
+	var currentBookmarked bool
+	err = s.db.QueryRowContext(ctx,
+		"SELECT bookmarked FROM ai_chat_messages WHERE id = $1 AND conversation_id = $2",
+		messageID, conversationID).Scan(&currentBookmarked)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return false, contextutils.ErrorWithContextf("message not found")
+		}
+		return false, contextutils.WrapError(err, "failed to get message bookmark status")
+	}
+
+	newBookmarked := !currentBookmarked
+
+	// Update the bookmark status
+	query := `UPDATE ai_chat_messages SET bookmarked = $1, updated_at = $2 WHERE id = $3 AND conversation_id = $4`
+	_, err = s.db.ExecContext(ctx, query, newBookmarked, time.Now(), messageID, conversationID)
+	if err != nil {
+		return false, contextutils.WrapError(err, "failed to update message bookmark status")
+	}
+
+	return newBookmarked, nil
 }
 
 // SearchMessages searches across all messages for a user
