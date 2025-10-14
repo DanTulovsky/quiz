@@ -202,6 +202,8 @@ interface ChatPanelProps {
   onSaveMessage?: (messageText: string, messageIndex: number) => void;
   onSaveConversation?: () => void;
   currentConversationId?: string | null;
+  // When true, disable/hide save actions to avoid duplicates (auto-save active)
+  disableSaveConversation?: boolean;
 }
 
 // Helper to get the last AI message index
@@ -245,6 +247,7 @@ const ChatPanel: React.FC<
   currentConversationId,
   onInputFocus,
   onInputBlur,
+  disableSaveConversation,
 }) => {
   // For blinking fix: always render the last AI message bubble, with spinner if needed
   const lastAIIndex = getLastAIMessageIndex(messages);
@@ -254,7 +257,7 @@ const ChatPanel: React.FC<
         <Box key={index}>
           <MessageBubble
             msg={msg}
-            onSave={onSaveMessage}
+            onSave={!disableSaveConversation ? onSaveMessage : undefined}
             messageIndex={index}
             isLoading={isLoading}
           />
@@ -273,7 +276,7 @@ const ChatPanel: React.FC<
       <MessageBubble
         key={index}
         msg={msg}
-        onSave={onSaveMessage}
+        onSave={!disableSaveConversation ? onSaveMessage : undefined}
         messageIndex={index}
         isLoading={isLoading}
       />
@@ -428,7 +431,9 @@ const ChatPanel: React.FC<
             size='xs'
             onClick={onSaveConversation}
             title='Save Conversation'
-            disabled={!currentConversationId || messages.length === 0}
+            disabled={
+              !!disableSaveConversation || !currentConversationId || messages.length === 0
+            }
           >
             <Save size={16} />
             <Badge ml={4} size='xs' color='gray' variant='filled' radius='sm'>
@@ -1155,28 +1160,6 @@ export const Chat: React.FC<ChatProps> = ({
                 return newMessages;
               });
 
-              // Auto-save AI response if enabled (only save complete response)
-              if (
-                autoSaveEnabled &&
-                user?.id &&
-                question?.id &&
-                conversationId &&
-                done
-              ) {
-                try {
-                  await addMessageMutation.mutateAsync({
-                    conversationId,
-                    data: {
-                      question_id: question.id,
-                      role: 'assistant',
-                      content: {
-                        text: streamedText,
-                      },
-                    },
-                  });
-                } catch {}
-              }
-
               // Scroll to bottom during streaming with requestAnimationFrame for smoother performance
               requestAnimationFrame(scrollToTopOfNewResponse);
             } catch {}
@@ -1185,6 +1168,28 @@ export const Chat: React.FC<ChatProps> = ({
             throw new Error('Streaming error occurred');
           }
         }
+      }
+
+      // Streaming complete: auto-save the full AI response once
+      if (
+        autoSaveEnabled &&
+        user?.id &&
+        question?.id &&
+        conversationId &&
+        streamedText.trim().length > 0
+      ) {
+        try {
+          await addMessageMutation.mutateAsync({
+            conversationId,
+            data: {
+              question_id: question.id,
+              role: 'assistant',
+              content: {
+                text: streamedText,
+              },
+            },
+          });
+        } catch {}
       }
     } catch (e: unknown) {
       // Check if this was an abort
@@ -1402,6 +1407,7 @@ export const Chat: React.FC<ChatProps> = ({
           currentConversationId={currentConversationId}
           onInputFocus={onInputFocus}
           onInputBlur={onInputBlur}
+          disableSaveConversation={autoSaveEnabled}
         />
       </Modal>
     );
@@ -1455,6 +1461,7 @@ export const Chat: React.FC<ChatProps> = ({
           currentConversationId={currentConversationId}
           onInputFocus={onInputFocus}
           onInputBlur={onInputBlur}
+          disableSaveConversation={autoSaveEnabled}
         />
       </Paper>
       {/* centered shortcut badge below the AI chat pane */}
