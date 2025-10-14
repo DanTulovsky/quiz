@@ -1,7 +1,0 @@
----
-description:
-globs:
-alwaysApply: true
----
-- Always try to use mantine native functionaity rather than custom css/typescript
-- Prefer to use libraries rather than coding from scratch

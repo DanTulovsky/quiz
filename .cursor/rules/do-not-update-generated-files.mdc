@@ -1,6 +1,0 @@
----
-description:
-globs:
-alwaysApply: true
----
-Never update generated code directly, always use proper commands: generate-api-types
