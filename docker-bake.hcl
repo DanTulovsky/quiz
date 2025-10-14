@@ -27,7 +27,6 @@ variable "TARGETARCH" {
   default = "arm64"
 }
 
-
 target "backend" {
   context = "."
   dockerfile = "Dockerfile.backend"

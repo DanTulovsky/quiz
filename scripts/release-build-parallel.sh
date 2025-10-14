@@ -72,7 +72,6 @@ if command -v docker >/dev/null 2>&1; then
     --set "*.cache-to=type=registry,ref=mrwetsnow/quiz-backend:buildcache,mode=max" \
     --set "*.cache-to=type=registry,ref=mrwetsnow/quiz-worker:buildcache,mode=max" \
     --set "*.cache-to=type=registry,ref=mrwetsnow/quiz-frontend:buildcache,mode=max" \
-    --set "TARGETARCH=$TARGETARCH" \
     default || {
     echo "One or more bake targets failed" >&2
     exit 1
