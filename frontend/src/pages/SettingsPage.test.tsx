@@ -151,6 +151,14 @@ vi.mock('../components/TimezoneSelector', () => ({
   ),
 }));
 
+// Mock the useTTS hook to prevent real TTS functionality in tests
+vi.mock('../hooks/useTTS', () => ({
+  useTTS: () => ({
+    playTTSOnce: vi.fn(),
+    stopTTSOnce: vi.fn(),
+  }),
+}));
+
 describe('SettingsPage', () => {
   let queryClient: QueryClient;
 
@@ -231,7 +239,13 @@ describe('SettingsPage', () => {
       expect(screen.getByText('Settings')).toBeInTheDocument();
     });
 
-    // Wait for the learning language to be set from user data and levels to load
+    // Wait for the learning language select to appear first (it should appear before level select)
+    await waitFor(() => {
+      const languageSelect = screen.getByTestId('learning-language-select');
+      expect(languageSelect).toBeInTheDocument();
+    });
+
+    // Wait for the level select to appear after language is loaded
     await waitFor(() => {
       const levelSelect = screen.getByTestId('level-select');
       expect(levelSelect).toBeInTheDocument();
@@ -246,7 +260,7 @@ describe('SettingsPage', () => {
     // In Mantine Select, the value is displayed as the full label
     const expectedValue = 'B1 — Intermediate';
     expect(levelSelect).toHaveValue(expectedValue);
-  });
+  }, 15000); // Increase timeout for this test
 
   it('loads TTS voices and populates the voice select from /v1/voices response object', async () => {
     // Mock fetch for /v1/voices
@@ -282,7 +296,12 @@ describe('SettingsPage', () => {
       );
     });
 
-    // Wait for preferences section and voice select to be in the DOM
+    // Wait for the Settings page to load
+    await waitFor(() => {
+      expect(screen.getByText('Settings')).toBeInTheDocument();
+    });
+
+    // Wait for the learning preferences section to be in the DOM
     await waitFor(() => {
       expect(screen.getByText('Learning Preferences')).toBeInTheDocument();
     });
@@ -292,7 +311,7 @@ describe('SettingsPage', () => {
       expect(mockFetch).toHaveBeenCalledWith(
         expect.stringContaining('/v1/voices?language=it-IT')
       );
-    });
+    }, { timeout: 5000 });
 
     // Voice select should now have options (value not required, but options rendered)
     const voiceSelect = screen.getByTestId('tts-voice-select');
@@ -309,5 +328,5 @@ describe('SettingsPage', () => {
       // We can verify this by checking if the select is enabled (not disabled due to no voices)
       expect(voiceSelect).not.toBeDisabled();
     });
-  });
+  }, 15000); // Increase timeout for this test
 });

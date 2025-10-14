@@ -295,6 +295,10 @@ export const SavedConversationsPage: React.FC = () => {
   const [editingConversation, setEditingConversation] =
     useState<Conversation | null>(null);
   const [editTitle, setEditTitle] = useState('');
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [conversationToDelete, setConversationToDelete] = useState<
+    string | null
+  >(null);
 
   const queryClient = useQueryClient();
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -453,12 +457,21 @@ export const SavedConversationsPage: React.FC = () => {
     setEditModalOpen(true);
   };
 
-  const handleDeleteConversation = async (conversationId: string) => {
-    if (window.confirm('Are you sure you want to delete this conversation?')) {
-      try {
-        await deleteConversationMutation.mutateAsync({ id: conversationId });
-      } catch {}
-    }
+  const handleDeleteConversation = (conversationId: string) => {
+    setConversationToDelete(conversationId);
+    setDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!conversationToDelete) return;
+
+    try {
+      await deleteConversationMutation.mutateAsync({
+        id: conversationToDelete,
+      });
+      setDeleteModalOpen(false);
+      setConversationToDelete(null);
+    } catch {}
   };
 
   const handleUpdateConversation = async () => {
@@ -600,6 +613,42 @@ export const SavedConversationsPage: React.FC = () => {
               loading={updateConversationMutation.isPending}
             >
               Save
+            </Button>
+          </Group>
+        </Stack>
+      </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        opened={deleteModalOpen}
+        onClose={() => {
+          setDeleteModalOpen(false);
+          setConversationToDelete(null);
+        }}
+        title='Delete Conversation'
+        size='sm'
+      >
+        <Stack gap='md'>
+          <Text>
+            Are you sure you want to delete this conversation? This action
+            cannot be undone.
+          </Text>
+          <Group justify='flex-end' gap='sm'>
+            <Button
+              variant='light'
+              onClick={() => {
+                setDeleteModalOpen(false);
+                setConversationToDelete(null);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              color='red'
+              onClick={handleConfirmDelete}
+              loading={deleteConversationMutation.isPending}
+            >
+              Delete
             </Button>
           </Group>
         </Stack>

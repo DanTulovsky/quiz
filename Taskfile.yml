@@ -1839,5 +1839,6 @@ tasks:
     deps: [update-vite-proxy]
     dir: frontend
     cmds:
+      - cd .. && docker compose -f docker-compose.yml down frontend
       - echo "🚀 Starting npm dev server..."
       - npm run dev
