@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useGetV1SettingsLevels } from '../api/api';
 import { useTheme } from '../contexts/ThemeContext';
 import { useMobileDetection } from '../hooks/useMobileDetection';
+import { useQueryClient } from '@tanstack/react-query';
 import { useHotkeys } from 'react-hotkeys-hook';
 import {
   AppShell,
@@ -40,6 +41,7 @@ import {
 import WorkerStatus from './WorkerStatus';
 import VersionDisplay from './VersionDisplay';
 import HelpModal from './HelpModal';
+import { getGetV1AiConversationsQueryKey } from '../api/api';
 
 interface LayoutProps {
   children: ReactNode;
@@ -59,6 +61,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { colorScheme, setColorScheme } = useTheme();
   // Expose current override to determine if we should offer switch back to mobile
   const { setMobileView, deviceView } = useMobileDetection();
+  const queryClient = useQueryClient();
 
   // Detect if we're on a mobile device (by viewport or user agent)
   const isMobileViewport = window.innerWidth < 768;
@@ -98,6 +101,22 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       }
     }
   }, [user]);
+
+  // Refresh AI Conversations when navigating to the page
+  const refreshAiConversations = useCallback(() => {
+    const conversationsListKey = getGetV1AiConversationsQueryKey({
+      limit: 50,
+      offset: 0,
+    });
+    queryClient.invalidateQueries({ queryKey: conversationsListKey });
+    queryClient.refetchQueries({ queryKey: conversationsListKey });
+  }, [queryClient]);
+
+  useEffect(() => {
+    if (location.pathname.startsWith('/conversations')) {
+      refreshAiConversations();
+    }
+  }, [location.pathname, refreshAiConversations]);
 
   // Use useCallback to prevent recreation of navigation array
   const navigation = useCallback(() => {
@@ -441,6 +460,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <NavLink
                 component={Link}
                 to={item.href}
+                onClick={
+                  item.name === 'AI Conversations'
+                    ? () => {
+                        refreshAiConversations();
+                      }
+                    : undefined
+                }
                 label={
                   <Group justify='space-between' w='100%' align='center'>
                     <span>{item.name}</span>
