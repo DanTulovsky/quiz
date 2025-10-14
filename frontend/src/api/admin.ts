@@ -802,3 +802,21 @@ export const useAdminStorySection = (sectionId: number | null) => {
     staleTime: 30000,
   });
 };
+
+// Delete a story (admin only)
+export const useAdminDeleteStory = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (storyId: number) => {
+      const resp = await AXIOS_INSTANCE.delete(`/v1/admin/backend/stories/${storyId}`, {
+        headers: { Accept: 'application/json' },
+      });
+      return resp.data;
+    },
+    onSuccess: () => {
+      // Refresh story lists and any open admin story queries
+      queryClient.invalidateQueries({ queryKey: ['admin-stories'], exact: false });
+      queryClient.invalidateQueries({ queryKey: ['admin-story'], exact: false });
+    },
+  });
+};

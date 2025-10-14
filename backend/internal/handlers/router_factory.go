@@ -360,10 +360,11 @@ func NewRouter(
 				backend.POST("/clear-database", adminHandler.ClearDatabase)
 				backend.POST("/userz/:id/clear", adminHandler.ClearUserDataForUser)
 
-				// Story explorer (admin)
-				backend.GET("/stories", adminHandler.GetStoriesPaginated)
-				backend.GET("/stories/:id", adminHandler.GetStoryAdmin)
-				backend.GET("/story-sections/:id", adminHandler.GetSectionAdmin)
+                // Story explorer (admin)
+                backend.GET("/stories", adminHandler.GetStoriesPaginated)
+                backend.GET("/stories/:id", adminHandler.GetStoryAdmin)
+                backend.DELETE("/stories/:id", adminHandler.DeleteStoryAdmin)
+                backend.GET("/story-sections/:id", adminHandler.GetSectionAdmin)
 			}
 
 		}
