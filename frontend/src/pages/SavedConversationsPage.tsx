@@ -19,8 +19,12 @@ import {
   ActionIcon,
   Menu,
   Modal,
+  Box,
 } from '@mantine/core';
-import { Search, Edit, Trash2, MessageCircle, Calendar } from 'lucide-react';
+import { Search, Edit, Trash2, MessageCircle, Calendar, Bookmark } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import SyntaxHighlighter from 'react-syntax-highlighter';
 import { useAuth } from '../hooks/useAuth';
 import {
   useGetV1AiConversations,
@@ -28,6 +32,7 @@ import {
   useGetV1AiSearch,
   useDeleteV1AiConversationsId,
   usePutV1AiConversationsId,
+  usePutV1AiConversationsBookmark,
   getGetV1AiConversationsQueryKey,
   Conversation,
   ChatMessage,
@@ -159,6 +164,8 @@ interface ConversationDetailModalProps {
   opened: boolean;
   onClose: () => void;
   messages: ChatMessage[];
+  onBookmarkToggle: (messageId: string) => void;
+  isBookmarking: boolean;
 }
 
 const ConversationDetailModal: React.FC<ConversationDetailModalProps> = ({
@@ -166,6 +173,8 @@ const ConversationDetailModal: React.FC<ConversationDetailModalProps> = ({
   opened,
   onClose,
   messages,
+  onBookmarkToggle,
+  isBookmarking,
 }) => {
   if (!conversation) return null;
 
@@ -185,26 +194,89 @@ const ConversationDetailModal: React.FC<ConversationDetailModalProps> = ({
     >
       <div style={{ flex: 1, overflow: 'auto', maxHeight: '60vh' }}>
         <Stack gap='sm'>
-          {messages.map((message, index) => (
-            <Card key={message.id || index} padding='md' radius='sm' withBorder>
-              <Group mb='xs'>
-                <Badge
-                  color={message.role === 'user' ? 'blue' : 'green'}
-                  variant='filled'
-                >
-                  {message.role === 'user' ? 'You' : 'AI'}
-                </Badge>
-                <Text size='xs' c='dimmed'>
-                  {format(new Date(message.created_at), 'MMM d, h:mm a')}
-                </Text>
-              </Group>
-              <Text size='sm' style={{ whiteSpace: 'pre-wrap' }}>
-                {typeof message.content === 'string'
-                  ? message.content
-                  : JSON.stringify(message.content, null, 2)}
-              </Text>
-            </Card>
-          ))}
+          {messages.map((message, index) => {
+            const messageText =
+              typeof message.content === 'string'
+                ? message.content
+                : message.content?.text || '';
+
+            return (
+              <Card
+                key={message.id || index}
+                padding='md'
+                radius='sm'
+                withBorder
+                style={{
+                  backgroundColor:
+                    message.role === 'user'
+                      ? 'var(--mantine-primary-color-1)'
+                      : 'var(--mantine-color-body)',
+                }}
+              >
+                <Group mb='xs' justify='space-between'>
+                  <Group>
+                    <Badge
+                      color={message.role === 'user' ? 'blue' : 'green'}
+                      variant='filled'
+                    >
+                      {message.role === 'user' ? 'You' : 'AI'}
+                    </Badge>
+                    <Text size='xs' c='dimmed'>
+                      {format(new Date(message.created_at), 'MMM d, h:mm a')}
+                    </Text>
+                  </Group>
+                  {message.role === 'assistant' && (
+                    <Button
+                      variant='light'
+                      size='xs'
+                      leftSection={<Bookmark size={14} />}
+                      onClick={() => onBookmarkToggle(message.id)}
+                      disabled={isBookmarking}
+                      color={message.bookmarked ? 'blue' : undefined}
+                      style={{
+                        opacity: message.bookmarked ? 1 : 0.7,
+                      }}
+                    >
+                      {message.bookmarked ? 'Bookmarked' : 'Bookmark'}
+                    </Button>
+                  )}
+                </Group>
+                <Box size='sm' style={{ maxWidth: 'none' }}>
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      code({ className, children, ...props }: any) {
+                        const match = /language-(\w+)/.exec(className || '');
+                        return match ? (
+                          <SyntaxHighlighter
+                            className='syntax-highlighter-vsc-dark'
+                            language={match[1]}
+                            PreTag='div'
+                            {...props}
+                          >
+                            {String(children).replace(/\n$/, '')}
+                          </SyntaxHighlighter>
+                        ) : (
+                          <code className={className} {...props}>
+                            {children}
+                          </code>
+                        );
+                      },
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      p: ({ children }: any) => (
+                        <Box mb='md' component='p'>
+                          {children}
+                        </Box>
+                      ),
+                    }}
+                  >
+                    {messageText}
+                  </ReactMarkdown>
+                </Box>
+              </Card>
+            );
+          })}
         </Stack>
       </div>
     </Modal>
@@ -332,6 +404,22 @@ export const SavedConversationsPage: React.FC = () => {
     queryClient
   );
 
+  const bookmarkMessageMutation = usePutV1AiConversationsBookmark(
+    {
+      mutation: {
+        onSuccess: () => {
+          // Invalidate the conversation query to refresh the messages
+          if (selectedConversation?.id) {
+            queryClient.invalidateQueries({
+              queryKey: ['getV1AiConversationsId', selectedConversation.id],
+            });
+          }
+        },
+      },
+    },
+    queryClient
+  );
+
   const totalCount = activeSearchQuery.trim()
     ? searchData?.total || filteredConversations.length
     : conversationsData?.total || filteredConversations.length;
@@ -380,6 +468,19 @@ export const SavedConversationsPage: React.FC = () => {
       await updateConversationMutation.mutateAsync({
         id: editingConversation.id,
         data: { title: editTitle },
+      });
+    } catch {}
+  };
+
+  const handleBookmarkToggle = async (messageId: string) => {
+    if (!selectedConversation?.id) return;
+
+    try {
+      await bookmarkMessageMutation.mutateAsync({
+        data: {
+          conversation_id: selectedConversation.id,
+          message_id: messageId,
+        },
       });
     } catch {}
   };
@@ -467,6 +568,8 @@ export const SavedConversationsPage: React.FC = () => {
           setConversationMessages([]);
         }}
         messages={conversationMessages}
+        onBookmarkToggle={handleBookmarkToggle}
+        isBookmarking={bookmarkMessageMutation.isPending}
       />
 
       {/* Edit Title Modal */}
