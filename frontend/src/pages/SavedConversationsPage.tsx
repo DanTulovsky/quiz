@@ -50,6 +50,25 @@ const ConversationCard: React.FC<ConversationCardProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
+  // Derive count and preview from optional fields to avoid fetching messages list
+  const messageCount =
+    (conversation as unknown as { message_count?: number }).message_count ??
+    conversation.messages?.length ??
+    0;
+
+  const previewMessage: string | undefined = (() => {
+    const fromMessages =
+      typeof conversation.messages?.[0]?.content === 'string'
+        ? (conversation.messages[0].content as unknown as string)
+        : undefined;
+    const fromPreviewField = (
+      conversation as unknown as {
+        preview_message?: string;
+      }
+    ).preview_message;
+    return fromMessages || fromPreviewField;
+  })();
+
   return (
     <Card shadow='sm' padding='lg' radius='md' withBorder>
       <Group justify='space-between' mb='xs'>
@@ -62,7 +81,11 @@ const ConversationCard: React.FC<ConversationCardProps> = ({
         </Title>
         <Menu shadow='md' width={120}>
           <Menu.Target>
-            <ActionIcon aria-label='Conversation actions' variant='subtle' color='gray'>
+            <ActionIcon
+              aria-label='Conversation actions'
+              variant='subtle'
+              color='gray'
+            >
               <Edit size={16} />
             </ActionIcon>
           </Menu.Target>
@@ -99,31 +122,26 @@ const ConversationCard: React.FC<ConversationCardProps> = ({
           {format(new Date(conversation.created_at), 'MMM d, h:mm a')}
         </Badge>
         <Badge variant='light' color='green'>
-          {conversation.messages?.length || 0} messages
+          {messageCount} {messageCount === 1 ? 'message' : 'messages'}
         </Badge>
       </Group>
 
-      {conversation.messages && conversation.messages.length > 0 && (
+      {previewMessage && (
         <Text size='sm' c='dimmed' lineClamp={isExpanded ? undefined : 2}>
-          {typeof conversation.messages[0]?.content === 'string'
-            ? conversation.messages[0].content.substring(0, 200)
-            : 'No preview available'}
+          {previewMessage.substring(0, 200)}
         </Text>
       )}
 
-      {conversation.messages &&
-        conversation.messages.length > 0 &&
-        typeof conversation.messages[0]?.content === 'string' &&
-        conversation.messages[0].content.length > 100 && (
-          <Button
-            variant='subtle'
-            size='xs'
-            mt='xs'
-            onClick={() => setIsExpanded(!isExpanded)}
-          >
-            {isExpanded ? 'Show Less' : 'Show More'}
-          </Button>
-        )}
+      {previewMessage && previewMessage.length > 100 && (
+        <Button
+          variant='subtle'
+          size='xs'
+          mt='xs'
+          onClick={() => setIsExpanded(!isExpanded)}
+        >
+          {isExpanded ? 'Show Less' : 'Show More'}
+        </Button>
+      )}
 
       <Divider my='sm' />
 
