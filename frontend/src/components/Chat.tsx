@@ -96,7 +96,11 @@ const suggestedPrompts = [
 // Shared message bubble for consistent formatting
 const MessageBubble: React.FC<{
   msg: Message;
-  onBookmark?: (messageText: string, messageIndex: number, messageId: string) => void;
+  onBookmark?: (
+    messageText: string,
+    messageIndex: number,
+    messageId: string
+  ) => void;
   messageIndex: number;
   isLoading?: boolean;
   bookmarked?: boolean;
@@ -191,7 +195,11 @@ interface ChatPanelProps {
   messages: Message[];
   MessageBubble: React.FC<{
     msg: Message;
-    onBookmark?: (messageText: string, messageIndex: number, messageId: string) => void;
+    onBookmark?: (
+      messageText: string,
+      messageIndex: number,
+      messageId: string
+    ) => void;
     messageIndex: number;
     isLoading?: boolean;
     bookmarked?: boolean;
@@ -266,7 +274,7 @@ const ChatPanel: React.FC<
         <Box key={index}>
           <MessageBubble
             msg={msg}
-            onBookmark={!disableSaveConversation ? onSaveMessage : undefined}
+            onBookmark={onSaveMessage}
             messageIndex={index}
             isLoading={isLoading}
             bookmarked={msg.bookmarked}
@@ -286,7 +294,7 @@ const ChatPanel: React.FC<
       <MessageBubble
         key={index}
         msg={msg}
-        onBookmark={!disableSaveConversation ? onSaveMessage : undefined}
+        onBookmark={onSaveMessage}
         messageIndex={index}
         isLoading={isLoading}
         bookmarked={msg.bookmarked}
@@ -443,7 +451,9 @@ const ChatPanel: React.FC<
             onClick={onSaveConversation}
             title='Bookmark Message'
             disabled={
-              !!disableSaveConversation || !currentConversationId || messages.length === 0
+              !!disableSaveConversation ||
+              !currentConversationId ||
+              messages.length === 0
             }
           >
             <Bookmark size={16} />
@@ -1085,7 +1095,11 @@ export const Chat: React.FC<ChatProps> = ({
 
     // Add an empty AI message that we'll stream into
     const aiMessageIndex = messages.length + 1; // +1 for the user message we just added
-    const aiMessage: Message = { sender: 'ai', text: '', id: crypto.randomUUID() };
+    const aiMessage: Message = {
+      sender: 'ai',
+      text: '',
+      id: crypto.randomUUID(),
+    };
     setMessages(prev => [...prev, aiMessage]);
 
     // Create abort controller for this request
@@ -1191,7 +1205,7 @@ export const Chat: React.FC<ChatProps> = ({
         streamedText.trim().length > 0
       ) {
         try {
-          await addMessageMutation.mutateAsync({
+          const savedMessage = await addMessageMutation.mutateAsync({
             conversationId,
             data: {
               question_id: question.id,
@@ -1201,6 +1215,18 @@ export const Chat: React.FC<ChatProps> = ({
               },
             },
           });
+
+          // Update the local message with the actual backend ID
+          if (savedMessage?.id) {
+            setMessages(prev =>
+              prev.map((msg, index) => {
+                if (index === aiMessageIndex) {
+                  return { ...msg, id: savedMessage.id };
+                }
+                return msg;
+              })
+            );
+          }
         } catch {}
       }
     } catch (e: unknown) {
@@ -1282,7 +1308,14 @@ export const Chat: React.FC<ChatProps> = ({
     messageIndex: number,
     messageId: string
   ) => {
-    if (!user?.id || !currentConversationId || !messageId) return;
+    if (!user?.id || !currentConversationId || !messageId) {
+      console.error('Bookmark failed: missing required data', {
+        userId: user?.id,
+        conversationId: currentConversationId,
+        messageId,
+      });
+      return;
+    }
 
     try {
       // Toggle the bookmark status
@@ -1294,14 +1327,22 @@ export const Chat: React.FC<ChatProps> = ({
       });
 
       // Update the local message state to reflect the new bookmark status
-      setMessages(prev => prev.map((msg, index) => {
-        if (index === messageIndex && msg.id === messageId) {
-          return { ...msg, bookmarked: !msg.bookmarked };
-        }
-        return msg;
-      }));
-    } catch {
-      // You could add error feedback here
+      setMessages(prev =>
+        prev.map((msg, index) => {
+          if (index === messageIndex && msg.id === messageId) {
+            return { ...msg, bookmarked: !msg.bookmarked };
+          }
+          return msg;
+        })
+      );
+
+      console.log('Message bookmarked successfully', {
+        messageId,
+        bookmarked: !messages[messageIndex]?.bookmarked,
+      });
+    } catch (error) {
+      console.error('Bookmark failed:', error);
+      // You could add user-facing error feedback here
     }
   };
 

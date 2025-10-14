@@ -24,9 +24,9 @@ type ConversationServiceInterface interface {
 	DeleteConversation(ctx context.Context, conversationID string, userID uint) error
 
 	// Message operations
-	AddMessage(ctx context.Context, conversationID string, userID uint, req *api.CreateMessageRequest) error
+	AddMessage(ctx context.Context, conversationID string, userID uint, req *api.CreateMessageRequest) (*api.ChatMessage, error)
 	GetConversationMessages(ctx context.Context, conversationID string, userID uint) ([]api.ChatMessage, error)
-	ToggleMessageBookmark(ctx context.Context, conversationID string, messageID string, userID uint) (bool, error)
+	ToggleMessageBookmark(ctx context.Context, conversationID, messageID string, userID uint) (bool, error)
 
 	// Search operations
 	SearchMessages(ctx context.Context, userID uint, query string, limit, offset int) ([]api.ChatMessage, int, error)
@@ -227,19 +227,19 @@ func (s *ConversationService) DeleteConversation(ctx context.Context, conversati
 }
 
 // AddMessage adds a new message to a conversation
-func (s *ConversationService) AddMessage(ctx context.Context, conversationID string, userID uint, req *api.CreateMessageRequest) error {
+func (s *ConversationService) AddMessage(ctx context.Context, conversationID string, userID uint, req *api.CreateMessageRequest) (*api.ChatMessage, error) {
 	// First verify the conversation belongs to the user
 	var ownerID uint
 	err := s.db.QueryRowContext(ctx, "SELECT user_id FROM ai_conversations WHERE id = $1", conversationID).Scan(&ownerID)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return contextutils.ErrorWithContextf("conversation not found")
+			return nil, contextutils.ErrorWithContextf("conversation not found")
 		}
-		return contextutils.WrapError(err, "failed to verify conversation ownership")
+		return nil, contextutils.WrapError(err, "failed to verify conversation ownership")
 	}
 
 	if ownerID != userID {
-		return contextutils.ErrorWithContextf("conversation not found")
+		return nil, contextutils.ErrorWithContextf("conversation not found")
 	}
 
 	messageID := uuid.New()
@@ -257,7 +257,7 @@ func (s *ConversationService) AddMessage(ctx context.Context, conversationID str
 	// Store content directly as JSON string
 	contentJSON, err := json.Marshal(req.Content)
 	if err != nil {
-		return contextutils.WrapError(err, "failed to marshal message content")
+		return nil, contextutils.WrapError(err, "failed to marshal message content")
 	}
 
 	var contentBytes []byte
@@ -281,7 +281,7 @@ func (s *ConversationService) AddMessage(ctx context.Context, conversationID str
 		&message.UpdatedAt,
 	)
 	if err != nil {
-		return contextutils.WrapError(err, "failed to add message")
+		return nil, contextutils.WrapError(err, "failed to add message")
 	}
 
 	// Unmarshal the content from bytes
@@ -290,11 +290,11 @@ func (s *ConversationService) AddMessage(ctx context.Context, conversationID str
 	}
 	err = json.Unmarshal(contentBytes, &contentObj)
 	if err != nil {
-		return contextutils.WrapError(err, "failed to unmarshal message content")
+		return nil, contextutils.WrapError(err, "failed to unmarshal message content")
 	}
 	message.Content = contentObj
 
-	return nil
+	return &message, nil
 }
 
 // GetConversationMessages retrieves all messages for a conversation
@@ -373,7 +373,7 @@ func (s *ConversationService) GetConversationMessages(ctx context.Context, conve
 }
 
 // ToggleMessageBookmark toggles the bookmark status of a message
-func (s *ConversationService) ToggleMessageBookmark(ctx context.Context, conversationID string, messageID string, userID uint) (bool, error) {
+func (s *ConversationService) ToggleMessageBookmark(ctx context.Context, conversationID, messageID string, userID uint) (bool, error) {
 	// First verify the conversation belongs to the user
 	var ownerID uint
 	err := s.db.QueryRowContext(ctx, "SELECT user_id FROM ai_conversations WHERE id = $1", conversationID).Scan(&ownerID)

@@ -163,7 +163,7 @@ func (suite *ConversationServiceIntegrationTestSuite) TestGetConversationWithMes
 				Text: stringPtr(fmt.Sprintf("Test message %d", i+1)),
 			},
 		}
-		err := suite.conversationSvc.AddMessage(ctx, conversation.Id.String(), uint(suite.testUser.ID), msgReq)
+		_, err := suite.conversationSvc.AddMessage(ctx, conversation.Id.String(), uint(suite.testUser.ID), msgReq)
 		suite.Require().NoError(err)
 	}
 
@@ -253,7 +253,7 @@ func (suite *ConversationServiceIntegrationTestSuite) TestAddMessage() {
 			Text: stringPtr("Hello, AI!"),
 		},
 	}
-	err = suite.conversationSvc.AddMessage(ctx, conversation.Id.String(), uint(suite.testUser.ID), msgReq)
+	_, err = suite.conversationSvc.AddMessage(ctx, conversation.Id.String(), uint(suite.testUser.ID), msgReq)
 	suite.Require().NoError(err)
 
 	// Verify user message
@@ -274,7 +274,7 @@ func (suite *ConversationServiceIntegrationTestSuite) TestAddMessage() {
 		},
 	}
 	fmt.Println(assistantMsgReq.Content)
-	err = suite.conversationSvc.AddMessage(ctx, conversation.Id.String(), uint(suite.testUser.ID), assistantMsgReq)
+	_, err = suite.conversationSvc.AddMessage(ctx, conversation.Id.String(), uint(suite.testUser.ID), assistantMsgReq)
 	suite.Require().NoError(err)
 
 	// Retrieve messages for the conversation
@@ -315,7 +315,7 @@ func (suite *ConversationServiceIntegrationTestSuite) TestSearchMessages() {
 			Text: stringPtr("I love learning Spanish"),
 		},
 	}
-	err = suite.conversationSvc.AddMessage(ctx, conv1.Id.String(), uint(suite.testUser.ID), msg1Req)
+	_, err = suite.conversationSvc.AddMessage(ctx, conv1.Id.String(), uint(suite.testUser.ID), msg1Req)
 	suite.Require().NoError(err)
 
 	msg2Req := &api.CreateMessageRequest{
@@ -326,7 +326,7 @@ func (suite *ConversationServiceIntegrationTestSuite) TestSearchMessages() {
 			Text: stringPtr("Spanish grammar can be challenging"),
 		},
 	}
-	err = suite.conversationSvc.AddMessage(ctx, conv1.Id.String(), uint(suite.testUser.ID), msg2Req)
+	_, err = suite.conversationSvc.AddMessage(ctx, conv1.Id.String(), uint(suite.testUser.ID), msg2Req)
 	suite.Require().NoError(err)
 
 	msg3Req := &api.CreateMessageRequest{
@@ -337,7 +337,7 @@ func (suite *ConversationServiceIntegrationTestSuite) TestSearchMessages() {
 			Text: stringPtr("I want to learn French instead"),
 		},
 	}
-	err = suite.conversationSvc.AddMessage(ctx, conv2.Id.String(), uint(suite.testUser.ID), msg3Req)
+	_, err = suite.conversationSvc.AddMessage(ctx, conv2.Id.String(), uint(suite.testUser.ID), msg3Req)
 	suite.Require().NoError(err)
 
 	// Search for "Spanish"

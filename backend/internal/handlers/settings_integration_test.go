@@ -473,7 +473,7 @@ func (suite *SettingsIntegrationTestSuite) TestClearAllAIChatsEndpoint() {
 			Text: stringPtr("Test message 1"),
 		},
 	}
-	err = conversationService.AddMessage(context.Background(), fmt.Sprintf("%s", conversation1.Id), uint(suite.TestUserID), &messageReq1)
+	_, err = conversationService.AddMessage(context.Background(), fmt.Sprintf("%s", conversation1.Id), uint(suite.TestUserID), &messageReq1)
 	suite.Require().NoError(err)
 
 	// Create second conversation
@@ -490,7 +490,7 @@ func (suite *SettingsIntegrationTestSuite) TestClearAllAIChatsEndpoint() {
 			Text: stringPtr("Test message 2a"),
 		},
 	}
-	err = conversationService.AddMessage(context.Background(), fmt.Sprintf("%s", conversation2.Id), uint(suite.TestUserID), &messageReq2)
+	_, err = conversationService.AddMessage(context.Background(), fmt.Sprintf("%s", conversation2.Id), uint(suite.TestUserID), &messageReq2)
 	suite.Require().NoError(err)
 
 	messageReq3 := api.CreateMessageRequest{
@@ -501,7 +501,7 @@ func (suite *SettingsIntegrationTestSuite) TestClearAllAIChatsEndpoint() {
 			Text: stringPtr("Test message 2b"),
 		},
 	}
-	err = conversationService.AddMessage(context.Background(), fmt.Sprintf("%s", conversation2.Id), uint(suite.TestUserID), &messageReq3)
+	_, err = conversationService.AddMessage(context.Background(), fmt.Sprintf("%s", conversation2.Id), uint(suite.TestUserID), &messageReq3)
 	suite.Require().NoError(err)
 
 	// Verify conversations exist

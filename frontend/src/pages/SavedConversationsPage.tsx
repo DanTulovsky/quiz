@@ -62,7 +62,11 @@ const ConversationCard: React.FC<ConversationCardProps> = ({
         </Title>
         <Menu shadow='md' width={120}>
           <Menu.Target>
-            <ActionIcon aria-label='Conversation actions' variant='subtle' color='gray'>
+            <ActionIcon
+              aria-label='Conversation actions'
+              variant='subtle'
+              color='gray'
+            >
               <Edit size={16} />
             </ActionIcon>
           </Menu.Target>

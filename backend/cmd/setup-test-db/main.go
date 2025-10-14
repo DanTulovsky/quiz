@@ -1295,7 +1295,7 @@ func loadAndCreateConversations(ctx context.Context, filePath string, users map[
 				QuestionId: msgData.QuestionID,
 			}
 
-			err := conversationService.AddMessage(ctx, conversation.Id.String(), uint(user.ID), createMsgReq)
+			_, err := conversationService.AddMessage(ctx, conversation.Id.String(), uint(user.ID), createMsgReq)
 			if err != nil {
 				return conversations, contextutils.WrapErrorf(err, "failed to add message %d for conversation %d", j, i)
 			}

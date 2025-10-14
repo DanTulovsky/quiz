@@ -357,7 +357,7 @@ func (h *AIConversationHandler) AddMessage(c *gin.Context) {
 	)
 
 	// Add message to conversation
-	err := h.conversationService.AddMessage(ctx, conversationID, uint(userID), &req)
+	createdMessage, err := h.conversationService.AddMessage(ctx, conversationID, uint(userID), &req)
 	if err != nil {
 		h.logger.Error(ctx, "Failed to add message to conversation", err, map[string]interface{}{
 			"user_id":         userID,
@@ -375,10 +375,7 @@ func (h *AIConversationHandler) AddMessage(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, api.SuccessResponse{
-		Message: stringPtr("Message added successfully"),
-		Success: true,
-	})
+	c.JSON(http.StatusCreated, createdMessage)
 }
 
 // SearchConversations handles GET /v1/ai/search
