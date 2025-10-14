@@ -751,6 +751,37 @@ func (h *AdminHandler) GetSectionAdmin(c *gin.Context) {
 	c.JSON(http.StatusOK, convertStorySectionWithQuestionsToAPI(section))
 }
 
+// DeleteStoryAdmin deletes a story by ID (admin only). Only archived or completed stories can be deleted.
+func (h *AdminHandler) DeleteStoryAdmin(c *gin.Context) {
+    if h.storyService == nil {
+        HandleAppError(c, contextutils.ErrInternalError)
+        return
+    }
+    idStr := c.Param("id")
+    id, err := strconv.Atoi(idStr)
+    if err != nil || id <= 0 {
+        HandleAppError(c, contextutils.ErrInvalidFormat)
+        return
+    }
+
+    if err := h.storyService.DeleteStoryAdmin(c.Request.Context(), uint(id)); err != nil {
+        h.logger.Error(c.Request.Context(), "Failed to delete story (admin)", err, map[string]interface{}{"story_id": id})
+
+        if strings.Contains(err.Error(), "not found") {
+            HandleAppError(c, contextutils.ErrRecordNotFound)
+            return
+        }
+        if strings.Contains(err.Error(), "cannot delete active story") {
+            HandleAppError(c, contextutils.ErrConflict)
+            return
+        }
+        HandleAppError(c, contextutils.WrapError(err, "failed to delete story"))
+        return
+    }
+
+    c.JSON(http.StatusNoContent, nil)
+}
+
 // ClearUserData removes all user activity data but keeps the users themselves
 func (h *AdminHandler) ClearUserData(c *gin.Context) {
 	err := h.userService.ClearUserData(c.Request.Context())

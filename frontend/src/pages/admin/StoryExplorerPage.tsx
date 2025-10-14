@@ -25,6 +25,7 @@ import {
   useAdminStory,
   useAdminStorySection,
   useUsersPaginated,
+  useAdminDeleteStory,
 } from '../../api/admin';
 import {
   useGetV1SettingsLanguages,
@@ -106,6 +107,23 @@ const StoryExplorerPage: React.FC = () => {
     setSelectedStoryId(storyId);
     setSectionIndex(0);
     setViewModalOpen(true);
+  };
+
+  // Delete story (admin)
+  const deleteStoryMutation = useAdminDeleteStory();
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [storyToDelete, setStoryToDelete] = useState<number | null>(null);
+  const triggerDelete = (storyId: number) => {
+    setStoryToDelete(storyId);
+    setConfirmOpen(true);
+  };
+  const confirmDelete = async () => {
+    if (!storyToDelete) return;
+    try {
+      await deleteStoryMutation.mutateAsync(storyToDelete);
+    } finally {
+      setStoryToDelete(null);
+    }
   };
 
   const clearFilters = () => {
@@ -262,16 +280,30 @@ const StoryExplorerPage: React.FC = () => {
                   </Table.Td>
                   <Table.Td>{s.user_id}</Table.Td>
                   <Table.Td>
-                    <Button
-                      size='xs'
-                      variant='subtle'
-                      onClick={e => {
-                        e.stopPropagation();
-                        openView(Number(s.id));
-                      }}
-                    >
-                      View
-                    </Button>
+                    <Group gap='xs' wrap='nowrap'>
+                      <Button
+                        size='xs'
+                        variant='subtle'
+                        onClick={e => {
+                          e.stopPropagation();
+                          openView(Number(s.id));
+                        }}
+                      >
+                        View
+                      </Button>
+                      <Button
+                        size='xs'
+                        variant='outline'
+                        color='red'
+                        onClick={e => {
+                          e.stopPropagation();
+                          triggerDelete(Number(s.id));
+                        }}
+                        disabled={s.status === 'active' || deleteStoryMutation.isPending}
+                      >
+                        {deleteStoryMutation.isPending && storyToDelete === s.id ? 'Deleting…' : 'Delete'}
+                      </Button>
+                    </Group>
                   </Table.Td>
                 </Table.Tr>
               ))}
@@ -369,6 +401,28 @@ const StoryExplorerPage: React.FC = () => {
               </Tabs.Panel>
             </Tabs>
           )}
+        </Stack>
+      </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        opened={confirmOpen}
+        onClose={() => setConfirmOpen(false)}
+        title='Delete Story'
+        centered
+      >
+        <Stack>
+          <Text size='sm' c='dimmed'>
+            This will permanently delete the story and all its sections and questions.
+          </Text>
+          <Group justify='flex-end'>
+            <Button variant='outline' onClick={() => setConfirmOpen(false)}>
+              Cancel
+            </Button>
+            <Button color='red' loading={deleteStoryMutation.isPending} onClick={() => { setConfirmOpen(false); confirmDelete(); }}>
+              Delete
+            </Button>
+          </Group>
         </Stack>
       </Modal>
     </Container>
