@@ -3432,7 +3432,7 @@ paths:
             format: int64
             minimum: 1
       responses:
-        "204":
+        "200":
           description: Story deleted successfully
         "400":
           description: Invalid story ID format

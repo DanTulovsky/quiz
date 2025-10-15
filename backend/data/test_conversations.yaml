@@ -15,6 +15,16 @@ conversations:
     content: "Certo! Ecco la differenza:\n\n**Ciao**: È un saluto informale usato con amici, familiari, e persone che conosci bene. È anche usato per salutare quando ci si incontra e quando ci si saluta. È molto comune tra i giovani.\n\n**Salve**: È un saluto più formale e neutrale. Si usa con persone che non conosci bene o in situazioni professionali. È meno personale di 'ciao' e si usa principalmente per salutare, non per accomiatarsi.\n\nIn generale:\n- Usa 'Ciao' con amici e familiari\n- Usa 'Salve' con estranei o in contesti formali\n- 'Buongiorno' è sempre appropriato fino al tardo pomeriggio"
     question_id: null
 
+- username: apitestuser
+  title: "Italian Language Learning - To Be Deleted"
+  messages:
+  - role: user
+    content: "I want to delete this conversation after testing the delete functionality."
+    question_id: null
+  - role: assistant
+    content: "This conversation is specifically created for testing the delete functionality. You can safely delete it without affecting other tests."
+    question_id: null
+
 - username: apitestuserstory1
   title: "Story Writing Discussion"
   messages:
@@ -43,6 +53,16 @@ conversations:
     question_id: null
   - role: assistant
     content: "Certo! Ecco come funziona il sistema dei ruoli nel quiz:\n\n**Ruoli disponibili:**\n- **admin**: Accesso completo a tutte le funzionalità amministrative\n- **user**: Ruolo standard per gli utenti normali\n- **moderator**: (se implementato) accesso moderato alle funzionalità\n\n**Permessi admin:**\n- Gestione utenti (creazione, modifica, eliminazione)\n- Gestione domande (aggiunta, modifica, approvazione)\n- Visualizzazione statistiche avanzate\n- Accesso a endpoint amministrativi\n- Gestione ruoli utente\n\n**Permessi user:**\n- Rispondere alle domande\n- Visualizzare il proprio progresso\n- Modificare le proprie impostazioni\n- Utilizzare funzionalità AI (se abilitate)\n- Creare storie (se implementato)\n\nIl sistema usa cookie di sessione per l'autenticazione e verifica i ruoli per ogni richiesta."
+    question_id: null
+
+- username: apitestadmin
+  title: "Admin Discussion - To Be Deleted"
+  messages:
+  - role: user
+    content: "I want to delete this conversation after testing the delete functionality."
+    question_id: null
+  - role: assistant
+    content: "This conversation is specifically created for testing the delete functionality. You can safely delete it without affecting other tests."
     question_id: null
 
 - username: apitestuser

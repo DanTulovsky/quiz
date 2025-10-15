@@ -779,7 +779,7 @@ func (h *AdminHandler) DeleteStoryAdmin(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusNoContent, nil)
+	c.JSON(http.StatusOK, gin.H{"message": "Story deleted successfully"})
 }
 
 // ClearUserData removes all user activity data but keeps the users themselves

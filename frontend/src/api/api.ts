@@ -12210,7 +12210,7 @@ export const getDeleteV1AdminBackendStoriesIdMockHandler = (overrideResponse?: v
   return http.delete('*/v1/admin/backend/stories/:id', async (info) => {await delay(1000);
   if (typeof overrideResponse === 'function') {await overrideResponse(info); }
     return new HttpResponse(null,
-      { status: 204,
+      { status: 200,
         
       })
   })

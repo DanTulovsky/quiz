@@ -58,3 +58,133 @@ stories:
             options: ["Library", "Coffee shop", "Park", "Store"]
             correct_answer_index: 1
             explanation: "The story says Sarah 'walked into the coffee shop'"
+
+  - username: "apitestadmin"
+    title: "Admin Test Story"
+    language: "italian"
+    subject: "An admin story for testing"
+    author_style: "formal and precise"
+    status: "active"
+    sections:
+      - section_number: 1
+        content: "As the administrator reviewed the system logs, they noticed an interesting pattern in user behavior. The data showed that users were engaging more with interactive content than static materials. This insight would help improve the platform's learning algorithms."
+        language_level: "B2"
+        word_count: 80
+        generated_by: "user"
+        questions:
+          - question_text: "What was the administrator reviewing?"
+            options: ["User profiles", "System logs", "Learning materials", "Performance reports"]
+            correct_answer_index: 1
+            explanation: "The story says the administrator was reviewing 'the system logs'"
+          - question_text: "What pattern did they notice?"
+            options: ["Users preferred static content", "Users engaged more with interactive content", "Users were not logging in", "Users were confused by the interface"]
+            correct_answer_index: 1
+            explanation: "The story mentions 'users were engaging more with interactive content than static materials'"
+
+  - username: "apitestadmin"
+    title: "Admin Archived Story"
+    language: "italian"
+    subject: "An archived admin story for testing"
+    author_style: "concise and clear"
+    status: "archived"
+
+  - username: "apitestuser"
+    title: "Regular User Story"
+    language: "italian"
+    subject: "A story for regular user testing"
+    author_style: "engaging and friendly"
+    status: "active"
+    sections:
+      - section_number: 1
+        content: "Maria decided to explore the local market in her neighborhood. She had always been curious about the fresh produce and handmade crafts that the vendors offered. As she walked through the bustling aisles, she struck up conversations with several shop owners."
+        language_level: "B1"
+        word_count: 80
+        generated_by: "user"
+        questions:
+          - question_text: "What did Maria decide to explore?"
+            options: ["The park", "The local market", "The museum", "The library"]
+            correct_answer_index: 1
+            explanation: "The story says Maria decided to explore 'the local market in her neighborhood'"
+          - question_text: "What was Maria curious about?"
+            options: ["The prices", "The fresh produce and handmade crafts", "The location", "The hours"]
+            correct_answer_index: 1
+            explanation: "The story mentions she was curious about 'the fresh produce and handmade crafts'"
+
+  - username: "apitestuser"
+    title: "Archived Regular User Story"
+    language: "italian"
+    subject: "An archived story for set-current testing"
+    author_style: "simple and clear"
+    status: "archived"
+
+  - username: "apitestuser"
+    title: "Regular User Story 2"
+    language: "italian"
+    subject: "Another story for regular user testing"
+    author_style: "engaging and friendly"
+    status: "archived"
+    sections:
+      - section_number: 1
+        content: "Today was a special day for Luca. He had been planning this trip for months, and finally the day had arrived. As he boarded the train, he felt a mix of excitement and nervousness about what lay ahead."
+        language_level: "B1"
+        word_count: 60
+        generated_by: "user"
+        questions:
+          - question_text: "How did Luca feel?"
+            options: ["Only excited", "Only nervous", "Both excited and nervous", "Neither excited nor nervous"]
+            correct_answer_index: 2
+            explanation: "The story says he felt 'a mix of excitement and nervousness'"
+
+  - username: "apitestuserstory1"
+    title: "Story Test User Story 2"
+    language: "italian"
+    subject: "Another story for story test user"
+    author_style: "casual and friendly"
+    status: "archived"
+    sections:
+      - section_number: 1
+        content: "Emma had always loved baking cookies. The smell of fresh baked goods filled her kitchen as she mixed the ingredients. She hummed a tune while waiting for the oven timer to go off."
+        language_level: "B1"
+        word_count: 55
+        generated_by: "user"
+        questions:
+          - question_text: "What did Emma love doing?"
+            options: ["Cooking pasta", "Baking cookies", "Making pizza", "Preparing salad"]
+            correct_answer_index: 1
+            explanation: "The story says Emma 'had always loved baking cookies'"
+
+  - username: "apitestuser2"
+    title: "User 2 Story 2"
+    language: "italian"
+    subject: "Another story for user 2"
+    author_style: "formal and precise"
+    status: "archived"
+    sections:
+      - section_number: 1
+        content: "The meeting started promptly at 9 AM. All participants were present and the agenda was distributed. The discussion focused on the quarterly budget and upcoming project deadlines."
+        language_level: "B2"
+        word_count: 45
+        generated_by: "user"
+        questions:
+          - question_text: "When did the meeting start?"
+            options: ["8 AM", "9 AM", "10 AM", "11 AM"]
+            correct_answer_index: 1
+            explanation: "The story says 'The meeting started promptly at 9 AM'"
+
+  - username: "apitestadmin"
+    title: "Admin Story 3"
+    language: "italian"
+    subject: "Another admin story for testing"
+    author_style: "concise and clear"
+    status: "archived"
+    sections:
+      - section_number: 1
+        content: "The system administrator checked the server logs and noticed everything was running smoothly. CPU usage was normal, memory consumption was stable, and no errors were reported in the last 24 hours."
+        language_level: "B2"
+        word_count: 50
+        generated_by: "user"
+        questions:
+          - question_text: "What was the administrator checking?"
+            options: ["User accounts", "Server logs", "Network connections", "Database queries"]
+            correct_answer_index: 1
+            explanation: "The story says the administrator 'checked the server logs'"

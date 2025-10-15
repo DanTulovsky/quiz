@@ -185,8 +185,8 @@ test.describe('Comprehensive API Tests', () => {
       try {
         const conversationsContent = fs.readFileSync(conversationsPath, 'utf8');
         testConversationsData = JSON.parse(conversationsContent);
-        console.log(`Loaded ${Object.keys(testConversationsData).length} conversations from test data`);
-        console.log(`Sample conversation: ${JSON.stringify(Object.values(testConversationsData)[0], null, 2)}`);
+        // console.log(`Loaded ${Object.keys(testConversationsData).length} conversations from test data`);
+        // console.log(`Sample conversation: ${JSON.stringify(Object.values(testConversationsData)[0], null, 2)}`);
       } catch (error) {
         console.error('Error loading conversations data:', error);
         testConversationsData = {};
@@ -578,6 +578,14 @@ test.describe('Comprehensive API Tests', () => {
       if (prop.format === 'email') {
         return `test-${Math.random().toString(36).substring(2, 8)}@example.com`;
       }
+      if (prop.format === 'uuid') {
+        // Generate a valid UUID for UUID format strings
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          const r = Math.random() * 16 | 0;
+          const v = c === 'x' ? r : (r & 0x3 | 0x8);
+          return v.toString(16);
+        });
+      }
       if (prop.enum && prop.enum.length > 0) {
         return prop.enum[0];
       }
@@ -871,11 +879,38 @@ test.describe('Comprehensive API Tests', () => {
     return queryParams;
   }
 
-  // Track available user IDs from test data
-  let availableUserIds: number[] = [];
-  let availableQuestionIds: number[] = [];
-  let availableStoryIds: number[] = [];
-  let deletedConversationIds: Set<string> = new Set();
+// Track available user IDs from test data
+let availableUserIds: number[] = [];
+let availableQuestionIds: number[] = [];
+let availableStoryIds: number[] = [];
+let deletedConversationIds: Set<string> = new Set();
+let deletedStoryIds: Set<number> = new Set();
+
+// Helper function to find a conversation for a specific user
+function findConversationForUser(username: string): any {
+  if (!testConversationsData) {
+    console.warn(`No conversation data available for user ${username}`);
+    return null;
+  }
+
+  // Look for conversations belonging to this user
+  for (const [key, conversation] of Object.entries(testConversationsData)) {
+    if (conversation.username === username && !deletedConversationIds.has(conversation.id)) {
+      return conversation;
+    }
+  }
+
+  // If no conversation found for this specific user, try to find any non-deleted conversation
+  for (const [key, conversation] of Object.entries(testConversationsData)) {
+    if (!deletedConversationIds.has(conversation.id)) {
+      console.warn(`Using conversation ${conversation.id} for user ${username} (not their own conversation)`);
+      return conversation;
+    }
+  }
+
+  console.warn(`No available conversations found for user ${username}`);
+  return null;
+}
 
   let userIdToUsername: Record<number, string> = {};
   let usernameToStoryIds: Record<string, number[]> = {};
@@ -929,6 +964,7 @@ test.describe('Comprehensive API Tests', () => {
 
     console.log(`Loaded ${availableStoryIds.length} story IDs from test data:`, availableStoryIds);
     console.log(`Story ownership mapping:`, usernameToStoryIds);
+    console.log(`Deleted story IDs:`, Array.from(deletedStoryIds));
   }
 
   // Helper to get a user ID by username from tests/test-users.json
@@ -1023,9 +1059,9 @@ test.describe('Comprehensive API Tests', () => {
   }
 
   function getAvailableConversationId(username?: string, forDeletion: boolean = false): string {
-    console.log(`getAvailableConversationId called with username: ${username}, forDeletion: ${forDeletion}`);
-    console.log(`testConversationsData keys: ${Object.keys(testConversationsData)}`);
-    console.log(`testConversationsData length: ${Object.keys(testConversationsData).length}`);
+    // console.log(`getAvailableConversationId called with username: ${username}, forDeletion: ${forDeletion}`);
+    // console.log(`testConversationsData keys: ${Object.keys(testConversationsData)}`);
+    // console.log(`testConversationsData length: ${Object.keys(testConversationsData).length}`);
 
     if (!testConversationsData || Object.keys(testConversationsData).length === 0) {
       console.error('No conversation data available!');
@@ -1038,10 +1074,8 @@ test.describe('Comprehensive API Tests', () => {
 
     for (const key of conversationKeys) {
       const conversation = testConversationsData[key];
-      console.log(`Checking conversation ${key}: username=${conversation.username}, id=${conversation.id}`);
       // Skip deleted conversations
       if (deletedConversationIds.has(conversation.id)) {
-        console.log(`Skipping deleted conversation: ${conversation.id}`);
         continue;
       }
       if (!username || conversation.username === username) {
@@ -1061,7 +1095,6 @@ test.describe('Comprehensive API Tests', () => {
 
       if (deletableConversations.length > 0) {
         const conversation = deletableConversations[0];
-        console.log(`Found deletable conversation: ${conversation.id}`);
         return conversation.id;
       }
 
@@ -1076,17 +1109,16 @@ test.describe('Comprehensive API Tests', () => {
 
     if (nonDeletableConversations.length > 0) {
       const conversation = nonDeletableConversations[0];
-      console.log(`Found non-deletable conversation: ${conversation.id}`);
       return conversation.id;
     }
 
     // Fallback to any conversation if no non-deletable ones exist
     const conversation = matchingConversations[0];
-    console.log(`Using fallback conversation: ${conversation.id}`);
     return conversation.id;
   }
 
-  function getAvailableStoryId(username?: string, includeArchived: boolean = false, storyData?: any): number {
+  async function getAvailableStoryId(username?: string, includeArchived: boolean = false, storyData?: any, request?: any): Promise<number> {
+
     if (availableStoryIds.length === 0) {
       throw new Error('No available story IDs. Test data setup may have failed.');
     }
@@ -1102,9 +1134,15 @@ test.describe('Comprehensive API Tests', () => {
 
     if (username) {
       const userStoryIds = usernameToStoryIds[username];
+
       if (userStoryIds && userStoryIds.length > 0) {
-        // Filter for stories based on status
+        // Filter for stories based on status and exclude deleted ones
         const filteredUserStoryIds = userStoryIds.filter(storyId => {
+          // Skip deleted stories
+          if (deletedStoryIds.has(storyId)) {
+            return false;
+          }
+
           if (storyData) {
             const story = Object.values(storyData).find((s: any) => (s as TestStoryData).id === storyId);
             if (includeArchived) {
@@ -1117,18 +1155,51 @@ test.describe('Comprehensive API Tests', () => {
         });
 
         if (filteredUserStoryIds.length > 0) {
-          return filteredUserStoryIds[0]; // Return the first story ID matching the criteria
+          // Return the first story ID from the test data
+          // The stories should exist in the database based on test setup
+          return filteredUserStoryIds[0];
         } else {
           const statusType = includeArchived ? 'archived' : 'active';
-          throw new Error(`No ${statusType} stories found for user '${username}'.`);
+
+          // If we're looking for stories for the story test user and none exist,
+          // try to use a user that has stories instead
+          if (username === 'apitestuserstory1') {
+            // Fall back to regular user who should have stories
+            const regularUserStoryIds = usernameToStoryIds['apitestuser'];
+            if (regularUserStoryIds && regularUserStoryIds.length > 0) {
+              const fallbackFilteredIds = regularUserStoryIds.filter(storyId => {
+                if (deletedStoryIds.has(storyId)) return false;
+                if (storyData) {
+                  const story = Object.values(storyData).find((s: any) => (s as TestStoryData).id === storyId);
+                  if (includeArchived) {
+                    return story && (story as TestStoryData).status === 'archived';
+                  } else {
+                    return story && (story as TestStoryData).status === 'active';
+                  }
+                }
+                return false;
+              });
+
+              if (fallbackFilteredIds.length > 0) {
+                return fallbackFilteredIds[0];
+              }
+            }
+          }
+
+          throw new Error(`No ${statusType} stories found for user '${username}'. This suggests that the test data setup did not create stories for this user.`);
         }
       } else {
         throw new Error(`No stories found for user '${username}'. Available users with stories: ${Object.keys(usernameToStoryIds).join(', ')}`);
       }
     }
 
-    // Filter for stories based on status
+    // If no username specified, filter for stories based on status and exclude deleted ones
     const filteredStoryIds = availableStoryIds.filter(storyId => {
+      // Skip deleted stories
+      if (deletedStoryIds.has(storyId)) {
+        return false;
+      }
+
       if (storyData) {
         const story = Object.values(storyData).find((s: any) => (s as TestStoryData).id === storyId);
         if (includeArchived) {
@@ -1142,10 +1213,10 @@ test.describe('Comprehensive API Tests', () => {
 
     if (filteredStoryIds.length === 0) {
       const statusType = includeArchived ? 'archived' : 'active';
-      throw new Error(`No ${statusType} story IDs available.`);
+      throw new Error(`No ${statusType} story IDs available. Available: ${availableStoryIds.filter(id => !deletedStoryIds.has(id)).join(', ')}`);
     }
 
-    // Fallback to the first story ID matching the criteria
+    // Return the first story ID matching the criteria
     return filteredStoryIds[0];
   }
 
@@ -1155,7 +1226,6 @@ test.describe('Comprehensive API Tests', () => {
     const dailyAssignmentsPath = path.join(dataDir, 'test_daily_assignments.yaml');
 
     if (!fs.existsSync(dailyAssignmentsPath)) {
-      console.log(`Daily assignments file not found at ${dailyAssignmentsPath}, falling back to available user ID`);
       return getAvailableUserId();
     }
 
@@ -1182,7 +1252,6 @@ test.describe('Comprehensive API Tests', () => {
         }
       }
 
-      console.log(`No user found with assignments for date ${date}, falling back to available user ID`);
       return getAvailableUserId();
     } catch (error) {
       console.log('Error loading daily assignments, falling back to available user ID:', error);
@@ -1211,7 +1280,7 @@ test.describe('Comprehensive API Tests', () => {
         }
       }
     } catch (error) {
-      console.log('Failed to get question from daily questions endpoint, trying quiz endpoint');
+      console.warn('Failed to get question from daily questions endpoint, trying quiz endpoint');
     }
 
     // For admin endpoints, try to get a question from the quiz endpoint using the target user
@@ -1230,7 +1299,7 @@ test.describe('Comprehensive API Tests', () => {
         }
       }
     } catch (error) {
-      console.log('Failed to get question from quiz endpoint, falling back to hardcoded ID');
+      console.warn('Failed to get question from quiz endpoint, falling back to hardcoded ID');
     }
 
     // Fallback to hardcoded ID if all else fails
@@ -1250,6 +1319,10 @@ test.describe('Comprehensive API Tests', () => {
 
   function markConversationAsDeleted(conversationId: string) {
     deletedConversationIds.add(conversationId);
+  }
+
+  function markStoryAsDeleted(storyId: number) {
+    deletedStoryIds.add(storyId);
   }
 
   // Helper function to determine what type of ID we need and get the appropriate value
@@ -1305,16 +1378,42 @@ test.describe('Comprehensive API Tests', () => {
         }
         // For DELETE operations, use a conversation that can be safely deleted
         const forDeletion = method === 'DELETE';
-        const conversationId = getAvailableConversationId(userContext?.username, forDeletion);
+        let username = userContext?.username;
+        // If the current user doesn't have conversations, use the dedicated test user
+        if (username && !Object.keys(testConversationsData || {}).some(key => testConversationsData[key].username === username)) {
+          username = 'apitestuser';
+        }
+        const conversationId = getAvailableConversationId(username || 'apitestuser', forDeletion);
         return {value: conversationId, type: 'conversation'};
       }
 
       // Check if this is a story-related endpoint
       if (path.includes('/story/')) {
-        // Use the dedicated story test user for story operations
+        // For admin users, use their own stories; for regular users, use story test user
         // For DELETE and set-current operations, we need an archived story
         const includeArchived = method === 'DELETE' || path.includes('/set-current');
-        const storyId = getAvailableStoryId('apitestuserstory1', includeArchived);
+        let username = userContext?.username;
+
+        // Admin users should use their own stories, not story test user's stories
+        if (username === 'apitestadmin') {
+          // Use admin's stories directly - get available story ID for admin
+          const storyId = await getAvailableStoryId(username, includeArchived, undefined, request);
+          return {value: storyId, type: 'story'};
+        }
+
+        // For story operations, use the dedicated story test user if the current user doesn't have stories
+        const userStoryIds = usernameToStoryIds[username || ''];
+        if (!userStoryIds || userStoryIds.length === 0) {
+          // Try the story test user first, then fall back to regular user if needed
+          let storyTestUserStoryIds = usernameToStoryIds['apitestuserstory1'];
+          if (storyTestUserStoryIds && storyTestUserStoryIds.length > 0) {
+            username = 'apitestuserstory1';
+          } else {
+            // Fall back to regular user if story test user doesn't have stories
+            username = 'apitestuser';
+          }
+        }
+        const storyId = await getAvailableStoryId(username || 'apitestuserstory1', includeArchived, undefined, request);
         return {value: storyId, type: 'story'};
       }
 
@@ -1386,7 +1485,6 @@ test.describe('Comprehensive API Tests', () => {
     for (const [key, value] of Object.entries(pathParams)) {
       const replacement = await getReplacementId(path, key, request, userContext, method, isErrorCase);
       resultPath = resultPath.replace(`{${key}}`, replacement.value.toString());
-      // console.log(`Replaced {${key}} with ${replacement.value} (${replacement.type}) in path: ${resultPath}`);
     }
     return resultPath;
   }
@@ -1399,9 +1497,6 @@ test.describe('Comprehensive API Tests', () => {
       'post',
       user
     );
-
-    // console.log(`🔐 Attempting login for user: ${user.username}`);
-    // console.log(`📤 Login request body: ${JSON.stringify(loginRequestBody, null, 2)}`);
 
     const loginResponse = await request.post(`${baseURL}/v1/auth/login`, {
       data: loginRequestBody,
@@ -1446,6 +1541,32 @@ test.describe('Comprehensive API Tests', () => {
         testCase.method,
         userContext
       );
+    }
+
+    // For bookmark endpoints, we need to handle conversation_id and message_id dynamically
+    if (testCase.path.includes('/conversations/bookmark')) {
+      const requestBody = { ...testCase.requestBody };
+
+      // Replace conversation_id and message_id with actual values from test data
+      if (requestBody.conversation_id) {
+        const conversation = findConversationForUser(userContext.username);
+        if (conversation) {
+          requestBody.conversation_id = conversation.id;
+        } else {
+          throw new Error(`No conversation available for user ${userContext.username} for bookmark test.`);
+        }
+      }
+
+      if (requestBody.message_id) {
+        const conversation = findConversationForUser(userContext.username);
+        if (conversation && conversation.messages && conversation.messages.length > 0) {
+          requestBody.message_id = conversation.messages[0].id;
+        } else {
+          throw new Error(`No message available for user ${userContext.username} for bookmark test.`);
+        }
+      }
+
+      return requestBody;
     }
 
     // For quiz answer endpoints, we need to handle question_id dynamically
@@ -1620,11 +1741,10 @@ test.describe('Comprehensive API Tests', () => {
             if (key === 'questionId') {
               const questionId = await getAvailableQuestionId(request, currentUser);
               endpointPath = endpointPath.replace(`{${key}}`, questionId.toString());
-              // console.log(`Replaced {${key}} with question ID ${questionId} in path: ${endpointPath}`);
             } else if (key === 'id' && value === 'STORY_ID_PLACEHOLDER') {
               // For story endpoints, use appropriate story ID based on operation
-              // DELETE operations need archived stories, set-current needs active stories
-              const includeArchived = testCase.method === 'DELETE';
+              // DELETE and set-current operations need archived stories to restore
+              const includeArchived = testCase.method === 'DELETE' || endpointPath.includes('/set-current');
               // Load story data for synchronous access
               const storyDataPath = path.join(process.cwd(), 'tests', 'test-stories.json');
               let storyData = null;
@@ -1633,19 +1753,27 @@ test.describe('Comprehensive API Tests', () => {
                 storyData = JSON.parse(storyDataContent);
               }
               let storyId;
-              if (endpointPath.includes('/set-current')) {
-                // For set-current, use a different story than the one that gets deleted
-                // Find all archived stories for this user and pick the second one if available
-                const userStories = Object.values(storyData).filter((s: any) =>
-                  s.username === 'apitestuserstory1' && s.status === 'archived'
-                );
-                if (userStories.length > 1) {
-                  storyId = userStories[1].id; // Use the second archived story
-                } else {
-                  storyId = getAvailableStoryId('apitestuserstory1', includeArchived, storyData);
-                }
+              // For all story operations, use the getAvailableStoryId function which handles deleted story tracking
+              let username = currentUser.username;
+
+              // Admin users should use their own stories, not story test user's stories
+              if (username === 'apitestadmin') {
+                // Use admin's stories directly - get available story ID for admin
+                storyId = await getAvailableStoryId(username, includeArchived, storyData, request);
               } else {
-                storyId = getAvailableStoryId('apitestuserstory1', includeArchived, storyData);
+                // For story operations, use the dedicated story test user if the current user doesn't have stories
+                const userStoryIds = usernameToStoryIds[username || ''];
+                if (!userStoryIds || userStoryIds.length === 0) {
+                  // Try the story test user first, then fall back to regular user if needed
+                  let storyTestUserStoryIds = usernameToStoryIds['apitestuserstory1'];
+                  if (storyTestUserStoryIds && storyTestUserStoryIds.length > 0) {
+                    username = 'apitestuserstory1';
+                  } else {
+                    // Fall back to regular user if story test user doesn't have stories
+                    username = 'apitestuser';
+                  }
+                }
+                storyId = await getAvailableStoryId(username, includeArchived, storyData, request);
               }
               endpointPath = endpointPath.replace(`{${key}}`, storyId.toString());
             } else if (key === 'id' && endpointPath.includes('/conversations/')) {
@@ -1654,14 +1782,12 @@ test.describe('Comprehensive API Tests', () => {
               const forDeletion = testCase.method === 'DELETE';
               const conversationId = getAvailableConversationId(currentUser.username, forDeletion);
               endpointPath = endpointPath.replace(`{${key}}`, conversationId);
-              // console.log(`Replaced {${key}} with conversation ID ${conversationId} in path: ${endpointPath}`);
             } else if (key === 'conversationId') {
               // For conversationId parameters, use appropriate conversation ID based on operation
               // DELETE operations need conversations that can be safely deleted
               const forDeletion = testCase.method === 'DELETE';
               const conversationId = getAvailableConversationId(currentUser.username, forDeletion);
               endpointPath = endpointPath.replace(`{${key}}`, conversationId);
-              // console.log(`Replaced {${key}} with conversation ID ${conversationId} in path: ${endpointPath}`);
             } else {
               endpointPath = endpointPath.replace(`{${key}}`, String(value));
             }
@@ -1706,7 +1832,16 @@ test.describe('Comprehensive API Tests', () => {
           if (urlMatch) {
             const deletedConversationId = urlMatch[1];
             markConversationAsDeleted(deletedConversationId);
-            console.log(`Marked conversation as deleted: ${deletedConversationId}`);
+          }
+        }
+
+        // Mark story as deleted if this was a successful DELETE operation
+        if (testCase.method === 'DELETE' && response.status() === 200 && endpointPath.includes('/stories/')) {
+          // Extract story ID from the URL
+          const urlMatch = endpointPath.match(/\/stories\/(\d+)/);
+          if (urlMatch) {
+            const deletedStoryId = parseInt(urlMatch[1]);
+            markStoryAsDeleted(deletedStoryId);
           }
         }
       }
@@ -1728,7 +1863,6 @@ test.describe('Comprehensive API Tests', () => {
             if (key === 'questionId') {
               const questionId = await getAvailableQuestionId(request, ADMIN_USER);
               endpointPath = endpointPath.replace(`{${key}}`, questionId.toString());
-              // console.log(`Replaced {${key}} with question ID ${questionId} in path: ${endpointPath}`);
             } else {
               endpointPath = endpointPath.replace(`{${key}}`, value.toString());
             }
@@ -1902,15 +2036,24 @@ test.describe('Comprehensive API Tests', () => {
         if (path.includes('/force-send')) {
           try {
             // Try to find reminderuser in the database first
-            const userCheckResponse = await request.get(`${baseURL}/v1/admin/backend/userz?username=reminderuser`, {
+            const userCheckResponse = await request.get(`${baseURL}/v1/admin/backend/userz`, {
               headers: {
                 'Cookie': sessionCookie
               }
             });
 
-            if (userCheckResponse.status() === 404) {
+            if (userCheckResponse.status() === 200) {
+              const responseData = await userCheckResponse.json();
+              const users = responseData.users || [];
+              const reminderUser = users.find((u: any) => u.username === 'reminderuser');
+              if (!reminderUser) {
+                throw new Error(`Test data not properly loaded: reminderuser not found in database users list. Available users: ${users.map((u: any) => u.username).join(', ')}`);
+              }
+            } else if (userCheckResponse.status() === 404) {
               const responseText = await userCheckResponse.text();
               throw new Error(`Test data not properly loaded: reminderuser not found in database. Response: ${responseText}. This indicates the setup-test-db command may have failed or the database state is inconsistent.`);
+            } else {
+              throw new Error(`Unexpected status code when checking for reminderuser: ${userCheckResponse.status()}`);
             }
           } catch (error) {
             if (error instanceof Error && error.message.includes('Test data not properly loaded')) {
@@ -2256,7 +2399,6 @@ test.describe('Comprehensive API Tests', () => {
       const protectedCases = testCases.filter(testCase => testCase.requiresAuth);
 
       for (const testCase of protectedCases) {
-        // console.log(`Processing test case: ${testCase.method} ${testCase.path}`);
 
         // Replace path parameters without triggering any authenticated calls
         const path = replacePathParametersUnauthenticated(testCase.path, testCase.pathParams);
