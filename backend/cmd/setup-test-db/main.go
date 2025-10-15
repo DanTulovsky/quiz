@@ -145,12 +145,24 @@ type TestConversations struct {
 	} `yaml:"conversations"`
 }
 
+// TestStorySectionData represents section data for E2E tests
+type TestStorySectionData struct {
+	ID            int    `json:"id"`
+	StoryID       int    `json:"story_id"`
+	SectionNumber int    `json:"section_number"`
+	Content       string `json:"content"`
+	LanguageLevel string `json:"language_level"`
+	WordCount     int    `json:"word_count"`
+	GeneratedBy   string `json:"generated_by"`
+}
+
 // TestStoryData represents story data for E2E tests
 type TestStoryData struct {
-	ID       int    `json:"id"`
-	Username string `json:"username"`
-	Title    string `json:"title"`
-	Status   string `json:"status"`
+	ID       int                    `json:"id"`
+	Username string                 `json:"username"`
+	Title    string                 `json:"title"`
+	Status   string                 `json:"status"`
+	Sections []TestStorySectionData `json:"sections"`
 }
 
 // TestStories represents a collection of test stories
@@ -1010,13 +1022,14 @@ func loadAndCreateStories(ctx context.Context, filePath string, users map[string
 			return stories, contextutils.WrapErrorf(err, "failed to get story ID for story %d", i)
 		}
 
-		// Store story data for test output
+		// Initialize story data for test output
 		storyKey := fmt.Sprintf("%s_%s", storyData.Username, storyData.Title)
-		stories[storyKey] = TestStoryData{
+		storyDataForOutput := TestStoryData{
 			ID:       storyID,
 			Username: storyData.Username,
 			Title:    storyData.Title,
 			Status:   storyData.Status,
+			Sections: []TestStorySectionData{},
 		}
 
 		// Create sections for this story
@@ -1052,6 +1065,18 @@ func loadAndCreateStories(ctx context.Context, filePath string, users map[string
 				return stories, contextutils.WrapErrorf(err, "failed to get section ID for section %d of story %d", j, i)
 			}
 
+			// Add section data to story data for test output
+			sectionDataForOutput := TestStorySectionData{
+				ID:            sectionID,
+				StoryID:       storyID,
+				SectionNumber: section.SectionNumber,
+				Content:       section.Content,
+				LanguageLevel: section.LanguageLevel,
+				WordCount:     section.WordCount,
+				GeneratedBy:   string(section.GeneratedBy),
+			}
+			storyDataForOutput.Sections = append(storyDataForOutput.Sections, sectionDataForOutput)
+
 			// Create questions for this section
 			for k, questionData := range sectionData.Questions {
 				question := &models.StorySectionQuestion{
@@ -1080,6 +1105,9 @@ func loadAndCreateStories(ctx context.Context, filePath string, users map[string
 				}
 			}
 		}
+
+		// Store story data for test output after all sections are created
+		stories[storyKey] = storyDataForOutput
 
 		logger.Info(ctx, "Created test story", map[string]interface{}{
 			"username": storyData.Username,

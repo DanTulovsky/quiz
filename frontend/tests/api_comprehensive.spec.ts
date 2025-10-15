@@ -98,11 +98,22 @@ interface TestRoleData {
   description: string;
 }
 
+interface TestStorySectionData {
+  id: number;
+  story_id: number;
+  section_number: number;
+  content: string;
+  language_level: string;
+  word_count: number;
+  generated_by: string;
+}
+
 interface TestStoryData {
   id: number;
   username: string;
   title: string;
   status: string;
+  sections: TestStorySectionData[];
 }
 
 interface TestRolesData {
@@ -134,6 +145,7 @@ test.describe('Comprehensive API Tests', () => {
   let testData: TestData;
   let testRolesData: TestRolesData;
   let testConversationsData: TestConversationsData;
+  let testStoriesData: TestStoriesData;
 
   test.beforeAll(async () => {
     // Load swagger.yaml
@@ -196,12 +208,32 @@ test.describe('Comprehensive API Tests', () => {
       testConversationsData = {};
     }
 
+    // Load stories data
+    const storiesPath = path.join(path.dirname(fileURLToPath(import.meta.url)), 'test-stories.json');
+    console.log(`Attempting to load stories from: ${storiesPath}`);
+    console.log(`File exists: ${fs.existsSync(storiesPath)}`);
+
+    if (fs.existsSync(storiesPath)) {
+      try {
+        const storiesContent = fs.readFileSync(storiesPath, 'utf8');
+        testStoriesData = JSON.parse(storiesContent);
+        console.log(`Loaded ${Object.keys(testStoriesData).length} stories from test data`);
+      } catch (error) {
+        console.error('Error loading stories data:', error);
+        testStoriesData = {};
+      }
+    } else {
+      console.warn('test-stories.json not found, using empty stories data');
+      testStoriesData = {};
+    }
+
     // Initialize available user IDs
     initializeAvailableUserIds();
 
     // Initialize available story IDs
     initializeAvailableStoryIds();
     initializeAvailableQuestionIds();
+    initializeAvailableSectionIds();
 
     // Generate test cases from swagger spec
     testCases = generateTestCases(swaggerSpec);
@@ -883,6 +915,7 @@ test.describe('Comprehensive API Tests', () => {
 let availableUserIds: number[] = [];
 let availableQuestionIds: number[] = [];
 let availableStoryIds: number[] = [];
+let availableSectionIds: number[] = [];
 let deletedConversationIds: Set<string> = new Set();
 let deletedStoryIds: Set<number> = new Set();
 
@@ -1020,6 +1053,31 @@ function findConversationForUser(username: string): any {
     console.log(`   Available story IDs: ${availableStoryIds.join(', ')}`);
     console.log(`   Deleted story IDs: ${Array.from(deletedStoryIds).join(', ')}`);
     console.log(`   Username to story mapping:`, Object.entries(usernameToStoryIds).map(([user, stories]) => `${user}: [${stories.join(', ')}]`).join(', '));
+  }
+
+  function initializeAvailableSectionIds() {
+    // Load section IDs from the stories data
+    availableSectionIds = [];
+
+    if (!testStoriesData) {
+      console.warn('No stories data available for section IDs');
+      return;
+    }
+
+    // Extract all section IDs from all stories
+    for (const story of Object.values(testStoriesData)) {
+      if (story.sections && story.sections.length > 0) {
+        for (const section of story.sections) {
+          if (!availableSectionIds.includes(section.id)) {
+            availableSectionIds.push(section.id);
+          }
+        }
+      }
+    }
+
+    console.log(`📊 INITIALIZED SECTION DATA:`);
+    console.log(`   Available section IDs: ${availableSectionIds.join(', ')}`);
+    console.log(`   Total sections: ${availableSectionIds.length}`);
   }
 
   // Helper to get a user ID by username from tests/test-users.json
@@ -1415,6 +1473,13 @@ function findConversationForUser(username: string): any {
     return availableQuestionIds[0];
   }
 
+  function getAvailableSectionId(): number {
+    if (availableSectionIds.length === 0) {
+      throw new Error('No available section IDs for testing');
+    }
+    return availableSectionIds[0]; // Use the first available section ID
+  }
+
   function removeUserId(id: number) {
     availableUserIds = availableUserIds.filter(userId => userId !== id);
   }
@@ -1484,6 +1549,17 @@ function findConversationForUser(username: string): any {
       }
       // Fallback to admin role ID if no roles found
       return {value: 1, type: 'role'};
+    }
+
+    // Check if this is a section-related endpoint first
+    if (path.includes('/story/section/')) {
+      console.log(`🔍 GETTING SECTION ID for param: ${paramKey}, path: ${path}, method: ${method}, isErrorCase: ${isErrorCase}`);
+      // For error cases (like 404 tests), use an invalid section ID
+      if (isErrorCase) {
+        return {value: 999999999, type: 'section'};
+      }
+      const sectionId = getAvailableSectionId();
+      return {value: sectionId, type: 'section'};
     }
 
     if (paramKey === 'id' || paramKey === 'conversationId') {
