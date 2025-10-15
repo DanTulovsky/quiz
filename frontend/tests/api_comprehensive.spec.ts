@@ -886,6 +886,54 @@ let availableStoryIds: number[] = [];
 let deletedConversationIds: Set<string> = new Set();
 let deletedStoryIds: Set<number> = new Set();
 
+// Helper function to get stories from database for a specific user
+async function getStoriesFromDatabase(username?: string, request?: any): Promise<Array<{id: number, status: string}>> {
+  if (!request) {
+    console.log(`❌ No request object provided for database query`);
+    return [];
+  }
+
+  try {
+    const baseURL = process.env.TEST_BASE_URL || 'http://localhost:3001';
+
+    // Get user ID for the username
+    let userId = null;
+    if (username) {
+      const userDataPath = path.join(process.cwd(), 'tests', 'test-users.json');
+      if (fs.existsSync(userDataPath)) {
+        const userDataContent = fs.readFileSync(userDataPath, 'utf8');
+        const userData = JSON.parse(userDataContent);
+        const user = Object.values(userData).find((u: any) => u.username === username) as any;
+        userId = user?.id;
+      }
+    }
+
+    if (!userId) {
+      console.log(`❌ Could not find user ID for username: ${username}`);
+      return [];
+    }
+
+    // Query the database directly using the backend API (requires admin auth)
+    const adminSession = await loginUser(request, ADMIN_USER);
+    const response = await request.get(`${baseURL}/v1/admin/backend/stories?user_id=${userId}`, {
+      headers: {
+        'Cookie': adminSession
+      }
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data.stories || [];
+    } else {
+      console.log(`❌ Failed to fetch stories from database: ${response.status()}`);
+      return [];
+    }
+  } catch (error) {
+    console.log(`❌ Error fetching stories from database: ${error}`);
+    return [];
+  }
+}
+
 // Helper function to find a conversation for a specific user
 function findConversationForUser(username: string): any {
   if (!testConversationsData) {
@@ -954,17 +1002,24 @@ function findConversationForUser(username: string): any {
       const storyId = story.id;
       const username = story.username;
 
-      availableStoryIds.push(storyId);
+      // Skip stories that are already marked as deleted
+      if (!deletedStoryIds.has(storyId)) {
+        availableStoryIds.push(storyId);
+      }
 
       if (!usernameToStoryIds[username]) {
         usernameToStoryIds[username] = [];
       }
-      usernameToStoryIds[username].push(storyId);
+      // Only add to username mapping if not deleted
+      if (!deletedStoryIds.has(storyId)) {
+        usernameToStoryIds[username].push(storyId);
+      }
     });
 
-    console.log(`Loaded ${availableStoryIds.length} story IDs from test data:`, availableStoryIds);
-    console.log(`Story ownership mapping:`, usernameToStoryIds);
-    console.log(`Deleted story IDs:`, Array.from(deletedStoryIds));
+    console.log(`📊 INITIALIZED STORY DATA:`);
+    console.log(`   Available story IDs: ${availableStoryIds.join(', ')}`);
+    console.log(`   Deleted story IDs: ${Array.from(deletedStoryIds).join(', ')}`);
+    console.log(`   Username to story mapping:`, Object.entries(usernameToStoryIds).map(([user, stories]) => `${user}: [${stories.join(', ')}]`).join(', '));
   }
 
   // Helper to get a user ID by username from tests/test-users.json
@@ -1118,6 +1173,7 @@ function findConversationForUser(username: string): any {
   }
 
   async function getAvailableStoryId(username?: string, includeArchived: boolean = false, storyData?: any, request?: any): Promise<number> {
+    console.log(`🔍 GETTING AVAILABLE STORY ID for user: ${username}, includeArchived: ${includeArchived}, deleted stories: ${Array.from(deletedStoryIds).join(', ')}`);
 
     if (availableStoryIds.length === 0) {
       throw new Error('No available story IDs. Test data setup may have failed.');
@@ -1132,14 +1188,44 @@ function findConversationForUser(username: string): any {
       }
     }
 
+    // Also check the database for stories that actually exist
+    const existingStories = await getStoriesFromDatabase(username, request);
+    console.log(`🔍 DATABASE STORIES for ${username}: ${existingStories.map(s => `${s.id}(${s.status})`).join(', ')}`);
+
     if (username) {
+      // First, filter database stories for this user
+      const userDbStories = existingStories.filter(story => {
+        if (includeArchived) {
+          return story.status === 'archived' || story.status === 'active';
+        } else {
+          return story.status === 'active';
+        }
+      });
+
+      if (userDbStories.length > 0) {
+        // Return the first available story from database
+        const selectedStory = userDbStories[0];
+        console.log(`✅ FOUND DATABASE STORY: ${selectedStory.id}(${selectedStory.status}) for ${username}`);
+        return selectedStory.id;
+      }
+
+      // Fallback to test data filtering
       const userStoryIds = usernameToStoryIds[username];
+      console.log(`🔍 USER STORY LOOKUP: ${username} has stories: ${userStoryIds?.join(', ') || 'none'}`);
 
       if (userStoryIds && userStoryIds.length > 0) {
         // Filter for stories based on status and exclude deleted ones
         const filteredUserStoryIds = userStoryIds.filter(storyId => {
           // Skip deleted stories
           if (deletedStoryIds.has(storyId)) {
+            console.log(`   Skipping deleted story: ${storyId}`);
+            return false;
+          }
+
+          // Check if story exists in database
+          const dbStory = existingStories.find(s => s.id === storyId);
+          if (!dbStory) {
+            console.log(`   Story ${storyId} not found in database`);
             return false;
           }
 
@@ -1157,8 +1243,10 @@ function findConversationForUser(username: string): any {
         if (filteredUserStoryIds.length > 0) {
           // Return the first story ID from the test data
           // The stories should exist in the database based on test setup
+          console.log(`✅ FOUND USER STORIES: ${filteredUserStoryIds.join(', ')} for ${username}`);
           return filteredUserStoryIds[0];
         } else {
+          console.log(`❌ NO USER STORIES FOUND for ${username}, falling back to global list`);
           const statusType = includeArchived ? 'archived' : 'active';
 
           // If we're looking for stories for the story test user and none exist,
@@ -1193,7 +1281,23 @@ function findConversationForUser(username: string): any {
       }
     }
 
-    // If no username specified, filter for stories based on status and exclude deleted ones
+    // If no username specified, filter database stories globally
+    const globalDbStories = existingStories.filter(story => {
+      if (includeArchived) {
+        return story.status === 'archived' || story.status === 'active';
+      } else {
+        return story.status === 'active';
+      }
+    });
+
+    if (globalDbStories.length > 0) {
+      // Return the first available story from database
+      const selectedStory = globalDbStories[0];
+      console.log(`✅ FOUND GLOBAL DATABASE STORY: ${selectedStory.id}(${selectedStory.status})`);
+      return selectedStory.id;
+    }
+
+    // Fallback to test data filtering
     const filteredStoryIds = availableStoryIds.filter(storyId => {
       // Skip deleted stories
       if (deletedStoryIds.has(storyId)) {
@@ -1217,7 +1321,9 @@ function findConversationForUser(username: string): any {
     }
 
     // Return the first story ID matching the criteria
-    return filteredStoryIds[0];
+    const selectedStoryId = filteredStoryIds[0];
+    console.log(`✅ RETURNING STORY ID: ${selectedStoryId} for user: ${username}, filtered from: ${filteredStoryIds.join(', ')}`);
+    return selectedStoryId;
   }
 
   function getUserIdWithDailyAssignments(date: string = '2025-08-04'): number {
@@ -1322,7 +1428,19 @@ function findConversationForUser(username: string): any {
   }
 
   function markStoryAsDeleted(storyId: number) {
+    console.log(`🔴 MARKING STORY AS DELETED: ${storyId}, current deleted stories: ${Array.from(deletedStoryIds).join(', ')}`);
     deletedStoryIds.add(storyId);
+
+    // Also remove from available story IDs and username mappings
+    availableStoryIds = availableStoryIds.filter(id => id !== storyId);
+    Object.values(usernameToStoryIds).forEach(userStories => {
+      const index = userStories.indexOf(storyId);
+      if (index > -1) {
+        userStories.splice(index, 1);
+      }
+    });
+
+    console.log(`🔴 AFTER DELETION - Available story IDs: ${availableStoryIds.join(', ')}`);
   }
 
   // Helper function to determine what type of ID we need and get the appropriate value
@@ -1369,8 +1487,9 @@ function findConversationForUser(username: string): any {
     }
 
     if (paramKey === 'id' || paramKey === 'conversationId') {
+      console.log(`🔍 GETTING REPLACEMENT ID for param: ${paramKey}, path: ${path}, method: ${method}, isErrorCase: ${isErrorCase}`);
       // Check if this is a conversation-related endpoint
-      if (path.includes('/conversations/')) {
+      if (path.includes('/conversations/') || path.includes('/ai/conversations/')) {
         // For error cases (like 404 tests), use a fake UUID that doesn't exist
         if (isErrorCase) {
           const fakeUuid = '00000000-0000-0000-0000-000000000001';
@@ -1388,7 +1507,8 @@ function findConversationForUser(username: string): any {
       }
 
       // Check if this is a story-related endpoint
-      if (path.includes('/story/')) {
+      if (path.includes('/story/') || path.includes('/stories/')) {
+        console.log(`🔍 STORY ENDPOINT DETECTED: ${path}, method: ${method}`);
         // For admin users, use their own stories; for regular users, use story test user
         // For DELETE and set-current operations, we need an archived story
         const includeArchived = method === 'DELETE' || path.includes('/set-current');
@@ -1398,6 +1518,7 @@ function findConversationForUser(username: string): any {
         if (username === 'apitestadmin') {
           // Use admin's stories directly - get available story ID for admin
           const storyId = await getAvailableStoryId(username, includeArchived, undefined, request);
+          console.log(`📋 RETURNING STORY ID: ${storyId} for admin user: ${username}, path: ${path}`);
           return {value: storyId, type: 'story'};
         }
 
@@ -1414,11 +1535,12 @@ function findConversationForUser(username: string): any {
           }
         }
         const storyId = await getAvailableStoryId(username || 'apitestuserstory1', includeArchived, undefined, request);
+        console.log(`📋 RETURNING STORY ID: ${storyId} for user: ${username}, path: ${path}`);
         return {value: storyId, type: 'story'};
       }
 
       // Check if this is a question-related endpoint
-      if (path.includes('/questions/') || path.includes('/quiz/question/')) {
+      if (path.includes('/questions/') || path.includes('/quiz/question/') || path.includes('/daily/questions/')) {
         const questionId = await getAvailableQuestionId(request, userContext);
         return {value: questionId, type: 'question'};
       }
@@ -1426,7 +1548,8 @@ function findConversationForUser(username: string): any {
       // Check if this is a user-related endpoint (most endpoints with {id} are user-related)
       if (path.includes('/userz/') || path.includes('/admin/backend/userz/') ||
         path.includes('/reset-password') || path.includes('/roles') ||
-        path.includes('/clear') || path.includes('/daily/')) {
+        path.includes('/clear') || path.includes('/daily/') ||
+        path.includes('/admin/backend/stories/') || path.includes('/admin/backend/questions/')) {
 
         // For roles listing endpoint, pick an existing user ID from the seeded data
         if (path.includes('/admin/backend/userz/') && path.endsWith('/roles') && !path.includes('/{roleId}')) {
@@ -1481,11 +1604,14 @@ function findConversationForUser(username: string): any {
   async function replacePathParameters(path: string, pathParams: Record<string, any> | undefined, request: any, userContext?: {username: string}, method?: string, isErrorCase: boolean = false): Promise<string> {
     if (!pathParams) return path;
 
+    console.log(`🔄 REPLACING PATH PARAMETERS for path: ${path}, method: ${method}`);
     let resultPath = path;
     for (const [key, value] of Object.entries(pathParams)) {
       const replacement = await getReplacementId(path, key, request, userContext, method, isErrorCase);
+      console.log(`🔄 REPLACED {${key}}=${value} with ${replacement.value} (type: ${replacement.type})`);
       resultPath = resultPath.replace(`{${key}}`, replacement.value.toString());
     }
+    console.log(`🔄 FINAL PATH: ${resultPath}`);
     return resultPath;
   }
 
@@ -1731,7 +1857,7 @@ function findConversationForUser(username: string): any {
         let endpointPath = testCase.path;
 
         // Determine which user to use for this test case
-        const isStoryEndpoint = endpointPath.includes('/story/');
+        const isStoryEndpoint = endpointPath.includes('/story/') || endpointPath.includes('/stories/');
         const currentUser = isStoryEndpoint ? STORY_TEST_USER : REGULAR_USER;
         const currentSessionCookie = await loginUser(request, currentUser);
 
@@ -1743,8 +1869,11 @@ function findConversationForUser(username: string): any {
               endpointPath = endpointPath.replace(`{${key}}`, questionId.toString());
             } else if (key === 'id' && value === 'STORY_ID_PLACEHOLDER') {
               // For story endpoints, use appropriate story ID based on operation
+              // Update endpointPath to include the resolved story ID for pattern matching
+              const tempEndpointPath = endpointPath.replace(`{${key}}`, '123'); // temporary replacement for pattern matching
               // DELETE and set-current operations need archived stories to restore
-              const includeArchived = testCase.method === 'DELETE' || endpointPath.includes('/set-current');
+              const includeArchived = testCase.method === 'DELETE' || tempEndpointPath.includes('/set-current');
+              const isStoryEndpoint = tempEndpointPath.includes('/story/') || tempEndpointPath.includes('/stories/');
               // Load story data for synchronous access
               const storyDataPath = path.join(process.cwd(), 'tests', 'test-stories.json');
               let storyData = null;
@@ -1826,22 +1955,26 @@ function findConversationForUser(username: string): any {
         });
 
         // Mark conversation as deleted if this was a successful DELETE operation
-        if (testCase.method === 'DELETE' && response.status() === 204 && endpointPath.includes('/conversations/')) {
-          // Extract conversation ID from the URL
-          const urlMatch = endpointPath.match(/\/conversations\/([^\/]+)/);
-          if (urlMatch) {
-            const deletedConversationId = urlMatch[1];
+        if (testCase.method === 'DELETE' && response.status() === 204 && (endpointPath.includes('/conversations/') || endpointPath.includes('/ai/conversations/'))) {
+          // Extract conversation ID from the URL - handle both /conversations/ and /ai/conversations/ patterns
+          const conversationMatch = endpointPath.match(/\/conversations\/([^\/]+)/) || endpointPath.match(/\/ai\/conversations\/([^\/]+)/);
+          if (conversationMatch) {
+            const deletedConversationId = conversationMatch[1];
             markConversationAsDeleted(deletedConversationId);
           }
         }
 
         // Mark story as deleted if this was a successful DELETE operation
-        if (testCase.method === 'DELETE' && response.status() === 200 && endpointPath.includes('/stories/')) {
-          // Extract story ID from the URL
-          const urlMatch = endpointPath.match(/\/stories\/(\d+)/);
-          if (urlMatch) {
-            const deletedStoryId = parseInt(urlMatch[1]);
+        if (testCase.method === 'DELETE' && response.status() === 200 && (endpointPath.includes('/story/') || endpointPath.includes('/stories/'))) {
+          // Extract story ID from the URL - handle both /story/ and /stories/ patterns
+          console.log(`🔍 CHECKING FOR STORY DELETION: method=${testCase.method}, status=${response.status()}, path=${endpointPath}`);
+          const storyMatch = endpointPath.match(/\/(?:story|stories)\/(\d+)/);
+          if (storyMatch) {
+            const deletedStoryId = parseInt(storyMatch[1]);
+            console.log(`📝 EXTRACTED STORY ID: ${deletedStoryId} from path: ${endpointPath}`);
             markStoryAsDeleted(deletedStoryId);
+          } else {
+            console.log(`❌ Could not extract story ID from path: ${endpointPath}`);
           }
         }
       }
@@ -2079,11 +2212,11 @@ function findConversationForUser(username: string): any {
         }
 
         // Mark conversation as deleted if this was a successful DELETE operation
-        if (testCase.method === 'DELETE' && response.status() === 204 && endpointPath.includes('/conversations/')) {
-          // Extract conversation ID from the URL
-          const urlMatch = endpointPath.match(/\/conversations\/([^\/]+)/);
-          if (urlMatch) {
-            const deletedConversationId = urlMatch[1];
+        if (testCase.method === 'DELETE' && response.status() === 204 && (endpointPath.includes('/conversations/') || endpointPath.includes('/ai/conversations/'))) {
+          // Extract conversation ID from the URL - handle both /conversations/ and /ai/conversations/ patterns
+          const conversationMatch = endpointPath.match(/\/conversations\/([^\/]+)/) || endpointPath.match(/\/ai\/conversations\/([^\/]+)/);
+          if (conversationMatch) {
+            const deletedConversationId = conversationMatch[1];
             markConversationAsDeleted(deletedConversationId);
             console.log(`Marked conversation as deleted: ${deletedConversationId}`);
           }
@@ -2154,11 +2287,11 @@ function findConversationForUser(username: string): any {
         }
 
         // Mark conversation as deleted if this was a successful DELETE operation
-        if (testCase.method === 'DELETE' && response.status() === 204 && endpointPath.includes('/conversations/')) {
-          // Extract conversation ID from the URL
-          const urlMatch = endpointPath.match(/\/conversations\/([^\/]+)/);
-          if (urlMatch) {
-            const deletedConversationId = urlMatch[1];
+        if (testCase.method === 'DELETE' && response.status() === 204 && (endpointPath.includes('/conversations/') || endpointPath.includes('/ai/conversations/'))) {
+          // Extract conversation ID from the URL - handle both /conversations/ and /ai/conversations/ patterns
+          const conversationMatch = endpointPath.match(/\/conversations\/([^\/]+)/) || endpointPath.match(/\/ai\/conversations\/([^\/]+)/);
+          if (conversationMatch) {
+            const deletedConversationId = conversationMatch[1];
             markConversationAsDeleted(deletedConversationId);
             console.log(`Marked conversation as deleted: ${deletedConversationId}`);
           }
@@ -2305,13 +2438,27 @@ function findConversationForUser(username: string): any {
         }
 
         // Mark conversation as deleted if this was a successful DELETE operation
-        if (testCase.method === 'DELETE' && response.status() === 204 && endpointPath.includes('/conversations/')) {
-          // Extract conversation ID from the URL
-          const urlMatch = endpointPath.match(/\/conversations\/([^\/]+)/);
-          if (urlMatch) {
-            const deletedConversationId = urlMatch[1];
+        if (testCase.method === 'DELETE' && response.status() === 204 && (endpointPath.includes('/conversations/') || endpointPath.includes('/ai/conversations/'))) {
+          // Extract conversation ID from the URL - handle both /conversations/ and /ai/conversations/ patterns
+          const conversationMatch = endpointPath.match(/\/conversations\/([^\/]+)/) || endpointPath.match(/\/ai\/conversations\/([^\/]+)/);
+          if (conversationMatch) {
+            const deletedConversationId = conversationMatch[1];
             markConversationAsDeleted(deletedConversationId);
             console.log(`Marked conversation as deleted: ${deletedConversationId}`);
+          }
+        }
+
+        // Mark story as deleted if this was a successful DELETE operation
+        if (testCase.method === 'DELETE' && response.status() === 200 && (endpointPath.includes('/story/') || endpointPath.includes('/stories/'))) {
+          // Extract story ID from the URL - handle both /story/ and /stories/ patterns
+          console.log(`🔍 CHECKING FOR STORY DELETION: method=${testCase.method}, status=${response.status()}, path=${endpointPath}`);
+          const storyMatch = endpointPath.match(/\/(?:story|stories)\/(\d+)/);
+          if (storyMatch) {
+            const deletedStoryId = parseInt(storyMatch[1]);
+            console.log(`📝 EXTRACTED STORY ID: ${deletedStoryId} from path: ${endpointPath}`);
+            markStoryAsDeleted(deletedStoryId);
+          } else {
+            console.log(`❌ Could not extract story ID from path: ${endpointPath}`);
           }
         }
 
