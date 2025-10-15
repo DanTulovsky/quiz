@@ -5,6 +5,12 @@
     "title": "Admin Archived Story",
     "status": "archived"
   },
+  "apitestadmin_Admin Story 3": {
+    "id": 12,
+    "username": "apitestadmin",
+    "title": "Admin Story 3",
+    "status": "archived"
+  },
   "apitestadmin_Admin Test Story": {
     "id": 5,
     "username": "apitestadmin",
@@ -16,6 +22,12 @@
     "username": "apitestuser2",
     "title": "Active Test Story",
     "status": "active"
+  },
+  "apitestuser2_User 2 Story 2": {
+    "id": 11,
+    "username": "apitestuser2",
+    "title": "User 2 Story 2",
+    "status": "archived"
   },
   "apitestuser_Archived Regular User Story": {
     "id": 8,
@@ -29,6 +41,12 @@
     "title": "Regular User Story",
     "status": "active"
   },
+  "apitestuser_Regular User Story 2": {
+    "id": 9,
+    "username": "apitestuser",
+    "title": "Regular User Story 2",
+    "status": "archived"
+  },
   "apitestuserstory1_Another Archived Story": {
     "id": 3,
     "username": "apitestuserstory1",
@@ -39,6 +57,12 @@
     "id": 2,
     "username": "apitestuserstory1",
     "title": "Archived Test Story",
+    "status": "archived"
+  },
+  "apitestuserstory1_Story Test User Story 2": {
+    "id": 10,
+    "username": "apitestuserstory1",
+    "title": "Story Test User Story 2",
     "status": "archived"
   },
   "apitestuserstory1_test_value": {
