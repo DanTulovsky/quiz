@@ -115,9 +115,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   // Refresh Bookmarked Messages when navigating to the page
   const refreshBookmarkedMessages = useCallback(() => {
-    const bookmarksKey = ['/v1/ai/bookmarks'];
-    queryClient.invalidateQueries({ queryKey: bookmarksKey });
-    queryClient.refetchQueries({ queryKey: bookmarksKey });
+    // Invalidate all bookmarked messages queries (including mobile with search params)
+    queryClient.invalidateQueries({ queryKey: ['/v1/ai/bookmarks'] });
+    queryClient.refetchQueries({ queryKey: ['/v1/ai/bookmarks'] });
+
+    // Also try with different query key patterns that might be used
+    queryClient.invalidateQueries({
+      queryKey: ['/v1/ai/bookmarks'],
+      exact: false,
+    });
+    queryClient.refetchQueries({
+      queryKey: ['/v1/ai/bookmarks'],
+      exact: false,
+    });
   }, [queryClient]);
 
   useEffect(() => {
@@ -127,7 +137,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   }, [location.pathname, refreshAiConversations]);
 
   useEffect(() => {
-    if (location.pathname.startsWith('/bookmarks') || location.pathname.startsWith('/m/bookmarks')) {
+    if (
+      location.pathname.startsWith('/bookmarks') ||
+      location.pathname.startsWith('/m/bookmarks')
+    ) {
       refreshBookmarkedMessages();
     }
   }, [location.pathname, refreshBookmarkedMessages]);
@@ -486,7 +499,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <Divider my='xs' label='Practice' labelPosition='center' />
               )}
               {item.name === 'AI Conversations' && (
-                <Divider my='xs' label='History' labelPosition='center' />
+                <Divider my='xs' label='AI History' labelPosition='center' />
               )}
               <NavLink
                 component={Link}
@@ -543,7 +556,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           {adminNav.length > 0 && (
             <>
               <Divider my='md' label='Administration' labelPosition='center' />
-              {adminNav.map((item, index) => (
+              {adminNav.map(item => (
                 <NavLink
                   key={item.name}
                   component={Link}
@@ -577,14 +590,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                           },
                         }}
                       >
-                        ⇧{index + 5}
+                        ⇧0
                       </Badge>
                     </Group>
                   }
                   leftSection={<item.icon size={20} />}
                   active={location.pathname.startsWith(item.href)}
                   data-testid={item.testId}
-                  title={`${item.name} (Shift+${index + 4})`}
+                  title={`${item.name} (Shift+0)`}
                 />
               ))}
             </>

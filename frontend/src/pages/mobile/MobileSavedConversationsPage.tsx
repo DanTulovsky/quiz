@@ -14,6 +14,7 @@ import {
   Modal,
   Box,
   Divider,
+  Paper,
 } from '@mantine/core';
 import {
   Search,
@@ -26,9 +27,9 @@ import {
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import { useAuth } from '../hooks/useAuth';
-import { usePagination } from '../hooks/usePagination';
-import { PaginationControls } from '../components/PaginationControls';
+import { useAuth } from '../../hooks/useAuth';
+import { usePagination } from '../../hooks/usePagination';
+import { PaginationControls } from '../../components/PaginationControls';
 import {
   useGetV1AiConversationsId,
   useDeleteV1AiConversationsId,
@@ -37,8 +38,8 @@ import {
   getGetV1AiConversationsIdQueryKey,
   Conversation,
   ChatMessage,
-} from '../api/api';
-import { customInstance } from '../api/axios';
+} from '../../api/api';
+import { customInstance } from '../../api/axios';
 import { useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
 
@@ -62,93 +63,94 @@ const ConversationCard: React.FC<ConversationCardProps> = ({
     0;
 
   return (
-    <Group
-      justify='space-between'
-      align='center'
-      py='sm'
-      px='xs'
+    <Paper
+      radius='sm'
+      withBorder
       style={{
-        borderBottom: '1px solid var(--mantine-color-gray-2)',
         cursor: 'pointer',
-        '&:hover': {
-          backgroundColor: 'var(--mantine-color-gray-0)',
-        },
+        transition: 'all 0.2s',
+        padding: '28px', // Generous internal padding for more space between text and border
       }}
       onClick={() => onView(conversation)}
     >
-      <Group align='center' gap='md' style={{ flex: 1 }}>
-        <Text
-          size='sm'
-          fw={500}
-          style={{
-            minWidth: 0,
-            flex: 1,
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          {conversation.title || 'Untitled Conversation'}
-        </Text>
+      <Stack gap='md'>
+        <Group justify='space-between' align='flex-start'>
+          <Stack gap={8} style={{ flex: 1 }}>
+            <Text
+              size='sm'
+              fw={500}
+              style={{
+                minWidth: 0,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {conversation.title || 'Untitled Conversation'}
+            </Text>
 
-        <Badge
-          variant='light'
-          color='blue'
-          size='xs'
-          leftSection={<Calendar size={10} />}
-        >
-          {format(new Date(conversation.created_at), 'MMM d, h:mm a')}
-        </Badge>
+            <Group gap='sm' wrap='wrap'>
+              <Badge
+                variant='light'
+                color='blue'
+                size='xs'
+                leftSection={<Calendar size={10} />}
+              >
+                {format(new Date(conversation.created_at), 'MMM d, h:mm a')}
+              </Badge>
 
-        <Badge variant='light' color='green' size='xs'>
-          {messageCount} {messageCount === 1 ? 'msg' : 'msgs'}
-        </Badge>
-      </Group>
+              <Badge variant='light' color='green' size='xs'>
+                {messageCount} {messageCount === 1 ? 'msg' : 'msgs'}
+              </Badge>
+            </Group>
+          </Stack>
 
-      <Menu shadow='md' width={120}>
-        <Menu.Target>
-          <ActionIcon
-            aria-label='Conversation actions'
-            variant='subtle'
-            color='gray'
-            size='sm'
-            onClick={e => e.stopPropagation()}
-          >
-            <Edit size={14} />
-          </ActionIcon>
-        </Menu.Target>
-        <Menu.Dropdown>
-          <Menu.Item
-            leftSection={<MessageCircle size={16} />}
-            onClick={e => {
-              e.stopPropagation();
-              onView(conversation);
-            }}
-          >
-            View
-          </Menu.Item>
-          <Menu.Item
-            leftSection={<Edit size={16} />}
-            onClick={e => {
-              e.stopPropagation();
-              onEdit(conversation);
-            }}
-          >
-            Edit Title
-          </Menu.Item>
-          <Menu.Item
-            leftSection={<Trash2 size={16} />}
-            color='red'
-            onClick={e => {
-              e.stopPropagation();
-              onDelete(conversation.id);
-            }}
-          >
-            Delete
-          </Menu.Item>
-        </Menu.Dropdown>
-      </Menu>
-    </Group>
+          <Menu shadow='md' width={120}>
+            <Menu.Target>
+              <ActionIcon
+                aria-label='Conversation actions'
+                variant='subtle'
+                color='gray'
+                size='sm'
+                onClick={e => e.stopPropagation()}
+              >
+                <Edit size={14} />
+              </ActionIcon>
+            </Menu.Target>
+            <Menu.Dropdown>
+              <Menu.Item
+                leftSection={<MessageCircle size={16} />}
+                onClick={e => {
+                  e.stopPropagation();
+                  onView(conversation);
+                }}
+              >
+                View
+              </Menu.Item>
+              <Menu.Item
+                leftSection={<Edit size={16} />}
+                onClick={e => {
+                  e.stopPropagation();
+                  onEdit(conversation);
+                }}
+              >
+                Edit Title
+              </Menu.Item>
+              <Menu.Item
+                leftSection={<Trash2 size={16} />}
+                color='red'
+                onClick={e => {
+                  e.stopPropagation();
+                  onDelete(conversation.id);
+                }}
+              >
+                Delete
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
+        </Group>
+      </Stack>
+    </Paper>
   );
 };
 
@@ -176,16 +178,22 @@ const ConversationDetailModal: React.FC<ConversationDetailModalProps> = ({
       opened={opened}
       onClose={onClose}
       title={conversation.title || 'Untitled Conversation'}
-      size='90%'
+      size='100%'
+      fullScreen
       styles={{
         content: {
-          maxHeight: '80vh',
+          height: '100vh',
           display: 'flex',
           flexDirection: 'column',
         },
+        body: {
+          flex: 1,
+          overflow: 'auto',
+          padding: '12px',
+        },
       }}
     >
-      <div style={{ flex: 1, overflow: 'auto', maxHeight: '60vh' }}>
+      <div style={{ flex: 1, overflow: 'auto' }}>
         <Stack gap='sm'>
           {messages.map((message, index) => {
             const messageText =
@@ -276,7 +284,7 @@ const ConversationDetailModal: React.FC<ConversationDetailModalProps> = ({
   );
 };
 
-export const SavedConversationsPage: React.FC = () => {
+export const MobileSavedConversationsPage: React.FC = () => {
   const {} = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSearchQuery, setActiveSearchQuery] = useState('');
@@ -341,7 +349,7 @@ export const SavedConversationsPage: React.FC = () => {
       }
     },
     {
-      initialLimit: 20,
+      initialLimit: 15, // Smaller limit for mobile
       enableInfiniteScroll: false,
     }
   );
@@ -373,7 +381,6 @@ export const SavedConversationsPage: React.FC = () => {
     setSearchQuery('');
     setActiveSearchQuery('');
     resetConversations(); // Reset pagination when clearing search
-    // Focus back to search input
     setTimeout(() => {
       searchInputRef.current?.focus();
     }, 0);
@@ -385,7 +392,7 @@ export const SavedConversationsPage: React.FC = () => {
     resetConversations(); // Reset pagination when searching
   };
 
-  // Mutations (use generated hooks directly; avoid creating hooks inside callbacks)
+  // Mutations
   const deleteConversationMutation = useDeleteV1AiConversationsId(
     {
       mutation: {
@@ -502,86 +509,92 @@ export const SavedConversationsPage: React.FC = () => {
   };
 
   return (
-    <Container size='xl' py='xl'>
-      <Stack gap='xl'>
+    <Container size='lg' py='md' px='xs'>
+      <Stack gap='md'>
         <Group justify='space-between' align='center'>
           <div>
-            <Title order={1}>Saved AI Conversations</Title>
-            <Text c='dimmed' mt='xs'>
-              View and manage your saved AI conversations
+            <Title order={2} size='h3'>
+              Saved Conversations
+            </Title>
+            <Text c='dimmed' size='sm' mt={4}>
+              Your AI conversation history
             </Text>
           </div>
-          <Badge variant='light' color='blue' size='lg'>
-            {totalCount} conversations
+          <Badge variant='light' color='blue' size='md'>
+            {totalCount}
           </Badge>
         </Group>
 
-        <Card padding='lg' radius='md' withBorder>
-          <Group gap='md' mb='lg'>
+        <Card padding='md' radius='md' withBorder>
+          <Stack gap='md'>
             <TextInput
               ref={searchInputRef}
-              placeholder='Type to prepare search query...'
+              placeholder='Search conversations...'
               value={searchQuery}
               onChange={handleSearchChange}
               onKeyDown={handleKeyPress}
               leftSection={<Search size={16} />}
-              style={{ flex: 1 }}
               disabled={isLoading || isFetching}
+              size='sm'
             />
             <Group gap='xs'>
               <Button
                 variant='filled'
+                size='sm'
                 leftSection={<Search size={16} />}
                 onClick={handleSearch}
                 disabled={!searchQuery.trim() || isLoading || isFetching}
+                style={{ flex: 1 }}
               >
                 Search
               </Button>
               {(searchQuery || activeSearchQuery) && (
-                <Button variant='subtle' onClick={handleClearSearch}>
+                <Button variant='subtle' size='sm' onClick={handleClearSearch}>
                   Clear
                 </Button>
               )}
             </Group>
-          </Group>
+          </Stack>
+        </Card>
 
-          {isLoading ? (
-            <Text ta='center' py='xl' c='dimmed'>
-              Loading conversations...
-            </Text>
-          ) : conversations.length === 0 ? (
-            <Text ta='center' py='xl' c='dimmed'>
+        {isLoading ? (
+          <Text ta='center' py='xl' c='dimmed' size='sm'>
+            Loading conversations...
+          </Text>
+        ) : conversations.length === 0 ? (
+          <Paper padding='xl' radius='md' withBorder>
+            <Text ta='center' c='dimmed' size='sm'>
               {activeSearchQuery
                 ? 'No conversations found matching your search.'
                 : 'No saved conversations yet.'}
             </Text>
-          ) : (
-            <>
-              <Stack gap='md'>
-                {conversations.map(conversation => (
-                  <ConversationCard
-                    key={conversation.id}
-                    conversation={conversation}
-                    onEdit={handleEditConversation}
-                    onDelete={handleDeleteConversation}
-                    onView={handleViewConversation}
-                  />
-                ))}
-              </Stack>
+          </Paper>
+        ) : (
+          <>
+            <Stack gap='sm'>
+              {conversations.map(conversation => (
+                <ConversationCard
+                  key={conversation.id}
+                  conversation={conversation}
+                  onEdit={handleEditConversation}
+                  onDelete={handleDeleteConversation}
+                  onView={handleViewConversation}
+                />
+              ))}
+            </Stack>
 
-              <Divider my='md' />
+            <Divider my='md' />
 
-              <PaginationControls
-                pagination={conversationsPagination}
-                onPageChange={goToConversationsPage}
-                onNext={goToNextConversationsPage}
-                onPrevious={goToPreviousConversationsPage}
-                isLoading={isLoading || isFetching}
-                variant='desktop'
-              />
-            </>
-          )}
-        </Card>
+            <PaginationControls
+              pagination={conversationsPagination}
+              onPageChange={goToConversationsPage}
+              onNext={goToNextConversationsPage}
+              onPrevious={goToPreviousConversationsPage}
+              isLoading={isLoading || isFetching}
+              variant='mobile'
+            />
+          </>
+        )}
       </Stack>
 
       {/* Conversation Detail Modal */}
@@ -607,6 +620,7 @@ export const SavedConversationsPage: React.FC = () => {
           setEditTitle('');
         }}
         title='Edit Conversation Title'
+        size='sm'
       >
         <Stack gap='md'>
           <TextInput
@@ -670,4 +684,4 @@ export const SavedConversationsPage: React.FC = () => {
   );
 };
 
-export default SavedConversationsPage;
+export default MobileSavedConversationsPage;

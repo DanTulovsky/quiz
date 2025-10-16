@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo, useCallback } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import {
   Container,
   Title,
@@ -13,17 +13,17 @@ import {
   Box,
   ActionIcon,
   Tooltip,
+  Divider,
 } from '@mantine/core';
 import { Search, BookmarkX } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { useAuth } from '../hooks/useAuth';
-import {
-  usePutV1AiConversationsBookmark,
-  useGetV1AiBookmarks,
-  ChatMessage,
-} from '../api/api';
+import { usePagination } from '../hooks/usePagination';
+import { PaginationControls } from '../components/PaginationControls';
+import { usePutV1AiConversationsBookmark, ChatMessage } from '../api/api';
+import { customInstance } from '../api/axios';
 import { useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
 
@@ -44,7 +44,8 @@ const MessageCard: React.FC<MessageCardProps> = ({
       : message.content?.text || '';
 
   // Get first ~200 characters for preview
-  const preview = messageText.substring(0, 200) + (messageText.length > 200 ? '...' : '');
+  const preview =
+    messageText.substring(0, 200) + (messageText.length > 200 ? '...' : '');
 
   return (
     <Card
@@ -78,7 +79,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
                 variant='light'
                 color='red'
                 size='sm'
-                onClick={(e) => {
+                onClick={e => {
                   e.stopPropagation();
                   onRemoveBookmark(message);
                 }}
@@ -202,24 +203,57 @@ export const BookmarkedMessagesPage: React.FC = () => {
   const {} = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSearchQuery, setActiveSearchQuery] = useState('');
-  const [selectedMessage, setSelectedMessage] = useState<ChatMessage | null>(null);
+  const [selectedMessage, setSelectedMessage] = useState<ChatMessage | null>(
+    null
+  );
   const [detailModalOpen, setDetailModalOpen] = useState(false);
   const queryClient = useQueryClient();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  // Fetch bookmarked messages
-  const { data: bookmarksData, isLoading } = useGetV1AiBookmarks({
-    limit: 50,
-    offset: 0,
-    q: activeSearchQuery.trim() || undefined,
-  });
+  // Use the pagination hook for better performance and UX
+  const {
+    data: messages,
+    isLoading,
+    isFetching,
+    pagination,
+    goToPage,
+    goToNextPage,
+    goToPreviousPage,
+    reset,
+  } = usePagination<ChatMessage>(
+    ['/v1/ai/bookmarks', activeSearchQuery],
+    async ({ limit, offset }) => {
+      const params: { limit: number; offset: number; q?: string } = {
+        limit,
+        offset,
+      };
+      if (activeSearchQuery.trim()) {
+        params.q = activeSearchQuery.trim();
+      }
+
+      const responseData = await customInstance({
+        url: '/v1/ai/bookmarks',
+        method: 'GET',
+        params,
+      });
+
+      return {
+        items: responseData.messages || [],
+        total: responseData.total || 0,
+      };
+    },
+    {
+      initialLimit: 20,
+      enableInfiniteScroll: false, // We'll use pagination controls instead
+    }
+  );
 
   const bookmarkMessageMutation = usePutV1AiConversationsBookmark(
     {
       mutation: {
         onSuccess: () => {
           // Refresh bookmarked messages
-          queryClient.invalidateQueries({ queryKey: ['/v1/ai/bookmarks'] });
+          reset();
           setDetailModalOpen(false);
           setSelectedMessage(null);
         },
@@ -228,8 +262,7 @@ export const BookmarkedMessagesPage: React.FC = () => {
     queryClient
   );
 
-  const messages: ChatMessage[] = bookmarksData?.messages || [];
-  const totalCount = bookmarksData?.total || messages.length;
+  const totalCount = pagination.totalItems;
 
   // Handle search input change
   const handleSearchChange = useCallback(
@@ -244,18 +277,26 @@ export const BookmarkedMessagesPage: React.FC = () => {
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'Enter') {
         setActiveSearchQuery(searchQuery);
+        reset(); // Reset pagination when searching
       }
     },
-    [searchQuery]
+    [searchQuery, reset]
   );
 
   // Clear search
   const handleClearSearch = () => {
     setSearchQuery('');
     setActiveSearchQuery('');
+    reset(); // Reset pagination when clearing search
     setTimeout(() => {
       searchInputRef.current?.focus();
     }, 0);
+  };
+
+  // Handle search button click
+  const handleSearch = () => {
+    setActiveSearchQuery(searchQuery);
+    reset(); // Reset pagination when searching
   };
 
   const handleViewMessage = (message: ChatMessage) => {
@@ -303,14 +344,14 @@ export const BookmarkedMessagesPage: React.FC = () => {
               onKeyDown={handleKeyPress}
               leftSection={<Search size={16} />}
               style={{ flex: 1 }}
-              disabled={isLoading}
+              disabled={isLoading || isFetching}
             />
             <Group gap='xs'>
               <Button
                 variant='filled'
                 leftSection={<Search size={16} />}
-                onClick={() => setActiveSearchQuery(searchQuery)}
-                disabled={isLoading}
+                onClick={handleSearch}
+                disabled={isLoading || isFetching}
               >
                 Search
               </Button>
@@ -333,16 +374,29 @@ export const BookmarkedMessagesPage: React.FC = () => {
                 : 'No bookmarked messages yet. Bookmark messages from conversations to see them here.'}
             </Text>
           ) : (
-            <Stack gap='md'>
-              {messages.map((message) => (
-                <MessageCard
-                  key={message.id}
-                  message={message}
-                  onView={handleViewMessage}
-                  onRemoveBookmark={handleRemoveBookmark}
-                />
-              ))}
-            </Stack>
+            <>
+              <Stack gap='md'>
+                {messages.map(message => (
+                  <MessageCard
+                    key={message.id}
+                    message={message}
+                    onView={handleViewMessage}
+                    onRemoveBookmark={handleRemoveBookmark}
+                  />
+                ))}
+              </Stack>
+
+              <Divider my='md' />
+
+              <PaginationControls
+                pagination={pagination}
+                onPageChange={goToPage}
+                onNext={goToNextPage}
+                onPrevious={goToPreviousPage}
+                isLoading={isLoading || isFetching}
+                variant='desktop'
+              />
+            </>
           )}
         </Card>
       </Stack>
@@ -363,4 +417,3 @@ export const BookmarkedMessagesPage: React.FC = () => {
 };
 
 export default BookmarkedMessagesPage;
-

@@ -10,6 +10,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MantineProvider } from '@mantine/core';
 import * as apiModule from '../api/api';
+import * as axiosModule from '../api/axios';
 import SavedConversationsPage from './SavedConversationsPage';
 
 // Mock return values for each hook
@@ -34,7 +35,7 @@ const mockConversationsData = {
       user_id: 1,
     },
   ],
-  total_count: 2,
+  total: 2,
 };
 
 const mockConversationDetailData = {
@@ -58,14 +59,16 @@ const mockConversationDetailData = {
   ],
 };
 
-// Mock all the API hooks
+// Mock all the API hooks and axios
 vi.mock('../api/api', () => ({
-  useGetV1AiConversations: vi.fn(),
-  useGetV1AiSearch: vi.fn(),
   useGetV1AiConversationsId: vi.fn(),
   useDeleteV1AiConversationsId: vi.fn(),
   usePutV1AiConversationsId: vi.fn(),
   usePutV1AiConversationsBookmark: vi.fn(),
+}));
+
+vi.mock('../api/axios', () => ({
+  customInstance: vi.fn(),
 }));
 
 // Mock the useAuth hook
@@ -108,17 +111,22 @@ describe('SavedConversationsPage', () => {
     // Clear all mocks before each test
     vi.clearAllMocks();
 
+    // Mock axios responses for pagination hook
+    vi.mocked(axiosModule.customInstance).mockImplementation(async config => {
+      if (config.url === '/v1/ai/conversations') {
+        return {
+          data: mockConversationsData,
+        };
+      }
+      if (config.url === '/v1/ai/search') {
+        return {
+          data: { conversations: [], total: 0 },
+        };
+      }
+      return { data: {} };
+    });
+
     // Setup mock return values for each hook
-    vi.mocked(apiModule.useGetV1AiConversations).mockReturnValue({
-      data: mockConversationsData,
-      isLoading: false,
-    });
-
-    vi.mocked(apiModule.useGetV1AiSearch).mockReturnValue({
-      data: { conversations: [], total_count: 0 },
-      isLoading: false,
-    });
-
     vi.mocked(apiModule.useGetV1AiConversationsId).mockReturnValue({
       data: mockConversationDetailData,
       isLoading: false,
@@ -262,5 +270,49 @@ describe('SavedConversationsPage', () => {
     });
 
     expect(mutateAsync).toHaveBeenCalled();
+  });
+
+  it('displays pagination controls when there are multiple pages', () => {
+    // Mock a response with more items than the page limit
+    const largeMockData = {
+      conversations: Array.from({ length: 25 }, (_, i) => ({
+        id: `conv-${i + 1}`,
+        title: `Conversation ${i + 1}`,
+        created_at: '2025-01-15T10:30:00Z',
+        updated_at: '2025-01-15T10:30:00Z',
+        message_count: 3,
+        preview_message: 'Explain the grammar...',
+        user_id: 1,
+      })),
+      total: 50, // More than one page
+    };
+
+    vi.mocked(axiosModule.customInstance).mockImplementation(async config => {
+      if (config.url === '/v1/ai/conversations') {
+        return { data: largeMockData };
+      }
+      return { data: {} };
+    });
+
+    act(() => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MantineProvider>
+            <BrowserRouter
+              future={{
+                v7_startTransition: false,
+                v7_relativeSplatPath: false,
+              }}
+            >
+              <SavedConversationsPage />
+            </BrowserRouter>
+          </MantineProvider>
+        </QueryClientProvider>
+      );
+    });
+
+    // Should display pagination info
+    expect(screen.getByText(/Showing 50 items/)).toBeInTheDocument();
+    expect(screen.getByText(/Page 1 of 3/)).toBeInTheDocument();
   });
 });

@@ -307,11 +307,14 @@ describe('SettingsPage', () => {
     });
 
     // Wait for the voices to be loaded and state to be updated
-    await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining('/v1/voices?language=it-IT')
-      );
-    }, { timeout: 5000 });
+    await waitFor(
+      () => {
+        expect(mockFetch).toHaveBeenCalledWith(
+          expect.stringContaining('/v1/voices?language=it-IT')
+        );
+      },
+      { timeout: 5000 }
+    );
 
     // Voice select should now have options (value not required, but options rendered)
     const voiceSelect = screen.getByTestId('tts-voice-select');

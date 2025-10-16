@@ -14,17 +14,17 @@ import {
   ActionIcon,
   Tooltip,
   Paper,
+  Divider,
 } from '@mantine/core';
 import { Search, BookmarkX, Maximize2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { useAuth } from '../../hooks/useAuth';
-import {
-  usePutV1AiConversationsBookmark,
-  useGetV1AiBookmarks,
-  ChatMessage,
-} from '../../api/api';
+import { usePagination } from '../../hooks/usePagination';
+import { PaginationControls } from '../../components/PaginationControls';
+import { usePutV1AiConversationsBookmark, ChatMessage } from '../../api/api';
+import { customInstance } from '../../api/axios';
 import { useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
 
@@ -45,16 +45,17 @@ const MessageCard: React.FC<MessageCardProps> = ({
       : message.content?.text || '';
 
   // Get first ~150 characters for preview on mobile
-  const preview = messageText.substring(0, 150) + (messageText.length > 150 ? '...' : '');
+  const preview =
+    messageText.substring(0, 150) + (messageText.length > 150 ? '...' : '');
 
   return (
     <Paper
-      padding='sm'
       radius='sm'
       withBorder
       style={{
         cursor: 'pointer',
         transition: 'all 0.2s',
+        padding: '28px', // Generous internal padding for more space between text and border
       }}
       onClick={() => onView(message)}
     >
@@ -81,7 +82,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
                 variant='light'
                 color='red'
                 size='sm'
-                onClick={(e) => {
+                onClick={e => {
                   e.stopPropagation();
                   onRemoveBookmark(message);
                 }}
@@ -95,11 +96,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
           {preview}
         </Text>
         <Group justify='flex-end'>
-          <ActionIcon
-            variant='subtle'
-            color='blue'
-            size='sm'
-          >
+          <ActionIcon variant='subtle' color='blue' size='sm'>
             <Maximize2 size={14} />
           </ActionIcon>
         </Group>
@@ -221,24 +218,64 @@ export const MobileBookmarkedMessagesPage: React.FC = () => {
   const {} = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSearchQuery, setActiveSearchQuery] = useState('');
-  const [selectedMessage, setSelectedMessage] = useState<ChatMessage | null>(null);
+  const [selectedMessage, setSelectedMessage] = useState<ChatMessage | null>(
+    null
+  );
   const [detailModalOpen, setDetailModalOpen] = useState(false);
   const queryClient = useQueryClient();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  // Fetch bookmarked messages
-  const { data: bookmarksData, isLoading } = useGetV1AiBookmarks({
-    limit: 50,
-    offset: 0,
-    q: activeSearchQuery.trim() || undefined,
-  });
+  // Force refresh when component mounts or search query changes
+  React.useEffect(() => {
+    const queryKey = ['/v1/ai/bookmarks', activeSearchQuery];
+    queryClient.invalidateQueries({ queryKey });
+    queryClient.refetchQueries({ queryKey });
+  }, [activeSearchQuery, queryClient]);
+
+  // Use the pagination hook for better performance and UX
+  const {
+    data: messages,
+    isLoading,
+    isFetching,
+    pagination,
+    goToPage,
+    goToNextPage,
+    goToPreviousPage,
+    reset,
+  } = usePagination<ChatMessage>(
+    ['/v1/ai/bookmarks', activeSearchQuery],
+    async ({ limit, offset }) => {
+      const params: { limit: number; offset: number; q?: string } = {
+        limit,
+        offset,
+      };
+      if (activeSearchQuery.trim()) {
+        params.q = activeSearchQuery.trim();
+      }
+
+      const responseData = await customInstance({
+        url: '/v1/ai/bookmarks',
+        method: 'GET',
+        params,
+      });
+
+      return {
+        items: responseData.messages || [],
+        total: responseData.total || 0,
+      };
+    },
+    {
+      initialLimit: 15, // Smaller limit for mobile
+      enableInfiniteScroll: false, // We'll use pagination controls instead
+    }
+  );
 
   const bookmarkMessageMutation = usePutV1AiConversationsBookmark(
     {
       mutation: {
         onSuccess: () => {
           // Refresh bookmarked messages
-          queryClient.invalidateQueries({ queryKey: ['/v1/ai/bookmarks'] });
+          reset();
           setDetailModalOpen(false);
           setSelectedMessage(null);
         },
@@ -247,8 +284,7 @@ export const MobileBookmarkedMessagesPage: React.FC = () => {
     queryClient
   );
 
-  const messages: ChatMessage[] = bookmarksData?.messages || [];
-  const totalCount = bookmarksData?.total || messages.length;
+  const totalCount = pagination.totalItems;
 
   // Handle search input change
   const handleSearchChange = useCallback(
@@ -263,18 +299,26 @@ export const MobileBookmarkedMessagesPage: React.FC = () => {
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'Enter') {
         setActiveSearchQuery(searchQuery);
+        reset(); // Reset pagination when searching
       }
     },
-    [searchQuery]
+    [searchQuery, reset]
   );
 
   // Clear search
   const handleClearSearch = () => {
     setSearchQuery('');
     setActiveSearchQuery('');
+    reset(); // Reset pagination when clearing search
     setTimeout(() => {
       searchInputRef.current?.focus();
     }, 0);
+  };
+
+  // Handle search button click
+  const handleSearch = () => {
+    setActiveSearchQuery(searchQuery);
+    reset(); // Reset pagination when searching
   };
 
   const handleViewMessage = (message: ChatMessage) => {
@@ -302,7 +346,9 @@ export const MobileBookmarkedMessagesPage: React.FC = () => {
       <Stack gap='md'>
         <Group justify='space-between' align='center'>
           <div>
-            <Title order={2} size='h3'>Bookmarked Messages</Title>
+            <Title order={2} size='h3'>
+              Bookmarked Messages
+            </Title>
             <Text c='dimmed' size='sm' mt={4}>
               Your saved AI responses
             </Text>
@@ -321,7 +367,7 @@ export const MobileBookmarkedMessagesPage: React.FC = () => {
               onChange={handleSearchChange}
               onKeyDown={handleKeyPress}
               leftSection={<Search size={16} />}
-              disabled={isLoading}
+              disabled={isLoading || isFetching}
               size='sm'
             />
             <Group gap='xs'>
@@ -329,18 +375,14 @@ export const MobileBookmarkedMessagesPage: React.FC = () => {
                 variant='filled'
                 size='sm'
                 leftSection={<Search size={16} />}
-                onClick={() => setActiveSearchQuery(searchQuery)}
-                disabled={isLoading}
+                onClick={handleSearch}
+                disabled={isLoading || isFetching}
                 style={{ flex: 1 }}
               >
                 Search
               </Button>
               {(searchQuery || activeSearchQuery) && (
-                <Button
-                  variant='subtle'
-                  size='sm'
-                  onClick={handleClearSearch}
-                >
+                <Button variant='subtle' size='sm' onClick={handleClearSearch}>
                   Clear
                 </Button>
               )}
@@ -361,16 +403,29 @@ export const MobileBookmarkedMessagesPage: React.FC = () => {
             </Text>
           </Paper>
         ) : (
-          <Stack gap='sm'>
-            {messages.map((message) => (
-              <MessageCard
-                key={message.id}
-                message={message}
-                onView={handleViewMessage}
-                onRemoveBookmark={handleRemoveBookmark}
-              />
-            ))}
-          </Stack>
+          <>
+            <Stack gap='sm'>
+              {messages.map(message => (
+                <MessageCard
+                  key={message.id}
+                  message={message}
+                  onView={handleViewMessage}
+                  onRemoveBookmark={handleRemoveBookmark}
+                />
+              ))}
+            </Stack>
+
+            <Divider my='md' />
+
+            <PaginationControls
+              pagination={pagination}
+              onPageChange={goToPage}
+              onNext={goToNextPage}
+              onPrevious={goToPreviousPage}
+              isLoading={isLoading || isFetching}
+              variant='mobile'
+            />
+          </>
         )}
       </Stack>
 
@@ -390,4 +445,3 @@ export const MobileBookmarkedMessagesPage: React.FC = () => {
 };
 
 export default MobileBookmarkedMessagesPage;
-

@@ -34,6 +34,7 @@ import MobileVocabularyPage from './pages/mobile/MobileVocabularyPage';
 import MobileReadingComprehensionPage from './pages/mobile/MobileReadingComprehensionPage';
 import MobileDailyPage from './pages/mobile/MobileDailyPage';
 import MobileStoryPage from './pages/mobile/MobileStoryPage';
+import MobileSavedConversationsPage from './pages/mobile/MobileSavedConversationsPage';
 import MobileBookmarkedMessagesPage from './pages/mobile/MobileBookmarkedMessagesPage';
 import { Center, Loader } from '@mantine/core';
 
@@ -513,6 +514,20 @@ function App() {
           user ? (
             <MobileLayout>
               <MobileStoryPage />
+            </MobileLayout>
+          ) : (
+            <Navigate
+              to={`/m/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`}
+            />
+          )
+        }
+      />
+      <Route
+        path='/m/conversations'
+        element={
+          user ? (
+            <MobileLayout>
+              <MobileSavedConversationsPage />
             </MobileLayout>
           ) : (
             <Navigate

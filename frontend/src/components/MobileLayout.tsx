@@ -22,6 +22,7 @@ import {
   IconLogout,
   IconBookmark,
   IconBook,
+  IconBrain,
 } from '@tabler/icons-react';
 import { useAuth } from '../hooks/useAuth';
 import { useMobileDetection } from '../hooks/useMobileDetection';
@@ -63,6 +64,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
     if (path.startsWith('/m/reading-comprehension')) return 'reading';
     if (path.startsWith('/m/story')) return 'story';
     if (path.startsWith('/m/daily')) return 'daily';
+    if (path.startsWith('/m/conversations')) return 'conversations';
     if (path.startsWith('/m/bookmarks')) return 'bookmarks';
     return 'quiz';
   };
@@ -85,7 +87,18 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
     },
     { key: 'story', label: 'Story', icon: IconBook, path: '/m/story' },
     { key: 'daily', label: 'Daily', icon: IconCalendar, path: '/m/daily' },
-    { key: 'bookmarks', label: 'Bookmarks', icon: IconBookmark, path: '/m/bookmarks' },
+    {
+      key: 'conversations',
+      label: 'AI Conversations',
+      icon: IconBrain,
+      path: '/m/conversations',
+    },
+    {
+      key: 'bookmarks',
+      label: 'Bookmarked Messages',
+      icon: IconBookmark,
+      path: '/m/bookmarks',
+    },
   ];
 
   return (
@@ -114,19 +127,30 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
             {navItems.map(item => {
               const Icon = item.icon;
               return (
-                <Button
-                  key={item.key}
-                  variant={activeTab === item.key ? 'light' : 'subtle'}
-                  leftSection={<Icon size={16} />}
-                  onClick={() => {
-                    handleNavigation(item.path);
-                    if (opened) toggle(); // close menu after navigation
-                  }}
-                  fullWidth
-                  justify='flex-start'
-                >
-                  {item.label}
-                </Button>
+                <React.Fragment key={item.key}>
+                  {item.key === 'daily' && (
+                    <Divider my='sm' label='Practice' labelPosition='center' />
+                  )}
+                  {item.key === 'conversations' && (
+                    <Divider
+                      my='sm'
+                      label='AI History'
+                      labelPosition='center'
+                    />
+                  )}
+                  <Button
+                    variant={activeTab === item.key ? 'light' : 'subtle'}
+                    leftSection={<Icon size={16} />}
+                    onClick={() => {
+                      handleNavigation(item.path);
+                      if (opened) toggle(); // close menu after navigation
+                    }}
+                    fullWidth
+                    justify='flex-start'
+                  >
+                    {item.label}
+                  </Button>
+                </React.Fragment>
               );
             })}
             <Divider my='sm' />
