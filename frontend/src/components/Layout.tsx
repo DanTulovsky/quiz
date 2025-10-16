@@ -37,6 +37,7 @@ import {
   IconAbc,
   IconDeviceMobile,
   IconQuestionMark,
+  IconBookmark,
 } from '@tabler/icons-react';
 import WorkerStatus from './WorkerStatus';
 import VersionDisplay from './VersionDisplay';
@@ -112,11 +113,24 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     queryClient.refetchQueries({ queryKey: conversationsListKey });
   }, [queryClient]);
 
+  // Refresh Bookmarked Messages when navigating to the page
+  const refreshBookmarkedMessages = useCallback(() => {
+    const bookmarksKey = ['/v1/ai/bookmarks'];
+    queryClient.invalidateQueries({ queryKey: bookmarksKey });
+    queryClient.refetchQueries({ queryKey: bookmarksKey });
+  }, [queryClient]);
+
   useEffect(() => {
     if (location.pathname.startsWith('/conversations')) {
       refreshAiConversations();
     }
   }, [location.pathname, refreshAiConversations]);
+
+  useEffect(() => {
+    if (location.pathname.startsWith('/bookmarks') || location.pathname.startsWith('/m/bookmarks')) {
+      refreshBookmarkedMessages();
+    }
+  }, [location.pathname, refreshBookmarkedMessages]);
 
   // Use useCallback to prevent recreation of navigation array
   const navigation = useCallback(() => {
@@ -151,6 +165,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         href: '/conversations',
         icon: IconBrain,
         testId: 'nav-conversations',
+      },
+      {
+        name: 'Bookmarked Messages',
+        href: '/bookmarks',
+        icon: IconBookmark,
+        testId: 'nav-bookmarks',
       },
     ];
 
@@ -233,6 +253,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       e.preventDefault();
       if (mainNav[5] && mainNav[5].href !== location.pathname) {
         navigate(mainNav[5].href);
+      }
+    },
+    { enableOnFormTags: false, preventDefault: true }
+  );
+
+  useHotkeys(
+    'shift+7',
+    e => {
+      e.preventDefault();
+      if (mainNav[6] && mainNav[6].href !== location.pathname) {
+        navigate(mainNav[6].href);
       }
     },
     { enableOnFormTags: false, preventDefault: true }

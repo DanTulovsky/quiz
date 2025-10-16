@@ -300,6 +300,7 @@ func NewRouter(
 			ai.POST("/conversations/:conversationId/messages", aiConversationHandler.AddMessage)
 			ai.PUT("/conversations/bookmark", aiConversationHandler.ToggleMessageBookmark)
 			ai.GET("/search", aiConversationHandler.SearchConversations)
+			ai.GET("/bookmarks", aiConversationHandler.GetBookmarkedMessages)
 		}
 		preferences := v1.Group("/preferences")
 		preferences.Use(middleware.RequireAuth())

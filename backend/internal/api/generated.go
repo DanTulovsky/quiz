@@ -1580,6 +1580,18 @@ type GetV1AdminWorkerNotificationsSentParamsNotificationType string
 // GetV1AdminWorkerNotificationsSentParamsStatus defines parameters for GetV1AdminWorkerNotificationsSent.
 type GetV1AdminWorkerNotificationsSentParamsStatus string
 
+// GetV1AiBookmarksParams defines parameters for GetV1AiBookmarks.
+type GetV1AiBookmarksParams struct {
+	// Q Optional search query to filter bookmarked messages
+	Q *string `form:"q,omitempty" json:"q,omitempty"`
+
+	// Limit Maximum number of messages to return
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Offset Number of messages to skip
+	Offset *int `form:"offset,omitempty" json:"offset,omitempty"`
+}
+
 // GetV1AiConversationsParams defines parameters for GetV1AiConversations.
 type GetV1AiConversationsParams struct {
 	// Limit Maximum number of conversations to return

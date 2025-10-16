@@ -958,7 +958,7 @@ tasks:
       DOCKER_BUILDKIT_NO_PROVENANCE: 1
     cmds:
       - echo "Stopping dev servers (keeping data)..."
-      - docker compose down -q
+      - docker compose down
       - echo "✅ Dev services stopped (data preserved)"
 
   restart-dev:

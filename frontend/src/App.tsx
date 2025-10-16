@@ -13,6 +13,7 @@ import ProgressPage from './pages/ProgressPage';
 import SettingsPage from './pages/SettingsPage';
 import StoryPage from './pages/StoryPage';
 import SavedConversationsPage from './pages/SavedConversationsPage';
+import BookmarkedMessagesPage from './pages/BookmarkedMessagesPage';
 import AdminPage from './pages/AdminPage';
 import BackendAdminPage from './pages/admin/BackendAdminPage';
 import UserManagementPage from './pages/admin/UserManagementPage';
@@ -33,6 +34,7 @@ import MobileVocabularyPage from './pages/mobile/MobileVocabularyPage';
 import MobileReadingComprehensionPage from './pages/mobile/MobileReadingComprehensionPage';
 import MobileDailyPage from './pages/mobile/MobileDailyPage';
 import MobileStoryPage from './pages/mobile/MobileStoryPage';
+import MobileBookmarkedMessagesPage from './pages/mobile/MobileBookmarkedMessagesPage';
 import { Center, Loader } from '@mantine/core';
 
 function App() {
@@ -231,6 +233,20 @@ function App() {
           user ? (
             <Layout>
               <SavedConversationsPage />
+            </Layout>
+          ) : (
+            <Navigate
+              to={`/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`}
+            />
+          )
+        }
+      />
+      <Route
+        path='/bookmarks'
+        element={
+          user ? (
+            <Layout>
+              <BookmarkedMessagesPage />
             </Layout>
           ) : (
             <Navigate
@@ -497,6 +513,20 @@ function App() {
           user ? (
             <MobileLayout>
               <MobileStoryPage />
+            </MobileLayout>
+          ) : (
+            <Navigate
+              to={`/m/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`}
+            />
+          )
+        }
+      />
+      <Route
+        path='/m/bookmarks'
+        element={
+          user ? (
+            <MobileLayout>
+              <MobileBookmarkedMessagesPage />
             </MobileLayout>
           ) : (
             <Navigate
