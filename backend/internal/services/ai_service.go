@@ -734,7 +734,7 @@ func (s *AIService) GenerateStorySection(ctx context.Context, userConfig *models
 
 	err = s.withConcurrencyControl(ctx, userConfig.Username, func() error {
 		prompt := s.buildStorySectionPrompt(req)
-		storyResult, storyErr = s.callOpenAI(ctx, userConfig, prompt, "")
+		storyResult, storyErr = s.callOpenAIWithRetry(ctx, userConfig, prompt, "")
 		return storyErr
 	})
 	if err != nil {
@@ -1225,11 +1225,56 @@ func (s *AIService) callOpenAI(ctx context.Context, userConfig *models.UserAICon
 	content := openAIResp.Choices[0].Message.Content
 	if content == "" {
 		span.SetAttributes(attribute.String("call.result", "empty_content"))
+		s.logger.Warn(ctx, "OpenAI returned empty content", map[string]interface{}{
+			"user_prefix":   userPrefix,
+			"response":      string(body),
+			"prompt_length": len(prompt),
+		})
 		return "", contextutils.WrapError(contextutils.ErrAIResponseInvalid, "AI returned empty content")
 	}
 
 	span.SetAttributes(attribute.String("call.result", "success"), attribute.Int("content_length", len(content)), attribute.String("duration", duration.String()))
 	return content, nil
+}
+
+// callOpenAIWithRetry attempts to call OpenAI with retry logic for empty content responses
+func (s *AIService) callOpenAIWithRetry(ctx context.Context, userConfig *models.UserAIConfig, prompt, grammar string) (string, error) {
+	const maxRetries = 2
+	var lastErr error
+
+	for attempt := 0; attempt <= maxRetries; attempt++ {
+		if attempt > 0 {
+			// Add a small delay between retries
+			time.Sleep(time.Duration(attempt) * time.Second)
+		}
+
+		content, err := s.callOpenAI(ctx, userConfig, prompt, grammar)
+		if err != nil {
+			// If it's not an empty content error, don't retry
+			if !contextutils.IsError(err, contextutils.ErrAIResponseInvalid) {
+				return "", err
+			}
+
+			lastErr = err
+
+			// If this is the last attempt, return the error
+			if attempt == maxRetries {
+				break
+			}
+
+			s.logger.Warn(ctx, "Retrying AI request due to empty content", map[string]interface{}{
+				"attempt":     attempt + 1,
+				"max_retries": maxRetries,
+				"error":       err.Error(),
+			})
+
+			continue
+		}
+
+		return content, nil
+	}
+
+	return "", contextutils.WrapErrorf(lastErr, "AI returned empty content after %d attempts", maxRetries+1)
 }
 
 // callOpenAIStream makes a streaming request to the OpenAI-compatible API
