@@ -3,72 +3,164 @@
     "id": 6,
     "username": "apitestadmin",
     "title": "Admin Archived Story",
-    "status": "archived"
+    "status": "archived",
+    "sections": []
   },
   "apitestadmin_Admin Story 3": {
     "id": 12,
     "username": "apitestadmin",
     "title": "Admin Story 3",
-    "status": "archived"
+    "status": "archived",
+    "sections": [
+      {
+        "id": 8,
+        "story_id": 12,
+        "section_number": 1,
+        "content": "The system administrator checked the server logs and noticed everything was running smoothly. CPU usage was normal, memory consumption was stable, and no errors were reported in the last 24 hours.",
+        "language_level": "B2",
+        "word_count": 50,
+        "generated_by": "user"
+      }
+    ]
   },
   "apitestadmin_Admin Test Story": {
     "id": 5,
     "username": "apitestadmin",
     "title": "Admin Test Story",
-    "status": "active"
+    "status": "active",
+    "sections": [
+      {
+        "id": 3,
+        "story_id": 5,
+        "section_number": 1,
+        "content": "As the administrator reviewed the system logs, they noticed an interesting pattern in user behavior. The data showed that users were engaging more with interactive content than static materials. This insight would help improve the platform's learning algorithms.",
+        "language_level": "B2",
+        "word_count": 80,
+        "generated_by": "user"
+      }
+    ]
   },
   "apitestuser2_Active Test Story": {
     "id": 4,
     "username": "apitestuser2",
     "title": "Active Test Story",
-    "status": "active"
+    "status": "active",
+    "sections": [
+      {
+        "id": 2,
+        "story_id": 4,
+        "section_number": 1,
+        "content": "Sarah walked into the coffee shop and immediately noticed the person sitting in the corner. They looked familiar, but she couldn't quite place where she had seen them before. As she ordered her coffee, she kept stealing glances in their direction.",
+        "language_level": "B1",
+        "word_count": 70,
+        "generated_by": "user"
+      }
+    ]
   },
   "apitestuser2_User 2 Story 2": {
     "id": 11,
     "username": "apitestuser2",
     "title": "User 2 Story 2",
-    "status": "archived"
+    "status": "archived",
+    "sections": [
+      {
+        "id": 7,
+        "story_id": 11,
+        "section_number": 1,
+        "content": "The meeting started promptly at 9 AM. All participants were present and the agenda was distributed. The discussion focused on the quarterly budget and upcoming project deadlines.",
+        "language_level": "B2",
+        "word_count": 45,
+        "generated_by": "user"
+      }
+    ]
   },
   "apitestuser_Archived Regular User Story": {
     "id": 8,
     "username": "apitestuser",
     "title": "Archived Regular User Story",
-    "status": "archived"
+    "status": "archived",
+    "sections": []
   },
   "apitestuser_Regular User Story": {
     "id": 7,
     "username": "apitestuser",
     "title": "Regular User Story",
-    "status": "active"
+    "status": "active",
+    "sections": [
+      {
+        "id": 4,
+        "story_id": 7,
+        "section_number": 1,
+        "content": "Maria decided to explore the local market in her neighborhood. She had always been curious about the fresh produce and handmade crafts that the vendors offered. As she walked through the bustling aisles, she struck up conversations with several shop owners.",
+        "language_level": "B1",
+        "word_count": 80,
+        "generated_by": "user"
+      }
+    ]
   },
   "apitestuser_Regular User Story 2": {
     "id": 9,
     "username": "apitestuser",
     "title": "Regular User Story 2",
-    "status": "archived"
+    "status": "archived",
+    "sections": [
+      {
+        "id": 5,
+        "story_id": 9,
+        "section_number": 1,
+        "content": "Today was a special day for Luca. He had been planning this trip for months, and finally the day had arrived. As he boarded the train, he felt a mix of excitement and nervousness about what lay ahead.",
+        "language_level": "B1",
+        "word_count": 60,
+        "generated_by": "user"
+      }
+    ]
   },
   "apitestuserstory1_Another Archived Story": {
     "id": 3,
     "username": "apitestuserstory1",
     "title": "Another Archived Story",
-    "status": "archived"
+    "status": "archived",
+    "sections": []
   },
   "apitestuserstory1_Archived Test Story": {
     "id": 2,
     "username": "apitestuserstory1",
     "title": "Archived Test Story",
-    "status": "archived"
+    "status": "archived",
+    "sections": []
   },
   "apitestuserstory1_Story Test User Story 2": {
     "id": 10,
     "username": "apitestuserstory1",
     "title": "Story Test User Story 2",
-    "status": "archived"
+    "status": "archived",
+    "sections": [
+      {
+        "id": 6,
+        "story_id": 10,
+        "section_number": 1,
+        "content": "Emma had always loved baking cookies. The smell of fresh baked goods filled her kitchen as she mixed the ingredients. She hummed a tune while waiting for the oven timer to go off.",
+        "language_level": "B1",
+        "word_count": 55,
+        "generated_by": "user"
+      }
+    ]
   },
   "apitestuserstory1_test_value": {
     "id": 1,
     "username": "apitestuserstory1",
     "title": "test_value",
-    "status": "active"
+    "status": "active",
+    "sections": [
+      {
+        "id": 1,
+        "story_id": 1,
+        "section_number": 1,
+        "content": "Once upon a time in a bustling city, Alex woke up with a sense of adventure in their heart. The sun was shining brightly through the window, and birds were singing cheerful songs outside. Today felt like the perfect day to explore something new.",
+        "language_level": "B1",
+        "word_count": 75,
+        "generated_by": "user"
+      }
+    ]
   }
 }

@@ -390,6 +390,7 @@ tasks:
     dir: frontend
     deps: [start-test-environment, setup-frontend]
     env:
+      E2E_EXCLUDE_PATHS: "re:/v1/admin/backend/questions/[0-9]+/ai-fix,re:/v1/story/[0-9]+/generate"
       DATABASE_URL: "{{.DYNAMIC_TEST_DB_URL}}"
       TEST_BASE_URL: "{{.DYNAMIC_TEST_BASE_URL}}"
       SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"

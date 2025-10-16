@@ -1473,11 +1473,47 @@ function findConversationForUser(username: string): any {
     return availableQuestionIds[0];
   }
 
-  function getAvailableSectionId(): number {
+  async function getAvailableSectionId(username?: string, request?: any): Promise<number> {
     if (availableSectionIds.length === 0) {
       throw new Error('No available section IDs for testing');
     }
-    return availableSectionIds[0]; // Use the first available section ID
+
+    if (!username) {
+      return availableSectionIds[0]; // Use the first available section ID if no username specified
+    }
+
+    // Get sections that belong to this user's stories in the database
+    const existingStories = await getStoriesFromDatabase(username, request);
+    console.log(`🔍 DATABASE STORIES for ${username}: ${existingStories.map(s => `${s.id}(${s.status})`).join(', ')}`);
+
+    // Find sections that belong to stories that exist in the database
+    const userSections: number[] = [];
+
+    if (!testStoriesData) {
+      console.warn('No stories data available for section filtering');
+      return availableSectionIds[0];
+    }
+
+    for (const story of Object.values(testStoriesData)) {
+      if (story.username === username && story.sections && story.sections.length > 0) {
+        // Check if this story exists in the database
+        const dbStory = existingStories.find(s => s.id === story.id);
+        if (dbStory) {
+          for (const section of story.sections) {
+            if (!userSections.includes(section.id)) {
+              userSections.push(section.id);
+            }
+          }
+        }
+      }
+    }
+
+    if (userSections.length === 0) {
+      console.warn(`No sections found for user ${username} in database, using first available section`);
+      return availableSectionIds[0];
+    }
+
+    return userSections[0]; // Return the first section belonging to this user
   }
 
   function removeUserId(id: number) {
@@ -1551,16 +1587,8 @@ function findConversationForUser(username: string): any {
       return {value: 1, type: 'role'};
     }
 
-    // Check if this is a section-related endpoint first
-    if (path.includes('/story/section/')) {
-      console.log(`🔍 GETTING SECTION ID for param: ${paramKey}, path: ${path}, method: ${method}, isErrorCase: ${isErrorCase}`);
-      // For error cases (like 404 tests), use an invalid section ID
-      if (isErrorCase) {
-        return {value: 999999999, type: 'section'};
-      }
-      const sectionId = getAvailableSectionId();
-      return {value: sectionId, type: 'section'};
-    }
+    // Section endpoints are now handled in the main test loop to avoid conflicts
+    // with the story endpoint logic
 
     if (paramKey === 'id' || paramKey === 'conversationId') {
       console.log(`🔍 GETTING REPLACEMENT ID for param: ${paramKey}, path: ${path}, method: ${method}, isErrorCase: ${isErrorCase}`);
@@ -1580,6 +1608,15 @@ function findConversationForUser(username: string): any {
         }
         const conversationId = getAvailableConversationId(username || 'apitestuser', forDeletion);
         return {value: conversationId, type: 'conversation'};
+      }
+
+      // Check if this is a section-related endpoint first
+      if (path.includes('/story/section/') || path.includes('/section/')) {
+        console.log(`🔍 SECTION ENDPOINT DETECTED: ${path}, method: ${method}`);
+        // For section endpoints, we need to get a section ID that belongs to the user's stories
+        const sectionId = await getAvailableSectionId(userContext?.username, request);
+        console.log(`📋 RETURNING SECTION ID: ${sectionId} for user: ${userContext?.username}, path: ${path}`);
+        return {value: sectionId, type: 'section'};
       }
 
       // Check if this is a story-related endpoint
@@ -1926,15 +1963,15 @@ function findConversationForUser(username: string): any {
       );
 
       for (const testCase of regularUserCases) {
+        // Determine which user to use for this test case
+        const isStoryEndpoint = testCase.path.includes('/story/') || testCase.path.includes('/stories/');
+        const currentUser = isStoryEndpoint ? STORY_TEST_USER : REGULAR_USER;
+
         // Check if this endpoint should be excluded
-        const expandedPath = await replacePathParameters(testCase.path, testCase.pathParams, request, REGULAR_USER, testCase.method, false);
+        const expandedPath = await replacePathParameters(testCase.path, testCase.pathParams, request, currentUser, testCase.method, false);
         if (isExcludedPath(expandedPath)) continue;
 
-        let endpointPath = testCase.path;
-
-        // Determine which user to use for this test case
-        const isStoryEndpoint = endpointPath.includes('/story/') || endpointPath.includes('/stories/');
-        const currentUser = isStoryEndpoint ? STORY_TEST_USER : REGULAR_USER;
+        let endpointPath = expandedPath;
         const currentSessionCookie = await loginUser(request, currentUser);
 
         // Add path parameters
@@ -2061,10 +2098,10 @@ function findConversationForUser(username: string): any {
 
       for (const testCase of publicCases) {
         // Check if this endpoint should be excluded
-        const expandedPath = await replacePathParameters(testCase.path, testCase.pathParams, request, REGULAR_USER, testCase.method, false);
+        const expandedPath = await replacePathParameters(testCase.path, testCase.pathParams, request, ADMIN_USER, testCase.method, false);
         if (isExcludedPath(expandedPath)) continue;
 
-        let endpointPath = testCase.path;
+        let endpointPath = expandedPath;
 
         // Add path parameters
         if (testCase.pathParams) {
