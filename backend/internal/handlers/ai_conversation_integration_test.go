@@ -1019,7 +1019,7 @@ func (suite *AIConversationIntegrationTestSuite) TestGetBookmarkedMessages_Succe
 		MessageID      string `json:"message_id"`
 	}{
 		ConversationID: conversation.Id.String(),
-		MessageID:      message.Id,
+		MessageID:      message.Id.String(),
 	}
 	bookmarkBody, _ := json.Marshal(bookmarkReq)
 	req, _ = http.NewRequest("PUT", "/v1/ai/conversations/bookmark", bytes.NewBuffer(bookmarkBody))
