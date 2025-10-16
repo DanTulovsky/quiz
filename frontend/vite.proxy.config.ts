@@ -20,14 +20,14 @@ export const proxyConfig = {
     target: 'http://localhost:8181',
     changeOrigin: true,
   },
-  // Proxy /v1/audio/ to http://localhost:8080
+  // Proxy /v1/audio/ to http://localhost:5050
   '/v1/audio/': {
-    target: 'http://localhost:8080',
+    target: 'http://localhost:5050',
     changeOrigin: true,
   },
-  // Proxy ^/v1/voices(.*)$ to http://localhost:8080
+  // Proxy ^/v1/voices(.*)$ to http://localhost:5050
   '^/v1/voices(.*)$': {
-    target: 'http://localhost:8080',
+    target: 'http://localhost:5050',
     changeOrigin: true,
   },
   // Proxy /v1/ to http://localhost:8080

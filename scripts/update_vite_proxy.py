@@ -35,8 +35,12 @@ def parse_docker_compose(compose_path):
         for port_mapping in port_list:
             # Parse port mapping like "8080:8080" or "${TTS_PORT:-5050}:5050"
             if isinstance(port_mapping, str) and ':' in port_mapping:
-                external, internal = port_mapping.split(':', 1)
-                # Handle environment variables like ${VAR:-default}
+                # Split from the right to handle environment variables with colons
+                parts = port_mapping.rsplit(':', 1)
+                external, internal = parts[0], parts[1]
+                # Handle environment variables like ${VAR:-default} or '${VAR:-default}'
+                if external.startswith(('"', "'")) and external.endswith(('"', "'")):
+                    external = external[1:-1]  # Remove quotes
                 if external.startswith('${'):
                     # Extract the default value after ':-'
                     inner = external[2:-1]  # Remove ${ and }
