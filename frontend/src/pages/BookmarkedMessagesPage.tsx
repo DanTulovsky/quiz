@@ -43,9 +43,36 @@ const MessageCard: React.FC<MessageCardProps> = ({
       ? message.content
       : message.content?.text || '';
 
-  // Get first ~200 characters for preview
-  const preview =
-    messageText.substring(0, 200) + (messageText.length > 200 ? '...' : '');
+  // Function to create a markdown preview with proper truncation
+  const createMarkdownPreview = (text: string, maxLength: number = 200) => {
+    if (!text) return '';
+
+    // For very short content, return as is
+    if (text.length <= maxLength) return text;
+
+    // Try to truncate at a reasonable markdown boundary
+    let truncated = text.substring(0, maxLength);
+
+    // If we're in the middle of markdown syntax, try to find a better break point
+    const lastSpace = truncated.lastIndexOf(' ');
+    const lastNewline = truncated.lastIndexOf('\n');
+
+    // Prefer breaking at newlines, then spaces
+    if (lastNewline > maxLength * 0.7) {
+      truncated = truncated.substring(0, lastNewline);
+    } else if (lastSpace > maxLength * 0.7) {
+      truncated = truncated.substring(0, lastSpace);
+    }
+
+    // Add ellipsis if we truncated
+    if (truncated.length < text.length) {
+      truncated += '...';
+    }
+
+    return truncated;
+  };
+
+  const preview = createMarkdownPreview(messageText, 200);
 
   return (
     <Card
@@ -89,9 +116,128 @@ const MessageCard: React.FC<MessageCardProps> = ({
             </Tooltip>
           </Group>
         </Group>
-        <Text size='sm' style={{ whiteSpace: 'pre-wrap' }}>
-          {preview}
-        </Text>
+        <Box size='sm'>
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            components={{
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              code({ children, ...props }: any) {
+                // For preview, just show code blocks as simple code tags
+                return (
+                  <code
+                    style={{
+                      backgroundColor: 'var(--mantine-color-gray-1)',
+                      padding: '2px 4px',
+                      borderRadius: '3px',
+                      fontSize: '0.85em',
+                    }}
+                    {...props}
+                  >
+                    {String(children).replace(/\n$/, '')}
+                  </code>
+                );
+              },
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              p: ({ children }: any) => (
+                <Box component='p' mb='xs'>
+                  {children}
+                </Box>
+              ),
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              h1: ({ children }: any) => (
+                <Text component='h1' size='lg' fw={600} mb='xs'>
+                  {children}
+                </Text>
+              ),
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              h2: ({ children }: any) => (
+                <Text component='h2' size='md' fw={600} mb='xs'>
+                  {children}
+                </Text>
+              ),
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              h3: ({ children }: any) => (
+                <Text component='h3' size='sm' fw={600} mb='xs'>
+                  {children}
+                </Text>
+              ),
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              ul: ({ children }: any) => (
+                <Box component='ul' mb='xs' ml='md'>
+                  {children}
+                </Box>
+              ),
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              ol: ({ children }: any) => (
+                <Box component='ol' mb='xs' ml='md'>
+                  {children}
+                </Box>
+              ),
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              li: ({ children }: any) => (
+                <Box component='li' mb='2px'>
+                  {children}
+                </Box>
+              ),
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              blockquote: ({ children }: any) => (
+                <Box
+                  component='blockquote'
+                  mb='xs'
+                  style={{
+                    borderLeft: '3px solid var(--mantine-color-blue-5)',
+                    paddingLeft: '8px',
+                    backgroundColor: 'var(--mantine-color-gray-0)',
+                  }}
+                >
+                  {children}
+                </Box>
+              ),
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              table: ({ children }: any) => (
+                <Box
+                  component='table'
+                  mb='xs'
+                  style={{
+                    borderCollapse: 'collapse',
+                    width: '100%',
+                  }}
+                >
+                  {children}
+                </Box>
+              ),
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              th: ({ children }: any) => (
+                <Box
+                  component='th'
+                  style={{
+                    border: '1px solid var(--mantine-color-gray-3)',
+                    padding: '4px 8px',
+                    textAlign: 'left',
+                    fontWeight: 600,
+                    backgroundColor: 'var(--mantine-color-gray-1)',
+                  }}
+                >
+                  {children}
+                </Box>
+              ),
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              td: ({ children }: any) => (
+                <Box
+                  component='td'
+                  style={{
+                    border: '1px solid var(--mantine-color-gray-3)',
+                    padding: '4px 8px',
+                  }}
+                >
+                  {children}
+                </Box>
+              ),
+            }}
+          >
+            {preview}
+          </ReactMarkdown>
+        </Box>
       </Stack>
     </Card>
   );
@@ -165,7 +311,7 @@ const MessageDetailModal: React.FC<MessageDetailModalProps> = ({
               remarkPlugins={[remarkGfm]}
               components={{
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                code({ className, children, ...props }: any) {
+                code({ children, ...props }: any) {
                   const match = /language-(\w+)/.exec(className || '');
                   return match ? (
                     <SyntaxHighlighter

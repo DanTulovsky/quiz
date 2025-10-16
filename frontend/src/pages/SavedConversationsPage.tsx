@@ -61,6 +61,36 @@ const ConversationCard: React.FC<ConversationCardProps> = ({
     conversation.messages?.length ??
     0;
 
+  // Create a preview snippet based on the conversation title
+  const createTitlePreview = (title: string, maxLength: number = 100) => {
+    if (!title || title === 'Untitled Conversation') {
+      return 'Click to view conversation';
+    }
+
+    if (title.length <= maxLength) return title;
+
+    // Try to truncate at a reasonable boundary
+    let truncated = title.substring(0, maxLength);
+
+    // If we're in the middle of a word, try to find a better break point
+    const lastSpace = truncated.lastIndexOf(' ');
+
+    if (lastSpace > maxLength * 0.7) {
+      truncated = truncated.substring(0, lastSpace);
+    }
+
+    // Add ellipsis if we truncated
+    if (truncated.length < title.length) {
+      truncated += '...';
+    }
+
+    return truncated;
+  };
+
+  const previewText = createTitlePreview(
+    conversation.title || 'Untitled Conversation'
+  );
+
   return (
     <Group
       justify='space-between'
@@ -77,19 +107,31 @@ const ConversationCard: React.FC<ConversationCardProps> = ({
       onClick={() => onView(conversation)}
     >
       <Group align='center' gap='md' style={{ flex: 1 }}>
-        <Text
-          size='sm'
-          fw={500}
-          style={{
-            minWidth: 0,
-            flex: 1,
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          {conversation.title || 'Untitled Conversation'}
-        </Text>
+        <Box style={{ flex: 1, minWidth: 0 }}>
+          <Text
+            size='sm'
+            fw={500}
+            mb={2}
+            style={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {conversation.title || 'Untitled Conversation'}
+          </Text>
+          <Text
+            size='xs'
+            c='dimmed'
+            style={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {previewText}
+          </Text>
+        </Box>
 
         <Badge
           variant='light'
