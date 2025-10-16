@@ -31,6 +31,14 @@ vi.mock('../hooks/useAuth', () => ({
   })),
 }));
 
+// Mock the useMobileDetection hook
+const mockUseMobileDetection = vi.fn(() => ({
+  isMobile: false,
+}));
+vi.mock('../hooks/useMobileDetection', () => ({
+  useMobileDetection: mockUseMobileDetection,
+}));
+
 // Mock framer-motion
 vi.mock('framer-motion', () => ({
   motion: {
@@ -387,6 +395,95 @@ describe('QuestionCard', () => {
     expect(
       screen.getByRole('button', { name: /listen to passage/i })
     ).toBeInTheDocument();
+
+    // Check that the copy button is present for desktop
+    expect(
+      screen.getByLabelText('Copy passage to clipboard')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /copy passage to clipboard/i })
+    ).toBeInTheDocument();
+  });
+
+  it('handles copy button click for reading comprehension', async () => {
+    // Mock clipboard API
+    const mockClipboard = {
+      writeText: vi.fn().mockResolvedValue(undefined),
+    };
+    Object.assign(navigator, { clipboard: mockClipboard });
+
+    const readingQuestion: Question = {
+      id: 2,
+      type: 'reading_comprehension',
+      content: {
+        question: 'What is the main topic of the passage?',
+        passage:
+          'La pizza è un piatto tradizionale italiano. È molto popolare in tutto il mondo.',
+        options: ['Food', 'Travel', 'History', 'Music'],
+      },
+      level: 'A2',
+      created_at: '2023-01-01T00:00:00Z',
+    };
+
+    renderWithProviders(
+      <TTSWrapper
+        question={readingQuestion}
+        onAnswer={mockOnAnswer}
+        onNext={mockOnNext}
+      />
+    );
+
+    const copyButton = screen.getByLabelText('Copy passage to clipboard');
+    expect(copyButton).toBeInTheDocument();
+
+    fireEvent.click(copyButton);
+
+    await waitFor(() => {
+      expect(mockClipboard.writeText).toHaveBeenCalledWith(
+        'La pizza è un piatto tradizionale italiano. È molto popolare in tutto il mondo.'
+      );
+    });
+
+    // Verify success notification was shown
+    expect(showNotificationWithClean).toHaveBeenCalledWith({
+      title: 'Copied!',
+      message: 'Passage copied to clipboard',
+      color: 'green',
+    });
+  });
+
+  it('does not display copy button on mobile for reading comprehension', () => {
+    // Mock mobile detection to return true for mobile
+    mockUseMobileDetection.mockReturnValue({ isMobile: true });
+
+    const readingQuestion: Question = {
+      id: 2,
+      type: 'reading_comprehension',
+      content: {
+        question: 'What is the main topic of the passage?',
+        passage:
+          'La pizza è un piatto tradizionale italiano. È molto popolare in tutto il mondo.',
+        options: ['Food', 'Travel', 'History', 'Music'],
+      },
+      level: 'A2',
+      created_at: '2023-01-01T00:00:00Z',
+    };
+
+    renderWithProviders(
+      <TTSWrapper
+        question={readingQuestion}
+        onAnswer={mockOnAnswer}
+        onNext={mockOnNext}
+      />
+    );
+
+    // Copy button should not be present on mobile
+    expect(
+      screen.queryByLabelText('Copy passage to clipboard')
+    ).not.toBeInTheDocument();
+
+    // Reset mock for other tests
+    mockUseMobileDetection.mockReturnValue({ isMobile: false });
   });
 
   it.skip('handles TTS button click for reading comprehension', async () => {

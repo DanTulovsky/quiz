@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useMediaQuery } from '@mantine/hooks';
 import { splitIntoParagraphs } from '../utils/passage';
+import { useMobileDetection } from '../hooks/useMobileDetection';
 import {
   Check,
   X,
@@ -11,6 +12,7 @@ import {
   BookOpen,
   Volume2,
   VolumeX,
+  Copy,
 } from 'lucide-react';
 import { Question, AnswerResponse as Feedback } from '../api/api';
 import * as Api from '../api/api';
@@ -234,6 +236,33 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
       bufferingProgress,
     } = useTTS();
     const { isAuthenticated } = useAuth();
+    const { isMobile } = useMobileDetection();
+
+    // Copy to clipboard functionality for reading comprehension passages
+    const handleCopyPassage = async () => {
+      if (
+        question.type !== 'reading_comprehension' ||
+        !question.content?.passage
+      ) {
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(question.content.passage);
+        showNotificationWithClean({
+          title: 'Copied!',
+          message: 'Passage copied to clipboard',
+          color: 'green',
+        });
+      } catch {
+        showNotificationWithClean({
+          title: 'Error',
+          message: 'Failed to copy passage to clipboard',
+          color: 'red',
+        });
+      }
+    };
+
     React.useImperativeHandle(ref, () => ({
       openReport: () => setShowReportModal(true),
       openMarkKnown: () => setShowMarkKnownModal(true),
@@ -953,6 +982,20 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                           )}
                         </ActionIcon>
                       </Tooltip>
+                      {/* Copy button - only show on desktop */}
+                      {!isMobile && (
+                        <Tooltip label='Copy passage to clipboard'>
+                          <ActionIcon
+                            size='md'
+                            variant='subtle'
+                            color='gray'
+                            onClick={handleCopyPassage}
+                            aria-label='Copy passage to clipboard'
+                          >
+                            <Copy size={18} />
+                          </ActionIcon>
+                        </Tooltip>
+                      )}
                       {/* Small inline buffering indicator (progress bar) */}
                       <Box
                         ml={8}
