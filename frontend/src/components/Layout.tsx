@@ -37,6 +37,7 @@ import {
   IconAbc,
   IconDeviceMobile,
   IconQuestionMark,
+  IconBookmark,
 } from '@tabler/icons-react';
 import WorkerStatus from './WorkerStatus';
 import VersionDisplay from './VersionDisplay';
@@ -152,6 +153,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         icon: IconBrain,
         testId: 'nav-conversations',
       },
+      {
+        name: 'Bookmarked Messages',
+        href: '/bookmarks',
+        icon: IconBookmark,
+        testId: 'nav-bookmarks',
+      },
     ];
 
     const adminNav = isAdmin
@@ -233,6 +240,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       e.preventDefault();
       if (mainNav[5] && mainNav[5].href !== location.pathname) {
         navigate(mainNav[5].href);
+      }
+    },
+    { enableOnFormTags: false, preventDefault: true }
+  );
+
+  useHotkeys(
+    'shift+7',
+    e => {
+      e.preventDefault();
+      if (mainNav[6] && mainNav[6].href !== location.pathname) {
+        navigate(mainNav[6].href);
       }
     },
     { enableOnFormTags: false, preventDefault: true }

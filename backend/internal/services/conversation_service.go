@@ -32,6 +32,9 @@ type ConversationServiceInterface interface {
 	SearchMessages(ctx context.Context, userID uint, query string, limit, offset int) ([]api.ChatMessage, int, error)
 	SearchConversations(ctx context.Context, userID uint, query string, limit, offset int) ([]api.Conversation, int, error)
 
+	// Bookmark operations
+	GetBookmarkedMessages(ctx context.Context, userID uint, query string, limit, offset int) ([]api.ChatMessage, int, error)
+
 	// Utility operations
 	// GetUserMessageCounts returns a map of conversation ID -> message count for the user's conversations
 	GetUserMessageCounts(ctx context.Context, userID uint) (map[string]int, error)
@@ -630,4 +633,90 @@ func (s *ConversationService) SearchConversations(ctx context.Context, userID ui
 	}
 
 	return conversations, total, nil
+}
+
+// GetBookmarkedMessages retrieves all bookmarked messages for a user
+func (s *ConversationService) GetBookmarkedMessages(ctx context.Context, userID uint, query string, limit, offset int) ([]api.ChatMessage, int, error) {
+	// Clean and prepare the search query if provided
+	searchTerm := "%"
+	if query != "" {
+		searchQuery := strings.TrimSpace(query)
+		searchTerm = fmt.Sprintf("%%%s%%", strings.ToLower(searchQuery))
+	}
+
+	// Get total count of bookmarked messages
+	countQuery := `
+		SELECT COUNT(*)
+		FROM ai_chat_messages m
+		JOIN ai_conversations c ON m.conversation_id = c.id
+		WHERE c.user_id = $1 AND m.bookmarked = true AND LOWER(m.answer_json::text) LIKE $2`
+
+	var total int
+	err := s.db.QueryRowContext(ctx, countQuery, userID, searchTerm).Scan(&total)
+	if err != nil {
+		return nil, 0, contextutils.WrapError(err, "failed to count bookmarked messages")
+	}
+
+	// Get bookmarked messages with conversation titles
+	querySQL := `
+		SELECT m.id, m.conversation_id, m.question_id, m.role, m.answer_json::text, m.bookmarked, m.created_at, m.updated_at, c.title
+		FROM ai_chat_messages m
+		JOIN ai_conversations c ON m.conversation_id = c.id
+		WHERE c.user_id = $1 AND m.bookmarked = true AND LOWER(m.answer_json::text) LIKE $2
+		ORDER BY m.created_at DESC
+		LIMIT $3 OFFSET $4`
+
+	rows, err := s.db.QueryContext(ctx, querySQL, userID, searchTerm, limit, offset)
+	if err != nil {
+		return nil, 0, contextutils.WrapError(err, "failed to get bookmarked messages")
+	}
+	defer func() { _ = rows.Close() }()
+
+	var messages []api.ChatMessage
+	for rows.Next() {
+		var msg api.ChatMessage
+		var questionIDPtr *int
+		var conversationTitle string
+
+		var answerBytes []byte
+		err := rows.Scan(
+			&msg.Id,
+			&msg.ConversationId,
+			&questionIDPtr,
+			&msg.Role,
+			&answerBytes,
+			&msg.Bookmarked,
+			&msg.CreatedAt,
+			&msg.UpdatedAt,
+			&conversationTitle,
+		)
+		if err != nil {
+			return nil, 0, contextutils.WrapError(err, "failed to scan bookmarked message")
+		}
+
+		// Content is stored as an object, unmarshal accordingly
+		var contentObj struct {
+			Text *string `json:"text,omitempty"`
+		}
+		err = json.Unmarshal(answerBytes, &contentObj)
+		if err != nil {
+			return nil, 0, contextutils.WrapError(err, "failed to unmarshal message content")
+		}
+		msg.Content = contentObj
+
+		if questionIDPtr != nil {
+			msg.QuestionId = questionIDPtr
+		}
+
+		// Set conversation title for display
+		msg.ConversationTitle = &conversationTitle
+
+		messages = append(messages, msg)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, 0, contextutils.WrapError(err, "error iterating bookmarked messages")
+	}
+
+	return messages, total, nil
 }

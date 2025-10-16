@@ -20,6 +20,8 @@ import {
   IconMessage,
   IconCalendar,
   IconLogout,
+  IconBookmark,
+  IconBook,
 } from '@tabler/icons-react';
 import { useAuth } from '../hooks/useAuth';
 import { useMobileDetection } from '../hooks/useMobileDetection';
@@ -61,6 +63,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
     if (path.startsWith('/m/reading-comprehension')) return 'reading';
     if (path.startsWith('/m/story')) return 'story';
     if (path.startsWith('/m/daily')) return 'daily';
+    if (path.startsWith('/m/bookmarks')) return 'bookmarks';
     return 'quiz';
   };
 
@@ -80,8 +83,9 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
       icon: IconMessage,
       path: '/m/reading-comprehension',
     },
-    { key: 'story', label: 'Story', icon: IconBook2, path: '/m/story' },
+    { key: 'story', label: 'Story', icon: IconBook, path: '/m/story' },
     { key: 'daily', label: 'Daily', icon: IconCalendar, path: '/m/daily' },
+    { key: 'bookmarks', label: 'Bookmarks', icon: IconBookmark, path: '/m/bookmarks' },
   ];
 
   return (

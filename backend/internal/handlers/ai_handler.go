@@ -535,3 +535,64 @@ func (h *AIConversationHandler) ToggleMessageBookmark(c *gin.Context) {
 		"bookmarked": newBookmarkedStatus,
 	})
 }
+
+// GetBookmarkedMessages handles GET /v1/ai/bookmarks
+func (h *AIConversationHandler) GetBookmarkedMessages(c *gin.Context) {
+	ctx, span := observability.TraceHandlerFunction(c.Request.Context(), "get_bookmarked_messages")
+	defer observability.FinishSpan(span, nil)
+
+	userID, exists := GetUserIDFromSession(c)
+	if !exists {
+		HandleAppError(c, contextutils.ErrUnauthorized)
+		return
+	}
+
+	// Parse query parameters
+	query := c.DefaultQuery("q", "")
+	limitStr := c.DefaultQuery("limit", "20")
+	offsetStr := c.DefaultQuery("offset", "0")
+
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil || limit < 1 || limit > 100 {
+		HandleAppError(c, contextutils.ErrInvalidFormat)
+		return
+	}
+
+	offset, err := strconv.Atoi(offsetStr)
+	if err != nil || offset < 0 {
+		HandleAppError(c, contextutils.ErrInvalidFormat)
+		return
+	}
+
+	// Add span attributes for observability
+	span.SetAttributes(
+		observability.AttributeUserID(userID),
+		attribute.String("search_query", query),
+		attribute.Int("limit", limit),
+		attribute.Int("offset", offset),
+	)
+
+	// Get bookmarked messages
+	messages, total, err := h.conversationService.GetBookmarkedMessages(ctx, uint(userID), query, limit, offset)
+	if err != nil {
+		h.logger.Error(ctx, "Failed to get bookmarked messages", err, map[string]interface{}{
+			"user_id": userID,
+			"query":   query,
+			"limit":   limit,
+			"offset":  offset,
+		})
+		HandleAppError(c, contextutils.WrapError(err, "failed to get bookmarked messages"))
+		return
+	}
+
+	// Add total count to response
+	response := gin.H{
+		"messages": messages,
+		"query":    query,
+		"total":    total,
+		"limit":    limit,
+		"offset":   offset,
+	}
+
+	c.JSON(http.StatusOK, response)
+}

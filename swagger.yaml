@@ -987,6 +987,68 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /v1/ai/bookmarks:
+    get:
+      tags:
+        - AI Conversations
+      summary: Get bookmarked messages
+      description: Retrieve all bookmarked AI chat messages for the authenticated user with optional search
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: q
+          in: query
+          required: false
+          description: Optional search query to filter bookmarked messages
+          schema:
+            type: string
+            maxLength: 255
+        - name: limit
+          in: query
+          description: Maximum number of messages to return
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          description: Number of messages to skip
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: Bookmarked messages retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  messages:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ChatMessage"
+                  query:
+                    type: string
+                    description: The search query that was used (if any)
+                  total:
+                    type: integer
+                    description: Total number of bookmarked messages
+                  limit:
+                    type: integer
+                    description: Number of messages returned
+                  offset:
+                    type: integer
+                    description: Number of messages skipped
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /v1/userz/profile:
     put:
       tags:

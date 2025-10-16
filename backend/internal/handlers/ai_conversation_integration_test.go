@@ -969,3 +969,95 @@ func (suite *AIConversationIntegrationTestSuite) TestToggleMessageBookmark_NotFo
 
 	assert.Equal(suite.T(), http.StatusNotFound, w.Code)
 }
+
+// TestGetBookmarkedMessages_Success tests successful retrieval of bookmarked messages
+func (suite *AIConversationIntegrationTestSuite) TestGetBookmarkedMessages_Success() {
+	sessionCookie := suite.login()
+
+	// Create a conversation
+	createReq := api.CreateConversationRequest{
+		Title: "Test Conversation for Bookmarks",
+	}
+	body, _ := json.Marshal(createReq)
+	req, _ := http.NewRequest("POST", "/v1/ai/conversations", bytes.NewBuffer(body))
+	req.Header.Set("Cookie", sessionCookie)
+	req.Header.Set("Content-Type", "application/json")
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+	require.Equal(suite.T(), http.StatusCreated, w.Code)
+
+	var conversation api.Conversation
+	err := json.Unmarshal(w.Body.Bytes(), &conversation)
+	require.NoError(suite.T(), err)
+
+	// Add a message
+	messageReq := api.CreateMessageRequest{
+		Role: api.CreateMessageRequestRoleAssistant,
+		Content: struct {
+			Text *string `json:"text,omitempty"`
+		}{
+			Text: stringPtr("This is a helpful AI response about learning Italian"),
+		},
+	}
+	msgBody, _ := json.Marshal(messageReq)
+	req, _ = http.NewRequest("POST", fmt.Sprintf("/v1/ai/conversations/%s/messages", conversation.Id.String()), bytes.NewBuffer(msgBody))
+	req.Header.Set("Cookie", sessionCookie)
+	req.Header.Set("Content-Type", "application/json")
+
+	w = httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+	require.Equal(suite.T(), http.StatusCreated, w.Code)
+
+	var message api.ChatMessage
+	err = json.Unmarshal(w.Body.Bytes(), &message)
+	require.NoError(suite.T(), err)
+
+	// Bookmark the message
+	bookmarkReq := struct {
+		ConversationID string `json:"conversation_id"`
+		MessageID      string `json:"message_id"`
+	}{
+		ConversationID: conversation.Id.String(),
+		MessageID:      message.Id,
+	}
+	bookmarkBody, _ := json.Marshal(bookmarkReq)
+	req, _ = http.NewRequest("PUT", "/v1/ai/conversations/bookmark", bytes.NewBuffer(bookmarkBody))
+	req.Header.Set("Cookie", sessionCookie)
+	req.Header.Set("Content-Type", "application/json")
+
+	w = httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+	require.Equal(suite.T(), http.StatusOK, w.Code)
+
+	// Get bookmarked messages
+	req, _ = http.NewRequest("GET", "/v1/ai/bookmarks", nil)
+	req.Header.Set("Cookie", sessionCookie)
+
+	w = httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusOK, w.Code)
+
+	var response map[string]interface{}
+	err = json.Unmarshal(w.Body.Bytes(), &response)
+	assert.NoError(suite.T(), err)
+
+	messages, ok := response["messages"].([]interface{})
+	assert.True(suite.T(), ok)
+	assert.GreaterOrEqual(suite.T(), len(messages), 1)
+
+	// Verify the message content
+	firstMessage := messages[0].(map[string]interface{})
+	assert.NotEmpty(suite.T(), firstMessage["id"])
+}
+
+// TestGetBookmarkedMessages_Unauthorized tests accessing bookmarks without authentication
+func (suite *AIConversationIntegrationTestSuite) TestGetBookmarkedMessages_Unauthorized() {
+	req, _ := http.NewRequest("GET", "/v1/ai/bookmarks", nil)
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code)
+}
