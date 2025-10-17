@@ -211,6 +211,9 @@ const MobileDailyPage: React.FC = () => {
   const [isReporting, setIsReporting] = useState(false);
   const [confidenceLevel, setConfidenceLevel] = useState<number | null>(null);
   const [isMarkingKnown, setIsMarkingKnown] = useState(false);
+  const [savedConfidenceLevel, setSavedConfidenceLevel] = useState<number | null>(
+    null
+  );
 
   const reportMutation = usePostV1QuizQuestionIdReport({
     mutation: {
@@ -241,6 +244,9 @@ const MobileDailyPage: React.FC = () => {
         setShowMarkKnownModal(false);
         const confidence = confidenceLevel;
         setConfidenceLevel(null);
+        setIsMarkingKnown(false);
+        // Persist locally so users see immediate feedback that rating was saved
+        setSavedConfidenceLevel(confidence ?? null);
         let message = 'Preference saved.';
         if (confidence === 1)
           message =
@@ -264,6 +270,7 @@ const MobileDailyPage: React.FC = () => {
         });
       },
       onError: error => {
+        setIsMarkingKnown(false);
         showNotificationWithClean({
           title: 'Error',
           message: error?.error || 'Failed to mark question as known.',
@@ -707,28 +714,41 @@ const MobileDailyPage: React.FC = () => {
           }}
         >
           <Group justify='space-between' gap='xs'>
-            <Button
-              onClick={() => handleReport()}
-              disabled={isReported || reportMutation.isPending}
-              variant='subtle'
-              color='gray'
-              size='xs'
-              data-testid='report-question-btn'
-              style={{ flex: 1 }}
-            >
-              {isReported ? 'Reported' : 'Report issue'}
-            </Button>
+            <Group gap='xs' style={{ flex: 1 }}>
+              <Button
+                onClick={() => handleReport()}
+                disabled={isReported || reportMutation.isPending}
+                variant='subtle'
+                color='gray'
+                size='xs'
+                data-testid='report-question-btn'
+                style={{ flex: 1 }}
+              >
+                {isReported ? 'Reported' : 'Report issue'}
+              </Button>
 
-            <Button
-              onClick={() => setShowMarkKnownModal(true)}
-              variant='subtle'
-              color='gray'
-              size='xs'
-              data-testid='mark-known-btn'
-              style={{ flex: 1 }}
-            >
-              Adjust frequency
-            </Button>
+              <Button
+                onClick={() => setShowMarkKnownModal(true)}
+                variant='subtle'
+                color='gray'
+                size='xs'
+                data-testid='mark-known-btn'
+                style={{ flex: 1 }}
+              >
+                Adjust frequency
+              </Button>
+            </Group>
+            {(() => {
+              const effectiveConfidence =
+                (currentQuestion?.question.confidence_level as
+                  | number
+                  | undefined) ?? savedConfidenceLevel;
+              return effectiveConfidence ? (
+                <Text size='xs' c='dimmed'>
+                  Confidence: {effectiveConfidence}/5
+                </Text>
+              ) : null;
+            })()}
           </Group>
         </Box>
 
@@ -738,6 +758,8 @@ const MobileDailyPage: React.FC = () => {
           onClose={() => setShowMarkKnownModal(false)}
           title='Adjust Question Frequency'
           size='sm'
+          centered
+          zIndex={4000}
           closeOnClickOutside={false}
           closeOnEscape={false}
         >
@@ -803,6 +825,8 @@ const MobileDailyPage: React.FC = () => {
           }}
           title='Report Issue with Question'
           size='sm'
+          centered
+          zIndex={4000}
           closeOnClickOutside={false}
           closeOnEscape={false}
         >

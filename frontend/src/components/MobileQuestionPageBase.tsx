@@ -106,6 +106,9 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
   const [isReporting, setIsReporting] = useState(false);
   const [confidenceLevel, setConfidenceLevel] = useState<number | null>(null);
   const [isMarkingKnown, setIsMarkingKnown] = useState(false);
+  const [savedConfidenceLevel, setSavedConfidenceLevel] = useState<number | null>(
+    null
+  );
 
   // URL state management for question navigation
   useQuestionUrlState({
@@ -270,6 +273,8 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
         setShowMarkKnownModal(false);
         const confidence = confidenceLevel;
         setConfidenceLevel(null);
+        // Persist locally so users see immediate feedback that rating was saved
+        setSavedConfidenceLevel(confidence ?? null);
         let message = 'Preference saved.';
         if (confidence === 1)
           message =
@@ -620,27 +625,39 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
           }}
         >
           <Group justify='space-between' gap='xs'>
-            <Button
-              onClick={handleReport}
-              disabled={isReported || reportMutation.isPending}
-              variant='subtle'
-              color='gray'
-              size='xs'
-              data-testid='report-question-btn'
-              style={{ flex: 1 }}
-            >
-              {isReported ? 'Reported' : 'Report issue'}
-            </Button>
-            <Button
-              onClick={() => setShowMarkKnownModal(true)}
-              variant='subtle'
-              color='gray'
-              size='xs'
-              data-testid='mark-known-btn'
-              style={{ flex: 1 }}
-            >
-              Adjust frequency
-            </Button>
+            <Group gap='xs' style={{ flex: 1 }}>
+              <Button
+                onClick={handleReport}
+                disabled={isReported || reportMutation.isPending}
+                variant='subtle'
+                color='gray'
+                size='xs'
+                data-testid='report-question-btn'
+                style={{ flex: 1 }}
+              >
+                {isReported ? 'Reported' : 'Report issue'}
+              </Button>
+              <Button
+                onClick={() => setShowMarkKnownModal(true)}
+                variant='subtle'
+                color='gray'
+                size='xs'
+                data-testid='mark-known-btn'
+                style={{ flex: 1 }}
+              >
+                Adjust frequency
+              </Button>
+            </Group>
+            {(() => {
+              const effectiveConfidence =
+                (question?.confidence_level as number | undefined) ??
+                savedConfidenceLevel;
+              return effectiveConfidence ? (
+                <Text size='xs' c='dimmed'>
+                  Confidence: {effectiveConfidence}/5
+                </Text>
+              ) : null;
+            })()}
           </Group>
         </Box>
 
@@ -650,6 +667,8 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
           onClose={() => setShowMarkKnownModal(false)}
           title='Adjust Question Frequency'
           size='sm'
+          centered
+          zIndex={4000}
           closeOnClickOutside={false}
           closeOnEscape={false}
         >
@@ -708,6 +727,8 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
           }}
           title='Report Issue with Question'
           size='sm'
+          centered
+          zIndex={4000}
           closeOnClickOutside={false}
           closeOnEscape={false}
         >
