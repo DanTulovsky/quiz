@@ -311,7 +311,7 @@ const MessageDetailModal: React.FC<MessageDetailModalProps> = ({
               remarkPlugins={[remarkGfm]}
               components={{
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                code({ children, ...props }: any) {
+                code({ children, className, ...props }: any) {
                   const match = /language-(\w+)/.exec(className || '');
                   return match ? (
                     <SyntaxHighlighter
