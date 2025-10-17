@@ -24,7 +24,6 @@ import (
 // UserServiceInterface defines the interface for user-related operations.
 // This allows for easier mocking in tests.
 type UserServiceInterface interface {
-	CreateUser(ctx context.Context, username, language, level string) (*models.User, error)
 	CreateUserWithPassword(ctx context.Context, username, password, language, level string) (*models.User, error)
 	CreateUserWithEmailAndTimezone(ctx context.Context, username, email, timezone, language, level string) (*models.User, error)
 	GetUserByID(ctx context.Context, id int) (*models.User, error)
@@ -128,6 +127,7 @@ func NewUserServiceWithLogger(db *sql.DB, cfg *config.Config, logger *observabil
 }
 
 // CreateUser creates a new user with the specified username, language, and level
+// Only used for testing purposes, should be moved to test utils if possible.
 func (s *UserService) CreateUser(ctx context.Context, username, language, level string) (result0 *models.User, err error) {
 	ctx, span := observability.TraceUserFunction(ctx, "create_user", attribute.String("user.username", username))
 	defer observability.FinishSpan(span, &err)
@@ -187,6 +187,18 @@ func (s *UserService) CreateUserWithEmailAndTimezone(ctx context.Context, userna
 	if user == nil {
 		return nil, contextutils.WrapError(contextutils.ErrDatabaseQuery, "user was created but could not be retrieved from database")
 	}
+
+	// Assign default "user" role to new users
+	err = s.AssignRoleByName(ctx, user.ID, "user")
+	if err != nil {
+		// Log the error but don't fail the user creation
+		// The user role assignment can be done manually by admin if needed
+		s.logger.Warn(ctx, "Failed to assign default user role", map[string]interface{}{
+			"user_id": user.ID,
+			"error":   err.Error(),
+		})
+	}
+
 	return user, nil
 }
 
@@ -228,6 +240,18 @@ func (s *UserService) CreateUserWithPassword(ctx context.Context, username, pass
 	if user == nil {
 		return nil, contextutils.WrapError(contextutils.ErrDatabaseQuery, "user was created but could not be retrieved from database")
 	}
+
+	// Assign default "user" role to new users
+	err = s.AssignRoleByName(ctx, user.ID, "user")
+	if err != nil {
+		// Log the error but don't fail the user creation
+		// The user role assignment can be done manually by admin if needed
+		s.logger.Warn(ctx, "Failed to assign default user role", map[string]interface{}{
+			"user_id": user.ID,
+			"error":   err.Error(),
+		})
+	}
+
 	return user, nil
 }
 

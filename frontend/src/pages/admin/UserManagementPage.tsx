@@ -139,7 +139,7 @@ const UserManagementPage: React.FC = () => {
     password: '',
     preferred_language: 'italian',
     current_level: 'A1',
-    selectedRoles: [] as string[],
+    selectedRoles: ['user'] as string[], // Default to user role
   });
 
   const [editForm, setEditForm] = useState({
@@ -203,7 +203,7 @@ const UserManagementPage: React.FC = () => {
         password: '',
         preferred_language: 'italian',
         current_level: 'A1',
-        selectedRoles: [],
+        selectedRoles: ['user'], // Default to user role
       });
     } catch {
       notifications.show({

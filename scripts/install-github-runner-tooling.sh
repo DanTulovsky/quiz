@@ -3,6 +3,7 @@
 # Quiz Application GitHub Runner Tooling Installer
 # ================================================
 # Minimal installer for GitHub Actions runner environment.
+#
 # This script handles any custom tooling that can't be installed via
 # standard GitHub Actions setup actions.
 
