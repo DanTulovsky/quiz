@@ -352,6 +352,7 @@ type StorySectionLengthsConfig struct {
 type StoryConfig struct {
 	MaxArchivedPerUser         int                       `json:"max_archived_per_user" yaml:"max_archived_per_user"`
 	GenerationEnabled          bool                      `json:"generation_enabled" yaml:"generation_enabled"`
+	EngagementBasedGeneration  bool                      `json:"engagement_based_generation" yaml:"engagement_based_generation"`
 	SectionLengths             StorySectionLengthsConfig `json:"section_lengths" yaml:"section_lengths"`
 	QuestionsPerSection        int                       `json:"questions_per_section" yaml:"questions_per_section"`
 	MaxExtraGenerationsPerDay  int                       `json:"max_extra_generations_per_day" yaml:"max_extra_generations_per_day"`

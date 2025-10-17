@@ -113,7 +113,7 @@ const mockUserWithProgress = mockUser;
 const mockUserWithProgressPaused = mockUserPaused;
 
 const mockUsersData = {
-  users: [mockUserWithProgress],
+  users: [{ user: mockUserWithProgress }],
   pagination: {
     page: 1,
     page_size: 20,
@@ -123,7 +123,7 @@ const mockUsersData = {
 };
 
 const mockUsersDataPaused = {
-  users: [mockUserWithProgressPaused],
+  users: [{ user: mockUserWithProgressPaused }],
   pagination: {
     page: 1,
     page_size: 20,

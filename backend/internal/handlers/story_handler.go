@@ -191,6 +191,19 @@ func (h *StoryHandler) GetCurrentStory(c *gin.Context) {
 		return
 	}
 
+	// Record views for all sections in the story (user is accessing/reading them)
+	for _, section := range story.Sections {
+		if err := h.storyService.RecordStorySectionView(ctx, uint(userID), section.ID); err != nil {
+			h.logger.Warn(ctx, "Failed to record story section view", map[string]interface{}{
+				"user_id":    userID,
+				"section_id": section.ID,
+				"story_id":   story.ID,
+				"error":      err.Error(),
+			})
+			// Don't fail the request if view recording fails
+		}
+	}
+
 	// Convert to API types to ensure proper serialization
 	apiStory := convertStoryWithSectionsToAPI(story)
 	c.JSON(http.StatusOK, apiStory)
@@ -230,6 +243,19 @@ func (h *StoryHandler) GetStory(c *gin.Context) {
 		return
 	}
 
+	// Record views for all sections in the story (user is accessing/reading them)
+	for _, section := range story.Sections {
+		if err := h.storyService.RecordStorySectionView(ctx, uint(userID), section.ID); err != nil {
+			h.logger.Warn(ctx, "Failed to record story section view", map[string]interface{}{
+				"user_id":    userID,
+				"section_id": section.ID,
+				"story_id":   storyID,
+				"error":      err.Error(),
+			})
+			// Don't fail the request if view recording fails
+		}
+	}
+
 	// Convert to API types to ensure proper serialization
 	apiStory := convertStoryWithSectionsToAPI(story)
 	c.JSON(http.StatusOK, apiStory)
@@ -267,6 +293,16 @@ func (h *StoryHandler) GetSection(c *gin.Context) {
 
 		StandardizeHTTPError(c, http.StatusInternalServerError, "Failed to get section", err.Error())
 		return
+	}
+
+	// Record view for this specific section (user is accessing/reading it)
+	if err := h.storyService.RecordStorySectionView(ctx, uint(userID), uint(sectionID)); err != nil {
+		h.logger.Warn(ctx, "Failed to record story section view", map[string]interface{}{
+			"user_id":    userID,
+			"section_id": sectionID,
+			"error":      err.Error(),
+		})
+		// Don't fail the request if view recording fails
 	}
 
 	// Convert to API types to ensure proper serialization

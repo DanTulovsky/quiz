@@ -131,6 +131,14 @@ func (m *MockStoryService) UpdateLastGenerationTime(_ context.Context, _ uint, _
 	return nil
 }
 
+func (m *MockStoryService) RecordStorySectionView(_ context.Context, _, _ uint) error {
+	return nil
+}
+
+func (m *MockStoryService) HasUserViewedLatestSection(_ context.Context, _ uint) (bool, error) {
+	return true, nil
+}
+
 func (m *MockStoryService) GetSectionLengthTarget(_ string, _ *models.SectionLength) int {
 	return 150
 }

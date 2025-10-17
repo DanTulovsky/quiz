@@ -149,6 +149,16 @@ func (m *mockStoryService) UpdateLastGenerationTime(ctx context.Context, storyID
 	return args.Error(0)
 }
 
+func (m *mockStoryService) RecordStorySectionView(ctx context.Context, userID, sectionID uint) error {
+	args := m.Called(ctx, userID, sectionID)
+	return args.Error(0)
+}
+
+func (m *mockStoryService) HasUserViewedLatestSection(ctx context.Context, userID uint) (bool, error) {
+	args := m.Called(ctx, userID)
+	return args.Bool(0), args.Error(1)
+}
+
 func (m *mockStoryService) GetSectionLengthTarget(level string, lengthPref *models.SectionLength) int {
 	args := m.Called(level, lengthPref)
 	return args.Int(0)

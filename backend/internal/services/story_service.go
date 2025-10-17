@@ -38,6 +38,8 @@ type StoryServiceInterface interface {
 	CreateSectionQuestions(ctx context.Context, sectionID uint, questions []models.StorySectionQuestionData) error
 	GetRandomQuestions(ctx context.Context, sectionID uint, count int) ([]models.StorySectionQuestion, error)
 	UpdateLastGenerationTime(ctx context.Context, storyID uint, generatorType models.GeneratorType) error
+	RecordStorySectionView(ctx context.Context, userID, sectionID uint) error
+	HasUserViewedLatestSection(ctx context.Context, userID uint) (bool, error)
 	GetSectionLengthTarget(level string, lengthPref *models.SectionLength) int
 	GetSectionLengthTargetWithLanguage(language, level string, lengthPref *models.SectionLength) int
 	SanitizeInput(input string) string
@@ -941,6 +943,30 @@ func (s *StoryService) canGenerateSection(ctx context.Context, storyID uint, gen
 		}, nil
 	}
 
+	// Check engagement-based generation if enabled and this is worker generation
+	// Manual user generation should always be allowed regardless of engagement
+	if s.config.Story.EngagementBasedGeneration && generatorType == models.GeneratorTypeWorker {
+		// Get the user ID for this story to check engagement
+		userIDQuery := "SELECT user_id FROM stories WHERE id = $1"
+		var userID uint
+		err = s.db.QueryRowContext(ctx, userIDQuery, storyID).Scan(&userID)
+		if err != nil {
+			return nil, contextutils.WrapErrorf(err, "failed to get user ID for story")
+		}
+
+		// Check if user has viewed the latest section
+		hasViewedLatest, err := s.HasUserViewedLatestSection(ctx, userID)
+		if err != nil {
+			return nil, contextutils.WrapErrorf(err, "failed to check user engagement")
+		}
+		if !hasViewedLatest {
+			return &models.StoryGenerationEligibilityResponse{
+				CanGenerate: false,
+				Reason:      "user has not viewed the latest section",
+			}, nil
+		}
+	}
+
 	// Check generation count for today by generator type
 	today := time.Now().Truncate(24 * time.Hour)
 	var sectionCount int
@@ -1061,6 +1087,65 @@ func (s *StoryService) UpdateLastGenerationTime(ctx context.Context, storyID uin
 	}
 
 	return nil
+}
+
+// RecordStorySectionView records that a user has viewed a story section
+func (s *StoryService) RecordStorySectionView(ctx context.Context, userID, sectionID uint) (err error) {
+	ctx, span := observability.TraceFunction(ctx, "story_service", "record_section_view",
+		observability.AttributeUserID(int(userID)),
+		attribute.Int("section.id", int(sectionID)),
+	)
+	defer observability.FinishSpan(span, &err)
+
+	// Use UPSERT to either insert a new view or update the viewed_at timestamp if the view already exists
+	query := `
+		INSERT INTO story_section_views (user_id, section_id, viewed_at, created_at)
+		VALUES ($1, $2, NOW(), NOW())
+		ON CONFLICT (user_id, section_id)
+		DO UPDATE SET viewed_at = NOW()`
+
+	_, err = s.db.ExecContext(ctx, query, userID, sectionID)
+	if err != nil {
+		return contextutils.WrapErrorf(err, "failed to record story section view")
+	}
+
+	return nil
+}
+
+// HasUserViewedLatestSection checks if a user has viewed the latest section of their story
+func (s *StoryService) HasUserViewedLatestSection(ctx context.Context, userID uint) (bool, error) {
+	ctx, span := observability.TraceFunction(ctx, "story_service", "has_user_viewed_latest_section",
+		observability.AttributeUserID(int(userID)),
+	)
+	defer observability.FinishSpan(span, nil)
+
+	// Get the user's current active story
+	story, err := s.GetCurrentStory(ctx, userID)
+	if err != nil {
+		return false, contextutils.WrapErrorf(err, "failed to get current story")
+	}
+	if story == nil || len(story.Sections) == 0 {
+		// No current story or no sections yet - can't have viewed anything
+		return false, nil
+	}
+
+	// Get the latest section (highest section number)
+	latestSection := story.Sections[len(story.Sections)-1]
+
+	// Check if user has viewed this section
+	query := `
+		SELECT EXISTS(
+			SELECT 1 FROM story_section_views
+			WHERE user_id = $1 AND section_id = $2
+		)`
+
+	var hasViewed bool
+	err = s.db.QueryRowContext(ctx, query, userID, latestSection.ID).Scan(&hasViewed)
+	if err != nil {
+		return false, contextutils.WrapErrorf(err, "failed to check if user viewed latest section")
+	}
+
+	return hasViewed, nil
 }
 
 // Helper methods

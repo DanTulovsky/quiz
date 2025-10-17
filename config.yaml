@@ -120,6 +120,7 @@ database:
 story:
   max_archived_per_user: 20
   generation_enabled: true
+  engagement_based_generation: true
   max_extra_generations_per_day: 1
   max_worker_generations_per_day: 1
 

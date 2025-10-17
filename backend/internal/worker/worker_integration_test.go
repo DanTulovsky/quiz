@@ -18,6 +18,11 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+// Helper function for string pointer conversion
+func stringPtr(s string) *string {
+	return &s
+}
+
 // MockAIService implements a mock AI service for testing
 type MockAIService struct {
 	*services.AIService
@@ -1060,4 +1065,174 @@ func TestWorkerPriorityFunctions_DifferentLanguages_Integration(t *testing.T) {
 		require.NoError(t, err)
 		assert.Contains(t, distribution, "greetings")
 	})
+}
+
+// TestWorker_EngagementBasedGeneration_Integration tests the worker's engagement-based generation filtering
+func TestWorker_EngagementBasedGeneration_Integration(t *testing.T) {
+	db := services.SharedTestDBSetup(t)
+	defer db.Close()
+
+	cfg, err := config.NewConfig()
+	require.NoError(t, err)
+	// Enable engagement-based generation for these tests
+	cfg.Story.EngagementBasedGeneration = true
+	cfg.Story.MaxWorkerGenerationsPerDay = 1
+
+	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+	userService := services.NewUserServiceWithLogger(db, cfg, logger)
+	learningService := services.NewLearningServiceWithLogger(db, cfg, logger)
+	questionService := services.NewQuestionServiceWithLogger(db, learningService, cfg, logger)
+	aiService := services.NewAIService(cfg, logger)
+	workerService := services.NewWorkerServiceWithLogger(db, logger)
+
+	// Create daily question service
+	dailyQuestionService := services.NewDailyQuestionService(db, logger, questionService, learningService)
+
+	// Create email service
+	emailService := services.NewEmailService(cfg, logger)
+
+	// Create story service
+	storyService := services.NewStoryService(db, cfg, logger)
+
+	// Create generation hint service
+	generationHintService := services.NewGenerationHintService(db, logger)
+
+	// Create worker
+	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, storyService, emailService, generationHintService, "test-instance", cfg, logger)
+
+	ctx := context.Background()
+
+	// Create a test user with AI enabled
+	username := "testuser_" + strings.Replace(time.Now().Format("20060102_150405"), "-", "", -1)
+	user, err := userService.CreateUser(context.Background(), username, "italian", "A1")
+	require.NoError(t, err)
+
+	// Set up AI configuration for the user
+	err = userService.UpdateUserSettings(context.Background(), user.ID, &models.UserSettings{
+		Language:   "italian",
+		Level:      "A1",
+		AIProvider: "openai",
+		AIModel:    "gpt-4",
+		AIEnabled:  true,
+	})
+	require.NoError(t, err)
+
+	// Create a test story
+	story, err := storyService.CreateStory(ctx, uint(user.ID), "italian", &models.CreateStoryRequest{
+		Title:       "Engagement Worker Test Story",
+		Subject:     stringPtr("Engagement Testing"),
+		AuthorStyle: stringPtr("Simple"),
+	})
+	require.NoError(t, err)
+	require.NotNil(t, story)
+
+	// Test 1: Initially, user has no sections, so getUsersWithActiveStories should return the user
+	// (but they won't be able to generate because they haven't viewed anything)
+	usersWithStories, err := worker.getUsersWithActiveStories(ctx)
+	require.NoError(t, err)
+	assert.Len(t, usersWithStories, 1, "Should have one user with active story")
+	assert.Equal(t, user.ID, usersWithStories[0].ID, "Should be our test user")
+
+	// Test 2: Create a section manually
+	section, err := storyService.CreateSection(ctx, story.ID, "Test section content", "A1", 100, models.GeneratorTypeUser)
+	require.NoError(t, err)
+	require.NotNil(t, section)
+
+	// Test 3: Now user has a section but hasn't viewed it, so should still be in the list
+	// but won't be able to generate new sections due to engagement check
+	usersWithStories, err = worker.getUsersWithActiveStories(ctx)
+	require.NoError(t, err)
+	assert.Len(t, usersWithStories, 1, "Should still have one user with active story")
+
+	// Test 4: Record that user has viewed the section
+	err = storyService.RecordStorySectionView(ctx, uint(user.ID), section.ID)
+	require.NoError(t, err)
+
+	// Test 5: Now user has viewed the latest section, so should be able to generate
+	usersWithStories, err = worker.getUsersWithActiveStories(ctx)
+	require.NoError(t, err)
+	assert.Len(t, usersWithStories, 1, "Should still have one user with active story")
+
+	// Test 6: Generate another section to verify engagement-based generation works
+	section2, err := storyService.CreateSection(ctx, story.ID, "Test section 2 content", "A1", 100, models.GeneratorTypeWorker)
+	require.NoError(t, err)
+	require.NotNil(t, section2)
+	require.Greater(t, section2.SectionNumber, section.SectionNumber, "Second section should have higher number")
+}
+
+// TestWorker_EngagementBasedGeneration_Disabled_Integration tests that engagement filtering is bypassed when disabled
+func TestWorker_EngagementBasedGeneration_Disabled_Integration(t *testing.T) {
+	db := services.SharedTestDBSetup(t)
+	defer db.Close()
+
+	cfg, err := config.NewConfig()
+	require.NoError(t, err)
+	// Disable engagement-based generation for these tests
+	cfg.Story.EngagementBasedGeneration = false
+	cfg.Story.MaxWorkerGenerationsPerDay = 1
+
+	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+	userService := services.NewUserServiceWithLogger(db, cfg, logger)
+	learningService := services.NewLearningServiceWithLogger(db, cfg, logger)
+	questionService := services.NewQuestionServiceWithLogger(db, learningService, cfg, logger)
+	aiService := services.NewAIService(cfg, logger)
+	workerService := services.NewWorkerServiceWithLogger(db, logger)
+
+	// Create daily question service
+	dailyQuestionService := services.NewDailyQuestionService(db, logger, questionService, learningService)
+
+	// Create email service
+	emailService := services.NewEmailService(cfg, logger)
+
+	// Create story service
+	storyService := services.NewStoryService(db, cfg, logger)
+
+	// Create generation hint service
+	generationHintService := services.NewGenerationHintService(db, logger)
+
+	// Create worker
+	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, storyService, emailService, generationHintService, "test-instance", cfg, logger)
+
+	ctx := context.Background()
+
+	// Create a test user with AI enabled
+	username := "testuser_" + strings.Replace(time.Now().Format("20060102_150405"), "-", "", -1)
+	user, err := userService.CreateUser(context.Background(), username, "italian", "A1")
+	require.NoError(t, err)
+
+	// Set up AI configuration for the user
+	err = userService.UpdateUserSettings(context.Background(), user.ID, &models.UserSettings{
+		Language:   "italian",
+		Level:      "A1",
+		AIProvider: "openai",
+		AIModel:    "gpt-4",
+		AIEnabled:  true,
+	})
+	require.NoError(t, err)
+
+	// Create a test story
+	story, err := storyService.CreateStory(ctx, uint(user.ID), "italian", &models.CreateStoryRequest{
+		Title:       "Engagement Disabled Test Story",
+		Subject:     stringPtr("Engagement Disabled Testing"),
+		AuthorStyle: stringPtr("Simple"),
+	})
+	require.NoError(t, err)
+	require.NotNil(t, story)
+
+	// Create a section manually
+	section, err := storyService.CreateSection(ctx, story.ID, "Test section content", "A1", 100, models.GeneratorTypeUser)
+	require.NoError(t, err)
+	require.NotNil(t, section)
+
+	// Test: Even though user hasn't viewed the section, they should still be in the list
+	// because engagement-based generation is disabled
+	usersWithStories, err := worker.getUsersWithActiveStories(ctx)
+	require.NoError(t, err)
+	assert.Len(t, usersWithStories, 1, "Should have one user with active story when engagement is disabled")
+
+	// Test: Should be able to generate new section even without viewing (engagement check is bypassed)
+	section2, err := storyService.CreateSection(ctx, story.ID, "Test section 2 content", "A1", 100, models.GeneratorTypeWorker)
+	require.NoError(t, err)
+	require.NotNil(t, section2)
+	require.Greater(t, section2.SectionNumber, section.SectionNumber, "Second section should have higher number")
 }

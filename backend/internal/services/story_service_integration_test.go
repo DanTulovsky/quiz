@@ -158,17 +158,22 @@ func TestStoryService_StoryGenerationLimits_Integration(t *testing.T) {
 	db := SharedTestDBSetup(t)
 	defer db.Close()
 
+	cfg, err := config.NewConfig()
+	require.NoError(t, err)
+
+	// Disable engagement-based generation for this test since we're testing generation limits, not engagement
+	cfg.Story.EngagementBasedGeneration = false
+
+	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+	storyService := NewStoryService(db, cfg, logger)
+
 	today := time.Now().Truncate(24 * time.Hour)
 	var debugSectionCount int
 
-	// Create a config with story limits
-	cfg, err := config.NewConfig()
-	require.NoError(t, err)
+	// Set up story limits for this test
 	cfg.Story.MaxArchivedPerUser = 20
 	cfg.Story.GenerationEnabled = true
 	cfg.Story.MaxExtraGenerationsPerDay = 1
-	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
-	storyService := NewStoryService(db, cfg, logger)
 
 	// Create a test user
 	user := createTestUser(t, db)
@@ -281,6 +286,7 @@ func TestStoryService_StoryGenerationLimits_Integration(t *testing.T) {
 	cfg2.Story.MaxArchivedPerUser = 20
 	cfg2.Story.GenerationEnabled = true
 	cfg2.Story.MaxExtraGenerationsPerDay = 2
+	cfg2.Story.EngagementBasedGeneration = false // Disable engagement for this test
 	logger2 := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
 	storyService2 := NewStoryService(db, cfg2, logger2)
 
@@ -899,4 +905,247 @@ func TestStoryService_GetUserStories_Integration(t *testing.T) {
 	emptyStories, err := storyService.GetUserStories(ctx, 999999, false)
 	require.NoError(t, err)
 	assert.Len(t, emptyStories, 0, "Non-existent user should return empty slice")
+}
+
+// TestStoryService_EngagementBasedGeneration_Integration tests the engagement-based generation functionality
+func TestStoryService_EngagementBasedGeneration_Integration(t *testing.T) {
+	db := SharedTestDBSetup(t)
+	defer db.Close()
+
+	cfg, err := config.NewConfig()
+	require.NoError(t, err)
+	// Enable engagement-based generation for these tests
+	cfg.Story.EngagementBasedGeneration = true
+	cfg.Story.MaxExtraGenerationsPerDay = 1
+	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+	userService := NewUserServiceWithLogger(db, cfg, logger)
+	storyService := NewStoryService(db, cfg, logger)
+
+	// Test with engagement-based generation enabled
+	t.Run("engagement_enabled", func(t *testing.T) {
+		ctx := context.Background()
+
+		// Create a test user
+		username := fmt.Sprintf("testuser_%d", time.Now().UnixNano())
+		user, err := userService.CreateUser(ctx, username, "italian", "A1")
+		require.NoError(t, err)
+
+		// Create a test story
+		story, err := storyService.CreateStory(ctx, uint(user.ID), "italian", &models.CreateStoryRequest{
+			Title:       "Engagement Test Story",
+			Subject:     stringPtr("Engagement Testing"),
+			AuthorStyle: stringPtr("Simple"),
+		})
+		require.NoError(t, err)
+		require.NotNil(t, story)
+
+		// Test 1: Initially, user should not have viewed any sections, so should not be eligible for generation
+		hasViewed, err := storyService.HasUserViewedLatestSection(ctx, uint(user.ID))
+		require.NoError(t, err)
+		assert.False(t, hasViewed, "User should not have viewed latest section initially")
+
+		// Test 2: Should not be able to generate section via worker when engagement-based generation is enabled
+		eligibility, err := storyService.canGenerateSection(ctx, story.ID, models.GeneratorTypeWorker)
+		require.NoError(t, err)
+		assert.False(t, eligibility.CanGenerate, "Should not be able to generate section without viewing latest")
+		assert.Contains(t, eligibility.Reason, "has not viewed the latest section", "Reason should mention engagement")
+
+		// Test 2b: Should be able to generate section via manual user generation even without viewing
+		eligibility, err = storyService.canGenerateSection(ctx, story.ID, models.GeneratorTypeUser)
+		require.NoError(t, err)
+		assert.True(t, eligibility.CanGenerate, "Should be able to generate section via manual user generation")
+
+		// Test 3: Create a section manually (simulating user generation)
+		section, err := storyService.CreateSection(ctx, story.ID, "Test section content", "A1", 100, models.GeneratorTypeUser)
+		require.NoError(t, err)
+		require.NotNil(t, section)
+
+		// Test 4: Now record that user has viewed this section
+		err = storyService.RecordStorySectionView(ctx, uint(user.ID), section.ID)
+		require.NoError(t, err)
+
+		// Test 5: Verify that the view was recorded
+		hasViewed, err = storyService.HasUserViewedLatestSection(ctx, uint(user.ID))
+		require.NoError(t, err)
+		assert.True(t, hasViewed, "User should have viewed latest section after recording view")
+
+		// Test 6: Now should be able to generate new section since user has viewed the latest
+		eligibility, err = storyService.canGenerateSection(ctx, story.ID, models.GeneratorTypeWorker)
+		require.NoError(t, err)
+		assert.True(t, eligibility.CanGenerate, "Should be able to generate section after viewing latest")
+	})
+
+	// Test with engagement-based generation disabled
+	t.Run("engagement_disabled", func(t *testing.T) {
+		// Disable engagement-based generation for this test
+		cfg.Story.EngagementBasedGeneration = false
+		cfg.Story.MaxExtraGenerationsPerDay = 10 // Increase limit for this test
+		storyService := NewStoryService(db, cfg, logger)
+
+		ctx := context.Background()
+
+		// Create a test user
+		username := fmt.Sprintf("testuser_%d", time.Now().UnixNano())
+		user, err := userService.CreateUser(ctx, username, "italian", "A1")
+		require.NoError(t, err)
+
+		// Create a test story
+		story, err := storyService.CreateStory(ctx, uint(user.ID), "italian", &models.CreateStoryRequest{
+			Title:       "No Engagement Test Story",
+			Subject:     stringPtr("No Engagement Testing"),
+			AuthorStyle: stringPtr("Simple"),
+		})
+		require.NoError(t, err)
+		require.NotNil(t, story)
+
+		// Test: Should be able to generate section via manual user generation even without viewing
+		// because engagement-based generation is disabled
+		eligibility, err := storyService.canGenerateSection(ctx, story.ID, models.GeneratorTypeUser)
+		require.NoError(t, err)
+		assert.True(t, eligibility.CanGenerate, "Should be able to generate section via manual user generation when engagement is disabled")
+
+		// Test: Should also be able to generate via worker
+		eligibility, err = storyService.canGenerateSection(ctx, story.ID, models.GeneratorTypeWorker)
+		require.NoError(t, err)
+		assert.True(t, eligibility.CanGenerate, "Should be able to generate section via worker when engagement is disabled")
+	})
+}
+
+// TestStoryService_RecordStorySectionView_Integration tests the section view recording functionality
+func TestStoryService_RecordStorySectionView_Integration(t *testing.T) {
+	db := SharedTestDBSetup(t)
+	defer db.Close()
+
+	cfg, err := config.NewConfig()
+	require.NoError(t, err)
+	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+	userService := NewUserServiceWithLogger(db, cfg, logger)
+	storyService := NewStoryService(db, cfg, logger)
+
+	ctx := context.Background()
+
+	// Create a test user
+	username := fmt.Sprintf("testuser_%d", time.Now().UnixNano())
+	user, err := userService.CreateUser(ctx, username, "italian", "A1")
+	require.NoError(t, err)
+
+	// Create a test story
+	story, err := storyService.CreateStory(ctx, uint(user.ID), "italian", &models.CreateStoryRequest{
+		Title:       "View Recording Test Story",
+		Subject:     stringPtr("View Recording Testing"),
+		AuthorStyle: stringPtr("Simple"),
+	})
+	require.NoError(t, err)
+	require.NotNil(t, story)
+
+	// Create a section
+	section, err := storyService.CreateSection(ctx, story.ID, "Test section content", "A1", 100, models.GeneratorTypeUser)
+	require.NoError(t, err)
+	require.NotNil(t, section)
+
+	// Test 1: Initially, no view should exist for this section
+	query := `SELECT COUNT(*) FROM story_section_views WHERE user_id = $1 AND section_id = $2`
+	var count int
+	err = db.QueryRowContext(ctx, query, user.ID, section.ID).Scan(&count)
+	require.NoError(t, err)
+	assert.Equal(t, 0, count, "Should be no views initially")
+
+	// Test 2: Record a view
+	err = storyService.RecordStorySectionView(ctx, uint(user.ID), section.ID)
+	require.NoError(t, err)
+
+	// Test 3: Should now have one view
+	err = db.QueryRowContext(ctx, query, user.ID, section.ID).Scan(&count)
+	require.NoError(t, err)
+	assert.Equal(t, 1, count, "Should have one view after recording")
+
+	// Test 4: Recording the same view again should update the timestamp (UPSERT behavior)
+	err = storyService.RecordStorySectionView(ctx, uint(user.ID), section.ID)
+	require.NoError(t, err)
+
+	// Should still have only one view record (UPSERT doesn't create duplicates)
+	err = db.QueryRowContext(ctx, query, user.ID, section.ID).Scan(&count)
+	require.NoError(t, err)
+	assert.Equal(t, 1, count, "Should still have only one view record after second recording")
+
+	// Test 5: Verify the view timestamp was updated
+	var viewedAt time.Time
+	err = db.QueryRowContext(ctx, `SELECT viewed_at FROM story_section_views WHERE user_id = $1 AND section_id = $2`, user.ID, section.ID).Scan(&viewedAt)
+	require.NoError(t, err)
+	assert.False(t, viewedAt.IsZero(), "Viewed timestamp should be set")
+}
+
+// TestStoryService_HasUserViewedLatestSection_Integration tests the engagement check functionality
+func TestStoryService_HasUserViewedLatestSection_Integration(t *testing.T) {
+	db := SharedTestDBSetup(t)
+	defer db.Close()
+
+	cfg, err := config.NewConfig()
+	require.NoError(t, err)
+	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+	userService := NewUserServiceWithLogger(db, cfg, logger)
+	storyService := NewStoryService(db, cfg, logger)
+
+	ctx := context.Background()
+
+	// Test 1: User with no story should return false
+	username := fmt.Sprintf("testuser_%d", time.Now().UnixNano())
+	user, err := userService.CreateUser(ctx, username, "italian", "A1")
+	require.NoError(t, err)
+
+	hasViewed, err := storyService.HasUserViewedLatestSection(ctx, uint(user.ID))
+	require.NoError(t, err)
+	assert.False(t, hasViewed, "User with no story should not have viewed latest section")
+
+	// Test 2: User with story but no sections should return false
+	story, err := storyService.CreateStory(ctx, uint(user.ID), "italian", &models.CreateStoryRequest{
+		Title:       "Empty Story",
+		Subject:     stringPtr("Empty Testing"),
+		AuthorStyle: stringPtr("Simple"),
+	})
+	require.NoError(t, err)
+	require.NotNil(t, story)
+
+	hasViewed, err = storyService.HasUserViewedLatestSection(ctx, uint(user.ID))
+	require.NoError(t, err)
+	assert.False(t, hasViewed, "User with story but no sections should not have viewed latest section")
+
+	// Test 3: User with story and sections but no views should return false
+	section, err := storyService.CreateSection(ctx, story.ID, "Test section content", "A1", 100, models.GeneratorTypeUser)
+	require.NoError(t, err)
+	require.NotNil(t, section)
+
+	hasViewed, err = storyService.HasUserViewedLatestSection(ctx, uint(user.ID))
+	require.NoError(t, err)
+	assert.False(t, hasViewed, "User with sections but no views should not have viewed latest section")
+
+	// Test 4: User with story and sections with recorded view should return true
+	err = storyService.RecordStorySectionView(ctx, uint(user.ID), section.ID)
+	require.NoError(t, err)
+
+	hasViewed, err = storyService.HasUserViewedLatestSection(ctx, uint(user.ID))
+	require.NoError(t, err)
+	assert.True(t, hasViewed, "User with recorded view should have viewed latest section")
+
+	// Test 5: Test with multiple sections - should check the latest one
+	section2, err := storyService.CreateSection(ctx, story.ID, "Test section 2 content", "A1", 100, models.GeneratorTypeUser)
+	require.NoError(t, err)
+	require.NotNil(t, section2)
+	require.Greater(t, section2.SectionNumber, section.SectionNumber, "Second section should have higher number")
+
+	// View the first section but not the second
+	err = storyService.RecordStorySectionView(ctx, uint(user.ID), section.ID)
+	require.NoError(t, err)
+
+	hasViewed, err = storyService.HasUserViewedLatestSection(ctx, uint(user.ID))
+	require.NoError(t, err)
+	assert.False(t, hasViewed, "Should not have viewed latest section when only viewing older section")
+
+	// Now view the latest section
+	err = storyService.RecordStorySectionView(ctx, uint(user.ID), section2.ID)
+	require.NoError(t, err)
+
+	hasViewed, err = storyService.HasUserViewedLatestSection(ctx, uint(user.ID))
+	require.NoError(t, err)
+	assert.True(t, hasViewed, "Should have viewed latest section after viewing it")
 }
