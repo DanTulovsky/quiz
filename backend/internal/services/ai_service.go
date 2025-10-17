@@ -1203,6 +1203,12 @@ func (s *AIService) callOpenAI(ctx context.Context, userConfig *models.UserAICon
 
 	if resp.StatusCode != http.StatusOK {
 		span.SetAttributes(attribute.String("call.result", "http_error"), attribute.Int("status_code", resp.StatusCode), attribute.String("body", string(body)))
+
+		// Handle rate limit errors specifically
+		if resp.StatusCode == http.StatusTooManyRequests {
+			return "", contextutils.WrapErrorf(contextutils.ErrRateLimit, "Rate limit exceeded for AI provider %s: %s", userConfig.Provider, string(body))
+		}
+
 		return "", contextutils.WrapErrorf(contextutils.ErrAIRequestFailed, "API request failed with status %d to %s: %s", resp.StatusCode, apiURL+"/chat/completions", string(body))
 	}
 
@@ -1419,6 +1425,12 @@ func (s *AIService) callOpenAIStream(ctx context.Context, userConfig *models.Use
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
 		span.SetAttributes(attribute.String("stream.result", "http_error"), attribute.Int("status_code", resp.StatusCode), attribute.String("body", string(body)))
+
+		// Handle rate limit errors specifically
+		if resp.StatusCode == http.StatusTooManyRequests {
+			return contextutils.WrapErrorf(contextutils.ErrRateLimit, "Rate limit exceeded for AI provider %s: %s", userConfig.Provider, string(body))
+		}
+
 		return contextutils.WrapErrorf(contextutils.ErrAIRequestFailed, "API request failed with status %d to %s: %s", resp.StatusCode, apiURL+"/chat/completions", string(body))
 	}
 

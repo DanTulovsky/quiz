@@ -1069,16 +1069,14 @@ func TestUserService_RoleManagement_Integration(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, user)
 
-	// Test GetUserRoles - should return empty initially
+	// Test GetUserRoles - should return user role (automatically assigned)
 	roles, err := userService.GetUserRoles(context.Background(), user.ID)
 	require.NoError(t, err)
-	assert.Empty(t, roles)
+	require.Len(t, roles, 1)
+	assert.Equal(t, "user", roles[0].Name)
+	assert.Equal(t, 1, roles[0].ID)
 
-	// Test AssignRole - assign user role (ID 1)
-	err = userService.AssignRole(context.Background(), user.ID, 1)
-	require.NoError(t, err)
-
-	// Verify role was assigned
+	// User already has user role assigned by default, verify it
 	roles, err = userService.GetUserRoles(context.Background(), user.ID)
 	require.NoError(t, err)
 	require.Len(t, roles, 1)

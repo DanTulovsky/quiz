@@ -8460,7 +8460,7 @@ export const postV1AdminBackendQuestionsIdAiFix = (
   
 
 
-export const getPostV1AdminBackendQuestionsIdAiFixMutationOptions = <TError = ErrorResponse | ErrorResponse | ErrorResponse | ErrorResponse,
+export const getPostV1AdminBackendQuestionsIdAiFixMutationOptions = <TError = ErrorResponse | ErrorResponse | ErrorResponse | ErrorResponse | ErrorResponse,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdAiFix>>, TError,{id: number;data: PostV1AdminBackendQuestionsIdAiFixBody}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdAiFix>>, TError,{id: number;data: PostV1AdminBackendQuestionsIdAiFixBody}, TContext> => {
 
@@ -8487,12 +8487,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type PostV1AdminBackendQuestionsIdAiFixMutationResult = NonNullable<Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdAiFix>>>
     export type PostV1AdminBackendQuestionsIdAiFixMutationBody = PostV1AdminBackendQuestionsIdAiFixBody
-    export type PostV1AdminBackendQuestionsIdAiFixMutationError = ErrorResponse | ErrorResponse | ErrorResponse | ErrorResponse
+    export type PostV1AdminBackendQuestionsIdAiFixMutationError = ErrorResponse | ErrorResponse | ErrorResponse | ErrorResponse | ErrorResponse
 
     /**
  * @summary Fix question with AI
  */
-export const usePostV1AdminBackendQuestionsIdAiFix = <TError = ErrorResponse | ErrorResponse | ErrorResponse | ErrorResponse,
+export const usePostV1AdminBackendQuestionsIdAiFix = <TError = ErrorResponse | ErrorResponse | ErrorResponse | ErrorResponse | ErrorResponse,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdAiFix>>, TError,{id: number;data: PostV1AdminBackendQuestionsIdAiFixBody}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdAiFix>>,
