@@ -1122,7 +1122,7 @@ func TestUserService_RoleManagement_Integration(t *testing.T) {
 	err = userService.RemoveRole(context.Background(), user.ID, 1)
 	require.NoError(t, err)
 
-	// Verify user role was removed
+	// Verify user role was removed, leaving only admin role
 	roles, err = userService.GetUserRoles(context.Background(), user.ID)
 	require.NoError(t, err)
 	require.Len(t, roles, 1)
@@ -1200,9 +1200,9 @@ func TestUserService_RoleManagement_ErrorCases_Integration(t *testing.T) {
 	assert.Contains(t, err.Error(), "role with ID 99999 not found")
 
 	// Test RemoveRole with role not assigned to user
-	err = userService.RemoveRole(context.Background(), user.ID, 1)
+	err = userService.RemoveRole(context.Background(), user.ID, 2)
 	require.Error(t, err)
-	assert.Contains(t, err.Error(), "user 1 does not have role 1")
+	assert.Contains(t, err.Error(), "user 1 does not have role 2")
 
 	// Test GetUserRoles with non-existent user
 	roles, err := userService.GetUserRoles(context.Background(), 99999)
@@ -1247,13 +1247,13 @@ func TestUserService_RoleManagement_AdminUser_Integration(t *testing.T) {
 	// Test that admin user has admin role
 	roles, err := userService.GetUserRoles(context.Background(), adminUser.ID)
 	require.NoError(t, err)
-	require.Len(t, roles, 1)
-	assert.Equal(t, "admin", roles[0].Name)
+	require.Len(t, roles, 2)                // Admin users have both user and admin roles
+	assert.Equal(t, "admin", roles[0].Name) // Admin role comes first in alphabetical order
 
 	// Test HasRole for admin user
 	hasUserRole, err := userService.HasRole(context.Background(), adminUser.ID, "user")
 	require.NoError(t, err)
-	assert.False(t, hasUserRole) // Admin user doesn't have user role by default
+	assert.True(t, hasUserRole) // Admin users have user role as well
 
 	hasAdminRole, err := userService.HasRole(context.Background(), adminUser.ID, "admin")
 	require.NoError(t, err)
@@ -1302,11 +1302,11 @@ func TestUserService_RoleAssignment_E2EScenario_Integration(t *testing.T) {
 	err = userService.AssignRoleByName(context.Background(), user.ID, "admin")
 	require.NoError(t, err)
 
-	// Verify admin role is assigned
+	// Verify admin role is assigned (user already has user role, so now has 2 roles)
 	roles, err := userService.GetUserRoles(context.Background(), user.ID)
 	require.NoError(t, err)
-	require.Len(t, roles, 1)
-	assert.Equal(t, "admin", roles[0].Name)
+	require.Len(t, roles, 2)                // User has both user and admin roles
+	assert.Equal(t, "admin", roles[0].Name) // Admin role comes first in alphabetical order
 
 	// Now test the exact scenario from E2E test: assign role_id 1 (user role)
 	err = userService.AssignRole(context.Background(), user.ID, 1)
@@ -1455,35 +1455,35 @@ func TestUserService_RoleAssignment_AdminToOtherUser_Integration(t *testing.T) {
 	require.NoError(t, err)
 	assert.True(t, isAdmin)
 
-	// Verify regular user has no roles initially
+	// Verify regular user has user role initially (automatically assigned)
 	roles, err := userService.GetUserRoles(context.Background(), regularUser.ID)
-	require.NoError(t, err)
-	assert.Empty(t, roles)
-
-	// Now test the exact scenario from E2E test: admin assigns role_id 1 (user role) to regular user
-	err = userService.AssignRole(context.Background(), regularUser.ID, 1)
-	require.NoError(t, err)
-
-	// Verify regular user now has the user role
-	roles, err = userService.GetUserRoles(context.Background(), regularUser.ID)
 	require.NoError(t, err)
 	require.Len(t, roles, 1)
 	assert.Equal(t, "user", roles[0].Name)
 
-	// Verify regular user is not an admin
+	// Now test the exact scenario from E2E test: admin assigns admin role to regular user
+	err = userService.AssignRole(context.Background(), regularUser.ID, 2)
+	require.NoError(t, err)
+
+	// Verify regular user now has both user and admin roles
+	roles, err = userService.GetUserRoles(context.Background(), regularUser.ID)
+	require.NoError(t, err)
+	require.Len(t, roles, 2)
+
+	// Verify regular user is now an admin (after admin role assignment)
 	isRegularUserAdmin, err := userService.IsAdmin(context.Background(), regularUser.ID)
 	require.NoError(t, err)
-	assert.False(t, isRegularUserAdmin)
+	assert.True(t, isRegularUserAdmin)
 
 	// Test that regular user has user role
 	hasUserRole, err := userService.HasRole(context.Background(), regularUser.ID, "user")
 	require.NoError(t, err)
 	assert.True(t, hasUserRole)
 
-	// Test that regular user doesn't have admin role
+	// Test that regular user now has admin role
 	hasAdminRole, err := userService.HasRole(context.Background(), regularUser.ID, "admin")
 	require.NoError(t, err)
-	assert.False(t, hasAdminRole)
+	assert.True(t, hasAdminRole)
 
 	// Test assigning admin role to regular user
 	err = userService.AssignRole(context.Background(), regularUser.ID, 2)
