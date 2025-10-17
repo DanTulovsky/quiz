@@ -12,7 +12,7 @@ import (
 	"quizapp/internal/config"
 	"quizapp/internal/models"
 	"quizapp/internal/observability"
-	serviceinterfaces "quizapp/internal/services/interfaces"
+	serviceinterfaces "quizapp/internal/serviceinterfaces"
 	contextutils "quizapp/internal/utils"
 
 	"go.opentelemetry.io/otel"

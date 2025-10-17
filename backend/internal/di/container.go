@@ -27,6 +27,7 @@ type ServiceContainerInterface interface {
 	GetGenerationHintService() (services.GenerationHintServiceInterface, error)
 	GetConversationService() (services.ConversationServiceInterface, error)
 	GetEmailService() (services.EmailServiceInterface, error)
+	GetTranslationService() (services.TranslationServiceInterface, error)
 	GetDatabase() *sql.DB
 	GetConfig() *config.Config
 	GetLogger() *observability.Logger
@@ -174,6 +175,11 @@ func (sc *ServiceContainer) GetEmailService() (services.EmailServiceInterface, e
 	return GetServiceAs[services.EmailServiceInterface](sc, "email")
 }
 
+// GetTranslationService returns the translation service
+func (sc *ServiceContainer) GetTranslationService() (services.TranslationServiceInterface, error) {
+	return GetServiceAs[services.TranslationServiceInterface](sc, "translation")
+}
+
 // GetDatabase returns the database instance
 func (sc *ServiceContainer) GetDatabase() *sql.DB {
 	return sc.db
@@ -287,6 +293,10 @@ func (sc *ServiceContainer) initializeServices(_ context.Context) {
 	// Email service
 	emailService := services.CreateEmailService(sc.cfg, sc.logger)
 	sc.services["email"] = emailService
+
+	// Translation service
+	translationService := services.NewTranslationService(sc.cfg)
+	sc.services["translation"] = translationService
 
 	// Register shutdown functions
 	sc.shutdownFuncs = append(sc.shutdownFuncs,

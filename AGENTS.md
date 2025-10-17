@@ -13,7 +13,7 @@
 
 ## Architecture
 
-- Follow established patterns in the codebase.
+- Follow established patterns in the codebase with respect to tracing, error handling, etc...
 - Keep business logic in service layers
 
 ## Code

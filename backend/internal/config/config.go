@@ -2,6 +2,7 @@
 package config
 
 import (
+	"fmt"
 	"os"
 	"reflect"
 	"sort"
@@ -88,6 +89,9 @@ type Config struct {
 
 	// Story Configuration
 	Story StoryConfig `json:"story" yaml:"story"`
+
+	// Translation Configuration
+	Translation TranslationConfig `json:"translation" yaml:"translation"`
 
 	// Internal fields
 	IsTest bool `json:"is_test" yaml:"is_test"`
@@ -354,6 +358,22 @@ type StoryConfig struct {
 	MaxWorkerGenerationsPerDay int                       `json:"max_worker_generations_per_day" yaml:"max_worker_generations_per_day"`
 }
 
+// TranslationConfig represents translation service configuration
+type TranslationConfig struct {
+	Enabled         bool                                 `json:"enabled" yaml:"enabled"`
+	DefaultProvider string                               `json:"default_provider" yaml:"default_provider"`
+	Providers       map[string]TranslationProviderConfig `json:"providers" yaml:"providers"`
+}
+
+// TranslationProviderConfig represents a translation provider configuration
+type TranslationProviderConfig struct {
+	Name        string `json:"name" yaml:"name"`
+	Code        string `json:"code" yaml:"code"`
+	APIKey      string `json:"api_key" yaml:"api_key"`
+	BaseURL     string `json:"base_url" yaml:"base_url"`
+	APIEndpoint string `json:"api_endpoint" yaml:"api_endpoint"`
+}
+
 // NewConfig loads configuration from YAML file first, then overrides with environment variables
 func NewConfig() (result0 *Config, err error) {
 	// Load config from YAML file
@@ -448,6 +468,11 @@ func overrideStructFromEnvWithPrefix(v interface{}, prefix string) {
 					field.Set(reflect.ValueOf(slice))
 				}
 			}
+		case reflect.Map:
+			// Handle map fields with string keys and struct values
+			if field.Type().Key().Kind() == reflect.String && field.Type().Elem().Kind() == reflect.Struct {
+				handleMapFieldOverrides(field, yamlTag, prefix)
+			}
 		case reflect.Struct:
 			// Recursively process nested structs with the field name as prefix
 			if field.CanAddr() {
@@ -466,6 +491,110 @@ func overrideStructFromEnvWithPrefix(v interface{}, prefix string) {
 				}
 				overrideStructFromEnvWithPrefix(field.Interface(), fieldPrefix)
 			}
+		}
+	}
+}
+
+// handleMapFieldOverrides handles environment variable overrides for map fields with string keys and struct values
+func handleMapFieldOverrides(field reflect.Value, yamlTag, parentPrefix string) {
+	if !field.CanSet() || field.Type().Key().Kind() != reflect.String {
+		return
+	}
+
+	// Build the prefix for environment variables
+	mapPrefix := strings.ToUpper(strings.ReplaceAll(yamlTag, "-", "_"))
+	if parentPrefix != "" {
+		mapPrefix = parentPrefix + "_" + mapPrefix
+	}
+
+	// Iterate through all keys in the map and look for corresponding environment variables
+	for _, key := range field.MapKeys() {
+		keyName := key.String()
+		keyVal := field.MapIndex(key)
+
+		if keyVal.IsValid() && keyVal.Kind() == reflect.Struct {
+			// Create a new struct with potential overrides
+			newStruct := createStructWithOverrides(keyVal, keyName, mapPrefix)
+			if newStruct.IsValid() {
+				field.SetMapIndex(key, newStruct)
+			}
+		}
+	}
+}
+
+// createStructWithOverrides creates a new struct with environment variable overrides applied
+func createStructWithOverrides(originalStruct reflect.Value, keyName, mapPrefix string) reflect.Value {
+	if !originalStruct.IsValid() || originalStruct.Kind() != reflect.Struct {
+		return reflect.Value{}
+	}
+
+	structType := originalStruct.Type()
+	newStruct := reflect.New(structType).Elem()
+	updated := false
+
+	for i := 0; i < structType.NumField(); i++ {
+		fieldInfo := structType.Field(i)
+		origField := originalStruct.Field(i)
+		newField := newStruct.Field(i)
+
+		// Skip unexported fields
+		if !newField.CanSet() {
+			continue
+		}
+
+		// Get the yaml tag for the field
+		yamlTag := fieldInfo.Tag.Get("yaml")
+		if yamlTag == "" || yamlTag == "-" {
+			// Copy original value for fields without yaml tags
+			newField.Set(origField)
+			continue
+		}
+
+		// Convert yaml tag to environment variable name
+		envKey := strings.ToUpper(strings.ReplaceAll(yamlTag, "-", "_"))
+		envVarName := fmt.Sprintf("%s_%s_%s", mapPrefix, strings.ToUpper(keyName), envKey)
+
+		envVal := os.Getenv(envVarName)
+		if envVal != "" {
+			// Set the field value based on its type
+			setReflectValue(newField, envVal)
+			updated = true
+		} else {
+			// Copy the original value
+			newField.Set(origField)
+		}
+	}
+
+	if updated {
+		return newStruct
+	}
+	return reflect.Value{}
+}
+
+// setReflectValue sets a reflect.Value from a string environment variable
+func setReflectValue(field reflect.Value, envVal string) {
+	if !field.CanSet() {
+		return
+	}
+
+	switch field.Kind() {
+	case reflect.String:
+		field.SetString(envVal)
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		if intVal, err := strconv.ParseInt(envVal, 10, 64); err == nil {
+			field.SetInt(intVal)
+		}
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		if uintVal, err := strconv.ParseUint(envVal, 10, 64); err == nil {
+			field.SetUint(uintVal)
+		}
+	case reflect.Float32, reflect.Float64:
+		if floatVal, err := strconv.ParseFloat(envVal, 64); err == nil {
+			field.SetFloat(floatVal)
+		}
+	case reflect.Bool:
+		if boolVal, err := strconv.ParseBool(envVal); err == nil {
+			field.SetBool(boolVal)
 		}
 	}
 }

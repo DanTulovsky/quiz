@@ -14,12 +14,35 @@ import {
   useAdminDeleteStory,
 } from '../../api/admin';
 import { useUsersPaginated } from '../../api/admin';
-import { useGetV1SettingsLanguages } from '../../api/api';
 
 // Mock the hooks
 vi.mock('../../hooks/useAuth');
 vi.mock('../../api/admin');
-vi.mock('../../api/api');
+vi.mock('../../api/api', () => ({
+  // Mock auth status for AuthProvider
+  useGetV1AuthStatus: () => ({
+    data: { authenticated: true, user: { id: 1, role: 'admin' } },
+    isLoading: false,
+    refetch: vi.fn(),
+  }),
+  usePostV1AuthLogin: () => ({
+    mutateAsync: vi.fn(),
+    isPending: false,
+  }),
+  usePostV1AuthLogout: () => ({
+    mutateAsync: vi.fn(),
+    isPending: false,
+  }),
+  usePutV1Settings: () => ({
+    mutateAsync: vi.fn(),
+    isPending: false,
+  }),
+  useGetV1SettingsLanguages: () => ({
+    data: ['italian', 'spanish', 'french'],
+    isLoading: false,
+    error: null,
+  }),
+}));
 
 const mockUseAuth = useAuth as ReturnType<typeof vi.fn>;
 const mockUseAdminStories = useAdminStories as ReturnType<typeof vi.fn>;
@@ -29,9 +52,7 @@ const mockUseAdminStorySection = useAdminStorySection as ReturnType<
 >;
 const mockUseAdminDeleteStory = useAdminDeleteStory as ReturnType<typeof vi.fn>;
 const mockUseUsersPaginated = useUsersPaginated as ReturnType<typeof vi.fn>;
-const mockUseGetV1SettingsLanguages = useGetV1SettingsLanguages as ReturnType<
-  typeof vi.fn
->;
+const mockUseGetV1SettingsLanguages = vi.fn();
 
 const mockStories = [
   {

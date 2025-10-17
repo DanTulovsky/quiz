@@ -15,7 +15,8 @@
     "format:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,json,css,md}\" --ignore-path .prettierignore",
     "test:e2e": "npx playwright test",
     "generate-types": "orval --config ./orval.config.cjs",
-    "test": "vitest --run",
+    "test": "vitest --run --reporter=verbose",
+    "test:find-hanging": "node debug-tests.cjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -59,6 +60,7 @@
     "@typescript-eslint/eslint-plugin": "^8.36.0",
     "@typescript-eslint/parser": "^8.36.0",
     "@vitejs/plugin-react": "^4.3.1",
+    "@vitest/ui": "^3.2.4",
     "dotenv": "^16.5.0",
     "eslint": "^9.33.0",
     "eslint-plugin-react-hooks": "^5.2.0",

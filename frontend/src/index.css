@@ -181,6 +181,11 @@ html {
   text-wrap: balance;
 }
 
+/* Fix for TranslationPopup Select dropdown z-index */
+.translation-popup .mantine-Select-dropdown {
+  z-index: 2000 !important;
+}
+
 .animate-pulse-subtle {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }

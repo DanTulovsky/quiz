@@ -40,6 +40,7 @@ func NewRouter(
 	conversationService services.ConversationServiceInterface,
 	oauthService *services.OAuthService,
 	generationHintService services.GenerationHintServiceInterface,
+	translationService services.TranslationServiceInterface,
 	logger *observability.Logger,
 ) *gin.Engine {
 	// Setup Gin router
@@ -174,6 +175,7 @@ func NewRouter(
 	dailyQuestionHandler := NewDailyQuestionHandler(userService, dailyQuestionService, cfg, logger)
 	storyHandler := NewStoryHandler(storyService, userService, aiService, cfg, logger)
 	aiConversationHandler := NewAIConversationHandler(conversationService, cfg, logger)
+	translationHandler := NewTranslationHandler(translationService, cfg, logger)
 	adminHandler := NewAdminHandlerWithLogger(userService, questionService, aiService, cfg, learningService, workerService, logger)
 	// Inject story service into admin handler via exported field
 	adminHandler.storyService = storyService
@@ -229,6 +231,9 @@ func NewRouter(
 			auth.GET("/google/login", authHandler.GoogleLogin)
 			auth.GET("/google/callback", authHandler.GoogleCallback)
 		}
+
+		// Translation routes
+		v1.POST("/translate", middleware.RequireAuth(), translationHandler.TranslateText)
 		quiz := v1.Group("/quiz")
 		quiz.Use(middleware.RequireAuth())
 		quiz.Use(middleware.RequestValidationMiddleware(logger))

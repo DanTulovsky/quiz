@@ -1,11 +1,5 @@
 name: quiz-test
 
-# Alternative cache configuration using registry (more reliable for concurrent builds):
-# cache_from:
-#   - type=registry,ref=your-registry.com/quiz:cache-backend
-# cache_to:
-#   - type=registry,ref=your-registry.com/quiz:cache-backend,mode=max
-
 services:
   postgres-test:
     image: postgres:15-alpine
@@ -32,12 +26,6 @@ services:
       args:
         BUILDKIT_INLINE_CACHE: 1
         TARGETOS: linux
-      cache_from:
-        - type=local,src=/tmp/.buildx-cache-backend
-      cache_to:
-        - type=local,dest=/tmp/.buildx-cache-backend-new,mode=max
-      x-bake:
-        provenance: false
     ports:
       - "8081:8080"
     networks:
@@ -91,10 +79,6 @@ services:
       args:
         BUILDKIT_INLINE_CACHE: 1
         TARGETOS: linux
-      cache_from:
-        - type=local,src=/tmp/.buildx-cache-worker
-      cache_to:
-        - type=local,dest=/tmp/.buildx-cache-worker-new,mode=max
     ports:
       - 8082:8081
     networks:
@@ -142,12 +126,6 @@ services:
       args:
         BUILDKIT_INLINE_CACHE: 1
         NODE_ENV: production
-      cache_from:
-        - type=local,src=/tmp/.buildx-cache-frontend
-      cache_to:
-        - type=local,dest=/tmp/.buildx-cache-frontend-new,mode=max
-      x-bake:
-        provenance: false
     ports:
       - "${FRONTEND_PORT:-3001}:80"
     volumes:

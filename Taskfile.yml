@@ -43,6 +43,17 @@ tasks:
     desc: Merge config.yaml and config.local.test.yaml into merged.config.yaml using yq (for testing)
     cmds:
       - scripts/merge-config.sh config.yaml config.local.test.yaml merged.config.yaml
+      - |
+        # Verify that the test config overrides are applied
+        if ! grep -q 'default_provider: "noop"' merged.config.yaml; then
+          echo "❌ Test config override failed: translation.default_provider should be 'noop'"
+          exit 1
+        fi
+        if ! grep -q 'code: "noop"' merged.config.yaml; then
+          echo "❌ Test config override failed: noop provider should be defined"
+          exit 1
+        fi
+        echo "✅ Test config overrides verified successfully"
 
   test:
     desc: "Main test target - runs Go tests, frontend tests, and E2E tests"
@@ -914,7 +925,7 @@ tasks:
       - echo "Building frontend..."
       - npm ci
       - INLINE_RUNTIME_CHUNK=false npm run build
-      - task: ../frontend-csp-nonce
+      - task: frontend-csp-nonce
 
   stop-test-servers:
     desc: "Stop test servers with Docker Compose"
@@ -1667,6 +1678,7 @@ tasks:
   pre-release:
     desc: "Run all linting and tests to make sure release works"
     cmds:
+      - task: setup-frontend
       - task: lint
       - task: test
       - task: test-e2e-api

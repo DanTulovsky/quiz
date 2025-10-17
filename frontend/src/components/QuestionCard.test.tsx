@@ -6,6 +6,15 @@ import QuestionCard, { type QuestionCardProps } from './QuestionCard';
 import { Question, AnswerResponse } from '../api/api';
 import { renderWithProviders } from '../test-utils';
 import KeyboardShortcuts from './KeyboardShortcuts';
+import { showNotificationWithClean } from '../notifications';
+import { useMobileDetection } from '../hooks/useMobileDetection';
+
+const mockAuthStatusData = {
+  authenticated: true,
+  user: { id: 1, role: 'user' },
+};
+
+const mockRefetch = vi.fn();
 
 // Mock the API calls
 vi.mock('../api/api', () => ({
@@ -22,6 +31,23 @@ vi.mock('../api/api', () => ({
     isLoading: false,
     error: null,
   })),
+  useGetV1AuthStatus: () => ({
+    data: mockAuthStatusData, // ✅ Stable reference
+    isLoading: false,
+    refetch: mockRefetch, // ✅ Stable reference
+  }),
+  usePostV1AuthLogin: vi.fn(() => ({
+    mutateAsync: vi.fn(),
+    isPending: false,
+  })),
+  usePostV1AuthLogout: vi.fn(() => ({
+    mutateAsync: vi.fn(),
+    isPending: false,
+  })),
+  usePutV1Settings: vi.fn(() => ({
+    mutateAsync: vi.fn(),
+    isPending: false,
+  })),
 }));
 
 // Mock the useAuth hook
@@ -31,12 +57,11 @@ vi.mock('../hooks/useAuth', () => ({
   })),
 }));
 
-// Mock the useMobileDetection hook
-const mockUseMobileDetection = vi.fn(() => ({
-  isMobile: false,
-}));
+// Mock mobile detection hook
 vi.mock('../hooks/useMobileDetection', () => ({
-  useMobileDetection: mockUseMobileDetection,
+  useMobileDetection: vi.fn(() => ({
+    isMobile: false,
+  })),
 }));
 
 // Mock framer-motion
@@ -344,6 +369,30 @@ describe('QuestionCard', () => {
     expect(screen.getByText('Food')).toBeInTheDocument();
   });
 
+  function TTSWrapper(
+    props: Omit<
+      QuestionCardProps,
+      | 'showExplanation'
+      | 'setShowExplanation'
+      | 'selectedAnswer'
+      | 'onAnswerSelect'
+    >
+  ) {
+    const [showExplanation, setShowExplanation] = React.useState(false);
+    const [selectedAnswer, setSelectedAnswer] = React.useState<number | null>(
+      null
+    );
+    return (
+      <QuestionCard
+        {...props}
+        showExplanation={showExplanation}
+        setShowExplanation={setShowExplanation}
+        selectedAnswer={selectedAnswer}
+        onAnswerSelect={setSelectedAnswer}
+      />
+    );
+  }
+
   it('displays TTS button for reading comprehension questions', () => {
     const readingQuestion: Question = {
       id: 2,
@@ -357,30 +406,6 @@ describe('QuestionCard', () => {
       level: 'A2',
       created_at: '2023-01-01T00:00:00Z',
     };
-
-    function TTSWrapper(
-      props: Omit<
-        QuestionCardProps,
-        | 'showExplanation'
-        | 'setShowExplanation'
-        | 'selectedAnswer'
-        | 'onAnswerSelect'
-      >
-    ) {
-      const [showExplanation, setShowExplanation] = React.useState(false);
-      const [selectedAnswer, setSelectedAnswer] = React.useState<number | null>(
-        null
-      );
-      return (
-        <QuestionCard
-          {...props}
-          showExplanation={showExplanation}
-          setShowExplanation={setShowExplanation}
-          selectedAnswer={selectedAnswer}
-          onAnswerSelect={setSelectedAnswer}
-        />
-      );
-    }
 
     renderWithProviders(
       <TTSWrapper
@@ -411,6 +436,30 @@ describe('QuestionCard', () => {
       writeText: vi.fn().mockResolvedValue(undefined),
     };
     Object.assign(navigator, { clipboard: mockClipboard });
+
+    function TTSWrapper(
+      props: Omit<
+        QuestionCardProps,
+        | 'showExplanation'
+        | 'setShowExplanation'
+        | 'selectedAnswer'
+        | 'onAnswerSelect'
+      >
+    ) {
+      const [showExplanation, setShowExplanation] = React.useState(false);
+      const [selectedAnswer, setSelectedAnswer] = React.useState<number | null>(
+        null
+      );
+      return (
+        <QuestionCard
+          {...props}
+          showExplanation={showExplanation}
+          setShowExplanation={setShowExplanation}
+          selectedAnswer={selectedAnswer}
+          onAnswerSelect={setSelectedAnswer}
+        />
+      );
+    }
 
     const readingQuestion: Question = {
       id: 2,
@@ -445,7 +494,7 @@ describe('QuestionCard', () => {
     });
 
     // Verify success notification was shown
-    expect(showNotificationWithClean).toHaveBeenCalledWith({
+    expect(vi.mocked(showNotificationWithClean)).toHaveBeenCalledWith({
       title: 'Copied!',
       message: 'Passage copied to clipboard',
       color: 'green',
@@ -453,8 +502,8 @@ describe('QuestionCard', () => {
   });
 
   it('does not display copy button on mobile for reading comprehension', () => {
-    // Mock mobile detection to return true for mobile
-    mockUseMobileDetection.mockReturnValue({ isMobile: true });
+    // Set mobile detection to return true for mobile
+    vi.mocked(useMobileDetection).mockReturnValue({ isMobile: true });
 
     const readingQuestion: Question = {
       id: 2,
@@ -483,7 +532,7 @@ describe('QuestionCard', () => {
     ).not.toBeInTheDocument();
 
     // Reset mock for other tests
-    mockUseMobileDetection.mockReturnValue({ isMobile: false });
+    vi.mocked(useMobileDetection).mockReturnValue({ isMobile: false });
   });
 
   it.skip('handles TTS button click for reading comprehension', async () => {
@@ -903,8 +952,6 @@ describe('QuestionCard', () => {
       status: 500,
     });
 
-    const { showNotificationWithClean } = await import('../notifications');
-
     function TTSWrapper(
       props: Omit<
         QuestionCardProps,
@@ -945,7 +992,7 @@ describe('QuestionCard', () => {
 
     // Verify that error notification was shown
     await waitFor(() => {
-      expect(showNotificationWithClean).toHaveBeenCalledWith({
+      expect(vi.mocked(showNotificationWithClean)).toHaveBeenCalledWith({
         title: 'TTS Error',
         message: 'Failed to generate speech',
         color: 'red',

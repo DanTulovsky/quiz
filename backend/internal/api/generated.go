@@ -1037,6 +1037,33 @@ type TestAIRequest struct {
 	Provider string `json:"provider"`
 }
 
+// TranslateRequest defines model for TranslateRequest.
+type TranslateRequest struct {
+	// SourceLanguage Source language code (optional - will be auto-detected if not provided)
+	SourceLanguage *string `json:"source_language,omitempty"`
+
+	// TargetLanguage Target language code (e.g., 'en', 'es', 'fr')
+	TargetLanguage string `json:"target_language"`
+
+	// Text Text to translate
+	Text string `json:"text"`
+}
+
+// TranslateResponse defines model for TranslateResponse.
+type TranslateResponse struct {
+	// Confidence Translation confidence score (if available from provider)
+	Confidence *float32 `json:"confidence,omitempty"`
+
+	// SourceLanguage Detected or provided source language code
+	SourceLanguage string `json:"source_language"`
+
+	// TargetLanguage Target language code that was requested
+	TargetLanguage string `json:"target_language"`
+
+	// TranslatedText The translated text
+	TranslatedText string `json:"translated_text"`
+}
+
 // UpdateConversationRequest defines model for UpdateConversationRequest.
 type UpdateConversationRequest struct {
 	// Title New title for the conversation
@@ -1747,6 +1774,9 @@ type PostV1StoryJSONRequestBody = CreateStoryRequest
 
 // PostV1StoryIdGenerateJSONRequestBody defines body for PostV1StoryIdGenerate for application/json ContentType.
 type PostV1StoryIdGenerateJSONRequestBody = EmptyRequest
+
+// PostV1TranslateJSONRequestBody defines body for PostV1Translate for application/json ContentType.
+type PostV1TranslateJSONRequestBody = TranslateRequest
 
 // PutV1UserzProfileJSONRequestBody defines body for PutV1UserzProfile for application/json ContentType.
 type PutV1UserzProfileJSONRequestBody = UserUpdateRequest

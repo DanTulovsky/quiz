@@ -3,6 +3,13 @@ import { screen, fireEvent, waitFor } from '@testing-library/react';
 import MobileDailyPage from '../MobileDailyPage';
 import { renderWithProviders } from '../../../test-utils';
 
+const mockAuthStatusData = {
+  authenticated: true,
+  user: { id: 1, role: 'user' },
+};
+
+const mockRefetch = vi.fn();
+
 // Mock auth hook
 vi.mock('../../../hooks/useAuth', () => ({
   useAuth: () => ({
@@ -16,6 +23,24 @@ vi.mock('../../../api/api', () => ({
   usePostV1QuizQuestionIdReport: () => ({ mutate: vi.fn(), isPending: false }),
   usePostV1QuizQuestionIdMarkKnown: () => ({
     mutate: vi.fn(),
+    isPending: false,
+  }),
+  // Mock auth status for AuthProvider
+  useGetV1AuthStatus: () => ({
+    data: mockAuthStatusData, // ✅ Stable reference
+    isLoading: false,
+    refetch: mockRefetch, // ✅ Stable reference
+  }),
+  usePostV1AuthLogin: () => ({
+    mutateAsync: vi.fn(),
+    isPending: false,
+  }),
+  usePostV1AuthLogout: () => ({
+    mutateAsync: vi.fn(),
+    isPending: false,
+  }),
+  usePutV1Settings: () => ({
+    mutateAsync: vi.fn(),
     isPending: false,
   }),
 }));

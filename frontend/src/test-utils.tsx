@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import { render, RenderOptions } from '@testing-library/react';
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
@@ -6,6 +6,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import { QuestionProvider } from './contexts/QuestionContext';
+import { AuthProvider } from './contexts/AuthProvider';
+import { TranslationProvider } from './contexts/TranslationContext';
 
 function createQueryClient() {
   return new QueryClient({
@@ -22,7 +24,9 @@ interface ProvidersProps {
 // Component that uses the theme context to set the Mantine theme
 const ThemedProviders: React.FC<ProvidersProps> = ({ children }) => {
   const { currentTheme, themes } = useTheme();
-  const queryClient = createQueryClient();
+
+  // ✅ Create QueryClient only once
+  const queryClient = useMemo(() => createQueryClient(), []);
 
   return (
     <MantineProvider theme={themes[currentTheme]}>
@@ -34,7 +38,11 @@ const ThemedProviders: React.FC<ProvidersProps> = ({ children }) => {
             v7_relativeSplatPath: false,
           }}
         >
-          <QuestionProvider>{children}</QuestionProvider>
+          <AuthProvider>
+            <TranslationProvider>
+              <QuestionProvider>{children}</QuestionProvider>
+            </TranslationProvider>
+          </AuthProvider>
         </BrowserRouter>
       </QueryClientProvider>
     </MantineProvider>

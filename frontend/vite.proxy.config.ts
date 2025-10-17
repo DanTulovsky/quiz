@@ -30,6 +30,11 @@ export const proxyConfig = {
     target: 'http://localhost:5050',
     changeOrigin: true,
   },
+  // Proxy /v1/translate to http://localhost:8080
+  '/v1/translate': {
+    target: 'http://localhost:8080',
+    changeOrigin: true,
+  },
   // Proxy /v1/ to http://localhost:8080
   '/v1/': {
     target: 'http://localhost:8080',

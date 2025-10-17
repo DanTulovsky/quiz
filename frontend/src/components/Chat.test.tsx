@@ -10,9 +10,53 @@ import {
 } from '../api/api';
 import { renderWithProviders } from '../test-utils';
 
+const mockAuthStatusData = {
+  authenticated: true,
+  user: { id: 1, role: 'user' },
+};
+
+const mockRefetch = vi.fn();
+
 // Mock the dependencies
 vi.mock('../hooks/useAuth');
-vi.mock('../api/api');
+vi.mock('../api/api', () => ({
+  // Mock auth status for AuthProvider
+  useGetV1AuthStatus: () => ({
+    data: mockAuthStatusData, // ✅ Stable reference
+    isLoading: false,
+    refetch: mockRefetch, // ✅ Stable reference
+  }),
+  usePostV1AuthLogin: () => ({
+    mutateAsync: vi.fn(),
+    isPending: false,
+  }),
+  usePostV1AuthLogout: () => ({
+    mutateAsync: vi.fn(),
+    isPending: false,
+  }),
+  usePutV1Settings: () => ({
+    mutateAsync: vi.fn(),
+    isPending: false,
+  }),
+  // Other API mocks as needed
+  useGetV1SettingsAiProviders: vi.fn(() => ({
+    data: { providers: [] },
+    isLoading: false,
+    error: null,
+  })),
+  usePostV1AiConversations: vi.fn(() => ({
+    mutateAsync: vi.fn(),
+    isPending: false,
+  })),
+  usePostV1AiConversationsConversationIdMessages: vi.fn(() => ({
+    mutateAsync: vi.fn(),
+    isPending: false,
+  })),
+  usePutV1AiConversationsBookmark: vi.fn(() => ({
+    mutateAsync: vi.fn(),
+    isPending: false,
+  })),
+}));
 vi.mock('react-hotkeys-hook', () => ({
   useHotkeys: vi.fn(),
 }));
@@ -34,7 +78,7 @@ const mockUsePostV1AiConversationsConversationIdMessages =
   >;
 
 // Mock fetch for streaming
-global.fetch = vi.fn();
+// global.fetch = vi.fn();
 
 const mockQuestion = {
   id: '1',
@@ -75,6 +119,7 @@ const mockProvidersData = {
 describe('Chat Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    global.fetch = vi.fn();
 
     // Setup default mocks
     mockUseAuth.mockReturnValue({
@@ -97,20 +142,35 @@ describe('Chat Component', () => {
     });
 
     mockUsePostV1AiConversationsConversationIdMessages.mockReturnValue({
-      mutateAsync: vi.fn().mockResolvedValue({}),
+      mutateAsync: vi.fn().mockResolvedValue({ id: 'test-message-id' }),
       isLoading: false,
       error: null,
     });
 
-    // Mock successful fetch response
+    // ✅ FIXED: Properly mock the streaming response
+    const mockReader = {
+      read: vi
+        .fn()
+        .mockResolvedValueOnce({
+          done: false,
+          value: new TextEncoder().encode('data: "Test"\n'),
+        })
+        .mockResolvedValueOnce({ done: true, value: undefined }),
+    };
+
     (global.fetch as vi.Mock).mockResolvedValue({
       ok: true,
       body: {
-        getReader: () => ({
-          read: vi.fn().mockResolvedValue({ done: true }),
-        }),
+        getReader: () => mockReader,
       },
     });
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
+    vi.clearAllTimers();
+    // Clear any pending fetch calls
+    // vi.restoreAllMocks();
   });
 
   it('renders chat component with AI enabled', () => {

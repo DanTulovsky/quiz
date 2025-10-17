@@ -63,6 +63,7 @@ func (suite *SettingsIntegrationTestSuite) SetupSuite() {
 	dailyQuestionService := services.NewDailyQuestionService(db, logger, questionService, learningService)
 	generationHintService := services.NewGenerationHintService(suite.DB, logger)
 	storyService := services.NewStoryService(db, cfg, logger)
+	translationService := services.NewTranslationService(cfg)
 	suite.Router = NewRouter(
 		suite.Config,
 		userService,
@@ -75,6 +76,7 @@ func (suite *SettingsIntegrationTestSuite) SetupSuite() {
 		services.NewConversationService(db),
 		oauthService,
 		generationHintService,
+		translationService,
 		logger,
 	)
 

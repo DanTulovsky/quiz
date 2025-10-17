@@ -40,3 +40,6 @@ export function customInstance<T>(
 }
 
 export default customInstance;
+
+// Export apiClient for backward compatibility (axios instance with HTTP methods)
+export const apiClient = AXIOS_INSTANCE;

@@ -695,3 +695,15 @@ variety:
     - "leisure_time"
     - "rush_hour"
     - "quiet_time"
+
+# Translation configuration
+translation:
+  enabled: true
+  default_provider: "google"
+  providers:
+    google:
+      name: "Google Translate"
+      code: "google"
+      api_key: "" # Set in environment variables as: TRANSLATION_PROVIDERS_GOOGLE_API_KEY
+      base_url: "https://translation.googleapis.com"
+      api_endpoint: "/language/translate/v2"

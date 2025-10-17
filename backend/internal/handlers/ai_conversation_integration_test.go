@@ -54,6 +54,7 @@ func (suite *AIConversationIntegrationTestSuite) SetupSuite() {
 	storyService := services.NewStoryService(db, cfg, logger)
 	oauthService := services.NewOAuthServiceWithLogger(cfg, logger)
 	generationHintService := services.NewGenerationHintService(db, logger)
+	translationService := services.NewTranslationService(cfg)
 
 	// Create test user
 	createdUser, err := userService.CreateUserWithPassword(context.Background(), "testuser_ai", "testpass", "english", "A1")
@@ -73,6 +74,7 @@ func (suite *AIConversationIntegrationTestSuite) SetupSuite() {
 		services.NewConversationService(db),
 		oauthService,
 		generationHintService,
+		translationService,
 		logger,
 	)
 

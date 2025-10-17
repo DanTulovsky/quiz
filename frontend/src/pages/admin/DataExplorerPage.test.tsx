@@ -20,15 +20,48 @@ import {
   useClearUserData,
   useUsersForQuestion,
 } from '../../api/admin';
-import {
-  useGetV1SettingsLanguages,
-  useGetV1SettingsLevels,
-} from '../../api/api';
 
 // Mock the hooks
 vi.mock('../../hooks/useAuth');
 vi.mock('../../api/admin');
-vi.mock('../../api/api');
+vi.mock('../../api/api', () => ({
+  // Mock auth status for AuthProvider
+  useGetV1AuthStatus: () => ({
+    data: { authenticated: true, user: { id: 1, role: 'admin' } },
+    isLoading: false,
+    refetch: vi.fn(),
+  }),
+  usePostV1AuthLogin: () => ({
+    mutateAsync: vi.fn(),
+    isPending: false,
+  }),
+  usePostV1AuthLogout: () => ({
+    mutateAsync: vi.fn(),
+    isPending: false,
+  }),
+  usePutV1Settings: () => ({
+    mutateAsync: vi.fn(),
+    isPending: false,
+  }),
+  useGetV1SettingsLanguages: () => ({
+    data: ['english', 'spanish', 'french', 'german', 'italian'],
+    isLoading: false,
+    error: null,
+  }),
+  useGetV1SettingsLevels: () => ({
+    data: {
+      levels: ['A1', 'A2', 'B1', 'B2'],
+      level_descriptions: {
+        A1: 'Beginner',
+        A2: 'Elementary',
+        B1: 'Intermediate',
+        B2: 'Upper intermediate',
+      },
+    },
+    isLoading: false,
+    error: null,
+  }),
+}));
 
 const mockUseAuth = useAuth as ReturnType<typeof vi.fn>;
 const mockUseAllQuestions = useAllQuestions as ReturnType<typeof vi.fn>;
@@ -54,12 +87,8 @@ const mockUseClearUserDataForUser = useClearUserDataForUser as ReturnType<
 const mockUseClearDatabase = useClearDatabase as ReturnType<typeof vi.fn>;
 const mockUseClearUserData = useClearUserData as ReturnType<typeof vi.fn>;
 const mockUseUsersForQuestion = useUsersForQuestion as ReturnType<typeof vi.fn>;
-const mockUseGetV1SettingsLanguages = useGetV1SettingsLanguages as ReturnType<
-  typeof vi.fn
->;
-const mockUseGetV1SettingsLevels = useGetV1SettingsLevels as ReturnType<
-  typeof vi.fn
->;
+const mockUseGetV1SettingsLanguages = vi.fn();
+const mockUseGetV1SettingsLevels = vi.fn();
 
 const mockQuestions = [
   {

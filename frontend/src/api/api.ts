@@ -1541,6 +1541,42 @@ export interface TTSResponse {
   error?: string;
 }
 
+export interface TranslateRequest {
+  /**
+   * Text to translate
+   * @minLength 1
+   * @maxLength 5000
+   */
+  text: string;
+  /**
+   * Target language code (e.g., 'en', 'es', 'fr')
+   * @minLength 2
+   * @maxLength 10
+   */
+  target_language: string;
+  /**
+   * Source language code (optional - will be auto-detected if not provided)
+   * @minLength 2
+   * @maxLength 10
+   */
+  source_language?: string;
+}
+
+export interface TranslateResponse {
+  /** The translated text */
+  translated_text: string;
+  /** Detected or provided source language code */
+  source_language: string;
+  /** Target language code that was requested */
+  target_language: string;
+  /**
+   * Translation confidence score (if available from provider)
+   * @minimum 0
+   * @maximum 1
+   */
+  confidence?: number;
+}
+
 export interface DailyQuestionHistory {
   /** RFC3339 timestamp of when the question was assigned in the user's timezone (includes offset) */
   assignment_date: string;
@@ -11030,6 +11066,72 @@ export const usePostV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerate = <TErr
     }
     
 /**
+ * Translate text to a target language using configured translation provider
+ * @summary Translate text
+ */
+export const postV1Translate = (
+    translateRequest: TranslateRequest,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<TranslateResponse>(
+      {url: `/v1/translate`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: translateRequest, signal
+    },
+      options);
+    }
+  
+
+
+export const getPostV1TranslateMutationOptions = <TError = ErrorResponse | ErrorResponse | ErrorResponse | ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1Translate>>, TError,{data: TranslateRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof postV1Translate>>, TError,{data: TranslateRequest}, TContext> => {
+
+const mutationKey = ['postV1Translate'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1Translate>>, {data: TranslateRequest}> = (props) => {
+          const {data} = props ?? {};
+
+          return  postV1Translate(data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostV1TranslateMutationResult = NonNullable<Awaited<ReturnType<typeof postV1Translate>>>
+    export type PostV1TranslateMutationBody = TranslateRequest
+    export type PostV1TranslateMutationError = ErrorResponse | ErrorResponse | ErrorResponse | ErrorResponse
+
+    /**
+ * @summary Translate text
+ */
+export const usePostV1Translate = <TError = ErrorResponse | ErrorResponse | ErrorResponse | ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1Translate>>, TError,{data: TranslateRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postV1Translate>>,
+        TError,
+        {data: TranslateRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getPostV1TranslateMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
  * Convert text to speech using the TTS service with SSE streaming support
  * @summary Generate speech from text
  */
@@ -11357,6 +11459,8 @@ export const getGetHealthResponseMock = (overrideResponse: Partial< GetHealth200
 export const getGetV1AdminWorkerDailyUsersUserIdQuestionsDateResponseMock = (overrideResponse: Partial< GetV1AdminWorkerDailyUsersUserIdQuestionsDate200 > = {}): GetV1AdminWorkerDailyUsersUserIdQuestionsDate200 => ({questions: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), user_id: faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), question_id: faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), assignment_date: faker.date.past().toISOString().split('T')[0], is_completed: faker.datatype.boolean(), completed_at: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), created_at: faker.string.alpha({length: {min: 10, max: 20}}), user_answer_index: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), null]), undefined]), submitted_at: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), user_shown_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), user_total_responses: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), user_correct_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), user_incorrect_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), question: {id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), type: faker.helpers.arrayElement([faker.helpers.arrayElement(Object.values(QuestionType)), undefined]), status: faker.helpers.arrayElement([faker.helpers.arrayElement(Object.values(QuestionStatus)), undefined]), difficulty_score: faker.helpers.arrayElement([faker.number.float({min: undefined, max: undefined, fractionDigits: 2}), undefined]), explanation: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), content: faker.helpers.arrayElement([{question: faker.string.alpha({length: {min: 1, max: 1000}}), options: Array.from({ length: faker.number.int({ min: 4, max: 10 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 1, max: 500}}))), sentence: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 2000}}), undefined]), passage: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 5000}}), undefined]), hint: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 500}}), undefined])}, undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), correct_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), incorrect_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), total_responses: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), user_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), correct_answer: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), reporters: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), topic_category: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), grammar_focus: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), vocabulary_domain: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), scenario: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), style_modifier: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), difficulty_modifier: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), time_context: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), confidence_level: faker.helpers.arrayElement([faker.number.int({min: 1, max: 5, multipleOf: undefined}), undefined])}})), undefined]), ...overrideResponse})
 
 export const getPostV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerateResponseMock = (overrideResponse: Partial< PostV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerate200 > = {}): PostV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerate200 => ({success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
+
+export const getPostV1TranslateResponseMock = (overrideResponse: Partial< TranslateResponse > = {}): TranslateResponse => ({translated_text: faker.string.alpha({length: {min: 10, max: 20}}), source_language: faker.string.alpha({length: {min: 10, max: 20}}), target_language: faker.string.alpha({length: {min: 10, max: 20}}), confidence: faker.helpers.arrayElement([faker.number.float({min: 0, max: 1, fractionDigits: 2}), undefined]), ...overrideResponse})
 
 export const getPostV1AudioSpeechResponseMock = (overrideResponse: Partial< TTSResponse > = {}): TTSResponse => ({type: faker.helpers.arrayElement([faker.helpers.arrayElement(['audio','usage','error'] as const), undefined]), audio: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), usage: faker.helpers.arrayElement([{input_tokens: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), output_tokens: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), total_tokens: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined])}, undefined]), error: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
 
@@ -12655,6 +12759,18 @@ export const getPostV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerateMockHand
   })
 }
 
+export const getPostV1TranslateMockHandler = (overrideResponse?: TranslateResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<TranslateResponse> | TranslateResponse)) => {
+  return http.post('*/v1/translate', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getPostV1TranslateResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
 export const getPostV1AudioSpeechMockHandler = (overrideResponse?: TTSResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<TTSResponse> | TTSResponse)) => {
   return http.post('*/v1/audio/speech', async (info) => {await delay(1000);
   
@@ -12776,5 +12892,6 @@ export const getQuizApplicationAPIMock = () => [
   getGetHealthMockHandler(),
   getGetV1AdminWorkerDailyUsersUserIdQuestionsDateMockHandler(),
   getPostV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerateMockHandler(),
+  getPostV1TranslateMockHandler(),
   getPostV1AudioSpeechMockHandler()
 ]

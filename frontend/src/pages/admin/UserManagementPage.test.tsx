@@ -16,17 +16,57 @@ import {
   useResumeUser,
 } from '../../api/admin';
 import { User, Role } from '../../api/api';
-import {
-  useGetV1SettingsLanguages,
-  useGetV1SettingsLevels,
-} from '../../api/api';
 import { renderWithProviders } from '../../test-utils';
 import { notifications } from '@mantine/notifications';
+
+const mockAuthStatusData = {
+  authenticated: true,
+  user: { id: 1, role: 'user' },
+};
+
+const mockRefetch = vi.fn();
 
 // Mock the hooks
 vi.mock('../../hooks/useAuth');
 vi.mock('../../api/admin');
-vi.mock('../../api/api');
+vi.mock('../../api/api', () => ({
+  // Mock auth status for AuthProvider
+  useGetV1AuthStatus: () => ({
+    data: mockAuthStatusData, // ✅ Stable reference
+    isLoading: false,
+    refetch: mockRefetch, // ✅ Stable reference
+  }),
+  usePostV1AuthLogin: () => ({
+    mutateAsync: vi.fn(),
+    isPending: false,
+  }),
+  usePostV1AuthLogout: () => ({
+    mutateAsync: vi.fn(),
+    isPending: false,
+  }),
+  usePutV1Settings: () => ({
+    mutateAsync: vi.fn(),
+    isPending: false,
+  }),
+  useGetV1SettingsLanguages: () => ({
+    data: ['english', 'spanish', 'french', 'german', 'italian'],
+    isLoading: false,
+    error: null,
+  }),
+  useGetV1SettingsLevels: () => ({
+    data: {
+      levels: ['A1', 'A2', 'B1', 'B2'],
+      level_descriptions: {
+        A1: 'Beginner',
+        A2: 'Elementary',
+        B1: 'Intermediate',
+        B2: 'Upper intermediate',
+      },
+    },
+    isLoading: false,
+    error: null,
+  }),
+}));
 vi.mock('@mantine/notifications');
 
 const mockUseAuth = useAuth as ReturnType<typeof vi.fn>;
@@ -43,12 +83,8 @@ const mockUseRoles = useRoles as ReturnType<typeof vi.fn>;
 const mockUseUsersPaginated = useUsersPaginated as ReturnType<typeof vi.fn>;
 const mockUsePauseUser = usePauseUser as ReturnType<typeof vi.fn>;
 const mockUseResumeUser = useResumeUser as ReturnType<typeof vi.fn>;
-const mockUseGetV1SettingsLanguages = useGetV1SettingsLanguages as ReturnType<
-  typeof vi.fn
->;
-const mockUseGetV1SettingsLevels = useGetV1SettingsLevels as ReturnType<
-  typeof vi.fn
->;
+const mockUseGetV1SettingsLanguages = vi.fn();
+const mockUseGetV1SettingsLevels = vi.fn();
 const mockNotifications = notifications as ReturnType<typeof vi.fn>;
 
 const mockUser: User = {

@@ -180,18 +180,11 @@ test.describe('Comprehensive API Tests', () => {
       const rolesContent = fs.readFileSync(rolesPath, 'utf8');
       testRolesData = JSON.parse(rolesContent);
     } else {
-      console.warn('test-roles.json not found, using default role data');
-      testRolesData = {
-        'admin': {id: 1, name: 'admin', description: 'Administrator role'},
-        'user': {id: 2, name: 'user', description: 'Regular user role'}
-      };
+      throw new Error('test-roles.json not found');
     }
 
     // Load conversations data
     const conversationsPath = path.join(path.dirname(fileURLToPath(import.meta.url)), 'test-conversations.json');
-    console.log(`Attempting to load conversations from: ${conversationsPath}`);
-    console.log(`Current working directory: ${process.cwd()}`);
-    console.log(`File exists: ${fs.existsSync(conversationsPath)}`);
 
     if (fs.existsSync(conversationsPath)) {
       try {
@@ -200,18 +193,14 @@ test.describe('Comprehensive API Tests', () => {
         // console.log(`Loaded ${Object.keys(testConversationsData).length} conversations from test data`);
         // console.log(`Sample conversation: ${JSON.stringify(Object.values(testConversationsData)[0], null, 2)}`);
       } catch (error) {
-        console.error('Error loading conversations data:', error);
-        testConversationsData = {};
+        throw new Error('Error loading conversations data:', error);
       }
     } else {
-      console.warn('test-conversations.json not found, using empty conversations data');
-      testConversationsData = {};
+      throw new Error('test-conversations.json not found');
     }
 
     // Load stories data
     const storiesPath = path.join(path.dirname(fileURLToPath(import.meta.url)), 'test-stories.json');
-    console.log(`Attempting to load stories from: ${storiesPath}`);
-    console.log(`File exists: ${fs.existsSync(storiesPath)}`);
 
     if (fs.existsSync(storiesPath)) {
       try {
@@ -219,12 +208,10 @@ test.describe('Comprehensive API Tests', () => {
         testStoriesData = JSON.parse(storiesContent);
         console.log(`Loaded ${Object.keys(testStoriesData).length} stories from test data`);
       } catch (error) {
-        console.error('Error loading stories data:', error);
-        testStoriesData = {};
+        throw new Error('Error loading stories data:', error);
       }
     } else {
-      console.warn('test-stories.json not found, using empty stories data');
-      testStoriesData = {};
+      throw new Error('test-stories.json not found');
     }
 
     // Initialize available user IDs
@@ -660,6 +647,12 @@ test.describe('Comprehensive API Tests', () => {
       if (key.includes('reason')) {
         return 'Test reason';
       }
+      if (key.includes('language') || key.includes('_language')) {
+        // For language fields, use a valid language code
+        // Common language codes that are likely to be supported
+        const commonLanguages = ['en', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'ko', 'zh'];
+        return commonLanguages[Math.floor(Math.random() * commonLanguages.length)];
+      }
       return 'test_value';
     }
 
@@ -1013,7 +1006,6 @@ function findConversationForUser(username: string): any {
     Object.values(userData).forEach((user: any) => {
       userIdToUsername[(user as any).id] = (user as any).username;
     });
-    console.log(`Loaded ${availableUserIds.length} user IDs from test data:`, availableUserIds.slice(0, 5));
   }
 
   function initializeAvailableStoryIds() {
@@ -1049,10 +1041,6 @@ function findConversationForUser(username: string): any {
       }
     });
 
-    console.log(`📊 INITIALIZED STORY DATA:`);
-    console.log(`   Available story IDs: ${availableStoryIds.join(', ')}`);
-    console.log(`   Deleted story IDs: ${Array.from(deletedStoryIds).join(', ')}`);
-    console.log(`   Username to story mapping:`, Object.entries(usernameToStoryIds).map(([user, stories]) => `${user}: [${stories.join(', ')}]`).join(', '));
   }
 
   function initializeAvailableSectionIds() {
@@ -1075,9 +1063,6 @@ function findConversationForUser(username: string): any {
       }
     }
 
-    console.log(`📊 INITIALIZED SECTION DATA:`);
-    console.log(`   Available section IDs: ${availableSectionIds.join(', ')}`);
-    console.log(`   Total sections: ${availableSectionIds.length}`);
   }
 
   // Helper to get a user ID by username from tests/test-users.json
@@ -1172,12 +1157,8 @@ function findConversationForUser(username: string): any {
   }
 
   function getAvailableConversationId(username?: string, forDeletion: boolean = false): string {
-    // console.log(`getAvailableConversationId called with username: ${username}, forDeletion: ${forDeletion}`);
-    // console.log(`testConversationsData keys: ${Object.keys(testConversationsData)}`);
-    // console.log(`testConversationsData length: ${Object.keys(testConversationsData).length}`);
-
     if (!testConversationsData || Object.keys(testConversationsData).length === 0) {
-      console.error('No conversation data available!');
+      throw new Error('No conversation data available!');
       throw new Error('No conversation data available. Test conversations may not have been created during setup.');
     }
 
@@ -1231,7 +1212,6 @@ function findConversationForUser(username: string): any {
   }
 
   async function getAvailableStoryId(username?: string, includeArchived: boolean = false, storyData?: any, request?: any): Promise<number> {
-    console.log(`🔍 GETTING AVAILABLE STORY ID for user: ${username}, includeArchived: ${includeArchived}, deleted stories: ${Array.from(deletedStoryIds).join(', ')}`);
 
     if (availableStoryIds.length === 0) {
       throw new Error('No available story IDs. Test data setup may have failed.');
@@ -1248,7 +1228,6 @@ function findConversationForUser(username: string): any {
 
     // Also check the database for stories that actually exist
     const existingStories = await getStoriesFromDatabase(username, request);
-    console.log(`🔍 DATABASE STORIES for ${username}: ${existingStories.map(s => `${s.id}(${s.status})`).join(', ')}`);
 
     if (username) {
       // First, filter database stories for this user
@@ -1263,27 +1242,23 @@ function findConversationForUser(username: string): any {
       if (userDbStories.length > 0) {
         // Return the first available story from database
         const selectedStory = userDbStories[0];
-        console.log(`✅ FOUND DATABASE STORY: ${selectedStory.id}(${selectedStory.status}) for ${username}`);
         return selectedStory.id;
       }
 
       // Fallback to test data filtering
       const userStoryIds = usernameToStoryIds[username];
-      console.log(`🔍 USER STORY LOOKUP: ${username} has stories: ${userStoryIds?.join(', ') || 'none'}`);
 
       if (userStoryIds && userStoryIds.length > 0) {
         // Filter for stories based on status and exclude deleted ones
         const filteredUserStoryIds = userStoryIds.filter(storyId => {
           // Skip deleted stories
           if (deletedStoryIds.has(storyId)) {
-            console.log(`   Skipping deleted story: ${storyId}`);
             return false;
           }
 
           // Check if story exists in database
           const dbStory = existingStories.find(s => s.id === storyId);
           if (!dbStory) {
-            console.log(`   Story ${storyId} not found in database`);
             return false;
           }
 
@@ -1301,7 +1276,6 @@ function findConversationForUser(username: string): any {
         if (filteredUserStoryIds.length > 0) {
           // Return the first story ID from the test data
           // The stories should exist in the database based on test setup
-          console.log(`✅ FOUND USER STORIES: ${filteredUserStoryIds.join(', ')} for ${username}`);
           return filteredUserStoryIds[0];
         } else {
           console.log(`❌ NO USER STORIES FOUND for ${username}, falling back to global list`);
@@ -1351,7 +1325,6 @@ function findConversationForUser(username: string): any {
     if (globalDbStories.length > 0) {
       // Return the first available story from database
       const selectedStory = globalDbStories[0];
-      console.log(`✅ FOUND GLOBAL DATABASE STORY: ${selectedStory.id}(${selectedStory.status})`);
       return selectedStory.id;
     }
 
@@ -1380,7 +1353,6 @@ function findConversationForUser(username: string): any {
 
     // Return the first story ID matching the criteria
     const selectedStoryId = filteredStoryIds[0];
-    console.log(`✅ RETURNING STORY ID: ${selectedStoryId} for user: ${username}, filtered from: ${filteredStoryIds.join(', ')}`);
     return selectedStoryId;
   }
 
@@ -1410,7 +1382,6 @@ function findConversationForUser(username: string): any {
           // Find the user by username
           const user = Object.values(userData).find((u: any) => u.username === assignment.username) as any;
           if (user && user.id) {
-            // console.log(`Found user ${assignment.username} with ID ${user.id} for date ${date}`);
             return user.id;
           }
         }

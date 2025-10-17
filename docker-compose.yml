@@ -166,12 +166,15 @@ services:
         APP_VERSION: ${APP_VERSION}
         COMMIT_HASH: ${COMMIT_HASH}
         BUILD_TIME: ${BUILD_TIME}
+        VITE_GOOGLE_TRANSLATE_API_KEY: ${VITE_GOOGLE_TRANSLATE_API_KEY}
       cache_from:
         - type=local,src=/tmp/.buildx-cache-frontend
       # cache_to:
       #   - type=local,dest=/tmp/.buildx-cache-frontend-new,mode=max
       x-bake:
         provenance: false
+    env_file:
+      - .env
     ports:
       - "${FRONTEND_PORT:-3000}:80"
     depends_on:

@@ -4,3 +4,11 @@ system:
 
 # Test mode configuration
 is_test: true
+
+# Override translation to use no-op provider for testing
+translation:
+  default_provider: "noop"
+  providers:
+    noop:
+      name: "No-op Translation"
+      code: "noop"

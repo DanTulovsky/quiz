@@ -78,6 +78,11 @@ func NewApplication(container di.ServiceContainerInterface) (*Application, error
 		return nil, contextutils.WrapError(err, "failed to get conversation service")
 	}
 
+	translationService, err := container.GetTranslationService()
+	if err != nil {
+		return nil, contextutils.WrapError(err, "failed to get translation service")
+	}
+
 	// Use the router factory
 	router := handlers.NewRouter(
 		container.GetConfig(),
@@ -91,6 +96,7 @@ func NewApplication(container di.ServiceContainerInterface) (*Application, error
 		conversationService,
 		oauthService,
 		generationHintService,
+		translationService,
 		container.GetLogger(),
 	)
 
