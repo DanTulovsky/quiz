@@ -959,7 +959,7 @@ const DataExplorerPage: React.FC = () => {
               }
               data={
                 users
-                  .filter((u: any) => u.user && u.user.id)
+                  .filter((u: any) => u?.user?.id)
                   .map((u: any) => ({
                     value: u.user!.id.toString(),
                     label: u.user!.username || `user-${u.user!.id}`,

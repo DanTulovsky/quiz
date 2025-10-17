@@ -1191,6 +1191,7 @@ tasks:
   test-frontend:
     desc: "Run frontend unit tests"
     dir: frontend
+    deps: [setup-frontend]
     env:
       NODE_OPTIONS: "--max-old-space-size=16384 --no-deprecation"
     cmds:
@@ -1782,6 +1783,7 @@ tasks:
 
   test-frontend-file:
     desc: "Run a single frontend unit test file (vitest, CI mode)"
+    deps: [setup-frontend]
     dir: frontend
     cmds:
       - |

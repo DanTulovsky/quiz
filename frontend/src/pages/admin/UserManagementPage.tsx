@@ -25,6 +25,7 @@ import {
   Paper,
   SimpleGrid,
   ThemeIcon,
+  Progress,
 } from '@mantine/core';
 import {
   IconTrash,
@@ -361,7 +362,8 @@ const UserManagementPage: React.FC = () => {
                 </Text>
                 <Text size='xl' fw={700}>
                   {usersData?.users?.filter(
-                    (u: { ai_enabled?: boolean }) => u?.ai_enabled
+                    (u: { user?: { ai_enabled?: boolean } }) =>
+                      u?.user?.ai_enabled
                   ).length || 0}
                 </Text>
               </div>
@@ -379,9 +381,9 @@ const UserManagementPage: React.FC = () => {
                 </Text>
                 <Text size='xl' fw={700}>
                   {usersData?.users?.filter(
-                    (u: { last_active?: string }) =>
-                      u?.last_active &&
-                      new Date(u.last_active) >
+                    (u: { user?: { last_active?: string } }) =>
+                      u?.user?.last_active &&
+                      new Date(u.user.last_active) >
                         new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
                   ).length || 0}
                 </Text>
@@ -519,198 +521,212 @@ const UserManagementPage: React.FC = () => {
                 </Table.Thead>
                 <Table.Tbody>
                   {usersData.users
-                    .filter(userData => userData?.id)
-                    .map(userData => (
-                      <Table.Tr key={userData.id}>
-                        <Table.Td>
-                          <Stack gap='xs'>
-                            <Text fw={500}>{userData?.username}</Text>
-                            <Text size='sm' c='dimmed'>
-                              {userData?.email}
-                            </Text>
-                            <Group gap='xs'>
-                              {userData?.roles?.map((role: Role) => (
-                                <Badge key={role.id} color='green' size='xs'>
-                                  {role.name}
-                                </Badge>
-                              ))}
-                            </Group>
-                          </Stack>
-                        </Table.Td>
-                        <Table.Td>
-                          <Badge color='gray' size='sm'>
-                            {userData?.current_level || 'A1'}
-                          </Badge>
-                        </Table.Td>
-                        <Table.Td>
-                          <Text size='sm'>
-                            {userData?.preferred_language || 'N/A'}
-                          </Text>
-                        </Table.Td>
-                        <Table.Td>
-                          {userData?.ai_enabled ? (
-                            <Badge color='blue' size='sm'>
-                              AI Enabled
-                            </Badge>
-                          ) : (
+                    .filter(userData => userData?.user?.id)
+                    .map(userData => {
+                      const user = userData.user;
+                      return (
+                        <Table.Tr key={user.id}>
+                          <Table.Td>
+                            <Stack gap='xs'>
+                              <Text fw={500}>{user?.username}</Text>
+                              <Text size='sm' c='dimmed'>
+                                {user?.email}
+                              </Text>
+                              <Group gap='xs'>
+                                {user?.roles?.map((role: Role) => (
+                                  <Badge key={role.id} color='green' size='xs'>
+                                    {role.name}
+                                  </Badge>
+                                ))}
+                              </Group>
+                            </Stack>
+                          </Table.Td>
+                          <Table.Td>
                             <Badge color='gray' size='sm'>
-                              AI Disabled
+                              {user?.current_level || 'A1'}
                             </Badge>
-                          )}
-                        </Table.Td>
-                        <Table.Td>
-                          {userData?.is_paused ? (
-                            <Badge color='red' size='sm'>
-                              Paused
-                            </Badge>
-                          ) : (
-                            <Badge color='green' size='sm'>
-                              Active
-                            </Badge>
-                          )}
-                        </Table.Td>
-                        <Table.Td>
-                          <Text size='sm'>
-                            {userData?.last_active
-                              ? new Date(
-                                  userData.last_active
-                                ).toLocaleDateString()
-                              : 'Never'}
-                          </Text>
-                        </Table.Td>
-                        <Table.Td>
-                          <Text size='sm' c='dimmed'>
-                            Progress data not available
-                          </Text>
-                        </Table.Td>
-                        <Table.Td>
-                          <Menu>
-                            <Menu.Target>
-                              <ActionIcon variant='subtle' size='sm'>
-                                <IconDotsVertical size={16} />
-                              </ActionIcon>
-                            </Menu.Target>
-                            <Menu.Dropdown>
-                              <Menu.Item
-                                leftSection={<IconEdit size={16} />}
-                                onClick={() => {
-                                  setSelectedUser(userData || null);
-                                  setEditForm({
-                                    username: userData?.username || '',
-                                    email: userData?.email || '',
-                                    timezone: userData?.timezone || '',
-                                    preferred_language:
-                                      userData?.preferred_language || '',
-                                    current_level:
-                                      userData?.current_level || '',
-                                    ai_enabled: userData?.ai_enabled || false,
-                                    ai_provider: userData?.ai_provider || '',
-                                    ai_model: userData?.ai_model || '',
-                                    api_key: '',
-                                    selectedRoles:
-                                      userData?.roles?.map(
-                                        (role: Role) => role.name
-                                      ) || [],
-                                  });
-                                  setIsEditModalOpen(true);
-                                }}
-                              >
-                                Edit
-                              </Menu.Item>
-                              <Menu.Item
-                                leftSection={<IconKey size={16} />}
-                                onClick={() => {
-                                  setSelectedUser(userData || null);
-                                  setIsPasswordModalOpen(true);
-                                }}
-                              >
-                                Reset Password
-                              </Menu.Item>
-                              {userData?.is_paused ? (
+                          </Table.Td>
+                          <Table.Td>
+                            <Text size='sm'>
+                              {user?.preferred_language || 'N/A'}
+                            </Text>
+                          </Table.Td>
+                          <Table.Td>
+                            {user?.ai_enabled ? (
+                              <Badge color='blue' size='sm'>
+                                AI Enabled
+                              </Badge>
+                            ) : (
+                              <Badge color='gray' size='sm'>
+                                AI Disabled
+                              </Badge>
+                            )}
+                          </Table.Td>
+                          <Table.Td>
+                            {user?.is_paused ? (
+                              <Badge color='red' size='sm'>
+                                Paused
+                              </Badge>
+                            ) : (
+                              <Badge color='green' size='sm'>
+                                Active
+                              </Badge>
+                            )}
+                          </Table.Td>
+                          <Table.Td>
+                            <Text size='sm'>
+                              {user?.last_active
+                                ? new Date(
+                                    user.last_active
+                                  ).toLocaleDateString()
+                                : 'Never'}
+                            </Text>
+                          </Table.Td>
+                          <Table.Td>
+                            <Progress
+                              value={
+                                user?.question_stats?.total > 0
+                                  ? (user.question_stats.correct /
+                                      user.question_stats.total) *
+                                    100
+                                  : 0
+                              }
+                              size='sm'
+                              w={80}
+                            />
+                            <Text size='xs' c='dimmed' mt='xs'>
+                              {user?.question_stats?.correct || 0}/
+                              {user?.question_stats?.total || 0}
+                            </Text>
+                          </Table.Td>
+                          <Table.Td>
+                            <Menu>
+                              <Menu.Target>
+                                <ActionIcon variant='subtle' size='sm'>
+                                  <IconDotsVertical size={16} />
+                                </ActionIcon>
+                              </Menu.Target>
+                              <Menu.Dropdown>
                                 <Menu.Item
-                                  leftSection={<IconPlayerPlay size={16} />}
+                                  leftSection={<IconEdit size={16} />}
                                   onClick={() => {
-                                    if (userData?.id) {
-                                      resumeUserMutation.mutate(userData.id, {
-                                        onSuccess: () => {
-                                          notifications.show({
-                                            title: 'Success',
-                                            message: `User ${userData.username} resumed successfully`,
-                                            color: 'green',
-                                            icon: <IconCheck size={16} />,
-                                          });
-                                        },
-                                        onError: () => {
-                                          notifications.show({
-                                            title: 'Error',
-                                            message: `Failed to resume user ${userData.username}`,
-                                            color: 'red',
-                                            icon: <IconX size={16} />,
-                                          });
-                                        },
-                                      });
-                                    }
+                                    setSelectedUser(user);
+                                    setEditForm({
+                                      username: user?.username || '',
+                                      email: user?.email || '',
+                                      timezone: user?.timezone || '',
+                                      preferred_language:
+                                        user?.preferred_language || '',
+                                      current_level: user?.current_level || '',
+                                      ai_enabled: user?.ai_enabled || false,
+                                      ai_provider: user?.ai_provider || '',
+                                      ai_model: user?.ai_model || '',
+                                      api_key: '',
+                                      selectedRoles:
+                                        user?.roles?.map(
+                                          (role: Role) => role.name
+                                        ) || [],
+                                    });
+                                    setIsEditModalOpen(true);
                                   }}
                                 >
-                                  Resume User
+                                  Edit
                                 </Menu.Item>
-                              ) : (
                                 <Menu.Item
-                                  leftSection={<IconPlayerPause size={16} />}
+                                  leftSection={<IconKey size={16} />}
                                   onClick={() => {
-                                    if (userData?.id) {
-                                      pauseUserMutation.mutate(userData.id, {
-                                        onSuccess: () => {
-                                          notifications.show({
-                                            title: 'Success',
-                                            message: `User ${userData.username} paused successfully`,
-                                            color: 'green',
-                                            icon: <IconCheck size={16} />,
-                                          });
-                                        },
-                                        onError: () => {
-                                          notifications.show({
-                                            title: 'Error',
-                                            message: `Failed to pause user ${userData.username}`,
-                                            color: 'red',
-                                            icon: <IconX size={16} />,
-                                          });
-                                        },
-                                      });
-                                    }
+                                    setSelectedUser(user);
+                                    setIsPasswordModalOpen(true);
                                   }}
                                 >
-                                  Pause User
+                                  Reset Password
                                 </Menu.Item>
-                              )}
-                              <Menu.Item
-                                leftSection={<IconRefresh size={16} />}
-                                onClick={() => {
-                                  setSelectedUser(userData || null);
-                                  setIsClearDataModalOpen(true);
-                                }}
-                              >
-                                Clear Data
-                              </Menu.Item>
-                              <Menu.Divider />
-                              <Menu.Item
-                                leftSection={<IconTrash size={16} />}
-                                color='red'
-                                onClick={() => {
-                                  setUserToDelete({
-                                    id: userData?.id || 0,
-                                    username: userData?.username || '',
-                                  });
-                                  setIsDeleteModalOpen(true);
-                                }}
-                              >
-                                Delete
-                              </Menu.Item>
-                            </Menu.Dropdown>
-                          </Menu>
-                        </Table.Td>
-                      </Table.Tr>
-                    ))}
+                                {user?.is_paused ? (
+                                  <Menu.Item
+                                    leftSection={<IconPlayerPlay size={16} />}
+                                    onClick={() => {
+                                      if (user?.id) {
+                                        resumeUserMutation.mutate(user.id, {
+                                          onSuccess: () => {
+                                            notifications.show({
+                                              title: 'Success',
+                                              message: `User ${user.username} resumed successfully`,
+                                              color: 'green',
+                                              icon: <IconCheck size={16} />,
+                                            });
+                                          },
+                                          onError: () => {
+                                            notifications.show({
+                                              title: 'Error',
+                                              message: `Failed to resume user ${user.username}`,
+                                              color: 'red',
+                                              icon: <IconX size={16} />,
+                                            });
+                                          },
+                                        });
+                                      }
+                                    }}
+                                  >
+                                    Resume User
+                                  </Menu.Item>
+                                ) : (
+                                  <Menu.Item
+                                    leftSection={<IconPlayerPause size={16} />}
+                                    onClick={() => {
+                                      if (user?.id) {
+                                        pauseUserMutation.mutate(user.id, {
+                                          onSuccess: () => {
+                                            notifications.show({
+                                              title: 'Success',
+                                              message: `User ${user.username} paused successfully`,
+                                              color: 'green',
+                                              icon: <IconCheck size={16} />,
+                                            });
+                                          },
+                                          onError: () => {
+                                            notifications.show({
+                                              title: 'Error',
+                                              message: `Failed to pause user ${user.username}`,
+                                              color: 'red',
+                                              icon: <IconX size={16} />,
+                                            });
+                                          },
+                                        });
+                                      }
+                                    }}
+                                  >
+                                    Pause User
+                                  </Menu.Item>
+                                )}
+                                <Menu.Item
+                                  leftSection={<IconRefresh size={16} />}
+                                  onClick={() => {
+                                    setSelectedUser(user);
+                                    setIsClearDataModalOpen(true);
+                                  }}
+                                >
+                                  Clear Data
+                                </Menu.Item>
+                                <Menu.Divider />
+                                <Menu.Item
+                                  leftSection={<IconTrash size={16} />}
+                                  color='red'
+                                  onClick={() => {
+                                    setUserToDelete({
+                                      id: user?.id || 0,
+                                      username: user?.username || '',
+                                    });
+                                    setIsDeleteModalOpen(true);
+                                  }}
+                                >
+                                  Delete
+                                </Menu.Item>
+                              </Menu.Dropdown>
+                            </Menu>
+                          </Table.Td>
+                        </Table.Tr>
+                      );
+                    })}
                 </Table.Tbody>
               </Table>
 

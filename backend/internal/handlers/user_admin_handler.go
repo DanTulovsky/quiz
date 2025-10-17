@@ -127,17 +127,23 @@ func (h *UserAdminHandler) GetUsersPaginated(c *gin.Context) {
 		return
 	}
 
-	// Convert to response format
-	var userResponses []ProfileResponse
+	// Convert to response format matching swagger specification
+	var userItems []gin.H
 	for _, user := range users {
-		userResponses = append(userResponses, h.convertUserToProfileResponse(c.Request.Context(), &user))
+		profileResponse := h.convertUserToProfileResponse(c.Request.Context(), &user)
+
+		// Create user item with nested user object as per swagger spec
+		userItem := gin.H{
+			"user": profileResponse,
+		}
+		userItems = append(userItems, userItem)
 	}
 
 	// Calculate pagination info
 	totalPages := (total + pageSize - 1) / pageSize
 
 	c.JSON(http.StatusOK, gin.H{
-		"users": userResponses,
+		"users": userItems,
 		"pagination": gin.H{
 			"page":        page,
 			"page_size":   pageSize,
