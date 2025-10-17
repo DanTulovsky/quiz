@@ -46,16 +46,12 @@ vi.mock('../api/api', () => ({
   })),
 }));
 vi.mock('react-markdown', () => ({
-  default: ({ children, components }: any) => {
-    // Simple mock that renders children and applies components
+  default: ({ children }: any) => {
+    // Simple mock that renders children as plain text for testing
     if (typeof children === 'string') {
-      // For code blocks, check if the custom code component is called with className
-      if (components?.code) {
-        return components.code({ children: 'test code', className: 'language-javascript' });
-      }
-      return <div>{children}</div>;
+      return <span data-testid='markdown-content'>{children}</span>;
     }
-    return <div>{children}</div>;
+    return <span data-testid='markdown-content'>{children}</span>;
   },
 }));
 
@@ -92,7 +88,9 @@ const mockPaginationData = {
 };
 
 const mockUseAuth = useAuth as vi.MockedFunction<typeof useAuth>;
-const mockUsePagination = usePagination as vi.MockedFunction<typeof usePagination>;
+const mockUsePagination = usePagination as vi.MockedFunction<
+  typeof usePagination
+>;
 
 describe('BookmarkedMessagesPage', () => {
   beforeEach(() => {
@@ -107,7 +105,6 @@ describe('BookmarkedMessagesPage', () => {
     });
 
     mockUsePagination.mockReturnValue(mockPaginationData);
-
   });
 
   afterEach(() => {
@@ -118,9 +115,13 @@ describe('BookmarkedMessagesPage', () => {
     renderWithProviders(<BookmarkedMessagesPage />);
 
     expect(screen.getByText('Bookmarked Messages')).toBeInTheDocument();
-    expect(screen.getByText('View and manage your bookmarked AI responses')).toBeInTheDocument();
+    expect(
+      screen.getByText('View and manage your bookmarked AI responses')
+    ).toBeInTheDocument();
     expect(screen.getByText('1 bookmarked')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('Search bookmarked messages...')).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText('Search bookmarked messages...')
+    ).toBeInTheDocument();
     expect(screen.getByText('Search')).toBeInTheDocument();
   });
 
@@ -135,25 +136,33 @@ describe('BookmarkedMessagesPage', () => {
   it('renders message cards that are clickable', () => {
     renderWithProviders(<BookmarkedMessagesPage />);
 
-    const messageCard = screen.getByText('Test message content').closest('div');
+    // Find the message card by looking for the markdown content
+    const markdownContent = screen.getByTestId('markdown-content');
+    const messageCard = markdownContent.closest('[style*="cursor: pointer"]');
     expect(messageCard).toBeInTheDocument();
 
     // The card should be clickable (has cursor pointer style)
-    expect(messageCard).toHaveStyle({ cursor: 'pointer' });
+    // Check that the style attribute contains cursor: pointer
+    expect(messageCard?.getAttribute('style')).toContain('cursor: pointer');
   });
 
   it('renders remove bookmark button in message cards', () => {
     renderWithProviders(<BookmarkedMessagesPage />);
 
-    // Should have remove bookmark button (ActionIcon)
-    const removeButton = screen.getByRole('button');
+    // Should have remove bookmark button (ActionIcon) - look for all buttons and find the one with bookmark-x icon
+    const buttons = screen.getAllByRole('button');
+    const removeButton = buttons.find(button =>
+      button.querySelector('.lucide-bookmark-x')
+    );
     expect(removeButton).toBeInTheDocument();
   });
 
   it('handles search input correctly', async () => {
     renderWithProviders(<BookmarkedMessagesPage />);
 
-    const searchInput = screen.getByPlaceholderText('Search bookmarked messages...');
+    const searchInput = screen.getByPlaceholderText(
+      'Search bookmarked messages...'
+    );
     fireEvent.change(searchInput, { target: { value: 'test search' } });
 
     expect(searchInput).toHaveValue('test search');
@@ -162,7 +171,9 @@ describe('BookmarkedMessagesPage', () => {
   it('triggers search when Enter key is pressed', async () => {
     renderWithProviders(<BookmarkedMessagesPage />);
 
-    const searchInput = screen.getByPlaceholderText('Search bookmarked messages...');
+    const searchInput = screen.getByPlaceholderText(
+      'Search bookmarked messages...'
+    );
     fireEvent.change(searchInput, { target: { value: 'test search' } });
 
     fireEvent.keyDown(searchInput, { key: 'Enter', code: 'Enter' });
@@ -175,7 +186,9 @@ describe('BookmarkedMessagesPage', () => {
   it('triggers search when Search button is clicked', async () => {
     renderWithProviders(<BookmarkedMessagesPage />);
 
-    const searchInput = screen.getByPlaceholderText('Search bookmarked messages...');
+    const searchInput = screen.getByPlaceholderText(
+      'Search bookmarked messages...'
+    );
     fireEvent.change(searchInput, { target: { value: 'test search' } });
 
     const searchButton = screen.getByText('Search');
@@ -190,7 +203,9 @@ describe('BookmarkedMessagesPage', () => {
     renderWithProviders(<BookmarkedMessagesPage />);
 
     // Set search query first
-    const searchInput = screen.getByPlaceholderText('Search bookmarked messages...');
+    const searchInput = screen.getByPlaceholderText(
+      'Search bookmarked messages...'
+    );
     fireEvent.change(searchInput, { target: { value: 'test search' } });
 
     // Click search to set active query
@@ -208,7 +223,6 @@ describe('BookmarkedMessagesPage', () => {
     expect(searchInput).toHaveValue('');
   });
 
-
   it('shows loading state correctly', () => {
     mockUsePagination.mockReturnValue({
       ...mockPaginationData,
@@ -217,7 +231,9 @@ describe('BookmarkedMessagesPage', () => {
 
     renderWithProviders(<BookmarkedMessagesPage />);
 
-    expect(screen.getByText('Loading bookmarked messages...')).toBeInTheDocument();
+    expect(
+      screen.getByText('Loading bookmarked messages...')
+    ).toBeInTheDocument();
   });
 
   it('shows empty state when no messages found', () => {
@@ -228,7 +244,11 @@ describe('BookmarkedMessagesPage', () => {
 
     renderWithProviders(<BookmarkedMessagesPage />);
 
-    expect(screen.getByText('No bookmarked messages yet. Bookmark messages from conversations to see them here.')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'No bookmarked messages yet. Bookmark messages from conversations to see them here.'
+      )
+    ).toBeInTheDocument();
   });
 
   it('shows no search results message when search returns no results', () => {
@@ -240,13 +260,17 @@ describe('BookmarkedMessagesPage', () => {
     renderWithProviders(<BookmarkedMessagesPage />);
 
     // Set active search query
-    const searchInput = screen.getByPlaceholderText('Search bookmarked messages...');
+    const searchInput = screen.getByPlaceholderText(
+      'Search bookmarked messages...'
+    );
     fireEvent.change(searchInput, { target: { value: 'nonexistent' } });
 
     const searchButton = screen.getByText('Search');
     fireEvent.click(searchButton);
 
-    expect(screen.getByText('No bookmarked messages found matching your search.')).toBeInTheDocument();
+    expect(
+      screen.getByText('No bookmarked messages found matching your search.')
+    ).toBeInTheDocument();
   });
 
   it('renders pagination controls when there are multiple pages', () => {
@@ -270,14 +294,19 @@ describe('BookmarkedMessagesPage', () => {
     renderWithProviders(<BookmarkedMessagesPage />);
 
     // The remove bookmark button should exist (ActionIcon with aria-label)
-    const removeButton = screen.getByRole('button');
+    const buttons = screen.getAllByRole('button');
+    const removeButton = buttons.find(button =>
+      button.querySelector('.lucide-bookmark-x')
+    );
     expect(removeButton).toBeInTheDocument();
   });
 
   it('renders message content correctly', () => {
     const messageWithContent = {
       ...mockPaginationData.data[0],
-      content: { text: 'Test message content with special characters: **bold** and *italic*' },
+      content: {
+        text: 'Test message content with special characters: **bold** and *italic*',
+      },
     };
 
     mockUsePagination.mockReturnValue({
@@ -287,8 +316,14 @@ describe('BookmarkedMessagesPage', () => {
 
     renderWithProviders(<BookmarkedMessagesPage />);
 
-    // The message content should be rendered
-    expect(screen.getByText('Test message content with special characters: **bold** and *italic*')).toBeInTheDocument();
+    // The message content should be rendered - check the markdown content element
+    const markdownContent = screen.getByTestId('markdown-content');
+    expect(markdownContent).toBeInTheDocument();
+    expect(markdownContent).toHaveTextContent(
+      'Test message content with special characters:'
+    );
+    expect(markdownContent).toHaveTextContent('bold');
+    expect(markdownContent).toHaveTextContent('italic');
   });
 
   it('handles code blocks with language detection (tests the className fix)', () => {

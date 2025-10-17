@@ -2640,12 +2640,14 @@ func TestCheckForDailyQuestionAssignments(t *testing.T) {
 					Username:          "user1",
 					PreferredLanguage: sql.NullString{Valid: true, String: "italian"},
 					CurrentLevel:      sql.NullString{Valid: true, String: "B1"},
+					AIEnabled:         sql.NullBool{Valid: true, Bool: true},
 				},
 				{
 					ID:                2,
 					Username:          "user2",
 					PreferredLanguage: sql.NullString{Valid: true, String: "italian"},
 					CurrentLevel:      sql.NullString{Valid: true, String: "A1"},
+					AIEnabled:         sql.NullBool{Valid: true, Bool: true},
 				},
 			},
 			assignmentError: nil,
@@ -2660,12 +2662,14 @@ func TestCheckForDailyQuestionAssignments(t *testing.T) {
 					Username:          "user1",
 					PreferredLanguage: sql.NullString{Valid: false},
 					CurrentLevel:      sql.NullString{Valid: true, String: "B1"},
+					AIEnabled:         sql.NullBool{Valid: true, Bool: true},
 				},
 				{
 					ID:                2,
 					Username:          "user2",
 					PreferredLanguage: sql.NullString{Valid: true, String: "italian"},
 					CurrentLevel:      sql.NullString{Valid: true, String: "A1"},
+					AIEnabled:         sql.NullBool{Valid: true, Bool: true},
 				},
 			},
 			assignmentError: nil,
@@ -2680,12 +2684,14 @@ func TestCheckForDailyQuestionAssignments(t *testing.T) {
 					Username:          "user1",
 					PreferredLanguage: sql.NullString{Valid: true, String: "italian"},
 					CurrentLevel:      sql.NullString{Valid: false},
+					AIEnabled:         sql.NullBool{Valid: true, Bool: true},
 				},
 				{
 					ID:                2,
 					Username:          "user2",
 					PreferredLanguage: sql.NullString{Valid: true, String: "italian"},
 					CurrentLevel:      sql.NullString{Valid: true, String: "A1"},
+					AIEnabled:         sql.NullBool{Valid: true, Bool: true},
 				},
 			},
 			assignmentError: nil,
@@ -2700,12 +2706,14 @@ func TestCheckForDailyQuestionAssignments(t *testing.T) {
 					Username:          "user1",
 					PreferredLanguage: sql.NullString{Valid: true, String: "italian"},
 					CurrentLevel:      sql.NullString{Valid: true, String: "B1"},
+					AIEnabled:         sql.NullBool{Valid: true, Bool: true},
 				},
 				{
 					ID:                2,
 					Username:          "user2",
 					PreferredLanguage: sql.NullString{Valid: true, String: "italian"},
 					CurrentLevel:      sql.NullString{Valid: true, String: "A1"},
+					AIEnabled:         sql.NullBool{Valid: true, Bool: true},
 				},
 			},
 			assignmentError: errors.New("assignment failed"),
@@ -2789,12 +2797,14 @@ func TestGetUsersEligibleForDailyQuestions(t *testing.T) {
 					Username:          "user1",
 					PreferredLanguage: sql.NullString{Valid: true, String: "italian"},
 					CurrentLevel:      sql.NullString{Valid: true, String: "B1"},
+					AIEnabled:         sql.NullBool{Valid: true, Bool: true},
 				},
 				{
 					ID:                2,
 					Username:          "user2",
 					PreferredLanguage: sql.NullString{Valid: true, String: "italian"},
 					CurrentLevel:      sql.NullString{Valid: true, String: "A1"},
+					AIEnabled:         sql.NullBool{Valid: true, Bool: true},
 				},
 			},
 			getUsersError:    nil,
@@ -2809,30 +2819,35 @@ func TestGetUsersEligibleForDailyQuestions(t *testing.T) {
 					Username:          "user1",
 					PreferredLanguage: sql.NullString{Valid: true, String: "italian"},
 					CurrentLevel:      sql.NullString{Valid: true, String: "B1"},
+					AIEnabled:         sql.NullBool{Valid: true, Bool: true},
 				},
 				{
 					ID:                2,
 					Username:          "user2",
 					PreferredLanguage: sql.NullString{Valid: false}, // No language
 					CurrentLevel:      sql.NullString{Valid: true, String: "A1"},
+					AIEnabled:         sql.NullBool{Valid: true, Bool: true},
 				},
 				{
 					ID:                3,
 					Username:          "user3",
 					PreferredLanguage: sql.NullString{Valid: true, String: "italian"},
 					CurrentLevel:      sql.NullString{Valid: false}, // No level
+					AIEnabled:         sql.NullBool{Valid: true, Bool: true},
 				},
 				{
 					ID:                4,
 					Username:          "user4",
 					PreferredLanguage: sql.NullString{Valid: true, String: ""}, // Empty language
 					CurrentLevel:      sql.NullString{Valid: true, String: "A1"},
+					AIEnabled:         sql.NullBool{Valid: true, Bool: true},
 				},
 				{
 					ID:                5,
 					Username:          "user5",
 					PreferredLanguage: sql.NullString{Valid: true, String: "italian"},
 					CurrentLevel:      sql.NullString{Valid: true, String: ""}, // Empty level
+					AIEnabled:         sql.NullBool{Valid: true, Bool: true},
 				},
 			},
 			getUsersError:    nil,
@@ -2914,6 +2929,7 @@ func TestDailyQuestionAssignmentIndependent(t *testing.T) {
 		Email:             sql.NullString{Valid: true, String: "test@example.com"},
 		PreferredLanguage: sql.NullString{Valid: true, String: "italian"},
 		CurrentLevel:      sql.NullString{Valid: true, String: "B1"},
+		AIEnabled:         sql.NullBool{Valid: true, Bool: true},
 	}
 
 	// Create learning preferences with daily reminders DISABLED

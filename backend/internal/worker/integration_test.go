@@ -55,14 +55,14 @@ func TestCheckForDailyQuestionAssignments_CreatesTwoDayHorizonAssignments(t *tes
 	if user == nil {
 		// Final fallback: insert user directly into DB and fetch by ID
 		var id int
-		err = db.QueryRowContext(context.Background(), `INSERT INTO users (username, preferred_language, current_level, ai_enabled, last_active, created_at, updated_at) VALUES ($1,$2,$3,$4,$5,NOW(),NOW()) RETURNING id`, uname, "italian", "A1", false, time.Now()).Scan(&id)
+		err = db.QueryRowContext(context.Background(), `INSERT INTO users (username, preferred_language, current_level, ai_enabled, last_active, created_at, updated_at) VALUES ($1,$2,$3,$4,$5,NOW(),NOW()) RETURNING id`, uname, "italian", "A1", true, time.Now()).Scan(&id)
 		require.NoError(t, err)
 		user, err = userService.GetUserByID(context.Background(), id)
 		require.NoError(t, err)
 	}
 	require.NotNil(t, user)
 	// Update required fields (email + timezone) so user is eligible
-	_, err = db.Exec(`UPDATE users SET email = $1, timezone = $2, last_active = $3 WHERE id = $4`, fmt.Sprintf("%s@example.com", uname), "UTC", time.Now(), user.ID)
+	_, err = db.Exec(`UPDATE users SET email = $1, timezone = $2, ai_enabled = $3, last_active = $4 WHERE id = $5`, fmt.Sprintf("%s@example.com", uname), "UTC", true, time.Now(), user.ID)
 	require.NoError(t, err)
 
 	// Create a question and assign to user so worker can pick from available pool

@@ -30,12 +30,6 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-const (
-	// NoActionPrefix is used to identify actions that should not be processed
-	NoActionPrefix        = config.NoActionPrefix
-	triggerThrottleWindow = config.WorkerTriggerThrottle // Prevent multiple triggers for same user within this window
-)
-
 // Status represents the current state of the worker
 type Status struct {
 	IsRunning       bool      `json:"is_running"`
@@ -371,12 +365,6 @@ func (w *Worker) checkForDailyQuestionAssignments(ctx context.Context) error {
 				})
 			} else {
 				successfulAssignments++
-				// 	w.logger.Info(ctx, "Successfully assigned daily questions", map[string]interface{}{
-				// 		"user_id":  user.ID,
-				// 		"username": user.Username,
-				// 		"timezone": timezone,
-				// 		"date":     target.Format("2006-01-02"),
-				// 	})
 			}
 		}
 	}
@@ -385,13 +373,6 @@ func (w *Worker) checkForDailyQuestionAssignments(ctx context.Context) error {
 		attribute.Int("assignments.successful", successfulAssignments),
 		attribute.Int("assignments.failed", failedAssignments),
 	)
-
-	w.logger.Info(ctx, "Completed daily question assignment check", map[string]interface{}{
-		"instance":               w.instance,
-		"eligible_users":         len(users),
-		"successful_assignments": successfulAssignments,
-		"failed_assignments":     failedAssignments,
-	})
 
 	return nil
 }
@@ -423,6 +404,15 @@ func (w *Worker) getUsersEligibleForDailyQuestions(ctx context.Context) ([]model
 
 		if !user.CurrentLevel.Valid || user.CurrentLevel.String == "" {
 			w.logger.Debug(ctx, "User missing current level, skipping daily question assignment", map[string]interface{}{
+				"user_id":  user.ID,
+				"username": user.Username,
+			})
+			continue
+		}
+
+		// USers with AI disabled are not eligible for daily questions
+		if !user.AIEnabled.Valid || !user.AIEnabled.Bool {
+			w.logger.Debug(ctx, "User has AI disabled, skipping daily question assignment", map[string]interface{}{
 				"user_id":  user.ID,
 				"username": user.Username,
 			})
@@ -510,12 +500,12 @@ func (w *Worker) Start(ctx context.Context) {
 	go w.heartbeatLoop(ctx)
 
 	// Main worker loop
-	ticker := time.NewTicker(config.WorkerHeartbeatInterval) // Check every 30 seconds
+	ticker := time.NewTicker(config.WorkerHeartbeatInterval)
 	defer ticker.Stop()
 
 	initialStatus := w.getInitialWorkerStatus(ctx)
 
-	w.logger.Info(ctx, "Worker started", map[string]interface{}{
+	w.logger.Info(ctx, "Worker started", map[string]any{
 		"instance": w.instance,
 		"status":   initialStatus,
 	})
@@ -524,7 +514,7 @@ func (w *Worker) Start(ctx context.Context) {
 	for {
 		select {
 		case <-ctx.Done():
-			w.logger.Info(ctx, "Worker shutting down", map[string]interface{}{
+			w.logger.Info(ctx, "Worker shutting down", map[string]any{
 				"instance": w.instance,
 			})
 			w.logActivity(ctx, "INFO", fmt.Sprintf("Worker %s shutting down", w.instance), nil, nil)
@@ -536,7 +526,7 @@ func (w *Worker) Start(ctx context.Context) {
 			w.run()
 
 		case <-w.manualTrigger:
-			w.logger.Info(ctx, "Worker triggered manually", map[string]interface{}{
+			w.logger.Info(ctx, "Worker triggered manually", map[string]any{
 				"instance": w.instance,
 			})
 			w.logActivity(ctx, "INFO", fmt.Sprintf("Worker %s triggered manually", w.instance), nil, nil)
@@ -588,7 +578,7 @@ func (w *Worker) getInitialWorkerStatus(ctx context.Context) string {
 }
 
 func (w *Worker) heartbeatLoop(ctx context.Context) {
-	ticker := time.NewTicker(config.WorkerHeartbeatInterval) // Heartbeat every 30 seconds
+	ticker := time.NewTicker(config.WorkerHeartbeatInterval)
 	defer ticker.Stop()
 
 	for {
@@ -604,7 +594,7 @@ func (w *Worker) heartbeatLoop(ctx context.Context) {
 // updateHeartbeat updates the heartbeat in the database
 func (w *Worker) updateHeartbeat(ctx context.Context) {
 	if err := w.workerService.UpdateHeartbeat(ctx, w.instance); err != nil {
-		w.logger.Error(ctx, "Failed to update heartbeat for worker", err, map[string]interface{}{
+		w.logger.Error(ctx, "Failed to update heartbeat for worker", err, map[string]any{
 			"instance": w.instance,
 		})
 	}
