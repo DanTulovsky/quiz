@@ -76,6 +76,7 @@ func (s *DailyQuestionService) AssignDailyQuestions(ctx context.Context, userID 
 	if user == nil {
 		return contextutils.ErrorWithContextf("user not found: %d", userID)
 	}
+	span.SetAttributes(attribute.String("user.name", user.Username))
 
 	language := user.PreferredLanguage.String
 	level := user.CurrentLevel.String
