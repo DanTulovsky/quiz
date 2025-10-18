@@ -12,3 +12,4 @@ translation:
     noop:
       name: "No-op Translation"
       code: "noop"
+      max_text_length: 5000

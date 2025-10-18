@@ -1,0 +1,390 @@
+package handlers
+
+import (
+	"net/http"
+	"strconv"
+
+	"quizapp/internal/api"
+	"quizapp/internal/config"
+	"quizapp/internal/observability"
+	"quizapp/internal/services"
+	contextutils "quizapp/internal/utils"
+
+	"github.com/gin-gonic/gin"
+	"go.opentelemetry.io/otel/attribute"
+)
+
+// SnippetsHandler handles snippets related HTTP requests
+type SnippetsHandler struct {
+	snippetsService services.SnippetsServiceInterface
+	cfg             *config.Config
+	logger          *observability.Logger
+}
+
+// NewSnippetsHandler creates a new SnippetsHandler instance
+func NewSnippetsHandler(snippetsService services.SnippetsServiceInterface, cfg *config.Config, logger *observability.Logger) *SnippetsHandler {
+	return &SnippetsHandler{
+		snippetsService: snippetsService,
+		cfg:             cfg,
+		logger:          logger,
+	}
+}
+
+// CreateSnippet handles POST /v1/snippets
+func (h *SnippetsHandler) CreateSnippet(c *gin.Context) {
+	ctx, span := observability.TraceSnippetFunction(c.Request.Context(), "create_snippet")
+	defer observability.FinishSpan(span, nil)
+
+	// Get user ID from context (set by auth middleware)
+	userID, exists := GetUserIDFromSession(c)
+	if !exists {
+		h.logger.Warn(ctx, "User ID not found in context")
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error":   "unauthorized",
+			"message": "User not authenticated",
+		})
+		return
+	}
+	username, exists := GetUsernameFromSession(c)
+	if !exists {
+		h.logger.Warn(ctx, "Username not found in context")
+		HandleAppError(c, contextutils.ErrUnauthorized)
+		return
+	}
+	span.SetAttributes(attribute.Int64("user.id", int64(userID)))
+	span.SetAttributes(attribute.String("user.username", username))
+
+	var req api.CreateSnippetRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		h.logger.Warn(ctx, "Invalid create snippet request format", map[string]interface{}{
+			"error": err.Error(),
+		})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "invalid_request",
+			"message": "Invalid request format",
+		})
+		return
+	}
+
+	snippet, err := h.snippetsService.CreateSnippet(ctx, int64(userID), req)
+	if err != nil {
+		h.logger.Error(ctx, "Failed to create snippet", err, map[string]interface{}{
+			"user_id": userID,
+		})
+
+		// Check if it's a duplicate error
+		if contextutils.IsError(err, contextutils.ErrRecordExists) {
+			c.JSON(http.StatusConflict, contextutils.ErrRecordExists.ToJSON())
+			return
+		}
+
+		HandleAppError(c, err)
+		return
+	}
+
+	// Convert to API response format
+	response := api.Snippet{
+		Id:              &snippet.ID,
+		UserId:          &snippet.UserID,
+		OriginalText:    &snippet.OriginalText,
+		TranslatedText:  &snippet.TranslatedText,
+		SourceLanguage:  &snippet.SourceLanguage,
+		TargetLanguage:  &snippet.TargetLanguage,
+		QuestionId:      snippet.QuestionID,
+		Context:         snippet.Context,
+		DifficultyLevel: snippet.DifficultyLevel,
+		CreatedAt:       &snippet.CreatedAt,
+		UpdatedAt:       &snippet.UpdatedAt,
+	}
+
+	span.SetAttributes(
+		attribute.Int64("snippet.id", snippet.ID),
+		attribute.Int64("user.id", int64(userID)),
+		attribute.String("snippet.original_text", snippet.OriginalText),
+		attribute.String("snippet.translated_text", snippet.TranslatedText),
+		attribute.String("snippet.source_language", snippet.SourceLanguage),
+		attribute.String("snippet.target_language", snippet.TargetLanguage),
+		attribute.Int64("snippet.question_id", *snippet.QuestionID),
+		attribute.String("snippet.context", *snippet.Context),
+		attribute.String("snippet.difficulty_level", *snippet.DifficultyLevel),
+	)
+
+	c.JSON(http.StatusCreated, response)
+}
+
+// GetSnippets handles GET /v1/snippets
+func (h *SnippetsHandler) GetSnippets(c *gin.Context) {
+	ctx, span := observability.TraceSnippetFunction(c.Request.Context(), "get_snippets")
+	defer observability.FinishSpan(span, nil)
+
+	// Get user ID from context (set by auth middleware)
+	userID, exists := GetUserIDFromSession(c)
+	if !exists {
+		h.logger.Warn(ctx, "User ID not found in context")
+		HandleAppError(c, contextutils.ErrUnauthorized)
+		return
+	}
+	username, exists := GetUsernameFromSession(c)
+	if !exists {
+		h.logger.Warn(ctx, "Username not found in context")
+		HandleAppError(c, contextutils.ErrUnauthorized)
+		return
+	}
+	span.SetAttributes(attribute.Int64("user.id", int64(userID)))
+	span.SetAttributes(attribute.String("user.username", username))
+	// Parse query parameters
+	params := api.GetV1SnippetsParams{}
+
+	if q := c.Query("q"); q != "" {
+		params.Q = &q
+	}
+	if sourceLang := c.Query("source_lang"); sourceLang != "" {
+		params.SourceLang = &sourceLang
+	}
+	if targetLang := c.Query("target_lang"); targetLang != "" {
+		params.TargetLang = &targetLang
+	}
+	if limitStr := c.Query("limit"); limitStr != "" {
+		if limit, err := strconv.Atoi(limitStr); err == nil {
+			params.Limit = &limit
+		}
+	}
+	if offsetStr := c.Query("offset"); offsetStr != "" {
+		if offset, err := strconv.Atoi(offsetStr); err == nil {
+			params.Offset = &offset
+		}
+	}
+	span.SetAttributes(attribute.Int("params.limit", *params.Limit), attribute.Int("params.offset", *params.Offset))
+	if q := params.Q; q != nil {
+		span.SetAttributes(attribute.String("params.q", *q))
+	}
+	if sourceLang := params.SourceLang; sourceLang != nil {
+		span.SetAttributes(attribute.String("params.source_lang", *sourceLang))
+	}
+	if targetLang := params.TargetLang; targetLang != nil {
+		span.SetAttributes(attribute.String("params.target_lang", *targetLang))
+	}
+	snippetList, err := h.snippetsService.GetSnippets(ctx, int64(userID), params)
+	if err != nil {
+		h.logger.Error(ctx, "Failed to get snippets", err, map[string]interface{}{
+			"user_id": userID,
+		})
+		HandleAppError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, snippetList)
+}
+
+// GetSnippet handles GET /v1/snippets/{id}
+func (h *SnippetsHandler) GetSnippet(c *gin.Context) {
+	ctx, span := observability.TraceSnippetFunction(c.Request.Context(), "get_snippet")
+	defer observability.FinishSpan(span, nil)
+
+	// Get user ID from context (set by auth middleware)
+	userID, exists := GetUserIDFromSession(c)
+	if !exists {
+		h.logger.Warn(ctx, "User ID not found in context")
+		HandleAppError(c, contextutils.ErrUnauthorized)
+		return
+	}
+	username, exists := GetUsernameFromSession(c)
+	if !exists {
+		h.logger.Warn(ctx, "Username not found in context")
+		HandleAppError(c, contextutils.ErrUnauthorized)
+		return
+	}
+	span.SetAttributes(attribute.String("user.username", username))
+	span.SetAttributes(attribute.Int64("user.id", int64(userID)))
+
+	// Parse snippet ID from URL parameter
+	snippetIDStr := c.Param("id")
+	snippetID, err := strconv.ParseInt(snippetIDStr, 10, 64)
+	if err != nil {
+		h.logger.Warn(ctx, "Invalid snippet ID format", map[string]interface{}{
+			"snippet_id": snippetIDStr,
+			"error":      err.Error(),
+		})
+		HandleAppError(c, contextutils.ErrInvalidFormat)
+		return
+	}
+
+	snippet, err := h.snippetsService.GetSnippet(ctx, int64(userID), snippetID)
+	if err != nil {
+		h.logger.Error(ctx, "Failed to get snippet", err, map[string]interface{}{
+			"user_id":    userID,
+			"snippet_id": snippetID,
+		})
+
+		if err.Error() == "snippet not found" {
+			HandleAppError(c, contextutils.ErrRecordNotFound)
+			return
+		}
+
+		HandleAppError(c, contextutils.ErrInternalError)
+		return
+	}
+
+	// Convert to API response format
+	response := api.Snippet{
+		Id:              &snippet.ID,
+		UserId:          &snippet.UserID,
+		OriginalText:    &snippet.OriginalText,
+		TranslatedText:  &snippet.TranslatedText,
+		SourceLanguage:  &snippet.SourceLanguage,
+		TargetLanguage:  &snippet.TargetLanguage,
+		QuestionId:      snippet.QuestionID,
+		Context:         snippet.Context,
+		DifficultyLevel: snippet.DifficultyLevel,
+		CreatedAt:       &snippet.CreatedAt,
+		UpdatedAt:       &snippet.UpdatedAt,
+	}
+
+	span.SetAttributes(
+		attribute.Int64("snippet.id", snippet.ID),
+	)
+
+	c.JSON(http.StatusOK, response)
+}
+
+// UpdateSnippet handles PUT /v1/snippets/{id}
+func (h *SnippetsHandler) UpdateSnippet(c *gin.Context) {
+	ctx, span := observability.TraceSnippetFunction(c.Request.Context(), "update_snippet")
+	defer observability.FinishSpan(span, nil)
+
+	// Get user ID from context (set by auth middleware)
+	userID, exists := GetUserIDFromSession(c)
+	if !exists {
+		h.logger.Warn(ctx, "User ID not found in context")
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error":   "unauthorized",
+			"message": "User not authenticated",
+		})
+		return
+	}
+	username, exists := GetUsernameFromSession(c)
+	if !exists {
+		h.logger.Warn(ctx, "Username not found in context")
+		HandleAppError(c, contextutils.ErrUnauthorized)
+		return
+	}
+	span.SetAttributes(attribute.String("user.username", username))
+	span.SetAttributes(attribute.Int64("user.id", int64(userID)))
+
+	// Parse snippet ID from URL parameter
+	snippetIDStr := c.Param("id")
+	snippetID, err := strconv.ParseInt(snippetIDStr, 10, 64)
+	if err != nil {
+		h.logger.Warn(ctx, "Invalid snippet ID format", map[string]interface{}{
+			"snippet_id": snippetIDStr,
+			"error":      err.Error(),
+		})
+		HandleAppError(c, contextutils.ErrInvalidFormat)
+		return
+	}
+
+	var req api.UpdateSnippetRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		h.logger.Warn(ctx, "Invalid update snippet request format", map[string]interface{}{
+			"error": err.Error(),
+		})
+		HandleAppError(c, contextutils.ErrInvalidInput)
+		return
+	}
+
+	snippet, err := h.snippetsService.UpdateSnippet(ctx, int64(userID), snippetID, req)
+	if err != nil {
+		h.logger.Error(ctx, "Failed to update snippet", err, map[string]interface{}{
+			"user_id":    userID,
+			"snippet_id": snippetID,
+		})
+
+		if err.Error() == "snippet not found" {
+			HandleAppError(c, contextutils.ErrRecordNotFound)
+			return
+		}
+
+		HandleAppError(c, contextutils.ErrInternalError)
+		return
+	}
+
+	// Convert to API response format
+	response := api.Snippet{
+		Id:              &snippet.ID,
+		UserId:          &snippet.UserID,
+		OriginalText:    &snippet.OriginalText,
+		TranslatedText:  &snippet.TranslatedText,
+		SourceLanguage:  &snippet.SourceLanguage,
+		TargetLanguage:  &snippet.TargetLanguage,
+		QuestionId:      snippet.QuestionID,
+		Context:         snippet.Context,
+		DifficultyLevel: snippet.DifficultyLevel,
+		CreatedAt:       &snippet.CreatedAt,
+		UpdatedAt:       &snippet.UpdatedAt,
+	}
+
+	span.SetAttributes(
+		attribute.Int64("snippet.id", snippet.ID),
+	)
+
+	c.JSON(http.StatusOK, response)
+}
+
+// DeleteSnippet handles DELETE /v1/snippets/{id}
+func (h *SnippetsHandler) DeleteSnippet(c *gin.Context) {
+	ctx, span := observability.TraceSnippetFunction(c.Request.Context(), "delete_snippet")
+	defer observability.FinishSpan(span, nil)
+
+	// Get user ID from context (set by auth middleware)
+	userID, exists := GetUserIDFromSession(c)
+	if !exists {
+		h.logger.Warn(ctx, "User ID not found in context")
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error":   "unauthorized",
+			"message": "User not authenticated",
+		})
+		return
+	}
+	username, exists := GetUsernameFromSession(c)
+	if !exists {
+		h.logger.Warn(ctx, "Username not found in context")
+		HandleAppError(c, contextutils.ErrUnauthorized)
+		return
+	}
+	span.SetAttributes(attribute.String("user.username", username))
+	span.SetAttributes(attribute.Int64("user.id", int64(userID)))
+
+	// Parse snippet ID from URL parameter
+	snippetIDStr := c.Param("id")
+	snippetID, err := strconv.ParseInt(snippetIDStr, 10, 64)
+	if err != nil {
+		h.logger.Warn(ctx, "Invalid snippet ID format", map[string]interface{}{
+			"snippet_id": snippetIDStr,
+			"error":      err.Error(),
+		})
+		HandleAppError(c, contextutils.ErrInvalidFormat)
+		return
+	}
+
+	err = h.snippetsService.DeleteSnippet(ctx, int64(userID), snippetID)
+	if err != nil {
+		h.logger.Error(ctx, "Failed to delete snippet", err, map[string]interface{}{
+			"user_id":    userID,
+			"snippet_id": snippetID,
+		})
+
+		if err.Error() == "snippet not found" {
+			HandleAppError(c, contextutils.ErrRecordNotFound)
+			return
+		}
+
+		HandleAppError(c, contextutils.ErrInternalError)
+		return
+	}
+
+	span.SetAttributes(
+		attribute.Int64("snippet.id", snippetID),
+	)
+
+	c.Status(http.StatusNoContent)
+}

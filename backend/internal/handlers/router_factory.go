@@ -41,6 +41,7 @@ func NewRouter(
 	oauthService *services.OAuthService,
 	generationHintService services.GenerationHintServiceInterface,
 	translationService services.TranslationServiceInterface,
+	snippetsService services.SnippetsServiceInterface,
 	logger *observability.Logger,
 ) *gin.Engine {
 	// Setup Gin router
@@ -176,6 +177,7 @@ func NewRouter(
 	storyHandler := NewStoryHandler(storyService, userService, aiService, cfg, logger)
 	aiConversationHandler := NewAIConversationHandler(conversationService, cfg, logger)
 	translationHandler := NewTranslationHandler(translationService, cfg, logger)
+	snippetsHandler := NewSnippetsHandler(snippetsService, cfg, logger)
 	adminHandler := NewAdminHandlerWithLogger(userService, questionService, aiService, cfg, learningService, workerService, logger)
 	// Inject story service into admin handler via exported field
 	adminHandler.storyService = storyService
@@ -234,6 +236,14 @@ func NewRouter(
 
 		// Translation routes
 		v1.POST("/translate", middleware.RequireAuth(), translationHandler.TranslateText)
+
+		// Snippets routes
+		v1.POST("/snippets", middleware.RequireAuth(), middleware.RequestValidationMiddleware(logger), snippetsHandler.CreateSnippet)
+		v1.GET("/snippets", middleware.RequireAuth(), snippetsHandler.GetSnippets)
+		v1.GET("/snippets/:id", middleware.RequireAuth(), snippetsHandler.GetSnippet)
+		v1.PUT("/snippets/:id", middleware.RequireAuth(), middleware.RequestValidationMiddleware(logger), snippetsHandler.UpdateSnippet)
+		v1.DELETE("/snippets/:id", middleware.RequireAuth(), snippetsHandler.DeleteSnippet)
+
 		quiz := v1.Group("/quiz")
 		quiz.Use(middleware.RequireAuth())
 		quiz.Use(middleware.RequestValidationMiddleware(logger))

@@ -45,6 +45,21 @@ type UserRole struct {
 	CreatedAt time.Time `json:"created_at" yaml:"created_at"`
 }
 
+// Snippet represents a vocabulary snippet saved by a user
+type Snippet struct {
+	ID              int64     `json:"id" yaml:"id"`
+	UserID          int64     `json:"user_id" yaml:"user_id"`
+	OriginalText    string    `json:"original_text" yaml:"original_text"`
+	TranslatedText  string    `json:"translated_text" yaml:"translated_text"`
+	SourceLanguage  string    `json:"source_language" yaml:"source_language"`
+	TargetLanguage  string    `json:"target_language" yaml:"target_language"`
+	QuestionID      *int64    `json:"question_id" yaml:"question_id"`
+	Context         *string   `json:"context" yaml:"context"`
+	DifficultyLevel *string   `json:"difficulty_level" yaml:"difficulty_level"`
+	CreatedAt       time.Time `json:"created_at" yaml:"created_at"`
+	UpdatedAt       time.Time `json:"updated_at" yaml:"updated_at"`
+}
+
 // MarshalJSON customizes JSON marshaling for User to handle sql.NullString and sql.NullTime properly
 func (u User) MarshalJSON() (result0 []byte, err error) { // Create a struct with the desired JSON structure
 	return json.Marshal(&struct {

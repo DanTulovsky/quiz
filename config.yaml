@@ -708,3 +708,4 @@ translation:
       api_key: "" # Set in environment variables as: TRANSLATION_PROVIDERS_GOOGLE_API_KEY
       base_url: "https://translation.googleapis.com"
       api_endpoint: "/language/translate/v2"
+      max_text_length: 5000

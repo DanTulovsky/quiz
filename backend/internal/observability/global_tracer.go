@@ -60,6 +60,16 @@ func TraceFunctionWithErrorHandling(ctx context.Context, serviceName, functionNa
 	return err
 }
 
+// TraceSnippetFunction starts a new span for a snippet service function.
+func TraceSnippetFunction(ctx context.Context, functionName string, attributes ...attribute.KeyValue) (context.Context, trace.Span) {
+	return TraceFunction(ctx, "snippet", functionName, attributes...)
+}
+
+// TraceTranslationFunction starts a new span for a translation service function.
+func TraceTranslationFunction(ctx context.Context, functionName string, attributes ...attribute.KeyValue) (context.Context, trace.Span) {
+	return TraceFunction(ctx, "translation", functionName, attributes...)
+}
+
 // TraceAIFunction starts a new span for an AI service function.
 func TraceAIFunction(ctx context.Context, functionName string, attributes ...attribute.KeyValue) (context.Context, trace.Span) {
 	return TraceFunction(ctx, "ai", functionName, attributes...)
@@ -123,6 +133,11 @@ func AttributeQuestionID(id int) attribute.KeyValue {
 // AttributeUserID returns a tracing attribute for a user ID.
 func AttributeUserID(id int) attribute.KeyValue {
 	return attribute.Int("user.id", id)
+}
+
+// AttributeSnippetID returns a tracing attribute for a snippet ID.
+func AttributeSnippetID(id int) attribute.KeyValue {
+	return attribute.Int("snippet.id", id)
 }
 
 // AttributeLanguage returns a tracing attribute for a language.

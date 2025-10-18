@@ -35,3 +35,27 @@ func GetUserIDFromSession(c *gin.Context) (int, bool) {
 	}
 	return id, true
 }
+
+// GetUsernameFromSession retrieves the current user username from the session or context.
+// Returns (0, false) if not authenticated or if the stored value is invalid.
+func GetUsernameFromSession(c *gin.Context) (string, bool) {
+	// First check if user ID is already in context (set by auth middleware)
+	if usernameVal, exists := c.Get(middleware.UsernameKey); exists {
+		if username, ok := usernameVal.(string); ok {
+			return username, true
+		}
+		return "", false
+	}
+
+	// Fall back to session if not in context (maintain original behavior for sessions)
+	session := sessions.Default(c)
+	username := session.Get(middleware.UsernameKey)
+	if username == nil {
+		return "", false
+	}
+	usernameStr, ok := username.(string)
+	if !ok {
+		return "", false
+	}
+	return usernameStr, true
+}

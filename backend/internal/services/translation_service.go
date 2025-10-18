@@ -10,8 +10,11 @@ import (
 	"time"
 
 	"quizapp/internal/config"
+	"quizapp/internal/observability"
 	"quizapp/internal/serviceinterfaces"
 	contextutils "quizapp/internal/utils"
+
+	"go.opentelemetry.io/otel/attribute"
 )
 
 // TranslationServiceInterface defines the interface for translation services
@@ -52,44 +55,77 @@ type GoogleTranslateResponse struct {
 }
 
 // Translate translates text using the configured translation provider
-func (s *GoogleTranslationService) Translate(ctx context.Context, req serviceinterfaces.TranslateRequest) (*serviceinterfaces.TranslateResponse, error) {
+func (s *GoogleTranslationService) Translate(ctx context.Context, req serviceinterfaces.TranslateRequest) (result *serviceinterfaces.TranslateResponse, err error) {
+	ctx, span := observability.TraceTranslationFunction(ctx, "translate",
+		attribute.String("translation.target_language", req.TargetLanguage),
+		attribute.String("translation.source_language", req.SourceLanguage),
+		attribute.Int("translation.text_length", len(req.Text)),
+	)
+	defer observability.FinishSpan(span, &err)
+
 	if !s.config.Translation.Enabled {
 		return nil, contextutils.NewAppError(contextutils.ErrorCodeServiceUnavailable, contextutils.SeverityError, "Translation service is disabled", "")
 	}
 
 	providerConfig, exists := s.config.Translation.Providers[s.config.Translation.DefaultProvider]
 	if !exists {
-		return nil, contextutils.NewAppError(contextutils.ErrorCodeServiceUnavailable, contextutils.SeverityError, "Translation provider not configured", "")
+		err = contextutils.NewAppError(contextutils.ErrorCodeServiceUnavailable, contextutils.SeverityError, "Translation provider not configured", "")
+		return nil, err
 	}
 
 	switch providerConfig.Code {
 	case "google":
-		return s.translateGoogle(ctx, req, providerConfig)
+		span.SetAttributes(attribute.String("translation.provider", providerConfig.Code))
+		result, err = s.translateGoogle(ctx, req, providerConfig)
+		return result, err
 	default:
-		return nil, contextutils.NewAppError(contextutils.ErrorCodeServiceUnavailable, contextutils.SeverityError, "Unsupported translation provider: "+providerConfig.Code, "")
+		err = contextutils.NewAppError(contextutils.ErrorCodeServiceUnavailable, contextutils.SeverityError, "Unsupported translation provider: "+providerConfig.Code, "")
+		return nil, err
 	}
 }
 
 // translateGoogle translates text using Google Translate API
-func (s *GoogleTranslationService) translateGoogle(ctx context.Context, req serviceinterfaces.TranslateRequest, providerConfig config.TranslationProviderConfig) (*serviceinterfaces.TranslateResponse, error) {
+func (s *GoogleTranslationService) translateGoogle(ctx context.Context, req serviceinterfaces.TranslateRequest, providerConfig config.TranslationProviderConfig) (result *serviceinterfaces.TranslateResponse, err error) {
+	ctx, span := observability.TraceTranslationFunction(ctx, "translate_google",
+		attribute.String("translation.provider", providerConfig.Code),
+		attribute.String("translation.target_language", req.TargetLanguage),
+		attribute.String("translation.source_language", req.SourceLanguage),
+		attribute.Int("translation.text_length", len(req.Text)),
+	)
+	defer observability.FinishSpan(span, &err)
+
 	if providerConfig.APIKey == "" {
-		return nil, contextutils.NewAppError(contextutils.ErrorCodeServiceUnavailable, contextutils.SeverityError, "Google Translate API key not configured", "")
+		err = contextutils.NewAppError(contextutils.ErrorCodeServiceUnavailable, contextutils.SeverityError, "Google Translate API key not configured", "")
+		return nil, err
+	}
+
+	if req.SourceLanguage == "" || req.TargetLanguage == "" {
+		err = contextutils.NewAppError(contextutils.ErrorCodeInvalidInput, contextutils.SeverityError, "Source and target language are required", "")
+		return nil, err
+	}
+
+	if len(req.Text) == 0 {
+		err = contextutils.NewAppError(contextutils.ErrorCodeInvalidInput, contextutils.SeverityError, "Text cannot be empty", "")
+		return nil, err
+	}
+
+	if len(req.Text) > providerConfig.MaxTextLength {
+		err = contextutils.NewAppError(contextutils.ErrorCodeInvalidInput, contextutils.SeverityError, fmt.Sprintf("Text cannot exceed %d characters", providerConfig.MaxTextLength), "")
+		return nil, err
 	}
 
 	// Prepare request
 	requestBody := GoogleTranslateRequest{
 		Q:      []string{req.Text},
 		Target: req.TargetLanguage,
+		Source: req.SourceLanguage,
 		Format: "text",
-	}
-
-	if req.SourceLanguage != "" {
-		requestBody.Source = req.SourceLanguage
 	}
 
 	jsonBody, err := json.Marshal(requestBody)
 	if err != nil {
-		return nil, contextutils.WrapError(err, "failed to marshal request")
+		err = contextutils.WrapError(err, "failed to marshal request")
+		return nil, err
 	}
 
 	// Build URL
@@ -98,49 +134,46 @@ func (s *GoogleTranslationService) translateGoogle(ctx context.Context, req serv
 	// Make request
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", url, bytes.NewBuffer(jsonBody))
 	if err != nil {
-		return nil, contextutils.WrapError(err, "failed to create request")
+		err = contextutils.WrapError(err, "failed to create request")
+		return nil, err
 	}
 
 	httpReq.Header.Set("Content-Type", "application/json")
 
-	resp, err := s.httpClient.Do(httpReq)
+	resp, err := s.httpClient.Do(httpReq.WithContext(ctx))
 	if err != nil {
-		return nil, contextutils.WrapError(err, "translation request failed")
+		err = contextutils.WrapError(err, "translation request failed")
+		return nil, err
 	}
 	defer func() { _ = resp.Body.Close() }()
 
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
-		return nil, contextutils.NewAppError(contextutils.ErrorCodeServiceUnavailable, contextutils.SeverityError,
+		err = contextutils.NewAppError(contextutils.ErrorCodeServiceUnavailable, contextutils.SeverityError,
 			fmt.Sprintf("Google Translate API error: %d - %s", resp.StatusCode, string(body)), "")
+		return nil, err
 	}
 
 	// Parse response
 	var googleResp GoogleTranslateResponse
 	if err := json.NewDecoder(resp.Body).Decode(&googleResp); err != nil {
-		return nil, contextutils.WrapError(err, "failed to decode response")
+		err = contextutils.WrapError(err, "failed to decode response")
+		return nil, err
 	}
 
 	if len(googleResp.Data.Translations) == 0 {
-		return nil, contextutils.NewAppError(contextutils.ErrorCodeServiceUnavailable, contextutils.SeverityError, "No translation returned from Google Translate API", "")
+		err = contextutils.NewAppError(contextutils.ErrorCodeServiceUnavailable, contextutils.SeverityError, "No translation returned from Google Translate API", "")
+		return nil, err
 	}
 
 	translation := googleResp.Data.Translations[0]
 
-	// Determine source language
-	sourceLanguage := req.SourceLanguage
-	if sourceLanguage == "" {
-		sourceLanguage = translation.DetectedSourceLanguage
-		if sourceLanguage == "" {
-			sourceLanguage = "auto"
-		}
-	}
-
-	return &serviceinterfaces.TranslateResponse{
+	result = &serviceinterfaces.TranslateResponse{
 		TranslatedText: translation.TranslatedText,
-		SourceLanguage: sourceLanguage,
+		SourceLanguage: req.SourceLanguage,
 		TargetLanguage: req.TargetLanguage,
-	}, nil
+	}
+	return result, nil
 }
 
 // ValidateLanguageCode validates that a language code is properly formatted

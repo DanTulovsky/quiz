@@ -346,6 +346,27 @@ type CreateMessageRequest struct {
 // CreateMessageRequestRole Role of the message sender
 type CreateMessageRequestRole string
 
+// CreateSnippetRequest defines model for CreateSnippetRequest.
+type CreateSnippetRequest struct {
+	// Context Optional user-provided context or notes about this snippet
+	Context *string `json:"context"`
+
+	// OriginalText The original text/word to save
+	OriginalText string `json:"original_text"`
+
+	// QuestionId Optional ID of the question where this text was encountered
+	QuestionId *int64 `json:"question_id"`
+
+	// SourceLanguage ISO language code of the source text
+	SourceLanguage string `json:"source_language"`
+
+	// TargetLanguage ISO language code of the target translation
+	TargetLanguage string `json:"target_language"`
+
+	// TranslatedText The translated text
+	TranslatedText string `json:"translated_text"`
+}
+
 // CreateStoryRequest defines model for CreateStoryRequest.
 type CreateStoryRequest struct {
 	AuthorStyle           *string                                  `json:"author_style"`
@@ -877,6 +898,37 @@ type SignupStatusResponse struct {
 	SignupsDisabled bool `json:"signups_disabled"`
 }
 
+// Snippet defines model for Snippet.
+type Snippet struct {
+	Context         *string    `json:"context"`
+	CreatedAt       *time.Time `json:"created_at,omitempty"`
+	DifficultyLevel *string    `json:"difficulty_level"`
+	Id              *int64     `json:"id,omitempty"`
+	OriginalText    *string    `json:"original_text,omitempty"`
+	QuestionId      *int64     `json:"question_id"`
+	SourceLanguage  *string    `json:"source_language,omitempty"`
+	TargetLanguage  *string    `json:"target_language,omitempty"`
+	TranslatedText  *string    `json:"translated_text,omitempty"`
+	UpdatedAt       *time.Time `json:"updated_at,omitempty"`
+	UserId          *int64     `json:"user_id,omitempty"`
+}
+
+// SnippetList defines model for SnippetList.
+type SnippetList struct {
+	// Limit Number of snippets returned
+	Limit *int `json:"limit,omitempty"`
+
+	// Offset Number of snippets skipped
+	Offset *int `json:"offset,omitempty"`
+
+	// Query The search query that was used (if any)
+	Query    *string    `json:"query"`
+	Snippets *[]Snippet `json:"snippets,omitempty"`
+
+	// Total Total number of snippets matching the query
+	Total *int `json:"total,omitempty"`
+}
+
 // Story defines model for Story.
 type Story struct {
 	AuthorStyle            *string                     `json:"author_style"`
@@ -1068,6 +1120,12 @@ type TranslateResponse struct {
 type UpdateConversationRequest struct {
 	// Title New title for the conversation
 	Title string `json:"title"`
+}
+
+// UpdateSnippetRequest defines model for UpdateSnippetRequest.
+type UpdateSnippetRequest struct {
+	// Context User-provided context or notes about this snippet
+	Context *string `json:"context"`
 }
 
 // User defines model for User.
@@ -1685,6 +1743,24 @@ type GetV1SettingsLevelsParams struct {
 	Language *string `form:"language,omitempty" json:"language,omitempty"`
 }
 
+// GetV1SnippetsParams defines parameters for GetV1Snippets.
+type GetV1SnippetsParams struct {
+	// Q Optional search query to filter snippets by text content
+	Q *string `form:"q,omitempty" json:"q,omitempty"`
+
+	// SourceLang Filter by source language
+	SourceLang *string `form:"source_lang,omitempty" json:"source_lang,omitempty"`
+
+	// TargetLang Filter by target language
+	TargetLang *string `form:"target_lang,omitempty" json:"target_lang,omitempty"`
+
+	// Limit Maximum number of snippets to return (default 50, max 100)
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Offset Number of snippets to skip for pagination
+	Offset *int `form:"offset,omitempty" json:"offset,omitempty"`
+}
+
 // GetV1StoryParams defines parameters for GetV1Story.
 type GetV1StoryParams struct {
 	// IncludeArchived Include archived stories in the response
@@ -1768,6 +1844,12 @@ type PutV1SettingsJSONRequestBody = UserSettings
 
 // PostV1SettingsTestAiJSONRequestBody defines body for PostV1SettingsTestAi for application/json ContentType.
 type PostV1SettingsTestAiJSONRequestBody = TestAIRequest
+
+// PostV1SnippetsJSONRequestBody defines body for PostV1Snippets for application/json ContentType.
+type PostV1SnippetsJSONRequestBody = CreateSnippetRequest
+
+// PutV1SnippetsIdJSONRequestBody defines body for PutV1SnippetsId for application/json ContentType.
+type PutV1SnippetsIdJSONRequestBody = UpdateSnippetRequest
 
 // PostV1StoryJSONRequestBody defines body for PostV1Story for application/json ContentType.
 type PostV1StoryJSONRequestBody = CreateStoryRequest

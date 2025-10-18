@@ -368,11 +368,12 @@ type TranslationConfig struct {
 
 // TranslationProviderConfig represents a translation provider configuration
 type TranslationProviderConfig struct {
-	Name        string `json:"name" yaml:"name"`
-	Code        string `json:"code" yaml:"code"`
-	APIKey      string `json:"api_key" yaml:"api_key"`
-	BaseURL     string `json:"base_url" yaml:"base_url"`
-	APIEndpoint string `json:"api_endpoint" yaml:"api_endpoint"`
+	Name          string `json:"name" yaml:"name"`
+	Code          string `json:"code" yaml:"code"`
+	APIKey        string `json:"api_key" yaml:"api_key"`
+	BaseURL       string `json:"base_url" yaml:"base_url"`
+	APIEndpoint   string `json:"api_endpoint" yaml:"api_endpoint"`
+	MaxTextLength int    `json:"max_text_length" yaml:"max_text_length"`
 }
 
 // NewConfig loads configuration from YAML file first, then overrides with environment variables

@@ -28,6 +28,7 @@ type ServiceContainerInterface interface {
 	GetConversationService() (services.ConversationServiceInterface, error)
 	GetEmailService() (services.EmailServiceInterface, error)
 	GetTranslationService() (services.TranslationServiceInterface, error)
+	GetSnippetsService() (services.SnippetsServiceInterface, error)
 	GetDatabase() *sql.DB
 	GetConfig() *config.Config
 	GetLogger() *observability.Logger
@@ -180,6 +181,11 @@ func (sc *ServiceContainer) GetTranslationService() (services.TranslationService
 	return GetServiceAs[services.TranslationServiceInterface](sc, "translation")
 }
 
+// GetSnippetsService returns the snippets service
+func (sc *ServiceContainer) GetSnippetsService() (services.SnippetsServiceInterface, error) {
+	return GetServiceAs[services.SnippetsServiceInterface](sc, "snippets")
+}
+
 // GetDatabase returns the database instance
 func (sc *ServiceContainer) GetDatabase() *sql.DB {
 	return sc.db
@@ -297,6 +303,10 @@ func (sc *ServiceContainer) initializeServices(_ context.Context) {
 	// Translation service
 	translationService := services.NewTranslationService(sc.cfg)
 	sc.services["translation"] = translationService
+
+	// Initialize snippets service
+	snippetsService := services.NewSnippetsService(sc.db, sc.cfg, sc.logger)
+	sc.services["snippets"] = snippetsService
 
 	// Register shutdown functions
 	sc.shutdownFuncs = append(sc.shutdownFuncs,

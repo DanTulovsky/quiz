@@ -1054,7 +1054,7 @@ func (s *AIService) callOpenAI(ctx context.Context, userConfig *models.UserAICon
 	if userConfig == nil {
 		return "", contextutils.WrapError(contextutils.ErrAIConfigInvalid, "userConfig is required")
 	}
-	_, span := observability.TraceAIFunction(ctx, "call_openai",
+	ctx, span := observability.TraceAIFunction(ctx, "call_openai",
 		attribute.String("ai.provider", userConfig.Provider),
 		attribute.String("ai.model", userConfig.Model),
 		attribute.String("ai.username", userConfig.Username),
@@ -1244,7 +1244,16 @@ func (s *AIService) callOpenAI(ctx context.Context, userConfig *models.UserAICon
 }
 
 // callOpenAIWithRetry attempts to call OpenAI with retry logic for empty content responses
-func (s *AIService) callOpenAIWithRetry(ctx context.Context, userConfig *models.UserAIConfig, prompt, grammar string) (string, error) {
+func (s *AIService) callOpenAIWithRetry(ctx context.Context, userConfig *models.UserAIConfig, prompt, grammar string) (result string, err error) {
+	_, span := observability.TraceAIFunction(ctx, "call_openai_with_retry",
+		attribute.String("ai.provider", userConfig.Provider),
+		attribute.String("ai.model", userConfig.Model),
+		attribute.String("ai.username", userConfig.Username),
+		attribute.Int("prompt.length", len(prompt)),
+		attribute.Bool("grammar.enabled", grammar != ""),
+	)
+	defer observability.FinishSpan(span, &err)
+
 	const maxRetries = 2
 	var lastErr error
 
@@ -1254,11 +1263,11 @@ func (s *AIService) callOpenAIWithRetry(ctx context.Context, userConfig *models.
 			time.Sleep(time.Duration(attempt) * time.Second)
 		}
 
-		content, err := s.callOpenAI(ctx, userConfig, prompt, grammar)
+		result, err = s.callOpenAI(ctx, userConfig, prompt, grammar)
 		if err != nil {
 			// If it's not an empty content error, don't retry
 			if !contextutils.IsError(err, contextutils.ErrAIResponseInvalid) {
-				return "", err
+				return result, err
 			}
 
 			lastErr = err
@@ -1277,14 +1286,14 @@ func (s *AIService) callOpenAIWithRetry(ctx context.Context, userConfig *models.
 			continue
 		}
 
-		return content, nil
+		return result, nil
 	}
 
-	return "", contextutils.WrapErrorf(lastErr, "AI returned empty content after %d attempts", maxRetries+1)
+	return result, contextutils.WrapErrorf(lastErr, "AI returned empty content after %d attempts", maxRetries+1)
 }
 
 // callOpenAIStream makes a streaming request to the OpenAI-compatible API
-func (s *AIService) callOpenAIStream(ctx context.Context, userConfig *models.UserAIConfig, prompt, grammar string, chunks chan<- string) error {
+func (s *AIService) callOpenAIStream(ctx context.Context, userConfig *models.UserAIConfig, prompt, grammar string, chunks chan<- string) (err error) {
 	if userConfig == nil {
 		return contextutils.WrapError(contextutils.ErrAIConfigInvalid, "userConfig is required")
 	}
@@ -1295,7 +1304,7 @@ func (s *AIService) callOpenAIStream(ctx context.Context, userConfig *models.Use
 		attribute.Int("prompt.length", len(prompt)),
 		attribute.Bool("grammar.enabled", grammar != ""),
 	)
-	defer span.End()
+	defer observability.FinishSpan(span, &err)
 
 	// Validate input parameters
 	if userConfig.Provider == "" {
