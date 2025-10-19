@@ -174,16 +174,22 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         testId: 'nav-story',
       },
       {
-        name: 'AI Conversations',
+        name: 'Saved AI Conversations',
         href: '/conversations',
         icon: IconBrain,
         testId: 'nav-conversations',
       },
       {
-        name: 'Bookmarked Messages',
+        name: 'Bookmarked AI Messages',
         href: '/bookmarks',
         icon: IconBookmark,
         testId: 'nav-bookmarks',
+      },
+      {
+        name: 'Saved Snippets',
+        href: '/snippets',
+        icon: IconBookmark,
+        testId: 'nav-snippets',
       },
     ];
 
@@ -498,14 +504,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               {item.name === 'Daily' && (
                 <Divider my='xs' label='Practice' labelPosition='center' />
               )}
-              {item.name === 'AI Conversations' && (
-                <Divider my='xs' label='AI History' labelPosition='center' />
+              {item.name === 'Saved AI Conversations' && (
+                <Divider my='xs' label='History' labelPosition='center' />
               )}
               <NavLink
                 component={Link}
                 to={item.href}
                 onClick={
-                  item.name === 'AI Conversations'
+                  item.name === 'Saved AI Conversations'
                     ? () => {
                         refreshAiConversations();
                       }

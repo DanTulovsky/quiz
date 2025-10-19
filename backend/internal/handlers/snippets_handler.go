@@ -176,6 +176,81 @@ func (h *SnippetsHandler) GetSnippets(c *gin.Context) {
 	c.JSON(http.StatusOK, snippetList)
 }
 
+// SearchSnippets handles GET /v1/snippets/search
+func (h *SnippetsHandler) SearchSnippets(c *gin.Context) {
+	ctx, span := observability.TraceSnippetFunction(c.Request.Context(), "search_snippets")
+	defer observability.FinishSpan(span, nil)
+
+	// Get user ID from context (set by auth middleware)
+	userID, exists := GetUserIDFromSession(c)
+	if !exists {
+		h.logger.Warn(ctx, "User ID not found in context")
+		HandleAppError(c, contextutils.ErrUnauthorized)
+		return
+	}
+	username, exists := GetUsernameFromSession(c)
+	if !exists {
+		h.logger.Warn(ctx, "Username not found in context")
+		HandleAppError(c, contextutils.ErrUnauthorized)
+		return
+	}
+	span.SetAttributes(attribute.Int64("user.id", int64(userID)))
+	span.SetAttributes(attribute.String("user.username", username))
+
+	// Parse query parameters
+	query := c.Query("q")
+	if query == "" {
+		HandleAppError(c, contextutils.ErrInvalidInput)
+		return
+	}
+
+	limitStr := c.DefaultQuery("limit", "20")
+	offsetStr := c.DefaultQuery("offset", "0")
+
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil || limit < 1 {
+		limit = 20
+	}
+	if limit > 100 {
+		limit = 100
+	}
+
+	offset, err := strconv.Atoi(offsetStr)
+	if err != nil || offset < 0 {
+		offset = 0
+	}
+
+	span.SetAttributes(
+		attribute.String("query", query),
+		attribute.Int("limit", limit),
+		attribute.Int("offset", offset),
+	)
+
+	// Search snippets
+	snippets, total, err := h.snippetsService.SearchSnippets(ctx, int64(userID), query, limit, offset)
+	if err != nil {
+		h.logger.Error(ctx, "Failed to search snippets", err, map[string]interface{}{
+			"user_id": userID,
+			"query":   query,
+			"limit":   limit,
+			"offset":  offset,
+		})
+		HandleAppError(c, contextutils.WrapError(err, "failed to search snippets"))
+		return
+	}
+
+	// Add metadata to response
+	response := gin.H{
+		"snippets": snippets,
+		"query":    query,
+		"total":    total,
+		"limit":    limit,
+		"offset":   offset,
+	}
+
+	c.JSON(http.StatusOK, response)
+}
+
 // GetSnippet handles GET /v1/snippets/{id}
 func (h *SnippetsHandler) GetSnippet(c *gin.Context) {
 	ctx, span := observability.TraceSnippetFunction(c.Request.Context(), "get_snippet")
@@ -385,6 +460,40 @@ func (h *SnippetsHandler) DeleteSnippet(c *gin.Context) {
 	span.SetAttributes(
 		attribute.Int64("snippet.id", snippetID),
 	)
+
+	c.Status(http.StatusNoContent)
+}
+
+// DeleteAllSnippets handles DELETE /v1/snippets
+func (h *SnippetsHandler) DeleteAllSnippets(c *gin.Context) {
+	ctx, span := observability.TraceSnippetFunction(c.Request.Context(), "delete_all_snippets")
+	defer observability.FinishSpan(span, nil)
+
+	// Get user ID from context (set by auth middleware)
+	userID, exists := GetUserIDFromSession(c)
+	if !exists {
+		h.logger.Warn(ctx, "User ID not found in context")
+		HandleAppError(c, contextutils.ErrUnauthorized)
+		return
+	}
+	username, exists := GetUsernameFromSession(c)
+	if !exists {
+		h.logger.Warn(ctx, "Username not found in context")
+		HandleAppError(c, contextutils.ErrUnauthorized)
+		return
+	}
+	span.SetAttributes(attribute.String("user.username", username))
+	span.SetAttributes(attribute.Int64("user.id", int64(userID)))
+
+	err := h.snippetsService.DeleteAllSnippets(ctx, int64(userID))
+	if err != nil {
+		h.logger.Error(ctx, "Failed to delete all snippets", err, map[string]interface{}{
+			"user_id": userID,
+		})
+
+		HandleAppError(c, contextutils.ErrInternalError)
+		return
+	}
 
 	c.Status(http.StatusNoContent)
 }

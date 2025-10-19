@@ -439,8 +439,11 @@ const UserManagementPage: React.FC = () => {
                 data={[
                   { value: '', label: 'All Languages' },
                   ...(languagesData?.map(lang => ({
-                    value: lang,
-                    label: lang.charAt(0).toUpperCase() + lang.slice(1),
+                    value: lang.code || lang,
+                    label: lang.name
+                      ? lang.name.charAt(0).toUpperCase() + lang.name.slice(1)
+                      : (lang.code || lang).charAt(0).toUpperCase() +
+                        (lang.code || lang).slice(1),
                   })) || []),
                 ]}
                 clearable

@@ -121,6 +121,19 @@ func TestGetLevelsForLanguage_Integration(t *testing.T) {
 	// Test unknown language
 	unknownLevels := cfg.GetLevelsForLanguage("unknown")
 	assert.Empty(t, unknownLevels)
+
+	// Test language code lookups (should work the same as name lookups)
+	italianLevelsByCode := cfg.GetLevelsForLanguage("it")
+	assert.NotEmpty(t, italianLevelsByCode)
+	assert.Equal(t, italianLevels, italianLevelsByCode, "Italian levels should be the same when looked up by code or name")
+
+	japaneseLevelsByCode := cfg.GetLevelsForLanguage("ja")
+	assert.NotEmpty(t, japaneseLevelsByCode)
+	assert.Equal(t, japaneseLevels, japaneseLevelsByCode, "Japanese levels should be the same when looked up by code or name")
+
+	chineseLevelsByCode := cfg.GetLevelsForLanguage("zh")
+	assert.NotEmpty(t, chineseLevelsByCode)
+	assert.Equal(t, chineseLevels, chineseLevelsByCode, "Chinese levels should be the same when looked up by code or name")
 }
 
 func TestGetLevelDescriptionsForLanguage_Integration(t *testing.T) {
@@ -147,6 +160,15 @@ func TestGetLevelDescriptionsForLanguage_Integration(t *testing.T) {
 	// Test unknown language
 	unknownDescs := cfg.GetLevelDescriptionsForLanguage("unknown")
 	assert.Empty(t, unknownDescs)
+
+	// Test language code lookups (should work the same as name lookups)
+	italianDescsByCode := cfg.GetLevelDescriptionsForLanguage("it")
+	assert.NotEmpty(t, italianDescsByCode)
+	assert.Equal(t, italianDescs, italianDescsByCode, "Italian descriptions should be the same when looked up by code or name")
+
+	japaneseDescsByCode := cfg.GetLevelDescriptionsForLanguage("ja")
+	assert.NotEmpty(t, japaneseDescsByCode)
+	assert.Equal(t, japaneseDescs, japaneseDescsByCode, "Japanese descriptions should be the same when looked up by code or name")
 }
 
 func TestGetAllLevels_Integration(t *testing.T) {

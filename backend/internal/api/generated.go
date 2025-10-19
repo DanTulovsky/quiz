@@ -550,8 +550,23 @@ type GoogleOAuthLoginResponse struct {
 // Language Learning language (dynamic). Allowed values come from config.yaml language_levels keys.
 type Language = string
 
-// LanguagesResponse Array of available learning languages
-type LanguagesResponse = []string
+// LanguageInfo defines model for LanguageInfo.
+type LanguageInfo struct {
+	// Code ISO language code
+	Code string `json:"code"`
+
+	// Name Human-readable language name
+	Name string `json:"name"`
+
+	// TtsLocale TTS locale code for this language
+	TtsLocale *string `json:"tts_locale,omitempty"`
+
+	// TtsVoice Default TTS voice for this language
+	TtsVoice *string `json:"tts_voice,omitempty"`
+}
+
+// LanguagesResponse Array of available learning languages with codes and names
+type LanguagesResponse = []LanguageInfo
 
 // Level Proficiency level (dynamic). Allowed values depend on the selected language and are sourced from config.yaml (e.g., CEFR A1–C2, JLPT N5–N1, HSK1–HSK6).
 type Level = string
@@ -1128,6 +1143,18 @@ type UpdateConversationRequest struct {
 type UpdateSnippetRequest struct {
 	// Context User-provided context or notes about this snippet
 	Context *string `json:"context"`
+
+	// OriginalText The original text/word to save
+	OriginalText *string `json:"original_text,omitempty"`
+
+	// SourceLanguage ISO language code of the source text
+	SourceLanguage *string `json:"source_language,omitempty"`
+
+	// TargetLanguage ISO language code of the target translation
+	TargetLanguage *string `json:"target_language,omitempty"`
+
+	// TranslatedText The translated text
+	TranslatedText *string `json:"translated_text,omitempty"`
 }
 
 // User defines model for User.
@@ -1760,6 +1787,18 @@ type GetV1SnippetsParams struct {
 	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
 
 	// Offset Number of snippets to skip for pagination
+	Offset *int `form:"offset,omitempty" json:"offset,omitempty"`
+}
+
+// GetV1SnippetsSearchParams defines parameters for GetV1SnippetsSearch.
+type GetV1SnippetsSearchParams struct {
+	// Q Search query string
+	Q string `form:"q" json:"q"`
+
+	// Limit Maximum number of results to return
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Offset Number of results to skip
 	Offset *int `form:"offset,omitempty" json:"offset,omitempty"`
 }
 

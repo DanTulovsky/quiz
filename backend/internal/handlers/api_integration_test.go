@@ -700,10 +700,16 @@ func (suite *APIIntegrationTestSuite) TestLanguages_MatchConfig() {
 	suite.Router.ServeHTTP(w, req)
 	suite.Equal(http.StatusOK, w.Code)
 
-	var languages []string
-	err := json.Unmarshal(w.Body.Bytes(), &languages)
+	var languageInfos []config.LanguageInfo
+	err := json.Unmarshal(w.Body.Bytes(), &languageInfos)
 	suite.Require().NoError(err)
-	assert.ElementsMatch(suite.T(), expected, languages)
+
+	// Extract language names from the response for comparison
+	actual := make([]string, len(languageInfos))
+	for i, langInfo := range languageInfos {
+		actual[i] = langInfo.Name
+	}
+	assert.ElementsMatch(suite.T(), expected, actual)
 }
 
 // Test updating user settings

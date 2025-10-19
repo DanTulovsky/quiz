@@ -8,25 +8,22 @@ import {
   Select,
   Stack,
 } from '@mantine/core';
-import {
-  useTranslation,
-  TranslationResult,
-} from '../contexts/TranslationContext';
+import { useTranslation } from '../contexts/TranslationContext';
 import { TextSelection } from '../hooks/useTextSelection';
-import { IconX, IconVolume } from '@tabler/icons-react';
+import { IconX, IconVolume, IconBookmark } from '@tabler/icons-react';
+import { postV1Snippets, Question } from '../api/api';
 
 interface TranslationPopupProps {
   selection: TextSelection;
   onClose: () => void;
+  currentQuestion?: Question | null;
 }
 
 export const TranslationPopup: React.FC<TranslationPopupProps> = ({
   selection,
   onClose,
+  currentQuestion,
 }) => {
-  const [translation, setTranslation] = useState<TranslationResult | null>(
-    null
-  );
   // Load saved language from localStorage or use browser language or default to 'en'
   const [targetLanguage, setTargetLanguage] = useState(() => {
     const saved = localStorage.getItem('quiz-translation-target-lang');
@@ -50,7 +47,15 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
     return 'en';
   });
   const [isSelectFocused, setIsSelectFocused] = useState(false);
-  const { translateText, isLoading, error } = useTranslation();
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [isSaved, setIsSaved] = useState(false);
+  const {
+    translateText,
+    translation,
+    isLoading: translationLoading,
+    error: translationError,
+  } = useTranslation();
   const popupRef = useRef<HTMLDivElement>(null);
 
   // Language options for the dropdown
@@ -72,8 +77,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
     const performTranslation = async () => {
       if (selection?.text && selection.text.length > 1) {
         try {
-          const result = await translateText(selection.text, targetLanguage);
-          setTranslation(result);
+          await translateText(selection.text, targetLanguage);
         } catch (err) {
           console.error('Translation failed:', err);
           // Error is already handled in context, just log here
@@ -153,6 +157,35 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
     }
   };
 
+  const handleSaveSnippet = async () => {
+    if (!translation || !selection.text) return;
+
+    setIsSaving(true);
+    setSaveError(null);
+
+    try {
+      const payload = {
+        original_text: selection.text,
+        translated_text: translation.translatedText,
+        source_language: translation.sourceLanguage,
+        target_language: targetLanguage,
+        ...(currentQuestion?.id && { question_id: currentQuestion.id }),
+      };
+
+      await postV1Snippets(payload);
+
+      setIsSaved(true);
+      // Reset saved state after 3 seconds
+      setTimeout(() => setIsSaved(false), 3000);
+    } catch (error) {
+      setSaveError(
+        error instanceof Error ? error.message : 'Failed to save snippet'
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <Paper
       ref={popupRef}
@@ -213,7 +246,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
 
         {/* Translation result */}
         <div style={{ minHeight: 60 }}>
-          {isLoading && (
+          {translationLoading && (
             <Group gap='xs'>
               <Loader size='sm' />
               <Text size='sm' c='dimmed'>
@@ -222,17 +255,17 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
             </Group>
           )}
 
-          {error && (
+          {translationError && (
             <Text size='sm' c='red'>
-              {error.includes('temporarily unavailable')
+              {translationError.includes('temporarily unavailable')
                 ? '🔄 Translation service is temporarily unavailable. Please wait a moment and try again.'
-                : error.includes('Rate limit exceeded')
+                : translationError.includes('Rate limit exceeded')
                   ? '⏱️ Too many translation requests. Please wait a moment and try again.'
-                  : `❌ ${error}`}
+                  : `❌ ${translationError}`}
             </Text>
           )}
 
-          {translation && !isLoading && !error && (
+          {translation && !translationLoading && !translationError && (
             <Stack gap='xs'>
               <Text size='sm'>{translation.translatedText}</Text>
               <Group gap='xs'>
@@ -256,7 +289,30 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
                 >
                   Original
                 </Button>
+                <Button
+                  variant={isSaved ? 'filled' : 'light'}
+                  size='xs'
+                  leftSection={
+                    isSaving ? (
+                      <Loader size={14} data-testid='loader' />
+                    ) : isSaved ? (
+                      <IconBookmark size={14} />
+                    ) : (
+                      <IconBookmark size={14} />
+                    )
+                  }
+                  onClick={handleSaveSnippet}
+                  disabled={isSaving || isSaved}
+                  color={isSaved ? 'green' : undefined}
+                >
+                  {isSaving ? 'Saving...' : isSaved ? 'Saved!' : 'Save'}
+                </Button>
               </Group>
+              {saveError && (
+                <Text size='xs' c='red'>
+                  {saveError}
+                </Text>
+              )}
             </Stack>
           )}
         </div>

@@ -1,0 +1,891 @@
+import React, {
+  useState,
+  useRef,
+  useCallback,
+  useMemo,
+  useEffect,
+} from 'react';
+import {
+  Container,
+  Title,
+  TextInput,
+  Select,
+  Button,
+  Group,
+  Stack,
+  Card,
+  Text,
+  Badge,
+  ActionIcon,
+  Modal,
+  Textarea,
+  Loader,
+  Center,
+  Alert,
+} from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { IconSearch, IconEdit, IconTrash, IconPlus } from '@tabler/icons-react';
+import { useQueryClient } from '@tanstack/react-query';
+import { useAuth } from '../hooks/useAuth';
+import { usePagination } from '../hooks/usePagination';
+import { PaginationControls } from '../components/PaginationControls';
+import {
+  useDeleteV1SnippetsId,
+  usePutV1SnippetsId,
+  usePostV1Snippets,
+  useGetV1SettingsLanguages,
+} from '../api/api';
+import { customInstance } from '../api/axios';
+
+const SnippetsPage: React.FC = () => {
+  const {} = useAuth();
+
+  // Fetch available languages
+  const { data: languages = [] } = useGetV1SettingsLanguages();
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeSearchQuery, setActiveSearchQuery] = useState('');
+  const [sourceLangFilter, setSourceLangFilter] = useState<string | null>(null);
+  const [targetLangFilter, setTargetLangFilter] = useState<string | null>(null);
+  const [editModalOpened, { open: openEditModal, close: closeEditModal }] =
+    useDisclosure(false);
+  const [addModalOpened, { open: openAddModal, close: closeAddModal }] =
+    useDisclosure(false);
+  const [
+    deleteModalOpened,
+    { open: openDeleteModal, close: closeDeleteModal },
+  ] = useDisclosure(false);
+  const [snippetToDelete, setSnippetToDelete] = useState<number | null>(null);
+  const [editingSnippet, setEditingSnippet] = useState<{
+    id: number;
+    original_text: string;
+    translated_text: string;
+    context: string | null;
+    source_language: string;
+    target_language: string;
+    difficulty_level: string | null;
+    created_at: string;
+  } | null>(null);
+
+  // Create language options for dropdowns
+  const languageOptions = useMemo(
+    () =>
+      languages.map(lang => ({
+        value: lang.code,
+        label: lang.name,
+      })),
+    [languages]
+  );
+
+  // Add snippet form state
+  const [newSnippet, setNewSnippet] = useState({
+    original_text: '',
+    translated_text: '',
+    source_language: 'IT', // Will be updated when languages load
+    target_language: 'EN', // Will be updated when languages load
+    context: '',
+  });
+
+  const [editForm, setEditForm] = useState({
+    original_text: '',
+    translated_text: '',
+    source_language: 'IT', // Will be updated when languages load
+    target_language: 'EN', // Will be updated when languages load
+    context: '',
+  });
+
+  // Update form defaults when languages are loaded
+  useEffect(() => {
+    if (languageOptions.length > 0) {
+      // Set source to first language, target to second if available, otherwise same as source
+      const sourceLang = languageOptions[0].value;
+      const targetLang =
+        languageOptions.length > 1 ? languageOptions[1].value : sourceLang;
+
+      setNewSnippet(prev => ({
+        ...prev,
+        source_language: sourceLang,
+        target_language: targetLang,
+      }));
+      setEditForm(prev => ({
+        ...prev,
+        source_language: sourceLang,
+        target_language: targetLang,
+      }));
+    }
+  }, [languageOptions]);
+
+  // Reset pagination when component mounts to ensure fresh data
+  useEffect(() => {
+    resetSnippets();
+  }, []);
+
+  const queryClient = useQueryClient();
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  // Use pagination hook for snippets
+  const {
+    data: snippets,
+    isLoading: snippetsLoading,
+    isFetching: snippetsFetching,
+    isError,
+    pagination: snippetsPagination,
+    goToPage: goToSnippetsPage,
+    goToNextPage: goToNextSnippetsPage,
+    goToPreviousPage: goToPreviousSnippetsPage,
+    reset: resetSnippets,
+  } = usePagination(
+    activeSearchQuery
+      ? ['/v1/snippets/search', activeSearchQuery]
+      : ['/v1/snippets'],
+    async ({ limit, offset }) => {
+      if (activeSearchQuery.trim()) {
+        // Use search API
+        const params: { q: string; limit: number; offset: number } = {
+          q: activeSearchQuery.trim(),
+          limit,
+          offset,
+        };
+        const responseData = await customInstance({
+          url: '/v1/snippets/search',
+          method: 'GET',
+          params,
+        });
+        return {
+          items: responseData.snippets || [],
+          total: responseData.total || 0,
+        };
+      } else {
+        // Use regular snippets API
+        const params: {
+          limit: number;
+          offset: number;
+          source_lang?: string;
+          target_lang?: string;
+        } = {
+          limit,
+          offset,
+          source_lang: sourceLangFilter || undefined,
+          target_lang: targetLangFilter || undefined,
+        };
+        const responseData = await customInstance({
+          url: '/v1/snippets',
+          method: 'GET',
+          params,
+        });
+        return {
+          items: responseData.snippets || [],
+          total: responseData.total || 0,
+        };
+      }
+    },
+    {
+      initialLimit: 20,
+      enableInfiniteScroll: false,
+    }
+  );
+
+  const isLoading = snippetsLoading;
+  const isFetching = snippetsFetching;
+
+  const totalCount = snippetsPagination.totalItems;
+
+  // Mutations (use generated hooks directly; avoid creating hooks inside callbacks)
+  const deleteSnippetMutation = useDeleteV1SnippetsId(
+    {
+      mutation: {
+        onSuccess: () => {
+          resetSnippets();
+        },
+      },
+    },
+    queryClient
+  );
+
+  const updateSnippetMutation = usePutV1SnippetsId(
+    {
+      mutation: {
+        onSuccess: () => {
+          resetSnippets();
+          closeEditModal();
+        },
+      },
+    },
+    queryClient
+  );
+
+  const createSnippetMutation = usePostV1Snippets(
+    {
+      mutation: {
+        onSuccess: () => {
+          resetSnippets();
+          closeAddModal();
+          setNewSnippet({
+            original_text: '',
+            translated_text: '',
+            source_language: 'IT', // Will be updated by useEffect if languages are loaded
+            target_language: 'EN', // Will be updated by useEffect if languages are loaded
+            context: '',
+          });
+        },
+      },
+    },
+    queryClient
+  );
+
+  // Get unique languages for filter dropdowns (from existing snippets)
+  const sourceLanguages = snippets
+    ? [...new Set(snippets.map(s => s.source_language))]
+    : [];
+  const targetLanguages = snippets
+    ? [...new Set(snippets.map(s => s.target_language))]
+    : [];
+
+  // Handle search input change
+  const handleSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchQuery(e.target.value);
+    },
+    []
+  );
+
+  // Handle Enter key press to trigger search
+  const handleKeyPress = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter' && searchQuery.trim()) {
+        setActiveSearchQuery(searchQuery);
+        resetSnippets(); // Reset pagination when searching
+      }
+    },
+    [searchQuery, resetSnippets]
+  );
+
+  // Clear search
+  const handleClearSearch = () => {
+    setSearchQuery('');
+    setActiveSearchQuery('');
+    resetSnippets(); // Reset pagination when clearing search
+    // Focus back to search input
+    setTimeout(() => {
+      searchInputRef.current?.focus();
+    }, 0);
+  };
+
+  // Handle search button click
+  const handleSearch = () => {
+    setActiveSearchQuery(searchQuery);
+    resetSnippets(); // Reset pagination when searching
+  };
+
+  // Handle filter changes
+  const handleFilterChange = () => {
+    if (activeSearchQuery) {
+      // If there's an active search, clear it when filters change
+      setActiveSearchQuery('');
+    }
+    resetSnippets();
+  };
+
+  const handleEdit = (snippet: {
+    id: number;
+    original_text: string;
+    translated_text: string;
+    context: string | null;
+    source_language: string;
+    target_language: string;
+    difficulty_level: string | null;
+    created_at: string;
+  }) => {
+    setEditingSnippet(snippet);
+    setEditForm({
+      original_text: snippet.original_text,
+      translated_text: snippet.translated_text,
+      source_language: snippet.source_language,
+      target_language: snippet.target_language,
+      context: snippet.context || '',
+    });
+    openEditModal();
+  };
+
+  const handleSaveEdit = () => {
+    if (editingSnippet) {
+      updateSnippetMutation.mutate({
+        id: editingSnippet.id,
+        data: {
+          original_text: editForm.original_text,
+          translated_text: editForm.translated_text,
+          source_language: editForm.source_language,
+          target_language: editForm.target_language,
+          context: editForm.context || null,
+        },
+      });
+    }
+  };
+
+  const handleSaveNew = () => {
+    createSnippetMutation.mutate({
+      data: {
+        original_text: newSnippet.original_text,
+        translated_text: newSnippet.translated_text,
+        source_language: newSnippet.source_language,
+        target_language: newSnippet.target_language,
+        context: newSnippet.context || null,
+      },
+    });
+  };
+
+  const handleAddNew = () => {
+    openAddModal();
+  };
+
+  const handleDelete = (id: number) => {
+    setSnippetToDelete(id);
+    openDeleteModal();
+  };
+
+  const confirmDelete = () => {
+    if (snippetToDelete) {
+      deleteSnippetMutation.mutate({ id: snippetToDelete });
+      closeDeleteModal();
+      setSnippetToDelete(null);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <Container size='lg' py='xl'>
+        <Center h={200}>
+          <Loader size='lg' />
+        </Center>
+      </Container>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Container size='lg' py='xl'>
+        <Alert color='red' title='Error'>
+          Failed to load snippets. Please try again later.
+        </Alert>
+      </Container>
+    );
+  }
+
+  return (
+    <Container size='lg' py='xl'>
+      <Stack gap='lg'>
+        <Group justify='space-between' align='center'>
+          <div>
+            <Title order={1}>Snippets</Title>
+            <Text c='dimmed' mt='xs'>
+              Manage your saved words and phrases for review
+            </Text>
+          </div>
+          <Group gap='md'>
+            <Badge variant='light' color='blue' size='lg'>
+              {totalCount} snippets
+            </Badge>
+            <Button
+              leftSection={<IconPlus size={16} />}
+              variant='light'
+              onClick={handleAddNew}
+            >
+              Add New
+            </Button>
+          </Group>
+        </Group>
+
+        {/* Search and Filters */}
+        <Card withBorder>
+          <Stack gap='md'>
+            <Group gap='md'>
+              <TextInput
+                ref={searchInputRef}
+                placeholder='Type to prepare search query...'
+                leftSection={<IconSearch size={16} />}
+                value={searchQuery}
+                onChange={handleSearchChange}
+                onKeyDown={handleKeyPress}
+                style={{ flex: 1 }}
+                disabled={isLoading || isFetching}
+              />
+              <Group gap='xs'>
+                <Button
+                  variant='filled'
+                  leftSection={<IconSearch size={16} />}
+                  onClick={handleSearch}
+                  disabled={!searchQuery.trim() || isLoading || isFetching}
+                >
+                  Search
+                </Button>
+                {(searchQuery || activeSearchQuery) && (
+                  <Button variant='subtle' onClick={handleClearSearch}>
+                    Clear
+                  </Button>
+                )}
+              </Group>
+            </Group>
+
+            <Group grow>
+              <Select
+                placeholder='Source language'
+                data={[
+                  { value: '', label: 'All source languages' },
+                  ...sourceLanguages.map(lang => {
+                    const languageOption = languageOptions.find(
+                      opt => opt.value === lang
+                    );
+                    return {
+                      value: lang,
+                      label: languageOption
+                        ? languageOption.label
+                        : lang.toUpperCase(),
+                    };
+                  }),
+                ]}
+                value={sourceLangFilter}
+                onChange={value => {
+                  setSourceLangFilter(value);
+                  handleFilterChange();
+                }}
+                clearable
+              />
+
+              <Select
+                placeholder='Target language'
+                data={[
+                  { value: '', label: 'All target languages' },
+                  ...targetLanguages.map(lang => {
+                    const languageOption = languageOptions.find(
+                      opt => opt.value === lang
+                    );
+                    return {
+                      value: lang,
+                      label: languageOption
+                        ? languageOption.label
+                        : lang.toUpperCase(),
+                    };
+                  }),
+                ]}
+                value={targetLangFilter}
+                onChange={value => {
+                  setTargetLangFilter(value);
+                  handleFilterChange();
+                }}
+                clearable
+              />
+
+              <Button
+                variant='outline'
+                onClick={() => {
+                  setSearchQuery('');
+                  setActiveSearchQuery('');
+                  setSourceLangFilter(null);
+                  setTargetLangFilter(null);
+                  resetSnippets();
+                }}
+              >
+                Clear Filters
+              </Button>
+            </Group>
+          </Stack>
+        </Card>
+
+        {/* Snippets List */}
+        {snippets && snippets.length > 0 ? (
+          <Stack gap='md'>
+            {snippets.map(snippet => (
+              <Card key={snippet.id} withBorder>
+                <Stack gap='sm'>
+                  <Group justify='space-between' align='flex-start'>
+                    <div style={{ flex: 1 }}>
+                      <Text size='lg' fw={500}>
+                        {snippet.original_text}
+                      </Text>
+                      <Text size='md' c='blue'>
+                        {snippet.translated_text}
+                      </Text>
+                    </div>
+
+                    <Group gap='xs'>
+                      <Badge variant='light' color='gray'>
+                        {snippet.source_language.toUpperCase()} →{' '}
+                        {snippet.target_language.toUpperCase()}
+                      </Badge>
+                      {snippet.difficulty_level && (
+                        <Badge variant='light' color='blue'>
+                          {snippet.difficulty_level}
+                        </Badge>
+                      )}
+                    </Group>
+                  </Group>
+
+                  {snippet.context && (
+                    <Text size='sm' c='dimmed' style={{ fontStyle: 'italic' }}>
+                      "{snippet.context}"
+                    </Text>
+                  )}
+
+                  <Group justify='space-between' align='center'>
+                    <Text size='xs' c='dimmed'>
+                      Created:{' '}
+                      {new Date(snippet.created_at).toLocaleDateString()}
+                    </Text>
+
+                    <Group gap='xs'>
+                      <ActionIcon
+                        variant='light'
+                        color='blue'
+                        onClick={() => handleEdit(snippet)}
+                      >
+                        <IconEdit size={16} />
+                      </ActionIcon>
+                      <ActionIcon
+                        variant='light'
+                        color='red'
+                        onClick={() => handleDelete(snippet.id)}
+                      >
+                        <IconTrash size={16} />
+                      </ActionIcon>
+                    </Group>
+                  </Group>
+                </Stack>
+              </Card>
+            ))}
+
+            <PaginationControls
+              pagination={snippetsPagination}
+              onPageChange={goToSnippetsPage}
+              onNext={goToNextSnippetsPage}
+              onPrevious={goToPreviousSnippetsPage}
+              isLoading={isLoading || isFetching}
+              variant='desktop'
+            />
+          </Stack>
+        ) : (
+          <Center h={200}>
+            <Stack align='center' gap='md'>
+              <Text c='dimmed' size='lg'>
+                {activeSearchQuery
+                  ? 'No snippets found matching your search.'
+                  : 'No snippets found'}
+              </Text>
+              <Text c='dimmed' size='sm'>
+                Use the translation popup while reading to save words and
+                phrases
+              </Text>
+            </Stack>
+          </Center>
+        )}
+      </Stack>
+
+      {/* Edit Modal */}
+      <Modal
+        opened={editModalOpened}
+        onClose={closeEditModal}
+        title='Edit Snippet'
+        size='md'
+        centered
+        closeOnClickOutside={true}
+      >
+        {editingSnippet && (
+          <Stack gap='md'>
+            <TextInput
+              label='Original Text'
+              placeholder='Enter the original text...'
+              value={editForm.original_text}
+              onChange={event =>
+                setEditForm(prev => ({
+                  ...prev,
+                  original_text: event.target.value,
+                }))
+              }
+              required
+            />
+
+            <TextInput
+              label='Translation'
+              placeholder='Enter the translation...'
+              value={editForm.translated_text}
+              onChange={event =>
+                setEditForm(prev => ({
+                  ...prev,
+                  translated_text: event.target.value,
+                }))
+              }
+              required
+            />
+
+            <Group grow>
+              <Select
+                label='Source Language'
+                data={languageOptions}
+                value={editForm.source_language}
+                onChange={value => {
+                  if (value) {
+                    const newSourceLang = value;
+                    setEditForm(prev => ({
+                      ...prev,
+                      source_language: newSourceLang,
+                      // If source and target become the same, update target to something else
+                      target_language:
+                        newSourceLang === prev.target_language &&
+                        languageOptions.length > 1
+                          ? languageOptions.find(
+                              opt => opt.value !== newSourceLang
+                            )?.value || prev.target_language
+                          : prev.target_language,
+                    }));
+                  }
+                }}
+                disabled={languageOptions.length === 0}
+                error={
+                  editForm.source_language === editForm.target_language
+                    ? 'Source and target languages must be different'
+                    : undefined
+                }
+                clearable={false}
+                searchable={true}
+              />
+
+              <Select
+                label='Target Language'
+                data={languageOptions}
+                value={editForm.target_language}
+                onChange={value => {
+                  if (value) {
+                    const newTargetLang = value;
+                    setEditForm(prev => ({
+                      ...prev,
+                      target_language: newTargetLang,
+                      // If source and target become the same, update source to something else
+                      source_language:
+                        newTargetLang === prev.source_language &&
+                        languageOptions.length > 1
+                          ? languageOptions.find(
+                              opt => opt.value !== newTargetLang
+                            )?.value || prev.source_language
+                          : prev.source_language,
+                    }));
+                  }
+                }}
+                disabled={languageOptions.length === 0}
+                error={
+                  editForm.source_language === editForm.target_language
+                    ? 'Source and target languages must be different'
+                    : undefined
+                }
+                clearable={false}
+                searchable={true}
+              />
+            </Group>
+
+            <Textarea
+              label='Context/Notes'
+              placeholder='Add context or notes about this snippet...'
+              value={editForm.context}
+              onChange={event =>
+                setEditForm(prev => ({
+                  ...prev,
+                  context: event.target.value,
+                }))
+              }
+              minRows={3}
+            />
+
+            <Group justify='flex-end'>
+              <Button variant='light' onClick={closeEditModal}>
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSaveEdit}
+                loading={updateSnippetMutation.isPending}
+                disabled={
+                  !editForm.original_text ||
+                  !editForm.translated_text ||
+                  editForm.source_language === editForm.target_language
+                }
+              >
+                Save Changes
+              </Button>
+            </Group>
+          </Stack>
+        )}
+      </Modal>
+
+      {/* Add New Modal */}
+      <Modal
+        opened={addModalOpened}
+        onClose={closeAddModal}
+        title='Add New Snippet'
+        size='md'
+        centered
+        closeOnClickOutside={true}
+      >
+        <Stack gap='md'>
+          <TextInput
+            label='Original Text'
+            placeholder='Enter the original text...'
+            value={newSnippet.original_text}
+            onChange={event =>
+              setNewSnippet(prev => ({
+                ...prev,
+                original_text: event.target.value,
+              }))
+            }
+            required
+          />
+
+          <TextInput
+            label='Translation'
+            placeholder='Enter the translation...'
+            value={newSnippet.translated_text}
+            onChange={event =>
+              setNewSnippet(prev => ({
+                ...prev,
+                translated_text: event.target.value,
+              }))
+            }
+            required
+          />
+
+          <Group grow>
+            <Select
+              label='Source Language'
+              data={languageOptions}
+              value={newSnippet.source_language}
+              onChange={value => {
+                if (value) {
+                  const newSourceLang = value;
+                  setNewSnippet(prev => ({
+                    ...prev,
+                    source_language: newSourceLang,
+                    // If source and target become the same, update target to something else
+                    target_language:
+                      newSourceLang === prev.target_language &&
+                      languageOptions.length > 1
+                        ? languageOptions.find(
+                            opt => opt.value !== newSourceLang
+                          )?.value || prev.target_language
+                        : prev.target_language,
+                  }));
+                }
+              }}
+              disabled={languageOptions.length === 0}
+              error={
+                newSnippet.source_language === newSnippet.target_language
+                  ? 'Source and target languages must be different'
+                  : undefined
+              }
+              styles={{
+                dropdown: {
+                  zIndex: 2000,
+                },
+              }}
+              clearable={false}
+              searchable={true}
+            />
+
+            <Select
+              label='Target Language'
+              data={languageOptions}
+              value={newSnippet.target_language}
+              onChange={value => {
+                if (value) {
+                  const newTargetLang = value;
+                  setNewSnippet(prev => ({
+                    ...prev,
+                    target_language: newTargetLang,
+                    // If source and target become the same, update source to something else
+                    source_language:
+                      newTargetLang === prev.source_language &&
+                      languageOptions.length > 1
+                        ? languageOptions.find(
+                            opt => opt.value !== newTargetLang
+                          )?.value || prev.source_language
+                        : prev.source_language,
+                  }));
+                }
+              }}
+              disabled={languageOptions.length === 0}
+              error={
+                newSnippet.source_language === newSnippet.target_language
+                  ? 'Source and target languages must be different'
+                  : undefined
+              }
+              styles={{
+                dropdown: {
+                  zIndex: 2000,
+                },
+              }}
+              clearable={false}
+              searchable={true}
+            />
+          </Group>
+
+          <Textarea
+            label='Context/Notes'
+            placeholder='Add context or notes about this snippet...'
+            value={newSnippet.context}
+            onChange={event =>
+              setNewSnippet(prev => ({
+                ...prev,
+                context: event.target.value,
+              }))
+            }
+            minRows={3}
+          />
+
+          <Group justify='flex-end'>
+            <Button variant='light' onClick={closeAddModal}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSaveNew}
+              loading={createSnippetMutation.isPending}
+              disabled={
+                !newSnippet.original_text ||
+                !newSnippet.translated_text ||
+                newSnippet.source_language === newSnippet.target_language
+              }
+            >
+              Add Snippet
+            </Button>
+          </Group>
+        </Stack>
+      </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        opened={deleteModalOpened}
+        onClose={closeDeleteModal}
+        title='Delete Snippet'
+        size='sm'
+        centered
+        closeOnClickOutside={true}
+      >
+        <Stack gap='md'>
+          <Text>
+            Are you sure you want to delete this snippet? This action cannot be
+            undone.
+          </Text>
+
+          <Group justify='flex-end'>
+            <Button variant='light' onClick={closeDeleteModal}>
+              Cancel
+            </Button>
+            <Button
+              color='red'
+              onClick={confirmDelete}
+              loading={deleteSnippetMutation.isPending}
+            >
+              Delete
+            </Button>
+          </Group>
+        </Stack>
+      </Modal>
+    </Container>
+  );
+};
+
+export default SnippetsPage;

@@ -258,7 +258,11 @@ func TestSnippetsService_UpdateSnippet_Integration(t *testing.T) {
 
 	// Update the snippet context
 	updateReq := api.UpdateSnippetRequest{
-		Context: stringPtr("Updated context"),
+		Context:        stringPtr("Updated context"),
+		OriginalText:   stringPtr("Updated original text"),
+		TranslatedText: stringPtr("Updated translated text"),
+		SourceLanguage: stringPtr("EN"),
+		TargetLanguage: stringPtr("IT"),
 	}
 
 	updated, err := service.UpdateSnippet(context.Background(), int64(user.ID), snippet.ID, updateReq)
@@ -266,6 +270,10 @@ func TestSnippetsService_UpdateSnippet_Integration(t *testing.T) {
 	require.NotNil(t, updated)
 
 	assert.Equal(t, "Updated context", *updated.Context)
+	assert.Equal(t, "Updated original text", updated.OriginalText)
+	assert.Equal(t, "Updated translated text", updated.TranslatedText)
+	assert.Equal(t, "EN", updated.SourceLanguage)
+	assert.Equal(t, "IT", updated.TargetLanguage)
 	assert.NotEqual(t, snippet.UpdatedAt, updated.UpdatedAt) // Should be updated
 
 	// Test updating non-existent snippet

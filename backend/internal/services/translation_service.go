@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 	"time"
 
 	"quizapp/internal/config"
@@ -42,6 +43,19 @@ type GoogleTranslateRequest struct {
 	Target string   `json:"target"`
 	Source string   `json:"source,omitempty"`
 	Format string   `json:"format"`
+}
+
+// normalizeLanguageCode converts language names to ISO codes for Google Translate API
+func normalizeLanguageCode(lang string, languageLevels map[string]config.LanguageLevelConfig) string {
+	// Check if it's a language name in our config
+	for languageName, levelConfig := range languageLevels {
+		if strings.EqualFold(languageName, lang) {
+			return levelConfig.Code
+		}
+	}
+
+	// If it's already a valid ISO code or unknown, return as-is
+	return lang
 }
 
 // GoogleTranslateResponse represents the response format from Google Translate API
@@ -114,11 +128,11 @@ func (s *GoogleTranslationService) translateGoogle(ctx context.Context, req serv
 		return nil, err
 	}
 
-	// Prepare request
+	// Prepare request - normalize language codes for Google Translate API
 	requestBody := GoogleTranslateRequest{
 		Q:      []string{req.Text},
-		Target: req.TargetLanguage,
-		Source: req.SourceLanguage,
+		Target: normalizeLanguageCode(req.TargetLanguage, s.config.LanguageLevels),
+		Source: normalizeLanguageCode(req.SourceLanguage, s.config.LanguageLevels),
 		Format: "text",
 	}
 
@@ -170,8 +184,8 @@ func (s *GoogleTranslationService) translateGoogle(ctx context.Context, req serv
 
 	result = &serviceinterfaces.TranslateResponse{
 		TranslatedText: translation.TranslatedText,
-		SourceLanguage: req.SourceLanguage,
-		TargetLanguage: req.TargetLanguage,
+		SourceLanguage: normalizeLanguageCode(req.SourceLanguage, s.config.LanguageLevels),
+		TargetLanguage: normalizeLanguageCode(req.TargetLanguage, s.config.LanguageLevels),
 	}
 	return result, nil
 }

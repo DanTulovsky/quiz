@@ -42,6 +42,8 @@ export const QuestionPageBase: React.FC<Props> = ({ mode }) => {
   const { user } = useAuth();
 
   const {
+    setQuizQuestion,
+    setReadingQuestion,
     quizFeedback,
     setQuizFeedback,
     readingFeedback,
@@ -99,6 +101,23 @@ export const QuestionPageBase: React.FC<Props> = ({ mode }) => {
 
   // Fetching is handled inside `useQuestionFlow` to avoid duplicate network
   // requests. Do not call `fetchQuestion` here.
+
+  // Update the global QuestionContext when local question changes
+  useEffect(() => {
+    if (question) {
+      if (mode === 'quiz') {
+        setQuizQuestion(question);
+      } else {
+        setReadingQuestion(question);
+      }
+    } else {
+      if (mode === 'quiz') {
+        setQuizQuestion(null);
+      } else {
+        setReadingQuestion(null);
+      }
+    }
+  }, [question, mode, setQuizQuestion, setReadingQuestion]);
 
   // Start prebuffering as soon as question data is available
   useEffect(() => {

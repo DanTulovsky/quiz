@@ -46,8 +46,19 @@ type QuestionVarietyConfig struct {
 
 // LanguageLevelConfig represents the levels and descriptions for a specific language
 type LanguageLevelConfig struct {
+	Code         string            `json:"code" yaml:"code"`
+	TtsLocale    string            `json:"tts_locale" yaml:"tts_locale"`
+	TtsVoice     string            `json:"tts_voice" yaml:"tts_voice"`
 	Levels       []string          `json:"levels" yaml:"levels"`
 	Descriptions map[string]string `json:"descriptions" yaml:"descriptions"`
+}
+
+// LanguageInfo represents a language with its code and human-readable name
+type LanguageInfo struct {
+	Code      string  `json:"code"`
+	Name      string  `json:"name"`
+	TtsLocale *string `json:"tts_locale,omitempty"`
+	TtsVoice  *string `json:"tts_voice,omitempty"`
 }
 
 // AuthConfig represents authentication-related configuration
@@ -143,18 +154,57 @@ func (c *Config) GetLanguages() []string {
 	return languages
 }
 
+// GetLanguageInfoList returns a slice of language info objects with code and name
+func (c *Config) GetLanguageInfoList() []LanguageInfo {
+	if c.LanguageLevels == nil {
+		return []LanguageInfo{}
+	}
+
+	languageInfos := make([]LanguageInfo, 0, len(c.LanguageLevels))
+	for langName, langConfig := range c.LanguageLevels {
+		var ttsLocale, ttsVoice *string
+		if langConfig.TtsLocale != "" {
+			ttsLocale = &langConfig.TtsLocale
+		}
+		if langConfig.TtsVoice != "" {
+			ttsVoice = &langConfig.TtsVoice
+		}
+
+		languageInfos = append(languageInfos, LanguageInfo{
+			Code:      langConfig.Code,
+			Name:      langName,
+			TtsLocale: ttsLocale,
+			TtsVoice:  ttsVoice,
+		})
+	}
+
+	// Sort by name for consistent ordering
+	sort.Slice(languageInfos, func(i, j int) bool {
+		return languageInfos[i].Name < languageInfos[j].Name
+	})
+
+	return languageInfos
+}
+
 // GetLevelsForLanguage returns the levels for a specific language
 func (c *Config) GetLevelsForLanguage(language string) []string {
 	if c.LanguageLevels == nil {
 		return []string{}
 	}
 
-	langConfig, exists := c.LanguageLevels[language]
-	if !exists {
-		return []string{}
+	// First try to look up by language name directly
+	if langConfig, exists := c.LanguageLevels[language]; exists {
+		return langConfig.Levels
 	}
 
-	return langConfig.Levels
+	// If not found by name, try to find by language code
+	for _, langConfig := range c.LanguageLevels {
+		if langConfig.Code == language {
+			return langConfig.Levels
+		}
+	}
+
+	return []string{}
 }
 
 // GetLevelDescriptionsForLanguage returns the level descriptions for a specific language
@@ -163,12 +213,19 @@ func (c *Config) GetLevelDescriptionsForLanguage(language string) map[string]str
 		return map[string]string{}
 	}
 
-	langConfig, exists := c.LanguageLevels[language]
-	if !exists {
-		return map[string]string{}
+	// First try to look up by language name directly
+	if langConfig, exists := c.LanguageLevels[language]; exists {
+		return langConfig.Descriptions
 	}
 
-	return langConfig.Descriptions
+	// If not found by name, try to find by language code
+	for _, langConfig := range c.LanguageLevels {
+		if langConfig.Code == language {
+			return langConfig.Descriptions
+		}
+	}
+
+	return map[string]string{}
 }
 
 // GetAllLevels returns all unique levels across all languages

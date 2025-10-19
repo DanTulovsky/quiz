@@ -245,7 +245,7 @@ func (h *SettingsHandler) GetLevels(c *gin.Context) {
 func (h *SettingsHandler) GetLanguages(c *gin.Context) {
 	_, span := observability.TraceHandlerFunction(c.Request.Context(), "get_languages")
 	defer observability.FinishSpan(span, nil)
-	c.JSON(http.StatusOK, h.cfg.GetLanguages())
+	c.JSON(http.StatusOK, h.cfg.GetLanguageInfoList())
 }
 
 // CheckAPIKeyAvailability checks if the user has a saved API key for the specified provider

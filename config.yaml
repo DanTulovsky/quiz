@@ -233,7 +233,32 @@ email:
 
 # Language-specific levels and descriptions
 language_levels:
+  english:
+    code: "en"
+    tts_locale: "en-US"
+    tts_voice: "en-US-JennyNeural"
+    levels:
+      - "A1"
+      - "A2"
+      - "B1"
+      - "B1+"
+      - "B1++"
+      - "B2"
+      - "C1"
+      - "C2"
+    descriptions:
+      A1: "Beginner"
+      A2: "Elementary"
+      B1: "Intermediate"
+      B1+: "Intermediate Plus"
+      B1++: "Strong Intermediate"
+      B2: "Upper-Intermediate"
+      C1: "Advanced"
+      C2: "Proficient"
   italian:
+    code: "it"
+    tts_locale: "it-IT"
+    tts_voice: "it-IT-IsabellaNeural"
     levels:
       - "A1"
       - "A2"
@@ -254,6 +279,9 @@ language_levels:
       C2: "Proficient"
 
   french:
+    code: "fr"
+    tts_locale: "fr-FR"
+    tts_voice: "fr-FR-DeniseNeural"
     levels:
       - "A1"
       - "A2"
@@ -274,6 +302,9 @@ language_levels:
       C2: "Proficient"
 
   german:
+    code: "de"
+    tts_locale: "de-DE"
+    tts_voice: "de-DE-KatjaNeural"
     levels:
       - "A1"
       - "A2"
@@ -294,6 +325,9 @@ language_levels:
       C2: "Proficient"
 
   russian:
+    code: "ru"
+    tts_locale: "ru-RU"
+    tts_voice: "ru-RU-DariyaNeural"
     levels:
       - "A1"
       - "A2"
@@ -314,6 +348,9 @@ language_levels:
       C2: "Proficient"
 
   japanese:
+    code: "ja"
+    tts_locale: "ja-JP"
+    tts_voice: "ja-JP-NanamiNeural"
     levels:
       - "N5"
       - "N4"
@@ -328,6 +365,9 @@ language_levels:
       N1: "Advanced"
 
   chinese:
+    code: "zh"
+    tts_locale: "zh-CN"
+    tts_voice: "zh-CN-XiaoxiaoNeural"
     levels:
       - "HSK1"
       - "HSK2"
@@ -342,8 +382,6 @@ language_levels:
       HSK4: "Upper-Intermediate"
       HSK5: "Advanced"
       HSK6: "Proficient"
-
-# Languages are now derived automatically from language_levels keys
 
 # Question variety configuration
 variety:
@@ -709,3 +747,45 @@ translation:
       base_url: "https://translation.googleapis.com"
       api_endpoint: "/language/translate/v2"
       max_text_length: 5000
+
+# Text-to-Speech configuration
+tts:
+  # Supported languages for TTS functionality
+  supported_languages:
+    - "italian"
+    - "french"
+    - "german"
+    - "russian"
+    - "japanese"
+    - "chinese"
+    - "it"
+    - "fr"
+    - "de"
+    - "ru"
+    - "ja"
+    - "zh"
+
+  # Language code to locale mapping for TTS voice selection
+  language_locales:
+    italian: "it-IT"
+    it: "it-IT"
+    french: "fr-FR"
+    fr: "fr-FR"
+    german: "de-DE"
+    de: "de-DE"
+    russian: "ru-RU"
+    ru: "ru-RU"
+    japanese: "ja-JP"
+    ja: "ja-JP"
+    chinese: "zh-CN"
+    zh: "zh-CN"
+
+  # Default TTS voices for each language/locale
+  default_voices:
+    "it-IT": "it-IT-IsabellaNeural"
+    "fr-FR": "fr-FR-DeniseNeural"
+    "de-DE": "de-DE-KatjaNeural"
+    "ru-RU": "ru-RU-DariyaNeural"
+    "ja-JP": "ja-JP-NanamiNeural"
+    "zh-CN": "zh-CN-XiaoxiaoNeural"
+

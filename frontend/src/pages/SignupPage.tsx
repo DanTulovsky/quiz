@@ -302,8 +302,12 @@ const SignupPage: React.FC = () => {
                     data={
                       Array.isArray(languagesQuery.data)
                         ? languagesQuery.data.map(lang => ({
-                            value: lang,
-                            label: lang.charAt(0).toUpperCase() + lang.slice(1),
+                            value: lang.name || lang,
+                            label: lang.name
+                              ? lang.name.charAt(0).toUpperCase() +
+                                lang.name.slice(1)
+                              : (lang.name || lang).charAt(0).toUpperCase() +
+                                (lang.name || lang).slice(1),
                           }))
                         : []
                     }

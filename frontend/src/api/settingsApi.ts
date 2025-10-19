@@ -21,5 +21,12 @@ export const clearAllAIChats = async () => {
   return res.data;
 };
 
+export const clearAllSnippets = async () => {
+  const res = await AXIOS_INSTANCE.delete('/v1/snippets', {
+    headers: { Accept: 'application/json' },
+  });
+  return res.data;
+};
+
 
 

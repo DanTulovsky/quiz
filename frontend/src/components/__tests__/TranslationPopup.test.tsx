@@ -10,18 +10,85 @@ import { AuthProvider } from '../../contexts/AuthProvider';
 import { TranslationProvider } from '../../contexts/TranslationContext';
 import { ThemeProvider } from '../../contexts/ThemeContext';
 
-// Mock document and window for tests
-Object.defineProperty(window, 'innerWidth', {
-  writable: true,
-  configurable: true,
-  value: 1024,
+// Mock data with stable references
+const mockAuthStatusData = {
+  authenticated: true,
+  user: { id: 1, role: 'user' },
+};
+
+const mockRefetch = vi.fn();
+
+// Mock the dependencies
+vi.mock('../../hooks/useAuth');
+
+// Create the mock function and export it for tests to use
+const exportedMockPostV1Snippets = vi.fn();
+
+vi.mock('../../api/api', () => {
+  return {
+    // Keep all other mocks as they were
+    useGetV1AuthStatus: () => ({
+      data: mockAuthStatusData,
+      isLoading: false,
+      refetch: mockRefetch,
+    }),
+    usePostV1AuthLogin: () => ({
+      mutateAsync: vi.fn(),
+      isPending: false,
+    }),
+    usePostV1AuthLogout: () => ({
+      mutateAsync: vi.fn(),
+      isPending: false,
+    }),
+    usePutV1Settings: () => ({
+      mutateAsync: vi.fn(),
+      isPending: false,
+    }),
+    useGetV1SettingsAiProviders: () => ({
+      data: { providers: [] },
+      isLoading: false,
+    }),
+    usePostV1SettingsTestAi: () => ({
+      mutateAsync: vi.fn(),
+      isPending: false,
+    }),
+    usePostV1SettingsTestEmail: () => ({
+      mutateAsync: vi.fn(),
+      isPending: false,
+    }),
+    useGetV1SettingsLevels: () => ({
+      data: { levels: ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'] },
+      isLoading: false,
+    }),
+    useGetV1SettingsLanguages: () => ({
+      data: ['en', 'es', 'fr', 'de', 'it'],
+      isLoading: false,
+    }),
+    useGetV1SettingsApiKeyAvailability: () => ({
+      data: { has_api_key: false },
+      isLoading: false,
+    }),
+    usePostV1Snippets: () => ({
+      mutateAsync: vi.fn(),
+      isPending: false,
+    }),
+    useDeleteV1SnippetsId: () => ({
+      mutateAsync: vi.fn(),
+      isPending: false,
+    }),
+    usePutV1SnippetsId: () => ({
+      mutateAsync: vi.fn(),
+      isPending: false,
+    }),
+    useGetV1Snippets: () => ({
+      data: { snippets: [], total: 0, limit: 20, offset: 0 },
+      isLoading: false,
+    }),
+    postV1Snippets: exportedMockPostV1Snippets,
+  };
 });
 
-Object.defineProperty(window, 'innerHeight', {
-  writable: true,
-  configurable: true,
-  value: 768,
-});
+export { exportedMockPostV1Snippets };
 
 // Create a simple test wrapper
 const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -63,6 +130,11 @@ vi.mock('../../contexts/TranslationContext', () => ({
       sourceLanguage: 'en',
       targetLanguage: 'es',
     }),
+    translation: {
+      translatedText: 'Translated text',
+      sourceLanguage: 'en',
+      targetLanguage: 'es',
+    },
     isLoading: false,
     error: null,
   }),
@@ -80,27 +152,6 @@ vi.mock('../../hooks/useTextSelection', () => ({
     },
     isVisible: true,
     clearSelection: vi.fn(),
-  }),
-}));
-
-// Mock the API module for AuthProvider
-vi.mock('../../api/api', () => ({
-  useGetV1AuthStatus: () => ({
-    data: { authenticated: true, user: { id: 1, role: 'user' } },
-    isLoading: false,
-    refetch: vi.fn(),
-  }),
-  usePostV1AuthLogin: () => ({
-    mutateAsync: vi.fn(),
-    isPending: false,
-  }),
-  usePostV1AuthLogout: () => ({
-    mutateAsync: vi.fn(),
-    isPending: false,
-  }),
-  usePutV1Settings: () => ({
-    mutateAsync: vi.fn(),
-    isPending: false,
   }),
 }));
 
@@ -251,5 +302,229 @@ describe('TranslationPopup', () => {
     await user.click(document.body);
 
     expect(mockOnClose).toHaveBeenCalled();
+  });
+
+  it('should show save button when translation is available', () => {
+    render(
+      <TestWrapper>
+        <TranslationPopup
+          selection={{
+            text: 'Hello world',
+            x: 100,
+            y: 100,
+            width: 50,
+            height: 20,
+          }}
+          onClose={mockOnClose}
+        />
+      </TestWrapper>
+    );
+
+    expect(screen.getByText('Save')).toBeInTheDocument();
+  });
+
+  it('should call save API when save button is clicked', async () => {
+    const user = userEvent.setup();
+
+    // Set up the mock for this test
+    exportedMockPostV1Snippets.mockResolvedValue({});
+
+    render(
+      <TestWrapper>
+        <TranslationPopup
+          selection={{
+            text: 'Bonjour',
+            x: 100,
+            y: 100,
+            width: 50,
+            height: 20,
+          }}
+          onClose={mockOnClose}
+        />
+      </TestWrapper>
+    );
+
+    const saveButton = screen.getByText('Save');
+    await user.click(saveButton);
+
+    expect(exportedMockPostV1Snippets).toHaveBeenCalledWith({
+      original_text: 'Bonjour',
+      translated_text: 'Translated text',
+      source_language: 'en',
+      target_language: 'es',
+    });
+  });
+
+  it('should show loading state while saving', async () => {
+    const user = userEvent.setup();
+
+    // Set up the mock for this test
+    exportedMockPostV1Snippets.mockImplementation(
+      () => new Promise(resolve => setTimeout(resolve, 100))
+    );
+
+    render(
+      <TestWrapper>
+        <TranslationPopup
+          selection={{
+            text: 'Bonjour',
+            x: 100,
+            y: 100,
+            width: 50,
+            height: 20,
+          }}
+          onClose={mockOnClose}
+        />
+      </TestWrapper>
+    );
+
+    const saveButton = screen.getByText('Save');
+    await user.click(saveButton);
+
+    expect(screen.getByText('Saving...')).toBeInTheDocument();
+    expect(screen.getByTestId('loader')).toBeInTheDocument();
+  });
+
+  it('should show saved state after successful save', async () => {
+    const user = userEvent.setup();
+
+    // Set up the mock for this test
+    exportedMockPostV1Snippets.mockResolvedValue({});
+
+    render(
+      <TestWrapper>
+        <TranslationPopup
+          selection={{
+            text: 'Bonjour',
+            x: 100,
+            y: 100,
+            width: 50,
+            height: 20,
+          }}
+          onClose={mockOnClose}
+        />
+      </TestWrapper>
+    );
+
+    const saveButton = screen.getByText('Save');
+    await user.click(saveButton);
+
+    // Wait for the save operation to complete and check that button shows "Saved!"
+    await waitFor(() => {
+      expect(screen.getByText('Saved!')).toBeInTheDocument();
+    });
+
+    // Button should be disabled after save
+    const savedButton = screen.getByText('Saved!');
+    expect(savedButton).toBeDisabled();
+  });
+
+  it('should show error message when save fails', async () => {
+    const user = userEvent.setup();
+
+    // Set up the mock for this test
+    exportedMockPostV1Snippets.mockRejectedValue(new Error('Save failed'));
+
+    render(
+      <TestWrapper>
+        <TranslationPopup
+          selection={{
+            text: 'Bonjour',
+            x: 100,
+            y: 100,
+            width: 50,
+            height: 20,
+          }}
+          onClose={mockOnClose}
+        />
+      </TestWrapper>
+    );
+
+    const saveButton = screen.getByText('Save');
+    await user.click(saveButton);
+
+    // Check that error message appears inline in the component
+    await waitFor(() => {
+      expect(screen.getByText('Save failed')).toBeInTheDocument();
+    });
+
+    // Save button should be enabled again after error
+    expect(saveButton).not.toBeDisabled();
+  });
+
+  it('should reset saved state after 3 seconds', async () => {
+    const user = userEvent.setup();
+
+    // Set up the mock for this test
+    exportedMockPostV1Snippets.mockResolvedValue({});
+
+    vi.useFakeTimers();
+
+    render(
+      <TestWrapper>
+        <TranslationPopup
+          selection={{
+            text: 'Bonjour',
+            x: 100,
+            y: 100,
+            width: 50,
+            height: 20,
+          }}
+          onClose={mockOnClose}
+        />
+      </TestWrapper>
+    );
+
+    const saveButton = screen.getByText('Save');
+    await user.click(saveButton);
+
+    // Wait for saved state
+    await waitFor(() => {
+      expect(screen.getByText('Saved!')).toBeInTheDocument();
+    });
+
+    // Fast-forward time by 3 seconds
+    vi.advanceTimersByTime(3000);
+
+    // Wait for the state to reset
+    await waitFor(() => {
+      expect(screen.getByText('Save')).toBeInTheDocument();
+    });
+
+    vi.useRealTimers();
+  });
+
+  it('should show save button even when no translation', () => {
+    // Mock translation context to return no translation
+    vi.mocked(
+      vi.importActual('../../contexts/TranslationContext')
+    ).useTranslation = () => ({
+      translateText: vi.fn().mockResolvedValue({
+        translatedText: '',
+        sourceLanguage: 'en',
+        targetLanguage: 'es',
+      }),
+      translation: null,
+      isLoading: false,
+      error: null,
+    });
+
+    render(
+      <TestWrapper>
+        <TranslationPopup
+          selection={{
+            text: 'Hello world',
+            x: 100,
+            y: 100,
+            width: 50,
+            height: 20,
+          }}
+          onClose={mockOnClose}
+        />
+      </TestWrapper>
+    );
+
+    // Save button should be present even when there's no translation
+    expect(screen.getByText('Save')).toBeInTheDocument();
   });
 });

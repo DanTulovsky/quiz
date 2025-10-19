@@ -1,12 +1,15 @@
-export type SupportedLanguage =
-  | 'italian'
-  | 'french'
-  | 'german'
-  | 'russian'
-  | 'japanese'
-  | 'chinese';
+// Get TTS locale for a language object or string
+export function languageToLocale(
+  language?: string | { tts_locale?: string }
+): string | undefined {
+  if (!language) return undefined;
 
-export function languageToLocale(language?: string): string | undefined {
+  // If it's a language object with tts_locale, use that
+  if (typeof language === 'object' && language.tts_locale) {
+    return language.tts_locale;
+  }
+
+  // Otherwise, it's a language name string, return the corresponding locale
   switch ((language || '').toLowerCase()) {
     case 'italian':
       return 'it-IT';
@@ -25,21 +28,30 @@ export function languageToLocale(language?: string): string | undefined {
   }
 }
 
-// Reasonable defaults per locale when TTS voices list isn't available
-export function defaultVoiceForLanguage(language?: string): string | undefined {
-  const locale = languageToLocale(language);
-  switch (locale) {
-    case 'it-IT':
+// Get default TTS voice for a language object or string
+export function defaultVoiceForLanguage(
+  language?: string | { tts_voice?: string }
+): string | undefined {
+  if (!language) return undefined;
+
+  // If it's a language object with tts_voice, use that
+  if (typeof language === 'object' && language.tts_voice) {
+    return language.tts_voice;
+  }
+
+  // Otherwise, it's a language name string, return the corresponding voice
+  switch ((language || '').toLowerCase()) {
+    case 'italian':
       return 'it-IT-IsabellaNeural';
-    case 'fr-FR':
+    case 'french':
       return 'fr-FR-DeniseNeural';
-    case 'de-DE':
+    case 'german':
       return 'de-DE-KatjaNeural';
-    case 'ru-RU':
+    case 'russian':
       return 'ru-RU-DariyaNeural';
-    case 'ja-JP':
+    case 'japanese':
       return 'ja-JP-NanamiNeural';
-    case 'zh-CN':
+    case 'chinese':
       return 'zh-CN-XiaoxiaoNeural';
     default:
       return undefined;
@@ -62,8 +74,15 @@ export function extractVoiceName(v: EdgeTTSVoiceInfo): string | undefined {
 }
 // Sample paragraphs (2-3 sentences) for each supported language so users can
 // better evaluate voice quality and prosody.
-export function sampleTextForLanguage(language?: string): string | undefined {
-  switch ((language || '').toLowerCase()) {
+export function sampleTextForLanguage(
+  language?: string | { name?: string }
+): string | undefined {
+  if (!language) return undefined;
+
+  // If it's a language object, get the name
+  const langName = typeof language === 'object' ? language.name : language;
+
+  switch ((langName || '').toLowerCase()) {
     case 'italian':
       return (
         'Ciao! Questo è un esempio di voce. ' +

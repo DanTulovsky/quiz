@@ -380,10 +380,16 @@ func (suite *SettingsIntegrationTestSuite) TestGetLanguages_Success() {
 
 	assert.Equal(suite.T(), http.StatusOK, w.Code)
 
-	var languages []string
+	var languages []config.LanguageInfo
 	err := json.Unmarshal(w.Body.Bytes(), &languages)
 	assert.NoError(suite.T(), err)
 	assert.NotEmpty(suite.T(), languages)
+
+	// Check that all languages have both code and name
+	for _, lang := range languages {
+		assert.NotEmpty(suite.T(), lang.Code)
+		assert.NotEmpty(suite.T(), lang.Name)
+	}
 }
 
 func (suite *SettingsIntegrationTestSuite) TestClearAllStoriesEndpoint() {

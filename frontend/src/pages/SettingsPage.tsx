@@ -16,6 +16,7 @@ import { Save, Lightbulb } from 'lucide-react';
 import React, { useEffect, useState, useRef } from 'react';
 import { showNotificationWithClean } from '../notifications';
 import ErrorModal from '../components/ErrorModal';
+import ConfirmationModal from '../components/ConfirmationModal';
 import { useQueryClient } from '@tanstack/react-query';
 import { getGetV1PreferencesLearningQueryKey } from '../api/api';
 import TimezoneSelector from '../components/TimezoneSelector';
@@ -52,6 +53,7 @@ import {
   clearAllStories,
   resetAccount,
   clearAllAIChats,
+  clearAllSnippets,
 } from '../api/settingsApi';
 import {
   IconUser,
@@ -111,6 +113,9 @@ const SettingsPage: React.FC = () => {
   const { data: languagesData } = useGetV1SettingsLanguages();
   const languages = languagesData;
 
+  // Find the current language object for TTS configuration
+  const currentLanguageObj = languages?.find(lang => lang.name === language);
+
   const [aiProvider, setAiProvider] = useState('');
   const [aiModel, setAiModel] = useState('');
   const [apiKey, setApiKey] = useState(''); // API key is write-only
@@ -139,6 +144,12 @@ const SettingsPage: React.FC = () => {
     title: '',
     message: '',
   });
+
+  // Confirmation modal states for dangerous actions
+  const [deleteAllStoriesModal, setDeleteAllStoriesModal] = useState(false);
+  const [deleteAllAiChatsModal, setDeleteAllAiChatsModal] = useState(false);
+  const [deleteAllSnippetsModal, setDeleteAllSnippetsModal] = useState(false);
+  const [resetAccountModal, setResetAccountModal] = useState(false);
 
   const testConnectionMutation = usePostV1SettingsTestAi();
   const profileUpdateMutation = usePutV1UserzProfile();
@@ -180,14 +191,9 @@ const SettingsPage: React.FC = () => {
     let isCancelled = false;
     const fetchVoices = async () => {
       try {
-        const locale = languageToLocale(language);
+        const locale = languageToLocale(currentLanguageObj);
         if (!locale) {
           setAvailableVoices([]);
-          setLearningPrefs(prev =>
-            prev
-              ? ({ ...prev, tts_voice: '' } as UserLearningPreferences)
-              : prev
-          );
           return;
         }
         const res = await fetch(
@@ -204,38 +210,38 @@ const SettingsPage: React.FC = () => {
         if (!isCancelled) {
           // Only keep voices for the selected language; do not merge previous-language voice
           setAvailableVoices(voices);
-          // Ensure currently selected voice belongs to this language
-          setLearningPrefs(prev => {
-            if (!prev) return prev;
-            const saved = (prev as unknown as { tts_voice?: string }).tts_voice;
-            const preferred = defaultVoiceForLanguage(language);
-            const chosen =
-              (saved && voices.includes(saved) && saved) ||
-              (preferred && voices.includes(preferred) && preferred) ||
-              voices[0] ||
-              '';
-            return chosen
-              ? ({ ...prev, tts_voice: chosen } as UserLearningPreferences)
-              : ({ ...prev, tts_voice: '' } as UserLearningPreferences);
-          });
         }
-      } catch {
-        const fallback = defaultVoiceForLanguage(language);
-        setAvailableVoices(fallback ? [fallback] : []);
-        if (fallback) {
-          setLearningPrefs(prev =>
-            prev && !(prev as unknown as { tts_voice?: string }).tts_voice
-              ? ({ ...prev, tts_voice: fallback } as UserLearningPreferences)
-              : prev
-          );
-        }
+      } catch (error) {
+        console.warn('Failed to fetch TTS voices:', error);
+        setAvailableVoices([]);
       }
     };
     fetchVoices();
     return () => {
       isCancelled = true;
     };
-  }, [language]);
+  }, [language, languages]); // Also depend on languages being loaded
+
+  // Ensure TTS voice is properly selected when learning preferences or voices change
+  useEffect(() => {
+    if (learningPrefs && availableVoices.length > 0) {
+      const saved = (learningPrefs as unknown as { tts_voice?: string })
+        .tts_voice;
+      const preferred = defaultVoiceForLanguage(currentLanguageObj);
+      const chosen =
+        (saved && availableVoices.includes(saved) && saved) ||
+        (preferred && availableVoices.includes(preferred) && preferred) ||
+        availableVoices[0] ||
+        '';
+      if (chosen && chosen !== saved) {
+        setLearningPrefs(prev =>
+          prev
+            ? ({ ...prev, tts_voice: chosen } as UserLearningPreferences)
+            : prev
+        );
+      }
+    }
+  }, [learningPrefs, availableVoices, currentLanguageObj]);
 
   // Initialize state from user data
   useEffect(() => {
@@ -446,6 +452,126 @@ const SettingsPage: React.FC = () => {
         isOpen: true,
         title: 'Test Email Failed',
         message: message,
+      });
+    }
+  };
+
+  // Handler functions for dangerous actions
+  const handleDeleteAllStories = async () => {
+    setDeleteAllStoriesModal(false);
+    try {
+      await clearAllStories();
+
+      // Invalidate story queries to ensure UI updates immediately
+      queryClient.invalidateQueries({
+        queryKey: ['currentStory', user?.id, user?.preferred_language],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['archivedStories', user?.id, user?.preferred_language],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['userStories'],
+      });
+
+      showNotificationWithClean({
+        title: 'Success',
+        message: 'All stories deleted',
+        color: 'green',
+      });
+      await refreshUser();
+    } catch (e) {
+      showNotificationWithClean({
+        title: 'Error',
+        message: String(e),
+        color: 'red',
+      });
+    }
+  };
+
+  const handleDeleteAllAiChats = async () => {
+    setDeleteAllAiChatsModal(false);
+    try {
+      await clearAllAIChats();
+
+      // Invalidate AI conversation queries to ensure UI updates immediately
+      queryClient.invalidateQueries({
+        queryKey: ['aiConversations'],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['aiConversations', user?.id],
+      });
+
+      showNotificationWithClean({
+        title: 'Success',
+        message: 'All AI chats deleted',
+        color: 'green',
+      });
+      await refreshUser();
+    } catch (e) {
+      showNotificationWithClean({
+        title: 'Error',
+        message: String(e),
+        color: 'red',
+      });
+    }
+  };
+
+  const handleDeleteAllSnippets = async () => {
+    setDeleteAllSnippetsModal(false);
+    try {
+      await clearAllSnippets();
+
+      // Invalidate snippet queries to ensure UI updates immediately
+      // The SnippetsPage uses these query keys with pagination
+      queryClient.invalidateQueries({
+        queryKey: ['/v1/snippets'],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['/v1/snippets/search'],
+      });
+
+      showNotificationWithClean({
+        title: 'Success',
+        message: 'All snippets deleted',
+        color: 'green',
+      });
+      await refreshUser();
+    } catch (e) {
+      showNotificationWithClean({
+        title: 'Error',
+        message: String(e),
+        color: 'red',
+      });
+    }
+  };
+
+  const handleResetAccount = async () => {
+    setResetAccountModal(false);
+    try {
+      await resetAccount();
+
+      // Invalidate story queries to ensure UI updates immediately
+      queryClient.invalidateQueries({
+        queryKey: ['currentStory', user?.id, user?.preferred_language],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['archivedStories', user?.id, user?.preferred_language],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['userStories'],
+      });
+
+      showNotificationWithClean({
+        title: 'Success',
+        message: 'Account reset',
+        color: 'green',
+      });
+      await refreshUser();
+    } catch (e) {
+      showNotificationWithClean({
+        title: 'Error',
+        message: String(e),
+        color: 'red',
       });
     }
   };
@@ -677,8 +803,12 @@ const SettingsPage: React.FC = () => {
                     onChange={value => setLanguage(value || '')}
                     data={
                       languages?.map(lang => ({
-                        value: lang,
-                        label: lang.charAt(0).toUpperCase() + lang.slice(1),
+                        value: lang.name || lang,
+                        label: lang.name
+                          ? lang.name.charAt(0).toUpperCase() +
+                            lang.name.slice(1)
+                          : (lang.name || lang).charAt(0).toUpperCase() +
+                            (lang.name || lang).slice(1),
                       })) || []
                     }
                     placeholder='Select language'
@@ -754,7 +884,8 @@ const SettingsPage: React.FC = () => {
                             }
                             onClick={async () => {
                               try {
-                                const sample = sampleTextForLanguage(language);
+                                const sample =
+                                  sampleTextForLanguage(currentLanguageObj);
                                 if (!sample) {
                                   showNotificationWithClean({
                                     title: 'No sample',
@@ -770,7 +901,7 @@ const SettingsPage: React.FC = () => {
                                       tts_voice?: string;
                                     }
                                   )?.tts_voice ||
-                                  defaultVoiceForLanguage(language) ||
+                                  defaultVoiceForLanguage(currentLanguageObj) ||
                                   'echo';
 
                                 // Set local buffering indicator
@@ -1220,136 +1351,25 @@ const SettingsPage: React.FC = () => {
                 <Button
                   color='red'
                   variant='outline'
-                  onClick={async () => {
-                    if (
-                      !confirm(
-                        'Are you sure you want to delete ALL your stories? This cannot be undone.'
-                      )
-                    )
-                      return;
-                    try {
-                      await clearAllStories();
-
-                      // Invalidate story queries to ensure UI updates immediately
-                      queryClient.invalidateQueries({
-                        queryKey: [
-                          'currentStory',
-                          user?.id,
-                          user?.preferred_language,
-                        ],
-                      });
-                      queryClient.invalidateQueries({
-                        queryKey: [
-                          'archivedStories',
-                          user?.id,
-                          user?.preferred_language,
-                        ],
-                      });
-                      queryClient.invalidateQueries({
-                        queryKey: ['userStories'],
-                      });
-
-                      showNotificationWithClean({
-                        title: 'Success',
-                        message: 'All stories deleted',
-                        color: 'green',
-                      });
-                      await refreshUser();
-                    } catch (e) {
-                      showNotificationWithClean({
-                        title: 'Error',
-                        message: String(e),
-                        color: 'red',
-                      });
-                    }
-                  }}
+                  onClick={() => setDeleteAllStoriesModal(true)}
                 >
                   Delete All Stories
                 </Button>
                 <Button
                   color='red'
                   variant='outline'
-                  onClick={async () => {
-                    if (
-                      !confirm(
-                        'Are you sure you want to delete ALL your AI chats? This cannot be undone.'
-                      )
-                    )
-                      return;
-                    try {
-                      await clearAllAIChats();
-
-                      // Invalidate AI conversation queries to ensure UI updates immediately
-                      queryClient.invalidateQueries({
-                        queryKey: ['aiConversations'],
-                      });
-                      queryClient.invalidateQueries({
-                        queryKey: ['aiConversations', user?.id],
-                      });
-
-                      showNotificationWithClean({
-                        title: 'Success',
-                        message: 'All AI chats deleted',
-                        color: 'green',
-                      });
-                      await refreshUser();
-                    } catch (e) {
-                      showNotificationWithClean({
-                        title: 'Error',
-                        message: String(e),
-                        color: 'red',
-                      });
-                    }
-                  }}
+                  onClick={() => setDeleteAllAiChatsModal(true)}
                 >
                   Delete All AI Chats
                 </Button>
                 <Button
                   color='red'
-                  onClick={async () => {
-                    if (
-                      !confirm(
-                        'Reset your account? This will delete your stories, questions, and progress. This cannot be undone.'
-                      )
-                    )
-                      return;
-                    try {
-                      await resetAccount();
-
-                      // Invalidate story queries to ensure UI updates immediately
-                      queryClient.invalidateQueries({
-                        queryKey: [
-                          'currentStory',
-                          user?.id,
-                          user?.preferred_language,
-                        ],
-                      });
-                      queryClient.invalidateQueries({
-                        queryKey: [
-                          'archivedStories',
-                          user?.id,
-                          user?.preferred_language,
-                        ],
-                      });
-                      queryClient.invalidateQueries({
-                        queryKey: ['userStories'],
-                      });
-
-                      showNotificationWithClean({
-                        title: 'Success',
-                        message: 'Account reset',
-                        color: 'green',
-                      });
-                      await refreshUser();
-                    } catch (e) {
-                      showNotificationWithClean({
-                        title: 'Error',
-                        message: String(e),
-                        color: 'red',
-                      });
-                    }
-                  }}
+                  variant='outline'
+                  onClick={() => setDeleteAllSnippetsModal(true)}
                 >
+                  Delete All Snippets
+                </Button>
+                <Button color='red' onClick={() => setResetAccountModal(true)}>
                   Reset Account
                 </Button>
               </Group>
@@ -1370,6 +1390,47 @@ const SettingsPage: React.FC = () => {
         onClose={() => setErrorModal({ ...errorModal, isOpen: false })}
         title={errorModal.title}
         message={errorModal.message}
+      />
+
+      {/* Confirmation Modals for Dangerous Actions */}
+      <ConfirmationModal
+        isOpen={deleteAllStoriesModal}
+        onClose={() => setDeleteAllStoriesModal(false)}
+        onConfirm={handleDeleteAllStories}
+        title='Delete All Stories'
+        message='Are you sure you want to delete ALL your stories? This cannot be undone.'
+        confirmText='Delete All Stories'
+        cancelText='Cancel'
+      />
+
+      <ConfirmationModal
+        isOpen={deleteAllAiChatsModal}
+        onClose={() => setDeleteAllAiChatsModal(false)}
+        onConfirm={handleDeleteAllAiChats}
+        title='Delete All AI Chats'
+        message='Are you sure you want to delete ALL your AI chats? This cannot be undone.'
+        confirmText='Delete All AI Chats'
+        cancelText='Cancel'
+      />
+
+      <ConfirmationModal
+        isOpen={deleteAllSnippetsModal}
+        onClose={() => setDeleteAllSnippetsModal(false)}
+        onConfirm={handleDeleteAllSnippets}
+        title='Delete All Snippets'
+        message='Are you sure you want to delete ALL your snippets? This cannot be undone.'
+        confirmText='Delete All Snippets'
+        cancelText='Cancel'
+      />
+
+      <ConfirmationModal
+        isOpen={resetAccountModal}
+        onClose={() => setResetAccountModal(false)}
+        onConfirm={handleResetAccount}
+        title='Reset Account'
+        message='Reset your account? This will delete your stories, questions, and progress. This cannot be undone.'
+        confirmText='Reset Account'
+        cancelText='Cancel'
       />
     </Container>
   );

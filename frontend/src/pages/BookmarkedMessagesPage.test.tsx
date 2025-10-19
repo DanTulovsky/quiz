@@ -46,7 +46,7 @@ vi.mock('../api/api', () => ({
   })),
 }));
 vi.mock('react-markdown', () => ({
-  default: ({ children }: any) => {
+  default: ({ children }: { children?: React.ReactNode }) => {
     // Simple mock that renders children as plain text for testing
     if (typeof children === 'string') {
       return <span data-testid='markdown-content'>{children}</span>;

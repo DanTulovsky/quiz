@@ -10,6 +10,7 @@ import OAuthCallbackPage from './pages/OAuthCallbackPage';
 import QuizPage from './pages/QuizPage';
 import ReadingComprehensionPage from './pages/ReadingComprehensionPage';
 import VocabularyPage from './pages/VocabularyPage';
+import SnippetsPage from './pages/SnippetsPage';
 import DailyPage from './pages/DailyPage';
 import ProgressPage from './pages/ProgressPage';
 import SettingsPage from './pages/SettingsPage';
@@ -125,6 +126,20 @@ function App() {
             user ? (
               <Layout>
                 <VocabularyPage />
+              </Layout>
+            ) : (
+              <Navigate
+                to={`/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`}
+              />
+            )
+          }
+        />
+        <Route
+          path='/snippets'
+          element={
+            user ? (
+              <Layout>
+                <SnippetsPage />
               </Layout>
             ) : (
               <Navigate
@@ -447,6 +462,20 @@ function App() {
             user ? (
               <MobileLayout>
                 <MobileVocabularyPage />
+              </MobileLayout>
+            ) : (
+              <Navigate
+                to={`/m/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`}
+              />
+            )
+          }
+        />
+        <Route
+          path='/m/snippets'
+          element={
+            user ? (
+              <MobileLayout>
+                <SnippetsPage />
               </MobileLayout>
             ) : (
               <Navigate

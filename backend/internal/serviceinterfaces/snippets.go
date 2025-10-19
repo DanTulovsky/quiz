@@ -16,6 +16,9 @@ type SnippetsService interface {
 	// GetSnippets retrieves snippets for a user with optional filtering
 	GetSnippets(ctx context.Context, userID int64, params api.GetV1SnippetsParams) (*api.SnippetList, error)
 
+	// SearchSnippets searches across all snippets for a user
+	SearchSnippets(ctx context.Context, userID int64, query string, limit, offset int) ([]api.Snippet, int, error)
+
 	// GetSnippet retrieves a specific snippet by ID
 	GetSnippet(ctx context.Context, userID, snippetID int64) (*models.Snippet, error)
 
@@ -24,4 +27,7 @@ type SnippetsService interface {
 
 	// DeleteSnippet deletes a snippet
 	DeleteSnippet(ctx context.Context, userID, snippetID int64) error
+
+	// DeleteAllSnippets deletes all snippets for a user
+	DeleteAllSnippets(ctx context.Context, userID int64) error
 }
