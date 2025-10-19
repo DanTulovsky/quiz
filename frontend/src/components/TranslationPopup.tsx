@@ -50,6 +50,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [isSaved, setIsSaved] = useState(false);
+  const [isAudioInteraction, setIsAudioInteraction] = useState(false);
   const {
     translateText,
     translation,
@@ -95,7 +96,8 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       // Don't close if the Select is focused (user is interacting with it)
-      if (isSelectFocused) {
+      // or if user is interacting with audio buttons
+      if (isSelectFocused || isAudioInteraction) {
         return;
       }
 
@@ -120,7 +122,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [onClose, isSelectFocused]);
+  }, [onClose, isSelectFocused, isAudioInteraction]);
 
   // Calculate popup position to stay within viewport
   const getPopupPosition = () => {
@@ -150,9 +152,23 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
 
   const speakText = (text: string, lang: string) => {
     if ('speechSynthesis' in window) {
+      // Set audio interaction state to prevent popup from closing
+      setIsAudioInteraction(true);
+
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = lang;
       utterance.rate = 0.8;
+
+      const handleSpeechEnd = () => {
+        // Keep audio interaction active for a bit longer to prevent accidental closes
+        setTimeout(() => {
+          setIsAudioInteraction(false);
+        }, 1000);
+      };
+
+      utterance.addEventListener('end', handleSpeechEnd);
+      utterance.addEventListener('error', handleSpeechEnd);
+
       speechSynthesis.speak(utterance);
     }
   };
@@ -186,6 +202,13 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
     }
   };
 
+  // Enhanced close handler that clears all interaction states
+  const handleClose = () => {
+    setIsAudioInteraction(false);
+    setIsSelectFocused(false);
+    onClose();
+  };
+
   return (
     <Paper
       ref={popupRef}
@@ -207,7 +230,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
           <Text size='sm' fw={500} c='dimmed'>
             Translation
           </Text>
-          <Button variant='subtle' size='xs' p={2} onClick={onClose}>
+          <Button variant='subtle' size='xs' p={2} onClick={handleClose}>
             <IconX size={14} />
           </Button>
         </Group>

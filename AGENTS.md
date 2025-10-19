@@ -36,7 +36,7 @@
 ## Project and Tasks
 
 - Get tasks from Linear when available.  While working on tasks, make sure to set the correct status.  Add updtes to the tasks as you progress through them.  Mark tasks as done only after I confirm they are done.
-- When updating Linear, always update by adding a comment.
+- When updating Linear, always update by adding a comment, do not overwrite the original task!
 
 ## Tests
 

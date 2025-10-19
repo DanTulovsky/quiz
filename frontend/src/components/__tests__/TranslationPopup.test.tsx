@@ -21,10 +21,10 @@ const mockRefetch = vi.fn();
 // Mock the dependencies
 vi.mock('../../hooks/useAuth');
 
-// Create the mock function and export it for tests to use
-const exportedMockPostV1Snippets = vi.fn();
-
 vi.mock('../../api/api', () => {
+  // Create the mock function before it's used in the return object
+  const exportedMockPostV1Snippets = vi.fn();
+
   return {
     // Keep all other mocks as they were
     useGetV1AuthStatus: () => ({
@@ -85,10 +85,10 @@ vi.mock('../../api/api', () => {
       isLoading: false,
     }),
     postV1Snippets: exportedMockPostV1Snippets,
+    // Export the mock function for tests to use
+    exportedMockPostV1Snippets,
   };
 });
-
-export { exportedMockPostV1Snippets };
 
 // Create a simple test wrapper
 const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
