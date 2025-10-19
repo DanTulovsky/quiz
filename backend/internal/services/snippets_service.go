@@ -34,7 +34,7 @@ func NewSnippetsService(db *sql.DB, cfg *config.Config, logger *observability.Lo
 
 // getDefaultDifficultyLevel returns a sensible default difficulty level when no question context is available
 func (s *SnippetsService) getDefaultDifficultyLevel() string {
-	// Default to B1 (Intermediate) as a reasonable middle ground for vocabulary snippets
+	// Default to "Unknown" when no question context is available
 	// Users can always update this through the UI if needed
 	return "Unknown"
 }
@@ -45,6 +45,11 @@ func (s *SnippetsService) getQuestionLevel(ctx context.Context, questionID int64
 		observability.AttributeQuestionID(int(questionID)),
 	)
 	defer observability.FinishSpan(span, &err)
+
+	// Check if database connection is valid
+	if s.db == nil {
+		return "", contextutils.WrapError(contextutils.ErrInternalError, "database connection is nil")
+	}
 
 	query := `SELECT level FROM questions WHERE id = $1`
 
@@ -63,12 +68,17 @@ func (s *SnippetsService) CreateSnippet(ctx context.Context, userID int64, req a
 	ctx, span := observability.TraceFunction(ctx, "snippets", "create_snippet")
 	defer observability.FinishSpan(span, &err)
 
+	// Check if database connection is valid
+	if s.db == nil {
+		return nil, contextutils.WrapError(contextutils.ErrInternalError, "database connection is nil")
+	}
+
 	span.SetAttributes(observability.AttributeUserID(int(userID)))
 
 	// Check if snippet already exists for this user and text combination
 	exists, err := s.snippetExists(ctx, userID, req.OriginalText, req.SourceLanguage, req.TargetLanguage)
 	if err != nil {
-		return nil, fmt.Errorf("failed to check snippet existence: %w", err)
+		return nil, contextutils.WrapErrorf(err, "failed to check snippet existence")
 	}
 	if exists {
 		return nil, contextutils.WrapError(contextutils.ErrRecordExists, "snippet already exists for this user and text combination")
@@ -104,6 +114,7 @@ func (s *SnippetsService) CreateSnippet(ctx context.Context, userID int64, req a
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 		RETURNING id, created_at, updated_at`
 
+	result = &models.Snippet{}
 	err = s.db.QueryRowContext(ctx, query,
 		userID,
 		req.OriginalText,
@@ -126,6 +137,7 @@ func (s *SnippetsService) CreateSnippet(ctx context.Context, userID int64, req a
 	result.TargetLanguage = req.TargetLanguage
 	result.QuestionID = req.QuestionId
 	result.Context = req.Context
+	result.DifficultyLevel = &difficultyLevel
 
 	s.logger.Info(ctx, "Created new snippet",
 		map[string]any{
@@ -145,6 +157,11 @@ func (s *SnippetsService) CreateSnippet(ctx context.Context, userID int64, req a
 func (s *SnippetsService) GetSnippets(ctx context.Context, userID int64, params api.GetV1SnippetsParams) (result *api.SnippetList, err error) {
 	ctx, span := observability.TraceFunction(ctx, "snippets", "get_snippets")
 	defer observability.FinishSpan(span, &err)
+
+	// Check if database connection is valid
+	if s.db == nil {
+		return nil, contextutils.WrapError(contextutils.ErrInternalError, "database connection is nil")
+	}
 
 	span.SetAttributes(observability.AttributeUserID(int(userID)))
 
@@ -203,7 +220,11 @@ func (s *SnippetsService) GetSnippets(ctx context.Context, userID int64, params 
 	if err != nil {
 		return nil, contextutils.WrapErrorf(err, "failed to query snippets")
 	}
-	defer rows.Close()
+	defer func() {
+		if closeErr := rows.Close(); closeErr != nil {
+			s.logger.Warn(ctx, "Failed to close rows", map[string]any{"error": closeErr.Error()})
+		}
+	}()
 
 	var snippets []api.Snippet
 	for rows.Next() {
@@ -289,6 +310,11 @@ func (s *SnippetsService) GetSnippet(ctx context.Context, userID, snippetID int6
 	ctx, span := observability.TraceFunction(ctx, "snippets", "get_snippet")
 	defer observability.FinishSpan(span, &err)
 
+	// Check if database connection is valid
+	if s.db == nil {
+		return nil, contextutils.WrapError(contextutils.ErrInternalError, "database connection is nil")
+	}
+
 	span.SetAttributes(observability.AttributeUserID(int(userID)))
 	span.SetAttributes(observability.AttributeSnippetID(int(snippetID)))
 
@@ -298,6 +324,7 @@ func (s *SnippetsService) GetSnippet(ctx context.Context, userID, snippetID int6
 		FROM snippets
 		WHERE id = $1 AND user_id = $2`
 
+	result = &models.Snippet{}
 	err = s.db.QueryRowContext(ctx, query, snippetID, userID).Scan(
 		&result.ID,
 		&result.UserID,
@@ -326,6 +353,11 @@ func (s *SnippetsService) UpdateSnippet(ctx context.Context, userID, snippetID i
 	ctx, span := observability.TraceFunction(ctx, "snippets", "update_snippet")
 	defer observability.FinishSpan(span, &err)
 
+	// Check if database connection is valid
+	if s.db == nil {
+		return nil, contextutils.WrapError(contextutils.ErrInternalError, "database connection is nil")
+	}
+
 	span.SetAttributes(observability.AttributeUserID(int(userID)))
 	span.SetAttributes(observability.AttributeSnippetID(int(snippetID)))
 
@@ -336,6 +368,7 @@ func (s *SnippetsService) UpdateSnippet(ctx context.Context, userID, snippetID i
 		RETURNING id, user_id, original_text, translated_text, source_language, target_language,
 		          question_id, context, difficulty_level, created_at, updated_at`
 
+	result = &models.Snippet{}
 	err = s.db.QueryRowContext(ctx, query, req.Context, snippetID, userID).Scan(
 		&result.ID,
 		&result.UserID,
@@ -370,6 +403,11 @@ func (s *SnippetsService) DeleteSnippet(ctx context.Context, userID, snippetID i
 	ctx, span := observability.TraceFunction(ctx, "snippets", "delete_snippet")
 	defer observability.FinishSpan(span, &err)
 
+	// Check if database connection is valid
+	if s.db == nil {
+		return contextutils.WrapError(contextutils.ErrInternalError, "database connection is nil")
+	}
+
 	span.SetAttributes(observability.AttributeUserID(int(userID)))
 	span.SetAttributes(observability.AttributeSnippetID(int(snippetID)))
 
@@ -400,6 +438,11 @@ func (s *SnippetsService) DeleteSnippet(ctx context.Context, userID, snippetID i
 func (s *SnippetsService) snippetExists(ctx context.Context, userID int64, originalText, sourceLang, targetLang string) (result bool, err error) {
 	ctx, span := observability.TraceFunction(ctx, "snippets", "snippet_exists")
 	defer observability.FinishSpan(span, &err)
+
+	// Check if database connection is valid
+	if s.db == nil {
+		return false, contextutils.WrapError(contextutils.ErrInternalError, "database connection is nil")
+	}
 
 	span.SetAttributes(observability.AttributeUserID(int(userID)))
 	span.SetAttributes(observability.AttributeLanguage(sourceLang))

@@ -1784,7 +1784,7 @@ export interface CreateSnippetRequest {
    */
   target_language: string;
   /**
-   * Optional ID of the question where this text was encountered
+   * Optional ID of the question where this text was encountered. If provided, the snippet will inherit the question's difficulty level (A1, A2, B1, B2, C1, C2)
    * @minimum 1
    * @nullable
    */
@@ -1817,7 +1817,10 @@ export interface Snippet {
   question_id?: number | null;
   /** @nullable */
   context?: string | null;
-  /** @nullable */
+  /**
+   * CEFR level (A1, A2, B1, B2, C1, C2)
+   * @nullable
+   */
   difficulty_level?: string | null;
   created_at?: string;
   updated_at?: string;

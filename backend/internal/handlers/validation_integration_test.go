@@ -64,7 +64,8 @@ func (suite *ValidationIntegrationTestSuite) SetupSuite() {
 	generationHintService := services.NewGenerationHintService(db, logger)
 	storyService := services.NewStoryService(db, cfg, logger)
 	translationService := services.NewTranslationService(cfg)
-	router := handlers.NewRouter(cfg, userService, questionService, learningService, aiService, workerService, dailyQuestionService, storyService, services.NewConversationService(db), oauthService, generationHintService, translationService, logger)
+	snippetsService := services.NewSnippetsService(db, cfg, logger)
+	router := handlers.NewRouter(cfg, userService, questionService, learningService, aiService, workerService, dailyQuestionService, storyService, services.NewConversationService(db), oauthService, generationHintService, translationService, snippetsService, logger)
 	suite.Router = router
 }
 

@@ -87,7 +87,8 @@ func (suite *APIIntegrationTestSuite) SetupSuite() {
 	generationHintService := services.NewGenerationHintService(suite.db, logger)
 	storyService := services.NewStoryService(suite.db, cfg, logger)
 	translationService := services.NewTranslationService(cfg)
-	router := handlers.NewRouter(cfg, userService, questionService, learningService, suite.mockAIService, workerService, dailyQuestionService, storyService, services.NewConversationService(db), oauthService, generationHintService, translationService, logger)
+	snippetsService := services.NewSnippetsService(suite.db, cfg, logger)
+	router := handlers.NewRouter(cfg, userService, questionService, learningService, suite.mockAIService, workerService, dailyQuestionService, storyService, services.NewConversationService(db), oauthService, generationHintService, translationService, snippetsService, logger)
 	suite.Router = router
 }
 

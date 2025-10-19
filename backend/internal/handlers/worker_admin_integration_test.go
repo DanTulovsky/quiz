@@ -72,6 +72,7 @@ func (suite *WorkerAdminIntegrationTestSuite) SetupSuite() {
 
 	// Use the real application router
 	translationService := services.NewTranslationService(cfg)
+	snippetsService := services.NewSnippetsService(db, cfg, logger)
 	suite.Router = NewRouter(
 		cfg,
 		userService,
@@ -85,6 +86,7 @@ func (suite *WorkerAdminIntegrationTestSuite) SetupSuite() {
 		oauthService,
 		generationHintService,
 		translationService,
+		snippetsService,
 		logger,
 	)
 

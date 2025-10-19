@@ -62,6 +62,7 @@ func (suite *AIConversationIntegrationTestSuite) SetupSuite() {
 	suite.TestUserID = createdUser.ID
 
 	// Use the real application router
+	snippetsService := services.NewSnippetsService(db, suite.Config, logger)
 	suite.Router = NewRouter(
 		suite.Config,
 		userService,
@@ -75,6 +76,7 @@ func (suite *AIConversationIntegrationTestSuite) SetupSuite() {
 		oauthService,
 		generationHintService,
 		translationService,
+		snippetsService,
 		logger,
 	)
 

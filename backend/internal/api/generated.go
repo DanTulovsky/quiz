@@ -354,7 +354,7 @@ type CreateSnippetRequest struct {
 	// OriginalText The original text/word to save
 	OriginalText string `json:"original_text"`
 
-	// QuestionId Optional ID of the question where this text was encountered
+	// QuestionId Optional ID of the question where this text was encountered. If provided, the snippet will inherit the question's difficulty level (A1, A2, B1, B2, C1, C2)
 	QuestionId *int64 `json:"question_id"`
 
 	// SourceLanguage ISO language code of the source text
@@ -900,8 +900,10 @@ type SignupStatusResponse struct {
 
 // Snippet defines model for Snippet.
 type Snippet struct {
-	Context         *string    `json:"context"`
-	CreatedAt       *time.Time `json:"created_at,omitempty"`
+	Context   *string    `json:"context"`
+	CreatedAt *time.Time `json:"created_at,omitempty"`
+
+	// DifficultyLevel CEFR level (A1, A2, B1, B2, C1, C2)
 	DifficultyLevel *string    `json:"difficulty_level"`
 	Id              *int64     `json:"id,omitempty"`
 	OriginalText    *string    `json:"original_text,omitempty"`

@@ -73,6 +73,7 @@ func (suite *UserAdminIntegrationTestSuite) SetupSuite() {
 	generationHintService := services.NewGenerationHintService(suite.db, logger)
 	storyService := services.NewStoryService(suite.db, suite.cfg, logger)
 	translationService := services.NewTranslationService(suite.cfg)
+	snippetsService := services.NewSnippetsService(suite.db, suite.cfg, logger)
 	suite.router = NewRouter(
 		suite.cfg,
 		suite.userService,
@@ -86,6 +87,7 @@ func (suite *UserAdminIntegrationTestSuite) SetupSuite() {
 		oauthService,
 		generationHintService,
 		translationService,
+		snippetsService,
 		logger,
 	)
 }

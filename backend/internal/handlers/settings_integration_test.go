@@ -64,6 +64,7 @@ func (suite *SettingsIntegrationTestSuite) SetupSuite() {
 	generationHintService := services.NewGenerationHintService(suite.DB, logger)
 	storyService := services.NewStoryService(db, cfg, logger)
 	translationService := services.NewTranslationService(cfg)
+	snippetsService := services.NewSnippetsService(db, cfg, logger)
 	suite.Router = NewRouter(
 		suite.Config,
 		userService,
@@ -77,6 +78,7 @@ func (suite *SettingsIntegrationTestSuite) SetupSuite() {
 		oauthService,
 		generationHintService,
 		translationService,
+		snippetsService,
 		logger,
 	)
 
