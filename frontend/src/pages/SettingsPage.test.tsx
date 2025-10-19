@@ -45,12 +45,12 @@ const mockLevelsData = {
 };
 
 const mockLanguagesData = [
-  'italian',
-  'russian',
-  'french',
-  'japanese',
-  'chinese',
-  'german',
+  { name: 'italian' },
+  { name: 'russian' },
+  { name: 'french' },
+  { name: 'japanese' },
+  { name: 'chinese' },
+  { name: 'german' },
 ];
 
 const mockProvidersData = {
@@ -217,6 +217,21 @@ describe('SettingsPage', () => {
   });
 
   it('should correctly display user current level in dropdown', async () => {
+    // Mock fetch for /v1/voices to prevent test failures
+    const voicesPayload = {
+      voices: [
+        { language: 'it-IT', gender: 'Male', name: 'it-IT-DiegoNeural' },
+        { language: 'it-IT', gender: 'Female', name: 'it-IT-IsabellaNeural' },
+      ],
+    };
+    const mockFetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve(voicesPayload),
+    });
+
+    // Set up the mock before rendering
+    global.fetch = mockFetch;
+
     act(() => {
       render(
         <QueryClientProvider client={queryClient}>
@@ -260,6 +275,11 @@ describe('SettingsPage', () => {
     // In Mantine Select, the value is displayed as the full label
     const expectedValue = 'B1 — Intermediate';
     expect(levelSelect).toHaveValue(expectedValue);
+
+    // Restore the global fetch mock after the test
+    global.fetch = vi.fn().mockImplementation(() => {
+      throw new Error('fetch() called without being mocked in test');
+    });
   }, 15000); // Increase timeout for this test
 
   it('loads TTS voices and populates the voice select from /v1/voices response object', async () => {
@@ -306,6 +326,11 @@ describe('SettingsPage', () => {
       expect(screen.getByText('Learning Preferences')).toBeInTheDocument();
     });
 
+    // Wait for languages to be loaded first
+    await waitFor(() => {
+      expect(screen.getByText('Learning Language')).toBeInTheDocument();
+    });
+
     // Wait for the voices to be loaded and state to be updated
     await waitFor(
       () => {
@@ -330,6 +355,11 @@ describe('SettingsPage', () => {
       // Check that the voices are available in the select data
       // We can verify this by checking if the select is enabled (not disabled due to no voices)
       expect(voiceSelect).not.toBeDisabled();
+    });
+
+    // Restore the global fetch mock after the test
+    global.fetch = vi.fn().mockImplementation(() => {
+      throw new Error('fetch() called without being mocked in test');
     });
   }, 15000); // Increase timeout for this test
 });

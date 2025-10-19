@@ -1,6 +1,6 @@
 // Get TTS locale for a language object or string
 export function languageToLocale(
-  language?: string | { tts_locale?: string }
+  language?: string | { tts_locale?: string; name?: string }
 ): string | undefined {
   if (!language) return undefined;
 
@@ -9,8 +9,11 @@ export function languageToLocale(
     return language.tts_locale;
   }
 
+  // If it's a language object with name, get the name
+  const languageName = typeof language === 'object' ? language.name : language;
+
   // Otherwise, it's a language name string, return the corresponding locale
-  switch ((language || '').toLowerCase()) {
+  switch ((languageName || '').toLowerCase()) {
     case 'italian':
       return 'it-IT';
     case 'french':
@@ -30,7 +33,7 @@ export function languageToLocale(
 
 // Get default TTS voice for a language object or string
 export function defaultVoiceForLanguage(
-  language?: string | { tts_voice?: string }
+  language?: string | { tts_voice?: string; name?: string }
 ): string | undefined {
   if (!language) return undefined;
 
@@ -39,8 +42,11 @@ export function defaultVoiceForLanguage(
     return language.tts_voice;
   }
 
+  // If it's a language object with name, get the name
+  const languageName = typeof language === 'object' ? language.name : language;
+
   // Otherwise, it's a language name string, return the corresponding voice
-  switch ((language || '').toLowerCase()) {
+  switch ((languageName || '').toLowerCase()) {
     case 'italian':
       return 'it-IT-IsabellaNeural';
     case 'french':

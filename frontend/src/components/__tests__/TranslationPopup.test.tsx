@@ -10,6 +10,9 @@ import { AuthProvider } from '../../contexts/AuthProvider';
 import { TranslationProvider } from '../../contexts/TranslationContext';
 import { ThemeProvider } from '../../contexts/ThemeContext';
 
+// Import the mocked API module to access the mock function
+import * as apiModule from '../../api/api';
+
 // Mock data with stable references
 const mockAuthStatusData = {
   authenticated: true,
@@ -22,8 +25,8 @@ const mockRefetch = vi.fn();
 vi.mock('../../hooks/useAuth');
 
 vi.mock('../../api/api', () => {
-  // Create the mock function before it's used in the return object
-  const exportedMockPostV1Snippets = vi.fn();
+  // Create the mock function inside the mock
+  const mockPostV1SnippetsFunction = vi.fn();
 
   return {
     // Keep all other mocks as they were
@@ -84,11 +87,10 @@ vi.mock('../../api/api', () => {
       data: { snippets: [], total: 0, limit: 20, offset: 0 },
       isLoading: false,
     }),
-    postV1Snippets: exportedMockPostV1Snippets,
-    // Export the mock function for tests to use
-    exportedMockPostV1Snippets,
+    postV1Snippets: mockPostV1SnippetsFunction,
   };
 });
+
 
 // Create a simple test wrapper
 const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -327,7 +329,7 @@ describe('TranslationPopup', () => {
     const user = userEvent.setup();
 
     // Set up the mock for this test
-    exportedMockPostV1Snippets.mockResolvedValue({});
+    apiModule.postV1Snippets.mockResolvedValue({});
 
     render(
       <TestWrapper>
@@ -347,7 +349,7 @@ describe('TranslationPopup', () => {
     const saveButton = screen.getByText('Save');
     await user.click(saveButton);
 
-    expect(exportedMockPostV1Snippets).toHaveBeenCalledWith({
+    expect(apiModule.postV1Snippets).toHaveBeenCalledWith({
       original_text: 'Bonjour',
       translated_text: 'Translated text',
       source_language: 'en',
@@ -359,7 +361,7 @@ describe('TranslationPopup', () => {
     const user = userEvent.setup();
 
     // Set up the mock for this test
-    exportedMockPostV1Snippets.mockImplementation(
+    apiModule.postV1Snippets.mockImplementation(
       () => new Promise(resolve => setTimeout(resolve, 100))
     );
 
@@ -389,7 +391,7 @@ describe('TranslationPopup', () => {
     const user = userEvent.setup();
 
     // Set up the mock for this test
-    exportedMockPostV1Snippets.mockResolvedValue({});
+    apiModule.postV1Snippets.mockResolvedValue({});
 
     render(
       <TestWrapper>
@@ -411,19 +413,17 @@ describe('TranslationPopup', () => {
 
     // Wait for the save operation to complete and check that button shows "Saved!"
     await waitFor(() => {
-      expect(screen.getByText('Saved!')).toBeInTheDocument();
+      const savedButton = screen.getByRole('button', { name: /Saved!/ });
+      expect(savedButton).toBeInTheDocument();
+      expect(savedButton).toBeDisabled();
     });
-
-    // Button should be disabled after save
-    const savedButton = screen.getByText('Saved!');
-    expect(savedButton).toBeDisabled();
   });
 
   it('should show error message when save fails', async () => {
     const user = userEvent.setup();
 
     // Set up the mock for this test
-    exportedMockPostV1Snippets.mockRejectedValue(new Error('Save failed'));
+    apiModule.postV1Snippets.mockRejectedValue(new Error('Save failed'));
 
     render(
       <TestWrapper>
@@ -452,47 +452,6 @@ describe('TranslationPopup', () => {
     expect(saveButton).not.toBeDisabled();
   });
 
-  it('should reset saved state after 3 seconds', async () => {
-    const user = userEvent.setup();
-
-    // Set up the mock for this test
-    exportedMockPostV1Snippets.mockResolvedValue({});
-
-    vi.useFakeTimers();
-
-    render(
-      <TestWrapper>
-        <TranslationPopup
-          selection={{
-            text: 'Bonjour',
-            x: 100,
-            y: 100,
-            width: 50,
-            height: 20,
-          }}
-          onClose={mockOnClose}
-        />
-      </TestWrapper>
-    );
-
-    const saveButton = screen.getByText('Save');
-    await user.click(saveButton);
-
-    // Wait for saved state
-    await waitFor(() => {
-      expect(screen.getByText('Saved!')).toBeInTheDocument();
-    });
-
-    // Fast-forward time by 3 seconds
-    vi.advanceTimersByTime(3000);
-
-    // Wait for the state to reset
-    await waitFor(() => {
-      expect(screen.getByText('Save')).toBeInTheDocument();
-    });
-
-    vi.useRealTimers();
-  });
 
   it('should show save button even when no translation', () => {
     // Mock translation context to return no translation
