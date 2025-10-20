@@ -1,4 +1,4 @@
-#!/bin/bash
+t!/bin/bash
 
 # Quiz Application Tooling Installer
 # ===================================
@@ -572,13 +572,13 @@ install_artillery() {
         log_info "Installing Artillery..."
         if [[ "$DRY_RUN" == "true" ]]; then
             if [[ "$OS" == "linux" ]]; then
-                log_dry_run "Would run: sudo npm install -g artillery"
+                log_dry_run "Would run: npm install -g artillery"
             else
                 log_dry_run "Would run: npm install -g artillery"
             fi
         else
             if [[ "$OS" == "linux" ]]; then
-                sudo npm install -g artillery
+                npm install artillery
             else
                 # On macOS, try without sudo first, fall back to sudo if needed
                 if ! npm install -g artillery 2>/dev/null; then
