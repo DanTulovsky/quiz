@@ -56,6 +56,8 @@ const (
 	ErrorCodeTimeout ErrorCode = "REQUEST_TIMEOUT"
 	// ErrorCodeRateLimit indicates that the rate limit has been exceeded
 	ErrorCodeRateLimit ErrorCode = "RATE_LIMIT_EXCEEDED"
+	// ErrorCodeQuotaExceeded indicates that the usage quota has been exceeded
+	ErrorCodeQuotaExceeded ErrorCode = "QUOTA_EXCEEDED"
 	// ErrorCodeInternalError indicates an internal server error
 	ErrorCodeInternalError ErrorCode = "INTERNAL_SERVER_ERROR"
 	// ErrorCodeAssignmentNotFound indicates that a question assignment was not found
@@ -251,6 +253,12 @@ var (
 		Code:     ErrorCodeRateLimit,
 		Severity: SeverityWarn,
 		Message:  "Rate limit exceeded",
+	}
+
+	ErrQuotaExceeded = &AppError{
+		Code:     ErrorCodeQuotaExceeded,
+		Severity: SeverityWarn,
+		Message:  "Usage quota exceeded",
 	}
 
 	ErrInternalError = &AppError{

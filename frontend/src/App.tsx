@@ -26,6 +26,7 @@ import WorkerAdminPage from './pages/admin/WorkerAdminPage';
 import AnalyticsPage from './pages/admin/AnalyticsPage';
 import NotificationsPage from './pages/admin/NotificationsPage';
 import DailyAdminPage from './pages/admin/DailyAdminPage';
+import TranslationUsagePage from './pages/admin/TranslationUsagePage';
 import NotFoundPage from './pages/NotFoundPage';
 import Layout from './components/Layout';
 import AdminLayout from './components/AdminLayout';
@@ -387,6 +388,19 @@ function App() {
             )
           }
         />
+        <Route
+          path='/admin/stats/translation'
+          element={
+            user ? (
+              <AdminLayout>
+                <TranslationUsagePage />
+              </AdminLayout>
+            ) : (
+              <Navigate to='/login' />
+            )
+          }
+        />
+
         <Route
           path='/admin/worker/daily'
           element={

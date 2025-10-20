@@ -820,3 +820,55 @@ export const useAdminDeleteStory = () => {
     },
   });
 };
+
+// Usage Statistics API methods
+export const useUsageStats = () => {
+  return useQuery({
+    queryKey: ['usage-stats'],
+    queryFn: async () => {
+      const response = await AXIOS_INSTANCE.get('/v1/admin/backend/usage-stats', {
+        headers: {
+          Accept: 'application/json',
+        },
+      });
+      return response.data;
+    },
+    staleTime: 60000, // Cache for 1 minute
+    refetchInterval: 300000, // Refresh every 5 minutes
+  });
+};
+
+export const useUsageStatsByService = (serviceName: string) => {
+  return useQuery({
+    queryKey: ['usage-stats', serviceName],
+    queryFn: async () => {
+      const response = await AXIOS_INSTANCE.get(`/v1/admin/backend/usage-stats/${serviceName}`, {
+        headers: {
+          Accept: 'application/json',
+        },
+      });
+      return response.data;
+    },
+    enabled: !!serviceName,
+    staleTime: 60000, // Cache for 1 minute
+  });
+};
+
+// Direct API functions for usage statistics (for components that need raw axios responses)
+export const adminApi = {
+  getUsageStats: async () => {
+    return await AXIOS_INSTANCE.get('/v1/admin/backend/usage-stats', {
+      headers: {
+        Accept: 'application/json',
+      },
+    });
+  },
+
+  getUsageStatsByService: async (serviceName: string) => {
+    return await AXIOS_INSTANCE.get(`/v1/admin/backend/usage-stats/${serviceName}`, {
+      headers: {
+        Accept: 'application/json',
+      },
+    });
+  },
+};

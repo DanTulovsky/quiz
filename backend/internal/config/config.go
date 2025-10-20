@@ -421,6 +421,7 @@ type TranslationConfig struct {
 	Enabled         bool                                 `json:"enabled" yaml:"enabled"`
 	DefaultProvider string                               `json:"default_provider" yaml:"default_provider"`
 	Providers       map[string]TranslationProviderConfig `json:"providers" yaml:"providers"`
+	Quota           TranslationQuotaConfig               `json:"quota" yaml:"quota"`
 }
 
 // TranslationProviderConfig represents a translation provider configuration
@@ -431,6 +432,15 @@ type TranslationProviderConfig struct {
 	BaseURL       string `json:"base_url" yaml:"base_url"`
 	APIEndpoint   string `json:"api_endpoint" yaml:"api_endpoint"`
 	MaxTextLength int    `json:"max_text_length" yaml:"max_text_length"`
+}
+
+// TranslationQuotaConfig represents quota configuration for translation services
+type TranslationQuotaConfig struct {
+	Enabled bool `json:"enabled" yaml:"enabled"`
+	// Monthly character quotas per provider
+	GoogleMonthlyQuota int64 `json:"google_monthly_quota" yaml:"google_monthly_quota"`
+	// Default monthly quota for new providers (in characters)
+	DefaultMonthlyQuota int64 `json:"default_monthly_quota" yaml:"default_monthly_quota"`
 }
 
 // NewConfig loads configuration from YAML file first, then overrides with environment variables

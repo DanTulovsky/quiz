@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"quizapp/internal/config"
+	"quizapp/internal/observability"
 	"quizapp/internal/serviceinterfaces"
 
 	"github.com/stretchr/testify/assert"
@@ -90,7 +91,7 @@ func TestNoopTranslationService_GetSupportedLanguages(t *testing.T) {
 }
 
 func TestGoogleTranslationService_ValidateLanguageCode(t *testing.T) {
-	service := NewGoogleTranslationService(&config.Config{})
+	service := NewGoogleTranslationService(&config.Config{}, &NoopUsageStatsService{}, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	validCodes := []string{"en", "es", "fr", "de", "zh-CN", "pt-BR"}
 	invalidCodes := []string{"", "a", "toolonglanguagecode", "invalid@code"}
@@ -111,7 +112,7 @@ func TestGoogleTranslationService_ValidateLanguageCode(t *testing.T) {
 }
 
 func TestGoogleTranslationService_GetSupportedLanguages(t *testing.T) {
-	service := NewGoogleTranslationService(&config.Config{})
+	service := NewGoogleTranslationService(&config.Config{}, &NoopUsageStatsService{}, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	languages := service.GetSupportedLanguages()
 	assert.NotEmpty(t, languages)
@@ -129,7 +130,7 @@ func TestNewTranslationService(t *testing.T) {
 			},
 		}
 
-		service := NewTranslationService(cfg)
+		service := NewTranslationService(cfg, &NoopUsageStatsService{}, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 		assert.IsType(t, &NoopTranslationService{}, service)
 	})
 
@@ -142,7 +143,7 @@ func TestNewTranslationService(t *testing.T) {
 			},
 		}
 
-		service := NewTranslationService(cfg)
+		service := NewTranslationService(cfg, &NoopUsageStatsService{}, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 		assert.IsType(t, &NoopTranslationService{}, service)
 	})
 
@@ -160,7 +161,7 @@ func TestNewTranslationService(t *testing.T) {
 			},
 		}
 
-		service := NewTranslationService(cfg)
+		service := NewTranslationService(cfg, &NoopUsageStatsService{}, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 		assert.IsType(t, &GoogleTranslationService{}, service)
 	})
 
@@ -178,7 +179,7 @@ func TestNewTranslationService(t *testing.T) {
 			},
 		}
 
-		service := NewTranslationService(cfg)
+		service := NewTranslationService(cfg, &NoopUsageStatsService{}, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 		assert.IsType(t, &NoopTranslationService{}, service)
 	})
 }

@@ -88,6 +88,11 @@ func NewApplication(container di.ServiceContainerInterface) (*Application, error
 		return nil, contextutils.WrapError(err, "failed to get snippets service")
 	}
 
+	usageStatsService, err := container.GetUsageStatsService()
+	if err != nil {
+		return nil, contextutils.WrapError(err, "failed to get usage stats service")
+	}
+
 	// Use the router factory
 	router := handlers.NewRouter(
 		container.GetConfig(),
@@ -103,6 +108,7 @@ func NewApplication(container di.ServiceContainerInterface) (*Application, error
 		generationHintService,
 		translationService,
 		snippetsService,
+		usageStatsService,
 		container.GetLogger(),
 	)
 

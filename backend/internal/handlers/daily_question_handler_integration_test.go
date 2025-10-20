@@ -70,9 +70,10 @@ func (suite *DailyQuestionHandlerIntegrationTestSuite) SetupSuite() {
 	// Create router with daily question service
 	generationHintService := services.NewGenerationHintService(db, logger)
 	storyService := services.NewStoryService(db, cfg, logger)
-	translationService := services.NewTranslationService(cfg)
+	usageStatsService := services.NewUsageStatsService(cfg, db, logger)
+	translationService := services.NewTranslationService(cfg, usageStatsService, logger)
 	snippetsService := services.NewSnippetsService(db, cfg, logger)
-	router := handlers.NewRouter(cfg, userService, questionService, learningService, aiService, workerService, dailyQuestionService, storyService, services.NewConversationService(db), oauthService, generationHintService, translationService, snippetsService, logger)
+	router := handlers.NewRouter(cfg, userService, questionService, learningService, aiService, workerService, dailyQuestionService, storyService, services.NewConversationService(db), oauthService, generationHintService, translationService, snippetsService, usageStatsService, logger)
 	suite.Router = router
 }
 

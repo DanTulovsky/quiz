@@ -34,10 +34,11 @@ type AdminHandler struct {
 	workerService   services.WorkerServiceInterface
 	logger          *observability.Logger
 	storyService    services.StoryServiceInterface
+	usageStatsSvc   services.UsageStatsServiceInterface
 }
 
 // NewAdminHandlerWithLogger creates a new AdminHandler with the provided services and logger.
-func NewAdminHandlerWithLogger(userService services.UserServiceInterface, questionService services.QuestionServiceInterface, aiService services.AIServiceInterface, cfg *config.Config, learningService services.LearningServiceInterface, workerService services.WorkerServiceInterface, logger *observability.Logger) *AdminHandler {
+func NewAdminHandlerWithLogger(userService services.UserServiceInterface, questionService services.QuestionServiceInterface, aiService services.AIServiceInterface, cfg *config.Config, learningService services.LearningServiceInterface, workerService services.WorkerServiceInterface, logger *observability.Logger, usageStatsSvc services.UsageStatsServiceInterface) *AdminHandler {
 	return &AdminHandler{
 		userService:     userService,
 		questionService: questionService,
@@ -47,6 +48,7 @@ func NewAdminHandlerWithLogger(userService services.UserServiceInterface, questi
 		learningService: learningService,
 		workerService:   workerService,
 		logger:          logger,
+		usageStatsSvc:   usageStatsSvc,
 	}
 }
 
@@ -1370,6 +1372,112 @@ func (h *AdminHandler) RemoveRole(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Role removed successfully"})
+}
+
+// GetUsageStats returns usage statistics for the admin interface
+func (h *AdminHandler) GetUsageStats(c *gin.Context) {
+	ctx, span := observability.TraceHandlerFunction(c.Request.Context(), "get_usage_stats")
+	defer observability.FinishSpan(span, nil)
+
+	if h.usageStatsSvc == nil {
+		HandleAppError(c, contextutils.ErrInternalError)
+		return
+	}
+
+	// Get all usage stats
+	stats, err := h.usageStatsSvc.GetAllUsageStats(ctx)
+	if err != nil {
+		h.logger.Error(ctx, "Failed to get usage stats", err, map[string]interface{}{})
+		HandleAppError(c, contextutils.WrapError(err, "failed to get usage stats"))
+		return
+	}
+
+	// Group stats by service and month for easier frontend consumption
+	serviceStats := make(map[string]map[string]map[string]interface{})
+	monthlyTotals := make(map[string]map[string]interface{})
+
+	for _, stat := range stats {
+		serviceName := stat.ServiceName
+		usageType := stat.UsageType
+		month := stat.UsageMonth.Format("2006-01")
+
+		if serviceStats[serviceName] == nil {
+			serviceStats[serviceName] = make(map[string]map[string]interface{})
+		}
+		if serviceStats[serviceName][month] == nil {
+			serviceStats[serviceName][month] = make(map[string]interface{})
+		}
+
+		serviceStats[serviceName][month][usageType] = map[string]interface{}{
+			"characters_used": stat.CharactersUsed,
+			"requests_made":   stat.RequestsMade,
+			"quota":           h.usageStatsSvc.GetMonthlyQuota(serviceName),
+		}
+
+		// Accumulate monthly totals
+		if monthlyTotals[month] == nil {
+			monthlyTotals[month] = make(map[string]interface{})
+		}
+		if monthlyTotals[month][serviceName] == nil {
+			monthlyTotals[month][serviceName] = map[string]interface{}{
+				"total_characters": 0,
+				"total_requests":   0,
+			}
+		}
+
+		totalChars := monthlyTotals[month][serviceName].(map[string]interface{})["total_characters"].(int) + stat.CharactersUsed
+		totalReqs := monthlyTotals[month][serviceName].(map[string]interface{})["total_requests"].(int) + stat.RequestsMade
+
+		monthlyTotals[month][serviceName].(map[string]interface{})["total_characters"] = totalChars
+		monthlyTotals[month][serviceName].(map[string]interface{})["total_requests"] = totalReqs
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"usage_stats":    serviceStats,
+		"monthly_totals": monthlyTotals,
+		"services":       []string{"google"}, // Currently only Google Translate
+	})
+}
+
+// GetUsageStatsByService returns usage statistics for a specific service
+func (h *AdminHandler) GetUsageStatsByService(c *gin.Context) {
+	ctx, span := observability.TraceHandlerFunction(c.Request.Context(), "get_usage_stats_by_service")
+	defer observability.FinishSpan(span, nil)
+
+	serviceName := c.Param("service")
+	if serviceName == "" {
+		HandleAppError(c, contextutils.ErrInvalidFormat)
+		return
+	}
+
+	if h.usageStatsSvc == nil {
+		HandleAppError(c, contextutils.ErrInternalError)
+		return
+	}
+
+	stats, err := h.usageStatsSvc.GetUsageStatsByService(ctx, serviceName)
+	if err != nil {
+		h.logger.Error(ctx, "Failed to get usage stats by service", err, map[string]interface{}{"service": serviceName})
+		HandleAppError(c, contextutils.WrapError(err, "failed to get usage stats"))
+		return
+	}
+
+	// Format for frontend consumption
+	monthlyData := make([]map[string]interface{}, 0)
+	for _, stat := range stats {
+		monthlyData = append(monthlyData, map[string]interface{}{
+			"month":           stat.UsageMonth.Format("2006-01"),
+			"usage_type":      stat.UsageType,
+			"characters_used": stat.CharactersUsed,
+			"requests_made":   stat.RequestsMade,
+			"quota":           h.usageStatsSvc.GetMonthlyQuota(serviceName),
+		})
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"service": serviceName,
+		"data":    monthlyData,
+	})
 }
 
 // calculateUserAggregateStats calculates aggregate statistics for all users

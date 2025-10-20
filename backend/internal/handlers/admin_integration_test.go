@@ -89,7 +89,8 @@ func (suite *AdminIntegrationTestSuite) SetupSuite() {
 	// Use the real application router
 	generationHintService := services.NewGenerationHintService(db, logger)
 	storyService := services.NewStoryService(db, suite.cfg, logger)
-	translationService := services.NewTranslationService(suite.cfg)
+	usageStatsService := services.NewUsageStatsService(suite.cfg, suite.db, logger)
+	translationService := services.NewTranslationService(suite.cfg, usageStatsService, logger)
 	snippetsService := services.NewSnippetsService(db, suite.cfg, logger)
 	suite.BackendRouter = handlers.NewRouter(
 		suite.cfg,
@@ -105,6 +106,7 @@ func (suite *AdminIntegrationTestSuite) SetupSuite() {
 		generationHintService,
 		translationService,
 		snippetsService,
+		usageStatsService,
 		logger,
 	)
 

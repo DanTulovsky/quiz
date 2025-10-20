@@ -3560,6 +3560,78 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /v1/admin/backend/usage-stats:
+    get:
+      tags:
+        - Admin
+      summary: Get usage statistics
+      description: Get comprehensive usage statistics for all services (admin only)
+      security:
+        - cookieAuth: []
+      responses:
+        "200":
+          description: Usage statistics retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UsageStatsResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: User not authorized (admin required)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/admin/backend/usage-stats/{service}:
+    get:
+      tags:
+        - Admin
+      summary: Get usage statistics for specific service
+      description: Get usage statistics for a specific translation service (admin only)
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: service
+          in: path
+          required: true
+          description: Service name (e.g., "google", "azure")
+          schema:
+            type: string
+            pattern: "^[a-zA-Z0-9_-]+$"
+            minLength: 1
+            maxLength: 50
+      responses:
+        "200":
+          description: Usage statistics for service retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceUsageStatsResponse"
+        "400":
+          description: Invalid service name
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: User not authorized (admin required)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /v1/admin/backend/reported-questions:
     get:
       tags:
@@ -7089,6 +7161,91 @@ components:
           nullable: true
           description: The search query that was used (if any)
           example: "bonjour"
+
+    UsageStatsResponse:
+      type: object
+      properties:
+        usage_stats:
+          type: object
+          description: Usage statistics organized by service, month (YYYY-MM), and usage type
+          additionalProperties:
+            type: object
+            description: Service name (e.g., "google")
+            additionalProperties:
+              type: object
+              description: Month in YYYY-MM format (e.g., "2025-10")
+              properties:
+                characters_used:
+                  type: integer
+                  minimum: 0
+                requests_made:
+                  type: integer
+                  minimum: 0
+                quota:
+                  type: integer
+                  minimum: 0
+        monthly_totals:
+          type: object
+          description: Monthly totals organized by month (YYYY-MM) and service
+          additionalProperties:
+            type: object
+            description: Month in YYYY-MM format (e.g., "2025-10")
+            additionalProperties:
+              type: object
+              description: Service name (e.g., "google")
+              properties:
+                total_characters:
+                  type: integer
+                  minimum: 0
+                total_requests:
+                  type: integer
+                  minimum: 0
+        services:
+          type: array
+          items:
+            type: string
+          description: List of service names
+          example: ["google"]
+      required:
+        - usage_stats
+        - monthly_totals
+        - services
+
+    ServiceUsageStatsResponse:
+      type: object
+      properties:
+        service:
+          type: string
+          description: Name of the service
+          example: "google"
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              month:
+                type: string
+                description: First day of the month (YYYY-MM)
+                example: "2025-10"
+              usage_type:
+                type: string
+                description: Type of usage (e.g., "translation")
+                example: "translation"
+              characters_used:
+                type: integer
+                minimum: 0
+                description: Number of characters processed
+              requests_made:
+                type: integer
+                minimum: 0
+                description: Number of requests made
+              quota:
+                type: integer
+                minimum: 0
+                description: Monthly quota for this service
+      required:
+        - service
+        - data
 
   securitySchemes:
     cookieAuth:

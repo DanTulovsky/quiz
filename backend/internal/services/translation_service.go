@@ -23,17 +23,21 @@ type TranslationServiceInterface = serviceinterfaces.TranslationService
 
 // GoogleTranslationService handles translation requests using Google Translate API
 type GoogleTranslationService struct {
-	config     *config.Config
-	httpClient *http.Client
+	config        *config.Config
+	httpClient    *http.Client
+	usageStatsSvc UsageStatsServiceInterface
+	logger        *observability.Logger
 }
 
 // NewGoogleTranslationService creates a new Google translation service instance
-func NewGoogleTranslationService(config *config.Config) *GoogleTranslationService {
+func NewGoogleTranslationService(config *config.Config, usageStatsSvc UsageStatsServiceInterface, logger *observability.Logger) *GoogleTranslationService {
 	return &GoogleTranslationService{
 		config: config,
 		httpClient: &http.Client{
 			Timeout: 30 * time.Second,
 		},
+		usageStatsSvc: usageStatsSvc,
+		logger:        logger,
 	}
 }
 
@@ -107,6 +111,11 @@ func (s *GoogleTranslationService) translateGoogle(ctx context.Context, req serv
 		attribute.Int("translation.text_length", len(req.Text)),
 	)
 	defer observability.FinishSpan(span, &err)
+
+	// Check quota before making the request
+	if err := s.usageStatsSvc.CheckQuota(ctx, providerConfig.Code, "translation", len(req.Text)); err != nil {
+		return nil, err
+	}
 
 	if providerConfig.APIKey == "" {
 		err = contextutils.NewAppError(contextutils.ErrorCodeServiceUnavailable, contextutils.SeverityError, "Google Translate API key not configured", "")
@@ -187,6 +196,21 @@ func (s *GoogleTranslationService) translateGoogle(ctx context.Context, req serv
 		SourceLanguage: normalizeLanguageCode(req.SourceLanguage, s.config.LanguageLevels),
 		TargetLanguage: normalizeLanguageCode(req.TargetLanguage, s.config.LanguageLevels),
 	}
+
+	// Record usage after successful translation
+	if err := s.usageStatsSvc.RecordUsage(ctx, providerConfig.Code, "translation", len(req.Text), 1); err != nil {
+		// Log the error but don't fail the translation request
+		// The translation was successful, we just couldn't record the usage
+		// This is a non-critical error that should be logged for monitoring
+		s.logger.Warn(ctx, "Failed to record translation usage", map[string]interface{}{
+			"service":    providerConfig.Code,
+			"usage_type": "translation",
+			"characters": len(req.Text),
+			"requests":   1,
+			"error":      err.Error(),
+		})
+	}
+
 	return result, nil
 }
 
@@ -264,7 +288,7 @@ func (s *NoopTranslationService) GetSupportedLanguages() []string {
 // NewTranslationService creates a translation service based on configuration
 // For testing environments, it returns a noop service if translation is disabled
 // For production, it returns a Google translation service if properly configured
-func NewTranslationService(config *config.Config) TranslationServiceInterface {
+func NewTranslationService(config *config.Config, usageStatsSvc UsageStatsServiceInterface, logger *observability.Logger) TranslationServiceInterface {
 	if !config.Translation.Enabled {
 		return NewNoopTranslationService()
 	}
@@ -277,7 +301,7 @@ func NewTranslationService(config *config.Config) TranslationServiceInterface {
 
 	switch providerConfig.Code {
 	case "google":
-		return NewGoogleTranslationService(config)
+		return NewGoogleTranslationService(config, usageStatsSvc, logger)
 	default:
 		// Fallback to noop for unsupported providers
 		return NewNoopTranslationService()

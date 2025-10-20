@@ -13,6 +13,7 @@ import {
   IconChartBar,
   IconSettings,
   IconServer,
+  IconTrendingUp,
 } from '@tabler/icons-react';
 import { useAuth } from '../hooks/useAuth';
 import { Navigate } from 'react-router-dom';
@@ -61,6 +62,13 @@ const AdminPage: React.FC = () => {
       icon: <IconChartBar size={24} />,
       path: '/admin/worker/analyticsz',
       color: 'teal',
+    },
+    {
+      title: 'Stats',
+      description: 'Usage statistics and monitoring',
+      icon: <IconTrendingUp size={24} />,
+      path: '/admin/stats/translation',
+      color: 'green',
     },
   ];
 

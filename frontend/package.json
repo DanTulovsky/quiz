@@ -44,6 +44,7 @@
     "react-select": "^5.10.2",
     "react-syntax-highlighter": "^15.6.6",
     "react-timezone-select": "^3.2.8",
+    "recharts": "^3.3.0",
     "remark-gfm": "^4.0.0"
   },
   "devDependencies": {

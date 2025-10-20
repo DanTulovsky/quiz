@@ -892,6 +892,29 @@ type SentNotificationNotificationType string
 // SentNotificationStatus Status of the notification
 type SentNotificationStatus string
 
+// ServiceUsageStatsResponse defines model for ServiceUsageStatsResponse.
+type ServiceUsageStatsResponse struct {
+	Data []struct {
+		// CharactersUsed Number of characters processed
+		CharactersUsed *int `json:"characters_used,omitempty"`
+
+		// Month First day of the month (YYYY-MM)
+		Month *string `json:"month,omitempty"`
+
+		// Quota Monthly quota for this service
+		Quota *int `json:"quota,omitempty"`
+
+		// RequestsMade Number of requests made
+		RequestsMade *int `json:"requests_made,omitempty"`
+
+		// UsageType Type of usage (e.g., "translation")
+		UsageType *string `json:"usage_type,omitempty"`
+	} `json:"data"`
+
+	// Service Name of the service
+	Service string `json:"service"`
+}
+
 // ServiceVersion defines model for ServiceVersion.
 type ServiceVersion struct {
 	// BuildTime Build timestamp (ISO8601)
@@ -1155,6 +1178,25 @@ type UpdateSnippetRequest struct {
 
 	// TranslatedText The translated text
 	TranslatedText *string `json:"translated_text,omitempty"`
+}
+
+// UsageStatsResponse defines model for UsageStatsResponse.
+type UsageStatsResponse struct {
+	// MonthlyTotals Monthly totals organized by month (YYYY-MM) and service
+	MonthlyTotals map[string]map[string]struct {
+		TotalCharacters *int `json:"total_characters,omitempty"`
+		TotalRequests   *int `json:"total_requests,omitempty"`
+	} `json:"monthly_totals"`
+
+	// Services List of service names
+	Services []string `json:"services"`
+
+	// UsageStats Usage statistics organized by service, month (YYYY-MM), and usage type
+	UsageStats map[string]map[string]struct {
+		CharactersUsed *int `json:"characters_used,omitempty"`
+		Quota          *int `json:"quota,omitempty"`
+		RequestsMade   *int `json:"requests_made,omitempty"`
+	} `json:"usage_stats"`
 }
 
 // User defines model for User.

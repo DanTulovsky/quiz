@@ -20,6 +20,7 @@ import {
   IconBell,
   IconCalendar,
   IconBook,
+  IconTrendingUp,
 } from '@tabler/icons-react';
 import { useAuth } from '../hooks/useAuth';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
@@ -76,6 +77,14 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       label: 'Notifications',
       icon: <IconBell size={16} />,
       path: '/admin/worker/notifications',
+    },
+  ];
+
+  const statsNavItems = [
+    {
+      label: 'Translation Usage',
+      icon: <IconTrendingUp size={16} />,
+      path: '/admin/stats/translation',
     },
   ];
 
@@ -169,6 +178,27 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
             Worker
           </Text>
           {workerNavItems.map(item => (
+            <NavLink
+              key={item.path}
+              label={item.label}
+              leftSection={item.icon}
+              active={
+                location.pathname === item.path ||
+                (item.path !== '/admin' &&
+                  location.pathname.startsWith(item.path))
+              }
+              onClick={() => handleNavClick(item.path)}
+              variant='filled'
+            />
+          ))}
+
+          <Divider my='xs' />
+
+          {/* Stats Group */}
+          <Text size='xs' fw={500} c='dimmed' tt='uppercase' mb='xs'>
+            Stats
+          </Text>
+          {statsNavItems.map(item => (
             <NavLink
               key={item.path}
               label={item.label}

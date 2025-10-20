@@ -29,6 +29,7 @@ type ServiceContainerInterface interface {
 	GetEmailService() (services.EmailServiceInterface, error)
 	GetTranslationService() (services.TranslationServiceInterface, error)
 	GetSnippetsService() (services.SnippetsServiceInterface, error)
+	GetUsageStatsService() (services.UsageStatsServiceInterface, error)
 	GetDatabase() *sql.DB
 	GetConfig() *config.Config
 	GetLogger() *observability.Logger
@@ -186,6 +187,11 @@ func (sc *ServiceContainer) GetSnippetsService() (services.SnippetsServiceInterf
 	return GetServiceAs[services.SnippetsServiceInterface](sc, "snippets")
 }
 
+// GetUsageStatsService returns the usage stats service
+func (sc *ServiceContainer) GetUsageStatsService() (services.UsageStatsServiceInterface, error) {
+	return GetServiceAs[services.UsageStatsServiceInterface](sc, "usage_stats")
+}
+
 // GetDatabase returns the database instance
 func (sc *ServiceContainer) GetDatabase() *sql.DB {
 	return sc.db
@@ -300,8 +306,12 @@ func (sc *ServiceContainer) initializeServices(_ context.Context) {
 	emailService := services.CreateEmailService(sc.cfg, sc.logger)
 	sc.services["email"] = emailService
 
+	// Usage stats service
+	usageStatsService := services.NewUsageStatsService(sc.cfg, sc.db, sc.logger)
+	sc.services["usage_stats"] = usageStatsService
+
 	// Translation service
-	translationService := services.NewTranslationService(sc.cfg)
+	translationService := services.NewTranslationService(sc.cfg, usageStatsService, sc.logger)
 	sc.services["translation"] = translationService
 
 	// Initialize snippets service

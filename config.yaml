@@ -747,6 +747,13 @@ translation:
       base_url: "https://translation.googleapis.com"
       api_endpoint: "/language/translate/v2"
       max_text_length: 5000
+  # Quota configuration for translation services
+  quota:
+    enabled: true
+    # Monthly character quotas (Google Translate free tier: 500,000 characters/month)
+    google_monthly_quota: 500000
+    # Default quota for new providers (in characters per month)
+    default_monthly_quota: 100000
 
 # Text-to-Speech configuration
 tts:

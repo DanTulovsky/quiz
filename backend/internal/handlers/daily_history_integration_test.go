@@ -42,9 +42,10 @@ func TestSubmitDailyAnswer_RecordsUserResponse(t *testing.T) {
 	generationHintService := services.NewGenerationHintService(db, logger)
 
 	storyService := services.NewStoryService(db, cfg, logger)
-	translationService := services.NewTranslationService(cfg)
+	usageStatsService := services.NewUsageStatsService(cfg, db, logger)
+	translationService := services.NewTranslationService(cfg, usageStatsService, logger)
 	snippetsService := services.NewSnippetsService(db, cfg, logger)
-	router := handlers.NewRouter(cfg, userService, questionService, learningService, services.NewAIService(cfg, logger), services.NewWorkerServiceWithLogger(db, logger), dailyQuestionService, storyService, services.NewConversationService(db), services.NewOAuthServiceWithLogger(cfg, logger), generationHintService, translationService, snippetsService, logger)
+	router := handlers.NewRouter(cfg, userService, questionService, learningService, services.NewAIService(cfg, logger), services.NewWorkerServiceWithLogger(db, logger), dailyQuestionService, storyService, services.NewConversationService(db), services.NewOAuthServiceWithLogger(cfg, logger), generationHintService, translationService, snippetsService, usageStatsService, logger)
 
 	// Create a user
 	user, err := userService.CreateUserWithPassword(context.Background(), fmt.Sprintf("daily_integ_%d", time.Now().UnixNano()), "password123", "italian", "A1")
@@ -176,9 +177,10 @@ func TestGetQuestionHistory_DateOnlyTimestamp_Returns500(t *testing.T) {
 	generationHintService := services.NewGenerationHintService(db, logger)
 
 	storyService := services.NewStoryService(db, cfg, logger)
-	translationService := services.NewTranslationService(cfg)
+	usageStatsService := services.NewUsageStatsService(cfg, db, logger)
+	translationService := services.NewTranslationService(cfg, usageStatsService, logger)
 	snippetsService := services.NewSnippetsService(db, cfg, logger)
-	router := handlers.NewRouter(cfg, userService, questionService, learningService, services.NewAIService(cfg, logger), services.NewWorkerServiceWithLogger(db, logger), dailyQuestionService, storyService, services.NewConversationService(db), services.NewOAuthServiceWithLogger(cfg, logger), generationHintService, translationService, snippetsService, logger)
+	router := handlers.NewRouter(cfg, userService, questionService, learningService, services.NewAIService(cfg, logger), services.NewWorkerServiceWithLogger(db, logger), dailyQuestionService, storyService, services.NewConversationService(db), services.NewOAuthServiceWithLogger(cfg, logger), generationHintService, translationService, snippetsService, usageStatsService, logger)
 
 	// Create a user
 	user, err := userService.CreateUserWithPassword(context.Background(), fmt.Sprintf("daily_integ_%d", time.Now().UnixNano()), "password123", "italian", "A1")

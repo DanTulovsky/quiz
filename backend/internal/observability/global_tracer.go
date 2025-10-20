@@ -110,6 +110,11 @@ func TraceOAuthFunction(ctx context.Context, functionName string, attributes ...
 	return TraceFunction(ctx, "oauth", functionName, attributes...)
 }
 
+// TraceUsageStatsFunction starts a new span for a usage stats service function.
+func TraceUsageStatsFunction(ctx context.Context, functionName string, attributes ...attribute.KeyValue) (context.Context, trace.Span) {
+	return TraceFunction(ctx, "usage_stats", functionName, attributes...)
+}
+
 // TraceCleanupFunction starts a new span for a cleanup service function.
 func TraceCleanupFunction(ctx context.Context, functionName string, attributes ...attribute.KeyValue) (context.Context, trace.Span) {
 	return TraceFunction(ctx, "cleanup", functionName, attributes...)

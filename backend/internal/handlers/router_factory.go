@@ -42,6 +42,7 @@ func NewRouter(
 	generationHintService services.GenerationHintServiceInterface,
 	translationService services.TranslationServiceInterface,
 	snippetsService services.SnippetsServiceInterface,
+	usageStatsService services.UsageStatsServiceInterface,
 	logger *observability.Logger,
 ) *gin.Engine {
 	// Setup Gin router
@@ -178,7 +179,7 @@ func NewRouter(
 	aiConversationHandler := NewAIConversationHandler(conversationService, cfg, logger)
 	translationHandler := NewTranslationHandler(translationService, cfg, logger)
 	snippetsHandler := NewSnippetsHandler(snippetsService, cfg, logger)
-	adminHandler := NewAdminHandlerWithLogger(userService, questionService, aiService, cfg, learningService, workerService, logger)
+	adminHandler := NewAdminHandlerWithLogger(userService, questionService, aiService, cfg, learningService, workerService, logger, usageStatsService)
 	// Inject story service into admin handler via exported field
 	adminHandler.storyService = storyService
 	userAdminHandler := NewUserAdminHandler(userService, cfg, logger)
@@ -384,6 +385,10 @@ func NewRouter(
 				backend.GET("/stories/:id", adminHandler.GetStoryAdmin)
 				backend.DELETE("/stories/:id", adminHandler.DeleteStoryAdmin)
 				backend.GET("/story-sections/:id", adminHandler.GetSectionAdmin)
+
+				// Usage stats (admin)
+				backend.GET("/usage-stats", adminHandler.GetUsageStats)
+				backend.GET("/usage-stats/:service", adminHandler.GetUsageStatsByService)
 			}
 
 		}
