@@ -1,0 +1,98 @@
+{
+  "adminuser_Danke schön_de": {
+    "id": 5,
+    "username": "adminuser",
+    "original_text": "Danke schön",
+    "translated_text": "Thank you very much",
+    "source_language": "de",
+    "target_language": "en"
+  },
+  "adminuser_Guten Tag_de": {
+    "id": 4,
+    "username": "adminuser",
+    "original_text": "Guten Tag",
+    "translated_text": "Good day",
+    "source_language": "de",
+    "target_language": "en"
+  },
+  "apitestadmin_Gracias_es": {
+    "id": 10,
+    "username": "apitestadmin",
+    "original_text": "Gracias",
+    "translated_text": "Thank you",
+    "source_language": "es",
+    "target_language": "en"
+  },
+  "apitestadmin_Hola_es": {
+    "id": 9,
+    "username": "apitestadmin",
+    "original_text": "Hola",
+    "translated_text": "Hello",
+    "source_language": "es",
+    "target_language": "en"
+  },
+  "apitestuser_Arrivederci_it": {
+    "id": 7,
+    "username": "apitestuser",
+    "original_text": "Arrivederci",
+    "translated_text": "Goodbye",
+    "source_language": "it",
+    "target_language": "en"
+  },
+  "apitestuser_Ciao_it": {
+    "id": 6,
+    "username": "apitestuser",
+    "original_text": "Ciao",
+    "translated_text": "Hello/Goodbye",
+    "source_language": "it",
+    "target_language": "en"
+  },
+  "apitestuser_Come stai?_it": {
+    "id": 8,
+    "username": "apitestuser",
+    "original_text": "Come stai?",
+    "translated_text": "How are you?",
+    "source_language": "it",
+    "target_language": "en"
+  },
+  "reminderuser_Hasta luego_es": {
+    "id": 11,
+    "username": "reminderuser",
+    "original_text": "Hasta luego",
+    "translated_text": "See you later",
+    "source_language": "es",
+    "target_language": "en"
+  },
+  "reminderuser_¿Cómo estás?_es": {
+    "id": 12,
+    "username": "reminderuser",
+    "original_text": "¿Cómo estás?",
+    "translated_text": "How are you?",
+    "source_language": "es",
+    "target_language": "en"
+  },
+  "testuser_Au revoir_fr": {
+    "id": 2,
+    "username": "testuser",
+    "original_text": "Au revoir",
+    "translated_text": "Goodbye",
+    "source_language": "fr",
+    "target_language": "en"
+  },
+  "testuser_Bonjour_fr": {
+    "id": 1,
+    "username": "testuser",
+    "original_text": "Bonjour",
+    "translated_text": "Hello",
+    "source_language": "fr",
+    "target_language": "en"
+  },
+  "testuser_Comment allez-vous?_fr": {
+    "id": 3,
+    "username": "testuser",
+    "original_text": "Comment allez-vous?",
+    "translated_text": "How are you?",
+    "source_language": "fr",
+    "target_language": "en"
+  }
+}

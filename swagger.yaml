@@ -1142,12 +1142,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SnippetList"
-        "400":
-          description: Invalid query parameters
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
         "401":
           description: User not authenticated
           content:

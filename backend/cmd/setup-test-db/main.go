@@ -197,6 +197,29 @@ type TestStories struct {
 	} `yaml:"stories"`
 }
 
+// TestSnippetData represents snippet data for E2E tests
+type TestSnippetData struct {
+	ID             int    `json:"id"`
+	Username       string `json:"username"`
+	OriginalText   string `json:"original_text"`
+	TranslatedText string `json:"translated_text"`
+	SourceLanguage string `json:"source_language"`
+	TargetLanguage string `json:"target_language"`
+}
+
+// TestSnippets represents a collection of test snippets
+type TestSnippets struct {
+	Snippets []struct {
+		Username        string  `yaml:"username"`
+		OriginalText    string  `yaml:"original_text"`
+		TranslatedText  string  `yaml:"translated_text"`
+		SourceLanguage  string  `yaml:"source_language"`
+		TargetLanguage  string  `yaml:"target_language"`
+		Context         *string `yaml:"context"`
+		DifficultyLevel string  `yaml:"difficulty_level"`
+	} `yaml:"snippets"`
+}
+
 func resetTestDatabase(databaseURL, testDB string, logger *observability.Logger) error {
 	ctx := context.Background()
 
@@ -465,7 +488,18 @@ func setupTestData(ctx context.Context, rootDir string, userService *services.Us
 		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to output story data: %w", err)
 	}
 
-	// 8. Load and create conversations
+	// 8. Load and create snippets
+	snippets, err := loadAndCreateSnippets(ctx, filepath.Join(dataDir, "test_snippets.yaml"), users, db, logger)
+	if err != nil {
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup snippets: %w", err)
+	}
+
+	// Output snippet data for E2E tests
+	if err := outputSnippetDataForTests(snippets, rootDir, logger); err != nil {
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to output snippet data: %w", err)
+	}
+
+	// 9. Load and create conversations
 	conversations, err := loadAndCreateConversations(ctx, filepath.Join(dataDir, "test_conversations.yaml"), users, db, logger)
 	if err != nil {
 		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup conversations: %w", err)
@@ -1119,6 +1153,68 @@ func loadAndCreateStories(ctx context.Context, filePath string, users map[string
 	return stories, nil
 }
 
+// loadAndCreateSnippets loads and creates snippets from test data
+func loadAndCreateSnippets(ctx context.Context, filePath string, users map[string]*models.User, db *sql.DB, logger *observability.Logger) (map[string]TestSnippetData, error) {
+	snippets := make(map[string]TestSnippetData)
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		// Snippets file is optional, so just return if it doesn't exist
+		logger.Info(ctx, "Snippets file not found, skipping", map[string]interface{}{
+			"file_path": filePath,
+		})
+		return snippets, nil
+	}
+
+	var testSnippets TestSnippets
+	if err := yaml.Unmarshal(data, &testSnippets); err != nil {
+		return snippets, contextutils.WrapError(err, "failed to parse snippets data")
+	}
+
+	// Create snippets service
+	snippetsService := services.NewSnippetsService(db, nil, logger)
+
+	for i, snippetData := range testSnippets.Snippets {
+		user, exists := users[snippetData.Username]
+		if !exists {
+			return snippets, contextutils.ErrorWithContextf("user not found for snippet: %s", snippetData.Username)
+		}
+
+		// Create snippet request
+		createReq := api.CreateSnippetRequest{
+			OriginalText:   snippetData.OriginalText,
+			TranslatedText: snippetData.TranslatedText,
+			SourceLanguage: snippetData.SourceLanguage,
+			TargetLanguage: snippetData.TargetLanguage,
+			Context:        snippetData.Context,
+		}
+
+		// Create snippet using the service
+		snippet, err := snippetsService.CreateSnippet(ctx, int64(user.ID), createReq)
+		if err != nil {
+			return snippets, contextutils.WrapErrorf(err, "failed to create snippet %d", i)
+		}
+
+		// Initialize snippet data for test output
+		snippetKey := fmt.Sprintf("%s_%s_%s", snippetData.Username, snippetData.OriginalText, snippetData.SourceLanguage)
+		snippets[snippetKey] = TestSnippetData{
+			ID:             int(snippet.ID),
+			Username:       snippetData.Username,
+			OriginalText:   snippet.OriginalText,
+			TranslatedText: snippet.TranslatedText,
+			SourceLanguage: snippet.SourceLanguage,
+			TargetLanguage: snippet.TargetLanguage,
+		}
+
+		logger.Info(ctx, "Created test snippet", map[string]interface{}{
+			"username":      snippetData.Username,
+			"original_text": snippetData.OriginalText,
+			"snippet_id":    snippet.ID,
+		})
+	}
+
+	return snippets, nil
+}
+
 // outputUserDataForTests outputs the created user data to a JSON file for E2E tests to read
 func outputUserDataForTests(users map[string]*models.User, rootDir string, logger *observability.Logger) error {
 	// Create a simplified structure for the E2E test
@@ -1190,6 +1286,36 @@ func outputStoryDataForTests(stories map[string]TestStoryData, rootDir string, l
 	logger.Info(context.Background(), "Output stories data for E2E tests", map[string]interface{}{
 		"file_path":     outputPath,
 		"stories_count": len(stories),
+	})
+
+	return nil
+}
+
+// outputSnippetDataForTests outputs the created snippet data to a JSON file for E2E tests to read
+func outputSnippetDataForTests(snippets map[string]TestSnippetData, rootDir string, logger *observability.Logger) error {
+	// Write to JSON file in the frontend/tests directory
+	outputPath := filepath.Join(rootDir, "..", "frontend", "tests", "test-snippets.json")
+
+	// Ensure the directory exists
+	outputDir := filepath.Dir(outputPath)
+	if err := os.MkdirAll(outputDir, 0o755); err != nil {
+		return contextutils.WrapErrorf(err, "failed to create output directory: %s", outputDir)
+	}
+
+	// Marshal to JSON with pretty printing
+	jsonData, err := json.MarshalIndent(snippets, "", "  ")
+	if err != nil {
+		return contextutils.WrapErrorf(err, "failed to marshal snippets data to JSON")
+	}
+
+	// Write to file
+	if err := os.WriteFile(outputPath, jsonData, 0o644); err != nil {
+		return contextutils.WrapErrorf(err, "failed to write snippets data to file: %s", outputPath)
+	}
+
+	logger.Info(context.Background(), "Output snippets data for E2E tests", map[string]interface{}{
+		"file_path":      outputPath,
+		"snippets_count": len(snippets),
 	})
 
 	return nil

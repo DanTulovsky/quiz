@@ -221,6 +221,7 @@ test.describe('Comprehensive API Tests', () => {
     initializeAvailableStoryIds();
     initializeAvailableQuestionIds();
     initializeAvailableSectionIds();
+    initializeAvailableSnippetIds();
 
     // Generate test cases from swagger spec
     testCases = generateTestCases(swaggerSpec);
@@ -827,7 +828,9 @@ test.describe('Comprehensive API Tests', () => {
     const importantProps = [
       'email', 'username', 'password', 'question_id', 'user_answer_index',
       // UserSettings properties
-      'language', 'level', 'ai_provider', 'ai_model', 'ai_enabled', 'api_key'
+      'language', 'level', 'ai_provider', 'ai_model', 'ai_enabled', 'api_key',
+      // Snippet update properties
+      'original_text', 'translated_text', 'source_language', 'target_language', 'context'
     ];
     return importantProps.includes(key);
   }
@@ -909,8 +912,10 @@ let availableUserIds: number[] = [];
 let availableQuestionIds: number[] = [];
 let availableStoryIds: number[] = [];
 let availableSectionIds: number[] = [];
+let availableSnippetIds: number[] = [];
 let deletedConversationIds: Set<string> = new Set();
 let deletedStoryIds: Set<number> = new Set();
+let deletedSnippetIds: Set<number> = new Set();
 
 // Helper function to get stories from database for a specific user
 async function getStoriesFromDatabase(username?: string, request?: any): Promise<Array<{id: number, status: string}>> {
@@ -1063,6 +1068,28 @@ function findConversationForUser(username: string): any {
       }
     }
 
+  }
+
+  function initializeAvailableSnippetIds() {
+    // Load actual snippet IDs from the JSON file created by the test data setup
+    const snippetDataPath = path.join(process.cwd(), 'tests', 'test-snippets.json');
+
+    if (!fs.existsSync(snippetDataPath)) {
+      throw new Error(`test-snippets.json not found at ${snippetDataPath}. Test data setup may have failed.`);
+    }
+
+    const snippetDataContent = fs.readFileSync(snippetDataPath, 'utf8');
+    const snippetData = JSON.parse(snippetDataContent);
+
+    // Extract snippet IDs
+    availableSnippetIds = [];
+    Object.values(snippetData).forEach((snippet: any) => {
+      const snippetId = snippet.id;
+      // Skip snippets that are already marked as deleted
+      if (!deletedSnippetIds.has(snippetId)) {
+        availableSnippetIds.push(snippetId);
+      }
+    });
   }
 
   // Helper to get a user ID by username from tests/test-users.json
@@ -1500,7 +1527,7 @@ function findConversationForUser(username: string): any {
   }
 
   function markStoryAsDeleted(storyId: number) {
-    console.log(`🔴 MARKING STORY AS DELETED: ${storyId}, current deleted stories: ${Array.from(deletedStoryIds).join(', ')}`);
+    // console.log(`🔴 MARKING STORY AS DELETED: ${storyId}, current deleted stories: ${Array.from(deletedStoryIds).join(', ')}`);
     deletedStoryIds.add(storyId);
 
     // Also remove from available story IDs and username mappings
@@ -1512,11 +1539,21 @@ function findConversationForUser(username: string): any {
       }
     });
 
-    console.log(`🔴 AFTER DELETION - Available story IDs: ${availableStoryIds.join(', ')}`);
+    // console.log(`🔴 AFTER DELETION - Available story IDs: ${availableStoryIds.join(', ')}`);
+  }
+
+  function markSnippetAsDeleted(snippetId: number) {
+    // console.log(`🔴 MARKING SNIPPET AS DELETED: ${snippetId}, current deleted snippets: ${Array.from(deletedSnippetIds).join(', ')}`);
+    deletedSnippetIds.add(snippetId);
+
+    // Also remove from available snippet IDs
+    availableSnippetIds = availableSnippetIds.filter(id => id !== snippetId);
+
+    // console.log(`🔴 AFTER DELETION - Available snippet IDs: ${availableSnippetIds.join(', ')}`);
   }
 
   // Helper function to determine what type of ID we need and get the appropriate value
-  async function getReplacementId(path: string, paramKey: string, request: any, userContext?: {username: string}, method?: string, isErrorCase: boolean = false): Promise<{value: number | string; type: 'user' | 'question' | 'daily_user' | 'date' | 'role' | 'provider' | 'story' | 'conversation'}> {
+  async function getReplacementId(pathString: string, paramKey: string, request: any, userContext?: {username: string}, method?: string, isErrorCase: boolean = false): Promise<{value: number | string; type: 'user' | 'question' | 'daily_user' | 'date' | 'role' | 'provider' | 'story' | 'conversation' | 'snippet'}> {
     if (paramKey === 'userId') {
       return {value: getUserIdWithDailyAssignments(), type: 'daily_user'};
     }
@@ -1543,7 +1580,7 @@ function findConversationForUser(username: string): any {
     if (paramKey === 'roleId') {
       // For roleId parameters, we need to get a valid role ID
       // For role removal operations, use the actual 'user' role ID from test roles data to ensure correctness
-      if (path.includes('/roles/') && path.includes('/{roleId}')) {
+      if (pathString.includes('/roles/') && pathString.includes('/{roleId}')) {
         const userRoleId = testRolesData?.['user']?.id;
         return {value: userRoleId ?? 1, type: 'role'};
       }
@@ -1562,9 +1599,9 @@ function findConversationForUser(username: string): any {
     // with the story endpoint logic
 
     if (paramKey === 'id' || paramKey === 'conversationId') {
-      console.log(`🔍 GETTING REPLACEMENT ID for param: ${paramKey}, path: ${path}, method: ${method}, isErrorCase: ${isErrorCase}`);
+      // console.log(`🔍 GETTING REPLACEMENT ID for param: ${paramKey}, path: ${pathString}, method: ${method}, isErrorCase: ${isErrorCase}`);
       // Check if this is a conversation-related endpoint
-      if (path.includes('/conversations/') || path.includes('/ai/conversations/')) {
+      if (pathString.includes('/conversations/') || pathString.includes('/ai/conversations/')) {
         // For error cases (like 404 tests), use a fake UUID that doesn't exist
         if (isErrorCase) {
           const fakeUuid = '00000000-0000-0000-0000-000000000001';
@@ -1582,27 +1619,27 @@ function findConversationForUser(username: string): any {
       }
 
       // Check if this is a section-related endpoint first
-      if (path.includes('/story/section/') || path.includes('/section/')) {
-        console.log(`🔍 SECTION ENDPOINT DETECTED: ${path}, method: ${method}`);
+      if (pathString.includes('/story/section/') || pathString.includes('/section/')) {
+        // console.log(`🔍 SECTION ENDPOINT DETECTED: ${pathString}, method: ${method}`);
         // For section endpoints, we need to get a section ID that belongs to the user's stories
         const sectionId = await getAvailableSectionId(userContext?.username, request);
-        console.log(`📋 RETURNING SECTION ID: ${sectionId} for user: ${userContext?.username}, path: ${path}`);
+        // console.log(`📋 RETURNING SECTION ID: ${sectionId} for user: ${userContext?.username}, path: ${pathString}`);
         return {value: sectionId, type: 'section'};
       }
 
       // Check if this is a story-related endpoint
-      if (path.includes('/story/') || path.includes('/stories/')) {
-        console.log(`🔍 STORY ENDPOINT DETECTED: ${path}, method: ${method}`);
+      if (pathString.includes('/story/') || pathString.includes('/stories/')) {
+        // console.log(`🔍 STORY ENDPOINT DETECTED: ${pathString}, method: ${method}`);
         // For admin users, use their own stories; for regular users, use story test user
         // For DELETE and set-current operations, we need an archived story
-        const includeArchived = method === 'DELETE' || path.includes('/set-current');
+        const includeArchived = method === 'DELETE' || pathString.includes('/set-current');
         let username = userContext?.username;
 
         // Admin users should use their own stories, not story test user's stories
         if (username === 'apitestadmin') {
           // Use admin's stories directly - get available story ID for admin
           const storyId = await getAvailableStoryId(username, includeArchived, undefined, request);
-          console.log(`📋 RETURNING STORY ID: ${storyId} for admin user: ${username}, path: ${path}`);
+          // console.log(`📋 RETURNING STORY ID: ${storyId} for admin user: ${username}, path: ${pathString}`);
           return {value: storyId, type: 'story'};
         }
 
@@ -1619,29 +1656,69 @@ function findConversationForUser(username: string): any {
           }
         }
         const storyId = await getAvailableStoryId(username || 'apitestuserstory1', includeArchived, undefined, request);
-        console.log(`📋 RETURNING STORY ID: ${storyId} for user: ${username}, path: ${path}`);
+        // console.log(`📋 RETURNING STORY ID: ${storyId} for user: ${username}, path: ${pathString}`);
         return {value: storyId, type: 'story'};
       }
 
+      // Check if this is a snippet-related endpoint
+      if (pathString.includes('/snippets/')) {
+        // console.log(`🔍 SNIPPET ENDPOINT DETECTED: ${pathString}, method: ${method}`);
+        // For error cases (like 404 tests), use a fake ID that doesn't exist
+        if (isErrorCase) {
+          return {value: 999999999, type: 'snippet'};
+        }
+
+        // Filter available snippet IDs to only include those belonging to the current user
+        const currentUsername = userContext?.username || 'apitestuser';
+        const userSnippetIds = availableSnippetIds.filter(id => {
+          // Find the snippet by ID and check if it belongs to the current user
+          const snippetDataPath = path.join(process.cwd(), 'tests', 'test-snippets.json');
+          if (fs.existsSync(snippetDataPath)) {
+            const snippetDataContent = fs.readFileSync(snippetDataPath, 'utf8');
+            const snippetData = JSON.parse(snippetDataContent);
+            const snippetKey = Object.keys(snippetData).find(key => snippetData[key].id === id);
+            return snippetKey && snippetData[snippetKey].username === currentUsername;
+          }
+          return false;
+        });
+
+        // console.log(`📋 Available snippets for user ${currentUsername}: ${userSnippetIds.join(', ')}`);
+
+        // For DELETE operations, use a snippet that can be safely deleted
+        const forDeletion = method === 'DELETE';
+        if (forDeletion && userSnippetIds.length > 0) {
+          const snippetId = userSnippetIds[0];
+          return {value: snippetId, type: 'snippet'};
+        }
+
+        // Return the first available snippet ID for this user
+        if (userSnippetIds.length === 0) {
+          throw new Error(`No available snippet IDs for user ${currentUsername}. Test data setup may have failed or user may not have any snippets.`);
+        }
+        const snippetId = userSnippetIds[0];
+        // console.log(`📋 RETURNING SNIPPET ID: ${snippetId} for user: ${currentUsername}, path: ${pathString}`);
+        return {value: snippetId, type: 'snippet'};
+      }
+
       // Check if this is a question-related endpoint
-      if (path.includes('/questions/') || path.includes('/quiz/question/') || path.includes('/daily/questions/')) {
+      if (pathString.includes('/questions/') || pathString.includes('/quiz/question/') || pathString.includes('/daily/questions/')) {
         const questionId = await getAvailableQuestionId(request, userContext);
         return {value: questionId, type: 'question'};
       }
 
       // Check if this is a user-related endpoint (most endpoints with {id} are user-related)
-      if (path.includes('/userz/') || path.includes('/admin/backend/userz/') ||
-        path.includes('/reset-password') || path.includes('/roles') ||
-        path.includes('/clear') || path.includes('/daily/') ||
-        path.includes('/admin/backend/stories/') || path.includes('/admin/backend/questions/')) {
+      if (pathString.includes('/userz/') || pathString.includes('/admin/backend/userz/') ||
+        pathString.includes('/reset-password') || pathString.includes('/roles') ||
+        pathString.includes('/clear') || pathString.includes('/daily/') ||
+        pathString.includes('/admin/backend/stories/') || pathString.includes('/admin/backend/questions/')) {
 
         // For roles listing endpoint, pick an existing user ID from the seeded data
-        if (path.includes('/admin/backend/userz/') && path.endsWith('/roles') && !path.includes('/{roleId}')) {
+        if (pathString.includes('/admin/backend/userz/') && pathString.endsWith('/roles') && !pathString.includes('/{roleId}')) {
           return {value: getAvailableUserId(), type: 'user'};
         }
 
         // Special handling for role removal operations to avoid removing admin role from admin user
-        if (path.includes('/roles/') && path.includes('/{roleId}')) {
+        if (pathString.includes('/roles/') && pathString.includes('/{roleId}')) {
           // For role removal, use a different user to avoid affecting the admin user
           // Find the role test user ID from test-users.json
           const userDataPath = process.cwd() + '/tests/test-users.json';
@@ -1660,7 +1737,7 @@ function findConversationForUser(username: string): any {
         }
 
         // Special handling: for password reset, operate on a load-test user to avoid flakiness
-        if (path.includes('/reset-password')) {
+        if (pathString.includes('/reset-password')) {
           const loadId = getLoadTestUserId();
           if (loadId) {
             return {value: loadId, type: 'user'};
@@ -1668,7 +1745,7 @@ function findConversationForUser(username: string): any {
         }
 
         // For any admin user operations, avoid admin/test control accounts and pick a random safe user ID
-        if (path.includes('/admin/backend/userz/')) {
+        if (pathString.includes('/admin/backend/userz/')) {
           const randomSafeId = getRandomSafeUserId();
           return {value: randomSafeId, type: 'user'};
         }
@@ -1681,17 +1758,17 @@ function findConversationForUser(username: string): any {
     }
 
     // If we reach here, we have an unknown parameter type - this should fail the test
-    throw new Error(`Unknown parameter type '${paramKey}' for path '${path}'. This indicates a missing case in getReplacementId.`);
+    throw new Error(`Unknown parameter type '${paramKey}' for path '${pathString}'. This indicates a missing case in getReplacementId.`);
   }
 
   // Helper function to replace path parameters with appropriate IDs
-  async function replacePathParameters(path: string, pathParams: Record<string, any> | undefined, request: any, userContext?: {username: string}, method?: string, isErrorCase: boolean = false): Promise<string> {
-    if (!pathParams) return path;
+  async function replacePathParameters(pathString: string, pathParams: Record<string, any> | undefined, request: any, userContext?: {username: string}, method?: string, isErrorCase: boolean = false): Promise<string> {
+    if (!pathParams) return pathString;
 
-    // console.log(`🔄 REPLACING PATH PARAMETERS for path: ${path}, method: ${method}`);
-    let resultPath = path;
+    // console.log(`🔄 REPLACING PATH PARAMETERS for path: ${pathString}, method: ${method}`);
+    let resultPath = pathString;
     for (const [key, value] of Object.entries(pathParams)) {
-      const replacement = await getReplacementId(path, key, request, userContext, method, isErrorCase);
+      const replacement = await getReplacementId(pathString, key, request, userContext, method, isErrorCase);
       // console.log(`🔄 REPLACED {${key}}=${value} with ${replacement.value} (type: ${replacement.type})`);
       resultPath = resultPath.replace(`{${key}}`, replacement.value.toString());
     }
@@ -2051,14 +2128,22 @@ function findConversationForUser(username: string): any {
         // Mark story as deleted if this was a successful DELETE operation
         if (testCase.method === 'DELETE' && response.status() === 200 && (endpointPath.includes('/story/') || endpointPath.includes('/stories/'))) {
           // Extract story ID from the URL - handle both /story/ and /stories/ patterns
-          console.log(`🔍 CHECKING FOR STORY DELETION: method=${testCase.method}, status=${response.status()}, path=${endpointPath}`);
           const storyMatch = endpointPath.match(/\/(?:story|stories)\/(\d+)/);
           if (storyMatch) {
             const deletedStoryId = parseInt(storyMatch[1]);
-            console.log(`📝 EXTRACTED STORY ID: ${deletedStoryId} from path: ${endpointPath}`);
             markStoryAsDeleted(deletedStoryId);
+          }
+        }
+
+        // Mark snippet as deleted if this was a successful DELETE operation
+        if (testCase.method === 'DELETE' && response.status() === 204 && endpointPath.includes('/snippets/')) {
+          // Extract snippet ID from the URL
+          const snippetMatch = endpointPath.match(/\/snippets\/(\d+)/);
+          if (snippetMatch) {
+            const deletedSnippetId = parseInt(snippetMatch[1]);
+            markSnippetAsDeleted(deletedSnippetId);
           } else {
-            console.log(`❌ Could not extract story ID from path: ${endpointPath}`);
+            console.log(`❌ Could not extract snippet ID from path: ${endpointPath}`);
           }
         }
       }
@@ -2302,7 +2387,7 @@ function findConversationForUser(username: string): any {
           if (conversationMatch) {
             const deletedConversationId = conversationMatch[1];
             markConversationAsDeleted(deletedConversationId);
-            console.log(`Marked conversation as deleted: ${deletedConversationId}`);
+            // console.log(`Marked conversation as deleted: ${deletedConversationId}`);
           }
         }
 
@@ -2377,7 +2462,7 @@ function findConversationForUser(username: string): any {
           if (conversationMatch) {
             const deletedConversationId = conversationMatch[1];
             markConversationAsDeleted(deletedConversationId);
-            console.log(`Marked conversation as deleted: ${deletedConversationId}`);
+            // console.log(`Marked conversation as deleted: ${deletedConversationId}`);
           }
         }
 
@@ -2528,21 +2613,35 @@ function findConversationForUser(username: string): any {
           if (conversationMatch) {
             const deletedConversationId = conversationMatch[1];
             markConversationAsDeleted(deletedConversationId);
-            console.log(`Marked conversation as deleted: ${deletedConversationId}`);
+            // console.log(`Marked conversation as deleted: ${deletedConversationId}`);
           }
         }
 
         // Mark story as deleted if this was a successful DELETE operation
         if (testCase.method === 'DELETE' && response.status() === 200 && (endpointPath.includes('/story/') || endpointPath.includes('/stories/'))) {
           // Extract story ID from the URL - handle both /story/ and /stories/ patterns
-          console.log(`🔍 CHECKING FOR STORY DELETION: method=${testCase.method}, status=${response.status()}, path=${endpointPath}`);
+          // console.log(`🔍 CHECKING FOR STORY DELETION: method=${testCase.method}, status=${response.status()}, path=${endpointPath}`);
           const storyMatch = endpointPath.match(/\/(?:story|stories)\/(\d+)/);
           if (storyMatch) {
             const deletedStoryId = parseInt(storyMatch[1]);
-            console.log(`📝 EXTRACTED STORY ID: ${deletedStoryId} from path: ${endpointPath}`);
+            // console.log(`📝 EXTRACTED STORY ID: ${deletedStoryId} from path: ${endpointPath}`);
             markStoryAsDeleted(deletedStoryId);
           } else {
             console.log(`❌ Could not extract story ID from path: ${endpointPath}`);
+          }
+        }
+
+        // Mark snippet as deleted if this was a successful DELETE operation
+        if (testCase.method === 'DELETE' && response.status() === 204 && endpointPath.includes('/snippets/')) {
+          // Extract snippet ID from the URL
+          // console.log(`🔍 CHECKING FOR SNIPPET DELETION: method=${testCase.method}, status=${response.status()}, path=${endpointPath}`);
+          const snippetMatch = endpointPath.match(/\/snippets\/(\d+)/);
+          if (snippetMatch) {
+            const deletedSnippetId = parseInt(snippetMatch[1]);
+            // console.log(`📝 EXTRACTED SNIPPET ID: ${deletedSnippetId} from path: ${endpointPath}`);
+            markSnippetAsDeleted(deletedSnippetId);
+          } else {
+            console.log(`❌ Could not extract snippet ID from path: ${endpointPath}`);
           }
         }
 

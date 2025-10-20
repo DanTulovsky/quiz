@@ -1,0 +1,99 @@
+# Test data for vocabulary snippets
+# This file contains test snippets for testing the snippets functionality
+
+snippets:
+  - username: testuser
+    original_text: "Bonjour"
+    translated_text: "Hello"
+    source_language: "fr"
+    target_language: "en"
+    context: "Learned this during French conversation practice"
+    difficulty_level: "A1"
+
+  - username: testuser
+    original_text: "Au revoir"
+    translated_text: "Goodbye"
+    source_language: "fr"
+    target_language: "en"
+    context: "Basic French greeting"
+    difficulty_level: "A1"
+
+  - username: testuser
+    original_text: "Comment allez-vous?"
+    translated_text: "How are you?"
+    source_language: "fr"
+    target_language: "en"
+    context: "Formal greeting in French"
+    difficulty_level: "A2"
+
+  - username: adminuser
+    original_text: "Guten Tag"
+    translated_text: "Good day"
+    source_language: "de"
+    target_language: "en"
+    context: "German greeting learned from admin"
+    difficulty_level: "A1"
+
+  - username: adminuser
+    original_text: "Danke schön"
+    translated_text: "Thank you very much"
+    source_language: "de"
+    target_language: "en"
+    context: "Polite German expression"
+    difficulty_level: "A1"
+
+  - username: apitestuser
+    original_text: "Ciao"
+    translated_text: "Hello/Goodbye"
+    source_language: "it"
+    target_language: "en"
+    context: "Basic Italian greeting"
+    difficulty_level: "A1"
+
+  - username: apitestuser
+    original_text: "Arrivederci"
+    translated_text: "Goodbye"
+    source_language: "it"
+    target_language: "en"
+    context: "Formal Italian farewell"
+    difficulty_level: "A1"
+
+  - username: apitestuser
+    original_text: "Come stai?"
+    translated_text: "How are you?"
+    source_language: "it"
+    target_language: "en"
+    context: "Italian conversation starter"
+    difficulty_level: "A1"
+
+  - username: apitestadmin
+    original_text: "Hola"
+    translated_text: "Hello"
+    source_language: "es"
+    target_language: "en"
+    context: "Basic Spanish greeting"
+    difficulty_level: "A1"
+
+  - username: apitestadmin
+    original_text: "Gracias"
+    translated_text: "Thank you"
+    source_language: "es"
+    target_language: "en"
+    context: "Spanish expression of gratitude"
+    difficulty_level: "A1"
+
+  - username: reminderuser
+    original_text: "Hasta luego"
+    translated_text: "See you later"
+    source_language: "es"
+    target_language: "en"
+    context: "Spanish farewell phrase"
+    difficulty_level: "A1"
+
+  - username: reminderuser
+    original_text: "¿Cómo estás?"
+    translated_text: "How are you?"
+    source_language: "es"
+    target_language: "en"
+    context: "Spanish greeting question"
+    difficulty_level: "A1"
