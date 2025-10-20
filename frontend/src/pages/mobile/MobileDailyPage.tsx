@@ -118,6 +118,7 @@ const MobileDailyPage: React.FC = () => {
       setSelectedAnswerLocal(null);
       setIsSubmittedLocal(false);
       setFeedbackLocal(null);
+      setIsReported(false);
       return;
     }
 
@@ -146,6 +147,7 @@ const MobileDailyPage: React.FC = () => {
       setSelectedAnswerLocal(null);
       setIsSubmittedLocal(false);
       setFeedbackLocal(null);
+      setIsReported(false);
     }
   }, [currentQuestion?.id, currentQuestion?.is_completed]);
 

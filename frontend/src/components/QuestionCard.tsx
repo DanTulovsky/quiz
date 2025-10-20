@@ -343,6 +343,7 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
     React.useEffect(() => {
       setIsSubmitted(!!feedback);
       setLocalFeedback(feedback || null);
+      setIsReported(false);
       // debugSelection('reset-on-question-change', { questionId: question.id, hasFeedback: !!feedback });
     }, [question.id, feedback]);
 
