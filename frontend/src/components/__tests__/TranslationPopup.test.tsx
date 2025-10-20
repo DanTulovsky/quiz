@@ -91,7 +91,6 @@ vi.mock('../../api/api', () => {
   };
 });
 
-
 // Create a simple test wrapper
 const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const queryClient = new QueryClient({
@@ -451,7 +450,6 @@ describe('TranslationPopup', () => {
     // Save button should be enabled again after error
     expect(saveButton).not.toBeDisabled();
   });
-
 
   it('should show save button even when no translation', () => {
     // Mock translation context to return no translation

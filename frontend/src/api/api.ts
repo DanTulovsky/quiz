@@ -12488,7 +12488,7 @@ export const getPostV1SnippetsMockHandler = (overrideResponse?: Snippet | ((info
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
     ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
     : getPostV1SnippetsResponseMock()),
-      { status: 201,
+      { status: 200,
         headers: { 'Content-Type': 'application/json' }
       })
   })

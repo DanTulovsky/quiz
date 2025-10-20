@@ -1688,14 +1688,14 @@ function findConversationForUser(username: string): any {
   async function replacePathParameters(path: string, pathParams: Record<string, any> | undefined, request: any, userContext?: {username: string}, method?: string, isErrorCase: boolean = false): Promise<string> {
     if (!pathParams) return path;
 
-    console.log(`🔄 REPLACING PATH PARAMETERS for path: ${path}, method: ${method}`);
+    // console.log(`🔄 REPLACING PATH PARAMETERS for path: ${path}, method: ${method}`);
     let resultPath = path;
     for (const [key, value] of Object.entries(pathParams)) {
       const replacement = await getReplacementId(path, key, request, userContext, method, isErrorCase);
-      console.log(`🔄 REPLACED {${key}}=${value} with ${replacement.value} (type: ${replacement.type})`);
+      // console.log(`🔄 REPLACED {${key}}=${value} with ${replacement.value} (type: ${replacement.type})`);
       resultPath = resultPath.replace(`{${key}}`, replacement.value.toString());
     }
-    console.log(`🔄 FINAL PATH: ${resultPath}`);
+    // console.log(`🔄 FINAL PATH: ${resultPath}`);
     return resultPath;
   }
 

@@ -39,10 +39,7 @@ func (h *SnippetsHandler) CreateSnippet(c *gin.Context) {
 	userID, exists := GetUserIDFromSession(c)
 	if !exists {
 		h.logger.Warn(ctx, "User ID not found in context")
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"error":   "unauthorized",
-			"message": "User not authenticated",
-		})
+		HandleAppError(c, contextutils.ErrUnauthorized)
 		return
 	}
 	username, exists := GetUsernameFromSession(c)
@@ -59,10 +56,7 @@ func (h *SnippetsHandler) CreateSnippet(c *gin.Context) {
 		h.logger.Warn(ctx, "Invalid create snippet request format", map[string]interface{}{
 			"error": err.Error(),
 		})
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error":   "invalid_request",
-			"message": "Invalid request format",
-		})
+		HandleAppError(c, contextutils.ErrInvalidInput)
 		return
 	}
 
@@ -71,12 +65,6 @@ func (h *SnippetsHandler) CreateSnippet(c *gin.Context) {
 		h.logger.Error(ctx, "Failed to create snippet", err, map[string]interface{}{
 			"user_id": userID,
 		})
-
-		// Check if it's a duplicate error
-		if contextutils.IsError(err, contextutils.ErrRecordExists) {
-			c.JSON(http.StatusConflict, contextutils.ErrRecordExists.ToJSON())
-			return
-		}
 
 		HandleAppError(c, err)
 		return
@@ -104,10 +92,16 @@ func (h *SnippetsHandler) CreateSnippet(c *gin.Context) {
 		attribute.String("snippet.translated_text", snippet.TranslatedText),
 		attribute.String("snippet.source_language", snippet.SourceLanguage),
 		attribute.String("snippet.target_language", snippet.TargetLanguage),
-		attribute.Int64("snippet.question_id", *snippet.QuestionID),
-		attribute.String("snippet.context", *snippet.Context),
-		attribute.String("snippet.difficulty_level", *snippet.DifficultyLevel),
 	)
+	if snippet.QuestionID != nil {
+		span.SetAttributes(attribute.Int64("snippet.question_id", *snippet.QuestionID))
+	}
+	if snippet.Context != nil {
+		span.SetAttributes(attribute.String("snippet.context", *snippet.Context))
+	}
+	if snippet.DifficultyLevel != nil {
+		span.SetAttributes(attribute.String("snippet.difficulty_level", *snippet.DifficultyLevel))
+	}
 
 	c.JSON(http.StatusCreated, response)
 }
@@ -154,7 +148,12 @@ func (h *SnippetsHandler) GetSnippets(c *gin.Context) {
 			params.Offset = &offset
 		}
 	}
-	span.SetAttributes(attribute.Int("params.limit", *params.Limit), attribute.Int("params.offset", *params.Offset))
+	if params.Limit != nil {
+		span.SetAttributes(attribute.Int("params.limit", *params.Limit))
+	}
+	if params.Offset != nil {
+		span.SetAttributes(attribute.Int("params.offset", *params.Offset))
+	}
 	if q := params.Q; q != nil {
 		span.SetAttributes(attribute.String("params.q", *q))
 	}
@@ -166,7 +165,7 @@ func (h *SnippetsHandler) GetSnippets(c *gin.Context) {
 	}
 	snippetList, err := h.snippetsService.GetSnippets(ctx, int64(userID), params)
 	if err != nil {
-		h.logger.Error(ctx, "Failed to get snippets", err, map[string]interface{}{
+		h.logger.Error(ctx, "Failed to get snippets", err, map[string]any{
 			"user_id": userID,
 		})
 		HandleAppError(c, err)
@@ -229,7 +228,7 @@ func (h *SnippetsHandler) SearchSnippets(c *gin.Context) {
 	// Search snippets
 	snippets, total, err := h.snippetsService.SearchSnippets(ctx, int64(userID), query, limit, offset)
 	if err != nil {
-		h.logger.Error(ctx, "Failed to search snippets", err, map[string]interface{}{
+		h.logger.Error(ctx, "Failed to search snippets", err, map[string]any{
 			"user_id": userID,
 			"query":   query,
 			"limit":   limit,
@@ -291,12 +290,7 @@ func (h *SnippetsHandler) GetSnippet(c *gin.Context) {
 			"snippet_id": snippetID,
 		})
 
-		if err.Error() == "snippet not found" {
-			HandleAppError(c, contextutils.ErrRecordNotFound)
-			return
-		}
-
-		HandleAppError(c, contextutils.ErrInternalError)
+		HandleAppError(c, err)
 		return
 	}
 
@@ -317,7 +311,22 @@ func (h *SnippetsHandler) GetSnippet(c *gin.Context) {
 
 	span.SetAttributes(
 		attribute.Int64("snippet.id", snippet.ID),
+		attribute.Int64("user.id", int64(userID)),
+		attribute.String("user.username", username),
+		attribute.String("snippet.original_text", snippet.OriginalText),
+		attribute.String("snippet.translated_text", snippet.TranslatedText),
+		attribute.String("snippet.source_language", snippet.SourceLanguage),
+		attribute.String("snippet.target_language", snippet.TargetLanguage),
 	)
+	if snippet.QuestionID != nil {
+		span.SetAttributes(attribute.Int64("snippet.question_id", *snippet.QuestionID))
+	}
+	if snippet.Context != nil {
+		span.SetAttributes(attribute.String("snippet.context", *snippet.Context))
+	}
+	if snippet.DifficultyLevel != nil {
+		span.SetAttributes(attribute.String("snippet.difficulty_level", *snippet.DifficultyLevel))
+	}
 
 	c.JSON(http.StatusOK, response)
 }
@@ -331,10 +340,7 @@ func (h *SnippetsHandler) UpdateSnippet(c *gin.Context) {
 	userID, exists := GetUserIDFromSession(c)
 	if !exists {
 		h.logger.Warn(ctx, "User ID not found in context")
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"error":   "unauthorized",
-			"message": "User not authenticated",
-		})
+		HandleAppError(c, contextutils.ErrUnauthorized)
 		return
 	}
 	username, exists := GetUsernameFromSession(c)
@@ -374,12 +380,7 @@ func (h *SnippetsHandler) UpdateSnippet(c *gin.Context) {
 			"snippet_id": snippetID,
 		})
 
-		if err.Error() == "snippet not found" {
-			HandleAppError(c, contextutils.ErrRecordNotFound)
-			return
-		}
-
-		HandleAppError(c, contextutils.ErrInternalError)
+		HandleAppError(c, err)
 		return
 	}
 
@@ -400,7 +401,22 @@ func (h *SnippetsHandler) UpdateSnippet(c *gin.Context) {
 
 	span.SetAttributes(
 		attribute.Int64("snippet.id", snippet.ID),
+		attribute.Int64("user.id", int64(userID)),
+		attribute.String("user.username", username),
+		attribute.String("snippet.original_text", snippet.OriginalText),
+		attribute.String("snippet.translated_text", snippet.TranslatedText),
+		attribute.String("snippet.source_language", snippet.SourceLanguage),
+		attribute.String("snippet.target_language", snippet.TargetLanguage),
 	)
+	if snippet.QuestionID != nil {
+		span.SetAttributes(attribute.Int64("snippet.question_id", *snippet.QuestionID))
+	}
+	if snippet.Context != nil {
+		span.SetAttributes(attribute.String("snippet.context", *snippet.Context))
+	}
+	if snippet.DifficultyLevel != nil {
+		span.SetAttributes(attribute.String("snippet.difficulty_level", *snippet.DifficultyLevel))
+	}
 
 	c.JSON(http.StatusOK, response)
 }
@@ -414,10 +430,7 @@ func (h *SnippetsHandler) DeleteSnippet(c *gin.Context) {
 	userID, exists := GetUserIDFromSession(c)
 	if !exists {
 		h.logger.Warn(ctx, "User ID not found in context")
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"error":   "unauthorized",
-			"message": "User not authenticated",
-		})
+		HandleAppError(c, contextutils.ErrUnauthorized)
 		return
 	}
 	username, exists := GetUsernameFromSession(c)
@@ -448,17 +461,14 @@ func (h *SnippetsHandler) DeleteSnippet(c *gin.Context) {
 			"snippet_id": snippetID,
 		})
 
-		if err.Error() == "snippet not found" {
-			HandleAppError(c, contextutils.ErrRecordNotFound)
-			return
-		}
-
-		HandleAppError(c, contextutils.ErrInternalError)
+		HandleAppError(c, err)
 		return
 	}
 
 	span.SetAttributes(
 		attribute.Int64("snippet.id", snippetID),
+		attribute.Int64("user.id", int64(userID)),
+		attribute.String("user.username", username),
 	)
 
 	c.Status(http.StatusNoContent)
