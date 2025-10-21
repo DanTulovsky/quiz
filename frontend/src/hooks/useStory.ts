@@ -97,23 +97,29 @@ export const useStory = (): UseStoryReturn => {
   }, []);
 
   // Helper to load section index from localStorage
-  const loadSectionIndex = useCallback((storyId: number): number | null => {
-    try {
-      const saved = localStorage.getItem(getSectionIndexKey(storyId));
-      return saved !== null ? parseInt(saved, 10) : null;
-    } catch {
-      return null;
-    }
-  }, [getSectionIndexKey]);
+  const loadSectionIndex = useCallback(
+    (storyId: number): number | null => {
+      try {
+        const saved = localStorage.getItem(getSectionIndexKey(storyId));
+        return saved !== null ? parseInt(saved, 10) : null;
+      } catch {
+        return null;
+      }
+    },
+    [getSectionIndexKey]
+  );
 
   // Helper to save section index to localStorage
-  const saveSectionIndex = useCallback((storyId: number, index: number) => {
-    try {
-      localStorage.setItem(getSectionIndexKey(storyId), String(index));
-    } catch {
-      // Ignore localStorage errors
-    }
-  }, [getSectionIndexKey]);
+  const saveSectionIndex = useCallback(
+    (storyId: number, index: number) => {
+      try {
+        localStorage.setItem(getSectionIndexKey(storyId), String(index));
+      } catch {
+        // Ignore localStorage errors
+      }
+    },
+    [getSectionIndexKey]
+  );
 
   // State
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
@@ -1069,7 +1075,11 @@ export const useStory = (): UseStoryReturn => {
       currentStory.sections.length > 0
     ) {
       const savedIndex = loadSectionIndex(currentStory.id!);
-      if (savedIndex !== null && savedIndex >= 0 && savedIndex < currentStory.sections.length) {
+      if (
+        savedIndex !== null &&
+        savedIndex >= 0 &&
+        savedIndex < currentStory.sections.length
+      ) {
         // Use saved index if valid
         setCurrentSectionIndex(savedIndex);
       } else {

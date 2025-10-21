@@ -1092,6 +1092,9 @@ const WorkerAdminPage: React.FC = () => {
         <Text
           style={{
             whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word',
+            overflowWrap: 'break-word',
+            maxWidth: '100%',
             fontFamily:
               'SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace',
             fontSize: '14px',

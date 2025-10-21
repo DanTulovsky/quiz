@@ -69,7 +69,12 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
       <Text
         size='sm'
         c='dimmed'
-        style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
+        style={{
+          whiteSpace: 'pre-wrap',
+          wordBreak: 'break-word',
+          overflowWrap: 'break-word',
+          maxWidth: '100%',
+        }}
       >
         {message}
       </Text>

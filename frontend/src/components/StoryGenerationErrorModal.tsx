@@ -79,12 +79,12 @@ const StoryGenerationErrorModal: React.FC<StoryGenerationErrorModalProps> = ({
           icon={errorConfig.icon}
         >
           <Group gap='xs' align='flex-start'>
-            <Text 
-              style={{ 
-                wordBreak: 'break-word', 
+            <Text
+              style={{
+                wordBreak: 'break-word',
                 whiteSpace: 'pre-wrap',
                 overflowWrap: 'break-word',
-                maxWidth: '100%'
+                maxWidth: '100%',
               }}
             >
               {displayErrorMessage}
