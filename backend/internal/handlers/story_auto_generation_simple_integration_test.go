@@ -128,11 +128,11 @@ func (suite *StoryAutoGenerationSimpleIntegrationTestSuite) setupRouter(userID u
 func (suite *StoryAutoGenerationSimpleIntegrationTestSuite) createTestUser() uint {
 	userService, err := suite.Container.GetUserService()
 	require.NoError(suite.T(), err)
-	
+
 	// Use a unique username based on timestamp to avoid conflicts
 	username := fmt.Sprintf("testuser_%d", time.Now().UnixNano())
 	email := fmt.Sprintf("test_%d@example.com", time.Now().UnixNano())
-	
+
 	user, err := userService.CreateUserWithEmailAndTimezone(
 		context.Background(),
 		username,
