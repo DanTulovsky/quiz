@@ -751,6 +751,11 @@ func (m *MockUserServiceForHandler) GetUserAPIKey(ctx context.Context, userID in
 	return args.String(0), args.Error(1)
 }
 
+func (m *MockUserServiceForHandler) GetUserAPIKeyWithID(ctx context.Context, userID int, provider string) (string, *int, error) {
+	args := m.Called(ctx, userID, provider)
+	return args.String(0), args.Get(1).(*int), args.Error(2)
+}
+
 func (m *MockUserServiceForHandler) SetUserAPIKey(ctx context.Context, userID int, provider, apiKey string) error {
 	args := m.Called(ctx, userID, provider, apiKey)
 	return args.Error(0)

@@ -141,6 +141,9 @@ type AIService struct {
 	// Variety service for question diversity
 	varietyService *VarietyService
 
+	// Usage stats service for tracking token usage
+	usageStatsSvc UsageStatsServiceInterface
+
 	// Concurrency control
 	globalSemaphore chan struct{} // Limits total concurrent requests
 	maxConcurrent   int           // Maximum concurrent requests globally
@@ -263,7 +266,12 @@ func (s *AIService) ValidateQuestionSchema(ctx context.Context, qType models.Que
 }
 
 // NewAIService creates a new AI service instance
-func NewAIService(cfg *config.Config, logger *observability.Logger) *AIService {
+func NewAIService(cfg *config.Config, logger *observability.Logger, usageStatsSvc UsageStatsServiceInterface) *AIService {
+	// Validate required dependencies
+	if usageStatsSvc == nil {
+		panic("usageStatsSvc is required for AI service")
+	}
+
 	// Create template manager
 	templateManager, err := NewAITemplateManager()
 	if err != nil {
@@ -296,6 +304,7 @@ func NewAIService(cfg *config.Config, logger *observability.Logger) *AIService {
 		cfg:              cfg,
 		templateManager:  templateManager,
 		varietyService:   varietyService,
+		usageStatsSvc:    usageStatsSvc,
 		globalSemaphore:  globalSemaphore,
 		maxConcurrent:    maxConcurrent,
 		maxPerUser:       maxPerUser,
@@ -390,6 +399,7 @@ type Message struct {
 type OpenAIResponse struct {
 	Choices []Choice  `json:"choices"`
 	Error   *APIError `json:"error,omitempty"`
+	Usage   *Usage    `json:"usage,omitempty"`
 }
 
 // Choice represents a choice in the API response
@@ -403,10 +413,18 @@ type APIError struct {
 	Type    string `json:"type"`
 }
 
+// Usage represents token usage information from OpenAI API
+type Usage struct {
+	PromptTokens     int `json:"prompt_tokens"`
+	CompletionTokens int `json:"completion_tokens"`
+	TotalTokens      int `json:"total_tokens"`
+}
+
 // OpenAIStreamResponse represents a streaming response chunk from the OpenAI-compatible API
 type OpenAIStreamResponse struct {
 	Choices []StreamChoice `json:"choices"`
 	Error   *APIError      `json:"error,omitempty"`
+	Usage   *Usage         `json:"usage,omitempty"`
 }
 
 // StreamChoice represents a choice in the streaming API response
@@ -1240,6 +1258,21 @@ func (s *AIService) callOpenAI(ctx context.Context, userConfig *models.UserAICon
 	}
 
 	span.SetAttributes(attribute.String("call.result", "success"), attribute.Int("content_length", len(content)), attribute.String("duration", duration.String()))
+
+	// Extract usage information if available and track it internally
+	if openAIResp.Usage != nil {
+		userID := contextutils.GetUserIDFromContext(ctx)
+		apiKeyID := contextutils.GetAPIKeyIDFromContext(ctx)
+		s.trackAIUsage(ctx, userConfig, *openAIResp.Usage, userID, apiKeyID)
+	} else {
+		s.logger.Warn(ctx, "No usage information available", map[string]any{
+			"user_prefix":   userPrefix,
+			"response":      string(body),
+			"prompt_length": len(prompt),
+		})
+		span.SetAttributes(attribute.String("call.result", "no_usage_information"), attribute.String("response", string(body)), attribute.String("prompt_length", strconv.Itoa(len(prompt))))
+	}
+
 	return content, nil
 }
 
@@ -1452,6 +1485,11 @@ func (s *AIService) callOpenAIStream(ctx context.Context, userConfig *models.Use
 	scanner := bufio.NewScanner(resp.Body)
 	var chunkCount int
 	var totalContentLength int
+	var finalUsage *Usage
+
+	// Usage information may or may not be included in streaming response chunks depending on the provider.
+	// We'll only try to extract usage from chunks for providers that support it in streaming responses.
+	// For providers that don't support usage in streaming, usage data is available via response.UsageMetadata in non-streaming calls.
 
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -1484,6 +1522,12 @@ func (s *AIService) callOpenAIStream(ctx context.Context, userConfig *models.Use
 			if streamResp.Error != nil {
 				span.SetAttributes(attribute.String("stream.result", "api_streaming_error"), attribute.String("error_message", streamResp.Error.Message), attribute.String("error_type", streamResp.Error.Type))
 				return contextutils.WrapErrorf(contextutils.ErrAIRequestFailed, "OpenAI API streaming error: %s", streamResp.Error.Message)
+			}
+
+			// Extract usage information if available (usually in the final chunk)
+			// Only check for usage if the provider supports it in streaming responses
+			if streamResp.Usage != nil && s.supportsUsageInStreaming(userConfig.Provider) {
+				finalUsage = streamResp.Usage
 			}
 
 			// Extract content from the chunk
@@ -1523,6 +1567,33 @@ func (s *AIService) callOpenAIStream(ctx context.Context, userConfig *models.Use
 		"chunk_count":          chunkCount,
 		"total_content_length": totalContentLength,
 	})
+
+	// Extract usage information if available and track it internally
+	if finalUsage != nil {
+		userID := contextutils.GetUserIDFromContext(ctx)
+		apiKeyID := contextutils.GetAPIKeyIDFromContext(ctx)
+		s.trackAIUsage(ctx, userConfig, *finalUsage, userID, apiKeyID)
+	} else {
+		// For providers that don't support usage in streaming, this is expected behavior
+		if !s.supportsUsageInStreaming(userConfig.Provider) {
+			s.logger.Debug(ctx, "No usage information in streaming response (expected - provider doesn't support usage in streaming)", map[string]any{
+				"user_prefix":     userPrefix,
+				"chunk_count":     chunkCount,
+				"content_length":  totalContentLength,
+				"provider":        userConfig.Provider,
+				"usage_supported": s.supportsUsageInStreaming(userConfig.Provider),
+			})
+		} else {
+			s.logger.Warn(ctx, "No usage information available in streaming response", map[string]any{
+				"user_prefix":    userPrefix,
+				"chunk_count":    chunkCount,
+				"content_length": totalContentLength,
+				"provider":       userConfig.Provider,
+			})
+		}
+		span.SetAttributes(attribute.String("stream.result", "no_usage_information"), attribute.Int("chunk_count", chunkCount), attribute.Int("content_length", totalContentLength))
+	}
+
 	span.SetAttributes(attribute.String("stream.result", "success"), attribute.Int("chunk_count", chunkCount), attribute.Int("total_content_length", totalContentLength), attribute.String("duration", time.Since(startTime).String()))
 	return nil
 }
@@ -2273,6 +2344,16 @@ func (s *AIService) supportsGrammarField(provider string) bool {
 	return false
 }
 
+// supportsUsageInStreaming checks if the provider supports usage tracking in streaming responses
+func (s *AIService) supportsUsageInStreaming(provider string) bool {
+	for _, providerConfig := range s.cfg.Providers {
+		if providerConfig.Code == provider {
+			return providerConfig.UsageSupported
+		}
+	}
+	return true
+}
+
 // getQuestionBatchSize returns the maximum number of questions that can be generated in a single request for the given provider
 func (s *AIService) getQuestionBatchSize(provider string) int {
 	// Get the batch size for the provider
@@ -2314,4 +2395,29 @@ func (s *AIService) SupportsGrammarField(provider string) bool {
 // CallWithPrompt sends a raw prompt (and optional grammar) to the provider and returns the response
 func (s *AIService) CallWithPrompt(ctx context.Context, userConfig *models.UserAIConfig, prompt, grammar string) (string, error) {
 	return s.callOpenAI(ctx, userConfig, prompt, grammar)
+}
+
+// trackAIUsage tracks AI usage statistics
+func (s *AIService) trackAIUsage(ctx context.Context, userConfig *models.UserAIConfig, usage Usage, userID int, apiKeyID *int) {
+	// TODO: Determine usage type based on the context (this is a simple heuristic)
+	usageType := "generic" // Default assumption
+
+	// Record usage in the usage stats service
+	err := s.usageStatsSvc.RecordUserAITokenUsage(
+		ctx,
+		userID,
+		apiKeyID,
+		userConfig.Provider,
+		userConfig.Model,
+		usageType,
+		usage.PromptTokens,
+		usage.CompletionTokens,
+		usage.TotalTokens,
+		1, // requests
+	)
+	if err != nil {
+		s.logger.Warn(ctx, "Failed to record AI usage", map[string]interface{}{
+			"error": err.Error(),
+		})
+	}
 }

@@ -62,7 +62,7 @@ func (suite *AuthIntegrationTestSuite) SetupSuite() {
 	userService := services.NewUserServiceWithLogger(db, suite.cfg, logger)
 	learningService := services.NewLearningServiceWithLogger(db, suite.cfg, logger)
 	questionService := services.NewQuestionServiceWithLogger(db, learningService, suite.cfg, logger)
-	aiService := services.NewAIService(suite.cfg, logger)
+	aiService := services.NewAIService(suite.cfg, logger, services.NewNoopUsageStatsService())
 	workerService := services.NewWorkerServiceWithLogger(db, logger)
 	oauthService := services.NewOAuthServiceWithLogger(suite.cfg, logger)
 

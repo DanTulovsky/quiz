@@ -202,6 +202,9 @@ type AIProviders struct {
 		} `json:"models,omitempty"`
 		Name *string `json:"name,omitempty"`
 		Url  *string `json:"url,omitempty"`
+
+		// UsageSupported Whether the provider supports usage tracking in streaming responses
+		UsageSupported *bool `json:"usage_supported,omitempty"`
 	} `json:"providers,omitempty"`
 }
 
@@ -1421,6 +1424,51 @@ type UserUpdateRequest0 = interface{}
 // UserUpdateRequest1 defines model for .
 type UserUpdateRequest1 = interface{}
 
+// UserUsageStats defines model for UserUsageStats.
+type UserUsageStats struct {
+	ApiKeyId         *int64              `json:"api_key_id,omitempty"`
+	CompletionTokens *int                `json:"completion_tokens,omitempty"`
+	CreatedAt        *string             `json:"created_at,omitempty"`
+	Id               *int64              `json:"id,omitempty"`
+	Model            *string             `json:"model,omitempty"`
+	PromptTokens     *int                `json:"prompt_tokens,omitempty"`
+	Provider         *string             `json:"provider,omitempty"`
+	RequestsMade     *int                `json:"requests_made,omitempty"`
+	ServiceName      *string             `json:"service_name,omitempty"`
+	TotalTokens      *int                `json:"total_tokens,omitempty"`
+	UpdatedAt        *string             `json:"updated_at,omitempty"`
+	UsageDate        *openapi_types.Date `json:"usage_date,omitempty"`
+	UsageHour        *int                `json:"usage_hour,omitempty"`
+	UsageType        *string             `json:"usage_type,omitempty"`
+	UserId           *int64              `json:"user_id,omitempty"`
+}
+
+// UserUsageStatsDaily defines model for UserUsageStatsDaily.
+type UserUsageStatsDaily struct {
+	Model                 *string             `json:"model,omitempty"`
+	Provider              *string             `json:"provider,omitempty"`
+	ServiceName           *string             `json:"service_name,omitempty"`
+	TotalCompletionTokens *int                `json:"total_completion_tokens,omitempty"`
+	TotalPromptTokens     *int                `json:"total_prompt_tokens,omitempty"`
+	TotalRequests         *int                `json:"total_requests,omitempty"`
+	TotalTokens           *int                `json:"total_tokens,omitempty"`
+	UsageDate             *openapi_types.Date `json:"usage_date,omitempty"`
+	UsageType             *string             `json:"usage_type,omitempty"`
+}
+
+// UserUsageStatsHourly defines model for UserUsageStatsHourly.
+type UserUsageStatsHourly struct {
+	Model                 *string `json:"model,omitempty"`
+	Provider              *string `json:"provider,omitempty"`
+	ServiceName           *string `json:"service_name,omitempty"`
+	TotalCompletionTokens *int    `json:"total_completion_tokens,omitempty"`
+	TotalPromptTokens     *int    `json:"total_prompt_tokens,omitempty"`
+	TotalRequests         *int    `json:"total_requests,omitempty"`
+	TotalTokens           *int    `json:"total_tokens,omitempty"`
+	UsageHour             *int    `json:"usage_hour,omitempty"`
+	UsageType             *string `json:"usage_type,omitempty"`
+}
+
 // WorkerHealth defines model for WorkerHealth.
 type WorkerHealth struct {
 	GlobalPaused    *bool `json:"global_paused,omitempty"`
@@ -1791,6 +1839,30 @@ type GetV1AuthGoogleCallbackParams struct {
 type PostV1DailyQuestionsDateAnswerQuestionIdJSONBody struct {
 	// UserAnswerIndex Index of the user's selected answer (0-based)
 	UserAnswerIndex int `json:"user_answer_index"`
+}
+
+// GetV1QuizAiTokenUsageParams defines parameters for GetV1QuizAiTokenUsage.
+type GetV1QuizAiTokenUsageParams struct {
+	// StartDate Start date in YYYY-MM-DD format
+	StartDate openapi_types.Date `form:"startDate" json:"startDate"`
+
+	// EndDate End date in YYYY-MM-DD format
+	EndDate openapi_types.Date `form:"endDate" json:"endDate"`
+}
+
+// GetV1QuizAiTokenUsageDailyParams defines parameters for GetV1QuizAiTokenUsageDaily.
+type GetV1QuizAiTokenUsageDailyParams struct {
+	// StartDate Start date in YYYY-MM-DD format
+	StartDate openapi_types.Date `form:"startDate" json:"startDate"`
+
+	// EndDate End date in YYYY-MM-DD format
+	EndDate openapi_types.Date `form:"endDate" json:"endDate"`
+}
+
+// GetV1QuizAiTokenUsageHourlyParams defines parameters for GetV1QuizAiTokenUsageHourly.
+type GetV1QuizAiTokenUsageHourlyParams struct {
+	// Date Date in YYYY-MM-DD format
+	Date openapi_types.Date `form:"date" json:"date"`
 }
 
 // GetV1QuizQuestionParams defines parameters for GetV1QuizQuestion.

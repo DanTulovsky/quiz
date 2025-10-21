@@ -40,7 +40,7 @@ func TestAIService_ConcurrencyControl(t *testing.T) {
 		},
 	}
 
-	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}), NewNoopUsageStatsService())
 
 	t.Run("GetConcurrencyStats", func(t *testing.T) {
 		stats := service.GetConcurrencyStats()
@@ -172,7 +172,7 @@ func TestAIService_SupportsGrammarField(t *testing.T) {
 			},
 		},
 	}
-	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}), NewNoopUsageStatsService())
 
 	tests := []struct {
 		name     string
@@ -200,7 +200,7 @@ func TestAIService_SupportsGrammarField_NoConfig(t *testing.T) {
 	cfg := &config.Config{
 		Providers: nil, // No config loaded
 	}
-	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}), NewNoopUsageStatsService())
 
 	// All providers should default to true for backward compatibility
 	tests := []struct {
@@ -299,7 +299,7 @@ func TestAIService_CleanJSONResponse(t *testing.T) {
 			},
 		},
 	}
-	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}), NewNoopUsageStatsService())
 
 	tests := []struct {
 		name     string
@@ -363,7 +363,7 @@ func TestAIService_BuildBatchQuestionPrompt_WithVariety(t *testing.T) {
 		},
 	}
 
-	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}), NewNoopUsageStatsService())
 
 	req := &models.AIQuestionGenRequest{
 		Language:              "italian",
@@ -436,7 +436,7 @@ func TestAIService_GetDifficultyScore_LanguageSpecific(t *testing.T) {
 		},
 	}
 
-	aiService := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	aiService := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}), NewNoopUsageStatsService())
 
 	tests := []struct {
 		name     string
@@ -485,7 +485,7 @@ func TestAIService_GetDifficultyScore_EmptyConfig(t *testing.T) {
 		LanguageLevels: map[string]config.LanguageLevelConfig{},
 	}
 
-	aiService := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	aiService := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}), NewNoopUsageStatsService())
 
 	result := aiService.getDifficultyScore("A1")
 	assert.Equal(t, 0.5, result, "Should return default score when no language levels configured")
@@ -501,7 +501,7 @@ func TestAIService_GetDifficultyScore_LevelOrdering(t *testing.T) {
 		},
 	}
 
-	aiService := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	aiService := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}), NewNoopUsageStatsService())
 
 	// Verify that difficulty increases with level position
 	assert.Equal(t, 0.0, aiService.getDifficultyScore("BEGINNER"))
@@ -628,7 +628,7 @@ func TestSchemaValidationFailureDetails(t *testing.T) {
 
 func TestAIService_ParseQuestionsResponse_ErrorHandling(t *testing.T) {
 	cfg := &config.Config{}
-	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}), NewNoopUsageStatsService())
 
 	type testCase struct {
 		name    string
@@ -689,7 +689,7 @@ func TestAIService_CreateQuestionFromData_NilService(t *testing.T) {
 
 func TestAIService_CreateQuestionFromData_NilData(t *testing.T) {
 	cfg := &config.Config{}
-	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}), NewNoopUsageStatsService())
 
 	question, err := service.createQuestionFromData(context.Background(), nil, "italian", "B1", models.Vocabulary)
 	assert.Error(t, err)
@@ -699,7 +699,7 @@ func TestAIService_CreateQuestionFromData_NilData(t *testing.T) {
 
 func TestAIService_ParseQuestionsResponse_RealWorldScenarios(t *testing.T) {
 	cfg := &config.Config{}
-	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}), NewNoopUsageStatsService())
 
 	tests := []struct {
 		name        string
@@ -884,7 +884,7 @@ func TestAIService_ParseQuestionsResponse_RealWorldScenarios(t *testing.T) {
 
 func TestAIService_ParseQuestionsResponse_EdgeCases(t *testing.T) {
 	cfg := &config.Config{}
-	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}), NewNoopUsageStatsService())
 
 	tests := []struct {
 		name        string
@@ -937,7 +937,7 @@ func TestAIService_Shutdown(t *testing.T) {
 		},
 	}
 
-	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}), NewNoopUsageStatsService())
 
 	// Initially not shutdown
 	assert.False(t, service.isShutdown())
@@ -965,7 +965,7 @@ func TestAIService_Shutdown_WithActiveRequests(t *testing.T) {
 		},
 	}
 
-	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}), NewNoopUsageStatsService())
 
 	// Use a timeout context to prevent hanging
 	ctx, cancel := context.WithTimeout(context.Background(), config.AITestTimeout)
@@ -999,7 +999,7 @@ func TestAIService_BuildChatPrompt_VocabularyQuestion(t *testing.T) {
 		},
 	}
 
-	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}), NewNoopUsageStatsService())
 
 	// Test vocabulary question with sentence
 	req := &models.AIChatRequest{
@@ -1045,7 +1045,7 @@ func TestAIService_BuildChatPrompt_ReadingComprehensionQuestion(t *testing.T) {
 		},
 	}
 
-	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}), NewNoopUsageStatsService())
 
 	// Test reading comprehension question with passage
 	req := &models.AIChatRequest{
@@ -1079,7 +1079,7 @@ func TestAIService_BuildChatPrompt_VocabularyWithSentence(t *testing.T) {
 		},
 	}
 
-	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}), NewNoopUsageStatsService())
 
 	// Test vocabulary question with sentence
 	req := &models.AIChatRequest{
@@ -1108,7 +1108,7 @@ func TestAIService_BuildChatPrompt_ReadingComprehensionWithPassage(t *testing.T)
 		},
 	}
 
-	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}), NewNoopUsageStatsService())
 
 	// Test reading comprehension question with passage
 	req := &models.AIChatRequest{
@@ -1137,7 +1137,7 @@ func TestAIService_BuildChatPrompt_QuestionWithoutPassage(t *testing.T) {
 		},
 	}
 
-	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}), NewNoopUsageStatsService())
 
 	// Test question without passage (like fill-in-blank)
 	req := &models.AIChatRequest{
@@ -1166,7 +1166,7 @@ func TestAIService_BuildStorySectionPrompt(t *testing.T) {
 		},
 	}
 
-	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	service := NewAIService(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}), NewNoopUsageStatsService())
 
 	t.Run("StorySectionPrompt_WithAllFields", func(t *testing.T) {
 		// Test with all optional fields populated

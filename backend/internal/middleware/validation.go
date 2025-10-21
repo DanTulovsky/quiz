@@ -58,6 +58,23 @@ func ResponseValidationMiddleware(logger *observability.Logger) gin.HandlerFunc 
 		}
 
 		if statusCode == http.StatusOK {
+			// Skip validation for streaming responses
+			contentType := c.Writer.Header().Get("Content-Type")
+			if contentType == "text/event-stream" {
+				span.SetAttributes(
+					observability.AttributeTypeFilter("streaming_response"),
+				)
+				logger.Debug(ctx, "Skipping validation for streaming response", map[string]interface{}{
+					"method": c.Request.Method,
+					"path":   c.Request.URL.Path,
+				})
+				// Write the buffered response to the real writer
+				c.Writer = originalWriter
+				c.Writer.WriteHeader(statusCode)
+				_, _ = c.Writer.Write(responseWriter.body.Bytes())
+				return
+			}
+
 			// Try to parse the response as JSON
 			var responseData interface{}
 			err := json.Unmarshal(responseWriter.body.Bytes(), &responseData)

@@ -382,6 +382,71 @@ export interface UserResponse {
   created_at?: string;
 }
 
+export interface UserUsageStats {
+  /** @minimum 1 */
+  id?: number;
+  /** @minimum 1 */
+  user_id?: number;
+  /** @minimum 1 */
+  api_key_id?: number;
+  usage_date?: string;
+  /**
+   * @minimum 0
+   * @maximum 23
+   */
+  usage_hour?: number;
+  service_name?: string;
+  provider?: string;
+  model?: string;
+  usage_type?: string;
+  /** @minimum 0 */
+  prompt_tokens?: number;
+  /** @minimum 0 */
+  completion_tokens?: number;
+  /** @minimum 0 */
+  total_tokens?: number;
+  /** @minimum 0 */
+  requests_made?: number;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface UserUsageStatsDaily {
+  usage_date?: string;
+  service_name?: string;
+  provider?: string;
+  model?: string;
+  usage_type?: string;
+  /** @minimum 0 */
+  total_prompt_tokens?: number;
+  /** @minimum 0 */
+  total_completion_tokens?: number;
+  /** @minimum 0 */
+  total_tokens?: number;
+  /** @minimum 0 */
+  total_requests?: number;
+}
+
+export interface UserUsageStatsHourly {
+  /**
+   * @minimum 0
+   * @maximum 23
+   */
+  usage_hour?: number;
+  service_name?: string;
+  provider?: string;
+  model?: string;
+  usage_type?: string;
+  /** @minimum 0 */
+  total_prompt_tokens?: number;
+  /** @minimum 0 */
+  total_completion_tokens?: number;
+  /** @minimum 0 */
+  total_tokens?: number;
+  /** @minimum 0 */
+  total_requests?: number;
+}
+
 export type UserSettings = (unknown & {
   language?: Language;
   level?: Level;
@@ -588,6 +653,8 @@ export type AIProvidersProvidersItem = {
   code?: string;
   /** @maxLength 500 */
   url?: string;
+  /** Whether the provider supports usage tracking in streaming responses */
+  usage_supported?: boolean;
   /** @maxItems 100 */
   models?: AIProvidersProvidersItemModelsItem[];
 };
@@ -1961,6 +2028,35 @@ type?: string;
  * @pattern ^[a-zA-Z_]+(,[a-zA-Z_]+)*$
  */
 exclude_type?: string;
+};
+
+export type GetV1QuizAiTokenUsageParams = {
+/**
+ * Start date in YYYY-MM-DD format
+ */
+startDate: string;
+/**
+ * End date in YYYY-MM-DD format
+ */
+endDate: string;
+};
+
+export type GetV1QuizAiTokenUsageDailyParams = {
+/**
+ * Start date in YYYY-MM-DD format
+ */
+startDate: string;
+/**
+ * End date in YYYY-MM-DD format
+ */
+endDate: string;
+};
+
+export type GetV1QuizAiTokenUsageHourlyParams = {
+/**
+ * Date in YYYY-MM-DD format
+ */
+date: string;
 };
 
 export type GetV1SettingsLevelsParams = {
@@ -3782,6 +3878,276 @@ export function useGetV1QuizProgress<TData = Awaited<ReturnType<typeof getV1Quiz
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getGetV1QuizProgressQueryOptions(options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * Get AI token usage statistics for the authenticated user
+ * @summary Get user AI token usage
+ */
+export const getV1QuizAiTokenUsage = (
+    params: GetV1QuizAiTokenUsageParams,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<UserUsageStats[]>(
+      {url: `/v1/quiz/ai-token-usage`, method: 'GET',
+        params, signal
+    },
+      options);
+    }
+  
+
+export const getGetV1QuizAiTokenUsageQueryKey = (params?: GetV1QuizAiTokenUsageParams,) => {
+    return [`/v1/quiz/ai-token-usage`, ...(params ? [params]: [])] as const;
+    }
+
+    
+export const getGetV1QuizAiTokenUsageQueryOptions = <TData = Awaited<ReturnType<typeof getV1QuizAiTokenUsage>>, TError = ErrorResponse | ErrorResponse>(params: GetV1QuizAiTokenUsageParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsage>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetV1QuizAiTokenUsageQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1QuizAiTokenUsage>>> = ({ signal }) => getV1QuizAiTokenUsage(params, requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsage>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetV1QuizAiTokenUsageQueryResult = NonNullable<Awaited<ReturnType<typeof getV1QuizAiTokenUsage>>>
+export type GetV1QuizAiTokenUsageQueryError = ErrorResponse | ErrorResponse
+
+
+export function useGetV1QuizAiTokenUsage<TData = Awaited<ReturnType<typeof getV1QuizAiTokenUsage>>, TError = ErrorResponse | ErrorResponse>(
+ params: GetV1QuizAiTokenUsageParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsage>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1QuizAiTokenUsage>>,
+          TError,
+          Awaited<ReturnType<typeof getV1QuizAiTokenUsage>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1QuizAiTokenUsage<TData = Awaited<ReturnType<typeof getV1QuizAiTokenUsage>>, TError = ErrorResponse | ErrorResponse>(
+ params: GetV1QuizAiTokenUsageParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsage>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1QuizAiTokenUsage>>,
+          TError,
+          Awaited<ReturnType<typeof getV1QuizAiTokenUsage>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1QuizAiTokenUsage<TData = Awaited<ReturnType<typeof getV1QuizAiTokenUsage>>, TError = ErrorResponse | ErrorResponse>(
+ params: GetV1QuizAiTokenUsageParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsage>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get user AI token usage
+ */
+
+export function useGetV1QuizAiTokenUsage<TData = Awaited<ReturnType<typeof getV1QuizAiTokenUsage>>, TError = ErrorResponse | ErrorResponse>(
+ params: GetV1QuizAiTokenUsageParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsage>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetV1QuizAiTokenUsageQueryOptions(params,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * Get daily aggregated AI token usage statistics for the authenticated user
+ * @summary Get user daily AI token usage
+ */
+export const getV1QuizAiTokenUsageDaily = (
+    params: GetV1QuizAiTokenUsageDailyParams,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<UserUsageStatsDaily[]>(
+      {url: `/v1/quiz/ai-token-usage/daily`, method: 'GET',
+        params, signal
+    },
+      options);
+    }
+  
+
+export const getGetV1QuizAiTokenUsageDailyQueryKey = (params?: GetV1QuizAiTokenUsageDailyParams,) => {
+    return [`/v1/quiz/ai-token-usage/daily`, ...(params ? [params]: [])] as const;
+    }
+
+    
+export const getGetV1QuizAiTokenUsageDailyQueryOptions = <TData = Awaited<ReturnType<typeof getV1QuizAiTokenUsageDaily>>, TError = ErrorResponse | ErrorResponse>(params: GetV1QuizAiTokenUsageDailyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsageDaily>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetV1QuizAiTokenUsageDailyQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1QuizAiTokenUsageDaily>>> = ({ signal }) => getV1QuizAiTokenUsageDaily(params, requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsageDaily>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetV1QuizAiTokenUsageDailyQueryResult = NonNullable<Awaited<ReturnType<typeof getV1QuizAiTokenUsageDaily>>>
+export type GetV1QuizAiTokenUsageDailyQueryError = ErrorResponse | ErrorResponse
+
+
+export function useGetV1QuizAiTokenUsageDaily<TData = Awaited<ReturnType<typeof getV1QuizAiTokenUsageDaily>>, TError = ErrorResponse | ErrorResponse>(
+ params: GetV1QuizAiTokenUsageDailyParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsageDaily>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1QuizAiTokenUsageDaily>>,
+          TError,
+          Awaited<ReturnType<typeof getV1QuizAiTokenUsageDaily>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1QuizAiTokenUsageDaily<TData = Awaited<ReturnType<typeof getV1QuizAiTokenUsageDaily>>, TError = ErrorResponse | ErrorResponse>(
+ params: GetV1QuizAiTokenUsageDailyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsageDaily>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1QuizAiTokenUsageDaily>>,
+          TError,
+          Awaited<ReturnType<typeof getV1QuizAiTokenUsageDaily>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1QuizAiTokenUsageDaily<TData = Awaited<ReturnType<typeof getV1QuizAiTokenUsageDaily>>, TError = ErrorResponse | ErrorResponse>(
+ params: GetV1QuizAiTokenUsageDailyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsageDaily>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get user daily AI token usage
+ */
+
+export function useGetV1QuizAiTokenUsageDaily<TData = Awaited<ReturnType<typeof getV1QuizAiTokenUsageDaily>>, TError = ErrorResponse | ErrorResponse>(
+ params: GetV1QuizAiTokenUsageDailyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsageDaily>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetV1QuizAiTokenUsageDailyQueryOptions(params,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * Get hourly aggregated AI token usage statistics for the authenticated user on a specific day
+ * @summary Get user hourly AI token usage
+ */
+export const getV1QuizAiTokenUsageHourly = (
+    params: GetV1QuizAiTokenUsageHourlyParams,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<UserUsageStatsHourly[]>(
+      {url: `/v1/quiz/ai-token-usage/hourly`, method: 'GET',
+        params, signal
+    },
+      options);
+    }
+  
+
+export const getGetV1QuizAiTokenUsageHourlyQueryKey = (params?: GetV1QuizAiTokenUsageHourlyParams,) => {
+    return [`/v1/quiz/ai-token-usage/hourly`, ...(params ? [params]: [])] as const;
+    }
+
+    
+export const getGetV1QuizAiTokenUsageHourlyQueryOptions = <TData = Awaited<ReturnType<typeof getV1QuizAiTokenUsageHourly>>, TError = ErrorResponse | ErrorResponse>(params: GetV1QuizAiTokenUsageHourlyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsageHourly>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetV1QuizAiTokenUsageHourlyQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1QuizAiTokenUsageHourly>>> = ({ signal }) => getV1QuizAiTokenUsageHourly(params, requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsageHourly>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetV1QuizAiTokenUsageHourlyQueryResult = NonNullable<Awaited<ReturnType<typeof getV1QuizAiTokenUsageHourly>>>
+export type GetV1QuizAiTokenUsageHourlyQueryError = ErrorResponse | ErrorResponse
+
+
+export function useGetV1QuizAiTokenUsageHourly<TData = Awaited<ReturnType<typeof getV1QuizAiTokenUsageHourly>>, TError = ErrorResponse | ErrorResponse>(
+ params: GetV1QuizAiTokenUsageHourlyParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsageHourly>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1QuizAiTokenUsageHourly>>,
+          TError,
+          Awaited<ReturnType<typeof getV1QuizAiTokenUsageHourly>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1QuizAiTokenUsageHourly<TData = Awaited<ReturnType<typeof getV1QuizAiTokenUsageHourly>>, TError = ErrorResponse | ErrorResponse>(
+ params: GetV1QuizAiTokenUsageHourlyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsageHourly>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1QuizAiTokenUsageHourly>>,
+          TError,
+          Awaited<ReturnType<typeof getV1QuizAiTokenUsageHourly>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1QuizAiTokenUsageHourly<TData = Awaited<ReturnType<typeof getV1QuizAiTokenUsageHourly>>, TError = ErrorResponse | ErrorResponse>(
+ params: GetV1QuizAiTokenUsageHourlyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsageHourly>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get user hourly AI token usage
+ */
+
+export function useGetV1QuizAiTokenUsageHourly<TData = Awaited<ReturnType<typeof getV1QuizAiTokenUsageHourly>>, TError = ErrorResponse | ErrorResponse>(
+ params: GetV1QuizAiTokenUsageHourlyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsageHourly>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetV1QuizAiTokenUsageHourlyQueryOptions(params,options)
 
   const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -12100,6 +12466,12 @@ export const getGetV1QuizProgressResponseMock = (overrideResponse: Partial< User
         [faker.string.alphanumeric(5)]: faker.number.int({min: 0, max: undefined, multipleOf: undefined})
       }, undefined]), ...overrideResponse})
 
+export const getGetV1QuizAiTokenUsageResponseMock = (): UserUsageStats[] => (Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: 1, max: undefined, multipleOf: undefined}), undefined]), user_id: faker.helpers.arrayElement([faker.number.int({min: 1, max: undefined, multipleOf: undefined}), undefined]), api_key_id: faker.helpers.arrayElement([faker.number.int({min: 1, max: undefined, multipleOf: undefined}), undefined]), usage_date: faker.helpers.arrayElement([faker.date.past().toISOString().split('T')[0], undefined]), usage_hour: faker.helpers.arrayElement([faker.number.int({min: 0, max: 23, multipleOf: undefined}), undefined]), service_name: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), provider: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), model: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), usage_type: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), prompt_tokens: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined, multipleOf: undefined}), undefined]), completion_tokens: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined, multipleOf: undefined}), undefined]), total_tokens: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined, multipleOf: undefined}), undefined]), requests_made: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined, multipleOf: undefined}), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), updated_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})))
+
+export const getGetV1QuizAiTokenUsageDailyResponseMock = (): UserUsageStatsDaily[] => (Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({usage_date: faker.helpers.arrayElement([faker.date.past().toISOString().split('T')[0], undefined]), service_name: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), provider: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), model: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), usage_type: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), total_prompt_tokens: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined, multipleOf: undefined}), undefined]), total_completion_tokens: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined, multipleOf: undefined}), undefined]), total_tokens: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined, multipleOf: undefined}), undefined]), total_requests: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined, multipleOf: undefined}), undefined])})))
+
+export const getGetV1QuizAiTokenUsageHourlyResponseMock = (): UserUsageStatsHourly[] => (Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({usage_hour: faker.helpers.arrayElement([faker.number.int({min: 0, max: 23, multipleOf: undefined}), undefined]), service_name: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), provider: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), model: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), usage_type: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), total_prompt_tokens: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined, multipleOf: undefined}), undefined]), total_completion_tokens: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined, multipleOf: undefined}), undefined]), total_tokens: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined, multipleOf: undefined}), undefined]), total_requests: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined, multipleOf: undefined}), undefined])})))
+
 export const getPostV1QuizQuestionIdReportResponseMock = (overrideResponse: Partial< SuccessResponse > = {}): SuccessResponse => ({success: faker.datatype.boolean(), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 500}}), undefined]), ...overrideResponse})
 
 export const getPostV1QuizQuestionIdMarkKnownResponseMock = (overrideResponse: Partial< SuccessResponse > = {}): SuccessResponse => ({success: faker.datatype.boolean(), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 500}}), undefined]), ...overrideResponse})
@@ -12108,7 +12480,7 @@ export const getGetV1QuizWorkerStatusResponseMock = (overrideResponse: Partial< 
 
 export const getPutV1SettingsResponseMock = (overrideResponse: Partial< SuccessResponse > = {}): SuccessResponse => ({success: faker.datatype.boolean(), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 500}}), undefined]), ...overrideResponse})
 
-export const getGetV1SettingsAiProvidersResponseMock = (overrideResponse: Partial< AIProviders > = {}): AIProviders => ({providers: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 50 }) }, (_, i) => i + 1).map(() => ({name: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 100}}), undefined]), code: faker.helpers.arrayElement([faker.helpers.fromRegExp('^[a-zA-Z0-9_.-]+$'), undefined]), url: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 500}}), undefined]), models: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 100 }) }, (_, i) => i + 1).map(() => ({name: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 100}}), undefined]), code: faker.helpers.arrayElement([faker.helpers.fromRegExp('^[a-zA-Z0-9_.:-]+$'), undefined])})), undefined])})), undefined]), levels: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 20 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 10, max: 20}}))), undefined]), ...overrideResponse})
+export const getGetV1SettingsAiProvidersResponseMock = (overrideResponse: Partial< AIProviders > = {}): AIProviders => ({providers: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 50 }) }, (_, i) => i + 1).map(() => ({name: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 100}}), undefined]), code: faker.helpers.arrayElement([faker.helpers.fromRegExp('^[a-zA-Z0-9_.-]+$'), undefined]), url: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 500}}), undefined]), usage_supported: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), models: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 100 }) }, (_, i) => i + 1).map(() => ({name: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 100}}), undefined]), code: faker.helpers.arrayElement([faker.helpers.fromRegExp('^[a-zA-Z0-9_.:-]+$'), undefined])})), undefined])})), undefined]), levels: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 20 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 10, max: 20}}))), undefined]), ...overrideResponse})
 
 export const getPostV1SettingsTestAiResponseMock = (overrideResponse: Partial< SuccessResponse > = {}): SuccessResponse => ({success: faker.datatype.boolean(), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 500}}), undefined]), ...overrideResponse})
 
@@ -12499,6 +12871,42 @@ export const getGetV1QuizProgressMockHandler = (overrideResponse?: UserProgress 
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
     ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
     : getGetV1QuizProgressResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
+export const getGetV1QuizAiTokenUsageMockHandler = (overrideResponse?: UserUsageStats[] | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<UserUsageStats[]> | UserUsageStats[])) => {
+  return http.get('*/v1/quiz/ai-token-usage', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetV1QuizAiTokenUsageResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
+export const getGetV1QuizAiTokenUsageDailyMockHandler = (overrideResponse?: UserUsageStatsDaily[] | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<UserUsageStatsDaily[]> | UserUsageStatsDaily[])) => {
+  return http.get('*/v1/quiz/ai-token-usage/daily', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetV1QuizAiTokenUsageDailyResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
+export const getGetV1QuizAiTokenUsageHourlyMockHandler = (overrideResponse?: UserUsageStatsHourly[] | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<UserUsageStatsHourly[]> | UserUsageStatsHourly[])) => {
+  return http.get('*/v1/quiz/ai-token-usage/hourly', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetV1QuizAiTokenUsageHourlyResponseMock()),
       { status: 200,
         headers: { 'Content-Type': 'application/json' }
       })
@@ -13787,6 +14195,9 @@ export const getQuizApplicationAPIMock = () => [
   getGetV1QuizQuestionIdMockHandler(),
   getPostV1QuizAnswerMockHandler(),
   getGetV1QuizProgressMockHandler(),
+  getGetV1QuizAiTokenUsageMockHandler(),
+  getGetV1QuizAiTokenUsageDailyMockHandler(),
+  getGetV1QuizAiTokenUsageHourlyMockHandler(),
   getPostV1QuizQuestionIdReportMockHandler(),
   getPostV1QuizQuestionIdMarkKnownMockHandler(),
   getGetV1QuizWorkerStatusMockHandler(),

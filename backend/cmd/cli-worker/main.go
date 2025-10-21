@@ -132,7 +132,9 @@ func main() {
 	learningService := services.NewLearningServiceWithLogger(db, cfg, logger)
 	// Create question service
 	questionService := services.NewQuestionServiceWithLogger(db, learningService, cfg, logger)
-	aiService := services.NewAIService(cfg, logger)
+	// Create usage stats service
+	usageStatsService := services.NewUsageStatsService(cfg, db, logger)
+	aiService := services.NewAIService(cfg, logger, usageStatsService)
 	workerService := services.NewWorkerServiceWithLogger(db, logger)
 
 	// Get user by username

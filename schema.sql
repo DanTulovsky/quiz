@@ -539,7 +539,31 @@ CREATE TABLE IF NOT EXISTS usage_stats (
     UNIQUE(service_name, usage_type, usage_month)
 );
 
--- Create indexes for efficient queries on snippets table
+-- User usage stats table - tracks AI token usage per user per API key per day
+CREATE TABLE IF NOT EXISTS user_usage_stats (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    api_key_id INTEGER REFERENCES user_api_keys(id) ON DELETE SET NULL,
+    usage_date DATE NOT NULL,           -- Date of usage (YYYY-MM-DD)
+    usage_hour INTEGER CHECK (usage_hour >= 0 AND usage_hour <= 23), -- Hour of day (0-23)
+    service_name VARCHAR(100) NOT NULL, -- e.g., 'openai', 'anthropic'
+    provider VARCHAR(100) NOT NULL,     -- e.g., 'openai', 'anthropic'
+    model VARCHAR(100) NOT NULL,        -- e.g., 'gpt-4', 'claude-3'
+    usage_type VARCHAR(50) NOT NULL,    -- e.g., 'question_generation', 'chat', 'story'
+    -- Token usage
+    prompt_tokens INTEGER NOT NULL DEFAULT 0,
+    completion_tokens INTEGER NOT NULL DEFAULT 0,
+    total_tokens INTEGER NOT NULL DEFAULT 0,
+    -- Request count
+    requests_made INTEGER NOT NULL DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+
+    -- Ensure one record per user per API key per date per hour per service per model per usage type
+    UNIQUE(user_id, api_key_id, usage_date, usage_hour, service_name, provider, model, usage_type)
+);
+
+-- Create indexes for efficient queries on user_usage_stats table
 CREATE INDEX IF NOT EXISTS idx_snippets_user_id ON snippets(user_id);
 CREATE INDEX IF NOT EXISTS idx_snippets_user_created ON snippets(user_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_snippets_source_language ON snippets(source_language);
@@ -552,5 +576,12 @@ CREATE INDEX IF NOT EXISTS idx_usage_stats_service_month ON usage_stats(service_
 CREATE INDEX IF NOT EXISTS idx_usage_stats_usage_type ON usage_stats(usage_type);
 CREATE INDEX IF NOT EXISTS idx_usage_stats_month ON usage_stats(usage_month);
 CREATE INDEX IF NOT EXISTS idx_usage_stats_created_at ON usage_stats(created_at);
+
+-- Create indexes for efficient queries on user_usage_stats table
+CREATE INDEX IF NOT EXISTS idx_user_usage_stats_user_id ON user_usage_stats(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_usage_stats_user_date ON user_usage_stats(user_id, usage_date);
+CREATE INDEX IF NOT EXISTS idx_user_usage_stats_date_hour ON user_usage_stats(usage_date, usage_hour);
+CREATE INDEX IF NOT EXISTS idx_user_usage_stats_service_provider ON user_usage_stats(service_name, provider);
+CREATE INDEX IF NOT EXISTS idx_user_usage_stats_api_key ON user_usage_stats(api_key_id);
 
 -- Insert default roles and assign them to existing users via migration files

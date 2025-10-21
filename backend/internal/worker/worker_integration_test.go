@@ -70,7 +70,7 @@ func TestWorkerIntegration_StartAndShutdown(t *testing.T) {
 	userService := services.NewUserServiceWithLogger(db, cfg, logger)
 	learningService := services.NewLearningServiceWithLogger(db, cfg, logger)
 	questionService := services.NewQuestionServiceWithLogger(db, learningService, cfg, logger)
-	aiService := services.NewAIService(cfg, logger)
+	aiService := services.NewAIService(cfg, logger, services.NewNoopUsageStatsService())
 	workerService := services.NewWorkerServiceWithLogger(db, logger)
 
 	// Create daily question service
@@ -124,7 +124,7 @@ func TestWorkerIntegration_HeartbeatLoop(t *testing.T) {
 	userService := services.NewUserServiceWithLogger(db, cfg, logger)
 	learningService := services.NewLearningServiceWithLogger(db, cfg, logger)
 	questionService := services.NewQuestionServiceWithLogger(db, learningService, cfg, logger)
-	aiService := services.NewAIService(cfg, logger)
+	aiService := services.NewAIService(cfg, logger, services.NewNoopUsageStatsService())
 	workerService := services.NewWorkerServiceWithLogger(db, logger)
 
 	// Create daily question service
@@ -169,7 +169,7 @@ func TestWorkerIntegration_RunWithNoUsers(t *testing.T) {
 	userService := services.NewUserServiceWithLogger(db, cfg, logger)
 	learningService := services.NewLearningServiceWithLogger(db, cfg, logger)
 	questionService := services.NewQuestionServiceWithLogger(db, learningService, cfg, logger)
-	aiService := services.NewAIService(cfg, logger)
+	aiService := services.NewAIService(cfg, logger, services.NewNoopUsageStatsService())
 	workerService := services.NewWorkerServiceWithLogger(db, logger)
 
 	// Create daily question service
@@ -215,7 +215,7 @@ func TestWorkerIntegration_RunWithUsers(t *testing.T) {
 	userService := services.NewUserServiceWithLogger(db, cfg, logger)
 	learningService := services.NewLearningServiceWithLogger(db, cfg, logger)
 	questionService := services.NewQuestionServiceWithLogger(db, learningService, cfg, logger)
-	aiService := services.NewAIService(cfg, logger)
+	aiService := services.NewAIService(cfg, logger, services.NewNoopUsageStatsService())
 	workerService := services.NewWorkerServiceWithLogger(db, logger)
 
 	// Create test user
@@ -269,7 +269,7 @@ func TestWorkerIntegration_GenerateNeededQuestions(t *testing.T) {
 
 	// Use mock AI service instead of real one
 	mockAIService := &MockAIService{
-		AIService: services.NewAIService(cfg, logger),
+		AIService: services.NewAIService(cfg, logger, services.NewNoopUsageStatsService()),
 	}
 
 	workerService := services.NewWorkerServiceWithLogger(db, logger)
@@ -337,7 +337,7 @@ func TestWorkerIntegration_EligibleCount_RecentCorrectExclusion(t *testing.T) {
 	// Create generation hint service
 	generationHintService := services.NewGenerationHintService(db, logger)
 
-	worker := NewWorker(userService, questionService, services.NewAIService(cfg, logger), learningService, workerService, dailyQuestionService, storyService, emailService, generationHintService, "test-instance", cfg, logger)
+	worker := NewWorker(userService, questionService, services.NewAIService(cfg, logger, services.NewNoopUsageStatsService()), learningService, workerService, dailyQuestionService, storyService, emailService, generationHintService, "test-instance", cfg, logger)
 
 	// Create user and two questions
 	user, err := userService.CreateUser(context.Background(), "eligibleuser", "italian", "A1")
@@ -377,7 +377,7 @@ func TestWorkerIntegration_HandleAIQuestionStream(t *testing.T) {
 	userService := services.NewUserServiceWithLogger(db, cfg, logger)
 	learningService := services.NewLearningServiceWithLogger(db, cfg, logger)
 	questionService := services.NewQuestionServiceWithLogger(db, learningService, cfg, logger)
-	aiService := services.NewAIService(cfg, logger)
+	aiService := services.NewAIService(cfg, logger, services.NewNoopUsageStatsService())
 	workerService := services.NewWorkerServiceWithLogger(db, logger)
 
 	// Create test user
@@ -418,7 +418,7 @@ func TestWorkerIntegration_ErrorHandling(t *testing.T) {
 	userService := services.NewUserServiceWithLogger(db, cfg, logger)
 	learningService := services.NewLearningServiceWithLogger(db, cfg, logger)
 	questionService := services.NewQuestionServiceWithLogger(db, learningService, cfg, logger)
-	aiService := services.NewAIService(cfg, logger)
+	aiService := services.NewAIService(cfg, logger, services.NewNoopUsageStatsService())
 	workerService := services.NewWorkerServiceWithLogger(db, logger)
 
 	// Create daily question service
@@ -469,7 +469,7 @@ func TestWorkerIntegration_PauseResumeFlow(t *testing.T) {
 	userService := services.NewUserServiceWithLogger(db, cfg, logger)
 	learningService := services.NewLearningServiceWithLogger(db, cfg, logger)
 	questionService := services.NewQuestionServiceWithLogger(db, learningService, cfg, logger)
-	aiService := services.NewAIService(cfg, logger)
+	aiService := services.NewAIService(cfg, logger, services.NewNoopUsageStatsService())
 	workerService := services.NewWorkerServiceWithLogger(db, logger)
 
 	// Create daily question service
@@ -509,7 +509,7 @@ func TestWorkerIntegration_StartupPause(t *testing.T) {
 	userService := services.NewUserServiceWithLogger(db, cfg, logger)
 	learningService := services.NewLearningServiceWithLogger(db, cfg, logger)
 	questionService := services.NewQuestionServiceWithLogger(db, learningService, cfg, logger)
-	aiService := services.NewAIService(cfg, logger)
+	aiService := services.NewAIService(cfg, logger, services.NewNoopUsageStatsService())
 	workerService := services.NewWorkerServiceWithLogger(db, logger)
 
 	// Set global pause before starting worker
@@ -557,7 +557,7 @@ func TestWorkerIntegration_ActivityLogging(t *testing.T) {
 	userService := services.NewUserServiceWithLogger(db, cfg, logger)
 	learningService := services.NewLearningServiceWithLogger(db, cfg, logger)
 	questionService := services.NewQuestionServiceWithLogger(db, learningService, cfg, logger)
-	aiService := services.NewAIService(cfg, logger)
+	aiService := services.NewAIService(cfg, logger, services.NewNoopUsageStatsService())
 	workerService := services.NewWorkerServiceWithLogger(db, logger)
 
 	// Create daily question service
@@ -598,7 +598,7 @@ func TestWorkerIntegration_UserFailureTracking(t *testing.T) {
 	userService := services.NewUserServiceWithLogger(db, cfg, logger)
 	learningService := services.NewLearningServiceWithLogger(db, cfg, logger)
 	questionService := services.NewQuestionServiceWithLogger(db, learningService, cfg, logger)
-	aiService := services.NewAIService(cfg, logger)
+	aiService := services.NewAIService(cfg, logger, services.NewNoopUsageStatsService())
 	workerService := services.NewWorkerServiceWithLogger(db, logger)
 
 	// Create test user
@@ -641,7 +641,7 @@ func TestWorkerIntegration_ManualTrigger(t *testing.T) {
 	userService := services.NewUserServiceWithLogger(db, cfg, logger)
 	learningService := services.NewLearningServiceWithLogger(db, cfg, logger)
 	questionService := services.NewQuestionServiceWithLogger(db, learningService, cfg, logger)
-	aiService := services.NewAIService(cfg, logger)
+	aiService := services.NewAIService(cfg, logger, services.NewNoopUsageStatsService())
 	workerService := services.NewWorkerServiceWithLogger(db, logger)
 
 	// Create daily question service
@@ -684,7 +684,7 @@ func TestWorkerIntegration_Shutdown(t *testing.T) {
 	userService := services.NewUserServiceWithLogger(db, cfg, logger)
 	learningService := services.NewLearningServiceWithLogger(db, cfg, logger)
 	questionService := services.NewQuestionServiceWithLogger(db, learningService, cfg, logger)
-	aiService := services.NewAIService(cfg, logger)
+	aiService := services.NewAIService(cfg, logger, services.NewNoopUsageStatsService())
 	workerService := services.NewWorkerServiceWithLogger(db, logger)
 
 	// Create daily question service
@@ -725,7 +725,7 @@ func TestWorkerPriorityFunctions_Integration(t *testing.T) {
 	userService := services.NewUserServiceWithLogger(db, cfg, logger)
 	learningService := services.NewLearningServiceWithLogger(db, cfg, logger)
 	questionService := services.NewQuestionServiceWithLogger(db, learningService, cfg, logger)
-	aiService := services.NewAIService(cfg, logger)
+	aiService := services.NewAIService(cfg, logger, services.NewNoopUsageStatsService())
 	workerService := services.NewWorkerServiceWithLogger(db, logger)
 
 	// Create daily question service
@@ -935,7 +935,7 @@ func TestWorkerPriorityFunctions_EmptyData_Integration(t *testing.T) {
 	userService := services.NewUserServiceWithLogger(db, cfg, logger)
 	learningService := services.NewLearningServiceWithLogger(db, cfg, logger)
 	questionService := services.NewQuestionServiceWithLogger(db, learningService, cfg, logger)
-	aiService := services.NewAIService(cfg, logger)
+	aiService := services.NewAIService(cfg, logger, services.NewNoopUsageStatsService())
 	workerService := services.NewWorkerServiceWithLogger(db, logger)
 
 	// Create daily question service
@@ -988,7 +988,7 @@ func TestWorkerPriorityFunctions_DifferentLanguages_Integration(t *testing.T) {
 	userService := services.NewUserServiceWithLogger(db, cfg, logger)
 	learningService := services.NewLearningServiceWithLogger(db, cfg, logger)
 	questionService := services.NewQuestionServiceWithLogger(db, learningService, cfg, logger)
-	aiService := services.NewAIService(cfg, logger)
+	aiService := services.NewAIService(cfg, logger, services.NewNoopUsageStatsService())
 	workerService := services.NewWorkerServiceWithLogger(db, logger)
 
 	// Create daily question service
@@ -1082,7 +1082,7 @@ func TestWorker_EngagementBasedGeneration_Integration(t *testing.T) {
 	userService := services.NewUserServiceWithLogger(db, cfg, logger)
 	learningService := services.NewLearningServiceWithLogger(db, cfg, logger)
 	questionService := services.NewQuestionServiceWithLogger(db, learningService, cfg, logger)
-	aiService := services.NewAIService(cfg, logger)
+	aiService := services.NewAIService(cfg, logger, services.NewNoopUsageStatsService())
 	workerService := services.NewWorkerServiceWithLogger(db, logger)
 
 	// Create daily question service
@@ -1175,7 +1175,7 @@ func TestWorker_EngagementBasedGeneration_Disabled_Integration(t *testing.T) {
 	userService := services.NewUserServiceWithLogger(db, cfg, logger)
 	learningService := services.NewLearningServiceWithLogger(db, cfg, logger)
 	questionService := services.NewQuestionServiceWithLogger(db, learningService, cfg, logger)
-	aiService := services.NewAIService(cfg, logger)
+	aiService := services.NewAIService(cfg, logger, services.NewNoopUsageStatsService())
 	workerService := services.NewWorkerServiceWithLogger(db, logger)
 
 	// Create daily question service

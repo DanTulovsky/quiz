@@ -53,7 +53,7 @@ func (suite *TranslationIntegrationTestSuite) SetupSuite() {
 	userService := services.NewUserServiceWithLogger(suite.DB, cfg, logger)
 	learningService := services.NewLearningServiceWithLogger(suite.DB, cfg, logger)
 	questionService := services.NewQuestionServiceWithLogger(suite.DB, learningService, cfg, logger)
-	aiService := services.NewAIService(cfg, logger)
+	aiService := services.NewAIService(cfg, logger, services.NewNoopUsageStatsService())
 	workerService := services.NewWorkerServiceWithLogger(suite.DB, logger)
 	dailyQuestionService := services.NewDailyQuestionService(suite.DB, logger, questionService, learningService)
 	storyService := services.NewStoryService(suite.DB, cfg, logger)

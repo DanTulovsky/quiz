@@ -75,6 +75,10 @@ func (m *mockUserService) ClearUserDataForUser(_ context.Context, _ int) error {
 func (m *mockUserService) GetUserAPIKey(_ context.Context, _ int, _ string) (result0 string, err error) {
 	return "", nil
 }
+
+func (m *mockUserService) GetUserAPIKeyWithID(_ context.Context, _ int, _ string) (string, *int, error) {
+	return "", nil, nil
+}
 func (m *mockUserService) SetUserAPIKey(_ context.Context, _ int, _, _ string) error { return nil }
 func (m *mockUserService) HasUserAPIKey(_ context.Context, _ int, _ string) (result0 bool, err error) {
 	return false, nil

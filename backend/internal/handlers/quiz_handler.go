@@ -31,6 +31,7 @@ type QuizHandler struct {
 	learningService services.LearningServiceInterface
 	workerService   services.WorkerServiceInterface
 	hintService     services.GenerationHintServiceInterface
+	usageStatsSvc   services.UsageStatsServiceInterface
 	cfg             *config.Config
 	logger          *observability.Logger
 }
@@ -43,6 +44,7 @@ func NewQuizHandler(
 	learningService services.LearningServiceInterface,
 	workerService services.WorkerServiceInterface,
 	hintService services.GenerationHintServiceInterface,
+	usageStatsSvc services.UsageStatsServiceInterface,
 	config *config.Config,
 	logger *observability.Logger,
 ) *QuizHandler {
@@ -53,6 +55,7 @@ func NewQuizHandler(
 		learningService: learningService,
 		workerService:   workerService,
 		hintService:     hintService,
+		usageStatsSvc:   usageStatsSvc,
 		cfg:             config,
 		logger:          logger,
 	}
@@ -513,6 +516,159 @@ func (h *QuizHandler) GetProgress(c *gin.Context) {
 	c.JSON(http.StatusOK, apiProgress)
 }
 
+// GetAITokenUsage returns AI token usage statistics for the authenticated user
+func (h *QuizHandler) GetAITokenUsage(c *gin.Context) {
+	ctx, span := observability.TraceHandlerFunction(c.Request.Context(), "get_ai_token_usage")
+	defer observability.FinishSpan(span, nil)
+
+	userID, exists := GetUserIDFromSession(c)
+	if !exists {
+		span.SetAttributes(attribute.String("error", "no_user_session"))
+		HandleAppError(c, contextutils.WrapError(contextutils.ErrUnauthorized, "user not authenticated"))
+		return
+	}
+	span.SetAttributes(observability.AttributeUserID(userID))
+
+	startDateStr := c.Query("startDate")
+	if startDateStr == "" {
+		span.SetAttributes(attribute.String("error", "missing_start_date"))
+		HandleAppError(c, contextutils.WrapError(contextutils.ErrInvalidInput, "startDate parameter is required"))
+		return
+	}
+
+	endDateStr := c.Query("endDate")
+	if endDateStr == "" {
+		span.SetAttributes(attribute.String("error", "missing_end_date"))
+		HandleAppError(c, contextutils.WrapError(contextutils.ErrInvalidInput, "endDate parameter is required"))
+		return
+	}
+
+	startDate, err := time.Parse("2006-01-02", startDateStr)
+	if err != nil {
+		span.SetAttributes(attribute.String("error", "invalid_start_date"))
+		HandleAppError(c, contextutils.WrapErrorf(contextutils.ErrInvalidInput, "invalid startDate format: %v", err))
+		return
+	}
+
+	endDate, err := time.Parse("2006-01-02", endDateStr)
+	if err != nil {
+		span.SetAttributes(attribute.String("error", "invalid_end_date"))
+		HandleAppError(c, contextutils.WrapErrorf(contextutils.ErrInvalidInput, "invalid endDate format: %v", err))
+		return
+	}
+
+	// Get usage stats
+	stats, err := h.usageStatsSvc.GetUserAITokenUsageStats(ctx, userID, startDate, endDate)
+	if err != nil {
+		h.logger.Error(ctx, "Failed to get user AI token usage stats", err, map[string]any{
+			"user_id":    userID,
+			"start_date": startDateStr,
+			"end_date":   endDateStr,
+		})
+		HandleAppError(c, contextutils.WrapError(err, "failed to get AI token usage stats"))
+		return
+	}
+
+	c.JSON(http.StatusOK, stats)
+}
+
+// GetAITokenUsageDaily returns daily aggregated AI token usage for the authenticated user
+func (h *QuizHandler) GetAITokenUsageDaily(c *gin.Context) {
+	ctx, span := observability.TraceHandlerFunction(c.Request.Context(), "get_ai_token_usage_daily")
+	defer observability.FinishSpan(span, nil)
+
+	userID, exists := GetUserIDFromSession(c)
+	if !exists {
+		span.SetAttributes(attribute.String("error", "no_user_session"))
+		HandleAppError(c, contextutils.WrapError(contextutils.ErrUnauthorized, "user not authenticated"))
+		return
+	}
+	span.SetAttributes(observability.AttributeUserID(userID))
+
+	startDateStr := c.Query("startDate")
+	if startDateStr == "" {
+		span.SetAttributes(attribute.String("error", "missing_start_date"))
+		HandleAppError(c, contextutils.WrapError(contextutils.ErrInvalidInput, "startDate parameter is required"))
+		return
+	}
+
+	endDateStr := c.Query("endDate")
+	if endDateStr == "" {
+		span.SetAttributes(attribute.String("error", "missing_end_date"))
+		HandleAppError(c, contextutils.WrapError(contextutils.ErrInvalidInput, "endDate parameter is required"))
+		return
+	}
+
+	startDate, err := time.Parse("2006-01-02", startDateStr)
+	if err != nil {
+		span.SetAttributes(attribute.String("error", "invalid_start_date"))
+		HandleAppError(c, contextutils.WrapErrorf(contextutils.ErrInvalidInput, "invalid startDate format: %v", err))
+		return
+	}
+
+	endDate, err := time.Parse("2006-01-02", endDateStr)
+	if err != nil {
+		span.SetAttributes(attribute.String("error", "invalid_end_date"))
+		HandleAppError(c, contextutils.WrapErrorf(contextutils.ErrInvalidInput, "invalid endDate format: %v", err))
+		return
+	}
+
+	// Get daily usage stats
+	stats, err := h.usageStatsSvc.GetUserAITokenUsageStatsByDay(ctx, userID, startDate, endDate)
+	if err != nil {
+		h.logger.Error(ctx, "Failed to get user AI token usage stats by day", err, map[string]interface{}{
+			"user_id":    userID,
+			"start_date": startDateStr,
+			"end_date":   endDateStr,
+		})
+		HandleAppError(c, contextutils.WrapError(err, "failed to get daily AI token usage stats"))
+		return
+	}
+
+	c.JSON(http.StatusOK, stats)
+}
+
+// GetAITokenUsageHourly returns hourly aggregated AI token usage for the authenticated user on a specific day
+func (h *QuizHandler) GetAITokenUsageHourly(c *gin.Context) {
+	ctx, span := observability.TraceHandlerFunction(c.Request.Context(), "get_ai_token_usage_hourly")
+	defer observability.FinishSpan(span, nil)
+
+	userID, exists := GetUserIDFromSession(c)
+	if !exists {
+		span.SetAttributes(attribute.String("error", "no_user_session"))
+		HandleAppError(c, contextutils.WrapError(contextutils.ErrUnauthorized, "user not authenticated"))
+		return
+	}
+	span.SetAttributes(observability.AttributeUserID(userID))
+
+	dateStr := c.Query("date")
+	if dateStr == "" {
+		span.SetAttributes(attribute.String("error", "missing_date"))
+		HandleAppError(c, contextutils.WrapError(contextutils.ErrInvalidInput, "date parameter is required"))
+		return
+	}
+
+	date, err := time.Parse("2006-01-02", dateStr)
+	if err != nil {
+		span.SetAttributes(attribute.String("error", "invalid_date"))
+		HandleAppError(c, contextutils.WrapErrorf(contextutils.ErrInvalidInput, "invalid date format: %v", err))
+		return
+	}
+
+	// Get hourly usage stats
+	stats, err := h.usageStatsSvc.GetUserAITokenUsageStatsByHour(ctx, userID, date)
+	if err != nil {
+		h.logger.Error(ctx, "Failed to get user AI token usage stats by hour", err, map[string]interface{}{
+			"user_id": userID,
+			"date":    dateStr,
+		})
+		HandleAppError(c, contextutils.WrapError(err, "failed to get hourly AI token usage stats"))
+		return
+	}
+
+	c.JSON(http.StatusOK, stats)
+}
+
 // ReportQuestion improves error handling with centralized utilities
 func (h *QuizHandler) ReportQuestion(c *gin.Context) {
 	ctx, span := observability.TraceHandlerFunction(c.Request.Context(), "report_question")
@@ -716,10 +872,12 @@ func (h *QuizHandler) ChatStream(c *gin.Context) {
 		userConfig.Model = user.AIModel.String
 	}
 	// Use the new per-provider API key system instead of the old user.AIAPIKey field
+	var apiKeyID *int
 	if userConfig.Provider != "" {
-		savedKey, err := h.userService.GetUserAPIKey(c.Request.Context(), userID, userConfig.Provider)
+		savedKey, keyID, err := h.userService.GetUserAPIKeyWithID(c.Request.Context(), userID, userConfig.Provider)
 		if err == nil && savedKey != "" {
 			userConfig.APIKey = savedKey
+			apiKeyID = keyID
 		}
 	}
 
@@ -744,11 +902,15 @@ func (h *QuizHandler) ChatStream(c *gin.Context) {
 	ctx, combinedCancel := context.WithCancel(timeoutCtx)
 	defer combinedCancel()
 
+	// Store userID and apiKeyID in context for usage tracking
+	// This context will be used by the AI service for usage tracking
+	ctx = context.WithValue(context.WithValue(ctx, contextutils.UserIDKey, userID), contextutils.APIKeyIDKey, apiKeyID)
+
 	// Watch for client disconnect
 	go func() {
 		defer func() {
 			if r := recover(); r != nil {
-				h.logger.Error(ctx, "Panic in client disconnect watcher", nil, map[string]interface{}{
+				h.logger.Error(ctx, "Panic in client disconnect watcher", nil, map[string]any{
 					"panic": r,
 				})
 			}
@@ -773,7 +935,7 @@ func (h *QuizHandler) ChatStream(c *gin.Context) {
 		}()
 		if err := h.aiService.GenerateChatResponseStream(ctx, userConfig, aiReq, chunks); err != nil {
 			h.logger.Error(ctx, "AI chat streaming failed for user", err, map[string]interface{}{
-				"user_id": userID,
+				"user_id": contextutils.GetUserIDFromContext(ctx),
 			})
 			// Only send error if context is not cancelled (avoid sending to closed channel)
 			if ctx.Err() == nil {

@@ -6,6 +6,8 @@
 # - url: Base URL for the provider's API
 # - supports_grammar: Whether the provider supports the 'grammar' field in API requests
 #   (Google's Generative AI API does not support this field)
+# - usage_supported: Whether the provider supports usage tracking in streaming responses
+#   (Google Gemini does not include usage in streaming chunks)
 # - question_batch_size: Maximum number of questions to generate in a single AI request
 # - models: List of available models with their max token limits
 
@@ -14,6 +16,7 @@ providers:
     code: ollama
     url: "http://localhost:11434/v1"
     supports_grammar: true
+    usage_supported: true
     question_batch_size: 1
     models:
       - { name: "Llama 4", code: "llama4:latest", max_tokens: 8192 }
@@ -25,6 +28,7 @@ providers:
     code: openai
     url: "https://api.openai.com/v1"
     supports_grammar: true
+    usage_supported: true
     question_batch_size: 5
     models:
       - { name: "GPT-4.1", code: "gpt-4.1", max_tokens: 16384 }
@@ -34,6 +38,7 @@ providers:
     code: anthropic
     url: "https://api.anthropic.com/v1"
     supports_grammar: true
+    usage_supported: true
     question_batch_size: 5
     models:
       - {
@@ -60,6 +65,7 @@ providers:
     code: google
     url: "https://generativelanguage.googleapis.com/v1beta/openai"
     supports_grammar: false
+    usage_supported: false
     question_batch_size: 5
     models:
       - { name: "Gemini 2.0 Flash", code: "gemini-2.0-flash", max_tokens: 8192 }

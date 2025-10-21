@@ -55,7 +55,7 @@ func (suite *ValidationIntegrationTestSuite) SetupSuite() {
 	suite.userService = userService
 	learningService := services.NewLearningServiceWithLogger(db, cfg, logger)
 	questionService := services.NewQuestionServiceWithLogger(db, learningService, cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
-	aiService := services.NewAIService(cfg, logger)
+	aiService := services.NewAIService(cfg, logger, services.NewNoopUsageStatsService())
 	workerService := services.NewWorkerServiceWithLogger(db, logger)
 	dailyQuestionService := services.NewDailyQuestionService(db, logger, questionService, learningService)
 	oauthService := services.NewOAuthServiceWithLogger(cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))

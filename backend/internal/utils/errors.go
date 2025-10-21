@@ -3,6 +3,7 @@
 package contextutils
 
 import (
+	"context"
 	"fmt"
 	"strings"
 )
@@ -561,4 +562,30 @@ func (e *AppError) ToJSONWithLocale(locale string) map[string]interface{} {
 	result["message"] = localizedMessage
 	result["error"] = localizedMessage // Keep error field in sync
 	return result
+}
+
+// ContextKey represents a context key type for passing values through context
+type ContextKey string
+
+const (
+	// UserIDKey is used to store user ID in context for usage tracking
+	UserIDKey ContextKey = "userID"
+	// APIKeyIDKey is used to store API key ID in context for usage tracking
+	APIKeyIDKey ContextKey = "apiKeyID"
+)
+
+// GetUserIDFromContext extracts the user ID from context, returning 0 if not found
+func GetUserIDFromContext(ctx context.Context) int {
+	if userID, ok := ctx.Value(UserIDKey).(int); ok {
+		return userID
+	}
+	return 0 // Default fallback
+}
+
+// GetAPIKeyIDFromContext extracts the API key ID from context, returning nil if not found
+func GetAPIKeyIDFromContext(ctx context.Context) *int {
+	if apiKeyID, ok := ctx.Value(APIKeyIDKey).(*int); ok {
+		return apiKeyID
+	}
+	return nil // Default fallback
 }

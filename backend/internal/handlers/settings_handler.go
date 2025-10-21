@@ -25,19 +25,21 @@ type SettingsHandler struct {
 	conversationService services.ConversationServiceInterface
 	aiService           services.AIServiceInterface
 	learningService     services.LearningServiceInterface
+	usageStatsSvc       services.UsageStatsServiceInterface
 	emailService        mailer.Mailer
 	cfg                 *config.Config
 	logger              *observability.Logger
 }
 
 // NewSettingsHandler creates a new SettingsHandler instance
-func NewSettingsHandler(userService services.UserServiceInterface, storyService services.StoryServiceInterface, conversationService services.ConversationServiceInterface, aiService services.AIServiceInterface, learningService services.LearningServiceInterface, emailService mailer.Mailer, cfg *config.Config, logger *observability.Logger) *SettingsHandler {
+func NewSettingsHandler(userService services.UserServiceInterface, storyService services.StoryServiceInterface, conversationService services.ConversationServiceInterface, aiService services.AIServiceInterface, learningService services.LearningServiceInterface, emailService mailer.Mailer, usageStatsSvc services.UsageStatsServiceInterface, cfg *config.Config, logger *observability.Logger) *SettingsHandler {
 	return &SettingsHandler{
 		userService:         userService,
 		storyService:        storyService,
 		conversationService: conversationService,
 		aiService:           aiService,
 		learningService:     learningService,
+		usageStatsSvc:       usageStatsSvc,
 		emailService:        emailService,
 		cfg:                 cfg,
 		logger:              logger,

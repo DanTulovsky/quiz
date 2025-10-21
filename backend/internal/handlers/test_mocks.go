@@ -22,7 +22,7 @@ type MockAIService struct {
 
 func NewMockAIService(cfg *config.Config, logger *observability.Logger) *MockAIService {
 	return &MockAIService{
-		realService: services.NewAIService(cfg, logger),
+		realService: services.NewAIService(cfg, logger, services.NewNoopUsageStatsService()),
 	}
 }
 

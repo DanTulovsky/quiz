@@ -172,8 +172,8 @@ func NewRouter(
 	// Initialize handlers
 	authHandler := NewAuthHandler(userService, oauthService, cfg, logger)
 	emailService := services.CreateEmailService(cfg, logger)
-	settingsHandler := NewSettingsHandler(userService, storyService, conversationService, aiService, learningService, emailService, cfg, logger)
-	quizHandler := NewQuizHandler(userService, questionService, aiService, learningService, workerService, generationHintService, cfg, logger)
+	settingsHandler := NewSettingsHandler(userService, storyService, conversationService, aiService, learningService, emailService, usageStatsService, cfg, logger)
+	quizHandler := NewQuizHandler(userService, questionService, aiService, learningService, workerService, generationHintService, usageStatsService, cfg, logger)
 	dailyQuestionHandler := NewDailyQuestionHandler(userService, dailyQuestionService, cfg, logger)
 	storyHandler := NewStoryHandler(storyService, userService, aiService, cfg, logger)
 	aiConversationHandler := NewAIConversationHandler(conversationService, cfg, logger)
@@ -257,6 +257,9 @@ func NewRouter(
 			quiz.POST("/question/:id/mark-known", quizHandler.MarkQuestionAsKnown)
 			quiz.POST("/answer", quizHandler.SubmitAnswer)
 			quiz.GET("/progress", quizHandler.GetProgress)
+			quiz.GET("/ai-token-usage", quizHandler.GetAITokenUsage)
+			quiz.GET("/ai-token-usage/daily", quizHandler.GetAITokenUsageDaily)
+			quiz.GET("/ai-token-usage/hourly", quizHandler.GetAITokenUsageHourly)
 			quiz.GET("/worker-status", quizHandler.GetWorkerStatus)
 			quiz.POST("/chat/stream", quizHandler.ChatStream)
 		}

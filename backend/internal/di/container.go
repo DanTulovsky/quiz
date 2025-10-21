@@ -282,10 +282,6 @@ func (sc *ServiceContainer) initializeServices(_ context.Context) {
 	storyService := services.NewStoryService(sc.db, sc.cfg, sc.logger)
 	sc.services["story"] = storyService
 
-	// AI service
-	aiService := services.NewAIService(sc.cfg, sc.logger)
-	sc.services["ai"] = aiService
-
 	// Worker service
 	workerService := services.NewWorkerServiceWithLogger(sc.db, sc.logger)
 	sc.services["worker"] = workerService
@@ -309,6 +305,10 @@ func (sc *ServiceContainer) initializeServices(_ context.Context) {
 	// Usage stats service
 	usageStatsService := services.NewUsageStatsService(sc.cfg, sc.db, sc.logger)
 	sc.services["usage_stats"] = usageStatsService
+
+	// AI service (depends on usage stats service)
+	aiService := services.NewAIService(sc.cfg, sc.logger, usageStatsService)
+	sc.services["ai"] = aiService
 
 	// Translation service
 	translationService := services.NewTranslationService(sc.cfg, usageStatsService, sc.logger)

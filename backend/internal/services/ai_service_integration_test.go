@@ -32,7 +32,7 @@ func newTestAIServiceWithServer(t *testing.T, handler http.HandlerFunc) (*AIServ
 			MaxAIPerUser:    1,
 		},
 	}
-	service := NewAIService(cfg, observability.NewLogger(nil))
+	service := NewAIService(cfg, observability.NewLogger(nil), NewNoopUsageStatsService())
 	return service, ts.Close
 }
 
@@ -126,7 +126,7 @@ func TestAIService_AddJSONStructureGuidance_Integration(t *testing.T) {
 			MaxAIPerUser:    1,
 		},
 	}
-	service := NewAIService(cfg, logger)
+	service := NewAIService(cfg, logger, NewNoopUsageStatsService())
 
 	// Test with different question types
 	testCases := []struct {
@@ -168,7 +168,7 @@ func TestAIService_GenerateQuestionsStream_Integration(t *testing.T) {
 			MaxAIPerUser:    1,
 		},
 	}
-	service := NewAIService(cfg, logger)
+	service := NewAIService(cfg, logger, NewNoopUsageStatsService())
 
 	userConfig := &models.UserAIConfig{
 		Provider: "openai",
@@ -220,7 +220,7 @@ func TestAIService_GenerateChatResponse_Integration(t *testing.T) {
 			MaxAIPerUser:    1,
 		},
 	}
-	service := NewAIService(cfg, logger)
+	service := NewAIService(cfg, logger, NewNoopUsageStatsService())
 
 	userConfig := &models.UserAIConfig{
 		Provider: "openai",
@@ -260,7 +260,7 @@ func TestAIService_GenerateChatResponseStream_Integration(t *testing.T) {
 			MaxAIPerUser:    1,
 		},
 	}
-	service := NewAIService(cfg, logger)
+	service := NewAIService(cfg, logger, NewNoopUsageStatsService())
 
 	userConfig := &models.UserAIConfig{
 		Provider: "openai",
@@ -304,7 +304,7 @@ func TestAIService_TestConnection_Integration(t *testing.T) {
 			MaxAIPerUser:    1,
 		},
 	}
-	service := NewAIService(cfg, logger)
+	service := NewAIService(cfg, logger, NewNoopUsageStatsService())
 
 	// Test with invalid API key
 	err := service.TestConnection(context.Background(), "openai", "gpt-3.5-turbo", "invalid-key")
@@ -335,7 +335,7 @@ func TestAIService_BuildBatchQuestionPromptWithJSONStructure_Integration(t *test
 			MaxAIPerUser:    1,
 		},
 	}
-	service := NewAIService(cfg, logger)
+	service := NewAIService(cfg, logger, NewNoopUsageStatsService())
 
 	req := &models.AIQuestionGenRequest{
 		Language:     "italian",
@@ -379,7 +379,7 @@ func TestAIService_BuildChatPrompt_Integration(t *testing.T) {
 			MaxAIPerUser:    1,
 		},
 	}
-	service := NewAIService(cfg, logger)
+	service := NewAIService(cfg, logger, NewNoopUsageStatsService())
 
 	req := &models.AIChatRequest{
 		UserMessage: "Hello, how are you?",
@@ -405,7 +405,7 @@ func TestAIService_FilterThinkingContent_Integration(t *testing.T) {
 			MaxAIPerUser:    1,
 		},
 	}
-	service := NewAIService(cfg, logger)
+	service := NewAIService(cfg, logger, NewNoopUsageStatsService())
 
 	// Test with thinking model
 	content := "Let me think about this...\nThe answer is: Hello"
@@ -438,7 +438,7 @@ func TestAIService_IsThinkingModel_Integration(t *testing.T) {
 			MaxAIPerUser:    1,
 		},
 	}
-	service := NewAIService(cfg, logger)
+	service := NewAIService(cfg, logger, NewNoopUsageStatsService())
 
 	// Test thinking models
 	assert.True(t, service.isThinkingModel("gpt-4"))
@@ -467,7 +467,7 @@ func TestAIService_ParseQuestionResponse_Integration(t *testing.T) {
 			MaxAIPerUser:    1,
 		},
 	}
-	service := NewAIService(cfg, logger)
+	service := NewAIService(cfg, logger, NewNoopUsageStatsService())
 
 	// Test with valid JSON response
 	validResponse := `{"sentence": "Ciao, come stai oggi?", "question": "Ciao", "options": ["Hello", "Goodbye", "Thank you", "Please"], "correct_answer": 0, "explanation": "Ciao means hello in Italian", "topic": "greetings"}`
@@ -520,7 +520,7 @@ func TestAIService_GetQuestionBatchSize_Integration(t *testing.T) {
 			MaxAIPerUser:    1,
 		},
 	}
-	service := NewAIService(cfg, logger)
+	service := NewAIService(cfg, logger, NewNoopUsageStatsService())
 
 	// Test different providers
 	assert.Equal(t, 5, service.getQuestionBatchSize("openai"))
@@ -555,7 +555,7 @@ func TestAIService_SupportsGrammarField_Integration(t *testing.T) {
 			MaxAIPerUser:    1,
 		},
 	}
-	service := NewAIService(cfg, logger)
+	service := NewAIService(cfg, logger, NewNoopUsageStatsService())
 
 	// Test providers that support grammar
 	assert.True(t, service.supportsGrammarField("openai"))
@@ -582,7 +582,7 @@ func TestAIService_GetMaxTokensForModel_Integration(t *testing.T) {
 			MaxAIPerUser:    1,
 		},
 	}
-	service := NewAIService(cfg, logger)
+	service := NewAIService(cfg, logger, NewNoopUsageStatsService())
 
 	// Test max tokens for different providers
 	assert.Equal(t, 4000, service.getMaxTokensForModel("openai", "gpt-4"))
@@ -607,7 +607,7 @@ func TestAIService_GetConcurrencyStats_Integration(t *testing.T) {
 			MaxAIPerUser:    1,
 		},
 	}
-	service := NewAIService(cfg, logger)
+	service := NewAIService(cfg, logger, NewNoopUsageStatsService())
 
 	stats := service.GetConcurrencyStats()
 	assert.NotNil(t, stats)
@@ -635,7 +635,7 @@ func TestAIService_VarietyService_Integration(t *testing.T) {
 			MaxAIPerUser:    1,
 		},
 	}
-	service := NewAIService(cfg, logger)
+	service := NewAIService(cfg, logger, NewNoopUsageStatsService())
 
 	varietyService := service.VarietyService()
 	assert.NotNil(t, varietyService)
@@ -657,7 +657,7 @@ func TestAIService_Shutdown_Integration(t *testing.T) {
 			MaxAIPerUser:    1,
 		},
 	}
-	service := NewAIService(cfg, logger)
+	service := NewAIService(cfg, logger, NewNoopUsageStatsService())
 
 	// Test shutdown
 	err := service.Shutdown(context.Background())

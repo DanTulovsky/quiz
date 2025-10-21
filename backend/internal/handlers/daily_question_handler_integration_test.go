@@ -63,7 +63,7 @@ func (suite *DailyQuestionHandlerIntegrationTestSuite) SetupSuite() {
 	questionService := services.NewQuestionServiceWithLogger(db, learningService, cfg, logger)
 	dailyQuestionService := services.NewDailyQuestionService(db, logger, questionService, learningService)
 	suite.dailyQuestionService = dailyQuestionService
-	aiService := services.NewAIService(cfg, logger)
+	aiService := services.NewAIService(cfg, logger, services.NewNoopUsageStatsService())
 	workerService := services.NewWorkerServiceWithLogger(db, logger)
 	oauthService := services.NewOAuthServiceWithLogger(cfg, logger)
 

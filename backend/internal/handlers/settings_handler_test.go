@@ -210,7 +210,7 @@ func setupSettingsTestRouter(learningService services.LearningServiceInterface) 
 	// Create a mock email service
 	mockEmailService := &MockEmailService{}
 
-	handler := NewSettingsHandler(nil, nil, nil, nil, learningService, mockEmailService, mockConfig, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	handler := NewSettingsHandler(nil, nil, nil, nil, learningService, mockEmailService, nil, mockConfig, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	router.GET("/preferences/learning", handler.GetLearningPreferences)
 	router.PUT("/preferences/learning", handler.UpdateLearningPreferences)
@@ -235,7 +235,7 @@ func TestGetProviders(t *testing.T) {
 
 	// aiService and userService can be nil for this handler test
 	mockEmailService := &MockEmailService{}
-	handler := NewSettingsHandler(nil, nil, nil, nil, nil, mockEmailService, mockConfig, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	handler := NewSettingsHandler(nil, nil, nil, nil, nil, mockEmailService, nil, mockConfig, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	router := gin.New()
 	router.GET("/ai-providers", handler.GetProviders)

@@ -43,6 +43,7 @@ type UserServiceInterface interface {
 	ClearUserData(ctx context.Context) error
 	ClearUserDataForUser(ctx context.Context, userID int) error
 	GetUserAPIKey(ctx context.Context, userID int, provider string) (string, error)
+	GetUserAPIKeyWithID(ctx context.Context, userID int, provider string) (string, *int, error)
 	SetUserAPIKey(ctx context.Context, userID int, provider, apiKey string) error
 	HasUserAPIKey(ctx context.Context, userID int, provider string) (bool, error)
 	// Role management methods
@@ -409,6 +410,33 @@ func (s *UserService) GetUserAPIKey(ctx context.Context, userID int, provider st
 		return "", contextutils.WrapError(err, "failed to get user API key")
 	}
 	return apiKey, nil
+}
+
+// GetUserAPIKeyWithID retrieves the API key and its ID for a specific provider for a user
+func (s *UserService) GetUserAPIKeyWithID(ctx context.Context, userID int, provider string) (apiKey string, apiKeyID *int, err error) {
+	ctx, span := observability.TraceUserFunction(ctx, "get_user_api_key_with_id", attribute.Int("user.id", userID), attribute.String("user.provider", provider))
+	defer observability.FinishSpan(span, &err)
+
+	// Check if user exists before getting API key
+	user, err := s.GetUserByID(ctx, userID)
+	if err != nil {
+		return "", nil, contextutils.WrapError(err, "failed to check if user exists")
+	}
+	if user == nil {
+		return "", nil, contextutils.WrapError(contextutils.ErrRecordNotFound, "user not found")
+	}
+
+	query := `SELECT id, api_key FROM user_api_keys WHERE user_id = $1 AND provider = $2`
+	var id int
+	var key string
+	err = s.db.QueryRowContext(ctx, query, userID, provider).Scan(&id, &key)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return "", nil, contextutils.WrapError(contextutils.ErrRecordNotFound, "API key for provider not found")
+		}
+		return "", nil, contextutils.WrapError(err, "failed to get user API key with ID")
+	}
+	return key, &id, nil
 }
 
 // SetUserAPIKey sets the API key for a specific provider for a user

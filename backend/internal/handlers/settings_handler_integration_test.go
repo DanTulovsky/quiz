@@ -66,14 +66,15 @@ func setupSettingsIntegrationTest(t *testing.T) (*gin.Engine, *services.UserServ
 	// Create services
 	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
 	userService := services.NewUserServiceWithLogger(db, cfg, logger)
-	aiService := services.NewAIService(cfg, logger)
+	aiService := services.NewAIService(cfg, logger, services.NewNoopUsageStatsService())
 	learningService := services.NewLearningServiceWithLogger(db, cfg, logger)
 	emailService := services.NewEmailService(cfg, logger)
 	storyService := services.NewStoryService(db, cfg, logger)
 	conversationService := services.NewConversationService(db)
 
 	// Create settings handler
-	settingsHandler := NewSettingsHandler(userService, storyService, conversationService, aiService, learningService, emailService, cfg, logger)
+	usageStatsService := services.NewUsageStatsService(cfg, db, logger)
+	settingsHandler := NewSettingsHandler(userService, storyService, conversationService, aiService, learningService, emailService, usageStatsService, cfg, logger)
 
 	// Setup routes
 	v1 := router.Group("/v1")

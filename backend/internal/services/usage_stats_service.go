@@ -29,6 +29,16 @@ type UsageStatsServiceInterface interface {
 	GetUsageStatsByService(ctx context.Context, serviceName string) ([]*UsageStats, error)
 	// GetUsageStatsByMonth returns usage statistics for a specific month
 	GetUsageStatsByMonth(ctx context.Context, year, month int) ([]*UsageStats, error)
+
+	// AI Token usage tracking for users
+	// RecordUserAITokenUsage records AI token usage for a specific user
+	RecordUserAITokenUsage(ctx context.Context, userID int, apiKeyID *int, provider, model, usageType string, promptTokens, completionTokens, totalTokens, requests int) error
+	// GetUserAITokenUsageStats returns AI token usage statistics for a specific user
+	GetUserAITokenUsageStats(ctx context.Context, userID int, startDate, endDate time.Time) ([]*UserUsageStats, error)
+	// GetUserAITokenUsageStatsByDay returns daily aggregated AI token usage for a user
+	GetUserAITokenUsageStatsByDay(ctx context.Context, userID int, startDate, endDate time.Time) ([]*UserUsageStatsDaily, error)
+	// GetUserAITokenUsageStatsByHour returns hourly aggregated AI token usage for a user on a specific day
+	GetUserAITokenUsageStatsByHour(ctx context.Context, userID int, date time.Time) ([]*UserUsageStatsHourly, error)
 }
 
 // UsageStats represents usage statistics for a service in a given month
@@ -41,6 +51,51 @@ type UsageStats struct {
 	RequestsMade   int       `json:"requests_made"`
 	CreatedAt      time.Time `json:"created_at"`
 	UpdatedAt      time.Time `json:"updated_at"`
+}
+
+// UserUsageStats represents detailed usage statistics for a user
+type UserUsageStats struct {
+	ID               int       `json:"id"`
+	UserID           int       `json:"user_id"`
+	APIKeyID         *int      `json:"api_key_id,omitempty"`
+	UsageDate        time.Time `json:"usage_date"`
+	UsageHour        int       `json:"usage_hour"`
+	ServiceName      string    `json:"service_name"`
+	Provider         string    `json:"provider"`
+	Model            string    `json:"model"`
+	UsageType        string    `json:"usage_type"`
+	PromptTokens     int       `json:"prompt_tokens"`
+	CompletionTokens int       `json:"completion_tokens"`
+	TotalTokens      int       `json:"total_tokens"`
+	RequestsMade     int       `json:"requests_made"`
+	CreatedAt        time.Time `json:"created_at"`
+	UpdatedAt        time.Time `json:"updated_at"`
+}
+
+// UserUsageStatsDaily represents daily aggregated usage for a user
+type UserUsageStatsDaily struct {
+	UsageDate             time.Time `json:"usage_date"`
+	ServiceName           string    `json:"service_name"`
+	Provider              string    `json:"provider"`
+	Model                 string    `json:"model"`
+	UsageType             string    `json:"usage_type"`
+	TotalPromptTokens     int       `json:"total_prompt_tokens"`
+	TotalCompletionTokens int       `json:"total_completion_tokens"`
+	TotalTokens           int       `json:"total_tokens"`
+	TotalRequests         int       `json:"total_requests"`
+}
+
+// UserUsageStatsHourly represents hourly usage for a user on a specific day
+type UserUsageStatsHourly struct {
+	UsageHour             int    `json:"usage_hour"`
+	ServiceName           string `json:"service_name"`
+	Provider              string `json:"provider"`
+	Model                 string `json:"model"`
+	UsageType             string `json:"usage_type"`
+	TotalPromptTokens     int    `json:"total_prompt_tokens"`
+	TotalCompletionTokens int    `json:"total_completion_tokens"`
+	TotalTokens           int    `json:"total_tokens"`
+	TotalRequests         int    `json:"total_requests"`
 }
 
 // UsageStatsService handles usage statistics tracking and quota management
@@ -117,6 +172,43 @@ func (s *UsageStatsService) RecordUsage(ctx context.Context, serviceName, usageT
 	_, err = s.db.ExecContext(ctx, query, serviceName, usageType, currentMonth, characters, requests)
 	if err != nil {
 		return contextutils.WrapError(err, "failed to record usage")
+	}
+
+	return nil
+}
+
+// RecordUserAITokenUsage records AI token usage for a specific user
+func (s *UsageStatsService) RecordUserAITokenUsage(ctx context.Context, userID int, apiKeyID *int, provider, model, usageType string, promptTokens, completionTokens, totalTokens, requests int) (err error) {
+	ctx, span := observability.TraceUsageStatsFunction(ctx, "record_user_ai_token_usage",
+		attribute.Int("user_id", userID),
+		attribute.String("provider", provider),
+		attribute.String("model", model),
+		attribute.String("usage_type", usageType),
+		attribute.Int("prompt_tokens", promptTokens),
+		attribute.Int("completion_tokens", completionTokens),
+		attribute.Int("total_tokens", totalTokens),
+		attribute.Int("requests", requests),
+	)
+	defer observability.FinishSpan(span, &err)
+
+	now := time.Now()
+	usageDate := now.Truncate(24 * time.Hour) // Start of day
+	usageHour := now.Hour()
+
+	query := `
+		INSERT INTO user_usage_stats (user_id, api_key_id, usage_date, usage_hour, service_name, provider, model, usage_type, prompt_tokens, completion_tokens, total_tokens, requests_made, updated_at)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, NOW())
+		ON CONFLICT (user_id, api_key_id, usage_date, usage_hour, service_name, provider, model, usage_type)
+		DO UPDATE SET
+			prompt_tokens = user_usage_stats.prompt_tokens + $9,
+			completion_tokens = user_usage_stats.completion_tokens + $10,
+			total_tokens = user_usage_stats.total_tokens + $11,
+			requests_made = user_usage_stats.requests_made + $12,
+			updated_at = NOW()`
+
+	_, err = s.db.ExecContext(ctx, query, userID, apiKeyID, usageDate, usageHour, "ai", provider, model, usageType, promptTokens, completionTokens, totalTokens, requests)
+	if err != nil {
+		return contextutils.WrapError(err, "failed to record user ai token usage")
 	}
 
 	return nil
@@ -303,6 +395,161 @@ func (s *UsageStatsService) GetUsageStatsByMonth(ctx context.Context, year, mont
 	return stats, nil
 }
 
+// GetUserAITokenUsageStats returns AI token usage statistics for a specific user
+func (s *UsageStatsService) GetUserAITokenUsageStats(ctx context.Context, userID int, startDate, endDate time.Time) (stats []*UserUsageStats, err error) {
+	ctx, span := observability.TraceUsageStatsFunction(ctx, "get_user_ai_token_usage_stats",
+		attribute.Int("user_id", userID),
+		attribute.String("start_date", startDate.Format("2006-01-02")),
+		attribute.String("end_date", endDate.Format("2006-01-02")),
+	)
+	defer observability.FinishSpan(span, &err)
+
+	query := `
+		SELECT id, user_id, api_key_id, usage_date, usage_hour, service_name, provider, model, usage_type, prompt_tokens, completion_tokens, total_tokens, requests_made, created_at, updated_at
+		FROM user_usage_stats
+		WHERE user_id = $1 AND usage_date >= $2 AND usage_date <= $3
+		ORDER BY usage_date DESC, usage_hour DESC`
+
+	rows, err := s.db.QueryContext(ctx, query, userID, startDate, endDate)
+	if err != nil {
+		return nil, contextutils.WrapError(err, "failed to query user usage stats")
+	}
+	defer func() {
+		if closeErr := rows.Close(); closeErr != nil {
+			s.logger.Warn(ctx, "Failed to close user usage stats query", map[string]interface{}{
+				"error": closeErr.Error(),
+			})
+		}
+	}()
+
+	stats = []*UserUsageStats{}
+	for rows.Next() {
+		var stat UserUsageStats
+		err = rows.Scan(
+			&stat.ID, &stat.UserID, &stat.APIKeyID, &stat.UsageDate, &stat.UsageHour,
+			&stat.ServiceName, &stat.Provider, &stat.Model, &stat.UsageType,
+			&stat.PromptTokens, &stat.CompletionTokens, &stat.TotalTokens, &stat.RequestsMade,
+			&stat.CreatedAt, &stat.UpdatedAt,
+		)
+		if err != nil {
+			return nil, contextutils.WrapError(err, "failed to scan user usage stats")
+		}
+		stats = append(stats, &stat)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, contextutils.WrapError(err, "error iterating user usage stats")
+	}
+
+	return stats, nil
+}
+
+// GetUserAITokenUsageStatsByDay returns daily aggregated AI token usage for a user
+func (s *UsageStatsService) GetUserAITokenUsageStatsByDay(ctx context.Context, userID int, startDate, endDate time.Time) (stats []*UserUsageStatsDaily, err error) {
+	ctx, span := observability.TraceUsageStatsFunction(ctx, "get_user_ai_token_usage_stats_by_day",
+		attribute.Int("user_id", userID),
+		attribute.String("start_date", startDate.Format("2006-01-02")),
+		attribute.String("end_date", endDate.Format("2006-01-02")),
+	)
+	defer observability.FinishSpan(span, &err)
+
+	query := `
+		SELECT usage_date, service_name, provider, model, usage_type,
+		       SUM(prompt_tokens) as total_prompt_tokens,
+		       SUM(completion_tokens) as total_completion_tokens,
+		       SUM(total_tokens) as total_tokens,
+		       SUM(requests_made) as total_requests
+		FROM user_usage_stats
+		WHERE user_id = $1 AND usage_date >= $2 AND usage_date <= $3
+		GROUP BY usage_date, service_name, provider, model, usage_type
+		ORDER BY usage_date DESC, service_name, provider, model, usage_type`
+
+	rows, err := s.db.QueryContext(ctx, query, userID, startDate, endDate)
+	if err != nil {
+		return nil, contextutils.WrapError(err, "failed to query user daily usage stats")
+	}
+	defer func() {
+		if closeErr := rows.Close(); closeErr != nil {
+			s.logger.Warn(ctx, "Failed to close user daily usage stats query", map[string]interface{}{
+				"error": closeErr.Error(),
+			})
+		}
+	}()
+
+	stats = []*UserUsageStatsDaily{}
+	for rows.Next() {
+		var stat UserUsageStatsDaily
+		err = rows.Scan(
+			&stat.UsageDate, &stat.ServiceName, &stat.Provider, &stat.Model, &stat.UsageType,
+			&stat.TotalPromptTokens, &stat.TotalCompletionTokens, &stat.TotalTokens, &stat.TotalRequests,
+		)
+		if err != nil {
+			return nil, contextutils.WrapError(err, "failed to scan user daily usage stats")
+		}
+		stats = append(stats, &stat)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, contextutils.WrapError(err, "error iterating user daily usage stats")
+	}
+
+	return stats, nil
+}
+
+// GetUserAITokenUsageStatsByHour returns hourly aggregated AI token usage for a user on a specific day
+func (s *UsageStatsService) GetUserAITokenUsageStatsByHour(ctx context.Context, userID int, date time.Time) (stats []*UserUsageStatsHourly, err error) {
+	ctx, span := observability.TraceUsageStatsFunction(ctx, "get_user_ai_token_usage_stats_by_hour",
+		attribute.Int("user_id", userID),
+		attribute.String("date", date.Format("2006-01-02")),
+	)
+	defer observability.FinishSpan(span, &err)
+
+	startOfDay := date.Truncate(24 * time.Hour)
+	endOfDay := startOfDay.Add(24 * time.Hour).Add(-time.Nanosecond)
+
+	query := `
+		SELECT usage_hour, service_name, provider, model, usage_type,
+		       SUM(prompt_tokens) as total_prompt_tokens,
+		       SUM(completion_tokens) as total_completion_tokens,
+		       SUM(total_tokens) as total_tokens,
+		       SUM(requests_made) as total_requests
+		FROM user_usage_stats
+		WHERE user_id = $1 AND usage_date >= $2 AND usage_date <= $3
+		GROUP BY usage_hour, service_name, provider, model, usage_type
+		ORDER BY usage_hour, service_name, provider, model, usage_type`
+
+	rows, err := s.db.QueryContext(ctx, query, userID, startOfDay, endOfDay)
+	if err != nil {
+		return nil, contextutils.WrapError(err, "failed to query user hourly usage stats")
+	}
+	defer func() {
+		if closeErr := rows.Close(); closeErr != nil {
+			s.logger.Warn(ctx, "Failed to close user hourly usage stats query", map[string]interface{}{
+				"error": closeErr.Error(),
+			})
+		}
+	}()
+
+	stats = []*UserUsageStatsHourly{}
+	for rows.Next() {
+		var stat UserUsageStatsHourly
+		err = rows.Scan(
+			&stat.UsageHour, &stat.ServiceName, &stat.Provider, &stat.Model, &stat.UsageType,
+			&stat.TotalPromptTokens, &stat.TotalCompletionTokens, &stat.TotalTokens, &stat.TotalRequests,
+		)
+		if err != nil {
+			return nil, contextutils.WrapError(err, "failed to scan user hourly usage stats")
+		}
+		stats = append(stats, &stat)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, contextutils.WrapError(err, "error iterating user hourly usage stats")
+	}
+
+	return stats, nil
+}
+
 // NoopUsageStatsService is a no-operation implementation for testing and when quotas are disabled
 type NoopUsageStatsService struct{}
 
@@ -349,4 +596,24 @@ func (s *NoopUsageStatsService) GetUsageStatsByService(_ context.Context, _ stri
 // GetUsageStatsByMonth returns usage statistics for a specific month
 func (s *NoopUsageStatsService) GetUsageStatsByMonth(_ context.Context, _, _ int) ([]*UsageStats, error) {
 	return []*UsageStats{}, nil
+}
+
+// RecordUserAITokenUsage always returns nil (no usage recording)
+func (s *NoopUsageStatsService) RecordUserAITokenUsage(_ context.Context, _ int, _ *int, _, _, _ string, _, _, _, _ int) error {
+	return nil
+}
+
+// GetUserAITokenUsageStats returns empty stats
+func (s *NoopUsageStatsService) GetUserAITokenUsageStats(_ context.Context, _ int, _, _ time.Time) ([]*UserUsageStats, error) {
+	return []*UserUsageStats{}, nil
+}
+
+// GetUserAITokenUsageStatsByDay returns empty stats
+func (s *NoopUsageStatsService) GetUserAITokenUsageStatsByDay(_ context.Context, _ int, _, _ time.Time) ([]*UserUsageStatsDaily, error) {
+	return []*UserUsageStatsDaily{}, nil
+}
+
+// GetUserAITokenUsageStatsByHour returns empty stats
+func (s *NoopUsageStatsService) GetUserAITokenUsageStatsByHour(_ context.Context, _ int, _ time.Time) ([]*UserUsageStatsHourly, error) {
+	return []*UserUsageStatsHourly{}, nil
 }

@@ -64,7 +64,7 @@ func (suite *UserAdminIntegrationTestSuite) SetupSuite() {
 	suite.userService = services.NewUserServiceWithLogger(suite.db, suite.cfg, logger)
 	learningService := services.NewLearningServiceWithLogger(suite.db, suite.cfg, logger)
 	questionService := services.NewQuestionServiceWithLogger(suite.db, learningService, suite.cfg, logger)
-	aiService := services.NewAIService(suite.cfg, logger)
+	aiService := services.NewAIService(suite.cfg, logger, services.NewNoopUsageStatsService())
 	workerService := services.NewWorkerServiceWithLogger(suite.db, logger)
 	oauthService := services.NewOAuthServiceWithLogger(suite.cfg, logger)
 

@@ -20,7 +20,8 @@ type ProviderConfig struct {
 	Name              string    `json:"name" yaml:"name"`
 	Code              string    `json:"code" yaml:"code"`
 	URL               string    `json:"url,omitempty" yaml:"url,omitempty"`
-	SupportsGrammar   bool      `json:"supports_grammar,omitempty" yaml:"supports_grammar,omitempty"`
+	SupportsGrammar   bool      `json:"supports_grammar" yaml:"supports_grammar"`
+	UsageSupported    bool      `json:"usage_supported" yaml:"usage_supported"`
 	QuestionBatchSize int       `json:"question_batch_size,omitempty" yaml:"question_batch_size,omitempty"`
 	Models            []AIModel `json:"models" yaml:"models"`
 }

@@ -1,6 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getV1QuizProgress } from '../api/api';
+import {
+  getV1QuizProgress,
+  getV1QuizAiTokenUsageDaily,
+  UserUsageStatsDaily,
+} from '../api/api';
 import { showNotificationWithClean } from '../notifications';
 import {
   Container,
@@ -32,7 +36,8 @@ import {
   IconBrain,
   IconInfoCircle,
 } from '@tabler/icons-react';
-import { getV1QuizQuestionId } from '../api/api';
+import { getV1QuizQuestionId, useGetV1SettingsAiProviders } from '../api/api';
+import { useAuth } from '../hooks/useAuth';
 
 interface LocalUserProgress {
   current_level: string;
@@ -591,12 +596,98 @@ const RecentActivityInfo: React.FC = () => (
   </Stack>
 );
 
+const TokenUsageInfo: React.FC = () => (
+  <Stack gap='md'>
+    <Title order={4}>AI Token Usage</Title>
+    <Text size='sm'>
+      Track your AI usage across all AI-powered features including question
+      generation, chat conversations, and story creation.
+    </Text>
+    <Text size='sm' c='dimmed'>
+      This helps you monitor your AI consumption, understand usage patterns, and
+      manage your API costs effectively.
+    </Text>
+    <Text size='sm' fw={600}>
+      What you'll see:
+    </Text>
+    <List size='sm' spacing='xs'>
+      <List.Item>
+        <strong>Total Tokens:</strong> Sum of all tokens used in the last 30
+        days
+      </List.Item>
+      <List.Item>
+        <strong>Total Requests:</strong> Number of AI API calls made
+      </List.Item>
+      <List.Item>
+        <strong>Avg Tokens/Request:</strong> Average tokens per API call
+      </List.Item>
+      <List.Item>
+        <strong>Daily Breakdown:</strong> Usage trends over time
+      </List.Item>
+    </List>
+    <Text size='sm' fw={600}>
+      Usage types tracked:
+    </Text>
+    <List size='sm' spacing='xs'>
+      <List.Item>Question Generation</List.Item>
+      <List.Item>Chat Conversations</List.Item>
+      <List.Item>Story Generation</List.Item>
+      <List.Item>Story Questions</List.Item>
+    </List>
+    <Text size='sm' fw={600}>
+      Provider compatibility:
+    </Text>
+    <List size='sm' spacing='xs'>
+      <List.Item>
+        <strong>Supported:</strong>{' '}
+        {providersData?.providers
+          ?.filter(p => p.usage_supported)
+          .map(p => p.name)
+          .join(', ') || 'Loading...'}
+      </List.Item>
+      <List.Item>
+        <strong>Not supported:</strong>{' '}
+        {providersData?.providers
+          ?.filter(p => !p.usage_supported)
+          .map(p => p.name)
+          .join(', ') || 'Loading...'}
+      </List.Item>
+    </List>
+    <Text size='sm' fw={600}>
+      Tips for usage management:
+    </Text>
+    <List size='sm' spacing='xs'>
+      <List.Item>Monitor your daily usage patterns</List.Item>
+      <List.Item>Identify peak usage times</List.Item>
+      <List.Item>Optimize prompts to reduce token consumption</List.Item>
+      <List.Item>Review usage trends to plan API costs</List.Item>
+    </List>
+  </Stack>
+);
+
 const ProgressPage: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [progress, setProgress] = useState<LocalUserProgress | null>(null);
+  const [tokenUsage, setTokenUsage] = useState<UserUsageStatsDaily[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [modalOpened, setModalOpened] = useState(false);
   const [modalContent, setModalContent] = useState<React.ReactNode>(null);
+
+  // Get provider information from API
+  const { data: providersData } = useGetV1SettingsAiProviders();
+
+  // Create provider usage support mapping from API data
+  const providerUsageSupport = useMemo(() => {
+    if (!providersData?.providers) return {};
+    return providersData.providers.reduce(
+      (acc, provider) => {
+        acc[provider.code || ''] = provider.usage_supported ?? true;
+        return acc;
+      },
+      {} as Record<string, boolean>
+    );
+  }, [providersData]);
 
   useEffect(() => {
     loadProgress();
@@ -609,8 +700,20 @@ const ProgressPage: React.FC = () => {
 
   const loadProgress = async () => {
     try {
-      const data = await getV1QuizProgress();
-      setProgress(data as unknown as LocalUserProgress);
+      // Load progress data
+      const progressData = await getV1QuizProgress();
+      setProgress(progressData as unknown as LocalUserProgress);
+
+      // Load token usage data for the last 30 days
+      const endDate = new Date();
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - 30);
+
+      const tokenUsageData = await getV1QuizAiTokenUsageDaily({
+        startDate: startDate.toISOString().split('T')[0],
+        endDate: endDate.toISOString().split('T')[0],
+      });
+      setTokenUsage(tokenUsageData);
     } catch (error: unknown) {
       const message =
         (error as { response?: { data?: { error?: string } } })?.response?.data
@@ -1183,6 +1286,146 @@ const ProgressPage: React.FC = () => {
             </Stack>
           </Card>
         ) : null}
+
+        {/* Token Usage Section */}
+        <Card
+          shadow='sm'
+          padding='xl'
+          radius='lg'
+          withBorder
+          style={{ background: 'var(--mantine-color-body)' }}
+        >
+          <Stack gap='md'>
+            <Group justify='space-between' align='center' mb={2}>
+              <Title order={3} size='h4'>
+                AI Token Usage
+              </Title>
+              <ActionIcon
+                size='sm'
+                variant='subtle'
+                color='gray'
+                onClick={() => openInfoModal(<TokenUsageInfo />)}
+              >
+                <IconInfoCircle size={16} />
+              </ActionIcon>
+            </Group>
+            <Divider mb={4} />
+
+            {tokenUsage && tokenUsage.length > 0 ? (
+              <Stack gap='md'>
+                {/* Summary Cards */}
+                <Group align='flex-start' gap={16} wrap='wrap'>
+                  <Card
+                    shadow='sm'
+                    padding='md'
+                    radius='md'
+                    withBorder
+                    style={{
+                      flex: 1,
+                      minWidth: 200,
+                      background: 'var(--mantine-color-body)',
+                    }}
+                  >
+                    <Stack gap='xs' align='center'>
+                      <Text size='sm' c='dimmed'>
+                        Total Tokens (30 days)
+                      </Text>
+                      <Text size='xl' fw={700}>
+                        {tokenUsage
+                          .reduce((sum, day) => sum + day.total_tokens, 0)
+                          .toLocaleString()}
+                      </Text>
+                    </Stack>
+                  </Card>
+
+                  <Card
+                    shadow='sm'
+                    padding='md'
+                    radius='md'
+                    withBorder
+                    style={{
+                      flex: 1,
+                      minWidth: 200,
+                      background: 'var(--mantine-color-body)',
+                    }}
+                  >
+                    <Stack gap='xs' align='center'>
+                      <Text size='sm' c='dimmed'>
+                        Total Requests (30 days)
+                      </Text>
+                      <Text size='xl' fw={700}>
+                        {tokenUsage.reduce(
+                          (sum, day) => sum + day.total_requests,
+                          0
+                        )}
+                      </Text>
+                    </Stack>
+                  </Card>
+
+                  <Card
+                    shadow='sm'
+                    padding='md'
+                    radius='md'
+                    withBorder
+                    style={{
+                      flex: 1,
+                      minWidth: 200,
+                      background: 'var(--mantine-color-body)',
+                    }}
+                  >
+                    <Stack gap='xs' align='center'>
+                      <Text size='sm' c='dimmed'>
+                        Avg Tokens/Request
+                      </Text>
+                      <Text size='xl' fw={700}>
+                        {tokenUsage.length > 0
+                          ? Math.round(
+                              tokenUsage.reduce(
+                                (sum, day) => sum + day.total_tokens,
+                                0
+                              ) /
+                                tokenUsage.reduce(
+                                  (sum, day) => sum + day.total_requests,
+                                  0
+                                )
+                            )
+                          : 0}
+                      </Text>
+                    </Stack>
+                  </Card>
+                </Group>
+
+                {/* Daily Usage Chart Placeholder */}
+                <Card
+                  shadow='sm'
+                  padding='md'
+                  radius='md'
+                  withBorder
+                  style={{
+                    background: 'var(--mantine-color-body)',
+                    minHeight: 200,
+                  }}
+                >
+                  <Stack gap='xs' align='center' justify='center' h={200}>
+                    <Text size='sm' c='dimmed'>
+                      Token Usage Chart
+                    </Text>
+                    <Text size='xs' c='dimmed'>
+                      Chart implementation would go here
+                    </Text>
+                  </Stack>
+                </Card>
+              </Stack>
+            ) : (
+              <Text c='dimmed' size='sm'>
+                {user?.ai_provider &&
+                providerUsageSupport[user.ai_provider] === false
+                  ? `Token usage tracking is not available for ${user.ai_provider} provider. Usage data is only tracked for providers that support it.`
+                  : 'No token usage data available yet. Complete some AI-powered activities to see your usage statistics!'}
+              </Text>
+            )}
+          </Stack>
+        </Card>
 
         {/* Areas to Improve & Recent Activity - side by side */}
         <Group align='flex-start' gap={24} wrap='wrap'>
