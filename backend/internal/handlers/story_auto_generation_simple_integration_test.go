@@ -229,16 +229,43 @@ func (suite *StoryAutoGenerationSimpleIntegrationTestSuite) TestToggleAutoGenera
 	assert.Equal(suite.T(), "Auto-generation resumed", *toggleResp2.Message)
 
 	// Test 3: Verify the state persisted by checking the story directly
-	req, _ = http.NewRequest("GET", fmt.Sprintf("/v1/story/%d", storyID), nil)
-	w = httptest.NewRecorder()
-	router.ServeHTTP(w, req)
+	req3, _ := http.NewRequest("GET", fmt.Sprintf("/v1/story/%d", storyID), nil)
+	w3 := httptest.NewRecorder()
+	router.ServeHTTP(w3, req3)
 
-	assert.Equal(suite.T(), http.StatusOK, w.Code)
+	assert.Equal(suite.T(), http.StatusOK, w3.Code)
 
 	var story api.StoryWithSections
-	err = json.Unmarshal(w.Body.Bytes(), &story)
+	err = json.Unmarshal(w3.Body.Bytes(), &story)
 	require.NoError(suite.T(), err)
+	require.NotNil(suite.T(), story.AutoGenerationPaused, "auto_generation_paused field should be present")
 	assert.False(suite.T(), *story.AutoGenerationPaused, "State should be false after toggle")
+
+	// Test 4: Toggle back to true and verify it actually changes
+	toggleReq3 := api.ToggleAutoGenerationRequest{
+		Paused: true,
+	}
+	reqBody3, _ := json.Marshal(toggleReq3)
+
+	req4, _ := http.NewRequest("POST", fmt.Sprintf("/v1/story/%d/toggle-auto-generation", storyID), bytes.NewBuffer(reqBody3))
+	req4.Header.Set("Content-Type", "application/json")
+	w4 := httptest.NewRecorder()
+	router.ServeHTTP(w4, req4)
+
+	assert.Equal(suite.T(), http.StatusOK, w4.Code)
+
+	// Verify it's now true
+	req5, _ := http.NewRequest("GET", fmt.Sprintf("/v1/story/%d", storyID), nil)
+	w5 := httptest.NewRecorder()
+	router.ServeHTTP(w5, req5)
+
+	assert.Equal(suite.T(), http.StatusOK, w5.Code)
+
+	var storyAfterToggle api.StoryWithSections
+	err = json.Unmarshal(w5.Body.Bytes(), &storyAfterToggle)
+	require.NoError(suite.T(), err)
+	require.NotNil(suite.T(), storyAfterToggle.AutoGenerationPaused, "auto_generation_paused field should be present")
+	assert.True(suite.T(), *storyAfterToggle.AutoGenerationPaused, "State should be true after toggle back")
 }
 
 func (suite *StoryAutoGenerationSimpleIntegrationTestSuite) TestToggleAutoGeneration_ErrorCases() {
