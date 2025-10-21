@@ -187,7 +187,11 @@ func (s *UsageStatsService) GetAllUsageStats(ctx context.Context) (stats []*Usag
 	if err != nil {
 		return nil, contextutils.WrapError(err, "failed to query usage stats")
 	}
-	defer rows.Close()
+	defer func() {
+		if closeErr := rows.Close(); closeErr != nil {
+			s.logger.Error(ctx, "Failed to close rows", closeErr, map[string]interface{}{})
+		}
+	}()
 
 	stats = []*UsageStats{}
 	for rows.Next() {
@@ -226,7 +230,11 @@ func (s *UsageStatsService) GetUsageStatsByService(ctx context.Context, serviceN
 	if err != nil {
 		return nil, contextutils.WrapError(err, "failed to query usage stats by service")
 	}
-	defer rows.Close()
+	defer func() {
+		if closeErr := rows.Close(); closeErr != nil {
+			s.logger.Error(ctx, "Failed to close rows", closeErr, map[string]interface{}{})
+		}
+	}()
 
 	stats = []*UsageStats{}
 	for rows.Next() {
@@ -269,7 +277,11 @@ func (s *UsageStatsService) GetUsageStatsByMonth(ctx context.Context, year, mont
 	if err != nil {
 		return nil, contextutils.WrapError(err, "failed to query usage stats by month")
 	}
-	defer rows.Close()
+	defer func() {
+		if closeErr := rows.Close(); closeErr != nil {
+			s.logger.Error(ctx, "Failed to close rows", closeErr, map[string]interface{}{})
+		}
+	}()
 
 	stats = []*UsageStats{}
 	for rows.Next() {
@@ -300,41 +312,41 @@ func NewNoopUsageStatsService() *NoopUsageStatsService {
 }
 
 // CheckQuota always returns nil (no quota checking)
-func (s *NoopUsageStatsService) CheckQuota(ctx context.Context, serviceName, usageType string, characters int) (err error) {
+func (s *NoopUsageStatsService) CheckQuota(_ context.Context, _, _ string, _ int) (err error) {
 	return nil
 }
 
 // RecordUsage always returns nil (no usage recording)
-func (s *NoopUsageStatsService) RecordUsage(ctx context.Context, serviceName, usageType string, characters, requests int) (err error) {
+func (s *NoopUsageStatsService) RecordUsage(_ context.Context, _, _ string, _, _ int) (err error) {
 	return nil
 }
 
 // GetCurrentMonthUsage returns empty stats
-func (s *NoopUsageStatsService) GetCurrentMonthUsage(ctx context.Context, serviceName, usageType string) (stats *UsageStats, err error) {
+func (s *NoopUsageStatsService) GetCurrentMonthUsage(_ context.Context, _, _ string) (stats *UsageStats, err error) {
 	return &UsageStats{
-		ServiceName:    serviceName,
-		UsageType:      usageType,
+		ServiceName:    "",
+		UsageType:      "",
 		CharactersUsed: 0,
 		RequestsMade:   0,
 	}, nil
 }
 
 // GetMonthlyQuota always returns 0 (no quota limit)
-func (s *NoopUsageStatsService) GetMonthlyQuota(serviceName string) int64 {
+func (s *NoopUsageStatsService) GetMonthlyQuota(_ string) int64 {
 	return 0
 }
 
 // GetAllUsageStats returns all usage statistics (for admin interface)
-func (s *NoopUsageStatsService) GetAllUsageStats(ctx context.Context) ([]*UsageStats, error) {
+func (s *NoopUsageStatsService) GetAllUsageStats(_ context.Context) ([]*UsageStats, error) {
 	return []*UsageStats{}, nil
 }
 
 // GetUsageStatsByService returns usage statistics for a specific service
-func (s *NoopUsageStatsService) GetUsageStatsByService(ctx context.Context, serviceName string) ([]*UsageStats, error) {
+func (s *NoopUsageStatsService) GetUsageStatsByService(_ context.Context, _ string) ([]*UsageStats, error) {
 	return []*UsageStats{}, nil
 }
 
 // GetUsageStatsByMonth returns usage statistics for a specific month
-func (s *NoopUsageStatsService) GetUsageStatsByMonth(ctx context.Context, year, month int) ([]*UsageStats, error) {
+func (s *NoopUsageStatsService) GetUsageStatsByMonth(_ context.Context, _, _ int) ([]*UsageStats, error) {
 	return []*UsageStats{}, nil
 }
