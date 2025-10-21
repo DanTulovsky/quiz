@@ -154,7 +154,7 @@ func (s *StoryService) GetUserStories(ctx context.Context, userID uint, includeA
 	query := `
 		SELECT id, user_id, title, language, subject, author_style, time_period, genre, tone,
 		       character_names, custom_instructions, section_length_override, status,
-		       last_section_generated_at, created_at, updated_at
+		       auto_generation_paused, last_section_generated_at, created_at, updated_at
 		FROM stories
 		WHERE user_id = $1 AND language = $2`
 
@@ -180,7 +180,8 @@ func (s *StoryService) GetUserStories(ctx context.Context, userID uint, includeA
 			&story.ID, &story.UserID, &story.Title, &story.Language, &story.Subject,
 			&story.AuthorStyle, &story.TimePeriod, &story.Genre, &story.Tone,
 			&story.CharacterNames, &story.CustomInstructions, &story.SectionLengthOverride,
-			&story.Status, &story.LastSectionGeneratedAt,
+			&story.Status, &story.AutoGenerationPaused,
+			&story.LastSectionGeneratedAt,
 			&story.CreatedAt, &story.UpdatedAt,
 		)
 		if err != nil {
@@ -212,7 +213,7 @@ func (s *StoryService) GetCurrentStory(ctx context.Context, userID uint) (*model
 	query := `
 		SELECT id, user_id, title, language, subject, author_style, time_period, genre, tone,
 		       character_names, custom_instructions, section_length_override, status,
-		       last_section_generated_at, created_at, updated_at
+		       auto_generation_paused, last_section_generated_at, created_at, updated_at
 		FROM stories
 		WHERE user_id = $1 AND language = $2 AND status = $3 AND status != $4`
 
@@ -221,7 +222,8 @@ func (s *StoryService) GetCurrentStory(ctx context.Context, userID uint) (*model
 		&story.ID, &story.UserID, &story.Title, &story.Language, &story.Subject,
 		&story.AuthorStyle, &story.TimePeriod, &story.Genre, &story.Tone,
 		&story.CharacterNames, &story.CustomInstructions, &story.SectionLengthOverride,
-		&story.Status, &story.LastSectionGeneratedAt,
+		&story.Status, &story.AutoGenerationPaused,
+		&story.LastSectionGeneratedAt,
 		&story.CreatedAt, &story.UpdatedAt,
 	)
 	if err != nil {
@@ -248,7 +250,7 @@ func (s *StoryService) GetStory(ctx context.Context, storyID, userID uint) (*mod
 	query := `
 		SELECT id, user_id, title, language, subject, author_style, time_period, genre, tone,
 		       character_names, custom_instructions, section_length_override, status,
-		       last_section_generated_at, created_at, updated_at
+		       auto_generation_paused, last_section_generated_at, created_at, updated_at
 		FROM stories
 		WHERE id = $1 AND user_id = $2`
 
@@ -257,7 +259,8 @@ func (s *StoryService) GetStory(ctx context.Context, storyID, userID uint) (*mod
 		&story.ID, &story.UserID, &story.Title, &story.Language, &story.Subject,
 		&story.AuthorStyle, &story.TimePeriod, &story.Genre, &story.Tone,
 		&story.CharacterNames, &story.CustomInstructions, &story.SectionLengthOverride,
-		&story.Status, &story.LastSectionGeneratedAt,
+		&story.Status, &story.AutoGenerationPaused,
+		&story.LastSectionGeneratedAt,
 		&story.CreatedAt, &story.UpdatedAt,
 	)
 	if err != nil {
