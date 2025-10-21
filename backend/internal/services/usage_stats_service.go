@@ -158,7 +158,7 @@ func (s *UsageStatsService) RecordUsage(ctx context.Context, serviceName, usageT
 	)
 	defer observability.FinishSpan(span, &err)
 
-	currentMonth := time.Now().Truncate(24*time.Hour).AddDate(0, 0, -time.Now().Day()+1) // First day of current month
+	currentMonth := time.Now().UTC().Truncate(24*time.Hour).AddDate(0, 0, -time.Now().UTC().Day()+1) // First day of current month
 
 	query := `
 		INSERT INTO usage_stats (service_name, usage_type, usage_month, characters_used, requests_made, updated_at)
@@ -222,7 +222,7 @@ func (s *UsageStatsService) GetCurrentMonthUsage(ctx context.Context, serviceNam
 	)
 	defer observability.FinishSpan(span, &err)
 
-	currentMonth := time.Now().Truncate(24*time.Hour).AddDate(0, 0, -time.Now().Day()+1) // First day of current month
+	currentMonth := time.Now().UTC().Truncate(24*time.Hour).AddDate(0, 0, -time.Now().UTC().Day()+1) // First day of current month
 
 	query := `
 		SELECT id, service_name, usage_type, usage_month, characters_used, requests_made, created_at, updated_at
