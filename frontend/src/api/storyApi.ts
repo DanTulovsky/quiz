@@ -115,6 +115,17 @@ export const exportStoryPDF = async (storyId: number): Promise<Blob> => {
   return getV1StoryIdExport(storyId);
 };
 
+/**
+ * Toggle auto-generation for a story
+ */
+export const toggleAutoGeneration = async (
+  storyId: number,
+  paused: boolean
+): Promise<void> => {
+  const { postV1StoryIdToggleAutoGeneration } = await import('./api');
+  await postV1StoryIdToggleAutoGeneration(storyId, { paused });
+};
+
 // Re-export types for convenience
 export type {
   Story,

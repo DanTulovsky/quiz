@@ -26,6 +26,7 @@ type StoryServiceInterface interface {
 	ArchiveStory(ctx context.Context, storyID, userID uint) error
 	CompleteStory(ctx context.Context, storyID, userID uint) error
 	SetCurrentStory(ctx context.Context, storyID, userID uint) error
+	ToggleAutoGeneration(ctx context.Context, storyID, userID uint, paused bool) error
 	DeleteStory(ctx context.Context, storyID, userID uint) error
 	DeleteAllStoriesForUser(ctx context.Context, userID uint) error
 	FixCurrentStoryConstraint(ctx context.Context) error
@@ -172,7 +173,7 @@ func (s *StoryService) GetUserStories(ctx context.Context, userID uint, includeA
 	}
 	defer func() { _ = rows.Close() }()
 
-	var stories []models.Story
+	stories := []models.Story{}
 	for rows.Next() {
 		var story models.Story
 		err := rows.Scan(
@@ -329,6 +330,28 @@ func (s *StoryService) CompleteStory(ctx context.Context, storyID, userID uint) 
 		map[string]interface{}{
 			"story_id": storyID,
 			"user_id":  userID,
+		})
+
+	return nil
+}
+
+// ToggleAutoGeneration toggles the auto-generation pause state for a story
+func (s *StoryService) ToggleAutoGeneration(ctx context.Context, storyID, userID uint, paused bool) error {
+	if err := s.validateStoryOwnership(ctx, storyID, userID); err != nil {
+		return err
+	}
+
+	query := "UPDATE stories SET auto_generation_paused = $1, updated_at = NOW() WHERE id = $2"
+	_, err := s.db.ExecContext(ctx, query, paused, storyID)
+	if err != nil {
+		return contextutils.WrapErrorf(err, "failed to toggle auto-generation")
+	}
+
+	s.logger.Info(context.Background(), "Story auto-generation toggled",
+		map[string]interface{}{
+			"story_id": storyID,
+			"user_id":  userID,
+			"paused":   paused,
 		})
 
 	return nil
@@ -770,7 +793,7 @@ func (s *StoryService) GetSectionQuestions(ctx context.Context, sectionID uint) 
 	}
 	defer func() { _ = rows.Close() }()
 
-	var questions []models.StorySectionQuestion
+	questions := []models.StorySectionQuestion{}
 	for rows.Next() {
 		var question models.StorySectionQuestion
 		var optionsJSON []byte
@@ -874,7 +897,7 @@ func (s *StoryService) GetRandomQuestions(ctx context.Context, sectionID uint, c
 	}
 	defer func() { _ = rows.Close() }()
 
-	var questions []models.StorySectionQuestion
+	questions := []models.StorySectionQuestion{}
 	for rows.Next() {
 		var question models.StorySectionQuestion
 		var optionsJSON []byte
@@ -1124,9 +1147,13 @@ func (s *StoryService) HasUserViewedLatestSection(ctx context.Context, userID ui
 	if err != nil {
 		return false, contextutils.WrapErrorf(err, "failed to get current story")
 	}
-	if story == nil || len(story.Sections) == 0 {
-		// No current story or no sections yet - can't have viewed anything
+	if story == nil {
+		// No current story - can't generate anything
 		return false, nil
+	}
+	if len(story.Sections) == 0 {
+		// Story exists but has no sections yet - allow first section generation
+		return true, nil
 	}
 
 	// Get the latest section (highest section number)
@@ -1332,7 +1359,7 @@ func (s *StoryService) GetStoriesPaginated(ctx context.Context, page, pageSize i
 	}
 	defer func() { _ = rows.Close() }()
 
-	var stories []models.Story
+	stories := []models.Story{}
 	for rows.Next() {
 		var story models.Story
 		if err := rows.Scan(

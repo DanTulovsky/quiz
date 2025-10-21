@@ -904,7 +904,10 @@ func (h *QuizHandler) ChatStream(c *gin.Context) {
 
 	// Store userID and apiKeyID in context for usage tracking
 	// This context will be used by the AI service for usage tracking
-	ctx = context.WithValue(context.WithValue(ctx, contextutils.UserIDKey, userID), contextutils.APIKeyIDKey, apiKeyID)
+	ctx = contextutils.WithUserID(ctx, userID)
+	if apiKeyID != nil {
+		ctx = contextutils.WithAPIKeyID(ctx, *apiKeyID)
+	}
 
 	// Watch for client disconnect
 	go func() {

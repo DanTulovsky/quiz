@@ -939,16 +939,15 @@ func TestStoryService_EngagementBasedGeneration_Integration(t *testing.T) {
 		require.NoError(t, err)
 		require.NotNil(t, story)
 
-		// Test 1: Initially, user should not have viewed any sections, so should not be eligible for generation
+		// Test 1: Initially, user should be allowed to generate first section (no sections yet)
 		hasViewed, err := storyService.HasUserViewedLatestSection(ctx, uint(user.ID))
 		require.NoError(t, err)
-		assert.False(t, hasViewed, "User should not have viewed latest section initially")
+		assert.True(t, hasViewed, "User should be allowed to generate first section when story has no sections")
 
-		// Test 2: Should not be able to generate section via worker when engagement-based generation is enabled
+		// Test 2: Should be able to generate first section via worker (no prior sections to view)
 		eligibility, err := storyService.canGenerateSection(ctx, story.ID, models.GeneratorTypeWorker)
 		require.NoError(t, err)
-		assert.False(t, eligibility.CanGenerate, "Should not be able to generate section without viewing latest")
-		assert.Contains(t, eligibility.Reason, "has not viewed the latest section", "Reason should mention engagement")
+		assert.True(t, eligibility.CanGenerate, "Should be able to generate first section via worker")
 
 		// Test 2b: Should be able to generate section via manual user generation even without viewing
 		eligibility, err = storyService.canGenerateSection(ctx, story.ID, models.GeneratorTypeUser)
@@ -959,6 +958,16 @@ func TestStoryService_EngagementBasedGeneration_Integration(t *testing.T) {
 		section, err := storyService.CreateSection(ctx, story.ID, "Test section content", "A1", 100, models.GeneratorTypeUser)
 		require.NoError(t, err)
 		require.NotNil(t, section)
+
+		// Test 3b: Now that a section exists but hasn't been viewed, worker should NOT be able to generate
+		hasViewed, err = storyService.HasUserViewedLatestSection(ctx, uint(user.ID))
+		require.NoError(t, err)
+		assert.False(t, hasViewed, "User should not have viewed section 1 yet")
+
+		eligibility, err = storyService.canGenerateSection(ctx, story.ID, models.GeneratorTypeWorker)
+		require.NoError(t, err)
+		assert.False(t, eligibility.CanGenerate, "Should not be able to generate section 2 without viewing section 1")
+		assert.Contains(t, eligibility.Reason, "has not viewed the latest section", "Reason should mention engagement")
 
 		// Test 4: Now record that user has viewed this section
 		err = storyService.RecordStorySectionView(ctx, uint(user.ID), section.ID)
@@ -1088,16 +1097,16 @@ func TestStoryService_HasUserViewedLatestSection_Integration(t *testing.T) {
 
 	ctx := context.Background()
 
-	// Test 1: User with no story should return false
+	// Test 1: User with no story should return false (no story to generate for)
 	username := fmt.Sprintf("testuser_%d", time.Now().UnixNano())
 	user, err := userService.CreateUser(ctx, username, "italian", "A1")
 	require.NoError(t, err)
 
 	hasViewed, err := storyService.HasUserViewedLatestSection(ctx, uint(user.ID))
 	require.NoError(t, err)
-	assert.False(t, hasViewed, "User with no story should not have viewed latest section")
+	assert.False(t, hasViewed, "User with no story should return false (no story to generate for)")
 
-	// Test 2: User with story but no sections should return false
+	// Test 2: User with story but no sections should return true (allow first generation)
 	story, err := storyService.CreateStory(ctx, uint(user.ID), "italian", &models.CreateStoryRequest{
 		Title:       "Empty Story",
 		Subject:     stringPtr("Empty Testing"),
@@ -1108,7 +1117,7 @@ func TestStoryService_HasUserViewedLatestSection_Integration(t *testing.T) {
 
 	hasViewed, err = storyService.HasUserViewedLatestSection(ctx, uint(user.ID))
 	require.NoError(t, err)
-	assert.False(t, hasViewed, "User with story but no sections should not have viewed latest section")
+	assert.True(t, hasViewed, "User with story but no sections should be allowed to generate first section")
 
 	// Test 3: User with story and sections but no views should return false
 	section, err := storyService.CreateSection(ctx, story.ID, "Test section content", "A1", 100, models.GeneratorTypeUser)

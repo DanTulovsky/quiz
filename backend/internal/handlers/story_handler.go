@@ -344,7 +344,13 @@ func (h *StoryHandler) GenerateNextSection(c *gin.Context) {
 	}
 
 	// Get user's AI configuration
-	userAIConfig := h.convertToServicesAIConfig(timeoutCtx, user)
+	userAIConfig, apiKeyID := h.convertToServicesAIConfig(timeoutCtx, user)
+
+	// Add user ID and API key ID to context for usage tracking
+	timeoutCtx = contextutils.WithUserID(timeoutCtx, userID)
+	if apiKeyID != nil {
+		timeoutCtx = contextutils.WithAPIKeyID(timeoutCtx, *apiKeyID)
+	}
 
 	// Generate the story section using the shared service method (user generation)
 	sectionWithQuestions, err := h.storyService.GenerateStorySection(timeoutCtx, uint(storyID), uint(userID), h.aiService, userAIConfig, models.GeneratorTypeUser)
@@ -536,6 +542,59 @@ func (h *StoryHandler) DeleteStory(c *gin.Context) {
 	c.JSON(http.StatusNoContent, nil)
 }
 
+// ToggleAutoGeneration handles POST /v1/story/:id/toggle-auto-generation
+func (h *StoryHandler) ToggleAutoGeneration(c *gin.Context) {
+	ctx, span := observability.TraceHandlerFunction(c.Request.Context(), "toggle_auto_generation")
+	defer observability.FinishSpan(span, nil)
+
+	userID, exists := GetUserIDFromSession(c)
+	if !exists {
+		StandardizeHTTPError(c, http.StatusUnauthorized, "Unauthorized", "User session not found or invalid")
+		return
+	}
+
+	storyIDStr := c.Param("id")
+	storyID, err := strconv.ParseUint(storyIDStr, 10, 32)
+	if err != nil {
+		StandardizeHTTPError(c, http.StatusBadRequest, "Invalid story ID", "Story ID must be a valid number")
+		return
+	}
+
+	// Parse request body to get the pause state
+	var req struct {
+		Paused bool `json:"paused" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		h.logger.Error(ctx, "Failed to bind toggle auto-generation request", err, nil)
+		StandardizeHTTPError(c, http.StatusBadRequest, "Invalid request format", err.Error())
+		return
+	}
+
+	err = h.storyService.ToggleAutoGeneration(ctx, uint(storyID), uint(userID), req.Paused)
+	if err != nil {
+		h.logger.Error(ctx, "Failed to toggle auto-generation", err, map[string]interface{}{
+			"story_id": storyID,
+			"user_id":  uint(userID),
+			"paused":   req.Paused,
+		})
+
+		if strings.Contains(err.Error(), "not found") || strings.Contains(err.Error(), "unauthorized") {
+			StandardizeHTTPError(c, http.StatusNotFound, "Story not found", "The requested story does not exist or you don't have access to it")
+			return
+		}
+
+		StandardizeHTTPError(c, http.StatusInternalServerError, "Failed to toggle auto-generation", err.Error())
+		return
+	}
+
+	message := "Auto-generation resumed"
+	if req.Paused {
+		message = "Auto-generation paused"
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": message, "auto_generation_paused": req.Paused})
+}
+
 // ExportStory handles GET /v1/story/:id/export
 func (h *StoryHandler) ExportStory(c *gin.Context) {
 	ctx, span := observability.TraceHandlerFunction(c.Request.Context(), "export_story")
@@ -647,7 +706,7 @@ func (h *StoryHandler) ExportStory(c *gin.Context) {
 }
 
 // convertToServicesAIConfig creates AI config for the user in services format
-func (h *StoryHandler) convertToServicesAIConfig(ctx context.Context, user *models.User) *models.UserAIConfig {
+func (h *StoryHandler) convertToServicesAIConfig(ctx context.Context, user *models.User) (*models.UserAIConfig, *int) {
 	// Handle sql.NullString fields
 	aiProvider := ""
 	if user.AIProvider.Valid {
@@ -660,10 +719,12 @@ func (h *StoryHandler) convertToServicesAIConfig(ctx context.Context, user *mode
 	}
 
 	apiKey := ""
+	var apiKeyID *int
 	if aiProvider != "" {
-		savedKey, err := h.userService.GetUserAPIKey(ctx, user.ID, aiProvider)
+		savedKey, keyID, err := h.userService.GetUserAPIKeyWithID(ctx, user.ID, aiProvider)
 		if err == nil && savedKey != "" {
 			apiKey = savedKey
+			apiKeyID = keyID
 		}
 	}
 
@@ -672,5 +733,5 @@ func (h *StoryHandler) convertToServicesAIConfig(ctx context.Context, user *mode
 		Model:    aiModel,
 		APIKey:   apiKey,
 		Username: user.Username,
-	}
+	}, apiKeyID
 }

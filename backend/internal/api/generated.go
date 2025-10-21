@@ -974,7 +974,10 @@ type SnippetList struct {
 
 // Story defines model for Story.
 type Story struct {
-	AuthorStyle            *string                     `json:"author_style"`
+	AuthorStyle *string `json:"author_style"`
+
+	// AutoGenerationPaused When true, the worker will skip automatic section generation for this story
+	AutoGenerationPaused   *bool                       `json:"auto_generation_paused,omitempty"`
 	CharacterNames         *string                     `json:"character_names"`
 	CreatedAt              *time.Time                  `json:"created_at,omitempty"`
 	CustomInstructions     *string                     `json:"custom_instructions"`
@@ -1037,7 +1040,10 @@ type StorySectionWithQuestions struct {
 
 // StoryWithSections defines model for StoryWithSections.
 type StoryWithSections struct {
-	AuthorStyle            *string                                 `json:"author_style"`
+	AuthorStyle *string `json:"author_style"`
+
+	// AutoGenerationPaused When true, the worker will skip automatic section generation for this story
+	AutoGenerationPaused   *bool                                   `json:"auto_generation_paused,omitempty"`
 	CharacterNames         *string                                 `json:"character_names"`
 	CreatedAt              *time.Time                              `json:"created_at,omitempty"`
 	CustomInstructions     *string                                 `json:"custom_instructions"`
@@ -1130,6 +1136,18 @@ type TestAIRequest struct {
 
 	// Provider AI provider code (e.g., "ollama", "openai")
 	Provider string `json:"provider"`
+}
+
+// ToggleAutoGenerationRequest defines model for ToggleAutoGenerationRequest.
+type ToggleAutoGenerationRequest struct {
+	// Paused Whether to pause (true) or resume (false) auto-generation
+	Paused bool `json:"paused"`
+}
+
+// ToggleAutoGenerationResponse defines model for ToggleAutoGenerationResponse.
+type ToggleAutoGenerationResponse struct {
+	AutoGenerationPaused *bool   `json:"auto_generation_paused,omitempty"`
+	Message              *string `json:"message,omitempty"`
 }
 
 // TranslateRequest defines model for TranslateRequest.
@@ -2011,6 +2029,9 @@ type PostV1StoryJSONRequestBody = CreateStoryRequest
 
 // PostV1StoryIdGenerateJSONRequestBody defines body for PostV1StoryIdGenerate for application/json ContentType.
 type PostV1StoryIdGenerateJSONRequestBody = EmptyRequest
+
+// PostV1StoryIdToggleAutoGenerationJSONRequestBody defines body for PostV1StoryIdToggleAutoGeneration for application/json ContentType.
+type PostV1StoryIdToggleAutoGenerationJSONRequestBody = ToggleAutoGenerationRequest
 
 // PostV1TranslateJSONRequestBody defines body for PostV1Translate for application/json ContentType.
 type PostV1TranslateJSONRequestBody = TranslateRequest

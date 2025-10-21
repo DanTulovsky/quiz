@@ -800,7 +800,13 @@ func (w *Worker) generateStorySection(ctx context.Context, user models.User) err
 	}
 
 	// Get user's AI configuration
-	userConfig := w.getUserAIConfig(timeoutCtx, &user)
+	userConfig, apiKeyID := w.getUserAIConfig(timeoutCtx, &user)
+
+	// Add user ID and API key ID to context for usage tracking
+	timeoutCtx = contextutils.WithUserID(timeoutCtx, user.ID)
+	if apiKeyID != nil {
+		timeoutCtx = contextutils.WithAPIKeyID(timeoutCtx, *apiKeyID)
+	}
 
 	// Generate the story section using the shared service method (worker generation)
 	_, err = w.storyService.GenerateStorySection(timeoutCtx, story.ID, uint(user.ID), w.aiService, userConfig, models.GeneratorTypeWorker)
@@ -849,6 +855,16 @@ func (w *Worker) getUsersWithActiveStories(ctx context.Context) ([]models.User, 
 
 		// Check if story is active
 		if story.Status != models.StoryStatusActive {
+			continue
+		}
+
+		// Check if auto-generation is paused for this story
+		if story.AutoGenerationPaused {
+			w.logger.Debug(ctx, "Skipping story with auto-generation paused",
+				map[string]interface{}{
+					"user_id":  user.ID,
+					"story_id": story.ID,
+				})
 			continue
 		}
 
@@ -1445,7 +1461,7 @@ func (w *Worker) GenerateQuestionsForUser(ctx context.Context, user *models.User
 	}
 	aiReq.RecentQuestionHistory = recentQuestions
 
-	userConfig := w.getUserAIConfig(ctx, user)
+	userConfig, apiKeyID := w.getUserAIConfig(ctx, user)
 
 	batchLogMsg := formatBatchLogMessage(user.Username, count, string(qType), language, level, variety, userConfig.Provider, userConfig.Model)
 	w.logger.Info(ctx, batchLogMsg, map[string]interface{}{
@@ -1454,7 +1470,7 @@ func (w *Worker) GenerateQuestionsForUser(ctx context.Context, user *models.User
 	w.updateActivity(batchLogMsg)
 	w.logActivity(ctx, "INFO", batchLogMsg, &user.ID, &user.Username)
 
-	progressMsg, questions, errAI := w.handleAIQuestionStream(ctx, userConfig, aiReq, variety, count, language, level, qType, topic, user)
+	progressMsg, questions, errAI := w.handleAIQuestionStream(ctx, userConfig, apiKeyID, aiReq, variety, count, language, level, qType, topic, user)
 
 	if errAI != nil {
 		w.recordUserFailure(ctx, user.ID, user.Username)
@@ -1508,8 +1524,8 @@ func (w *Worker) buildAIQuestionGenRequest(ctx context.Context, user *models.Use
 	return aiReq, recentQuestions, nil
 }
 
-// getUserAIConfig builds the UserAIConfig struct with API key
-func (w *Worker) getUserAIConfig(ctx context.Context, user *models.User) *models.UserAIConfig {
+// getUserAIConfig builds the UserAIConfig struct with API key and returns the API key ID
+func (w *Worker) getUserAIConfig(ctx context.Context, user *models.User) (*models.UserAIConfig, *int) {
 	ctx, span := observability.TraceWorkerFunction(ctx, "get_user_ai_config",
 		observability.AttributeUserID(user.ID),
 		attribute.String("user.username", user.Username),
@@ -1528,10 +1544,12 @@ func (w *Worker) getUserAIConfig(ctx context.Context, user *models.User) *models
 		span.SetAttributes(attribute.String("ai.model", model))
 	}
 	apiKey := ""
+	var apiKeyID *int
 	if provider != "" {
-		savedKey, err := w.userService.GetUserAPIKey(ctx, user.ID, provider)
+		savedKey, keyID, err := w.userService.GetUserAPIKeyWithID(ctx, user.ID, provider)
 		if err == nil && savedKey != "" {
 			apiKey = savedKey
+			apiKeyID = keyID
 		}
 	}
 	return &models.UserAIConfig{
@@ -1539,11 +1557,11 @@ func (w *Worker) getUserAIConfig(ctx context.Context, user *models.User) *models
 		Model:    model,
 		APIKey:   apiKey,
 		Username: user.Username,
-	}
+	}, apiKeyID
 }
 
 // handleAIQuestionStream handles the AI streaming and collects questions
-func (w *Worker) handleAIQuestionStream(ctx context.Context, userConfig *models.UserAIConfig, req *models.AIQuestionGenRequest, variety *services.VarietyElements, count int, language, level string, qType models.QuestionType, topic string, user *models.User) (result0 string, result1 []*models.Question, err error) {
+func (w *Worker) handleAIQuestionStream(ctx context.Context, userConfig *models.UserAIConfig, apiKeyID *int, req *models.AIQuestionGenRequest, variety *services.VarietyElements, count int, language, level string, qType models.QuestionType, topic string, user *models.User) (result0 string, result1 []*models.Question, err error) {
 	ctx, span := observability.TraceWorkerFunction(ctx, "handle_ai_question_stream",
 		attribute.String("ai.provider", userConfig.Provider),
 		attribute.String("ai.model", userConfig.Model),
@@ -1556,6 +1574,12 @@ func (w *Worker) handleAIQuestionStream(ctx context.Context, userConfig *models.
 		attribute.String("worker.instance", w.instance),
 	)
 	defer observability.FinishSpan(span, &err)
+
+	// Add user ID and API key ID to context for usage tracking
+	ctx = contextutils.WithUserID(ctx, user.ID)
+	if apiKeyID != nil {
+		ctx = contextutils.WithAPIKeyID(ctx, *apiKeyID)
+	}
 
 	progressChan := make(chan *models.Question)
 	var questions []*models.Question

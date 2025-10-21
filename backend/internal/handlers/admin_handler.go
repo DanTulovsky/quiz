@@ -489,7 +489,7 @@ func (h *AdminHandler) FixQuestionWithAI(c *gin.Context) {
 	}
 
 	// Get saved API key for the reporter's configured provider
-	savedKey, _ := h.userService.GetUserAPIKey(ctx, reporterID, reporterProvider.String)
+	savedKey, apiKeyID, _ := h.userService.GetUserAPIKeyWithID(ctx, reporterID, reporterProvider.String)
 
 	userCfg := &models.UserAIConfig{
 		Provider: reporterProvider.String,
@@ -550,6 +550,14 @@ func (h *AdminHandler) FixQuestionWithAI(c *gin.Context) {
 		}
 	} else {
 		grammar = ""
+	}
+
+	// Add user ID and API key ID to context for usage tracking
+	if reporterID != 0 {
+		ctx = contextutils.WithUserID(ctx, reporterID)
+	}
+	if apiKeyID != nil {
+		ctx = contextutils.WithAPIKeyID(ctx, *apiKeyID)
 	}
 
 	// Call AI service with constructed prompt and grammar

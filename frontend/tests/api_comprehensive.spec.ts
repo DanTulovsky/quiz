@@ -130,6 +130,10 @@ interface TestConversationsData {
   [conversationKey: string]: TestConversationData;
 }
 
+interface TestStoriesData {
+  [storyKey: string]: TestStoryData;
+}
+
 
 /**
  * Comprehensive API E2E tests that dynamically build test cases from swagger.yaml
@@ -905,6 +909,15 @@ test.describe('Comprehensive API Tests', () => {
           queryParams[param.name] = 'test query';
         } else if (param.name === 'user_id') {
           queryParams[param.name] = 1;
+        } else if (param.name === 'startDate') {
+          // Use a recent date range for token usage queries
+          queryParams[param.name] = '2025-08-01';
+        } else if (param.name === 'endDate') {
+          // Use a recent date range for token usage queries
+          queryParams[param.name] = '2025-08-31';
+        } else if (param.name === 'date') {
+          // Use the seeded test date for single-date queries
+          queryParams[param.name] = '2025-08-04';
         }
       }
     }
@@ -1063,7 +1076,7 @@ function findConversationForUser(username: string): any {
     }
 
     // Extract all section IDs from all stories
-    for (const story of Object.values(testStoriesData)) {
+    for (const story of Object.values(testStoriesData) as TestStoryData[]) {
       if (story.sections && story.sections.length > 0) {
         for (const section of story.sections) {
           if (!availableSectionIds.includes(section.id)) {
@@ -1196,7 +1209,7 @@ function findConversationForUser(username: string): any {
 
     // Find conversations for the given username or any conversation if no username specified
     const conversationKeys = Object.keys(testConversationsData);
-    const matchingConversations = [];
+    const matchingConversations: TestConversationData[] = [];
 
     for (const key of conversationKeys) {
       const conversation = testConversationsData[key];
@@ -1426,7 +1439,7 @@ function findConversationForUser(username: string): any {
     }
   }
 
-  async function getAvailableQuestionId(request: any, userContext?: {username: string}): Promise<number> {
+  async function getAvailableQuestionId(request: any, userContext?: {username: string; password: string}): Promise<number> {
     // Use provided user context or default to regular user
     const targetUser = userContext || REGULAR_USER;
 
@@ -1497,7 +1510,7 @@ function findConversationForUser(username: string): any {
       return availableSectionIds[0];
     }
 
-    for (const story of Object.values(testStoriesData)) {
+    for (const story of Object.values(testStoriesData) as TestStoryData[]) {
       if (story.username === username && story.sections && story.sections.length > 0) {
         // Check if this story exists in the database
         const dbStory = existingStories.find(s => s.id === story.id);
@@ -1558,7 +1571,7 @@ function findConversationForUser(username: string): any {
   }
 
   // Helper function to determine what type of ID we need and get the appropriate value
-  async function getReplacementId(pathString: string, paramKey: string, request: any, userContext?: {username: string}, method?: string, isErrorCase: boolean = false): Promise<{value: number | string; type: 'user' | 'question' | 'daily_user' | 'date' | 'role' | 'provider' | 'story' | 'conversation' | 'snippet'}> {
+  async function getReplacementId(pathString: string, paramKey: string, request: any, userContext?: {username: string; password: string}, method?: string, isErrorCase: boolean = false): Promise<{value: number | string; type: 'user' | 'question' | 'daily_user' | 'date' | 'role' | 'provider' | 'story' | 'conversation' | 'snippet' | 'section'}> {
     if (paramKey === 'userId') {
       return {value: getUserIdWithDailyAssignments(), type: 'daily_user'};
     }
@@ -1776,7 +1789,7 @@ function findConversationForUser(username: string): any {
   }
 
   // Helper function to replace path parameters with appropriate IDs
-  async function replacePathParameters(pathString: string, pathParams: Record<string, any> | undefined, request: any, userContext?: {username: string}, method?: string, isErrorCase: boolean = false): Promise<string> {
+  async function replacePathParameters(pathString: string, pathParams: Record<string, any> | undefined, request: any, userContext?: {username: string; password: string}, method?: string, isErrorCase: boolean = false): Promise<string> {
     if (!pathParams) return pathString;
 
     // console.log(`🔄 REPLACING PATH PARAMETERS for path: ${pathString}, method: ${method}`);
@@ -2231,8 +2244,8 @@ function findConversationForUser(username: string): any {
 
         const url = new URL(`${baseURL}${endpointPath}`);
 
-        // Add query parameters
-        if (testCase.queryParams) {
+        // Add query parameters (skip for 400 error tests to test missing required params)
+        if (testCase.queryParams && !testCase.expectedStatusCodes.includes('400')) {
           for (const [key, value] of Object.entries(testCase.queryParams)) {
             url.searchParams.append(key, String(value));
           }
@@ -2508,8 +2521,8 @@ function findConversationForUser(username: string): any {
 
         const url = new URL(`${baseURL}${endpointPath}`);
 
-        // Add query parameters
-        if (testCase.queryParams) {
+        // Add query parameters (skip for 400 error tests to test missing required params)
+        if (testCase.queryParams && !testCase.expectedStatusCodes.includes('400')) {
           for (const [key, value] of Object.entries(testCase.queryParams)) {
             url.searchParams.append(key, String(value));
           }

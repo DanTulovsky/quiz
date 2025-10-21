@@ -13,6 +13,7 @@ import {
   setCurrentStory as apiSetCurrentStory,
   deleteStory as apiDeleteStory,
   exportStoryPDF as apiExportStoryPDF,
+  toggleAutoGeneration as apiToggleAutoGeneration,
   StoryWithSections,
   StorySectionWithQuestions,
   StorySection,
@@ -60,6 +61,7 @@ export interface UseStoryReturn {
   generateNextSection: (storyId: number) => Promise<void>;
   deleteStory: (storyId: number) => Promise<void>;
   exportStoryPDF: (storyId: number) => Promise<void>;
+  toggleAutoGeneration: (storyId: number, paused: boolean) => Promise<void>;
 
   // Navigation
   goToSection: (index: number) => void;
@@ -878,6 +880,42 @@ export const useStory = (): UseStoryReturn => {
     },
   });
 
+  // Toggle auto-generation mutation
+  const toggleAutoGenerationMutation = useMutation({
+    mutationFn: ({ storyId, paused }: { storyId: number; paused: boolean }) =>
+      apiToggleAutoGeneration(storyId, paused),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['currentStory'] });
+      queryClient.invalidateQueries({ queryKey: ['stories'] });
+
+      const message = variables.paused
+        ? 'Auto-generation paused. Manual generation still works.'
+        : 'Auto-generation resumed.';
+
+      showNotificationWithClean({
+        title: 'Settings Updated',
+        message,
+        type: 'success',
+      });
+    },
+    onError: (error: unknown) => {
+      let errorMessage = 'Failed to update auto-generation settings.';
+      const err = error as AxiosError;
+      if (err.response?.data && typeof err.response.data === 'object') {
+        const data = err.response.data as { error?: string };
+        if (data.error) {
+          errorMessage = data.error;
+        }
+      }
+
+      showNotificationWithClean({
+        title: 'Update Failed',
+        message: errorMessage,
+        type: 'error',
+      });
+    },
+  });
+
   // Computed values
   const sections = currentStory?.sections || [];
   const hasCurrentStory = !!currentStory;
@@ -1042,6 +1080,13 @@ export const useStory = (): UseStoryReturn => {
     [exportStoryPDFMutation]
   );
 
+  const toggleAutoGenerationAction = useCallback(
+    async (storyId: number, paused: boolean) => {
+      await toggleAutoGenerationMutation.mutateAsync({ storyId, paused });
+    },
+    [toggleAutoGenerationMutation]
+  );
+
   const goToSection = useCallback(
     (index: number) => {
       if (index >= 0 && index < sections.length) {
@@ -1098,6 +1143,7 @@ export const useStory = (): UseStoryReturn => {
     generateNextSection,
     deleteStory: deleteStoryAction,
     exportStoryPDF: exportStoryPDFAction,
+    toggleAutoGeneration: toggleAutoGenerationAction,
 
     // Navigation
     goToSection,

@@ -50,6 +50,7 @@ type Story struct {
 	CustomInstructions     *string        `json:"custom_instructions"`
 	SectionLengthOverride  *SectionLength `json:"section_length_override,omitempty"`
 	Status                 StoryStatus    `json:"status"`
+	AutoGenerationPaused   bool           `json:"auto_generation_paused"`
 	LastSectionGeneratedAt *time.Time     `json:"last_section_generated_at"`
 	ExtraGenerationsToday  int            `json:"extra_generations_today"`
 	CreatedAt              time.Time      `json:"created_at"`

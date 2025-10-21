@@ -91,6 +91,11 @@ func (m *mockStoryService) SetCurrentStory(ctx context.Context, storyID, userID 
 	return args.Error(0)
 }
 
+func (m *mockStoryService) ToggleAutoGeneration(ctx context.Context, storyID, userID uint, paused bool) error {
+	args := m.Called(ctx, storyID, userID, paused)
+	return args.Error(0)
+}
+
 func (m *mockStoryService) DeleteStory(ctx context.Context, storyID, userID uint) error {
 	args := m.Called(ctx, storyID, userID)
 	return args.Error(0)
@@ -1795,12 +1800,15 @@ func TestGetUserAIConfig(t *testing.T) {
 	userService := &mockUserService{}
 	w := NewWorker(userService, &mockQuestionService{}, &mockAIService{}, &mockLearningService{}, &mockWorkerService{}, &mockDailyQuestionService{}, &mockStoryService{}, &mockEmailService{}, nil, "test", testWorkerConfig(), observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 	user := &models.User{ID: 1, Username: "bob", AIProvider: sql.NullString{String: "openai", Valid: true}, AIModel: sql.NullString{String: "gpt-4", Valid: true}}
-	userService.On("GetUserAPIKey", mock.Anything, 1, "openai").Return("key", nil)
-	cfg := w.getUserAIConfig(context.Background(), user)
+	keyID := 123
+	userService.On("GetUserAPIKeyWithID", mock.Anything, 1, "openai").Return("key", &keyID, nil)
+	cfg, apiKeyID := w.getUserAIConfig(context.Background(), user)
 	assert.Equal(t, "openai", cfg.Provider)
 	assert.Equal(t, "gpt-4", cfg.Model)
 	assert.Equal(t, "key", cfg.APIKey)
 	assert.Equal(t, "bob", cfg.Username)
+	assert.NotNil(t, apiKeyID)
+	assert.Equal(t, 123, *apiKeyID)
 }
 
 func TestCheckPauseStatus_GlobalPause(t *testing.T) {

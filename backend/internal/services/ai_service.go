@@ -2399,6 +2399,18 @@ func (s *AIService) CallWithPrompt(ctx context.Context, userConfig *models.UserA
 
 // trackAIUsage tracks AI usage statistics
 func (s *AIService) trackAIUsage(ctx context.Context, userConfig *models.UserAIConfig, usage Usage, userID int, apiKeyID *int) {
+	// Skip recording if userID is invalid (0 means no user context)
+	if userID == 0 {
+		s.logger.Error(ctx, "Skipping AI usage tracking - no valid user ID in context", nil, map[string]interface{}{
+			"provider":          userConfig.Provider,
+			"model":             userConfig.Model,
+			"prompt_tokens":     usage.PromptTokens,
+			"completion_tokens": usage.CompletionTokens,
+			"total_tokens":      usage.TotalTokens,
+		})
+		return
+	}
+
 	// TODO: Determine usage type based on the context (this is a simple heuristic)
 	usageType := "generic" // Default assumption
 
@@ -2417,7 +2429,8 @@ func (s *AIService) trackAIUsage(ctx context.Context, userConfig *models.UserAIC
 	)
 	if err != nil {
 		s.logger.Warn(ctx, "Failed to record AI usage", map[string]interface{}{
-			"error": err.Error(),
+			"error":   err.Error(),
+			"user_id": userID,
 		})
 	}
 }

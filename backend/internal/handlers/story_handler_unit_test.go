@@ -80,6 +80,10 @@ func (m *MockStoryService) SetCurrentStory(_ context.Context, _, _ uint) error {
 	return nil
 }
 
+func (m *MockStoryService) ToggleAutoGeneration(_ context.Context, _, _ uint, _ bool) error {
+	return nil
+}
+
 func (m *MockStoryService) DeleteStory(_ context.Context, _, _ uint) error {
 	return nil
 }

@@ -290,6 +290,7 @@ func NewRouter(
 			story.POST("/:id/archive", storyHandler.ArchiveStory)
 			story.POST("/:id/complete", storyHandler.CompleteStory)
 			story.POST("/:id/set-current", storyHandler.SetCurrentStory)
+			story.POST("/:id/toggle-auto-generation", storyHandler.ToggleAutoGeneration)
 			story.DELETE("/:id", storyHandler.DeleteStory)
 			story.GET("/:id/export", storyHandler.ExportStory)
 		}

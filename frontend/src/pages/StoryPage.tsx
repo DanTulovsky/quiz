@@ -16,6 +16,8 @@ import {
   IconLayoutList,
   IconDownload,
   IconPlus,
+  IconPlayerPause,
+  IconPlayerPlay,
 } from '@tabler/icons-react';
 
 import { useStory } from '../hooks/useStory';
@@ -55,6 +57,7 @@ const StoryPage: React.FC = () => {
     setViewMode,
     generationErrorModal,
     closeGenerationErrorModal,
+    toggleAutoGeneration,
   } = useStory();
 
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -83,6 +86,15 @@ const StoryPage: React.FC = () => {
   const handleExportStory = async () => {
     if (currentStory) {
       await exportStoryPDF(currentStory.id!);
+    }
+  };
+
+  const handleToggleAutoGeneration = async () => {
+    if (currentStory) {
+      await toggleAutoGeneration(
+        currentStory.id!,
+        !currentStory.auto_generation_paused
+      );
     }
   };
 
@@ -249,6 +261,25 @@ const StoryPage: React.FC = () => {
                 size='sm'
               >
                 Export PDF
+              </Button>
+            )}
+
+            {/* Pause/Resume Auto-Generation Button */}
+            {currentStory && (
+              <Button
+                variant='light'
+                leftSection={
+                  currentStory.auto_generation_paused ? (
+                    <IconPlayerPlay size={16} />
+                  ) : (
+                    <IconPlayerPause size={16} />
+                  )
+                }
+                onClick={handleToggleAutoGeneration}
+                size='sm'
+                color={currentStory.auto_generation_paused ? 'green' : 'blue'}
+              >
+                {currentStory.auto_generation_paused ? 'Resume' : 'Pause'} Auto
               </Button>
             )}
 

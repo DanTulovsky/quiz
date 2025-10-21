@@ -589,3 +589,13 @@ func GetAPIKeyIDFromContext(ctx context.Context) *int {
 	}
 	return nil // Default fallback
 }
+
+// WithUserID returns a new context with the user ID set
+func WithUserID(ctx context.Context, userID int) context.Context {
+	return context.WithValue(ctx, UserIDKey, userID)
+}
+
+// WithAPIKeyID returns a new context with the API key ID set
+func WithAPIKeyID(ctx context.Context, apiKeyID int) context.Context {
+	return context.WithValue(ctx, APIKeyIDKey, &apiKeyID)
+}

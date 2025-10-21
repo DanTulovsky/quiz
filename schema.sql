@@ -454,6 +454,7 @@ CREATE TABLE IF NOT EXISTS stories (
     custom_instructions TEXT,
     section_length_override VARCHAR(10) CHECK (section_length_override IN ('short', 'medium', 'long')),
     status VARCHAR(20) NOT NULL CHECK (status IN ('active', 'archived', 'completed')) DEFAULT 'active',
+    auto_generation_paused BOOLEAN NOT NULL DEFAULT FALSE,
     last_section_generated_at TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
