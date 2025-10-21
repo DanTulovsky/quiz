@@ -538,11 +538,12 @@ func convertStorySectionToAPI(section *models.StorySection) api.StorySection {
 // Convert models.StoryWithSections to api.StoryWithSections
 func convertStoryWithSectionsToAPI(story *models.StoryWithSections) api.StoryWithSections {
 	apiStory := api.StoryWithSections{
-		Id:       int64FromUint(story.ID),
-		UserId:   int64FromUint(story.UserID),
-		Title:    stringPtr(story.Title),
-		Language: stringPtr(story.Language),
-		Status:   (*api.StoryWithSectionsStatus)(stringPtr(string(story.Status))),
+		Id:                   int64FromUint(story.ID),
+		UserId:               int64FromUint(story.UserID),
+		Title:                stringPtr(story.Title),
+		Language:             stringPtr(story.Language),
+		Status:               (*api.StoryWithSectionsStatus)(stringPtr(string(story.Status))),
+		AutoGenerationPaused: boolPtr(story.AutoGenerationPaused),
 	}
 
 	if story.Subject != nil {

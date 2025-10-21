@@ -884,6 +884,27 @@ export const useStory = (): UseStoryReturn => {
   const toggleAutoGenerationMutation = useMutation({
     mutationFn: ({ storyId, paused }: { storyId: number; paused: boolean }) =>
       apiToggleAutoGeneration(storyId, paused),
+    onMutate: async ({ storyId, paused }) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['currentStory'] });
+
+      // Snapshot the previous value
+      const previousStory = queryClient.getQueryData(['currentStory']);
+
+      // Optimistically update the story
+      queryClient.setQueryData(
+        ['currentStory'],
+        (old: StoryWithSections | undefined) => {
+          if (old && old.id === storyId) {
+            return { ...old, auto_generation_paused: paused };
+          }
+          return old;
+        }
+      );
+
+      // Return a context object with the snapshotted value
+      return { previousStory };
+    },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['currentStory'] });
       queryClient.invalidateQueries({ queryKey: ['stories'] });
@@ -898,7 +919,12 @@ export const useStory = (): UseStoryReturn => {
         type: 'success',
       });
     },
-    onError: (error: unknown) => {
+    onError: (error: unknown, variables, context) => {
+      // If the mutation fails, use the context returned from onMutate to roll back
+      if (context?.previousStory) {
+        queryClient.setQueryData(['currentStory'], context.previousStory);
+      }
+
       let errorMessage = 'Failed to update auto-generation settings.';
       const err = error as AxiosError;
       if (err.response?.data && typeof err.response.data === 'object') {

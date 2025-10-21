@@ -8,6 +8,7 @@ import {
   Modal,
   Stack,
   Alert,
+  Tooltip,
 } from '@mantine/core';
 import {
   IconBook,
@@ -266,21 +267,32 @@ const StoryPage: React.FC = () => {
 
             {/* Pause/Resume Auto-Generation Button */}
             {currentStory && (
-              <Button
-                variant='light'
-                leftSection={
-                  currentStory.auto_generation_paused ? (
-                    <IconPlayerPlay size={16} />
-                  ) : (
-                    <IconPlayerPause size={16} />
-                  )
+              <Tooltip
+                label={
+                  currentStory.auto_generation_paused
+                    ? 'Resume automatic story generation. New sections will be generated daily.'
+                    : 'Pause automatic story generation. No new sections will be generated until resumed.'
                 }
-                onClick={handleToggleAutoGeneration}
-                size='sm'
-                color={currentStory.auto_generation_paused ? 'green' : 'blue'}
+                position='bottom'
+                withArrow
               >
-                {currentStory.auto_generation_paused ? 'Resume' : 'Pause'} Auto
-              </Button>
+                <Button
+                  variant='light'
+                  leftSection={
+                    currentStory.auto_generation_paused ? (
+                      <IconPlayerPlay size={16} />
+                    ) : (
+                      <IconPlayerPause size={16} />
+                    )
+                  }
+                  onClick={handleToggleAutoGeneration}
+                  size='sm'
+                  color={currentStory.auto_generation_paused ? 'green' : 'blue'}
+                >
+                  {currentStory.auto_generation_paused ? 'Resume' : 'Pause'}{' '}
+                  Auto
+                </Button>
+              </Tooltip>
             )}
 
             {/* Archive Button */}

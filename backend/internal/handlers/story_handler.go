@@ -562,7 +562,7 @@ func (h *StoryHandler) ToggleAutoGeneration(c *gin.Context) {
 
 	// Parse request body to get the pause state
 	var req struct {
-		Paused bool `json:"paused" binding:"required"`
+		Paused *bool `json:"paused" binding:"required"`
 	}
 	if err := c.ShouldBindJSON(&req); err != nil {
 		h.logger.Error(ctx, "Failed to bind toggle auto-generation request", err, nil)
@@ -570,12 +570,18 @@ func (h *StoryHandler) ToggleAutoGeneration(c *gin.Context) {
 		return
 	}
 
-	err = h.storyService.ToggleAutoGeneration(ctx, uint(storyID), uint(userID), req.Paused)
+	if req.Paused == nil {
+		h.logger.Error(ctx, "Missing paused field in toggle auto-generation request", nil, nil)
+		StandardizeHTTPError(c, http.StatusBadRequest, "Invalid request format", "paused field is required")
+		return
+	}
+
+	err = h.storyService.ToggleAutoGeneration(ctx, uint(storyID), uint(userID), *req.Paused)
 	if err != nil {
 		h.logger.Error(ctx, "Failed to toggle auto-generation", err, map[string]interface{}{
 			"story_id": storyID,
 			"user_id":  uint(userID),
-			"paused":   req.Paused,
+			"paused":   *req.Paused,
 		})
 
 		if strings.Contains(err.Error(), "not found") || strings.Contains(err.Error(), "unauthorized") {
@@ -588,11 +594,11 @@ func (h *StoryHandler) ToggleAutoGeneration(c *gin.Context) {
 	}
 
 	message := "Auto-generation resumed"
-	if req.Paused {
+	if *req.Paused {
 		message = "Auto-generation paused"
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": message, "auto_generation_paused": req.Paused})
+	c.JSON(http.StatusOK, gin.H{"message": message, "auto_generation_paused": *req.Paused})
 }
 
 // ExportStory handles GET /v1/story/:id/export
