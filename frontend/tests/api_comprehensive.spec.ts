@@ -406,6 +406,9 @@ test.describe('Comprehensive API Tests', () => {
               if (path.includes('/{questionId}')) {
                 errorPath = path.replace('{questionId}', 'invalid');
               }
+              if (path.includes('/{service}')) {
+                errorPath = path.replace('{service}', 'invalid-service');
+              }
               if (path.includes('/{date}')) {
                 errorPath = path.replace('{date}', 'invalid-date');
               }
@@ -863,6 +866,8 @@ test.describe('Comprehensive API Tests', () => {
           pathParams[param.name] = 1; // Default user ID for testing
         } else if (param.name === 'provider') {
           pathParams[param.name] = 'ollama';
+        } else if (param.name === 'service') {
+          pathParams[param.name] = 'google';
         } else if (param.name === 'roleId') {
           pathParams[param.name] = 1;
         } else if (param.name === 'date') {
@@ -1482,7 +1487,7 @@ function findConversationForUser(username: string): any {
 
     // Get sections that belong to this user's stories in the database
     const existingStories = await getStoriesFromDatabase(username, request);
-    console.log(`🔍 DATABASE STORIES for ${username}: ${existingStories.map(s => `${s.id}(${s.status})`).join(', ')}`);
+    // console.log(`🔍 DATABASE STORIES for ${username}: ${existingStories.map(s => `${s.id}(${s.status})`).join(', ')}`);
 
     // Find sections that belong to stories that exist in the database
     const userSections: number[] = [];
@@ -1566,6 +1571,15 @@ function findConversationForUser(username: string): any {
     if (paramKey === 'provider') {
       // Use a valid provider code defined in config and tests
       return {value: 'ollama', type: 'provider'};
+    }
+
+    if (paramKey === 'service') {
+      // For error cases, use an invalid service name to trigger validation errors
+      if (isErrorCase) {
+        return {value: 'invalid-service', type: 'provider'};
+      }
+      // Use a valid service code for translation services
+      return {value: 'google', type: 'provider'};
     }
 
     if (paramKey === 'questionId') {
@@ -1931,6 +1945,7 @@ function findConversationForUser(username: string): any {
       let value: string | number = 1;
       if (key === 'date') value = '2025-08-04';
       else if (key === 'provider') value = 'ollama';
+      else if (key === 'service') value = 'google';
       else if (key === 'roleId') value = 1;
       else if (key === 'questionId') value = 1;
       else if (key === 'userId') value = 1;
@@ -2487,8 +2502,8 @@ function findConversationForUser(username: string): any {
       for (const testCase of adminErrorCases) {
         // console.log(`Processing test case: ${testCase.method} ${testCase.path}`);
 
-        // Replace path parameters with appropriate IDs
-        const path = await replacePathParameters(testCase.path, testCase.pathParams, request, ADMIN_USER, testCase.method, false);
+        // Replace path parameters with appropriate IDs (use error case logic for error tests)
+        const path = await replacePathParameters(testCase.path, testCase.pathParams, request, ADMIN_USER, testCase.method, true);
         const endpointPath = path;
 
         const url = new URL(`${baseURL}${endpointPath}`);

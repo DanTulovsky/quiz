@@ -269,7 +269,7 @@ tasks:
 
   start-test-environment:
     desc: "Start test servers and setup database for Artillery/E2E tests"
-    deps: [stop-test-servers, clean-test]
+    deps: [stop-test-servers, clean-test, merge-config-test]
     env:
       DATABASE_URL: "{{.DYNAMIC_TEST_DB_URL}}"
       TEST_BASE_URL: "{{.DYNAMIC_TEST_BASE_URL}}"

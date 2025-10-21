@@ -1450,6 +1450,25 @@ func (h *AdminHandler) GetUsageStatsByService(c *gin.Context) {
 		return
 	}
 
+	// Validate service name against configured translation providers
+	if !h.config.Translation.Enabled {
+		HandleAppError(c, contextutils.ErrInvalidFormat)
+		return
+	}
+
+	isValidService := false
+	for providerCode := range h.config.Translation.Providers {
+		if providerCode == serviceName {
+			isValidService = true
+			break
+		}
+	}
+
+	if !isValidService {
+		HandleAppError(c, contextutils.ErrInvalidFormat)
+		return
+	}
+
 	if h.usageStatsSvc == nil {
 		HandleAppError(c, contextutils.ErrInternalError)
 		return
