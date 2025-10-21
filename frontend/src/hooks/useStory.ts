@@ -91,6 +91,30 @@ export const useStory = (): UseStoryReturn => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
+  // Helper to get localStorage key for section index
+  const getSectionIndexKey = useCallback((storyId: number) => {
+    return `story_section_index_${storyId}`;
+  }, []);
+
+  // Helper to load section index from localStorage
+  const loadSectionIndex = useCallback((storyId: number): number | null => {
+    try {
+      const saved = localStorage.getItem(getSectionIndexKey(storyId));
+      return saved !== null ? parseInt(saved, 10) : null;
+    } catch {
+      return null;
+    }
+  }, [getSectionIndexKey]);
+
+  // Helper to save section index to localStorage
+  const saveSectionIndex = useCallback((storyId: number, index: number) => {
+    try {
+      localStorage.setItem(getSectionIndexKey(storyId), String(index));
+    } catch {
+      // Ignore localStorage errors
+    }
+  }, [getSectionIndexKey]);
+
   // State
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
   const [viewMode, setViewMode] = useState<ViewMode>('section');
@@ -1037,16 +1061,30 @@ export const useStory = (): UseStoryReturn => {
     }
   }, [currentStoryError]);
 
-  // Reset section index when story changes - start at last section
+  // Load section index from localStorage when story changes, or default to last section
   useEffect(() => {
     if (
       currentStory &&
       currentStory.sections &&
       currentStory.sections.length > 0
     ) {
-      setCurrentSectionIndex(currentStory.sections.length - 1);
+      const savedIndex = loadSectionIndex(currentStory.id!);
+      if (savedIndex !== null && savedIndex >= 0 && savedIndex < currentStory.sections.length) {
+        // Use saved index if valid
+        setCurrentSectionIndex(savedIndex);
+      } else {
+        // Default to last section for new stories or if saved index is invalid
+        setCurrentSectionIndex(currentStory.sections.length - 1);
+      }
     }
-  }, [currentStory?.id]);
+  }, [currentStory?.id, loadSectionIndex]);
+
+  // Save section index to localStorage whenever it changes
+  useEffect(() => {
+    if (currentStory?.id !== undefined) {
+      saveSectionIndex(currentStory.id, currentSectionIndex);
+    }
+  }, [currentSectionIndex, currentStory?.id, saveSectionIndex]);
 
   // Action handlers
   const createStory = useCallback(

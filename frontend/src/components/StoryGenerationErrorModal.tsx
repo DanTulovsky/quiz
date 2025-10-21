@@ -78,8 +78,17 @@ const StoryGenerationErrorModal: React.FC<StoryGenerationErrorModalProps> = ({
           title={errorConfig.title}
           icon={errorConfig.icon}
         >
-          <Group gap='xs' align='center'>
-            <Text>{displayErrorMessage}</Text>
+          <Group gap='xs' align='flex-start'>
+            <Text 
+              style={{ 
+                wordBreak: 'break-word', 
+                whiteSpace: 'pre-wrap',
+                overflowWrap: 'break-word',
+                maxWidth: '100%'
+              }}
+            >
+              {displayErrorMessage}
+            </Text>
             {detailedErrorInfo && (
               <Tooltip label={detailedErrorInfo} multiline withArrow w={400}>
                 <Box>
