@@ -7,10 +7,34 @@ const path = require('path');
  * Generate phrasebook index.json by scanning directories
  */
 function generatePhrasebookIndex() {
-  const phrasebookDir = path.join(__dirname, '../frontend/src/data/phrasebook');
+  // Try different possible paths for the phrasebook directory
+  const possiblePaths = [
+    path.join(__dirname, '../frontend/src/data/phrasebook'), // Local development
+    path.join(process.cwd(), 'src/data/phrasebook'), // Docker build context
+    path.join(__dirname, '../../frontend/src/data/phrasebook'), // Alternative local path
+    path.join(__dirname, '../src/data/phrasebook'), // Docker: script in /app/scripts/, frontend in /app/src/
+  ];
+
+  let phrasebookDir = null;
+  console.log('🔍 Checking possible paths:');
+  for (const possiblePath of possiblePaths) {
+    console.log(`   - ${possiblePath} ${fs.existsSync(possiblePath) ? '✅' : '❌'}`);
+    if (fs.existsSync(possiblePath)) {
+      phrasebookDir = possiblePath;
+      break;
+    }
+  }
+
+  if (!phrasebookDir) {
+    console.error('❌ Could not find phrasebook directory. Tried paths:');
+    possiblePaths.forEach(p => console.error(`   - ${p}`));
+    process.exit(1);
+  }
+
   const indexPath = path.join(phrasebookDir, 'index.json');
 
   console.log('🔍 Scanning phrasebook directories...');
+  console.log(`📁 Using phrasebook directory: ${phrasebookDir}`);
 
   // Read all directories in the phrasebook folder
   const entries = fs.readdirSync(phrasebookDir, { withFileTypes: true });
