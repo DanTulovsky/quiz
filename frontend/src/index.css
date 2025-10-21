@@ -211,3 +211,9 @@ html {
   /* background: rgba(0,0,0,0.02); */
   /* transition: background 0.2s; */
 }
+
+/* Phrasebook sticky header positioning */
+.phrasebook-sticky-header {
+  /* Position right below the main AppShell header */
+  top: 70px !important;
+}

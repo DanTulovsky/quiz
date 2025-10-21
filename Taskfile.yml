@@ -916,6 +916,12 @@ tasks:
     cmds:
       - python3 scripts/self_host_fonts.py
 
+  generate-phrasebook-index:
+    desc: "Generate phrasebook index.json by scanning category directories"
+    cmds:
+      - echo "Generating phrasebook index..."
+      - node scripts/generate-phrasebook-index.js
+
   build-frontend:
     desc: "Build frontend"
     dir: frontend
@@ -1454,7 +1460,7 @@ tasks:
 
   restart-dev-frontend:
     desc: "Rebuild and restart only the frontend Docker container (production)"
-    deps: [build-frontend-with-version, setup-cache-dirs, generate-api-types]
+    deps: [build-frontend-with-version, setup-cache-dirs, generate-api-types, generate-phrasebook-index]
     env:
       DOCKER_BUILDKIT: 1
       COMPOSE_DOCKER_CLI_BUILD: 1
@@ -1686,7 +1692,7 @@ tasks:
 
   build-all-with-version:
     desc: "Build all Docker images with version, commit, and build time injected from git."
-    deps: [setup-cache-dirs]
+    deps: [setup-cache-dirs, generate-phrasebook-index]
     env:
       DOCKER_BUILDKIT: 1
       COMPOSE_DOCKER_CLI_BUILD: 1
@@ -1719,7 +1725,7 @@ tasks:
 
   build-frontend-with-version:
     desc: "Build frontend Docker images with version, commit, and build time injected from git."
-    deps: [setup-cache-dirs]
+    deps: [setup-cache-dirs, generate-phrasebook-index]
     env:
       DOCKER_BUILDKIT: 1
       COMPOSE_DOCKER_CLI_BUILD: 1

@@ -1,0 +1,296 @@
+{
+  "category": "calendar",
+  "sections": [
+    {
+      "title": "Days of the Week",
+      "words": [
+        {
+          "term": "Monday",
+          "icon": "💼",
+          "note": "",
+          "de": "Montag",
+          "en": "Monday",
+          "fr": "lundi",
+          "it": "lunedì",
+          "ja": "月曜日",
+          "ru": "понедельник",
+          "zh": "星期一"
+        },
+        {
+          "term": "Tuesday",
+          "icon": "🔥",
+          "note": "",
+          "de": "Dienstag",
+          "en": "Tuesday",
+          "fr": "mardi",
+          "it": "martedì",
+          "ja": "火曜日",
+          "ru": "вторник",
+          "zh": "星期二"
+        },
+        {
+          "term": "Wednesday",
+          "icon": "🐪",
+          "note": "",
+          "de": "Mittwoch",
+          "en": "Wednesday",
+          "fr": "mercredi",
+          "it": "mercoledì",
+          "ja": "水曜日",
+          "ru": "среда",
+          "zh": "星期三"
+        },
+        {
+          "term": "Thursday",
+          "icon": "⚡",
+          "note": "",
+          "de": "Donnerstag",
+          "en": "Thursday",
+          "fr": "jeudi",
+          "it": "giovedì",
+          "ja": "木曜日",
+          "ru": "четверг",
+          "zh": "星期四"
+        },
+        {
+          "term": "Friday",
+          "icon": "🎉",
+          "note": "",
+          "de": "Freitag",
+          "en": "Friday",
+          "fr": "vendredi",
+          "it": "venerdì",
+          "ja": "金曜日",
+          "ru": "пятница",
+          "zh": "星期五"
+        },
+        {
+          "term": "Saturday",
+          "icon": "🏖️",
+          "note": "",
+          "de": "Samstag",
+          "en": "Saturday",
+          "fr": "samedi",
+          "it": "sabato",
+          "ja": "土曜日",
+          "ru": "суббота",
+          "zh": "星期六"
+        },
+        {
+          "term": "Sunday",
+          "icon": "☀️",
+          "note": "",
+          "de": "Sonntag",
+          "en": "Sunday",
+          "fr": "dimanche",
+          "it": "domenica",
+          "ja": "日曜日",
+          "ru": "воскресенье",
+          "zh": "星期天"
+        }
+      ]
+    },
+    {
+      "title": "Months",
+      "words": [
+        {
+          "term": "January",
+          "icon": "❄️",
+          "note": "",
+          "de": "Januar",
+          "en": "January",
+          "fr": "janvier",
+          "it": "gennaio",
+          "ja": "一月",
+          "ru": "январь",
+          "zh": "一月"
+        },
+        {
+          "term": "February",
+          "icon": "💝",
+          "note": "",
+          "de": "Februar",
+          "en": "February",
+          "fr": "février",
+          "it": "febbraio",
+          "ja": "二月",
+          "ru": "февраль",
+          "zh": "二月"
+        },
+        {
+          "term": "March",
+          "icon": "🌸",
+          "note": "",
+          "de": "März",
+          "en": "March",
+          "fr": "mars",
+          "it": "marzo",
+          "ja": "三月",
+          "ru": "март",
+          "zh": "三月"
+        },
+        {
+          "term": "April",
+          "icon": "🌷",
+          "note": "",
+          "de": "April",
+          "en": "April",
+          "fr": "avril",
+          "it": "aprile",
+          "ja": "四月",
+          "ru": "апрель",
+          "zh": "四月"
+        },
+        {
+          "term": "May",
+          "icon": "🌺",
+          "note": "",
+          "de": "Mai",
+          "en": "May",
+          "fr": "mai",
+          "it": "maggio",
+          "ja": "五月",
+          "ru": "май",
+          "zh": "五月"
+        },
+        {
+          "term": "June",
+          "icon": "☀️",
+          "note": "",
+          "de": "Juni",
+          "en": "June",
+          "fr": "juin",
+          "it": "giugno",
+          "ja": "六月",
+          "ru": "июнь",
+          "zh": "六月"
+        },
+        {
+          "term": "July",
+          "icon": "🎆",
+          "note": "",
+          "de": "Juli",
+          "en": "July",
+          "fr": "juillet",
+          "it": "luglio",
+          "ja": "七月",
+          "ru": "июль",
+          "zh": "七月"
+        },
+        {
+          "term": "August",
+          "icon": "🏖️",
+          "note": "",
+          "de": "August",
+          "en": "August",
+          "fr": "août",
+          "it": "agosto",
+          "ja": "八月",
+          "ru": "август",
+          "zh": "八月"
+        },
+        {
+          "term": "September",
+          "icon": "🍂",
+          "note": "",
+          "de": "September",
+          "en": "September",
+          "fr": "septembre",
+          "it": "settembre",
+          "ja": "九月",
+          "ru": "сентябрь",
+          "zh": "九月"
+        },
+        {
+          "term": "October",
+          "icon": "🎃",
+          "note": "",
+          "de": "Oktober",
+          "en": "October",
+          "fr": "octobre",
+          "it": "ottobre",
+          "ja": "十月",
+          "ru": "октябрь",
+          "zh": "十月"
+        },
+        {
+          "term": "November",
+          "icon": "🦃",
+          "note": "",
+          "de": "November",
+          "en": "November",
+          "fr": "novembre",
+          "it": "novembre",
+          "ja": "十一月",
+          "ru": "ноябрь",
+          "zh": "十一月"
+        },
+        {
+          "term": "December",
+          "icon": "🎄",
+          "note": "",
+          "de": "Dezember",
+          "en": "December",
+          "fr": "décembre",
+          "it": "dicembre",
+          "ja": "十二月",
+          "ru": "декабрь",
+          "zh": "十二月"
+        }
+      ]
+    },
+    {
+      "title": "Seasons",
+      "words": [
+        {
+          "term": "spring",
+          "icon": "🌸",
+          "note": "",
+          "de": "Frühling",
+          "en": "spring",
+          "fr": "printemps",
+          "it": "primavera",
+          "ja": "春",
+          "ru": "весна",
+          "zh": "春天"
+        },
+        {
+          "term": "summer",
+          "icon": "☀️",
+          "note": "",
+          "de": "Sommer",
+          "en": "summer",
+          "fr": "été",
+          "it": "estate",
+          "ja": "夏",
+          "ru": "лето",
+          "zh": "夏天"
+        },
+        {
+          "term": "autumn / fall",
+          "icon": "🍂",
+          "note": "",
+          "de": "Herbst",
+          "en": "autumn / fall",
+          "fr": "automne",
+          "it": "autunno",
+          "ja": "秋",
+          "ru": "осень",
+          "zh": "秋天"
+        },
+        {
+          "term": "winter",
+          "icon": "❄️",
+          "note": "",
+          "de": "Winter",
+          "en": "winter",
+          "fr": "hiver",
+          "it": "inverno",
+          "ja": "冬",
+          "ru": "зима",
+          "zh": "冬天"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "categories": [
+    "calendar",
+    "colors",
+    "emotions",
+    "family",
+    "food",
+    "greetings",
+    "home",
+    "numbers",
+    "time",
+    "transportation",
+    "verbs",
+    "weather"
+  ],
+  "generatedAt": "2025-10-21T21:40:06.632Z",
+  "generatedBy": "generate-phrasebook-index.js"
+}

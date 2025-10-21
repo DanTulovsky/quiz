@@ -4,6 +4,7 @@
   "description": "AI-powered quiz application frontend",
   "type": "module",
   "scripts": {
+    "prebuild": "node ../scripts/generate-phrasebook-index.js",
     "postbuild": "node ./scripts/generate-front-version.cjs",
     "dev": "vite",
     "build": "vite build",

@@ -11,6 +11,8 @@ import QuizPage from './pages/QuizPage';
 import ReadingComprehensionPage from './pages/ReadingComprehensionPage';
 import VocabularyPage from './pages/VocabularyPage';
 import SnippetsPage from './pages/SnippetsPage';
+import PhrasebookIndexPage from './pages/PhrasebookIndexPage';
+import PhrasebookCategoryPage from './pages/PhrasebookCategoryPage';
 import DailyPage from './pages/DailyPage';
 import ProgressPage from './pages/ProgressPage';
 import SettingsPage from './pages/SettingsPage';
@@ -141,6 +143,34 @@ function App() {
             user ? (
               <Layout>
                 <SnippetsPage />
+              </Layout>
+            ) : (
+              <Navigate
+                to={`/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`}
+              />
+            )
+          }
+        />
+        <Route
+          path='/phrasebook'
+          element={
+            user ? (
+              <Layout>
+                <PhrasebookIndexPage />
+              </Layout>
+            ) : (
+              <Navigate
+                to={`/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`}
+              />
+            )
+          }
+        />
+        <Route
+          path='/phrasebook/:category'
+          element={
+            user ? (
+              <Layout>
+                <PhrasebookCategoryPage />
               </Layout>
             ) : (
               <Navigate
@@ -490,6 +520,34 @@ function App() {
             user ? (
               <MobileLayout>
                 <SnippetsPage />
+              </MobileLayout>
+            ) : (
+              <Navigate
+                to={`/m/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`}
+              />
+            )
+          }
+        />
+        <Route
+          path='/m/phrasebook'
+          element={
+            user ? (
+              <MobileLayout>
+                <PhrasebookIndexPage />
+              </MobileLayout>
+            ) : (
+              <Navigate
+                to={`/m/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`}
+              />
+            )
+          }
+        />
+        <Route
+          path='/m/phrasebook/:category'
+          element={
+            user ? (
+              <MobileLayout>
+                <PhrasebookCategoryPage />
               </MobileLayout>
             ) : (
               <Navigate

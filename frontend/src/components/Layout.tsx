@@ -38,6 +38,7 @@ import {
   IconDeviceMobile,
   IconQuestionMark,
   IconBookmark,
+  IconLanguage,
 } from '@tabler/icons-react';
 import WorkerStatus from './WorkerStatus';
 import VersionDisplay from './VersionDisplay';
@@ -190,6 +191,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         href: '/snippets',
         icon: IconBookmark,
         testId: 'nav-snippets',
+      },
+      {
+        name: 'Phrasebook',
+        href: '/phrasebook',
+        icon: IconLanguage,
+        testId: 'nav-phrasebook',
       },
     ];
 
@@ -506,6 +513,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               )}
               {item.name === 'Saved AI Conversations' && (
                 <Divider my='xs' label='History' labelPosition='center' />
+              )}
+              {item.name === 'Phrasebook' && (
+                <Divider my='xs' label='Reference' labelPosition='center' />
               )}
               <NavLink
                 component={Link}

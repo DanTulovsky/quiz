@@ -76,6 +76,9 @@ COPY frontend/scripts ./scripts
 COPY --from=font-generator /app/frontend/public/fonts ./public/fonts
 COPY --from=font-generator /app/src/fonts.css ./src/fonts.css
 
+# Copy phrasebook index generation script to parent directory (will run automatically via npm prebuild)
+COPY scripts/generate-phrasebook-index.js ../scripts/
+
 # Build the app with cache mounts for Vite and esbuild
 RUN --mount=type=cache,id=quiz-frontend-vite,sharing=locked,target=/app/node_modules/.vite \
     --mount=type=cache,id=quiz-frontend-esbuild,sharing=locked,target=/root/.cache/esbuild \

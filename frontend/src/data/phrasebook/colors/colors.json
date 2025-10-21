@@ -1,0 +1,195 @@
+{
+  "category": "colors",
+  "sections": [
+    {
+      "title": "Basic Colors",
+      "words": [
+        {
+          "term": "red",
+          "icon": "🔴",
+          "note": "",
+          "de": "rot",
+          "en": "red",
+          "fr": "rouge",
+          "it": "rosso",
+          "ja": "赤",
+          "ru": "красный",
+          "zh": "红色"
+        },
+        {
+          "term": "blue",
+          "icon": "🔵",
+          "note": "",
+          "de": "blau",
+          "en": "blue",
+          "fr": "bleu",
+          "it": "blu",
+          "ja": "青",
+          "ru": "синий",
+          "zh": "蓝色"
+        },
+        {
+          "term": "yellow",
+          "icon": "🟡",
+          "note": "",
+          "de": "gelb",
+          "en": "yellow",
+          "fr": "jaune",
+          "it": "giallo",
+          "ja": "黄色",
+          "ru": "жёлтый",
+          "zh": "黄色"
+        },
+        {
+          "term": "green",
+          "icon": "🟢",
+          "note": "",
+          "de": "grün",
+          "en": "green",
+          "fr": "vert",
+          "it": "verde",
+          "ja": "緑",
+          "ru": "зелёный",
+          "zh": "绿色"
+        },
+        {
+          "term": "orange",
+          "icon": "🟠",
+          "note": "",
+          "de": "orange",
+          "en": "orange",
+          "fr": "orange",
+          "it": "arancione",
+          "ja": "オレンジ",
+          "ru": "оранжевый",
+          "zh": "橙色"
+        },
+        {
+          "term": "purple",
+          "icon": "🟣",
+          "note": "",
+          "de": "lila",
+          "en": "purple",
+          "fr": "violet",
+          "it": "viola",
+          "ja": "紫",
+          "ru": "фиолетовый",
+          "zh": "紫色"
+        },
+        {
+          "term": "pink",
+          "icon": "🔴",
+          "note": "",
+          "de": "rosa",
+          "en": "pink",
+          "fr": "rose",
+          "it": "rosa",
+          "ja": "ピンク",
+          "ru": "розовый",
+          "zh": "粉色"
+        },
+        {
+          "term": "brown",
+          "icon": "🟤",
+          "note": "",
+          "de": "braun",
+          "en": "brown",
+          "fr": "marron",
+          "it": "marrone",
+          "ja": "茶色",
+          "ru": "коричневый",
+          "zh": "棕色"
+        },
+        {
+          "term": "black",
+          "icon": "⚫",
+          "note": "",
+          "de": "schwarz",
+          "en": "black",
+          "fr": "noir",
+          "it": "nero",
+          "ja": "黒",
+          "ru": "чёрный",
+          "zh": "黑色"
+        },
+        {
+          "term": "white",
+          "icon": "⚪",
+          "note": "",
+          "de": "weiß",
+          "en": "white",
+          "fr": "blanc",
+          "it": "bianco",
+          "ja": "白",
+          "ru": "белый",
+          "zh": "白色"
+        },
+        {
+          "term": "gray",
+          "icon": "⚫",
+          "note": "",
+          "de": "grau",
+          "en": "gray",
+          "fr": "gris",
+          "it": "grigio",
+          "ja": "灰色",
+          "ru": "серый",
+          "zh": "灰色"
+        }
+      ]
+    },
+    {
+      "title": "Shades",
+      "words": [
+        {
+          "term": "light",
+          "icon": "☀️",
+          "note": "",
+          "de": "hell",
+          "en": "light",
+          "fr": "clair",
+          "it": "chiaro",
+          "ja": "明るい",
+          "ru": "светлый",
+          "zh": "浅"
+        },
+        {
+          "term": "dark",
+          "icon": "🌙",
+          "note": "",
+          "de": "dunkel",
+          "en": "dark",
+          "fr": "foncé",
+          "it": "scuro",
+          "ja": "暗い",
+          "ru": "тёмный",
+          "zh": "深"
+        },
+        {
+          "term": "bright",
+          "icon": "✨",
+          "note": "",
+          "de": "hell",
+          "en": "bright",
+          "fr": "vif",
+          "it": "brillante",
+          "ja": "鮮やか",
+          "ru": "яркий",
+          "zh": "鲜艳"
+        },
+        {
+          "term": "pale",
+          "icon": "🌫️",
+          "note": "",
+          "de": "blass",
+          "en": "pale",
+          "fr": "pâle",
+          "it": "pallido",
+          "ja": "淡い",
+          "ru": "бледный",
+          "zh": "淡"
+        }
+      ]
+    }
+  ]
+}

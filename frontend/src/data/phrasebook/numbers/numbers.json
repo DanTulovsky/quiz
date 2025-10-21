@@ -1,0 +1,630 @@
+{
+  "category": "numbers",
+  "sections": [
+    {
+      "title": "Cardinal Numbers (1-20)",
+      "words": [
+        {
+          "term": "one",
+          "icon": "1",
+          "note": "Number 1",
+          "en": "one",
+          "it": "uno",
+          "fr": "un",
+          "de": "eins",
+          "ru": "один",
+          "ja": "一",
+          "zh": "一"
+        },
+        {
+          "term": "two",
+          "icon": "2",
+          "note": "Number 2",
+          "en": "two",
+          "it": "due",
+          "fr": "deux",
+          "de": "zwei",
+          "ru": "два",
+          "ja": "二",
+          "zh": "二"
+        },
+        {
+          "term": "three",
+          "icon": "3",
+          "note": "Number 3",
+          "en": "three",
+          "it": "tre",
+          "fr": "trois",
+          "de": "drei",
+          "ru": "три",
+          "ja": "三",
+          "zh": "三"
+        },
+        {
+          "term": "four",
+          "icon": "4",
+          "note": "Number 4",
+          "en": "four",
+          "it": "quattro",
+          "fr": "quatre",
+          "de": "vier",
+          "ru": "четыре",
+          "ja": "四",
+          "zh": "四"
+        },
+        {
+          "term": "five",
+          "icon": "5",
+          "note": "Number 5",
+          "en": "five",
+          "it": "cinque",
+          "fr": "cinq",
+          "de": "fünf",
+          "ru": "пять",
+          "ja": "五",
+          "zh": "五"
+        },
+        {
+          "term": "six",
+          "icon": "6",
+          "note": "Number 6",
+          "en": "six",
+          "it": "sei",
+          "fr": "six",
+          "de": "sechs",
+          "ru": "шесть",
+          "ja": "六",
+          "zh": "六"
+        },
+        {
+          "term": "seven",
+          "icon": "7",
+          "note": "Number 7",
+          "en": "seven",
+          "it": "sette",
+          "fr": "sept",
+          "de": "sieben",
+          "ru": "семь",
+          "ja": "七",
+          "zh": "七"
+        },
+        {
+          "term": "eight",
+          "icon": "8",
+          "note": "Number 8",
+          "en": "eight",
+          "it": "otto",
+          "fr": "huit",
+          "de": "acht",
+          "ru": "восемь",
+          "ja": "八",
+          "zh": "八"
+        },
+        {
+          "term": "nine",
+          "icon": "9",
+          "note": "Number 9",
+          "en": "nine",
+          "it": "nove",
+          "fr": "neuf",
+          "de": "neun",
+          "ru": "девять",
+          "ja": "九",
+          "zh": "九"
+        },
+        {
+          "term": "ten",
+          "icon": "10",
+          "note": "Number 10",
+          "en": "ten",
+          "it": "dieci",
+          "fr": "dix",
+          "de": "zehn",
+          "ru": "десять",
+          "ja": "十",
+          "zh": "十"
+        },
+        {
+          "term": "eleven",
+          "icon": "11",
+          "note": "Number 11",
+          "en": "eleven",
+          "it": "undici",
+          "fr": "onze",
+          "de": "elf",
+          "ru": "одиннадцать",
+          "ja": "十一",
+          "zh": "十一"
+        },
+        {
+          "term": "twelve",
+          "icon": "12",
+          "note": "Number 12",
+          "en": "twelve",
+          "it": "dodici",
+          "fr": "douze",
+          "de": "zwölf",
+          "ru": "двенадцать",
+          "ja": "十二",
+          "zh": "十二"
+        },
+        {
+          "term": "thirteen",
+          "icon": "13",
+          "note": "Number 13",
+          "en": "thirteen",
+          "it": "tredici",
+          "fr": "treize",
+          "de": "dreizehn",
+          "ru": "тринадцать",
+          "ja": "十三",
+          "zh": "十三"
+        },
+        {
+          "term": "fourteen",
+          "icon": "14",
+          "note": "Number 14",
+          "en": "fourteen",
+          "it": "quattordici",
+          "fr": "quatorze",
+          "de": "vierzehn",
+          "ru": "четырнадцать",
+          "ja": "十四",
+          "zh": "十四"
+        },
+        {
+          "term": "fifteen",
+          "icon": "15",
+          "note": "Number 15",
+          "en": "fifteen",
+          "it": "quindici",
+          "fr": "quinze",
+          "de": "fünfzehn",
+          "ru": "пятнадцать",
+          "ja": "十五",
+          "zh": "十五"
+        },
+        {
+          "term": "sixteen",
+          "icon": "16",
+          "note": "Number 16",
+          "en": "sixteen",
+          "it": "sedici",
+          "fr": "seize",
+          "de": "sechzehn",
+          "ru": "шестнадцать",
+          "ja": "十六",
+          "zh": "十六"
+        },
+        {
+          "term": "seventeen",
+          "icon": "17",
+          "note": "Number 17",
+          "en": "seventeen",
+          "it": "diciassette",
+          "fr": "dix-sept",
+          "de": "siebzehn",
+          "ru": "семнадцать",
+          "ja": "十七",
+          "zh": "十七"
+        },
+        {
+          "term": "eighteen",
+          "icon": "18",
+          "note": "Number 18",
+          "en": "eighteen",
+          "it": "diciotto",
+          "fr": "dix-huit",
+          "de": "achtzehn",
+          "ru": "восемнадцать",
+          "ja": "十八",
+          "zh": "十八"
+        },
+        {
+          "term": "nineteen",
+          "icon": "19",
+          "note": "Number 19",
+          "en": "nineteen",
+          "it": "diciannove",
+          "fr": "dix-neuf",
+          "de": "neunzehn",
+          "ru": "девятнадцать",
+          "ja": "十九",
+          "zh": "十九"
+        },
+        {
+          "term": "twenty",
+          "icon": "20",
+          "note": "Number 20",
+          "en": "twenty",
+          "it": "venti",
+          "fr": "vingt",
+          "de": "zwanzig",
+          "ru": "двадцать",
+          "ja": "二十",
+          "zh": "二十"
+        }
+      ]
+    },
+    {
+      "title": "Tens and Hundreds",
+      "words": [
+        {
+          "term": "thirty",
+          "icon": "30",
+          "note": "Number 30",
+          "en": "thirty",
+          "it": "trenta",
+          "fr": "trente",
+          "de": "dreißig",
+          "ru": "тридцать",
+          "ja": "三十",
+          "zh": "三十"
+        },
+        {
+          "term": "forty",
+          "icon": "40",
+          "note": "Number 40",
+          "en": "forty",
+          "it": "quaranta",
+          "fr": "quarante",
+          "de": "vierzig",
+          "ru": "сорок",
+          "ja": "四十",
+          "zh": "四十"
+        },
+        {
+          "term": "fifty",
+          "icon": "50",
+          "note": "Number 50",
+          "en": "fifty",
+          "it": "cinquanta",
+          "fr": "cinquante",
+          "de": "fünfzig",
+          "ru": "пятьдесят",
+          "ja": "五十",
+          "zh": "五十"
+        },
+        {
+          "term": "sixty",
+          "icon": "60",
+          "note": "Number 60",
+          "en": "sixty",
+          "it": "sessanta",
+          "fr": "soixante",
+          "de": "sechzig",
+          "ru": "шестьдесят",
+          "ja": "六十",
+          "zh": "六十"
+        },
+        {
+          "term": "seventy",
+          "icon": "70",
+          "note": "Number 70",
+          "en": "seventy",
+          "it": "settanta",
+          "fr": "soixante-dix",
+          "de": "siebzig",
+          "ru": "семьдесят",
+          "ja": "七十",
+          "zh": "七十"
+        },
+        {
+          "term": "eighty",
+          "icon": "80",
+          "note": "Number 80",
+          "en": "eighty",
+          "it": "ottanta",
+          "fr": "quatre-vingts",
+          "de": "achtzig",
+          "ru": "восемьдесят",
+          "ja": "八十",
+          "zh": "八十"
+        },
+        {
+          "term": "ninety",
+          "icon": "90",
+          "note": "Number 90",
+          "en": "ninety",
+          "it": "novanta",
+          "fr": "quatre-vingt-dix",
+          "de": "neunzig",
+          "ru": "девяносто",
+          "ja": "九十",
+          "zh": "九十"
+        },
+        {
+          "term": "one hundred",
+          "icon": "100",
+          "note": "Number 100",
+          "en": "one hundred",
+          "it": "cento",
+          "fr": "cent",
+          "de": "einhundert",
+          "ru": "сто",
+          "ja": "百",
+          "zh": "一百"
+        },
+        {
+          "term": "one thousand",
+          "icon": "1K",
+          "note": "Number 1000",
+          "en": "one thousand",
+          "it": "mille",
+          "fr": "mille",
+          "de": "eintausend",
+          "ru": "тысяча",
+          "ja": "千",
+          "zh": "一千"
+        },
+        {
+          "term": "one million",
+          "icon": "1M",
+          "note": "Number 1,000,000",
+          "en": "one million",
+          "it": "un milione",
+          "fr": "un million",
+          "de": "eine Million",
+          "ru": "миллион",
+          "ja": "百万",
+          "zh": "一百万"
+        }
+      ]
+    },
+    {
+      "title": "Ordinal Numbers",
+      "words": [
+        {
+          "term": "first",
+          "icon": "1st",
+          "note": "1st position",
+          "en": "first",
+          "it": "primo",
+          "fr": "premier",
+          "de": "erste",
+          "ru": "первый",
+          "ja": "第一",
+          "zh": "第一"
+        },
+        {
+          "term": "second",
+          "icon": "2nd",
+          "note": "2nd position",
+          "en": "second",
+          "it": "secondo",
+          "fr": "deuxième",
+          "de": "zweite",
+          "ru": "второй",
+          "ja": "第二",
+          "zh": "第二"
+        },
+        {
+          "term": "third",
+          "icon": "3rd",
+          "note": "3rd position",
+          "en": "third",
+          "it": "terzo",
+          "fr": "troisième",
+          "de": "dritte",
+          "ru": "третий",
+          "ja": "第三",
+          "zh": "第三"
+        },
+        {
+          "term": "fourth",
+          "icon": "4th",
+          "note": "4th position",
+          "en": "fourth",
+          "it": "quarto",
+          "fr": "quatrième",
+          "de": "vierte",
+          "ru": "четвертый",
+          "ja": "第四",
+          "zh": "第四"
+        },
+        {
+          "term": "fifth",
+          "icon": "5th",
+          "note": "5th position",
+          "en": "fifth",
+          "it": "quinto",
+          "fr": "cinquième",
+          "de": "fünfte",
+          "ru": "пятый",
+          "ja": "第五",
+          "zh": "第五"
+        },
+        {
+          "term": "last",
+          "icon": "∞",
+          "note": "Final position",
+          "en": "last",
+          "it": "ultimo",
+          "fr": "dernier",
+          "de": "letzte",
+          "ru": "последний",
+          "ja": "最後",
+          "zh": "最后"
+        }
+      ]
+    },
+    {
+      "title": "Quantities",
+      "words": [
+        {
+          "term": "many",
+          "icon": "🔢",
+          "note": "Large quantity",
+          "en": "many",
+          "it": "molti",
+          "fr": "beaucoup",
+          "de": "viele",
+          "ru": "много",
+          "ja": "たくさん",
+          "zh": "很多"
+        },
+        {
+          "term": "few",
+          "icon": "🔢",
+          "note": "Small quantity",
+          "en": "few",
+          "it": "pochi",
+          "fr": "peu",
+          "de": "wenige",
+          "ru": "мало",
+          "ja": "少し",
+          "zh": "很少"
+        },
+        {
+          "term": "some",
+          "icon": "🔢",
+          "note": "Indefinite quantity",
+          "en": "some",
+          "it": "alcuni",
+          "fr": "quelques",
+          "de": "einige",
+          "ru": "некоторые",
+          "ja": "いくつか",
+          "zh": "一些"
+        },
+        {
+          "term": "all",
+          "icon": "🔢",
+          "note": "Complete quantity",
+          "en": "all",
+          "it": "tutti",
+          "fr": "tout",
+          "de": "alle",
+          "ru": "все",
+          "ja": "すべて",
+          "zh": "全部"
+        },
+        {
+          "term": "none",
+          "icon": "🔢",
+          "note": "Zero quantity",
+          "en": "none",
+          "it": "nessuno",
+          "fr": "aucun",
+          "de": "keine",
+          "ru": "никакой",
+          "ja": "なし",
+          "zh": "没有"
+        },
+        {
+          "term": "enough",
+          "icon": "🔢",
+          "note": "Sufficient quantity",
+          "en": "enough",
+          "it": "abbastanza",
+          "fr": "assez",
+          "de": "genug",
+          "ru": "достаточно",
+          "ja": "十分",
+          "zh": "足够"
+        },
+        {
+          "term": "more",
+          "icon": "➕",
+          "note": "Additional quantity",
+          "en": "more",
+          "it": "più",
+          "fr": "plus",
+          "de": "mehr",
+          "ru": "больше",
+          "ja": "もっと",
+          "zh": "更多"
+        },
+        {
+          "term": "less",
+          "icon": "➖",
+          "note": "Reduced quantity",
+          "en": "less",
+          "it": "meno",
+          "fr": "moins",
+          "de": "weniger",
+          "ru": "меньше",
+          "ja": "少なく",
+          "zh": "更少"
+        }
+      ]
+    },
+    {
+      "title": "Measurements",
+      "words": [
+        {
+          "term": "kilogram",
+          "icon": "⚖️",
+          "note": "Weight unit",
+          "en": "kilogram",
+          "it": "chilogrammo",
+          "fr": "kilogramme",
+          "de": "Kilogramm",
+          "ru": "килограмм",
+          "ja": "キログラム",
+          "zh": "公斤"
+        },
+        {
+          "term": "gram",
+          "icon": "⚖️",
+          "note": "Small weight unit",
+          "en": "gram",
+          "it": "grammo",
+          "fr": "gramme",
+          "de": "Gramm",
+          "ru": "грамм",
+          "ja": "グラム",
+          "zh": "克"
+        },
+        {
+          "term": "liter",
+          "icon": "🥤",
+          "note": "Volume unit",
+          "en": "liter",
+          "it": "litro",
+          "fr": "litre",
+          "de": "Liter",
+          "ru": "литр",
+          "ja": "リットル",
+          "zh": "升"
+        },
+        {
+          "term": "meter",
+          "icon": "📏",
+          "note": "Length unit",
+          "en": "meter",
+          "it": "metro",
+          "fr": "mètre",
+          "de": "Meter",
+          "ru": "метр",
+          "ja": "メートル",
+          "zh": "米"
+        },
+        {
+          "term": "kilometer",
+          "icon": "📏",
+          "note": "Distance unit",
+          "en": "kilometer",
+          "it": "chilometro",
+          "fr": "kilomètre",
+          "de": "Kilometer",
+          "ru": "километр",
+          "ja": "キロメートル",
+          "zh": "公里"
+        },
+        {
+          "term": "centimeter",
+          "icon": "📏",
+          "note": "Small length unit",
+          "en": "centimeter",
+          "it": "centimetro",
+          "fr": "centimètre",
+          "de": "Zentimeter",
+          "ru": "сантиметр",
+          "ja": "センチメートル",
+          "zh": "厘米"
+        }
+      ]
+    }
+  ]
+}

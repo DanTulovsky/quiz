@@ -1,0 +1,445 @@
+{
+  "category": "time",
+  "sections": [
+    {
+      "title": "Time of Day",
+      "words": [
+        {
+          "term": "morning",
+          "icon": "🌅",
+          "note": "",
+          "de": "Morgen",
+          "en": "morning",
+          "fr": "matin",
+          "it": "mattina",
+          "ja": "朝",
+          "ru": "утро",
+          "zh": "早上"
+        },
+        {
+          "term": "afternoon",
+          "icon": "☀️",
+          "note": "",
+          "de": "Nachmittag",
+          "en": "afternoon",
+          "fr": "après-midi",
+          "it": "pomeriggio",
+          "ja": "午後",
+          "ru": "день",
+          "zh": "下午"
+        },
+        {
+          "term": "evening",
+          "icon": "🌆",
+          "note": "",
+          "de": "Abend",
+          "en": "evening",
+          "fr": "soir",
+          "it": "sera",
+          "ja": "夕方",
+          "ru": "вечер",
+          "zh": "晚上"
+        },
+        {
+          "term": "night",
+          "icon": "🌙",
+          "note": "",
+          "de": "Nacht",
+          "en": "night",
+          "fr": "nuit",
+          "it": "notte",
+          "ja": "夜",
+          "ru": "ночь",
+          "zh": "夜里"
+        },
+        {
+          "term": "midnight",
+          "icon": "🌃",
+          "note": "",
+          "de": "Mitternacht",
+          "en": "midnight",
+          "fr": "minuit",
+          "it": "mezzanotte",
+          "ja": "真夜中",
+          "ru": "полночь",
+          "zh": "午夜"
+        },
+        {
+          "term": "noon",
+          "icon": "☀️",
+          "note": "",
+          "de": "Mittag",
+          "en": "noon",
+          "fr": "midi",
+          "it": "mezzogiorno",
+          "ja": "正午",
+          "ru": "полдень",
+          "zh": "中午"
+        }
+      ]
+    },
+    {
+      "title": "Time References",
+      "words": [
+        {
+          "term": "today",
+          "icon": "☀️",
+          "note": "",
+          "de": "heute",
+          "en": "today",
+          "fr": "aujourd'hui",
+          "it": "oggi",
+          "ja": "今日",
+          "ru": "сегодня",
+          "zh": "今天"
+        },
+        {
+          "term": "yesterday",
+          "icon": "⏪",
+          "note": "",
+          "de": "gestern",
+          "en": "yesterday",
+          "fr": "hier",
+          "it": "ieri",
+          "ja": "昨日",
+          "ru": "вчера",
+          "zh": "昨天"
+        },
+        {
+          "term": "tomorrow",
+          "icon": "⏩",
+          "note": "",
+          "de": "morgen",
+          "en": "tomorrow",
+          "fr": "demain",
+          "it": "domani",
+          "ja": "明日",
+          "ru": "завтра",
+          "zh": "明天"
+        },
+        {
+          "term": "now",
+          "icon": "⏱️",
+          "note": "",
+          "de": "jetzt",
+          "en": "now",
+          "fr": "maintenant",
+          "it": "adesso",
+          "ja": "今",
+          "ru": "сейчас",
+          "zh": "现在"
+        },
+        {
+          "term": "later",
+          "icon": "🔜",
+          "note": "",
+          "de": "später",
+          "en": "later",
+          "fr": "plus tard",
+          "it": "dopo",
+          "ja": "後で",
+          "ru": "позже",
+          "zh": "以后"
+        },
+        {
+          "term": "soon",
+          "icon": "💨",
+          "note": "",
+          "de": "bald",
+          "en": "soon",
+          "fr": "bientôt",
+          "it": "presto",
+          "ja": "すぐ",
+          "ru": "скоро",
+          "zh": "很快"
+        },
+        {
+          "term": "early",
+          "icon": "🌅",
+          "note": "",
+          "de": "früh",
+          "en": "early",
+          "fr": "tôt",
+          "it": "presto",
+          "ja": "早く",
+          "ru": "рано",
+          "zh": "早"
+        },
+        {
+          "term": "late",
+          "icon": "🌃",
+          "note": "",
+          "de": "spät",
+          "en": "late",
+          "fr": "tard",
+          "it": "tardi",
+          "ja": "遅く",
+          "ru": "поздно",
+          "zh": "晚"
+        }
+      ]
+    },
+    {
+      "title": "Clock Time",
+      "words": [
+        {
+          "term": "hour",
+          "icon": "⏰",
+          "note": "",
+          "de": "Stunde",
+          "en": "hour",
+          "fr": "heure",
+          "it": "ora",
+          "ja": "時間",
+          "ru": "час",
+          "zh": "小时"
+        },
+        {
+          "term": "minute",
+          "icon": "⏱️",
+          "note": "",
+          "de": "Minute",
+          "en": "minute",
+          "fr": "minute",
+          "it": "minuto",
+          "ja": "分",
+          "ru": "минута",
+          "zh": "分钟"
+        },
+        {
+          "term": "second",
+          "icon": "⚡",
+          "note": "",
+          "de": "Sekunde",
+          "en": "second",
+          "fr": "seconde",
+          "it": "secondo",
+          "ja": "秒",
+          "ru": "секунда",
+          "zh": "秒"
+        },
+        {
+          "term": "o'clock",
+          "icon": "🕛",
+          "note": "",
+          "de": "Uhr",
+          "en": "o'clock",
+          "fr": "heure(s)",
+          "it": "in punto",
+          "ja": "時",
+          "ru": "часов",
+          "zh": "点"
+        },
+        {
+          "term": "half past",
+          "icon": "🕡",
+          "note": "",
+          "de": "halb",
+          "en": "half past",
+          "fr": "et demie",
+          "it": "e mezza",
+          "ja": "半",
+          "ru": "половина",
+          "zh": "半"
+        },
+        {
+          "term": "quarter past",
+          "icon": "🕒",
+          "note": "",
+          "de": "Viertel nach",
+          "en": "quarter past",
+          "fr": "et quart",
+          "it": "e un quarto",
+          "ja": "15分",
+          "ru": "четверть",
+          "zh": "一刻"
+        },
+        {
+          "term": "quarter to",
+          "icon": "🕤",
+          "note": "",
+          "de": "Viertel vor",
+          "en": "quarter to",
+          "fr": "moins le quart",
+          "it": "meno un quarto",
+          "ja": "15分前",
+          "ru": "без четверти",
+          "zh": "差一刻"
+        }
+      ]
+    },
+    {
+      "title": "Time Phrases",
+      "words": [
+        {
+          "term": "What time is it?",
+          "icon": "🕐",
+          "note": "Asking for the time",
+          "de": "Wie spät ist es?",
+          "en": "What time is it?",
+          "fr": "Quelle heure est-il?",
+          "it": "Che ora è?",
+          "ja": "今何時ですか？",
+          "ru": "Который час?",
+          "zh": "现在几点了？"
+        },
+        {
+          "term": "What's the time?",
+          "icon": "🕑",
+          "note": "Asking for the time",
+          "de": "Wie viel Uhr ist es?",
+          "en": "What's the time?",
+          "fr": "Il est quelle heure?",
+          "it": "Che ore sono?",
+          "ja": "時間は何時ですか？",
+          "ru": "Сколько времени?",
+          "zh": "几点钟了？"
+        },
+        {
+          "term": "Do you have the time?",
+          "icon": "🕒",
+          "note": "Asking for the time",
+          "de": "Haben Sie die Uhrzeit?",
+          "en": "Do you have the time?",
+          "fr": "Avez-vous l'heure?",
+          "it": "Hai l'ora?",
+          "ja": "時間を教えてください",
+          "ru": "У вас есть время?",
+          "zh": "你知道时间吗？"
+        },
+        {
+          "term": "It's three o'clock",
+          "icon": "🕒",
+          "note": "Telling time",
+          "de": "Es ist drei Uhr",
+          "en": "It's three o'clock",
+          "fr": "Il est trois heures",
+          "it": "Sono le tre",
+          "ja": "3時です",
+          "ru": "Три часа",
+          "zh": "三点钟"
+        },
+        {
+          "term": "It's half past two",
+          "icon": "🕝",
+          "note": "Telling time",
+          "de": "Es ist halb drei",
+          "en": "It's half past two",
+          "fr": "Il est deux heures et demie",
+          "it": "Sono le due e mezza",
+          "ja": "2時半です",
+          "ru": "Половина третьего",
+          "zh": "两点半"
+        },
+        {
+          "term": "It's quarter to four",
+          "icon": "🕞",
+          "note": "Telling time",
+          "de": "Es ist Viertel vor vier",
+          "en": "It's quarter to four",
+          "fr": "Il est moins le quart de quatre",
+          "it": "Mancano un quarto alle quattro",
+          "ja": "4時15分前です",
+          "ru": "Без четверти четыре",
+          "zh": "差一刻四点"
+        },
+        {
+          "term": "It's ten past five",
+          "icon": "🕔",
+          "note": "Telling time",
+          "de": "Es ist fünf Uhr zehn",
+          "en": "It's ten past five",
+          "fr": "Il est cinq heures dix",
+          "it": "Sono le cinque e dieci",
+          "ja": "5時10分です",
+          "ru": "Десять минут шестого",
+          "zh": "五点十分"
+        },
+        {
+          "term": "It's twenty to six",
+          "icon": "🕕",
+          "note": "Telling time",
+          "de": "Es ist zwanzig vor sechs",
+          "en": "It's twenty to six",
+          "fr": "Il est six heures moins vingt",
+          "it": "Mancano venti alle sei",
+          "ja": "6時20分前です",
+          "ru": "Без двадцати шесть",
+          "zh": "差二十分钟六点"
+        },
+        {
+          "term": "At what time?",
+          "icon": "⏰",
+          "note": "Asking for specific time",
+          "de": "Um wie viel Uhr?",
+          "en": "At what time?",
+          "fr": "À quelle heure?",
+          "it": "A che ora?",
+          "ja": "何時に？",
+          "ru": "В котором часу?",
+          "zh": "什么时候？"
+        },
+        {
+          "term": "What time do you...?",
+          "icon": "📅",
+          "note": "Asking about schedule",
+          "de": "Um wie viel Uhr...?",
+          "en": "What time do you...?",
+          "fr": "À quelle heure...?",
+          "it": "A che ora...?",
+          "ja": "何時に...？",
+          "ru": "В котором часу...?",
+          "zh": "你什么时候...？"
+        },
+        {
+          "term": "I'm running late",
+          "icon": "⏰",
+          "note": "Time-related expression",
+          "de": "Ich bin zu spät",
+          "en": "I'm running late",
+          "fr": "Je suis en retard",
+          "it": "Sono in ritardo",
+          "ja": "遅刻しています",
+          "ru": "Я опаздываю",
+          "zh": "我迟到了"
+        },
+        {
+          "term": "I'm early",
+          "icon": "⏰",
+          "note": "Time-related expression",
+          "de": "Ich bin früh dran",
+          "en": "I'm early",
+          "fr": "Je suis en avance",
+          "it": "Sono in anticipo",
+          "ja": "早く来ました",
+          "ru": "Я пришёл рано",
+          "zh": "我来早了"
+        },
+        {
+          "term": "Right on time",
+          "icon": "✅",
+          "note": "Time-related expression",
+          "de": "Genau pünktlich",
+          "en": "Right on time",
+          "fr": "Juste à l'heure",
+          "it": "Proprio in orario",
+          "ja": "ちょうど時間通り",
+          "ru": "Точно вовремя",
+          "zh": "正好准时"
+        },
+        {
+          "term": "Time flies",
+          "icon": "⏰",
+          "note": "Time-related expression",
+          "de": "Die Zeit vergeht schnell",
+          "en": "Time flies",
+          "fr": "Le temps passe vite",
+          "it": "Il tempo vola",
+          "ja": "時間が早く過ぎる",
+          "ru": "Время летит",
+          "zh": "时间过得很快"
+        }
+      ]
+    }
+  ]
+}

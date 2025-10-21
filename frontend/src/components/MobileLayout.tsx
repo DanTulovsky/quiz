@@ -23,6 +23,7 @@ import {
   IconBookmark,
   IconBook,
   IconBrain,
+  IconLanguage,
 } from '@tabler/icons-react';
 import { useAuth } from '../hooks/useAuth';
 import { useMobileDetection } from '../hooks/useMobileDetection';
@@ -66,6 +67,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
     if (path.startsWith('/m/daily')) return 'daily';
     if (path.startsWith('/m/conversations')) return 'conversations';
     if (path.startsWith('/m/bookmarks')) return 'bookmarks';
+    if (path.startsWith('/m/phrasebook')) return 'phrasebook';
     return 'quiz';
   };
 
@@ -98,6 +100,12 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
       label: 'Bookmarked Messages',
       icon: IconBookmark,
       path: '/m/bookmarks',
+    },
+    {
+      key: 'phrasebook',
+      label: 'Phrasebook',
+      icon: IconLanguage,
+      path: '/m/phrasebook',
     },
   ];
 
@@ -137,6 +145,9 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
                       label='AI History'
                       labelPosition='center'
                     />
+                  )}
+                  {item.key === 'phrasebook' && (
+                    <Divider my='sm' label='Reference' labelPosition='center' />
                   )}
                   <Button
                     variant={activeTab === item.key ? 'light' : 'subtle'}

@@ -1,0 +1,207 @@
+{
+  "category": "family",
+  "sections": [
+    {
+      "title": "Immediate Family",
+      "words": [
+        {
+          "term": "mother",
+          "icon": "👩",
+          "note": "",
+          "de": "Mutter",
+          "en": "mother",
+          "fr": "mère",
+          "it": "madre",
+          "ja": "母",
+          "ru": "мать",
+          "zh": "母亲"
+        },
+        {
+          "term": "father",
+          "icon": "👨",
+          "note": "",
+          "de": "Vater",
+          "en": "father",
+          "fr": "père",
+          "it": "padre",
+          "ja": "父",
+          "ru": "отец",
+          "zh": "父亲"
+        },
+        {
+          "term": "sister",
+          "icon": "👧",
+          "note": "",
+          "de": "Schwester",
+          "en": "sister",
+          "fr": "sœur",
+          "it": "sorella",
+          "ja": "姉妹",
+          "ru": "сестра",
+          "zh": "姐妹"
+        },
+        {
+          "term": "brother",
+          "icon": "👦",
+          "note": "",
+          "de": "Bruder",
+          "en": "brother",
+          "fr": "frère",
+          "it": "fratello",
+          "ja": "兄弟",
+          "ru": "брат",
+          "zh": "兄弟"
+        },
+        {
+          "term": "daughter",
+          "icon": "👶",
+          "note": "",
+          "de": "Tochter",
+          "en": "daughter",
+          "fr": "fille",
+          "it": "figlia",
+          "ja": "娘",
+          "ru": "дочь",
+          "zh": "女儿"
+        },
+        {
+          "term": "son",
+          "icon": "👶",
+          "note": "",
+          "de": "Sohn",
+          "en": "son",
+          "fr": "fils",
+          "it": "figlio",
+          "ja": "息子",
+          "ru": "сын",
+          "zh": "儿子"
+        },
+        {
+          "term": "wife",
+          "icon": "👰",
+          "note": "",
+          "de": "Ehefrau",
+          "en": "wife",
+          "fr": "femme",
+          "it": "moglie",
+          "ja": "妻",
+          "ru": "жена",
+          "zh": "妻子"
+        },
+        {
+          "term": "husband",
+          "icon": "🤵",
+          "note": "",
+          "de": "Ehemann",
+          "en": "husband",
+          "fr": "mari",
+          "it": "marito",
+          "ja": "夫",
+          "ru": "муж",
+          "zh": "丈夫"
+        }
+      ]
+    },
+    {
+      "title": "Extended Family",
+      "words": [
+        {
+          "term": "grandmother",
+          "icon": "👵",
+          "note": "",
+          "de": "Großmutter",
+          "en": "grandmother",
+          "fr": "grand-mère",
+          "it": "nonna",
+          "ja": "祖母",
+          "ru": "бабушка",
+          "zh": "祖母"
+        },
+        {
+          "term": "grandfather",
+          "icon": "👴",
+          "note": "",
+          "de": "Großvater",
+          "en": "grandfather",
+          "fr": "grand-père",
+          "it": "nonno",
+          "ja": "祖父",
+          "ru": "дедушка",
+          "zh": "祖父"
+        },
+        {
+          "term": "aunt",
+          "icon": "👩‍🦱",
+          "note": "",
+          "de": "Tante",
+          "en": "aunt",
+          "fr": "tante",
+          "it": "zia",
+          "ja": "叔母",
+          "ru": "тётя",
+          "zh": "姨妈"
+        },
+        {
+          "term": "uncle",
+          "icon": "👨‍🦱",
+          "note": "",
+          "de": "Onkel",
+          "en": "uncle",
+          "fr": "oncle",
+          "it": "zio",
+          "ja": "叔父",
+          "ru": "дядя",
+          "zh": "叔叔"
+        },
+        {
+          "term": "cousin",
+          "icon": "🧑",
+          "note": "",
+          "de": "Cousin/e",
+          "en": "cousin",
+          "fr": "cousin/e",
+          "it": "cugino/a",
+          "ja": "いとこ",
+          "ru": "двоюродный брат/сестра",
+          "zh": "表兄弟"
+        },
+        {
+          "term": "niece",
+          "icon": "👧",
+          "note": "",
+          "de": "Nichte",
+          "en": "niece",
+          "fr": "nièce",
+          "it": "nipote",
+          "ja": "姪",
+          "ru": "племянница",
+          "zh": "侄女"
+        },
+        {
+          "term": "nephew",
+          "icon": "👦",
+          "note": "",
+          "de": "Neffe",
+          "en": "nephew",
+          "fr": "neveu",
+          "it": "nipote",
+          "ja": "甥",
+          "ru": "племянник",
+          "zh": "侄子"
+        },
+        {
+          "term": "grandchild",
+          "icon": "👶",
+          "note": "",
+          "de": "Enkelkind",
+          "en": "grandchild",
+          "fr": "petit-enfant",
+          "it": "nipote",
+          "ja": "孫",
+          "ru": "внук/внучка",
+          "zh": "孙子"
+        }
+      ]
+    }
+  ]
+}
