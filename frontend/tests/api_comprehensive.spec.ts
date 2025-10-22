@@ -2132,6 +2132,12 @@ function findConversationForUser(username: string): any {
           requestOptions.headers['Content-Type'] = 'application/json';
         }
 
+        // Handle question_id in request body for snippets endpoints
+        if (testCase.path.includes('/snippets') && requestOptions.data && requestOptions.data.question_id === 1) {
+          const questionId = await getAvailableQuestionId(request, currentUser);
+          requestOptions.data.question_id = questionId;
+        }
+
         const response = await request[testCase.method.toLowerCase()](url.toString(), requestOptions);
 
         // Log the response details and assert status
@@ -2469,6 +2475,12 @@ function findConversationForUser(username: string): any {
             const questionId = await getAvailableQuestionId(request, ADMIN_USER);
             requestOptions.data.question_id = questionId;
             // console.log(`Replaced question_id in request body with ${questionId} for ${testCase.path}`);
+          }
+
+          // Handle question_id in request body for snippets endpoints
+          if (testCase.path.includes('/snippets') && requestOptions.data && requestOptions.data.question_id === 1) {
+            const questionId = await getAvailableQuestionId(request, ADMIN_USER);
+            requestOptions.data.question_id = questionId;
           }
 
           requestOptions.headers['Content-Type'] = 'application/json';
