@@ -175,6 +175,60 @@ func (h *SnippetsHandler) GetSnippets(c *gin.Context) {
 	c.JSON(http.StatusOK, snippetList)
 }
 
+// GetSnippetsByQuestion handles GET /v1/snippets/by-question/:question_id
+func (h *SnippetsHandler) GetSnippetsByQuestion(c *gin.Context) {
+	ctx, span := observability.TraceSnippetFunction(c.Request.Context(), "get_snippets_by_question")
+	defer observability.FinishSpan(span, nil)
+
+	// Get user ID from context (set by auth middleware)
+	userID, exists := GetUserIDFromSession(c)
+	if !exists {
+		h.logger.Warn(ctx, "User ID not found in context")
+		HandleAppError(c, contextutils.ErrUnauthorized)
+		return
+	}
+	username, exists := GetUsernameFromSession(c)
+	if !exists {
+		h.logger.Warn(ctx, "Username not found in context")
+		HandleAppError(c, contextutils.ErrUnauthorized)
+		return
+	}
+	span.SetAttributes(attribute.Int64("user.id", int64(userID)))
+	span.SetAttributes(attribute.String("user.username", username))
+
+	// Parse question_id from path parameter
+	questionIDStr := c.Param("question_id")
+	questionID, err := strconv.ParseInt(questionIDStr, 10, 64)
+	if err != nil {
+		h.logger.Warn(ctx, "Invalid question_id parameter", map[string]any{
+			"question_id": questionIDStr,
+			"error":       err.Error(),
+		})
+		HandleAppError(c, contextutils.ErrInvalidInput)
+		return
+	}
+
+	span.SetAttributes(attribute.Int64("question.id", questionID))
+
+	// Get snippets for this question
+	snippets, err := h.snippetsService.GetSnippetsByQuestion(ctx, int64(userID), questionID)
+	if err != nil {
+		h.logger.Error(ctx, "Failed to get snippets by question", err, map[string]any{
+			"user_id":     userID,
+			"question_id": questionID,
+		})
+		HandleAppError(c, contextutils.WrapError(err, "failed to get snippets by question"))
+		return
+	}
+
+	// Return response with snippets array
+	response := gin.H{
+		"snippets": snippets,
+	}
+
+	c.JSON(http.StatusOK, response)
+}
+
 // SearchSnippets handles GET /v1/snippets/search
 func (h *SnippetsHandler) SearchSnippets(c *gin.Context) {
 	ctx, span := observability.TraceSnippetFunction(c.Request.Context(), "search_snippets")

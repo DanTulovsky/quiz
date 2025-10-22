@@ -31,6 +31,11 @@ vi.mock('../api/api', () => ({
     isLoading: false,
     error: null,
   })),
+  useGetV1SnippetsByQuestionQuestionId: vi.fn(() => ({
+    data: { snippets: [] },
+    isLoading: false,
+    error: null,
+  })),
   useGetV1AuthStatus: () => ({
     data: mockAuthStatusData, // ✅ Stable reference
     isLoading: false,

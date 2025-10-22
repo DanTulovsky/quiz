@@ -2267,6 +2267,10 @@ export type GetV1SnippetsSearch200 = {
   offset?: number;
 };
 
+export type GetV1SnippetsByQuestionQuestionId200 = {
+  snippets?: Snippet[];
+};
+
 export type PutV1UserzProfile200 = {
   message?: string;
   user?: UserProfile;
@@ -5896,6 +5900,95 @@ export function useGetV1SnippetsSearch<TData = Awaited<ReturnType<typeof getV1Sn
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getGetV1SnippetsSearchQueryOptions(params,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * Retrieve all vocabulary snippets saved by the authenticated user for a specific question. This endpoint is optimized for performance to avoid slowing down question loading.
+ * @summary Get snippets for a specific question
+ */
+export const getV1SnippetsByQuestionQuestionId = (
+    questionId: number,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<GetV1SnippetsByQuestionQuestionId200>(
+      {url: `/v1/snippets/by-question/${questionId}`, method: 'GET', signal
+    },
+      options);
+    }
+  
+
+export const getGetV1SnippetsByQuestionQuestionIdQueryKey = (questionId?: number,) => {
+    return [`/v1/snippets/by-question/${questionId}`] as const;
+    }
+
+    
+export const getGetV1SnippetsByQuestionQuestionIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1SnippetsByQuestionQuestionId>>, TError = ErrorResponse | ErrorResponse>(questionId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsByQuestionQuestionId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetV1SnippetsByQuestionQuestionIdQueryKey(questionId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1SnippetsByQuestionQuestionId>>> = ({ signal }) => getV1SnippetsByQuestionQuestionId(questionId, requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(questionId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsByQuestionQuestionId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetV1SnippetsByQuestionQuestionIdQueryResult = NonNullable<Awaited<ReturnType<typeof getV1SnippetsByQuestionQuestionId>>>
+export type GetV1SnippetsByQuestionQuestionIdQueryError = ErrorResponse | ErrorResponse
+
+
+export function useGetV1SnippetsByQuestionQuestionId<TData = Awaited<ReturnType<typeof getV1SnippetsByQuestionQuestionId>>, TError = ErrorResponse | ErrorResponse>(
+ questionId: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsByQuestionQuestionId>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1SnippetsByQuestionQuestionId>>,
+          TError,
+          Awaited<ReturnType<typeof getV1SnippetsByQuestionQuestionId>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1SnippetsByQuestionQuestionId<TData = Awaited<ReturnType<typeof getV1SnippetsByQuestionQuestionId>>, TError = ErrorResponse | ErrorResponse>(
+ questionId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsByQuestionQuestionId>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1SnippetsByQuestionQuestionId>>,
+          TError,
+          Awaited<ReturnType<typeof getV1SnippetsByQuestionQuestionId>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1SnippetsByQuestionQuestionId<TData = Awaited<ReturnType<typeof getV1SnippetsByQuestionQuestionId>>, TError = ErrorResponse | ErrorResponse>(
+ questionId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsByQuestionQuestionId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get snippets for a specific question
+ */
+
+export function useGetV1SnippetsByQuestionQuestionId<TData = Awaited<ReturnType<typeof getV1SnippetsByQuestionQuestionId>>, TError = ErrorResponse | ErrorResponse>(
+ questionId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsByQuestionQuestionId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetV1SnippetsByQuestionQuestionIdQueryOptions(questionId,options)
 
   const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -12624,6 +12717,8 @@ export const getGetV1SnippetsResponseMock = (overrideResponse: Partial< SnippetL
 
 export const getGetV1SnippetsSearchResponseMock = (overrideResponse: Partial< GetV1SnippetsSearch200 > = {}): GetV1SnippetsSearch200 => ({snippets: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), original_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), translated_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), source_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), target_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), question_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), null]), undefined]), context: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), difficulty_level: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), created_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), updated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined])})), undefined]), query: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), total: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), limit: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), offset: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), ...overrideResponse})
 
+export const getGetV1SnippetsByQuestionQuestionIdResponseMock = (overrideResponse: Partial< GetV1SnippetsByQuestionQuestionId200 > = {}): GetV1SnippetsByQuestionQuestionId200 => ({snippets: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), original_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), translated_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), source_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), target_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), question_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), null]), undefined]), context: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), difficulty_level: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), created_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), updated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined])})), undefined]), ...overrideResponse})
+
 export const getGetV1SnippetsIdResponseMock = (overrideResponse: Partial< Snippet > = {}): Snippet => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), original_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), translated_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), source_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), target_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), question_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), null]), undefined]), context: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), difficulty_level: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), created_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), updated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), ...overrideResponse})
 
 export const getPutV1SnippetsIdResponseMock = (overrideResponse: Partial< Snippet > = {}): Snippet => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), original_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), translated_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), source_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), target_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), question_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), null]), undefined]), context: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), difficulty_level: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), created_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), updated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), ...overrideResponse})
@@ -13279,6 +13374,18 @@ export const getGetV1SnippetsSearchMockHandler = (overrideResponse?: GetV1Snippe
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
     ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
     : getGetV1SnippetsSearchResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
+export const getGetV1SnippetsByQuestionQuestionIdMockHandler = (overrideResponse?: GetV1SnippetsByQuestionQuestionId200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1SnippetsByQuestionQuestionId200> | GetV1SnippetsByQuestionQuestionId200)) => {
+  return http.get('*/v1/snippets/by-question/:questionId', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetV1SnippetsByQuestionQuestionIdResponseMock()),
       { status: 200,
         headers: { 'Content-Type': 'application/json' }
       })
@@ -14342,6 +14449,7 @@ export const getQuizApplicationAPIMock = () => [
   getPostV1SnippetsMockHandler(),
   getGetV1SnippetsMockHandler(),
   getGetV1SnippetsSearchMockHandler(),
+  getGetV1SnippetsByQuestionQuestionIdMockHandler(),
   getGetV1SnippetsIdMockHandler(),
   getPutV1SnippetsIdMockHandler(),
   getDeleteV1SnippetsIdMockHandler(),

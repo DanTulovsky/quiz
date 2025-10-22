@@ -307,6 +307,83 @@ func (s *SnippetsService) GetSnippets(ctx context.Context, userID int64, params 
 	return result, nil
 }
 
+// GetSnippetsByQuestion retrieves snippets for a user filtered by question ID
+// This method is optimized for performance to support async loading in the UI
+func (s *SnippetsService) GetSnippetsByQuestion(ctx context.Context, userID int64, questionID int64) (result []api.Snippet, err error) {
+	ctx, span := observability.TraceFunction(ctx, "snippets", "get_snippets_by_question")
+	defer observability.FinishSpan(span, &err)
+
+	// Check if database connection is valid
+	if s.db == nil {
+		return nil, contextutils.WrapError(contextutils.ErrInternalError, "database connection is nil")
+	}
+
+	span.SetAttributes(
+		observability.AttributeUserID(int(userID)),
+		observability.AttributeQuestionID(int(questionID)),
+	)
+
+	// Query snippets for this user and question
+	// Uses the existing idx_snippets_question_id index for performance
+	query := `
+		SELECT id, user_id, original_text, translated_text, source_language, target_language,
+		       question_id, context, difficulty_level, created_at, updated_at
+		FROM snippets
+		WHERE user_id = $1 AND question_id = $2
+		ORDER BY created_at DESC`
+
+	rows, err := s.db.QueryContext(ctx, query, userID, questionID)
+	if err != nil {
+		return nil, contextutils.WrapErrorf(err, "failed to get snippets by question")
+	}
+	defer func() {
+		if closeErr := rows.Close(); closeErr != nil {
+			s.logger.Warn(ctx, "Failed to close rows", map[string]any{"error": closeErr.Error()})
+		}
+	}()
+
+	snippets := []api.Snippet{}
+	for rows.Next() {
+		var snippet models.Snippet
+		err := rows.Scan(
+			&snippet.ID,
+			&snippet.UserID,
+			&snippet.OriginalText,
+			&snippet.TranslatedText,
+			&snippet.SourceLanguage,
+			&snippet.TargetLanguage,
+			&snippet.QuestionID,
+			&snippet.Context,
+			&snippet.DifficultyLevel,
+			&snippet.CreatedAt,
+			&snippet.UpdatedAt,
+		)
+		if err != nil {
+			return nil, contextutils.WrapErrorf(err, "failed to scan snippet")
+		}
+
+		snippets = append(snippets, api.Snippet{
+			Id:              &snippet.ID,
+			UserId:          &snippet.UserID,
+			OriginalText:    &snippet.OriginalText,
+			TranslatedText:  &snippet.TranslatedText,
+			SourceLanguage:  &snippet.SourceLanguage,
+			TargetLanguage:  &snippet.TargetLanguage,
+			QuestionId:      snippet.QuestionID,
+			Context:         snippet.Context,
+			DifficultyLevel: snippet.DifficultyLevel,
+			CreatedAt:       &snippet.CreatedAt,
+			UpdatedAt:       &snippet.UpdatedAt,
+		})
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, contextutils.WrapErrorf(err, "error iterating over snippet rows")
+	}
+
+	return snippets, nil
+}
+
 // SearchSnippets searches across all snippets for a user
 func (s *SnippetsService) SearchSnippets(ctx context.Context, userID int64, query string, limit, offset int) (result []api.Snippet, totalCount int, err error) {
 	ctx, span := observability.TraceFunction(ctx, "snippets", "search_snippets")

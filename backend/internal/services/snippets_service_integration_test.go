@@ -445,3 +445,95 @@ func ensureSnippetsTableExists(db *sql.DB) error {
 
 	return nil
 }
+
+// TestSnippetsService_GetSnippetsByQuestion_Integration tests getting snippets by question ID
+func TestSnippetsService_GetSnippetsByQuestion_Integration(t *testing.T) {
+	db := SharedTestDBSetup(t)
+	defer db.Close()
+
+	cfg, err := config.NewConfig()
+	require.NoError(t, err)
+	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+
+	// Create a test user
+	userService := NewUserServiceWithLogger(db, cfg, logger)
+	username := fmt.Sprintf("testuser_by_question_%d", time.Now().UnixNano())
+	user, err := userService.CreateUser(context.Background(), username, "fr", "B1")
+	require.NoError(t, err, "Should be able to create test user")
+	require.NotNil(t, user, "Created user should not be nil")
+
+	// Create a test question directly in the database
+	var questionID int64
+	err = db.QueryRow(`
+		INSERT INTO questions (type, language, level, difficulty_score, content, correct_answer, explanation)
+		VALUES ($1, $2, $3, $4, $5, $6, $7)
+		RETURNING id
+	`, "vocabulary", "fr", "B1", 0.5, `{"question":"What does **test** mean?","options":["option1","option2","option3","option4"]}`, 0, "Test explanation").Scan(&questionID)
+	require.NoError(t, err, "Should be able to create test question")
+
+	service := NewSnippetsService(db, cfg, logger)
+
+	// Create snippets with and without question_id
+	snippetsWithQuestion := []api.CreateSnippetRequest{
+		{
+			OriginalText:   "bonjour",
+			TranslatedText: "hello",
+			SourceLanguage: "fr",
+			TargetLanguage: "en",
+			QuestionId:     &questionID,
+		},
+		{
+			OriginalText:   "merci",
+			TranslatedText: "thank you",
+			SourceLanguage: "fr",
+			TargetLanguage: "en",
+			QuestionId:     &questionID,
+		},
+	}
+
+	snippetWithoutQuestion := api.CreateSnippetRequest{
+		OriginalText:   "au revoir",
+		TranslatedText: "goodbye",
+		SourceLanguage: "fr",
+		TargetLanguage: "en",
+		// No question_id
+	}
+
+	// Create snippets
+	for _, req := range snippetsWithQuestion {
+		_, err := service.CreateSnippet(context.Background(), int64(user.ID), req)
+		require.NoError(t, err, "Should be able to create snippet with question")
+	}
+
+	_, err = service.CreateSnippet(context.Background(), int64(user.ID), snippetWithoutQuestion)
+	require.NoError(t, err, "Should be able to create snippet without question")
+
+	// Test: Get snippets by question
+	snippets, err := service.GetSnippetsByQuestion(context.Background(), int64(user.ID), questionID)
+	require.NoError(t, err, "Should be able to get snippets by question")
+	require.NotNil(t, snippets, "Snippets should not be nil")
+	assert.Len(t, snippets, 2, "Should return exactly 2 snippets for the question")
+
+	// Verify the snippets are the correct ones
+	originalTexts := make([]string, len(snippets))
+	for i, snippet := range snippets {
+		require.NotNil(t, snippet.OriginalText, "Original text should not be nil")
+		originalTexts[i] = *snippet.OriginalText
+	}
+	assert.Contains(t, originalTexts, "bonjour", "Should contain 'bonjour'")
+	assert.Contains(t, originalTexts, "merci", "Should contain 'merci'")
+	assert.NotContains(t, originalTexts, "au revoir", "Should not contain 'au revoir' (no question_id)")
+
+	// Test: Get snippets for non-existent question
+	snippets, err = service.GetSnippetsByQuestion(context.Background(), int64(user.ID), 999999)
+	require.NoError(t, err, "Should not error for non-existent question")
+	assert.Empty(t, snippets, "Should return empty array for non-existent question")
+
+	// Test: Different user should not see snippets
+	otherUser, err := userService.CreateUser(context.Background(), fmt.Sprintf("otheruser_%d", time.Now().UnixNano()), "fr", "B1")
+	require.NoError(t, err, "Should be able to create other user")
+
+	snippets, err = service.GetSnippetsByQuestion(context.Background(), int64(otherUser.ID), questionID)
+	require.NoError(t, err, "Should not error for different user")
+	assert.Empty(t, snippets, "Different user should not see other user's snippets")
+}

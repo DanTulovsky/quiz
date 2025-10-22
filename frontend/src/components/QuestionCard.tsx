@@ -20,6 +20,7 @@ import { defaultVoiceForLanguage } from '../utils/tts';
 import logger from '../utils/logger';
 import { useAuth } from '../hooks/useAuth';
 import { useTTS } from '../hooks/useTTS';
+import { useQuestionSnippets } from '../hooks/useQuestionSnippets';
 import {
   usePostV1QuizQuestionIdReport,
   usePostV1QuizQuestionIdMarkKnown,
@@ -28,6 +29,7 @@ import {
 } from '../api/api';
 import { showNotificationWithClean } from '../notifications';
 import { QuestionHistoryChart } from './QuestionHistoryChart';
+import { SnippetHighlighter } from './SnippetHighlighter';
 import {
   Stack,
   Group,
@@ -237,6 +239,9 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
     } = useTTS();
     const { isAuthenticated } = useAuth();
     const { isMobile } = useMobileDetection();
+
+    // Load snippets for this question (async, non-blocking)
+    const { snippets } = useQuestionSnippets(question?.id);
 
     // Copy to clipboard functionality for reading comprehension passages
     const handleCopyPassage = async () => {
@@ -898,10 +903,13 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
               question.content?.question ? (
                 <>
                   <Title order={3} data-testid='question-content' mb={0}>
-                    {highlightTargetWord(
-                      question.content.sentence,
-                      question.content.question
-                    )}
+                    <SnippetHighlighter
+                      text={question.content.sentence}
+                      snippets={snippets}
+                      targetWord={question.content.question}
+                      component="span"
+                      componentProps={{}}
+                    />
                   </Title>
                   <Text
                     size='sm'
@@ -915,9 +923,16 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                   </Text>
                 </>
               ) : (
-                <Title order={3} data-testid='question-content' mb={0}>
-                  {question.content?.question}
-                </Title>
+                <SnippetHighlighter
+                  text={question.content?.question || ''}
+                  snippets={snippets}
+                  component={Title}
+                  componentProps={{
+                    order: 3,
+                    'data-testid': 'question-content',
+                    mb: 0,
+                  }}
+                />
               ))}
 
             {/* Show passage for reading comprehension questions */}
@@ -1050,19 +1065,22 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                       return (
                         <div>
                           {paras.map((p, idx) => (
-                            <Text
+                            <SnippetHighlighter
                               key={idx}
-                              size='lg'
-                              style={{
-                                whiteSpace: 'pre-line',
-                                lineHeight: 1.8,
-                                fontWeight: 500,
-                                letterSpacing: 0.1,
-                                marginBottom: idx === paras.length - 1 ? 0 : 12,
+                              text={p}
+                              snippets={snippets}
+                              component={Text}
+                              componentProps={{
+                                size: 'lg',
+                                style: {
+                                  whiteSpace: 'pre-line',
+                                  lineHeight: 1.8,
+                                  fontWeight: 500,
+                                  letterSpacing: 0.1,
+                                  marginBottom: idx === paras.length - 1 ? 0 : 12,
+                                },
                               }}
-                            >
-                              {p}
-                            </Text>
+                            />
                           ))}
                         </div>
                       );
@@ -1073,9 +1091,16 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
 
             {/* For reading comprehension, place the question after the passage */}
             {question.type === 'reading_comprehension' && (
-              <Title order={3} data-testid='question-content' mb={0}>
-                {question.content?.question}
-              </Title>
+              <SnippetHighlighter
+                text={question.content?.question || ''}
+                snippets={snippets}
+                component={Title}
+                componentProps={{
+                  order: 3,
+                  'data-testid': 'question-content',
+                  mb: 0,
+                }}
+              />
             )}
 
             {/* Show hint for fill_blank questions */}

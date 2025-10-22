@@ -1340,6 +1340,46 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /v1/snippets/by-question/{question_id}:
+    get:
+      tags:
+        - Snippets
+      summary: Get snippets for a specific question
+      description: Retrieve all vocabulary snippets saved by the authenticated user for a specific question. This endpoint is optimized for performance to avoid slowing down question loading.
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: question_id
+          in: path
+          required: true
+          description: Question ID
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Snippets retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  snippets:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Snippet"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Question not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /v1/snippets/{id}:
     get:
       tags:
