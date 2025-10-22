@@ -410,6 +410,9 @@ test.describe('Comprehensive API Tests', () => {
               if (path.includes('/{questionId}')) {
                 errorPath = path.replace('{questionId}', 'invalid');
               }
+              if (path.includes('/{question_id}')) {
+                errorPath = path.replace('{question_id}', 'invalid');
+              }
               if (path.includes('/{service}')) {
                 errorPath = path.replace('{service}', 'invalid-service');
               }
@@ -862,8 +865,12 @@ test.describe('Comprehensive API Tests', () => {
           } else {
             pathParams[param.name] = 1; // Default ID, will be overridden if needed
           }
-        } else if (param.name === 'questionId') {
+        } else if (param.name === 'questionId' || param.name === 'question_id') {
           pathParams[param.name] = 'QUESTION_ID_PLACEHOLDER'; // Use placeholder for question ID
+        } else if (param.name === 'section_id') {
+          pathParams[param.name] = 'SECTION_ID_PLACEHOLDER'; // Use placeholder for section ID
+        } else if (param.name === 'story_id') {
+          pathParams[param.name] = 'STORY_ID_PLACEHOLDER'; // Use placeholder for story ID
         } else if (param.name === 'conversationId') {
           pathParams[param.name] = 'CONVERSATION_ID_PLACEHOLDER'; // Use placeholder for conversation ID
         } else if (param.name === 'userId') {
@@ -1595,13 +1602,31 @@ function findConversationForUser(username: string): any {
       return {value: 'google', type: 'provider'};
     }
 
-    if (paramKey === 'questionId') {
+    if (paramKey === 'questionId' || paramKey === 'question_id') {
       // For error cases, use 'invalid' to trigger validation errors
       if (isErrorCase) {
         return {value: 'invalid', type: 'question'};
       }
       const questionId = await getAvailableQuestionId(request, userContext);
       return {value: questionId, type: 'question'};
+    }
+
+    if (paramKey === 'section_id') {
+      // For error cases, use 'invalid' to trigger validation errors
+      if (isErrorCase) {
+        return {value: 'invalid', type: 'section'};
+      }
+      const sectionId = await getAvailableSectionId(userContext?.username, request);
+      return {value: sectionId, type: 'section'};
+    }
+
+    if (paramKey === 'story_id') {
+      // For error cases, use a large invalid number
+      if (isErrorCase) {
+        return {value: 999999999, type: 'story'};
+      }
+      const storyId = await getAvailableStoryId(userContext?.username, false, undefined, request);
+      return {value: storyId, type: 'story'};
     }
 
     if (paramKey === 'roleId') {
@@ -1960,7 +1985,9 @@ function findConversationForUser(username: string): any {
       else if (key === 'provider') value = 'ollama';
       else if (key === 'service') value = 'google';
       else if (key === 'roleId') value = 1;
-      else if (key === 'questionId') value = 1;
+      else if (key === 'questionId' || key === 'question_id') value = 1;
+      else if (key === 'section_id') value = 1;
+      else if (key === 'story_id') value = 1;
       else if (key === 'userId') value = 1;
       else if (key === 'id' || key === 'conversationId') {
         // Check if this is a conversation-related endpoint
@@ -2053,9 +2080,15 @@ function findConversationForUser(username: string): any {
         // Add path parameters
         if (testCase.pathParams) {
           for (const [key, value] of Object.entries(testCase.pathParams)) {
-            if (key === 'questionId') {
+            if (key === 'questionId' || key === 'question_id') {
               const questionId = await getAvailableQuestionId(request, currentUser);
               endpointPath = endpointPath.replace(`{${key}}`, questionId.toString());
+            } else if (key === 'section_id') {
+              const sectionId = await getAvailableSectionId(currentUser.username, request);
+              endpointPath = endpointPath.replace(`{${key}}`, sectionId.toString());
+            } else if (key === 'story_id') {
+              const storyId = await getAvailableStoryId(currentUser.username, false, undefined, request);
+              endpointPath = endpointPath.replace(`{${key}}`, storyId.toString());
             } else if (key === 'id' && value === 'STORY_ID_PLACEHOLDER') {
               // For story endpoints, use appropriate story ID based on operation
               // Update endpointPath to include the resolved story ID for pattern matching
@@ -2196,9 +2229,15 @@ function findConversationForUser(username: string): any {
         // Add path parameters
         if (testCase.pathParams) {
           for (const [key, value] of Object.entries(testCase.pathParams)) {
-            if (key === 'questionId') {
+            if (key === 'questionId' || key === 'question_id') {
               const questionId = await getAvailableQuestionId(request, ADMIN_USER);
               endpointPath = endpointPath.replace(`{${key}}`, questionId.toString());
+            } else if (key === 'section_id') {
+              const sectionId = await getAvailableSectionId(ADMIN_USER.username, request);
+              endpointPath = endpointPath.replace(`{${key}}`, sectionId.toString());
+            } else if (key === 'story_id') {
+              const storyId = await getAvailableStoryId(ADMIN_USER.username, false, undefined, request);
+              endpointPath = endpointPath.replace(`{${key}}`, storyId.toString());
             } else {
               endpointPath = endpointPath.replace(`{${key}}`, value.toString());
             }
