@@ -87,38 +87,20 @@ func (s *GoogleTranslationService) Translate(ctx context.Context, req serviceint
 		return nil, contextutils.NewAppError(contextutils.ErrorCodeServiceUnavailable, contextutils.SeverityError, "Translation service is disabled", "")
 	}
 
+	// Get provider config for usage stats and quota checking
 	providerConfig, exists := s.config.Translation.Providers[s.config.Translation.DefaultProvider]
 	if !exists {
 		err = contextutils.NewAppError(contextutils.ErrorCodeServiceUnavailable, contextutils.SeverityError, "Translation provider not configured", "")
 		return nil, err
 	}
 
-	switch providerConfig.Code {
-	case "google":
-		span.SetAttributes(attribute.String("translation.provider", providerConfig.Code))
-		result, err = s.translateGoogle(ctx, req, providerConfig)
-		return result, err
-	default:
-		err = contextutils.NewAppError(contextutils.ErrorCodeServiceUnavailable, contextutils.SeverityError, "Unsupported translation provider: "+providerConfig.Code, "")
-		return nil, err
-	}
-}
-
-// translateGoogle translates text using Google Translate API
-func (s *GoogleTranslationService) translateGoogle(ctx context.Context, req serviceinterfaces.TranslateRequest, providerConfig config.TranslationProviderConfig) (result *serviceinterfaces.TranslateResponse, err error) {
-	ctx, span := observability.TraceTranslationFunction(ctx, "translate_google",
-		attribute.String("translation.provider", providerConfig.Code),
-		attribute.String("translation.target_language", req.TargetLanguage),
-		attribute.String("translation.source_language", req.SourceLanguage),
-		attribute.Int("translation.text_length", len(req.Text)),
-	)
-	defer observability.FinishSpan(span, &err)
+	span.SetAttributes(attribute.String("translation.provider", providerConfig.Code))
 
 	// Generate hash for cache lookup
 	textHash := HashText(req.Text)
 	span.SetAttributes(attribute.String("cache.text_hash", textHash))
 
-	// Check cache first
+	// Check cache first (provider-agnostic)
 	cachedTranslation, err := s.cacheRepo.GetCachedTranslation(ctx, textHash, req.SourceLanguage, req.TargetLanguage)
 	if err != nil {
 		// Log cache error but don't fail the translation request
