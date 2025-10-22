@@ -8,6 +8,7 @@ import (
 	"quizapp/internal/config"
 	"quizapp/internal/models"
 	"quizapp/internal/observability"
+	"quizapp/internal/services"
 	contextutils "quizapp/internal/utils"
 
 	"github.com/stretchr/testify/assert"
@@ -35,6 +36,7 @@ func TestWorkerSetsUserContextForAI(t *testing.T) {
 		storyService,
 		emailService,
 		nil,
+		services.NewInMemoryTranslationCacheRepository(),
 		"test",
 		testWorkerConfig(),
 		observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}),
@@ -83,6 +85,7 @@ func TestWorkerHandleAIQuestionStreamSetsContext(t *testing.T) {
 		storyService,
 		emailService,
 		nil,
+		services.NewInMemoryTranslationCacheRepository(),
 		"test",
 		testWorkerConfig(),
 		observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}),
@@ -163,6 +166,7 @@ func TestWorkerHandleAIQuestionStreamWithoutAPIKeyID(t *testing.T) {
 		storyService,
 		emailService,
 		nil,
+		services.NewInMemoryTranslationCacheRepository(),
 		"test",
 		testWorkerConfig(),
 		observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}),
@@ -233,6 +237,7 @@ func TestGetUserAIConfig_WithAPIKeyID(t *testing.T) {
 		&mockStoryService{},
 		&mockEmailService{},
 		nil,
+		services.NewInMemoryTranslationCacheRepository(),
 		"test",
 		testWorkerConfig(),
 		observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}),
@@ -273,6 +278,7 @@ func TestGetUserAIConfig_NoProvider(t *testing.T) {
 		&mockStoryService{},
 		&mockEmailService{},
 		nil,
+		services.NewInMemoryTranslationCacheRepository(),
 		"test",
 		testWorkerConfig(),
 		observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}),

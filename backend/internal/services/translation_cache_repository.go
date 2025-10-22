@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"database/sql"
 	"fmt"
+	"sync"
 	"time"
 
 	"quizapp/internal/models"
@@ -56,11 +57,11 @@ func (r *TranslationCacheRepositoryImpl) GetCachedTranslation(ctx context.Contex
 	defer observability.FinishSpan(span, &err)
 
 	query := `
-		SELECT id, text_hash, original_text, source_language, target_language, 
+		SELECT id, text_hash, original_text, source_language, target_language,
 		       translated_text, created_at, expires_at
 		FROM translation_cache
-		WHERE text_hash = $1 
-		  AND source_language = $2 
+		WHERE text_hash = $1
+		  AND source_language = $2
 		  AND target_language = $3
 		  AND expires_at > NOW()
 	`
@@ -107,8 +108,8 @@ func (r *TranslationCacheRepositoryImpl) SaveTranslation(ctx context.Context, te
 	query := `
 		INSERT INTO translation_cache (text_hash, original_text, source_language, target_language, translated_text, expires_at)
 		VALUES ($1, $2, $3, $4, $5, $6)
-		ON CONFLICT (text_hash, source_language, target_language) 
-		DO UPDATE SET 
+		ON CONFLICT (text_hash, source_language, target_language)
+		DO UPDATE SET
 			translated_text = EXCLUDED.translated_text,
 			expires_at = EXCLUDED.expires_at,
 			created_at = CURRENT_TIMESTAMP
@@ -152,4 +153,73 @@ func (r *TranslationCacheRepositoryImpl) CleanupExpiredTranslations(ctx context.
 	})
 
 	return rowsAffected, nil
+}
+
+// InMemoryTranslationCacheRepository is an in-memory implementation for testing
+type InMemoryTranslationCacheRepository struct {
+	cache map[string]*models.TranslationCache
+	mu    sync.RWMutex
+}
+
+// NewInMemoryTranslationCacheRepository creates a new in-memory translation cache repository
+func NewInMemoryTranslationCacheRepository() *InMemoryTranslationCacheRepository {
+	return &InMemoryTranslationCacheRepository{
+		cache: make(map[string]*models.TranslationCache),
+	}
+}
+
+// GetCachedTranslation retrieves a cached translation from the in-memory cache
+func (m *InMemoryTranslationCacheRepository) GetCachedTranslation(_ context.Context, textHash, sourceLang, targetLang string) (*models.TranslationCache, error) {
+	m.mu.RLock()
+	defer m.mu.RUnlock()
+
+	key := textHash + "|" + sourceLang + "|" + targetLang
+	cached, exists := m.cache[key]
+	if !exists {
+		return nil, nil
+	}
+
+	// Check if expired
+	if time.Now().After(cached.ExpiresAt) {
+		return nil, nil
+	}
+
+	return cached, nil
+}
+
+// SaveTranslation saves a translation to the in-memory cache
+func (m *InMemoryTranslationCacheRepository) SaveTranslation(_ context.Context, textHash, originalText, sourceLang, targetLang, translatedText string) error {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	key := textHash + "|" + sourceLang + "|" + targetLang
+	m.cache[key] = &models.TranslationCache{
+		TextHash:       textHash,
+		OriginalText:   originalText,
+		SourceLanguage: sourceLang,
+		TargetLanguage: targetLang,
+		TranslatedText: translatedText,
+		CreatedAt:      time.Now(),
+		ExpiresAt:      time.Now().Add(30 * 24 * time.Hour),
+	}
+
+	return nil
+}
+
+// CleanupExpiredTranslations removes expired entries from the in-memory cache
+func (m *InMemoryTranslationCacheRepository) CleanupExpiredTranslations(_ context.Context) (int64, error) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	now := time.Now()
+	deleted := int64(0)
+
+	for key, cached := range m.cache {
+		if now.After(cached.ExpiresAt) {
+			delete(m.cache, key)
+			deleted++
+		}
+	}
+
+	return deleted, nil
 }

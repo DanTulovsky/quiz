@@ -595,14 +595,14 @@ CREATE TABLE IF NOT EXISTS translation_cache (
     translated_text TEXT NOT NULL,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     expires_at TIMESTAMPTZ NOT NULL,
-    
+
     UNIQUE(text_hash, source_language, target_language)
 );
 
 -- Create indexes for efficient lookup and cleanup
-CREATE INDEX IF NOT EXISTS idx_translation_cache_lookup 
+CREATE INDEX IF NOT EXISTS idx_translation_cache_lookup
     ON translation_cache(text_hash, source_language, target_language);
-CREATE INDEX IF NOT EXISTS idx_translation_cache_expires_at 
+CREATE INDEX IF NOT EXISTS idx_translation_cache_expires_at
     ON translation_cache(expires_at);
 
 -- Insert default roles and assign them to existing users via migration files
