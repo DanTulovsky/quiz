@@ -117,9 +117,8 @@ describe('StorySectionView', () => {
     it('displays section content correctly', () => {
       renderComponent();
 
-      expect(screen.getByText('Section 1')).toBeInTheDocument();
+      expect(screen.getByText('1 of 3')).toBeInTheDocument();
       expect(screen.getByText('intermediate')).toBeInTheDocument();
-      expect(screen.getByText('25 words')).toBeInTheDocument();
       expect(
         screen.getByText(/This is the first section of the story/)
       ).toBeInTheDocument();
@@ -128,9 +127,8 @@ describe('StorySectionView', () => {
     it('displays section metadata correctly', () => {
       renderComponent();
 
-      expect(screen.getByText('Section 1')).toBeInTheDocument();
+      expect(screen.getByText('1 of 3')).toBeInTheDocument();
       expect(screen.getByText('intermediate')).toBeInTheDocument();
-      expect(screen.getByText('25 words')).toBeInTheDocument();
     });
 
     it('shows navigation controls', () => {

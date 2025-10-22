@@ -338,6 +338,7 @@ const StoryPage: React.FC = () => {
                 onClick={() => setShowCreateModal(true)}
                 size='sm'
                 px='xs'
+                aria-label='New Story'
               >
                 <IconPlus size={18} />
               </Button>

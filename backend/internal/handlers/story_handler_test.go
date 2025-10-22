@@ -459,9 +459,15 @@ func (suite *StoryHandlerIntegrationTestSuite) TestStoryHandler_GetCurrentStory_
 	router.GET("/v1/story/current", handler.GetCurrentStory)
 
 	suite.Run("should return generating status when story has no sections", func() {
+		// Clean up any existing active stories for this user in this language
+		_, err := suite.Container.GetDatabase().ExecContext(ctx,
+			`UPDATE stories SET status = 'archived' WHERE user_id = $1 AND language = $2 AND status = 'active'`,
+			user.ID, "en")
+		require.NoError(suite.T(), err)
+
 		// Create a story with no sections
 		var storyID uint
-		err := suite.Container.GetDatabase().QueryRowContext(ctx,
+		err = suite.Container.GetDatabase().QueryRowContext(ctx,
 			`INSERT INTO stories (user_id, title, language, status, created_at, updated_at)
 			 VALUES ($1, $2, $3, $4, NOW(), NOW()) RETURNING id`,
 			user.ID, "Empty Story", "en", "active").Scan(&storyID)
@@ -483,12 +489,18 @@ func (suite *StoryHandlerIntegrationTestSuite) TestStoryHandler_GetCurrentStory_
 	})
 
 	suite.Run("should return story content when story has sections from previous days", func() {
+		// Clean up any existing active stories for this user in this language
+		_, err := suite.Container.GetDatabase().ExecContext(ctx,
+			`UPDATE stories SET status = 'archived' WHERE user_id = $1 AND language = $2 AND status = 'active'`,
+			user.ID, "en")
+		require.NoError(suite.T(), err)
+
 		// Create a story with sections from yesterday
 		var storyID uint
-		err := suite.Container.GetDatabase().QueryRowContext(ctx,
+		err = suite.Container.GetDatabase().QueryRowContext(ctx,
 			`INSERT INTO stories (user_id, title, language, status, created_at, updated_at)
 			 VALUES ($1, $2, $3, $4, NOW(), NOW()) RETURNING id`,
-			user.ID, "Story with Old Sections", "es", "active").Scan(&storyID)
+			user.ID, "Story with Old Sections", "en", "active").Scan(&storyID)
 		require.NoError(suite.T(), err)
 
 		// Create sections from yesterday (not today)
@@ -516,19 +528,25 @@ func (suite *StoryHandlerIntegrationTestSuite) TestStoryHandler_GetCurrentStory_
 		var storyResponse api.StoryWithSections
 		err = json.Unmarshal(w.Body.Bytes(), &storyResponse)
 		assert.NoError(suite.T(), err)
-		assert.Equal(suite.T(), "Story with Old Sections", storyResponse.Title)
+		assert.Equal(suite.T(), "Story with Old Sections", *storyResponse.Title)
 		assert.Len(suite.T(), *storyResponse.Sections, 2, "Should return both sections")
-		assert.Equal(suite.T(), 1, (*storyResponse.Sections)[0].SectionNumber)
-		assert.Equal(suite.T(), 2, (*storyResponse.Sections)[1].SectionNumber)
+		assert.Equal(suite.T(), 1, *(*storyResponse.Sections)[0].SectionNumber)
+		assert.Equal(suite.T(), 2, *(*storyResponse.Sections)[1].SectionNumber)
 	})
 
 	suite.Run("should return story content when story has sections from today", func() {
+		// Clean up any existing active stories for this user in this language
+		_, err := suite.Container.GetDatabase().ExecContext(ctx,
+			`UPDATE stories SET status = 'archived' WHERE user_id = $1 AND language = $2 AND status = 'active'`,
+			user.ID, "en")
+		require.NoError(suite.T(), err)
+
 		// Create a story with sections from today
 		var storyID uint
-		err := suite.Container.GetDatabase().QueryRowContext(ctx,
+		err = suite.Container.GetDatabase().QueryRowContext(ctx,
 			`INSERT INTO stories (user_id, title, language, status, created_at, updated_at)
 			 VALUES ($1, $2, $3, $4, NOW(), NOW()) RETURNING id`,
-			user.ID, "Story with Today Sections", "fr", "active").Scan(&storyID)
+			user.ID, "Story with Today Sections", "en", "active").Scan(&storyID)
 		require.NoError(suite.T(), err)
 
 		// Create sections from today
@@ -550,18 +568,24 @@ func (suite *StoryHandlerIntegrationTestSuite) TestStoryHandler_GetCurrentStory_
 		var storyResponse api.StoryWithSections
 		err = json.Unmarshal(w.Body.Bytes(), &storyResponse)
 		assert.NoError(suite.T(), err)
-		assert.Equal(suite.T(), "Story with Today Sections", storyResponse.Title)
+		assert.Equal(suite.T(), "Story with Today Sections", *storyResponse.Title)
 		assert.Len(suite.T(), *storyResponse.Sections, 1, "Should return the section")
-		assert.Equal(suite.T(), 1, (*storyResponse.Sections)[0].SectionNumber)
+		assert.Equal(suite.T(), 1, *(*storyResponse.Sections)[0].SectionNumber)
 	})
 
 	suite.Run("should return story content when story has mixed sections from different days", func() {
+		// Clean up any existing active stories for this user in this language
+		_, err := suite.Container.GetDatabase().ExecContext(ctx,
+			`UPDATE stories SET status = 'archived' WHERE user_id = $1 AND language = $2 AND status = 'active'`,
+			user.ID, "en")
+		require.NoError(suite.T(), err)
+
 		// Create a story with sections from both yesterday and today
 		var storyID uint
-		err := suite.Container.GetDatabase().QueryRowContext(ctx,
+		err = suite.Container.GetDatabase().QueryRowContext(ctx,
 			`INSERT INTO stories (user_id, title, language, status, created_at, updated_at)
 			 VALUES ($1, $2, $3, $4, NOW(), NOW()) RETURNING id`,
-			user.ID, "Story with Mixed Sections", "de", "active").Scan(&storyID)
+			user.ID, "Story with Mixed Sections", "en", "active").Scan(&storyID)
 		require.NoError(suite.T(), err)
 
 		// Create sections from yesterday
@@ -591,9 +615,9 @@ func (suite *StoryHandlerIntegrationTestSuite) TestStoryHandler_GetCurrentStory_
 		var storyResponse api.StoryWithSections
 		err = json.Unmarshal(w.Body.Bytes(), &storyResponse)
 		assert.NoError(suite.T(), err)
-		assert.Equal(suite.T(), "Story with Mixed Sections", storyResponse.Title)
+		assert.Equal(suite.T(), "Story with Mixed Sections", *storyResponse.Title)
 		assert.Len(suite.T(), *storyResponse.Sections, 2, "Should return both sections")
-		assert.Equal(suite.T(), 1, (*storyResponse.Sections)[0].SectionNumber)
-		assert.Equal(suite.T(), 2, (*storyResponse.Sections)[1].SectionNumber)
+		assert.Equal(suite.T(), 1, *(*storyResponse.Sections)[0].SectionNumber)
+		assert.Equal(suite.T(), 2, *(*storyResponse.Sections)[1].SectionNumber)
 	})
 }
