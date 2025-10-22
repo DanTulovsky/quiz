@@ -252,17 +252,41 @@ const StoryPage: React.FC = () => {
             <Title order={3}>{currentStory?.title}</Title>
           </div>
 
-          <div style={{ display: 'flex', gap: '8px' }}>
+          <div style={{ display: 'flex', gap: '4px' }}>
+            {/* View Mode Toggle */}
+            <Tooltip label="Section View" position="bottom" withArrow>
+              <Button
+                variant={viewMode === 'section' ? 'filled' : 'light'}
+                onClick={() => setViewMode('section')}
+                size='sm'
+                px='xs'
+              >
+                <IconLayoutList size={18} />
+              </Button>
+            </Tooltip>
+            <Tooltip label="Reading View" position="bottom" withArrow>
+              <Button
+                variant={viewMode === 'reading' ? 'filled' : 'light'}
+                onClick={() => setViewMode('reading')}
+                size='sm'
+                px='xs'
+              >
+                <IconEye size={18} />
+              </Button>
+            </Tooltip>
+
             {/* Export Button */}
             {currentStory && (
-              <Button
-                variant='light'
-                leftSection={<IconDownload size={16} />}
-                onClick={handleExportStory}
-                size='sm'
-              >
-                Export PDF
-              </Button>
+              <Tooltip label="Export PDF" position="bottom" withArrow>
+                <Button
+                  variant='light'
+                  onClick={handleExportStory}
+                  size='sm'
+                  px='xs'
+                >
+                  <IconDownload size={18} />
+                </Button>
+              </Tooltip>
             )}
 
             {/* Pause/Resume Auto-Generation Button */}
@@ -278,67 +302,48 @@ const StoryPage: React.FC = () => {
               >
                 <Button
                   variant='light'
-                  leftSection={
-                    currentStory.auto_generation_paused ? (
-                      <IconPlayerPlay size={16} />
-                    ) : (
-                      <IconPlayerPause size={16} />
-                    )
-                  }
                   onClick={handleToggleAutoGeneration}
                   size='sm'
+                  px='xs'
                   color={currentStory.auto_generation_paused ? 'green' : 'blue'}
                 >
-                  {currentStory.auto_generation_paused ? 'Resume' : 'Pause'}{' '}
-                  Auto
+                  {currentStory.auto_generation_paused ? (
+                    <IconPlayerPlay size={18} />
+                  ) : (
+                    <IconPlayerPause size={18} />
+                  )}
                 </Button>
               </Tooltip>
             )}
 
             {/* Archive Button */}
             {currentStory && (
-              <Button
-                variant='outline'
-                leftSection={<IconArchive size={16} />}
-                onClick={handleArchiveStory}
-                size='sm'
-                color='orange'
-              >
-                Archive
-              </Button>
+              <Tooltip label="Archive Story" position="bottom" withArrow>
+                <Button
+                  variant='outline'
+                  onClick={handleArchiveStory}
+                  size='sm'
+                  px='xs'
+                  color='orange'
+                >
+                  <IconArchive size={18} />
+                </Button>
+              </Tooltip>
             )}
 
             {/* New Story Button */}
-            <Button
-              variant='outline'
-              leftSection={<IconPlus size={16} />}
-              onClick={() => setShowCreateModal(true)}
-              size='sm'
-            >
-              New Story
-            </Button>
+            <Tooltip label="New Story" position="bottom" withArrow>
+              <Button
+                variant='outline'
+                onClick={() => setShowCreateModal(true)}
+                size='sm'
+                px='xs'
+              >
+                <IconPlus size={18} />
+              </Button>
+            </Tooltip>
           </div>
         </div>
-
-        {/* View Mode Toggle */}
-        <Group justify='center'>
-          <Button
-            variant={viewMode === 'section' ? 'filled' : 'light'}
-            leftSection={<IconLayoutList size={16} />}
-            onClick={() => setViewMode('section')}
-            size='sm'
-          >
-            Section View
-          </Button>
-          <Button
-            variant={viewMode === 'reading' ? 'filled' : 'light'}
-            leftSection={<IconEye size={16} />}
-            onClick={() => setViewMode('reading')}
-            size='sm'
-          >
-            Reading View
-          </Button>
-        </Group>
 
         {/* Story Content */}
         {viewMode === 'section' ? (

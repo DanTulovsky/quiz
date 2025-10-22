@@ -390,82 +390,74 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
     <Stack gap='md'>
       {/* Section Header */}
       <Paper p='sm' radius='md'>
-        <Group justify='space-between' align='center'>
-          <Group gap='xs'>
-            <Badge variant='light' color='blue' size='sm'>
-              Section {section.section_number}
-            </Badge>
-            <Badge variant='outline' size='sm'>
-              {section.language_level}
-            </Badge>
-          </Group>
-          <Badge variant='outline' size='sm'>
-            {section.word_count} words
-          </Badge>
-        </Group>
-
         {/* Section Navigation */}
-        <Group justify='center' mt='sm' gap={4}>
-          <Button
-            variant='light'
-            size='xs'
-            onClick={onFirst}
-            disabled={sectionIndex === 0}
-            styles={{
-              root: { fontSize: '11px', padding: '2px 6px', minHeight: '28px' },
-              label: { fontSize: '11px' },
-            }}
-          >
-            «
-          </Button>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+          <Group gap={4}>
+            <Button
+              variant='light'
+              size='xs'
+              onClick={onFirst}
+              disabled={sectionIndex === 0}
+              styles={{
+                root: { fontSize: '11px', padding: '2px 6px', minHeight: '28px' },
+                label: { fontSize: '11px' },
+              }}
+            >
+              «
+            </Button>
 
-          <Button
-            variant='light'
-            size='xs'
-            onClick={onPrevious}
-            disabled={sectionIndex === 0}
-            styles={{
-              root: { fontSize: '11px', padding: '2px 6px', minHeight: '28px' },
-              label: { fontSize: '11px' },
-            }}
-          >
-            ‹
-          </Button>
+            <Button
+              variant='light'
+              size='xs'
+              onClick={onPrevious}
+              disabled={sectionIndex === 0}
+              styles={{
+                root: { fontSize: '11px', padding: '2px 6px', minHeight: '28px' },
+                label: { fontSize: '11px' },
+              }}
+            >
+              ‹
+            </Button>
 
-          <Text
-            size='xs'
-            color='dimmed'
-            style={{ minWidth: '50px', textAlign: 'center' }}
-          >
-            {sectionIndex + 1} / {totalSections}
-          </Text>
+            <Text
+              size='xs'
+              color='dimmed'
+              style={{ minWidth: '50px', textAlign: 'center' }}
+            >
+              {sectionIndex + 1} / {totalSections}
+            </Text>
 
-          <Button
-            variant='light'
-            size='xs'
-            onClick={onNext}
-            disabled={sectionIndex >= totalSections - 1}
-            styles={{
-              root: { fontSize: '11px', padding: '2px 6px', minHeight: '28px' },
-              label: { fontSize: '11px' },
-            }}
-          >
-            ›
-          </Button>
+            <Button
+              variant='light'
+              size='xs'
+              onClick={onNext}
+              disabled={sectionIndex >= totalSections - 1}
+              styles={{
+                root: { fontSize: '11px', padding: '2px 6px', minHeight: '28px' },
+                label: { fontSize: '11px' },
+              }}
+            >
+              ›
+            </Button>
 
-          <Button
-            variant='light'
-            size='xs'
-            onClick={onLast}
-            disabled={sectionIndex >= totalSections - 1}
-            styles={{
-              root: { fontSize: '11px', padding: '2px 6px', minHeight: '28px' },
-              label: { fontSize: '11px' },
-            }}
-          >
-            »
-          </Button>
-        </Group>
+            <Button
+              variant='light'
+              size='xs'
+              onClick={onLast}
+              disabled={sectionIndex >= totalSections - 1}
+              styles={{
+                root: { fontSize: '11px', padding: '2px 6px', minHeight: '28px' },
+                label: { fontSize: '11px' },
+              }}
+            >
+              »
+            </Button>
+          </Group>
+
+          <Badge variant='outline' size='sm'>
+            {section.language_level}
+          </Badge>
+        </div>
       </Paper>
 
       {/* Section Content */}

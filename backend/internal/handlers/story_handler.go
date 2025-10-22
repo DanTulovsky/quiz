@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-	"time"
 
 	"quizapp/internal/api"
 	"quizapp/internal/config"
@@ -174,22 +173,9 @@ func (h *StoryHandler) GetCurrentStory(c *gin.Context) {
 		return
 	}
 
-	// If story exists and has sections, check if a section is currently being generated today
-	today := time.Now().Truncate(24 * time.Hour)
-	sectionsToday := 0
-	for _, section := range story.Sections {
-		if section.GenerationDate.Truncate(24 * time.Hour).Equal(today) {
-			sectionsToday++
-		}
-	}
-
-	if sectionsToday == 0 {
-		c.JSON(http.StatusAccepted, api.GeneratingResponse{
-			Status:  stringPtr("generating"),
-			Message: stringPtr("The next section is being generated. Please check back shortly."),
-		})
-		return
-	}
+	// If story exists and has sections, show the story content
+	// The "generating" message should only appear when there are no sections at all
+	// (which is handled above) or when the system is actually generating a new section
 
 	// Record views for all sections in the story (user is accessing/reading them)
 	for _, section := range story.Sections {

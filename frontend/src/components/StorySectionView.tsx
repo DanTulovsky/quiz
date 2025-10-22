@@ -86,79 +86,65 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
     <Stack spacing='md'>
       {/* Section Header */}
       <Paper p='md' radius='md'>
-        <Group position='apart' align='center'>
-          <Group spacing='xs'>
-            <Badge variant='light' color='blue'>
-              Section {section.section_number}
-            </Badge>
-            <Badge variant='outline'>
-              <Group spacing={4}>
-                <IconLanguage size={12} />
-                {section.language_level}
-              </Group>
-            </Badge>
-          </Group>
-
-          <Group spacing='xs'>
-            <Badge variant='outline'>
-              <Group spacing={4}>
-                <IconFileText size={12} />
-                {section.word_count} words
-              </Group>
-            </Badge>
-          </Group>
-        </Group>
-
         {/* Section Navigation */}
-        <Group position='center' mt='md' spacing='xs'>
-          <Button
-            variant='light'
-            leftSection={<IconChevronsLeft size={16} />}
-            onClick={onFirst}
-            disabled={sectionIndex === 0}
-            size='sm'
-          >
-            First
-          </Button>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+          <Group spacing='xs'>
+            <Button
+              variant='light'
+              leftSection={<IconChevronsLeft size={16} />}
+              onClick={onFirst}
+              disabled={sectionIndex === 0}
+              size='sm'
+            >
+              First
+            </Button>
 
-          <Button
-            variant='light'
-            leftSection={<IconChevronLeft size={16} />}
-            onClick={onPrevious}
-            disabled={sectionIndex === 0}
-            size='sm'
-          >
-            Previous
-          </Button>
+            <Button
+              variant='light'
+              leftSection={<IconChevronLeft size={16} />}
+              onClick={onPrevious}
+              disabled={sectionIndex === 0}
+              size='sm'
+            >
+              Previous
+            </Button>
 
-          <Text
-            size='sm'
-            color='dimmed'
-            style={{ minWidth: '80px', textAlign: 'center' }}
-          >
-            {sectionIndex + 1} of {totalSections}
-          </Text>
+            <Text
+              size='sm'
+              color='dimmed'
+              style={{ minWidth: '80px', textAlign: 'center' }}
+            >
+              {sectionIndex + 1} of {totalSections}
+            </Text>
 
-          <Button
-            variant='light'
-            rightSection={<IconChevronRight size={16} />}
-            onClick={onNext}
-            disabled={sectionIndex >= totalSections - 1}
-            size='sm'
-          >
-            Next
-          </Button>
+            <Button
+              variant='light'
+              rightSection={<IconChevronRight size={16} />}
+              onClick={onNext}
+              disabled={sectionIndex >= totalSections - 1}
+              size='sm'
+            >
+              Next
+            </Button>
 
-          <Button
-            variant='light'
-            rightSection={<IconChevronsRight size={16} />}
-            onClick={onLast}
-            disabled={sectionIndex >= totalSections - 1}
-            size='sm'
-          >
-            Last
-          </Button>
-        </Group>
+            <Button
+              variant='light'
+              rightSection={<IconChevronsRight size={16} />}
+              onClick={onLast}
+              disabled={sectionIndex >= totalSections - 1}
+              size='sm'
+            >
+              Last
+            </Button>
+          </Group>
+
+          <Badge variant='outline'>
+            <Group spacing={4}>
+              <IconLanguage size={12} />
+              {section.language_level}
+            </Group>
+          </Badge>
+        </div>
       </Paper>
 
       {/* Section Content */}
