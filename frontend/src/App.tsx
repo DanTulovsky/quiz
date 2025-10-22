@@ -43,6 +43,8 @@ import MobileStoryPage from './pages/mobile/MobileStoryPage';
 import MobileSavedConversationsPage from './pages/mobile/MobileSavedConversationsPage';
 import MobileBookmarkedMessagesPage from './pages/mobile/MobileBookmarkedMessagesPage';
 import MobileSnippetsPage from './pages/mobile/MobileSnippetsPage';
+import MobilePhrasebookIndexPage from './pages/mobile/MobilePhrasebookIndexPage';
+import MobilePhrasebookCategoryPage from './pages/mobile/MobilePhrasebookCategoryPage';
 import { Center, Loader } from '@mantine/core';
 
 function App() {
@@ -534,7 +536,7 @@ function App() {
           element={
             user ? (
               <MobileLayout>
-                <PhrasebookIndexPage />
+                <MobilePhrasebookIndexPage />
               </MobileLayout>
             ) : (
               <Navigate
@@ -548,7 +550,7 @@ function App() {
           element={
             user ? (
               <MobileLayout>
-                <PhrasebookCategoryPage />
+                <MobilePhrasebookCategoryPage />
               </MobileLayout>
             ) : (
               <Navigate
