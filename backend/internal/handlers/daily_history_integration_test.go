@@ -43,7 +43,8 @@ func TestSubmitDailyAnswer_RecordsUserResponse(t *testing.T) {
 
 	storyService := services.NewStoryService(db, cfg, logger)
 	usageStatsService := services.NewUsageStatsService(cfg, db, logger)
-	translationService := services.NewTranslationService(cfg, usageStatsService, logger)
+	translationCacheRepo := services.NewTranslationCacheRepository(db, logger)
+	translationService := services.NewTranslationService(cfg, usageStatsService, translationCacheRepo, logger)
 	snippetsService := services.NewSnippetsService(db, cfg, logger)
 	router := handlers.NewRouter(cfg, userService, questionService, learningService, services.NewAIService(cfg, logger, services.NewNoopUsageStatsService()), services.NewWorkerServiceWithLogger(db, logger), dailyQuestionService, storyService, services.NewConversationService(db), services.NewOAuthServiceWithLogger(cfg, logger), generationHintService, translationService, snippetsService, usageStatsService, logger)
 
@@ -178,7 +179,8 @@ func TestGetQuestionHistory_DateOnlyTimestamp_Returns500(t *testing.T) {
 
 	storyService := services.NewStoryService(db, cfg, logger)
 	usageStatsService := services.NewUsageStatsService(cfg, db, logger)
-	translationService := services.NewTranslationService(cfg, usageStatsService, logger)
+	translationCacheRepo := services.NewTranslationCacheRepository(db, logger)
+	translationService := services.NewTranslationService(cfg, usageStatsService, translationCacheRepo, logger)
 	snippetsService := services.NewSnippetsService(db, cfg, logger)
 	router := handlers.NewRouter(cfg, userService, questionService, learningService, services.NewAIService(cfg, logger, services.NewNoopUsageStatsService()), services.NewWorkerServiceWithLogger(db, logger), dailyQuestionService, storyService, services.NewConversationService(db), services.NewOAuthServiceWithLogger(cfg, logger), generationHintService, translationService, snippetsService, usageStatsService, logger)
 

@@ -60,7 +60,8 @@ func (suite *TranslationIntegrationTestSuite) SetupSuite() {
 	oauthService := services.NewOAuthServiceWithLogger(cfg, logger)
 	generationHintService := services.NewGenerationHintService(suite.DB, logger)
 	usageStatsService := services.NewUsageStatsService(cfg, suite.DB, logger)
-	translationService := services.NewTranslationService(cfg, usageStatsService, logger)
+	translationCacheRepo := services.NewTranslationCacheRepository(suite.DB, logger)
+	translationService := services.NewTranslationService(cfg, usageStatsService, translationCacheRepo, logger)
 	snippetsService := services.NewSnippetsService(suite.DB, cfg, logger)
 
 	suite.UserService = userService

@@ -90,7 +90,8 @@ func (suite *AdminIntegrationTestSuite) SetupSuite() {
 	generationHintService := services.NewGenerationHintService(db, logger)
 	storyService := services.NewStoryService(db, suite.cfg, logger)
 	usageStatsService := services.NewUsageStatsService(suite.cfg, suite.db, logger)
-	translationService := services.NewTranslationService(suite.cfg, usageStatsService, logger)
+	translationCacheRepo := services.NewTranslationCacheRepository(suite.db, logger)
+	translationService := services.NewTranslationService(suite.cfg, usageStatsService, translationCacheRepo, logger)
 	snippetsService := services.NewSnippetsService(db, suite.cfg, logger)
 	suite.BackendRouter = handlers.NewRouter(
 		suite.cfg,

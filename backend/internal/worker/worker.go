@@ -74,24 +74,27 @@ type Config struct {
 
 // Worker manages AI question generation in the background
 type Worker struct {
-	userService          services.UserServiceInterface
-	questionService      services.QuestionServiceInterface
-	aiService            services.AIServiceInterface
-	learningService      services.LearningServiceInterface
-	workerService        services.WorkerServiceInterface
-	dailyQuestionService services.DailyQuestionServiceInterface
-	storyService         services.StoryServiceInterface
-	emailService         mailer.Mailer
-	hintService          services.GenerationHintServiceInterface
-	instance             string
-	status               Status
-	history              []RunRecord
-	activityLogs         []ActivityLog // Circular buffer for recent activity logs
-	mu                   sync.RWMutex
-	manualTrigger        chan bool
-	cfg                  *config.Config
-	workerCfg            Config
-	logger               *observability.Logger
+	userService            services.UserServiceInterface
+	questionService        services.QuestionServiceInterface
+	aiService              services.AIServiceInterface
+	learningService        services.LearningServiceInterface
+	workerService          services.WorkerServiceInterface
+	dailyQuestionService   services.DailyQuestionServiceInterface
+	storyService           services.StoryServiceInterface
+	emailService           mailer.Mailer
+	hintService            services.GenerationHintServiceInterface
+	translationCacheRepo   services.TranslationCacheRepository
+	instance               string
+	status                 Status
+	history                []RunRecord
+	activityLogs           []ActivityLog // Circular buffer for recent activity logs
+	mu                     sync.RWMutex
+	manualTrigger          chan bool
+	cfg                    *config.Config
+	workerCfg              Config
+	logger                 *observability.Logger
+	lastTranslationCleanup time.Time // Track last translation cache cleanup
+	translationCleanupMu   sync.RWMutex
 
 	// Track failures for exponential backoff
 	userFailures map[int]*UserFailureInfo // userID -> failure info
@@ -100,6 +103,66 @@ type Worker struct {
 	// Time function for testing - defaults to time.Now
 	timeNow func() time.Time
 	cancel  context.CancelFunc // Added for cleanup
+}
+
+// cleanupTranslationCache removes expired translation cache entries once per day
+func (w *Worker) cleanupTranslationCache(ctx context.Context) error {
+	ctx, span := otel.Tracer("worker").Start(ctx, "cleanupTranslationCache",
+		trace.WithAttributes(
+			attribute.String("worker.instance", w.instance),
+		),
+	)
+	defer span.End()
+
+	// Check if we've already cleaned up today
+	w.translationCleanupMu.Lock()
+	lastCleanup := w.lastTranslationCleanup
+	w.translationCleanupMu.Unlock()
+
+	now := w.timeNow()
+
+	// Only cleanup once per day (check if last cleanup was on a different day)
+	if !lastCleanup.IsZero() {
+		lastCleanupDay := lastCleanup.Truncate(24 * time.Hour)
+		todayDay := now.Truncate(24 * time.Hour)
+
+		if lastCleanupDay.Equal(todayDay) {
+			// Already cleaned up today
+			span.SetAttributes(
+				attribute.Bool("cleanup.skipped", true),
+				attribute.String("cleanup.last_run", lastCleanup.Format(time.RFC3339)),
+			)
+			return nil
+		}
+	}
+
+	w.logger.Info(ctx, "Cleaning up expired translation cache entries", map[string]interface{}{
+		"last_cleanup": lastCleanup,
+	})
+
+	count, err := w.translationCacheRepo.CleanupExpiredTranslations(ctx)
+	if err != nil {
+		span.RecordError(err)
+		span.SetAttributes(attribute.Bool("cleanup.success", false))
+		return contextutils.WrapError(err, "failed to cleanup expired translation cache entries")
+	}
+
+	// Update last cleanup time
+	w.translationCleanupMu.Lock()
+	w.lastTranslationCleanup = now
+	w.translationCleanupMu.Unlock()
+
+	span.SetAttributes(
+		attribute.Bool("cleanup.success", true),
+		attribute.Int64("cleanup.deleted_count", count),
+	)
+
+	w.logger.Info(ctx, "Translation cache cleanup completed", map[string]interface{}{
+		"deleted_count": count,
+		"instance":      w.instance,
+	})
+
+	return nil
 }
 
 // checkForDailyReminders checks if any users need daily reminder emails
@@ -431,7 +494,7 @@ func (w *Worker) getUsersEligibleForDailyQuestions(ctx context.Context) ([]model
 }
 
 // NewWorker creates a new Worker instance
-func NewWorker(userService services.UserServiceInterface, questionService services.QuestionServiceInterface, aiService services.AIServiceInterface, learningService services.LearningServiceInterface, workerService services.WorkerServiceInterface, dailyQuestionService services.DailyQuestionServiceInterface, storyService services.StoryServiceInterface, emailService mailer.Mailer, hintService services.GenerationHintServiceInterface, instance string, cfg *config.Config, logger *observability.Logger) *Worker {
+func NewWorker(userService services.UserServiceInterface, questionService services.QuestionServiceInterface, aiService services.AIServiceInterface, learningService services.LearningServiceInterface, workerService services.WorkerServiceInterface, dailyQuestionService services.DailyQuestionServiceInterface, storyService services.StoryServiceInterface, emailService mailer.Mailer, hintService services.GenerationHintServiceInterface, translationCacheRepo services.TranslationCacheRepository, instance string, cfg *config.Config, logger *observability.Logger) *Worker {
 	if instance == "" {
 		instance = "default"
 	}
@@ -454,6 +517,7 @@ func NewWorker(userService services.UserServiceInterface, questionService servic
 		storyService:         storyService,
 		emailService:         emailService,
 		hintService:          hintService,
+		translationCacheRepo: translationCacheRepo,
 		instance:             instance,
 		status:               Status{IsRunning: false, CurrentActivity: "Initialized"},
 		history:              make([]RunRecord, 0, cfg.Server.MaxHistory),
@@ -638,6 +702,13 @@ func (w *Worker) run() {
 	// Check for daily email reminders
 	if err := w.checkForDailyReminders(ctx); err != nil {
 		w.logger.Error(ctx, "Failed to check daily reminders", err, map[string]interface{}{
+			"instance": w.instance,
+		})
+	}
+
+	// Cleanup expired translation cache entries (once per day)
+	if err := w.cleanupTranslationCache(ctx); err != nil {
+		w.logger.Error(ctx, "Failed to cleanup translation cache", err, map[string]interface{}{
 			"instance": w.instance,
 		})
 	}

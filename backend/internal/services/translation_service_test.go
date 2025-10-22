@@ -6,12 +6,28 @@ import (
 	"testing"
 
 	"quizapp/internal/config"
+	"quizapp/internal/models"
 	"quizapp/internal/observability"
 	"quizapp/internal/serviceinterfaces"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
+
+// MockTranslationCacheRepository is a mock implementation of TranslationCacheRepository for testing
+type MockTranslationCacheRepository struct{}
+
+func (m *MockTranslationCacheRepository) GetCachedTranslation(_ context.Context, _, _, _ string) (*models.TranslationCache, error) {
+	return nil, nil // Always return cache miss for unit tests
+}
+
+func (m *MockTranslationCacheRepository) SaveTranslation(_ context.Context, _, _, _, _, _ string) error {
+	return nil // Always succeed for unit tests
+}
+
+func (m *MockTranslationCacheRepository) CleanupExpiredTranslations(_ context.Context) (int64, error) {
+	return 0, nil
+}
 
 func TestNoopTranslationService_Translate(t *testing.T) {
 	service := NewNoopTranslationService()
@@ -91,7 +107,7 @@ func TestNoopTranslationService_GetSupportedLanguages(t *testing.T) {
 }
 
 func TestGoogleTranslationService_ValidateLanguageCode(t *testing.T) {
-	service := NewGoogleTranslationService(&config.Config{}, &NoopUsageStatsService{}, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	service := NewGoogleTranslationService(&config.Config{}, &NoopUsageStatsService{}, &MockTranslationCacheRepository{}, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	validCodes := []string{"en", "es", "fr", "de", "zh-CN", "pt-BR"}
 	invalidCodes := []string{"", "a", "toolonglanguagecode", "invalid@code"}
@@ -112,7 +128,7 @@ func TestGoogleTranslationService_ValidateLanguageCode(t *testing.T) {
 }
 
 func TestGoogleTranslationService_GetSupportedLanguages(t *testing.T) {
-	service := NewGoogleTranslationService(&config.Config{}, &NoopUsageStatsService{}, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	service := NewGoogleTranslationService(&config.Config{}, &NoopUsageStatsService{}, &MockTranslationCacheRepository{}, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	languages := service.GetSupportedLanguages()
 	assert.NotEmpty(t, languages)
@@ -130,7 +146,7 @@ func TestNewTranslationService(t *testing.T) {
 			},
 		}
 
-		service := NewTranslationService(cfg, &NoopUsageStatsService{}, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+		service := NewTranslationService(cfg, &NoopUsageStatsService{}, &MockTranslationCacheRepository{}, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 		assert.IsType(t, &NoopTranslationService{}, service)
 	})
 
@@ -143,7 +159,7 @@ func TestNewTranslationService(t *testing.T) {
 			},
 		}
 
-		service := NewTranslationService(cfg, &NoopUsageStatsService{}, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+		service := NewTranslationService(cfg, &NoopUsageStatsService{}, &MockTranslationCacheRepository{}, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 		assert.IsType(t, &NoopTranslationService{}, service)
 	})
 
@@ -161,7 +177,7 @@ func TestNewTranslationService(t *testing.T) {
 			},
 		}
 
-		service := NewTranslationService(cfg, &NoopUsageStatsService{}, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+		service := NewTranslationService(cfg, &NoopUsageStatsService{}, &MockTranslationCacheRepository{}, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 		assert.IsType(t, &GoogleTranslationService{}, service)
 	})
 
@@ -179,7 +195,7 @@ func TestNewTranslationService(t *testing.T) {
 			},
 		}
 
-		service := NewTranslationService(cfg, &NoopUsageStatsService{}, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+		service := NewTranslationService(cfg, &NoopUsageStatsService{}, &MockTranslationCacheRepository{}, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 		assert.IsType(t, &NoopTranslationService{}, service)
 	})
 }

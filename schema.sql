@@ -585,4 +585,24 @@ CREATE INDEX IF NOT EXISTS idx_user_usage_stats_date_hour ON user_usage_stats(us
 CREATE INDEX IF NOT EXISTS idx_user_usage_stats_service_provider ON user_usage_stats(service_name, provider);
 CREATE INDEX IF NOT EXISTS idx_user_usage_stats_api_key ON user_usage_stats(api_key_id);
 
+-- Translation cache table - caches translation results to reduce API calls
+CREATE TABLE IF NOT EXISTS translation_cache (
+    id SERIAL PRIMARY KEY,
+    text_hash VARCHAR(64) NOT NULL,
+    original_text TEXT NOT NULL,
+    source_language VARCHAR(10) NOT NULL,
+    target_language VARCHAR(10) NOT NULL,
+    translated_text TEXT NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMPTZ NOT NULL,
+    
+    UNIQUE(text_hash, source_language, target_language)
+);
+
+-- Create indexes for efficient lookup and cleanup
+CREATE INDEX IF NOT EXISTS idx_translation_cache_lookup 
+    ON translation_cache(text_hash, source_language, target_language);
+CREATE INDEX IF NOT EXISTS idx_translation_cache_expires_at 
+    ON translation_cache(expires_at);
+
 -- Insert default roles and assign them to existing users via migration files

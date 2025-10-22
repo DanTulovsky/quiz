@@ -123,6 +123,7 @@ Provides commands for user management, database operations, and system administr
 	// Add subcommands with initialized services
 	rootCmd.AddCommand(commands.UserCommands(userService, logger, cfg.Database.URL))
 	rootCmd.AddCommand(commands.DatabaseCommands(userService, logger, db))
+	rootCmd.AddCommand(commands.TranslationCommands(logger, db))
 
 	// Execute the command
 	if err := rootCmd.Execute(); err != nil {

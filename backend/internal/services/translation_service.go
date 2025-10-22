@@ -26,17 +26,19 @@ type GoogleTranslationService struct {
 	config        *config.Config
 	httpClient    *http.Client
 	usageStatsSvc UsageStatsServiceInterface
+	cacheRepo     TranslationCacheRepository
 	logger        *observability.Logger
 }
 
 // NewGoogleTranslationService creates a new Google translation service instance
-func NewGoogleTranslationService(config *config.Config, usageStatsSvc UsageStatsServiceInterface, logger *observability.Logger) *GoogleTranslationService {
+func NewGoogleTranslationService(config *config.Config, usageStatsSvc UsageStatsServiceInterface, cacheRepo TranslationCacheRepository, logger *observability.Logger) *GoogleTranslationService {
 	return &GoogleTranslationService{
 		config: config,
 		httpClient: &http.Client{
 			Timeout: 30 * time.Second,
 		},
 		usageStatsSvc: usageStatsSvc,
+		cacheRepo:     cacheRepo,
 		logger:        logger,
 	}
 }
@@ -111,6 +113,46 @@ func (s *GoogleTranslationService) translateGoogle(ctx context.Context, req serv
 		attribute.Int("translation.text_length", len(req.Text)),
 	)
 	defer observability.FinishSpan(span, &err)
+
+	// Generate hash for cache lookup
+	textHash := HashText(req.Text)
+	span.SetAttributes(attribute.String("cache.text_hash", textHash))
+
+	// Check cache first
+	cachedTranslation, err := s.cacheRepo.GetCachedTranslation(ctx, textHash, req.SourceLanguage, req.TargetLanguage)
+	if err != nil {
+		// Log cache error but don't fail the translation request
+		s.logger.Error(ctx, "Failed to check translation cache", err, map[string]interface{}{
+			"text_hash":       textHash,
+			"source_language": req.SourceLanguage,
+			"target_language": req.TargetLanguage,
+		})
+	} else if cachedTranslation != nil {
+		// Cache hit - return cached translation
+		span.SetAttributes(
+			attribute.Bool("cache.hit", true),
+			attribute.String("cache.created_at", cachedTranslation.CreatedAt.Format(time.RFC3339)),
+		)
+
+		// Record cache hit in usage stats
+		if err := s.usageStatsSvc.RecordUsage(ctx, providerConfig.Code, "translation_cache_hit", len(req.Text), 1); err != nil {
+			s.logger.Error(ctx, "Failed to record translation cache hit", err)
+		}
+
+		return &serviceinterfaces.TranslateResponse{
+			TranslatedText: cachedTranslation.TranslatedText,
+			SourceLanguage: cachedTranslation.SourceLanguage,
+			TargetLanguage: cachedTranslation.TargetLanguage,
+		}, nil
+	}
+
+	// Cache miss - proceed with API call
+	span.SetAttributes(attribute.Bool("cache.hit", false))
+
+	// Record cache miss in usage stats
+	if err := s.usageStatsSvc.RecordUsage(ctx, providerConfig.Code, "translation_cache_miss", 0, 1); err != nil {
+		s.logger.Error(ctx, "Failed to record translation cache miss", err)
+	}
 
 	// Check quota before making the request
 	if err := s.usageStatsSvc.CheckQuota(ctx, providerConfig.Code, "translation", len(req.Text)); err != nil {
@@ -202,13 +244,25 @@ func (s *GoogleTranslationService) translateGoogle(ctx context.Context, req serv
 		// Log the error but don't fail the translation request
 		// The translation was successful, we just couldn't record the usage
 		// This is a non-critical error that should be logged for monitoring
-		s.logger.Warn(ctx, "Failed to record translation usage", map[string]interface{}{
+		s.logger.Error(ctx, "Failed to record translation usage", err, map[string]interface{}{
 			"service":    providerConfig.Code,
 			"usage_type": "translation",
 			"characters": len(req.Text),
 			"requests":   1,
-			"error":      err.Error(),
 		})
+	}
+
+	// Save translation to cache
+	if err := s.cacheRepo.SaveTranslation(ctx, textHash, req.Text, req.SourceLanguage, req.TargetLanguage, result.TranslatedText); err != nil {
+		// Log the error but don't fail the translation request
+		span.SetAttributes(attribute.Bool("cache.save_error", true))
+		s.logger.Error(ctx, "Failed to save translation to cache", err, map[string]interface{}{
+			"text_hash":       textHash,
+			"source_language": req.SourceLanguage,
+			"target_language": req.TargetLanguage,
+		})
+	} else {
+		span.SetAttributes(attribute.Bool("cache.saved", true))
 	}
 
 	return result, nil
@@ -288,7 +342,7 @@ func (s *NoopTranslationService) GetSupportedLanguages() []string {
 // NewTranslationService creates a translation service based on configuration
 // For testing environments, it returns a noop service if translation is disabled
 // For production, it returns a Google translation service if properly configured
-func NewTranslationService(config *config.Config, usageStatsSvc UsageStatsServiceInterface, logger *observability.Logger) TranslationServiceInterface {
+func NewTranslationService(config *config.Config, usageStatsSvc UsageStatsServiceInterface, cacheRepo TranslationCacheRepository, logger *observability.Logger) TranslationServiceInterface {
 	if !config.Translation.Enabled {
 		return NewNoopTranslationService()
 	}
@@ -301,7 +355,7 @@ func NewTranslationService(config *config.Config, usageStatsSvc UsageStatsServic
 
 	switch providerConfig.Code {
 	case "google":
-		return NewGoogleTranslationService(config, usageStatsSvc, logger)
+		return NewGoogleTranslationService(config, usageStatsSvc, cacheRepo, logger)
 	default:
 		// Fallback to noop for unsupported providers
 		return NewNoopTranslationService()

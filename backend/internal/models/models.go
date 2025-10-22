@@ -60,6 +60,18 @@ type Snippet struct {
 	UpdatedAt       time.Time `json:"updated_at" yaml:"updated_at"`
 }
 
+// TranslationCache represents a cached translation result
+type TranslationCache struct {
+	ID             int       `json:"id" yaml:"id"`
+	TextHash       string    `json:"text_hash" yaml:"text_hash"`
+	OriginalText   string    `json:"original_text" yaml:"original_text"`
+	SourceLanguage string    `json:"source_language" yaml:"source_language"`
+	TargetLanguage string    `json:"target_language" yaml:"target_language"`
+	TranslatedText string    `json:"translated_text" yaml:"translated_text"`
+	CreatedAt      time.Time `json:"created_at" yaml:"created_at"`
+	ExpiresAt      time.Time `json:"expires_at" yaml:"expires_at"`
+}
+
 // MarshalJSON customizes JSON marshaling for User to handle sql.NullString and sql.NullTime properly
 func (u User) MarshalJSON() (result0 []byte, err error) { // Create a struct with the desired JSON structure
 	return json.Marshal(&struct {

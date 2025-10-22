@@ -310,8 +310,12 @@ func (sc *ServiceContainer) initializeServices(_ context.Context) {
 	aiService := services.NewAIService(sc.cfg, sc.logger, usageStatsService)
 	sc.services["ai"] = aiService
 
-	// Translation service
-	translationService := services.NewTranslationService(sc.cfg, usageStatsService, sc.logger)
+	// Translation cache repository
+	translationCacheRepo := services.NewTranslationCacheRepository(sc.db, sc.logger)
+	sc.services["translation_cache"] = translationCacheRepo
+
+	// Translation service (depends on usage stats service and translation cache repository)
+	translationService := services.NewTranslationService(sc.cfg, usageStatsService, translationCacheRepo, sc.logger)
 	sc.services["translation"] = translationService
 
 	// Initialize snippets service
