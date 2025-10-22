@@ -391,7 +391,14 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
       {/* Section Header */}
       <Paper p='sm' radius='md'>
         {/* Section Navigation */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: '100%',
+          }}
+        >
           <Group gap={4}>
             <Button
               variant='light'
@@ -399,7 +406,11 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
               onClick={onFirst}
               disabled={sectionIndex === 0}
               styles={{
-                root: { fontSize: '11px', padding: '2px 6px', minHeight: '28px' },
+                root: {
+                  fontSize: '11px',
+                  padding: '2px 6px',
+                  minHeight: '28px',
+                },
                 label: { fontSize: '11px' },
               }}
             >
@@ -412,7 +423,11 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
               onClick={onPrevious}
               disabled={sectionIndex === 0}
               styles={{
-                root: { fontSize: '11px', padding: '2px 6px', minHeight: '28px' },
+                root: {
+                  fontSize: '11px',
+                  padding: '2px 6px',
+                  minHeight: '28px',
+                },
                 label: { fontSize: '11px' },
               }}
             >
@@ -433,7 +448,11 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
               onClick={onNext}
               disabled={sectionIndex >= totalSections - 1}
               styles={{
-                root: { fontSize: '11px', padding: '2px 6px', minHeight: '28px' },
+                root: {
+                  fontSize: '11px',
+                  padding: '2px 6px',
+                  minHeight: '28px',
+                },
                 label: { fontSize: '11px' },
               }}
             >
@@ -446,7 +465,11 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
               onClick={onLast}
               disabled={sectionIndex >= totalSections - 1}
               styles={{
-                root: { fontSize: '11px', padding: '2px 6px', minHeight: '28px' },
+                root: {
+                  fontSize: '11px',
+                  padding: '2px 6px',
+                  minHeight: '28px',
+                },
                 label: { fontSize: '11px' },
               }}
             >

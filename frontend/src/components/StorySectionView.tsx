@@ -23,7 +23,6 @@ import {
   IconPlus,
   IconBook,
   IconLanguage,
-  IconFileText,
 } from '@tabler/icons-react';
 import {
   StorySection,
@@ -87,7 +86,14 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
       {/* Section Header */}
       <Paper p='md' radius='md'>
         {/* Section Navigation */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: '100%',
+          }}
+        >
           <Group spacing='xs'>
             <Button
               variant='light'

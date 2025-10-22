@@ -254,7 +254,7 @@ const StoryPage: React.FC = () => {
 
           <div style={{ display: 'flex', gap: '4px' }}>
             {/* View Mode Toggle */}
-            <Tooltip label="Section View" position="bottom" withArrow>
+            <Tooltip label='Section View' position='bottom' withArrow>
               <Button
                 variant={viewMode === 'section' ? 'filled' : 'light'}
                 onClick={() => setViewMode('section')}
@@ -264,7 +264,7 @@ const StoryPage: React.FC = () => {
                 <IconLayoutList size={18} />
               </Button>
             </Tooltip>
-            <Tooltip label="Reading View" position="bottom" withArrow>
+            <Tooltip label='Reading View' position='bottom' withArrow>
               <Button
                 variant={viewMode === 'reading' ? 'filled' : 'light'}
                 onClick={() => setViewMode('reading')}
@@ -277,7 +277,7 @@ const StoryPage: React.FC = () => {
 
             {/* Export Button */}
             {currentStory && (
-              <Tooltip label="Export PDF" position="bottom" withArrow>
+              <Tooltip label='Export PDF' position='bottom' withArrow>
                 <Button
                   variant='light'
                   onClick={handleExportStory}
@@ -318,7 +318,7 @@ const StoryPage: React.FC = () => {
 
             {/* Archive Button */}
             {currentStory && (
-              <Tooltip label="Archive Story" position="bottom" withArrow>
+              <Tooltip label='Archive Story' position='bottom' withArrow>
                 <Button
                   variant='outline'
                   onClick={handleArchiveStory}
@@ -332,7 +332,7 @@ const StoryPage: React.FC = () => {
             )}
 
             {/* New Story Button */}
-            <Tooltip label="New Story" position="bottom" withArrow>
+            <Tooltip label='New Story' position='bottom' withArrow>
               <Button
                 variant='outline'
                 onClick={() => setShowCreateModal(true)}
