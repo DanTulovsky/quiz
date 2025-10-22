@@ -360,8 +360,14 @@ type CreateSnippetRequest struct {
 	// QuestionId Optional ID of the question where this text was encountered. If provided, the snippet will inherit the question's difficulty level (A1, A2, B1, B2, C1, C2)
 	QuestionId *int64 `json:"question_id"`
 
+	// SectionId Optional ID of the story section where this text was encountered
+	SectionId *int64 `json:"section_id"`
+
 	// SourceLanguage ISO language code of the source text
 	SourceLanguage string `json:"source_language"`
+
+	// StoryId Optional ID of the story where this text was encountered
+	StoryId *int64 `json:"story_id"`
 
 	// TargetLanguage ISO language code of the target translation
 	TargetLanguage string `json:"target_language"`
@@ -945,15 +951,21 @@ type Snippet struct {
 	CreatedAt *time.Time `json:"created_at,omitempty"`
 
 	// DifficultyLevel CEFR level (A1, A2, B1, B2, C1, C2)
-	DifficultyLevel *string    `json:"difficulty_level"`
-	Id              *int64     `json:"id,omitempty"`
-	OriginalText    *string    `json:"original_text,omitempty"`
-	QuestionId      *int64     `json:"question_id"`
-	SourceLanguage  *string    `json:"source_language,omitempty"`
-	TargetLanguage  *string    `json:"target_language,omitempty"`
-	TranslatedText  *string    `json:"translated_text,omitempty"`
-	UpdatedAt       *time.Time `json:"updated_at,omitempty"`
-	UserId          *int64     `json:"user_id,omitempty"`
+	DifficultyLevel *string `json:"difficulty_level"`
+	Id              *int64  `json:"id,omitempty"`
+	OriginalText    *string `json:"original_text,omitempty"`
+	QuestionId      *int64  `json:"question_id"`
+
+	// SectionId ID of the story section where this snippet was created
+	SectionId      *int64  `json:"section_id"`
+	SourceLanguage *string `json:"source_language,omitempty"`
+
+	// StoryId ID of the story where this snippet was created
+	StoryId        *int64     `json:"story_id"`
+	TargetLanguage *string    `json:"target_language,omitempty"`
+	TranslatedText *string    `json:"translated_text,omitempty"`
+	UpdatedAt      *time.Time `json:"updated_at,omitempty"`
+	UserId         *int64     `json:"user_id,omitempty"`
 }
 
 // SnippetList defines model for SnippetList.

@@ -44,6 +44,23 @@ vi.mock('../../api/api', () => ({
   }),
 }));
 
+// Mock the snippet hooks
+vi.mock('../../hooks/useSectionSnippets', () => ({
+  useSectionSnippets: () => ({
+    snippets: [],
+    isLoading: false,
+    error: null,
+  }),
+}));
+
+vi.mock('../../hooks/useStorySnippets', () => ({
+  useStorySnippets: () => ({
+    snippets: [],
+    isLoading: false,
+    error: null,
+  }),
+}));
+
 const mockUseAuth = useAuth as ReturnType<typeof vi.fn>;
 const mockUseAdminStories = useAdminStories as ReturnType<typeof vi.fn>;
 const mockUseAdminStory = useAdminStory as ReturnType<typeof vi.fn>;

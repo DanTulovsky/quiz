@@ -31,6 +31,7 @@ import { useMobileDetection } from '../hooks/useMobileDetection';
 import { useTheme } from '../contexts/ThemeContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import VersionDisplay from './VersionDisplay';
+import { TranslationOverlay } from './TranslationOverlay';
 
 interface MobileLayoutProps {
   children: React.ReactNode;
@@ -238,6 +239,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
       {/* Removed footer displaying active section label */}
 
       <AppShell.Main>{children}</AppShell.Main>
+      <TranslationOverlay />
     </AppShell>
   );
 };

@@ -1,6 +1,16 @@
 import React, { useMemo } from 'react';
-import { Tooltip } from '@mantine/core';
-import { Snippet } from '../api/api';
+import {
+  Popover,
+  Stack,
+  Text,
+  Group,
+  Badge,
+  Divider,
+  ActionIcon,
+} from '@mantine/core';
+import { IconTrash } from '@tabler/icons-react';
+import { Snippet, deleteV1SnippetsId } from '../api/api';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface SnippetHighlighterProps {
   text: string;
@@ -8,7 +18,7 @@ interface SnippetHighlighterProps {
   /** Optional component to wrap the entire text */
   component?: React.ElementType;
   /** Props to pass to the wrapper component */
-  componentProps?: Record<string, any>;
+  componentProps?: Record<string, unknown>;
   /** Optional target word to highlight (for vocabulary questions) */
   targetWord?: string;
 }
@@ -36,6 +46,25 @@ export const SnippetHighlighter: React.FC<SnippetHighlighterProps> = ({
   componentProps = {},
   targetWord,
 }) => {
+  const queryClient = useQueryClient();
+
+  const handleDeleteSnippet = async (snippetId: number) => {
+    try {
+      await deleteV1SnippetsId(snippetId);
+
+      // Invalidate all snippet queries to refresh the UI
+      queryClient.invalidateQueries({
+        queryKey: ['/v1/snippets'],
+      });
+      queryClient.invalidateQueries({
+        predicate: query => {
+          return query.queryKey[0]?.toString().includes('/v1/snippets/');
+        },
+      });
+    } catch (error) {
+      console.error('Failed to delete snippet:', error);
+    }
+  };
   const segments = useMemo(() => {
     // If no snippets and no target word, return the original text as a single segment
     if ((!snippets || snippets.length === 0) && !targetWord) {
@@ -71,7 +100,9 @@ export const SnippetHighlighter: React.FC<SnippetHighlighterProps> = ({
               ? text[index + snippetText.length]
               : ' ';
 
-          const isWordBoundaryBefore = /[\s.,!?;:()\[\]{}"'«»]/.test(beforeChar);
+          const isWordBoundaryBefore = /[\s.,!?;:()\[\]{}"'«»]/.test(
+            beforeChar
+          );
           const isWordBoundaryAfter = /[\s.,!?;:()\[\]{}"'«»]/.test(afterChar);
 
           // Only match if it's a whole word (or at start/end of text)
@@ -180,10 +211,7 @@ export const SnippetHighlighter: React.FC<SnippetHighlighterProps> = ({
     // Target word highlighting (blue and bold)
     if (segment.isTargetWord && !segment.isSnippet) {
       return (
-        <strong
-          key={index}
-          style={{ color: '#1976d2', fontWeight: 700 }}
-        >
+        <strong key={index} style={{ color: '#1976d2', fontWeight: 700 }}>
           {segment.text}
         </strong>
       );
@@ -192,28 +220,76 @@ export const SnippetHighlighter: React.FC<SnippetHighlighterProps> = ({
     // Snippet highlighting (dashed underline with tooltip)
     if (segment.isSnippet) {
       const snippet = segment.snippet!;
-      const tooltipLabel = snippet.translated_text || 'No translation available';
+
+      // Create rich tooltip content
+      const tooltipContent = (
+        <Stack gap='xs'>
+          {/* Header with translation and delete button */}
+          <Group justify='space-between' align='flex-start'>
+            <Text size='sm' fw={500} style={{ flex: 1 }}>
+              {snippet.translated_text || 'No translation available'}
+            </Text>
+            <ActionIcon
+              size='sm'
+              variant='subtle'
+              color='red'
+              onClick={e => {
+                e.stopPropagation();
+                handleDeleteSnippet(snippet.id);
+              }}
+              title='Delete snippet'
+            >
+              <IconTrash size={14} />
+            </ActionIcon>
+          </Group>
+
+          {/* Language pair and difficulty */}
+          <Group gap='xs' wrap='wrap'>
+            <Badge size='xs' variant='outline' color='blue'>
+              {snippet.source_language} → {snippet.target_language}
+            </Badge>
+            {snippet.difficulty_level && (
+              <Badge size='xs' variant='outline' color='green'>
+                {snippet.difficulty_level}
+              </Badge>
+            )}
+          </Group>
+
+          {/* Context if available */}
+          {snippet.context && (
+            <>
+              <Divider size='xs' />
+              <Text size='xs' c='dimmed' fs='italic'>
+                "{snippet.context}"
+              </Text>
+            </>
+          )}
+        </Stack>
+      );
 
       return (
-        <Tooltip
+        <Popover
           key={index}
-          label={tooltipLabel}
-          position="top"
+          position='top'
           withArrow
-          multiline
-          maw={300}
-          transitionProps={{ duration: 150 }}
+          withinPortal
+          shadow='md'
+          radius='md'
+          trigger='hover'
         >
-          <span
-            style={{
-              borderBottom: '1px dashed #228be6',
-              cursor: 'help',
-              textDecoration: 'none',
-            }}
-          >
-            {segment.text}
-          </span>
-        </Tooltip>
+          <Popover.Target>
+            <span
+              style={{
+                borderBottom: '1px dashed var(--mantine-color-blue-6)',
+                cursor: 'help',
+                textDecoration: 'none',
+              }}
+            >
+              {segment.text}
+            </span>
+          </Popover.Target>
+          <Popover.Dropdown>{tooltipContent}</Popover.Dropdown>
+        </Popover>
       );
     }
 
@@ -229,4 +305,3 @@ export const SnippetHighlighter: React.FC<SnippetHighlighterProps> = ({
   // Otherwise, return the content directly
   return <>{content}</>;
 };
-

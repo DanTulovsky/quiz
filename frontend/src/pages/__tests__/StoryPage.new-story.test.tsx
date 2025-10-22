@@ -56,6 +56,23 @@ vi.mock('../../hooks/useTTS', () => ({
   }),
 }));
 
+// Mock the snippet hooks
+vi.mock('../../hooks/useSectionSnippets', () => ({
+  useSectionSnippets: () => ({
+    snippets: [],
+    isLoading: false,
+    error: null,
+  }),
+}));
+
+vi.mock('../../hooks/useStorySnippets', () => ({
+  useStorySnippets: () => ({
+    snippets: [],
+    isLoading: false,
+    error: null,
+  }),
+}));
+
 // Preferences hook used by children
 vi.mock('../../api/api', async () => {
   const actual = await vi.importActual('../../api/api');

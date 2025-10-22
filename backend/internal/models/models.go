@@ -54,6 +54,8 @@ type Snippet struct {
 	SourceLanguage  string    `json:"source_language" yaml:"source_language"`
 	TargetLanguage  string    `json:"target_language" yaml:"target_language"`
 	QuestionID      *int64    `json:"question_id" yaml:"question_id"`
+	SectionID       *int64    `json:"section_id" yaml:"section_id"`
+	StoryID         *int64    `json:"story_id" yaml:"story_id"`
 	Context         *string   `json:"context" yaml:"context"`
 	DifficultyLevel *string   `json:"difficulty_level" yaml:"difficulty_level"`
 	CreatedAt       time.Time `json:"created_at" yaml:"created_at"`

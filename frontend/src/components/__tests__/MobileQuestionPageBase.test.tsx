@@ -64,6 +64,14 @@ vi.mock('../../utils/tts', () => ({
   defaultVoiceForLanguage: vi.fn(() => 'it-IT'),
 }));
 
+// Mock SnippetHighlighter component
+vi.mock('../SnippetHighlighter', () => ({
+  SnippetHighlighter: ({ text, component: Component, componentProps }: any) => {
+    const ComponentToRender = Component || 'span';
+    return <ComponentToRender {...componentProps}>{text}</ComponentToRender>;
+  },
+}));
+
 vi.mock('../../api/api', () => ({
   postV1QuizAnswer: vi.fn(() =>
     Promise.resolve({
@@ -77,6 +85,12 @@ vi.mock('../../api/api', () => ({
   usePostV1QuizQuestionIdMarkKnown: () => ({
     mutate: vi.fn(),
     isPending: false,
+  }),
+  // Mock snippet hooks
+  useGetV1SnippetsByQuestionQuestionId: () => ({
+    data: { snippets: [] },
+    isLoading: false,
+    error: null,
   }),
   // Mock auth status for AuthProvider
   useGetV1AuthStatus: () => ({

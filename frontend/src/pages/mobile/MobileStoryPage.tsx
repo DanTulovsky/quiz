@@ -28,6 +28,9 @@ import { splitIntoParagraphs } from '../../utils/passage';
 import CreateStoryForm from '../../components/CreateStoryForm';
 import ArchivedStoriesView from '../../components/ArchivedStoriesView';
 import StoryGenerationErrorModal from '../../components/StoryGenerationErrorModal';
+import { SnippetHighlighter } from '../../components/SnippetHighlighter';
+import { useSectionSnippets } from '../../hooks/useSectionSnippets';
+import { useStorySnippets } from '../../hooks/useStorySnippets';
 import {
   CreateStoryRequest,
   StoryWithSections,
@@ -374,6 +377,9 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
 
   // Get user learning preferences for preferred voice
   const { data: userLearningPrefs } = useGetV1PreferencesLearning();
+
+  // Fetch snippets for the current section
+  const { snippets } = useSectionSnippets(section?.id);
   if (!section) {
     return (
       <Paper p='xl' radius='md' style={{ textAlign: 'center' }}>
@@ -549,18 +555,21 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
                 <div>
                   {paragraphs.map((paragraph, index) => (
                     <div key={index}>
-                      <div
-                        style={{
-                          lineHeight: 1.6,
-                          fontSize: '16px',
-                          whiteSpace: 'pre-wrap',
-                          paddingRight: '4px',
-                          marginBottom:
-                            index < paragraphs.length - 1 ? '1rem' : 0,
+                      <SnippetHighlighter
+                        text={paragraph}
+                        snippets={snippets}
+                        component={Text}
+                        componentProps={{
+                          style: {
+                            lineHeight: 1.6,
+                            fontSize: '16px',
+                            whiteSpace: 'pre-wrap',
+                            paddingRight: '4px',
+                            marginBottom:
+                              index < paragraphs.length - 1 ? '1rem' : 0,
+                          },
                         }}
-                      >
-                        {paragraph}
-                      </div>
+                      />
                     </div>
                   ))}
                 </div>
@@ -731,6 +740,9 @@ const MobileStoryReadingView: React.FC<MobileStoryReadingViewProps> = ({
 
   // Get user learning preferences for preferred voice
   const { data: userLearningPrefs } = useGetV1PreferencesLearning();
+
+  // Fetch snippets for the entire story
+  const { snippets } = useStorySnippets(story?.id);
   if (!story) {
     return (
       <Paper p='xl' radius='md' style={{ textAlign: 'center' }}>
@@ -840,22 +852,25 @@ const MobileStoryReadingView: React.FC<MobileStoryReadingViewProps> = ({
                     return (
                       <div>
                         {paragraphs.map((paragraph, paraIndex) => (
-                          <div
+                          <SnippetHighlighter
                             key={paraIndex}
-                            style={{
-                              lineHeight: 1.7,
-                              fontSize: '16px',
-                              whiteSpace: 'pre-wrap',
-                              marginBottom:
-                                paraIndex < paragraphs.length - 1
-                                  ? '1.5rem'
-                                  : index < (story.sections?.length || 0) - 1
+                            text={paragraph}
+                            snippets={snippets}
+                            component={Text}
+                            componentProps={{
+                              style: {
+                                lineHeight: 1.7,
+                                fontSize: '16px',
+                                whiteSpace: 'pre-wrap',
+                                marginBottom:
+                                  paraIndex < paragraphs.length - 1
                                     ? '1.5rem'
-                                    : '1rem',
+                                    : index < (story.sections?.length || 0) - 1
+                                      ? '1.5rem'
+                                      : '1rem',
+                              },
                             }}
-                          >
-                            {paragraph}
-                          </div>
+                          />
                         ))}
                       </div>
                     );

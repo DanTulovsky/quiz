@@ -19,6 +19,8 @@ import { useTTS } from '../hooks/useTTS';
 import { Volume2, VolumeX } from 'lucide-react';
 import { defaultVoiceForLanguage } from '../utils/tts';
 import { useGetV1PreferencesLearning } from '../api/api';
+import { SnippetHighlighter } from './SnippetHighlighter';
+import { useStorySnippets } from '../hooks/useStorySnippets';
 
 interface StoryReadingViewProps {
   story: StoryWithSections | null;
@@ -38,6 +40,9 @@ const StoryReadingView: React.FC<StoryReadingViewProps> = ({
 
   // Get user learning preferences for preferred voice
   const { data: userLearningPrefs } = useGetV1PreferencesLearning();
+
+  // Get snippets for the entire story
+  const { snippets } = useStorySnippets(story?.id);
 
   if (!story) {
     return (
@@ -178,19 +183,22 @@ const StoryReadingView: React.FC<StoryReadingViewProps> = ({
               {story.sections.map((section, index) => (
                 <div key={section.id || index}>
                   {/* Section Content */}
-                  <div
-                    style={{
-                      lineHeight: 1.7,
-                      fontSize: '16px',
-                      whiteSpace: 'pre-wrap',
-                      // Space for the TTS icon so text doesn't overlap
-                      paddingRight: '4px',
-                      marginBottom:
-                        index < story.sections.length - 1 ? '1.5rem' : '1rem',
+                  <SnippetHighlighter
+                    text={section.content || ''}
+                    snippets={snippets}
+                    component={Text}
+                    componentProps={{
+                      style: {
+                        lineHeight: 1.7,
+                        fontSize: '16px',
+                        whiteSpace: 'pre-wrap',
+                        // Space for the TTS icon so text doesn't overlap
+                        paddingRight: '4px',
+                        marginBottom:
+                          index < story.sections.length - 1 ? '1.5rem' : '1rem',
+                      },
                     }}
-                  >
-                    {section.content}
-                  </div>
+                  />
                 </div>
               ))}
 

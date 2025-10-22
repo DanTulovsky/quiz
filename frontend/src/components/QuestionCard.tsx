@@ -167,31 +167,6 @@ export type QuestionCardHandle = {
 // Debug logger (removed; kept as comment for quick re-enable)
 // const debugSelection = (..._args: unknown[]) => {};
 
-// Utility to highlight the target word in the sentence
-function highlightTargetWord(sentence: string, target: string) {
-  if (!target) return sentence;
-  // Use regex to match the word boundary (case-insensitive)
-  const regex = new RegExp(
-    `\\b${target.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')}\\b`,
-    'gi'
-  );
-  const parts = sentence.split(regex);
-  const matches = sentence.match(regex);
-  if (!matches) return sentence;
-  const result: React.ReactNode[] = [];
-  for (let i = 0; i < parts.length; i++) {
-    result.push(parts[i]);
-    if (i < matches.length) {
-      result.push(
-        <strong key={i} style={{ color: '#1976d2', fontWeight: 700 }}>
-          {matches[i]}
-        </strong>
-      );
-    }
-  }
-  return result;
-}
-
 const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
   (
     {
@@ -907,7 +882,7 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                       text={question.content.sentence}
                       snippets={snippets}
                       targetWord={question.content.question}
-                      component="span"
+                      component='span'
                       componentProps={{}}
                     />
                   </Title>
@@ -1077,7 +1052,8 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                                   lineHeight: 1.8,
                                   fontWeight: 500,
                                   letterSpacing: 0.1,
-                                  marginBottom: idx === paras.length - 1 ? 0 : 12,
+                                  marginBottom:
+                                    idx === paras.length - 1 ? 0 : 12,
                                 },
                               }}
                             />

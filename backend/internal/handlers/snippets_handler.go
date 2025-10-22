@@ -229,6 +229,114 @@ func (h *SnippetsHandler) GetSnippetsByQuestion(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
+// GetSnippetsBySection handles GET /v1/snippets/by-section/:section_id
+func (h *SnippetsHandler) GetSnippetsBySection(c *gin.Context) {
+	ctx, span := observability.TraceSnippetFunction(c.Request.Context(), "get_snippets_by_section")
+	defer observability.FinishSpan(span, nil)
+
+	// Get user ID from context (set by auth middleware)
+	userID, exists := GetUserIDFromSession(c)
+	if !exists {
+		h.logger.Warn(ctx, "User ID not found in context")
+		HandleAppError(c, contextutils.ErrUnauthorized)
+		return
+	}
+	username, exists := GetUsernameFromSession(c)
+	if !exists {
+		h.logger.Warn(ctx, "Username not found in context")
+		HandleAppError(c, contextutils.ErrUnauthorized)
+		return
+	}
+	span.SetAttributes(attribute.Int64("user.id", int64(userID)))
+	span.SetAttributes(attribute.String("user.username", username))
+
+	// Parse section_id from path parameter
+	sectionIDStr := c.Param("section_id")
+	sectionID, err := strconv.ParseInt(sectionIDStr, 10, 64)
+	if err != nil {
+		h.logger.Warn(ctx, "Invalid section_id parameter", map[string]any{
+			"section_id": sectionIDStr,
+			"error":      err.Error(),
+		})
+		HandleAppError(c, contextutils.ErrInvalidInput)
+		return
+	}
+
+	span.SetAttributes(attribute.Int64("section.id", sectionID))
+
+	// Get snippets for this section
+	snippets, err := h.snippetsService.GetSnippetsBySection(ctx, int64(userID), sectionID)
+	if err != nil {
+		h.logger.Error(ctx, "Failed to get snippets by section", err, map[string]any{
+			"user_id":    userID,
+			"section_id": sectionID,
+		})
+		HandleAppError(c, contextutils.WrapError(err, "failed to get snippets by section"))
+		return
+	}
+
+	// Return response with snippets array
+	response := gin.H{
+		"snippets": snippets,
+	}
+
+	c.JSON(http.StatusOK, response)
+}
+
+// GetSnippetsByStory handles GET /v1/snippets/by-story/:story_id
+func (h *SnippetsHandler) GetSnippetsByStory(c *gin.Context) {
+	ctx, span := observability.TraceSnippetFunction(c.Request.Context(), "get_snippets_by_story")
+	defer observability.FinishSpan(span, nil)
+
+	// Get user ID from context (set by auth middleware)
+	userID, exists := GetUserIDFromSession(c)
+	if !exists {
+		h.logger.Warn(ctx, "User ID not found in context")
+		HandleAppError(c, contextutils.ErrUnauthorized)
+		return
+	}
+	username, exists := GetUsernameFromSession(c)
+	if !exists {
+		h.logger.Warn(ctx, "Username not found in context")
+		HandleAppError(c, contextutils.ErrUnauthorized)
+		return
+	}
+	span.SetAttributes(attribute.Int64("user.id", int64(userID)))
+	span.SetAttributes(attribute.String("user.username", username))
+
+	// Parse story_id from path parameter
+	storyIDStr := c.Param("story_id")
+	storyID, err := strconv.ParseInt(storyIDStr, 10, 64)
+	if err != nil {
+		h.logger.Warn(ctx, "Invalid story_id parameter", map[string]any{
+			"story_id": storyIDStr,
+			"error":    err.Error(),
+		})
+		HandleAppError(c, contextutils.ErrInvalidInput)
+		return
+	}
+
+	span.SetAttributes(attribute.Int64("story.id", storyID))
+
+	// Get snippets for this story
+	snippets, err := h.snippetsService.GetSnippetsByStory(ctx, int64(userID), storyID)
+	if err != nil {
+		h.logger.Error(ctx, "Failed to get snippets by story", err, map[string]any{
+			"user_id":  userID,
+			"story_id": storyID,
+		})
+		HandleAppError(c, contextutils.WrapError(err, "failed to get snippets by story"))
+		return
+	}
+
+	// Return response with snippets array
+	response := gin.H{
+		"snippets": snippets,
+	}
+
+	c.JSON(http.StatusOK, response)
+}
+
 // SearchSnippets handles GET /v1/snippets/search
 func (h *SnippetsHandler) SearchSnippets(c *gin.Context) {
 	ctx, span := observability.TraceSnippetFunction(c.Request.Context(), "search_snippets")

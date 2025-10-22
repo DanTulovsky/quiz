@@ -40,4 +40,3 @@ export const useQuestionSnippets = (questionId: number | null | undefined) => {
     error,
   };
 };
-

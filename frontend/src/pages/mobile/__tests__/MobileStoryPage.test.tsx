@@ -66,6 +66,31 @@ vi.mock('../../../utils/tts', () => ({
   defaultVoiceForLanguage: vi.fn(() => 'en-US-Default'),
 }));
 
+// Mock the snippet hooks
+vi.mock('../../../hooks/useSectionSnippets', () => ({
+  useSectionSnippets: () => ({
+    snippets: [],
+    isLoading: false,
+    error: null,
+  }),
+}));
+
+vi.mock('../../../hooks/useStorySnippets', () => ({
+  useStorySnippets: () => ({
+    snippets: [],
+    isLoading: false,
+    error: null,
+  }),
+}));
+
+// Mock SnippetHighlighter component
+vi.mock('../../../components/SnippetHighlighter', () => ({
+  SnippetHighlighter: ({ text, component: Component, componentProps }: any) => {
+    const ComponentToRender = Component || 'span';
+    return <ComponentToRender {...componentProps}>{text}</ComponentToRender>;
+  },
+}));
+
 // Mock the API hooks for learning preferences
 vi.mock('../../../api/api', async () => {
   const actual = await vi.importActual('../../../api/api');

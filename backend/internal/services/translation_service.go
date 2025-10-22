@@ -100,14 +100,18 @@ func (s *GoogleTranslationService) Translate(ctx context.Context, req serviceint
 	textHash := HashText(req.Text)
 	span.SetAttributes(attribute.String("cache.text_hash", textHash))
 
+	// Normalize source language for consistent cache lookup
+	normalizedSourceLang := normalizeLanguageCode(req.SourceLanguage, s.config.LanguageLevels)
+	normalizedTargetLang := normalizeLanguageCode(req.TargetLanguage, s.config.LanguageLevels)
+
 	// Check cache first (provider-agnostic)
-	cachedTranslation, err := s.cacheRepo.GetCachedTranslation(ctx, textHash, req.SourceLanguage, req.TargetLanguage)
+	cachedTranslation, err := s.cacheRepo.GetCachedTranslation(ctx, textHash, normalizedSourceLang, normalizedTargetLang)
 	if err != nil {
 		// Log cache error but don't fail the translation request
 		s.logger.Error(ctx, "Failed to check translation cache", err, map[string]interface{}{
 			"text_hash":       textHash,
-			"source_language": req.SourceLanguage,
-			"target_language": req.TargetLanguage,
+			"source_language": normalizedSourceLang,
+			"target_language": normalizedTargetLang,
 		})
 	} else if cachedTranslation != nil {
 		// Cache hit - return cached translation
@@ -161,11 +165,11 @@ func (s *GoogleTranslationService) Translate(ctx context.Context, req serviceint
 		return nil, err
 	}
 
-	// Prepare request - normalize language codes for Google Translate API
+	// Prepare request - use normalized language codes for Google Translate API
 	requestBody := GoogleTranslateRequest{
 		Q:      []string{req.Text},
-		Target: normalizeLanguageCode(req.TargetLanguage, s.config.LanguageLevels),
-		Source: normalizeLanguageCode(req.SourceLanguage, s.config.LanguageLevels),
+		Target: normalizedTargetLang,
+		Source: normalizedSourceLang,
 		Format: "text",
 	}
 
@@ -217,8 +221,8 @@ func (s *GoogleTranslationService) Translate(ctx context.Context, req serviceint
 
 	result = &serviceinterfaces.TranslateResponse{
 		TranslatedText: translation.TranslatedText,
-		SourceLanguage: normalizeLanguageCode(req.SourceLanguage, s.config.LanguageLevels),
-		TargetLanguage: normalizeLanguageCode(req.TargetLanguage, s.config.LanguageLevels),
+		SourceLanguage: normalizedSourceLang,
+		TargetLanguage: normalizedTargetLang,
 	}
 
 	// Record usage after successful translation
@@ -234,13 +238,13 @@ func (s *GoogleTranslationService) Translate(ctx context.Context, req serviceint
 		})
 	}
 
-	// Save translation to cache
-	if err := s.cacheRepo.SaveTranslation(ctx, textHash, req.Text, req.SourceLanguage, req.TargetLanguage, result.TranslatedText); err != nil {
+	// Save translation to cache using the normalized source language
+	if err := s.cacheRepo.SaveTranslation(ctx, textHash, req.Text, result.SourceLanguage, req.TargetLanguage, result.TranslatedText); err != nil {
 		// Log the error but don't fail the translation request
 		span.SetAttributes(attribute.Bool("cache.save_error", true))
 		s.logger.Error(ctx, "Failed to save translation to cache", err, map[string]interface{}{
 			"text_hash":       textHash,
-			"source_language": req.SourceLanguage,
+			"source_language": result.SourceLanguage,
 			"target_language": req.TargetLanguage,
 		})
 	} else {

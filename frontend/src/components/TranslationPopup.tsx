@@ -8,6 +8,7 @@ import {
   Select,
   Stack,
 } from '@mantine/core';
+import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from '../contexts/TranslationContext';
 import { TextSelection } from '../hooks/useTextSelection';
 import { IconX, IconVolume, IconBookmark } from '@tabler/icons-react';
@@ -24,6 +25,8 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
   onClose,
   currentQuestion,
 }) => {
+  const queryClient = useQueryClient();
+
   // Load saved language from localStorage or use browser language or default to 'en'
   const [targetLanguage, setTargetLanguage] = useState(() => {
     const saved = localStorage.getItem('quiz-translation-target-lang');
@@ -186,9 +189,40 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
         source_language: translation.sourceLanguage,
         target_language: targetLanguage,
         ...(currentQuestion?.id && { question_id: currentQuestion.id }),
+        ...(currentQuestion?.section_id && {
+          section_id: currentQuestion.section_id,
+        }),
+        ...(currentQuestion?.story_id && {
+          story_id: currentQuestion.story_id,
+        }),
       };
 
       await postV1Snippets(payload);
+
+      // Invalidate relevant snippet queries to refresh highlights
+      if (currentQuestion?.id) {
+        // Invalidate question snippets
+        queryClient.invalidateQueries({
+          queryKey: [`/v1/snippets/by-question/${currentQuestion.id}`],
+        });
+      }
+      if (currentQuestion?.section_id) {
+        // Invalidate section snippets
+        queryClient.invalidateQueries({
+          queryKey: [`/v1/snippets/by-section/${currentQuestion.section_id}`],
+        });
+      }
+      if (currentQuestion?.story_id) {
+        // Invalidate story snippets
+        queryClient.invalidateQueries({
+          queryKey: [`/v1/snippets/by-story/${currentQuestion.story_id}`],
+        });
+      }
+
+      // Also invalidate general snippets list in case any components show all snippets
+      queryClient.invalidateQueries({
+        queryKey: ['/v1/snippets'],
+      });
 
       setIsSaved(true);
       // Reset saved state after 3 seconds

@@ -244,6 +244,8 @@ func NewRouter(
 		v1.DELETE("/snippets", middleware.RequireAuth(), snippetsHandler.DeleteAllSnippets)
 		v1.GET("/snippets/search", middleware.RequireAuth(), snippetsHandler.SearchSnippets)
 		v1.GET("/snippets/by-question/:question_id", middleware.RequireAuth(), snippetsHandler.GetSnippetsByQuestion)
+		v1.GET("/snippets/by-section/:section_id", middleware.RequireAuth(), snippetsHandler.GetSnippetsBySection)
+		v1.GET("/snippets/by-story/:story_id", middleware.RequireAuth(), snippetsHandler.GetSnippetsByStory)
 		v1.GET("/snippets/:id", middleware.RequireAuth(), snippetsHandler.GetSnippet)
 		v1.PUT("/snippets/:id", middleware.RequireAuth(), middleware.RequestValidationMiddleware(logger), snippetsHandler.UpdateSnippet)
 		v1.DELETE("/snippets/:id", middleware.RequireAuth(), snippetsHandler.DeleteSnippet)

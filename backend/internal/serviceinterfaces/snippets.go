@@ -17,7 +17,13 @@ type SnippetsService interface {
 	GetSnippets(ctx context.Context, userID int64, params api.GetV1SnippetsParams) (*api.SnippetList, error)
 
 	// GetSnippetsByQuestion retrieves snippets for a user filtered by question ID
-	GetSnippetsByQuestion(ctx context.Context, userID int64, questionID int64) ([]api.Snippet, error)
+	GetSnippetsByQuestion(ctx context.Context, userID, questionID int64) ([]api.Snippet, error)
+
+	// GetSnippetsBySection retrieves snippets for a user filtered by section ID
+	GetSnippetsBySection(ctx context.Context, userID, sectionID int64) ([]api.Snippet, error)
+
+	// GetSnippetsByStory retrieves snippets for a user filtered by story ID
+	GetSnippetsByStory(ctx context.Context, userID, storyID int64) ([]api.Snippet, error)
 
 	// SearchSnippets searches across all snippets for a user
 	SearchSnippets(ctx context.Context, userID int64, query string, limit, offset int) ([]api.Snippet, int, error)

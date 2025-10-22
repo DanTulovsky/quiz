@@ -29,6 +29,15 @@ vi.mock('../hooks/useTTS', () => ({
   useTTS: () => mockTTS,
 }));
 
+// Mock the snippet hooks
+vi.mock('../hooks/useSectionSnippets', () => ({
+  useSectionSnippets: () => ({
+    snippets: [],
+    isLoading: false,
+    error: null,
+  }),
+}));
+
 // Reset mock state before each test
 beforeEach(() => {
   vi.clearAllMocks();

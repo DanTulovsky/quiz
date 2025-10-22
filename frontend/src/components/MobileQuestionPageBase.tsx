@@ -34,30 +34,8 @@ import {
   usePostV1QuizQuestionIdMarkKnown,
 } from '../api/api';
 import { showNotificationWithClean } from '../notifications';
-
-// Utility to bold the target vocabulary word inside the sentence (same as desktop)
-function highlightTargetWord(sentence: string, target: string) {
-  if (!target) return sentence;
-  const regex = new RegExp(
-    `\\b${target.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')}\\b`,
-    'gi'
-  );
-  const parts = sentence.split(regex);
-  const matches = sentence.match(regex);
-  if (!matches) return sentence;
-  const result: React.ReactNode[] = [];
-  for (let i = 0; i < parts.length; i++) {
-    result.push(parts[i]);
-    if (i < matches.length) {
-      result.push(
-        <strong key={i} style={{ color: '#1976d2', fontWeight: 700 }}>
-          {matches[i]}
-        </strong>
-      );
-    }
-  }
-  return result;
-}
+import { SnippetHighlighter } from './SnippetHighlighter';
+import { useQuestionSnippets } from '../hooks/useQuestionSnippets';
 
 export type QuestionMode = 'quiz' | 'reading' | 'vocabulary';
 
@@ -69,8 +47,14 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
   const isSmallScreen = useMediaQuery('(max-width: 768px)');
   const { questionId } = useParams();
 
-  const { quizFeedback, setQuizFeedback, readingFeedback, setReadingFeedback } =
-    useQuestion();
+  const {
+    quizFeedback,
+    setQuizFeedback,
+    readingFeedback,
+    setReadingFeedback,
+    setQuizQuestion,
+    setReadingQuestion
+  } = useQuestion();
 
   const feedback = mode === 'quiz' ? quizFeedback : readingFeedback;
   const setFeedback = mode === 'quiz' ? setQuizFeedback : setReadingFeedback;
@@ -97,6 +81,26 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
 
   const { question, isLoading, error, forceFetchNextQuestion } =
     useQuestionFlow({ mode, questionId });
+
+  // Fetch snippets for the current question
+  const { snippets } = useQuestionSnippets(question?.id);
+
+  // Update the global QuestionContext when local question changes (same as desktop)
+  useEffect(() => {
+    if (question) {
+      if (mode === 'quiz') {
+        setQuizQuestion(question);
+      } else {
+        setReadingQuestion(question);
+      }
+    } else {
+      if (mode === 'quiz') {
+        setQuizQuestion(null);
+      } else {
+        setReadingQuestion(null);
+      }
+    }
+  }, [question, mode, setQuizQuestion, setReadingQuestion]);
 
   // Reporting & mark-known state (mobile parity with desktop QuestionCard)
   const [isReported, setIsReported] = useState(false);
@@ -429,19 +433,22 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
                     return (
                       <div>
                         {paras.map((p, i) => (
-                          <Text
+                          <SnippetHighlighter
                             key={i}
-                            size='md'
-                            style={{
-                              whiteSpace: 'pre-line',
-                              lineHeight: 1.7,
-                              fontWeight: 400,
-                              letterSpacing: 0.2,
-                              marginBottom: i === paras.length - 1 ? 0 : 10,
+                            text={p}
+                            snippets={snippets}
+                            component={Text}
+                            componentProps={{
+                              size: 'md',
+                              style: {
+                                whiteSpace: 'pre-line',
+                                lineHeight: 1.7,
+                                fontWeight: 400,
+                                letterSpacing: 0.2,
+                                marginBottom: i === paras.length - 1 ? 0 : 10,
+                              },
                             }}
-                          >
-                            {p}
-                          </Text>
+                          />
                         ))}
                       </div>
                     );
@@ -459,13 +466,18 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
             {/* For vocabulary, show sentence context */}
             {question.type === 'vocabulary' && question.content?.sentence && (
               <>
-                {/* Vocabulary sentence regular weight */}
-                <Text size='lg' data-testid='vocab-sentence' mb={4}>
-                  {highlightTargetWord(
-                    question.content.sentence,
-                    question.content.question
-                  )}
-                </Text>
+                {/* Vocabulary sentence with snippet highlighting */}
+                <SnippetHighlighter
+                  text={question.content.sentence}
+                  snippets={snippets}
+                  targetWord={question.content.question}
+                  component={Text}
+                  componentProps={{
+                    size: 'lg',
+                    'data-testid': 'vocab-sentence',
+                    style: { marginBottom: 4 },
+                  }}
+                />
                 {/* Prompt: What does X mean in this context? */}
                 <Text
                   size='sm'
@@ -480,12 +492,18 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
               </>
             )}
 
-            {/* For other question types */}
+            {/* For other question types (quiz, etc.) */}
             {question.type !== 'reading_comprehension' &&
               question.type !== 'vocabulary' && (
-                <Text size='lg' fw={500}>
-                  {question.content?.question}
-                </Text>
+                <SnippetHighlighter
+                  text={question.content?.question || ''}
+                  snippets={snippets}
+                  component={Text}
+                  componentProps={{
+                    size: 'lg',
+                    fw: 500,
+                  }}
+                />
               )}
           </Stack>
         </Paper>

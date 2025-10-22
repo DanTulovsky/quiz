@@ -34,30 +34,8 @@ import {
   usePostV1QuizQuestionIdMarkKnown,
 } from '../../api/api';
 import { showNotificationWithClean } from '../../notifications';
-
-// Highlight occurrences of target word within a sentence with bold styling.
-function highlightTargetWord(sentence: string, target: string) {
-  if (!target) return sentence;
-  const regex = new RegExp(
-    `\\b${target.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')}\\b`,
-    'gi'
-  );
-  const parts = sentence.split(regex);
-  const matches = sentence.match(regex);
-  if (!matches) return sentence;
-  const result: React.ReactNode[] = [];
-  for (let i = 0; i < parts.length; i++) {
-    result.push(parts[i]);
-    if (i < matches.length) {
-      result.push(
-        <strong key={i} style={{ color: '#1976d2', fontWeight: 700 }}>
-          {matches[i]}
-        </strong>
-      );
-    }
-  }
-  return result;
-}
+import { SnippetHighlighter } from '../../components/SnippetHighlighter';
+import { useQuestionSnippets } from '../../hooks/useQuestionSnippets';
 
 const MobileDailyPage: React.FC = () => {
   const { date: dateParam } = useParams();
@@ -78,6 +56,9 @@ const MobileDailyPage: React.FC = () => {
     goToPreviousQuestion,
     isAllCompleted,
   } = useDailyQuestions();
+
+  // Fetch snippets for the current question
+  const { snippets } = useQuestionSnippets(currentQuestion?.question_id);
 
   // Local UI state
   const [selectedAnswerLocal, setSelectedAnswerLocal] = useState<number | null>(
@@ -496,20 +477,22 @@ const MobileDailyPage: React.FC = () => {
                   baseSentence.trim() &&
                   qWord.trim()
                 ) {
-                  // If the sentence equals the target word, skip highlighting to keep text contiguous
-                  const shouldHighlight =
-                    baseSentence.trim().toLowerCase() !==
-                    qWord.trim().toLowerCase();
                   return (
                     <>
                       {/* Make sentence/title sizing match desktop QuestionCard */}
-                      <Text size='lg' fw={500}>
-                        {shouldHighlight
-                          ? highlightTargetWord(baseSentence, qWord)
-                          : baseSentence}
-                      </Text>
+                      <SnippetHighlighter
+                        text={baseSentence}
+                        snippets={snippets}
+                        targetWord={qWord}
+                        component={Text}
+                        componentProps={{
+                          size: 'lg',
+                          fw: 500,
+                        }}
+                      />
                       {/* Standalone vocabulary word removed to avoid duplicate display */}
-                      {shouldHighlight && (
+                      {baseSentence.trim().toLowerCase() !==
+                        qWord.trim().toLowerCase() && (
                         <Text
                           size='sm'
                           c='dimmed'
