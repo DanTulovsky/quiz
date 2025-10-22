@@ -10,6 +10,7 @@ import (
 	"quizapp/internal/observability"
 	contextutils "quizapp/internal/utils"
 
+	openapi_types "github.com/oapi-codegen/runtime/types"
 	"go.opentelemetry.io/otel/attribute"
 )
 
@@ -74,15 +75,15 @@ type UserUsageStats struct {
 
 // UserUsageStatsDaily represents daily aggregated usage for a user
 type UserUsageStatsDaily struct {
-	UsageDate             time.Time `json:"usage_date"`
-	ServiceName           string    `json:"service_name"`
-	Provider              string    `json:"provider"`
-	Model                 string    `json:"model"`
-	UsageType             string    `json:"usage_type"`
-	TotalPromptTokens     int       `json:"total_prompt_tokens"`
-	TotalCompletionTokens int       `json:"total_completion_tokens"`
-	TotalTokens           int       `json:"total_tokens"`
-	TotalRequests         int       `json:"total_requests"`
+	UsageDate             openapi_types.Date `json:"usage_date"`
+	ServiceName           string             `json:"service_name"`
+	Provider              string             `json:"provider"`
+	Model                 string             `json:"model"`
+	UsageType             string             `json:"usage_type"`
+	TotalPromptTokens     int                `json:"total_prompt_tokens"`
+	TotalCompletionTokens int                `json:"total_completion_tokens"`
+	TotalTokens           int                `json:"total_tokens"`
+	TotalRequests         int                `json:"total_requests"`
 }
 
 // UserUsageStatsHourly represents hourly usage for a user on a specific day
@@ -479,13 +480,15 @@ func (s *UsageStatsService) GetUserAITokenUsageStatsByDay(ctx context.Context, u
 	stats = []*UserUsageStatsDaily{}
 	for rows.Next() {
 		var stat UserUsageStatsDaily
+		var usageDate time.Time
 		err = rows.Scan(
-			&stat.UsageDate, &stat.ServiceName, &stat.Provider, &stat.Model, &stat.UsageType,
+			&usageDate, &stat.ServiceName, &stat.Provider, &stat.Model, &stat.UsageType,
 			&stat.TotalPromptTokens, &stat.TotalCompletionTokens, &stat.TotalTokens, &stat.TotalRequests,
 		)
 		if err != nil {
 			return nil, contextutils.WrapError(err, "failed to scan user daily usage stats")
 		}
+		stat.UsageDate = openapi_types.Date{Time: usageDate}
 		stats = append(stats, &stat)
 	}
 
