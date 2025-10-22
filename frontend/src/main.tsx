@@ -10,6 +10,7 @@ import { AuthProvider } from './contexts/AuthProvider.tsx';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext.tsx';
 import { QuestionProvider } from './contexts/QuestionContext';
 import UpdatePrompt from './components/UpdatePrompt';
+import { createThemeWithFontScale } from './theme/theme';
 
 import { CacheProvider } from '@emotion/react';
 import createCache from '@emotion/cache';
@@ -55,13 +56,13 @@ const cache = createCache({ key: 'mantine', nonce });
 
 // Component that uses the theme context to set the Mantine theme
 export const ThemedApp: React.FC = () => {
-  const { currentTheme, themes, colorScheme } = useTheme();
+  const { currentTheme, colorScheme, fontSize } = useTheme();
+
+  // Apply font scaling to the theme
+  const scaledTheme = createThemeWithFontScale(currentTheme, fontSize);
 
   return (
-    <MantineProvider
-      theme={themes[currentTheme]}
-      forceColorScheme={colorScheme}
-    >
+    <MantineProvider theme={scaledTheme} forceColorScheme={colorScheme}>
       <Notifications />
       <QueryClientProvider client={queryClient}>
         <BrowserRouter

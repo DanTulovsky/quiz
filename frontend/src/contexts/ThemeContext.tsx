@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import { ThemeName, ColorScheme } from '../theme/theme';
 import { themes, themeNames } from '../theme/theme';
-import { ThemeContextType } from './ThemeContext.types';
+import { ThemeContextType, FontSize } from './ThemeContext.types';
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
@@ -19,8 +19,9 @@ interface ThemeProviderProps {
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const [currentTheme, setCurrentTheme] = useState<ThemeName>('blue');
   const [colorScheme, setColorSchemeState] = useState<ColorScheme>('light');
+  const [fontSize, setFontSizeState] = useState<FontSize>('medium');
 
-  // Load theme and colorScheme from localStorage on mount
+  // Load theme, colorScheme, and fontSize from localStorage on mount
   useEffect(() => {
     const savedTheme = localStorage.getItem('quiz-theme') as ThemeName;
 
@@ -46,6 +47,18 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       ).matches;
       setColorSchemeState(prefersDark ? 'dark' : 'light');
     }
+
+    const savedFontSize = localStorage.getItem('quiz-font-size') as FontSize;
+    if (
+      savedFontSize === 'small' ||
+      savedFontSize === 'medium' ||
+      savedFontSize === 'large' ||
+      savedFontSize === 'extra-large'
+    ) {
+      setFontSizeState(savedFontSize);
+    } else {
+      setFontSizeState('medium');
+    }
   }, []);
 
   // Save theme to localStorage when it changes
@@ -63,6 +76,12 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     localStorage.setItem('quiz-color-scheme', scheme);
   };
 
+  // Save fontSize to localStorage when it changes
+  const setFontSize = (size: FontSize) => {
+    setFontSizeState(size);
+    localStorage.setItem('quiz-font-size', size);
+  };
+
   const value: ThemeContextType = {
     currentTheme,
     setTheme,
@@ -70,6 +89,8 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     themes,
     colorScheme,
     setColorScheme,
+    fontSize,
+    setFontSize,
   };
 
   return (

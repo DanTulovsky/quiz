@@ -1,6 +1,15 @@
 import { MantineThemeOverride } from '@mantine/core';
 
 export type ColorScheme = 'light' | 'dark';
+export type FontSize = 'small' | 'medium' | 'large' | 'extra-large';
+
+// Font scale multipliers for each size option
+export const fontScaleMap: Record<FontSize, number> = {
+  small: 0.875,
+  medium: 1.0,
+  large: 1.125,
+  'extra-large': 1.25,
+};
 
 // Valid Mantine primary colors
 const validPrimaryColors = [
@@ -80,8 +89,8 @@ const baseTheme: MantineThemeOverride = {
   },
 };
 
-// Helper function to create a theme with validation
-const createValidTheme = (primaryColor: string) => {
+// Helper function to create a theme with validation and optional font scaling
+const createValidTheme = (primaryColor: string, fontScale: number = 1.0) => {
   if (
     !validPrimaryColors.includes(
       primaryColor as (typeof validPrimaryColors)[number]
@@ -90,7 +99,33 @@ const createValidTheme = (primaryColor: string) => {
     // Avoid noisy console in production; rely on dev logger
     return { ...baseTheme, primaryColor: 'blue' }; // fallback to blue
   }
+
+  // Apply font scaling if different from default
   const theme = { ...baseTheme, primaryColor };
+  if (fontScale !== 1.0) {
+    // Scale the base font sizes
+    theme.fontSizes = {
+      xs: `${0.75 * fontScale}rem`,
+      sm: `${0.875 * fontScale}rem`,
+      md: `${1 * fontScale}rem`,
+      lg: `${1.125 * fontScale}rem`,
+      xl: `${1.25 * fontScale}rem`,
+    };
+
+    // Scale heading sizes
+    theme.headings = {
+      ...theme.headings,
+      sizes: {
+        h1: { fontSize: `${2.125 * fontScale}rem` },
+        h2: { fontSize: `${1.625 * fontScale}rem` },
+        h3: { fontSize: `${1.375 * fontScale}rem` },
+        h4: { fontSize: `${1.125 * fontScale}rem` },
+        h5: { fontSize: `${1 * fontScale}rem` },
+        h6: { fontSize: `${0.875 * fontScale}rem` },
+      },
+    };
+  }
+
   return theme;
 };
 
@@ -120,6 +155,15 @@ export const themeNames = {
   green: 'Green',
   teal: 'Teal',
   cyan: 'Cyan',
+};
+
+// Helper function to create a theme with font scaling applied
+export const createThemeWithFontScale = (
+  themeName: ThemeName,
+  fontSize: FontSize
+): MantineThemeOverride => {
+  const fontScale = fontScaleMap[fontSize];
+  return createValidTheme(themeName, fontScale);
 };
 
 // Default theme

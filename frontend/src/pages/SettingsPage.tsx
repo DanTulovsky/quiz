@@ -48,6 +48,7 @@ import {
   NumberInput,
   Slider,
   Tooltip,
+  SegmentedControl,
 } from '@mantine/core';
 import {
   clearAllStories,
@@ -80,8 +81,15 @@ interface ApiError {
 
 const SettingsPage: React.FC = () => {
   const { user, refreshUser } = useAuth();
-  const { currentTheme, setTheme, themeNames, colorScheme, setColorScheme } =
-    useTheme();
+  const {
+    currentTheme,
+    setTheme,
+    themeNames,
+    colorScheme,
+    setColorScheme,
+    fontSize,
+    setFontSize,
+  } = useTheme();
   const [language, setLanguage] = useState('');
   const [level, setLevel] = useState('');
 
@@ -689,6 +697,25 @@ const SettingsPage: React.FC = () => {
                   size='md'
                 />
               </Group>
+
+              <Box>
+                <Text size='sm' fw={500} mb='xs'>
+                  Font Size
+                </Text>
+                <SegmentedControl
+                  value={fontSize}
+                  onChange={value => setFontSize(value as typeof fontSize)}
+                  data={[
+                    { label: 'Small', value: 'small' },
+                    { label: 'Medium', value: 'medium' },
+                    { label: 'Large', value: 'large' },
+                    { label: 'Extra Large', value: 'extra-large' },
+                  ]}
+                  fullWidth
+                  data-testid='font-size-control'
+                />
+              </Box>
+
               <Group gap={8} wrap='wrap' justify='flex-start'>
                 {Object.entries(themeNames).map(([themeKey, themeName]) => (
                   <Card
