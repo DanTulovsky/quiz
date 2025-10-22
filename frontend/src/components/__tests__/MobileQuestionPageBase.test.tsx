@@ -20,10 +20,20 @@ vi.mock('../../hooks/useAuth', () => ({
 
 vi.mock('../../contexts/useQuestion', () => ({
   useQuestion: () => ({
+    quizQuestion: null,
+    setQuizQuestion: vi.fn(),
+    readingQuestion: null,
+    setReadingQuestion: vi.fn(),
     quizFeedback: null,
     setQuizFeedback: vi.fn(),
     readingFeedback: null,
     setReadingFeedback: vi.fn(),
+    selectedAnswer: null,
+    setSelectedAnswer: vi.fn(),
+    isSubmitted: false,
+    setIsSubmitted: vi.fn(),
+    showExplanation: false,
+    setShowExplanation: vi.fn(),
   }),
 }));
 
@@ -66,7 +76,15 @@ vi.mock('../../utils/tts', () => ({
 
 // Mock SnippetHighlighter component
 vi.mock('../SnippetHighlighter', () => ({
-  SnippetHighlighter: ({ text, component: Component, componentProps }: any) => {
+  SnippetHighlighter: ({
+    text,
+    component: Component,
+    componentProps,
+  }: {
+    text: string;
+    component?: React.ElementType;
+    componentProps?: Record<string, unknown>;
+  }) => {
     const ComponentToRender = Component || 'span';
     return <ComponentToRender {...componentProps}>{text}</ComponentToRender>;
   },

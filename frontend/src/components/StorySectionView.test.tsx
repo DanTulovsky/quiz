@@ -52,6 +52,22 @@ vi.mock('../utils/tts', () => ({
   defaultVoiceForLanguage: vi.fn(() => 'en-US-Default'),
 }));
 
+// Mock SnippetHighlighter component
+vi.mock('./SnippetHighlighter', () => ({
+  SnippetHighlighter: ({
+    text,
+    component: Component,
+    componentProps,
+  }: {
+    text: string;
+    component?: React.ElementType;
+    componentProps?: Record<string, unknown>;
+  }) => {
+    const ComponentToRender = Component || 'span';
+    return <ComponentToRender {...componentProps}>{text}</ComponentToRender>;
+  },
+}));
+
 // Mock the API hooks for learning preferences
 vi.mock('../api/api', async () => {
   const actual = await vi.importActual('../api/api');

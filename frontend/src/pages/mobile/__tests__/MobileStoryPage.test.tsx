@@ -85,7 +85,15 @@ vi.mock('../../../hooks/useStorySnippets', () => ({
 
 // Mock SnippetHighlighter component
 vi.mock('../../../components/SnippetHighlighter', () => ({
-  SnippetHighlighter: ({ text, component: Component, componentProps }: any) => {
+  SnippetHighlighter: ({
+    text,
+    component: Component,
+    componentProps,
+  }: {
+    text: string;
+    component?: React.ElementType;
+    componentProps?: Record<string, unknown>;
+  }) => {
     const ComponentToRender = Component || 'span';
     return <ComponentToRender {...componentProps}>{text}</ComponentToRender>;
   },

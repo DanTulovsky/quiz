@@ -53,7 +53,7 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
     readingFeedback,
     setReadingFeedback,
     setQuizQuestion,
-    setReadingQuestion
+    setReadingQuestion,
   } = useQuestion();
 
   const feedback = mode === 'quiz' ? quizFeedback : readingFeedback;

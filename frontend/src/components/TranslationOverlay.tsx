@@ -12,11 +12,15 @@ export const TranslationOverlay: React.FC = () => {
   const location = useLocation();
 
   // Get daily question if we're on the daily page (both desktop and mobile)
-  const isDailyPage = location.pathname.startsWith('/daily') || location.pathname.startsWith('/m/daily');
+  const isDailyPage =
+    location.pathname.startsWith('/daily') ||
+    location.pathname.startsWith('/m/daily');
   const { currentQuestion: dailyQuestion } = useDailyQuestions();
 
   // Get story context if we're on the story page (both desktop and mobile)
-  const isStoryPage = location.pathname.startsWith('/story') || location.pathname.startsWith('/m/story');
+  const isStoryPage =
+    location.pathname.startsWith('/story') ||
+    location.pathname.startsWith('/m/story');
   const { currentStory, currentSection, viewMode } = useStory();
 
   // Mobile pages now update the QuestionContext just like desktop pages,
@@ -38,7 +42,8 @@ export const TranslationOverlay: React.FC = () => {
       id: currentStory.id!,
       story_id: currentStory.id!, // Always set story_id to the story ID
       // Add section context if we're in section view and have a current section
-      ...(viewMode === 'section' && currentSection && { section_id: currentSection.id }),
+      ...(viewMode === 'section' &&
+        currentSection && { section_id: currentSection.id }),
     } as { id: number; section_id?: number; story_id?: number }; // Type assertion since we're creating a custom object
   }
 
