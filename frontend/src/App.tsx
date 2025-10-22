@@ -42,6 +42,7 @@ import MobileDailyPage from './pages/mobile/MobileDailyPage';
 import MobileStoryPage from './pages/mobile/MobileStoryPage';
 import MobileSavedConversationsPage from './pages/mobile/MobileSavedConversationsPage';
 import MobileBookmarkedMessagesPage from './pages/mobile/MobileBookmarkedMessagesPage';
+import MobileSnippetsPage from './pages/mobile/MobileSnippetsPage';
 import { Center, Loader } from '@mantine/core';
 
 function App() {
@@ -519,7 +520,7 @@ function App() {
           element={
             user ? (
               <MobileLayout>
-                <SnippetsPage />
+                <MobileSnippetsPage />
               </MobileLayout>
             ) : (
               <Navigate

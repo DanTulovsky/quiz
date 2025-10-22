@@ -73,7 +73,6 @@ function generatePhrasebookIndex() {
   // Generate the index.json content
   const indexContent = {
     categories: categories,
-    generatedAt: new Date().toISOString(),
     generatedBy: 'generate-phrasebook-index.js'
   };
 
