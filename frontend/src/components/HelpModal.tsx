@@ -16,6 +16,10 @@ import {
   IconCalendar,
   IconBook,
   IconAlertCircle,
+  IconAbc,
+  IconBookmark,
+  IconLanguage,
+  IconNotes,
 } from '@tabler/icons-react';
 
 interface HelpModalProps {
@@ -39,9 +43,9 @@ const HelpModal: React.FC<HelpModalProps> = ({ opened, onClose }) => {
     >
       <Stack gap='md'>
         <Text size='sm' c='dimmed'>
-          Welcome to your personalized Italian language learning system! This
-          adaptive quiz platform helps you practice and improve your skills
-          through AI-generated exercises.
+          Welcome to your personalized language learning system! This adaptive
+          quiz platform helps you practice and improve your skills through
+          AI-generated exercises.
         </Text>
 
         <Alert
@@ -52,10 +56,10 @@ const HelpModal: React.FC<HelpModalProps> = ({ opened, onClose }) => {
           mt='sm'
         >
           <Text size='sm'>
-            <strong>AI must be enabled in Settings</strong> before any sections
-            (Quiz, Reading Comprehension, Daily Practice, or Stories) will work.
-            The system relies entirely on AI-generated content tailored to your
-            skill level.
+            <strong>AI must be enabled in Settings</strong> before the main
+            learning sections (Quiz, Reading Comprehension, Daily Practice, and
+            Stories) will work. The system relies on AI-generated content
+            tailored to your skill level.
           </Text>
         </Alert>
 
@@ -68,6 +72,10 @@ const HelpModal: React.FC<HelpModalProps> = ({ opened, onClose }) => {
               <strong>Quiz Section:</strong> Take interactive multiple-choice
               questions adapted to your level
             </List.Item>
+            <List.Item icon={<IconAbc size={16} />}>
+              <strong>Vocabulary:</strong> Practice and review vocabulary words
+              with spaced repetition
+            </List.Item>
             <List.Item icon={<IconFileText size={16} />}>
               <strong>Reading Comprehension:</strong> Practice reading passages
               with comprehension questions
@@ -79,6 +87,22 @@ const HelpModal: React.FC<HelpModalProps> = ({ opened, onClose }) => {
             <List.Item icon={<IconBook size={16} />}>
               <strong>Story Mode:</strong> Read engaging stories written for
               your current proficiency level
+            </List.Item>
+            <List.Item icon={<IconBrain size={16} />}>
+              <strong>Saved AI Conversations:</strong> Access and review your
+              saved AI chat conversations
+            </List.Item>
+            <List.Item icon={<IconBookmark size={16} />}>
+              <strong>Bookmarked AI Messages:</strong> View AI messages you've
+              bookmarked for later reference
+            </List.Item>
+            <List.Item icon={<IconNotes size={16} />}>
+              <strong>Saved Snippets:</strong> Access your saved text snippets
+              and phrases
+            </List.Item>
+            <List.Item icon={<IconLanguage size={16} />}>
+              <strong>Phrasebook:</strong> Browse common phrases organized by
+              category
             </List.Item>
           </List>
         </Stack>
@@ -97,8 +121,8 @@ const HelpModal: React.FC<HelpModalProps> = ({ opened, onClose }) => {
               improvement over time
             </List.Item>
             <List.Item>
-              <strong>Keyboard Shortcuts:</strong> Use Shift+1-5 to quickly
-              navigate between sections
+              <strong>Keyboard Shortcuts:</strong> Use Shift+number keys to
+              quickly navigate between sections
             </List.Item>
             <List.Item>
               <strong>Help:</strong> Click the ? icon anytime for assistance
