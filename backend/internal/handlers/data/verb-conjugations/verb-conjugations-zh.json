@@ -48,6 +48,76 @@
             { "pronoun": "你们", "form": "会是", "exampleSentence": "你们明天会是学生", "exampleSentenceEn": "You will be students tomorrow" },
             { "pronoun": "他们/她们/它们", "form": "会是", "exampleSentence": "他们明天会在这里", "exampleSentenceEn": "They will be here tomorrow" }
           ]
+        },
+        {
+          "tenseId": "progressive",
+          "tenseName": "进行时",
+          "tenseNameEn": "Progressive",
+          "description": "Used to express ongoing actions happening at the moment of speaking. Formed with '正在' before the verb, emphasizing the action is in progress.",
+          "conjugations": [
+            { "pronoun": "我", "form": "正在是", "exampleSentence": "我正在成为一个更好的人", "exampleSentenceEn": "I am becoming a better person" },
+            { "pronoun": "你", "form": "正在是", "exampleSentence": "你正在是团队中最重要的成员", "exampleSentenceEn": "You are being the most important member of the team" },
+            { "pronoun": "他/她/它", "form": "正在是", "exampleSentence": "她正在成为一名优秀的老师", "exampleSentenceEn": "She is becoming an excellent teacher" },
+            { "pronoun": "我们", "form": "正在是", "exampleSentence": "我们正在成为好朋友", "exampleSentenceEn": "We are becoming good friends" },
+            { "pronoun": "你们", "form": "正在是", "exampleSentence": "你们正在成为这个项目的核心", "exampleSentenceEn": "You are becoming the core of this project" },
+            { "pronoun": "他们/她们/它们", "form": "正在是", "exampleSentence": "他们正在成为行业领导者", "exampleSentenceEn": "They are becoming industry leaders" }
+          ]
+        },
+        {
+          "tenseId": "completed",
+          "tenseName": "完成时",
+          "tenseNameEn": "Completed",
+          "description": "Used to indicate that an action has been completed and has relevance to the present. The aspect marker '了' is used after the verb to show completion.",
+          "conjugations": [
+            { "pronoun": "我", "form": "是了", "exampleSentence": "我现在是医生了", "exampleSentenceEn": "I am now a doctor (I have become a doctor)" },
+            { "pronoun": "你", "form": "是了", "exampleSentence": "你是成年人了", "exampleSentenceEn": "You are an adult now" },
+            { "pronoun": "他/她/它", "form": "是了", "exampleSentence": "他是经理了", "exampleSentenceEn": "He has become a manager" },
+            { "pronoun": "我们", "form": "是了", "exampleSentence": "我们是好朋友了", "exampleSentenceEn": "We have become good friends" },
+            { "pronoun": "你们", "form": "是了", "exampleSentence": "你们都是大学生了", "exampleSentenceEn": "You all are university students now" },
+            { "pronoun": "他们/她们/它们", "form": "是了", "exampleSentence": "他们是合作伙伴了", "exampleSentenceEn": "They have become partners" }
+          ]
+        },
+        {
+          "tenseId": "experiential",
+          "tenseName": "经历时",
+          "tenseNameEn": "Experiential",
+          "description": "Used to express that someone has had the experience of being something or doing something in the past. Formed with '过' after the verb.",
+          "conjugations": [
+            { "pronoun": "我", "form": "是过", "exampleSentence": "我以前是过老师", "exampleSentenceEn": "I have been a teacher before" },
+            { "pronoun": "你", "form": "是过", "exampleSentence": "你是过班长吗", "exampleSentenceEn": "Have you been a class monitor before?" },
+            { "pronoun": "他/她/它", "form": "是过", "exampleSentence": "她是过公司的经理", "exampleSentenceEn": "She has been a manager at a company" },
+            { "pronoun": "我们", "form": "是过", "exampleSentence": "我们以前是过邻居", "exampleSentenceEn": "We have been neighbors before" },
+            { "pronoun": "你们", "form": "是过", "exampleSentence": "你们是过同学吗", "exampleSentenceEn": "Have you been classmates before?" },
+            { "pronoun": "他们/她们/它们", "form": "是过", "exampleSentence": "他们是过竞争对手", "exampleSentenceEn": "They have been competitors" }
+          ]
+        },
+        {
+          "tenseId": "negative",
+          "tenseName": "否定形式",
+          "tenseNameEn": "Negative",
+          "description": "Used to negate statements about being or identity. Chinese uses '不' before the verb '是' to form the negative.",
+          "conjugations": [
+            { "pronoun": "我", "form": "不是", "exampleSentence": "我不是学生，我是老师", "exampleSentenceEn": "I am not a student, I am a teacher" },
+            { "pronoun": "你", "form": "不是", "exampleSentence": "你不是一个人，我们都在这里", "exampleSentenceEn": "You are not alone, we are all here" },
+            { "pronoun": "他/她/它", "form": "不是", "exampleSentence": "他不是中国人，他是日本人", "exampleSentenceEn": "He is not Chinese, he is Japanese" },
+            { "pronoun": "我们", "form": "不是", "exampleSentence": "我们不是敌人，我们是朋友", "exampleSentenceEn": "We are not enemies, we are friends" },
+            { "pronoun": "你们", "form": "不是", "exampleSentence": "你们不是初学者，你们很有经验", "exampleSentenceEn": "You are not beginners, you have a lot of experience" },
+            { "pronoun": "他们/她们/它们", "form": "不是", "exampleSentence": "他们不是这里的人", "exampleSentenceEn": "They are not from here" }
+          ]
+        },
+        {
+          "tenseId": "past_negative",
+          "tenseName": "过去否定形式",
+          "tenseNameEn": "Past Negative",
+          "description": "Used to negate past states or experiences. Chinese uses '没' before the verb for past negation, especially with experiential '过'.",
+          "conjugations": [
+            { "pronoun": "我", "form": "没是过", "exampleSentence": "我以前没是过老师", "exampleSentenceEn": "I have never been a teacher before" },
+            { "pronoun": "你", "form": "没是过", "exampleSentence": "你以前没是过班长吗", "exampleSentenceEn": "Have you never been a class monitor before?" },
+            { "pronoun": "他/她/它", "form": "没是过", "exampleSentence": "她没是过这种情况", "exampleSentenceEn": "She has never been in this situation" },
+            { "pronoun": "我们", "form": "没是过", "exampleSentence": "我们以前没是过邻居", "exampleSentenceEn": "We have never been neighbors before" },
+            { "pronoun": "你们", "form": "没是过", "exampleSentence": "你们没是过同学", "exampleSentenceEn": "You have never been classmates" },
+            { "pronoun": "他们/她们/它们", "form": "没是过", "exampleSentence": "他们没是过竞争对手", "exampleSentenceEn": "They have never been competitors" }
+          ]
         }
       ]
     },
@@ -96,6 +166,76 @@
             { "pronoun": "我们", "form": "会有", "exampleSentence": "我们明天会有时间", "exampleSentenceEn": "We will have time tomorrow" },
             { "pronoun": "你们", "form": "会有", "exampleSentence": "你们明天会是对的", "exampleSentenceEn": "You will be right tomorrow" },
             { "pronoun": "他们/她们/它们", "form": "会有", "exampleSentence": "他们明天会有一所房子", "exampleSentenceEn": "They will have a house tomorrow" }
+          ]
+        },
+        {
+          "tenseId": "progressive",
+          "tenseName": "进行时",
+          "tenseNameEn": "Progressive",
+          "description": "Used to express ongoing actions or states. With '有', often used in continuous states or gradual possession.",
+          "conjugations": [
+            { "pronoun": "我", "form": "正在有", "exampleSentence": "我正在经历一些困难", "exampleSentenceEn": "I am experiencing some difficulties" },
+            { "pronoun": "你", "form": "正在有", "exampleSentence": "你正在拥有越来越多的机会", "exampleSentenceEn": "You are having more and more opportunities" },
+            { "pronoun": "他/她/它", "form": "正在有", "exampleSentence": "她正在经历人生中最美好的时光", "exampleSentenceEn": "She is experiencing the best time of her life" },
+            { "pronoun": "我们", "form": "正在有", "exampleSentence": "我们正在拥有更好的未来", "exampleSentenceEn": "We are having a better future" },
+            { "pronoun": "你们", "form": "正在有", "exampleSentence": "你们正在获得更多的支持", "exampleSentenceEn": "You are gaining more support" },
+            { "pronoun": "他们/她们/它们", "form": "正在有", "exampleSentence": "他们正在经历快速的成长", "exampleSentenceEn": "They are experiencing rapid growth" }
+          ]
+        },
+        {
+          "tenseId": "completed",
+          "tenseName": "完成时",
+          "tenseNameEn": "Completed",
+          "description": "Used to indicate that an action has been completed with present relevance. The aspect marker '了' shows a change of state or completion.",
+          "conjugations": [
+            { "pronoun": "我", "form": "有了", "exampleSentence": "我有了一个新的想法", "exampleSentenceEn": "I have (got) a new idea" },
+            { "pronoun": "你", "form": "有了", "exampleSentence": "你有了很大的进步", "exampleSentenceEn": "You have made great progress" },
+            { "pronoun": "他/她/它", "form": "有了", "exampleSentence": "她有了孩子以后变得更成熟了", "exampleSentenceEn": "She has become more mature after having children" },
+            { "pronoun": "我们", "form": "有了", "exampleSentence": "我们有了更多的经验", "exampleSentenceEn": "We have gained more experience" },
+            { "pronoun": "你们", "form": "有了", "exampleSentence": "你们有了新的计划", "exampleSentenceEn": "You have a new plan" },
+            { "pronoun": "他们/她们/它们", "form": "有了", "exampleSentence": "他们有了很大的改变", "exampleSentenceEn": "They have had great changes" }
+          ]
+        },
+        {
+          "tenseId": "experiential",
+          "tenseName": "经历时",
+          "tenseNameEn": "Experiential",
+          "description": "Used to express that someone has had the experience of having or possessing something before. Formed with '过' after the verb.",
+          "conjugations": [
+            { "pronoun": "我", "form": "有过", "exampleSentence": "我以前有过一只狗", "exampleSentenceEn": "I have had a dog before" },
+            { "pronoun": "你", "form": "有过", "exampleSentence": "你有过这样的经历吗", "exampleSentenceEn": "Have you had such an experience?" },
+            { "pronoun": "他/她/它", "form": "有过", "exampleSentence": "她有过很多不同的工作", "exampleSentenceEn": "She has had many different jobs" },
+            { "pronoun": "我们", "form": "有过", "exampleSentence": "我们有过相似的想法", "exampleSentenceEn": "We have had similar ideas" },
+            { "pronoun": "你们", "form": "有过", "exampleSentence": "你们以前有过这样的问题吗", "exampleSentenceEn": "Have you had such problems before?" },
+            { "pronoun": "他们/她们/它们", "form": "有过", "exampleSentence": "他们有过成功的合作经验", "exampleSentenceEn": "They have had successful cooperation experience" }
+          ]
+        },
+        {
+          "tenseId": "negative",
+          "tenseName": "否定形式",
+          "tenseNameEn": "Negative",
+          "description": "Used to negate possession or existence in the present. Chinese uses '没' or '没有' before the verb to form the negative.",
+          "conjugations": [
+            { "pronoun": "我", "form": "没有", "exampleSentence": "我没有钱，但是我有朋友", "exampleSentenceEn": "I don't have money, but I have friends" },
+            { "pronoun": "你", "form": "没有", "exampleSentence": "你没有理由担心这件事", "exampleSentenceEn": "You have no reason to worry about this" },
+            { "pronoun": "他/她/它", "form": "没有", "exampleSentence": "他没有经验，但是他很努力", "exampleSentenceEn": "He doesn't have experience, but he works hard" },
+            { "pronoun": "我们", "form": "没有", "exampleSentence": "我们没有时间浪费在这上面", "exampleSentenceEn": "We don't have time to waste on this" },
+            { "pronoun": "你们", "form": "没有", "exampleSentence": "你们没有权利这样做", "exampleSentenceEn": "You have no right to do this" },
+            { "pronoun": "他们/她们/它们", "form": "没有", "exampleSentence": "他们没有任何问题", "exampleSentenceEn": "They don't have any problems" }
+          ]
+        },
+        {
+          "tenseId": "past_negative",
+          "tenseName": "过去否定形式",
+          "tenseNameEn": "Past Negative",
+          "description": "Used to negate past possession or experiences. Chinese uses '没' before '有过' for experiential negation.",
+          "conjugations": [
+            { "pronoun": "我", "form": "没有过", "exampleSentence": "我以前没有过这样的经历", "exampleSentenceEn": "I have never had such an experience before" },
+            { "pronoun": "你", "form": "没有过", "exampleSentence": "你以前没有过自己的房子吗", "exampleSentenceEn": "Have you never had your own house before?" },
+            { "pronoun": "他/她/它", "form": "没有过", "exampleSentence": "她从来没有过这么好的机会", "exampleSentenceEn": "She has never had such a good opportunity" },
+            { "pronoun": "我们", "form": "没有过", "exampleSentence": "我们以前没有过这样的困难", "exampleSentenceEn": "We have never had such difficulties before" },
+            { "pronoun": "你们", "form": "没有过", "exampleSentence": "你们没有过失败的经验吗", "exampleSentenceEn": "Have you never had the experience of failure?" },
+            { "pronoun": "他们/她们/它们", "form": "没有过", "exampleSentence": "他们从来没有过这种想法", "exampleSentenceEn": "They have never had such an idea" }
           ]
         }
       ]

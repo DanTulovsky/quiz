@@ -64,6 +64,48 @@
           ]
         },
         {
+          "tenseId": "passe_simple",
+          "tenseName": "Passé Simple",
+          "tenseNameEn": "Simple Past",
+          "description": "Used primarily in formal and literary French to narrate completed past events. Common in written literature, historical texts, and formal storytelling, but rarely used in everyday speech.",
+          "conjugations": [
+            { "pronoun": "je", "form": "fus", "exampleSentence": "Je fus étonné quand je vis le résultat", "exampleSentenceEn": "I was astonished when I saw the result" },
+            { "pronoun": "tu", "form": "fus", "exampleSentence": "Tu fus le premier à arriver à la réunion importante", "exampleSentenceEn": "You were the first to arrive at the important meeting" },
+            { "pronoun": "il/elle", "form": "fut", "exampleSentence": "Elle fut une grande artiste pendant toute sa vie", "exampleSentenceEn": "She was a great artist throughout her life" },
+            { "pronoun": "nous", "form": "fûmes", "exampleSentence": "Nous fûmes témoins d'un événement historique", "exampleSentenceEn": "We were witnesses to a historical event" },
+            { "pronoun": "vous", "form": "fûtes", "exampleSentence": "Vous fûtes très courageux pendant la guerre", "exampleSentenceEn": "You were very brave during the war" },
+            { "pronoun": "ils/elles", "form": "furent", "exampleSentence": "Ils furent les meilleurs amis jusqu'à la fin", "exampleSentenceEn": "They were the best friends until the end" }
+          ]
+        },
+        {
+          "tenseId": "plus_que_parfait",
+          "tenseName": "Plus-que-parfait",
+          "tenseNameEn": "Pluperfect",
+          "description": "Used to express actions that were completed before another past action. Essential for establishing the sequence of past events and often used with 'avant' or 'après'.",
+          "conjugations": [
+            { "pronoun": "je", "form": "avais été", "exampleSentence": "J'avais été malade avant de partir en voyage", "exampleSentenceEn": "I had been sick before leaving on the trip" },
+            { "pronoun": "tu", "form": "avais été", "exampleSentence": "Tu avais été très nerveux avant l'examen final", "exampleSentenceEn": "You had been very nervous before the final exam" },
+            { "pronoun": "il/elle", "form": "avait été", "exampleSentence": "Elle avait été professeur pendant vingt ans avant de prendre sa retraite", "exampleSentenceEn": "She had been a teacher for twenty years before retiring" },
+            { "pronoun": "nous", "form": "avions été", "exampleSentence": "Nous avions été au musée avant d'aller au restaurant", "exampleSentenceEn": "We had been to the museum before going to the restaurant" },
+            { "pronoun": "vous", "form": "aviez été", "exampleSentence": "Vous aviez été prévenus du danger qui nous attendait", "exampleSentenceEn": "You had been warned about the danger that awaited us" },
+            { "pronoun": "ils/elles", "form": "avaient été", "exampleSentence": "Ils avaient été de bons amis jusqu'à cette dispute", "exampleSentenceEn": "They had been good friends until that argument" }
+          ]
+        },
+        {
+          "tenseId": "futur_anterieur",
+          "tenseName": "Futur Antérieur",
+          "tenseNameEn": "Future Perfect",
+          "description": "Used to express actions that will be completed before another future action or before a specific time in the future. Often used with time expressions like 'quand' or 'dès que'.",
+          "conjugations": [
+            { "pronoun": "je", "form": "aurai été", "exampleSentence": "J'aurai été partout dans le monde quand j'aurai cinquante ans", "exampleSentenceEn": "I will have been everywhere in the world when I'm fifty" },
+            { "pronoun": "tu", "form": "auras été", "exampleSentence": "Tu auras certainement été fatigué après ce long voyage", "exampleSentenceEn": "You will certainly have been tired after this long journey" },
+            { "pronoun": "il/elle", "form": "aura été", "exampleSentence": "Elle aura été mariée pendant vingt ans l'année prochaine", "exampleSentenceEn": "She will have been married for twenty years next year" },
+            { "pronoun": "nous", "form": "aurons été", "exampleSentence": "Nous aurons été là-bas avant que tu arrives", "exampleSentenceEn": "We will have been there before you arrive" },
+            { "pronoun": "vous", "form": "aurez été", "exampleSentence": "Vous aurez été prévenus des conséquences avant de prendre votre décision", "exampleSentenceEn": "You will have been warned of the consequences before making your decision" },
+            { "pronoun": "ils/elles", "form": "auront été", "exampleSentence": "Ils auront été en réunion toute la journée quand nous arriverons", "exampleSentenceEn": "They will have been in a meeting all day when we arrive" }
+          ]
+        },
+        {
           "tenseId": "conditionnel_present",
           "tenseName": "Conditionnel Présent",
           "tenseNameEn": "Present Conditional",
@@ -75,6 +117,20 @@
             { "pronoun": "nous", "form": "serions", "exampleSentence": "Nous serions ici", "exampleSentenceEn": "We would be here" },
             { "pronoun": "vous", "form": "seriez", "exampleSentence": "Vous seriez prêts", "exampleSentenceEn": "You would be ready" },
             { "pronoun": "ils/elles", "form": "seraient", "exampleSentence": "Ils seraient amis", "exampleSentenceEn": "They would be friends" }
+          ]
+        },
+        {
+          "tenseId": "conditionnel_passe",
+          "tenseName": "Conditionnel Passé",
+          "tenseNameEn": "Past Conditional",
+          "description": "Used to express hypothetical past actions or regrets about things that didn't happen. Often used to describe what would have happened under different circumstances.",
+          "conjugations": [
+            { "pronoun": "je", "form": "aurais été", "exampleSentence": "J'aurais été plus heureux si tu étais venu avec moi", "exampleSentenceEn": "I would have been happier if you had come with me" },
+            { "pronoun": "tu", "form": "aurais été", "exampleSentence": "Tu aurais été fier de voir son succès", "exampleSentenceEn": "You would have been proud to see his success" },
+            { "pronoun": "il/elle", "form": "aurait été", "exampleSentence": "Elle aurait été une excellente directrice si elle avait accepté le poste", "exampleSentenceEn": "She would have been an excellent director if she had accepted the position" },
+            { "pronoun": "nous", "form": "aurions été", "exampleSentence": "Nous aurions été là-bas plus tôt si le train n'avait pas eu de retard", "exampleSentenceEn": "We would have been there earlier if the train hadn't been delayed" },
+            { "pronoun": "vous", "form": "auriez été", "exampleSentence": "Vous auriez été surpris de voir les changements", "exampleSentenceEn": "You would have been surprised to see the changes" },
+            { "pronoun": "ils/elles", "form": "auraient été", "exampleSentence": "Ils auraient été de meilleurs amis s'ils s'étaient mieux compris", "exampleSentenceEn": "They would have been better friends if they had understood each other better" }
           ]
         },
         {
@@ -166,6 +222,48 @@
           ]
         },
         {
+          "tenseId": "passe_simple",
+          "tenseName": "Passé Simple",
+          "tenseNameEn": "Simple Past",
+          "description": "Used primarily in formal and literary French to narrate completed past events. Common in written literature, historical texts, and formal storytelling, but rarely used in everyday speech.",
+          "conjugations": [
+            { "pronoun": "je", "form": "eus", "exampleSentence": "J'eus une révélation soudaine en lisant ce livre", "exampleSentenceEn": "I had a sudden revelation while reading this book" },
+            { "pronoun": "tu", "form": "eus", "exampleSentence": "Tu eus beaucoup de difficultés pendant cette période", "exampleSentenceEn": "You had many difficulties during this period" },
+            { "pronoun": "il/elle", "form": "eut", "exampleSentence": "Elle eut trois enfants au cours de sa vie", "exampleSentenceEn": "She had three children during her life" },
+            { "pronoun": "nous", "form": "eûmes", "exampleSentence": "Nous eûmes la chance de rencontrer des gens extraordinaires", "exampleSentenceEn": "We had the chance to meet extraordinary people" },
+            { "pronoun": "vous", "form": "eûtes", "exampleSentence": "Vous eûtes le courage de dire la vérité", "exampleSentenceEn": "You had the courage to tell the truth" },
+            { "pronoun": "ils/elles", "form": "eurent", "exampleSentence": "Ils eurent beaucoup de succès dans leurs entreprises", "exampleSentenceEn": "They had a lot of success in their ventures" }
+          ]
+        },
+        {
+          "tenseId": "plus_que_parfait",
+          "tenseName": "Plus-que-parfait",
+          "tenseNameEn": "Pluperfect",
+          "description": "Used to express actions that were completed before another past action. Essential for establishing the sequence of past events and often used with 'avant' or 'après'.",
+          "conjugations": [
+            { "pronoun": "je", "form": "avais eu", "exampleSentence": "J'avais eu des doutes avant de prendre ma décision", "exampleSentenceEn": "I had had doubts before making my decision" },
+            { "pronoun": "tu", "form": "avais eu", "exampleSentence": "Tu avais eu raison de te méfier de lui", "exampleSentenceEn": "You had been right to be wary of him" },
+            { "pronoun": "il/elle", "form": "avait eu", "exampleSentence": "Elle avait eu beaucoup de problèmes avant de trouver cette solution", "exampleSentenceEn": "She had had many problems before finding this solution" },
+            { "pronoun": "nous", "form": "avions eu", "exampleSentence": "Nous avions eu le temps de tout préparer avant leur arrivée", "exampleSentenceEn": "We had had time to prepare everything before their arrival" },
+            { "pronoun": "vous", "form": "aviez eu", "exampleSentence": "Vous aviez eu l'occasion de voyager beaucoup dans votre jeunesse", "exampleSentenceEn": "You had had the opportunity to travel a lot in your youth" },
+            { "pronoun": "ils/elles", "form": "avaient eu", "exampleSentence": "Ils avaient eu une grande fête avant de déménager", "exampleSentenceEn": "They had had a big party before moving" }
+          ]
+        },
+        {
+          "tenseId": "futur_anterieur",
+          "tenseName": "Futur Antérieur",
+          "tenseNameEn": "Future Perfect",
+          "description": "Used to express actions that will be completed before another future action or before a specific time in the future. Often used with time expressions like 'quand' or 'dès que'.",
+          "conjugations": [
+            { "pronoun": "je", "form": "aurai eu", "exampleSentence": "J'aurai eu le temps de finir avant ton retour", "exampleSentenceEn": "I will have had time to finish before you return" },
+            { "pronoun": "tu", "form": "auras eu", "exampleSentence": "Tu auras certainement eu des nouvelles d'ici là", "exampleSentenceEn": "You will certainly have had news by then" },
+            { "pronoun": "il/elle", "form": "aura eu", "exampleSentence": "Elle aura eu cinquante ans le mois prochain", "exampleSentenceEn": "She will have been fifty years old next month" },
+            { "pronoun": "nous", "form": "aurons eu", "exampleSentence": "Nous aurons eu assez de temps pour tout vérifier", "exampleSentenceEn": "We will have had enough time to check everything" },
+            { "pronoun": "vous", "form": "aurez eu", "exampleSentence": "Vous aurez eu l'occasion de réfléchir avant de répondre", "exampleSentenceEn": "You will have had the opportunity to think before answering" },
+            { "pronoun": "ils/elles", "form": "auront eu", "exampleSentence": "Ils auront eu plusieurs avertissements avant d'être sanctionnés", "exampleSentenceEn": "They will have had several warnings before being sanctioned" }
+          ]
+        },
+        {
           "tenseId": "conditionnel_present",
           "tenseName": "Conditionnel Présent",
           "tenseNameEn": "Present Conditional",
@@ -177,6 +275,20 @@
             { "pronoun": "nous", "form": "aurions", "exampleSentence": "Nous aurions de la chance", "exampleSentenceEn": "We would be lucky" },
             { "pronoun": "vous", "form": "auriez", "exampleSentence": "Vous auriez peur", "exampleSentenceEn": "You would be afraid" },
             { "pronoun": "ils/elles", "form": "auraient", "exampleSentence": "Ils auraient une fête", "exampleSentenceEn": "They would have a party" }
+          ]
+        },
+        {
+          "tenseId": "conditionnel_passe",
+          "tenseName": "Conditionnel Passé",
+          "tenseNameEn": "Past Conditional",
+          "description": "Used to express hypothetical past actions or regrets about things that didn't happen. Often used to describe what would have happened under different circumstances.",
+          "conjugations": [
+            { "pronoun": "je", "form": "aurais eu", "exampleSentence": "J'aurais eu plus de temps si j'avais commencé plus tôt", "exampleSentenceEn": "I would have had more time if I had started earlier" },
+            { "pronoun": "tu", "form": "aurais eu", "exampleSentence": "Tu aurais eu raison de refuser cette offre", "exampleSentenceEn": "You would have been right to refuse this offer" },
+            { "pronoun": "il/elle", "form": "aurait eu", "exampleSentence": "Elle aurait eu une meilleure vie si elle avait fait d'autres choix", "exampleSentenceEn": "She would have had a better life if she had made other choices" },
+            { "pronoun": "nous", "form": "aurions eu", "exampleSentence": "Nous aurions eu moins de problèmes si nous avions été mieux préparés", "exampleSentenceEn": "We would have had fewer problems if we had been better prepared" },
+            { "pronoun": "vous", "form": "auriez eu", "exampleSentence": "Vous auriez eu l'occasion de le rencontrer si vous étiez venus", "exampleSentenceEn": "You would have had the opportunity to meet him if you had come" },
+            { "pronoun": "ils/elles", "form": "auraient eu", "exampleSentence": "Ils auraient eu plus de succès avec une stratégie différente", "exampleSentenceEn": "They would have had more success with a different strategy" }
           ]
         },
         {

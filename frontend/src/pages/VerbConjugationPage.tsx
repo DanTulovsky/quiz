@@ -333,6 +333,7 @@ export function VerbConjugationPage() {
                   clearable
                   maxDropdownHeight={400}
                   style={{ minWidth: '250px' }}
+                  comboboxProps={{ width: 'auto', dropdownPadding: 4 }}
                 />
                 <Select
                   data={availableVerbs.map(verb => ({

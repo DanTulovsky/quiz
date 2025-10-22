@@ -60,6 +60,21 @@
             { "pronoun": "мы", "form": "будем", "exampleSentence": "Будем счастливыми!", "exampleSentenceEn": "Let's be happy!" },
             { "pronoun": "вы", "form": "будьте", "exampleSentence": "Будьте добрыми!", "exampleSentenceEn": "Be kind!" }
           ]
+        },
+        {
+          "tenseId": "conditional",
+          "tenseName": "Сослагательное наклонение",
+          "tenseNameEn": "Conditional",
+          "description": "Used to express hypothetical situations, wishes, or actions that would happen under certain conditions. Formed by adding 'бы' to the past tense form.",
+          "conjugations": [
+            { "pronoun": "я", "form": "был/была бы", "exampleSentence": "Я был бы счастлив, если бы ты пришёл", "exampleSentenceEn": "I would be happy if you came" },
+            { "pronoun": "ты", "form": "был/была бы", "exampleSentence": "Ты был бы хорошим учителем", "exampleSentenceEn": "You would be a good teacher" },
+            { "pronoun": "он", "form": "был бы", "exampleSentence": "Он был бы рад помочь тебе, если бы знал", "exampleSentenceEn": "He would be glad to help you if he knew" },
+            { "pronoun": "она", "form": "была бы", "exampleSentence": "Она была бы здесь, если бы не опоздала на поезд", "exampleSentenceEn": "She would be here if she hadn't missed the train" },
+            { "pronoun": "мы", "form": "были бы", "exampleSentence": "Мы были бы там раньше, если бы не пробки", "exampleSentenceEn": "We would have been there earlier if not for the traffic" },
+            { "pronoun": "вы", "form": "были бы", "exampleSentence": "Вы были бы удивлены, увидев эти изменения", "exampleSentenceEn": "You would be surprised to see these changes" },
+            { "pronoun": "они", "form": "были бы", "exampleSentence": "Они были бы лучшими друзьями, если бы лучше понимали друг друга", "exampleSentenceEn": "They would be best friends if they understood each other better" }
+          ]
         }
       ]
     },
@@ -120,6 +135,21 @@
             { "pronoun": "ты", "form": "имей", "exampleSentence": "Имей терпение!", "exampleSentenceEn": "Be patient!" },
             { "pronoun": "мы", "form": "будем иметь", "exampleSentence": "Будем иметь мужество!", "exampleSentenceEn": "Let's be brave!" },
             { "pronoun": "вы", "form": "имейте", "exampleSentence": "Имейте веру!", "exampleSentenceEn": "Have faith!" }
+          ]
+        },
+        {
+          "tenseId": "conditional",
+          "tenseName": "Сослагательное наклонение",
+          "tenseNameEn": "Conditional",
+          "description": "Used to express hypothetical situations, wishes, or actions that would happen under certain conditions. Formed by adding 'бы' to the past tense form.",
+          "conjugations": [
+            { "pronoun": "я", "form": "имел/имела бы", "exampleSentence": "Я имел бы больше времени, если бы начал раньше", "exampleSentenceEn": "I would have more time if I had started earlier" },
+            { "pronoun": "ты", "form": "имел/имела бы", "exampleSentence": "Ты имел бы больше друзей, если бы был более открытым", "exampleSentenceEn": "You would have more friends if you were more open" },
+            { "pronoun": "он", "form": "имел бы", "exampleSentence": "Он имел бы успех, если бы упорно работал", "exampleSentenceEn": "He would have success if he worked hard" },
+            { "pronoun": "она", "form": "имела бы", "exampleSentence": "Она имела бы лучшую жизнь, если бы сделала другой выбор", "exampleSentenceEn": "She would have a better life if she had made a different choice" },
+            { "pronoun": "мы", "form": "имели бы", "exampleSentence": "Мы имели бы меньше проблем, если бы были лучше подготовлены", "exampleSentenceEn": "We would have fewer problems if we were better prepared" },
+            { "pronoun": "вы", "form": "имели бы", "exampleSentence": "Вы имели бы возможность встретить его, если бы пришли", "exampleSentenceEn": "You would have had the opportunity to meet him if you had come" },
+            { "pronoun": "они", "form": "имели бы", "exampleSentence": "Они имели бы больше успеха с другой стратегией", "exampleSentenceEn": "They would have more success with a different strategy" }
           ]
         }
       ]

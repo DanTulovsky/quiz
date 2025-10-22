@@ -50,6 +50,20 @@
           ]
         },
         {
+          "tenseId": "futur_ii",
+          "tenseName": "Futur II",
+          "tenseNameEn": "Future Perfect",
+          "description": "Used to express actions that will be completed by a certain point in the future. Often used with time expressions like 'bis morgen' (by tomorrow) or to make assumptions about past events.",
+          "conjugations": [
+            { "pronoun": "ich", "form": "werde gewesen sein", "exampleSentence": "Bis nächste Woche werde ich dort gewesen sein", "exampleSentenceEn": "By next week, I will have been there" },
+            { "pronoun": "du", "form": "wirst gewesen sein", "exampleSentence": "Du wirst sicher sehr müde gewesen sein nach der langen Reise", "exampleSentenceEn": "You will surely have been very tired after the long journey" },
+            { "pronoun": "er/sie/es", "form": "wird gewesen sein", "exampleSentence": "Sie wird wahrscheinlich zu Hause gewesen sein, als ich anrief", "exampleSentenceEn": "She will probably have been at home when I called" },
+            { "pronoun": "wir", "form": "werden gewesen sein", "exampleSentence": "In zwei Jahren werden wir verheiratet gewesen sein", "exampleSentenceEn": "In two years, we will have been married" },
+            { "pronoun": "ihr", "form": "werdet gewesen sein", "exampleSentence": "Ihr werdet mit der Arbeit fertig gewesen sein, bevor der Chef kommt", "exampleSentenceEn": "You will have been finished with the work before the boss arrives" },
+            { "pronoun": "sie/Sie", "form": "werden gewesen sein", "exampleSentence": "Bis Ende des Monats werden sie in drei Ländern gewesen sein", "exampleSentenceEn": "By the end of the month, they will have been to three countries" }
+          ]
+        },
+        {
           "tenseId": "perfekt",
           "tenseName": "Perfekt",
           "tenseNameEn": "Present Perfect",
@@ -61,6 +75,20 @@
             { "pronoun": "wir", "form": "sind gewesen", "exampleSentence": "Wir sind glücklich gewesen", "exampleSentenceEn": "We have been happy" },
             { "pronoun": "ihr", "form": "seid gewesen", "exampleSentence": "Ihr seid hier gewesen", "exampleSentenceEn": "You have been here" },
             { "pronoun": "sie/Sie", "form": "sind gewesen", "exampleSentence": "Sie sind Freunde gewesen", "exampleSentenceEn": "They have been friends" }
+          ]
+        },
+        {
+          "tenseId": "plusquamperfekt",
+          "tenseName": "Plusquamperfekt",
+          "tenseNameEn": "Pluperfect",
+          "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+          "conjugations": [
+            { "pronoun": "ich", "form": "war gewesen", "exampleSentence": "Als ich ankam, war ich schon einmal dort gewesen", "exampleSentenceEn": "When I arrived, I had already been there before" },
+            { "pronoun": "du", "form": "warst gewesen", "exampleSentence": "Du warst vor der Prüfung sehr nervös gewesen", "exampleSentenceEn": "You had been very nervous before the exam" },
+            { "pronoun": "er/sie/es", "form": "war gewesen", "exampleSentence": "Sie war lange Zeit Lehrerin gewesen, bevor sie Direktorin wurde", "exampleSentenceEn": "She had been a teacher for a long time before she became principal" },
+            { "pronoun": "wir", "form": "waren gewesen", "exampleSentence": "Wir waren im Museum gewesen, bevor wir ins Café gingen", "exampleSentenceEn": "We had been to the museum before we went to the café" },
+            { "pronoun": "ihr", "form": "wart gewesen", "exampleSentence": "Ihr wart die ganze Nacht wach gewesen", "exampleSentenceEn": "You had been awake all night" },
+            { "pronoun": "sie/Sie", "form": "waren gewesen", "exampleSentence": "Sie waren gute Freunde gewesen, bis der Streit sie trennte", "exampleSentenceEn": "They had been good friends until the argument separated them" }
           ]
         },
         {
@@ -89,6 +117,17 @@
             { "pronoun": "wir", "form": "wären", "exampleSentence": "Wir wären hier", "exampleSentenceEn": "We would be here" },
             { "pronoun": "ihr", "form": "wäret", "exampleSentence": "Ihr wäret bereit", "exampleSentenceEn": "You would be ready" },
             { "pronoun": "sie/Sie", "form": "wären", "exampleSentence": "Sie wären Freunde", "exampleSentenceEn": "They would be friends" }
+          ]
+        },
+        {
+          "tenseId": "imperativ",
+          "tenseName": "Imperativ",
+          "tenseNameEn": "Imperative",
+          "description": "Used to give commands, orders, or instructions. Only exists for the second person (du, ihr) and formal address (Sie). The subject pronoun is usually omitted.",
+          "conjugations": [
+            { "pronoun": "du", "form": "sei", "exampleSentence": "Sei bitte pünktlich zum Meeting!", "exampleSentenceEn": "Please be on time for the meeting!" },
+            { "pronoun": "ihr", "form": "seid", "exampleSentence": "Seid vorsichtig, wenn ihr über die Straße geht!", "exampleSentenceEn": "Be careful when you cross the street!" },
+            { "pronoun": "Sie", "form": "seien Sie", "exampleSentence": "Seien Sie so freundlich und helfen Sie mir!", "exampleSentenceEn": "Be so kind and help me!" }
           ]
         }
       ]
@@ -141,6 +180,20 @@
           ]
         },
         {
+          "tenseId": "futur_ii",
+          "tenseName": "Futur II",
+          "tenseNameEn": "Future Perfect",
+          "description": "Used to express actions that will be completed by a certain point in the future. Often used with time expressions like 'bis morgen' (by tomorrow) or to make assumptions about past events.",
+          "conjugations": [
+            { "pronoun": "ich", "form": "werde gehabt haben", "exampleSentence": "Bis morgen werde ich die Antwort gehabt haben", "exampleSentenceEn": "By tomorrow, I will have had the answer" },
+            { "pronoun": "du", "form": "wirst gehabt haben", "exampleSentence": "Du wirst sicher einen anstrengenden Tag gehabt haben", "exampleSentenceEn": "You will surely have had an exhausting day" },
+            { "pronoun": "er/sie/es", "form": "wird gehabt haben", "exampleSentence": "Er wird wahrscheinlich keine Zeit gehabt haben, dich anzurufen", "exampleSentenceEn": "He will probably not have had time to call you" },
+            { "pronoun": "wir", "form": "werden gehabt haben", "exampleSentence": "Bis Ende des Jahres werden wir genug Geld für die Reise gehabt haben", "exampleSentenceEn": "By the end of the year, we will have had enough money for the trip" },
+            { "pronoun": "ihr", "form": "werdet gehabt haben", "exampleSentence": "Ihr werdet bestimmt viel Spaß auf der Party gehabt haben", "exampleSentenceEn": "You will certainly have had a lot of fun at the party" },
+            { "pronoun": "sie/Sie", "form": "werden gehabt haben", "exampleSentence": "Sie werden bis dahin drei Meetings gehabt haben", "exampleSentenceEn": "They will have had three meetings by then" }
+          ]
+        },
+        {
           "tenseId": "perfekt",
           "tenseName": "Perfekt",
           "tenseNameEn": "Present Perfect",
@@ -152,6 +205,20 @@
             { "pronoun": "wir", "form": "haben gehabt", "exampleSentence": "Wir haben Zeit gehabt", "exampleSentenceEn": "We have had time" },
             { "pronoun": "ihr", "form": "habt gehabt", "exampleSentence": "Ihr habt Angst gehabt", "exampleSentenceEn": "You have been afraid" },
             { "pronoun": "sie/Sie", "form": "haben gehabt", "exampleSentence": "Sie haben eine Party gehabt", "exampleSentenceEn": "They have had a party" }
+          ]
+        },
+        {
+          "tenseId": "plusquamperfekt",
+          "tenseName": "Plusquamperfekt",
+          "tenseNameEn": "Pluperfect",
+          "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+          "conjugations": [
+            { "pronoun": "ich", "form": "hatte gehabt", "exampleSentence": "Ich hatte vor dem Unfall noch nie Probleme mit dem Auto gehabt", "exampleSentenceEn": "I had never had problems with the car before the accident" },
+            { "pronoun": "du", "form": "hattest gehabt", "exampleSentence": "Du hattest großes Glück gehabt, dass nichts Schlimmes passiert war", "exampleSentenceEn": "You had been very lucky that nothing bad had happened" },
+            { "pronoun": "er/sie/es", "form": "hatte gehabt", "exampleSentence": "Sie hatte schon drei Katzen gehabt, bevor sie den Hund bekam", "exampleSentenceEn": "She had already had three cats before she got the dog" },
+            { "pronoun": "wir", "form": "hatten gehabt", "exampleSentence": "Wir hatten keine Ahnung gehabt, was uns erwartete", "exampleSentenceEn": "We had had no idea what was waiting for us" },
+            { "pronoun": "ihr", "form": "hattet gehabt", "exampleSentence": "Ihr hattet genug Zeit gehabt, um alles vorzubereiten", "exampleSentenceEn": "You had had enough time to prepare everything" },
+            { "pronoun": "sie/Sie", "form": "hatten gehabt", "exampleSentence": "Sie hatten lange Zweifel gehabt, bevor sie die Entscheidung trafen", "exampleSentenceEn": "They had had doubts for a long time before they made the decision" }
           ]
         },
         {
@@ -180,6 +247,17 @@
             { "pronoun": "wir", "form": "hätten", "exampleSentence": "Wir hätten Glück", "exampleSentenceEn": "We would be lucky" },
             { "pronoun": "ihr", "form": "hättet", "exampleSentence": "Ihr hättet Angst", "exampleSentenceEn": "You would be afraid" },
             { "pronoun": "sie/Sie", "form": "hätten", "exampleSentence": "Sie hätten eine Party", "exampleSentenceEn": "They would have a party" }
+          ]
+        },
+        {
+          "tenseId": "imperativ",
+          "tenseName": "Imperativ",
+          "tenseNameEn": "Imperative",
+          "description": "Used to give commands, orders, or instructions. Only exists for the second person (du, ihr) and formal address (Sie). The subject pronoun is usually omitted.",
+          "conjugations": [
+            { "pronoun": "du", "form": "hab", "exampleSentence": "Hab keine Angst vor der Herausforderung!", "exampleSentenceEn": "Don't be afraid of the challenge!" },
+            { "pronoun": "ihr", "form": "habt", "exampleSentence": "Habt Vertrauen in euch selbst!", "exampleSentenceEn": "Have confidence in yourselves!" },
+            { "pronoun": "Sie", "form": "haben Sie", "exampleSentence": "Haben Sie bitte etwas Geduld mit uns!", "exampleSentenceEn": "Please have some patience with us!" }
           ]
         }
       ]

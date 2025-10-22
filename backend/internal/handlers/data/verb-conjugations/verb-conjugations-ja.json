@@ -3,127 +3,323 @@
   "languageName": "Japanese",
   "verbs": [
     {
-      "infinitive": "です",
-      "infinitiveEn": "to be (polite)",
+      "infinitive": "する",
+      "infinitiveEn": "to do",
       "category": "essential",
       "tenses": [
         {
           "tenseId": "present_polite",
           "tenseName": "丁寧語現在形",
           "tenseNameEn": "Present Polite",
-          "description": "Used in formal situations and polite conversation. This is the most commonly used form of 'to be' in Japanese for polite speech.",
+          "description": "Used in formal situations and polite conversation. This is the most commonly used form for polite speech in daily interactions.",
           "conjugations": [
-            { "pronoun": "私", "form": "です", "exampleSentence": "私は学生です", "exampleSentenceEn": "I am a student" },
-            { "pronoun": "あなた", "form": "です", "exampleSentence": "あなたは良いです", "exampleSentenceEn": "You are good" },
-            { "pronoun": "彼/彼女", "form": "です", "exampleSentence": "彼は日本人です", "exampleSentenceEn": "He is Japanese" },
-            { "pronoun": "私たち", "form": "です", "exampleSentence": "私たちは友達です", "exampleSentenceEn": "We are friends" },
-            { "pronoun": "あなたたち", "form": "です", "exampleSentence": "あなたたちは学生です", "exampleSentenceEn": "You are students" },
-            { "pronoun": "彼ら/彼女ら", "form": "です", "exampleSentence": "彼らはここです", "exampleSentenceEn": "They are here" }
+            { "pronoun": "私", "form": "します", "exampleSentence": "私は毎日運動します", "exampleSentenceEn": "I exercise every day" },
+            { "pronoun": "あなた", "form": "します", "exampleSentence": "あなたは素晴らしい仕事をします", "exampleSentenceEn": "You do wonderful work" },
+            { "pronoun": "彼/彼女", "form": "します", "exampleSentence": "彼は料理を上手にします", "exampleSentenceEn": "He cooks well" },
+            { "pronoun": "私たち", "form": "します", "exampleSentence": "私たちは週末に買い物をします", "exampleSentenceEn": "We go shopping on weekends" },
+            { "pronoun": "あなたたち", "form": "します", "exampleSentence": "あなたたちは宿題をちゃんとします", "exampleSentenceEn": "You do your homework properly" },
+            { "pronoun": "彼ら/彼女ら", "form": "します", "exampleSentence": "彼らは一生懸命勉強します", "exampleSentenceEn": "They study hard" }
+          ]
+        },
+        {
+          "tenseId": "present_polite_negative",
+          "tenseName": "丁寧語現在否定形",
+          "tenseNameEn": "Present Polite Negative",
+          "description": "Used to politely express that an action does not happen or is not done. Common in everyday polite conversation.",
+          "conjugations": [
+            { "pronoun": "私", "form": "しません", "exampleSentence": "私は肉を食べません", "exampleSentenceEn": "I don't eat meat" },
+            { "pronoun": "あなた", "form": "しません", "exampleSentence": "あなたはそんなことをしません", "exampleSentenceEn": "You don't do such things" },
+            { "pronoun": "彼/彼女", "form": "しません", "exampleSentence": "彼女は嘘をつきません", "exampleSentenceEn": "She doesn't tell lies" },
+            { "pronoun": "私たち", "form": "しません", "exampleSentence": "私たちは無駄なことをしません", "exampleSentenceEn": "We don't do wasteful things" },
+            { "pronoun": "あなたたち", "form": "しません", "exampleSentence": "あなたたちは心配しません", "exampleSentenceEn": "You don't worry" },
+            { "pronoun": "彼ら/彼女ら", "form": "しません", "exampleSentence": "彼らは約束を破りません", "exampleSentenceEn": "They don't break promises" }
           ]
         },
         {
           "tenseId": "past_polite",
           "tenseName": "丁寧語過去形",
           "tenseNameEn": "Past Polite",
-          "description": "Used to express past states or conditions in polite speech. Formed by changing 'です' to 'でした'.",
+          "description": "Used to express past actions or completed events in polite speech. Formed by changing 'ます' to 'ました'.",
           "conjugations": [
-            { "pronoun": "私", "form": "でした", "exampleSentence": "私は学生でした", "exampleSentenceEn": "I was a student" },
-            { "pronoun": "あなた", "form": "でした", "exampleSentence": "あなたは良いでした", "exampleSentenceEn": "You were good" },
-            { "pronoun": "彼/彼女", "form": "でした", "exampleSentence": "彼は日本人でした", "exampleSentenceEn": "He was Japanese" },
-            { "pronoun": "私たち", "form": "でした", "exampleSentence": "私たちは友達でした", "exampleSentenceEn": "We were friends" },
-            { "pronoun": "あなたたち", "form": "でした", "exampleSentence": "あなたたちは学生でした", "exampleSentenceEn": "You were students" },
-            { "pronoun": "彼ら/彼女ら", "form": "でした", "exampleSentence": "彼らはここでした", "exampleSentenceEn": "They were here" }
+            { "pronoun": "私", "form": "しました", "exampleSentence": "私は昨日たくさんの仕事をしました", "exampleSentenceEn": "I did a lot of work yesterday" },
+            { "pronoun": "あなた", "form": "しました", "exampleSentence": "あなたは素晴らしい発表をしました", "exampleSentenceEn": "You gave a wonderful presentation" },
+            { "pronoun": "彼/彼女", "form": "しました", "exampleSentence": "彼は昨夜料理をしました", "exampleSentenceEn": "He cooked last night" },
+            { "pronoun": "私たち", "form": "しました", "exampleSentence": "私たちは先週旅行をしました", "exampleSentenceEn": "We traveled last week" },
+            { "pronoun": "あなたたち", "form": "しました", "exampleSentence": "あなたたちは試験の準備をしました", "exampleSentenceEn": "You prepared for the exam" },
+            { "pronoun": "彼ら/彼女ら", "form": "しました", "exampleSentence": "彼らは会議で重要な決定をしました", "exampleSentenceEn": "They made an important decision at the meeting" }
+          ]
+        },
+        {
+          "tenseId": "past_polite_negative",
+          "tenseName": "丁寧語過去否定形",
+          "tenseNameEn": "Past Polite Negative",
+          "description": "Used to politely express that an action did not happen in the past. Common in polite conversation about past events.",
+          "conjugations": [
+            { "pronoun": "私", "form": "しませんでした", "exampleSentence": "私は昨日何もしませんでした", "exampleSentenceEn": "I didn't do anything yesterday" },
+            { "pronoun": "あなた", "form": "しませんでした", "exampleSentence": "あなたはそのミスをしませんでした", "exampleSentenceEn": "You didn't make that mistake" },
+            { "pronoun": "彼/彼女", "form": "しませんでした", "exampleSentence": "彼女は約束を忘れませんでした", "exampleSentenceEn": "She didn't forget the promise" },
+            { "pronoun": "私たち", "form": "しませんでした", "exampleSentence": "私たちはその仕事をしませんでした", "exampleSentenceEn": "We didn't do that work" },
+            { "pronoun": "あなたたち", "form": "しませんでした", "exampleSentence": "あなたたちは問題を起こしませんでした", "exampleSentenceEn": "You didn't cause problems" },
+            { "pronoun": "彼ら/彼女ら", "form": "しませんでした", "exampleSentence": "彼らは諦めませんでした", "exampleSentenceEn": "They didn't give up" }
           ]
         },
         {
           "tenseId": "present_casual",
           "tenseName": "普通語現在形",
           "tenseNameEn": "Present Casual",
-          "description": "Used in casual conversation with friends, family, or in informal situations. The casual form of 'です' is 'だ'.",
+          "description": "Used in casual conversation with friends, family, or in informal situations. The casual form of 'します' is 'する'.",
           "conjugations": [
-            { "pronoun": "私", "form": "だ", "exampleSentence": "私は学生だ", "exampleSentenceEn": "I am a student" },
-            { "pronoun": "あなた", "form": "だ", "exampleSentence": "あなたは良いだ", "exampleSentenceEn": "You are good" },
-            { "pronoun": "彼/彼女", "form": "だ", "exampleSentence": "彼は日本人だ", "exampleSentenceEn": "He is Japanese" },
-            { "pronoun": "私たち", "form": "だ", "exampleSentence": "私たちは友達だ", "exampleSentenceEn": "We are friends" },
-            { "pronoun": "あなたたち", "form": "だ", "exampleSentence": "あなたたちは学生だ", "exampleSentenceEn": "You are students" },
-            { "pronoun": "彼ら/彼女ら", "form": "だ", "exampleSentence": "彼らはここだ", "exampleSentenceEn": "They are here" }
+            { "pronoun": "私", "form": "する", "exampleSentence": "私は毎日運動する", "exampleSentenceEn": "I exercise every day" },
+            { "pronoun": "あなた", "form": "する", "exampleSentence": "君はいい仕事をする", "exampleSentenceEn": "You do good work" },
+            { "pronoun": "彼/彼女", "form": "する", "exampleSentence": "彼は料理が得意だ", "exampleSentenceEn": "He's good at cooking" },
+            { "pronoun": "私たち", "form": "する", "exampleSentence": "僕たちは週末に遊びに行く", "exampleSentenceEn": "We hang out on weekends" },
+            { "pronoun": "あなたたち", "form": "する", "exampleSentence": "お前らは宿題をちゃんとやる", "exampleSentenceEn": "You guys do your homework properly" },
+            { "pronoun": "彼ら/彼女ら", "form": "する", "exampleSentence": "彼らは頑張って勉強する", "exampleSentenceEn": "They study hard" }
+          ]
+        },
+        {
+          "tenseId": "present_casual_negative",
+          "tenseName": "普通語現在否定形",
+          "tenseNameEn": "Present Casual Negative",
+          "description": "Used in casual conversation to express that an action does not happen. Formed by changing 'する' to 'しない'.",
+          "conjugations": [
+            { "pronoun": "私", "form": "しない", "exampleSentence": "僕は肉を食べない", "exampleSentenceEn": "I don't eat meat" },
+            { "pronoun": "あなた", "form": "しない", "exampleSentence": "君はそんなことをしない", "exampleSentenceEn": "You don't do such things" },
+            { "pronoun": "彼/彼女", "form": "しない", "exampleSentence": "彼女は嘘をつかない", "exampleSentenceEn": "She doesn't tell lies" },
+            { "pronoun": "私たち", "form": "しない", "exampleSentence": "僕たちは無駄なことをしない", "exampleSentenceEn": "We don't do wasteful things" },
+            { "pronoun": "あなたたち", "form": "しない", "exampleSentence": "お前らは心配しない", "exampleSentenceEn": "You don't worry" },
+            { "pronoun": "彼ら/彼女ら", "form": "しない", "exampleSentence": "彼らは約束を破らない", "exampleSentenceEn": "They don't break promises" }
           ]
         },
         {
           "tenseId": "past_casual",
           "tenseName": "普通語過去形",
           "tenseNameEn": "Past Casual",
-          "description": "Used to express past states or conditions in casual speech. Formed by changing 'だ' to 'だった'.",
+          "description": "Used to express past states or conditions in casual speech. Formed by changing 'する' to 'した'.",
           "conjugations": [
-            { "pronoun": "私", "form": "だった", "exampleSentence": "私は学生だった", "exampleSentenceEn": "I was a student" },
-            { "pronoun": "あなた", "form": "だった", "exampleSentence": "あなたは良いだった", "exampleSentenceEn": "You were good" },
-            { "pronoun": "彼/彼女", "form": "だった", "exampleSentence": "彼は日本人だった", "exampleSentenceEn": "He was Japanese" },
-            { "pronoun": "私たち", "form": "だった", "exampleSentence": "私たちは友達だった", "exampleSentenceEn": "We were friends" },
-            { "pronoun": "あなたたち", "form": "だった", "exampleSentence": "あなたたちは学生だった", "exampleSentenceEn": "You were students" },
-            { "pronoun": "彼ら/彼女ら", "form": "だった", "exampleSentence": "彼らはここだった", "exampleSentenceEn": "They were here" }
+            { "pronoun": "私", "form": "した", "exampleSentence": "昨日たくさんの仕事をした", "exampleSentenceEn": "I did a lot of work yesterday" },
+            { "pronoun": "あなた", "form": "した", "exampleSentence": "君はいい発表をした", "exampleSentenceEn": "You gave a good presentation" },
+            { "pronoun": "彼/彼女", "form": "した", "exampleSentence": "彼は昨夜料理をした", "exampleSentenceEn": "He cooked last night" },
+            { "pronoun": "私たち", "form": "した", "exampleSentence": "僕たちは先週旅行をした", "exampleSentenceEn": "We traveled last week" },
+            { "pronoun": "あなたたち", "form": "した", "exampleSentence": "お前らは試験の準備をした", "exampleSentenceEn": "You prepared for the exam" },
+            { "pronoun": "彼ら/彼女ら", "form": "した", "exampleSentence": "彼らは会議で決定をした", "exampleSentenceEn": "They made a decision at the meeting" }
+          ]
+        },
+        {
+          "tenseId": "past_casual_negative",
+          "tenseName": "普通語過去否定形",
+          "tenseNameEn": "Past Casual Negative",
+          "description": "Used in casual speech to express that an action did not happen in the past. Formed by changing 'しない' to 'しなかった'.",
+          "conjugations": [
+            { "pronoun": "私", "form": "しなかった", "exampleSentence": "昨日何もしなかった", "exampleSentenceEn": "I didn't do anything yesterday" },
+            { "pronoun": "あなた", "form": "しなかった", "exampleSentence": "君はそのミスをしなかった", "exampleSentenceEn": "You didn't make that mistake" },
+            { "pronoun": "彼/彼女", "form": "しなかった", "exampleSentence": "彼女は約束を忘れなかった", "exampleSentenceEn": "She didn't forget the promise" },
+            { "pronoun": "私たち", "form": "しなかった", "exampleSentence": "僕たちはその仕事をしなかった", "exampleSentenceEn": "We didn't do that work" },
+            { "pronoun": "あなたたち", "form": "しなかった", "exampleSentence": "お前らは問題を起こさなかった", "exampleSentenceEn": "You didn't cause problems" },
+            { "pronoun": "彼ら/彼女ら", "form": "しなかった", "exampleSentence": "彼らは諦めなかった", "exampleSentenceEn": "They didn't give up" }
+          ]
+        },
+        {
+          "tenseId": "te_form",
+          "tenseName": "て形",
+          "tenseNameEn": "Te-form",
+          "description": "A connecting form used for sequential actions, requests, and as a base for other conjugations. Essential for linking verbs and creating complex sentences.",
+          "conjugations": [
+            { "pronoun": "私", "form": "して", "exampleSentence": "仕事をして、それから休みます", "exampleSentenceEn": "I'll work, and then I'll rest" },
+            { "pronoun": "あなた", "form": "して", "exampleSentence": "宿題をしてから遊んでください", "exampleSentenceEn": "Please play after doing your homework" },
+            { "pronoun": "彼/彼女", "form": "して", "exampleSentence": "彼は料理をして、掃除もしました", "exampleSentenceEn": "He cooked and also cleaned" },
+            { "pronoun": "私たち", "form": "して", "exampleSentence": "準備をして、すぐに出発しよう", "exampleSentenceEn": "Let's prepare and leave right away" },
+            { "pronoun": "あなたたち", "form": "して", "exampleSentence": "練習をして、試合に臨んでください", "exampleSentenceEn": "Please practice and face the match" },
+            { "pronoun": "彼ら/彼女ら", "form": "して", "exampleSentence": "彼らは相談をして、決定を下しました", "exampleSentenceEn": "They consulted and made a decision" }
+          ]
+        },
+        {
+          "tenseId": "potential_form",
+          "tenseName": "可能形",
+          "tenseNameEn": "Potential Form",
+          "description": "Used to express ability or possibility. Indicates whether someone can or is able to do something.",
+          "conjugations": [
+            { "pronoun": "私", "form": "できる", "exampleSentence": "私は日本語で話すことができる", "exampleSentenceEn": "I can speak in Japanese" },
+            { "pronoun": "あなた", "form": "できる", "exampleSentence": "あなたは難しい問題を解くことができる", "exampleSentenceEn": "You can solve difficult problems" },
+            { "pronoun": "彼/彼女", "form": "できる", "exampleSentence": "彼女は一人で全部できる", "exampleSentenceEn": "She can do everything by herself" },
+            { "pronoun": "私たち", "form": "できる", "exampleSentence": "私たちは協力してこの仕事ができる", "exampleSentenceEn": "We can do this work by cooperating" },
+            { "pronoun": "あなたたち", "form": "できる", "exampleSentence": "あなたたちなら必ずできる", "exampleSentenceEn": "If it's you guys, you can definitely do it" },
+            { "pronoun": "彼ら/彼女ら", "form": "できる", "exampleSentence": "彼らは素晴らしい演奏ができる", "exampleSentenceEn": "They can perform wonderfully" }
+          ]
+        },
+        {
+          "tenseId": "volitional_form",
+          "tenseName": "意向形",
+          "tenseNameEn": "Volitional Form",
+          "description": "Used to express intention, invitation, or suggestion. Often translated as 'let's do' or 'I will do'.",
+          "conjugations": [
+            { "pronoun": "私", "form": "しよう", "exampleSentence": "明日から毎日運動しよう", "exampleSentenceEn": "I'll exercise every day starting tomorrow" },
+            { "pronoun": "あなた", "form": "しよう", "exampleSentence": "一緒に頑張ろう", "exampleSentenceEn": "Let's do our best together" },
+            { "pronoun": "彼/彼女", "form": "しよう", "exampleSentence": "彼はもっと努力しようと決めた", "exampleSentenceEn": "He decided to try harder" },
+            { "pronoun": "私たち", "form": "しよう", "exampleSentence": "今日は早く帰ろう", "exampleSentenceEn": "Let's go home early today" },
+            { "pronoun": "あなたたち", "form": "しよう", "exampleSentence": "みんなで旅行しよう", "exampleSentenceEn": "Let's all travel together" },
+            { "pronoun": "彼ら/彼女ら", "form": "しよう", "exampleSentence": "彼らは新しいプロジェクトを始めようとしている", "exampleSentenceEn": "They are about to start a new project" }
           ]
         }
       ]
     },
     {
-      "infinitive": "ある",
-      "infinitiveEn": "to have/exist (for inanimate objects)",
+      "infinitive": "行く",
+      "infinitiveEn": "to go",
       "category": "essential",
       "tenses": [
         {
           "tenseId": "present_polite",
           "tenseName": "丁寧語現在形",
           "tenseNameEn": "Present Polite",
-          "description": "Used in formal situations and polite conversation. This form is used for inanimate objects and abstract concepts.",
+          "description": "Used in formal situations and polite conversation. This is the most commonly used form for polite speech in daily interactions.",
           "conjugations": [
-            { "pronoun": "私", "form": "あります", "exampleSentence": "私には本があります", "exampleSentenceEn": "I have a book" },
-            { "pronoun": "あなた", "form": "あります", "exampleSentence": "あなたにはお腹が空いています", "exampleSentenceEn": "You are hungry" },
-            { "pronoun": "彼/彼女", "form": "あります", "exampleSentence": "彼女には猫があります", "exampleSentenceEn": "She has a cat" },
-            { "pronoun": "私たち", "form": "あります", "exampleSentence": "私たちには時間があります", "exampleSentenceEn": "We have time" },
-            { "pronoun": "あなたたち", "form": "あります", "exampleSentence": "あなたたちには正しいがあります", "exampleSentenceEn": "You are right" },
-            { "pronoun": "彼ら/彼女ら", "form": "あります", "exampleSentence": "彼らには家があります", "exampleSentenceEn": "They have a house" }
+            { "pronoun": "私", "form": "行きます", "exampleSentence": "私は毎朝会社に行きます", "exampleSentenceEn": "I go to the office every morning" },
+            { "pronoun": "あなた", "form": "行きます", "exampleSentence": "あなたはいつも図書館に行きます", "exampleSentenceEn": "You always go to the library" },
+            { "pronoun": "彼/彼女", "form": "行きます", "exampleSentence": "彼は週末に山に行きます", "exampleSentenceEn": "He goes to the mountains on weekends" },
+            { "pronoun": "私たち", "form": "行きます", "exampleSentence": "私たちは来月旅行に行きます", "exampleSentenceEn": "We're going on a trip next month" },
+            { "pronoun": "あなたたち", "form": "行きます", "exampleSentence": "あなたたちはどこに行きますか", "exampleSentenceEn": "Where are you going?" },
+            { "pronoun": "彼ら/彼女ら", "form": "行きます", "exampleSentence": "彼らは毎日学校に行きます", "exampleSentenceEn": "They go to school every day" }
+          ]
+        },
+        {
+          "tenseId": "present_polite_negative",
+          "tenseName": "丁寧語現在否定形",
+          "tenseNameEn": "Present Polite Negative",
+          "description": "Used to politely express that one does not go somewhere or that an action does not take place.",
+          "conjugations": [
+            { "pronoun": "私", "form": "行きません", "exampleSentence": "私は今日学校に行きません", "exampleSentenceEn": "I'm not going to school today" },
+            { "pronoun": "あなた", "form": "行きません", "exampleSentence": "あなたはそこに行きませんか", "exampleSentenceEn": "Aren't you going there?" },
+            { "pronoun": "彼/彼女", "form": "行きません", "exampleSentence": "彼女は一人では行きません", "exampleSentenceEn": "She doesn't go alone" },
+            { "pronoun": "私たち", "form": "行きません", "exampleSentence": "私たちはその店には行きません", "exampleSentenceEn": "We don't go to that store" },
+            { "pronoun": "あなたたち", "form": "行きません", "exampleSentence": "あなたたちはパーティーに行きませんか", "exampleSentenceEn": "Aren't you going to the party?" },
+            { "pronoun": "彼ら/彼女ら", "form": "行きません", "exampleSentence": "彼らは危険な場所には行きません", "exampleSentenceEn": "They don't go to dangerous places" }
           ]
         },
         {
           "tenseId": "past_polite",
           "tenseName": "丁寧語過去形",
           "tenseNameEn": "Past Polite",
-          "description": "Used to express past states or conditions in polite speech. Formed by changing 'あります' to 'ありました'.",
+          "description": "Used to express past actions or completed events in polite speech, specifically for going somewhere.",
           "conjugations": [
-            { "pronoun": "私", "form": "ありました", "exampleSentence": "私には本がありました", "exampleSentenceEn": "I had a book" },
-            { "pronoun": "あなた", "form": "ありました", "exampleSentence": "あなたにはお腹が空いていました", "exampleSentenceEn": "You were hungry" },
-            { "pronoun": "彼/彼女", "form": "ありました", "exampleSentence": "彼女には猫がありました", "exampleSentenceEn": "She had a cat" },
-            { "pronoun": "私たち", "form": "ありました", "exampleSentence": "私たちには時間がありました", "exampleSentenceEn": "We had time" },
-            { "pronoun": "あなたたち", "form": "ありました", "exampleSentence": "あなたたちには正しいがありました", "exampleSentenceEn": "You were right" },
-            { "pronoun": "彼ら/彼女ら", "form": "ありました", "exampleSentence": "彼らには家がありました", "exampleSentenceEn": "They had a house" }
+            { "pronoun": "私", "form": "行きました", "exampleSentence": "私は昨日デパートに行きました", "exampleSentenceEn": "I went to the department store yesterday" },
+            { "pronoun": "あなた", "form": "行きました", "exampleSentence": "あなたは先週どこに行きましたか", "exampleSentenceEn": "Where did you go last week?" },
+            { "pronoun": "彼/彼女", "form": "行きました", "exampleSentence": "彼は友達の家に行きました", "exampleSentenceEn": "He went to his friend's house" },
+            { "pronoun": "私たち", "form": "行きました", "exampleSentence": "私たちは夏に沖縄に行きました", "exampleSentenceEn": "We went to Okinawa in summer" },
+            { "pronoun": "あなたたち", "form": "行きました", "exampleSentence": "あなたたちは映画館に行きました", "exampleSentenceEn": "You went to the movie theater" },
+            { "pronoun": "彼ら/彼女ら", "form": "行きました", "exampleSentence": "彼らは海外旅行に行きました", "exampleSentenceEn": "They went on an overseas trip" }
+          ]
+        },
+        {
+          "tenseId": "past_polite_negative",
+          "tenseName": "丁寧語過去否定形",
+          "tenseNameEn": "Past Polite Negative",
+          "description": "Used to politely express that one did not go somewhere in the past.",
+          "conjugations": [
+            { "pronoun": "私", "form": "行きませんでした", "exampleSentence": "私は昨日どこにも行きませんでした", "exampleSentenceEn": "I didn't go anywhere yesterday" },
+            { "pronoun": "あなた", "form": "行きませんでした", "exampleSentence": "あなたはパーティーに行きませんでしたね", "exampleSentenceEn": "You didn't go to the party, did you?" },
+            { "pronoun": "彼/彼女", "form": "行きませんでした", "exampleSentence": "彼女は体調が悪くて行きませんでした", "exampleSentenceEn": "She didn't go because she wasn't feeling well" },
+            { "pronoun": "私たち", "form": "行きませんでした", "exampleSentence": "私たちは結局行きませんでした", "exampleSentenceEn": "We didn't end up going" },
+            { "pronoun": "あなたたち", "form": "行きませんでした", "exampleSentence": "あなたたちは会議に行きませんでしたか", "exampleSentenceEn": "Didn't you go to the meeting?" },
+            { "pronoun": "彼ら/彼女ら", "form": "行きませんでした", "exampleSentence": "彼らは天気が悪くて行きませんでした", "exampleSentenceEn": "They didn't go because of bad weather" }
           ]
         },
         {
           "tenseId": "present_casual",
           "tenseName": "普通語現在形",
           "tenseNameEn": "Present Casual",
-          "description": "Used in casual conversation with friends, family, or in informal situations. The casual form of 'あります' is 'ある'.",
+          "description": "Used in casual conversation with friends, family, or in informal situations about going places.",
           "conjugations": [
-            { "pronoun": "私", "form": "ある", "exampleSentence": "私には本がある", "exampleSentenceEn": "I have a book" },
-            { "pronoun": "あなた", "form": "ある", "exampleSentence": "あなたにはお腹が空いている", "exampleSentenceEn": "You are hungry" },
-            { "pronoun": "彼/彼女", "form": "ある", "exampleSentence": "彼女には猫がある", "exampleSentenceEn": "She has a cat" },
-            { "pronoun": "私たち", "form": "ある", "exampleSentence": "私たちには時間がある", "exampleSentenceEn": "We have time" },
-            { "pronoun": "あなたたち", "form": "ある", "exampleSentence": "あなたたちには正しいがある", "exampleSentenceEn": "You are right" },
-            { "pronoun": "彼ら/彼女ら", "form": "ある", "exampleSentence": "彼らには家がある", "exampleSentenceEn": "They have a house" }
+            { "pronoun": "私", "form": "行く", "exampleSentence": "毎朝会社に行く", "exampleSentenceEn": "I go to work every morning" },
+            { "pronoun": "あなた", "form": "行く", "exampleSentence": "君はいつも図書館に行く", "exampleSentenceEn": "You always go to the library" },
+            { "pronoun": "彼/彼女", "form": "行く", "exampleSentence": "彼は週末に山に行く", "exampleSentenceEn": "He goes to the mountains on weekends" },
+            { "pronoun": "私たち", "form": "行く", "exampleSentence": "僕たちは来月旅行に行く", "exampleSentenceEn": "We're going on a trip next month" },
+            { "pronoun": "あなたたち", "form": "行く", "exampleSentence": "お前らはどこに行くんだ", "exampleSentenceEn": "Where are you guys going?" },
+            { "pronoun": "彼ら/彼女ら", "form": "行く", "exampleSentence": "彼らは毎日学校に行く", "exampleSentenceEn": "They go to school every day" }
+          ]
+        },
+        {
+          "tenseId": "present_casual_negative",
+          "tenseName": "普通語現在否定形",
+          "tenseNameEn": "Present Casual Negative",
+          "description": "Used in casual conversation to express that one does not go somewhere.",
+          "conjugations": [
+            { "pronoun": "私", "form": "行かない", "exampleSentence": "僕は今日学校に行かない", "exampleSentenceEn": "I'm not going to school today" },
+            { "pronoun": "あなた", "form": "行かない", "exampleSentence": "君はそこに行かないの", "exampleSentenceEn": "You're not going there?" },
+            { "pronoun": "彼/彼女", "form": "行かない", "exampleSentence": "彼女は一人では行かない", "exampleSentenceEn": "She doesn't go alone" },
+            { "pronoun": "私たち", "form": "行かない", "exampleSentence": "僕たちはその店には行かない", "exampleSentenceEn": "We don't go to that store" },
+            { "pronoun": "あなたたち", "form": "行かない", "exampleSentence": "お前らはパーティーに行かないのか", "exampleSentenceEn": "Aren't you guys going to the party?" },
+            { "pronoun": "彼ら/彼女ら", "form": "行かない", "exampleSentence": "彼らは危険な場所には行かない", "exampleSentenceEn": "They don't go to dangerous places" }
           ]
         },
         {
           "tenseId": "past_casual",
           "tenseName": "普通語過去形",
           "tenseNameEn": "Past Casual",
-          "description": "Used to express past states or conditions in casual speech. Formed by changing 'ある' to 'あった'.",
+          "description": "Used to express past actions in casual speech, specifically for going somewhere.",
           "conjugations": [
-            { "pronoun": "私", "form": "あった", "exampleSentence": "私には本があった", "exampleSentenceEn": "I had a book" },
-            { "pronoun": "あなた", "form": "あった", "exampleSentence": "あなたにはお腹が空いていた", "exampleSentenceEn": "You were hungry" },
-            { "pronoun": "彼/彼女", "form": "あった", "exampleSentence": "彼女には猫があった", "exampleSentenceEn": "She had a cat" },
-            { "pronoun": "私たち", "form": "あった", "exampleSentence": "私たちには時間があった", "exampleSentenceEn": "We had time" },
-            { "pronoun": "あなたたち", "form": "あった", "exampleSentence": "あなたたちには正しいがあった", "exampleSentenceEn": "You were right" },
-            { "pronoun": "彼ら/彼女ら", "form": "あった", "exampleSentence": "彼らには家があった", "exampleSentenceEn": "They had a house" }
+            { "pronoun": "私", "form": "行った", "exampleSentence": "昨日デパートに行った", "exampleSentenceEn": "I went to the department store yesterday" },
+            { "pronoun": "あなた", "form": "行った", "exampleSentence": "君は先週どこに行った", "exampleSentenceEn": "Where did you go last week?" },
+            { "pronoun": "彼/彼女", "form": "行った", "exampleSentence": "彼は友達の家に行った", "exampleSentenceEn": "He went to his friend's house" },
+            { "pronoun": "私たち", "form": "行った", "exampleSentence": "僕たちは夏に沖縄に行った", "exampleSentenceEn": "We went to Okinawa in summer" },
+            { "pronoun": "あなたたち", "form": "行った", "exampleSentence": "お前らは映画館に行った", "exampleSentenceEn": "You went to the movie theater" },
+            { "pronoun": "彼ら/彼女ら", "form": "行った", "exampleSentence": "彼らは海外旅行に行った", "exampleSentenceEn": "They went on an overseas trip" }
+          ]
+        },
+        {
+          "tenseId": "past_casual_negative",
+          "tenseName": "普通語過去否定形",
+          "tenseNameEn": "Past Casual Negative",
+          "description": "Used in casual speech to express that one did not go somewhere in the past.",
+          "conjugations": [
+            { "pronoun": "私", "form": "行かなかった", "exampleSentence": "昨日どこにも行かなかった", "exampleSentenceEn": "I didn't go anywhere yesterday" },
+            { "pronoun": "あなた", "form": "行かなかった", "exampleSentence": "君はパーティーに行かなかったね", "exampleSentenceEn": "You didn't go to the party, did you?" },
+            { "pronoun": "彼/彼女", "form": "行かなかった", "exampleSentence": "彼女は体調が悪くて行かなかった", "exampleSentenceEn": "She didn't go because she wasn't feeling well" },
+            { "pronoun": "私たち", "form": "行かなかった", "exampleSentence": "僕たちは結局行かなかった", "exampleSentenceEn": "We didn't end up going" },
+            { "pronoun": "あなたたち", "form": "行かなかった", "exampleSentence": "お前らは会議に行かなかったのか", "exampleSentenceEn": "You guys didn't go to the meeting?" },
+            { "pronoun": "彼ら/彼女ら", "form": "行かなかった", "exampleSentence": "彼らは天気が悪くて行かなかった", "exampleSentenceEn": "They didn't go because of bad weather" }
+          ]
+        },
+        {
+          "tenseId": "te_form",
+          "tenseName": "て形",
+          "tenseNameEn": "Te-form",
+          "description": "A connecting form used for sequential actions, requests, and as a base for other conjugations. Essential for linking verbs.",
+          "conjugations": [
+            { "pronoun": "私", "form": "行って", "exampleSentence": "学校に行って、勉強します", "exampleSentenceEn": "I'll go to school and study" },
+            { "pronoun": "あなた", "form": "行って", "exampleSentence": "駅に行って、切符を買ってください", "exampleSentenceEn": "Please go to the station and buy a ticket" },
+            { "pronoun": "彼/彼女", "form": "行って", "exampleSentence": "彼は図書館に行って、本を借りた", "exampleSentenceEn": "He went to the library and borrowed a book" },
+            { "pronoun": "私たち", "form": "行って", "exampleSentence": "買い物に行って、夕飯を作ろう", "exampleSentenceEn": "Let's go shopping and make dinner" },
+            { "pronoun": "あなたたち", "form": "行って", "exampleSentence": "公園に行って、遊んできてください", "exampleSentenceEn": "Please go to the park and play" },
+            { "pronoun": "彼ら/彼女ら", "form": "行って", "exampleSentence": "彼らは会議に行って、報告をしました", "exampleSentenceEn": "They went to the meeting and gave a report" }
+          ]
+        },
+        {
+          "tenseId": "potential_form",
+          "tenseName": "可能形",
+          "tenseNameEn": "Potential Form",
+          "description": "Used to express ability or possibility to go somewhere. Indicates whether someone can go.",
+          "conjugations": [
+            { "pronoun": "私", "form": "行ける", "exampleSentence": "私は明日パーティーに行ける", "exampleSentenceEn": "I can go to the party tomorrow" },
+            { "pronoun": "あなた", "form": "行ける", "exampleSentence": "あなたは今週末旅行に行けますか", "exampleSentenceEn": "Can you go on a trip this weekend?" },
+            { "pronoun": "彼/彼女", "form": "行ける", "exampleSentence": "彼女は一人で海外に行ける", "exampleSentenceEn": "She can go abroad by herself" },
+            { "pronoun": "私たち", "form": "行ける", "exampleSentence": "私たちは車で山に行ける", "exampleSentenceEn": "We can go to the mountains by car" },
+            { "pronoun": "あなたたち", "form": "行ける", "exampleSentence": "あなたたちは何時に行けますか", "exampleSentenceEn": "What time can you go?" },
+            { "pronoun": "彼ら/彼女ら", "form": "行ける", "exampleSentence": "彼らは来週なら行ける", "exampleSentenceEn": "They can go next week" }
+          ]
+        },
+        {
+          "tenseId": "volitional_form",
+          "tenseName": "意向形",
+          "tenseNameEn": "Volitional Form",
+          "description": "Used to express intention, invitation, or suggestion to go somewhere. Often translated as 'let's go' or 'I will go'.",
+          "conjugations": [
+            { "pronoun": "私", "form": "行こう", "exampleSentence": "明日早く学校に行こう", "exampleSentenceEn": "I'll go to school early tomorrow" },
+            { "pronoun": "あなた", "form": "行こう", "exampleSentence": "一緒に映画を見に行こう", "exampleSentenceEn": "Let's go watch a movie together" },
+            { "pronoun": "彼/彼女", "form": "行こう", "exampleSentence": "彼は海外留学に行こうと決めた", "exampleSentenceEn": "He decided to go study abroad" },
+            { "pronoun": "私たち", "form": "行こう", "exampleSentence": "今日は早く帰ろう", "exampleSentenceEn": "Let's go home early today" },
+            { "pronoun": "あなたたち", "form": "行こう", "exampleSentence": "みんなで旅行に行こう", "exampleSentenceEn": "Let's all go on a trip" },
+            { "pronoun": "彼ら/彼女ら", "form": "行こう", "exampleSentence": "彼らは新しいレストランに行こうとしている", "exampleSentenceEn": "They are about to go to a new restaurant" }
           ]
         }
       ]

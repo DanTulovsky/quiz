@@ -64,6 +64,48 @@
           ]
         },
         {
+          "tenseId": "passato_remoto",
+          "tenseName": "Passato Remoto",
+          "tenseNameEn": "Remote Past",
+          "description": "Used to describe completed actions in the distant past with no connection to the present. More common in Southern Italy and in formal writing, literature, and historical narratives.",
+          "conjugations": [
+            { "pronoun": "io", "form": "fui", "exampleSentence": "Io fui molto sorpreso quando ricevetti la notizia", "exampleSentenceEn": "I was very surprised when I received the news" },
+            { "pronoun": "tu", "form": "fosti", "exampleSentence": "Tu fosti il primo ad arrivare alla riunione importante", "exampleSentenceEn": "You were the first to arrive at the important meeting" },
+            { "pronoun": "lui/lei", "form": "fu", "exampleSentence": "Lei fu una grande scienziata per tutta la sua vita", "exampleSentenceEn": "She was a great scientist throughout her life" },
+            { "pronoun": "noi", "form": "fummo", "exampleSentence": "Noi fummo testimoni di un evento straordinario", "exampleSentenceEn": "We were witnesses to an extraordinary event" },
+            { "pronoun": "voi", "form": "foste", "exampleSentence": "Voi foste molto coraggiosi durante quella difficile situazione", "exampleSentenceEn": "You were very brave during that difficult situation" },
+            { "pronoun": "loro", "form": "furono", "exampleSentence": "Loro furono i migliori amici fino alla fine", "exampleSentenceEn": "They were the best friends until the end" }
+          ]
+        },
+        {
+          "tenseId": "trapassato_prossimo",
+          "tenseName": "Trapassato Prossimo",
+          "tenseNameEn": "Pluperfect",
+          "description": "Used to express actions that were completed before another past action. Essential for establishing the sequence of past events, often used with 'prima' or 'dopo'.",
+          "conjugations": [
+            { "pronoun": "io", "form": "ero stato/a", "exampleSentence": "Io ero stato malato prima di partire per il viaggio", "exampleSentenceEn": "I had been sick before leaving for the trip" },
+            { "pronoun": "tu", "form": "eri stato/a", "exampleSentence": "Tu eri stato molto nervoso prima dell'esame finale", "exampleSentenceEn": "You had been very nervous before the final exam" },
+            { "pronoun": "lui/lei", "form": "era stato/a", "exampleSentence": "Lei era stata insegnante per vent'anni prima di andare in pensione", "exampleSentenceEn": "She had been a teacher for twenty years before retiring" },
+            { "pronoun": "noi", "form": "eravamo stati/e", "exampleSentence": "Noi eravamo stati al museo prima di andare al ristorante", "exampleSentenceEn": "We had been to the museum before going to the restaurant" },
+            { "pronoun": "voi", "form": "eravate stati/e", "exampleSentence": "Voi eravate stati avvisati del pericolo che ci aspettava", "exampleSentenceEn": "You had been warned about the danger that awaited us" },
+            { "pronoun": "loro", "form": "erano stati/e", "exampleSentence": "Loro erano stati buoni amici fino a quella lite", "exampleSentenceEn": "They had been good friends until that argument" }
+          ]
+        },
+        {
+          "tenseId": "futuro_anteriore",
+          "tenseName": "Futuro Anteriore",
+          "tenseNameEn": "Future Perfect",
+          "description": "Used to express actions that will be completed before another future action or before a specific time in the future. Often used with time expressions like 'quando' or 'dopo che'.",
+          "conjugations": [
+            { "pronoun": "io", "form": "sarò stato/a", "exampleSentence": "Io sarò stato dappertutto nel mondo quando avrò cinquant'anni", "exampleSentenceEn": "I will have been everywhere in the world when I'm fifty" },
+            { "pronoun": "tu", "form": "sarai stato/a", "exampleSentence": "Tu sarai certamente stato stanco dopo questo lungo viaggio", "exampleSentenceEn": "You will certainly have been tired after this long journey" },
+            { "pronoun": "lui/lei", "form": "sarà stato/a", "exampleSentence": "Lei sarà stata sposata per vent'anni l'anno prossimo", "exampleSentenceEn": "She will have been married for twenty years next year" },
+            { "pronoun": "noi", "form": "saremo stati/e", "exampleSentence": "Noi saremo stati là prima che tu arrivi", "exampleSentenceEn": "We will have been there before you arrive" },
+            { "pronoun": "voi", "form": "sarete stati/e", "exampleSentence": "Voi sarete stati avvisati delle conseguenze prima di prendere la decisione", "exampleSentenceEn": "You will have been warned of the consequences before making the decision" },
+            { "pronoun": "loro", "form": "saranno stati/e", "exampleSentence": "Loro saranno stati in riunione tutto il giorno quando arriveremo", "exampleSentenceEn": "They will have been in a meeting all day when we arrive" }
+          ]
+        },
+        {
           "tenseId": "condizionale_presente",
           "tenseName": "Condizionale Presente",
           "tenseNameEn": "Present Conditional",
@@ -75,6 +117,20 @@
             { "pronoun": "noi", "form": "saremmo", "exampleSentence": "Noi saremmo qui", "exampleSentenceEn": "We would be here" },
             { "pronoun": "voi", "form": "sareste", "exampleSentence": "Voi sareste pronti", "exampleSentenceEn": "You would be ready" },
             { "pronoun": "loro", "form": "sarebbero", "exampleSentence": "Loro sarebbero amici", "exampleSentenceEn": "They would be friends" }
+          ]
+        },
+        {
+          "tenseId": "condizionale_passato",
+          "tenseName": "Condizionale Passato",
+          "tenseNameEn": "Past Conditional",
+          "description": "Used to express hypothetical past actions or regrets about things that didn't happen. Often used to describe what would have happened under different circumstances.",
+          "conjugations": [
+            { "pronoun": "io", "form": "sarei stato/a", "exampleSentence": "Io sarei stato più felice se tu fossi venuto con me", "exampleSentenceEn": "I would have been happier if you had come with me" },
+            { "pronoun": "tu", "form": "saresti stato/a", "exampleSentence": "Tu saresti stato orgoglioso di vedere il suo successo", "exampleSentenceEn": "You would have been proud to see his success" },
+            { "pronoun": "lui/lei", "form": "sarebbe stato/a", "exampleSentence": "Lei sarebbe stata un'eccellente direttrice se avesse accettato il posto", "exampleSentenceEn": "She would have been an excellent director if she had accepted the position" },
+            { "pronoun": "noi", "form": "saremmo stati/e", "exampleSentence": "Noi saremmo stati là prima se il treno non avesse avuto ritardo", "exampleSentenceEn": "We would have been there earlier if the train hadn't been delayed" },
+            { "pronoun": "voi", "form": "sareste stati/e", "exampleSentence": "Voi sareste stati sorpresi di vedere i cambiamenti", "exampleSentenceEn": "You would have been surprised to see the changes" },
+            { "pronoun": "loro", "form": "sarebbero stati/e", "exampleSentence": "Loro sarebbero stati migliori amici se si fossero capiti meglio", "exampleSentenceEn": "They would have been better friends if they had understood each other better" }
           ]
         },
         {
@@ -166,6 +222,48 @@
           ]
         },
         {
+          "tenseId": "passato_remoto",
+          "tenseName": "Passato Remoto",
+          "tenseNameEn": "Remote Past",
+          "description": "Used to describe completed actions in the distant past with no connection to the present. More common in Southern Italy and in formal writing, literature, and historical narratives.",
+          "conjugations": [
+            { "pronoun": "io", "form": "ebbi", "exampleSentence": "Io ebbi una rivelazione improvvisa leggendo quel libro", "exampleSentenceEn": "I had a sudden revelation while reading that book" },
+            { "pronoun": "tu", "form": "avesti", "exampleSentence": "Tu avesti molte difficoltà durante quel periodo", "exampleSentenceEn": "You had many difficulties during that period" },
+            { "pronoun": "lui/lei", "form": "ebbe", "exampleSentence": "Lei ebbe tre figli nel corso della sua vita", "exampleSentenceEn": "She had three children during her life" },
+            { "pronoun": "noi", "form": "avemmo", "exampleSentence": "Noi avemmo la fortuna di incontrare persone straordinarie", "exampleSentenceEn": "We had the fortune to meet extraordinary people" },
+            { "pronoun": "voi", "form": "aveste", "exampleSentence": "Voi aveste il coraggio di dire la verità", "exampleSentenceEn": "You had the courage to tell the truth" },
+            { "pronoun": "loro", "form": "ebbero", "exampleSentence": "Loro ebbero molto successo nelle loro imprese", "exampleSentenceEn": "They had a lot of success in their ventures" }
+          ]
+        },
+        {
+          "tenseId": "trapassato_prossimo",
+          "tenseName": "Trapassato Prossimo",
+          "tenseNameEn": "Pluperfect",
+          "description": "Used to express actions that were completed before another past action. Essential for establishing the sequence of past events, often used with 'prima' or 'dopo'.",
+          "conjugations": [
+            { "pronoun": "io", "form": "avevo avuto", "exampleSentence": "Io avevo avuto dei dubbi prima di prendere la decisione", "exampleSentenceEn": "I had had doubts before making the decision" },
+            { "pronoun": "tu", "form": "avevi avuto", "exampleSentence": "Tu avevi avuto ragione a diffidare di lui", "exampleSentenceEn": "You had been right to be wary of him" },
+            { "pronoun": "lui/lei", "form": "aveva avuto", "exampleSentence": "Lei aveva avuto molti problemi prima di trovare questa soluzione", "exampleSentenceEn": "She had had many problems before finding this solution" },
+            { "pronoun": "noi", "form": "avevamo avuto", "exampleSentence": "Noi avevamo avuto il tempo di preparare tutto prima del loro arrivo", "exampleSentenceEn": "We had had time to prepare everything before their arrival" },
+            { "pronoun": "voi", "form": "avevate avuto", "exampleSentence": "Voi avevate avuto l'occasione di viaggiare molto nella vostra gioventù", "exampleSentenceEn": "You had had the opportunity to travel a lot in your youth" },
+            { "pronoun": "loro", "form": "avevano avuto", "exampleSentence": "Loro avevano avuto una grande festa prima di trasferirsi", "exampleSentenceEn": "They had had a big party before moving" }
+          ]
+        },
+        {
+          "tenseId": "futuro_anteriore",
+          "tenseName": "Futuro Anteriore",
+          "tenseNameEn": "Future Perfect",
+          "description": "Used to express actions that will be completed before another future action or before a specific time in the future. Often used with time expressions like 'quando' or 'dopo che'.",
+          "conjugations": [
+            { "pronoun": "io", "form": "avrò avuto", "exampleSentence": "Io avrò avuto il tempo di finire prima del tuo ritorno", "exampleSentenceEn": "I will have had time to finish before you return" },
+            { "pronoun": "tu", "form": "avrai avuto", "exampleSentence": "Tu avrai certamente avuto notizie entro allora", "exampleSentenceEn": "You will certainly have had news by then" },
+            { "pronoun": "lui/lei", "form": "avrà avuto", "exampleSentence": "Lei avrà avuto cinquant'anni il mese prossimo", "exampleSentenceEn": "She will have been fifty years old next month" },
+            { "pronoun": "noi", "form": "avremo avuto", "exampleSentence": "Noi avremo avuto abbastanza tempo per controllare tutto", "exampleSentenceEn": "We will have had enough time to check everything" },
+            { "pronoun": "voi", "form": "avrete avuto", "exampleSentence": "Voi avrete avuto l'occasione di riflettere prima di rispondere", "exampleSentenceEn": "You will have had the opportunity to think before answering" },
+            { "pronoun": "loro", "form": "avranno avuto", "exampleSentence": "Loro avranno avuto diversi avvertimenti prima di essere sanzionati", "exampleSentenceEn": "They will have had several warnings before being sanctioned" }
+          ]
+        },
+        {
           "tenseId": "condizionale_presente",
           "tenseName": "Condizionale Presente",
           "tenseNameEn": "Present Conditional",
@@ -177,6 +275,20 @@
             { "pronoun": "noi", "form": "avremmo", "exampleSentence": "Noi avremmo fortuna", "exampleSentenceEn": "We would be lucky" },
             { "pronoun": "voi", "form": "avreste", "exampleSentence": "Voi avreste paura", "exampleSentenceEn": "You would be afraid" },
             { "pronoun": "loro", "form": "avrebbero", "exampleSentence": "Loro avrebbero una festa", "exampleSentenceEn": "They would have a party" }
+          ]
+        },
+        {
+          "tenseId": "condizionale_passato",
+          "tenseName": "Condizionale Passato",
+          "tenseNameEn": "Past Conditional",
+          "description": "Used to express hypothetical past actions or regrets about things that didn't happen. Often used to describe what would have happened under different circumstances.",
+          "conjugations": [
+            { "pronoun": "io", "form": "avrei avuto", "exampleSentence": "Io avrei avuto più tempo se avessi cominciato prima", "exampleSentenceEn": "I would have had more time if I had started earlier" },
+            { "pronoun": "tu", "form": "avresti avuto", "exampleSentence": "Tu avresti avuto ragione a rifiutare quell'offerta", "exampleSentenceEn": "You would have been right to refuse that offer" },
+            { "pronoun": "lui/lei", "form": "avrebbe avuto", "exampleSentence": "Lei avrebbe avuto una vita migliore se avesse fatto scelte diverse", "exampleSentenceEn": "She would have had a better life if she had made different choices" },
+            { "pronoun": "noi", "form": "avremmo avuto", "exampleSentence": "Noi avremmo avuto meno problemi se fossimo stati meglio preparati", "exampleSentenceEn": "We would have had fewer problems if we had been better prepared" },
+            { "pronoun": "voi", "form": "avreste avuto", "exampleSentence": "Voi avreste avuto l'occasione di incontrarlo se foste venuti", "exampleSentenceEn": "You would have had the opportunity to meet him if you had come" },
+            { "pronoun": "loro", "form": "avrebbero avuto", "exampleSentence": "Loro avrebbero avuto più successo con una strategia diversa", "exampleSentenceEn": "They would have had more success with a different strategy" }
           ]
         },
         {
