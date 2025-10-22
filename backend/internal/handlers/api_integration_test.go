@@ -1603,6 +1603,217 @@ func (suite *APIIntegrationTestSuite) TestGetProgress_ErrorHandling() {
 	// The important thing is that the endpoint doesn't fail
 }
 
+// Verb Conjugation Integration Tests
+
+func (suite *APIIntegrationTestSuite) TestGetVerbConjugationInfo() {
+	req, _ := http.NewRequest("GET", "/v1/verb-conjugations/info", nil)
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusOK, w.Code)
+
+	var infoResp map[string]interface{}
+	err := json.Unmarshal(w.Body.Bytes(), &infoResp)
+	assert.NoError(suite.T(), err)
+
+	// Verify the response structure
+	assert.Equal(suite.T(), "verb-conjugation", infoResp["id"])
+	assert.Equal(suite.T(), "Verb Conjugations", infoResp["name"])
+	assert.Equal(suite.T(), "📚", infoResp["emoji"])
+	assert.Contains(suite.T(), infoResp["description"], "Comprehensive verb conjugation tables")
+}
+
+func (suite *APIIntegrationTestSuite) TestGetAvailableLanguages() {
+	req, _ := http.NewRequest("GET", "/v1/verb-conjugations/languages", nil)
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusOK, w.Code)
+
+	var languages []string
+	err := json.Unmarshal(w.Body.Bytes(), &languages)
+	assert.NoError(suite.T(), err)
+
+	// Verify we get the expected languages from config.yaml
+	expectedLanguages := []string{"it", "fr", "de", "ru", "ja", "zh"}
+	for _, lang := range expectedLanguages {
+		assert.Contains(suite.T(), languages, lang, "Language %s should be available", lang)
+	}
+}
+
+func (suite *APIIntegrationTestSuite) TestGetVerbConjugations_Italian() {
+	req, _ := http.NewRequest("GET", "/v1/verb-conjugations/it", nil)
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusOK, w.Code)
+
+	var data map[string]interface{}
+	err := json.Unmarshal(w.Body.Bytes(), &data)
+	assert.NoError(suite.T(), err)
+
+	// Verify the response structure
+	assert.Equal(suite.T(), "it", data["language"])
+	assert.Equal(suite.T(), "Italian", data["languageName"])
+
+	// Verify verbs array exists and has content
+	verbs, ok := data["verbs"].([]interface{})
+	assert.True(suite.T(), ok, "Verbs should be an array")
+	assert.Greater(suite.T(), len(verbs), 0, "Should have at least one verb")
+
+	// Check first verb structure
+	firstVerb := verbs[0].(map[string]interface{})
+	assert.Contains(suite.T(), firstVerb, "infinitive")
+	assert.Contains(suite.T(), firstVerb, "infinitiveEn")
+	assert.Contains(suite.T(), firstVerb, "category")
+	assert.Contains(suite.T(), firstVerb, "tenses")
+
+	// Check tenses array
+	tenses, ok := firstVerb["tenses"].([]interface{})
+	assert.True(suite.T(), ok, "Tenses should be an array")
+	assert.Greater(suite.T(), len(tenses), 0, "Should have at least one tense")
+
+	// Check first tense structure
+	firstTense := tenses[0].(map[string]interface{})
+	assert.Contains(suite.T(), firstTense, "tenseId")
+	assert.Contains(suite.T(), firstTense, "tenseName")
+	assert.Contains(suite.T(), firstTense, "tenseNameEn")
+	assert.Contains(suite.T(), firstTense, "description")
+	assert.Contains(suite.T(), firstTense, "conjugations")
+
+	// Verify description is not empty
+	description, ok := firstTense["description"].(string)
+	assert.True(suite.T(), ok, "Description should be a string")
+	assert.NotEmpty(suite.T(), description, "Description should not be empty")
+}
+
+func (suite *APIIntegrationTestSuite) TestGetVerbConjugations_French() {
+	req, _ := http.NewRequest("GET", "/v1/verb-conjugations/fr", nil)
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusOK, w.Code)
+
+	var data map[string]interface{}
+	err := json.Unmarshal(w.Body.Bytes(), &data)
+	assert.NoError(suite.T(), err)
+
+	// Verify the response structure
+	assert.Equal(suite.T(), "fr", data["language"])
+	assert.Equal(suite.T(), "French", data["languageName"])
+
+	// Verify verbs array exists
+	verbs, ok := data["verbs"].([]interface{})
+	assert.True(suite.T(), ok, "Verbs should be an array")
+	assert.Greater(suite.T(), len(verbs), 0, "Should have at least one verb")
+}
+
+func (suite *APIIntegrationTestSuite) TestGetVerbConjugations_NonExistentLanguage() {
+	req, _ := http.NewRequest("GET", "/v1/verb-conjugations/xx", nil)
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusNotFound, w.Code)
+}
+
+func (suite *APIIntegrationTestSuite) TestGetVerbConjugation_SpecificVerb() {
+	req, _ := http.NewRequest("GET", "/v1/verb-conjugations/it/essere", nil)
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusOK, w.Code)
+
+	var verb map[string]interface{}
+	err := json.Unmarshal(w.Body.Bytes(), &verb)
+	assert.NoError(suite.T(), err)
+
+	// Verify the response structure for specific verb
+	assert.Equal(suite.T(), "essere", verb["infinitive"])
+	assert.Equal(suite.T(), "to be", verb["infinitiveEn"])
+	assert.Equal(suite.T(), "essential", verb["category"])
+
+	// Verify tenses array
+	tenses, ok := verb["tenses"].([]interface{})
+	assert.True(suite.T(), ok, "Tenses should be an array")
+	assert.Greater(suite.T(), len(tenses), 0, "Should have at least one tense")
+
+	// Check that each tense has a description
+	for i, tenseInterface := range tenses {
+		tense := tenseInterface.(map[string]interface{})
+		description, ok := tense["description"].(string)
+		assert.True(suite.T(), ok, "Tense %d should have a description string", i)
+		assert.NotEmpty(suite.T(), description, "Tense %d description should not be empty", i)
+	}
+}
+
+func (suite *APIIntegrationTestSuite) TestGetVerbConjugation_NonExistentVerb() {
+	req, _ := http.NewRequest("GET", "/v1/verb-conjugations/it/nonexistent", nil)
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusNotFound, w.Code)
+}
+
+func (suite *APIIntegrationTestSuite) TestGetVerbConjugation_NonExistentLanguageForVerb() {
+	req, _ := http.NewRequest("GET", "/v1/verb-conjugations/xx/essere", nil)
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusNotFound, w.Code)
+}
+
+func (suite *APIIntegrationTestSuite) TestVerbConjugationDataIntegrity() {
+	// Test that all languages have proper data structure
+	languages := []string{"it", "fr", "de", "ru", "ja", "zh"}
+
+	for _, lang := range languages {
+		req, _ := http.NewRequest("GET", fmt.Sprintf("/v1/verb-conjugations/%s", lang), nil)
+
+		w := httptest.NewRecorder()
+		suite.Router.ServeHTTP(w, req)
+
+		assert.Equal(suite.T(), http.StatusOK, w.Code, "Language %s should be available", lang)
+
+		var data map[string]interface{}
+		err := json.Unmarshal(w.Body.Bytes(), &data)
+		assert.NoError(suite.T(), err, "Language %s data should be valid JSON", lang)
+
+		// Verify basic structure
+		assert.Contains(suite.T(), data, "language", "Language %s should have language field", lang)
+		assert.Contains(suite.T(), data, "languageName", "Language %s should have languageName field", lang)
+		assert.Contains(suite.T(), data, "verbs", "Language %s should have verbs field", lang)
+
+		// Verify verbs array
+		verbs, ok := data["verbs"].([]interface{})
+		assert.True(suite.T(), ok, "Language %s verbs should be an array", lang)
+		assert.Greater(suite.T(), len(verbs), 0, "Language %s should have at least one verb", lang)
+
+		// Check that each verb has tenses with descriptions
+		for i, verbInterface := range verbs {
+			verb := verbInterface.(map[string]interface{})
+			tenses, ok := verb["tenses"].([]interface{})
+			assert.True(suite.T(), ok, "Language %s verb %d should have tenses array", lang, i)
+			assert.Greater(suite.T(), len(tenses), 0, "Language %s verb %d should have at least one tense", lang, i)
+
+			// Check that each tense has a description
+			for j, tenseInterface := range tenses {
+				tense := tenseInterface.(map[string]interface{})
+				description, ok := tense["description"].(string)
+				assert.True(suite.T(), ok, "Language %s verb %d tense %d should have description string", lang, i, j)
+				assert.NotEmpty(suite.T(), description, "Language %s verb %d tense %d description should not be empty", lang, i, j)
+			}
+		}
+	}
+}
+
 func TestAPIIntegrationTestSuite(t *testing.T) {
 	suite.Run(t, new(APIIntegrationTestSuite))
 }

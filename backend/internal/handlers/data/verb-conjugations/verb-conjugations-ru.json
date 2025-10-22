@@ -1,0 +1,128 @@
+{
+  "language": "ru",
+  "languageName": "Russian",
+  "verbs": [
+    {
+      "infinitive": "быть",
+      "infinitiveEn": "to be",
+      "category": "essential",
+      "tenses": [
+        {
+          "tenseId": "present",
+          "tenseName": "Настоящее время",
+          "tenseNameEn": "Present",
+          "description": "Used to describe actions happening now, general truths, or habitual actions. In Russian, the present tense of 'быть' is rarely used in modern language, replaced by the absence of a verb.",
+          "conjugations": [
+            { "pronoun": "я", "form": "есть", "exampleSentence": "Я есть студент", "exampleSentenceEn": "I am a student" },
+            { "pronoun": "ты", "form": "есть", "exampleSentence": "Ты есть хороший", "exampleSentenceEn": "You are good" },
+            { "pronoun": "он/она/оно", "form": "есть", "exampleSentence": "Он есть русский", "exampleSentenceEn": "He is Russian" },
+            { "pronoun": "мы", "form": "есть", "exampleSentence": "Мы есть друзья", "exampleSentenceEn": "We are friends" },
+            { "pronoun": "вы", "form": "есть", "exampleSentence": "Вы есть студенты", "exampleSentenceEn": "You are students" },
+            { "pronoun": "они", "form": "есть", "exampleSentence": "Они есть здесь", "exampleSentenceEn": "They are here" }
+          ]
+        },
+        {
+          "tenseId": "past",
+          "tenseName": "Прошедшее время",
+          "tenseNameEn": "Past",
+          "description": "Used to describe completed actions in the past. Russian past tense is formed by adding gender endings to the verb stem and doesn't require auxiliary verbs.",
+          "conjugations": [
+            { "pronoun": "я", "form": "был/была", "exampleSentence": "Я был счастлив", "exampleSentenceEn": "I was happy" },
+            { "pronoun": "ты", "form": "был/была", "exampleSentence": "Ты был хорош", "exampleSentenceEn": "You were good" },
+            { "pronoun": "он", "form": "был", "exampleSentence": "Он был русским", "exampleSentenceEn": "He was Russian" },
+            { "pronoun": "она", "form": "была", "exampleSentence": "Она была красивой", "exampleSentenceEn": "She was beautiful" },
+            { "pronoun": "мы", "form": "были", "exampleSentence": "Мы были друзьями", "exampleSentenceEn": "We were friends" },
+            { "pronoun": "вы", "form": "были", "exampleSentence": "Вы были здесь", "exampleSentenceEn": "You were here" },
+            { "pronoun": "они", "form": "были", "exampleSentence": "Они были друзьями", "exampleSentenceEn": "They were friends" }
+          ]
+        },
+        {
+          "tenseId": "future",
+          "tenseName": "Будущее время",
+          "tenseNameEn": "Future",
+          "description": "Used to express future actions, predictions, or intentions. Russian future tense is formed using the auxiliary verb 'быть' (to be) in its future form plus the infinitive.",
+          "conjugations": [
+            { "pronoun": "я", "form": "буду", "exampleSentence": "Я буду дома", "exampleSentenceEn": "I will be at home" },
+            { "pronoun": "ты", "form": "будешь", "exampleSentence": "Ты будешь хорошим", "exampleSentenceEn": "You will be good" },
+            { "pronoun": "он/она/оно", "form": "будет", "exampleSentence": "Она будет счастливой", "exampleSentenceEn": "She will be happy" },
+            { "pronoun": "мы", "form": "будем", "exampleSentence": "Мы будем здесь", "exampleSentenceEn": "We will be here" },
+            { "pronoun": "вы", "form": "будете", "exampleSentence": "Вы будете готовы", "exampleSentenceEn": "You will be ready" },
+            { "pronoun": "они", "form": "будут", "exampleSentence": "Они будут друзьями", "exampleSentenceEn": "They will be friends" }
+          ]
+        },
+        {
+          "tenseId": "imperative",
+          "tenseName": "Повелительное наклонение",
+          "tenseNameEn": "Imperative",
+          "description": "Used to give commands, orders, or instructions. Russian imperative has different forms for singular and plural, and the subject pronoun is usually omitted.",
+          "conjugations": [
+            { "pronoun": "ты", "form": "будь", "exampleSentence": "Будь хорошим!", "exampleSentenceEn": "Be good!" },
+            { "pronoun": "мы", "form": "будем", "exampleSentence": "Будем счастливыми!", "exampleSentenceEn": "Let's be happy!" },
+            { "pronoun": "вы", "form": "будьте", "exampleSentence": "Будьте добрыми!", "exampleSentenceEn": "Be kind!" }
+          ]
+        }
+      ]
+    },
+    {
+      "infinitive": "иметь",
+      "infinitiveEn": "to have",
+      "category": "essential",
+      "tenses": [
+        {
+          "tenseId": "present",
+          "tenseName": "Настоящее время",
+          "tenseNameEn": "Present",
+          "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in Russian.",
+          "conjugations": [
+            { "pronoun": "я", "form": "имею", "exampleSentence": "Я имею книгу", "exampleSentenceEn": "I have a book" },
+            { "pronoun": "ты", "form": "имеешь", "exampleSentence": "Ты имеешь голод", "exampleSentenceEn": "You are hungry" },
+            { "pronoun": "он/она/оно", "form": "имеет", "exampleSentence": "Она имеет кота", "exampleSentenceEn": "She has a cat" },
+            { "pronoun": "мы", "form": "имеем", "exampleSentence": "Мы имеем время", "exampleSentenceEn": "We have time" },
+            { "pronoun": "вы", "form": "имеете", "exampleSentence": "Вы имеете право", "exampleSentenceEn": "You are right" },
+            { "pronoun": "они", "form": "имеют", "exampleSentence": "Они имеют дом", "exampleSentenceEn": "They have a house" }
+          ]
+        },
+        {
+          "tenseId": "past",
+          "tenseName": "Прошедшее время",
+          "tenseNameEn": "Past",
+          "description": "Used to describe completed actions in the past. Russian past tense is formed by adding gender endings to the verb stem and doesn't require auxiliary verbs.",
+          "conjugations": [
+            { "pronoun": "я", "form": "имел/имела", "exampleSentence": "Я имел голод", "exampleSentenceEn": "I was hungry" },
+            { "pronoun": "ты", "form": "имел/имела", "exampleSentence": "Ты имел право", "exampleSentenceEn": "You were right" },
+            { "pronoun": "он", "form": "имел", "exampleSentence": "Он имел собаку", "exampleSentenceEn": "He had a dog" },
+            { "pronoun": "она", "form": "имела", "exampleSentence": "Она имела время", "exampleSentenceEn": "She had time" },
+            { "pronoun": "мы", "form": "имели", "exampleSentence": "Мы имели время", "exampleSentenceEn": "We had time" },
+            { "pronoun": "вы", "form": "имели", "exampleSentence": "Вы имели страх", "exampleSentenceEn": "You were afraid" },
+            { "pronoun": "они", "form": "имели", "exampleSentence": "Они имели машину", "exampleSentenceEn": "They had a car" }
+          ]
+        },
+        {
+          "tenseId": "future",
+          "tenseName": "Будущее время",
+          "tenseNameEn": "Future",
+          "description": "Used to express future actions, predictions, or intentions. Russian future tense is formed using the auxiliary verb 'быть' (to be) in its future form plus the infinitive.",
+          "conjugations": [
+            { "pronoun": "я", "form": "буду иметь", "exampleSentence": "Я буду иметь время", "exampleSentenceEn": "I will have time" },
+            { "pronoun": "ты", "form": "будешь иметь", "exampleSentence": "Ты будешь иметь успех", "exampleSentenceEn": "You will succeed" },
+            { "pronoun": "он/она/оно", "form": "будет иметь", "exampleSentence": "Она будет иметь ребенка", "exampleSentenceEn": "She will have a child" },
+            { "pronoun": "мы", "form": "будем иметь", "exampleSentence": "Мы будем иметь удачу", "exampleSentenceEn": "We will be lucky" },
+            { "pronoun": "вы", "form": "будете иметь", "exampleSentence": "Вы будете иметь право", "exampleSentenceEn": "You will be right" },
+            { "pronoun": "они", "form": "будут иметь", "exampleSentence": "Они будут иметь вечеринку", "exampleSentenceEn": "They will have a party" }
+          ]
+        },
+        {
+          "tenseId": "imperative",
+          "tenseName": "Повелительное наклонение",
+          "tenseNameEn": "Imperative",
+          "description": "Used to give commands, orders, or instructions. Russian imperative has different forms for singular and plural, and the subject pronoun is usually omitted.",
+          "conjugations": [
+            { "pronoun": "ты", "form": "имей", "exampleSentence": "Имей терпение!", "exampleSentenceEn": "Be patient!" },
+            { "pronoun": "мы", "form": "будем иметь", "exampleSentence": "Будем иметь мужество!", "exampleSentenceEn": "Let's be brave!" },
+            { "pronoun": "вы", "form": "имейте", "exampleSentence": "Имейте веру!", "exampleSentenceEn": "Have faith!" }
+          ]
+        }
+      ]
+    }
+  ]
+}

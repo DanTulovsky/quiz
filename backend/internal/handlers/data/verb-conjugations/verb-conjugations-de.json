@@ -1,0 +1,188 @@
+{
+  "language": "de",
+  "languageName": "German",
+  "verbs": [
+    {
+      "infinitive": "sein",
+      "infinitiveEn": "to be",
+      "category": "essential",
+      "tenses": [
+        {
+          "tenseId": "praesens",
+          "tenseName": "Präsens",
+          "tenseNameEn": "Present",
+          "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in German.",
+          "conjugations": [
+            { "pronoun": "ich", "form": "bin", "exampleSentence": "Ich bin glücklich", "exampleSentenceEn": "I am happy" },
+            { "pronoun": "du", "form": "bist", "exampleSentence": "Du bist gut", "exampleSentenceEn": "You are good" },
+            { "pronoun": "er/sie/es", "form": "ist", "exampleSentence": "Er ist Deutscher", "exampleSentenceEn": "He is German" },
+            { "pronoun": "wir", "form": "sind", "exampleSentence": "Wir sind Freunde", "exampleSentenceEn": "We are friends" },
+            { "pronoun": "ihr", "form": "seid", "exampleSentence": "Ihr seid Studenten", "exampleSentenceEn": "You are students" },
+            { "pronoun": "sie/Sie", "form": "sind", "exampleSentence": "Sie sind hier", "exampleSentenceEn": "They are here" }
+          ]
+        },
+        {
+          "tenseId": "praeteritum",
+          "tenseName": "Präteritum",
+          "tenseNameEn": "Simple Past",
+          "description": "Used primarily in written German and formal speech to describe completed actions in the past. Also used in storytelling and narratives.",
+          "conjugations": [
+            { "pronoun": "ich", "form": "war", "exampleSentence": "Ich war müde", "exampleSentenceEn": "I was tired" },
+            { "pronoun": "du", "form": "warst", "exampleSentence": "Du warst jung", "exampleSentenceEn": "You were young" },
+            { "pronoun": "er/sie/es", "form": "war", "exampleSentence": "Sie war schön", "exampleSentenceEn": "She was beautiful" },
+            { "pronoun": "wir", "form": "waren", "exampleSentence": "Wir waren zufrieden", "exampleSentenceEn": "We were satisfied" },
+            { "pronoun": "ihr", "form": "wart", "exampleSentence": "Ihr wart hier", "exampleSentenceEn": "You were here" },
+            { "pronoun": "sie/Sie", "form": "waren", "exampleSentence": "Sie waren Freunde", "exampleSentenceEn": "They were friends" }
+          ]
+        },
+        {
+          "tenseId": "futur_i",
+          "tenseName": "Futur I",
+          "tenseNameEn": "Future I",
+          "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'morgen' (tomorrow) or 'nächste Woche' (next week).",
+          "conjugations": [
+            { "pronoun": "ich", "form": "werde sein", "exampleSentence": "Ich werde zu Hause sein", "exampleSentenceEn": "I will be at home" },
+            { "pronoun": "du", "form": "wirst sein", "exampleSentence": "Du wirst gut sein", "exampleSentenceEn": "You will be good" },
+            { "pronoun": "er/sie/es", "form": "wird sein", "exampleSentence": "Sie wird glücklich sein", "exampleSentenceEn": "She will be happy" },
+            { "pronoun": "wir", "form": "werden sein", "exampleSentence": "Wir werden hier sein", "exampleSentenceEn": "We will be here" },
+            { "pronoun": "ihr", "form": "werdet sein", "exampleSentence": "Ihr werdet bereit sein", "exampleSentenceEn": "You will be ready" },
+            { "pronoun": "sie/Sie", "form": "werden sein", "exampleSentence": "Sie werden Freunde sein", "exampleSentenceEn": "They will be friends" }
+          ]
+        },
+        {
+          "tenseId": "perfekt",
+          "tenseName": "Perfekt",
+          "tenseNameEn": "Present Perfect",
+          "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken German.",
+          "conjugations": [
+            { "pronoun": "ich", "form": "bin gewesen", "exampleSentence": "Ich bin in Berlin gewesen", "exampleSentenceEn": "I have been to Berlin" },
+            { "pronoun": "du", "form": "bist gewesen", "exampleSentence": "Du bist gut gewesen", "exampleSentenceEn": "You have been good" },
+            { "pronoun": "er/sie/es", "form": "ist gewesen", "exampleSentence": "Sie ist nett gewesen", "exampleSentenceEn": "She has been nice" },
+            { "pronoun": "wir", "form": "sind gewesen", "exampleSentence": "Wir sind glücklich gewesen", "exampleSentenceEn": "We have been happy" },
+            { "pronoun": "ihr", "form": "seid gewesen", "exampleSentence": "Ihr seid hier gewesen", "exampleSentenceEn": "You have been here" },
+            { "pronoun": "sie/Sie", "form": "sind gewesen", "exampleSentence": "Sie sind Freunde gewesen", "exampleSentenceEn": "They have been friends" }
+          ]
+        },
+        {
+          "tenseId": "konjunktiv_i",
+          "tenseName": "Konjunktiv I",
+          "tenseNameEn": "Subjunctive I",
+          "description": "Used primarily in indirect speech and formal writing to report what someone else has said. Also used in certain fixed expressions and formal contexts.",
+          "conjugations": [
+            { "pronoun": "ich", "form": "sei", "exampleSentence": "Er sagt, er sei glücklich", "exampleSentenceEn": "He says he is happy" },
+            { "pronoun": "du", "form": "seist", "exampleSentence": "Er sagt, du seist gut", "exampleSentenceEn": "He says you are good" },
+            { "pronoun": "er/sie/es", "form": "sei", "exampleSentence": "Er sagt, sie sei nett", "exampleSentenceEn": "He says she is nice" },
+            { "pronoun": "wir", "form": "seien", "exampleSentence": "Er sagt, wir seien hier", "exampleSentenceEn": "He says we are here" },
+            { "pronoun": "ihr", "form": "seiet", "exampleSentence": "Er sagt, ihr seiet bereit", "exampleSentenceEn": "He says you are ready" },
+            { "pronoun": "sie/Sie", "form": "seien", "exampleSentence": "Er sagt, sie seien Freunde", "exampleSentenceEn": "He says they are friends" }
+          ]
+        },
+        {
+          "tenseId": "konjunktiv_ii",
+          "tenseName": "Konjunktiv II",
+          "tenseNameEn": "Subjunctive II",
+          "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'wenn' (if) clauses.",
+          "conjugations": [
+            { "pronoun": "ich", "form": "wäre", "exampleSentence": "Ich wäre glücklich", "exampleSentenceEn": "I would be happy" },
+            { "pronoun": "du", "form": "wärst", "exampleSentence": "Du wärst gut", "exampleSentenceEn": "You would be good" },
+            { "pronoun": "er/sie/es", "form": "wäre", "exampleSentence": "Sie wäre nett", "exampleSentenceEn": "She would be nice" },
+            { "pronoun": "wir", "form": "wären", "exampleSentence": "Wir wären hier", "exampleSentenceEn": "We would be here" },
+            { "pronoun": "ihr", "form": "wäret", "exampleSentence": "Ihr wäret bereit", "exampleSentenceEn": "You would be ready" },
+            { "pronoun": "sie/Sie", "form": "wären", "exampleSentence": "Sie wären Freunde", "exampleSentenceEn": "They would be friends" }
+          ]
+        }
+      ]
+    },
+    {
+      "infinitive": "haben",
+      "infinitiveEn": "to have",
+      "category": "essential",
+      "tenses": [
+        {
+          "tenseId": "praesens",
+          "tenseName": "Präsens",
+          "tenseNameEn": "Present",
+          "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in German.",
+          "conjugations": [
+            { "pronoun": "ich", "form": "habe", "exampleSentence": "Ich habe ein Buch", "exampleSentenceEn": "I have a book" },
+            { "pronoun": "du", "form": "hast", "exampleSentence": "Du hast Hunger", "exampleSentenceEn": "You are hungry" },
+            { "pronoun": "er/sie/es", "form": "hat", "exampleSentence": "Sie hat eine Katze", "exampleSentenceEn": "She has a cat" },
+            { "pronoun": "wir", "form": "haben", "exampleSentence": "Wir haben Zeit", "exampleSentenceEn": "We have time" },
+            { "pronoun": "ihr", "form": "habt", "exampleSentence": "Ihr habt recht", "exampleSentenceEn": "You are right" },
+            { "pronoun": "sie/Sie", "form": "haben", "exampleSentence": "Sie haben ein Haus", "exampleSentenceEn": "They have a house" }
+          ]
+        },
+        {
+          "tenseId": "praeteritum",
+          "tenseName": "Präteritum",
+          "tenseNameEn": "Simple Past",
+          "description": "Used primarily in written German and formal speech to describe completed actions in the past. Also used in storytelling and narratives.",
+          "conjugations": [
+            { "pronoun": "ich", "form": "hatte", "exampleSentence": "Ich hatte Hunger", "exampleSentenceEn": "I was hungry" },
+            { "pronoun": "du", "form": "hattest", "exampleSentence": "Du hattest recht", "exampleSentenceEn": "You were right" },
+            { "pronoun": "er/sie/es", "form": "hatte", "exampleSentence": "Sie hatte einen Hund", "exampleSentenceEn": "She had a dog" },
+            { "pronoun": "wir", "form": "hatten", "exampleSentence": "Wir hatten Zeit", "exampleSentenceEn": "We had time" },
+            { "pronoun": "ihr", "form": "hattet", "exampleSentence": "Ihr hattet Angst", "exampleSentenceEn": "You were afraid" },
+            { "pronoun": "sie/Sie", "form": "hatten", "exampleSentence": "Sie hatten ein Auto", "exampleSentenceEn": "They had a car" }
+          ]
+        },
+        {
+          "tenseId": "futur_i",
+          "tenseName": "Futur I",
+          "tenseNameEn": "Future I",
+          "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'morgen' (tomorrow) or 'nächste Woche' (next week).",
+          "conjugations": [
+            { "pronoun": "ich", "form": "werde haben", "exampleSentence": "Ich werde Zeit haben", "exampleSentenceEn": "I will have time" },
+            { "pronoun": "du", "form": "wirst haben", "exampleSentence": "Du wirst Erfolg haben", "exampleSentenceEn": "You will succeed" },
+            { "pronoun": "er/sie/es", "form": "wird haben", "exampleSentence": "Sie wird ein Kind haben", "exampleSentenceEn": "She will have a child" },
+            { "pronoun": "wir", "form": "werden haben", "exampleSentence": "Wir werden Glück haben", "exampleSentenceEn": "We will be lucky" },
+            { "pronoun": "ihr", "form": "werdet haben", "exampleSentence": "Ihr werdet recht haben", "exampleSentenceEn": "You will be right" },
+            { "pronoun": "sie/Sie", "form": "werden haben", "exampleSentence": "Sie werden eine Party haben", "exampleSentenceEn": "They will have a party" }
+          ]
+        },
+        {
+          "tenseId": "perfekt",
+          "tenseName": "Perfekt",
+          "tenseNameEn": "Present Perfect",
+          "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken German.",
+          "conjugations": [
+            { "pronoun": "ich", "form": "habe gehabt", "exampleSentence": "Ich habe Glück gehabt", "exampleSentenceEn": "I have been lucky" },
+            { "pronoun": "du", "form": "hast gehabt", "exampleSentence": "Du hast recht gehabt", "exampleSentenceEn": "You have been right" },
+            { "pronoun": "er/sie/es", "form": "hat gehabt", "exampleSentence": "Sie hat ein Kind gehabt", "exampleSentenceEn": "She has had a child" },
+            { "pronoun": "wir", "form": "haben gehabt", "exampleSentence": "Wir haben Zeit gehabt", "exampleSentenceEn": "We have had time" },
+            { "pronoun": "ihr", "form": "habt gehabt", "exampleSentence": "Ihr habt Angst gehabt", "exampleSentenceEn": "You have been afraid" },
+            { "pronoun": "sie/Sie", "form": "haben gehabt", "exampleSentence": "Sie haben eine Party gehabt", "exampleSentenceEn": "They have had a party" }
+          ]
+        },
+        {
+          "tenseId": "konjunktiv_i",
+          "tenseName": "Konjunktiv I",
+          "tenseNameEn": "Subjunctive I",
+          "description": "Used primarily in indirect speech and formal writing to report what someone else has said. Also used in certain fixed expressions and formal contexts.",
+          "conjugations": [
+            { "pronoun": "ich", "form": "habe", "exampleSentence": "Er sagt, er habe Zeit", "exampleSentenceEn": "He says he has time" },
+            { "pronoun": "du", "form": "habest", "exampleSentence": "Er sagt, du habest recht", "exampleSentenceEn": "He says you are right" },
+            { "pronoun": "er/sie/es", "form": "habe", "exampleSentence": "Er sagt, sie habe Glück", "exampleSentenceEn": "He says she is lucky" },
+            { "pronoun": "wir", "form": "haben", "exampleSentence": "Er sagt, wir haben Zeit", "exampleSentenceEn": "He says we have time" },
+            { "pronoun": "ihr", "form": "habet", "exampleSentence": "Er sagt, ihr habet Glück", "exampleSentenceEn": "He says you are lucky" },
+            { "pronoun": "sie/Sie", "form": "haben", "exampleSentence": "Er sagt, sie haben eine Party", "exampleSentenceEn": "He says they have a party" }
+          ]
+        },
+        {
+          "tenseId": "konjunktiv_ii",
+          "tenseName": "Konjunktiv II",
+          "tenseNameEn": "Subjunctive II",
+          "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'wenn' (if) clauses.",
+          "conjugations": [
+            { "pronoun": "ich", "form": "hätte", "exampleSentence": "Ich hätte Zeit", "exampleSentenceEn": "I would have time" },
+            { "pronoun": "du", "form": "hättest", "exampleSentence": "Du hättest recht", "exampleSentenceEn": "You would be right" },
+            { "pronoun": "er/sie/es", "form": "hätte", "exampleSentence": "Sie hätte ein Kind", "exampleSentenceEn": "She would have a child" },
+            { "pronoun": "wir", "form": "hätten", "exampleSentence": "Wir hätten Glück", "exampleSentenceEn": "We would be lucky" },
+            { "pronoun": "ihr", "form": "hättet", "exampleSentence": "Ihr hättet Angst", "exampleSentenceEn": "You would be afraid" },
+            { "pronoun": "sie/Sie", "form": "hätten", "exampleSentence": "Sie hätten eine Party", "exampleSentenceEn": "They would have a party" }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -13,6 +13,7 @@ import VocabularyPage from './pages/VocabularyPage';
 import SnippetsPage from './pages/SnippetsPage';
 import PhrasebookIndexPage from './pages/PhrasebookIndexPage';
 import PhrasebookCategoryPage from './pages/PhrasebookCategoryPage';
+import { VerbConjugationPage } from './pages/VerbConjugationPage';
 import DailyPage from './pages/DailyPage';
 import ProgressPage from './pages/ProgressPage';
 import SettingsPage from './pages/SettingsPage';
@@ -174,6 +175,20 @@ function App() {
             user ? (
               <Layout>
                 <PhrasebookCategoryPage />
+              </Layout>
+            ) : (
+              <Navigate
+                to={`/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`}
+              />
+            )
+          }
+        />
+        <Route
+          path='/verb-conjugation'
+          element={
+            user ? (
+              <Layout>
+                <VerbConjugationPage />
               </Layout>
             ) : (
               <Navigate

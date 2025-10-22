@@ -35,6 +35,11 @@ export const proxyConfig = {
     target: 'http://localhost:8080',
     changeOrigin: true,
   },
+  // Proxy /v1/verb-conjugations/ to http://localhost:8080
+  '/v1/verb-conjugations/': {
+    target: 'http://localhost:8080',
+    changeOrigin: true,
+  },
   // Proxy /v1/ to http://localhost:8080
   '/v1/': {
     target: 'http://localhost:8080',

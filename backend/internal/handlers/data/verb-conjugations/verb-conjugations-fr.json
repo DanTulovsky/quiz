@@ -1,0 +1,210 @@
+{
+  "language": "fr",
+  "languageName": "French",
+  "verbs": [
+    {
+      "infinitive": "être",
+      "infinitiveEn": "to be",
+      "category": "essential",
+      "tenses": [
+        {
+          "tenseId": "present",
+          "tenseName": "Présent",
+          "tenseNameEn": "Present",
+          "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in French.",
+          "conjugations": [
+            { "pronoun": "je", "form": "suis", "exampleSentence": "Je suis heureux", "exampleSentenceEn": "I am happy" },
+            { "pronoun": "tu", "form": "es", "exampleSentence": "Tu es bon", "exampleSentenceEn": "You are good" },
+            { "pronoun": "il/elle", "form": "est", "exampleSentence": "Il est français", "exampleSentenceEn": "He is French" },
+            { "pronoun": "nous", "form": "sommes", "exampleSentence": "Nous sommes amis", "exampleSentenceEn": "We are friends" },
+            { "pronoun": "vous", "form": "êtes", "exampleSentence": "Vous êtes étudiants", "exampleSentenceEn": "You are students" },
+            { "pronoun": "ils/elles", "form": "sont", "exampleSentence": "Ils sont ici", "exampleSentenceEn": "They are here" }
+          ]
+        },
+        {
+          "tenseId": "imparfait",
+          "tenseName": "Imparfait",
+          "tenseNameEn": "Imperfect",
+          "description": "Used to describe ongoing, repeated, or habitual actions in the past. Also used for descriptions, states of being, and background information in storytelling.",
+          "conjugations": [
+            { "pronoun": "je", "form": "étais", "exampleSentence": "J'étais fatigué", "exampleSentenceEn": "I was tired" },
+            { "pronoun": "tu", "form": "étais", "exampleSentence": "Tu étais jeune", "exampleSentenceEn": "You were young" },
+            { "pronoun": "il/elle", "form": "était", "exampleSentence": "Elle était belle", "exampleSentenceEn": "She was beautiful" },
+            { "pronoun": "nous", "form": "étions", "exampleSentence": "Nous étions contents", "exampleSentenceEn": "We were happy" },
+            { "pronoun": "vous", "form": "étiez", "exampleSentence": "Vous étiez là", "exampleSentenceEn": "You were there" },
+            { "pronoun": "ils/elles", "form": "étaient", "exampleSentence": "Ils étaient amis", "exampleSentenceEn": "They were friends" }
+          ]
+        },
+        {
+          "tenseId": "futur",
+          "tenseName": "Futur Simple",
+          "tenseNameEn": "Simple Future",
+          "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'demain' (tomorrow) or 'la semaine prochaine' (next week).",
+          "conjugations": [
+            { "pronoun": "je", "form": "serai", "exampleSentence": "Je serai à la maison", "exampleSentenceEn": "I will be at home" },
+            { "pronoun": "tu", "form": "seras", "exampleSentence": "Tu seras bon", "exampleSentenceEn": "You will be good" },
+            { "pronoun": "il/elle", "form": "sera", "exampleSentence": "Elle sera heureuse", "exampleSentenceEn": "She will be happy" },
+            { "pronoun": "nous", "form": "serons", "exampleSentence": "Nous serons ici", "exampleSentenceEn": "We will be here" },
+            { "pronoun": "vous", "form": "serez", "exampleSentence": "Vous serez prêts", "exampleSentenceEn": "You will be ready" },
+            { "pronoun": "ils/elles", "form": "seront", "exampleSentence": "Ils seront amis", "exampleSentenceEn": "They will be friends" }
+          ]
+        },
+        {
+          "tenseId": "passe_compose",
+          "tenseName": "Passé Composé",
+          "tenseNameEn": "Present Perfect",
+          "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken French.",
+          "conjugations": [
+            { "pronoun": "je", "form": "ai été", "exampleSentence": "J'ai été à Paris", "exampleSentenceEn": "I have been to Paris" },
+            { "pronoun": "tu", "form": "as été", "exampleSentence": "Tu as été bon", "exampleSentenceEn": "You have been good" },
+            { "pronoun": "il/elle", "form": "a été", "exampleSentence": "Elle a été gentille", "exampleSentenceEn": "She has been kind" },
+            { "pronoun": "nous", "form": "avons été", "exampleSentence": "Nous avons été heureux", "exampleSentenceEn": "We have been happy" },
+            { "pronoun": "vous", "form": "avez été", "exampleSentence": "Vous avez été là", "exampleSentenceEn": "You have been there" },
+            { "pronoun": "ils/elles", "form": "ont été", "exampleSentence": "Ils ont été amis", "exampleSentenceEn": "They have been friends" }
+          ]
+        },
+        {
+          "tenseId": "conditionnel_present",
+          "tenseName": "Conditionnel Présent",
+          "tenseNameEn": "Present Conditional",
+          "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'si' (if) clauses.",
+          "conjugations": [
+            { "pronoun": "je", "form": "serais", "exampleSentence": "Je serais heureux", "exampleSentenceEn": "I would be happy" },
+            { "pronoun": "tu", "form": "serais", "exampleSentence": "Tu serais bon", "exampleSentenceEn": "You would be good" },
+            { "pronoun": "il/elle", "form": "serait", "exampleSentence": "Elle serait gentille", "exampleSentenceEn": "She would be kind" },
+            { "pronoun": "nous", "form": "serions", "exampleSentence": "Nous serions ici", "exampleSentenceEn": "We would be here" },
+            { "pronoun": "vous", "form": "seriez", "exampleSentence": "Vous seriez prêts", "exampleSentenceEn": "You would be ready" },
+            { "pronoun": "ils/elles", "form": "seraient", "exampleSentence": "Ils seraient amis", "exampleSentenceEn": "They would be friends" }
+          ]
+        },
+        {
+          "tenseId": "subjonctif_present",
+          "tenseName": "Subjonctif Présent",
+          "tenseNameEn": "Present Subjunctive",
+          "description": "Used in dependent clauses after certain expressions of opinion, doubt, emotion, or necessity. Common triggers include 'il faut que' (it's necessary that) and 'je veux que' (I want that).",
+          "conjugations": [
+            { "pronoun": "je", "form": "sois", "exampleSentence": "Il faut que je sois heureux", "exampleSentenceEn": "I need to be happy" },
+            { "pronoun": "tu", "form": "sois", "exampleSentence": "Il faut que tu sois bon", "exampleSentenceEn": "You need to be good" },
+            { "pronoun": "il/elle", "form": "soit", "exampleSentence": "Il faut qu'elle soit gentille", "exampleSentenceEn": "She needs to be kind" },
+            { "pronoun": "nous", "form": "soyons", "exampleSentence": "Il faut que nous soyons ici", "exampleSentenceEn": "We need to be here" },
+            { "pronoun": "vous", "form": "soyez", "exampleSentence": "Il faut que vous soyez prêts", "exampleSentenceEn": "You need to be ready" },
+            { "pronoun": "ils/elles", "form": "soient", "exampleSentence": "Il faut qu'ils soient amis", "exampleSentenceEn": "They need to be friends" }
+          ]
+        },
+        {
+          "tenseId": "imperatif",
+          "tenseName": "Impératif",
+          "tenseNameEn": "Imperative",
+          "description": "Used to give commands, orders, or instructions. Only exists for the second person (tu, vous) and first person plural (nous). The subject pronoun is usually omitted.",
+          "conjugations": [
+            { "pronoun": "tu", "form": "sois", "exampleSentence": "Sois bon!", "exampleSentenceEn": "Be good!" },
+            { "pronoun": "nous", "form": "soyons", "exampleSentence": "Soyons heureux!", "exampleSentenceEn": "Let's be happy!" },
+            { "pronoun": "vous", "form": "soyez", "exampleSentence": "Soyez gentils!", "exampleSentenceEn": "Be kind!" }
+          ]
+        }
+      ]
+    },
+    {
+      "infinitive": "avoir",
+      "infinitiveEn": "to have",
+      "category": "essential",
+      "tenses": [
+        {
+          "tenseId": "present",
+          "tenseName": "Présent",
+          "tenseNameEn": "Present",
+          "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in French.",
+          "conjugations": [
+            { "pronoun": "je", "form": "ai", "exampleSentence": "J'ai un livre", "exampleSentenceEn": "I have a book" },
+            { "pronoun": "tu", "form": "as", "exampleSentence": "Tu as faim", "exampleSentenceEn": "You are hungry" },
+            { "pronoun": "il/elle", "form": "a", "exampleSentence": "Elle a un chat", "exampleSentenceEn": "She has a cat" },
+            { "pronoun": "nous", "form": "avons", "exampleSentence": "Nous avons le temps", "exampleSentenceEn": "We have time" },
+            { "pronoun": "vous", "form": "avez", "exampleSentence": "Vous avez raison", "exampleSentenceEn": "You are right" },
+            { "pronoun": "ils/elles", "form": "ont", "exampleSentence": "Ils ont une maison", "exampleSentenceEn": "They have a house" }
+          ]
+        },
+        {
+          "tenseId": "imparfait",
+          "tenseName": "Imparfait",
+          "tenseNameEn": "Imperfect",
+          "description": "Used to describe ongoing, repeated, or habitual actions in the past. Also used for descriptions, states of being, and background information in storytelling.",
+          "conjugations": [
+            { "pronoun": "je", "form": "avais", "exampleSentence": "J'avais faim", "exampleSentenceEn": "I was hungry" },
+            { "pronoun": "tu", "form": "avais", "exampleSentence": "Tu avais raison", "exampleSentenceEn": "You were right" },
+            { "pronoun": "il/elle", "form": "avait", "exampleSentence": "Elle avait un chien", "exampleSentenceEn": "She had a dog" },
+            { "pronoun": "nous", "form": "avions", "exampleSentence": "Nous avions le temps", "exampleSentenceEn": "We had time" },
+            { "pronoun": "vous", "form": "aviez", "exampleSentence": "Vous aviez peur", "exampleSentenceEn": "You were afraid" },
+            { "pronoun": "ils/elles", "form": "avaient", "exampleSentence": "Ils avaient une voiture", "exampleSentenceEn": "They had a car" }
+          ]
+        },
+        {
+          "tenseId": "futur",
+          "tenseName": "Futur Simple",
+          "tenseNameEn": "Simple Future",
+          "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'demain' (tomorrow) or 'la semaine prochaine' (next week).",
+          "conjugations": [
+            { "pronoun": "je", "form": "aurai", "exampleSentence": "J'aurai le temps", "exampleSentenceEn": "I will have time" },
+            { "pronoun": "tu", "form": "auras", "exampleSentence": "Tu auras du succès", "exampleSentenceEn": "You will succeed" },
+            { "pronoun": "il/elle", "form": "aura", "exampleSentence": "Elle aura un enfant", "exampleSentenceEn": "She will have a child" },
+            { "pronoun": "nous", "form": "aurons", "exampleSentence": "Nous aurons de la chance", "exampleSentenceEn": "We will be lucky" },
+            { "pronoun": "vous", "form": "aurez", "exampleSentence": "Vous aurez raison", "exampleSentenceEn": "You will be right" },
+            { "pronoun": "ils/elles", "form": "auront", "exampleSentence": "Ils auront une fête", "exampleSentenceEn": "They will have a party" }
+          ]
+        },
+        {
+          "tenseId": "passe_compose",
+          "tenseName": "Passé Composé",
+          "tenseNameEn": "Present Perfect",
+          "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken French.",
+          "conjugations": [
+            { "pronoun": "je", "form": "ai eu", "exampleSentence": "J'ai eu de la chance", "exampleSentenceEn": "I have been lucky" },
+            { "pronoun": "tu", "form": "as eu", "exampleSentence": "Tu as eu raison", "exampleSentenceEn": "You have been right" },
+            { "pronoun": "il/elle", "form": "a eu", "exampleSentence": "Elle a eu un enfant", "exampleSentenceEn": "She has had a child" },
+            { "pronoun": "nous", "form": "avons eu", "exampleSentence": "Nous avons eu le temps", "exampleSentenceEn": "We have had time" },
+            { "pronoun": "vous", "form": "avez eu", "exampleSentence": "Vous avez eu peur", "exampleSentenceEn": "You have been afraid" },
+            { "pronoun": "ils/elles", "form": "ont eu", "exampleSentence": "Ils ont eu une fête", "exampleSentenceEn": "They have had a party" }
+          ]
+        },
+        {
+          "tenseId": "conditionnel_present",
+          "tenseName": "Conditionnel Présent",
+          "tenseNameEn": "Present Conditional",
+          "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'si' (if) clauses.",
+          "conjugations": [
+            { "pronoun": "je", "form": "aurais", "exampleSentence": "J'aurais le temps", "exampleSentenceEn": "I would have time" },
+            { "pronoun": "tu", "form": "aurais", "exampleSentence": "Tu aurais raison", "exampleSentenceEn": "You would be right" },
+            { "pronoun": "il/elle", "form": "aurait", "exampleSentence": "Elle aurait un enfant", "exampleSentenceEn": "She would have a child" },
+            { "pronoun": "nous", "form": "aurions", "exampleSentence": "Nous aurions de la chance", "exampleSentenceEn": "We would be lucky" },
+            { "pronoun": "vous", "form": "auriez", "exampleSentence": "Vous auriez peur", "exampleSentenceEn": "You would be afraid" },
+            { "pronoun": "ils/elles", "form": "auraient", "exampleSentence": "Ils auraient une fête", "exampleSentenceEn": "They would have a party" }
+          ]
+        },
+        {
+          "tenseId": "subjonctif_present",
+          "tenseName": "Subjonctif Présent",
+          "tenseNameEn": "Present Subjunctive",
+          "description": "Used in dependent clauses after certain expressions of opinion, doubt, emotion, or necessity. Common triggers include 'il faut que' (it's necessary that) and 'je veux que' (I want that).",
+          "conjugations": [
+            { "pronoun": "je", "form": "aie", "exampleSentence": "Il faut que j'aie le temps", "exampleSentenceEn": "I need to have time" },
+            { "pronoun": "tu", "form": "aies", "exampleSentence": "Il faut que tu aies raison", "exampleSentenceEn": "You need to be right" },
+            { "pronoun": "il/elle", "form": "ait", "exampleSentence": "Il faut qu'elle ait de la chance", "exampleSentenceEn": "She needs to be lucky" },
+            { "pronoun": "nous", "form": "ayons", "exampleSentence": "Il faut que nous ayons le temps", "exampleSentenceEn": "We need to have time" },
+            { "pronoun": "vous", "form": "ayez", "exampleSentence": "Il faut que vous ayez de la chance", "exampleSentenceEn": "You need to be lucky" },
+            { "pronoun": "ils/elles", "form": "aient", "exampleSentence": "Il faut qu'ils aient une fête", "exampleSentenceEn": "They need to have a party" }
+          ]
+        },
+        {
+          "tenseId": "imperatif",
+          "tenseName": "Impératif",
+          "tenseNameEn": "Imperative",
+          "description": "Used to give commands, orders, or instructions. Only exists for the second person (tu, vous) and first person plural (nous). The subject pronoun is usually omitted.",
+          "conjugations": [
+            { "pronoun": "tu", "form": "aie", "exampleSentence": "Aie de la patience!", "exampleSentenceEn": "Be patient!" },
+            { "pronoun": "nous", "form": "ayons", "exampleSentence": "Ayons du courage!", "exampleSentenceEn": "Let's be brave!" },
+            { "pronoun": "vous", "form": "ayez", "exampleSentence": "Ayez confiance!", "exampleSentenceEn": "Have faith!" }
+          ]
+        }
+      ]
+    }
+  ]
+}

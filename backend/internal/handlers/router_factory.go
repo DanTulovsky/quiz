@@ -183,6 +183,7 @@ func NewRouter(
 	// Inject story service into admin handler via exported field
 	adminHandler.storyService = storyService
 	userAdminHandler := NewUserAdminHandler(userService, cfg, logger)
+	verbConjugationHandler := NewVerbConjugationHandler(logger)
 
 	// V1 routes (matching swagger spec)
 	v1 := router.Group("/v1")
@@ -310,6 +311,15 @@ func NewRouter(
 			settings.POST("/clear-ai-chats", middleware.RequireAuth(), middleware.RequestValidationMiddleware(logger), settingsHandler.ClearAllAIChats)
 			settings.POST("/reset-account", middleware.RequireAuth(), middleware.RequestValidationMiddleware(logger), settingsHandler.ResetAccount)
 			settings.GET("/api-key/:provider", middleware.RequireAuth(), settingsHandler.CheckAPIKeyAvailability)
+		}
+
+		// Verb conjugation endpoints
+		verbConjugations := v1.Group("/verb-conjugations")
+		{
+			verbConjugations.GET("/info", verbConjugationHandler.GetVerbConjugationInfo)
+			verbConjugations.GET("/languages", verbConjugationHandler.GetAvailableLanguages)
+			verbConjugations.GET("/:language", verbConjugationHandler.GetVerbConjugations)
+			verbConjugations.GET("/:language/:verb", verbConjugationHandler.GetVerbConjugation)
 		}
 
 		// AI conversation endpoints

@@ -198,6 +198,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         icon: IconLanguage,
         testId: 'nav-phrasebook',
       },
+      {
+        name: 'Verb Conjugations',
+        href: '/verb-conjugation',
+        icon: IconBook2,
+        testId: 'nav-verb-conjugations',
+      },
     ];
 
     const adminNav = isAdmin

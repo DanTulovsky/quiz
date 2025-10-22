@@ -1,0 +1,210 @@
+{
+  "language": "it",
+  "languageName": "Italian",
+  "verbs": [
+    {
+      "infinitive": "essere",
+      "infinitiveEn": "to be",
+      "category": "essential",
+      "tenses": [
+        {
+          "tenseId": "presente",
+          "tenseName": "Presente",
+          "tenseNameEn": "Present",
+          "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in Italian.",
+          "conjugations": [
+            { "pronoun": "io", "form": "sono", "exampleSentence": "Io sono felice", "exampleSentenceEn": "I am happy" },
+            { "pronoun": "tu", "form": "sei", "exampleSentence": "Tu sei bravo", "exampleSentenceEn": "You are good" },
+            { "pronoun": "lui/lei", "form": "è", "exampleSentence": "Lui è italiano", "exampleSentenceEn": "He is Italian" },
+            { "pronoun": "noi", "form": "siamo", "exampleSentence": "Noi siamo amici", "exampleSentenceEn": "We are friends" },
+            { "pronoun": "voi", "form": "siete", "exampleSentence": "Voi siete studenti", "exampleSentenceEn": "You are students" },
+            { "pronoun": "loro", "form": "sono", "exampleSentence": "Loro sono qui", "exampleSentenceEn": "They are here" }
+          ]
+        },
+        {
+          "tenseId": "imperfetto",
+          "tenseName": "Imperfetto",
+          "tenseNameEn": "Imperfect",
+          "description": "Used to describe ongoing, repeated, or habitual actions in the past. Also used for descriptions, states of being, and background information in storytelling.",
+          "conjugations": [
+            { "pronoun": "io", "form": "ero", "exampleSentence": "Io ero stanco", "exampleSentenceEn": "I was tired" },
+            { "pronoun": "tu", "form": "eri", "exampleSentence": "Tu eri giovane", "exampleSentenceEn": "You were young" },
+            { "pronoun": "lui/lei", "form": "era", "exampleSentence": "Lei era bella", "exampleSentenceEn": "She was beautiful" },
+            { "pronoun": "noi", "form": "eravamo", "exampleSentence": "Noi eravamo contenti", "exampleSentenceEn": "We were happy" },
+            { "pronoun": "voi", "form": "eravate", "exampleSentence": "Voi eravate qui", "exampleSentenceEn": "You were here" },
+            { "pronoun": "loro", "form": "erano", "exampleSentence": "Loro erano amici", "exampleSentenceEn": "They were friends" }
+          ]
+        },
+        {
+          "tenseId": "futuro_semplice",
+          "tenseName": "Futuro Semplice",
+          "tenseNameEn": "Simple Future",
+          "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'domani' (tomorrow) or 'la prossima settimana' (next week).",
+          "conjugations": [
+            { "pronoun": "io", "form": "sarò", "exampleSentence": "Io sarò a casa", "exampleSentenceEn": "I will be at home" },
+            { "pronoun": "tu", "form": "sarai", "exampleSentence": "Tu sarai bravo", "exampleSentenceEn": "You will be good" },
+            { "pronoun": "lui/lei", "form": "sarà", "exampleSentence": "Lei sarà felice", "exampleSentenceEn": "She will be happy" },
+            { "pronoun": "noi", "form": "saremo", "exampleSentence": "Noi saremo qui", "exampleSentenceEn": "We will be here" },
+            { "pronoun": "voi", "form": "sarete", "exampleSentence": "Voi sarete pronti", "exampleSentenceEn": "You will be ready" },
+            { "pronoun": "loro", "form": "saranno", "exampleSentence": "Loro saranno amici", "exampleSentenceEn": "They will be friends" }
+          ]
+        },
+        {
+          "tenseId": "passato_prossimo",
+          "tenseName": "Passato Prossimo",
+          "tenseNameEn": "Present Perfect",
+          "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken Italian.",
+          "conjugations": [
+            { "pronoun": "io", "form": "sono stato/a", "exampleSentence": "Io sono stato a Roma", "exampleSentenceEn": "I have been to Rome" },
+            { "pronoun": "tu", "form": "sei stato/a", "exampleSentence": "Tu sei stato bravo", "exampleSentenceEn": "You have been good" },
+            { "pronoun": "lui/lei", "form": "è stato/a", "exampleSentence": "Lei è stata gentile", "exampleSentenceEn": "She has been kind" },
+            { "pronoun": "noi", "form": "siamo stati/e", "exampleSentence": "Noi siamo stati felici", "exampleSentenceEn": "We have been happy" },
+            { "pronoun": "voi", "form": "siete stati/e", "exampleSentence": "Voi siete stati qui", "exampleSentenceEn": "You have been here" },
+            { "pronoun": "loro", "form": "sono stati/e", "exampleSentence": "Loro sono stati amici", "exampleSentenceEn": "They have been friends" }
+          ]
+        },
+        {
+          "tenseId": "condizionale_presente",
+          "tenseName": "Condizionale Presente",
+          "tenseNameEn": "Present Conditional",
+          "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'se' (if) clauses.",
+          "conjugations": [
+            { "pronoun": "io", "form": "sarei", "exampleSentence": "Io sarei felice", "exampleSentenceEn": "I would be happy" },
+            { "pronoun": "tu", "form": "saresti", "exampleSentence": "Tu saresti bravo", "exampleSentenceEn": "You would be good" },
+            { "pronoun": "lui/lei", "form": "sarebbe", "exampleSentence": "Lei sarebbe gentile", "exampleSentenceEn": "She would be kind" },
+            { "pronoun": "noi", "form": "saremmo", "exampleSentence": "Noi saremmo qui", "exampleSentenceEn": "We would be here" },
+            { "pronoun": "voi", "form": "sareste", "exampleSentence": "Voi sareste pronti", "exampleSentenceEn": "You would be ready" },
+            { "pronoun": "loro", "form": "sarebbero", "exampleSentence": "Loro sarebbero amici", "exampleSentenceEn": "They would be friends" }
+          ]
+        },
+        {
+          "tenseId": "congiuntivo_presente",
+          "tenseName": "Congiuntivo Presente",
+          "tenseNameEn": "Present Subjunctive",
+          "description": "Used in dependent clauses after certain expressions of opinion, doubt, emotion, or necessity. Common triggers include 'spero che' (I hope that) and 'è importante che' (it's important that).",
+          "conjugations": [
+            { "pronoun": "io", "form": "sia", "exampleSentence": "Spero che io sia felice", "exampleSentenceEn": "I hope that I am happy" },
+            { "pronoun": "tu", "form": "sia", "exampleSentence": "Spero che tu sia bravo", "exampleSentenceEn": "I hope that you are good" },
+            { "pronoun": "lui/lei", "form": "sia", "exampleSentence": "Spero che lei sia gentile", "exampleSentenceEn": "I hope that she is kind" },
+            { "pronoun": "noi", "form": "siamo", "exampleSentence": "Spero che noi siamo qui", "exampleSentenceEn": "I hope that we are here" },
+            { "pronoun": "voi", "form": "siate", "exampleSentence": "Spero che voi siate pronti", "exampleSentenceEn": "I hope that you are ready" },
+            { "pronoun": "loro", "form": "siano", "exampleSentence": "Spero che loro siano amici", "exampleSentenceEn": "I hope that they are friends" }
+          ]
+        },
+        {
+          "tenseId": "imperativo",
+          "tenseName": "Imperativo",
+          "tenseNameEn": "Imperative",
+          "description": "Used to give commands, orders, or instructions. Only exists for the second person (tu, voi) and first person plural (noi). The subject pronoun is usually omitted.",
+          "conjugations": [
+            { "pronoun": "tu", "form": "sii", "exampleSentence": "Sii bravo!", "exampleSentenceEn": "Be good!" },
+            { "pronoun": "noi", "form": "siamo", "exampleSentence": "Siamo felici!", "exampleSentenceEn": "Let's be happy!" },
+            { "pronoun": "voi", "form": "siate", "exampleSentence": "Siate gentili!", "exampleSentenceEn": "Be kind!" }
+          ]
+        }
+      ]
+    },
+    {
+      "infinitive": "avere",
+      "infinitiveEn": "to have",
+      "category": "essential",
+      "tenses": [
+        {
+          "tenseId": "presente",
+          "tenseName": "Presente",
+          "tenseNameEn": "Present",
+          "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in Italian.",
+          "conjugations": [
+            { "pronoun": "io", "form": "ho", "exampleSentence": "Io ho un libro", "exampleSentenceEn": "I have a book" },
+            { "pronoun": "tu", "form": "hai", "exampleSentence": "Tu hai fame", "exampleSentenceEn": "You are hungry" },
+            { "pronoun": "lui/lei", "form": "ha", "exampleSentence": "Lei ha un gatto", "exampleSentenceEn": "She has a cat" },
+            { "pronoun": "noi", "form": "abbiamo", "exampleSentence": "Noi abbiamo tempo", "exampleSentenceEn": "We have time" },
+            { "pronoun": "voi", "form": "avete", "exampleSentence": "Voi avete ragione", "exampleSentenceEn": "You are right" },
+            { "pronoun": "loro", "form": "hanno", "exampleSentence": "Loro hanno una casa", "exampleSentenceEn": "They have a house" }
+          ]
+        },
+        {
+          "tenseId": "imperfetto",
+          "tenseName": "Imperfetto",
+          "tenseNameEn": "Imperfect",
+          "description": "Used to describe ongoing, repeated, or habitual actions in the past. Also used for descriptions, states of being, and background information in storytelling.",
+          "conjugations": [
+            { "pronoun": "io", "form": "avevo", "exampleSentence": "Io avevo fame", "exampleSentenceEn": "I was hungry" },
+            { "pronoun": "tu", "form": "avevi", "exampleSentence": "Tu avevi ragione", "exampleSentenceEn": "You were right" },
+            { "pronoun": "lui/lei", "form": "aveva", "exampleSentence": "Lei aveva un cane", "exampleSentenceEn": "She had a dog" },
+            { "pronoun": "noi", "form": "avevamo", "exampleSentence": "Noi avevamo tempo", "exampleSentenceEn": "We had time" },
+            { "pronoun": "voi", "form": "avevate", "exampleSentence": "Voi avevate paura", "exampleSentenceEn": "You were afraid" },
+            { "pronoun": "loro", "form": "avevano", "exampleSentence": "Loro avevano una macchina", "exampleSentenceEn": "They had a car" }
+          ]
+        },
+        {
+          "tenseId": "futuro_semplice",
+          "tenseName": "Futuro Semplice",
+          "tenseNameEn": "Simple Future",
+          "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'domani' (tomorrow) or 'la prossima settimana' (next week).",
+          "conjugations": [
+            { "pronoun": "io", "form": "avrò", "exampleSentence": "Io avrò tempo", "exampleSentenceEn": "I will have time" },
+            { "pronoun": "tu", "form": "avrai", "exampleSentence": "Tu avrai successo", "exampleSentenceEn": "You will succeed" },
+            { "pronoun": "lui/lei", "form": "avrà", "exampleSentence": "Lei avrà un figlio", "exampleSentenceEn": "She will have a child" },
+            { "pronoun": "noi", "form": "avremo", "exampleSentence": "Noi avremo fortuna", "exampleSentenceEn": "We will be lucky" },
+            { "pronoun": "voi", "form": "avrete", "exampleSentence": "Voi avrete ragione", "exampleSentenceEn": "You will be right" },
+            { "pronoun": "loro", "form": "avranno", "exampleSentence": "Loro avranno una festa", "exampleSentenceEn": "They will have a party" }
+          ]
+        },
+        {
+          "tenseId": "passato_prossimo",
+          "tenseName": "Passato Prossimo",
+          "tenseNameEn": "Present Perfect",
+          "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken Italian.",
+          "conjugations": [
+            { "pronoun": "io", "form": "ho avuto", "exampleSentence": "Io ho avuto fortuna", "exampleSentenceEn": "I have been lucky" },
+            { "pronoun": "tu", "form": "hai avuto", "exampleSentence": "Tu hai avuto ragione", "exampleSentenceEn": "You have been right" },
+            { "pronoun": "lui/lei", "form": "ha avuto", "exampleSentence": "Lei ha avuto un figlio", "exampleSentenceEn": "She has had a child" },
+            { "pronoun": "noi", "form": "abbiamo avuto", "exampleSentence": "Noi abbiamo avuto tempo", "exampleSentenceEn": "We have had time" },
+            { "pronoun": "voi", "form": "avete avuto", "exampleSentence": "Voi avete avuto paura", "exampleSentenceEn": "You have been afraid" },
+            { "pronoun": "loro", "form": "hanno avuto", "exampleSentence": "Loro hanno avuto una festa", "exampleSentenceEn": "They have had a party" }
+          ]
+        },
+        {
+          "tenseId": "condizionale_presente",
+          "tenseName": "Condizionale Presente",
+          "tenseNameEn": "Present Conditional",
+          "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'se' (if) clauses.",
+          "conjugations": [
+            { "pronoun": "io", "form": "avrei", "exampleSentence": "Io avrei tempo", "exampleSentenceEn": "I would have time" },
+            { "pronoun": "tu", "form": "avresti", "exampleSentence": "Tu avresti ragione", "exampleSentenceEn": "You would be right" },
+            { "pronoun": "lui/lei", "form": "avrebbe", "exampleSentence": "Lei avrebbe un figlio", "exampleSentenceEn": "She would have a child" },
+            { "pronoun": "noi", "form": "avremmo", "exampleSentence": "Noi avremmo fortuna", "exampleSentenceEn": "We would be lucky" },
+            { "pronoun": "voi", "form": "avreste", "exampleSentence": "Voi avreste paura", "exampleSentenceEn": "You would be afraid" },
+            { "pronoun": "loro", "form": "avrebbero", "exampleSentence": "Loro avrebbero una festa", "exampleSentenceEn": "They would have a party" }
+          ]
+        },
+        {
+          "tenseId": "congiuntivo_presente",
+          "tenseName": "Congiuntivo Presente",
+          "tenseNameEn": "Present Subjunctive",
+          "description": "Used in dependent clauses after certain expressions of opinion, doubt, emotion, or necessity. Common triggers include 'spero che' (I hope that) and 'è importante che' (it's important that).",
+          "conjugations": [
+            { "pronoun": "io", "form": "abbia", "exampleSentence": "Spero che io abbia tempo", "exampleSentenceEn": "I hope that I have time" },
+            { "pronoun": "tu", "form": "abbia", "exampleSentence": "Spero che tu abbia ragione", "exampleSentenceEn": "I hope that you are right" },
+            { "pronoun": "lui/lei", "form": "abbia", "exampleSentence": "Spero che lei abbia fortuna", "exampleSentenceEn": "I hope that she is lucky" },
+            { "pronoun": "noi", "form": "abbiamo", "exampleSentence": "Spero che noi abbiamo tempo", "exampleSentenceEn": "I hope that we have time" },
+            { "pronoun": "voi", "form": "abbiate", "exampleSentence": "Spero che voi abbiate fortuna", "exampleSentenceEn": "I hope that you are lucky" },
+            { "pronoun": "loro", "form": "abbiano", "exampleSentence": "Spero che loro abbiano una festa", "exampleSentenceEn": "I hope that they have a party" }
+          ]
+        },
+        {
+          "tenseId": "imperativo",
+          "tenseName": "Imperativo",
+          "tenseNameEn": "Imperative",
+          "description": "Used to give commands, orders, or instructions. Only exists for the second person (tu, voi) and first person plural (noi). The subject pronoun is usually omitted.",
+          "conjugations": [
+            { "pronoun": "tu", "form": "abbi", "exampleSentence": "Abbi pazienza!", "exampleSentenceEn": "Be patient!" },
+            { "pronoun": "noi", "form": "abbiamo", "exampleSentence": "Abbiamo coraggio!", "exampleSentenceEn": "Let's be brave!" },
+            { "pronoun": "voi", "form": "abbiate", "exampleSentence": "Abbiate fiducia!", "exampleSentenceEn": "Have faith!" }
+          ]
+        }
+      ]
+    }
+  ]
+}

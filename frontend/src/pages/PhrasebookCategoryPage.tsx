@@ -54,6 +54,7 @@ const PhrasebookCategoryPage = () => {
   const { category } = useParams<{ category: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
+
   const [data, setData] = useState<PhrasebookData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

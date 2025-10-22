@@ -1,0 +1,132 @@
+{
+  "language": "ja",
+  "languageName": "Japanese",
+  "verbs": [
+    {
+      "infinitive": "です",
+      "infinitiveEn": "to be (polite)",
+      "category": "essential",
+      "tenses": [
+        {
+          "tenseId": "present_polite",
+          "tenseName": "丁寧語現在形",
+          "tenseNameEn": "Present Polite",
+          "description": "Used in formal situations and polite conversation. This is the most commonly used form of 'to be' in Japanese for polite speech.",
+          "conjugations": [
+            { "pronoun": "私", "form": "です", "exampleSentence": "私は学生です", "exampleSentenceEn": "I am a student" },
+            { "pronoun": "あなた", "form": "です", "exampleSentence": "あなたは良いです", "exampleSentenceEn": "You are good" },
+            { "pronoun": "彼/彼女", "form": "です", "exampleSentence": "彼は日本人です", "exampleSentenceEn": "He is Japanese" },
+            { "pronoun": "私たち", "form": "です", "exampleSentence": "私たちは友達です", "exampleSentenceEn": "We are friends" },
+            { "pronoun": "あなたたち", "form": "です", "exampleSentence": "あなたたちは学生です", "exampleSentenceEn": "You are students" },
+            { "pronoun": "彼ら/彼女ら", "form": "です", "exampleSentence": "彼らはここです", "exampleSentenceEn": "They are here" }
+          ]
+        },
+        {
+          "tenseId": "past_polite",
+          "tenseName": "丁寧語過去形",
+          "tenseNameEn": "Past Polite",
+          "description": "Used to express past states or conditions in polite speech. Formed by changing 'です' to 'でした'.",
+          "conjugations": [
+            { "pronoun": "私", "form": "でした", "exampleSentence": "私は学生でした", "exampleSentenceEn": "I was a student" },
+            { "pronoun": "あなた", "form": "でした", "exampleSentence": "あなたは良いでした", "exampleSentenceEn": "You were good" },
+            { "pronoun": "彼/彼女", "form": "でした", "exampleSentence": "彼は日本人でした", "exampleSentenceEn": "He was Japanese" },
+            { "pronoun": "私たち", "form": "でした", "exampleSentence": "私たちは友達でした", "exampleSentenceEn": "We were friends" },
+            { "pronoun": "あなたたち", "form": "でした", "exampleSentence": "あなたたちは学生でした", "exampleSentenceEn": "You were students" },
+            { "pronoun": "彼ら/彼女ら", "form": "でした", "exampleSentence": "彼らはここでした", "exampleSentenceEn": "They were here" }
+          ]
+        },
+        {
+          "tenseId": "present_casual",
+          "tenseName": "普通語現在形",
+          "tenseNameEn": "Present Casual",
+          "description": "Used in casual conversation with friends, family, or in informal situations. The casual form of 'です' is 'だ'.",
+          "conjugations": [
+            { "pronoun": "私", "form": "だ", "exampleSentence": "私は学生だ", "exampleSentenceEn": "I am a student" },
+            { "pronoun": "あなた", "form": "だ", "exampleSentence": "あなたは良いだ", "exampleSentenceEn": "You are good" },
+            { "pronoun": "彼/彼女", "form": "だ", "exampleSentence": "彼は日本人だ", "exampleSentenceEn": "He is Japanese" },
+            { "pronoun": "私たち", "form": "だ", "exampleSentence": "私たちは友達だ", "exampleSentenceEn": "We are friends" },
+            { "pronoun": "あなたたち", "form": "だ", "exampleSentence": "あなたたちは学生だ", "exampleSentenceEn": "You are students" },
+            { "pronoun": "彼ら/彼女ら", "form": "だ", "exampleSentence": "彼らはここだ", "exampleSentenceEn": "They are here" }
+          ]
+        },
+        {
+          "tenseId": "past_casual",
+          "tenseName": "普通語過去形",
+          "tenseNameEn": "Past Casual",
+          "description": "Used to express past states or conditions in casual speech. Formed by changing 'だ' to 'だった'.",
+          "conjugations": [
+            { "pronoun": "私", "form": "だった", "exampleSentence": "私は学生だった", "exampleSentenceEn": "I was a student" },
+            { "pronoun": "あなた", "form": "だった", "exampleSentence": "あなたは良いだった", "exampleSentenceEn": "You were good" },
+            { "pronoun": "彼/彼女", "form": "だった", "exampleSentence": "彼は日本人だった", "exampleSentenceEn": "He was Japanese" },
+            { "pronoun": "私たち", "form": "だった", "exampleSentence": "私たちは友達だった", "exampleSentenceEn": "We were friends" },
+            { "pronoun": "あなたたち", "form": "だった", "exampleSentence": "あなたたちは学生だった", "exampleSentenceEn": "You were students" },
+            { "pronoun": "彼ら/彼女ら", "form": "だった", "exampleSentence": "彼らはここだった", "exampleSentenceEn": "They were here" }
+          ]
+        }
+      ]
+    },
+    {
+      "infinitive": "ある",
+      "infinitiveEn": "to have/exist (for inanimate objects)",
+      "category": "essential",
+      "tenses": [
+        {
+          "tenseId": "present_polite",
+          "tenseName": "丁寧語現在形",
+          "tenseNameEn": "Present Polite",
+          "description": "Used in formal situations and polite conversation. This form is used for inanimate objects and abstract concepts.",
+          "conjugations": [
+            { "pronoun": "私", "form": "あります", "exampleSentence": "私には本があります", "exampleSentenceEn": "I have a book" },
+            { "pronoun": "あなた", "form": "あります", "exampleSentence": "あなたにはお腹が空いています", "exampleSentenceEn": "You are hungry" },
+            { "pronoun": "彼/彼女", "form": "あります", "exampleSentence": "彼女には猫があります", "exampleSentenceEn": "She has a cat" },
+            { "pronoun": "私たち", "form": "あります", "exampleSentence": "私たちには時間があります", "exampleSentenceEn": "We have time" },
+            { "pronoun": "あなたたち", "form": "あります", "exampleSentence": "あなたたちには正しいがあります", "exampleSentenceEn": "You are right" },
+            { "pronoun": "彼ら/彼女ら", "form": "あります", "exampleSentence": "彼らには家があります", "exampleSentenceEn": "They have a house" }
+          ]
+        },
+        {
+          "tenseId": "past_polite",
+          "tenseName": "丁寧語過去形",
+          "tenseNameEn": "Past Polite",
+          "description": "Used to express past states or conditions in polite speech. Formed by changing 'あります' to 'ありました'.",
+          "conjugations": [
+            { "pronoun": "私", "form": "ありました", "exampleSentence": "私には本がありました", "exampleSentenceEn": "I had a book" },
+            { "pronoun": "あなた", "form": "ありました", "exampleSentence": "あなたにはお腹が空いていました", "exampleSentenceEn": "You were hungry" },
+            { "pronoun": "彼/彼女", "form": "ありました", "exampleSentence": "彼女には猫がありました", "exampleSentenceEn": "She had a cat" },
+            { "pronoun": "私たち", "form": "ありました", "exampleSentence": "私たちには時間がありました", "exampleSentenceEn": "We had time" },
+            { "pronoun": "あなたたち", "form": "ありました", "exampleSentence": "あなたたちには正しいがありました", "exampleSentenceEn": "You were right" },
+            { "pronoun": "彼ら/彼女ら", "form": "ありました", "exampleSentence": "彼らには家がありました", "exampleSentenceEn": "They had a house" }
+          ]
+        },
+        {
+          "tenseId": "present_casual",
+          "tenseName": "普通語現在形",
+          "tenseNameEn": "Present Casual",
+          "description": "Used in casual conversation with friends, family, or in informal situations. The casual form of 'あります' is 'ある'.",
+          "conjugations": [
+            { "pronoun": "私", "form": "ある", "exampleSentence": "私には本がある", "exampleSentenceEn": "I have a book" },
+            { "pronoun": "あなた", "form": "ある", "exampleSentence": "あなたにはお腹が空いている", "exampleSentenceEn": "You are hungry" },
+            { "pronoun": "彼/彼女", "form": "ある", "exampleSentence": "彼女には猫がある", "exampleSentenceEn": "She has a cat" },
+            { "pronoun": "私たち", "form": "ある", "exampleSentence": "私たちには時間がある", "exampleSentenceEn": "We have time" },
+            { "pronoun": "あなたたち", "form": "ある", "exampleSentence": "あなたたちには正しいがある", "exampleSentenceEn": "You are right" },
+            { "pronoun": "彼ら/彼女ら", "form": "ある", "exampleSentence": "彼らには家がある", "exampleSentenceEn": "They have a house" }
+          ]
+        },
+        {
+          "tenseId": "past_casual",
+          "tenseName": "普通語過去形",
+          "tenseNameEn": "Past Casual",
+          "description": "Used to express past states or conditions in casual speech. Formed by changing 'ある' to 'あった'.",
+          "conjugations": [
+            { "pronoun": "私", "form": "あった", "exampleSentence": "私には本があった", "exampleSentenceEn": "I had a book" },
+            { "pronoun": "あなた", "form": "あった", "exampleSentence": "あなたにはお腹が空いていた", "exampleSentenceEn": "You were hungry" },
+            { "pronoun": "彼/彼女", "form": "あった", "exampleSentence": "彼女には猫があった", "exampleSentenceEn": "She had a cat" },
+            { "pronoun": "私たち", "form": "あった", "exampleSentence": "私たちには時間があった", "exampleSentenceEn": "We had time" },
+            { "pronoun": "あなたたち", "form": "あった", "exampleSentence": "あなたたちには正しいがあった", "exampleSentenceEn": "You were right" },
+            { "pronoun": "彼ら/彼女ら", "form": "あった", "exampleSentence": "彼らには家があった", "exampleSentenceEn": "They had a house" }
+          ]
+        }
+      ]
+    }
+  ]
+}
