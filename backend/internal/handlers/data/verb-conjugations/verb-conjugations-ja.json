@@ -202,6 +202,45 @@
             { "pronoun": "あなたたち", "form": "すれば", "exampleSentence": "計画をすれば、うまくいく", "exampleSentenceEn": "If you plan, it will go well" },
             { "pronoun": "彼ら/彼女ら", "form": "すれば", "exampleSentence": "彼らが決断をすれば、前に進める", "exampleSentenceEn": "If they make a decision, we can move forward" }
           ]
+        },
+        {
+          "tenseId": "imperative_form",
+          "tenseName": "命令形",
+          "tenseNameEn": "Imperative Form",
+          "description": "Used to give commands or orders. This form is direct and should be used carefully as it can sound rude. Often used in emergency situations or with close relationships.",
+          "conjugations": [
+            { "pronoun": "—", "form": "しろ", "exampleSentence": "宿題をしろ！", "exampleSentenceEn": "Do your homework!" },
+            { "pronoun": "—", "form": "しろ", "exampleSentence": "すぐにしろ！", "exampleSentenceEn": "Do it immediately!" },
+            { "pronoun": "—", "form": "しろ", "exampleSentence": "集中してしろ！", "exampleSentenceEn": "Concentrate and do it!" }
+          ]
+        },
+        {
+          "tenseId": "causative_passive_form",
+          "tenseName": "使役受身形",
+          "tenseNameEn": "Causative-Passive Form",
+          "description": "Used to express being made to do something against one's will, often with a sense of being forced or compelled. Combines causative and passive meanings.",
+          "conjugations": [
+            { "pronoun": "私", "form": "させられる", "exampleSentence": "私は毎日宿題をさせられる", "exampleSentenceEn": "I am made to do homework every day" },
+            { "pronoun": "あなた", "form": "させられる", "exampleSentence": "あなたは会議に参加させられる", "exampleSentenceEn": "You are made to attend the meeting" },
+            { "pronoun": "彼/彼女", "form": "させられる", "exampleSentence": "彼は難しい仕事をさせられる", "exampleSentenceEn": "He is made to do difficult work" },
+            { "pronoun": "私たち", "form": "させられる", "exampleSentence": "私たちは早く起きさせられる", "exampleSentenceEn": "We are made to wake up early" },
+            { "pronoun": "あなたたち", "form": "させられる", "exampleSentence": "あなたたちは練習をさせられる", "exampleSentenceEn": "You are made to practice" },
+            { "pronoun": "彼ら/彼女ら", "form": "させられる", "exampleSentence": "彼らは長時間働かせられる", "exampleSentenceEn": "They are made to work long hours" }
+          ]
+        },
+        {
+          "tenseId": "conditional_tara_form",
+          "tenseName": "条件形（たら形）",
+          "tenseNameEn": "Conditional (Tara-form)",
+          "description": "Used to express hypothetical conditions or 'if-then' statements. More conversational than the ば-form and often used for natural consequences.",
+          "conjugations": [
+            { "pronoun": "私", "form": "したら", "exampleSentence": "宿題をしたら、遊べる", "exampleSentenceEn": "If I do my homework, I can play" },
+            { "pronoun": "あなた", "form": "したら", "exampleSentence": "練習をしたら、上手になる", "exampleSentenceEn": "If you practice, you'll get better" },
+            { "pronoun": "彼/彼女", "form": "したら", "exampleSentence": "彼が準備をしたら、出発できる", "exampleSentenceEn": "If he prepares, we can leave" },
+            { "pronoun": "私たち", "form": "したら", "exampleSentence": "協力をしたら、成功する", "exampleSentenceEn": "If we cooperate, we'll succeed" },
+            { "pronoun": "あなたたち", "form": "したら", "exampleSentence": "計画をしたら、うまくいく", "exampleSentenceEn": "If you plan, it will work out" },
+            { "pronoun": "彼ら/彼女ら", "form": "したら", "exampleSentence": "彼らが決断をしたら、進められる", "exampleSentenceEn": "If they make a decision, we can proceed" }
+          ]
         }
       ]
     },
@@ -404,6 +443,45 @@
             { "pronoun": "私たち", "form": "行けば", "exampleSentence": "一緒に行けば、楽しいよ", "exampleSentenceEn": "If we go together, it will be fun" },
             { "pronoun": "あなたたち", "form": "行けば", "exampleSentence": "今行けば、セールに間に合う", "exampleSentenceEn": "If you go now, you'll catch the sale" },
             { "pronoun": "彼ら/彼女ら", "form": "行けば", "exampleSentence": "彼らが海外に行けば、視野が広がる", "exampleSentenceEn": "If they go abroad, their perspective will broaden" }
+          ]
+        },
+        {
+          "tenseId": "imperative_form",
+          "tenseName": "命令形",
+          "tenseNameEn": "Imperative Form",
+          "description": "Used to give commands or orders about going somewhere. This form is direct and should be used carefully as it can sound rude. Often used in emergency situations or with close relationships.",
+          "conjugations": [
+            { "pronoun": "—", "form": "行け", "exampleSentence": "すぐに行け！", "exampleSentenceEn": "Go immediately!" },
+            { "pronoun": "—", "form": "行け", "exampleSentence": "家に帰れ！", "exampleSentenceEn": "Go home!" },
+            { "pronoun": "—", "form": "行け", "exampleSentence": "病院に行け！", "exampleSentenceEn": "Go to the hospital!" }
+          ]
+        },
+        {
+          "tenseId": "causative_passive_form",
+          "tenseName": "使役受身形",
+          "tenseNameEn": "Causative-Passive Form",
+          "description": "Used to express being made to go somewhere against one's will, often with a sense of being forced or compelled. Combines causative and passive meanings.",
+          "conjugations": [
+            { "pronoun": "私", "form": "行かせられる", "exampleSentence": "私は毎日学校に行かせられる", "exampleSentenceEn": "I am made to go to school every day" },
+            { "pronoun": "あなた", "form": "行かせられる", "exampleSentence": "あなたは会議に行かせられる", "exampleSentenceEn": "You are made to go to the meeting" },
+            { "pronoun": "彼/彼女", "form": "行かせられる", "exampleSentence": "彼は遠い場所に行かせられる", "exampleSentenceEn": "He is made to go to a distant place" },
+            { "pronoun": "私たち", "form": "行かせられる", "exampleSentence": "私たちは早く出発させられる", "exampleSentenceEn": "We are made to leave early" },
+            { "pronoun": "あなたたち", "form": "行かせられる", "exampleSentence": "あなたたちは研修に行かせられる", "exampleSentenceEn": "You are made to go to training" },
+            { "pronoun": "彼ら/彼女ら", "form": "行かせられる", "exampleSentence": "彼らは海外出張に行かせられる", "exampleSentenceEn": "They are made to go on business trips abroad" }
+          ]
+        },
+        {
+          "tenseId": "conditional_tara_form",
+          "tenseName": "条件形（たら形）",
+          "tenseNameEn": "Conditional (Tara-form)",
+          "description": "Used to express hypothetical conditions about going, or 'if-then' statements. More conversational than the ば-form and often used for natural consequences.",
+          "conjugations": [
+            { "pronoun": "私", "form": "行ったら", "exampleSentence": "駅に行ったら、友達に会える", "exampleSentenceEn": "If I go to the station, I can meet my friend" },
+            { "pronoun": "あなた", "form": "行ったら", "exampleSentence": "早く行ったら、間に合う", "exampleSentenceEn": "If you go early, you'll make it in time" },
+            { "pronoun": "彼/彼女", "form": "行ったら", "exampleSentence": "彼がパリに行ったら、エッフェル塔が見られる", "exampleSentenceEn": "If he goes to Paris, he can see the Eiffel Tower" },
+            { "pronoun": "私たち", "form": "行ったら", "exampleSentence": "一緒に行ったら、楽しいよ", "exampleSentenceEn": "If we go together, it will be fun" },
+            { "pronoun": "あなたたち", "form": "行ったら", "exampleSentence": "今行ったら、セールに間に合う", "exampleSentenceEn": "If you go now, you'll catch the sale" },
+            { "pronoun": "彼ら/彼女ら", "form": "行ったら", "exampleSentence": "彼らが海外に行ったら、視野が広がる", "exampleSentenceEn": "If they go abroad, their perspective will broaden" }
           ]
         }
       ]

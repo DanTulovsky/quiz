@@ -64,6 +64,7 @@ tasks:
       # - task: test-e2e-api
       - task: test-merge-config
       - task: check-undocumented-apis
+      - task: test-verb-conjugations
 
   test-go:
     desc: "All Go tests (unit + integration with database)"
@@ -1475,6 +1476,12 @@ tasks:
     desc: "Test merge-config.sh script logic"
     cmds:
       - bash scripts/test_merge_config.sh
+
+  test-verb-conjugations:
+    desc: "Validate verb conjugation JSON files for syntax and consistency"
+    cmds:
+      - echo "Validating verb conjugation files..."
+      - python3 scripts/validate-verb-conjugations.py
 
   analyze-test-performance:
     desc: "Analyze integration test performance and identify bottlenecks"

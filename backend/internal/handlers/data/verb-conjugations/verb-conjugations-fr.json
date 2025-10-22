@@ -199,6 +199,20 @@
             { "pronoun": "vous", "form": "eûtes été", "exampleSentence": "Dès que vous eûtes été installés, le spectacle débuta", "exampleSentenceEn": "As soon as you had been seated, the show began" },
             { "pronoun": "ils/elles", "form": "eurent été", "exampleSentence": "Quand ils eurent été réunis, le chef prit la parole", "exampleSentenceEn": "When they had been gathered, the chief spoke" }
           ]
+        },
+        {
+          "tenseId": "passe_simple",
+          "tenseName": "Passé Simple",
+          "tenseNameEn": "Simple Past",
+          "description": "Used primarily in literary French and formal writing to narrate completed actions in the past. Rarely used in spoken French but essential for reading literature and formal documents.",
+          "conjugations": [
+            { "pronoun": "je", "form": "fus", "exampleSentence": "Je fus surpris par cette nouvelle", "exampleSentenceEn": "I was surprised by this news" },
+            { "pronoun": "tu", "form": "fus", "exampleSentence": "Tu fus le premier à arriver", "exampleSentenceEn": "You were the first to arrive" },
+            { "pronoun": "il/elle", "form": "fut", "exampleSentence": "Elle fut élue présidente de l'association", "exampleSentenceEn": "She was elected president of the association" },
+            { "pronoun": "nous", "form": "fûmes", "exampleSentence": "Nous fûmes très impressionnés par sa performance", "exampleSentenceEn": "We were very impressed by his performance" },
+            { "pronoun": "vous", "form": "fûtes", "exampleSentence": "Vous fûtes choisis pour représenter l'équipe", "exampleSentenceEn": "You were chosen to represent the team" },
+            { "pronoun": "ils/elles", "form": "furent", "exampleSentence": "Ils furent reçus avec beaucoup d'honneur", "exampleSentenceEn": "They were received with great honor" }
+          ]
         }
       ]
     },
@@ -398,6 +412,20 @@
             { "pronoun": "nous", "form": "eûmes eu", "exampleSentence": "Après que nous eûmes eu leur accord, nous commençâmes le projet", "exampleSentenceEn": "After we had gotten their agreement, we started the project" },
             { "pronoun": "vous", "form": "eûtes eu", "exampleSentence": "Dès que vous eûtes eu les résultats, vous nous informâtes", "exampleSentenceEn": "As soon as you had gotten the results, you informed us" },
             { "pronoun": "ils/elles", "form": "eurent eu", "exampleSentence": "Quand ils eurent eu toutes les réponses, ils prirent leur décision", "exampleSentenceEn": "When they had gotten all the answers, they made their decision" }
+          ]
+        },
+        {
+          "tenseId": "passe_simple",
+          "tenseName": "Passé Simple",
+          "tenseNameEn": "Simple Past",
+          "description": "Used primarily in literary French and formal writing to narrate completed actions in the past. Rarely used in spoken French but essential for reading literature and formal documents.",
+          "conjugations": [
+            { "pronoun": "je", "form": "eus", "exampleSentence": "J'eus l'occasion de visiter Paris l'année dernière", "exampleSentenceEn": "I had the opportunity to visit Paris last year" },
+            { "pronoun": "tu", "form": "eus", "exampleSentence": "Tu eus de la chance de réussir cet examen difficile", "exampleSentenceEn": "You were lucky to pass this difficult exam" },
+            { "pronoun": "il/elle", "form": "eut", "exampleSentence": "Elle eut une carrière exceptionnelle dans la médecine", "exampleSentenceEn": "She had an exceptional career in medicine" },
+            { "pronoun": "nous", "form": "eûmes", "exampleSentence": "Nous eûmes beaucoup de difficultés au début du projet", "exampleSentenceEn": "We had many difficulties at the beginning of the project" },
+            { "pronoun": "vous", "form": "eûtes", "exampleSentence": "Vous eûtes le courage de prendre cette décision importante", "exampleSentenceEn": "You had the courage to make this important decision" },
+            { "pronoun": "ils/elles", "form": "eurent", "exampleSentence": "Ils eurent une influence considérable sur l'évolution de la société", "exampleSentenceEn": "They had a considerable influence on the evolution of society" }
           ]
         }
       ]

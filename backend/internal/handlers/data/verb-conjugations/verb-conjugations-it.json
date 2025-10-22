@@ -213,6 +213,71 @@
             { "pronoun": "voi", "form": "foste stati/e", "exampleSentence": "Appena voi foste stati informati, prendeste la decisione", "exampleSentenceEn": "As soon as you had been informed, you made the decision" },
             { "pronoun": "loro", "form": "furono stati/e", "exampleSentence": "Quando loro furono stati riuniti, il re parlò", "exampleSentenceEn": "When they had been gathered, the king spoke" }
           ]
+        },
+        {
+          "tenseId": "infinito_presente",
+          "tenseName": "Infinito Presente",
+          "tenseNameEn": "Present Infinitive",
+          "description": "The base form of the verb, used after auxiliary verbs, prepositions, and in many other constructions. The infinitive form of 'essere' is used to express existence, identity, or state of being.",
+          "conjugations": [
+            { "pronoun": "—", "form": "essere", "exampleSentence": "È importante essere onesti", "exampleSentenceEn": "It's important to be honest" },
+            { "pronoun": "—", "form": "essere", "exampleSentence": "Voglio essere un buon padre", "exampleSentenceEn": "I want to be a good father" },
+            { "pronoun": "—", "form": "essere", "exampleSentence": "Prima di essere dottore, studiava medicina", "exampleSentenceEn": "Before being a doctor, he studied medicine" }
+          ]
+        },
+        {
+          "tenseId": "infinito_passato",
+          "tenseName": "Infinito Passato",
+          "tenseNameEn": "Past Infinitive",
+          "description": "Used to express an action that occurred before the main action. Formed with the infinitive of 'essere' or 'avere' plus the past participle.",
+          "conjugations": [
+            { "pronoun": "—", "form": "essere stato/a", "exampleSentence": "Dopo essere stato in Italia, parla meglio l'italiano", "exampleSentenceEn": "After having been in Italy, he speaks Italian better" },
+            { "pronoun": "—", "form": "essere stato/a", "exampleSentence": "Senza essere stata preparata, affrontò la sfida", "exampleSentenceEn": "Without having been prepared, she faced the challenge" },
+            { "pronoun": "—", "form": "essere stato/a", "exampleSentence": "Oltre ad essere stati avvisati, ci hanno anche aiutato", "exampleSentenceEn": "Besides having been warned, they also helped us" }
+          ]
+        },
+        {
+          "tenseId": "participio_presente",
+          "tenseName": "Participio Presente",
+          "tenseNameEn": "Present Participle",
+          "description": "The verb 'essere' does not have a present participle form in Italian, as it is a state-of-being verb rather than an action verb.",
+          "conjugations": [
+            { "pronoun": "—", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" }
+          ]
+        },
+        {
+          "tenseId": "participio_passato",
+          "tenseName": "Participio Passato",
+          "tenseNameEn": "Past Participle",
+          "description": "Used to form compound tenses and as an adjective. The past participle of 'essere' agrees in gender and number with the subject.",
+          "conjugations": [
+            { "pronoun": "maschile singolare", "form": "stato", "exampleSentence": "È stato un giorno difficile", "exampleSentenceEn": "It was a difficult day" },
+            { "pronoun": "femminile singolare", "form": "stata", "exampleSentence": "È stata una festa meravigliosa", "exampleSentenceEn": "It was a wonderful party" },
+            { "pronoun": "maschile plurale", "form": "stati", "exampleSentence": "Sono stati i primi ad arrivare", "exampleSentenceEn": "They were the first to arrive" },
+            { "pronoun": "femminile plurale", "form": "state", "exampleSentence": "Sono state molto gentili", "exampleSentenceEn": "They were very kind" }
+          ]
+        },
+        {
+          "tenseId": "gerundio_presente",
+          "tenseName": "Gerundio Presente",
+          "tenseNameEn": "Present Gerund",
+          "description": "Used to express an action occurring simultaneously with the main action. Functions as an adverb and is invariable.",
+          "conjugations": [
+            { "pronoun": "—", "form": "essendo", "exampleSentence": "Essendo italiano, conosce bene la cucina del paese", "exampleSentenceEn": "Being Italian, he knows the country's cuisine well" },
+            { "pronoun": "—", "form": "essendo", "exampleSentence": "Essendo in ritardo, prese un taxi", "exampleSentenceEn": "Being late, he took a taxi" },
+            { "pronoun": "—", "form": "essendo", "exampleSentence": "Essendo malata, non poté venire alla festa", "exampleSentenceEn": "Being sick, she couldn't come to the party" }
+          ]
+        },
+        {
+          "tenseId": "gerundio_passato",
+          "tenseName": "Gerundio Passato",
+          "tenseNameEn": "Past Gerund",
+          "description": "Used to express an action that occurred before the main action. Formed with the gerund of 'essere' plus the past participle.",
+          "conjugations": [
+            { "pronoun": "—", "form": "essendo stato/a", "exampleSentence": "Essendo stato in quella città, poté dare buoni consigli", "exampleSentenceEn": "Having been in that city, he could give good advice" },
+            { "pronoun": "—", "form": "essendo stata", "exampleSentence": "Essendo stata avvisata, arrivò puntuale", "exampleSentenceEn": "Having been warned, she arrived on time" },
+            { "pronoun": "—", "form": "essendo stati/e", "exampleSentence": "Essendo stati preparati, affrontarono l'esame con fiducia", "exampleSentenceEn": "Having been prepared, they faced the exam with confidence" }
+          ]
         }
       ]
     },
@@ -426,6 +491,74 @@
             { "pronoun": "noi", "form": "avemmo avuto", "exampleSentence": "Dopo che noi avemmo avuto l'approvazione, iniziammo il lavoro", "exampleSentenceEn": "After we had gotten approval, we started the work" },
             { "pronoun": "voi", "form": "aveste avuto", "exampleSentence": "Appena voi aveste avuto i risultati, li comunicaste", "exampleSentenceEn": "As soon as you had gotten the results, you communicated them" },
             { "pronoun": "loro", "form": "ebbero avuto", "exampleSentence": "Quando loro ebbero avuto tutte le risposte, presero la decisione", "exampleSentenceEn": "When they had gotten all the answers, they made the decision" }
+          ]
+        },
+        {
+          "tenseId": "infinito_presente",
+          "tenseName": "Infinito Presente",
+          "tenseNameEn": "Present Infinitive",
+          "description": "The base form of the verb, used after auxiliary verbs, prepositions, and in many other constructions. The infinitive form of 'avere' is used to express possession, necessity, or obligation.",
+          "conjugations": [
+            { "pronoun": "—", "form": "avere", "exampleSentence": "È importante avere pazienza", "exampleSentenceEn": "It's important to have patience" },
+            { "pronoun": "—", "form": "avere", "exampleSentence": "Voglio avere successo nella vita", "exampleSentenceEn": "I want to have success in life" },
+            { "pronoun": "—", "form": "avere", "exampleSentence": "Prima di avere figli, viaggiavano molto", "exampleSentenceEn": "Before having children, they traveled a lot" }
+          ]
+        },
+        {
+          "tenseId": "infinito_passato",
+          "tenseName": "Infinito Passato",
+          "tenseNameEn": "Past Infinitive",
+          "description": "Used to express an action that occurred before the main action. Formed with the infinitive of 'essere' or 'avere' plus the past participle.",
+          "conjugations": [
+            { "pronoun": "—", "form": "aver avuto", "exampleSentence": "Dopo aver avuto questa esperienza, è diventato più saggio", "exampleSentenceEn": "After having had this experience, he became wiser" },
+            { "pronoun": "—", "form": "aver avuto", "exampleSentence": "Senza aver avuto preparazione, affrontò l'esame", "exampleSentenceEn": "Without having had preparation, she faced the exam" },
+            { "pronoun": "—", "form": "aver avuto", "exampleSentence": "Oltre ad aver avuto successo, è anche rimasto umile", "exampleSentenceEn": "Besides having had success, he also remained humble" }
+          ]
+        },
+        {
+          "tenseId": "participio_presente",
+          "tenseName": "Participio Presente",
+          "tenseNameEn": "Present Participle",
+          "description": "Used as an adjective to describe a noun that is currently performing or having something. Functions as an adjective and agrees with the noun in gender and number.",
+          "conjugations": [
+            { "pronoun": "maschile singolare", "form": "avente", "exampleSentence": "Il cliente avente diritto può richiedere il rimborso", "exampleSentenceEn": "The client having the right can request a refund" },
+            { "pronoun": "femminile singolare", "form": "avente", "exampleSentence": "La persona avente esperienza viene preferita", "exampleSentenceEn": "The person having experience is preferred" },
+            { "pronoun": "maschile plurale", "form": "aventi", "exampleSentence": "Gli studenti aventi buoni voti ricevono borse di studio", "exampleSentenceEn": "Students having good grades receive scholarships" },
+            { "pronoun": "femminile plurale", "form": "aventi", "exampleSentence": "Le aziende aventi certificazioni sono più competitive", "exampleSentenceEn": "Companies having certifications are more competitive" }
+          ]
+        },
+        {
+          "tenseId": "participio_passato",
+          "tenseName": "Participio Passato",
+          "tenseNameEn": "Past Participle",
+          "description": "Used to form compound tenses and as an adjective. The past participle of 'avere' is used in compound tenses with 'essere' as auxiliary.",
+          "conjugations": [
+            { "pronoun": "maschile singolare", "form": "avuto", "exampleSentence": "È avuto successo grazie al suo impegno", "exampleSentenceEn": "He had success thanks to his commitment" },
+            { "pronoun": "femminile singolare", "form": "avuta", "exampleSentence": "È avuta una bella opportunità", "exampleSentenceEn": "She had a beautiful opportunity" },
+            { "pronoun": "maschile plurale", "form": "avuti", "exampleSentence": "Sono avuti molti complimenti", "exampleSentenceEn": "They had many compliments" },
+            { "pronoun": "femminile plurale", "form": "avute", "exampleSentence": "Sono avute grandi soddisfazioni", "exampleSentenceEn": "They had great satisfactions" }
+          ]
+        },
+        {
+          "tenseId": "gerundio_presente",
+          "tenseName": "Gerundio Presente",
+          "tenseNameEn": "Present Gerund",
+          "description": "Used to express an action occurring simultaneously with the main action. Functions as an adverb and is invariable.",
+          "conjugations": [
+            { "pronoun": "—", "form": "avendo", "exampleSentence": "Avendo tempo libero, decise di leggere un libro", "exampleSentenceEn": "Having free time, he decided to read a book" },
+            { "pronoun": "—", "form": "avendo", "exampleSentence": "Avendo esperienza, riuscì a risolvere il problema", "exampleSentenceEn": "Having experience, she managed to solve the problem" },
+            { "pronoun": "—", "form": "avendo", "exampleSentence": "Avendo fiducia in sé stesso, affrontò la sfida", "exampleSentenceEn": "Having confidence in himself, he faced the challenge" }
+          ]
+        },
+        {
+          "tenseId": "gerundio_passato",
+          "tenseName": "Gerundio Passato",
+          "tenseNameEn": "Past Gerund",
+          "description": "Used to express an action that occurred before the main action. Formed with the gerund of 'avere' plus the past participle.",
+          "conjugations": [
+            { "pronoun": "—", "form": "avendo avuto", "exampleSentence": "Avendo avuto questa esperienza, poté dare consigli utili", "exampleSentenceEn": "Having had this experience, he could give useful advice" },
+            { "pronoun": "—", "form": "avendo avuto", "exampleSentence": "Avendo avuto successo, diventò più sicuro di sé", "exampleSentenceEn": "Having had success, she became more self-confident" },
+            { "pronoun": "—", "form": "avendo avuto", "exampleSentence": "Avendo avuto la possibilità, decisero di partire", "exampleSentenceEn": "Having had the opportunity, they decided to leave" }
           ]
         }
       ]

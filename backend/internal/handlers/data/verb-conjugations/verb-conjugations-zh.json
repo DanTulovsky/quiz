@@ -118,6 +118,45 @@
             { "pronoun": "你们", "form": "没是过", "exampleSentence": "你们没是过同学", "exampleSentenceEn": "You have never been classmates" },
             { "pronoun": "他们/她们/它们", "form": "没是过", "exampleSentence": "他们没是过竞争对手", "exampleSentenceEn": "They have never been competitors" }
           ]
+        },
+        {
+          "tenseId": "potential",
+          "tenseName": "能愿式",
+          "tenseNameEn": "Potential",
+          "description": "Used to express ability, possibility, or permission. Chinese uses auxiliary verbs like '能' (can), '会' (can/will), '可以' (can/may) before the main verb.",
+          "conjugations": [
+            { "pronoun": "我", "form": "能是", "exampleSentence": "我能是一个好学生", "exampleSentenceEn": "I can be a good student" },
+            { "pronoun": "你", "form": "能是", "exampleSentence": "你能是一个好老师", "exampleSentenceEn": "You can be a good teacher" },
+            { "pronoun": "他/她/它", "form": "能是", "exampleSentence": "他能是一个好医生", "exampleSentenceEn": "He can be a good doctor" },
+            { "pronoun": "我们", "form": "能是", "exampleSentence": "我们能是好朋友", "exampleSentenceEn": "We can be good friends" },
+            { "pronoun": "你们", "form": "能是", "exampleSentence": "你们能是好学生", "exampleSentenceEn": "You can be good students" },
+            { "pronoun": "他们/她们/它们", "form": "能是", "exampleSentence": "他们能是好同事", "exampleSentenceEn": "They can be good colleagues" }
+          ]
+        },
+        {
+          "tenseId": "conditional",
+          "tenseName": "条件式",
+          "tenseNameEn": "Conditional",
+          "description": "Used to express hypothetical situations or conditions. Chinese uses '如果...就...' (if...then...) or '要是...就...' constructions.",
+          "conjugations": [
+            { "pronoun": "我", "form": "如果是", "exampleSentence": "如果我是老师，我就会帮助学生", "exampleSentenceEn": "If I were a teacher, I would help students" },
+            { "pronoun": "你", "form": "如果是", "exampleSentence": "如果你是医生，你就会救人", "exampleSentenceEn": "If you were a doctor, you would save people" },
+            { "pronoun": "他/她/它", "form": "如果是", "exampleSentence": "如果他是老板，他就会管理公司", "exampleSentenceEn": "If he were a boss, he would manage the company" },
+            { "pronoun": "我们", "form": "如果是", "exampleSentence": "如果我们是朋友，我们就会互相帮助", "exampleSentenceEn": "If we were friends, we would help each other" },
+            { "pronoun": "你们", "form": "如果是", "exampleSentence": "如果你们是学生，你们就会好好学习", "exampleSentenceEn": "If you were students, you would study hard" },
+            { "pronoun": "他们/她们/它们", "form": "如果是", "exampleSentence": "如果他们是同事，他们就会合作", "exampleSentenceEn": "If they were colleagues, they would cooperate" }
+          ]
+        },
+        {
+          "tenseId": "imperative",
+          "tenseName": "命令式",
+          "tenseNameEn": "Imperative",
+          "description": "Used to give commands, orders, or instructions. Chinese often uses the verb directly with '要' (must) or '应该' (should) for polite commands.",
+          "conjugations": [
+            { "pronoun": "—", "form": "要是", "exampleSentence": "要是好学生！", "exampleSentenceEn": "Be a good student!" },
+            { "pronoun": "—", "form": "要是", "exampleSentence": "要是诚实的人！", "exampleSentenceEn": "Be an honest person!" },
+            { "pronoun": "—", "form": "要是", "exampleSentence": "要是勇敢的人！", "exampleSentenceEn": "Be a brave person!" }
+          ]
         }
       ]
     },
@@ -236,6 +275,45 @@
             { "pronoun": "我们", "form": "没有过", "exampleSentence": "我们以前没有过这样的困难", "exampleSentenceEn": "We have never had such difficulties before" },
             { "pronoun": "你们", "form": "没有过", "exampleSentence": "你们没有过失败的经验吗", "exampleSentenceEn": "Have you never had the experience of failure?" },
             { "pronoun": "他们/她们/它们", "form": "没有过", "exampleSentence": "他们从来没有过这种想法", "exampleSentenceEn": "They have never had such an idea" }
+          ]
+        },
+        {
+          "tenseId": "potential",
+          "tenseName": "能愿式",
+          "tenseNameEn": "Potential",
+          "description": "Used to express ability, possibility, or permission. Chinese uses auxiliary verbs like '能' (can), '会' (can/will), '可以' (can/may) before the main verb.",
+          "conjugations": [
+            { "pronoun": "我", "form": "能有", "exampleSentence": "我能有更多时间学习", "exampleSentenceEn": "I can have more time to study" },
+            { "pronoun": "你", "form": "能有", "exampleSentence": "你能有一个美好的未来", "exampleSentenceEn": "You can have a bright future" },
+            { "pronoun": "他/她/它", "form": "能有", "exampleSentence": "他能有很多机会", "exampleSentenceEn": "He can have many opportunities" },
+            { "pronoun": "我们", "form": "能有", "exampleSentence": "我们能有一个更好的计划", "exampleSentenceEn": "We can have a better plan" },
+            { "pronoun": "你们", "form": "能有", "exampleSentence": "你们能有更多经验", "exampleSentenceEn": "You can have more experience" },
+            { "pronoun": "他们/她们/它们", "form": "能有", "exampleSentence": "他们能有更好的生活", "exampleSentenceEn": "They can have a better life" }
+          ]
+        },
+        {
+          "tenseId": "conditional",
+          "tenseName": "条件式",
+          "tenseNameEn": "Conditional",
+          "description": "Used to express hypothetical situations or conditions. Chinese uses '如果...就...' (if...then...) or '要是...就...' constructions.",
+          "conjugations": [
+            { "pronoun": "我", "form": "如果有", "exampleSentence": "如果我有时间，我就会帮你", "exampleSentenceEn": "If I have time, I will help you" },
+            { "pronoun": "你", "form": "如果有", "exampleSentence": "如果你有机会，你就会成功", "exampleSentenceEn": "If you have the opportunity, you will succeed" },
+            { "pronoun": "他/她/它", "form": "如果有", "exampleSentence": "如果他有钱，他就会买房子", "exampleSentenceEn": "If he has money, he will buy a house" },
+            { "pronoun": "我们", "form": "如果有", "exampleSentence": "如果我们有资源，我们就会开始项目", "exampleSentenceEn": "If we have resources, we will start the project" },
+            { "pronoun": "你们", "form": "如果有", "exampleSentence": "如果你们有疑问，你们就可以问", "exampleSentenceEn": "If you have questions, you can ask" },
+            { "pronoun": "他们/她们/它们", "form": "如果有", "exampleSentence": "如果他们有支持，他们就会成功", "exampleSentenceEn": "If they have support, they will succeed" }
+          ]
+        },
+        {
+          "tenseId": "imperative",
+          "tenseName": "命令式",
+          "tenseNameEn": "Imperative",
+          "description": "Used to give commands, orders, or instructions. Chinese often uses the verb directly with '要' (must) or '应该' (should) for polite commands.",
+          "conjugations": [
+            { "pronoun": "—", "form": "要有", "exampleSentence": "要有信心！", "exampleSentenceEn": "Have confidence!" },
+            { "pronoun": "—", "form": "要有", "exampleSentence": "要有耐心！", "exampleSentenceEn": "Have patience!" },
+            { "pronoun": "—", "form": "要有", "exampleSentence": "要有责任感！", "exampleSentenceEn": "Have a sense of responsibility!" }
           ]
         }
       ]
