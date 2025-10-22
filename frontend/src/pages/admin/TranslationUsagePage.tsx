@@ -56,24 +56,16 @@ interface UsageStats {
     };
   };
   services: string[];
-}
-
-interface ServiceUsageData {
-  service: string;
-  data: Array<{
-    month: string;
-    usage_type: string;
-    characters_used: number;
-    requests_made: number;
-    quota: number;
-  }>;
+  cache_stats?: {
+    total_cache_hits_requests: number;
+    total_cache_hits_characters: number;
+    total_cache_misses_requests: number;
+    cache_hit_rate: number;
+  };
 }
 
 const TranslationUsagePage: React.FC = () => {
   const [usageStats, setUsageStats] = useState<UsageStats | null>(null);
-  const [serviceUsage, setServiceUsage] = useState<ServiceUsageData | null>(
-    null
-  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [chartModalOpen, setChartModalOpen] = useState(false);
@@ -90,15 +82,6 @@ const TranslationUsagePage: React.FC = () => {
       // Load overview stats
       const statsResponse = await adminApi.getUsageStats();
       setUsageStats(statsResponse.data);
-
-      // Load Google service details for the chart
-      try {
-        const googleResponse = await adminApi.getUsageStatsByService('google');
-        setServiceUsage(googleResponse.data);
-      } catch {
-        // Google service might not exist yet, that's okay
-        console.log('No Google service data available yet');
-      }
     } catch (error: unknown) {
       let errorMessage = 'Failed to load usage statistics';
 
@@ -142,6 +125,49 @@ const TranslationUsagePage: React.FC = () => {
       [key: string]: string | number;
     }> = [];
 
+    // Build a map to track cache stats by month
+    const cacheDataByMonth: {
+      [month: string]: {
+        cache_hits: number;
+        cache_misses: number;
+        cache_hit_rate: number;
+      };
+    } = {};
+
+    // Process cache stats from usage_stats
+    usageStats.services.forEach(service => {
+      const serviceData = usageStats.usage_stats[service];
+      if (serviceData) {
+        Object.entries(serviceData).forEach(([month, usageTypes]) => {
+          if (!cacheDataByMonth[month]) {
+            cacheDataByMonth[month] = {
+              cache_hits: 0,
+              cache_misses: 0,
+              cache_hit_rate: 0,
+            };
+          }
+
+          if (usageTypes['translation_cache_hit']) {
+            cacheDataByMonth[month].cache_hits +=
+              usageTypes['translation_cache_hit'].requests_made || 0;
+          }
+          if (usageTypes['translation_cache_miss']) {
+            cacheDataByMonth[month].cache_misses +=
+              usageTypes['translation_cache_miss'].requests_made || 0;
+          }
+
+          // Calculate hit rate for this month
+          const totalRequests =
+            cacheDataByMonth[month].cache_hits +
+            cacheDataByMonth[month].cache_misses;
+          if (totalRequests > 0) {
+            cacheDataByMonth[month].cache_hit_rate =
+              (cacheDataByMonth[month].cache_hits / totalRequests) * 100;
+          }
+        });
+      }
+    });
+
     // Process monthly totals for all services
     Object.entries(usageStats.monthly_totals)
       .sort(([a], [b]) => a.localeCompare(b))
@@ -155,6 +181,13 @@ const TranslationUsagePage: React.FC = () => {
           monthData[`${service}_characters`] = data.total_characters;
           monthData[`${service}_requests`] = data.total_requests;
         });
+
+        // Add cache data if available for this month
+        if (cacheDataByMonth[month]) {
+          monthData['cache_hits'] = cacheDataByMonth[month].cache_hits;
+          monthData['cache_misses'] = cacheDataByMonth[month].cache_misses;
+          monthData['cache_hit_rate'] = cacheDataByMonth[month].cache_hit_rate;
+        }
 
         chartData.push(monthData);
       });
@@ -238,14 +271,10 @@ const TranslationUsagePage: React.FC = () => {
             if (!latestMonth) return null;
 
             const latestData = usageStats.usage_stats[service][latestMonth];
-            const totalUsed = Object.values(latestData).reduce(
-              (sum: number, usage) => sum + usage.characters_used,
-              0
-            );
-            const totalQuota = Object.values(latestData).reduce(
-              (sum: number, usage) => sum + usage.quota,
-              0
-            );
+            // Only count translation usage for quota, not cache
+            const translationUsage = latestData['translation'];
+            const totalUsed = translationUsage?.characters_used || 0;
+            const totalQuota = translationUsage?.quota || 0;
 
             const percentage = getQuotaPercentage(totalUsed, totalQuota);
 
@@ -287,6 +316,120 @@ const TranslationUsagePage: React.FC = () => {
               </Card>
             );
           })}
+
+          {/* Cache Statistics Cards */}
+          {usageStats.cache_stats && (
+            <>
+              {/* Cache Hit Rate Card */}
+              <Card shadow='sm' padding='lg' radius='md' withBorder>
+                <Stack gap='xs'>
+                  <Group justify='space-between'>
+                    <Text fw={500} size='sm' tt='uppercase' c='dimmed'>
+                      Cache Hit Rate
+                    </Text>
+                    <Badge
+                      color={
+                        usageStats.cache_stats.cache_hit_rate >= 70
+                          ? 'green'
+                          : usageStats.cache_stats.cache_hit_rate >= 40
+                            ? 'yellow'
+                            : 'red'
+                      }
+                      variant='light'
+                    >
+                      {usageStats.cache_stats.cache_hit_rate.toFixed(1)}%
+                    </Badge>
+                  </Group>
+
+                  <div>
+                    <RingProgress
+                      size={80}
+                      thickness={8}
+                      sections={[
+                        {
+                          value: usageStats.cache_stats.cache_hit_rate,
+                          color:
+                            usageStats.cache_stats.cache_hit_rate >= 70
+                              ? 'green'
+                              : usageStats.cache_stats.cache_hit_rate >= 40
+                                ? 'yellow'
+                                : 'red',
+                        },
+                      ]}
+                      label={
+                        <Text size='xs' ta='center' fw={700}>
+                          {usageStats.cache_stats.cache_hit_rate.toFixed(0)}%
+                        </Text>
+                      }
+                    />
+                  </div>
+
+                  <Text size='sm' c='dimmed'>
+                    {formatNumber(
+                      usageStats.cache_stats.total_cache_hits_requests
+                    )}{' '}
+                    hits /{' '}
+                    {formatNumber(
+                      usageStats.cache_stats.total_cache_hits_requests +
+                        usageStats.cache_stats.total_cache_misses_requests
+                    )}{' '}
+                    total
+                  </Text>
+                </Stack>
+              </Card>
+
+              {/* Cache Efficiency Card */}
+              <Card shadow='sm' padding='lg' radius='md' withBorder>
+                <Stack gap='xs'>
+                  <Text fw={500} size='sm' tt='uppercase' c='dimmed'>
+                    Cache Efficiency
+                  </Text>
+
+                  <div>
+                    <Text size='xl' fw={700}>
+                      {formatNumber(
+                        usageStats.cache_stats.total_cache_hits_requests
+                      )}
+                    </Text>
+                    <Text size='sm' c='dimmed'>
+                      requests served from cache
+                    </Text>
+                  </div>
+
+                  <Text size='xs' c='dimmed'>
+                    {formatNumber(
+                      usageStats.cache_stats.total_cache_misses_requests
+                    )}{' '}
+                    cache misses
+                  </Text>
+                </Stack>
+              </Card>
+
+              {/* Characters Saved Card */}
+              <Card shadow='sm' padding='lg' radius='md' withBorder>
+                <Stack gap='xs'>
+                  <Text fw={500} size='sm' tt='uppercase' c='dimmed'>
+                    Characters Saved
+                  </Text>
+
+                  <div>
+                    <Text size='xl' fw={700}>
+                      {formatNumber(
+                        usageStats.cache_stats.total_cache_hits_characters
+                      )}
+                    </Text>
+                    <Text size='sm' c='dimmed'>
+                      characters served from cache
+                    </Text>
+                  </div>
+
+                  <Text size='xs' c='green'>
+                    Quota saved by caching
+                  </Text>
+                </Stack>
+              </Card>
+            </>
+          )}
         </SimpleGrid>
 
         <Card shadow='sm' padding='lg' radius='md' withBorder>
@@ -383,73 +526,118 @@ const TranslationUsagePage: React.FC = () => {
                     Service-Specific Usage Details
                   </Text>
 
-                  {serviceUsage && (
-                    <Card shadow='sm' padding='md' radius='md' withBorder>
-                      <Text size='md' fw={500} mb='md'>
-                        {serviceUsage.service.toUpperCase()} Translation Service
-                      </Text>
+                  {usageStats &&
+                  Object.keys(usageStats.usage_stats).length > 0 ? (
+                    Object.entries(usageStats.usage_stats).map(
+                      ([serviceName, serviceData]) => (
+                        <Card
+                          key={serviceName}
+                          shadow='sm'
+                          padding='md'
+                          radius='md'
+                          withBorder
+                        >
+                          <Text size='md' fw={500} mb='md'>
+                            {serviceName.toUpperCase()} Translation Service
+                          </Text>
 
-                      <Table>
-                        <Table.Thead>
-                          <Table.Tr>
-                            <Table.Th>Month</Table.Th>
-                            <Table.Th>Usage Type</Table.Th>
-                            <Table.Th>Characters</Table.Th>
-                            <Table.Th>Requests</Table.Th>
-                            <Table.Th>Quota</Table.Th>
-                            <Table.Th>Usage %</Table.Th>
-                          </Table.Tr>
-                        </Table.Thead>
-                        <Table.Tbody>
-                          {serviceUsage.data.map((item, index) => {
-                            const percentage = getQuotaPercentage(
-                              item.characters_used || 0,
-                              item.quota || 0
-                            );
-                            return (
-                              <Table.Tr
-                                key={`${item.month}-${item.usage_type}-${index}`}
-                              >
-                                <Table.Td>{formatMonth(item.month)}</Table.Td>
-                                <Table.Td>
-                                  <Badge variant='outline' size='sm'>
-                                    {item.usage_type}
-                                  </Badge>
-                                </Table.Td>
-                                <Table.Td>
-                                  {formatNumber(item.characters_used || 0)}
-                                </Table.Td>
-                                <Table.Td>
-                                  {formatNumber(item.requests_made || 0)}
-                                </Table.Td>
-                                <Table.Td>
-                                  {formatNumber(item.quota || 0)}
-                                </Table.Td>
-                                <Table.Td>
-                                  <Group gap='xs'>
-                                    <Text
-                                      size='sm'
-                                      c={getQuotaColor(percentage)}
-                                    >
-                                      {percentage.toFixed(1)}%
-                                    </Text>
-                                    <Progress
-                                      value={percentage}
-                                      color={getQuotaColor(percentage)}
-                                      size='xs'
-                                      w={60}
-                                    />
-                                  </Group>
-                                </Table.Td>
+                          <Table>
+                            <Table.Thead>
+                              <Table.Tr>
+                                <Table.Th>Month</Table.Th>
+                                <Table.Th>Usage Type</Table.Th>
+                                <Table.Th>Characters</Table.Th>
+                                <Table.Th>Requests</Table.Th>
+                                <Table.Th>Quota</Table.Th>
+                                <Table.Th>Usage %</Table.Th>
                               </Table.Tr>
-                            );
-                          })}
-                        </Table.Tbody>
-                      </Table>
-                    </Card>
-                  )}
-
-                  {!serviceUsage && (
+                            </Table.Thead>
+                            <Table.Tbody>
+                              {Object.entries(serviceData)
+                                .sort(([a], [b]) => b.localeCompare(a)) // Sort months descending
+                                .map(([month, usageTypes]) =>
+                                  Object.entries(usageTypes).map(
+                                    ([usageType, data], index) => {
+                                      const isCacheType =
+                                        usageType === 'translation_cache_hit' ||
+                                        usageType === 'translation_cache_miss';
+                                      const percentage = getQuotaPercentage(
+                                        data.characters_used || 0,
+                                        data.quota || 0
+                                      );
+                                      return (
+                                        <Table.Tr
+                                          key={`${month}-${usageType}-${index}`}
+                                        >
+                                          <Table.Td>
+                                            {formatMonth(month)}
+                                          </Table.Td>
+                                          <Table.Td>
+                                            <Badge
+                                              variant='outline'
+                                              size='sm'
+                                              color={
+                                                isCacheType ? 'blue' : 'green'
+                                              }
+                                            >
+                                              {usageType}
+                                            </Badge>
+                                          </Table.Td>
+                                          <Table.Td>
+                                            {formatNumber(
+                                              data.characters_used || 0
+                                            )}
+                                          </Table.Td>
+                                          <Table.Td>
+                                            {formatNumber(
+                                              data.requests_made || 0
+                                            )}
+                                          </Table.Td>
+                                          <Table.Td>
+                                            {isCacheType ? (
+                                              <Text size='sm' c='dimmed'>
+                                                N/A
+                                              </Text>
+                                            ) : (
+                                              formatNumber(data.quota || 0)
+                                            )}
+                                          </Table.Td>
+                                          <Table.Td>
+                                            {isCacheType ? (
+                                              <Text size='sm' c='dimmed'>
+                                                N/A
+                                              </Text>
+                                            ) : (
+                                              <Group gap='xs'>
+                                                <Text
+                                                  size='sm'
+                                                  c={getQuotaColor(percentage)}
+                                                >
+                                                  {percentage.toFixed(1)}%
+                                                </Text>
+                                                <Progress
+                                                  value={percentage}
+                                                  color={getQuotaColor(
+                                                    percentage
+                                                  )}
+                                                  size='xs'
+                                                  w={60}
+                                                />
+                                              </Group>
+                                            )}
+                                          </Table.Td>
+                                        </Table.Tr>
+                                      );
+                                    }
+                                  )
+                                )
+                                .flat()}
+                            </Table.Tbody>
+                          </Table>
+                        </Card>
+                      )
+                    )
+                  ) : (
                     <Alert
                       variant='light'
                       color='blue'
@@ -495,17 +683,33 @@ const TranslationUsagePage: React.FC = () => {
               <LineChart data={prepareChartData()}>
                 <CartesianGrid strokeDasharray='3 3' />
                 <XAxis dataKey='month' />
-                <YAxis />
+                <YAxis yAxisId='left' />
+                <YAxis
+                  yAxisId='right'
+                  orientation='right'
+                  domain={[0, 100]}
+                  label={{
+                    value: 'Cache Hit Rate (%)',
+                    angle: -90,
+                    position: 'insideRight',
+                  }}
+                />
                 <Tooltip
-                  formatter={(value: number, name: string) => [
-                    formatNumber(value),
-                    name.replace('_', ' ').toUpperCase(),
-                  ]}
+                  formatter={(value: number, name: string) => {
+                    if (name.includes('hit_rate')) {
+                      return [`${value.toFixed(1)}%`, 'Cache Hit Rate'];
+                    }
+                    return [
+                      formatNumber(value),
+                      name.replace(/_/g, ' ').toUpperCase(),
+                    ];
+                  }}
                 />
                 <Legend />
                 {usageStats.services.map(service => (
                   <Line
                     key={`${service}_characters`}
+                    yAxisId='left'
                     type='monotone'
                     dataKey={`${service}_characters`}
                     stroke='#8884d8'
@@ -516,6 +720,7 @@ const TranslationUsagePage: React.FC = () => {
                 {usageStats.services.map(service => (
                   <Line
                     key={`${service}_requests`}
+                    yAxisId='left'
                     type='monotone'
                     dataKey={`${service}_requests`}
                     stroke='#82ca9d'
@@ -523,6 +728,33 @@ const TranslationUsagePage: React.FC = () => {
                     strokeWidth={2}
                   />
                 ))}
+                <Line
+                  yAxisId='left'
+                  type='monotone'
+                  dataKey='cache_hits'
+                  stroke='#4dabf7'
+                  name='Cache Hits'
+                  strokeWidth={2}
+                  strokeDasharray='5 5'
+                />
+                <Line
+                  yAxisId='left'
+                  type='monotone'
+                  dataKey='cache_misses'
+                  stroke='#ff6b6b'
+                  name='Cache Misses'
+                  strokeWidth={2}
+                  strokeDasharray='5 5'
+                />
+                <Line
+                  yAxisId='right'
+                  type='monotone'
+                  dataKey='cache_hit_rate'
+                  stroke='#40c057'
+                  name='Cache Hit Rate (%)'
+                  strokeWidth={3}
+                  dot={{ r: 4 }}
+                />
               </LineChart>
             </ResponsiveContainer>
           ) : (

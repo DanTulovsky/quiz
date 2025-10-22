@@ -1404,6 +1404,9 @@ func (h *AdminHandler) GetUsageStats(c *gin.Context) {
 	serviceStats := make(map[string]map[string]map[string]interface{})
 	monthlyTotals := make(map[string]map[string]interface{})
 
+	// Track cache statistics across all services
+	var totalCacheHitsRequests, totalCacheHitsCharacters, totalCacheMissesRequests int
+
 	for _, stat := range stats {
 		serviceName := stat.ServiceName
 		usageType := stat.UsageType
@@ -1422,28 +1425,52 @@ func (h *AdminHandler) GetUsageStats(c *gin.Context) {
 			"quota":           h.usageStatsSvc.GetMonthlyQuota(serviceName),
 		}
 
-		// Accumulate monthly totals
-		if monthlyTotals[month] == nil {
-			monthlyTotals[month] = make(map[string]interface{})
+		// Accumulate cache statistics
+		switch usageType {
+		case "translation_cache_hit":
+			totalCacheHitsRequests += stat.RequestsMade
+			totalCacheHitsCharacters += stat.CharactersUsed
+		case "translation_cache_miss":
+			totalCacheMissesRequests += stat.RequestsMade
 		}
-		if monthlyTotals[month][serviceName] == nil {
-			monthlyTotals[month][serviceName] = map[string]interface{}{
-				"total_characters": 0,
-				"total_requests":   0,
+
+		// Accumulate monthly totals (only for actual translations, not cache)
+		if usageType == "translation" {
+			if monthlyTotals[month] == nil {
+				monthlyTotals[month] = make(map[string]interface{})
 			}
+			if monthlyTotals[month][serviceName] == nil {
+				monthlyTotals[month][serviceName] = map[string]interface{}{
+					"total_characters": 0,
+					"total_requests":   0,
+				}
+			}
+
+			totalChars := monthlyTotals[month][serviceName].(map[string]interface{})["total_characters"].(int) + stat.CharactersUsed
+			totalReqs := monthlyTotals[month][serviceName].(map[string]interface{})["total_requests"].(int) + stat.RequestsMade
+
+			monthlyTotals[month][serviceName].(map[string]interface{})["total_characters"] = totalChars
+			monthlyTotals[month][serviceName].(map[string]interface{})["total_requests"] = totalReqs
 		}
+	}
 
-		totalChars := monthlyTotals[month][serviceName].(map[string]interface{})["total_characters"].(int) + stat.CharactersUsed
-		totalReqs := monthlyTotals[month][serviceName].(map[string]interface{})["total_requests"].(int) + stat.RequestsMade
-
-		monthlyTotals[month][serviceName].(map[string]interface{})["total_characters"] = totalChars
-		monthlyTotals[month][serviceName].(map[string]interface{})["total_requests"] = totalReqs
+	// Calculate cache hit rate
+	totalCacheRequests := totalCacheHitsRequests + totalCacheMissesRequests
+	var cacheHitRate float64
+	if totalCacheRequests > 0 {
+		cacheHitRate = (float64(totalCacheHitsRequests) / float64(totalCacheRequests)) * 100
 	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"usage_stats":    serviceStats,
 		"monthly_totals": monthlyTotals,
 		"services":       []string{"google"}, // Currently only Google Translate
+		"cache_stats": gin.H{
+			"total_cache_hits_requests":   totalCacheHitsRequests,
+			"total_cache_hits_characters": totalCacheHitsCharacters,
+			"total_cache_misses_requests": totalCacheMissesRequests,
+			"cache_hit_rate":              cacheHitRate,
+		},
 	})
 }
 
@@ -1492,12 +1519,20 @@ func (h *AdminHandler) GetUsageStatsByService(c *gin.Context) {
 	// Format for frontend consumption
 	monthlyData := make([]map[string]interface{}, 0)
 	for _, stat := range stats {
+		// Only show quota for actual translation usage, not for cache hits/misses
+		var quota interface{}
+		if stat.UsageType == "translation" {
+			quota = h.usageStatsSvc.GetMonthlyQuota(serviceName)
+		} else {
+			quota = nil
+		}
+
 		monthlyData = append(monthlyData, map[string]interface{}{
 			"month":           stat.UsageMonth.Format("2006-01"),
 			"usage_type":      stat.UsageType,
 			"characters_used": stat.CharactersUsed,
 			"requests_made":   stat.RequestsMade,
-			"quota":           h.usageStatsSvc.GetMonthlyQuota(serviceName),
+			"quota":           quota,
 		})
 	}
 

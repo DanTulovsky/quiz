@@ -1973,6 +1973,33 @@ export type UsageStatsResponseMonthlyTotals = {[key: string]: {[key: string]: {
   total_requests?: number;
 }}};
 
+/**
+ * Cache performance statistics across all services
+ */
+export type UsageStatsResponseCacheStats = {
+  /**
+   * Total number of cache hit requests
+   * @minimum 0
+   */
+  total_cache_hits_requests?: number;
+  /**
+   * Total characters served from cache
+   * @minimum 0
+   */
+  total_cache_hits_characters?: number;
+  /**
+   * Total number of cache miss requests
+   * @minimum 0
+   */
+  total_cache_misses_requests?: number;
+  /**
+   * Cache hit rate as a percentage
+   * @minimum 0
+   * @maximum 100
+   */
+  cache_hit_rate?: number;
+};
+
 export interface UsageStatsResponse {
   /** Usage statistics organized by service, month (YYYY-MM), and usage type */
   usage_stats: UsageStatsResponseUsageStats;
@@ -1980,6 +2007,8 @@ export interface UsageStatsResponse {
   monthly_totals: UsageStatsResponseMonthlyTotals;
   /** List of service names */
   services: string[];
+  /** Cache performance statistics across all services */
+  cache_stats?: UsageStatsResponseCacheStats;
 }
 
 export type ServiceUsageStatsResponseDataItem = {
@@ -12753,7 +12782,7 @@ export const getGetV1AdminBackendUsageStatsResponseMock = (overrideResponse: Par
         [faker.string.alphanumeric(5)]: {
         [faker.string.alphanumeric(5)]: {total_characters: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined, multipleOf: undefined}), undefined]), total_requests: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined, multipleOf: undefined}), undefined])}
       }
-      }, services: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 10, max: 20}}))), ...overrideResponse})
+      }, services: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 10, max: 20}}))), cache_stats: faker.helpers.arrayElement([{total_cache_hits_requests: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined, multipleOf: undefined}), undefined]), total_cache_hits_characters: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined, multipleOf: undefined}), undefined]), total_cache_misses_requests: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined, multipleOf: undefined}), undefined]), cache_hit_rate: faker.helpers.arrayElement([faker.number.float({min: 0, max: 100, fractionDigits: 2}), undefined])}, undefined]), ...overrideResponse})
 
 export const getGetV1AdminBackendUsageStatsServiceResponseMock = (overrideResponse: Partial< ServiceUsageStatsResponse > = {}): ServiceUsageStatsResponse => ({service: faker.string.alpha({length: {min: 10, max: 20}}), data: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({month: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), usage_type: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), characters_used: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined, multipleOf: undefined}), undefined]), requests_made: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined, multipleOf: undefined}), undefined]), quota: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined, multipleOf: undefined}), undefined])})), ...overrideResponse})
 

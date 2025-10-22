@@ -404,27 +404,7 @@ func main() {
 func applySchema(db *sql.DB, schemaPath, _ string, logger *observability.Logger) error {
 	ctx := context.Background()
 
-	// First, drop all existing tables and sequences to ensure clean state
-	logger.Info(ctx, "Dropping existing tables and sequences")
-	dropSQL := `
-		-- Drop tables in reverse dependency order
-		DROP TABLE IF EXISTS performance_metrics CASCADE;
-		DROP TABLE IF EXISTS user_responses CASCADE;
-		DROP TABLE IF EXISTS questions CASCADE;
-		DROP TABLE IF EXISTS users CASCADE;
-
-		-- Drop any remaining sequences (in case they weren't cleaned up)
-		DROP SEQUENCE IF EXISTS users_id_seq CASCADE;
-		DROP SEQUENCE IF EXISTS questions_id_seq CASCADE;
-		DROP SEQUENCE IF EXISTS user_responses_id_seq CASCADE;
-		DROP SEQUENCE IF EXISTS performance_metrics_id_seq CASCADE;
-	`
-
-	if _, err := db.Exec(dropSQL); err != nil {
-		return contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to drop existing tables: %w", err)
-	}
-
-	// Now apply the schema
+	// Apply the schema (database is already empty after resetTestDatabase)
 	logger.Info(ctx, "Applying schema")
 	schemaSQL, err := os.ReadFile(schemaPath)
 	if err != nil {

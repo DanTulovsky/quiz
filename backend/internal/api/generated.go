@@ -1203,6 +1203,21 @@ type UpdateSnippetRequest struct {
 
 // UsageStatsResponse defines model for UsageStatsResponse.
 type UsageStatsResponse struct {
+	// CacheStats Cache performance statistics across all services
+	CacheStats *struct {
+		// CacheHitRate Cache hit rate as a percentage
+		CacheHitRate *float32 `json:"cache_hit_rate,omitempty"`
+
+		// TotalCacheHitsCharacters Total characters served from cache
+		TotalCacheHitsCharacters *int `json:"total_cache_hits_characters,omitempty"`
+
+		// TotalCacheHitsRequests Total number of cache hit requests
+		TotalCacheHitsRequests *int `json:"total_cache_hits_requests,omitempty"`
+
+		// TotalCacheMissesRequests Total number of cache miss requests
+		TotalCacheMissesRequests *int `json:"total_cache_misses_requests,omitempty"`
+	} `json:"cache_stats,omitempty"`
+
 	// MonthlyTotals Monthly totals organized by month (YYYY-MM) and service
 	MonthlyTotals map[string]map[string]struct {
 		TotalCharacters *int `json:"total_characters,omitempty"`

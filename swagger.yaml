@@ -7513,6 +7513,28 @@ components:
             type: string
           description: List of service names
           example: ["google"]
+        cache_stats:
+          type: object
+          description: Cache performance statistics across all services
+          properties:
+            total_cache_hits_requests:
+              type: integer
+              minimum: 0
+              description: Total number of cache hit requests
+            total_cache_hits_characters:
+              type: integer
+              minimum: 0
+              description: Total characters served from cache
+            total_cache_misses_requests:
+              type: integer
+              minimum: 0
+              description: Total number of cache miss requests
+            cache_hit_rate:
+              type: number
+              format: float
+              minimum: 0
+              maximum: 100
+              description: Cache hit rate as a percentage
       required:
         - usage_stats
         - monthly_totals
