@@ -75,6 +75,64 @@
             { "pronoun": "вы", "form": "были бы", "exampleSentence": "Вы были бы удивлены, увидев эти изменения", "exampleSentenceEn": "You would be surprised to see these changes" },
             { "pronoun": "они", "form": "были бы", "exampleSentence": "Они были бы лучшими друзьями, если бы лучше понимали друг друга", "exampleSentenceEn": "They would be best friends if they understood each other better" }
           ]
+        },
+        {
+          "tenseId": "present_gerund",
+          "tenseName": "Деепричастие настоящего времени",
+          "tenseNameEn": "Present Gerund",
+          "description": "The verb 'быть' does not have a present gerund form in modern Russian, as it lacks a present tense conjugation in standard usage.",
+          "conjugations": [
+            { "pronoun": "—", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" }
+          ]
+        },
+        {
+          "tenseId": "past_gerund",
+          "tenseName": "Деепричастие прошедшего времени",
+          "tenseNameEn": "Past Gerund",
+          "description": "Used to express an action that occurred simultaneously with or before the main action. Functions as an adverb and is invariable.",
+          "conjugations": [
+            { "pronoun": "—", "form": "будучи", "exampleSentence": "Будучи студентом, он много работал", "exampleSentenceEn": "Being a student, he worked a lot" },
+            { "pronoun": "—", "form": "бывши", "exampleSentence": "Бывши за границей, она узнала много нового", "exampleSentenceEn": "Having been abroad, she learned many new things" }
+          ]
+        },
+        {
+          "tenseId": "present_active_participle",
+          "tenseName": "Причастие настоящего времени действительный залог",
+          "tenseNameEn": "Present Active Participle",
+          "description": "The verb 'быть' does not have a present active participle in modern Russian.",
+          "conjugations": [
+            { "pronoun": "—", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" }
+          ]
+        },
+        {
+          "tenseId": "past_active_participle",
+          "tenseName": "Причастие прошедшего времени действительный залог",
+          "tenseNameEn": "Past Active Participle",
+          "description": "Used to describe a noun that performed an action in the past. Functions as an adjective and agrees with the noun in gender, number, and case.",
+          "conjugations": [
+            { "pronoun": "он", "form": "бывший", "exampleSentence": "Бывший президент выступил с речью", "exampleSentenceEn": "The former president gave a speech" },
+            { "pronoun": "она", "form": "бывшая", "exampleSentence": "Бывшая учительница навестила школу", "exampleSentenceEn": "The former teacher visited the school" },
+            { "pronoun": "оно", "form": "бывшее", "exampleSentence": "Бывшее здание было снесено", "exampleSentenceEn": "The former building was demolished" },
+            { "pronoun": "они", "form": "бывшие", "exampleSentence": "Бывшие коллеги встретились на конференции", "exampleSentenceEn": "Former colleagues met at the conference" }
+          ]
+        },
+        {
+          "tenseId": "present_passive_participle",
+          "tenseName": "Причастие настоящего времени страдательный залог",
+          "tenseNameEn": "Present Passive Participle",
+          "description": "The verb 'быть' does not form a present passive participle.",
+          "conjugations": [
+            { "pronoun": "—", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" }
+          ]
+        },
+        {
+          "tenseId": "past_passive_participle",
+          "tenseName": "Причастие прошедшего времени страдательный залог",
+          "tenseNameEn": "Past Passive Participle",
+          "description": "The verb 'быть' does not form a past passive participle as it is intransitive.",
+          "conjugations": [
+            { "pronoun": "—", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" }
+          ]
         }
       ]
     },
@@ -150,6 +208,71 @@
             { "pronoun": "мы", "form": "имели бы", "exampleSentence": "Мы имели бы меньше проблем, если бы были лучше подготовлены", "exampleSentenceEn": "We would have fewer problems if we were better prepared" },
             { "pronoun": "вы", "form": "имели бы", "exampleSentence": "Вы имели бы возможность встретить его, если бы пришли", "exampleSentenceEn": "You would have had the opportunity to meet him if you had come" },
             { "pronoun": "они", "form": "имели бы", "exampleSentence": "Они имели бы больше успеха с другой стратегией", "exampleSentenceEn": "They would have more success with a different strategy" }
+          ]
+        },
+        {
+          "tenseId": "present_gerund",
+          "tenseName": "Деепричастие настоящего времени",
+          "tenseNameEn": "Present Gerund",
+          "description": "Used to express an action occurring simultaneously with the main action. Functions as an adverb and is invariable.",
+          "conjugations": [
+            { "pronoun": "—", "form": "имея", "exampleSentence": "Имея большой опыт, он легко решил проблему", "exampleSentenceEn": "Having great experience, he easily solved the problem" },
+            { "pronoun": "—", "form": "имея", "exampleSentence": "Имея свободное время, она читает книги", "exampleSentenceEn": "Having free time, she reads books" }
+          ]
+        },
+        {
+          "tenseId": "past_gerund",
+          "tenseName": "Деепричастие прошедшего времени",
+          "tenseNameEn": "Past Gerund",
+          "description": "Used to express an action that occurred before the main action. Functions as an adverb and is invariable.",
+          "conjugations": [
+            { "pronoun": "—", "form": "имев", "exampleSentence": "Имев возможность учиться, он стал врачом", "exampleSentenceEn": "Having had the opportunity to study, he became a doctor" },
+            { "pronoun": "—", "form": "имевши", "exampleSentence": "Имевши большие планы, они начали новый проект", "exampleSentenceEn": "Having had big plans, they started a new project" }
+          ]
+        },
+        {
+          "tenseId": "present_active_participle",
+          "tenseName": "Причастие настоящего времени действительный залог",
+          "tenseNameEn": "Present Active Participle",
+          "description": "Used to describe a noun that is currently performing an action. Functions as an adjective and agrees with the noun in gender, number, and case.",
+          "conjugations": [
+            { "pronoun": "он", "form": "имеющий", "exampleSentence": "Человек, имеющий власть, должен быть ответственным", "exampleSentenceEn": "A person having power must be responsible" },
+            { "pronoun": "она", "form": "имеющая", "exampleSentence": "Компания, имеющая опыт, получила контракт", "exampleSentenceEn": "The company having experience got the contract" },
+            { "pronoun": "оно", "form": "имеющее", "exampleSentence": "Предложение, имеющее смысл, было принято", "exampleSentenceEn": "The proposal having sense was accepted" },
+            { "pronoun": "они", "form": "имеющие", "exampleSentence": "Студенты, имеющие вопросы, могут задать их", "exampleSentenceEn": "Students having questions can ask them" }
+          ]
+        },
+        {
+          "tenseId": "past_active_participle",
+          "tenseName": "Причастие прошедшего времени действительный залог",
+          "tenseNameEn": "Past Active Participle",
+          "description": "Used to describe a noun that performed an action in the past. Functions as an adjective and agrees with the noun in gender, number, and case.",
+          "conjugations": [
+            { "pronoun": "он", "form": "имевший", "exampleSentence": "Человек, имевший влияние, ушёл на пенсию", "exampleSentenceEn": "The person who had influence retired" },
+            { "pronoun": "она", "form": "имевшая", "exampleSentence": "Семья, имевшая традиции, переехала в город", "exampleSentenceEn": "The family that had traditions moved to the city" },
+            { "pronoun": "оно", "form": "имевшее", "exampleSentence": "Государство, имевшее колонии, распалось", "exampleSentenceEn": "The state that had colonies collapsed" },
+            { "pronoun": "они", "form": "имевшие", "exampleSentence": "Люди, имевшие надежду, продолжали бороться", "exampleSentenceEn": "People who had hope continued to fight" }
+          ]
+        },
+        {
+          "tenseId": "present_passive_participle",
+          "tenseName": "Причастие настоящего времени страдательный залог",
+          "tenseNameEn": "Present Passive Participle",
+          "description": "The verb 'иметь' does not form a present passive participle in standard Russian usage.",
+          "conjugations": [
+            { "pronoun": "—", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" }
+          ]
+        },
+        {
+          "tenseId": "past_passive_participle",
+          "tenseName": "Причастие прошедшего времени страдательный залог",
+          "tenseNameEn": "Past Passive Participle",
+          "description": "Used to describe a noun that was the object of an action in the past. Functions as an adjective and agrees with the noun in gender, number, and case. Rare for 'иметь'.",
+          "conjugations": [
+            { "pronoun": "он", "form": "имеемый", "exampleSentence": "Успех, имеемый командой, впечатляет", "exampleSentenceEn": "The success had by the team is impressive" },
+            { "pronoun": "она", "form": "имеемая", "exampleSentence": "Цель, имеемая всеми, объединяет людей", "exampleSentenceEn": "The goal had by everyone unites people" },
+            { "pronoun": "оно", "form": "имеемое", "exampleSentence": "Право, имеемое гражданами, защищено законом", "exampleSentenceEn": "The right had by citizens is protected by law" },
+            { "pronoun": "они", "form": "имеемые", "exampleSentence": "Возможности, имеемые молодёжью, безграничны", "exampleSentenceEn": "The opportunities had by youth are limitless" }
           ]
         }
       ]

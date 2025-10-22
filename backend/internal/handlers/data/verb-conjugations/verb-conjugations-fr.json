@@ -157,6 +157,48 @@
             { "pronoun": "nous", "form": "soyons", "exampleSentence": "Soyons heureux!", "exampleSentenceEn": "Let's be happy!" },
             { "pronoun": "vous", "form": "soyez", "exampleSentence": "Soyez gentils!", "exampleSentenceEn": "Be kind!" }
           ]
+        },
+        {
+          "tenseId": "subjonctif_imparfait",
+          "tenseName": "Subjonctif Imparfait",
+          "tenseNameEn": "Imperfect Subjunctive",
+          "description": "Used in formal and literary French after the same triggers as present subjunctive, but when the main clause is in a past tense. Rarely used in modern spoken French.",
+          "conjugations": [
+            { "pronoun": "je", "form": "fusse", "exampleSentence": "Il fallait que je fusse présent à la réunion", "exampleSentenceEn": "It was necessary that I be present at the meeting" },
+            { "pronoun": "tu", "form": "fusses", "exampleSentence": "Il voulait que tu fusses plus patient", "exampleSentenceEn": "He wanted you to be more patient" },
+            { "pronoun": "il/elle", "form": "fût", "exampleSentence": "Bien qu'elle fût malade, elle vint travailler", "exampleSentenceEn": "Although she was sick, she came to work" },
+            { "pronoun": "nous", "form": "fussions", "exampleSentence": "Il était important que nous fussions à l'heure", "exampleSentenceEn": "It was important that we be on time" },
+            { "pronoun": "vous", "form": "fussiez", "exampleSentence": "Je craignais que vous fussiez perdus", "exampleSentenceEn": "I feared that you were lost" },
+            { "pronoun": "ils/elles", "form": "fussent", "exampleSentence": "Il demanda qu'ils fussent traités avec respect", "exampleSentenceEn": "He asked that they be treated with respect" }
+          ]
+        },
+        {
+          "tenseId": "subjonctif_passe",
+          "tenseName": "Subjonctif Passé",
+          "tenseNameEn": "Past Subjunctive",
+          "description": "Used in dependent clauses after expressions of doubt, emotion, or necessity when referring to a completed action in the past. Formed with the present subjunctive of the auxiliary verb plus the past participle.",
+          "conjugations": [
+            { "pronoun": "je", "form": "aie été", "exampleSentence": "Je suis content que j'aie été accepté dans cette université", "exampleSentenceEn": "I'm happy that I was accepted into this university" },
+            { "pronoun": "tu", "form": "aies été", "exampleSentence": "Il est surprenant que tu aies été choisi pour ce rôle", "exampleSentenceEn": "It's surprising that you were chosen for this role" },
+            { "pronoun": "il/elle", "form": "ait été", "exampleSentence": "C'est dommage qu'elle ait été absente hier", "exampleSentenceEn": "It's a pity that she was absent yesterday" },
+            { "pronoun": "nous", "form": "ayons été", "exampleSentence": "Bien que nous ayons été en retard, ils nous ont attendus", "exampleSentenceEn": "Although we were late, they waited for us" },
+            { "pronoun": "vous", "form": "ayez été", "exampleSentence": "Je doute que vous ayez été complètement honnêtes", "exampleSentenceEn": "I doubt that you were completely honest" },
+            { "pronoun": "ils/elles", "form": "aient été", "exampleSentence": "Il est possible qu'ils aient été mal informés", "exampleSentenceEn": "It's possible that they were misinformed" }
+          ]
+        },
+        {
+          "tenseId": "passe_anterieur",
+          "tenseName": "Passé Antérieur",
+          "tenseNameEn": "Past Anterior",
+          "description": "Used in formal and literary French to express an action that was completed immediately before another past action. Typically follows time expressions like 'quand', 'lorsque', 'après que', 'dès que'.",
+          "conjugations": [
+            { "pronoun": "je", "form": "eus été", "exampleSentence": "Dès que j'eus été informé, je partis immédiatement", "exampleSentenceEn": "As soon as I had been informed, I left immediately" },
+            { "pronoun": "tu", "form": "eus été", "exampleSentence": "Quand tu eus été présenté à tous, la réunion commença", "exampleSentenceEn": "When you had been introduced to everyone, the meeting began" },
+            { "pronoun": "il/elle", "form": "eut été", "exampleSentence": "Lorsqu'elle eut été élue présidente, elle prononça un discours", "exampleSentenceEn": "When she had been elected president, she gave a speech" },
+            { "pronoun": "nous", "form": "eûmes été", "exampleSentence": "Après que nous eûmes été accueillis, on nous servit le dîner", "exampleSentenceEn": "After we had been welcomed, dinner was served to us" },
+            { "pronoun": "vous", "form": "eûtes été", "exampleSentence": "Dès que vous eûtes été installés, le spectacle débuta", "exampleSentenceEn": "As soon as you had been seated, the show began" },
+            { "pronoun": "ils/elles", "form": "eurent été", "exampleSentence": "Quand ils eurent été réunis, le chef prit la parole", "exampleSentenceEn": "When they had been gathered, the chief spoke" }
+          ]
         }
       ]
     },
@@ -314,6 +356,48 @@
             { "pronoun": "tu", "form": "aie", "exampleSentence": "Aie de la patience!", "exampleSentenceEn": "Be patient!" },
             { "pronoun": "nous", "form": "ayons", "exampleSentence": "Ayons du courage!", "exampleSentenceEn": "Let's be brave!" },
             { "pronoun": "vous", "form": "ayez", "exampleSentence": "Ayez confiance!", "exampleSentenceEn": "Have faith!" }
+          ]
+        },
+        {
+          "tenseId": "subjonctif_imparfait",
+          "tenseName": "Subjonctif Imparfait",
+          "tenseNameEn": "Imperfect Subjunctive",
+          "description": "Used in formal and literary French after the same triggers as present subjunctive, but when the main clause is in a past tense. Rarely used in modern spoken French.",
+          "conjugations": [
+            { "pronoun": "je", "form": "eusse", "exampleSentence": "Il aurait fallu que j'eusse plus de temps pour finir", "exampleSentenceEn": "It would have been necessary that I had more time to finish" },
+            { "pronoun": "tu", "form": "eusses", "exampleSentence": "Je souhaitais que tu eusses cette opportunité", "exampleSentenceEn": "I wished that you had this opportunity" },
+            { "pronoun": "il/elle", "form": "eût", "exampleSentence": "Bien qu'il eût beaucoup d'argent, il restait généreux", "exampleSentenceEn": "Although he had a lot of money, he remained generous" },
+            { "pronoun": "nous", "form": "eussions", "exampleSentence": "Il voulait que nous eussions confiance en lui", "exampleSentenceEn": "He wanted us to have confidence in him" },
+            { "pronoun": "vous", "form": "eussiez", "exampleSentence": "Je craignais que vous n'eussiez pas assez de provisions", "exampleSentenceEn": "I feared that you didn't have enough supplies" },
+            { "pronoun": "ils/elles", "form": "eussent", "exampleSentence": "Il importait qu'ils eussent toutes les informations nécessaires", "exampleSentenceEn": "It was important that they had all the necessary information" }
+          ]
+        },
+        {
+          "tenseId": "subjonctif_passe",
+          "tenseName": "Subjonctif Passé",
+          "tenseNameEn": "Past Subjunctive",
+          "description": "Used in dependent clauses after expressions of doubt, emotion, or necessity when referring to a completed action in the past. Formed with the present subjunctive of the auxiliary verb plus the past participle.",
+          "conjugations": [
+            { "pronoun": "je", "form": "aie eu", "exampleSentence": "Je regrette que j'aie eu si peu de patience", "exampleSentenceEn": "I regret that I had so little patience" },
+            { "pronoun": "tu", "form": "aies eu", "exampleSentence": "Il est dommage que tu aies eu ces difficultés", "exampleSentenceEn": "It's a pity that you had these difficulties" },
+            { "pronoun": "il/elle", "form": "ait eu", "exampleSentence": "Je suis heureux qu'elle ait eu cette chance", "exampleSentenceEn": "I'm happy that she had this chance" },
+            { "pronoun": "nous", "form": "ayons eu", "exampleSentence": "Bien que nous ayons eu des problèmes, nous avons réussi", "exampleSentenceEn": "Although we had problems, we succeeded" },
+            { "pronoun": "vous", "form": "ayez eu", "exampleSentence": "Je doute que vous ayez eu le temps de tout préparer", "exampleSentenceEn": "I doubt that you had time to prepare everything" },
+            { "pronoun": "ils/elles", "form": "aient eu", "exampleSentence": "C'est incroyable qu'ils aient eu autant de succès", "exampleSentenceEn": "It's incredible that they had so much success" }
+          ]
+        },
+        {
+          "tenseId": "passe_anterieur",
+          "tenseName": "Passé Antérieur",
+          "tenseNameEn": "Past Anterior",
+          "description": "Used in formal and literary French to express an action that was completed immediately before another past action. Typically follows time expressions like 'quand', 'lorsque', 'après que', 'dès que'.",
+          "conjugations": [
+            { "pronoun": "je", "form": "eus eu", "exampleSentence": "Dès que j'eus eu la confirmation, je les appelai", "exampleSentenceEn": "As soon as I had received confirmation, I called them" },
+            { "pronoun": "tu", "form": "eus eu", "exampleSentence": "Quand tu eus eu fini ton travail, tu partis en vacances", "exampleSentenceEn": "When you had finished your work, you went on vacation" },
+            { "pronoun": "il/elle", "form": "eut eu", "exampleSentence": "Lorsqu'elle eut eu son diplôme, elle chercha un emploi", "exampleSentenceEn": "When she had gotten her diploma, she looked for a job" },
+            { "pronoun": "nous", "form": "eûmes eu", "exampleSentence": "Après que nous eûmes eu leur accord, nous commençâmes le projet", "exampleSentenceEn": "After we had gotten their agreement, we started the project" },
+            { "pronoun": "vous", "form": "eûtes eu", "exampleSentence": "Dès que vous eûtes eu les résultats, vous nous informâtes", "exampleSentenceEn": "As soon as you had gotten the results, you informed us" },
+            { "pronoun": "ils/elles", "form": "eurent eu", "exampleSentence": "Quand ils eurent eu toutes les réponses, ils prirent leur décision", "exampleSentenceEn": "When they had gotten all the answers, they made their decision" }
           ]
         }
       ]

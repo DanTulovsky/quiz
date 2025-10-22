@@ -157,6 +157,62 @@
             { "pronoun": "noi", "form": "siamo", "exampleSentence": "Siamo felici!", "exampleSentenceEn": "Let's be happy!" },
             { "pronoun": "voi", "form": "siate", "exampleSentence": "Siate gentili!", "exampleSentenceEn": "Be kind!" }
           ]
+        },
+        {
+          "tenseId": "congiuntivo_imperfetto",
+          "tenseName": "Congiuntivo Imperfetto",
+          "tenseNameEn": "Imperfect Subjunctive",
+          "description": "Used in dependent clauses after expressions of doubt, emotion, or necessity when the main clause is in a past tense. Essential for expressing hypothetical situations in the past.",
+          "conjugations": [
+            { "pronoun": "io", "form": "fossi", "exampleSentence": "Pensavo che io fossi troppo giovane per capire", "exampleSentenceEn": "I thought that I was too young to understand" },
+            { "pronoun": "tu", "form": "fossi", "exampleSentence": "Speravo che tu fossi d'accordo con me", "exampleSentenceEn": "I hoped that you agreed with me" },
+            { "pronoun": "lui/lei", "form": "fosse", "exampleSentence": "Credevo che lei fosse italiana", "exampleSentenceEn": "I believed that she was Italian" },
+            { "pronoun": "noi", "form": "fossimo", "exampleSentence": "Volevano che noi fossimo più puntuali", "exampleSentenceEn": "They wanted us to be more punctual" },
+            { "pronoun": "voi", "form": "foste", "exampleSentence": "Dubitavo che voi foste pronti per l'esame", "exampleSentenceEn": "I doubted that you were ready for the exam" },
+            { "pronoun": "loro", "form": "fossero", "exampleSentence": "Sembrava che loro fossero molto stanchi", "exampleSentenceEn": "It seemed that they were very tired" }
+          ]
+        },
+        {
+          "tenseId": "congiuntivo_passato",
+          "tenseName": "Congiuntivo Passato",
+          "tenseNameEn": "Past Subjunctive",
+          "description": "Used in dependent clauses after expressions of doubt, emotion, or necessity when referring to a completed action in the past. Formed with the present subjunctive of the auxiliary verb plus the past participle.",
+          "conjugations": [
+            { "pronoun": "io", "form": "sia stato/a", "exampleSentence": "Penso che io sia stato fortunato nella vita", "exampleSentenceEn": "I think that I was lucky in life" },
+            { "pronoun": "tu", "form": "sia stato/a", "exampleSentence": "È possibile che tu sia stato malinteso", "exampleSentenceEn": "It's possible that you were misunderstood" },
+            { "pronoun": "lui/lei", "form": "sia stato/a", "exampleSentence": "Dubito che lei sia stata completamente onesta", "exampleSentenceEn": "I doubt that she was completely honest" },
+            { "pronoun": "noi", "form": "siamo stati/e", "exampleSentence": "Temo che noi siamo stati troppo severi", "exampleSentenceEn": "I fear that we were too harsh" },
+            { "pronoun": "voi", "form": "siate stati/e", "exampleSentence": "Mi dispiace che voi siate stati delusi", "exampleSentenceEn": "I'm sorry that you were disappointed" },
+            { "pronoun": "loro", "form": "siano stati/e", "exampleSentence": "Spero che loro siano stati felici insieme", "exampleSentenceEn": "I hope that they were happy together" }
+          ]
+        },
+        {
+          "tenseId": "congiuntivo_trapassato",
+          "tenseName": "Congiuntivo Trapassato",
+          "tenseNameEn": "Pluperfect Subjunctive",
+          "description": "Used in dependent clauses to express an action that occurred before another past action, often in hypothetical or contrary-to-fact statements. Formed with the imperfect subjunctive of the auxiliary verb plus the past participle.",
+          "conjugations": [
+            { "pronoun": "io", "form": "fossi stato/a", "exampleSentence": "Se io fossi stato più attento, avrei evitato l'errore", "exampleSentenceEn": "If I had been more careful, I would have avoided the mistake" },
+            { "pronoun": "tu", "form": "fossi stato/a", "exampleSentence": "Pensavo che tu fossi stato informato della situazione", "exampleSentenceEn": "I thought that you had been informed of the situation" },
+            { "pronoun": "lui/lei", "form": "fosse stato/a", "exampleSentence": "Credevo che lei fosse stata all'estero per anni", "exampleSentenceEn": "I believed that she had been abroad for years" },
+            { "pronoun": "noi", "form": "fossimo stati/e", "exampleSentence": "Sarebbe stato meglio se noi fossimo stati più preparati", "exampleSentenceEn": "It would have been better if we had been more prepared" },
+            { "pronoun": "voi", "form": "foste stati/e", "exampleSentence": "Speravo che voi foste stati avvisati in tempo", "exampleSentenceEn": "I hoped that you had been warned in time" },
+            { "pronoun": "loro", "form": "fossero stati/e", "exampleSentence": "Dubitavo che loro fossero stati così ingenui", "exampleSentenceEn": "I doubted that they had been so naive" }
+          ]
+        },
+        {
+          "tenseId": "trapassato_remoto",
+          "tenseName": "Trapassato Remoto",
+          "tenseNameEn": "Preterite Perfect",
+          "description": "Used in formal and literary Italian to express an action completed immediately before another past action in the remote past. Typically follows time expressions like 'dopo che', 'quando', 'appena'.",
+          "conjugations": [
+            { "pronoun": "io", "form": "fui stato/a", "exampleSentence": "Dopo che io fui stato avvisato, partii immediatamente", "exampleSentenceEn": "After I had been warned, I left immediately" },
+            { "pronoun": "tu", "form": "fosti stato/a", "exampleSentence": "Appena tu fosti stato presentato, la cerimonia iniziò", "exampleSentenceEn": "As soon as you had been introduced, the ceremony began" },
+            { "pronoun": "lui/lei", "form": "fu stato/a", "exampleSentence": "Quando lei fu stata eletta, pronunciò un discorso memorabile", "exampleSentenceEn": "When she had been elected, she gave a memorable speech" },
+            { "pronoun": "noi", "form": "fummo stati/e", "exampleSentence": "Dopo che noi fummo stati accolti, ci sedettimo a tavola", "exampleSentenceEn": "After we had been welcomed, we sat at the table" },
+            { "pronoun": "voi", "form": "foste stati/e", "exampleSentence": "Appena voi foste stati informati, prendeste la decisione", "exampleSentenceEn": "As soon as you had been informed, you made the decision" },
+            { "pronoun": "loro", "form": "furono stati/e", "exampleSentence": "Quando loro furono stati riuniti, il re parlò", "exampleSentenceEn": "When they had been gathered, the king spoke" }
+          ]
         }
       ]
     },
@@ -314,6 +370,62 @@
             { "pronoun": "tu", "form": "abbi", "exampleSentence": "Abbi pazienza!", "exampleSentenceEn": "Be patient!" },
             { "pronoun": "noi", "form": "abbiamo", "exampleSentence": "Abbiamo coraggio!", "exampleSentenceEn": "Let's be brave!" },
             { "pronoun": "voi", "form": "abbiate", "exampleSentence": "Abbiate fiducia!", "exampleSentenceEn": "Have faith!" }
+          ]
+        },
+        {
+          "tenseId": "congiuntivo_imperfetto",
+          "tenseName": "Congiuntivo Imperfetto",
+          "tenseNameEn": "Imperfect Subjunctive",
+          "description": "Used in dependent clauses after expressions of doubt, emotion, or necessity when the main clause is in a past tense. Essential for expressing hypothetical situations in the past.",
+          "conjugations": [
+            { "pronoun": "io", "form": "avessi", "exampleSentence": "Credevo che io avessi abbastanza esperienza", "exampleSentenceEn": "I believed that I had enough experience" },
+            { "pronoun": "tu", "form": "avessi", "exampleSentence": "Speravo che tu avessi capito la lezione", "exampleSentenceEn": "I hoped that you had understood the lesson" },
+            { "pronoun": "lui/lei", "form": "avesse", "exampleSentence": "Pensavo che lei avesse più tempo libero", "exampleSentenceEn": "I thought that she had more free time" },
+            { "pronoun": "noi", "form": "avessimo", "exampleSentence": "Volevano che noi avessimo più pazienza", "exampleSentenceEn": "They wanted us to have more patience" },
+            { "pronoun": "voi", "form": "aveste", "exampleSentence": "Temevo che voi aveste dei problemi", "exampleSentenceEn": "I feared that you had problems" },
+            { "pronoun": "loro", "form": "avessero", "exampleSentence": "Dubitavo che loro avessero le competenze necessarie", "exampleSentenceEn": "I doubted that they had the necessary skills" }
+          ]
+        },
+        {
+          "tenseId": "congiuntivo_passato",
+          "tenseName": "Congiuntivo Passato",
+          "tenseNameEn": "Past Subjunctive",
+          "description": "Used in dependent clauses after expressions of doubt, emotion, or necessity when referring to a completed action in the past. Formed with the present subjunctive of the auxiliary verb plus the past participle.",
+          "conjugations": [
+            { "pronoun": "io", "form": "abbia avuto", "exampleSentence": "Spero che io abbia avuto ragione a fidarmi", "exampleSentenceEn": "I hope that I was right to trust" },
+            { "pronoun": "tu", "form": "abbia avuto", "exampleSentence": "Mi dispiace che tu abbia avuto questa delusione", "exampleSentenceEn": "I'm sorry that you had this disappointment" },
+            { "pronoun": "lui/lei", "form": "abbia avuto", "exampleSentence": "È probabile che lei abbia avuto un contrattempo", "exampleSentenceEn": "It's likely that she had a setback" },
+            { "pronoun": "noi", "form": "abbiamo avuto", "exampleSentence": "Temo che noi abbiamo avuto un malinteso", "exampleSentenceEn": "I fear that we had a misunderstanding" },
+            { "pronoun": "voi", "form": "abbiate avuto", "exampleSentence": "Sono felice che voi abbiate avuto successo", "exampleSentenceEn": "I'm happy that you had success" },
+            { "pronoun": "loro", "form": "abbiano avuto", "exampleSentence": "Dubito che loro abbiano avuto il tempo di finire", "exampleSentenceEn": "I doubt that they had time to finish" }
+          ]
+        },
+        {
+          "tenseId": "congiuntivo_trapassato",
+          "tenseName": "Congiuntivo Trapassato",
+          "tenseNameEn": "Pluperfect Subjunctive",
+          "description": "Used in dependent clauses to express an action that occurred before another past action, often in hypothetical or contrary-to-fact statements. Formed with the imperfect subjunctive of the auxiliary verb plus the past participle.",
+          "conjugations": [
+            { "pronoun": "io", "form": "avessi avuto", "exampleSentence": "Se io avessi avuto più coraggio, avrei parlato", "exampleSentenceEn": "If I had had more courage, I would have spoken" },
+            { "pronoun": "tu", "form": "avessi avuto", "exampleSentence": "Credevo che tu avessi avuto una buona ragione", "exampleSentenceEn": "I believed that you had had a good reason" },
+            { "pronoun": "lui/lei", "form": "avesse avuto", "exampleSentence": "Pensavo che lei avesse avuto un'infanzia difficile", "exampleSentenceEn": "I thought that she had had a difficult childhood" },
+            { "pronoun": "noi", "form": "avessimo avuto", "exampleSentence": "Se noi avessimo avuto più informazioni, avremmo deciso diversamente", "exampleSentenceEn": "If we had had more information, we would have decided differently" },
+            { "pronoun": "voi", "form": "aveste avuto", "exampleSentence": "Speravo che voi aveste avuto l'opportunità di viaggiare", "exampleSentenceEn": "I hoped that you had had the opportunity to travel" },
+            { "pronoun": "loro", "form": "avessero avuto", "exampleSentence": "Dubitavo che loro avessero avuto abbastanza risorse", "exampleSentenceEn": "I doubted that they had had enough resources" }
+          ]
+        },
+        {
+          "tenseId": "trapassato_remoto",
+          "tenseName": "Trapassato Remoto",
+          "tenseNameEn": "Preterite Perfect",
+          "description": "Used in formal and literary Italian to express an action completed immediately before another past action in the remote past. Typically follows time expressions like 'dopo che', 'quando', 'appena'.",
+          "conjugations": [
+            { "pronoun": "io", "form": "ebbi avuto", "exampleSentence": "Dopo che io ebbi avuto la conferma, partii subito", "exampleSentenceEn": "After I had received confirmation, I left at once" },
+            { "pronoun": "tu", "form": "avesti avuto", "exampleSentence": "Appena tu avesti avuto notizie, ci chiamasti", "exampleSentenceEn": "As soon as you had received news, you called us" },
+            { "pronoun": "lui/lei", "form": "ebbe avuto", "exampleSentence": "Quando lei ebbe avuto il diploma, cercò lavoro", "exampleSentenceEn": "When she had gotten her diploma, she looked for work" },
+            { "pronoun": "noi", "form": "avemmo avuto", "exampleSentence": "Dopo che noi avemmo avuto l'approvazione, iniziammo il lavoro", "exampleSentenceEn": "After we had gotten approval, we started the work" },
+            { "pronoun": "voi", "form": "aveste avuto", "exampleSentence": "Appena voi aveste avuto i risultati, li comunicaste", "exampleSentenceEn": "As soon as you had gotten the results, you communicated them" },
+            { "pronoun": "loro", "form": "ebbero avuto", "exampleSentence": "Quando loro ebbero avuto tutte le risposte, presero la decisione", "exampleSentenceEn": "When they had gotten all the answers, they made the decision" }
           ]
         }
       ]

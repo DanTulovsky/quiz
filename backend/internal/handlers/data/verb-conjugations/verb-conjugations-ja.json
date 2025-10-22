@@ -160,6 +160,48 @@
             { "pronoun": "あなたたち", "form": "しよう", "exampleSentence": "みんなで旅行しよう", "exampleSentenceEn": "Let's all travel together" },
             { "pronoun": "彼ら/彼女ら", "form": "しよう", "exampleSentence": "彼らは新しいプロジェクトを始めようとしている", "exampleSentenceEn": "They are about to start a new project" }
           ]
+        },
+        {
+          "tenseId": "passive_form",
+          "tenseName": "受身形",
+          "tenseNameEn": "Passive Form",
+          "description": "Used to express that the subject receives an action from someone else, often with a sense of inconvenience or suffering. Can also express respect or formality.",
+          "conjugations": [
+            { "pronoun": "私", "form": "される", "exampleSentence": "私は先生に質問される", "exampleSentenceEn": "I am asked a question by the teacher" },
+            { "pronoun": "あなた", "form": "される", "exampleSentence": "あなたは上司に批判される", "exampleSentenceEn": "You are criticized by your boss" },
+            { "pronoun": "彼/彼女", "form": "される", "exampleSentence": "彼女は皆に尊敬される", "exampleSentenceEn": "She is respected by everyone" },
+            { "pronoun": "私たち", "form": "される", "exampleSentence": "私たちは先輩に指導される", "exampleSentenceEn": "We are instructed by our seniors" },
+            { "pronoun": "あなたたち", "form": "される", "exampleSentence": "あなたたちは会社に信頼される", "exampleSentenceEn": "You are trusted by the company" },
+            { "pronoun": "彼ら/彼女ら", "form": "される", "exampleSentence": "彼らは社会に評価される", "exampleSentenceEn": "They are evaluated by society" }
+          ]
+        },
+        {
+          "tenseId": "causative_form",
+          "tenseName": "使役形",
+          "tenseNameEn": "Causative Form",
+          "description": "Used to express making or letting someone do something. Indicates that the subject causes someone else to perform an action.",
+          "conjugations": [
+            { "pronoun": "私", "form": "させる", "exampleSentence": "私は子供に宿題をさせる", "exampleSentenceEn": "I make my child do homework" },
+            { "pronoun": "あなた", "form": "させる", "exampleSentence": "あなたは部下に報告をさせる", "exampleSentenceEn": "You have your subordinate make a report" },
+            { "pronoun": "彼/彼女", "form": "させる", "exampleSentence": "彼は学生に発表をさせる", "exampleSentenceEn": "He makes the students give presentations" },
+            { "pronoun": "私たち", "form": "させる", "exampleSentence": "私たちは社員に研修を受けさせる", "exampleSentenceEn": "We have our employees undergo training" },
+            { "pronoun": "あなたたち", "form": "させる", "exampleSentence": "あなたたちは新人に仕事をさせる", "exampleSentenceEn": "You have the newcomers do work" },
+            { "pronoun": "彼ら/彼女ら", "form": "させる", "exampleSentence": "彼らは選手に練習をさせる", "exampleSentenceEn": "They make the players practice" }
+          ]
+        },
+        {
+          "tenseId": "conditional_form",
+          "tenseName": "条件形",
+          "tenseNameEn": "Conditional Form",
+          "description": "Used to express a condition or hypothetical situation, meaning 'if' or 'when'. Formed by adding 'ば' to the verb stem.",
+          "conjugations": [
+            { "pronoun": "私", "form": "すれば", "exampleSentence": "努力をすれば、必ず成功する", "exampleSentenceEn": "If you make an effort, you will surely succeed" },
+            { "pronoun": "あなた", "form": "すれば", "exampleSentence": "練習をすれば、上手になる", "exampleSentenceEn": "If you practice, you will get better" },
+            { "pronoun": "彼/彼女", "form": "すれば", "exampleSentence": "彼が準備をすれば、問題ない", "exampleSentenceEn": "If he prepares, there's no problem" },
+            { "pronoun": "私たち", "form": "すれば", "exampleSentence": "協力をすれば、できないことはない", "exampleSentenceEn": "If we cooperate, there's nothing we can't do" },
+            { "pronoun": "あなたたち", "form": "すれば", "exampleSentence": "計画をすれば、うまくいく", "exampleSentenceEn": "If you plan, it will go well" },
+            { "pronoun": "彼ら/彼女ら", "form": "すれば", "exampleSentence": "彼らが決断をすれば、前に進める", "exampleSentenceEn": "If they make a decision, we can move forward" }
+          ]
         }
       ]
     },
@@ -320,6 +362,48 @@
             { "pronoun": "私たち", "form": "行こう", "exampleSentence": "今日は早く帰ろう", "exampleSentenceEn": "Let's go home early today" },
             { "pronoun": "あなたたち", "form": "行こう", "exampleSentence": "みんなで旅行に行こう", "exampleSentenceEn": "Let's all go on a trip" },
             { "pronoun": "彼ら/彼女ら", "form": "行こう", "exampleSentence": "彼らは新しいレストランに行こうとしている", "exampleSentenceEn": "They are about to go to a new restaurant" }
+          ]
+        },
+        {
+          "tenseId": "passive_form",
+          "tenseName": "受身形",
+          "tenseNameEn": "Passive Form",
+          "description": "Used to express that someone's going causes an effect on the speaker, often with a sense of inconvenience or being left behind.",
+          "conjugations": [
+            { "pronoun": "私", "form": "行かれる", "exampleSentence": "私は友達に先に行かれた", "exampleSentenceEn": "My friend went ahead without me" },
+            { "pronoun": "あなた", "form": "行かれる", "exampleSentence": "あなたは同僚に置いて行かれる", "exampleSentenceEn": "You are left behind by your colleagues" },
+            { "pronoun": "彼/彼女", "form": "行かれる", "exampleSentence": "彼は恋人に遠くへ行かれてしまった", "exampleSentenceEn": "His girlfriend went far away (and he feels the loss)" },
+            { "pronoun": "私たち", "form": "行かれる", "exampleSentence": "私たちは先輩たちに先に行かれた", "exampleSentenceEn": "We were left behind by our seniors" },
+            { "pronoun": "あなたたち", "form": "行かれる", "exampleSentence": "あなたたちは仲間に行かれて寂しい", "exampleSentenceEn": "You feel lonely because your friends went" },
+            { "pronoun": "彼ら/彼女ら", "form": "行かれる", "exampleSentence": "彼らは家族に旅行に行かれた", "exampleSentenceEn": "Their family went on a trip (leaving them behind)" }
+          ]
+        },
+        {
+          "tenseId": "causative_form",
+          "tenseName": "使役形",
+          "tenseNameEn": "Causative Form",
+          "description": "Used to express making or letting someone go somewhere. Indicates that the subject causes someone else to go.",
+          "conjugations": [
+            { "pronoun": "私", "form": "行かせる", "exampleSentence": "私は息子を学校に行かせる", "exampleSentenceEn": "I make my son go to school" },
+            { "pronoun": "あなた", "form": "行かせる", "exampleSentence": "あなたは部下を出張に行かせる", "exampleSentenceEn": "You send your subordinate on a business trip" },
+            { "pronoun": "彼/彼女", "form": "行かせる", "exampleSentence": "彼女は娘を留学に行かせる", "exampleSentenceEn": "She lets her daughter go study abroad" },
+            { "pronoun": "私たち", "form": "行かせる", "exampleSentence": "私たちは新人を研修に行かせる", "exampleSentenceEn": "We send the newcomers to training" },
+            { "pronoun": "あなたたち", "form": "行かせる", "exampleSentence": "あなたたちは子供たちを遠足に行かせる", "exampleSentenceEn": "You let the children go on a field trip" },
+            { "pronoun": "彼ら/彼女ら", "form": "行かせる", "exampleSentence": "彼らは選手を大会に行かせる", "exampleSentenceEn": "They send the players to the tournament" }
+          ]
+        },
+        {
+          "tenseId": "conditional_form",
+          "tenseName": "条件形",
+          "tenseNameEn": "Conditional Form",
+          "description": "Used to express a condition or hypothetical situation about going, meaning 'if (someone) goes' or 'when (someone) goes'.",
+          "conjugations": [
+            { "pronoun": "私", "form": "行けば", "exampleSentence": "駅に行けば、すぐに会える", "exampleSentenceEn": "If you go to the station, we can meet right away" },
+            { "pronoun": "あなた", "form": "行けば", "exampleSentence": "早く行けば、間に合う", "exampleSentenceEn": "If you go early, you'll make it in time" },
+            { "pronoun": "彼/彼女", "form": "行けば", "exampleSentence": "彼がパリに行けば、エッフェル塔が見られる", "exampleSentenceEn": "If he goes to Paris, he can see the Eiffel Tower" },
+            { "pronoun": "私たち", "form": "行けば", "exampleSentence": "一緒に行けば、楽しいよ", "exampleSentenceEn": "If we go together, it will be fun" },
+            { "pronoun": "あなたたち", "form": "行けば", "exampleSentence": "今行けば、セールに間に合う", "exampleSentenceEn": "If you go now, you'll catch the sale" },
+            { "pronoun": "彼ら/彼女ら", "form": "行けば", "exampleSentence": "彼らが海外に行けば、視野が広がる", "exampleSentenceEn": "If they go abroad, their perspective will broaden" }
           ]
         }
       ]
