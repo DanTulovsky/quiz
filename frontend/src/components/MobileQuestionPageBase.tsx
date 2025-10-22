@@ -307,6 +307,7 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
     setSelectedAnswerLocal(null);
     setIsSubmittedLocal(false);
     setFeedback(null);
+    setIsReported(false);
   }, [question?.id, setFeedback]);
 
   // Scroll to top when a new question is loaded (mobile)
