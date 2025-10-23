@@ -79,6 +79,8 @@ func (h *SnippetsHandler) CreateSnippet(c *gin.Context) {
 		SourceLanguage:  &snippet.SourceLanguage,
 		TargetLanguage:  &snippet.TargetLanguage,
 		QuestionId:      snippet.QuestionID,
+		SectionId:       snippet.SectionID,
+		StoryId:         snippet.StoryID,
 		Context:         snippet.Context,
 		DifficultyLevel: snippet.DifficultyLevel,
 		CreatedAt:       &snippet.CreatedAt,

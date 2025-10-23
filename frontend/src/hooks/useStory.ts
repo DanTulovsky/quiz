@@ -1,6 +1,23 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
+// Global state store for story section index to ensure all useStory instances share the same state
+let globalCurrentSectionIndex = 0;
+const globalStateListeners = new Set<() => void>();
+
+const setGlobalCurrentSectionIndex = (value: number | ((prev: number) => number)) => {
+  const newValue = typeof value === 'function' ? value(globalCurrentSectionIndex) : value;
+  if (newValue !== globalCurrentSectionIndex) {
+    globalCurrentSectionIndex = newValue;
+    globalStateListeners.forEach(listener => listener());
+  }
+};
+
+const subscribeToGlobalState = (listener: () => void) => {
+  globalStateListeners.add(listener);
+  return () => globalStateListeners.delete(listener);
+};
+
 import { useAuth } from './useAuth';
 import {
   createStory as apiCreateStory,
@@ -121,8 +138,23 @@ export const useStory = (): UseStoryReturn => {
     [getSectionIndexKey]
   );
 
-  // State
-  const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
+  // State - use global state for currentSectionIndex to ensure all instances share the same value
+  const [currentSectionIndex, setCurrentSectionIndexState] = useState(globalCurrentSectionIndex);
+
+  // Subscribe to global state changes
+  useEffect(() => {
+    const unsubscribe = subscribeToGlobalState(() => {
+      setCurrentSectionIndexState(globalCurrentSectionIndex);
+    });
+    return unsubscribe;
+  }, []);
+
+  // Wrapper for setCurrentSectionIndex that updates global state
+  const setCurrentSectionIndexWithDebug = (value: number | ((prev: number) => number)) => {
+    setGlobalCurrentSectionIndex(value);
+  };
+
+
   const [viewMode, setViewMode] = useState<ViewMode>('section');
   const [error, setError] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -318,7 +350,7 @@ export const useStory = (): UseStoryReturn => {
       queryClient.refetchQueries({
         queryKey: ['archivedStories', user?.id, user?.preferred_language],
       });
-      setCurrentSectionIndex(0);
+      setCurrentSectionIndexWithDebug(0);
       setViewMode('section');
       showNotificationWithClean({
         title: 'Story Archived',
@@ -454,7 +486,7 @@ export const useStory = (): UseStoryReturn => {
         queryKey: ['currentStory', user?.id],
       });
       queryClient.invalidateQueries({ queryKey: ['userStories'] });
-      setCurrentSectionIndex(0);
+      setCurrentSectionIndexWithDebug(0);
       setViewMode('section');
       showNotificationWithClean({
         title: 'Story Activated',
@@ -551,7 +583,7 @@ export const useStory = (): UseStoryReturn => {
 
       // Go to the new section first so currentSection is updated
       if (currentStory && currentStory.sections) {
-        setCurrentSectionIndex(currentStory.sections.length);
+        setCurrentSectionIndexWithDebug(currentStory.sections.length);
       }
 
       // Invalidate the sectionWithQuestions query for the new section after state updates
@@ -977,6 +1009,7 @@ export const useStory = (): UseStoryReturn => {
   const hasCurrentStory = !!currentStory;
   const currentSection = sections[currentSectionIndex] || null;
 
+
   // Check if generation is allowed today (basic client-side checks)
   // The backend will do the final validation and return appropriate errors
   const canGenerateToday =
@@ -1067,7 +1100,7 @@ export const useStory = (): UseStoryReturn => {
     }
   }, [currentStoryError]);
 
-  // Load section index from localStorage when story changes, or default to last section
+  // Load section index from localStorage when story changes, or default to first section
   useEffect(() => {
     if (
       currentStory &&
@@ -1081,13 +1114,14 @@ export const useStory = (): UseStoryReturn => {
         savedIndex < currentStory.sections.length
       ) {
         // Use saved index if valid
-        setCurrentSectionIndex(savedIndex);
+        setGlobalCurrentSectionIndex(savedIndex);
       } else {
-        // Default to last section for new stories or if saved index is invalid
-        setCurrentSectionIndex(currentStory.sections.length - 1);
+        // Default to first section (index 0) instead of last section
+        // This prevents the initial load issue where users expect to start from section 1
+        setGlobalCurrentSectionIndex(0);
       }
     }
-  }, [currentStory?.id, loadSectionIndex]);
+  }, [currentStory?.id]); // Remove loadSectionIndex from dependencies
 
   // Save section index to localStorage whenever it changes
   useEffect(() => {
@@ -1095,6 +1129,13 @@ export const useStory = (): UseStoryReturn => {
       saveSectionIndex(currentStory.id, currentSectionIndex);
     }
   }, [currentSectionIndex, currentStory?.id, saveSectionIndex]);
+
+  // Update global state when currentSectionIndex changes
+  useEffect(() => {
+    if (currentSectionIndex !== globalCurrentSectionIndex) {
+      setGlobalCurrentSectionIndex(currentSectionIndex);
+    }
+  }, [currentSectionIndex]);
 
   // Action handlers
   const createStory = useCallback(
@@ -1164,7 +1205,7 @@ export const useStory = (): UseStoryReturn => {
   const goToSection = useCallback(
     (index: number) => {
       if (index >= 0 && index < sections.length) {
-        setCurrentSectionIndex(index);
+        setCurrentSectionIndexWithDebug(index);
       }
     },
     [sections.length]
@@ -1172,23 +1213,23 @@ export const useStory = (): UseStoryReturn => {
 
   const goToNextSection = useCallback(() => {
     if (currentSectionIndex < sections.length - 1) {
-      setCurrentSectionIndex(currentSectionIndex + 1);
+      setCurrentSectionIndexWithDebug(currentSectionIndex + 1);
     }
   }, [currentSectionIndex, sections.length]);
 
   const goToPreviousSection = useCallback(() => {
     if (currentSectionIndex > 0) {
-      setCurrentSectionIndex(currentSectionIndex - 1);
+      setCurrentSectionIndexWithDebug(currentSectionIndex - 1);
     }
   }, [currentSectionIndex]);
 
   const goToFirstSection = useCallback(() => {
-    setCurrentSectionIndex(0);
+    setCurrentSectionIndexWithDebug(0);
   }, []);
 
   const goToLastSection = useCallback(() => {
     if (sections.length > 0) {
-      setCurrentSectionIndex(sections.length - 1);
+      setCurrentSectionIndexWithDebug(sections.length - 1);
     }
   }, [sections.length]);
 
