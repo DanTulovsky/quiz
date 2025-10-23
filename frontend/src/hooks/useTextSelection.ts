@@ -79,8 +79,12 @@ export const useTextSelection = () => {
 
   const clearSelection = useCallback(() => {
     // Clean up data attributes from previously selected elements
-    const elementsWithTranslation = document.querySelectorAll('[data-translation-enabled]');
-    elementsWithTranslation.forEach(el => el.removeAttribute('data-translation-enabled'));
+    const elementsWithTranslation = document.querySelectorAll(
+      '[data-translation-enabled]'
+    );
+    elementsWithTranslation.forEach(el =>
+      el.removeAttribute('data-translation-enabled')
+    );
 
     setIsVisible(false);
     setSelection(null);

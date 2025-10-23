@@ -117,7 +117,8 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
         target.closest('.mantine-Select-root');
 
       // Don't close if clicking on the selected text itself
-      const isSelectedText = selection &&
+      const isSelectedText =
+        selection &&
         target.textContent?.includes(selection.text) &&
         target.closest('[data-translation-enabled]');
 
