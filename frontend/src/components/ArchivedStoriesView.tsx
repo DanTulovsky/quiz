@@ -120,9 +120,15 @@ const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
         </div>
 
         <Text color='dimmed' size='sm'>
-          You have {archivedStories.filter(story => story.status === 'archived').length} archived{' '}
-          {archivedStories.filter(story => story.status === 'archived').length === 1 ? 'story' : 'stories'}. You can restore
-          any of these to continue reading or create a new story.
+          You have{' '}
+          {archivedStories.filter(story => story.status === 'archived').length}{' '}
+          archived{' '}
+          {archivedStories.filter(story => story.status === 'archived')
+            .length === 1
+            ? 'story'
+            : 'stories'}
+          . You can restore any of these to continue reading or create a new
+          story.
         </Text>
 
         {/* Search Input */}
