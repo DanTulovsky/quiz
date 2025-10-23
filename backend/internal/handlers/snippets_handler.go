@@ -140,6 +140,14 @@ func (h *SnippetsHandler) GetSnippets(c *gin.Context) {
 	if targetLang := c.Query("target_lang"); targetLang != "" {
 		params.TargetLang = &targetLang
 	}
+	if storyIDStr := c.Query("story_id"); storyIDStr != "" {
+		if storyID, err := strconv.ParseInt(storyIDStr, 10, 64); err == nil {
+			params.StoryId = &storyID
+		}
+	}
+	if level := c.Query("level"); level != "" {
+		params.Level = (*api.GetV1SnippetsParamsLevel)(&level)
+	}
 	if limitStr := c.Query("limit"); limitStr != "" {
 		if limit, err := strconv.Atoi(limitStr); err == nil {
 			params.Limit = &limit
@@ -164,6 +172,12 @@ func (h *SnippetsHandler) GetSnippets(c *gin.Context) {
 	}
 	if targetLang := params.TargetLang; targetLang != nil {
 		span.SetAttributes(attribute.String("params.target_lang", *targetLang))
+	}
+	if storyID := params.StoryId; storyID != nil {
+		span.SetAttributes(attribute.Int64("params.story_id", *storyID))
+	}
+	if level := params.Level; level != nil {
+		span.SetAttributes(attribute.String("params.level", string(*level)))
 	}
 	snippetList, err := h.snippetsService.GetSnippets(ctx, int64(userID), params)
 	if err != nil {

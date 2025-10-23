@@ -181,6 +181,16 @@ const (
 	GetV1AdminWorkerNotificationsSentParamsStatusSent    GetV1AdminWorkerNotificationsSentParamsStatus = "sent"
 )
 
+// Defines values for GetV1SnippetsParamsLevel.
+const (
+	A1 GetV1SnippetsParamsLevel = "A1"
+	A2 GetV1SnippetsParamsLevel = "A2"
+	B1 GetV1SnippetsParamsLevel = "B1"
+	B2 GetV1SnippetsParamsLevel = "B2"
+	C1 GetV1SnippetsParamsLevel = "C1"
+	C2 GetV1SnippetsParamsLevel = "C2"
+)
+
 // AIConcurrencyStats defines model for AIConcurrencyStats.
 type AIConcurrencyStats struct {
 	ActiveRequests  *int            `json:"active_requests,omitempty"`
@@ -1942,12 +1952,21 @@ type GetV1SnippetsParams struct {
 	// TargetLang Filter by target language
 	TargetLang *string `form:"target_lang,omitempty" json:"target_lang,omitempty"`
 
+	// StoryId Filter by story ID
+	StoryId *int64 `form:"story_id,omitempty" json:"story_id,omitempty"`
+
+	// Level Filter by difficulty level (CEFR level)
+	Level *GetV1SnippetsParamsLevel `form:"level,omitempty" json:"level,omitempty"`
+
 	// Limit Maximum number of snippets to return (default 50, max 100)
 	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
 
 	// Offset Number of snippets to skip for pagination
 	Offset *int `form:"offset,omitempty" json:"offset,omitempty"`
 }
+
+// GetV1SnippetsParamsLevel defines parameters for GetV1Snippets.
+type GetV1SnippetsParamsLevel string
 
 // GetV1SnippetsSearchParams defines parameters for GetV1SnippetsSearch.
 type GetV1SnippetsSearchParams struct {

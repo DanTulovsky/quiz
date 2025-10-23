@@ -600,6 +600,142 @@ func TestSnippetsService_GetSnippets_WithStoryContext_Integration(t *testing.T) 
 	t.Logf("Snippet response includes StoryId field: %v", snippet.StoryId != nil || snippet.StoryId == nil)
 }
 
+// TestSnippetsService_GetSnippets_WithFilters_Integration2 tests filtering by story_id and level
+func TestSnippetsService_GetSnippets_WithFilters_Integration2(t *testing.T) {
+	db := SharedTestDBSetup(t)
+	defer db.Close()
+
+	cfg, err := config.NewConfig()
+	require.NoError(t, err)
+	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+
+	// Create a test user first
+	userService := NewUserServiceWithLogger(db, cfg, logger)
+	username := fmt.Sprintf("testuser_filters_%d", time.Now().UnixNano())
+	user, err := userService.CreateUser(context.Background(), username, "it", "B1")
+	require.NoError(t, err, "Should be able to create test user")
+	require.NotNil(t, user, "Created user should not be nil")
+
+	service := NewSnippetsService(db, cfg, logger)
+
+	// Create test snippets with different levels and story contexts
+	snippets := []api.CreateSnippetRequest{
+		{
+			OriginalText:   "word_a1",
+			TranslatedText: "translation_a1",
+			SourceLanguage: "it",
+			TargetLanguage: "en",
+		},
+		{
+			OriginalText:   "word_b1",
+			TranslatedText: "translation_b1",
+			SourceLanguage: "it",
+			TargetLanguage: "en",
+		},
+		{
+			OriginalText:   "word_c1",
+			TranslatedText: "translation_c1",
+			SourceLanguage: "it",
+			TargetLanguage: "en",
+		},
+	}
+
+	// Create snippets for the test user
+	for _, req := range snippets {
+		_, err := service.CreateSnippet(context.Background(), int64(user.ID), req)
+		require.NoError(t, err, "Should be able to create snippet")
+	}
+
+	// Update snippets with difficulty levels using direct database update
+	// since we don't have difficulty_level in CreateSnippetRequest
+	levels := []string{"A1", "B1", "C1"}
+	updateQuery := `UPDATE snippets SET difficulty_level = $1 WHERE user_id = $2 AND original_text = $3`
+	for i, snippet := range snippets {
+		_, err := db.Exec(updateQuery, levels[i], user.ID, snippet.OriginalText)
+		require.NoError(t, err, "Should be able to update snippet with difficulty level")
+	}
+
+	// Test: Get all snippets without filters
+	params := api.GetV1SnippetsParams{}
+	snippetList, err := service.GetSnippets(context.Background(), int64(user.ID), params)
+	require.NoError(t, err, "Should be able to get snippets")
+	require.NotNil(t, snippetList, "Snippet list should not be nil")
+	require.NotNil(t, snippetList.Snippets, "Snippets should not be nil")
+	assert.Equal(t, 3, *snippetList.Total, "Should return exactly 3 snippets")
+	assert.Len(t, *snippetList.Snippets, 3, "Should return exactly 3 snippets")
+
+	// Test: Filter by level A1
+	levelA1 := api.GetV1SnippetsParamsLevel("A1")
+	params = api.GetV1SnippetsParams{Level: &levelA1}
+	snippetList, err = service.GetSnippets(context.Background(), int64(user.ID), params)
+	require.NoError(t, err, "Should be able to get snippets filtered by level A1")
+	require.NotNil(t, snippetList, "Snippet list should not be nil")
+	require.NotNil(t, snippetList.Snippets, "Snippets should not be nil")
+	assert.Equal(t, 1, *snippetList.Total, "Should return exactly 1 snippet for A1")
+	assert.Len(t, *snippetList.Snippets, 1, "Should return exactly 1 snippet for A1")
+
+	snippet := (*snippetList.Snippets)[0]
+	require.NotNil(t, snippet.OriginalText, "Original text should not be nil")
+	assert.Equal(t, "word_a1", *snippet.OriginalText, "Should have correct original text for A1")
+	require.NotNil(t, snippet.DifficultyLevel, "Difficulty level should not be nil")
+	assert.Equal(t, "A1", *snippet.DifficultyLevel, "Should have correct difficulty level")
+
+	// Test: Filter by level B1
+	levelB1 := api.GetV1SnippetsParamsLevel("B1")
+	params = api.GetV1SnippetsParams{Level: &levelB1}
+	snippetList, err = service.GetSnippets(context.Background(), int64(user.ID), params)
+	require.NoError(t, err, "Should be able to get snippets filtered by level B1")
+	require.NotNil(t, snippetList, "Snippet list should not be nil")
+	require.NotNil(t, snippetList.Snippets, "Snippets should not be nil")
+	assert.Equal(t, 1, *snippetList.Total, "Should return exactly 1 snippet for B1")
+	assert.Len(t, *snippetList.Snippets, 1, "Should return exactly 1 snippet for B1")
+
+	snippet = (*snippetList.Snippets)[0]
+	require.NotNil(t, snippet.OriginalText, "Original text should not be nil")
+	assert.Equal(t, "word_b1", *snippet.OriginalText, "Should have correct original text for B1")
+	require.NotNil(t, snippet.DifficultyLevel, "Difficulty level should not be nil")
+	assert.Equal(t, "B1", *snippet.DifficultyLevel, "Should have correct difficulty level")
+
+	// Test: Filter by non-existent level
+	levelD1 := api.GetV1SnippetsParamsLevel("D1")
+	params = api.GetV1SnippetsParams{Level: &levelD1}
+	snippetList, err = service.GetSnippets(context.Background(), int64(user.ID), params)
+	require.NoError(t, err, "Should not error for non-existent level")
+	require.NotNil(t, snippetList, "Snippet list should not be nil")
+	require.NotNil(t, snippetList.Snippets, "Snippets should not be nil")
+	assert.Equal(t, 0, *snippetList.Total, "Should return 0 snippets for non-existent level")
+	assert.Len(t, *snippetList.Snippets, 0, "Should return 0 snippets for non-existent level")
+
+	// Test: Filter by story_id (should return 0 since we didn't create snippets with story_id)
+	storyID := int64(123)
+	params = api.GetV1SnippetsParams{StoryId: &storyID}
+	snippetList, err = service.GetSnippets(context.Background(), int64(user.ID), params)
+	require.NoError(t, err, "Should not error for non-existent story_id")
+	require.NotNil(t, snippetList, "Snippet list should not be nil")
+	require.NotNil(t, snippetList.Snippets, "Snippets should not be nil")
+	assert.Equal(t, 0, *snippetList.Total, "Should return 0 snippets for non-existent story_id")
+	assert.Len(t, *snippetList.Snippets, 0, "Should return 0 snippets for non-existent story_id")
+
+	// Test: Combine level filter with search
+	searchQuery := "word"
+	params = api.GetV1SnippetsParams{
+		Q:     &searchQuery,
+		Level: &levelA1,
+	}
+	snippetList, err = service.GetSnippets(context.Background(), int64(user.ID), params)
+	require.NoError(t, err, "Should be able to combine search and level filter")
+	require.NotNil(t, snippetList, "Snippet list should not be nil")
+	require.NotNil(t, snippetList.Snippets, "Snippets should not be nil")
+	assert.Equal(t, 1, *snippetList.Total, "Should return exactly 1 snippet for search + A1 filter")
+	assert.Len(t, *snippetList.Snippets, 1, "Should return exactly 1 snippet for search + A1 filter")
+
+	snippet = (*snippetList.Snippets)[0]
+	require.NotNil(t, snippet.OriginalText, "Original text should not be nil")
+	assert.Equal(t, "word_a1", *snippet.OriginalText, "Should have correct original text for search + A1")
+	require.NotNil(t, snippet.DifficultyLevel, "Difficulty level should not be nil")
+	assert.Equal(t, "A1", *snippet.DifficultyLevel, "Should have correct difficulty level for search + A1")
+}
+
 // Helper functions for creating pointers to primitive types
 func int64Ptr(i int64) *int64 {
 	return &i

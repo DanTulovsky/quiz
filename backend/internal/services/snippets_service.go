@@ -87,7 +87,7 @@ func (s *SnippetsService) CreateSnippet(ctx context.Context, userID int64, req a
 		return nil, contextutils.WrapError(contextutils.ErrRecordExists, "snippet already exists for this user and text combination")
 	}
 
-	// Determine difficulty level - use question's level if question_id is provided
+	// Determine difficulty level - use question's level if question_id is provided, or section's level if section_id is provided
 	var difficultyLevel string
 	var levelSource string
 
@@ -104,8 +104,21 @@ func (s *SnippetsService) CreateSnippet(ctx context.Context, userID int64, req a
 			difficultyLevel = questionLevel
 			levelSource = "question"
 		}
+	} else if req.SectionId != nil {
+		// Get the story section's language level
+		sectionLevel, err := s.getSectionLevel(ctx, *req.SectionId)
+		if err != nil {
+			// If we can't get the section level, use default
+			s.logger.Warn(ctx, "Failed to get section level, using default",
+				map[string]any{"section_id": *req.SectionId, "error": err.Error()})
+			difficultyLevel = s.getDefaultDifficultyLevel()
+			levelSource = "default_fallback"
+		} else {
+			difficultyLevel = sectionLevel
+			levelSource = "section"
+		}
 	} else {
-		// No question context, use default
+		// No question or section context, use default
 		difficultyLevel = s.getDefaultDifficultyLevel()
 		levelSource = "default"
 	}
@@ -160,6 +173,28 @@ func (s *SnippetsService) CreateSnippet(ctx context.Context, userID int64, req a
 	return result, nil
 }
 
+// getSectionLevel retrieves the language level of a specific story section
+func (s *SnippetsService) getSectionLevel(ctx context.Context, sectionID int64) (result string, err error) {
+	ctx, span := observability.TraceFunction(ctx, "snippets", "get_section_level")
+	defer observability.FinishSpan(span, &err)
+
+	// Check if database connection is valid
+	if s.db == nil {
+		return "", contextutils.WrapError(contextutils.ErrInternalError, "database connection is nil")
+	}
+
+	query := `SELECT language_level FROM story_sections WHERE id = $1`
+
+	err = s.db.QueryRowContext(ctx, query, sectionID).Scan(&result)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return "", contextutils.WrapErrorf(contextutils.ErrRecordNotFound, "story section with id %d not found", sectionID)
+		}
+		return "", contextutils.WrapErrorf(err, "failed to get section level for section %d", sectionID)
+	}
+	return result, nil
+}
+
 // GetSnippets retrieves snippets for a user with optional filtering
 func (s *SnippetsService) GetSnippets(ctx context.Context, userID int64, params api.GetV1SnippetsParams) (result *api.SnippetList, err error) {
 	ctx, span := observability.TraceFunction(ctx, "snippets", "get_snippets")
@@ -201,6 +236,20 @@ func (s *SnippetsService) GetSnippets(ctx context.Context, userID int64, params 
 		argCount++
 		query += fmt.Sprintf(" AND target_language = $%d", argCount)
 		args = append(args, *params.TargetLang)
+	}
+
+	// Add story_id filter if provided
+	if params.StoryId != nil && *params.StoryId > 0 {
+		argCount++
+		query += fmt.Sprintf(" AND story_id = $%d", argCount)
+		args = append(args, *params.StoryId)
+	}
+
+	// Add difficulty level filter if provided
+	if params.Level != nil && *params.Level != "" {
+		argCount++
+		query += fmt.Sprintf(" AND difficulty_level = $%d", argCount)
+		args = append(args, string(*params.Level))
 	}
 
 	// Add ordering and pagination
@@ -288,6 +337,14 @@ func (s *SnippetsService) GetSnippets(ctx context.Context, userID int64, params 
 	if params.TargetLang != nil && *params.TargetLang != "" {
 		totalQuery += fmt.Sprintf(" AND target_language = $%d", len(totalArgs)+1)
 		totalArgs = append(totalArgs, *params.TargetLang)
+	}
+	if params.StoryId != nil && *params.StoryId > 0 {
+		totalQuery += fmt.Sprintf(" AND story_id = $%d", len(totalArgs)+1)
+		totalArgs = append(totalArgs, *params.StoryId)
+	}
+	if params.Level != nil && *params.Level != "" {
+		totalQuery += fmt.Sprintf(" AND difficulty_level = $%d", len(totalArgs)+1)
+		totalArgs = append(totalArgs, string(*params.Level))
 	}
 
 	var total int

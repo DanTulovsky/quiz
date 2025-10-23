@@ -1246,6 +1246,21 @@ paths:
           schema:
             type: string
             maxLength: 10
+        - name: story_id
+          in: query
+          required: false
+          description: Filter by story ID
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+        - name: level
+          in: query
+          required: false
+          description: Filter by difficulty level (CEFR level)
+          schema:
+            type: string
+            enum: [A1, A2, B1, B2, C1, C2]
         - name: limit
           in: query
           required: false

@@ -42,18 +42,39 @@ import {
   usePutV1SnippetsId,
   usePostV1Snippets,
   useGetV1SettingsLanguages,
+  useGetV1SettingsLevels,
+  useGetV1Story,
 } from '../api/api';
 import { customInstance } from '../api/axios';
 
 const SnippetsPage: React.FC = () => {
-  const {} = useAuth();
+  const { user } = useAuth();
   const location = useLocation();
 
   // Fetch available languages
   const { data: languages = [] } = useGetV1SettingsLanguages();
 
+  // Fetch user's stories for the dropdown
+  const { data: stories = [] } = useGetV1Story();
+
+  // Fetch available levels for the user's language
+  const { data: levelsData, isLoading: levelsLoading } = useGetV1SettingsLevels(
+    user?.preferred_language
+      ? { language: user.preferred_language }
+      : undefined,
+    {
+      query: {
+        enabled: !!user?.preferred_language,
+      },
+    }
+  );
+  const levels = levelsData?.levels || [];
+  const levelDescriptions = levelsData?.level_descriptions || {};
+
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSearchQuery, setActiveSearchQuery] = useState('');
+  const [selectedStoryId, setSelectedStoryId] = useState<string | null>(null);
+  const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
 
   // Handle URL search parameters
   useEffect(() => {
@@ -94,6 +115,47 @@ const SnippetsPage: React.FC = () => {
     [languages]
   );
 
+  // Create story options for dropdown
+  const storyOptions = useMemo(
+    () =>
+      stories.map(story => ({
+        value: String(story.id),
+        label: story.title || 'Untitled Story',
+      })),
+    [stories]
+  );
+
+  // Level options from API
+  const levelOptions = useMemo(
+    () =>
+      levels.map(level => ({
+        value: level,
+        label: levelDescriptions[level]
+          ? `${level} - ${levelDescriptions[level]}`
+          : level,
+      })),
+    [levels, levelDescriptions]
+  );
+
+  // Calculate dynamic width for dropdowns based on content
+  const storyDropdownWidth = useMemo(() => {
+    if (storyOptions.length === 0) return 200;
+    const maxLength = Math.max(
+      ...storyOptions.map(option => option.label.length)
+    );
+    // Base width + character width (approximately 8px per character) + padding
+    return Math.min(Math.max(maxLength * 8 + 40, 200), 400);
+  }, [storyOptions]);
+
+  const levelDropdownWidth = useMemo(() => {
+    if (levelOptions.length === 0) return 150;
+    const maxLength = Math.max(
+      ...levelOptions.map(option => option.label.length)
+    );
+    // Base width + character width (approximately 8px per character) + padding
+    return Math.min(Math.max(maxLength * 8 + 40, 150), 300);
+  }, [levelOptions]);
+
   // Add snippet form state
   const [newSnippet, setNewSnippet] = useState({
     original_text: '',
@@ -132,11 +194,6 @@ const SnippetsPage: React.FC = () => {
     }
   }, [languageOptions]);
 
-  // Reset pagination when component mounts to ensure fresh data
-  useEffect(() => {
-    resetSnippets();
-  }, []);
-
   const queryClient = useQueryClient();
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -153,16 +210,33 @@ const SnippetsPage: React.FC = () => {
     reset: resetSnippets,
   } = usePagination(
     activeSearchQuery
-      ? ['/v1/snippets/search', activeSearchQuery]
-      : ['/v1/snippets'],
+      ? [
+          '/v1/snippets/search',
+          activeSearchQuery,
+          selectedStoryId,
+          selectedLevel,
+        ]
+      : ['/v1/snippets', selectedStoryId, selectedLevel],
     async ({ limit, offset }) => {
       if (activeSearchQuery.trim()) {
         // Use search API
-        const params: { q: string; limit: number; offset: number } = {
+        const params: {
+          q: string;
+          limit: number;
+          offset: number;
+          story_id?: number;
+          level?: string;
+        } = {
           q: activeSearchQuery.trim(),
           limit,
           offset,
         };
+        if (selectedStoryId) {
+          params.story_id = parseInt(selectedStoryId, 10);
+        }
+        if (selectedLevel) {
+          params.level = selectedLevel;
+        }
         const responseData = await customInstance({
           url: '/v1/snippets/search',
           method: 'GET',
@@ -177,10 +251,18 @@ const SnippetsPage: React.FC = () => {
         const params: {
           limit: number;
           offset: number;
+          story_id?: number;
+          level?: string;
         } = {
           limit,
           offset,
         };
+        if (selectedStoryId) {
+          params.story_id = parseInt(selectedStoryId, 10);
+        }
+        if (selectedLevel) {
+          params.level = selectedLevel;
+        }
         const responseData = await customInstance({
           url: '/v1/snippets',
           method: 'GET',
@@ -197,6 +279,16 @@ const SnippetsPage: React.FC = () => {
       enableInfiniteScroll: false,
     }
   );
+
+  // Reset pagination when component mounts to ensure fresh data
+  useEffect(() => {
+    resetSnippets();
+  }, []);
+
+  // Reset pagination when filters change
+  useEffect(() => {
+    resetSnippets();
+  }, [selectedStoryId, selectedLevel, resetSnippets]);
 
   const isLoading = snippetsLoading;
   const isFetching = snippetsFetching;
@@ -451,6 +543,49 @@ const SnippetsPage: React.FC = () => {
                   </Button>
                 )}
               </Group>
+            </Group>
+            <Group gap='md'>
+              <Select
+                placeholder='Filter by story'
+                data={storyOptions}
+                value={selectedStoryId}
+                onChange={setSelectedStoryId}
+                clearable
+                disabled={isLoading || isFetching}
+                style={{ width: storyDropdownWidth }}
+                searchable
+              />
+              <Select
+                placeholder='Filter by level'
+                data={
+                  levelOptions.length > 0
+                    ? levelOptions
+                    : [
+                        {
+                          value: 'loading',
+                          label: 'Loading levels...',
+                          disabled: true,
+                        },
+                      ]
+                }
+                value={selectedLevel}
+                onChange={setSelectedLevel}
+                clearable
+                disabled={isLoading || isFetching || levelsLoading}
+                style={{ width: levelDropdownWidth }}
+                searchable
+              />
+              {(selectedStoryId || selectedLevel) && (
+                <Button
+                  variant='subtle'
+                  onClick={() => {
+                    setSelectedStoryId(null);
+                    setSelectedLevel(null);
+                  }}
+                >
+                  Clear Filters
+                </Button>
+              )}
             </Group>
           </Stack>
         </Card>

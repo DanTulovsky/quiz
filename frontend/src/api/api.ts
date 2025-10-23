@@ -2245,6 +2245,15 @@ source_lang?: string;
  */
 target_lang?: string;
 /**
+ * Filter by story ID
+ * @minimum 1
+ */
+story_id?: number;
+/**
+ * Filter by difficulty level (CEFR level)
+ */
+level?: GetV1SnippetsLevel;
+/**
  * Maximum number of snippets to return (default 50, max 100)
  * @minimum 1
  * @maximum 100
@@ -2256,6 +2265,19 @@ limit?: number;
  */
 offset?: number;
 };
+
+export type GetV1SnippetsLevel = typeof GetV1SnippetsLevel[keyof typeof GetV1SnippetsLevel];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const GetV1SnippetsLevel = {
+  A1: 'A1',
+  A2: 'A2',
+  B1: 'B1',
+  B2: 'B2',
+  C1: 'C1',
+  C2: 'C2',
+} as const;
 
 export type GetV1SnippetsSearchParams = {
 /**
