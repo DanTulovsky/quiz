@@ -84,7 +84,7 @@ const MobileStoryPage: React.FC = () => {
         setCurrentStory(storyId);
       }
     }
-  }, [storyIdParam, currentStory, setCurrentStory]);
+  }, [storyIdParam]); // Removed currentStory and setCurrentStory to prevent infinite loop
 
   // Handle section ID parameter
   useEffect(() => {
@@ -116,8 +116,7 @@ const MobileStoryPage: React.FC = () => {
     sectionIdParam,
     currentStory,
     currentSectionIndex,
-    goToNextSection,
-    goToPreviousSection,
+    // Removed goToNextSection and goToPreviousSection to prevent unnecessary re-renders
   ]);
   const [isCreatingStory, setIsCreatingStory] = useState(false);
 
