@@ -58,13 +58,20 @@ export function usePagination<TData = unknown>(
   const [allData, setAllData] = useState<TData[]>([]);
 
   const infiniteQueryOptions: UseInfiniteQueryOptions = {
-    queryKey: [...queryKey, 'pagination'],
-    queryFn: ({ pageParam = 0 }) =>
-      queryFn({
+    queryKey: [...queryKey, 'pagination', currentPage],
+    queryFn: ({ pageParam = 0 }) => {
+      // For traditional pagination, calculate offset based on current page
+      const offset = enableInfiniteScroll ? pageParam * limit : (currentPage - 1) * limit;
+      return queryFn({
         limit,
-        offset: pageParam * limit,
-      }),
+        offset,
+      });
+    },
     getNextPageParam: (lastPage, pages) => {
+      if (!enableInfiniteScroll) {
+        return undefined; // Traditional pagination doesn't use next page param
+      }
+
       const totalLoaded = pages.reduce((acc, page) => {
         if (page?.items && Array.isArray(page.items)) {
           return acc + page.items.length;
@@ -79,6 +86,9 @@ export function usePagination<TData = unknown>(
       return totalLoaded < total ? pages.length : undefined;
     },
     getPreviousPageParam: (firstPage, pages) => {
+      if (!enableInfiniteScroll) {
+        return undefined; // Traditional pagination doesn't use previous page param
+      }
       return pages.length > 1 ? pages.length - 2 : undefined;
     },
   };
@@ -100,20 +110,33 @@ export function usePagination<TData = unknown>(
       return [];
     }
 
-    return (
-      data.pages.flatMap(page => {
-        // React Query stores the return value from queryFn directly in page
-        // My query function returns {items: [...], total: 1}
-        if (page && Array.isArray(page.items)) {
-          return page.items;
-        } else if (page && page.conversations) {
-          return page.conversations;
-        } else {
-          return [];
-        }
-      }) || []
-    );
-  }, [data]);
+    if (enableInfiniteScroll) {
+      // For infinite scroll, flatten all pages
+      return (
+        data.pages.flatMap(page => {
+          // React Query stores the return value from queryFn directly in page
+          // My query function returns {items: [...], total: 1}
+          if (page && Array.isArray(page.items)) {
+            return page.items;
+          } else if (page && page.conversations) {
+            return page.conversations;
+          } else {
+            return [];
+          }
+        }) || []
+      );
+    } else {
+      // For traditional pagination, only show the current page's data
+      const currentPageData = data.pages[0];
+      if (currentPageData && Array.isArray(currentPageData.items)) {
+        return currentPageData.items;
+      } else if (currentPageData && currentPageData.conversations) {
+        return currentPageData.conversations;
+      } else {
+        return [];
+      }
+    }
+  }, [data, enableInfiniteScroll]);
 
   // Update allData when flattenedData changes
   useMemo(() => {
@@ -163,8 +186,8 @@ export function usePagination<TData = unknown>(
     (page: number) => {
       if (page >= 1 && page <= totalPages && page !== currentPage) {
         setCurrentPage(page);
-        // For now, we'll refetch with new offset
-        // In a more sophisticated implementation, we might want to cache pages
+        // For traditional pagination, we need to refetch with the new page
+        // The queryFn will receive the new offset based on the current page
         refetch();
       }
     },

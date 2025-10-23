@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import {
   Container,
   Title,
@@ -30,6 +31,11 @@ import StoryGenerationErrorModal from '../components/StoryGenerationErrorModal';
 import { CreateStoryRequest } from '../api/storyApi';
 
 const StoryPage: React.FC = () => {
+  const { id: storyIdParam, sectionId: sectionIdParam } = useParams<{
+    id?: string;
+    sectionId?: string;
+  }>();
+
   const {
     currentStory,
     archivedStories,
@@ -63,6 +69,50 @@ const StoryPage: React.FC = () => {
 
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [isCreatingStory, setIsCreatingStory] = useState(false);
+
+  // Handle URL parameters for story and section navigation
+  useEffect(() => {
+    if (storyIdParam) {
+      const storyId = parseInt(storyIdParam, 10);
+      if (!isNaN(storyId) && (!currentStory || currentStory.id !== storyId)) {
+        setCurrentStory(storyId);
+      }
+    }
+  }, [storyIdParam, currentStory, setCurrentStory]);
+
+  // Handle section ID parameter
+  useEffect(() => {
+    if (sectionIdParam && currentStory && currentStory.sections) {
+      const sectionId = parseInt(sectionIdParam, 10);
+      if (!isNaN(sectionId)) {
+        const sectionIndex = currentStory.sections.findIndex(
+          section => section.id === sectionId
+        );
+        if (sectionIndex !== -1 && sectionIndex !== currentSectionIndex) {
+          // Navigate to the specific section
+          // Note: We need to add a function to set section index directly
+          // For now, we'll use the existing navigation functions
+          if (sectionIndex > currentSectionIndex) {
+            // Navigate forward
+            for (let i = currentSectionIndex; i < sectionIndex; i++) {
+              goToNextSection();
+            }
+          } else if (sectionIndex < currentSectionIndex) {
+            // Navigate backward
+            for (let i = currentSectionIndex; i > sectionIndex; i--) {
+              goToPreviousSection();
+            }
+          }
+        }
+      }
+    }
+  }, [
+    sectionIdParam,
+    currentStory,
+    currentSectionIndex,
+    goToNextSection,
+    goToPreviousSection,
+  ]);
 
   const handleCreateStory = async (data: CreateStoryRequest) => {
     setIsCreatingStory(true);

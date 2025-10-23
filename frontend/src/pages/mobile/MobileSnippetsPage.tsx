@@ -5,6 +5,7 @@ import React, {
   useMemo,
   useEffect,
 } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
   Container,
   Title,
@@ -23,6 +24,7 @@ import {
   Alert,
   Paper,
   Divider,
+  Anchor,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import {
@@ -31,6 +33,7 @@ import {
   IconTrash,
   IconPlus,
   IconX,
+  IconExternalLink,
 } from '@tabler/icons-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../../hooks/useAuth';
@@ -46,14 +49,23 @@ import { customInstance } from '../../api/axios';
 
 const MobileSnippetsPage: React.FC = () => {
   const {} = useAuth();
+  const location = useLocation();
 
   // Fetch available languages
   const { data: languages = [] } = useGetV1SettingsLanguages();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSearchQuery, setActiveSearchQuery] = useState('');
-  const [sourceLangFilter, setSourceLangFilter] = useState<string | null>(null);
-  const [targetLangFilter, setTargetLangFilter] = useState<string | null>(null);
+
+  // Handle URL search parameters
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const q = urlParams.get('q');
+    if (q) {
+      setSearchQuery(q);
+      setActiveSearchQuery(q);
+    }
+  }, [location.search]);
   const [editModalOpened, { open: openEditModal, close: closeEditModal }] =
     useDisclosure(false);
   const [addModalOpened, { open: openAddModal, close: closeAddModal }] =
@@ -167,13 +179,9 @@ const MobileSnippetsPage: React.FC = () => {
         const params: {
           limit: number;
           offset: number;
-          source_lang?: string;
-          target_lang?: string;
         } = {
           limit,
           offset,
-          source_lang: sourceLangFilter || undefined,
-          target_lang: targetLangFilter || undefined,
         };
         const responseData = await customInstance({
           url: '/v1/snippets',
@@ -240,14 +248,6 @@ const MobileSnippetsPage: React.FC = () => {
     queryClient
   );
 
-  // Get unique languages for filter dropdowns (from existing snippets)
-  const sourceLanguages = snippets
-    ? [...new Set(snippets.map(s => s.source_language))]
-    : [];
-  const targetLanguages = snippets
-    ? [...new Set(snippets.map(s => s.target_language))]
-    : [];
-
   // Handle search input change
   const handleSearchChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -282,15 +282,6 @@ const MobileSnippetsPage: React.FC = () => {
   const handleSearch = () => {
     setActiveSearchQuery(searchQuery);
     resetSnippets(); // Reset pagination when searching
-  };
-
-  // Handle filter changes
-  const handleFilterChange = () => {
-    if (activeSearchQuery) {
-      // If there's an active search, clear it when filters change
-      setActiveSearchQuery('');
-    }
-    resetSnippets();
   };
 
   const handleEdit = (snippet: {
@@ -357,6 +348,37 @@ const MobileSnippetsPage: React.FC = () => {
       setSnippetToDelete(null);
     }
   };
+
+  const getSnippetLink = useCallback(
+    (snippet: {
+      question_id?: number;
+      story_id?: number;
+      section_id?: number;
+    }) => {
+      if (snippet.question_id) {
+        return {
+          href: `/m/quiz/${snippet.question_id}`,
+          label: 'View Question',
+        };
+      } else if (snippet.story_id) {
+        // If we have both story_id and section_id, link to the specific section
+        if (snippet.section_id) {
+          return {
+            href: `/m/story/${snippet.story_id}/section/${snippet.section_id}`,
+            label: 'View Story Section',
+          };
+        } else {
+          // Just story_id, link to the story
+          return {
+            href: `/m/story/${snippet.story_id}`,
+            label: 'View Story',
+          };
+        }
+      }
+      return null;
+    },
+    []
+  );
 
   if (isLoading) {
     return (
@@ -437,107 +459,37 @@ const MobileSnippetsPage: React.FC = () => {
           </Button>
         </Stack>
 
-        {/* Filters */}
-        <Stack gap='xs'>
-          <Text size='sm' fw={500}>
-            Filters
-          </Text>
-          <Select
-            placeholder='Source language'
-            data={[
-              { value: '', label: 'All source languages' },
-              ...sourceLanguages.map(lang => {
-                const languageOption = languageOptions.find(
-                  opt => opt.value === lang
-                );
-                return {
-                  value: lang,
-                  label: languageOption
-                    ? languageOption.label
-                    : lang.toUpperCase(),
-                };
-              }),
-            ]}
-            value={sourceLangFilter}
-            onChange={value => {
-              setSourceLangFilter(value);
-              handleFilterChange();
-            }}
-            clearable
-          />
-
-          <Select
-            placeholder='Target language'
-            data={[
-              { value: '', label: 'All target languages' },
-              ...targetLanguages.map(lang => {
-                const languageOption = languageOptions.find(
-                  opt => opt.value === lang
-                );
-                return {
-                  value: lang,
-                  label: languageOption
-                    ? languageOption.label
-                    : lang.toUpperCase(),
-                };
-              }),
-            ]}
-            value={targetLangFilter}
-            onChange={value => {
-              setTargetLangFilter(value);
-              handleFilterChange();
-            }}
-            clearable
-          />
-
-          {(sourceLangFilter || targetLangFilter || activeSearchQuery) && (
-            <Button
-              variant='subtle'
-              onClick={() => {
-                setSearchQuery('');
-                setActiveSearchQuery('');
-                setSourceLangFilter(null);
-                setTargetLangFilter(null);
-                resetSnippets();
-              }}
-              fullWidth
-            >
-              Clear All Filters
-            </Button>
-          )}
-        </Stack>
-
         <Divider />
 
         {/* Snippets List */}
         {snippets && snippets.length > 0 ? (
-          <Stack gap='md'>
+          <Stack gap='sm'>
             {snippets.map(snippet => (
               <Paper
                 key={snippet.id}
                 withBorder
-                p='lg'
+                p='sm'
                 radius='md'
                 style={{
                   transition: 'all 0.2s',
                 }}
               >
-                <Stack gap='sm'>
+                <Stack gap='xs'>
                   <Group
                     justify='space-between'
                     align='flex-start'
                     wrap='nowrap'
                   >
-                    <Stack gap={4} style={{ flex: 1, minWidth: 0 }}>
+                    <Stack gap={2} style={{ flex: 1, minWidth: 0 }}>
                       <Text
-                        size='lg'
+                        size='md'
                         fw={500}
                         style={{ wordBreak: 'break-word' }}
                       >
                         {snippet.original_text}
                       </Text>
                       <Text
-                        size='md'
+                        size='sm'
                         c='blue'
                         style={{ wordBreak: 'break-word' }}
                       >
@@ -546,21 +498,9 @@ const MobileSnippetsPage: React.FC = () => {
                     </Stack>
                   </Group>
 
-                  <Group gap='xs' wrap='wrap'>
-                    <Badge variant='light' color='gray' size='sm'>
-                      {snippet.source_language.toUpperCase()} →{' '}
-                      {snippet.target_language.toUpperCase()}
-                    </Badge>
-                    {snippet.difficulty_level && (
-                      <Badge variant='light' color='blue' size='sm'>
-                        {snippet.difficulty_level}
-                      </Badge>
-                    )}
-                  </Group>
-
                   {snippet.context && (
                     <Text
-                      size='sm'
+                      size='xs'
                       c='dimmed'
                       style={{ fontStyle: 'italic', wordBreak: 'break-word' }}
                     >
@@ -568,27 +508,52 @@ const MobileSnippetsPage: React.FC = () => {
                     </Text>
                   )}
 
-                  <Group justify='space-between' align='center' mt='xs'>
-                    <Text size='xs' c='dimmed'>
-                      {new Date(snippet.created_at).toLocaleDateString()}
-                    </Text>
+                  <Group justify='space-between' align='center' wrap='wrap'>
+                    <Group gap='xs' wrap='wrap'>
+                      <Badge variant='light' color='gray' size='sm'>
+                        {snippet.source_language.toUpperCase()} →{' '}
+                        {snippet.target_language.toUpperCase()}
+                      </Badge>
+                      {snippet.difficulty_level &&
+                        snippet.difficulty_level.toLowerCase() !==
+                          'unknown' && (
+                          <Badge variant='light' color='blue' size='sm'>
+                            {snippet.difficulty_level}
+                          </Badge>
+                        )}
+                      {getSnippetLink(snippet) && (
+                        <Anchor
+                          href={getSnippetLink(snippet)?.href}
+                          size='xs'
+                          c='blue'
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 4,
+                          }}
+                        >
+                          <IconExternalLink size={12} />
+                          {getSnippetLink(snippet)?.label}
+                        </Anchor>
+                      )}
+                    </Group>
 
-                    <Group gap='xs'>
+                    <Group gap={4}>
                       <ActionIcon
                         variant='light'
                         color='blue'
-                        size='lg'
+                        size='sm'
                         onClick={() => handleEdit(snippet)}
                       >
-                        <IconEdit size={18} />
+                        <IconEdit size={14} />
                       </ActionIcon>
                       <ActionIcon
                         variant='light'
                         color='red'
-                        size='lg'
+                        size='sm'
                         onClick={() => handleDelete(snippet.id)}
                       >
-                        <IconTrash size={18} />
+                        <IconTrash size={14} />
                       </ActionIcon>
                     </Group>
                   </Group>
@@ -745,7 +710,7 @@ const MobileSnippetsPage: React.FC = () => {
               minRows={3}
             />
 
-            <Group justify='flex-end' mt='md'>
+            <Group justify='space-between' mt='md'>
               <Button variant='light' onClick={closeEditModal} fullWidth>
                 Cancel
               </Button>

@@ -5,6 +5,7 @@ import React, {
   useMemo,
   useEffect,
 } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
   Container,
   Title,
@@ -22,9 +23,16 @@ import {
   Loader,
   Center,
   Alert,
+  Anchor,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { IconSearch, IconEdit, IconTrash, IconPlus } from '@tabler/icons-react';
+import {
+  IconSearch,
+  IconEdit,
+  IconTrash,
+  IconPlus,
+  IconExternalLink,
+} from '@tabler/icons-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../hooks/useAuth';
 import { usePagination } from '../hooks/usePagination';
@@ -39,14 +47,23 @@ import { customInstance } from '../api/axios';
 
 const SnippetsPage: React.FC = () => {
   const {} = useAuth();
+  const location = useLocation();
 
   // Fetch available languages
   const { data: languages = [] } = useGetV1SettingsLanguages();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSearchQuery, setActiveSearchQuery] = useState('');
-  const [sourceLangFilter, setSourceLangFilter] = useState<string | null>(null);
-  const [targetLangFilter, setTargetLangFilter] = useState<string | null>(null);
+
+  // Handle URL search parameters
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const q = urlParams.get('q');
+    if (q) {
+      setSearchQuery(q);
+      setActiveSearchQuery(q);
+    }
+  }, [location.search]);
   const [editModalOpened, { open: openEditModal, close: closeEditModal }] =
     useDisclosure(false);
   const [addModalOpened, { open: openAddModal, close: closeAddModal }] =
@@ -160,13 +177,9 @@ const SnippetsPage: React.FC = () => {
         const params: {
           limit: number;
           offset: number;
-          source_lang?: string;
-          target_lang?: string;
         } = {
           limit,
           offset,
-          source_lang: sourceLangFilter || undefined,
-          target_lang: targetLangFilter || undefined,
         };
         const responseData = await customInstance({
           url: '/v1/snippets',
@@ -233,14 +246,6 @@ const SnippetsPage: React.FC = () => {
     queryClient
   );
 
-  // Get unique languages for filter dropdowns (from existing snippets)
-  const sourceLanguages = snippets
-    ? [...new Set(snippets.map(s => s.source_language))]
-    : [];
-  const targetLanguages = snippets
-    ? [...new Set(snippets.map(s => s.target_language))]
-    : [];
-
   // Handle search input change
   const handleSearchChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -275,15 +280,6 @@ const SnippetsPage: React.FC = () => {
   const handleSearch = () => {
     setActiveSearchQuery(searchQuery);
     resetSnippets(); // Reset pagination when searching
-  };
-
-  // Handle filter changes
-  const handleFilterChange = () => {
-    if (activeSearchQuery) {
-      // If there's an active search, clear it when filters change
-      setActiveSearchQuery('');
-    }
-    resetSnippets();
   };
 
   const handleEdit = (snippet: {
@@ -350,6 +346,37 @@ const SnippetsPage: React.FC = () => {
       setSnippetToDelete(null);
     }
   };
+
+  const getSnippetLink = useCallback(
+    (snippet: {
+      question_id?: number;
+      story_id?: number;
+      section_id?: number;
+    }) => {
+      if (snippet.question_id) {
+        return {
+          href: `/quiz/${snippet.question_id}`,
+          label: 'View Question',
+        };
+      } else if (snippet.story_id) {
+        // If we have both story_id and section_id, link to the specific section
+        if (snippet.section_id) {
+          return {
+            href: `/story/${snippet.story_id}/section/${snippet.section_id}`,
+            label: 'View Story Section',
+          };
+        } else {
+          // Just story_id, link to the story
+          return {
+            href: `/story/${snippet.story_id}`,
+            label: 'View Story',
+          };
+        }
+      }
+      return null;
+    },
+    []
+  );
 
   if (isLoading) {
     return (
@@ -425,69 +452,6 @@ const SnippetsPage: React.FC = () => {
                 )}
               </Group>
             </Group>
-
-            <Group grow>
-              <Select
-                placeholder='Source language'
-                data={[
-                  { value: '', label: 'All source languages' },
-                  ...sourceLanguages.map(lang => {
-                    const languageOption = languageOptions.find(
-                      opt => opt.value === lang
-                    );
-                    return {
-                      value: lang,
-                      label: languageOption
-                        ? languageOption.label
-                        : lang.toUpperCase(),
-                    };
-                  }),
-                ]}
-                value={sourceLangFilter}
-                onChange={value => {
-                  setSourceLangFilter(value);
-                  handleFilterChange();
-                }}
-                clearable
-              />
-
-              <Select
-                placeholder='Target language'
-                data={[
-                  { value: '', label: 'All target languages' },
-                  ...targetLanguages.map(lang => {
-                    const languageOption = languageOptions.find(
-                      opt => opt.value === lang
-                    );
-                    return {
-                      value: lang,
-                      label: languageOption
-                        ? languageOption.label
-                        : lang.toUpperCase(),
-                    };
-                  }),
-                ]}
-                value={targetLangFilter}
-                onChange={value => {
-                  setTargetLangFilter(value);
-                  handleFilterChange();
-                }}
-                clearable
-              />
-
-              <Button
-                variant='outline'
-                onClick={() => {
-                  setSearchQuery('');
-                  setActiveSearchQuery('');
-                  setSourceLangFilter(null);
-                  setTargetLangFilter(null);
-                  resetSnippets();
-                }}
-              >
-                Clear Filters
-              </Button>
-            </Group>
           </Stack>
         </Card>
 
@@ -508,15 +472,31 @@ const SnippetsPage: React.FC = () => {
                     </div>
 
                     <Group gap='xs'>
+                      {getSnippetLink(snippet) && (
+                        <Anchor
+                          href={getSnippetLink(snippet)!.href}
+                          size='sm'
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 4,
+                          }}
+                        >
+                          <IconExternalLink size={12} />
+                          {getSnippetLink(snippet)!.label}
+                        </Anchor>
+                      )}
                       <Badge variant='light' color='gray'>
                         {snippet.source_language.toUpperCase()} →{' '}
                         {snippet.target_language.toUpperCase()}
                       </Badge>
-                      {snippet.difficulty_level && (
-                        <Badge variant='light' color='blue'>
-                          {snippet.difficulty_level}
-                        </Badge>
-                      )}
+                      {snippet.difficulty_level &&
+                        snippet.difficulty_level.toLowerCase() !==
+                          'unknown' && (
+                          <Badge variant='light' color='blue'>
+                            {snippet.difficulty_level}
+                          </Badge>
+                        )}
                     </Group>
                   </Group>
 

@@ -269,6 +269,34 @@ function App() {
           }
         />
         <Route
+          path='/story/:id'
+          element={
+            user ? (
+              <Layout>
+                <StoryPage />
+              </Layout>
+            ) : (
+              <Navigate
+                to={`/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`}
+              />
+            )
+          }
+        />
+        <Route
+          path='/story/:id/section/:sectionId'
+          element={
+            user ? (
+              <Layout>
+                <StoryPage />
+              </Layout>
+            ) : (
+              <Navigate
+                to={`/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`}
+              />
+            )
+          }
+        />
+        <Route
           path='/progress'
           element={
             user ? (
@@ -647,6 +675,34 @@ function App() {
         />
         <Route
           path='/m/story'
+          element={
+            user ? (
+              <MobileLayout>
+                <MobileStoryPage />
+              </MobileLayout>
+            ) : (
+              <Navigate
+                to={`/m/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`}
+              />
+            )
+          }
+        />
+        <Route
+          path='/m/story/:id'
+          element={
+            user ? (
+              <MobileLayout>
+                <MobileStoryPage />
+              </MobileLayout>
+            ) : (
+              <Navigate
+                to={`/m/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`}
+              />
+            )
+          }
+        />
+        <Route
+          path='/m/story/:id/section/:sectionId'
           element={
             user ? (
               <MobileLayout>

@@ -14,8 +14,14 @@ import {
   Accordion,
   Box,
   Paper,
+  Button,
 } from '@mantine/core';
-import { IconBook, IconVolume } from '@tabler/icons-react';
+import {
+  IconBook,
+  IconVolume,
+  IconChevronDown,
+  IconChevronUp,
+} from '@tabler/icons-react';
 import {
   loadVerbConjugations,
   loadVerbConjugation,
@@ -40,7 +46,10 @@ export default function MobileVerbConjugationPage() {
   const [languages, setLanguages] = useState<LanguageInfo[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [accordionValue, setAccordionValue] = useState<string | null>(null);
+  const [accordionValue, setAccordionValue] = useState<
+    string | string[] | null
+  >(null);
+  const [isAllExpanded, setIsAllExpanded] = useState(false);
 
   // Convert user's preferred language to language code using server data
   const getLanguageCode = (languageName: string): string => {
@@ -155,6 +164,32 @@ export default function MobileVerbConjugationPage() {
     }
   };
 
+  const handleExpandAll = () => {
+    if (verbData) {
+      if (isAllExpanded) {
+        // Collapse all
+        setAccordionValue(null);
+        setIsAllExpanded(false);
+      } else {
+        // Expand all
+        const allTenseIds = verbData.tenses.map(tense => tense.tenseId);
+        setAccordionValue(allTenseIds);
+        setIsAllExpanded(true);
+      }
+    }
+  };
+
+  // Update expand all state when accordion value changes
+  useEffect(() => {
+    if (verbData) {
+      const allTenseIds = verbData.tenses.map(tense => tense.tenseId);
+      const isAllOpen =
+        Array.isArray(accordionValue) &&
+        allTenseIds.every(id => accordionValue.includes(id));
+      setIsAllExpanded(isAllOpen);
+    }
+  }, [accordionValue, verbData]);
+
   const renderTense = (tense: {
     tenseId: string;
     tenseName: string;
@@ -256,8 +291,23 @@ export default function MobileVerbConjugationPage() {
           <Stack gap='md'>
             <Group justify='space-between' align='center'>
               <Badge color='blue' variant='light' size='lg'>
-                {availableVerbs.length} verbs
+                {availableVerbs.length} VERBS
               </Badge>
+              <Button
+                variant='light'
+                size='sm'
+                leftSection={
+                  isAllExpanded ? (
+                    <IconChevronUp size={16} />
+                  ) : (
+                    <IconChevronDown size={16} />
+                  )
+                }
+                onClick={handleExpandAll}
+                disabled={!verbData || verbData.tenses.length === 0}
+              >
+                {isAllExpanded ? 'Collapse All' : 'Expand All'}
+              </Button>
             </Group>
 
             <Select
@@ -276,6 +326,7 @@ export default function MobileVerbConjugationPage() {
               value={accordionValue}
               onChange={setAccordionValue}
               chevronPosition='right'
+              multiple
             >
               {verbData.tenses.map(renderTense)}
             </Accordion>

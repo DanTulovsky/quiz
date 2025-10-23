@@ -174,7 +174,7 @@ func (s *SnippetsService) GetSnippets(ctx context.Context, userID int64, params 
 
 	query := `
 		SELECT id, user_id, original_text, translated_text, source_language, target_language,
-		       question_id, context, difficulty_level, created_at, updated_at
+		       question_id, section_id, story_id, context, difficulty_level, created_at, updated_at
 		FROM snippets
 		WHERE user_id = $1`
 
@@ -244,6 +244,8 @@ func (s *SnippetsService) GetSnippets(ctx context.Context, userID int64, params 
 			&snippet.SourceLanguage,
 			&snippet.TargetLanguage,
 			&snippet.QuestionID,
+			&snippet.SectionID,
+			&snippet.StoryID,
 			&snippet.Context,
 			&snippet.DifficultyLevel,
 			&snippet.CreatedAt,
@@ -261,6 +263,8 @@ func (s *SnippetsService) GetSnippets(ctx context.Context, userID int64, params 
 			SourceLanguage:  &snippet.SourceLanguage,
 			TargetLanguage:  &snippet.TargetLanguage,
 			QuestionId:      snippet.QuestionID,
+			SectionId:       snippet.SectionID,
+			StoryId:         snippet.StoryID,
 			Context:         snippet.Context,
 			DifficultyLevel: snippet.DifficultyLevel,
 			CreatedAt:       &snippet.CreatedAt,

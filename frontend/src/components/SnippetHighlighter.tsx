@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Popover,
   Stack,
@@ -7,8 +7,12 @@ import {
   Badge,
   Divider,
   ActionIcon,
+  Modal,
+  Button,
 } from '@mantine/core';
-import { IconTrash } from '@tabler/icons-react';
+import { IconTrash, IconExternalLink } from '@tabler/icons-react';
+import { useDisclosure } from '@mantine/hooks';
+import { useNavigate } from 'react-router-dom';
 import { Snippet, deleteV1SnippetsId } from '../api/api';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -47,23 +51,38 @@ export const SnippetHighlighter: React.FC<SnippetHighlighterProps> = ({
   targetWord,
 }) => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const [
+    deleteModalOpened,
+    { open: openDeleteModal, close: closeDeleteModal },
+  ] = useDisclosure(false);
+  const [snippetToDelete, setSnippetToDelete] = useState<number | null>(null);
 
-  const handleDeleteSnippet = async (snippetId: number) => {
-    try {
-      await deleteV1SnippetsId(snippetId);
+  const handleDeleteClick = (snippetId: number) => {
+    setSnippetToDelete(snippetId);
+    openDeleteModal();
+  };
 
-      // Invalidate all snippet queries to refresh the UI
-      queryClient.invalidateQueries({
-        queryKey: ['/v1/snippets'],
-      });
-      queryClient.invalidateQueries({
-        predicate: query => {
-          return query.queryKey[0]?.toString().includes('/v1/snippets/');
-        },
-      });
-    } catch (error) {
-      console.error('Failed to delete snippet:', error);
+  const handleConfirmDelete = async () => {
+    if (snippetToDelete) {
+      try {
+        await deleteV1SnippetsId(snippetToDelete);
+
+        // Invalidate all snippet queries to refresh the UI
+        queryClient.invalidateQueries({
+          queryKey: ['/v1/snippets'],
+        });
+        queryClient.invalidateQueries({
+          predicate: query => {
+            return query.queryKey[0]?.toString().includes('/v1/snippets/');
+          },
+        });
+      } catch (error) {
+        console.error('Failed to delete snippet:', error);
+      }
     }
+    closeDeleteModal();
+    setSnippetToDelete(null);
   };
   const segments = useMemo(() => {
     // If no snippets and no target word, return the original text as a single segment
@@ -224,23 +243,39 @@ export const SnippetHighlighter: React.FC<SnippetHighlighterProps> = ({
       // Create rich tooltip content
       const tooltipContent = (
         <Stack gap='xs'>
-          {/* Header with translation and delete button */}
+          {/* Header with translation and action buttons */}
           <Group justify='space-between' align='flex-start'>
             <Text size='sm' fw={500} style={{ flex: 1 }}>
               {snippet.translated_text || 'No translation available'}
             </Text>
-            <ActionIcon
-              size='sm'
-              variant='subtle'
-              color='red'
-              onClick={e => {
-                e.stopPropagation();
-                handleDeleteSnippet(snippet.id);
-              }}
-              title='Delete snippet'
-            >
-              <IconTrash size={14} />
-            </ActionIcon>
+            <Group gap='xs'>
+              <ActionIcon
+                size='sm'
+                variant='subtle'
+                color='blue'
+                onClick={e => {
+                  e.stopPropagation();
+                  // Navigate to snippets page with search for this specific snippet
+                  const searchQuery = encodeURIComponent(snippet.original_text || '');
+                  navigate(`/snippets?q=${searchQuery}`);
+                }}
+                title='View this snippet in snippets page'
+              >
+                <IconExternalLink size={14} />
+              </ActionIcon>
+              <ActionIcon
+                size='sm'
+                variant='subtle'
+                color='red'
+                onClick={e => {
+                  e.stopPropagation();
+                  handleDeleteClick(snippet.id);
+                }}
+                title='Delete snippet'
+              >
+                <IconTrash size={14} />
+              </ActionIcon>
+            </Group>
           </Group>
 
           {/* Language pair and difficulty */}
@@ -299,9 +334,59 @@ export const SnippetHighlighter: React.FC<SnippetHighlighterProps> = ({
 
   // If a wrapper component is specified, use it
   if (Component) {
-    return <Component {...componentProps}>{content}</Component>;
+    return (
+      <>
+        <Component {...componentProps}>{content}</Component>
+        <Modal
+          opened={deleteModalOpened}
+          onClose={closeDeleteModal}
+          title='Delete Snippet'
+          centered
+        >
+          <Stack gap='md'>
+            <Text>
+              Are you sure you want to delete this snippet? This action cannot
+              be undone.
+            </Text>
+            <Group justify='flex-end'>
+              <Button variant='light' onClick={closeDeleteModal}>
+                Cancel
+              </Button>
+              <Button color='red' onClick={handleConfirmDelete}>
+                Delete
+              </Button>
+            </Group>
+          </Stack>
+        </Modal>
+      </>
+    );
   }
 
   // Otherwise, return the content directly
-  return <>{content}</>;
+  return (
+    <>
+      {content}
+      <Modal
+        opened={deleteModalOpened}
+        onClose={closeDeleteModal}
+        title='Delete Snippet'
+        centered
+      >
+        <Stack gap='md'>
+          <Text>
+            Are you sure you want to delete this snippet? This action cannot be
+            undone.
+          </Text>
+          <Group justify='flex-end'>
+            <Button variant='light' onClick={closeDeleteModal}>
+              Cancel
+            </Button>
+            <Button color='red' onClick={handleConfirmDelete}>
+              Delete
+            </Button>
+          </Group>
+        </Stack>
+      </Modal>
+    </>
+  );
 };
