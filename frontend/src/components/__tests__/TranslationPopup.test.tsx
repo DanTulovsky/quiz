@@ -299,6 +299,9 @@ describe('TranslationPopup', () => {
       </TestWrapper>
     );
 
+    // Wait for the click outside handler to be attached (100ms delay)
+    await new Promise(resolve => setTimeout(resolve, 150));
+
     // Click outside the popup (on the document body)
     await user.click(document.body);
 

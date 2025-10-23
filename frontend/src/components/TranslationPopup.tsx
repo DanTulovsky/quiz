@@ -116,16 +116,28 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
         target.closest('.mantine-Select-input') ||
         target.closest('.mantine-Select-root');
 
-      if (isInsidePopup || isSelectElement) {
+      // Don't close if clicking on the selected text itself
+      const isSelectedText = selection &&
+        target.textContent?.includes(selection.text) &&
+        target.closest('[data-translation-enabled]');
+
+      if (isInsidePopup || isSelectElement || isSelectedText) {
         return;
       }
 
       onClose();
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [onClose, isSelectFocused, isAudioInteraction]);
+    // Use a small delay to prevent immediate closing when popup opens
+    const timeoutId = setTimeout(() => {
+      document.addEventListener('mousedown', handleClickOutside);
+    }, 100);
+
+    return () => {
+      clearTimeout(timeoutId);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [onClose, isSelectFocused, isAudioInteraction, selection]);
 
   // Calculate popup position to stay within viewport
   const getPopupPosition = () => {

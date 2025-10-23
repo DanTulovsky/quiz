@@ -33,6 +33,12 @@ export const useTextSelection = () => {
     if (selectedText.length > 1) {
       const rect = range.getBoundingClientRect();
 
+      // Mark the selected element as translation-enabled for click detection
+      const selectedElement = range.commonAncestorContainer.parentElement;
+      if (selectedElement) {
+        selectedElement.setAttribute('data-translation-enabled', 'true');
+      }
+
       setSelection({
         text: selectedText,
         x: rect.left + rect.width / 2, // Center of selection
@@ -72,6 +78,10 @@ export const useTextSelection = () => {
   }, [handleSelectionChange]);
 
   const clearSelection = useCallback(() => {
+    // Clean up data attributes from previously selected elements
+    const elementsWithTranslation = document.querySelectorAll('[data-translation-enabled]');
+    elementsWithTranslation.forEach(el => el.removeAttribute('data-translation-enabled'));
+
     setIsVisible(false);
     setSelection(null);
     window.getSelection()?.removeAllRanges();
