@@ -21,13 +21,11 @@ export const TranslationOverlay: React.FC = () => {
   const isStoryPage =
     location.pathname.startsWith('/story') ||
     location.pathname.startsWith('/m/story');
-  const { currentStory, currentSection, viewMode, currentSectionIndex } = useStory();
-
+  const { currentStory, currentSection, viewMode, currentSectionIndex } =
+    useStory();
 
   // Mobile pages now update the QuestionContext just like desktop pages,
   // so we don't need special handling for mobile question pages
-
-
 
   // Get the current question from either quiz, reading, daily, story, or mobile context
   // Use useMemo to ensure it updates when story context changes
@@ -40,20 +38,28 @@ export const TranslationOverlay: React.FC = () => {
         ...dailyQuestion.question,
         id: dailyQuestion.question_id,
       };
-        } else if (isStoryPage && currentStory) {
-          // For stories, create a context object with story/section info
-          // NOTE: Do NOT set 'id' field here - stories don't have questions, so question_id should not be set
-          question = {
-            story_id: currentStory.id!, // Always set story_id to the story ID
-            // Add section context if we're in section view and have a current section
-            ...(viewMode === 'section' &&
-              currentSection && { section_id: currentSection.id }),
-          } as any; // Type assertion since we're creating a custom object for story context
-
+    } else if (isStoryPage && currentStory) {
+      // For stories, create a context object with story/section info
+      // NOTE: Do NOT set 'id' field here - stories don't have questions, so question_id should not be set
+      question = {
+        story_id: currentStory.id!, // Always set story_id to the story ID
+        // Add section context if we're in section view and have a current section
+        ...(viewMode === 'section' &&
+          currentSection && { section_id: currentSection.id }),
+      } as any; // Type assertion since we're creating a custom object for story context
     }
 
     return question;
-  }, [quizQuestion, readingQuestion, isDailyPage, dailyQuestion, isStoryPage, currentStory, currentSection, viewMode]);
+  }, [
+    quizQuestion,
+    readingQuestion,
+    isDailyPage,
+    dailyQuestion,
+    isStoryPage,
+    currentStory,
+    currentSection,
+    viewMode,
+  ]);
 
   if (!isVisible || !selection) {
     return null;

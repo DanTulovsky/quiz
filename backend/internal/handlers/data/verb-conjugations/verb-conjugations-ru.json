@@ -1922,6 +1922,2855 @@
           ]
         }
       ]
+    },
+    {
+      "infinitive": "говорить",
+      "infinitiveEn": "to speak/talk",
+      "category": "essential",
+      "tenses": [
+        {
+          "tenseId": "present",
+          "tenseName": "Настоящее время",
+          "tenseNameEn": "Present",
+          "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in Russian.",
+          "conjugations": [
+            {
+              "pronoun": "я",
+              "form": "говорю",
+              "exampleSentence": "Я говорю по-русски",
+              "exampleSentenceEn": "I speak Russian"
+            },
+            {
+              "pronoun": "ты",
+              "form": "говоришь",
+              "exampleSentence": "Ты говоришь с мамой",
+              "exampleSentenceEn": "You talk to mom"
+            },
+            {
+              "pronoun": "он/она/оно",
+              "form": "говорит",
+              "exampleSentence": "Он говорит правду",
+              "exampleSentenceEn": "He tells the truth"
+            },
+            {
+              "pronoun": "мы",
+              "form": "говорим",
+              "exampleSentence": "Мы говорим о работе",
+              "exampleSentenceEn": "We talk about work"
+            },
+            {
+              "pronoun": "вы",
+              "form": "говорите",
+              "exampleSentence": "Вы говорите по-английски",
+              "exampleSentenceEn": "You speak English"
+            },
+            {
+              "pronoun": "они",
+              "form": "говорят",
+              "exampleSentence": "Они говорят тихо",
+              "exampleSentenceEn": "They speak quietly"
+            }
+          ]
+        },
+        {
+          "tenseId": "past",
+          "tenseName": "Прошедшее время",
+          "tenseNameEn": "Past",
+          "description": "Used to describe completed actions in the past. The form changes based on gender and number.",
+          "conjugations": [
+            {
+              "pronoun": "я (m)",
+              "form": "говорил",
+              "exampleSentence": "Я говорил по-русски",
+              "exampleSentenceEn": "I spoke Russian"
+            },
+            {
+              "pronoun": "я (f)",
+              "form": "говорила",
+              "exampleSentence": "Я говорила по-русски",
+              "exampleSentenceEn": "I spoke Russian"
+            },
+            {
+              "pronoun": "ты (m)",
+              "form": "говорил",
+              "exampleSentence": "Ты говорил с мамой",
+              "exampleSentenceEn": "You talked to mom"
+            },
+            {
+              "pronoun": "ты (f)",
+              "form": "говорила",
+              "exampleSentence": "Ты говорила с мамой",
+              "exampleSentenceEn": "You talked to mom"
+            },
+            {
+              "pronoun": "он",
+              "form": "говорил",
+              "exampleSentence": "Он говорил правду",
+              "exampleSentenceEn": "He told the truth"
+            },
+            {
+              "pronoun": "она",
+              "form": "говорила",
+              "exampleSentence": "Она говорила правду",
+              "exampleSentenceEn": "She told the truth"
+            },
+            {
+              "pronoun": "оно",
+              "form": "говорило",
+              "exampleSentence": "Оно говорило правду",
+              "exampleSentenceEn": "It told the truth"
+            },
+            {
+              "pronoun": "мы",
+              "form": "говорили",
+              "exampleSentence": "Мы говорили о работе",
+              "exampleSentenceEn": "We talked about work"
+            },
+            {
+              "pronoun": "вы",
+              "form": "говорили",
+              "exampleSentence": "Вы говорили по-английски",
+              "exampleSentenceEn": "You spoke English"
+            },
+            {
+              "pronoun": "они",
+              "form": "говорили",
+              "exampleSentence": "Они говорили тихо",
+              "exampleSentenceEn": "They spoke quietly"
+            }
+          ]
+        },
+        {
+          "tenseId": "future",
+          "tenseName": "Будущее время",
+          "tenseNameEn": "Future",
+          "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'завтра' (tomorrow).",
+          "conjugations": [
+            {
+              "pronoun": "я",
+              "form": "буду говорить",
+              "exampleSentence": "Я буду говорить по-русски завтра",
+              "exampleSentenceEn": "I will speak Russian tomorrow"
+            },
+            {
+              "pronoun": "ты",
+              "form": "будешь говорить",
+              "exampleSentence": "Ты будешь говорить с мамой",
+              "exampleSentenceEn": "You will talk to mom"
+            },
+            {
+              "pronoun": "он/она/оно",
+              "form": "будет говорить",
+              "exampleSentence": "Он будет говорить правду",
+              "exampleSentenceEn": "He will tell the truth"
+            },
+            {
+              "pronoun": "мы",
+              "form": "будем говорить",
+              "exampleSentence": "Мы будем говорить о работе",
+              "exampleSentenceEn": "We will talk about work"
+            },
+            {
+              "pronoun": "вы",
+              "form": "будете говорить",
+              "exampleSentence": "Вы будете говорить по-английски",
+              "exampleSentenceEn": "You will speak English"
+            },
+            {
+              "pronoun": "они",
+              "form": "будут говорить",
+              "exampleSentence": "Они будут говорить тихо",
+              "exampleSentenceEn": "They will speak quietly"
+            }
+          ]
+        },
+        {
+          "tenseId": "imperative",
+          "tenseName": "Повелительное наклонение",
+          "tenseNameEn": "Imperative",
+          "description": "Used to give commands, orders, or instructions. Only exists for the second person (ты, вы).",
+          "conjugations": [
+            {
+              "pronoun": "ты",
+              "form": "говори",
+              "exampleSentence": "Говори правду!",
+              "exampleSentenceEn": "Tell the truth!"
+            },
+            {
+              "pronoun": "вы",
+              "form": "говорите",
+              "exampleSentence": "Говорите громче!",
+              "exampleSentenceEn": "Speak louder!"
+            }
+          ]
+        },
+        {
+          "tenseId": "conditional",
+          "tenseName": "Условное наклонение",
+          "tenseNameEn": "Conditional",
+          "description": "Used to express hypothetical situations or actions that would happen under certain conditions. Often used with 'если' (if) clauses.",
+          "conjugations": [
+            {
+              "pronoun": "я",
+              "form": "говорил бы",
+              "exampleSentence": "Я говорил бы по-русски, если бы имел время",
+              "exampleSentenceEn": "I would speak Russian if I had time"
+            },
+            {
+              "pronoun": "ты",
+              "form": "говорил бы",
+              "exampleSentence": "Ты говорил бы с мамой",
+              "exampleSentenceEn": "You would talk to mom"
+            },
+            {
+              "pronoun": "он/она/оно",
+              "form": "говорил бы",
+              "exampleSentence": "Он говорил бы правду",
+              "exampleSentenceEn": "He would tell the truth"
+            },
+            {
+              "pronoun": "мы",
+              "form": "говорили бы",
+              "exampleSentence": "Мы говорили бы о работе",
+              "exampleSentenceEn": "We would talk about work"
+            },
+            {
+              "pronoun": "вы",
+              "form": "говорили бы",
+              "exampleSentence": "Вы говорили бы по-английски",
+              "exampleSentenceEn": "You would speak English"
+            },
+            {
+              "pronoun": "они",
+              "form": "говорили бы",
+              "exampleSentence": "Они говорили бы тихо",
+              "exampleSentenceEn": "They would speak quietly"
+            }
+          ]
+        },
+        {
+          "tenseId": "present_active_participle",
+          "tenseName": "Причастие настоящего времени",
+          "tenseNameEn": "Present Active Participle",
+          "description": "Used as an adjective to describe someone who is currently performing the action. Must agree in gender, number, and case.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "говорящий",
+              "exampleSentence": "Говорящий человек",
+              "exampleSentenceEn": "A speaking person"
+            },
+            {
+              "pronoun": "—",
+              "form": "говорящая",
+              "exampleSentence": "Говорящая женщина",
+              "exampleSentenceEn": "A speaking woman"
+            },
+            {
+              "pronoun": "—",
+              "form": "говорящее",
+              "exampleSentence": "Говорящее животное",
+              "exampleSentenceEn": "A speaking animal"
+            },
+            {
+              "pronoun": "—",
+              "form": "говорящие",
+              "exampleSentence": "Говорящие люди",
+              "exampleSentenceEn": "Speaking people"
+            }
+          ]
+        },
+        {
+          "tenseId": "past_active_participle",
+          "tenseName": "Причастие прошедшего времени",
+          "tenseNameEn": "Past Active Participle",
+          "description": "Used as an adjective to describe someone who performed the action in the past. Must agree in gender, number, and case.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "говоривший",
+              "exampleSentence": "Говоривший человек",
+              "exampleSentenceEn": "A person who spoke"
+            },
+            {
+              "pronoun": "—",
+              "form": "говорившая",
+              "exampleSentence": "Говорившая женщина",
+              "exampleSentenceEn": "A woman who spoke"
+            },
+            {
+              "pronoun": "—",
+              "form": "говорившее",
+              "exampleSentence": "Говорившее животное",
+              "exampleSentenceEn": "An animal that spoke"
+            },
+            {
+              "pronoun": "—",
+              "form": "говорившие",
+              "exampleSentence": "Говорившие люди",
+              "exampleSentenceEn": "People who spoke"
+            }
+          ]
+        },
+        {
+          "tenseId": "present_passive_participle",
+          "tenseName": "Страдательное причастие настоящего времени",
+          "tenseNameEn": "Present Passive Participle",
+          "description": "Used as an adjective to describe something that is currently being acted upon. Must agree in gender, number, and case.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            }
+          ]
+        },
+        {
+          "tenseId": "past_passive_participle",
+          "tenseName": "Страдательное причастие прошедшего времени",
+          "tenseNameEn": "Past Passive Participle",
+          "description": "Used as an adjective to describe something that was acted upon in the past. Must agree in gender, number, and case.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            }
+          ]
+        },
+        {
+          "tenseId": "present_gerund",
+          "tenseName": "Деепричастие настоящего времени",
+          "tenseNameEn": "Present Gerund",
+          "description": "Used to express an action that happens simultaneously with the main action. Often used to show manner or condition.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "говоря",
+              "exampleSentence": "Говоря по-русски, я думаю",
+              "exampleSentenceEn": "While speaking Russian, I think"
+            },
+            {
+              "pronoun": "—",
+              "form": "говоря",
+              "exampleSentence": "Говоря с мамой, он пел",
+              "exampleSentenceEn": "While talking to mom, he sang"
+            },
+            {
+              "pronoun": "—",
+              "form": "говоря",
+              "exampleSentence": "Говоря правду, мы разговаривали",
+              "exampleSentenceEn": "While telling the truth, we talked"
+            }
+          ]
+        },
+        {
+          "tenseId": "past_gerund",
+          "tenseName": "Деепричастие прошедшего времени",
+          "tenseNameEn": "Past Gerund",
+          "description": "Used to express an action that was completed before the main action. Often used to show sequence of events.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "infinitive": "знать",
+      "infinitiveEn": "to know",
+      "category": "essential",
+      "tenses": [
+        {
+          "tenseId": "present",
+          "tenseName": "Настоящее время",
+          "tenseNameEn": "Present",
+          "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in Russian.",
+          "conjugations": [
+            {
+              "pronoun": "я",
+              "form": "знаю",
+              "exampleSentence": "Я знаю ответ",
+              "exampleSentenceEn": "I know the answer"
+            },
+            {
+              "pronoun": "ты",
+              "form": "знаешь",
+              "exampleSentence": "Ты знаешь песню",
+              "exampleSentenceEn": "You know the song"
+            },
+            {
+              "pronoun": "он/она/оно",
+              "form": "знает",
+              "exampleSentence": "Он знает плавать",
+              "exampleSentenceEn": "He knows how to swim"
+            },
+            {
+              "pronoun": "мы",
+              "form": "знаем",
+              "exampleSentence": "Мы знаем танцевать",
+              "exampleSentenceEn": "We know how to dance"
+            },
+            {
+              "pronoun": "вы",
+              "form": "знаете",
+              "exampleSentence": "Вы знаете готовить",
+              "exampleSentenceEn": "You know how to cook"
+            },
+            {
+              "pronoun": "они",
+              "form": "знают",
+              "exampleSentence": "Они знают играть",
+              "exampleSentenceEn": "They know how to play"
+            }
+          ]
+        },
+        {
+          "tenseId": "past",
+          "tenseName": "Прошедшее время",
+          "tenseNameEn": "Past",
+          "description": "Used to describe completed actions in the past. The form changes based on gender and number.",
+          "conjugations": [
+            {
+              "pronoun": "я (m)",
+              "form": "знал",
+              "exampleSentence": "Я знал ответ",
+              "exampleSentenceEn": "I knew the answer"
+            },
+            {
+              "pronoun": "я (f)",
+              "form": "знала",
+              "exampleSentence": "Я знала ответ",
+              "exampleSentenceEn": "I knew the answer"
+            },
+            {
+              "pronoun": "ты (m)",
+              "form": "знал",
+              "exampleSentence": "Ты знал песню",
+              "exampleSentenceEn": "You knew the song"
+            },
+            {
+              "pronoun": "ты (f)",
+              "form": "знала",
+              "exampleSentence": "Ты знала песню",
+              "exampleSentenceEn": "You knew the song"
+            },
+            {
+              "pronoun": "он",
+              "form": "знал",
+              "exampleSentence": "Он знал плавать",
+              "exampleSentenceEn": "He knew how to swim"
+            },
+            {
+              "pronoun": "она",
+              "form": "знала",
+              "exampleSentence": "Она знала плавать",
+              "exampleSentenceEn": "She knew how to swim"
+            },
+            {
+              "pronoun": "оно",
+              "form": "знало",
+              "exampleSentence": "Оно знало плавать",
+              "exampleSentenceEn": "It knew how to swim"
+            },
+            {
+              "pronoun": "мы",
+              "form": "знали",
+              "exampleSentence": "Мы знали танцевать",
+              "exampleSentenceEn": "We knew how to dance"
+            },
+            {
+              "pronoun": "вы",
+              "form": "знали",
+              "exampleSentence": "Вы знали готовить",
+              "exampleSentenceEn": "You knew how to cook"
+            },
+            {
+              "pronoun": "они",
+              "form": "знали",
+              "exampleSentence": "Они знали играть",
+              "exampleSentenceEn": "They knew how to play"
+            }
+          ]
+        },
+        {
+          "tenseId": "future",
+          "tenseName": "Будущее время",
+          "tenseNameEn": "Future",
+          "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'завтра' (tomorrow).",
+          "conjugations": [
+            {
+              "pronoun": "я",
+              "form": "буду знать",
+              "exampleSentence": "Я буду знать ответ завтра",
+              "exampleSentenceEn": "I will know the answer tomorrow"
+            },
+            {
+              "pronoun": "ты",
+              "form": "будешь знать",
+              "exampleSentence": "Ты будешь знать песню",
+              "exampleSentenceEn": "You will know the song"
+            },
+            {
+              "pronoun": "он/она/оно",
+              "form": "будет знать",
+              "exampleSentence": "Он будет знать плавать",
+              "exampleSentenceEn": "He will know how to swim"
+            },
+            {
+              "pronoun": "мы",
+              "form": "будем знать",
+              "exampleSentence": "Мы будем знать танцевать",
+              "exampleSentenceEn": "We will know how to dance"
+            },
+            {
+              "pronoun": "вы",
+              "form": "будете знать",
+              "exampleSentence": "Вы будете знать готовить",
+              "exampleSentenceEn": "You will know how to cook"
+            },
+            {
+              "pronoun": "они",
+              "form": "будут знать",
+              "exampleSentence": "Они будут знать играть",
+              "exampleSentenceEn": "They will know how to play"
+            }
+          ]
+        },
+        {
+          "tenseId": "imperative",
+          "tenseName": "Повелительное наклонение",
+          "tenseNameEn": "Imperative",
+          "description": "Used to give commands, orders, or instructions. Only exists for the second person (ты, вы).",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            }
+          ]
+        },
+        {
+          "tenseId": "conditional",
+          "tenseName": "Условное наклонение",
+          "tenseNameEn": "Conditional",
+          "description": "Used to express hypothetical situations or actions that would happen under certain conditions. Often used with 'если' (if) clauses.",
+          "conjugations": [
+            {
+              "pronoun": "я",
+              "form": "знал бы",
+              "exampleSentence": "Я знал бы ответ, если бы имел время",
+              "exampleSentenceEn": "I would know the answer if I had time"
+            },
+            {
+              "pronoun": "ты",
+              "form": "знал бы",
+              "exampleSentence": "Ты знал бы песню",
+              "exampleSentenceEn": "You would know the song"
+            },
+            {
+              "pronoun": "он/она/оно",
+              "form": "знал бы",
+              "exampleSentence": "Он знал бы плавать",
+              "exampleSentenceEn": "He would know how to swim"
+            },
+            {
+              "pronoun": "мы",
+              "form": "знали бы",
+              "exampleSentence": "Мы знали бы танцевать",
+              "exampleSentenceEn": "We would know how to dance"
+            },
+            {
+              "pronoun": "вы",
+              "form": "знали бы",
+              "exampleSentence": "Вы знали бы готовить",
+              "exampleSentenceEn": "You would know how to cook"
+            },
+            {
+              "pronoun": "они",
+              "form": "знали бы",
+              "exampleSentence": "Они знали бы играть",
+              "exampleSentenceEn": "They would know how to play"
+            }
+          ]
+        },
+        {
+          "tenseId": "present_active_participle",
+          "tenseName": "Причастие настоящего времени",
+          "tenseNameEn": "Present Active Participle",
+          "description": "Used as an adjective to describe someone who is currently performing the action. Must agree in gender, number, and case.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "знающий",
+              "exampleSentence": "Знающий человек",
+              "exampleSentenceEn": "A knowing person"
+            },
+            {
+              "pronoun": "—",
+              "form": "знающая",
+              "exampleSentence": "Знающая женщина",
+              "exampleSentenceEn": "A knowing woman"
+            },
+            {
+              "pronoun": "—",
+              "form": "знающее",
+              "exampleSentence": "Знающее животное",
+              "exampleSentenceEn": "A knowing animal"
+            },
+            {
+              "pronoun": "—",
+              "form": "знающие",
+              "exampleSentence": "Знающие люди",
+              "exampleSentenceEn": "Knowing people"
+            }
+          ]
+        },
+        {
+          "tenseId": "past_active_participle",
+          "tenseName": "Причастие прошедшего времени",
+          "tenseNameEn": "Past Active Participle",
+          "description": "Used as an adjective to describe someone who performed the action in the past. Must agree in gender, number, and case.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "знавший",
+              "exampleSentence": "Знавший человек",
+              "exampleSentenceEn": "A person who knew"
+            },
+            {
+              "pronoun": "—",
+              "form": "знавшая",
+              "exampleSentence": "Знавшая женщина",
+              "exampleSentenceEn": "A woman who knew"
+            },
+            {
+              "pronoun": "—",
+              "form": "знавшее",
+              "exampleSentence": "Знавшее животное",
+              "exampleSentenceEn": "An animal that knew"
+            },
+            {
+              "pronoun": "—",
+              "form": "знавшие",
+              "exampleSentence": "Знавшие люди",
+              "exampleSentenceEn": "People who knew"
+            }
+          ]
+        },
+        {
+          "tenseId": "present_passive_participle",
+          "tenseName": "Страдательное причастие настоящего времени",
+          "tenseNameEn": "Present Passive Participle",
+          "description": "Used as an adjective to describe something that is currently being acted upon. Must agree in gender, number, and case.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            }
+          ]
+        },
+        {
+          "tenseId": "past_passive_participle",
+          "tenseName": "Страдательное причастие прошедшего времени",
+          "tenseNameEn": "Past Passive Participle",
+          "description": "Used as an adjective to describe something that was acted upon in the past. Must agree in gender, number, and case.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            }
+          ]
+        },
+        {
+          "tenseId": "present_gerund",
+          "tenseName": "Деепричастие настоящего времени",
+          "tenseNameEn": "Present Gerund",
+          "description": "Used to express an action that happens simultaneously with the main action. Often used to show manner or condition.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "зная",
+              "exampleSentence": "Зная ответ, я думаю",
+              "exampleSentenceEn": "While knowing the answer, I think"
+            },
+            {
+              "pronoun": "—",
+              "form": "зная",
+              "exampleSentence": "Зная песню, он пел",
+              "exampleSentenceEn": "While knowing the song, he sang"
+            },
+            {
+              "pronoun": "—",
+              "form": "зная",
+              "exampleSentence": "Зная плавать, мы разговаривали",
+              "exampleSentenceEn": "While knowing how to swim, we talked"
+            }
+          ]
+        },
+        {
+          "tenseId": "past_gerund",
+          "tenseName": "Деепричастие прошедшего времени",
+          "tenseNameEn": "Past Gerund",
+          "description": "Used to express an action that was completed before the main action. Often used to show sequence of events.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "infinitive": "видеть",
+      "infinitiveEn": "to see",
+      "category": "essential",
+      "tenses": [
+        {
+          "tenseId": "present",
+          "tenseName": "Настоящее время",
+          "tenseNameEn": "Present",
+          "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in Russian.",
+          "conjugations": [
+            {
+              "pronoun": "я",
+              "form": "вижу",
+              "exampleSentence": "Я вижу телевизор",
+              "exampleSentenceEn": "I watch television"
+            },
+            {
+              "pronoun": "ты",
+              "form": "видишь",
+              "exampleSentence": "Ты видишь фильм",
+              "exampleSentenceEn": "You see the movie"
+            },
+            {
+              "pronoun": "он/она/оно",
+              "form": "видит",
+              "exampleSentence": "Он видит звезду",
+              "exampleSentenceEn": "He sees the star"
+            },
+            {
+              "pronoun": "мы",
+              "form": "видим",
+              "exampleSentence": "Мы видим панораму",
+              "exampleSentenceEn": "We see the view"
+            },
+            {
+              "pronoun": "вы",
+              "form": "видите",
+              "exampleSentence": "Вы видите картину",
+              "exampleSentenceEn": "You see the painting"
+            },
+            {
+              "pronoun": "они",
+              "form": "видят",
+              "exampleSentence": "Они видят луну",
+              "exampleSentenceEn": "They see the moon"
+            }
+          ]
+        },
+        {
+          "tenseId": "past",
+          "tenseName": "Прошедшее время",
+          "tenseNameEn": "Past",
+          "description": "Used to describe completed actions in the past. The form changes based on gender and number.",
+          "conjugations": [
+            {
+              "pronoun": "я (m)",
+              "form": "видел",
+              "exampleSentence": "Я видел телевизор",
+              "exampleSentenceEn": "I watched television"
+            },
+            {
+              "pronoun": "я (f)",
+              "form": "видела",
+              "exampleSentence": "Я видела телевизор",
+              "exampleSentenceEn": "I watched television"
+            },
+            {
+              "pronoun": "ты (m)",
+              "form": "видел",
+              "exampleSentence": "Ты видел фильм",
+              "exampleSentenceEn": "You saw the movie"
+            },
+            {
+              "pronoun": "ты (f)",
+              "form": "видела",
+              "exampleSentence": "Ты видела фильм",
+              "exampleSentenceEn": "You saw the movie"
+            },
+            {
+              "pronoun": "он",
+              "form": "видел",
+              "exampleSentence": "Он видел звезду",
+              "exampleSentenceEn": "He saw the star"
+            },
+            {
+              "pronoun": "она",
+              "form": "видела",
+              "exampleSentence": "Она видела звезду",
+              "exampleSentenceEn": "She saw the star"
+            },
+            {
+              "pronoun": "оно",
+              "form": "видело",
+              "exampleSentence": "Оно видело звезду",
+              "exampleSentenceEn": "It saw the star"
+            },
+            {
+              "pronoun": "мы",
+              "form": "видели",
+              "exampleSentence": "Мы видели панораму",
+              "exampleSentenceEn": "We saw the view"
+            },
+            {
+              "pronoun": "вы",
+              "form": "видели",
+              "exampleSentence": "Вы видели картину",
+              "exampleSentenceEn": "You saw the painting"
+            },
+            {
+              "pronoun": "они",
+              "form": "видели",
+              "exampleSentence": "Они видели луну",
+              "exampleSentenceEn": "They saw the moon"
+            }
+          ]
+        },
+        {
+          "tenseId": "future",
+          "tenseName": "Будущее время",
+          "tenseNameEn": "Future",
+          "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'завтра' (tomorrow).",
+          "conjugations": [
+            {
+              "pronoun": "я",
+              "form": "буду видеть",
+              "exampleSentence": "Я буду видеть телевизор завтра",
+              "exampleSentenceEn": "I will watch television tomorrow"
+            },
+            {
+              "pronoun": "ты",
+              "form": "будешь видеть",
+              "exampleSentence": "Ты будешь видеть фильм",
+              "exampleSentenceEn": "You will see the movie"
+            },
+            {
+              "pronoun": "он/она/оно",
+              "form": "будет видеть",
+              "exampleSentence": "Он будет видеть звезду",
+              "exampleSentenceEn": "He will see the star"
+            },
+            {
+              "pronoun": "мы",
+              "form": "будем видеть",
+              "exampleSentence": "Мы будем видеть панораму",
+              "exampleSentenceEn": "We will see the view"
+            },
+            {
+              "pronoun": "вы",
+              "form": "будете видеть",
+              "exampleSentence": "Вы будете видеть картину",
+              "exampleSentenceEn": "You will see the painting"
+            },
+            {
+              "pronoun": "они",
+              "form": "будут видеть",
+              "exampleSentence": "Они будут видеть луну",
+              "exampleSentenceEn": "They will see the moon"
+            }
+          ]
+        },
+        {
+          "tenseId": "imperative",
+          "tenseName": "Повелительное наклонение",
+          "tenseNameEn": "Imperative",
+          "description": "Used to give commands, orders, or instructions. Only exists for the second person (ты, вы).",
+          "conjugations": [
+            {
+              "pronoun": "ты",
+              "form": "видь",
+              "exampleSentence": "Видь телевизор!",
+              "exampleSentenceEn": "Watch television!"
+            },
+            {
+              "pronoun": "вы",
+              "form": "видьте",
+              "exampleSentence": "Видьте фильм!",
+              "exampleSentenceEn": "Watch the movie!"
+            }
+          ]
+        },
+        {
+          "tenseId": "conditional",
+          "tenseName": "Условное наклонение",
+          "tenseNameEn": "Conditional",
+          "description": "Used to express hypothetical situations or actions that would happen under certain conditions. Often used with 'если' (if) clauses.",
+          "conjugations": [
+            {
+              "pronoun": "я",
+              "form": "видел бы",
+              "exampleSentence": "Я видел бы телевизор, если бы имел время",
+              "exampleSentenceEn": "I would watch television if I had time"
+            },
+            {
+              "pronoun": "ты",
+              "form": "видел бы",
+              "exampleSentence": "Ты видел бы фильм",
+              "exampleSentenceEn": "You would see the movie"
+            },
+            {
+              "pronoun": "он/она/оно",
+              "form": "видел бы",
+              "exampleSentence": "Он видел бы звезду",
+              "exampleSentenceEn": "He would see the star"
+            },
+            {
+              "pronoun": "мы",
+              "form": "видели бы",
+              "exampleSentence": "Мы видели бы панораму",
+              "exampleSentenceEn": "We would see the view"
+            },
+            {
+              "pronoun": "вы",
+              "form": "видели бы",
+              "exampleSentence": "Вы видели бы картину",
+              "exampleSentenceEn": "You would see the painting"
+            },
+            {
+              "pronoun": "они",
+              "form": "видели бы",
+              "exampleSentence": "Они видели бы луну",
+              "exampleSentenceEn": "They would see the moon"
+            }
+          ]
+        },
+        {
+          "tenseId": "present_active_participle",
+          "tenseName": "Причастие настоящего времени",
+          "tenseNameEn": "Present Active Participle",
+          "description": "Used as an adjective to describe someone who is currently performing the action. Must agree in gender, number, and case.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "видящий",
+              "exampleSentence": "Видящий человек",
+              "exampleSentenceEn": "A seeing person"
+            },
+            {
+              "pronoun": "—",
+              "form": "видящая",
+              "exampleSentence": "Видящая женщина",
+              "exampleSentenceEn": "A seeing woman"
+            },
+            {
+              "pronoun": "—",
+              "form": "видящее",
+              "exampleSentence": "Видящее животное",
+              "exampleSentenceEn": "A seeing animal"
+            },
+            {
+              "pronoun": "—",
+              "form": "видящие",
+              "exampleSentence": "Видящие люди",
+              "exampleSentenceEn": "Seeing people"
+            }
+          ]
+        },
+        {
+          "tenseId": "past_active_participle",
+          "tenseName": "Причастие прошедшего времени",
+          "tenseNameEn": "Past Active Participle",
+          "description": "Used as an adjective to describe someone who performed the action in the past. Must agree in gender, number, and case.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "видевший",
+              "exampleSentence": "Видевший человек",
+              "exampleSentenceEn": "A person who saw"
+            },
+            {
+              "pronoun": "—",
+              "form": "видевшая",
+              "exampleSentence": "Видевшая женщина",
+              "exampleSentenceEn": "A woman who saw"
+            },
+            {
+              "pronoun": "—",
+              "form": "видевшее",
+              "exampleSentence": "Видевшее животное",
+              "exampleSentenceEn": "An animal that saw"
+            },
+            {
+              "pronoun": "—",
+              "form": "видевшие",
+              "exampleSentence": "Видевшие люди",
+              "exampleSentenceEn": "People who saw"
+            }
+          ]
+        },
+        {
+          "tenseId": "present_passive_participle",
+          "tenseName": "Страдательное причастие настоящего времени",
+          "tenseNameEn": "Present Passive Participle",
+          "description": "Used as an adjective to describe something that is currently being acted upon. Must agree in gender, number, and case.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            }
+          ]
+        },
+        {
+          "tenseId": "past_passive_participle",
+          "tenseName": "Страдательное причастие прошедшего времени",
+          "tenseNameEn": "Past Passive Participle",
+          "description": "Used as an adjective to describe something that was acted upon in the past. Must agree in gender, number, and case.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            }
+          ]
+        },
+        {
+          "tenseId": "present_gerund",
+          "tenseName": "Деепричастие настоящего времени",
+          "tenseNameEn": "Present Gerund",
+          "description": "Used to express an action that happens simultaneously with the main action. Often used to show manner or condition.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "видя",
+              "exampleSentence": "Видя телевизор, я думаю",
+              "exampleSentenceEn": "While watching television, I think"
+            },
+            {
+              "pronoun": "—",
+              "form": "видя",
+              "exampleSentence": "Видя фильм, он пел",
+              "exampleSentenceEn": "While watching the movie, he sang"
+            },
+            {
+              "pronoun": "—",
+              "form": "видя",
+              "exampleSentence": "Видя звезду, мы разговаривали",
+              "exampleSentenceEn": "While seeing the star, we talked"
+            }
+          ]
+        },
+        {
+          "tenseId": "past_gerund",
+          "tenseName": "Деепричастие прошедшего времени",
+          "tenseNameEn": "Past Gerund",
+          "description": "Used to express an action that was completed before the main action. Often used to show sequence of events.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "infinitive": "хотеть",
+      "infinitiveEn": "to want",
+      "category": "essential",
+      "tenses": [
+        {
+          "tenseId": "present",
+          "tenseName": "Настоящее время",
+          "tenseNameEn": "Present",
+          "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in Russian.",
+          "conjugations": [
+            {
+              "pronoun": "я",
+              "form": "хочу",
+              "exampleSentence": "Я хочу пить",
+              "exampleSentenceEn": "I want to drink"
+            },
+            {
+              "pronoun": "ты",
+              "form": "хочешь",
+              "exampleSentence": "Ты хочешь есть",
+              "exampleSentenceEn": "You want to eat"
+            },
+            {
+              "pronoun": "он/она/оно",
+              "form": "хочет",
+              "exampleSentence": "Он хочет спать",
+              "exampleSentenceEn": "He wants to sleep"
+            },
+            {
+              "pronoun": "мы",
+              "form": "хотим",
+              "exampleSentence": "Мы хотим играть",
+              "exampleSentenceEn": "We want to play"
+            },
+            {
+              "pronoun": "вы",
+              "form": "хотите",
+              "exampleSentence": "Вы хотите танцевать",
+              "exampleSentenceEn": "You want to dance"
+            },
+            {
+              "pronoun": "они",
+              "form": "хотят",
+              "exampleSentence": "Они хотят петь",
+              "exampleSentenceEn": "They want to sing"
+            }
+          ]
+        },
+        {
+          "tenseId": "past",
+          "tenseName": "Прошедшее время",
+          "tenseNameEn": "Past",
+          "description": "Used to describe completed actions in the past. The form changes based on gender and number.",
+          "conjugations": [
+            {
+              "pronoun": "я (m)",
+              "form": "хотел",
+              "exampleSentence": "Я хотел пить",
+              "exampleSentenceEn": "I wanted to drink"
+            },
+            {
+              "pronoun": "я (f)",
+              "form": "хотела",
+              "exampleSentence": "Я хотела пить",
+              "exampleSentenceEn": "I wanted to drink"
+            },
+            {
+              "pronoun": "ты (m)",
+              "form": "хотел",
+              "exampleSentence": "Ты хотел есть",
+              "exampleSentenceEn": "You wanted to eat"
+            },
+            {
+              "pronoun": "ты (f)",
+              "form": "хотела",
+              "exampleSentence": "Ты хотела есть",
+              "exampleSentenceEn": "You wanted to eat"
+            },
+            {
+              "pronoun": "он",
+              "form": "хотел",
+              "exampleSentence": "Он хотел спать",
+              "exampleSentenceEn": "He wanted to sleep"
+            },
+            {
+              "pronoun": "она",
+              "form": "хотела",
+              "exampleSentence": "Она хотела спать",
+              "exampleSentenceEn": "She wanted to sleep"
+            },
+            {
+              "pronoun": "оно",
+              "form": "хотело",
+              "exampleSentence": "Оно хотело спать",
+              "exampleSentenceEn": "It wanted to sleep"
+            },
+            {
+              "pronoun": "мы",
+              "form": "хотели",
+              "exampleSentence": "Мы хотели играть",
+              "exampleSentenceEn": "We wanted to play"
+            },
+            {
+              "pronoun": "вы",
+              "form": "хотели",
+              "exampleSentence": "Вы хотели танцевать",
+              "exampleSentenceEn": "You wanted to dance"
+            },
+            {
+              "pronoun": "они",
+              "form": "хотели",
+              "exampleSentence": "Они хотели петь",
+              "exampleSentenceEn": "They wanted to sing"
+            }
+          ]
+        },
+        {
+          "tenseId": "future",
+          "tenseName": "Будущее время",
+          "tenseNameEn": "Future",
+          "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'завтра' (tomorrow).",
+          "conjugations": [
+            {
+              "pronoun": "я",
+              "form": "буду хотеть",
+              "exampleSentence": "Я буду хотеть пить завтра",
+              "exampleSentenceEn": "I will want to drink tomorrow"
+            },
+            {
+              "pronoun": "ты",
+              "form": "будешь хотеть",
+              "exampleSentence": "Ты будешь хотеть есть",
+              "exampleSentenceEn": "You will want to eat"
+            },
+            {
+              "pronoun": "он/она/оно",
+              "form": "будет хотеть",
+              "exampleSentence": "Он будет хотеть спать",
+              "exampleSentenceEn": "He will want to sleep"
+            },
+            {
+              "pronoun": "мы",
+              "form": "будем хотеть",
+              "exampleSentence": "Мы будем хотеть играть",
+              "exampleSentenceEn": "We will want to play"
+            },
+            {
+              "pronoun": "вы",
+              "form": "будете хотеть",
+              "exampleSentence": "Вы будете хотеть танцевать",
+              "exampleSentenceEn": "You will want to dance"
+            },
+            {
+              "pronoun": "они",
+              "form": "будут хотеть",
+              "exampleSentence": "Они будут хотеть петь",
+              "exampleSentenceEn": "They will want to sing"
+            }
+          ]
+        },
+        {
+          "tenseId": "imperative",
+          "tenseName": "Повелительное наклонение",
+          "tenseNameEn": "Imperative",
+          "description": "Used to give commands, orders, or instructions. Only exists for the second person (ты, вы).",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            }
+          ]
+        },
+        {
+          "tenseId": "conditional",
+          "tenseName": "Условное наклонение",
+          "tenseNameEn": "Conditional",
+          "description": "Used to express hypothetical situations or actions that would happen under certain conditions. Often used with 'если' (if) clauses.",
+          "conjugations": [
+            {
+              "pronoun": "я",
+              "form": "хотел бы",
+              "exampleSentence": "Я хотел бы пить, если бы имел время",
+              "exampleSentenceEn": "I would want to drink if I had time"
+            },
+            {
+              "pronoun": "ты",
+              "form": "хотел бы",
+              "exampleSentence": "Ты хотел бы есть",
+              "exampleSentenceEn": "You would want to eat"
+            },
+            {
+              "pronoun": "он/она/оно",
+              "form": "хотел бы",
+              "exampleSentence": "Он хотел бы спать",
+              "exampleSentenceEn": "He would want to sleep"
+            },
+            {
+              "pronoun": "мы",
+              "form": "хотели бы",
+              "exampleSentence": "Мы хотели бы играть",
+              "exampleSentenceEn": "We would want to play"
+            },
+            {
+              "pronoun": "вы",
+              "form": "хотели бы",
+              "exampleSentence": "Вы хотели бы танцевать",
+              "exampleSentenceEn": "You would want to dance"
+            },
+            {
+              "pronoun": "они",
+              "form": "хотели бы",
+              "exampleSentence": "Они хотели бы петь",
+              "exampleSentenceEn": "They would want to sing"
+            }
+          ]
+        },
+        {
+          "tenseId": "present_active_participle",
+          "tenseName": "Причастие настоящего времени",
+          "tenseNameEn": "Present Active Participle",
+          "description": "Used as an adjective to describe someone who is currently performing the action. Must agree in gender, number, and case.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "хотящий",
+              "exampleSentence": "Хотящий человек",
+              "exampleSentenceEn": "A wanting person"
+            },
+            {
+              "pronoun": "—",
+              "form": "хотящая",
+              "exampleSentence": "Хотящая женщина",
+              "exampleSentenceEn": "A wanting woman"
+            },
+            {
+              "pronoun": "—",
+              "form": "хотящее",
+              "exampleSentence": "Хотящее животное",
+              "exampleSentenceEn": "A wanting animal"
+            },
+            {
+              "pronoun": "—",
+              "form": "хотящие",
+              "exampleSentence": "Хотящие люди",
+              "exampleSentenceEn": "Wanting people"
+            }
+          ]
+        },
+        {
+          "tenseId": "past_active_participle",
+          "tenseName": "Причастие прошедшего времени",
+          "tenseNameEn": "Past Active Participle",
+          "description": "Used as an adjective to describe someone who performed the action in the past. Must agree in gender, number, and case.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "хотевший",
+              "exampleSentence": "Хотевший человек",
+              "exampleSentenceEn": "A person who wanted"
+            },
+            {
+              "pronoun": "—",
+              "form": "хотевшая",
+              "exampleSentence": "Хотевшая женщина",
+              "exampleSentenceEn": "A woman who wanted"
+            },
+            {
+              "pronoun": "—",
+              "form": "хотевшее",
+              "exampleSentence": "Хотевшее животное",
+              "exampleSentenceEn": "An animal that wanted"
+            },
+            {
+              "pronoun": "—",
+              "form": "хотевшие",
+              "exampleSentence": "Хотевшие люди",
+              "exampleSentenceEn": "People who wanted"
+            }
+          ]
+        },
+        {
+          "tenseId": "present_passive_participle",
+          "tenseName": "Страдательное причастие настоящего времени",
+          "tenseNameEn": "Present Passive Participle",
+          "description": "Used as an adjective to describe something that is currently being acted upon. Must agree in gender, number, and case.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            }
+          ]
+        },
+        {
+          "tenseId": "past_passive_participle",
+          "tenseName": "Страдательное причастие прошедшего времени",
+          "tenseNameEn": "Past Passive Participle",
+          "description": "Used as an adjective to describe something that was acted upon in the past. Must agree in gender, number, and case.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            }
+          ]
+        },
+        {
+          "tenseId": "present_gerund",
+          "tenseName": "Деепричастие настоящего времени",
+          "tenseNameEn": "Present Gerund",
+          "description": "Used to express an action that happens simultaneously with the main action. Often used to show manner or condition.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "хотя",
+              "exampleSentence": "Хотя пить, я думаю",
+              "exampleSentenceEn": "While wanting to drink, I think"
+            },
+            {
+              "pronoun": "—",
+              "form": "хотя",
+              "exampleSentence": "Хотя есть, он пел",
+              "exampleSentenceEn": "While wanting to eat, he sang"
+            },
+            {
+              "pronoun": "—",
+              "form": "хотя",
+              "exampleSentence": "Хотя спать, мы разговаривали",
+              "exampleSentenceEn": "While wanting to sleep, we talked"
+            }
+          ]
+        },
+        {
+          "tenseId": "past_gerund",
+          "tenseName": "Деепричастие прошедшего времени",
+          "tenseNameEn": "Past Gerund",
+          "description": "Used to express an action that was completed before the main action. Often used to show sequence of events.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "infinitive": "думать",
+      "infinitiveEn": "to think",
+      "category": "essential",
+      "tenses": [
+        {
+          "tenseId": "present",
+          "tenseName": "Настоящее время",
+          "tenseNameEn": "Present",
+          "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in Russian.",
+          "conjugations": [
+            {
+              "pronoun": "я",
+              "form": "думаю",
+              "exampleSentence": "Я думаю о работе",
+              "exampleSentenceEn": "I think about work"
+            },
+            {
+              "pronoun": "ты",
+              "form": "думаешь",
+              "exampleSentence": "Ты думаешь о семье",
+              "exampleSentenceEn": "You think about family"
+            },
+            {
+              "pronoun": "он/она/оно",
+              "form": "думает",
+              "exampleSentence": "Он думает о будущем",
+              "exampleSentenceEn": "He thinks about the future"
+            },
+            {
+              "pronoun": "мы",
+              "form": "думаем",
+              "exampleSentence": "Мы думаем о путешествии",
+              "exampleSentenceEn": "We think about travel"
+            },
+            {
+              "pronoun": "вы",
+              "form": "думаете",
+              "exampleSentence": "Вы думаете о проблеме",
+              "exampleSentenceEn": "You think about the problem"
+            },
+            {
+              "pronoun": "они",
+              "form": "думают",
+              "exampleSentence": "Они думают о решении",
+              "exampleSentenceEn": "They think about the solution"
+            }
+          ]
+        },
+        {
+          "tenseId": "past",
+          "tenseName": "Прошедшее время",
+          "tenseNameEn": "Past",
+          "description": "Used to describe completed actions in the past. The form changes based on gender and number.",
+          "conjugations": [
+            {
+              "pronoun": "я (m)",
+              "form": "думал",
+              "exampleSentence": "Я думал о работе",
+              "exampleSentenceEn": "I thought about work"
+            },
+            {
+              "pronoun": "я (f)",
+              "form": "думала",
+              "exampleSentence": "Я думала о работе",
+              "exampleSentenceEn": "I thought about work"
+            },
+            {
+              "pronoun": "ты (m)",
+              "form": "думал",
+              "exampleSentence": "Ты думал о семье",
+              "exampleSentenceEn": "You thought about family"
+            },
+            {
+              "pronoun": "ты (f)",
+              "form": "думала",
+              "exampleSentence": "Ты думала о семье",
+              "exampleSentenceEn": "You thought about family"
+            },
+            {
+              "pronoun": "он",
+              "form": "думал",
+              "exampleSentence": "Он думал о будущем",
+              "exampleSentenceEn": "He thought about the future"
+            },
+            {
+              "pronoun": "она",
+              "form": "думала",
+              "exampleSentence": "Она думала о будущем",
+              "exampleSentenceEn": "She thought about the future"
+            },
+            {
+              "pronoun": "оно",
+              "form": "думало",
+              "exampleSentence": "Оно думало о будущем",
+              "exampleSentenceEn": "It thought about the future"
+            },
+            {
+              "pronoun": "мы",
+              "form": "думали",
+              "exampleSentence": "Мы думали о путешествии",
+              "exampleSentenceEn": "We thought about travel"
+            },
+            {
+              "pronoun": "вы",
+              "form": "думали",
+              "exampleSentence": "Вы думали о проблеме",
+              "exampleSentenceEn": "You thought about the problem"
+            },
+            {
+              "pronoun": "они",
+              "form": "думали",
+              "exampleSentence": "Они думали о решении",
+              "exampleSentenceEn": "They thought about the solution"
+            }
+          ]
+        },
+        {
+          "tenseId": "future",
+          "tenseName": "Будущее время",
+          "tenseNameEn": "Future",
+          "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'завтра' (tomorrow).",
+          "conjugations": [
+            {
+              "pronoun": "я",
+              "form": "буду думать",
+              "exampleSentence": "Я буду думать о работе завтра",
+              "exampleSentenceEn": "I will think about work tomorrow"
+            },
+            {
+              "pronoun": "ты",
+              "form": "будешь думать",
+              "exampleSentence": "Ты будешь думать о семье",
+              "exampleSentenceEn": "You will think about family"
+            },
+            {
+              "pronoun": "он/она/оно",
+              "form": "будет думать",
+              "exampleSentence": "Он будет думать о будущем",
+              "exampleSentenceEn": "He will think about the future"
+            },
+            {
+              "pronoun": "мы",
+              "form": "будем думать",
+              "exampleSentence": "Мы будем думать о путешествии",
+              "exampleSentenceEn": "We will think about travel"
+            },
+            {
+              "pronoun": "вы",
+              "form": "будете думать",
+              "exampleSentence": "Вы будете думать о проблеме",
+              "exampleSentenceEn": "You will think about the problem"
+            },
+            {
+              "pronoun": "они",
+              "form": "будут думать",
+              "exampleSentence": "Они будут думать о решении",
+              "exampleSentenceEn": "They will think about the solution"
+            }
+          ]
+        },
+        {
+          "tenseId": "imperative",
+          "tenseName": "Повелительное наклонение",
+          "tenseNameEn": "Imperative",
+          "description": "Used to give commands, orders, or instructions. Only exists for the second person (ты, вы).",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            }
+          ]
+        },
+        {
+          "tenseId": "conditional",
+          "tenseName": "Условное наклонение",
+          "tenseNameEn": "Conditional",
+          "description": "Used to express hypothetical situations or actions that would happen under certain conditions. Often used with 'если' (if) clauses.",
+          "conjugations": [
+            {
+              "pronoun": "я",
+              "form": "думал бы",
+              "exampleSentence": "Я думал бы о работе, если бы имел время",
+              "exampleSentenceEn": "I would think about work if I had time"
+            },
+            {
+              "pronoun": "ты",
+              "form": "думал бы",
+              "exampleSentence": "Ты думал бы о семье",
+              "exampleSentenceEn": "You would think about family"
+            },
+            {
+              "pronoun": "он/она/оно",
+              "form": "думал бы",
+              "exampleSentence": "Он думал бы о будущем",
+              "exampleSentenceEn": "He would think about the future"
+            },
+            {
+              "pronoun": "мы",
+              "form": "думали бы",
+              "exampleSentence": "Мы думали бы о путешествии",
+              "exampleSentenceEn": "We would think about travel"
+            },
+            {
+              "pronoun": "вы",
+              "form": "думали бы",
+              "exampleSentence": "Вы думали бы о проблеме",
+              "exampleSentenceEn": "You would think about the problem"
+            },
+            {
+              "pronoun": "они",
+              "form": "думали бы",
+              "exampleSentence": "Они думали бы о решении",
+              "exampleSentenceEn": "They would think about the solution"
+            }
+          ]
+        },
+        {
+          "tenseId": "present_active_participle",
+          "tenseName": "Причастие настоящего времени",
+          "tenseNameEn": "Present Active Participle",
+          "description": "Used as an adjective to describe someone who is currently performing the action. Must agree in gender, number, and case.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "думающий",
+              "exampleSentence": "Думающий человек",
+              "exampleSentenceEn": "A thinking person"
+            },
+            {
+              "pronoun": "—",
+              "form": "думающая",
+              "exampleSentence": "Думающая женщина",
+              "exampleSentenceEn": "A thinking woman"
+            },
+            {
+              "pronoun": "—",
+              "form": "думающее",
+              "exampleSentence": "Думающее животное",
+              "exampleSentenceEn": "A thinking animal"
+            },
+            {
+              "pronoun": "—",
+              "form": "думающие",
+              "exampleSentence": "Думающие люди",
+              "exampleSentenceEn": "Thinking people"
+            }
+          ]
+        },
+        {
+          "tenseId": "past_active_participle",
+          "tenseName": "Причастие прошедшего времени",
+          "tenseNameEn": "Past Active Participle",
+          "description": "Used as an adjective to describe someone who performed the action in the past. Must agree in gender, number, and case.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "думавший",
+              "exampleSentence": "Думавший человек",
+              "exampleSentenceEn": "A person who thought"
+            },
+            {
+              "pronoun": "—",
+              "form": "думавшая",
+              "exampleSentence": "Думавшая женщина",
+              "exampleSentenceEn": "A woman who thought"
+            },
+            {
+              "pronoun": "—",
+              "form": "думавшее",
+              "exampleSentence": "Думавшее животное",
+              "exampleSentenceEn": "An animal that thought"
+            },
+            {
+              "pronoun": "—",
+              "form": "думавшие",
+              "exampleSentence": "Думавшие люди",
+              "exampleSentenceEn": "People who thought"
+            }
+          ]
+        },
+        {
+          "tenseId": "present_passive_participle",
+          "tenseName": "Страдательное причастие настоящего времени",
+          "tenseNameEn": "Present Passive Participle",
+          "description": "Used as an adjective to describe something that is currently being acted upon. Must agree in gender, number, and case.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            }
+          ]
+        },
+        {
+          "tenseId": "past_passive_participle",
+          "tenseName": "Страдательное причастие прошедшего времени",
+          "tenseNameEn": "Past Passive Participle",
+          "description": "Used as an adjective to describe something that was acted upon in the past. Must agree in gender, number, and case.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            }
+          ]
+        },
+        {
+          "tenseId": "present_gerund",
+          "tenseName": "Деепричастие настоящего времени",
+          "tenseNameEn": "Present Gerund",
+          "description": "Used to express an action that happens simultaneously with the main action. Often used to show manner or condition.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "думая",
+              "exampleSentence": "Думая о работе, я думаю",
+              "exampleSentenceEn": "While thinking about work, I think"
+            },
+            {
+              "pronoun": "—",
+              "form": "думая",
+              "exampleSentence": "Думая о семье, он пел",
+              "exampleSentenceEn": "While thinking about family, he sang"
+            },
+            {
+              "pronoun": "—",
+              "form": "думая",
+              "exampleSentence": "Думая о будущем, мы разговаривали",
+              "exampleSentenceEn": "While thinking about the future, we talked"
+            }
+          ]
+        },
+        {
+          "tenseId": "past_gerund",
+          "tenseName": "Деепричастие прошедшего времени",
+          "tenseNameEn": "Past Gerund",
+          "description": "Used to express an action that was completed before the main action. Often used to show sequence of events.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "infinitive": "понимать",
+      "infinitiveEn": "to understand",
+      "category": "essential",
+      "tenses": [
+        {
+          "tenseId": "present",
+          "tenseName": "Настоящее время",
+          "tenseNameEn": "Present",
+          "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in Russian.",
+          "conjugations": [
+            {
+              "pronoun": "я",
+              "form": "понимаю",
+              "exampleSentence": "Я понимаю вопрос",
+              "exampleSentenceEn": "I understand the question"
+            },
+            {
+              "pronoun": "ты",
+              "form": "понимаешь",
+              "exampleSentence": "Ты понимаешь проблему",
+              "exampleSentenceEn": "You understand the problem"
+            },
+            {
+              "pronoun": "он/она/оно",
+              "form": "понимает",
+              "exampleSentence": "Он понимает ситуацию",
+              "exampleSentenceEn": "He understands the situation"
+            },
+            {
+              "pronoun": "мы",
+              "form": "понимаем",
+              "exampleSentence": "Мы понимаем задачу",
+              "exampleSentenceEn": "We understand the task"
+            },
+            {
+              "pronoun": "вы",
+              "form": "понимаете",
+              "exampleSentence": "Вы понимаете урок",
+              "exampleSentenceEn": "You understand the lesson"
+            },
+            {
+              "pronoun": "они",
+              "form": "понимают",
+              "exampleSentence": "Они понимают правило",
+              "exampleSentenceEn": "They understand the rule"
+            }
+          ]
+        },
+        {
+          "tenseId": "past",
+          "tenseName": "Прошедшее время",
+          "tenseNameEn": "Past",
+          "description": "Used to describe completed actions in the past. The form changes based on gender and number.",
+          "conjugations": [
+            {
+              "pronoun": "я (m)",
+              "form": "понимал",
+              "exampleSentence": "Я понимал вопрос",
+              "exampleSentenceEn": "I understood the question"
+            },
+            {
+              "pronoun": "я (f)",
+              "form": "понимала",
+              "exampleSentence": "Я понимала вопрос",
+              "exampleSentenceEn": "I understood the question"
+            },
+            {
+              "pronoun": "ты (m)",
+              "form": "понимал",
+              "exampleSentence": "Ты понимал проблему",
+              "exampleSentenceEn": "You understood the problem"
+            },
+            {
+              "pronoun": "ты (f)",
+              "form": "понимала",
+              "exampleSentence": "Ты понимала проблему",
+              "exampleSentenceEn": "You understood the problem"
+            },
+            {
+              "pronoun": "он",
+              "form": "понимал",
+              "exampleSentence": "Он понимал ситуацию",
+              "exampleSentenceEn": "He understood the situation"
+            },
+            {
+              "pronoun": "она",
+              "form": "понимала",
+              "exampleSentence": "Она понимала ситуацию",
+              "exampleSentenceEn": "She understood the situation"
+            },
+            {
+              "pronoun": "оно",
+              "form": "понимало",
+              "exampleSentence": "Оно понимало ситуацию",
+              "exampleSentenceEn": "It understood the situation"
+            },
+            {
+              "pronoun": "мы",
+              "form": "понимали",
+              "exampleSentence": "Мы понимали задачу",
+              "exampleSentenceEn": "We understood the task"
+            },
+            {
+              "pronoun": "вы",
+              "form": "понимали",
+              "exampleSentence": "Вы понимали урок",
+              "exampleSentenceEn": "You understood the lesson"
+            },
+            {
+              "pronoun": "они",
+              "form": "понимали",
+              "exampleSentence": "Они понимали правило",
+              "exampleSentenceEn": "They understood the rule"
+            }
+          ]
+        },
+        {
+          "tenseId": "future",
+          "tenseName": "Будущее время",
+          "tenseNameEn": "Future",
+          "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'завтра' (tomorrow).",
+          "conjugations": [
+            {
+              "pronoun": "я",
+              "form": "буду понимать",
+              "exampleSentence": "Я буду понимать вопрос завтра",
+              "exampleSentenceEn": "I will understand the question tomorrow"
+            },
+            {
+              "pronoun": "ты",
+              "form": "будешь понимать",
+              "exampleSentence": "Ты будешь понимать проблему",
+              "exampleSentenceEn": "You will understand the problem"
+            },
+            {
+              "pronoun": "он/она/оно",
+              "form": "будет понимать",
+              "exampleSentence": "Он будет понимать ситуацию",
+              "exampleSentenceEn": "He will understand the situation"
+            },
+            {
+              "pronoun": "мы",
+              "form": "будем понимать",
+              "exampleSentence": "Мы будем понимать задачу",
+              "exampleSentenceEn": "We will understand the task"
+            },
+            {
+              "pronoun": "вы",
+              "form": "будете понимать",
+              "exampleSentence": "Вы будете понимать урок",
+              "exampleSentenceEn": "You will understand the lesson"
+            },
+            {
+              "pronoun": "они",
+              "form": "будут понимать",
+              "exampleSentence": "Они будут понимать правило",
+              "exampleSentenceEn": "They will understand the rule"
+            }
+          ]
+        },
+        {
+          "tenseId": "imperative",
+          "tenseName": "Повелительное наклонение",
+          "tenseNameEn": "Imperative",
+          "description": "Used to give commands, orders, or instructions. Only exists for the second person (ты, вы).",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            }
+          ]
+        },
+        {
+          "tenseId": "conditional",
+          "tenseName": "Условное наклонение",
+          "tenseNameEn": "Conditional",
+          "description": "Used to express hypothetical situations or actions that would happen under certain conditions. Often used with 'если' (if) clauses.",
+          "conjugations": [
+            {
+              "pronoun": "я",
+              "form": "понимал бы",
+              "exampleSentence": "Я понимал бы вопрос, если бы имел время",
+              "exampleSentenceEn": "I would understand the question if I had time"
+            },
+            {
+              "pronoun": "ты",
+              "form": "понимал бы",
+              "exampleSentence": "Ты понимал бы проблему",
+              "exampleSentenceEn": "You would understand the problem"
+            },
+            {
+              "pronoun": "он/она/оно",
+              "form": "понимал бы",
+              "exampleSentence": "Он понимал бы ситуацию",
+              "exampleSentenceEn": "He would understand the situation"
+            },
+            {
+              "pronoun": "мы",
+              "form": "понимали бы",
+              "exampleSentence": "Мы понимали бы задачу",
+              "exampleSentenceEn": "We would understand the task"
+            },
+            {
+              "pronoun": "вы",
+              "form": "понимали бы",
+              "exampleSentence": "Вы понимали бы урок",
+              "exampleSentenceEn": "You would understand the lesson"
+            },
+            {
+              "pronoun": "они",
+              "form": "понимали бы",
+              "exampleSentence": "Они понимали бы правило",
+              "exampleSentenceEn": "They would understand the rule"
+            }
+          ]
+        },
+        {
+          "tenseId": "present_active_participle",
+          "tenseName": "Причастие настоящего времени",
+          "tenseNameEn": "Present Active Participle",
+          "description": "Used as an adjective to describe someone who is currently performing the action. Must agree in gender, number, and case.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "понимающий",
+              "exampleSentence": "Понимающий человек",
+              "exampleSentenceEn": "An understanding person"
+            },
+            {
+              "pronoun": "—",
+              "form": "понимающая",
+              "exampleSentence": "Понимающая женщина",
+              "exampleSentenceEn": "An understanding woman"
+            },
+            {
+              "pronoun": "—",
+              "form": "понимающее",
+              "exampleSentence": "Понимающее животное",
+              "exampleSentenceEn": "An understanding animal"
+            },
+            {
+              "pronoun": "—",
+              "form": "понимающие",
+              "exampleSentence": "Понимающие люди",
+              "exampleSentenceEn": "Understanding people"
+            }
+          ]
+        },
+        {
+          "tenseId": "past_active_participle",
+          "tenseName": "Причастие прошедшего времени",
+          "tenseNameEn": "Past Active Participle",
+          "description": "Used as an adjective to describe someone who performed the action in the past. Must agree in gender, number, and case.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "понимавший",
+              "exampleSentence": "Понимавший человек",
+              "exampleSentenceEn": "A person who understood"
+            },
+            {
+              "pronoun": "—",
+              "form": "понимавшая",
+              "exampleSentence": "Понимавшая женщина",
+              "exampleSentenceEn": "A woman who understood"
+            },
+            {
+              "pronoun": "—",
+              "form": "понимавшее",
+              "exampleSentence": "Понимавшее животное",
+              "exampleSentenceEn": "An animal that understood"
+            },
+            {
+              "pronoun": "—",
+              "form": "понимавшие",
+              "exampleSentence": "Понимавшие люди",
+              "exampleSentenceEn": "People who understood"
+            }
+          ]
+        },
+        {
+          "tenseId": "present_passive_participle",
+          "tenseName": "Страдательное причастие настоящего времени",
+          "tenseNameEn": "Present Passive Participle",
+          "description": "Used as an adjective to describe something that is currently being acted upon. Must agree in gender, number, and case.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            }
+          ]
+        },
+        {
+          "tenseId": "past_passive_participle",
+          "tenseName": "Страдательное причастие прошедшего времени",
+          "tenseNameEn": "Past Passive Participle",
+          "description": "Used as an adjective to describe something that was acted upon in the past. Must agree in gender, number, and case.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            }
+          ]
+        },
+        {
+          "tenseId": "present_gerund",
+          "tenseName": "Деепричастие настоящего времени",
+          "tenseNameEn": "Present Gerund",
+          "description": "Used to express an action that happens simultaneously with the main action. Often used to show manner or condition.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "понимая",
+              "exampleSentence": "Понимая вопрос, я думаю",
+              "exampleSentenceEn": "While understanding the question, I think"
+            },
+            {
+              "pronoun": "—",
+              "form": "понимая",
+              "exampleSentence": "Понимая проблему, он пел",
+              "exampleSentenceEn": "While understanding the problem, he sang"
+            },
+            {
+              "pronoun": "—",
+              "form": "понимая",
+              "exampleSentence": "Понимая ситуацию, мы разговаривали",
+              "exampleSentenceEn": "While understanding the situation, we talked"
+            }
+          ]
+        },
+        {
+          "tenseId": "past_gerund",
+          "tenseName": "Деепричастие прошедшего времени",
+          "tenseNameEn": "Past Gerund",
+          "description": "Used to express an action that was completed before the main action. Often used to show sequence of events.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "infinitive": "давать",
+      "infinitiveEn": "to give",
+      "category": "essential",
+      "tenses": [
+        {
+          "tenseId": "present",
+          "tenseName": "Настоящее время",
+          "tenseNameEn": "Present",
+          "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in Russian.",
+          "conjugations": [
+            {
+              "pronoun": "я",
+              "form": "даю",
+              "exampleSentence": "Я даю подарок",
+              "exampleSentenceEn": "I give a gift"
+            },
+            {
+              "pronoun": "ты",
+              "form": "даёшь",
+              "exampleSentence": "Ты даёшь совет",
+              "exampleSentenceEn": "You give advice"
+            },
+            {
+              "pronoun": "он/она/оно",
+              "form": "даёт",
+              "exampleSentence": "Он даёт деньги",
+              "exampleSentenceEn": "He gives money"
+            },
+            {
+              "pronoun": "мы",
+              "form": "даём",
+              "exampleSentence": "Мы даём урок",
+              "exampleSentenceEn": "We give a lesson"
+            },
+            {
+              "pronoun": "вы",
+              "form": "даёте",
+              "exampleSentence": "Вы даёте помощь",
+              "exampleSentenceEn": "You give help"
+            },
+            {
+              "pronoun": "они",
+              "form": "дают",
+              "exampleSentence": "Они дают обещание",
+              "exampleSentenceEn": "They give a promise"
+            }
+          ]
+        },
+        {
+          "tenseId": "past",
+          "tenseName": "Прошедшее время",
+          "tenseNameEn": "Past",
+          "description": "Used to describe completed actions in the past. The form changes based on gender and number.",
+          "conjugations": [
+            {
+              "pronoun": "я (m)",
+              "form": "давал",
+              "exampleSentence": "Я давал подарок",
+              "exampleSentenceEn": "I gave a gift"
+            },
+            {
+              "pronoun": "я (f)",
+              "form": "давала",
+              "exampleSentence": "Я давала подарок",
+              "exampleSentenceEn": "I gave a gift"
+            },
+            {
+              "pronoun": "ты (m)",
+              "form": "давал",
+              "exampleSentence": "Ты давал совет",
+              "exampleSentenceEn": "You gave advice"
+            },
+            {
+              "pronoun": "ты (f)",
+              "form": "давала",
+              "exampleSentence": "Ты давала совет",
+              "exampleSentenceEn": "You gave advice"
+            },
+            {
+              "pronoun": "он",
+              "form": "давал",
+              "exampleSentence": "Он давал деньги",
+              "exampleSentenceEn": "He gave money"
+            },
+            {
+              "pronoun": "она",
+              "form": "давала",
+              "exampleSentence": "Она давала деньги",
+              "exampleSentenceEn": "She gave money"
+            },
+            {
+              "pronoun": "оно",
+              "form": "давало",
+              "exampleSentence": "Оно давало деньги",
+              "exampleSentenceEn": "It gave money"
+            },
+            {
+              "pronoun": "мы",
+              "form": "давали",
+              "exampleSentence": "Мы давали урок",
+              "exampleSentenceEn": "We gave a lesson"
+            },
+            {
+              "pronoun": "вы",
+              "form": "давали",
+              "exampleSentence": "Вы давали помощь",
+              "exampleSentenceEn": "You gave help"
+            },
+            {
+              "pronoun": "они",
+              "form": "давали",
+              "exampleSentence": "Они давали обещание",
+              "exampleSentenceEn": "They gave a promise"
+            }
+          ]
+        },
+        {
+          "tenseId": "future",
+          "tenseName": "Будущее время",
+          "tenseNameEn": "Future",
+          "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'завтра' (tomorrow).",
+          "conjugations": [
+            {
+              "pronoun": "я",
+              "form": "буду давать",
+              "exampleSentence": "Я буду давать подарок завтра",
+              "exampleSentenceEn": "I will give a gift tomorrow"
+            },
+            {
+              "pronoun": "ты",
+              "form": "будешь давать",
+              "exampleSentence": "Ты будешь давать совет",
+              "exampleSentenceEn": "You will give advice"
+            },
+            {
+              "pronoun": "он/она/оно",
+              "form": "будет давать",
+              "exampleSentence": "Он будет давать деньги",
+              "exampleSentenceEn": "He will give money"
+            },
+            {
+              "pronoun": "мы",
+              "form": "будем давать",
+              "exampleSentence": "Мы будем давать урок",
+              "exampleSentenceEn": "We will give a lesson"
+            },
+            {
+              "pronoun": "вы",
+              "form": "будете давать",
+              "exampleSentence": "Вы будете давать помощь",
+              "exampleSentenceEn": "You will give help"
+            },
+            {
+              "pronoun": "они",
+              "form": "будут давать",
+              "exampleSentence": "Они будут давать обещание",
+              "exampleSentenceEn": "They will give a promise"
+            }
+          ]
+        },
+        {
+          "tenseId": "imperative",
+          "tenseName": "Повелительное наклонение",
+          "tenseNameEn": "Imperative",
+          "description": "Used to give commands, orders, or instructions. Only exists for the second person (ты, вы).",
+          "conjugations": [
+            {
+              "pronoun": "ты",
+              "form": "давай",
+              "exampleSentence": "Давай подарок!",
+              "exampleSentenceEn": "Give the gift!"
+            },
+            {
+              "pronoun": "вы",
+              "form": "давайте",
+              "exampleSentence": "Давайте совет!",
+              "exampleSentenceEn": "Give advice!"
+            }
+          ]
+        },
+        {
+          "tenseId": "conditional",
+          "tenseName": "Условное наклонение",
+          "tenseNameEn": "Conditional",
+          "description": "Used to express hypothetical situations or actions that would happen under certain conditions. Often used with 'если' (if) clauses.",
+          "conjugations": [
+            {
+              "pronoun": "я",
+              "form": "давал бы",
+              "exampleSentence": "Я давал бы подарок, если бы имел время",
+              "exampleSentenceEn": "I would give a gift if I had time"
+            },
+            {
+              "pronoun": "ты",
+              "form": "давал бы",
+              "exampleSentence": "Ты давал бы совет",
+              "exampleSentenceEn": "You would give advice"
+            },
+            {
+              "pronoun": "он/она/оно",
+              "form": "давал бы",
+              "exampleSentence": "Он давал бы деньги",
+              "exampleSentenceEn": "He would give money"
+            },
+            {
+              "pronoun": "мы",
+              "form": "давали бы",
+              "exampleSentence": "Мы давали бы урок",
+              "exampleSentenceEn": "We would give a lesson"
+            },
+            {
+              "pronoun": "вы",
+              "form": "давали бы",
+              "exampleSentence": "Вы давали бы помощь",
+              "exampleSentenceEn": "You would give help"
+            },
+            {
+              "pronoun": "они",
+              "form": "давали бы",
+              "exampleSentence": "Они давали бы обещание",
+              "exampleSentenceEn": "They would give a promise"
+            }
+          ]
+        },
+        {
+          "tenseId": "present_active_participle",
+          "tenseName": "Причастие настоящего времени",
+          "tenseNameEn": "Present Active Participle",
+          "description": "Used as an adjective to describe someone who is currently performing the action. Must agree in gender, number, and case.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "дающий",
+              "exampleSentence": "Дающий человек",
+              "exampleSentenceEn": "A giving person"
+            },
+            {
+              "pronoun": "—",
+              "form": "дающая",
+              "exampleSentence": "Дающая женщина",
+              "exampleSentenceEn": "A giving woman"
+            },
+            {
+              "pronoun": "—",
+              "form": "дающее",
+              "exampleSentence": "Дающее животное",
+              "exampleSentenceEn": "A giving animal"
+            },
+            {
+              "pronoun": "—",
+              "form": "дающие",
+              "exampleSentence": "Дающие люди",
+              "exampleSentenceEn": "Giving people"
+            }
+          ]
+        },
+        {
+          "tenseId": "past_active_participle",
+          "tenseName": "Причастие прошедшего времени",
+          "tenseNameEn": "Past Active Participle",
+          "description": "Used as an adjective to describe someone who performed the action in the past. Must agree in gender, number, and case.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "дававший",
+              "exampleSentence": "Дававший человек",
+              "exampleSentenceEn": "A person who gave"
+            },
+            {
+              "pronoun": "—",
+              "form": "дававшая",
+              "exampleSentence": "Дававшая женщина",
+              "exampleSentenceEn": "A woman who gave"
+            },
+            {
+              "pronoun": "—",
+              "form": "дававшее",
+              "exampleSentence": "Дававшее животное",
+              "exampleSentenceEn": "An animal that gave"
+            },
+            {
+              "pronoun": "—",
+              "form": "дававшие",
+              "exampleSentence": "Дававшие люди",
+              "exampleSentenceEn": "People who gave"
+            }
+          ]
+        },
+        {
+          "tenseId": "present_passive_participle",
+          "tenseName": "Страдательное причастие настоящего времени",
+          "tenseNameEn": "Present Passive Participle",
+          "description": "Used as an adjective to describe something that is currently being acted upon. Must agree in gender, number, and case.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            }
+          ]
+        },
+        {
+          "tenseId": "past_passive_participle",
+          "tenseName": "Страдательное причастие прошедшего времени",
+          "tenseNameEn": "Past Passive Participle",
+          "description": "Used as an adjective to describe something that was acted upon in the past. Must agree in gender, number, and case.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            }
+          ]
+        },
+        {
+          "tenseId": "present_gerund",
+          "tenseName": "Деепричастие настоящего времени",
+          "tenseNameEn": "Present Gerund",
+          "description": "Used to express an action that happens simultaneously with the main action. Often used to show manner or condition.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "давая",
+              "exampleSentence": "Давая подарок, я думаю",
+              "exampleSentenceEn": "While giving a gift, I think"
+            },
+            {
+              "pronoun": "—",
+              "form": "давая",
+              "exampleSentence": "Давая совет, он пел",
+              "exampleSentenceEn": "While giving advice, he sang"
+            },
+            {
+              "pronoun": "—",
+              "form": "давая",
+              "exampleSentence": "Давая деньги, мы разговаривали",
+              "exampleSentenceEn": "While giving money, we talked"
+            }
+          ]
+        },
+        {
+          "tenseId": "past_gerund",
+          "tenseName": "Деепричастие прошедшего времени",
+          "tenseNameEn": "Past Gerund",
+          "description": "Used to express an action that was completed before the main action. Often used to show sequence of events.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

@@ -5,8 +5,11 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 let globalCurrentSectionIndex = 0;
 const globalStateListeners = new Set<() => void>();
 
-const setGlobalCurrentSectionIndex = (value: number | ((prev: number) => number)) => {
-  const newValue = typeof value === 'function' ? value(globalCurrentSectionIndex) : value;
+const setGlobalCurrentSectionIndex = (
+  value: number | ((prev: number) => number)
+) => {
+  const newValue =
+    typeof value === 'function' ? value(globalCurrentSectionIndex) : value;
   if (newValue !== globalCurrentSectionIndex) {
     globalCurrentSectionIndex = newValue;
     globalStateListeners.forEach(listener => listener());
@@ -139,7 +142,9 @@ export const useStory = (): UseStoryReturn => {
   );
 
   // State - use global state for currentSectionIndex to ensure all instances share the same value
-  const [currentSectionIndex, setCurrentSectionIndexState] = useState(globalCurrentSectionIndex);
+  const [currentSectionIndex, setCurrentSectionIndexState] = useState(
+    globalCurrentSectionIndex
+  );
 
   // Subscribe to global state changes
   useEffect(() => {
@@ -150,10 +155,11 @@ export const useStory = (): UseStoryReturn => {
   }, []);
 
   // Wrapper for setCurrentSectionIndex that updates global state
-  const setCurrentSectionIndexWithDebug = (value: number | ((prev: number) => number)) => {
+  const setCurrentSectionIndexWithDebug = (
+    value: number | ((prev: number) => number)
+  ) => {
     setGlobalCurrentSectionIndex(value);
   };
-
 
   const [viewMode, setViewMode] = useState<ViewMode>('section');
   const [error, setError] = useState<string | null>(null);
@@ -1008,7 +1014,6 @@ export const useStory = (): UseStoryReturn => {
   const sections = currentStory?.sections || [];
   const hasCurrentStory = !!currentStory;
   const currentSection = sections[currentSectionIndex] || null;
-
 
   // Check if generation is allowed today (basic client-side checks)
   // The backend will do the final validation and return appropriate errors
