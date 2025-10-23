@@ -39,14 +39,16 @@ const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Filter stories based on search query
-  const filteredStories = archivedStories.filter(
-    story =>
-      story.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      story.language?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      story.genre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      story.subject?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Filter stories to only show archived ones, then apply search filter
+  const filteredStories = archivedStories
+    .filter(story => story.status === 'archived') // Only show archived stories
+    .filter(
+      story =>
+        story.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        story.language?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        story.genre?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        story.subject?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
   if (isLoading) {
     return (
@@ -118,8 +120,8 @@ const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
         </div>
 
         <Text color='dimmed' size='sm'>
-          You have {archivedStories.length} archived{' '}
-          {archivedStories.length === 1 ? 'story' : 'stories'}. You can restore
+          You have {archivedStories.filter(story => story.status === 'archived').length} archived{' '}
+          {archivedStories.filter(story => story.status === 'archived').length === 1 ? 'story' : 'stories'}. You can restore
           any of these to continue reading or create a new story.
         </Text>
 

@@ -415,7 +415,11 @@ const StoryPage: React.FC = () => {
 
             {/* Archive Button */}
             {currentStory && (
-              <Tooltip label='Archive Story (can always be restored)' position='bottom' withArrow>
+              <Tooltip
+                label='Archive Story (can always be restored)'
+                position='bottom'
+                withArrow
+              >
                 <Button
                   variant='outline'
                   onClick={handleArchiveStory}

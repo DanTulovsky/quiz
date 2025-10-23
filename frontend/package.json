@@ -10,7 +10,7 @@
     "build": "vite build",
     "build:fast": "vite build --mode production",
     "preview": "vite preview",
-    "lint": "eslint src --ext ts,tsx --ignore-pattern 'src/api/**'",
+    "lint": "eslint src --ext ts,tsx --ignore-pattern 'src/api/**' --max-warnings 0",
     "lint:fix": "eslint src --ext js,jsx,ts,tsx --ignore-pattern 'src/api/**' --fix",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,md}\" --ignore-path .prettierignore",
     "format:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,json,css,md}\" --ignore-path .prettierignore",

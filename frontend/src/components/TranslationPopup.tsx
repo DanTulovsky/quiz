@@ -14,10 +14,16 @@ import { TextSelection } from '../hooks/useTextSelection';
 import { IconX, IconVolume, IconBookmark } from '@tabler/icons-react';
 import { postV1Snippets, Question } from '../api/api';
 
+// Type for story context when no question is available
+interface StoryContext {
+  story_id: number;
+  section_id?: number;
+}
+
 interface TranslationPopupProps {
   selection: TextSelection;
   onClose: () => void;
-  currentQuestion?: Question | null;
+  currentQuestion?: Question | StoryContext | null;
 }
 
 export const TranslationPopup: React.FC<TranslationPopupProps> = ({
@@ -201,34 +207,45 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
         translated_text: translation.translatedText,
         source_language: translation.sourceLanguage,
         target_language: targetLanguage,
-        ...(currentQuestion?.id && { question_id: currentQuestion.id }),
-        ...(currentQuestion?.section_id && {
-          section_id: currentQuestion.section_id,
-        }),
-        ...(currentQuestion?.story_id && {
-          story_id: currentQuestion.story_id,
-        }),
+        ...(currentQuestion &&
+          'id' in currentQuestion && {
+            question_id: (currentQuestion as Question).id,
+          }),
+        ...(currentQuestion &&
+          'section_id' in currentQuestion && {
+            section_id: (currentQuestion as StoryContext).section_id,
+          }),
+        ...(currentQuestion &&
+          'story_id' in currentQuestion && {
+            story_id: (currentQuestion as StoryContext).story_id,
+          }),
       };
 
       await postV1Snippets(payload);
 
       // Invalidate relevant snippet queries to refresh highlights
-      if (currentQuestion?.id) {
+      if (currentQuestion && 'id' in currentQuestion) {
         // Invalidate question snippets
         queryClient.invalidateQueries({
-          queryKey: [`/v1/snippets/by-question/${currentQuestion.id}`],
+          queryKey: [
+            `/v1/snippets/by-question/${(currentQuestion as Question).id}`,
+          ],
         });
       }
-      if (currentQuestion?.section_id) {
+      if (currentQuestion && 'section_id' in currentQuestion) {
         // Invalidate section snippets
         queryClient.invalidateQueries({
-          queryKey: [`/v1/snippets/by-section/${currentQuestion.section_id}`],
+          queryKey: [
+            `/v1/snippets/by-section/${(currentQuestion as StoryContext).section_id}`,
+          ],
         });
       }
-      if (currentQuestion?.story_id) {
+      if (currentQuestion && 'story_id' in currentQuestion) {
         // Invalidate story snippets
         queryClient.invalidateQueries({
-          queryKey: [`/v1/snippets/by-story/${currentQuestion.story_id}`],
+          queryKey: [
+            `/v1/snippets/by-story/${(currentQuestion as StoryContext).story_id}`,
+          ],
         });
       }
 

@@ -272,6 +272,9 @@ export const useStory = (): UseStoryReturn => {
         queryKey: ['currentStory', user?.id, user?.preferred_language],
       });
       queryClient.invalidateQueries({ queryKey: ['userStories'] });
+      queryClient.invalidateQueries({
+        queryKey: ['archivedStories', user?.id, user?.preferred_language],
+      });
       showNotificationWithClean({
         title: 'Story Created',
         message: 'Your story has been created successfully!',
@@ -425,6 +428,9 @@ export const useStory = (): UseStoryReturn => {
         queryKey: ['currentStory', user?.id, user?.preferred_language],
       });
       queryClient.invalidateQueries({ queryKey: ['userStories'] });
+      queryClient.invalidateQueries({
+        queryKey: ['archivedStories', user?.id, user?.preferred_language],
+      });
       showNotificationWithClean({
         title: 'Story Completed',
         message: 'Your story has been marked as completed!',
@@ -492,6 +498,9 @@ export const useStory = (): UseStoryReturn => {
         queryKey: ['currentStory', user?.id],
       });
       queryClient.invalidateQueries({ queryKey: ['userStories'] });
+      queryClient.invalidateQueries({
+        queryKey: ['archivedStories', user?.id, user?.preferred_language],
+      });
       setCurrentSectionIndexWithDebug(0);
       setViewMode('section');
       showNotificationWithClean({
@@ -815,6 +824,9 @@ export const useStory = (): UseStoryReturn => {
         queryKey: ['currentStory', user?.id, user?.preferred_language],
       });
       queryClient.invalidateQueries({ queryKey: ['userStories'] });
+      queryClient.invalidateQueries({
+        queryKey: ['archivedStories', user?.id, user?.preferred_language],
+      });
       showNotificationWithClean({
         title: 'Story Deleted',
         message: 'Story has been deleted successfully.',

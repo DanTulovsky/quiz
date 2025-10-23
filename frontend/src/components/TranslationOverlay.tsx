@@ -5,6 +5,13 @@ import { TranslationPopup } from './TranslationPopup';
 import { useQuestion } from '../contexts/useQuestion';
 import { useDailyQuestions } from '../hooks/useDailyQuestions';
 import { useStory } from '../hooks/useStory';
+import { Question } from '../api/api';
+
+// Type for story context when no question is available
+interface StoryContext {
+  story_id: number;
+  section_id?: number;
+}
 
 export const TranslationOverlay: React.FC = () => {
   const { selection, isVisible, clearSelection } = useTextSelection();
@@ -29,8 +36,9 @@ export const TranslationOverlay: React.FC = () => {
 
   // Get the current question from either quiz, reading, daily, story, or mobile context
   // Use useMemo to ensure it updates when story context changes
-  const currentQuestion = useMemo(() => {
-    let question = quizQuestion || readingQuestion;
+  const currentQuestion = useMemo((): Question | StoryContext | null => {
+    let question: Question | StoryContext | null =
+      quizQuestion || readingQuestion;
 
     if (isDailyPage && dailyQuestion) {
       // For daily questions, we need to create a question object with the correct ID
@@ -46,7 +54,7 @@ export const TranslationOverlay: React.FC = () => {
         // Add section context if we're in section view and have a current section
         ...(viewMode === 'section' &&
           currentSection && { section_id: currentSection.id }),
-      } as any; // Type assertion since we're creating a custom object for story context
+      };
     }
 
     return question;
