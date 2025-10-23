@@ -25,6 +25,7 @@ import {
   IconBrain,
   IconLanguage,
   IconNotes,
+  IconLanguageHiragana,
 } from '@tabler/icons-react';
 import { useAuth } from '../hooks/useAuth';
 import { useMobileDetection } from '../hooks/useMobileDetection';
@@ -71,6 +72,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
     if (path.startsWith('/m/bookmarks')) return 'bookmarks';
     if (path.startsWith('/m/snippets')) return 'snippets';
     if (path.startsWith('/m/phrasebook')) return 'phrasebook';
+    if (path.startsWith('/m/verb-conjugation')) return 'verb-conjugation';
     return 'quiz';
   };
 
@@ -115,6 +117,12 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
       label: 'Phrasebook',
       icon: IconLanguage,
       path: '/m/phrasebook',
+    },
+    {
+      key: 'verb-conjugation',
+      label: 'Verb Conjugations',
+      icon: IconLanguageHiragana,
+      path: '/m/verb-conjugation',
     },
   ];
 

@@ -11,43 +11,43 @@
           "tenseId": "present",
           "tenseName": "Настоящее время",
           "tenseNameEn": "Present",
-          "description": "Used to describe actions happening now, general truths, or habitual actions. In Russian, the present tense of 'быть' is rarely used in modern language, replaced by the absence of a verb.",
+          "description": "In modern Russian, the present tense of 'быть' is omitted in most contexts. The form 'есть' exists but is archaic/philosophical or used for emphasis. Standard usage omits the verb entirely.",
           "conjugations": [
             {
               "pronoun": "я",
-              "form": "есть",
-              "exampleSentence": "Я есть студент",
+              "form": "есть (archaic)",
+              "exampleSentence": "Я студент",
               "exampleSentenceEn": "I am a student"
             },
             {
               "pronoun": "ты",
-              "form": "есть",
-              "exampleSentence": "Ты есть хороший",
-              "exampleSentenceEn": "You are good"
+              "form": "есть (archaic)",
+              "exampleSentence": "Ты хороший учитель",
+              "exampleSentenceEn": "You are a good teacher"
             },
             {
               "pronoun": "он/она/оно",
-              "form": "есть",
-              "exampleSentence": "Он есть русский",
-              "exampleSentenceEn": "He is Russian"
+              "form": "есть (archaic)",
+              "exampleSentence": "Он русский писатель",
+              "exampleSentenceEn": "He is a Russian writer"
             },
             {
               "pronoun": "мы",
-              "form": "есть",
-              "exampleSentence": "Мы есть друзья",
-              "exampleSentenceEn": "We are friends"
+              "form": "есть (archaic)",
+              "exampleSentence": "Мы студенты университета",
+              "exampleSentenceEn": "We are university students"
             },
             {
               "pronoun": "вы",
-              "form": "есть",
-              "exampleSentence": "Вы есть студенты",
-              "exampleSentenceEn": "You are students"
+              "form": "есть (archaic)",
+              "exampleSentence": "Вы опытные специалисты",
+              "exampleSentenceEn": "You are experienced specialists"
             },
             {
               "pronoun": "они",
-              "form": "есть",
-              "exampleSentence": "Они есть здесь",
-              "exampleSentenceEn": "They are here"
+              "form": "есть (archaic)",
+              "exampleSentence": "Они здесь каждый день",
+              "exampleSentenceEn": "They are here every day"
             }
           ]
         },
@@ -351,8 +351,8 @@
             {
               "pronoun": "ты",
               "form": "имеешь",
-              "exampleSentence": "Ты имеешь голод",
-              "exampleSentenceEn": "You are hungry"
+              "exampleSentence": "Ты имеешь возможность учиться за границей",
+              "exampleSentenceEn": "You have the opportunity to study abroad"
             },
             {
               "pronoun": "он/она/оно",
@@ -369,8 +369,8 @@
             {
               "pronoun": "вы",
               "form": "имеете",
-              "exampleSentence": "Вы имеете право",
-              "exampleSentenceEn": "You are right"
+              "exampleSentence": "Вы имеете право выбирать свой путь",
+              "exampleSentenceEn": "You have the right to choose your path"
             },
             {
               "pronoun": "они",
@@ -389,14 +389,14 @@
             {
               "pronoun": "я",
               "form": "имел/имела",
-              "exampleSentence": "Я имел голод",
-              "exampleSentenceEn": "I was hungry"
+              "exampleSentence": "Я имел возможность путешествовать по Европе",
+              "exampleSentenceEn": "I had the opportunity to travel through Europe"
             },
             {
               "pronoun": "ты",
               "form": "имел/имела",
-              "exampleSentence": "Ты имел право",
-              "exampleSentenceEn": "You were right"
+              "exampleSentence": "Ты имел интересную коллекцию марок",
+              "exampleSentenceEn": "You had an interesting stamp collection"
             },
             {
               "pronoun": "он",
@@ -419,8 +419,8 @@
             {
               "pronoun": "вы",
               "form": "имели",
-              "exampleSentence": "Вы имели страх",
-              "exampleSentenceEn": "You were afraid"
+              "exampleSentence": "Вы имели важные документы в сейфе",
+              "exampleSentenceEn": "You had important documents in the safe"
             },
             {
               "pronoun": "они",
@@ -457,14 +457,14 @@
             {
               "pronoun": "мы",
               "form": "будем иметь",
-              "exampleSentence": "Мы будем иметь удачу",
-              "exampleSentenceEn": "We will be lucky"
+              "exampleSentence": "Мы будем иметь возможность встретиться снова",
+              "exampleSentenceEn": "We will have the opportunity to meet again"
             },
             {
               "pronoun": "вы",
               "form": "будете иметь",
-              "exampleSentence": "Вы будете иметь право",
-              "exampleSentenceEn": "You will be right"
+              "exampleSentence": "Вы будете иметь приоритет в этом проекте",
+              "exampleSentenceEn": "You will have priority in this project"
             },
             {
               "pronoun": "они",
@@ -1873,25 +1873,25 @@
           "tenseId": "present_gerund",
           "tenseName": "Деепричастие настоящего времени",
           "tenseNameEn": "Present Gerund",
-          "description": "Used to express an action that happens simultaneously with the main action. Often used to show manner or condition.",
+          "description": "The verb 'мочь' does not form a present gerund in modern Russian. An archaic form 'могя' exists but is rarely used in contemporary speech. Modal constructions are preferred instead.",
           "conjugations": [
             {
               "pronoun": "—",
-              "form": "могучи",
-              "exampleSentence": "Могучи помочь, я думаю",
-              "exampleSentenceEn": "While being able to help, I think"
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
             },
             {
               "pronoun": "—",
-              "form": "могучи",
-              "exampleSentence": "Могучи прийти, он пел",
-              "exampleSentenceEn": "While being able to come, he sang"
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
             },
             {
               "pronoun": "—",
-              "form": "могучи",
-              "exampleSentence": "Могучи говорить, мы разговаривали",
-              "exampleSentenceEn": "While being able to speak, we talked"
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
             }
           ]
         },
@@ -2751,8 +2751,8 @@
             {
               "pronoun": "я",
               "form": "вижу",
-              "exampleSentence": "Я вижу телевизор",
-              "exampleSentenceEn": "I watch television"
+              "exampleSentence": "Я вижу красивое здание вдалеке",
+              "exampleSentenceEn": "I see a beautiful building in the distance"
             },
             {
               "pronoun": "ты",
@@ -2902,19 +2902,19 @@
           "tenseId": "imperative",
           "tenseName": "Повелительное наклонение",
           "tenseNameEn": "Imperative",
-          "description": "Used to give commands, orders, or instructions. Only exists for the second person (ты, вы).",
+          "description": "The verb 'видеть' (to see) has no imperative form in Russian. To give commands about looking/watching, use 'смотреть' (to look/watch) instead: смотри/смотрите.",
           "conjugations": [
             {
               "pronoun": "ты",
-              "form": "видь",
-              "exampleSentence": "Видь телевизор!",
-              "exampleSentenceEn": "Watch television!"
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
             },
             {
               "pronoun": "вы",
-              "form": "видьте",
-              "exampleSentence": "Видьте фильм!",
-              "exampleSentenceEn": "Watch the movie!"
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
             }
           ]
         },
@@ -3501,25 +3501,25 @@
           "tenseId": "present_gerund",
           "tenseName": "Деепричастие настоящего времени",
           "tenseNameEn": "Present Gerund",
-          "description": "Used to express an action that happens simultaneously with the main action. Often used to show manner or condition.",
+          "description": "The verb 'хотеть' does not form a present gerund in modern Russian. Note: 'хотя' is the conjunction 'although', not a gerund form. An archaic form 'хотев' exists but is not used in contemporary speech.",
           "conjugations": [
             {
               "pronoun": "—",
-              "form": "хотя",
-              "exampleSentence": "Хотя пить, я думаю",
-              "exampleSentenceEn": "While wanting to drink, I think"
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
             },
             {
               "pronoun": "—",
-              "form": "хотя",
-              "exampleSentence": "Хотя есть, он пел",
-              "exampleSentenceEn": "While wanting to eat, he sang"
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
             },
             {
               "pronoun": "—",
-              "form": "хотя",
-              "exampleSentence": "Хотя спать, мы разговаривали",
-              "exampleSentenceEn": "While wanting to sleep, we talked"
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
             }
           ]
         },

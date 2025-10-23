@@ -18,7 +18,7 @@
             { "pronoun": "他/她/它", "form": "是", "exampleSentence": "他是中国人", "exampleSentenceEn": "He is Chinese" },
             { "pronoun": "我们", "form": "是", "exampleSentence": "我们是朋友", "exampleSentenceEn": "We are friends" },
             { "pronoun": "你们", "form": "是", "exampleSentence": "你们是学生", "exampleSentenceEn": "You are students" },
-            { "pronoun": "他们/她们/它们", "form": "是", "exampleSentence": "他们在这里", "exampleSentenceEn": "They are here" }
+            { "pronoun": "他们/她们/它们", "form": "是", "exampleSentence": "他们是学生", "exampleSentenceEn": "They are students" }
           ]
         },
         {
@@ -32,7 +32,7 @@
             { "pronoun": "他/她/它", "form": "是", "exampleSentence": "他昨天是中国人", "exampleSentenceEn": "He was Chinese yesterday" },
             { "pronoun": "我们", "form": "是", "exampleSentence": "我们昨天是朋友", "exampleSentenceEn": "We were friends yesterday" },
             { "pronoun": "你们", "form": "是", "exampleSentence": "你们昨天是学生", "exampleSentenceEn": "You were students yesterday" },
-            { "pronoun": "他们/她们/它们", "form": "是", "exampleSentence": "他们昨天在这里", "exampleSentenceEn": "They were here yesterday" }
+            { "pronoun": "他们/她们/它们", "form": "是", "exampleSentence": "他们昨天是学生", "exampleSentenceEn": "They were students yesterday" }
           ]
         },
         {
@@ -46,21 +46,21 @@
             { "pronoun": "他/她/它", "form": "会是", "exampleSentence": "他明天会是中国人", "exampleSentenceEn": "He will be Chinese tomorrow" },
             { "pronoun": "我们", "form": "会是", "exampleSentence": "我们明天会是朋友", "exampleSentenceEn": "We will be friends tomorrow" },
             { "pronoun": "你们", "form": "会是", "exampleSentence": "你们明天会是学生", "exampleSentenceEn": "You will be students tomorrow" },
-            { "pronoun": "他们/她们/它们", "form": "会是", "exampleSentence": "他们明天会在这里", "exampleSentenceEn": "They will be here tomorrow" }
+            { "pronoun": "他们/她们/它们", "form": "会是", "exampleSentence": "他们明天会是学生", "exampleSentenceEn": "They will be students tomorrow" }
           ]
         },
         {
           "tenseId": "progressive",
           "tenseName": "进行时",
           "tenseNameEn": "Progressive",
-          "description": "Used to express ongoing actions happening at the moment of speaking. Formed with '正在' before the verb, emphasizing the action is in progress.",
+          "description": "Used to express ongoing process of becoming. Since '是' (to be) is a stative verb, the progressive form uses '正在成为' (becoming) to indicate an ongoing transformation or change in state.",
           "conjugations": [
-            { "pronoun": "我", "form": "正在是", "exampleSentence": "我正在成为一个更好的人", "exampleSentenceEn": "I am becoming a better person" },
-            { "pronoun": "你", "form": "正在是", "exampleSentence": "你正在是团队中最重要的成员", "exampleSentenceEn": "You are being the most important member of the team" },
-            { "pronoun": "他/她/它", "form": "正在是", "exampleSentence": "她正在成为一名优秀的老师", "exampleSentenceEn": "She is becoming an excellent teacher" },
-            { "pronoun": "我们", "form": "正在是", "exampleSentence": "我们正在成为好朋友", "exampleSentenceEn": "We are becoming good friends" },
-            { "pronoun": "你们", "form": "正在是", "exampleSentence": "你们正在成为这个项目的核心", "exampleSentenceEn": "You are becoming the core of this project" },
-            { "pronoun": "他们/她们/它们", "form": "正在是", "exampleSentence": "他们正在成为行业领导者", "exampleSentenceEn": "They are becoming industry leaders" }
+            { "pronoun": "我", "form": "正在成为", "exampleSentence": "我正在成为一个更好的人", "exampleSentenceEn": "I am becoming a better person" },
+            { "pronoun": "你", "form": "正在成为", "exampleSentence": "你正在成为团队中最重要的成员", "exampleSentenceEn": "You are becoming the most important member of the team" },
+            { "pronoun": "他/她/它", "form": "正在成为", "exampleSentence": "她正在成为一名优秀的老师", "exampleSentenceEn": "She is becoming an excellent teacher" },
+            { "pronoun": "我们", "form": "正在成为", "exampleSentence": "我们正在成为好朋友", "exampleSentenceEn": "We are becoming good friends" },
+            { "pronoun": "你们", "form": "正在成为", "exampleSentence": "你们正在成为这个项目的核心", "exampleSentenceEn": "You are becoming the core of this project" },
+            { "pronoun": "他们/她们/它们", "form": "正在成为", "exampleSentence": "他们正在成为行业领导者", "exampleSentenceEn": "They are becoming industry leaders" }
           ]
         },
         {
@@ -109,14 +109,14 @@
           "tenseId": "past_negative",
           "tenseName": "过去否定形式",
           "tenseNameEn": "Past Negative",
-          "description": "Used to negate past states or experiences. Chinese uses '没' before the verb for past negation, especially with experiential '过'.",
+          "description": "Used to negate past states or experiences. Chinese uses '没有' before the verb for past negation, especially with experiential '过'.",
           "conjugations": [
-            { "pronoun": "我", "form": "没是过", "exampleSentence": "我以前没是过老师", "exampleSentenceEn": "I have never been a teacher before" },
-            { "pronoun": "你", "form": "没是过", "exampleSentence": "你以前没是过班长吗", "exampleSentenceEn": "Have you never been a class monitor before?" },
-            { "pronoun": "他/她/它", "form": "没是过", "exampleSentence": "她没是过这种情况", "exampleSentenceEn": "She has never been in this situation" },
-            { "pronoun": "我们", "form": "没是过", "exampleSentence": "我们以前没是过邻居", "exampleSentenceEn": "We have never been neighbors before" },
-            { "pronoun": "你们", "form": "没是过", "exampleSentence": "你们没是过同学", "exampleSentenceEn": "You have never been classmates" },
-            { "pronoun": "他们/她们/它们", "form": "没是过", "exampleSentence": "他们没是过竞争对手", "exampleSentenceEn": "They have never been competitors" }
+            { "pronoun": "我", "form": "没有是过", "exampleSentence": "我以前没有是过老师", "exampleSentenceEn": "I have never been a teacher before" },
+            { "pronoun": "你", "form": "没有是过", "exampleSentence": "你以前没有是过班长吗", "exampleSentenceEn": "Have you never been a class monitor before?" },
+            { "pronoun": "他/她/它", "form": "没有是过", "exampleSentence": "她没有是过这种情况", "exampleSentenceEn": "She has never been in this situation" },
+            { "pronoun": "我们", "form": "没有是过", "exampleSentence": "我们以前没有是过邻居", "exampleSentenceEn": "We have never been neighbors before" },
+            { "pronoun": "你们", "form": "没有是过", "exampleSentence": "你们没有是过同学", "exampleSentenceEn": "You have never been classmates" },
+            { "pronoun": "他们/她们/它们", "form": "没有是过", "exampleSentence": "他们没有是过竞争对手", "exampleSentenceEn": "They have never been competitors" }
           ]
         },
         {
@@ -172,10 +172,10 @@
           "description": "Used to describe actions happening now, general truths, or habitual actions. Chinese verbs don't change form, so tense is indicated by time words or context.",
           "conjugations": [
             { "pronoun": "我", "form": "有", "exampleSentence": "我有一本书", "exampleSentenceEn": "I have a book" },
-            { "pronoun": "你", "form": "有", "exampleSentence": "你饿了", "exampleSentenceEn": "You are hungry" },
+            { "pronoun": "你", "form": "有", "exampleSentence": "你有饿的感觉", "exampleSentenceEn": "You have a feeling of hunger" },
             { "pronoun": "他/她/它", "form": "有", "exampleSentence": "她有一只猫", "exampleSentenceEn": "She has a cat" },
             { "pronoun": "我们", "form": "有", "exampleSentence": "我们有时间", "exampleSentenceEn": "We have time" },
-            { "pronoun": "你们", "form": "有", "exampleSentence": "你们是对的", "exampleSentenceEn": "You are right" },
+            { "pronoun": "你们", "form": "有", "exampleSentence": "你们有道理", "exampleSentenceEn": "You are right (have reason)" },
             { "pronoun": "他们/她们/它们", "form": "有", "exampleSentence": "他们有一所房子", "exampleSentenceEn": "They have a house" }
           ]
         },
@@ -186,10 +186,10 @@
           "description": "Used to describe completed actions in the past. Chinese indicates past tense using time words like '昨天' (yesterday) or aspect markers like '了'.",
           "conjugations": [
             { "pronoun": "我", "form": "有", "exampleSentence": "我昨天有一本书", "exampleSentenceEn": "I had a book yesterday" },
-            { "pronoun": "你", "form": "有", "exampleSentence": "你昨天饿了", "exampleSentenceEn": "You were hungry yesterday" },
+            { "pronoun": "你", "form": "有", "exampleSentence": "你昨天有饿的感觉", "exampleSentenceEn": "You had a feeling of hunger yesterday" },
             { "pronoun": "他/她/它", "form": "有", "exampleSentence": "她昨天有一只猫", "exampleSentenceEn": "She had a cat yesterday" },
             { "pronoun": "我们", "form": "有", "exampleSentence": "我们昨天有时间", "exampleSentenceEn": "We had time yesterday" },
-            { "pronoun": "你们", "form": "有", "exampleSentence": "你们昨天是对的", "exampleSentenceEn": "You were right yesterday" },
+            { "pronoun": "你们", "form": "有", "exampleSentence": "你们昨天有道理", "exampleSentenceEn": "You were right yesterday (had reason)" },
             { "pronoun": "他们/她们/它们", "form": "有", "exampleSentence": "他们昨天有一所房子", "exampleSentenceEn": "They had a house yesterday" }
           ]
         },
@@ -203,22 +203,8 @@
             { "pronoun": "你", "form": "会有", "exampleSentence": "你明天会饿", "exampleSentenceEn": "You will be hungry tomorrow" },
             { "pronoun": "他/她/它", "form": "会有", "exampleSentence": "她明天会有一只猫", "exampleSentenceEn": "She will have a cat tomorrow" },
             { "pronoun": "我们", "form": "会有", "exampleSentence": "我们明天会有时间", "exampleSentenceEn": "We will have time tomorrow" },
-            { "pronoun": "你们", "form": "会有", "exampleSentence": "你们明天会是对的", "exampleSentenceEn": "You will be right tomorrow" },
+            { "pronoun": "你们", "form": "会有", "exampleSentence": "你们明天会有道理", "exampleSentenceEn": "You will be right tomorrow (will have reason)" },
             { "pronoun": "他们/她们/它们", "form": "会有", "exampleSentence": "他们明天会有一所房子", "exampleSentenceEn": "They will have a house tomorrow" }
-          ]
-        },
-        {
-          "tenseId": "progressive",
-          "tenseName": "进行时",
-          "tenseNameEn": "Progressive",
-          "description": "Used to express ongoing actions or states. With '有', often used in continuous states or gradual possession.",
-          "conjugations": [
-            { "pronoun": "我", "form": "正在有", "exampleSentence": "我正在经历一些困难", "exampleSentenceEn": "I am experiencing some difficulties" },
-            { "pronoun": "你", "form": "正在有", "exampleSentence": "你正在拥有越来越多的机会", "exampleSentenceEn": "You are having more and more opportunities" },
-            { "pronoun": "他/她/它", "form": "正在有", "exampleSentence": "她正在经历人生中最美好的时光", "exampleSentenceEn": "She is experiencing the best time of her life" },
-            { "pronoun": "我们", "form": "正在有", "exampleSentence": "我们正在拥有更好的未来", "exampleSentenceEn": "We are having a better future" },
-            { "pronoun": "你们", "form": "正在有", "exampleSentence": "你们正在获得更多的支持", "exampleSentenceEn": "You are gaining more support" },
-            { "pronoun": "他们/她们/它们", "form": "正在有", "exampleSentence": "他们正在经历快速的成长", "exampleSentenceEn": "They are experiencing rapid growth" }
           ]
         },
         {

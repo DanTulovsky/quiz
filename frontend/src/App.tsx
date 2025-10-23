@@ -46,6 +46,7 @@ import MobileBookmarkedMessagesPage from './pages/mobile/MobileBookmarkedMessage
 import MobileSnippetsPage from './pages/mobile/MobileSnippetsPage';
 import MobilePhrasebookIndexPage from './pages/mobile/MobilePhrasebookIndexPage';
 import MobilePhrasebookCategoryPage from './pages/mobile/MobilePhrasebookCategoryPage';
+import MobileVerbConjugationPage from './pages/mobile/MobileVerbConjugationPage';
 import { Center, Loader } from '@mantine/core';
 
 function App() {
@@ -566,6 +567,20 @@ function App() {
             user ? (
               <MobileLayout>
                 <MobilePhrasebookCategoryPage />
+              </MobileLayout>
+            ) : (
+              <Navigate
+                to={`/m/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`}
+              />
+            )
+          }
+        />
+        <Route
+          path='/m/verb-conjugation'
+          element={
+            user ? (
+              <MobileLayout>
+                <MobileVerbConjugationPage />
               </MobileLayout>
             ) : (
               <Navigate
