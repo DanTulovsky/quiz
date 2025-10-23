@@ -27,6 +27,7 @@ interface ArchivedStoriesViewProps {
   isLoading: boolean;
   onUnarchive: (storyId: number) => Promise<void>;
   onCreateNew: () => void;
+  hideCreateButton?: boolean;
 }
 
 const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
@@ -34,6 +35,7 @@ const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
   isLoading,
   onUnarchive,
   onCreateNew,
+  hideCreateButton = false,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -97,15 +99,17 @@ const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
     <Container size='md' py='xl'>
       <Stack spacing='md'>
         {/* Create New Story Button - Moved to top */}
-        <Group position='center'>
-          <Button
-            leftSection={<IconBook size={16} />}
-            size='lg'
-            onClick={onCreateNew}
-          >
-            Create New Story
-          </Button>
-        </Group>
+        {!hideCreateButton && (
+          <Group position='center'>
+            <Button
+              leftSection={<IconBook size={16} />}
+              size='lg'
+              onClick={onCreateNew}
+            >
+              Create New Story
+            </Button>
+          </Group>
+        )}
 
         {/* Archived Stories Section */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>

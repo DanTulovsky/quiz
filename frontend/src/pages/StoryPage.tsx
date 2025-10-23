@@ -163,6 +163,7 @@ const StoryPage: React.FC = () => {
           isLoading={isLoadingArchivedStories}
           onUnarchive={handleUnarchiveStory}
           onCreateNew={() => setShowCreateModal(true)}
+          hideCreateButton={false}
         />
         {/* Create Story Modal - Available when showing archived stories */}
         {showCreateModal && (
@@ -276,10 +277,56 @@ const StoryPage: React.FC = () => {
       }
     };
 
+    const message = getGeneratingMessage();
+
+    // If we have archived stories, show them below the generating message
+    if (archivedStories && archivedStories.length > 0) {
+      return (
+        <>
+          <Container size='lg' py='md'>
+            <Alert color='blue' variant='light'>
+              <Text>{message}</Text>
+            </Alert>
+          </Container>
+          <ArchivedStoriesView
+            archivedStories={archivedStories}
+            isLoading={isLoadingArchivedStories}
+            onUnarchive={handleUnarchiveStory}
+            onCreateNew={() => setShowCreateModal(true)}
+            hideCreateButton={true}
+          />
+          {/* Create Story Modal - Available during generation */}
+          {showCreateModal && (
+            <Modal
+              opened={true}
+              onClose={() => setShowCreateModal(false)}
+              title='Create New Story'
+              size='xl'
+              centered
+            >
+              <CreateStoryForm
+                onSubmit={handleCreateStory}
+                loading={isCreatingStory}
+              />
+            </Modal>
+          )}
+
+          {/* Generation Error Modal */}
+          <StoryGenerationErrorModal
+            isOpen={generationErrorModal.isOpen}
+            onClose={closeGenerationErrorModal}
+            errorMessage={generationErrorModal.errorMessage}
+            errorDetails={generationErrorModal.errorDetails}
+          />
+        </>
+      );
+    }
+
+    // Otherwise show just the generating message
     return (
       <Container size='lg' py='xl'>
         <Alert color='blue' variant='light'>
-          <Text>{getGeneratingMessage()}</Text>
+          <Text>{message}</Text>
         </Alert>
       </Container>
     );
