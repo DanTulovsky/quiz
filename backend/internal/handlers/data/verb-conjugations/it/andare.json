@@ -1,0 +1,807 @@
+{
+    "category": "essential",
+    "infinitive": "andare",
+    "infinitiveEn": "to go",
+    "language": "it",
+    "languageName": "Italian",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io vado a scuola",
+                    "exampleSentenceEn": "I go to school",
+                    "form": "vado",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu vai a casa",
+                    "exampleSentenceEn": "You go home",
+                    "form": "vai",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui va al cinema",
+                    "exampleSentenceEn": "He goes to the cinema",
+                    "form": "va",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi andiamo a passeggio",
+                    "exampleSentenceEn": "We go for a walk",
+                    "form": "andiamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi andate a fare la spesa",
+                    "exampleSentenceEn": "You go shopping",
+                    "form": "andate",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro vanno a teatro",
+                    "exampleSentenceEn": "They go to the theater",
+                    "form": "vanno",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in Italian.",
+            "tenseId": "presente",
+            "tenseName": "Presente",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io andavo a scuola",
+                    "exampleSentenceEn": "I was going to school",
+                    "form": "andavo",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu andavi a casa",
+                    "exampleSentenceEn": "You were going home",
+                    "form": "andavi",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui andava al cinema",
+                    "exampleSentenceEn": "He was going to the cinema",
+                    "form": "andava",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi andavamo a passeggio",
+                    "exampleSentenceEn": "We were going for a walk",
+                    "form": "andavamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi andavate a fare la spesa",
+                    "exampleSentenceEn": "You were going shopping",
+                    "form": "andavate",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro andavano a teatro",
+                    "exampleSentenceEn": "They were going to the theater",
+                    "form": "andavano",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to describe ongoing, repeated, or habitual actions in the past. Also used for background information in storytelling.",
+            "tenseId": "imperfetto",
+            "tenseName": "Imperfetto",
+            "tenseNameEn": "Imperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io andrò a scuola domani",
+                    "exampleSentenceEn": "I will go to school tomorrow",
+                    "form": "andrò",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu andrai a casa",
+                    "exampleSentenceEn": "You will go home",
+                    "form": "andrai",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui andrà al cinema",
+                    "exampleSentenceEn": "He will go to the cinema",
+                    "form": "andrà",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi andremo a passeggio",
+                    "exampleSentenceEn": "We will go for a walk",
+                    "form": "andremo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi andrete a fare la spesa",
+                    "exampleSentenceEn": "You will go shopping",
+                    "form": "andrete",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro andranno a teatro",
+                    "exampleSentenceEn": "They will go to the theater",
+                    "form": "andranno",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'domani' (tomorrow) or 'la settimana prossima' (next week).",
+            "tenseId": "futuro_semplice",
+            "tenseName": "Futuro Semplice",
+            "tenseNameEn": "Simple Future"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io sono andato a scuola",
+                    "exampleSentenceEn": "I have gone to school",
+                    "form": "sono andato/a",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu sei andato a casa",
+                    "exampleSentenceEn": "You have gone home",
+                    "form": "sei andato/a",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui è andato al cinema",
+                    "exampleSentenceEn": "He has gone to the cinema",
+                    "form": "è andato/a",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi siamo andati a passeggio",
+                    "exampleSentenceEn": "We have gone for a walk",
+                    "form": "siamo andati/e",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi siete andati a fare la spesa",
+                    "exampleSentenceEn": "You have gone shopping",
+                    "form": "siete andati/e",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro sono andati a teatro",
+                    "exampleSentenceEn": "They have gone to the theater",
+                    "form": "sono andati/e",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken Italian.",
+            "tenseId": "passato_prossimo",
+            "tenseName": "Passato Prossimo",
+            "tenseNameEn": "Present Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io andai a scuola",
+                    "exampleSentenceEn": "I went to school",
+                    "form": "andai",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu andasti a casa",
+                    "exampleSentenceEn": "You went home",
+                    "form": "andasti",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui andò al cinema",
+                    "exampleSentenceEn": "He went to the cinema",
+                    "form": "andò",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi andammo a passeggio",
+                    "exampleSentenceEn": "We went for a walk",
+                    "form": "andammo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi andaste a fare la spesa",
+                    "exampleSentenceEn": "You went shopping",
+                    "form": "andaste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro andarono a teatro",
+                    "exampleSentenceEn": "They went to the theater",
+                    "form": "andarono",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used primarily in formal and literary Italian to narrate completed past events. Also used in southern Italy in spoken language.",
+            "tenseId": "passato_remoto",
+            "tenseName": "Passato Remoto",
+            "tenseNameEn": "Simple Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io ero andato a scuola prima che piovesse",
+                    "exampleSentenceEn": "I had gone to school before it rained",
+                    "form": "ero andato/a",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu eri andato a casa prima che venissi",
+                    "exampleSentenceEn": "You had gone home before I came",
+                    "form": "eri andato/a",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui era andato al cinema prima che arrivassimo",
+                    "exampleSentenceEn": "He had gone to the cinema before we arrived",
+                    "form": "era andato/a",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi eravamo andati a passeggio prima che facesse buio",
+                    "exampleSentenceEn": "We had gone for a walk before it got dark",
+                    "form": "eravamo andati/e",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi eravate andati a fare la spesa prima della chiusura",
+                    "exampleSentenceEn": "You had gone shopping before closing",
+                    "form": "eravate andati/e",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro erano andati a teatro prima dello spettacolo",
+                    "exampleSentenceEn": "They had gone to the theater before the show",
+                    "form": "erano andati/e",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+            "tenseId": "trapassato_prossimo",
+            "tenseName": "Trapassato Prossimo",
+            "tenseNameEn": "Pluperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Appena fui andato a scuola, piovve",
+                    "exampleSentenceEn": "As soon as I had gone to school, it rained",
+                    "form": "fui andato/a",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Appena fosti andato a casa, venni",
+                    "exampleSentenceEn": "As soon as you had gone home, I came",
+                    "form": "fosti andato/a",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Appena fu andato al cinema, arrivammo",
+                    "exampleSentenceEn": "As soon as he had gone to the cinema, we arrived",
+                    "form": "fu andato/a",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Appena fummo andati a passeggio, fece buio",
+                    "exampleSentenceEn": "As soon as we had gone for a walk, it got dark",
+                    "form": "fummo andati/e",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Appena foste andati a fare la spesa, il negozio chiuse",
+                    "exampleSentenceEn": "As soon as you had gone shopping, the store closed",
+                    "form": "foste andati/e",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Appena furono andati a teatro, lo spettacolo cominciò",
+                    "exampleSentenceEn": "As soon as they had gone to the theater, the show began",
+                    "form": "furono andati/e",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in formal and literary Italian to express an action that was completed immediately before another past action. Rarely used in modern Italian.",
+            "tenseId": "trapassato_remoto",
+            "tenseName": "Trapassato Remoto",
+            "tenseNameEn": "Past Anterior"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io sarò andato a scuola domani",
+                    "exampleSentenceEn": "I will have gone to school tomorrow",
+                    "form": "sarò andato/a",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu sarai andato a casa",
+                    "exampleSentenceEn": "You will have gone home",
+                    "form": "sarai andato/a",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui sarà andato al cinema",
+                    "exampleSentenceEn": "He will have gone to the cinema",
+                    "form": "sarà andato/a",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi saremo andati a passeggio",
+                    "exampleSentenceEn": "We will have gone for a walk",
+                    "form": "saremo andati/e",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi sarete andati a fare la spesa",
+                    "exampleSentenceEn": "You will have gone shopping",
+                    "form": "sarete andati/e",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro saranno andati a teatro",
+                    "exampleSentenceEn": "They will have gone to the theater",
+                    "form": "saranno andati/e",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express actions that will be completed before another future action. Often used with time expressions like 'domani' (tomorrow).",
+            "tenseId": "futuro_anteriore",
+            "tenseName": "Futuro Anteriore",
+            "tenseNameEn": "Future Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io andrei a scuola se avessi tempo",
+                    "exampleSentenceEn": "I would go to school if I had time",
+                    "form": "andrei",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu andresti a casa",
+                    "exampleSentenceEn": "You would go home",
+                    "form": "andresti",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui andrebbe al cinema",
+                    "exampleSentenceEn": "He would go to the cinema",
+                    "form": "andrebbe",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi andremmo a passeggio",
+                    "exampleSentenceEn": "We would go for a walk",
+                    "form": "andremmo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi andreste a fare la spesa",
+                    "exampleSentenceEn": "You would go shopping",
+                    "form": "andreste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro andrebbero a teatro",
+                    "exampleSentenceEn": "They would go to the theater",
+                    "form": "andrebbero",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'se' (if) clauses.",
+            "tenseId": "condizionale_presente",
+            "tenseName": "Condizionale Presente",
+            "tenseNameEn": "Present Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io sarei andato a scuola se avessi potuto",
+                    "exampleSentenceEn": "I would have gone to school if I could have",
+                    "form": "sarei andato/a",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu saresti andato a casa",
+                    "exampleSentenceEn": "You would have gone home",
+                    "form": "saresti andato/a",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui sarebbe andato al cinema",
+                    "exampleSentenceEn": "He would have gone to the cinema",
+                    "form": "sarebbe andato/a",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi saremmo andati a passeggio",
+                    "exampleSentenceEn": "We would have gone for a walk",
+                    "form": "saremmo andati/e",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi sareste andati a fare la spesa",
+                    "exampleSentenceEn": "You would have gone shopping",
+                    "form": "sareste andati/e",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro sarebbero andati a teatro",
+                    "exampleSentenceEn": "They would have gone to the theater",
+                    "form": "sarebbero andati/e",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express hypothetical past actions or regrets about things that didn't happen. Often used with 'se' (if) clauses referring to the past.",
+            "tenseId": "condizionale_passato",
+            "tenseName": "Condizionale Passato",
+            "tenseNameEn": "Past Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "È necessario che io vada a scuola",
+                    "exampleSentenceEn": "I must go to school",
+                    "form": "vada",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Voglio che tu vada a casa",
+                    "exampleSentenceEn": "I want you to go home",
+                    "form": "vada",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "È necessario che lui vada al cinema",
+                    "exampleSentenceEn": "He must go to the cinema",
+                    "form": "vada",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "È necessario che noi andiamo a passeggio",
+                    "exampleSentenceEn": "We must go for a walk",
+                    "form": "andiamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "È necessario che voi andiate a fare la spesa",
+                    "exampleSentenceEn": "You must go shopping",
+                    "form": "andiate",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "È necessario che loro vadano a teatro",
+                    "exampleSentenceEn": "They must go to the theater",
+                    "form": "vadano",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in dependent clauses after certain expressions of opinion, doubt, emotion, or necessity. Often used after 'è necessario che', 'voglio che', etc.",
+            "tenseId": "congiuntivo_presente",
+            "tenseName": "Congiuntivo Presente",
+            "tenseNameEn": "Present Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Era necessario che io andassi a scuola",
+                    "exampleSentenceEn": "I had to go to school",
+                    "form": "andassi",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Volevo che tu andassi a casa",
+                    "exampleSentenceEn": "I wanted you to go home",
+                    "form": "andassi",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Era necessario che lui andasse al cinema",
+                    "exampleSentenceEn": "He had to go to the cinema",
+                    "form": "andasse",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Era necessario che noi andassimo a passeggio",
+                    "exampleSentenceEn": "We had to go for a walk",
+                    "form": "andassimo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Era necessario che voi andaste a fare la spesa",
+                    "exampleSentenceEn": "You had to go shopping",
+                    "form": "andaste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Era necessario che loro andassero a teatro",
+                    "exampleSentenceEn": "They had to go to the theater",
+                    "form": "andassero",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in formal and literary Italian after the same triggers as present subjunctive, but referring to past events. Rarely used in modern spoken Italian.",
+            "tenseId": "congiuntivo_imperfetto",
+            "tenseName": "Congiuntivo Imperfetto",
+            "tenseNameEn": "Imperfect Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "È necessario che io sia andato a scuola",
+                    "exampleSentenceEn": "I must have gone to school",
+                    "form": "sia andato/a",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Voglio che tu sia andato a casa",
+                    "exampleSentenceEn": "I want you to have gone home",
+                    "form": "sia andato/a",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "È necessario che lui sia andato al cinema",
+                    "exampleSentenceEn": "He must have gone to the cinema",
+                    "form": "sia andato/a",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "È necessario che noi siamo andati a passeggio",
+                    "exampleSentenceEn": "We must have gone for a walk",
+                    "form": "siamo andati/e",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "È necessario che voi siate andati a fare la spesa",
+                    "exampleSentenceEn": "You must have gone shopping",
+                    "form": "siate andati/e",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "È necessario che loro siano andati a teatro",
+                    "exampleSentenceEn": "They must have gone to the theater",
+                    "form": "siano andati/e",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in dependent clauses after expressions of doubt, emotion, or necessity when referring to a completed action in the past.",
+            "tenseId": "congiuntivo_passato",
+            "tenseName": "Congiuntivo Passato",
+            "tenseNameEn": "Past Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Era necessario che io fossi andato a scuola",
+                    "exampleSentenceEn": "I had to have gone to school",
+                    "form": "fossi andato/a",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Volevo che tu fossi andato a casa",
+                    "exampleSentenceEn": "I wanted you to have gone home",
+                    "form": "fossi andato/a",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Era necessario che lui fosse andato al cinema",
+                    "exampleSentenceEn": "He had to have gone to the cinema",
+                    "form": "fosse andato/a",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Era necessario che noi fossimo andati a passeggio",
+                    "exampleSentenceEn": "We had to have gone for a walk",
+                    "form": "fossimo andati/e",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Era necessario che voi foste andati a fare la spesa",
+                    "exampleSentenceEn": "You had to have gone shopping",
+                    "form": "foste andati/e",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Era necessario che loro fossero andati a teatro",
+                    "exampleSentenceEn": "They had to have gone to the theater",
+                    "form": "fossero andati/e",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in formal and literary Italian after the same triggers as other subjunctive tenses, but referring to actions completed before another past action.",
+            "tenseId": "congiuntivo_trapassato",
+            "tenseName": "Congiuntivo Trapassato",
+            "tenseNameEn": "Pluperfect Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Vai a scuola!",
+                    "exampleSentenceEn": "Go to school!",
+                    "form": "vai",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Andiamo a passeggio!",
+                    "exampleSentenceEn": "Let's go for a walk!",
+                    "form": "andiamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Andate a fare la spesa!",
+                    "exampleSentenceEn": "Go shopping!",
+                    "form": "andate",
+                    "pronoun": "voi"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (tu, noi, voi). The subject pronoun is omitted.",
+            "tenseId": "imperativo",
+            "tenseName": "Imperativo",
+            "tenseNameEn": "Imperative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Voglio andare a scuola",
+                    "exampleSentenceEn": "I want to go to school",
+                    "form": "andare",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Devo andare a casa",
+                    "exampleSentenceEn": "I must go home",
+                    "form": "andare",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Posso andare al cinema",
+                    "exampleSentenceEn": "I can go to the cinema",
+                    "form": "andare",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "The base form of the verb, used after modal verbs, prepositions, and in many other constructions.",
+            "tenseId": "infinito_presente",
+            "tenseName": "Infinito Presente",
+            "tenseNameEn": "Present Infinitive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Dopo essere andato a scuola, ho studiato",
+                    "exampleSentenceEn": "After having gone to school, I studied",
+                    "form": "essere andato/a",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Prima di essere andato a casa, ho lavorato",
+                    "exampleSentenceEn": "Before having gone home, I worked",
+                    "form": "essere andato/a",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Dopo essere andato al cinema, ho cenato",
+                    "exampleSentenceEn": "After having gone to the cinema, I had dinner",
+                    "form": "essere andato/a",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express actions that were completed before another action. Often used after modal verbs in the past.",
+            "tenseId": "infinito_passato",
+            "tenseName": "Infinito Passato",
+            "tenseNameEn": "Past Infinitive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Una persona andante",
+                    "exampleSentenceEn": "A walking person",
+                    "form": "andante",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Il treno andante",
+                    "exampleSentenceEn": "The going train",
+                    "form": "andante",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "La macchina andante",
+                    "exampleSentenceEn": "The going car",
+                    "form": "andante",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective or in progressive constructions. In modern Italian, it's mainly used as an adjective.",
+            "tenseId": "participio_presente",
+            "tenseName": "Participio Presente",
+            "tenseNameEn": "Present Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Sono andato a scuola",
+                    "exampleSentenceEn": "I have gone to school",
+                    "form": "andato/a",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "È andata a casa",
+                    "exampleSentenceEn": "She has gone home",
+                    "form": "andato/a",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Sono andati al cinema",
+                    "exampleSentenceEn": "They have gone to the cinema",
+                    "form": "andati/e",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to form compound tenses and as an adjective. Must agree in gender and number with the subject.",
+            "tenseId": "participio_passato",
+            "tenseName": "Participio Passato",
+            "tenseNameEn": "Past Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Sto andando a scuola",
+                    "exampleSentenceEn": "I am going to school",
+                    "form": "andando",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Stai andando a casa",
+                    "exampleSentenceEn": "You are going home",
+                    "form": "andando",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Sta andando al cinema",
+                    "exampleSentenceEn": "He is going to the cinema",
+                    "form": "andando",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express ongoing actions, often with 'stare' to form the present continuous tense.",
+            "tenseId": "gerundio_presente",
+            "tenseName": "Gerundio Presente",
+            "tenseNameEn": "Present Gerund"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Essendo andato a scuola, ho studiato",
+                    "exampleSentenceEn": "Having gone to school, I studied",
+                    "form": "essendo andato/a",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Essendo andata a casa, ha riposato",
+                    "exampleSentenceEn": "Having gone home, she rested",
+                    "form": "essendo andato/a",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Essendo andati al cinema, hanno cenato",
+                    "exampleSentenceEn": "Having gone to the cinema, they had dinner",
+                    "form": "essendo andati/e",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express actions that were completed before another action. Rarely used in modern Italian.",
+            "tenseId": "gerundio_passato",
+            "tenseName": "Gerundio Passato",
+            "tenseNameEn": "Past Gerund"
+        }
+    ]
+}

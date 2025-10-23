@@ -1,0 +1,387 @@
+{
+    "category": "essential",
+    "infinitive": "sagen",
+    "infinitiveEn": "to say",
+    "language": "de",
+    "languageName": "German",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich sage die Wahrheit",
+                    "exampleSentenceEn": "I tell the truth",
+                    "form": "sage",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du sagst immer das Richtige",
+                    "exampleSentenceEn": "You always say the right thing",
+                    "form": "sagst",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er sagt hallo",
+                    "exampleSentenceEn": "He says hello",
+                    "form": "sagt",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir sagen danke",
+                    "exampleSentenceEn": "We say thank you",
+                    "form": "sagen",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr sagt bitte",
+                    "exampleSentenceEn": "You say please",
+                    "form": "sagt",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie sagen auf Wiedersehen",
+                    "exampleSentenceEn": "They say goodbye",
+                    "form": "sagen",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in German.",
+            "tenseId": "praesens",
+            "tenseName": "Präsens",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich sagte die Wahrheit",
+                    "exampleSentenceEn": "I told the truth",
+                    "form": "sagte",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du sagtest immer das Richtige",
+                    "exampleSentenceEn": "You always told the right thing",
+                    "form": "sagtest",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er sagte hallo",
+                    "exampleSentenceEn": "He said hello",
+                    "form": "sagte",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir sagten danke",
+                    "exampleSentenceEn": "We said thank you",
+                    "form": "sagten",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr sagtet bitte",
+                    "exampleSentenceEn": "You said please",
+                    "form": "sagtet",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie sagten auf Wiedersehen",
+                    "exampleSentenceEn": "They said goodbye",
+                    "form": "sagten",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used primarily in written German and formal speech to describe completed actions in the past. Also used in storytelling and narratives.",
+            "tenseId": "praeteritum",
+            "tenseName": "Präteritum",
+            "tenseNameEn": "Simple Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich werde die Wahrheit sagen",
+                    "exampleSentenceEn": "I will tell the truth",
+                    "form": "werde sagen",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du wirst das Richtige sagen",
+                    "exampleSentenceEn": "You will say the right thing",
+                    "form": "wirst sagen",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er wird hallo sagen",
+                    "exampleSentenceEn": "He will say hello",
+                    "form": "wird sagen",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir werden danke sagen",
+                    "exampleSentenceEn": "We will say thank you",
+                    "form": "werden sagen",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr werdet bitte sagen",
+                    "exampleSentenceEn": "You will say please",
+                    "form": "werdet sagen",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie werden auf Wiedersehen sagen",
+                    "exampleSentenceEn": "They will say goodbye",
+                    "form": "werden sagen",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'morgen' (tomorrow) or 'nächste Woche' (next week).",
+            "tenseId": "futur_i",
+            "tenseName": "Futur I",
+            "tenseNameEn": "Future I"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Bis morgen werde ich die Wahrheit gesagt haben",
+                    "exampleSentenceEn": "By tomorrow, I will have told the truth",
+                    "form": "werde gesagt haben",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du wirst sicher das Richtige gesagt haben",
+                    "exampleSentenceEn": "You will surely have said the right thing",
+                    "form": "wirst gesagt haben",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er wird wahrscheinlich hallo gesagt haben",
+                    "exampleSentenceEn": "He will probably have said hello",
+                    "form": "wird gesagt haben",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir werden danke gesagt haben",
+                    "exampleSentenceEn": "We will have said thank you",
+                    "form": "werden gesagt haben",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr werdet bitte gesagt haben",
+                    "exampleSentenceEn": "You will have said please",
+                    "form": "werdet gesagt haben",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie werden auf Wiedersehen gesagt haben",
+                    "exampleSentenceEn": "They will have said goodbye",
+                    "form": "werden gesagt haben",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express actions that will be completed by a certain point in the future. Often used with time expressions like 'bis morgen' (by tomorrow) or to make assumptions about past events.",
+            "tenseId": "futur_ii",
+            "tenseName": "Futur II",
+            "tenseNameEn": "Future Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich habe die Wahrheit gesagt",
+                    "exampleSentenceEn": "I have told the truth",
+                    "form": "habe gesagt",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du hast das Richtige gesagt",
+                    "exampleSentenceEn": "You have said the right thing",
+                    "form": "hast gesagt",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er hat hallo gesagt",
+                    "exampleSentenceEn": "He has said hello",
+                    "form": "hat gesagt",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir haben danke gesagt",
+                    "exampleSentenceEn": "We have said thank you",
+                    "form": "haben gesagt",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr habt bitte gesagt",
+                    "exampleSentenceEn": "You have said please",
+                    "form": "habt gesagt",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie haben auf Wiedersehen gesagt",
+                    "exampleSentenceEn": "They have said goodbye",
+                    "form": "haben gesagt",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken German.",
+            "tenseId": "perfekt",
+            "tenseName": "Perfekt",
+            "tenseNameEn": "Present Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich hatte die Wahrheit gesagt, bevor er kam",
+                    "exampleSentenceEn": "I had told the truth before he came",
+                    "form": "hatte gesagt",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du hattest das Richtige gesagt, bevor ich antwortete",
+                    "exampleSentenceEn": "You had said the right thing before I answered",
+                    "form": "hattest gesagt",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er hatte hallo gesagt, bevor er ging",
+                    "exampleSentenceEn": "He had said hello before he left",
+                    "form": "hatte gesagt",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir hatten danke gesagt, bevor wir gingen",
+                    "exampleSentenceEn": "We had said thank you before we left",
+                    "form": "hatten gesagt",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr hattet bitte gesagt, bevor ihr aufhörtet",
+                    "exampleSentenceEn": "You had said please before you stopped",
+                    "form": "hattet gesagt",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie hatten auf Wiedersehen gesagt, bevor sie gingen",
+                    "exampleSentenceEn": "They had said goodbye before they left",
+                    "form": "hatten gesagt",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+            "tenseId": "plusquamperfekt",
+            "tenseName": "Plusquamperfekt",
+            "tenseNameEn": "Pluperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Er sagt, er sage die Wahrheit",
+                    "exampleSentenceEn": "He says he tells the truth",
+                    "form": "sage",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Er sagt, du sagest das Richtige",
+                    "exampleSentenceEn": "He says you tell the right thing",
+                    "form": "sagest",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er sagt, sie sage hallo",
+                    "exampleSentenceEn": "He says she says hello",
+                    "form": "sage",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Er sagt, wir sagen danke",
+                    "exampleSentenceEn": "He says we say thank you",
+                    "form": "sagen",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Er sagt, ihr saget bitte",
+                    "exampleSentenceEn": "He says you say please",
+                    "form": "saget",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Er sagt, sie sagen auf Wiedersehen",
+                    "exampleSentenceEn": "He says they say goodbye",
+                    "form": "sagen",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used primarily in indirect speech and formal writing to report what someone else has said. Also used in certain fixed expressions and formal contexts.",
+            "tenseId": "konjunktiv_i",
+            "tenseName": "Konjunktiv I",
+            "tenseNameEn": "Subjunctive I"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich sagte gerne die Wahrheit",
+                    "exampleSentenceEn": "I would gladly tell the truth",
+                    "form": "sagte",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du sagtest das Richtige",
+                    "exampleSentenceEn": "You would say the right thing",
+                    "form": "sagtest",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Sie sagte hallo",
+                    "exampleSentenceEn": "She would say hello",
+                    "form": "sagte",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir sagten danke",
+                    "exampleSentenceEn": "We would say thank you",
+                    "form": "sagten",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr sagtet bitte",
+                    "exampleSentenceEn": "You would say please",
+                    "form": "sagtet",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie sagten auf Wiedersehen",
+                    "exampleSentenceEn": "They would say goodbye",
+                    "form": "sagten",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'wenn' (if) clauses.",
+            "tenseId": "konjunktiv_ii",
+            "tenseName": "Konjunktiv II",
+            "tenseNameEn": "Subjunctive II"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Sag bitte die Wahrheit!",
+                    "exampleSentenceEn": "Please tell the truth!",
+                    "form": "sag",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Sagt hallo!",
+                    "exampleSentenceEn": "Say hello!",
+                    "form": "sagt",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sagen Sie bitte danke!",
+                    "exampleSentenceEn": "Please say thank you!",
+                    "form": "sagen Sie",
+                    "pronoun": "Sie"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (du, ihr) and formal address (Sie). The subject pronoun is usually omitted.",
+            "tenseId": "imperativ",
+            "tenseName": "Imperativ",
+            "tenseNameEn": "Imperative"
+        }
+    ]
+}

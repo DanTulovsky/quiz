@@ -14,7 +14,7 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 )
 
-//go:embed data/verb-conjugations/*.json
+//go:embed data/verb-conjugations
 var verbConjugationFS embed.FS
 
 // VerbConjugationHandler handles verb conjugation related HTTP requests
@@ -38,6 +38,8 @@ type VerbConjugationData struct {
 
 // VerbConjugation represents a single verb with its conjugations across all tenses
 type VerbConjugation struct {
+	Language     string  `json:"language"`
+	LanguageName string  `json:"languageName"`
 	Infinitive   string  `json:"infinitive"`
 	InfinitiveEn string  `json:"infinitiveEn"`
 	Category     string  `json:"category"`
@@ -104,30 +106,70 @@ func (h *VerbConjugationHandler) GetVerbConjugations(c *gin.Context) {
 
 	span.SetAttributes(attribute.String("language", languageCode))
 
-	// Read the language-specific JSON file
-	filename := fmt.Sprintf("data/verb-conjugations/verb-conjugations-%s.json", languageCode)
-	data, err := verbConjugationFS.ReadFile(filename)
+	// Read all verb files in the language directory
+	languageDir := fmt.Sprintf("data/verb-conjugations/%s", languageCode)
+	entries, err := verbConjugationFS.ReadDir(languageDir)
 	if err != nil {
-		// Check if it's a file not found error
+		// Check if it's a directory not found error
 		if strings.Contains(err.Error(), "file does not exist") || strings.Contains(err.Error(), "no such file") || strings.Contains(err.Error(), "not found") {
 			HandleAppError(c, contextutils.ErrRecordNotFound)
 			return
 		}
-		h.logger.Error(c.Request.Context(), "Failed to read verb conjugations", err, map[string]interface{}{
-			"language": languageCode,
-			"filename": filename,
+		h.logger.Error(c.Request.Context(), "Failed to read verb conjugation directory", err, map[string]interface{}{
+			"language":  languageCode,
+			"directory": languageDir,
 		})
-		HandleAppError(c, contextutils.WrapError(err, "failed to read verb conjugations"))
+		HandleAppError(c, contextutils.WrapError(err, "failed to read verb conjugation directory"))
 		return
 	}
 
-	var verbData VerbConjugationData
-	if err := json.Unmarshal(data, &verbData); err != nil {
-		h.logger.Error(c.Request.Context(), "Failed to parse verb conjugations", err, map[string]interface{}{
-			"language": languageCode,
-		})
-		HandleAppError(c, contextutils.WrapError(err, "failed to parse verb conjugations"))
+	var verbs []VerbConjugation
+	var languageName string
+	var language string
+
+	// Read each verb file
+	for _, entry := range entries {
+		if !entry.IsDir() && strings.HasSuffix(entry.Name(), ".json") {
+			filename := fmt.Sprintf("%s/%s", languageDir, entry.Name())
+			data, err := verbConjugationFS.ReadFile(filename)
+			if err != nil {
+				h.logger.Error(c.Request.Context(), "Failed to read verb file", err, map[string]interface{}{
+					"language": languageCode,
+					"filename": filename,
+				})
+				HandleAppError(c, contextutils.WrapError(err, "failed to read verb file"))
+				return
+			}
+
+			var verb VerbConjugation
+			if err := json.Unmarshal(data, &verb); err != nil {
+				h.logger.Error(c.Request.Context(), "Failed to parse verb file", err, map[string]interface{}{
+					"language": languageCode,
+					"filename": filename,
+				})
+				HandleAppError(c, contextutils.WrapError(err, "failed to parse verb file"))
+				return
+			}
+
+			// Set language metadata from first verb (all verbs in a directory should have the same language)
+			if languageName == "" {
+				languageName = verb.LanguageName
+				language = verb.Language
+			}
+
+			verbs = append(verbs, verb)
+		}
+	}
+
+	if len(verbs) == 0 {
+		HandleAppError(c, contextutils.ErrRecordNotFound)
 		return
+	}
+
+	verbData := VerbConjugationData{
+		Language:     language,
+		LanguageName: languageName,
+		Verbs:        verbs,
 	}
 
 	c.JSON(http.StatusOK, verbData)
@@ -149,8 +191,8 @@ func (h *VerbConjugationHandler) GetVerbConjugation(c *gin.Context) {
 	span.SetAttributes(attribute.String("language", languageCode))
 	span.SetAttributes(attribute.String("verb", verbInfinitive))
 
-	// Read the language-specific JSON file
-	filename := fmt.Sprintf("data/verb-conjugations/verb-conjugations-%s.json", languageCode)
+	// Read the specific verb file
+	filename := fmt.Sprintf("data/verb-conjugations/%s/%s.json", languageCode, verbInfinitive)
 	data, err := verbConjugationFS.ReadFile(filename)
 	if err != nil {
 		// Check if it's a file not found error
@@ -158,32 +200,26 @@ func (h *VerbConjugationHandler) GetVerbConjugation(c *gin.Context) {
 			HandleAppError(c, contextutils.ErrRecordNotFound)
 			return
 		}
-		h.logger.Error(c.Request.Context(), "Failed to read verb conjugations", err, map[string]interface{}{
+		h.logger.Error(c.Request.Context(), "Failed to read verb file", err, map[string]interface{}{
 			"language": languageCode,
+			"verb":     verbInfinitive,
 			"filename": filename,
 		})
-		HandleAppError(c, contextutils.WrapError(err, "failed to read verb conjugations"))
+		HandleAppError(c, contextutils.WrapError(err, "failed to read verb file"))
 		return
 	}
 
-	var verbData VerbConjugationData
-	if err := json.Unmarshal(data, &verbData); err != nil {
-		h.logger.Error(c.Request.Context(), "Failed to parse verb conjugations", err, map[string]interface{}{
+	var verb VerbConjugation
+	if err := json.Unmarshal(data, &verb); err != nil {
+		h.logger.Error(c.Request.Context(), "Failed to parse verb file", err, map[string]interface{}{
 			"language": languageCode,
+			"verb":     verbInfinitive,
 		})
-		HandleAppError(c, contextutils.WrapError(err, "failed to parse verb conjugations"))
+		HandleAppError(c, contextutils.WrapError(err, "failed to parse verb file"))
 		return
 	}
 
-	// Find the specific verb
-	for _, verb := range verbData.Verbs {
-		if strings.EqualFold(verb.Infinitive, verbInfinitive) {
-			c.JSON(http.StatusOK, verb)
-			return
-		}
-	}
-
-	HandleAppError(c, contextutils.ErrRecordNotFound)
+	c.JSON(http.StatusOK, verb)
 }
 
 // GetAvailableLanguages returns the list of available languages for verb conjugations
@@ -191,7 +227,7 @@ func (h *VerbConjugationHandler) GetAvailableLanguages(c *gin.Context) {
 	_, span := observability.TraceHandlerFunction(c.Request.Context(), "get_available_languages")
 	defer observability.FinishSpan(span, nil)
 
-	// Read all files in the verb-conjugations directory
+	// Read all entries in the verb-conjugations directory
 	entries, err := verbConjugationFS.ReadDir("data/verb-conjugations")
 	if err != nil {
 		h.logger.Error(c.Request.Context(), "Failed to read verb conjugation directory", err)
@@ -201,11 +237,9 @@ func (h *VerbConjugationHandler) GetAvailableLanguages(c *gin.Context) {
 
 	var languages []string
 	for _, entry := range entries {
-		if !entry.IsDir() && strings.HasPrefix(entry.Name(), "verb-conjugations-") && strings.HasSuffix(entry.Name(), ".json") {
-			// Extract language code from filename like "verb-conjugations-it.json"
-			languageCode := strings.TrimPrefix(entry.Name(), "verb-conjugations-")
-			languageCode = strings.TrimSuffix(languageCode, ".json")
-			languages = append(languages, languageCode)
+		// Only include directories (language folders), skip files like info.json
+		if entry.IsDir() {
+			languages = append(languages, entry.Name())
 		}
 	}
 

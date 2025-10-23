@@ -1,0 +1,607 @@
+{
+    "category": "essential",
+    "infinitive": "pouvoir",
+    "infinitiveEn": "can",
+    "language": "fr",
+    "languageName": "French",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Je peux nager",
+                    "exampleSentenceEn": "I can swim",
+                    "form": "peux",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu peux chanter",
+                    "exampleSentenceEn": "You can sing",
+                    "form": "peux",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il peut danser",
+                    "exampleSentenceEn": "He can dance",
+                    "form": "peut",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous pouvons aider",
+                    "exampleSentenceEn": "We can help",
+                    "form": "pouvons",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous pouvez venir",
+                    "exampleSentenceEn": "You can come",
+                    "form": "pouvez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils peuvent jouer",
+                    "exampleSentenceEn": "They can play",
+                    "form": "peuvent",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in French.",
+            "tenseId": "present",
+            "tenseName": "Présent",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Je pouvais nager",
+                    "exampleSentenceEn": "I could swim",
+                    "form": "pouvais",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu pouvais chanter",
+                    "exampleSentenceEn": "You could sing",
+                    "form": "pouvais",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il pouvait danser",
+                    "exampleSentenceEn": "He could dance",
+                    "form": "pouvait",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous pouvions aider",
+                    "exampleSentenceEn": "We could help",
+                    "form": "pouvions",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous pouviez venir",
+                    "exampleSentenceEn": "You could come",
+                    "form": "pouviez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils pouvaient jouer",
+                    "exampleSentenceEn": "They could play",
+                    "form": "pouvaient",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to describe ongoing, repeated, or habitual actions in the past. Also used for background information in storytelling.",
+            "tenseId": "imparfait",
+            "tenseName": "Imparfait",
+            "tenseNameEn": "Imperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Je pourrai nager demain",
+                    "exampleSentenceEn": "I will be able to swim tomorrow",
+                    "form": "pourrai",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu pourras chanter",
+                    "exampleSentenceEn": "You will be able to sing",
+                    "form": "pourras",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il pourra danser",
+                    "exampleSentenceEn": "He will be able to dance",
+                    "form": "pourra",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous pourrons aider",
+                    "exampleSentenceEn": "We will be able to help",
+                    "form": "pourrons",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous pourrez venir",
+                    "exampleSentenceEn": "You will be able to come",
+                    "form": "pourrez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils pourront jouer",
+                    "exampleSentenceEn": "They will be able to play",
+                    "form": "pourront",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'demain' (tomorrow) or 'la semaine prochaine' (next week).",
+            "tenseId": "futur",
+            "tenseName": "Futur Simple",
+            "tenseNameEn": "Simple Future"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'ai pu nager",
+                    "exampleSentenceEn": "I have been able to swim",
+                    "form": "ai pu",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu as pu chanter",
+                    "exampleSentenceEn": "You have been able to sing",
+                    "form": "as pu",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il a pu danser",
+                    "exampleSentenceEn": "He has been able to dance",
+                    "form": "a pu",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous avons pu aider",
+                    "exampleSentenceEn": "We have been able to help",
+                    "form": "avons pu",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous avez pu venir",
+                    "exampleSentenceEn": "You have been able to come",
+                    "form": "avez pu",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils ont pu jouer",
+                    "exampleSentenceEn": "They have been able to play",
+                    "form": "ont pu",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken French.",
+            "tenseId": "passe_compose",
+            "tenseName": "Passé Composé",
+            "tenseNameEn": "Present Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Je pus nager",
+                    "exampleSentenceEn": "I could swim",
+                    "form": "pus",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu pus chanter",
+                    "exampleSentenceEn": "You could sing",
+                    "form": "pus",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il put danser",
+                    "exampleSentenceEn": "He could dance",
+                    "form": "put",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous pûmes aider",
+                    "exampleSentenceEn": "We could help",
+                    "form": "pûmes",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous pûtes venir",
+                    "exampleSentenceEn": "You could come",
+                    "form": "pûtes",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils purent jouer",
+                    "exampleSentenceEn": "They could play",
+                    "form": "purent",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used primarily in formal and literary French to narrate completed past events. Rarely used in spoken French.",
+            "tenseId": "passe_simple",
+            "tenseName": "Passé Simple",
+            "tenseNameEn": "Simple Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'avais pu nager avant qu'il pleuve",
+                    "exampleSentenceEn": "I had been able to swim before it rained",
+                    "form": "avais pu",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu avais pu chanter avant que je vienne",
+                    "exampleSentenceEn": "You had been able to sing before I came",
+                    "form": "avais pu",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il avait pu danser avant qu'il pleuve",
+                    "exampleSentenceEn": "He had been able to dance before it rained",
+                    "form": "avait pu",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous avions pu aider avant qu'il fasse nuit",
+                    "exampleSentenceEn": "We had been able to help before it got dark",
+                    "form": "avions pu",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous aviez pu venir avant la fermeture",
+                    "exampleSentenceEn": "You had been able to come before closing",
+                    "form": "aviez pu",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils avaient pu jouer avant le spectacle",
+                    "exampleSentenceEn": "They had been able to play before the show",
+                    "form": "avaient pu",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+            "tenseId": "plus_que_parfait",
+            "tenseName": "Plus-que-parfait",
+            "tenseNameEn": "Pluperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'aurai pu nager d'ici demain",
+                    "exampleSentenceEn": "I will have been able to swim by tomorrow",
+                    "form": "aurai pu",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu auras pu chanter",
+                    "exampleSentenceEn": "You will have been able to sing",
+                    "form": "auras pu",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il aura pu danser",
+                    "exampleSentenceEn": "He will have been able to dance",
+                    "form": "aura pu",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous aurons pu aider",
+                    "exampleSentenceEn": "We will have been able to help",
+                    "form": "aurons pu",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous aurez pu venir",
+                    "exampleSentenceEn": "You will have been able to come",
+                    "form": "aurez pu",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils auront pu jouer",
+                    "exampleSentenceEn": "They will have been able to play",
+                    "form": "auront pu",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express actions that will be completed before another future action. Often used with time expressions like 'd'ici demain' (by tomorrow).",
+            "tenseId": "futur_anterieur",
+            "tenseName": "Futur Antérieur",
+            "tenseNameEn": "Future Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Je pourrais nager si j'avais le temps",
+                    "exampleSentenceEn": "I could swim if I had time",
+                    "form": "pourrais",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu pourrais chanter",
+                    "exampleSentenceEn": "You could sing",
+                    "form": "pourrais",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il pourrait danser",
+                    "exampleSentenceEn": "He could dance",
+                    "form": "pourrait",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous pourrions aider",
+                    "exampleSentenceEn": "We could help",
+                    "form": "pourrions",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous pourriez venir",
+                    "exampleSentenceEn": "You could come",
+                    "form": "pourriez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils pourraient jouer",
+                    "exampleSentenceEn": "They could play",
+                    "form": "pourraient",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'si' (if) clauses.",
+            "tenseId": "conditionnel_present",
+            "tenseName": "Conditionnel Présent",
+            "tenseNameEn": "Present Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'aurais pu nager si j'avais pu",
+                    "exampleSentenceEn": "I would have been able to swim if I could have",
+                    "form": "aurais pu",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu aurais pu chanter",
+                    "exampleSentenceEn": "You would have been able to sing",
+                    "form": "aurais pu",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il aurait pu danser",
+                    "exampleSentenceEn": "He would have been able to dance",
+                    "form": "aurait pu",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous aurions pu aider",
+                    "exampleSentenceEn": "We would have been able to help",
+                    "form": "aurions pu",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous auriez pu venir",
+                    "exampleSentenceEn": "You would have been able to come",
+                    "form": "auriez pu",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils auraient pu jouer",
+                    "exampleSentenceEn": "They would have been able to play",
+                    "form": "auraient pu",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express hypothetical past actions or regrets about things that didn't happen. Often used with 'si' (if) clauses referring to the past.",
+            "tenseId": "conditionnel_passe",
+            "tenseName": "Conditionnel Passé",
+            "tenseNameEn": "Past Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Il faut que je puisse nager",
+                    "exampleSentenceEn": "I must be able to swim",
+                    "form": "puisse",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Je veux que tu puisses chanter",
+                    "exampleSentenceEn": "I want you to be able to sing",
+                    "form": "puisses",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il faut qu'il puisse danser",
+                    "exampleSentenceEn": "He must be able to dance",
+                    "form": "puisse",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Il faut que nous puissions aider",
+                    "exampleSentenceEn": "We must be able to help",
+                    "form": "puissions",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Il faut que vous puissiez venir",
+                    "exampleSentenceEn": "You must be able to come",
+                    "form": "puissiez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Il faut qu'ils puissent jouer",
+                    "exampleSentenceEn": "They must be able to play",
+                    "form": "puissent",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used in dependent clauses after certain expressions of opinion, doubt, emotion, or necessity. Often used after 'il faut que', 'je veux que', etc.",
+            "tenseId": "subjonctif_present",
+            "tenseName": "Subjonctif Présent",
+            "tenseNameEn": "Present Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (tu, nous, vous). The subject pronoun is omitted.",
+            "tenseId": "imperatif",
+            "tenseName": "Impératif",
+            "tenseNameEn": "Imperative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Il fallait que je pusse nager",
+                    "exampleSentenceEn": "I had to be able to swim",
+                    "form": "pusse",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Je voulais que tu pusses chanter",
+                    "exampleSentenceEn": "I wanted you to be able to sing",
+                    "form": "pusses",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il fallait qu'il pût danser",
+                    "exampleSentenceEn": "He had to be able to dance",
+                    "form": "pût",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Il fallait que nous pussions aider",
+                    "exampleSentenceEn": "We had to be able to help",
+                    "form": "pussions",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Il fallait que vous pussiez venir",
+                    "exampleSentenceEn": "You had to be able to come",
+                    "form": "pussiez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Il fallait qu'ils pussent jouer",
+                    "exampleSentenceEn": "They had to be able to play",
+                    "form": "pussent",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used in formal and literary French after the same triggers as present subjunctive, but referring to past events. Rarely used in modern spoken French.",
+            "tenseId": "subjonctif_imparfait",
+            "tenseName": "Subjonctif Imparfait",
+            "tenseNameEn": "Imperfect Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Il faut que j'aie pu nager",
+                    "exampleSentenceEn": "I must have been able to swim",
+                    "form": "aie pu",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Je veux que tu aies pu chanter",
+                    "exampleSentenceEn": "I want you to have been able to sing",
+                    "form": "aies pu",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il faut qu'il ait pu danser",
+                    "exampleSentenceEn": "He must have been able to dance",
+                    "form": "ait pu",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Il faut que nous ayons pu aider",
+                    "exampleSentenceEn": "We must have been able to help",
+                    "form": "ayons pu",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Il faut que vous ayez pu venir",
+                    "exampleSentenceEn": "You must have been able to come",
+                    "form": "ayez pu",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Il faut qu'ils aient pu jouer",
+                    "exampleSentenceEn": "They must have been able to play",
+                    "form": "aient pu",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used in dependent clauses after expressions of doubt, emotion, or necessity when referring to a completed action in the past.",
+            "tenseId": "subjonctif_passe",
+            "tenseName": "Subjonctif Passé",
+            "tenseNameEn": "Past Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Dès que j'eus pu nager, il pleuvit",
+                    "exampleSentenceEn": "As soon as I had been able to swim, it rained",
+                    "form": "eus pu",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Dès que tu eus pu chanter, je vins",
+                    "exampleSentenceEn": "As soon as you had been able to sing, I came",
+                    "form": "eus pu",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Dès qu'il eut pu danser, nous arrivâmes",
+                    "exampleSentenceEn": "As soon as he had been able to dance, we arrived",
+                    "form": "eut pu",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Dès que nous eûmes pu aider, il fit nuit",
+                    "exampleSentenceEn": "As soon as we had been able to help, it got dark",
+                    "form": "eûmes pu",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Dès que vous eûtes pu venir, la boutique ferma",
+                    "exampleSentenceEn": "As soon as you had been able to come, the store closed",
+                    "form": "eûtes pu",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Dès qu'ils eurent pu jouer, le spectacle commença",
+                    "exampleSentenceEn": "As soon as they had been able to play, the show began",
+                    "form": "eurent pu",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used in formal and literary French to express an action that was completed immediately before another past action. Rarely used in modern French.",
+            "tenseId": "passe_anterieur",
+            "tenseName": "Passé Antérieur",
+            "tenseNameEn": "Past Anterior"
+        }
+    ]
+}

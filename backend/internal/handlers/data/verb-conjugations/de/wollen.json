@@ -1,0 +1,387 @@
+{
+    "category": "essential",
+    "infinitive": "wollen",
+    "infinitiveEn": "to want",
+    "language": "de",
+    "languageName": "German",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich will lernen",
+                    "exampleSentenceEn": "I want to learn",
+                    "form": "will",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du willst spielen",
+                    "exampleSentenceEn": "You want to play",
+                    "form": "willst",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er will arbeiten",
+                    "exampleSentenceEn": "He wants to work",
+                    "form": "will",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir wollen reisen",
+                    "exampleSentenceEn": "We want to travel",
+                    "form": "wollen",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr wollt essen",
+                    "exampleSentenceEn": "You want to eat",
+                    "form": "wollt",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie wollen helfen",
+                    "exampleSentenceEn": "They want to help",
+                    "form": "wollen",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in German.",
+            "tenseId": "praesens",
+            "tenseName": "Präsens",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich wollte lernen",
+                    "exampleSentenceEn": "I wanted to learn",
+                    "form": "wollte",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du wolltest spielen",
+                    "exampleSentenceEn": "You wanted to play",
+                    "form": "wolltest",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er wollte arbeiten",
+                    "exampleSentenceEn": "He wanted to work",
+                    "form": "wollte",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir wollten reisen",
+                    "exampleSentenceEn": "We wanted to travel",
+                    "form": "wollten",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr wolltet essen",
+                    "exampleSentenceEn": "You wanted to eat",
+                    "form": "wolltet",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie wollten helfen",
+                    "exampleSentenceEn": "They wanted to help",
+                    "form": "wollten",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used primarily in written German and formal speech to describe completed actions in the past. Also used in storytelling and narratives.",
+            "tenseId": "praeteritum",
+            "tenseName": "Präteritum",
+            "tenseNameEn": "Simple Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich werde lernen wollen",
+                    "exampleSentenceEn": "I will want to learn",
+                    "form": "werde wollen",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du wirst spielen wollen",
+                    "exampleSentenceEn": "You will want to play",
+                    "form": "wirst wollen",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er wird arbeiten wollen",
+                    "exampleSentenceEn": "He will want to work",
+                    "form": "wird wollen",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir werden reisen wollen",
+                    "exampleSentenceEn": "We will want to travel",
+                    "form": "werden wollen",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr werdet essen wollen",
+                    "exampleSentenceEn": "You will want to eat",
+                    "form": "werdet wollen",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie werden helfen wollen",
+                    "exampleSentenceEn": "They will want to help",
+                    "form": "werden wollen",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'morgen' (tomorrow) or 'nächste Woche' (next week).",
+            "tenseId": "futur_i",
+            "tenseName": "Futur I",
+            "tenseNameEn": "Future I"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Bis morgen werde ich lernen gewollt haben",
+                    "exampleSentenceEn": "By tomorrow, I will have wanted to learn",
+                    "form": "werde gewollt haben",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du wirst sicher spielen gewollt haben",
+                    "exampleSentenceEn": "You will surely have wanted to play",
+                    "form": "wirst gewollt haben",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er wird wahrscheinlich arbeiten gewollt haben",
+                    "exampleSentenceEn": "He will probably have wanted to work",
+                    "form": "wird gewollt haben",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir werden reisen gewollt haben",
+                    "exampleSentenceEn": "We will have wanted to travel",
+                    "form": "werden gewollt haben",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr werdet essen gewollt haben",
+                    "exampleSentenceEn": "You will have wanted to eat",
+                    "form": "werdet gewollt haben",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie werden helfen gewollt haben",
+                    "exampleSentenceEn": "They will have wanted to help",
+                    "form": "werden gewollt haben",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express actions that will be completed by a certain point in the future. Often used with time expressions like 'bis morgen' (by tomorrow) or to make assumptions about past events.",
+            "tenseId": "futur_ii",
+            "tenseName": "Futur II",
+            "tenseNameEn": "Future Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich habe lernen gewollt",
+                    "exampleSentenceEn": "I have wanted to learn",
+                    "form": "habe gewollt",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du hast spielen gewollt",
+                    "exampleSentenceEn": "You have wanted to play",
+                    "form": "hast gewollt",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er hat arbeiten gewollt",
+                    "exampleSentenceEn": "He has wanted to work",
+                    "form": "hat gewollt",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir haben reisen gewollt",
+                    "exampleSentenceEn": "We have wanted to travel",
+                    "form": "haben gewollt",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr habt essen gewollt",
+                    "exampleSentenceEn": "You have wanted to eat",
+                    "form": "habt gewollt",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie haben helfen gewollt",
+                    "exampleSentenceEn": "They have wanted to help",
+                    "form": "haben gewollt",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken German.",
+            "tenseId": "perfekt",
+            "tenseName": "Perfekt",
+            "tenseNameEn": "Present Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich hatte lernen gewollt, bevor ich aufhörte",
+                    "exampleSentenceEn": "I had wanted to learn before I stopped",
+                    "form": "hatte gewollt",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du hattest spielen gewollt, bevor du gingst",
+                    "exampleSentenceEn": "You had wanted to play before you left",
+                    "form": "hattest gewollt",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er hatte arbeiten gewollt, bevor er krank wurde",
+                    "exampleSentenceEn": "He had wanted to work before he got sick",
+                    "form": "hatte gewollt",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir hatten reisen gewollt, bevor wir aufhörten",
+                    "exampleSentenceEn": "We had wanted to travel before we stopped",
+                    "form": "hatten gewollt",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr hattet essen gewollt, bevor ihr gingt",
+                    "exampleSentenceEn": "You had wanted to eat before you left",
+                    "form": "hattet gewollt",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie hatten helfen gewollt, bevor sie gingen",
+                    "exampleSentenceEn": "They had wanted to help before they left",
+                    "form": "hatten gewollt",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+            "tenseId": "plusquamperfekt",
+            "tenseName": "Plusquamperfekt",
+            "tenseNameEn": "Pluperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Er sagt, er wolle lernen",
+                    "exampleSentenceEn": "He says he wants to learn",
+                    "form": "wolle",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Er sagt, du wollest spielen",
+                    "exampleSentenceEn": "He says you want to play",
+                    "form": "wollest",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er sagt, sie wolle arbeiten",
+                    "exampleSentenceEn": "He says she wants to work",
+                    "form": "wolle",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Er sagt, wir wollen reisen",
+                    "exampleSentenceEn": "He says we want to travel",
+                    "form": "wollen",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Er sagt, ihr wollet essen",
+                    "exampleSentenceEn": "He says you want to eat",
+                    "form": "wollet",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Er sagt, sie wollen helfen",
+                    "exampleSentenceEn": "He says they want to help",
+                    "form": "wollen",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used primarily in indirect speech and formal writing to report what someone else has said. Also used in certain fixed expressions and formal contexts.",
+            "tenseId": "konjunktiv_i",
+            "tenseName": "Konjunktiv I",
+            "tenseNameEn": "Subjunctive I"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich wollte gerne lernen",
+                    "exampleSentenceEn": "I would gladly want to learn",
+                    "form": "wollte",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du wolltest spielen",
+                    "exampleSentenceEn": "You would want to play",
+                    "form": "wolltest",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Sie wollte arbeiten",
+                    "exampleSentenceEn": "She would want to work",
+                    "form": "wollte",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir wollten reisen",
+                    "exampleSentenceEn": "We would want to travel",
+                    "form": "wollten",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr wolltet essen",
+                    "exampleSentenceEn": "You would want to eat",
+                    "form": "wolltet",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie wollten helfen",
+                    "exampleSentenceEn": "They would want to help",
+                    "form": "wollten",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'wenn' (if) clauses.",
+            "tenseId": "konjunktiv_ii",
+            "tenseName": "Konjunktiv II",
+            "tenseNameEn": "Subjunctive II"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (du, ihr) and formal address (Sie). The subject pronoun is usually omitted.",
+            "tenseId": "imperativ",
+            "tenseName": "Imperativ",
+            "tenseNameEn": "Imperative"
+        }
+    ]
+}

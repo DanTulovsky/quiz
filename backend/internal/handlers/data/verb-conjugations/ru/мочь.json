@@ -1,0 +1,409 @@
+{
+    "category": "essential",
+    "infinitive": "мочь",
+    "infinitiveEn": "to be able to/can",
+    "language": "ru",
+    "languageName": "Russian",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я могу помочь",
+                    "exampleSentenceEn": "I can help",
+                    "form": "могу",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты можешь прийти",
+                    "exampleSentenceEn": "You can come",
+                    "form": "можешь",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он может говорить",
+                    "exampleSentenceEn": "He can speak",
+                    "form": "может",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы можем учиться",
+                    "exampleSentenceEn": "We can study",
+                    "form": "можем",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы можете есть",
+                    "exampleSentenceEn": "You can eat",
+                    "form": "можете",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они могут танцевать",
+                    "exampleSentenceEn": "They can dance",
+                    "form": "могут",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in Russian.",
+            "tenseId": "present",
+            "tenseName": "Настоящее время",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я мог помочь",
+                    "exampleSentenceEn": "I could help",
+                    "form": "мог",
+                    "pronoun": "я (m)"
+                },
+                {
+                    "exampleSentence": "Я могла помочь",
+                    "exampleSentenceEn": "I could help",
+                    "form": "могла",
+                    "pronoun": "я (f)"
+                },
+                {
+                    "exampleSentence": "Ты мог прийти",
+                    "exampleSentenceEn": "You could come",
+                    "form": "мог",
+                    "pronoun": "ты (m)"
+                },
+                {
+                    "exampleSentence": "Ты могла прийти",
+                    "exampleSentenceEn": "You could come",
+                    "form": "могла",
+                    "pronoun": "ты (f)"
+                },
+                {
+                    "exampleSentence": "Он мог говорить",
+                    "exampleSentenceEn": "He could speak",
+                    "form": "мог",
+                    "pronoun": "он"
+                },
+                {
+                    "exampleSentence": "Она могла говорить",
+                    "exampleSentenceEn": "She could speak",
+                    "form": "могла",
+                    "pronoun": "она"
+                },
+                {
+                    "exampleSentence": "Оно могло говорить",
+                    "exampleSentenceEn": "It could speak",
+                    "form": "могло",
+                    "pronoun": "оно"
+                },
+                {
+                    "exampleSentence": "Мы могли учиться",
+                    "exampleSentenceEn": "We could study",
+                    "form": "могли",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы могли есть",
+                    "exampleSentenceEn": "You could eat",
+                    "form": "могли",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они могли танцевать",
+                    "exampleSentenceEn": "They could dance",
+                    "form": "могли",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to describe completed actions in the past. The form changes based on gender and number.",
+            "tenseId": "past",
+            "tenseName": "Прошедшее время",
+            "tenseNameEn": "Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я смогу помочь завтра",
+                    "exampleSentenceEn": "I will be able to help tomorrow",
+                    "form": "смогу",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты сможешь прийти",
+                    "exampleSentenceEn": "You will be able to come",
+                    "form": "сможешь",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он сможет говорить",
+                    "exampleSentenceEn": "He will be able to speak",
+                    "form": "сможет",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы сможем учиться",
+                    "exampleSentenceEn": "We will be able to study",
+                    "form": "сможем",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы сможете есть",
+                    "exampleSentenceEn": "You will be able to eat",
+                    "form": "сможете",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они смогут танцевать",
+                    "exampleSentenceEn": "They will be able to dance",
+                    "form": "смогут",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'завтра' (tomorrow).",
+            "tenseId": "future",
+            "tenseName": "Будущее время",
+            "tenseNameEn": "Future"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (ты, вы).",
+            "tenseId": "imperative",
+            "tenseName": "Повелительное наклонение",
+            "tenseNameEn": "Imperative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я мог бы помочь, если бы имел время",
+                    "exampleSentenceEn": "I could help if I had time",
+                    "form": "мог бы",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты мог бы прийти",
+                    "exampleSentenceEn": "You could come",
+                    "form": "мог бы",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он мог бы говорить",
+                    "exampleSentenceEn": "He could speak",
+                    "form": "мог бы",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы могли бы учиться",
+                    "exampleSentenceEn": "We could study",
+                    "form": "могли бы",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы могли бы есть",
+                    "exampleSentenceEn": "You could eat",
+                    "form": "могли бы",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они могли бы танцевать",
+                    "exampleSentenceEn": "They could dance",
+                    "form": "могли бы",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to express hypothetical situations or actions that would happen under certain conditions. Often used with 'если' (if) clauses.",
+            "tenseId": "conditional",
+            "tenseName": "Условное наклонение",
+            "tenseNameEn": "Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Могущий человек",
+                    "exampleSentenceEn": "An able person",
+                    "form": "могущий",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Могущая женщина",
+                    "exampleSentenceEn": "An able woman",
+                    "form": "могущая",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Могущее животное",
+                    "exampleSentenceEn": "An able animal",
+                    "form": "могущее",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Могущие люди",
+                    "exampleSentenceEn": "Able people",
+                    "form": "могущие",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe someone who is currently performing the action. Must agree in gender, number, and case.",
+            "tenseId": "present_active_participle",
+            "tenseName": "Причастие настоящего времени",
+            "tenseNameEn": "Present Active Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Могший человек",
+                    "exampleSentenceEn": "A person who could",
+                    "form": "могший",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Могшая женщина",
+                    "exampleSentenceEn": "A woman who could",
+                    "form": "могшая",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Могшее животное",
+                    "exampleSentenceEn": "An animal that could",
+                    "form": "могшее",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Могшие люди",
+                    "exampleSentenceEn": "People who could",
+                    "form": "могшие",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe someone who performed the action in the past. Must agree in gender, number, and case.",
+            "tenseId": "past_active_participle",
+            "tenseName": "Причастие прошедшего времени",
+            "tenseNameEn": "Past Active Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe something that is currently being acted upon. Must agree in gender, number, and case.",
+            "tenseId": "present_passive_participle",
+            "tenseName": "Страдательное причастие настоящего времени",
+            "tenseNameEn": "Present Passive Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe something that was acted upon in the past. Must agree in gender, number, and case.",
+            "tenseId": "past_passive_participle",
+            "tenseName": "Страдательное причастие прошедшего времени",
+            "tenseNameEn": "Past Passive Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "The verb 'мочь' does not form a present gerund in modern Russian. An archaic form 'могя' exists but is rarely used in contemporary speech. Modal constructions are preferred instead.",
+            "tenseId": "present_gerund",
+            "tenseName": "Деепричастие настоящего времени",
+            "tenseNameEn": "Present Gerund"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express an action that was completed before the main action. Often used to show sequence of events.",
+            "tenseId": "past_gerund",
+            "tenseName": "Деепричастие прошедшего времени",
+            "tenseNameEn": "Past Gerund"
+        }
+    ]
+}

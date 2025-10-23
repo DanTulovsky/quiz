@@ -1,0 +1,387 @@
+{
+    "category": "essential",
+    "infinitive": "können",
+    "infinitiveEn": "can",
+    "language": "de",
+    "languageName": "German",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich kann Deutsch sprechen",
+                    "exampleSentenceEn": "I can speak German",
+                    "form": "kann",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du kannst gut singen",
+                    "exampleSentenceEn": "You can sing well",
+                    "form": "kannst",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er kann schwimmen",
+                    "exampleSentenceEn": "He can swim",
+                    "form": "kann",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir können tanzen",
+                    "exampleSentenceEn": "We can dance",
+                    "form": "können",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr könnt kochen",
+                    "exampleSentenceEn": "You can cook",
+                    "form": "könnt",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie können helfen",
+                    "exampleSentenceEn": "They can help",
+                    "form": "können",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in German.",
+            "tenseId": "praesens",
+            "tenseName": "Präsens",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich konnte Deutsch sprechen",
+                    "exampleSentenceEn": "I could speak German",
+                    "form": "konnte",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du konntest gut singen",
+                    "exampleSentenceEn": "You could sing well",
+                    "form": "konntest",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er konnte schwimmen",
+                    "exampleSentenceEn": "He could swim",
+                    "form": "konnte",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir konnten tanzen",
+                    "exampleSentenceEn": "We could dance",
+                    "form": "konnten",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr konntet kochen",
+                    "exampleSentenceEn": "You could cook",
+                    "form": "konntet",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie konnten helfen",
+                    "exampleSentenceEn": "They could help",
+                    "form": "konnten",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used primarily in written German and formal speech to describe completed actions in the past. Also used in storytelling and narratives.",
+            "tenseId": "praeteritum",
+            "tenseName": "Präteritum",
+            "tenseNameEn": "Simple Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich werde Deutsch sprechen können",
+                    "exampleSentenceEn": "I will be able to speak German",
+                    "form": "werde können",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du wirst gut singen können",
+                    "exampleSentenceEn": "You will be able to sing well",
+                    "form": "wirst können",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er wird schwimmen können",
+                    "exampleSentenceEn": "He will be able to swim",
+                    "form": "wird können",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir werden tanzen können",
+                    "exampleSentenceEn": "We will be able to dance",
+                    "form": "werden können",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr werdet kochen können",
+                    "exampleSentenceEn": "You will be able to cook",
+                    "form": "werdet können",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie werden helfen können",
+                    "exampleSentenceEn": "They will be able to help",
+                    "form": "werden können",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'morgen' (tomorrow) or 'nächste Woche' (next week).",
+            "tenseId": "futur_i",
+            "tenseName": "Futur I",
+            "tenseNameEn": "Future I"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Bis morgen werde ich Deutsch sprechen gekonnt haben",
+                    "exampleSentenceEn": "By tomorrow, I will have been able to speak German",
+                    "form": "werde gekonnt haben",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du wirst sicher gut singen gekonnt haben",
+                    "exampleSentenceEn": "You will surely have been able to sing well",
+                    "form": "wirst gekonnt haben",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er wird wahrscheinlich schwimmen gekonnt haben",
+                    "exampleSentenceEn": "He will probably have been able to swim",
+                    "form": "wird gekonnt haben",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir werden tanzen gekonnt haben",
+                    "exampleSentenceEn": "We will have been able to dance",
+                    "form": "werden gekonnt haben",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr werdet kochen gekonnt haben",
+                    "exampleSentenceEn": "You will have been able to cook",
+                    "form": "werdet gekonnt haben",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie werden helfen gekonnt haben",
+                    "exampleSentenceEn": "They will have been able to help",
+                    "form": "werden gekonnt haben",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express actions that will be completed by a certain point in the future. Often used with time expressions like 'bis morgen' (by tomorrow) or to make assumptions about past events.",
+            "tenseId": "futur_ii",
+            "tenseName": "Futur II",
+            "tenseNameEn": "Future Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich habe Deutsch sprechen gekonnt",
+                    "exampleSentenceEn": "I have been able to speak German",
+                    "form": "habe gekonnt",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du hast gut singen gekonnt",
+                    "exampleSentenceEn": "You have been able to sing well",
+                    "form": "hast gekonnt",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er hat schwimmen gekonnt",
+                    "exampleSentenceEn": "He has been able to swim",
+                    "form": "hat gekonnt",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir haben tanzen gekonnt",
+                    "exampleSentenceEn": "We have been able to dance",
+                    "form": "haben gekonnt",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr habt kochen gekonnt",
+                    "exampleSentenceEn": "You have been able to cook",
+                    "form": "habt gekonnt",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie haben helfen gekonnt",
+                    "exampleSentenceEn": "They have been able to help",
+                    "form": "haben gekonnt",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken German.",
+            "tenseId": "perfekt",
+            "tenseName": "Perfekt",
+            "tenseNameEn": "Present Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich hatte Deutsch sprechen gekonnt, bevor ich nach Deutschland ging",
+                    "exampleSentenceEn": "I had been able to speak German before I went to Germany",
+                    "form": "hatte gekonnt",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du hattest gut singen gekonnt, bevor du aufhörte",
+                    "exampleSentenceEn": "You had been able to sing well before you stopped",
+                    "form": "hattest gekonnt",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er hatte schwimmen gekonnt, bevor er verletzt wurde",
+                    "exampleSentenceEn": "He had been able to swim before he got injured",
+                    "form": "hatte gekonnt",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir hatten tanzen gekonnt, bevor wir müde wurden",
+                    "exampleSentenceEn": "We had been able to dance before we got tired",
+                    "form": "hatten gekonnt",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr hattet kochen gekonnt, bevor ihr umzogt",
+                    "exampleSentenceEn": "You had been able to cook before you moved",
+                    "form": "hattet gekonnt",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie hatten helfen gekonnt, bevor sie gingen",
+                    "exampleSentenceEn": "They had been able to help before they left",
+                    "form": "hatten gekonnt",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+            "tenseId": "plusquamperfekt",
+            "tenseName": "Plusquamperfekt",
+            "tenseNameEn": "Pluperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Er sagt, er könne Deutsch sprechen",
+                    "exampleSentenceEn": "He says he can speak German",
+                    "form": "könne",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Er sagt, du könnest gut singen",
+                    "exampleSentenceEn": "He says you can sing well",
+                    "form": "könnest",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er sagt, sie könne schwimmen",
+                    "exampleSentenceEn": "He says she can swim",
+                    "form": "könne",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Er sagt, wir können tanzen",
+                    "exampleSentenceEn": "He says we can dance",
+                    "form": "können",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Er sagt, ihr könnet kochen",
+                    "exampleSentenceEn": "He says you can cook",
+                    "form": "könnet",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Er sagt, sie können helfen",
+                    "exampleSentenceEn": "He says they can help",
+                    "form": "können",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used primarily in indirect speech and formal writing to report what someone else has said. Also used in certain fixed expressions and formal contexts.",
+            "tenseId": "konjunktiv_i",
+            "tenseName": "Konjunktiv I",
+            "tenseNameEn": "Subjunctive I"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich könnte Deutsch sprechen",
+                    "exampleSentenceEn": "I could speak German",
+                    "form": "könnte",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du könntest gut singen",
+                    "exampleSentenceEn": "You could sing well",
+                    "form": "könntest",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Sie könnte schwimmen",
+                    "exampleSentenceEn": "She could swim",
+                    "form": "könnte",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir könnten tanzen",
+                    "exampleSentenceEn": "We could dance",
+                    "form": "könnten",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr könntet kochen",
+                    "exampleSentenceEn": "You could cook",
+                    "form": "könntet",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie könnten helfen",
+                    "exampleSentenceEn": "They could help",
+                    "form": "könnten",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'wenn' (if) clauses.",
+            "tenseId": "konjunktiv_ii",
+            "tenseName": "Konjunktiv II",
+            "tenseNameEn": "Subjunctive II"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (du, ihr) and formal address (Sie). The subject pronoun is usually omitted.",
+            "tenseId": "imperativ",
+            "tenseName": "Imperativ",
+            "tenseNameEn": "Imperative"
+        }
+    ]
+}

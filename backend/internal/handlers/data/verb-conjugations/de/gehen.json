@@ -1,0 +1,387 @@
+{
+    "category": "essential",
+    "infinitive": "gehen",
+    "infinitiveEn": "to go",
+    "language": "de",
+    "languageName": "German",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich gehe zur Schule",
+                    "exampleSentenceEn": "I go to school",
+                    "form": "gehe",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du gehst nach Hause",
+                    "exampleSentenceEn": "You go home",
+                    "form": "gehst",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er geht ins Kino",
+                    "exampleSentenceEn": "He goes to the cinema",
+                    "form": "geht",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir gehen spazieren",
+                    "exampleSentenceEn": "We go for a walk",
+                    "form": "gehen",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr geht einkaufen",
+                    "exampleSentenceEn": "You go shopping",
+                    "form": "geht",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie gehen ins Theater",
+                    "exampleSentenceEn": "They go to the theater",
+                    "form": "gehen",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in German.",
+            "tenseId": "praesens",
+            "tenseName": "Präsens",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich ging gestern zur Schule",
+                    "exampleSentenceEn": "I went to school yesterday",
+                    "form": "ging",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du gingst nach Hause",
+                    "exampleSentenceEn": "You went home",
+                    "form": "gingst",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Sie ging ins Kino",
+                    "exampleSentenceEn": "She went to the cinema",
+                    "form": "ging",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir gingen spazieren",
+                    "exampleSentenceEn": "We went for a walk",
+                    "form": "gingen",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr gingt einkaufen",
+                    "exampleSentenceEn": "You went shopping",
+                    "form": "gingt",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie gingen ins Theater",
+                    "exampleSentenceEn": "They went to the theater",
+                    "form": "gingen",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used primarily in written German and formal speech to describe completed actions in the past. Also used in storytelling and narratives.",
+            "tenseId": "praeteritum",
+            "tenseName": "Präteritum",
+            "tenseNameEn": "Simple Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich werde morgen zur Schule gehen",
+                    "exampleSentenceEn": "I will go to school tomorrow",
+                    "form": "werde gehen",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du wirst nach Hause gehen",
+                    "exampleSentenceEn": "You will go home",
+                    "form": "wirst gehen",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Sie wird ins Kino gehen",
+                    "exampleSentenceEn": "She will go to the cinema",
+                    "form": "wird gehen",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir werden spazieren gehen",
+                    "exampleSentenceEn": "We will go for a walk",
+                    "form": "werden gehen",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr werdet einkaufen gehen",
+                    "exampleSentenceEn": "You will go shopping",
+                    "form": "werdet gehen",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie werden ins Theater gehen",
+                    "exampleSentenceEn": "They will go to the theater",
+                    "form": "werden gehen",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'morgen' (tomorrow) or 'nächste Woche' (next week).",
+            "tenseId": "futur_i",
+            "tenseName": "Futur I",
+            "tenseNameEn": "Future I"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Bis morgen werde ich zur Schule gegangen sein",
+                    "exampleSentenceEn": "By tomorrow, I will have gone to school",
+                    "form": "werde gegangen sein",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du wirst sicher nach Hause gegangen sein",
+                    "exampleSentenceEn": "You will surely have gone home",
+                    "form": "wirst gegangen sein",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Sie wird wahrscheinlich ins Kino gegangen sein",
+                    "exampleSentenceEn": "She will probably have gone to the cinema",
+                    "form": "wird gegangen sein",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Bis dahin werden wir spazieren gegangen sein",
+                    "exampleSentenceEn": "By then, we will have gone for a walk",
+                    "form": "werden gegangen sein",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr werdet einkaufen gegangen sein",
+                    "exampleSentenceEn": "You will have gone shopping",
+                    "form": "werdet gegangen sein",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie werden ins Theater gegangen sein",
+                    "exampleSentenceEn": "They will have gone to the theater",
+                    "form": "werden gegangen sein",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express actions that will be completed by a certain point in the future. Often used with time expressions like 'bis morgen' (by tomorrow) or to make assumptions about past events.",
+            "tenseId": "futur_ii",
+            "tenseName": "Futur II",
+            "tenseNameEn": "Future Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich bin zur Schule gegangen",
+                    "exampleSentenceEn": "I have gone to school",
+                    "form": "bin gegangen",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du bist nach Hause gegangen",
+                    "exampleSentenceEn": "You have gone home",
+                    "form": "bist gegangen",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Sie ist ins Kino gegangen",
+                    "exampleSentenceEn": "She has gone to the cinema",
+                    "form": "ist gegangen",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir sind spazieren gegangen",
+                    "exampleSentenceEn": "We have gone for a walk",
+                    "form": "sind gegangen",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr seid einkaufen gegangen",
+                    "exampleSentenceEn": "You have gone shopping",
+                    "form": "seid gegangen",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie sind ins Theater gegangen",
+                    "exampleSentenceEn": "They have gone to the theater",
+                    "form": "sind gegangen",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken German.",
+            "tenseId": "perfekt",
+            "tenseName": "Perfekt",
+            "tenseNameEn": "Present Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Als ich ankam, war ich schon zur Schule gegangen",
+                    "exampleSentenceEn": "When I arrived, I had already gone to school",
+                    "form": "war gegangen",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du warst nach Hause gegangen, bevor ich kam",
+                    "exampleSentenceEn": "You had gone home before I came",
+                    "form": "warst gegangen",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Sie war ins Kino gegangen, als wir anriefen",
+                    "exampleSentenceEn": "She had gone to the cinema when we called",
+                    "form": "war gegangen",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir waren spazieren gegangen, bevor es regnete",
+                    "exampleSentenceEn": "We had gone for a walk before it rained",
+                    "form": "waren gegangen",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr wart einkaufen gegangen, als der Sturm begann",
+                    "exampleSentenceEn": "You had gone shopping when the storm began",
+                    "form": "wart gegangen",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie waren ins Theater gegangen, bevor wir kamen",
+                    "exampleSentenceEn": "They had gone to the theater before we came",
+                    "form": "waren gegangen",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+            "tenseId": "plusquamperfekt",
+            "tenseName": "Plusquamperfekt",
+            "tenseNameEn": "Pluperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Er sagt, er gehe zur Schule",
+                    "exampleSentenceEn": "He says he goes to school",
+                    "form": "gehe",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Er sagt, du gehest nach Hause",
+                    "exampleSentenceEn": "He says you go home",
+                    "form": "gehest",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er sagt, sie gehe ins Kino",
+                    "exampleSentenceEn": "He says she goes to the cinema",
+                    "form": "gehe",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Er sagt, wir gehen spazieren",
+                    "exampleSentenceEn": "He says we go for a walk",
+                    "form": "gehen",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Er sagt, ihr gehet einkaufen",
+                    "exampleSentenceEn": "He says you go shopping",
+                    "form": "gehet",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Er sagt, sie gehen ins Theater",
+                    "exampleSentenceEn": "He says they go to the theater",
+                    "form": "gehen",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used primarily in indirect speech and formal writing to report what someone else has said. Also used in certain fixed expressions and formal contexts.",
+            "tenseId": "konjunktiv_i",
+            "tenseName": "Konjunktiv I",
+            "tenseNameEn": "Subjunctive I"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich ginge gerne zur Schule",
+                    "exampleSentenceEn": "I would gladly go to school",
+                    "form": "ginge",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du gingest nach Hause",
+                    "exampleSentenceEn": "You would go home",
+                    "form": "gingest",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Sie ginge ins Kino",
+                    "exampleSentenceEn": "She would go to the cinema",
+                    "form": "ginge",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir gingen spazieren",
+                    "exampleSentenceEn": "We would go for a walk",
+                    "form": "gingen",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr ginget einkaufen",
+                    "exampleSentenceEn": "You would go shopping",
+                    "form": "ginget",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie gingen ins Theater",
+                    "exampleSentenceEn": "They would go to the theater",
+                    "form": "gingen",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'wenn' (if) clauses.",
+            "tenseId": "konjunktiv_ii",
+            "tenseName": "Konjunktiv II",
+            "tenseNameEn": "Subjunctive II"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Geh bitte zur Schule!",
+                    "exampleSentenceEn": "Please go to school!",
+                    "form": "geh",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Geht nach Hause!",
+                    "exampleSentenceEn": "Go home!",
+                    "form": "geht",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Gehen Sie bitte ins Theater!",
+                    "exampleSentenceEn": "Please go to the theater!",
+                    "form": "gehen Sie",
+                    "pronoun": "Sie"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (du, ihr) and formal address (Sie). The subject pronoun is usually omitted.",
+            "tenseId": "imperativ",
+            "tenseName": "Imperativ",
+            "tenseNameEn": "Imperative"
+        }
+    ]
+}

@@ -1,0 +1,409 @@
+{
+    "category": "essential",
+    "infinitive": "знать",
+    "infinitiveEn": "to know",
+    "language": "ru",
+    "languageName": "Russian",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я знаю ответ",
+                    "exampleSentenceEn": "I know the answer",
+                    "form": "знаю",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты знаешь песню",
+                    "exampleSentenceEn": "You know the song",
+                    "form": "знаешь",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он знает плавать",
+                    "exampleSentenceEn": "He knows how to swim",
+                    "form": "знает",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы знаем танцевать",
+                    "exampleSentenceEn": "We know how to dance",
+                    "form": "знаем",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы знаете готовить",
+                    "exampleSentenceEn": "You know how to cook",
+                    "form": "знаете",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они знают играть",
+                    "exampleSentenceEn": "They know how to play",
+                    "form": "знают",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in Russian.",
+            "tenseId": "present",
+            "tenseName": "Настоящее время",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я знал ответ",
+                    "exampleSentenceEn": "I knew the answer",
+                    "form": "знал",
+                    "pronoun": "я (m)"
+                },
+                {
+                    "exampleSentence": "Я знала ответ",
+                    "exampleSentenceEn": "I knew the answer",
+                    "form": "знала",
+                    "pronoun": "я (f)"
+                },
+                {
+                    "exampleSentence": "Ты знал песню",
+                    "exampleSentenceEn": "You knew the song",
+                    "form": "знал",
+                    "pronoun": "ты (m)"
+                },
+                {
+                    "exampleSentence": "Ты знала песню",
+                    "exampleSentenceEn": "You knew the song",
+                    "form": "знала",
+                    "pronoun": "ты (f)"
+                },
+                {
+                    "exampleSentence": "Он знал плавать",
+                    "exampleSentenceEn": "He knew how to swim",
+                    "form": "знал",
+                    "pronoun": "он"
+                },
+                {
+                    "exampleSentence": "Она знала плавать",
+                    "exampleSentenceEn": "She knew how to swim",
+                    "form": "знала",
+                    "pronoun": "она"
+                },
+                {
+                    "exampleSentence": "Оно знало плавать",
+                    "exampleSentenceEn": "It knew how to swim",
+                    "form": "знало",
+                    "pronoun": "оно"
+                },
+                {
+                    "exampleSentence": "Мы знали танцевать",
+                    "exampleSentenceEn": "We knew how to dance",
+                    "form": "знали",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы знали готовить",
+                    "exampleSentenceEn": "You knew how to cook",
+                    "form": "знали",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они знали играть",
+                    "exampleSentenceEn": "They knew how to play",
+                    "form": "знали",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to describe completed actions in the past. The form changes based on gender and number.",
+            "tenseId": "past",
+            "tenseName": "Прошедшее время",
+            "tenseNameEn": "Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я буду знать ответ завтра",
+                    "exampleSentenceEn": "I will know the answer tomorrow",
+                    "form": "буду знать",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты будешь знать песню",
+                    "exampleSentenceEn": "You will know the song",
+                    "form": "будешь знать",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он будет знать плавать",
+                    "exampleSentenceEn": "He will know how to swim",
+                    "form": "будет знать",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы будем знать танцевать",
+                    "exampleSentenceEn": "We will know how to dance",
+                    "form": "будем знать",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы будете знать готовить",
+                    "exampleSentenceEn": "You will know how to cook",
+                    "form": "будете знать",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они будут знать играть",
+                    "exampleSentenceEn": "They will know how to play",
+                    "form": "будут знать",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'завтра' (tomorrow).",
+            "tenseId": "future",
+            "tenseName": "Будущее время",
+            "tenseNameEn": "Future"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (ты, вы).",
+            "tenseId": "imperative",
+            "tenseName": "Повелительное наклонение",
+            "tenseNameEn": "Imperative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я знал бы ответ, если бы имел время",
+                    "exampleSentenceEn": "I would know the answer if I had time",
+                    "form": "знал бы",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты знал бы песню",
+                    "exampleSentenceEn": "You would know the song",
+                    "form": "знал бы",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он знал бы плавать",
+                    "exampleSentenceEn": "He would know how to swim",
+                    "form": "знал бы",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы знали бы танцевать",
+                    "exampleSentenceEn": "We would know how to dance",
+                    "form": "знали бы",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы знали бы готовить",
+                    "exampleSentenceEn": "You would know how to cook",
+                    "form": "знали бы",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они знали бы играть",
+                    "exampleSentenceEn": "They would know how to play",
+                    "form": "знали бы",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to express hypothetical situations or actions that would happen under certain conditions. Often used with 'если' (if) clauses.",
+            "tenseId": "conditional",
+            "tenseName": "Условное наклонение",
+            "tenseNameEn": "Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Знающий человек",
+                    "exampleSentenceEn": "A knowing person",
+                    "form": "знающий",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Знающая женщина",
+                    "exampleSentenceEn": "A knowing woman",
+                    "form": "знающая",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Знающее животное",
+                    "exampleSentenceEn": "A knowing animal",
+                    "form": "знающее",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Знающие люди",
+                    "exampleSentenceEn": "Knowing people",
+                    "form": "знающие",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe someone who is currently performing the action. Must agree in gender, number, and case.",
+            "tenseId": "present_active_participle",
+            "tenseName": "Причастие настоящего времени",
+            "tenseNameEn": "Present Active Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Знавший человек",
+                    "exampleSentenceEn": "A person who knew",
+                    "form": "знавший",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Знавшая женщина",
+                    "exampleSentenceEn": "A woman who knew",
+                    "form": "знавшая",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Знавшее животное",
+                    "exampleSentenceEn": "An animal that knew",
+                    "form": "знавшее",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Знавшие люди",
+                    "exampleSentenceEn": "People who knew",
+                    "form": "знавшие",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe someone who performed the action in the past. Must agree in gender, number, and case.",
+            "tenseId": "past_active_participle",
+            "tenseName": "Причастие прошедшего времени",
+            "tenseNameEn": "Past Active Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe something that is currently being acted upon. Must agree in gender, number, and case.",
+            "tenseId": "present_passive_participle",
+            "tenseName": "Страдательное причастие настоящего времени",
+            "tenseNameEn": "Present Passive Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe something that was acted upon in the past. Must agree in gender, number, and case.",
+            "tenseId": "past_passive_participle",
+            "tenseName": "Страдательное причастие прошедшего времени",
+            "tenseNameEn": "Past Passive Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Зная ответ, я думаю",
+                    "exampleSentenceEn": "While knowing the answer, I think",
+                    "form": "зная",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Зная песню, он пел",
+                    "exampleSentenceEn": "While knowing the song, he sang",
+                    "form": "зная",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Зная плавать, мы разговаривали",
+                    "exampleSentenceEn": "While knowing how to swim, we talked",
+                    "form": "зная",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express an action that happens simultaneously with the main action. Often used to show manner or condition.",
+            "tenseId": "present_gerund",
+            "tenseName": "Деепричастие настоящего времени",
+            "tenseNameEn": "Present Gerund"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express an action that was completed before the main action. Often used to show sequence of events.",
+            "tenseId": "past_gerund",
+            "tenseName": "Деепричастие прошедшего времени",
+            "tenseNameEn": "Past Gerund"
+        }
+    ]
+}

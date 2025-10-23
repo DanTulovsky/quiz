@@ -1,0 +1,739 @@
+{
+    "category": "essential",
+    "infinitive": "する",
+    "infinitiveEn": "to do",
+    "language": "ja",
+    "languageName": "Japanese",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "私は毎日運動します",
+                    "exampleSentenceEn": "I exercise every day",
+                    "form": "します",
+                    "pronoun": "私"
+                },
+                {
+                    "exampleSentence": "あなたは素晴らしい仕事をします",
+                    "exampleSentenceEn": "You do wonderful work",
+                    "form": "します",
+                    "pronoun": "あなた"
+                },
+                {
+                    "exampleSentence": "彼は料理を上手にします",
+                    "exampleSentenceEn": "He cooks well",
+                    "form": "します",
+                    "pronoun": "彼/彼女"
+                },
+                {
+                    "exampleSentence": "私たちは週末に買い物をします",
+                    "exampleSentenceEn": "We go shopping on weekends",
+                    "form": "します",
+                    "pronoun": "私たち"
+                },
+                {
+                    "exampleSentence": "あなたたちは宿題をちゃんとします",
+                    "exampleSentenceEn": "You do your homework properly",
+                    "form": "します",
+                    "pronoun": "あなたたち"
+                },
+                {
+                    "exampleSentence": "彼らは一生懸命勉強します",
+                    "exampleSentenceEn": "They study hard",
+                    "form": "します",
+                    "pronoun": "彼ら/彼女ら"
+                }
+            ],
+            "description": "Used in formal situations and polite conversation. This is the most commonly used form for polite speech in daily interactions.",
+            "tenseId": "present_polite",
+            "tenseName": "丁寧語現在形",
+            "tenseNameEn": "Present Polite"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "私は肉を食べません",
+                    "exampleSentenceEn": "I don't eat meat",
+                    "form": "しません",
+                    "pronoun": "私"
+                },
+                {
+                    "exampleSentence": "あなたはそんなことをしません",
+                    "exampleSentenceEn": "You don't do such things",
+                    "form": "しません",
+                    "pronoun": "あなた"
+                },
+                {
+                    "exampleSentence": "彼女は嘘をつきません",
+                    "exampleSentenceEn": "She doesn't tell lies",
+                    "form": "しません",
+                    "pronoun": "彼/彼女"
+                },
+                {
+                    "exampleSentence": "私たちは無駄なことをしません",
+                    "exampleSentenceEn": "We don't do wasteful things",
+                    "form": "しません",
+                    "pronoun": "私たち"
+                },
+                {
+                    "exampleSentence": "あなたたちは心配しません",
+                    "exampleSentenceEn": "You don't worry",
+                    "form": "しません",
+                    "pronoun": "あなたたち"
+                },
+                {
+                    "exampleSentence": "彼らは約束を破りません",
+                    "exampleSentenceEn": "They don't break promises",
+                    "form": "しません",
+                    "pronoun": "彼ら/彼女ら"
+                }
+            ],
+            "description": "Used to politely express that an action does not happen or is not done. Common in everyday polite conversation.",
+            "tenseId": "present_polite_negative",
+            "tenseName": "丁寧語現在否定形",
+            "tenseNameEn": "Present Polite Negative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "私は昨日たくさんの仕事をしました",
+                    "exampleSentenceEn": "I did a lot of work yesterday",
+                    "form": "しました",
+                    "pronoun": "私"
+                },
+                {
+                    "exampleSentence": "あなたは素晴らしい発表をしました",
+                    "exampleSentenceEn": "You gave a wonderful presentation",
+                    "form": "しました",
+                    "pronoun": "あなた"
+                },
+                {
+                    "exampleSentence": "彼は昨夜料理をしました",
+                    "exampleSentenceEn": "He cooked last night",
+                    "form": "しました",
+                    "pronoun": "彼/彼女"
+                },
+                {
+                    "exampleSentence": "私たちは先週旅行をしました",
+                    "exampleSentenceEn": "We traveled last week",
+                    "form": "しました",
+                    "pronoun": "私たち"
+                },
+                {
+                    "exampleSentence": "あなたたちは試験の準備をしました",
+                    "exampleSentenceEn": "You prepared for the exam",
+                    "form": "しました",
+                    "pronoun": "あなたたち"
+                },
+                {
+                    "exampleSentence": "彼らは会議で重要な決定をしました",
+                    "exampleSentenceEn": "They made an important decision at the meeting",
+                    "form": "しました",
+                    "pronoun": "彼ら/彼女ら"
+                }
+            ],
+            "description": "Used to express past actions or completed events in polite speech. Formed by changing 'ます' to 'ました'.",
+            "tenseId": "past_polite",
+            "tenseName": "丁寧語過去形",
+            "tenseNameEn": "Past Polite"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "私は昨日何もしませんでした",
+                    "exampleSentenceEn": "I didn't do anything yesterday",
+                    "form": "しませんでした",
+                    "pronoun": "私"
+                },
+                {
+                    "exampleSentence": "あなたはそのミスをしませんでした",
+                    "exampleSentenceEn": "You didn't make that mistake",
+                    "form": "しませんでした",
+                    "pronoun": "あなた"
+                },
+                {
+                    "exampleSentence": "彼女は約束を忘れませんでした",
+                    "exampleSentenceEn": "She didn't forget the promise",
+                    "form": "しませんでした",
+                    "pronoun": "彼/彼女"
+                },
+                {
+                    "exampleSentence": "私たちはその仕事をしませんでした",
+                    "exampleSentenceEn": "We didn't do that work",
+                    "form": "しませんでした",
+                    "pronoun": "私たち"
+                },
+                {
+                    "exampleSentence": "あなたたちは問題を起こしませんでした",
+                    "exampleSentenceEn": "You didn't cause problems",
+                    "form": "しませんでした",
+                    "pronoun": "あなたたち"
+                },
+                {
+                    "exampleSentence": "彼らは諦めませんでした",
+                    "exampleSentenceEn": "They didn't give up",
+                    "form": "しませんでした",
+                    "pronoun": "彼ら/彼女ら"
+                }
+            ],
+            "description": "Used to politely express that an action did not happen in the past. Common in polite conversation about past events.",
+            "tenseId": "past_polite_negative",
+            "tenseName": "丁寧語過去否定形",
+            "tenseNameEn": "Past Polite Negative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "私は毎日運動する",
+                    "exampleSentenceEn": "I exercise every day",
+                    "form": "する",
+                    "pronoun": "私"
+                },
+                {
+                    "exampleSentence": "君はいい仕事をする",
+                    "exampleSentenceEn": "You do good work",
+                    "form": "する",
+                    "pronoun": "あなた"
+                },
+                {
+                    "exampleSentence": "彼は料理が得意だ",
+                    "exampleSentenceEn": "He's good at cooking",
+                    "form": "する",
+                    "pronoun": "彼/彼女"
+                },
+                {
+                    "exampleSentence": "僕たちは週末に遊びに行く",
+                    "exampleSentenceEn": "We hang out on weekends",
+                    "form": "する",
+                    "pronoun": "私たち"
+                },
+                {
+                    "exampleSentence": "お前らは宿題をちゃんとやる",
+                    "exampleSentenceEn": "You guys do your homework properly",
+                    "form": "する",
+                    "pronoun": "あなたたち"
+                },
+                {
+                    "exampleSentence": "彼らは頑張って勉強する",
+                    "exampleSentenceEn": "They study hard",
+                    "form": "する",
+                    "pronoun": "彼ら/彼女ら"
+                }
+            ],
+            "description": "Used in casual conversation with friends, family, or in informal situations. The casual form of 'します' is 'する'.",
+            "tenseId": "present_casual",
+            "tenseName": "普通語現在形",
+            "tenseNameEn": "Present Casual"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "僕は肉を食べない",
+                    "exampleSentenceEn": "I don't eat meat",
+                    "form": "しない",
+                    "pronoun": "私"
+                },
+                {
+                    "exampleSentence": "君はそんなことをしない",
+                    "exampleSentenceEn": "You don't do such things",
+                    "form": "しない",
+                    "pronoun": "あなた"
+                },
+                {
+                    "exampleSentence": "彼女は嘘をつかない",
+                    "exampleSentenceEn": "She doesn't tell lies",
+                    "form": "しない",
+                    "pronoun": "彼/彼女"
+                },
+                {
+                    "exampleSentence": "僕たちは無駄なことをしない",
+                    "exampleSentenceEn": "We don't do wasteful things",
+                    "form": "しない",
+                    "pronoun": "私たち"
+                },
+                {
+                    "exampleSentence": "お前らは心配しない",
+                    "exampleSentenceEn": "You don't worry",
+                    "form": "しない",
+                    "pronoun": "あなたたち"
+                },
+                {
+                    "exampleSentence": "彼らは約束を破らない",
+                    "exampleSentenceEn": "They don't break promises",
+                    "form": "しない",
+                    "pronoun": "彼ら/彼女ら"
+                }
+            ],
+            "description": "Used in casual conversation to express that an action does not happen. Formed by changing 'する' to 'しない'.",
+            "tenseId": "present_casual_negative",
+            "tenseName": "普通語現在否定形",
+            "tenseNameEn": "Present Casual Negative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "昨日たくさんの仕事をした",
+                    "exampleSentenceEn": "I did a lot of work yesterday",
+                    "form": "した",
+                    "pronoun": "私"
+                },
+                {
+                    "exampleSentence": "君はいい発表をした",
+                    "exampleSentenceEn": "You gave a good presentation",
+                    "form": "した",
+                    "pronoun": "あなた"
+                },
+                {
+                    "exampleSentence": "彼は昨夜料理をした",
+                    "exampleSentenceEn": "He cooked last night",
+                    "form": "した",
+                    "pronoun": "彼/彼女"
+                },
+                {
+                    "exampleSentence": "僕たちは先週旅行をした",
+                    "exampleSentenceEn": "We traveled last week",
+                    "form": "した",
+                    "pronoun": "私たち"
+                },
+                {
+                    "exampleSentence": "お前らは試験の準備をした",
+                    "exampleSentenceEn": "You prepared for the exam",
+                    "form": "した",
+                    "pronoun": "あなたたち"
+                },
+                {
+                    "exampleSentence": "彼らは会議で決定をした",
+                    "exampleSentenceEn": "They made a decision at the meeting",
+                    "form": "した",
+                    "pronoun": "彼ら/彼女ら"
+                }
+            ],
+            "description": "Used to express past states or conditions in casual speech. Formed by changing 'する' to 'した'.",
+            "tenseId": "past_casual",
+            "tenseName": "普通語過去形",
+            "tenseNameEn": "Past Casual"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "昨日何もしなかった",
+                    "exampleSentenceEn": "I didn't do anything yesterday",
+                    "form": "しなかった",
+                    "pronoun": "私"
+                },
+                {
+                    "exampleSentence": "君はそのミスをしなかった",
+                    "exampleSentenceEn": "You didn't make that mistake",
+                    "form": "しなかった",
+                    "pronoun": "あなた"
+                },
+                {
+                    "exampleSentence": "彼女は約束を忘れなかった",
+                    "exampleSentenceEn": "She didn't forget the promise",
+                    "form": "しなかった",
+                    "pronoun": "彼/彼女"
+                },
+                {
+                    "exampleSentence": "僕たちはその仕事をしなかった",
+                    "exampleSentenceEn": "We didn't do that work",
+                    "form": "しなかった",
+                    "pronoun": "私たち"
+                },
+                {
+                    "exampleSentence": "お前らは問題を起こさなかった",
+                    "exampleSentenceEn": "You didn't cause problems",
+                    "form": "しなかった",
+                    "pronoun": "あなたたち"
+                },
+                {
+                    "exampleSentence": "彼らは諦めなかった",
+                    "exampleSentenceEn": "They didn't give up",
+                    "form": "しなかった",
+                    "pronoun": "彼ら/彼女ら"
+                }
+            ],
+            "description": "Used in casual speech to express that an action did not happen in the past. Formed by changing 'しない' to 'しなかった'.",
+            "tenseId": "past_casual_negative",
+            "tenseName": "普通語過去否定形",
+            "tenseNameEn": "Past Casual Negative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "仕事をして、それから休みます",
+                    "exampleSentenceEn": "I'll work, and then I'll rest",
+                    "form": "して",
+                    "pronoun": "私"
+                },
+                {
+                    "exampleSentence": "宿題をしてから遊んでください",
+                    "exampleSentenceEn": "Please play after doing your homework",
+                    "form": "して",
+                    "pronoun": "あなた"
+                },
+                {
+                    "exampleSentence": "彼は料理をして、掃除もしました",
+                    "exampleSentenceEn": "He cooked and also cleaned",
+                    "form": "して",
+                    "pronoun": "彼/彼女"
+                },
+                {
+                    "exampleSentence": "準備をして、すぐに出発しよう",
+                    "exampleSentenceEn": "Let's prepare and leave right away",
+                    "form": "して",
+                    "pronoun": "私たち"
+                },
+                {
+                    "exampleSentence": "練習をして、試合に臨んでください",
+                    "exampleSentenceEn": "Please practice and face the match",
+                    "form": "して",
+                    "pronoun": "あなたたち"
+                },
+                {
+                    "exampleSentence": "彼らは相談をして、決定を下しました",
+                    "exampleSentenceEn": "They consulted and made a decision",
+                    "form": "して",
+                    "pronoun": "彼ら/彼女ら"
+                }
+            ],
+            "description": "A connecting form used for sequential actions, requests, and as a base for other conjugations. Essential for linking verbs and creating complex sentences.",
+            "tenseId": "te_form",
+            "tenseName": "て形",
+            "tenseNameEn": "Te-form"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "私は日本語で話すことができる",
+                    "exampleSentenceEn": "I can speak in Japanese",
+                    "form": "できる",
+                    "pronoun": "私"
+                },
+                {
+                    "exampleSentence": "あなたは難しい問題を解くことができる",
+                    "exampleSentenceEn": "You can solve difficult problems",
+                    "form": "できる",
+                    "pronoun": "あなた"
+                },
+                {
+                    "exampleSentence": "彼女は一人で全部できる",
+                    "exampleSentenceEn": "She can do everything by herself",
+                    "form": "できる",
+                    "pronoun": "彼/彼女"
+                },
+                {
+                    "exampleSentence": "私たちは協力してこの仕事ができる",
+                    "exampleSentenceEn": "We can do this work by cooperating",
+                    "form": "できる",
+                    "pronoun": "私たち"
+                },
+                {
+                    "exampleSentence": "あなたたちなら必ずできる",
+                    "exampleSentenceEn": "If it's you guys, you can definitely do it",
+                    "form": "できる",
+                    "pronoun": "あなたたち"
+                },
+                {
+                    "exampleSentence": "彼らは素晴らしい演奏ができる",
+                    "exampleSentenceEn": "They can perform wonderfully",
+                    "form": "できる",
+                    "pronoun": "彼ら/彼女ら"
+                }
+            ],
+            "description": "Used to express ability or possibility. Indicates whether someone can or is able to do something.",
+            "tenseId": "potential_form",
+            "tenseName": "可能形",
+            "tenseNameEn": "Potential Form"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "明日から毎日運動しよう",
+                    "exampleSentenceEn": "I'll exercise every day starting tomorrow",
+                    "form": "しよう",
+                    "pronoun": "私"
+                },
+                {
+                    "exampleSentence": "一緒に頑張ろう",
+                    "exampleSentenceEn": "Let's do our best together",
+                    "form": "しよう",
+                    "pronoun": "あなた"
+                },
+                {
+                    "exampleSentence": "彼はもっと努力しようと決めた",
+                    "exampleSentenceEn": "He decided to try harder",
+                    "form": "しよう",
+                    "pronoun": "彼/彼女"
+                },
+                {
+                    "exampleSentence": "今日は早く帰ろう",
+                    "exampleSentenceEn": "Let's go home early today",
+                    "form": "しよう",
+                    "pronoun": "私たち"
+                },
+                {
+                    "exampleSentence": "みんなで旅行しよう",
+                    "exampleSentenceEn": "Let's all travel together",
+                    "form": "しよう",
+                    "pronoun": "あなたたち"
+                },
+                {
+                    "exampleSentence": "彼らは新しいプロジェクトを始めようとしている",
+                    "exampleSentenceEn": "They are about to start a new project",
+                    "form": "しよう",
+                    "pronoun": "彼ら/彼女ら"
+                }
+            ],
+            "description": "Used to express intention, invitation, or suggestion. Often translated as 'let's do' or 'I will do'.",
+            "tenseId": "volitional_form",
+            "tenseName": "意向形",
+            "tenseNameEn": "Volitional Form"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "私は先生に質問される",
+                    "exampleSentenceEn": "I am asked a question by the teacher",
+                    "form": "される",
+                    "pronoun": "私"
+                },
+                {
+                    "exampleSentence": "あなたは上司に批判される",
+                    "exampleSentenceEn": "You are criticized by your boss",
+                    "form": "される",
+                    "pronoun": "あなた"
+                },
+                {
+                    "exampleSentence": "彼女は皆に尊敬される",
+                    "exampleSentenceEn": "She is respected by everyone",
+                    "form": "される",
+                    "pronoun": "彼/彼女"
+                },
+                {
+                    "exampleSentence": "私たちは先輩に指導される",
+                    "exampleSentenceEn": "We are instructed by our seniors",
+                    "form": "される",
+                    "pronoun": "私たち"
+                },
+                {
+                    "exampleSentence": "あなたたちは会社に信頼される",
+                    "exampleSentenceEn": "You are trusted by the company",
+                    "form": "される",
+                    "pronoun": "あなたたち"
+                },
+                {
+                    "exampleSentence": "彼らは社会に評価される",
+                    "exampleSentenceEn": "They are evaluated by society",
+                    "form": "される",
+                    "pronoun": "彼ら/彼女ら"
+                }
+            ],
+            "description": "Used to express that the subject receives an action from someone else, often with a sense of inconvenience or suffering. Can also express respect or formality.",
+            "tenseId": "passive_form",
+            "tenseName": "受身形",
+            "tenseNameEn": "Passive Form"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "私は子供に宿題をさせる",
+                    "exampleSentenceEn": "I make my child do homework",
+                    "form": "させる",
+                    "pronoun": "私"
+                },
+                {
+                    "exampleSentence": "あなたは部下に報告をさせる",
+                    "exampleSentenceEn": "You have your subordinate make a report",
+                    "form": "させる",
+                    "pronoun": "あなた"
+                },
+                {
+                    "exampleSentence": "彼は学生に発表をさせる",
+                    "exampleSentenceEn": "He makes the students give presentations",
+                    "form": "させる",
+                    "pronoun": "彼/彼女"
+                },
+                {
+                    "exampleSentence": "私たちは社員に研修を受けさせる",
+                    "exampleSentenceEn": "We have our employees undergo training",
+                    "form": "させる",
+                    "pronoun": "私たち"
+                },
+                {
+                    "exampleSentence": "あなたたちは新人に仕事をさせる",
+                    "exampleSentenceEn": "You have the newcomers do work",
+                    "form": "させる",
+                    "pronoun": "あなたたち"
+                },
+                {
+                    "exampleSentence": "彼らは選手に練習をさせる",
+                    "exampleSentenceEn": "They make the players practice",
+                    "form": "させる",
+                    "pronoun": "彼ら/彼女ら"
+                }
+            ],
+            "description": "Used to express making or letting someone do something. Indicates that the subject causes someone else to perform an action.",
+            "tenseId": "causative_form",
+            "tenseName": "使役形",
+            "tenseNameEn": "Causative Form"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "努力をすれば、必ず成功する",
+                    "exampleSentenceEn": "If you make an effort, you will surely succeed",
+                    "form": "すれば",
+                    "pronoun": "私"
+                },
+                {
+                    "exampleSentence": "練習をすれば、上手になる",
+                    "exampleSentenceEn": "If you practice, you will get better",
+                    "form": "すれば",
+                    "pronoun": "あなた"
+                },
+                {
+                    "exampleSentence": "彼が準備をすれば、問題ない",
+                    "exampleSentenceEn": "If he prepares, there's no problem",
+                    "form": "すれば",
+                    "pronoun": "彼/彼女"
+                },
+                {
+                    "exampleSentence": "協力をすれば、できないことはない",
+                    "exampleSentenceEn": "If we cooperate, there's nothing we can't do",
+                    "form": "すれば",
+                    "pronoun": "私たち"
+                },
+                {
+                    "exampleSentence": "計画をすれば、うまくいく",
+                    "exampleSentenceEn": "If you plan, it will go well",
+                    "form": "すれば",
+                    "pronoun": "あなたたち"
+                },
+                {
+                    "exampleSentence": "彼らが決断をすれば、前に進める",
+                    "exampleSentenceEn": "If they make a decision, we can move forward",
+                    "form": "すれば",
+                    "pronoun": "彼ら/彼女ら"
+                }
+            ],
+            "description": "Used to express a condition or hypothetical situation, meaning 'if' or 'when'. Formed by adding 'ば' to the verb stem.",
+            "tenseId": "conditional_form",
+            "tenseName": "条件形",
+            "tenseNameEn": "Conditional Form"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "宿題をしろ！",
+                    "exampleSentenceEn": "Do your homework!",
+                    "form": "しろ",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "すぐにしろ！",
+                    "exampleSentenceEn": "Do it immediately!",
+                    "form": "しろ",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "集中してしろ！",
+                    "exampleSentenceEn": "Concentrate and do it!",
+                    "form": "しろ",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to give commands or orders. This form is direct and should be used carefully as it can sound rude. Often used in emergency situations or with close relationships.",
+            "tenseId": "imperative_form",
+            "tenseName": "命令形",
+            "tenseNameEn": "Imperative Form"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "私は毎日宿題をさせられる",
+                    "exampleSentenceEn": "I am made to do homework every day",
+                    "form": "させられる",
+                    "pronoun": "私"
+                },
+                {
+                    "exampleSentence": "あなたは会議に参加させられる",
+                    "exampleSentenceEn": "You are made to attend the meeting",
+                    "form": "させられる",
+                    "pronoun": "あなた"
+                },
+                {
+                    "exampleSentence": "彼は難しい仕事をさせられる",
+                    "exampleSentenceEn": "He is made to do difficult work",
+                    "form": "させられる",
+                    "pronoun": "彼/彼女"
+                },
+                {
+                    "exampleSentence": "私たちは早く起きさせられる",
+                    "exampleSentenceEn": "We are made to wake up early",
+                    "form": "させられる",
+                    "pronoun": "私たち"
+                },
+                {
+                    "exampleSentence": "あなたたちは練習をさせられる",
+                    "exampleSentenceEn": "You are made to practice",
+                    "form": "させられる",
+                    "pronoun": "あなたたち"
+                },
+                {
+                    "exampleSentence": "彼らは長時間働かせられる",
+                    "exampleSentenceEn": "They are made to work long hours",
+                    "form": "させられる",
+                    "pronoun": "彼ら/彼女ら"
+                }
+            ],
+            "description": "Used to express being made to do something against one's will, often with a sense of being forced or compelled. Combines causative and passive meanings.",
+            "tenseId": "causative_passive_form",
+            "tenseName": "使役受身形",
+            "tenseNameEn": "Causative-Passive Form"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "宿題をしたら、遊べる",
+                    "exampleSentenceEn": "If I do my homework, I can play",
+                    "form": "したら",
+                    "pronoun": "私"
+                },
+                {
+                    "exampleSentence": "練習をしたら、上手になる",
+                    "exampleSentenceEn": "If you practice, you'll get better",
+                    "form": "したら",
+                    "pronoun": "あなた"
+                },
+                {
+                    "exampleSentence": "彼が準備をしたら、出発できる",
+                    "exampleSentenceEn": "If he prepares, we can leave",
+                    "form": "したら",
+                    "pronoun": "彼/彼女"
+                },
+                {
+                    "exampleSentence": "協力をしたら、成功する",
+                    "exampleSentenceEn": "If we cooperate, we'll succeed",
+                    "form": "したら",
+                    "pronoun": "私たち"
+                },
+                {
+                    "exampleSentence": "計画をしたら、うまくいく",
+                    "exampleSentenceEn": "If you plan, it will work out",
+                    "form": "したら",
+                    "pronoun": "あなたたち"
+                },
+                {
+                    "exampleSentence": "彼らが決断をしたら、進められる",
+                    "exampleSentenceEn": "If they make a decision, we can proceed",
+                    "form": "したら",
+                    "pronoun": "彼ら/彼女ら"
+                }
+            ],
+            "description": "Used to express hypothetical conditions or 'if-then' statements. More conversational than the ば-form and often used for natural consequences.",
+            "tenseId": "conditional_tara_form",
+            "tenseName": "条件形（たら形）",
+            "tenseNameEn": "Conditional (Tara-form)"
+        }
+    ]
+}

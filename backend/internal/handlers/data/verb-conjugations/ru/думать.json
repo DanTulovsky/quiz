@@ -1,0 +1,409 @@
+{
+    "category": "essential",
+    "infinitive": "думать",
+    "infinitiveEn": "to think",
+    "language": "ru",
+    "languageName": "Russian",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я думаю о работе",
+                    "exampleSentenceEn": "I think about work",
+                    "form": "думаю",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты думаешь о семье",
+                    "exampleSentenceEn": "You think about family",
+                    "form": "думаешь",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он думает о будущем",
+                    "exampleSentenceEn": "He thinks about the future",
+                    "form": "думает",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы думаем о путешествии",
+                    "exampleSentenceEn": "We think about travel",
+                    "form": "думаем",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы думаете о проблеме",
+                    "exampleSentenceEn": "You think about the problem",
+                    "form": "думаете",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они думают о решении",
+                    "exampleSentenceEn": "They think about the solution",
+                    "form": "думают",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in Russian.",
+            "tenseId": "present",
+            "tenseName": "Настоящее время",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я думал о работе",
+                    "exampleSentenceEn": "I thought about work",
+                    "form": "думал",
+                    "pronoun": "я (m)"
+                },
+                {
+                    "exampleSentence": "Я думала о работе",
+                    "exampleSentenceEn": "I thought about work",
+                    "form": "думала",
+                    "pronoun": "я (f)"
+                },
+                {
+                    "exampleSentence": "Ты думал о семье",
+                    "exampleSentenceEn": "You thought about family",
+                    "form": "думал",
+                    "pronoun": "ты (m)"
+                },
+                {
+                    "exampleSentence": "Ты думала о семье",
+                    "exampleSentenceEn": "You thought about family",
+                    "form": "думала",
+                    "pronoun": "ты (f)"
+                },
+                {
+                    "exampleSentence": "Он думал о будущем",
+                    "exampleSentenceEn": "He thought about the future",
+                    "form": "думал",
+                    "pronoun": "он"
+                },
+                {
+                    "exampleSentence": "Она думала о будущем",
+                    "exampleSentenceEn": "She thought about the future",
+                    "form": "думала",
+                    "pronoun": "она"
+                },
+                {
+                    "exampleSentence": "Оно думало о будущем",
+                    "exampleSentenceEn": "It thought about the future",
+                    "form": "думало",
+                    "pronoun": "оно"
+                },
+                {
+                    "exampleSentence": "Мы думали о путешествии",
+                    "exampleSentenceEn": "We thought about travel",
+                    "form": "думали",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы думали о проблеме",
+                    "exampleSentenceEn": "You thought about the problem",
+                    "form": "думали",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они думали о решении",
+                    "exampleSentenceEn": "They thought about the solution",
+                    "form": "думали",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to describe completed actions in the past. The form changes based on gender and number.",
+            "tenseId": "past",
+            "tenseName": "Прошедшее время",
+            "tenseNameEn": "Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я буду думать о работе завтра",
+                    "exampleSentenceEn": "I will think about work tomorrow",
+                    "form": "буду думать",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты будешь думать о семье",
+                    "exampleSentenceEn": "You will think about family",
+                    "form": "будешь думать",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он будет думать о будущем",
+                    "exampleSentenceEn": "He will think about the future",
+                    "form": "будет думать",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы будем думать о путешествии",
+                    "exampleSentenceEn": "We will think about travel",
+                    "form": "будем думать",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы будете думать о проблеме",
+                    "exampleSentenceEn": "You will think about the problem",
+                    "form": "будете думать",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они будут думать о решении",
+                    "exampleSentenceEn": "They will think about the solution",
+                    "form": "будут думать",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'завтра' (tomorrow).",
+            "tenseId": "future",
+            "tenseName": "Будущее время",
+            "tenseNameEn": "Future"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Думай о решении проблемы!",
+                    "exampleSentenceEn": "Think about solving the problem!",
+                    "form": "думай",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Думайте о будущем ваших детей!",
+                    "exampleSentenceEn": "Think about your children's future!",
+                    "form": "думайте",
+                    "pronoun": "вы"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (ты, вы).",
+            "tenseId": "imperative",
+            "tenseName": "Повелительное наклонение",
+            "tenseNameEn": "Imperative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я думал бы о работе, если бы имел время",
+                    "exampleSentenceEn": "I would think about work if I had time",
+                    "form": "думал бы",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты думал бы о семье",
+                    "exampleSentenceEn": "You would think about family",
+                    "form": "думал бы",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он думал бы о будущем",
+                    "exampleSentenceEn": "He would think about the future",
+                    "form": "думал бы",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы думали бы о путешествии",
+                    "exampleSentenceEn": "We would think about travel",
+                    "form": "думали бы",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы думали бы о проблеме",
+                    "exampleSentenceEn": "You would think about the problem",
+                    "form": "думали бы",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они думали бы о решении",
+                    "exampleSentenceEn": "They would think about the solution",
+                    "form": "думали бы",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to express hypothetical situations or actions that would happen under certain conditions. Often used with 'если' (if) clauses.",
+            "tenseId": "conditional",
+            "tenseName": "Условное наклонение",
+            "tenseNameEn": "Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Думающий человек",
+                    "exampleSentenceEn": "A thinking person",
+                    "form": "думающий",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Думающая женщина",
+                    "exampleSentenceEn": "A thinking woman",
+                    "form": "думающая",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Думающее животное",
+                    "exampleSentenceEn": "A thinking animal",
+                    "form": "думающее",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Думающие люди",
+                    "exampleSentenceEn": "Thinking people",
+                    "form": "думающие",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe someone who is currently performing the action. Must agree in gender, number, and case.",
+            "tenseId": "present_active_participle",
+            "tenseName": "Причастие настоящего времени",
+            "tenseNameEn": "Present Active Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Думавший человек",
+                    "exampleSentenceEn": "A person who thought",
+                    "form": "думавший",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Думавшая женщина",
+                    "exampleSentenceEn": "A woman who thought",
+                    "form": "думавшая",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Думавшее животное",
+                    "exampleSentenceEn": "An animal that thought",
+                    "form": "думавшее",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Думавшие люди",
+                    "exampleSentenceEn": "People who thought",
+                    "form": "думавшие",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe someone who performed the action in the past. Must agree in gender, number, and case.",
+            "tenseId": "past_active_participle",
+            "tenseName": "Причастие прошедшего времени",
+            "tenseNameEn": "Past Active Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe something that is currently being acted upon. Must agree in gender, number, and case.",
+            "tenseId": "present_passive_participle",
+            "tenseName": "Страдательное причастие настоящего времени",
+            "tenseNameEn": "Present Passive Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe something that was acted upon in the past. Must agree in gender, number, and case.",
+            "tenseId": "past_passive_participle",
+            "tenseName": "Страдательное причастие прошедшего времени",
+            "tenseNameEn": "Past Passive Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Думая о работе, я думаю",
+                    "exampleSentenceEn": "While thinking about work, I think",
+                    "form": "думая",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Думая о семье, он пел",
+                    "exampleSentenceEn": "While thinking about family, he sang",
+                    "form": "думая",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Думая о будущем, мы разговаривали",
+                    "exampleSentenceEn": "While thinking about the future, we talked",
+                    "form": "думая",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express an action that happens simultaneously with the main action. Often used to show manner or condition.",
+            "tenseId": "present_gerund",
+            "tenseName": "Деепричастие настоящего времени",
+            "tenseNameEn": "Present Gerund"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express an action that was completed before the main action. Often used to show sequence of events.",
+            "tenseId": "past_gerund",
+            "tenseName": "Деепричастие прошедшего времени",
+            "tenseNameEn": "Past Gerund"
+        }
+    ]
+}

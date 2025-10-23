@@ -1,0 +1,409 @@
+{
+    "category": "essential",
+    "infinitive": "хотеть",
+    "infinitiveEn": "to want",
+    "language": "ru",
+    "languageName": "Russian",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я хочу пить",
+                    "exampleSentenceEn": "I want to drink",
+                    "form": "хочу",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты хочешь есть",
+                    "exampleSentenceEn": "You want to eat",
+                    "form": "хочешь",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он хочет спать",
+                    "exampleSentenceEn": "He wants to sleep",
+                    "form": "хочет",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы хотим играть",
+                    "exampleSentenceEn": "We want to play",
+                    "form": "хотим",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы хотите танцевать",
+                    "exampleSentenceEn": "You want to dance",
+                    "form": "хотите",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они хотят петь",
+                    "exampleSentenceEn": "They want to sing",
+                    "form": "хотят",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in Russian.",
+            "tenseId": "present",
+            "tenseName": "Настоящее время",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я хотел пить",
+                    "exampleSentenceEn": "I wanted to drink",
+                    "form": "хотел",
+                    "pronoun": "я (m)"
+                },
+                {
+                    "exampleSentence": "Я хотела пить",
+                    "exampleSentenceEn": "I wanted to drink",
+                    "form": "хотела",
+                    "pronoun": "я (f)"
+                },
+                {
+                    "exampleSentence": "Ты хотел есть",
+                    "exampleSentenceEn": "You wanted to eat",
+                    "form": "хотел",
+                    "pronoun": "ты (m)"
+                },
+                {
+                    "exampleSentence": "Ты хотела есть",
+                    "exampleSentenceEn": "You wanted to eat",
+                    "form": "хотела",
+                    "pronoun": "ты (f)"
+                },
+                {
+                    "exampleSentence": "Он хотел спать",
+                    "exampleSentenceEn": "He wanted to sleep",
+                    "form": "хотел",
+                    "pronoun": "он"
+                },
+                {
+                    "exampleSentence": "Она хотела спать",
+                    "exampleSentenceEn": "She wanted to sleep",
+                    "form": "хотела",
+                    "pronoun": "она"
+                },
+                {
+                    "exampleSentence": "Оно хотело спать",
+                    "exampleSentenceEn": "It wanted to sleep",
+                    "form": "хотело",
+                    "pronoun": "оно"
+                },
+                {
+                    "exampleSentence": "Мы хотели играть",
+                    "exampleSentenceEn": "We wanted to play",
+                    "form": "хотели",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы хотели танцевать",
+                    "exampleSentenceEn": "You wanted to dance",
+                    "form": "хотели",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они хотели петь",
+                    "exampleSentenceEn": "They wanted to sing",
+                    "form": "хотели",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to describe completed actions in the past. The form changes based on gender and number.",
+            "tenseId": "past",
+            "tenseName": "Прошедшее время",
+            "tenseNameEn": "Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я буду хотеть пить завтра",
+                    "exampleSentenceEn": "I will want to drink tomorrow",
+                    "form": "буду хотеть",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты будешь хотеть есть",
+                    "exampleSentenceEn": "You will want to eat",
+                    "form": "будешь хотеть",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он будет хотеть спать",
+                    "exampleSentenceEn": "He will want to sleep",
+                    "form": "будет хотеть",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы будем хотеть играть",
+                    "exampleSentenceEn": "We will want to play",
+                    "form": "будем хотеть",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы будете хотеть танцевать",
+                    "exampleSentenceEn": "You will want to dance",
+                    "form": "будете хотеть",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они будут хотеть петь",
+                    "exampleSentenceEn": "They will want to sing",
+                    "form": "будут хотеть",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'завтра' (tomorrow).",
+            "tenseId": "future",
+            "tenseName": "Будущее время",
+            "tenseNameEn": "Future"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (ты, вы).",
+            "tenseId": "imperative",
+            "tenseName": "Повелительное наклонение",
+            "tenseNameEn": "Imperative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я хотел бы пить, если бы имел время",
+                    "exampleSentenceEn": "I would want to drink if I had time",
+                    "form": "хотел бы",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты хотел бы есть",
+                    "exampleSentenceEn": "You would want to eat",
+                    "form": "хотел бы",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он хотел бы спать",
+                    "exampleSentenceEn": "He would want to sleep",
+                    "form": "хотел бы",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы хотели бы играть",
+                    "exampleSentenceEn": "We would want to play",
+                    "form": "хотели бы",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы хотели бы танцевать",
+                    "exampleSentenceEn": "You would want to dance",
+                    "form": "хотели бы",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они хотели бы петь",
+                    "exampleSentenceEn": "They would want to sing",
+                    "form": "хотели бы",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to express hypothetical situations or actions that would happen under certain conditions. Often used with 'если' (if) clauses.",
+            "tenseId": "conditional",
+            "tenseName": "Условное наклонение",
+            "tenseNameEn": "Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Хотящий человек",
+                    "exampleSentenceEn": "A wanting person",
+                    "form": "хотящий",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Хотящая женщина",
+                    "exampleSentenceEn": "A wanting woman",
+                    "form": "хотящая",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Хотящее животное",
+                    "exampleSentenceEn": "A wanting animal",
+                    "form": "хотящее",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Хотящие люди",
+                    "exampleSentenceEn": "Wanting people",
+                    "form": "хотящие",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe someone who is currently performing the action. Must agree in gender, number, and case.",
+            "tenseId": "present_active_participle",
+            "tenseName": "Причастие настоящего времени",
+            "tenseNameEn": "Present Active Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Хотевший человек",
+                    "exampleSentenceEn": "A person who wanted",
+                    "form": "хотевший",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Хотевшая женщина",
+                    "exampleSentenceEn": "A woman who wanted",
+                    "form": "хотевшая",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Хотевшее животное",
+                    "exampleSentenceEn": "An animal that wanted",
+                    "form": "хотевшее",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Хотевшие люди",
+                    "exampleSentenceEn": "People who wanted",
+                    "form": "хотевшие",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe someone who performed the action in the past. Must agree in gender, number, and case.",
+            "tenseId": "past_active_participle",
+            "tenseName": "Причастие прошедшего времени",
+            "tenseNameEn": "Past Active Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe something that is currently being acted upon. Must agree in gender, number, and case.",
+            "tenseId": "present_passive_participle",
+            "tenseName": "Страдательное причастие настоящего времени",
+            "tenseNameEn": "Present Passive Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe something that was acted upon in the past. Must agree in gender, number, and case.",
+            "tenseId": "past_passive_participle",
+            "tenseName": "Страдательное причастие прошедшего времени",
+            "tenseNameEn": "Past Passive Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "The verb 'хотеть' does not form a present gerund in modern Russian. Note: 'хотя' is the conjunction 'although', not a gerund form. An archaic form 'хотев' exists but is not used in contemporary speech.",
+            "tenseId": "present_gerund",
+            "tenseName": "Деепричастие настоящего времени",
+            "tenseNameEn": "Present Gerund"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express an action that was completed before the main action. Often used to show sequence of events.",
+            "tenseId": "past_gerund",
+            "tenseName": "Деепричастие прошедшего времени",
+            "tenseNameEn": "Past Gerund"
+        }
+    ]
+}

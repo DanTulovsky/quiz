@@ -1,0 +1,807 @@
+{
+    "category": "essential",
+    "infinitive": "vedere",
+    "infinitiveEn": "to see",
+    "language": "it",
+    "languageName": "Italian",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io vedo la televisione",
+                    "exampleSentenceEn": "I watch television",
+                    "form": "vedo",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu vedi il film",
+                    "exampleSentenceEn": "You see the movie",
+                    "form": "vedi",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui vede la stella",
+                    "exampleSentenceEn": "He sees the star",
+                    "form": "vede",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi vediamo il panorama",
+                    "exampleSentenceEn": "We see the view",
+                    "form": "vediamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi vedete il quadro",
+                    "exampleSentenceEn": "You see the painting",
+                    "form": "vedete",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro vedono la luna",
+                    "exampleSentenceEn": "They see the moon",
+                    "form": "vedono",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in Italian.",
+            "tenseId": "presente",
+            "tenseName": "Presente",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io vedevo la televisione",
+                    "exampleSentenceEn": "I was watching television",
+                    "form": "vedevo",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu vedevi il film",
+                    "exampleSentenceEn": "You were seeing the movie",
+                    "form": "vedevi",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui vedeva la stella",
+                    "exampleSentenceEn": "He was seeing the star",
+                    "form": "vedeva",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi vedevamo il panorama",
+                    "exampleSentenceEn": "We were seeing the view",
+                    "form": "vedevamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi vedevate il quadro",
+                    "exampleSentenceEn": "You were seeing the painting",
+                    "form": "vedevate",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro vedevano la luna",
+                    "exampleSentenceEn": "They were seeing the moon",
+                    "form": "vedevano",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to describe ongoing, repeated, or habitual actions in the past. Also used for background information in storytelling.",
+            "tenseId": "imperfetto",
+            "tenseName": "Imperfetto",
+            "tenseNameEn": "Imperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io vedrò la televisione domani",
+                    "exampleSentenceEn": "I will watch television tomorrow",
+                    "form": "vedrò",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu vedrai il film",
+                    "exampleSentenceEn": "You will see the movie",
+                    "form": "vedrai",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui vedrà la stella",
+                    "exampleSentenceEn": "He will see the star",
+                    "form": "vedrà",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi vedremo il panorama",
+                    "exampleSentenceEn": "We will see the view",
+                    "form": "vedremo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi vedrete il quadro",
+                    "exampleSentenceEn": "You will see the painting",
+                    "form": "vedrete",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro vedranno la luna",
+                    "exampleSentenceEn": "They will see the moon",
+                    "form": "vedranno",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'domani' (tomorrow) or 'la settimana prossima' (next week).",
+            "tenseId": "futuro_semplice",
+            "tenseName": "Futuro Semplice",
+            "tenseNameEn": "Simple Future"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io ho visto la televisione",
+                    "exampleSentenceEn": "I have watched television",
+                    "form": "ho visto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu hai visto il film",
+                    "exampleSentenceEn": "You have seen the movie",
+                    "form": "hai visto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui ha visto la stella",
+                    "exampleSentenceEn": "He has seen the star",
+                    "form": "ha visto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi abbiamo visto il panorama",
+                    "exampleSentenceEn": "We have seen the view",
+                    "form": "abbiamo visto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avete visto il quadro",
+                    "exampleSentenceEn": "You have seen the painting",
+                    "form": "avete visto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro hanno visto la luna",
+                    "exampleSentenceEn": "They have seen the moon",
+                    "form": "hanno visto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken Italian.",
+            "tenseId": "passato_prossimo",
+            "tenseName": "Passato Prossimo",
+            "tenseNameEn": "Present Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io vidi la televisione",
+                    "exampleSentenceEn": "I watched television",
+                    "form": "vidi",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu vedesti il film",
+                    "exampleSentenceEn": "You saw the movie",
+                    "form": "vedesti",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui vide la stella",
+                    "exampleSentenceEn": "He saw the star",
+                    "form": "vide",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi vedemmo il panorama",
+                    "exampleSentenceEn": "We saw the view",
+                    "form": "vedemmo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi vedeste il quadro",
+                    "exampleSentenceEn": "You saw the painting",
+                    "form": "vedeste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro videro la luna",
+                    "exampleSentenceEn": "They saw the moon",
+                    "form": "videro",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used primarily in formal and literary Italian to narrate completed past events. Also used in southern Italy in spoken language.",
+            "tenseId": "passato_remoto",
+            "tenseName": "Passato Remoto",
+            "tenseNameEn": "Simple Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io avevo visto la televisione prima che piovesse",
+                    "exampleSentenceEn": "I had watched television before it rained",
+                    "form": "avevo visto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu avevi visto il film prima che venissi",
+                    "exampleSentenceEn": "You had seen the movie before I came",
+                    "form": "avevi visto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui aveva visto la stella prima che arrivassimo",
+                    "exampleSentenceEn": "He had seen the star before we arrived",
+                    "form": "aveva visto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi avevamo visto il panorama prima che facesse buio",
+                    "exampleSentenceEn": "We had seen the view before it got dark",
+                    "form": "avevamo visto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avevate visto il quadro prima della chiusura",
+                    "exampleSentenceEn": "You had seen the painting before closing",
+                    "form": "avevate visto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro avevano visto la luna prima dello spettacolo",
+                    "exampleSentenceEn": "They had seen the moon before the show",
+                    "form": "avevano visto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+            "tenseId": "trapassato_prossimo",
+            "tenseName": "Trapassato Prossimo",
+            "tenseNameEn": "Pluperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Appena ebbi visto la televisione, piovve",
+                    "exampleSentenceEn": "As soon as I had watched television, it rained",
+                    "form": "ebbi visto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Appena avesti visto il film, venni",
+                    "exampleSentenceEn": "As soon as you had seen the movie, I came",
+                    "form": "avesti visto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Appena ebbe visto la stella, arrivammo",
+                    "exampleSentenceEn": "As soon as he had seen the star, we arrived",
+                    "form": "ebbe visto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Appena avemmo visto il panorama, fece buio",
+                    "exampleSentenceEn": "As soon as we had seen the view, it got dark",
+                    "form": "avemmo visto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Appena aveste visto il quadro, il museo chiuse",
+                    "exampleSentenceEn": "As soon as you had seen the painting, the museum closed",
+                    "form": "aveste visto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Appena ebbero visto la luna, lo spettacolo cominciò",
+                    "exampleSentenceEn": "As soon as they had seen the moon, the show began",
+                    "form": "ebbero visto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in formal and literary Italian to express an action that was completed immediately before another past action. Rarely used in modern Italian.",
+            "tenseId": "trapassato_remoto",
+            "tenseName": "Trapassato Remoto",
+            "tenseNameEn": "Past Anterior"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io avrò visto la televisione domani",
+                    "exampleSentenceEn": "I will have watched television tomorrow",
+                    "form": "avrò visto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu avrai visto il film",
+                    "exampleSentenceEn": "You will have seen the movie",
+                    "form": "avrai visto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui avrà visto la stella",
+                    "exampleSentenceEn": "He will have seen the star",
+                    "form": "avrà visto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi avremo visto il panorama",
+                    "exampleSentenceEn": "We will have seen the view",
+                    "form": "avremo visto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avrete visto il quadro",
+                    "exampleSentenceEn": "You will have seen the painting",
+                    "form": "avrete visto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro avranno visto la luna",
+                    "exampleSentenceEn": "They will have seen the moon",
+                    "form": "avranno visto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express actions that will be completed before another future action. Often used with time expressions like 'domani' (tomorrow).",
+            "tenseId": "futuro_anteriore",
+            "tenseName": "Futuro Anteriore",
+            "tenseNameEn": "Future Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io vedrei la televisione se avessi tempo",
+                    "exampleSentenceEn": "I would watch television if I had time",
+                    "form": "vedrei",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu vedresti il film",
+                    "exampleSentenceEn": "You would see the movie",
+                    "form": "vedresti",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui vedrebbe la stella",
+                    "exampleSentenceEn": "He would see the star",
+                    "form": "vedrebbe",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi vedremmo il panorama",
+                    "exampleSentenceEn": "We would see the view",
+                    "form": "vedremmo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi vedreste il quadro",
+                    "exampleSentenceEn": "You would see the painting",
+                    "form": "vedreste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro vedrebbero la luna",
+                    "exampleSentenceEn": "They would see the moon",
+                    "form": "vedrebbero",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'se' (if) clauses.",
+            "tenseId": "condizionale_presente",
+            "tenseName": "Condizionale Presente",
+            "tenseNameEn": "Present Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io avrei visto la televisione se avessi potuto",
+                    "exampleSentenceEn": "I would have watched television if I could have",
+                    "form": "avrei visto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu avresti visto il film",
+                    "exampleSentenceEn": "You would have seen the movie",
+                    "form": "avresti visto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui avrebbe visto la stella",
+                    "exampleSentenceEn": "He would have seen the star",
+                    "form": "avrebbe visto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi avremmo visto il panorama",
+                    "exampleSentenceEn": "We would have seen the view",
+                    "form": "avremmo visto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avreste visto il quadro",
+                    "exampleSentenceEn": "You would have seen the painting",
+                    "form": "avreste visto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro avrebbero visto la luna",
+                    "exampleSentenceEn": "They would have seen the moon",
+                    "form": "avrebbero visto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express hypothetical past actions or regrets about things that didn't happen. Often used with 'se' (if) clauses referring to the past.",
+            "tenseId": "condizionale_passato",
+            "tenseName": "Condizionale Passato",
+            "tenseNameEn": "Past Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "È necessario che io veda la televisione",
+                    "exampleSentenceEn": "I must watch television",
+                    "form": "veda",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Voglio che tu veda il film",
+                    "exampleSentenceEn": "I want you to see the movie",
+                    "form": "veda",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "È necessario che lui veda la stella",
+                    "exampleSentenceEn": "He must see the star",
+                    "form": "veda",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "È necessario che noi vediamo il panorama",
+                    "exampleSentenceEn": "We must see the view",
+                    "form": "vediamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "È necessario che voi vediate il quadro",
+                    "exampleSentenceEn": "You must see the painting",
+                    "form": "vediate",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "È necessario che loro vedano la luna",
+                    "exampleSentenceEn": "They must see the moon",
+                    "form": "vedano",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in dependent clauses after certain expressions of opinion, doubt, emotion, or necessity. Often used after 'è necessario che', 'voglio che', etc.",
+            "tenseId": "congiuntivo_presente",
+            "tenseName": "Congiuntivo Presente",
+            "tenseNameEn": "Present Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Era necessario che io vedessi la televisione",
+                    "exampleSentenceEn": "I had to watch television",
+                    "form": "vedessi",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Volevo che tu vedessi il film",
+                    "exampleSentenceEn": "I wanted you to see the movie",
+                    "form": "vedessi",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Era necessario che lui vedesse la stella",
+                    "exampleSentenceEn": "He had to see the star",
+                    "form": "vedesse",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Era necessario che noi vedessimo il panorama",
+                    "exampleSentenceEn": "We had to see the view",
+                    "form": "vedessimo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Era necessario che voi vedeste il quadro",
+                    "exampleSentenceEn": "You had to see the painting",
+                    "form": "vedeste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Era necessario che loro vedessero la luna",
+                    "exampleSentenceEn": "They had to see the moon",
+                    "form": "vedessero",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in formal and literary Italian after the same triggers as present subjunctive, but referring to past events. Rarely used in modern spoken Italian.",
+            "tenseId": "congiuntivo_imperfetto",
+            "tenseName": "Congiuntivo Imperfetto",
+            "tenseNameEn": "Imperfect Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "È necessario che io abbia visto la televisione",
+                    "exampleSentenceEn": "I must have watched television",
+                    "form": "abbia visto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Voglio che tu abbia visto il film",
+                    "exampleSentenceEn": "I want you to have seen the movie",
+                    "form": "abbia visto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "È necessario che lui abbia visto la stella",
+                    "exampleSentenceEn": "He must have seen the star",
+                    "form": "abbia visto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "È necessario che noi abbiamo visto il panorama",
+                    "exampleSentenceEn": "We must have seen the view",
+                    "form": "abbiamo visto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "È necessario che voi abbiate visto il quadro",
+                    "exampleSentenceEn": "You must have seen the painting",
+                    "form": "abbiate visto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "È necessario che loro abbiano visto la luna",
+                    "exampleSentenceEn": "They must have seen the moon",
+                    "form": "abbiano visto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in dependent clauses after expressions of doubt, emotion, or necessity when referring to a completed action in the past.",
+            "tenseId": "congiuntivo_passato",
+            "tenseName": "Congiuntivo Passato",
+            "tenseNameEn": "Past Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Era necessario che io avessi visto la televisione",
+                    "exampleSentenceEn": "I had to have watched television",
+                    "form": "avessi visto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Volevo che tu avessi visto il film",
+                    "exampleSentenceEn": "I wanted you to have seen the movie",
+                    "form": "avessi visto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Era necessario che lui avesse visto la stella",
+                    "exampleSentenceEn": "He had to have seen the star",
+                    "form": "avesse visto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Era necessario che noi avessimo visto il panorama",
+                    "exampleSentenceEn": "We had to have seen the view",
+                    "form": "avessimo visto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Era necessario che voi aveste visto il quadro",
+                    "exampleSentenceEn": "You had to have seen the painting",
+                    "form": "aveste visto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Era necessario che loro avessero visto la luna",
+                    "exampleSentenceEn": "They had to have seen the moon",
+                    "form": "avessero visto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in formal and literary Italian after the same triggers as other subjunctive tenses, but referring to actions completed before another past action.",
+            "tenseId": "congiuntivo_trapassato",
+            "tenseName": "Congiuntivo Trapassato",
+            "tenseNameEn": "Pluperfect Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Vedi la televisione!",
+                    "exampleSentenceEn": "Watch television!",
+                    "form": "vedi",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Vediamo il film!",
+                    "exampleSentenceEn": "Let's watch the movie!",
+                    "form": "vediamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Vedete il quadro!",
+                    "exampleSentenceEn": "See the painting!",
+                    "form": "vedete",
+                    "pronoun": "voi"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (tu, noi, voi). The subject pronoun is omitted.",
+            "tenseId": "imperativo",
+            "tenseName": "Imperativo",
+            "tenseNameEn": "Imperative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Voglio vedere la televisione",
+                    "exampleSentenceEn": "I want to watch television",
+                    "form": "vedere",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Devo vedere il film",
+                    "exampleSentenceEn": "I must see the movie",
+                    "form": "vedere",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Posso vedere la stella",
+                    "exampleSentenceEn": "I can see the star",
+                    "form": "vedere",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "The base form of the verb, used after modal verbs, prepositions, and in many other constructions.",
+            "tenseId": "infinito_presente",
+            "tenseName": "Infinito Presente",
+            "tenseNameEn": "Present Infinitive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Dopo aver visto la televisione, ho studiato",
+                    "exampleSentenceEn": "After having watched television, I studied",
+                    "form": "aver visto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Prima di aver visto il film, ho lavorato",
+                    "exampleSentenceEn": "Before having seen the movie, I worked",
+                    "form": "aver visto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Dopo aver visto la stella, ho cenato",
+                    "exampleSentenceEn": "After having seen the star, I had dinner",
+                    "form": "aver visto",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express actions that were completed before another action. Often used after modal verbs in the past.",
+            "tenseId": "infinito_passato",
+            "tenseName": "Infinito Passato",
+            "tenseNameEn": "Past Infinitive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Una persona vedente",
+                    "exampleSentenceEn": "A seeing person",
+                    "form": "vedente",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Il lavoro vedente",
+                    "exampleSentenceEn": "The seeing work",
+                    "form": "vedente",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "La macchina vedente",
+                    "exampleSentenceEn": "The seeing machine",
+                    "form": "vedente",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective or in progressive constructions. In modern Italian, it's mainly used as an adjective.",
+            "tenseId": "participio_presente",
+            "tenseName": "Participio Presente",
+            "tenseNameEn": "Present Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ho visto la televisione",
+                    "exampleSentenceEn": "I have watched television",
+                    "form": "visto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Ha visto il film",
+                    "exampleSentenceEn": "She has seen the movie",
+                    "form": "visto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Hanno visto la stella",
+                    "exampleSentenceEn": "They have seen the star",
+                    "form": "visti",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to form compound tenses and as an adjective. Must agree in gender and number with the subject.",
+            "tenseId": "participio_passato",
+            "tenseName": "Participio Passato",
+            "tenseNameEn": "Past Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Sto vedendo la televisione",
+                    "exampleSentenceEn": "I am watching television",
+                    "form": "vedendo",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Stai vedendo il film",
+                    "exampleSentenceEn": "You are seeing the movie",
+                    "form": "vedendo",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Sta vedendo la stella",
+                    "exampleSentenceEn": "He is seeing the star",
+                    "form": "vedendo",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express ongoing actions, often with 'stare' to form the present continuous tense.",
+            "tenseId": "gerundio_presente",
+            "tenseName": "Gerundio Presente",
+            "tenseNameEn": "Present Gerund"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Avendo visto la televisione, ho studiato",
+                    "exampleSentenceEn": "Having watched television, I studied",
+                    "form": "avendo visto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Avendo visto il film, ha riposato",
+                    "exampleSentenceEn": "Having seen the movie, she rested",
+                    "form": "avendo visto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Avendo visto la stella, hanno cenato",
+                    "exampleSentenceEn": "Having seen the star, they had dinner",
+                    "form": "avendo visto",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express actions that were completed before another action. Rarely used in modern Italian.",
+            "tenseId": "gerundio_passato",
+            "tenseName": "Gerundio Passato",
+            "tenseNameEn": "Past Gerund"
+        }
+    ]
+}

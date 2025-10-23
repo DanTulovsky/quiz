@@ -1,0 +1,807 @@
+{
+    "category": "essential",
+    "infinitive": "dare",
+    "infinitiveEn": "to give",
+    "language": "it",
+    "languageName": "Italian",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io do un regalo",
+                    "exampleSentenceEn": "I give a gift",
+                    "form": "do",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu dai un bacio",
+                    "exampleSentenceEn": "You give a kiss",
+                    "form": "dai",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui dà un consiglio",
+                    "exampleSentenceEn": "He gives advice",
+                    "form": "dà",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi diamo una mano",
+                    "exampleSentenceEn": "We give a hand",
+                    "form": "diamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi date un sorriso",
+                    "exampleSentenceEn": "You give a smile",
+                    "form": "date",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro danno un abbraccio",
+                    "exampleSentenceEn": "They give a hug",
+                    "form": "danno",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in Italian.",
+            "tenseId": "presente",
+            "tenseName": "Presente",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io davo un regalo",
+                    "exampleSentenceEn": "I was giving a gift",
+                    "form": "davo",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu davi un bacio",
+                    "exampleSentenceEn": "You were giving a kiss",
+                    "form": "davi",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui dava un consiglio",
+                    "exampleSentenceEn": "He was giving advice",
+                    "form": "dava",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi davamo una mano",
+                    "exampleSentenceEn": "We were giving a hand",
+                    "form": "davamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi davate un sorriso",
+                    "exampleSentenceEn": "You were giving a smile",
+                    "form": "davate",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro davano un abbraccio",
+                    "exampleSentenceEn": "They were giving a hug",
+                    "form": "davano",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to describe ongoing, repeated, or habitual actions in the past. Also used for background information in storytelling.",
+            "tenseId": "imperfetto",
+            "tenseName": "Imperfetto",
+            "tenseNameEn": "Imperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io darò un regalo domani",
+                    "exampleSentenceEn": "I will give a gift tomorrow",
+                    "form": "darò",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu darai un bacio",
+                    "exampleSentenceEn": "You will give a kiss",
+                    "form": "darai",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui darà un consiglio",
+                    "exampleSentenceEn": "He will give advice",
+                    "form": "darà",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi daremo una mano",
+                    "exampleSentenceEn": "We will give a hand",
+                    "form": "daremo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi darete un sorriso",
+                    "exampleSentenceEn": "You will give a smile",
+                    "form": "darete",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro daranno un abbraccio",
+                    "exampleSentenceEn": "They will give a hug",
+                    "form": "daranno",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'domani' (tomorrow) or 'la settimana prossima' (next week).",
+            "tenseId": "futuro_semplice",
+            "tenseName": "Futuro Semplice",
+            "tenseNameEn": "Simple Future"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io ho dato un regalo",
+                    "exampleSentenceEn": "I have given a gift",
+                    "form": "ho dato",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu hai dato un bacio",
+                    "exampleSentenceEn": "You have given a kiss",
+                    "form": "hai dato",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui ha dato un consiglio",
+                    "exampleSentenceEn": "He has given advice",
+                    "form": "ha dato",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi abbiamo dato una mano",
+                    "exampleSentenceEn": "We have given a hand",
+                    "form": "abbiamo dato",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avete dato un sorriso",
+                    "exampleSentenceEn": "You have given a smile",
+                    "form": "avete dato",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro hanno dato un abbraccio",
+                    "exampleSentenceEn": "They have given a hug",
+                    "form": "hanno dato",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken Italian.",
+            "tenseId": "passato_prossimo",
+            "tenseName": "Passato Prossimo",
+            "tenseNameEn": "Present Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io diedi un regalo",
+                    "exampleSentenceEn": "I gave a gift",
+                    "form": "diedi",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu desti un bacio",
+                    "exampleSentenceEn": "You gave a kiss",
+                    "form": "desti",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui diede un consiglio",
+                    "exampleSentenceEn": "He gave advice",
+                    "form": "diede",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi demmo una mano",
+                    "exampleSentenceEn": "We gave a hand",
+                    "form": "demmo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi deste un sorriso",
+                    "exampleSentenceEn": "You gave a smile",
+                    "form": "deste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro diedero un abbraccio",
+                    "exampleSentenceEn": "They gave a hug",
+                    "form": "diedero",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used primarily in formal and literary Italian to narrate completed past events. Also used in southern Italy in spoken language.",
+            "tenseId": "passato_remoto",
+            "tenseName": "Passato Remoto",
+            "tenseNameEn": "Simple Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io avevo dato un regalo prima che piovesse",
+                    "exampleSentenceEn": "I had given a gift before it rained",
+                    "form": "avevo dato",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu avevi dato un bacio prima che venissi",
+                    "exampleSentenceEn": "You had given a kiss before I came",
+                    "form": "avevi dato",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui aveva dato un consiglio prima che arrivassimo",
+                    "exampleSentenceEn": "He had given advice before we arrived",
+                    "form": "aveva dato",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi avevamo dato una mano prima che facesse buio",
+                    "exampleSentenceEn": "We had given a hand before it got dark",
+                    "form": "avevamo dato",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avevate dato un sorriso prima della chiusura",
+                    "exampleSentenceEn": "You had given a smile before closing",
+                    "form": "avevate dato",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro avevano dato un abbraccio prima dello spettacolo",
+                    "exampleSentenceEn": "They had given a hug before the show",
+                    "form": "avevano dato",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+            "tenseId": "trapassato_prossimo",
+            "tenseName": "Trapassato Prossimo",
+            "tenseNameEn": "Pluperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Appena ebbi dato un regalo, piovve",
+                    "exampleSentenceEn": "As soon as I had given a gift, it rained",
+                    "form": "ebbi dato",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Appena avesti dato un bacio, venni",
+                    "exampleSentenceEn": "As soon as you had given a kiss, I came",
+                    "form": "avesti dato",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Appena ebbe dato un consiglio, arrivammo",
+                    "exampleSentenceEn": "As soon as he had given advice, we arrived",
+                    "form": "ebbe dato",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Appena avemmo dato una mano, fece buio",
+                    "exampleSentenceEn": "As soon as we had given a hand, it got dark",
+                    "form": "avemmo dato",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Appena aveste dato un sorriso, il negozio chiuse",
+                    "exampleSentenceEn": "As soon as you had given a smile, the store closed",
+                    "form": "aveste dato",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Appena ebbero dato un abbraccio, lo spettacolo cominciò",
+                    "exampleSentenceEn": "As soon as they had given a hug, the show began",
+                    "form": "ebbero dato",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in formal and literary Italian to express an action that was completed immediately before another past action. Rarely used in modern Italian.",
+            "tenseId": "trapassato_remoto",
+            "tenseName": "Trapassato Remoto",
+            "tenseNameEn": "Past Anterior"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io avrò dato un regalo domani",
+                    "exampleSentenceEn": "I will have given a gift tomorrow",
+                    "form": "avrò dato",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu avrai dato un bacio",
+                    "exampleSentenceEn": "You will have given a kiss",
+                    "form": "avrai dato",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui avrà dato un consiglio",
+                    "exampleSentenceEn": "He will have given advice",
+                    "form": "avrà dato",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi avremo dato una mano",
+                    "exampleSentenceEn": "We will have given a hand",
+                    "form": "avremo dato",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avrete dato un sorriso",
+                    "exampleSentenceEn": "You will have given a smile",
+                    "form": "avrete dato",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro avranno dato un abbraccio",
+                    "exampleSentenceEn": "They will have given a hug",
+                    "form": "avranno dato",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express actions that will be completed before another future action. Often used with time expressions like 'domani' (tomorrow).",
+            "tenseId": "futuro_anteriore",
+            "tenseName": "Futuro Anteriore",
+            "tenseNameEn": "Future Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io darei un regalo se avessi tempo",
+                    "exampleSentenceEn": "I would give a gift if I had time",
+                    "form": "darei",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu daresti un bacio",
+                    "exampleSentenceEn": "You would give a kiss",
+                    "form": "daresti",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui darebbe un consiglio",
+                    "exampleSentenceEn": "He would give advice",
+                    "form": "darebbe",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi daremmo una mano",
+                    "exampleSentenceEn": "We would give a hand",
+                    "form": "daremmo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi dareste un sorriso",
+                    "exampleSentenceEn": "You would give a smile",
+                    "form": "dareste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro darebbero un abbraccio",
+                    "exampleSentenceEn": "They would give a hug",
+                    "form": "darebbero",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'se' (if) clauses.",
+            "tenseId": "condizionale_presente",
+            "tenseName": "Condizionale Presente",
+            "tenseNameEn": "Present Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io avrei dato un regalo se avessi potuto",
+                    "exampleSentenceEn": "I would have given a gift if I could have",
+                    "form": "avrei dato",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu avresti dato un bacio",
+                    "exampleSentenceEn": "You would have given a kiss",
+                    "form": "avresti dato",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui avrebbe dato un consiglio",
+                    "exampleSentenceEn": "He would have given advice",
+                    "form": "avrebbe dato",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi avremmo dato una mano",
+                    "exampleSentenceEn": "We would have given a hand",
+                    "form": "avremmo dato",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avreste dato un sorriso",
+                    "exampleSentenceEn": "You would have given a smile",
+                    "form": "avreste dato",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro avrebbero dato un abbraccio",
+                    "exampleSentenceEn": "They would have given a hug",
+                    "form": "avrebbero dato",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express hypothetical past actions or regrets about things that didn't happen. Often used with 'se' (if) clauses referring to the past.",
+            "tenseId": "condizionale_passato",
+            "tenseName": "Condizionale Passato",
+            "tenseNameEn": "Past Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "È necessario che io dia un regalo",
+                    "exampleSentenceEn": "I must give a gift",
+                    "form": "dia",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Voglio che tu dia un bacio",
+                    "exampleSentenceEn": "I want you to give a kiss",
+                    "form": "dia",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "È necessario che lui dia un consiglio",
+                    "exampleSentenceEn": "He must give advice",
+                    "form": "dia",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "È necessario che noi diamo una mano",
+                    "exampleSentenceEn": "We must give a hand",
+                    "form": "diamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "È necessario che voi diate un sorriso",
+                    "exampleSentenceEn": "You must give a smile",
+                    "form": "diate",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "È necessario che loro diano un abbraccio",
+                    "exampleSentenceEn": "They must give a hug",
+                    "form": "diano",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in dependent clauses after certain expressions of opinion, doubt, emotion, or necessity. Often used after 'è necessario che', 'voglio che', etc.",
+            "tenseId": "congiuntivo_presente",
+            "tenseName": "Congiuntivo Presente",
+            "tenseNameEn": "Present Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Era necessario che io dessi un regalo",
+                    "exampleSentenceEn": "I had to give a gift",
+                    "form": "dessi",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Volevo che tu dessi un bacio",
+                    "exampleSentenceEn": "I wanted you to give a kiss",
+                    "form": "dessi",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Era necessario che lui desse un consiglio",
+                    "exampleSentenceEn": "He had to give advice",
+                    "form": "desse",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Era necessario che noi dessimo una mano",
+                    "exampleSentenceEn": "We had to give a hand",
+                    "form": "dessimo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Era necessario che voi deste un sorriso",
+                    "exampleSentenceEn": "You had to give a smile",
+                    "form": "deste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Era necessario che loro dessero un abbraccio",
+                    "exampleSentenceEn": "They had to give a hug",
+                    "form": "dessero",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in formal and literary Italian after the same triggers as present subjunctive, but referring to past events. Rarely used in modern spoken Italian.",
+            "tenseId": "congiuntivo_imperfetto",
+            "tenseName": "Congiuntivo Imperfetto",
+            "tenseNameEn": "Imperfect Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "È necessario che io abbia dato un regalo",
+                    "exampleSentenceEn": "I must have given a gift",
+                    "form": "abbia dato",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Voglio che tu abbia dato un bacio",
+                    "exampleSentenceEn": "I want you to have given a kiss",
+                    "form": "abbia dato",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "È necessario che lui abbia dato un consiglio",
+                    "exampleSentenceEn": "He must have given advice",
+                    "form": "abbia dato",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "È necessario che noi abbiamo dato una mano",
+                    "exampleSentenceEn": "We must have given a hand",
+                    "form": "abbiamo dato",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "È necessario che voi abbiate dato un sorriso",
+                    "exampleSentenceEn": "You must have given a smile",
+                    "form": "abbiate dato",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "È necessario che loro abbiano dato un abbraccio",
+                    "exampleSentenceEn": "They must have given a hug",
+                    "form": "abbiano dato",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in dependent clauses after expressions of doubt, emotion, or necessity when referring to a completed action in the past.",
+            "tenseId": "congiuntivo_passato",
+            "tenseName": "Congiuntivo Passato",
+            "tenseNameEn": "Past Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Era necessario che io avessi dato un regalo",
+                    "exampleSentenceEn": "I had to have given a gift",
+                    "form": "avessi dato",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Volevo che tu avessi dato un bacio",
+                    "exampleSentenceEn": "I wanted you to have given a kiss",
+                    "form": "avessi dato",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Era necessario che lui avesse dato un consiglio",
+                    "exampleSentenceEn": "He had to have given advice",
+                    "form": "avesse dato",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Era necessario che noi avessimo dato una mano",
+                    "exampleSentenceEn": "We had to have given a hand",
+                    "form": "avessimo dato",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Era necessario che voi aveste dato un sorriso",
+                    "exampleSentenceEn": "You had to have given a smile",
+                    "form": "aveste dato",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Era necessario che loro avessero dato un abbraccio",
+                    "exampleSentenceEn": "They had to have given a hug",
+                    "form": "avessero dato",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in formal and literary Italian after the same triggers as other subjunctive tenses, but referring to actions completed before another past action.",
+            "tenseId": "congiuntivo_trapassato",
+            "tenseName": "Congiuntivo Trapassato",
+            "tenseNameEn": "Pluperfect Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Dai un regalo!",
+                    "exampleSentenceEn": "Give a gift!",
+                    "form": "dai",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Diamo una mano!",
+                    "exampleSentenceEn": "Let's give a hand!",
+                    "form": "diamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Date un sorriso!",
+                    "exampleSentenceEn": "Give a smile!",
+                    "form": "date",
+                    "pronoun": "voi"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (tu, noi, voi). The subject pronoun is omitted.",
+            "tenseId": "imperativo",
+            "tenseName": "Imperativo",
+            "tenseNameEn": "Imperative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Voglio dare un regalo",
+                    "exampleSentenceEn": "I want to give a gift",
+                    "form": "dare",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Devo dare un bacio",
+                    "exampleSentenceEn": "I must give a kiss",
+                    "form": "dare",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Posso dare un consiglio",
+                    "exampleSentenceEn": "I can give advice",
+                    "form": "dare",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "The base form of the verb, used after modal verbs, prepositions, and in many other constructions.",
+            "tenseId": "infinito_presente",
+            "tenseName": "Infinito Presente",
+            "tenseNameEn": "Present Infinitive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Dopo aver dato un regalo, ho studiato",
+                    "exampleSentenceEn": "After having given a gift, I studied",
+                    "form": "aver dato",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Prima di aver dato un bacio, ho lavorato",
+                    "exampleSentenceEn": "Before having given a kiss, I worked",
+                    "form": "aver dato",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Dopo aver dato un consiglio, ho cenato",
+                    "exampleSentenceEn": "After having given advice, I had dinner",
+                    "form": "aver dato",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express actions that were completed before another action. Often used after modal verbs in the past.",
+            "tenseId": "infinito_passato",
+            "tenseName": "Infinito Passato",
+            "tenseNameEn": "Past Infinitive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Una persona dante",
+                    "exampleSentenceEn": "A giving person",
+                    "form": "dante",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Il lavoro dante",
+                    "exampleSentenceEn": "The giving work",
+                    "form": "dante",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "La macchina dante",
+                    "exampleSentenceEn": "The giving machine",
+                    "form": "dante",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective or in progressive constructions. In modern Italian, it's mainly used as an adjective.",
+            "tenseId": "participio_presente",
+            "tenseName": "Participio Presente",
+            "tenseNameEn": "Present Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ho dato un regalo",
+                    "exampleSentenceEn": "I have given a gift",
+                    "form": "dato",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Ha dato un bacio",
+                    "exampleSentenceEn": "She has given a kiss",
+                    "form": "dato",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Hanno dato un consiglio",
+                    "exampleSentenceEn": "They have given advice",
+                    "form": "dati",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to form compound tenses and as an adjective. Must agree in gender and number with the subject.",
+            "tenseId": "participio_passato",
+            "tenseName": "Participio Passato",
+            "tenseNameEn": "Past Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Sto dando un regalo",
+                    "exampleSentenceEn": "I am giving a gift",
+                    "form": "dando",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Stai dando un bacio",
+                    "exampleSentenceEn": "You are giving a kiss",
+                    "form": "dando",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Sta dando un consiglio",
+                    "exampleSentenceEn": "He is giving advice",
+                    "form": "dando",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express ongoing actions, often with 'stare' to form the present continuous tense.",
+            "tenseId": "gerundio_presente",
+            "tenseName": "Gerundio Presente",
+            "tenseNameEn": "Present Gerund"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Avendo dato un regalo, ho studiato",
+                    "exampleSentenceEn": "Having given a gift, I studied",
+                    "form": "avendo dato",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Avendo dato un bacio, ha riposato",
+                    "exampleSentenceEn": "Having given a kiss, she rested",
+                    "form": "avendo dato",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Avendo dato un consiglio, hanno cenato",
+                    "exampleSentenceEn": "Having given advice, they had dinner",
+                    "form": "avendo dato",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express actions that were completed before another action. Rarely used in modern Italian.",
+            "tenseId": "gerundio_passato",
+            "tenseName": "Gerundio Passato",
+            "tenseNameEn": "Past Gerund"
+        }
+    ]
+}

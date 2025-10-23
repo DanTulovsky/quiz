@@ -1,0 +1,651 @@
+{
+    "category": "essential",
+    "infinitive": "avoir",
+    "infinitiveEn": "to have",
+    "language": "fr",
+    "languageName": "French",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'ai un livre",
+                    "exampleSentenceEn": "I have a book",
+                    "form": "ai",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu as faim",
+                    "exampleSentenceEn": "You are hungry",
+                    "form": "as",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Elle a un chat",
+                    "exampleSentenceEn": "She has a cat",
+                    "form": "a",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous avons le temps",
+                    "exampleSentenceEn": "We have time",
+                    "form": "avons",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous avez raison",
+                    "exampleSentenceEn": "You are right",
+                    "form": "avez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils ont une maison",
+                    "exampleSentenceEn": "They have a house",
+                    "form": "ont",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in French.",
+            "tenseId": "present",
+            "tenseName": "Présent",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'avais faim",
+                    "exampleSentenceEn": "I was hungry",
+                    "form": "avais",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu avais raison",
+                    "exampleSentenceEn": "You were right",
+                    "form": "avais",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Elle avait un chien",
+                    "exampleSentenceEn": "She had a dog",
+                    "form": "avait",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous avions le temps",
+                    "exampleSentenceEn": "We had time",
+                    "form": "avions",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous aviez peur",
+                    "exampleSentenceEn": "You were afraid",
+                    "form": "aviez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils avaient une voiture",
+                    "exampleSentenceEn": "They had a car",
+                    "form": "avaient",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to describe ongoing, repeated, or habitual actions in the past. Also used for descriptions, states of being, and background information in storytelling.",
+            "tenseId": "imparfait",
+            "tenseName": "Imparfait",
+            "tenseNameEn": "Imperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'aurai le temps",
+                    "exampleSentenceEn": "I will have time",
+                    "form": "aurai",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu auras du succès",
+                    "exampleSentenceEn": "You will succeed",
+                    "form": "auras",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Elle aura un enfant",
+                    "exampleSentenceEn": "She will have a child",
+                    "form": "aura",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous aurons de la chance",
+                    "exampleSentenceEn": "We will be lucky",
+                    "form": "aurons",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous aurez raison",
+                    "exampleSentenceEn": "You will be right",
+                    "form": "aurez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils auront une fête",
+                    "exampleSentenceEn": "They will have a party",
+                    "form": "auront",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'demain' (tomorrow) or 'la semaine prochaine' (next week).",
+            "tenseId": "futur",
+            "tenseName": "Futur Simple",
+            "tenseNameEn": "Simple Future"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'ai eu de la chance",
+                    "exampleSentenceEn": "I have been lucky",
+                    "form": "ai eu",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu as eu raison",
+                    "exampleSentenceEn": "You have been right",
+                    "form": "as eu",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Elle a eu un enfant",
+                    "exampleSentenceEn": "She has had a child",
+                    "form": "a eu",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous avons eu le temps",
+                    "exampleSentenceEn": "We have had time",
+                    "form": "avons eu",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous avez eu peur",
+                    "exampleSentenceEn": "You have been afraid",
+                    "form": "avez eu",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils ont eu une fête",
+                    "exampleSentenceEn": "They have had a party",
+                    "form": "ont eu",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken French.",
+            "tenseId": "passe_compose",
+            "tenseName": "Passé Composé",
+            "tenseNameEn": "Present Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'eus une révélation soudaine en lisant ce livre",
+                    "exampleSentenceEn": "I had a sudden revelation while reading this book",
+                    "form": "eus",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu eus beaucoup de difficultés pendant cette période",
+                    "exampleSentenceEn": "You had many difficulties during this period",
+                    "form": "eus",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Elle eut trois enfants au cours de sa vie",
+                    "exampleSentenceEn": "She had three children during her life",
+                    "form": "eut",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous eûmes la chance de rencontrer des gens extraordinaires",
+                    "exampleSentenceEn": "We had the chance to meet extraordinary people",
+                    "form": "eûmes",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous eûtes le courage de dire la vérité",
+                    "exampleSentenceEn": "You had the courage to tell the truth",
+                    "form": "eûtes",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils eurent beaucoup de succès dans leurs entreprises",
+                    "exampleSentenceEn": "They had a lot of success in their ventures",
+                    "form": "eurent",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used primarily in formal and literary French to narrate completed past events. Common in written literature, historical texts, and formal storytelling, but rarely used in everyday speech.",
+            "tenseId": "passe_simple",
+            "tenseName": "Passé Simple",
+            "tenseNameEn": "Simple Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'avais eu des doutes avant de prendre ma décision",
+                    "exampleSentenceEn": "I had had doubts before making my decision",
+                    "form": "avais eu",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu avais eu raison de te méfier de lui",
+                    "exampleSentenceEn": "You had been right to be wary of him",
+                    "form": "avais eu",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Elle avait eu beaucoup de problèmes avant de trouver cette solution",
+                    "exampleSentenceEn": "She had had many problems before finding this solution",
+                    "form": "avait eu",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous avions eu le temps de tout préparer avant leur arrivée",
+                    "exampleSentenceEn": "We had had time to prepare everything before their arrival",
+                    "form": "avions eu",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous aviez eu l'occasion de voyager beaucoup dans votre jeunesse",
+                    "exampleSentenceEn": "You had had the opportunity to travel a lot in your youth",
+                    "form": "aviez eu",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils avaient eu une grande fête avant de déménager",
+                    "exampleSentenceEn": "They had had a big party before moving",
+                    "form": "avaient eu",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express actions that were completed before another past action. Essential for establishing the sequence of past events and often used with 'avant' or 'après'.",
+            "tenseId": "plus_que_parfait",
+            "tenseName": "Plus-que-parfait",
+            "tenseNameEn": "Pluperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'aurai eu le temps de finir avant ton retour",
+                    "exampleSentenceEn": "I will have had time to finish before you return",
+                    "form": "aurai eu",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu auras certainement eu des nouvelles d'ici là",
+                    "exampleSentenceEn": "You will certainly have had news by then",
+                    "form": "auras eu",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Elle aura eu cinquante ans le mois prochain",
+                    "exampleSentenceEn": "She will have been fifty years old next month",
+                    "form": "aura eu",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous aurons eu assez de temps pour tout vérifier",
+                    "exampleSentenceEn": "We will have had enough time to check everything",
+                    "form": "aurons eu",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous aurez eu l'occasion de réfléchir avant de répondre",
+                    "exampleSentenceEn": "You will have had the opportunity to think before answering",
+                    "form": "aurez eu",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils auront eu plusieurs avertissements avant d'être sanctionnés",
+                    "exampleSentenceEn": "They will have had several warnings before being sanctioned",
+                    "form": "auront eu",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express actions that will be completed before another future action or before a specific time in the future. Often used with time expressions like 'quand' or 'dès que'.",
+            "tenseId": "futur_anterieur",
+            "tenseName": "Futur Antérieur",
+            "tenseNameEn": "Future Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'aurais le temps",
+                    "exampleSentenceEn": "I would have time",
+                    "form": "aurais",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu aurais raison",
+                    "exampleSentenceEn": "You would be right",
+                    "form": "aurais",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Elle aurait un enfant",
+                    "exampleSentenceEn": "She would have a child",
+                    "form": "aurait",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous aurions de la chance",
+                    "exampleSentenceEn": "We would be lucky",
+                    "form": "aurions",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous auriez peur",
+                    "exampleSentenceEn": "You would be afraid",
+                    "form": "auriez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils auraient une fête",
+                    "exampleSentenceEn": "They would have a party",
+                    "form": "auraient",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'si' (if) clauses.",
+            "tenseId": "conditionnel_present",
+            "tenseName": "Conditionnel Présent",
+            "tenseNameEn": "Present Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'aurais eu plus de temps si j'avais commencé plus tôt",
+                    "exampleSentenceEn": "I would have had more time if I had started earlier",
+                    "form": "aurais eu",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu aurais eu raison de refuser cette offre",
+                    "exampleSentenceEn": "You would have been right to refuse this offer",
+                    "form": "aurais eu",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Elle aurait eu une meilleure vie si elle avait fait d'autres choix",
+                    "exampleSentenceEn": "She would have had a better life if she had made other choices",
+                    "form": "aurait eu",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous aurions eu moins de problèmes si nous avions été mieux préparés",
+                    "exampleSentenceEn": "We would have had fewer problems if we had been better prepared",
+                    "form": "aurions eu",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous auriez eu l'occasion de le rencontrer si vous étiez venus",
+                    "exampleSentenceEn": "You would have had the opportunity to meet him if you had come",
+                    "form": "auriez eu",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils auraient eu plus de succès avec une stratégie différente",
+                    "exampleSentenceEn": "They would have had more success with a different strategy",
+                    "form": "auraient eu",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express hypothetical past actions or regrets about things that didn't happen. Often used to describe what would have happened under different circumstances.",
+            "tenseId": "conditionnel_passe",
+            "tenseName": "Conditionnel Passé",
+            "tenseNameEn": "Past Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Il faut que j'aie le temps",
+                    "exampleSentenceEn": "I need to have time",
+                    "form": "aie",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Il faut que tu aies raison",
+                    "exampleSentenceEn": "You need to be right",
+                    "form": "aies",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il faut qu'elle ait de la chance",
+                    "exampleSentenceEn": "She needs to be lucky",
+                    "form": "ait",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Il faut que nous ayons le temps",
+                    "exampleSentenceEn": "We need to have time",
+                    "form": "ayons",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Il faut que vous ayez de la chance",
+                    "exampleSentenceEn": "You need to be lucky",
+                    "form": "ayez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Il faut qu'ils aient une fête",
+                    "exampleSentenceEn": "They need to have a party",
+                    "form": "aient",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used in dependent clauses after certain expressions of opinion, doubt, emotion, or necessity. Common triggers include 'il faut que' (it's necessary that) and 'je veux que' (I want that).",
+            "tenseId": "subjonctif_present",
+            "tenseName": "Subjonctif Présent",
+            "tenseNameEn": "Present Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Aie de la patience!",
+                    "exampleSentenceEn": "Be patient!",
+                    "form": "aie",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Ayons du courage!",
+                    "exampleSentenceEn": "Let's be brave!",
+                    "form": "ayons",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Ayez confiance!",
+                    "exampleSentenceEn": "Have faith!",
+                    "form": "ayez",
+                    "pronoun": "vous"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (tu, vous) and first person plural (nous). The subject pronoun is usually omitted.",
+            "tenseId": "imperatif",
+            "tenseName": "Impératif",
+            "tenseNameEn": "Imperative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Il aurait fallu que j'eusse plus de temps pour finir",
+                    "exampleSentenceEn": "It would have been necessary that I had more time to finish",
+                    "form": "eusse",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Je souhaitais que tu eusses cette opportunité",
+                    "exampleSentenceEn": "I wished that you had this opportunity",
+                    "form": "eusses",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Bien qu'il eût beaucoup d'argent, il restait généreux",
+                    "exampleSentenceEn": "Although he had a lot of money, he remained generous",
+                    "form": "eût",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Il voulait que nous eussions confiance en lui",
+                    "exampleSentenceEn": "He wanted us to have confidence in him",
+                    "form": "eussions",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Je craignais que vous n'eussiez pas assez de provisions",
+                    "exampleSentenceEn": "I feared that you didn't have enough supplies",
+                    "form": "eussiez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Il importait qu'ils eussent toutes les informations nécessaires",
+                    "exampleSentenceEn": "It was important that they had all the necessary information",
+                    "form": "eussent",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used in formal and literary French after the same triggers as present subjunctive, but when the main clause is in a past tense. Rarely used in modern spoken French.",
+            "tenseId": "subjonctif_imparfait",
+            "tenseName": "Subjonctif Imparfait",
+            "tenseNameEn": "Imperfect Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Je regrette que j'aie eu si peu de patience",
+                    "exampleSentenceEn": "I regret that I had so little patience",
+                    "form": "aie eu",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Il est dommage que tu aies eu ces difficultés",
+                    "exampleSentenceEn": "It's a pity that you had these difficulties",
+                    "form": "aies eu",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Je suis heureux qu'elle ait eu cette chance",
+                    "exampleSentenceEn": "I'm happy that she had this chance",
+                    "form": "ait eu",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Bien que nous ayons eu des problèmes, nous avons réussi",
+                    "exampleSentenceEn": "Although we had problems, we succeeded",
+                    "form": "ayons eu",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Je doute que vous ayez eu le temps de tout préparer",
+                    "exampleSentenceEn": "I doubt that you had time to prepare everything",
+                    "form": "ayez eu",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "C'est incroyable qu'ils aient eu autant de succès",
+                    "exampleSentenceEn": "It's incredible that they had so much success",
+                    "form": "aient eu",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used in dependent clauses after expressions of doubt, emotion, or necessity when referring to a completed action in the past. Formed with the present subjunctive of the auxiliary verb plus the past participle.",
+            "tenseId": "subjonctif_passe",
+            "tenseName": "Subjonctif Passé",
+            "tenseNameEn": "Past Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Dès que j'eus eu la confirmation, je les appelai",
+                    "exampleSentenceEn": "As soon as I had received confirmation, I called them",
+                    "form": "eus eu",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Quand tu eus eu fini ton travail, tu partis en vacances",
+                    "exampleSentenceEn": "When you had finished your work, you went on vacation",
+                    "form": "eus eu",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lorsqu'elle eut eu son diplôme, elle chercha un emploi",
+                    "exampleSentenceEn": "When she had gotten her diploma, she looked for a job",
+                    "form": "eut eu",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Après que nous eûmes eu leur accord, nous commençâmes le projet",
+                    "exampleSentenceEn": "After we had gotten their agreement, we started the project",
+                    "form": "eûmes eu",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Dès que vous eûtes eu les résultats, vous nous informâtes",
+                    "exampleSentenceEn": "As soon as you had gotten the results, you informed us",
+                    "form": "eûtes eu",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Quand ils eurent eu toutes les réponses, ils prirent leur décision",
+                    "exampleSentenceEn": "When they had gotten all the answers, they made their decision",
+                    "form": "eurent eu",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used in formal and literary French to express an action that was completed immediately before another past action. Typically follows time expressions like 'quand', 'lorsque', 'après que', 'dès que'.",
+            "tenseId": "passe_anterieur",
+            "tenseName": "Passé Antérieur",
+            "tenseNameEn": "Past Anterior"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'eus l'occasion de visiter Paris l'année dernière",
+                    "exampleSentenceEn": "I had the opportunity to visit Paris last year",
+                    "form": "eus",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu eus de la chance de réussir cet examen difficile",
+                    "exampleSentenceEn": "You were lucky to pass this difficult exam",
+                    "form": "eus",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Elle eut une carrière exceptionnelle dans la médecine",
+                    "exampleSentenceEn": "She had an exceptional career in medicine",
+                    "form": "eut",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous eûmes beaucoup de difficultés au début du projet",
+                    "exampleSentenceEn": "We had many difficulties at the beginning of the project",
+                    "form": "eûmes",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous eûtes le courage de prendre cette décision importante",
+                    "exampleSentenceEn": "You had the courage to make this important decision",
+                    "form": "eûtes",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils eurent une influence considérable sur l'évolution de la société",
+                    "exampleSentenceEn": "They had a considerable influence on the evolution of society",
+                    "form": "eurent",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used primarily in literary French and formal writing to narrate completed actions in the past. Rarely used in spoken French but essential for reading literature and formal documents.",
+            "tenseId": "passe_simple",
+            "tenseName": "Passé Simple",
+            "tenseNameEn": "Simple Past"
+        }
+    ]
+}

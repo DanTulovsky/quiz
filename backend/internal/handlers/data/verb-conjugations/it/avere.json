@@ -1,0 +1,819 @@
+{
+    "category": "essential",
+    "infinitive": "avere",
+    "infinitiveEn": "to have",
+    "language": "it",
+    "languageName": "Italian",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io ho un libro",
+                    "exampleSentenceEn": "I have a book",
+                    "form": "ho",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu hai fame",
+                    "exampleSentenceEn": "You are hungry",
+                    "form": "hai",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lei ha un gatto",
+                    "exampleSentenceEn": "She has a cat",
+                    "form": "ha",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi abbiamo tempo",
+                    "exampleSentenceEn": "We have time",
+                    "form": "abbiamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avete ragione",
+                    "exampleSentenceEn": "You are right",
+                    "form": "avete",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro hanno una casa",
+                    "exampleSentenceEn": "They have a house",
+                    "form": "hanno",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in Italian.",
+            "tenseId": "presente",
+            "tenseName": "Presente",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io avevo fame",
+                    "exampleSentenceEn": "I was hungry",
+                    "form": "avevo",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu avevi ragione",
+                    "exampleSentenceEn": "You were right",
+                    "form": "avevi",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lei aveva un cane",
+                    "exampleSentenceEn": "She had a dog",
+                    "form": "aveva",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi avevamo tempo",
+                    "exampleSentenceEn": "We had time",
+                    "form": "avevamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avevate paura",
+                    "exampleSentenceEn": "You were afraid",
+                    "form": "avevate",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro avevano una macchina",
+                    "exampleSentenceEn": "They had a car",
+                    "form": "avevano",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to describe ongoing, repeated, or habitual actions in the past. Also used for descriptions, states of being, and background information in storytelling.",
+            "tenseId": "imperfetto",
+            "tenseName": "Imperfetto",
+            "tenseNameEn": "Imperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io avrò tempo",
+                    "exampleSentenceEn": "I will have time",
+                    "form": "avrò",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu avrai successo",
+                    "exampleSentenceEn": "You will succeed",
+                    "form": "avrai",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lei avrà un figlio",
+                    "exampleSentenceEn": "She will have a child",
+                    "form": "avrà",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi avremo fortuna",
+                    "exampleSentenceEn": "We will be lucky",
+                    "form": "avremo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avrete ragione",
+                    "exampleSentenceEn": "You will be right",
+                    "form": "avrete",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro avranno una festa",
+                    "exampleSentenceEn": "They will have a party",
+                    "form": "avranno",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'domani' (tomorrow) or 'la prossima settimana' (next week).",
+            "tenseId": "futuro_semplice",
+            "tenseName": "Futuro Semplice",
+            "tenseNameEn": "Simple Future"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io ho avuto fortuna",
+                    "exampleSentenceEn": "I have been lucky",
+                    "form": "ho avuto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu hai avuto ragione",
+                    "exampleSentenceEn": "You have been right",
+                    "form": "hai avuto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lei ha avuto un figlio",
+                    "exampleSentenceEn": "She has had a child",
+                    "form": "ha avuto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi abbiamo avuto tempo",
+                    "exampleSentenceEn": "We have had time",
+                    "form": "abbiamo avuto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avete avuto paura",
+                    "exampleSentenceEn": "You have been afraid",
+                    "form": "avete avuto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro hanno avuto una festa",
+                    "exampleSentenceEn": "They have had a party",
+                    "form": "hanno avuto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken Italian.",
+            "tenseId": "passato_prossimo",
+            "tenseName": "Passato Prossimo",
+            "tenseNameEn": "Present Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io ebbi una rivelazione improvvisa leggendo quel libro",
+                    "exampleSentenceEn": "I had a sudden revelation while reading that book",
+                    "form": "ebbi",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu avesti molte difficoltà durante quel periodo",
+                    "exampleSentenceEn": "You had many difficulties during that period",
+                    "form": "avesti",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lei ebbe tre figli nel corso della sua vita",
+                    "exampleSentenceEn": "She had three children during her life",
+                    "form": "ebbe",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi avemmo la fortuna di incontrare persone straordinarie",
+                    "exampleSentenceEn": "We had the fortune to meet extraordinary people",
+                    "form": "avemmo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi aveste il coraggio di dire la verità",
+                    "exampleSentenceEn": "You had the courage to tell the truth",
+                    "form": "aveste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro ebbero molto successo nelle loro imprese",
+                    "exampleSentenceEn": "They had a lot of success in their ventures",
+                    "form": "ebbero",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to describe completed actions in the distant past with no connection to the present. More common in Southern Italy and in formal writing, literature, and historical narratives.",
+            "tenseId": "passato_remoto",
+            "tenseName": "Passato Remoto",
+            "tenseNameEn": "Remote Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io avevo avuto dei dubbi prima di prendere la decisione",
+                    "exampleSentenceEn": "I had had doubts before making the decision",
+                    "form": "avevo avuto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu avevi avuto ragione a diffidare di lui",
+                    "exampleSentenceEn": "You had been right to be wary of him",
+                    "form": "avevi avuto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lei aveva avuto molti problemi prima di trovare questa soluzione",
+                    "exampleSentenceEn": "She had had many problems before finding this solution",
+                    "form": "aveva avuto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi avevamo avuto il tempo di preparare tutto prima del loro arrivo",
+                    "exampleSentenceEn": "We had had time to prepare everything before their arrival",
+                    "form": "avevamo avuto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avevate avuto l'occasione di viaggiare molto nella vostra gioventù",
+                    "exampleSentenceEn": "You had had the opportunity to travel a lot in your youth",
+                    "form": "avevate avuto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro avevano avuto una grande festa prima di trasferirsi",
+                    "exampleSentenceEn": "They had had a big party before moving",
+                    "form": "avevano avuto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express actions that were completed before another past action. Essential for establishing the sequence of past events, often used with 'prima' or 'dopo'.",
+            "tenseId": "trapassato_prossimo",
+            "tenseName": "Trapassato Prossimo",
+            "tenseNameEn": "Pluperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io avrò avuto il tempo di finire prima del tuo ritorno",
+                    "exampleSentenceEn": "I will have had time to finish before you return",
+                    "form": "avrò avuto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu avrai certamente avuto notizie entro allora",
+                    "exampleSentenceEn": "You will certainly have had news by then",
+                    "form": "avrai avuto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lei avrà avuto cinquant'anni il mese prossimo",
+                    "exampleSentenceEn": "She will have been fifty years old next month",
+                    "form": "avrà avuto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi avremo avuto abbastanza tempo per controllare tutto",
+                    "exampleSentenceEn": "We will have had enough time to check everything",
+                    "form": "avremo avuto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avrete avuto l'occasione di riflettere prima di rispondere",
+                    "exampleSentenceEn": "You will have had the opportunity to think before answering",
+                    "form": "avrete avuto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro avranno avuto diversi avvertimenti prima di essere sanzionati",
+                    "exampleSentenceEn": "They will have had several warnings before being sanctioned",
+                    "form": "avranno avuto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express actions that will be completed before another future action or before a specific time in the future. Often used with time expressions like 'quando' or 'dopo che'.",
+            "tenseId": "futuro_anteriore",
+            "tenseName": "Futuro Anteriore",
+            "tenseNameEn": "Future Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io avrei tempo",
+                    "exampleSentenceEn": "I would have time",
+                    "form": "avrei",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu avresti ragione",
+                    "exampleSentenceEn": "You would be right",
+                    "form": "avresti",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lei avrebbe un figlio",
+                    "exampleSentenceEn": "She would have a child",
+                    "form": "avrebbe",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi avremmo fortuna",
+                    "exampleSentenceEn": "We would be lucky",
+                    "form": "avremmo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avreste paura",
+                    "exampleSentenceEn": "You would be afraid",
+                    "form": "avreste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro avrebbero una festa",
+                    "exampleSentenceEn": "They would have a party",
+                    "form": "avrebbero",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'se' (if) clauses.",
+            "tenseId": "condizionale_presente",
+            "tenseName": "Condizionale Presente",
+            "tenseNameEn": "Present Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io avrei avuto più tempo se avessi cominciato prima",
+                    "exampleSentenceEn": "I would have had more time if I had started earlier",
+                    "form": "avrei avuto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu avresti avuto ragione a rifiutare quell'offerta",
+                    "exampleSentenceEn": "You would have been right to refuse that offer",
+                    "form": "avresti avuto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lei avrebbe avuto una vita migliore se avesse fatto scelte diverse",
+                    "exampleSentenceEn": "She would have had a better life if she had made different choices",
+                    "form": "avrebbe avuto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi avremmo avuto meno problemi se fossimo stati meglio preparati",
+                    "exampleSentenceEn": "We would have had fewer problems if we had been better prepared",
+                    "form": "avremmo avuto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avreste avuto l'occasione di incontrarlo se foste venuti",
+                    "exampleSentenceEn": "You would have had the opportunity to meet him if you had come",
+                    "form": "avreste avuto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro avrebbero avuto più successo con una strategia diversa",
+                    "exampleSentenceEn": "They would have had more success with a different strategy",
+                    "form": "avrebbero avuto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express hypothetical past actions or regrets about things that didn't happen. Often used to describe what would have happened under different circumstances.",
+            "tenseId": "condizionale_passato",
+            "tenseName": "Condizionale Passato",
+            "tenseNameEn": "Past Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Spero che io abbia tempo",
+                    "exampleSentenceEn": "I hope that I have time",
+                    "form": "abbia",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Spero che tu abbia ragione",
+                    "exampleSentenceEn": "I hope that you are right",
+                    "form": "abbia",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Spero che lei abbia fortuna",
+                    "exampleSentenceEn": "I hope that she is lucky",
+                    "form": "abbia",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Spero che noi abbiamo tempo",
+                    "exampleSentenceEn": "I hope that we have time",
+                    "form": "abbiamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Spero che voi abbiate fortuna",
+                    "exampleSentenceEn": "I hope that you are lucky",
+                    "form": "abbiate",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Spero che loro abbiano una festa",
+                    "exampleSentenceEn": "I hope that they have a party",
+                    "form": "abbiano",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in dependent clauses after certain expressions of opinion, doubt, emotion, or necessity. Common triggers include 'spero che' (I hope that) and 'è importante che' (it's important that).",
+            "tenseId": "congiuntivo_presente",
+            "tenseName": "Congiuntivo Presente",
+            "tenseNameEn": "Present Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Abbi pazienza!",
+                    "exampleSentenceEn": "Be patient!",
+                    "form": "abbi",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Abbiamo coraggio!",
+                    "exampleSentenceEn": "Let's be brave!",
+                    "form": "abbiamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Abbiate fiducia!",
+                    "exampleSentenceEn": "Have faith!",
+                    "form": "abbiate",
+                    "pronoun": "voi"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (tu, voi) and first person plural (noi). The subject pronoun is usually omitted.",
+            "tenseId": "imperativo",
+            "tenseName": "Imperativo",
+            "tenseNameEn": "Imperative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Credevo che io avessi abbastanza esperienza",
+                    "exampleSentenceEn": "I believed that I had enough experience",
+                    "form": "avessi",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Speravo che tu avessi capito la lezione",
+                    "exampleSentenceEn": "I hoped that you had understood the lesson",
+                    "form": "avessi",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Pensavo che lei avesse più tempo libero",
+                    "exampleSentenceEn": "I thought that she had more free time",
+                    "form": "avesse",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Volevano che noi avessimo più pazienza",
+                    "exampleSentenceEn": "They wanted us to have more patience",
+                    "form": "avessimo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Temevo che voi aveste dei problemi",
+                    "exampleSentenceEn": "I feared that you had problems",
+                    "form": "aveste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Dubitavo che loro avessero le competenze necessarie",
+                    "exampleSentenceEn": "I doubted that they had the necessary skills",
+                    "form": "avessero",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in dependent clauses after expressions of doubt, emotion, or necessity when the main clause is in a past tense. Essential for expressing hypothetical situations in the past.",
+            "tenseId": "congiuntivo_imperfetto",
+            "tenseName": "Congiuntivo Imperfetto",
+            "tenseNameEn": "Imperfect Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Spero che io abbia avuto ragione a fidarmi",
+                    "exampleSentenceEn": "I hope that I was right to trust",
+                    "form": "abbia avuto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Mi dispiace che tu abbia avuto questa delusione",
+                    "exampleSentenceEn": "I'm sorry that you had this disappointment",
+                    "form": "abbia avuto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "È probabile che lei abbia avuto un contrattempo",
+                    "exampleSentenceEn": "It's likely that she had a setback",
+                    "form": "abbia avuto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Temo che noi abbiamo avuto un malinteso",
+                    "exampleSentenceEn": "I fear that we had a misunderstanding",
+                    "form": "abbiamo avuto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Sono felice che voi abbiate avuto successo",
+                    "exampleSentenceEn": "I'm happy that you had success",
+                    "form": "abbiate avuto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Dubito che loro abbiano avuto il tempo di finire",
+                    "exampleSentenceEn": "I doubt that they had time to finish",
+                    "form": "abbiano avuto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in dependent clauses after expressions of doubt, emotion, or necessity when referring to a completed action in the past. Formed with the present subjunctive of the auxiliary verb plus the past participle.",
+            "tenseId": "congiuntivo_passato",
+            "tenseName": "Congiuntivo Passato",
+            "tenseNameEn": "Past Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Se io avessi avuto più coraggio, avrei parlato",
+                    "exampleSentenceEn": "If I had had more courage, I would have spoken",
+                    "form": "avessi avuto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Credevo che tu avessi avuto una buona ragione",
+                    "exampleSentenceEn": "I believed that you had had a good reason",
+                    "form": "avessi avuto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Pensavo che lei avesse avuto un'infanzia difficile",
+                    "exampleSentenceEn": "I thought that she had had a difficult childhood",
+                    "form": "avesse avuto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Se noi avessimo avuto più informazioni, avremmo deciso diversamente",
+                    "exampleSentenceEn": "If we had had more information, we would have decided differently",
+                    "form": "avessimo avuto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Speravo che voi aveste avuto l'opportunità di viaggiare",
+                    "exampleSentenceEn": "I hoped that you had had the opportunity to travel",
+                    "form": "aveste avuto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Dubitavo che loro avessero avuto abbastanza risorse",
+                    "exampleSentenceEn": "I doubted that they had had enough resources",
+                    "form": "avessero avuto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in dependent clauses to express an action that occurred before another past action, often in hypothetical or contrary-to-fact statements. Formed with the imperfect subjunctive of the auxiliary verb plus the past participle.",
+            "tenseId": "congiuntivo_trapassato",
+            "tenseName": "Congiuntivo Trapassato",
+            "tenseNameEn": "Pluperfect Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Dopo che io ebbi avuto la conferma, partii subito",
+                    "exampleSentenceEn": "After I had received confirmation, I left at once",
+                    "form": "ebbi avuto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Appena tu avesti avuto notizie, ci chiamasti",
+                    "exampleSentenceEn": "As soon as you had received news, you called us",
+                    "form": "avesti avuto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Quando lei ebbe avuto il diploma, cercò lavoro",
+                    "exampleSentenceEn": "When she had gotten her diploma, she looked for work",
+                    "form": "ebbe avuto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Dopo che noi avemmo avuto l'approvazione, iniziammo il lavoro",
+                    "exampleSentenceEn": "After we had gotten approval, we started the work",
+                    "form": "avemmo avuto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Appena voi aveste avuto i risultati, li comunicaste",
+                    "exampleSentenceEn": "As soon as you had gotten the results, you communicated them",
+                    "form": "aveste avuto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Quando loro ebbero avuto tutte le risposte, presero la decisione",
+                    "exampleSentenceEn": "When they had gotten all the answers, they made the decision",
+                    "form": "ebbero avuto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in formal and literary Italian to express an action completed immediately before another past action in the remote past. Typically follows time expressions like 'dopo che', 'quando', 'appena'.",
+            "tenseId": "trapassato_remoto",
+            "tenseName": "Trapassato Remoto",
+            "tenseNameEn": "Preterite Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "È importante avere pazienza",
+                    "exampleSentenceEn": "It's important to have patience",
+                    "form": "avere",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Voglio avere successo nella vita",
+                    "exampleSentenceEn": "I want to have success in life",
+                    "form": "avere",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Prima di avere figli, viaggiavano molto",
+                    "exampleSentenceEn": "Before having children, they traveled a lot",
+                    "form": "avere",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "The base form of the verb, used after auxiliary verbs, prepositions, and in many other constructions. The infinitive form of 'avere' is used to express possession, necessity, or obligation.",
+            "tenseId": "infinito_presente",
+            "tenseName": "Infinito Presente",
+            "tenseNameEn": "Present Infinitive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Dopo aver avuto questa esperienza, è diventato più saggio",
+                    "exampleSentenceEn": "After having had this experience, he became wiser",
+                    "form": "aver avuto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Senza aver avuto preparazione, affrontò l'esame",
+                    "exampleSentenceEn": "Without having had preparation, she faced the exam",
+                    "form": "aver avuto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Oltre ad aver avuto successo, è anche rimasto umile",
+                    "exampleSentenceEn": "Besides having had success, he also remained humble",
+                    "form": "aver avuto",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express an action that occurred before the main action. Formed with the infinitive of 'essere' or 'avere' plus the past participle.",
+            "tenseId": "infinito_passato",
+            "tenseName": "Infinito Passato",
+            "tenseNameEn": "Past Infinitive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Il cliente avente diritto può richiedere il rimborso",
+                    "exampleSentenceEn": "The client having the right can request a refund",
+                    "form": "avente",
+                    "pronoun": "maschile singolare"
+                },
+                {
+                    "exampleSentence": "La persona avente esperienza viene preferita",
+                    "exampleSentenceEn": "The person having experience is preferred",
+                    "form": "avente",
+                    "pronoun": "femminile singolare"
+                },
+                {
+                    "exampleSentence": "Gli studenti aventi buoni voti ricevono borse di studio",
+                    "exampleSentenceEn": "Students having good grades receive scholarships",
+                    "form": "aventi",
+                    "pronoun": "maschile plurale"
+                },
+                {
+                    "exampleSentence": "Le aziende aventi certificazioni sono più competitive",
+                    "exampleSentenceEn": "Companies having certifications are more competitive",
+                    "form": "aventi",
+                    "pronoun": "femminile plurale"
+                }
+            ],
+            "description": "Used as an adjective to describe a noun that is currently performing or having something. Functions as an adjective and agrees with the noun in gender and number.",
+            "tenseId": "participio_presente",
+            "tenseName": "Participio Presente",
+            "tenseNameEn": "Present Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "È avuto successo grazie al suo impegno",
+                    "exampleSentenceEn": "He had success thanks to his commitment",
+                    "form": "avuto",
+                    "pronoun": "maschile singolare"
+                },
+                {
+                    "exampleSentence": "È avuta una bella opportunità",
+                    "exampleSentenceEn": "She had a beautiful opportunity",
+                    "form": "avuta",
+                    "pronoun": "femminile singolare"
+                },
+                {
+                    "exampleSentence": "Sono avuti molti complimenti",
+                    "exampleSentenceEn": "They had many compliments",
+                    "form": "avuti",
+                    "pronoun": "maschile plurale"
+                },
+                {
+                    "exampleSentence": "Sono avute grandi soddisfazioni",
+                    "exampleSentenceEn": "They had great satisfactions",
+                    "form": "avute",
+                    "pronoun": "femminile plurale"
+                }
+            ],
+            "description": "Used to form compound tenses and as an adjective. The past participle of 'avere' is used in compound tenses with 'essere' as auxiliary.",
+            "tenseId": "participio_passato",
+            "tenseName": "Participio Passato",
+            "tenseNameEn": "Past Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Avendo tempo libero, decise di leggere un libro",
+                    "exampleSentenceEn": "Having free time, he decided to read a book",
+                    "form": "avendo",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Avendo esperienza, riuscì a risolvere il problema",
+                    "exampleSentenceEn": "Having experience, she managed to solve the problem",
+                    "form": "avendo",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Avendo fiducia in sé stesso, affrontò la sfida",
+                    "exampleSentenceEn": "Having confidence in himself, he faced the challenge",
+                    "form": "avendo",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express an action occurring simultaneously with the main action. Functions as an adverb and is invariable.",
+            "tenseId": "gerundio_presente",
+            "tenseName": "Gerundio Presente",
+            "tenseNameEn": "Present Gerund"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Avendo avuto questa esperienza, poté dare consigli utili",
+                    "exampleSentenceEn": "Having had this experience, he could give useful advice",
+                    "form": "avendo avuto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Avendo avuto successo, diventò più sicuro di sé",
+                    "exampleSentenceEn": "Having had success, she became more self-confident",
+                    "form": "avendo avuto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Avendo avuto la possibilità, decisero di partire",
+                    "exampleSentenceEn": "Having had the opportunity, they decided to leave",
+                    "form": "avendo avuto",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express an action that occurred before the main action. Formed with the gerund of 'avere' plus the past participle.",
+            "tenseId": "gerundio_passato",
+            "tenseName": "Gerundio Passato",
+            "tenseNameEn": "Past Gerund"
+        }
+    ]
+}

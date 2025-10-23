@@ -1,0 +1,387 @@
+{
+    "category": "essential",
+    "infinitive": "haben",
+    "infinitiveEn": "to have",
+    "language": "de",
+    "languageName": "German",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich habe ein Buch",
+                    "exampleSentenceEn": "I have a book",
+                    "form": "habe",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du hast Hunger",
+                    "exampleSentenceEn": "You are hungry",
+                    "form": "hast",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Sie hat eine Katze",
+                    "exampleSentenceEn": "She has a cat",
+                    "form": "hat",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir haben Zeit",
+                    "exampleSentenceEn": "We have time",
+                    "form": "haben",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr habt recht",
+                    "exampleSentenceEn": "You are right",
+                    "form": "habt",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie haben ein Haus",
+                    "exampleSentenceEn": "They have a house",
+                    "form": "haben",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in German.",
+            "tenseId": "praesens",
+            "tenseName": "Präsens",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich hatte Hunger",
+                    "exampleSentenceEn": "I was hungry",
+                    "form": "hatte",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du hattest recht",
+                    "exampleSentenceEn": "You were right",
+                    "form": "hattest",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Sie hatte einen Hund",
+                    "exampleSentenceEn": "She had a dog",
+                    "form": "hatte",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir hatten Zeit",
+                    "exampleSentenceEn": "We had time",
+                    "form": "hatten",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr hattet Angst",
+                    "exampleSentenceEn": "You were afraid",
+                    "form": "hattet",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie hatten ein Auto",
+                    "exampleSentenceEn": "They had a car",
+                    "form": "hatten",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used primarily in written German and formal speech to describe completed actions in the past. Also used in storytelling and narratives.",
+            "tenseId": "praeteritum",
+            "tenseName": "Präteritum",
+            "tenseNameEn": "Simple Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich werde Zeit haben",
+                    "exampleSentenceEn": "I will have time",
+                    "form": "werde haben",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du wirst Erfolg haben",
+                    "exampleSentenceEn": "You will succeed",
+                    "form": "wirst haben",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Sie wird ein Kind haben",
+                    "exampleSentenceEn": "She will have a child",
+                    "form": "wird haben",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir werden Glück haben",
+                    "exampleSentenceEn": "We will be lucky",
+                    "form": "werden haben",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr werdet recht haben",
+                    "exampleSentenceEn": "You will be right",
+                    "form": "werdet haben",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie werden eine Party haben",
+                    "exampleSentenceEn": "They will have a party",
+                    "form": "werden haben",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'morgen' (tomorrow) or 'nächste Woche' (next week).",
+            "tenseId": "futur_i",
+            "tenseName": "Futur I",
+            "tenseNameEn": "Future I"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Bis morgen werde ich die Antwort gehabt haben",
+                    "exampleSentenceEn": "By tomorrow, I will have had the answer",
+                    "form": "werde gehabt haben",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du wirst sicher einen anstrengenden Tag gehabt haben",
+                    "exampleSentenceEn": "You will surely have had an exhausting day",
+                    "form": "wirst gehabt haben",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er wird wahrscheinlich keine Zeit gehabt haben, dich anzurufen",
+                    "exampleSentenceEn": "He will probably not have had time to call you",
+                    "form": "wird gehabt haben",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Bis Ende des Jahres werden wir genug Geld für die Reise gehabt haben",
+                    "exampleSentenceEn": "By the end of the year, we will have had enough money for the trip",
+                    "form": "werden gehabt haben",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr werdet bestimmt viel Spaß auf der Party gehabt haben",
+                    "exampleSentenceEn": "You will certainly have had a lot of fun at the party",
+                    "form": "werdet gehabt haben",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie werden bis dahin drei Meetings gehabt haben",
+                    "exampleSentenceEn": "They will have had three meetings by then",
+                    "form": "werden gehabt haben",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express actions that will be completed by a certain point in the future. Often used with time expressions like 'bis morgen' (by tomorrow) or to make assumptions about past events.",
+            "tenseId": "futur_ii",
+            "tenseName": "Futur II",
+            "tenseNameEn": "Future Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich habe Glück gehabt",
+                    "exampleSentenceEn": "I have been lucky",
+                    "form": "habe gehabt",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du hast recht gehabt",
+                    "exampleSentenceEn": "You have been right",
+                    "form": "hast gehabt",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Sie hat ein Kind gehabt",
+                    "exampleSentenceEn": "She has had a child",
+                    "form": "hat gehabt",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir haben Zeit gehabt",
+                    "exampleSentenceEn": "We have had time",
+                    "form": "haben gehabt",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr habt Angst gehabt",
+                    "exampleSentenceEn": "You have been afraid",
+                    "form": "habt gehabt",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie haben eine Party gehabt",
+                    "exampleSentenceEn": "They have had a party",
+                    "form": "haben gehabt",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken German.",
+            "tenseId": "perfekt",
+            "tenseName": "Perfekt",
+            "tenseNameEn": "Present Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich hatte vor dem Unfall noch nie Probleme mit dem Auto gehabt",
+                    "exampleSentenceEn": "I had never had problems with the car before the accident",
+                    "form": "hatte gehabt",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du hattest großes Glück gehabt, dass nichts Schlimmes passiert war",
+                    "exampleSentenceEn": "You had been very lucky that nothing bad had happened",
+                    "form": "hattest gehabt",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Sie hatte schon drei Katzen gehabt, bevor sie den Hund bekam",
+                    "exampleSentenceEn": "She had already had three cats before she got the dog",
+                    "form": "hatte gehabt",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir hatten keine Ahnung gehabt, was uns erwartete",
+                    "exampleSentenceEn": "We had had no idea what was waiting for us",
+                    "form": "hatten gehabt",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr hattet genug Zeit gehabt, um alles vorzubereiten",
+                    "exampleSentenceEn": "You had had enough time to prepare everything",
+                    "form": "hattet gehabt",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie hatten lange Zweifel gehabt, bevor sie die Entscheidung trafen",
+                    "exampleSentenceEn": "They had had doubts for a long time before they made the decision",
+                    "form": "hatten gehabt",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+            "tenseId": "plusquamperfekt",
+            "tenseName": "Plusquamperfekt",
+            "tenseNameEn": "Pluperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Er sagt, er habe Zeit",
+                    "exampleSentenceEn": "He says he has time",
+                    "form": "habe",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Er sagt, du habest recht",
+                    "exampleSentenceEn": "He says you are right",
+                    "form": "habest",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er sagt, sie habe Glück",
+                    "exampleSentenceEn": "He says she is lucky",
+                    "form": "habe",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Er sagt, wir haben Zeit",
+                    "exampleSentenceEn": "He says we have time",
+                    "form": "haben",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Er sagt, ihr habet Glück",
+                    "exampleSentenceEn": "He says you are lucky",
+                    "form": "habet",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Er sagt, sie haben eine Party",
+                    "exampleSentenceEn": "He says they have a party",
+                    "form": "haben",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used primarily in indirect speech and formal writing to report what someone else has said. Also used in certain fixed expressions and formal contexts.",
+            "tenseId": "konjunktiv_i",
+            "tenseName": "Konjunktiv I",
+            "tenseNameEn": "Subjunctive I"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich hätte Zeit",
+                    "exampleSentenceEn": "I would have time",
+                    "form": "hätte",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du hättest recht",
+                    "exampleSentenceEn": "You would be right",
+                    "form": "hättest",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Sie hätte ein Kind",
+                    "exampleSentenceEn": "She would have a child",
+                    "form": "hätte",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir hätten Glück",
+                    "exampleSentenceEn": "We would be lucky",
+                    "form": "hätten",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr hättet Angst",
+                    "exampleSentenceEn": "You would be afraid",
+                    "form": "hättet",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie hätten eine Party",
+                    "exampleSentenceEn": "They would have a party",
+                    "form": "hätten",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'wenn' (if) clauses.",
+            "tenseId": "konjunktiv_ii",
+            "tenseName": "Konjunktiv II",
+            "tenseNameEn": "Subjunctive II"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Hab keine Angst vor der Herausforderung!",
+                    "exampleSentenceEn": "Don't be afraid of the challenge!",
+                    "form": "hab",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Habt Vertrauen in euch selbst!",
+                    "exampleSentenceEn": "Have confidence in yourselves!",
+                    "form": "habt",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Haben Sie bitte etwas Geduld mit uns!",
+                    "exampleSentenceEn": "Please have some patience with us!",
+                    "form": "haben Sie",
+                    "pronoun": "Sie"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (du, ihr) and formal address (Sie). The subject pronoun is usually omitted.",
+            "tenseId": "imperativ",
+            "tenseName": "Imperativ",
+            "tenseNameEn": "Imperative"
+        }
+    ]
+}

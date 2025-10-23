@@ -1,0 +1,807 @@
+{
+    "category": "essential",
+    "infinitive": "dovere",
+    "infinitiveEn": "to have to/must",
+    "language": "it",
+    "languageName": "Italian",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io devo studiare",
+                    "exampleSentenceEn": "I must study",
+                    "form": "devo",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu devi lavorare",
+                    "exampleSentenceEn": "You must work",
+                    "form": "devi",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui deve andare",
+                    "exampleSentenceEn": "He must go",
+                    "form": "deve",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi dobbiamo partire",
+                    "exampleSentenceEn": "We must leave",
+                    "form": "dobbiamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi dovete venire",
+                    "exampleSentenceEn": "You must come",
+                    "form": "dovete",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro devono restare",
+                    "exampleSentenceEn": "They must stay",
+                    "form": "devono",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in Italian.",
+            "tenseId": "presente",
+            "tenseName": "Presente",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io dovevo studiare",
+                    "exampleSentenceEn": "I had to study",
+                    "form": "dovevo",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu dovevi lavorare",
+                    "exampleSentenceEn": "You had to work",
+                    "form": "dovevi",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui doveva andare",
+                    "exampleSentenceEn": "He had to go",
+                    "form": "doveva",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi dovevamo partire",
+                    "exampleSentenceEn": "We had to leave",
+                    "form": "dovevamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi dovevate venire",
+                    "exampleSentenceEn": "You had to come",
+                    "form": "dovevate",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro dovevano restare",
+                    "exampleSentenceEn": "They had to stay",
+                    "form": "dovevano",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to describe ongoing, repeated, or habitual actions in the past. Also used for background information in storytelling.",
+            "tenseId": "imperfetto",
+            "tenseName": "Imperfetto",
+            "tenseNameEn": "Imperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io dovrò studiare domani",
+                    "exampleSentenceEn": "I will have to study tomorrow",
+                    "form": "dovrò",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu dovrai lavorare",
+                    "exampleSentenceEn": "You will have to work",
+                    "form": "dovrai",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui dovrà andare",
+                    "exampleSentenceEn": "He will have to go",
+                    "form": "dovrà",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi dovremo partire",
+                    "exampleSentenceEn": "We will have to leave",
+                    "form": "dovremo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi dovrete venire",
+                    "exampleSentenceEn": "You will have to come",
+                    "form": "dovrete",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro dovranno restare",
+                    "exampleSentenceEn": "They will have to stay",
+                    "form": "dovranno",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'domani' (tomorrow) or 'la settimana prossima' (next week).",
+            "tenseId": "futuro_semplice",
+            "tenseName": "Futuro Semplice",
+            "tenseNameEn": "Simple Future"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io ho dovuto studiare",
+                    "exampleSentenceEn": "I have had to study",
+                    "form": "ho dovuto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu hai dovuto lavorare",
+                    "exampleSentenceEn": "You have had to work",
+                    "form": "hai dovuto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui ha dovuto andare",
+                    "exampleSentenceEn": "He has had to go",
+                    "form": "ha dovuto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi abbiamo dovuto partire",
+                    "exampleSentenceEn": "We have had to leave",
+                    "form": "abbiamo dovuto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avete dovuto venire",
+                    "exampleSentenceEn": "You have had to come",
+                    "form": "avete dovuto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro hanno dovuto restare",
+                    "exampleSentenceEn": "They have had to stay",
+                    "form": "hanno dovuto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken Italian.",
+            "tenseId": "passato_prossimo",
+            "tenseName": "Passato Prossimo",
+            "tenseNameEn": "Present Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io dovetti studiare",
+                    "exampleSentenceEn": "I had to study",
+                    "form": "dovetti",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu dovesti lavorare",
+                    "exampleSentenceEn": "You had to work",
+                    "form": "dovesti",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui dovette andare",
+                    "exampleSentenceEn": "He had to go",
+                    "form": "dovette",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi dovemmo partire",
+                    "exampleSentenceEn": "We had to leave",
+                    "form": "dovemmo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi doveste venire",
+                    "exampleSentenceEn": "You had to come",
+                    "form": "doveste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro doverono restare",
+                    "exampleSentenceEn": "They had to stay",
+                    "form": "doverono",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used primarily in formal and literary Italian to narrate completed past events. Also used in southern Italy in spoken language.",
+            "tenseId": "passato_remoto",
+            "tenseName": "Passato Remoto",
+            "tenseNameEn": "Simple Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io avevo dovuto studiare prima che piovesse",
+                    "exampleSentenceEn": "I had had to study before it rained",
+                    "form": "avevo dovuto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu avevi dovuto lavorare prima che venissi",
+                    "exampleSentenceEn": "You had had to work before I came",
+                    "form": "avevi dovuto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui aveva dovuto andare prima che arrivassimo",
+                    "exampleSentenceEn": "He had had to go before we arrived",
+                    "form": "aveva dovuto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi avevamo dovuto partire prima che facesse buio",
+                    "exampleSentenceEn": "We had had to leave before it got dark",
+                    "form": "avevamo dovuto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avevate dovuto venire prima della chiusura",
+                    "exampleSentenceEn": "You had had to come before closing",
+                    "form": "avevate dovuto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro avevano dovuto restare prima dello spettacolo",
+                    "exampleSentenceEn": "They had had to stay before the show",
+                    "form": "avevano dovuto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+            "tenseId": "trapassato_prossimo",
+            "tenseName": "Trapassato Prossimo",
+            "tenseNameEn": "Pluperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Appena ebbi dovuto studiare, piovve",
+                    "exampleSentenceEn": "As soon as I had had to study, it rained",
+                    "form": "ebbi dovuto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Appena avesti dovuto lavorare, venni",
+                    "exampleSentenceEn": "As soon as you had had to work, I came",
+                    "form": "avesti dovuto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Appena ebbe dovuto andare, arrivammo",
+                    "exampleSentenceEn": "As soon as he had had to go, we arrived",
+                    "form": "ebbe dovuto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Appena avemmo dovuto partire, fece buio",
+                    "exampleSentenceEn": "As soon as we had had to leave, it got dark",
+                    "form": "avemmo dovuto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Appena aveste dovuto venire, l'ufficio chiuse",
+                    "exampleSentenceEn": "As soon as you had had to come, the office closed",
+                    "form": "aveste dovuto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Appena ebbero dovuto restare, lo spettacolo cominciò",
+                    "exampleSentenceEn": "As soon as they had had to stay, the show began",
+                    "form": "ebbero dovuto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in formal and literary Italian to express an action that was completed immediately before another past action. Rarely used in modern Italian.",
+            "tenseId": "trapassato_remoto",
+            "tenseName": "Trapassato Remoto",
+            "tenseNameEn": "Past Anterior"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io avrò dovuto studiare domani",
+                    "exampleSentenceEn": "I will have had to study tomorrow",
+                    "form": "avrò dovuto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu avrai dovuto lavorare",
+                    "exampleSentenceEn": "You will have had to work",
+                    "form": "avrai dovuto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui avrà dovuto andare",
+                    "exampleSentenceEn": "He will have had to go",
+                    "form": "avrà dovuto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi avremo dovuto partire",
+                    "exampleSentenceEn": "We will have had to leave",
+                    "form": "avremo dovuto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avrete dovuto venire",
+                    "exampleSentenceEn": "You will have had to come",
+                    "form": "avrete dovuto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro avranno dovuto restare",
+                    "exampleSentenceEn": "They will have had to stay",
+                    "form": "avranno dovuto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express actions that will be completed before another future action. Often used with time expressions like 'domani' (tomorrow).",
+            "tenseId": "futuro_anteriore",
+            "tenseName": "Futuro Anteriore",
+            "tenseNameEn": "Future Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io dovrei studiare se avessi tempo",
+                    "exampleSentenceEn": "I would have to study if I had time",
+                    "form": "dovrei",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu dovresti lavorare",
+                    "exampleSentenceEn": "You would have to work",
+                    "form": "dovresti",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui dovrebbe andare",
+                    "exampleSentenceEn": "He would have to go",
+                    "form": "dovrebbe",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi dovremmo partire",
+                    "exampleSentenceEn": "We would have to leave",
+                    "form": "dovremmo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi dovreste venire",
+                    "exampleSentenceEn": "You would have to come",
+                    "form": "dovreste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro dovrebbero restare",
+                    "exampleSentenceEn": "They would have to stay",
+                    "form": "dovrebbero",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'se' (if) clauses.",
+            "tenseId": "condizionale_presente",
+            "tenseName": "Condizionale Presente",
+            "tenseNameEn": "Present Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io avrei dovuto studiare se avessi potuto",
+                    "exampleSentenceEn": "I would have had to study if I could have",
+                    "form": "avrei dovuto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu avresti dovuto lavorare",
+                    "exampleSentenceEn": "You would have had to work",
+                    "form": "avresti dovuto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui avrebbe dovuto andare",
+                    "exampleSentenceEn": "He would have had to go",
+                    "form": "avrebbe dovuto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi avremmo dovuto partire",
+                    "exampleSentenceEn": "We would have had to leave",
+                    "form": "avremmo dovuto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avreste dovuto venire",
+                    "exampleSentenceEn": "You would have had to come",
+                    "form": "avreste dovuto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro avrebbero dovuto restare",
+                    "exampleSentenceEn": "They would have had to stay",
+                    "form": "avrebbero dovuto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express hypothetical past actions or regrets about things that didn't happen. Often used with 'se' (if) clauses referring to the past.",
+            "tenseId": "condizionale_passato",
+            "tenseName": "Condizionale Passato",
+            "tenseNameEn": "Past Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "È necessario che io debba studiare",
+                    "exampleSentenceEn": "I must study",
+                    "form": "debba",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Voglio che tu debba lavorare",
+                    "exampleSentenceEn": "I want you to have to work",
+                    "form": "debba",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "È necessario che lui debba andare",
+                    "exampleSentenceEn": "He must go",
+                    "form": "debba",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "È necessario che noi dobbiamo partire",
+                    "exampleSentenceEn": "We must leave",
+                    "form": "dobbiamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "È necessario che voi dobbiate venire",
+                    "exampleSentenceEn": "You must come",
+                    "form": "dobbiate",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "È necessario che loro debbano restare",
+                    "exampleSentenceEn": "They must stay",
+                    "form": "debbano",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in dependent clauses after certain expressions of opinion, doubt, emotion, or necessity. Often used after 'è necessario che', 'voglio che', etc.",
+            "tenseId": "congiuntivo_presente",
+            "tenseName": "Congiuntivo Presente",
+            "tenseNameEn": "Present Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Era necessario che io dovessi studiare",
+                    "exampleSentenceEn": "I had to study",
+                    "form": "dovessi",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Volevo che tu dovessi lavorare",
+                    "exampleSentenceEn": "I wanted you to have to work",
+                    "form": "dovessi",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Era necessario che lui dovesse andare",
+                    "exampleSentenceEn": "He had to go",
+                    "form": "dovesse",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Era necessario che noi dovessimo partire",
+                    "exampleSentenceEn": "We had to leave",
+                    "form": "dovessimo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Era necessario che voi doveste venire",
+                    "exampleSentenceEn": "You had to come",
+                    "form": "doveste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Era necessario che loro dovessero restare",
+                    "exampleSentenceEn": "They had to stay",
+                    "form": "dovessero",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in formal and literary Italian after the same triggers as present subjunctive, but referring to past events. Rarely used in modern spoken Italian.",
+            "tenseId": "congiuntivo_imperfetto",
+            "tenseName": "Congiuntivo Imperfetto",
+            "tenseNameEn": "Imperfect Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "È necessario che io abbia dovuto studiare",
+                    "exampleSentenceEn": "I must have had to study",
+                    "form": "abbia dovuto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Voglio che tu abbia dovuto lavorare",
+                    "exampleSentenceEn": "I want you to have had to work",
+                    "form": "abbia dovuto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "È necessario che lui abbia dovuto andare",
+                    "exampleSentenceEn": "He must have had to go",
+                    "form": "abbia dovuto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "È necessario che noi abbiamo dovuto partire",
+                    "exampleSentenceEn": "We must have had to leave",
+                    "form": "abbiamo dovuto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "È necessario che voi abbiate dovuto venire",
+                    "exampleSentenceEn": "You must have had to come",
+                    "form": "abbiate dovuto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "È necessario che loro abbiano dovuto restare",
+                    "exampleSentenceEn": "They must have had to stay",
+                    "form": "abbiano dovuto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in dependent clauses after expressions of doubt, emotion, or necessity when referring to a completed action in the past.",
+            "tenseId": "congiuntivo_passato",
+            "tenseName": "Congiuntivo Passato",
+            "tenseNameEn": "Past Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Era necessario che io avessi dovuto studiare",
+                    "exampleSentenceEn": "I had to have had to study",
+                    "form": "avessi dovuto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Volevo che tu avessi dovuto lavorare",
+                    "exampleSentenceEn": "I wanted you to have had to work",
+                    "form": "avessi dovuto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Era necessario che lui avesse dovuto andare",
+                    "exampleSentenceEn": "He had to have had to go",
+                    "form": "avesse dovuto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Era necessario che noi avessimo dovuto partire",
+                    "exampleSentenceEn": "We had to have had to leave",
+                    "form": "avessimo dovuto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Era necessario che voi aveste dovuto venire",
+                    "exampleSentenceEn": "You had to have had to come",
+                    "form": "aveste dovuto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Era necessario che loro avessero dovuto restare",
+                    "exampleSentenceEn": "They had to have had to stay",
+                    "form": "avessero dovuto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in formal and literary Italian after the same triggers as other subjunctive tenses, but referring to actions completed before another past action.",
+            "tenseId": "congiuntivo_trapassato",
+            "tenseName": "Congiuntivo Trapassato",
+            "tenseNameEn": "Pluperfect Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (tu, noi, voi). The subject pronoun is omitted.",
+            "tenseId": "imperativo",
+            "tenseName": "Imperativo",
+            "tenseNameEn": "Imperative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Voglio dovere studiare",
+                    "exampleSentenceEn": "I want to have to study",
+                    "form": "dovere",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Devo dovere lavorare",
+                    "exampleSentenceEn": "I must have to work",
+                    "form": "dovere",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Posso dovere andare",
+                    "exampleSentenceEn": "I can have to go",
+                    "form": "dovere",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "The base form of the verb, used after modal verbs, prepositions, and in many other constructions.",
+            "tenseId": "infinito_presente",
+            "tenseName": "Infinito Presente",
+            "tenseNameEn": "Present Infinitive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Dopo aver dovuto studiare, ho lavorato",
+                    "exampleSentenceEn": "After having had to study, I worked",
+                    "form": "aver dovuto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Prima di aver dovuto lavorare, ho riposato",
+                    "exampleSentenceEn": "Before having had to work, I rested",
+                    "form": "aver dovuto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Dopo aver dovuto andare, ho cenato",
+                    "exampleSentenceEn": "After having had to go, I had dinner",
+                    "form": "aver dovuto",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express actions that were completed before another action. Often used after modal verbs in the past.",
+            "tenseId": "infinito_passato",
+            "tenseName": "Infinito Passato",
+            "tenseNameEn": "Past Infinitive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Una persona dovente",
+                    "exampleSentenceEn": "A having to person",
+                    "form": "dovente",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Il lavoro dovente",
+                    "exampleSentenceEn": "The having to work",
+                    "form": "dovente",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "La macchina dovente",
+                    "exampleSentenceEn": "The having to machine",
+                    "form": "dovente",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective or in progressive constructions. In modern Italian, it's mainly used as an adjective.",
+            "tenseId": "participio_presente",
+            "tenseName": "Participio Presente",
+            "tenseNameEn": "Present Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ho dovuto studiare",
+                    "exampleSentenceEn": "I have had to study",
+                    "form": "dovuto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Ha dovuto lavorare",
+                    "exampleSentenceEn": "She has had to work",
+                    "form": "dovuto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Hanno dovuto andare",
+                    "exampleSentenceEn": "They have had to go",
+                    "form": "dovuti",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to form compound tenses and as an adjective. Must agree in gender and number with the subject.",
+            "tenseId": "participio_passato",
+            "tenseName": "Participio Passato",
+            "tenseNameEn": "Past Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Sto dovendo studiare",
+                    "exampleSentenceEn": "I am having to study",
+                    "form": "dovendo",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Stai dovendo lavorare",
+                    "exampleSentenceEn": "You are having to work",
+                    "form": "dovendo",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Sta dovendo andare",
+                    "exampleSentenceEn": "He is having to go",
+                    "form": "dovendo",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express ongoing actions, often with 'stare' to form the present continuous tense.",
+            "tenseId": "gerundio_presente",
+            "tenseName": "Gerundio Presente",
+            "tenseNameEn": "Present Gerund"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Avendo dovuto studiare, ho lavorato",
+                    "exampleSentenceEn": "Having had to study, I worked",
+                    "form": "avendo dovuto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Avendo dovuto lavorare, ha riposato",
+                    "exampleSentenceEn": "Having had to work, she rested",
+                    "form": "avendo dovuto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Avendo dovuto andare, hanno cenato",
+                    "exampleSentenceEn": "Having had to go, they had dinner",
+                    "form": "avendo dovuto",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express actions that were completed before another action. Rarely used in modern Italian.",
+            "tenseId": "gerundio_passato",
+            "tenseName": "Gerundio Passato",
+            "tenseNameEn": "Past Gerund"
+        }
+    ]
+}

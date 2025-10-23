@@ -1,0 +1,807 @@
+{
+    "category": "essential",
+    "infinitive": "potere",
+    "infinitiveEn": "to be able to/can",
+    "language": "it",
+    "languageName": "Italian",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io posso aiutarti",
+                    "exampleSentenceEn": "I can help you",
+                    "form": "posso",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu puoi venire",
+                    "exampleSentenceEn": "You can come",
+                    "form": "puoi",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui può parlare",
+                    "exampleSentenceEn": "He can speak",
+                    "form": "può",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi possiamo studiare",
+                    "exampleSentenceEn": "We can study",
+                    "form": "possiamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi potete mangiare",
+                    "exampleSentenceEn": "You can eat",
+                    "form": "potete",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro possono ballare",
+                    "exampleSentenceEn": "They can dance",
+                    "form": "possono",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in Italian.",
+            "tenseId": "presente",
+            "tenseName": "Presente",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io potevo aiutarti",
+                    "exampleSentenceEn": "I could help you",
+                    "form": "potevo",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu potevi venire",
+                    "exampleSentenceEn": "You could come",
+                    "form": "potevi",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui poteva parlare",
+                    "exampleSentenceEn": "He could speak",
+                    "form": "poteva",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi potevamo studiare",
+                    "exampleSentenceEn": "We could study",
+                    "form": "potevamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi potevate mangiare",
+                    "exampleSentenceEn": "You could eat",
+                    "form": "potevate",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro potevano ballare",
+                    "exampleSentenceEn": "They could dance",
+                    "form": "potevano",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to describe ongoing, repeated, or habitual actions in the past. Also used for background information in storytelling.",
+            "tenseId": "imperfetto",
+            "tenseName": "Imperfetto",
+            "tenseNameEn": "Imperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io potrò aiutarti domani",
+                    "exampleSentenceEn": "I will be able to help you tomorrow",
+                    "form": "potrò",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu potrai venire",
+                    "exampleSentenceEn": "You will be able to come",
+                    "form": "potrai",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui potrà parlare",
+                    "exampleSentenceEn": "He will be able to speak",
+                    "form": "potrà",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi potremo studiare",
+                    "exampleSentenceEn": "We will be able to study",
+                    "form": "potremo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi potrete mangiare",
+                    "exampleSentenceEn": "You will be able to eat",
+                    "form": "potrete",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro potranno ballare",
+                    "exampleSentenceEn": "They will be able to dance",
+                    "form": "potranno",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'domani' (tomorrow) or 'la settimana prossima' (next week).",
+            "tenseId": "futuro_semplice",
+            "tenseName": "Futuro Semplice",
+            "tenseNameEn": "Simple Future"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io ho potuto aiutarti",
+                    "exampleSentenceEn": "I have been able to help you",
+                    "form": "ho potuto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu hai potuto venire",
+                    "exampleSentenceEn": "You have been able to come",
+                    "form": "hai potuto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui ha potuto parlare",
+                    "exampleSentenceEn": "He has been able to speak",
+                    "form": "ha potuto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi abbiamo potuto studiare",
+                    "exampleSentenceEn": "We have been able to study",
+                    "form": "abbiamo potuto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avete potuto mangiare",
+                    "exampleSentenceEn": "You have been able to eat",
+                    "form": "avete potuto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro hanno potuto ballare",
+                    "exampleSentenceEn": "They have been able to dance",
+                    "form": "hanno potuto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken Italian.",
+            "tenseId": "passato_prossimo",
+            "tenseName": "Passato Prossimo",
+            "tenseNameEn": "Present Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io potei aiutarti",
+                    "exampleSentenceEn": "I was able to help you",
+                    "form": "potei",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu potesti venire",
+                    "exampleSentenceEn": "You were able to come",
+                    "form": "potesti",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui poté parlare",
+                    "exampleSentenceEn": "He was able to speak",
+                    "form": "poté",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi potemmo studiare",
+                    "exampleSentenceEn": "We were able to study",
+                    "form": "potemmo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi poteste mangiare",
+                    "exampleSentenceEn": "You were able to eat",
+                    "form": "poteste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro poterono ballare",
+                    "exampleSentenceEn": "They were able to dance",
+                    "form": "poterono",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used primarily in formal and literary Italian to narrate completed past events. Also used in southern Italy in spoken language.",
+            "tenseId": "passato_remoto",
+            "tenseName": "Passato Remoto",
+            "tenseNameEn": "Simple Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io avevo potuto aiutarti prima che piovesse",
+                    "exampleSentenceEn": "I had been able to help you before it rained",
+                    "form": "avevo potuto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu avevi potuto venire prima che arrivassi",
+                    "exampleSentenceEn": "You had been able to come before I arrived",
+                    "form": "avevi potuto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui aveva potuto parlare prima che partissimo",
+                    "exampleSentenceEn": "He had been able to speak before we left",
+                    "form": "aveva potuto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi avevamo potuto studiare prima che facesse buio",
+                    "exampleSentenceEn": "We had been able to study before it got dark",
+                    "form": "avevamo potuto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avevate potuto mangiare prima della chiusura",
+                    "exampleSentenceEn": "You had been able to eat before closing",
+                    "form": "avevate potuto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro avevano potuto ballare prima dello spettacolo",
+                    "exampleSentenceEn": "They had been able to dance before the show",
+                    "form": "avevano potuto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+            "tenseId": "trapassato_prossimo",
+            "tenseName": "Trapassato Prossimo",
+            "tenseNameEn": "Pluperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Appena ebbi potuto aiutarti, piovve",
+                    "exampleSentenceEn": "As soon as I had been able to help you, it rained",
+                    "form": "ebbi potuto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Appena avesti potuto venire, arrivai",
+                    "exampleSentenceEn": "As soon as you had been able to come, I arrived",
+                    "form": "avesti potuto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Appena ebbe potuto parlare, partimmo",
+                    "exampleSentenceEn": "As soon as he had been able to speak, we left",
+                    "form": "ebbe potuto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Appena avemmo potuto studiare, fece buio",
+                    "exampleSentenceEn": "As soon as we had been able to study, it got dark",
+                    "form": "avemmo potuto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Appena aveste potuto mangiare, il ristorante chiuse",
+                    "exampleSentenceEn": "As soon as you had been able to eat, the restaurant closed",
+                    "form": "aveste potuto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Appena ebbero potuto ballare, lo spettacolo cominciò",
+                    "exampleSentenceEn": "As soon as they had been able to dance, the show began",
+                    "form": "ebbero potuto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in formal and literary Italian to express an action that was completed immediately before another past action. Rarely used in modern Italian.",
+            "tenseId": "trapassato_remoto",
+            "tenseName": "Trapassato Remoto",
+            "tenseNameEn": "Past Anterior"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io avrò potuto aiutarti domani",
+                    "exampleSentenceEn": "I will have been able to help you tomorrow",
+                    "form": "avrò potuto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu avrai potuto venire",
+                    "exampleSentenceEn": "You will have been able to come",
+                    "form": "avrai potuto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui avrà potuto parlare",
+                    "exampleSentenceEn": "He will have been able to speak",
+                    "form": "avrà potuto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi avremo potuto studiare",
+                    "exampleSentenceEn": "We will have been able to study",
+                    "form": "avremo potuto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avrete potuto mangiare",
+                    "exampleSentenceEn": "You will have been able to eat",
+                    "form": "avrete potuto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro avranno potuto ballare",
+                    "exampleSentenceEn": "They will have been able to dance",
+                    "form": "avranno potuto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express actions that will be completed before another future action. Often used with time expressions like 'domani' (tomorrow).",
+            "tenseId": "futuro_anteriore",
+            "tenseName": "Futuro Anteriore",
+            "tenseNameEn": "Future Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io potrei aiutarti se avessi tempo",
+                    "exampleSentenceEn": "I could help you if I had time",
+                    "form": "potrei",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu potresti venire",
+                    "exampleSentenceEn": "You could come",
+                    "form": "potresti",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui potrebbe parlare",
+                    "exampleSentenceEn": "He could speak",
+                    "form": "potrebbe",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi potremmo studiare",
+                    "exampleSentenceEn": "We could study",
+                    "form": "potremmo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi potreste mangiare",
+                    "exampleSentenceEn": "You could eat",
+                    "form": "potreste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro potrebbero ballare",
+                    "exampleSentenceEn": "They could dance",
+                    "form": "potrebbero",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'se' (if) clauses.",
+            "tenseId": "condizionale_presente",
+            "tenseName": "Condizionale Presente",
+            "tenseNameEn": "Present Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io avrei potuto aiutarti se avessi avuto tempo",
+                    "exampleSentenceEn": "I could have helped you if I had had time",
+                    "form": "avrei potuto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu avresti potuto venire",
+                    "exampleSentenceEn": "You could have come",
+                    "form": "avresti potuto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui avrebbe potuto parlare",
+                    "exampleSentenceEn": "He could have spoken",
+                    "form": "avrebbe potuto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi avremmo potuto studiare",
+                    "exampleSentenceEn": "We could have studied",
+                    "form": "avremmo potuto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avreste potuto mangiare",
+                    "exampleSentenceEn": "You could have eaten",
+                    "form": "avreste potuto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro avrebbero potuto ballare",
+                    "exampleSentenceEn": "They could have danced",
+                    "form": "avrebbero potuto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express hypothetical past actions or regrets about things that didn't happen. Often used with 'se' (if) clauses referring to the past.",
+            "tenseId": "condizionale_passato",
+            "tenseName": "Condizionale Passato",
+            "tenseNameEn": "Past Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "È necessario che io possa aiutarti",
+                    "exampleSentenceEn": "I must be able to help you",
+                    "form": "possa",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Voglio che tu possa venire",
+                    "exampleSentenceEn": "I want you to be able to come",
+                    "form": "possa",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "È necessario che lui possa parlare",
+                    "exampleSentenceEn": "He must be able to speak",
+                    "form": "possa",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "È necessario che noi possiamo studiare",
+                    "exampleSentenceEn": "We must be able to study",
+                    "form": "possiamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "È necessario che voi possiate mangiare",
+                    "exampleSentenceEn": "You must be able to eat",
+                    "form": "possiate",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "È necessario che loro possano ballare",
+                    "exampleSentenceEn": "They must be able to dance",
+                    "form": "possano",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in dependent clauses after certain expressions of opinion, doubt, emotion, or necessity. Often used after 'è necessario che', 'voglio che', etc.",
+            "tenseId": "congiuntivo_presente",
+            "tenseName": "Congiuntivo Presente",
+            "tenseNameEn": "Present Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Era necessario che io potessi aiutarti",
+                    "exampleSentenceEn": "I had to be able to help you",
+                    "form": "potessi",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Volevo che tu potessi venire",
+                    "exampleSentenceEn": "I wanted you to be able to come",
+                    "form": "potessi",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Era necessario che lui potesse parlare",
+                    "exampleSentenceEn": "He had to be able to speak",
+                    "form": "potesse",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Era necessario che noi potessimo studiare",
+                    "exampleSentenceEn": "We had to be able to study",
+                    "form": "potessimo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Era necessario che voi poteste mangiare",
+                    "exampleSentenceEn": "You had to be able to eat",
+                    "form": "poteste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Era necessario che loro potessero ballare",
+                    "exampleSentenceEn": "They had to be able to dance",
+                    "form": "potessero",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in formal and literary Italian after the same triggers as present subjunctive, but referring to past events. Rarely used in modern spoken Italian.",
+            "tenseId": "congiuntivo_imperfetto",
+            "tenseName": "Congiuntivo Imperfetto",
+            "tenseNameEn": "Imperfect Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "È necessario che io abbia potuto aiutarti",
+                    "exampleSentenceEn": "I must have been able to help you",
+                    "form": "abbia potuto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Voglio che tu abbia potuto venire",
+                    "exampleSentenceEn": "I want you to have been able to come",
+                    "form": "abbia potuto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "È necessario che lui abbia potuto parlare",
+                    "exampleSentenceEn": "He must have been able to speak",
+                    "form": "abbia potuto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "È necessario che noi abbiamo potuto studiare",
+                    "exampleSentenceEn": "We must have been able to study",
+                    "form": "abbiamo potuto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "È necessario che voi abbiate potuto mangiare",
+                    "exampleSentenceEn": "You must have been able to eat",
+                    "form": "abbiate potuto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "È necessario che loro abbiano potuto ballare",
+                    "exampleSentenceEn": "They must have been able to dance",
+                    "form": "abbiano potuto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in dependent clauses after expressions of doubt, emotion, or necessity when referring to a completed action in the past.",
+            "tenseId": "congiuntivo_passato",
+            "tenseName": "Congiuntivo Passato",
+            "tenseNameEn": "Past Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Era necessario che io avessi potuto aiutarti",
+                    "exampleSentenceEn": "I had to have been able to help you",
+                    "form": "avessi potuto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Volevo che tu avessi potuto venire",
+                    "exampleSentenceEn": "I wanted you to have been able to come",
+                    "form": "avessi potuto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Era necessario che lui avesse potuto parlare",
+                    "exampleSentenceEn": "He had to have been able to speak",
+                    "form": "avesse potuto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Era necessario che noi avessimo potuto studiare",
+                    "exampleSentenceEn": "We had to have been able to study",
+                    "form": "avessimo potuto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Era necessario che voi aveste potuto mangiare",
+                    "exampleSentenceEn": "You had to have been able to eat",
+                    "form": "aveste potuto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Era necessario che loro avessero potuto ballare",
+                    "exampleSentenceEn": "They had to have been able to dance",
+                    "form": "avessero potuto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in formal and literary Italian after the same triggers as other subjunctive tenses, but referring to actions completed before another past action.",
+            "tenseId": "congiuntivo_trapassato",
+            "tenseName": "Congiuntivo Trapassato",
+            "tenseNameEn": "Pluperfect Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (tu, noi, voi). The subject pronoun is omitted.",
+            "tenseId": "imperativo",
+            "tenseName": "Imperativo",
+            "tenseNameEn": "Imperative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Voglio potere aiutarti",
+                    "exampleSentenceEn": "I want to be able to help you",
+                    "form": "potere",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Devo potere venire",
+                    "exampleSentenceEn": "I must be able to come",
+                    "form": "potere",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Posso potere parlare",
+                    "exampleSentenceEn": "I can be able to speak",
+                    "form": "potere",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "The base form of the verb, used after modal verbs, prepositions, and in many other constructions.",
+            "tenseId": "infinito_presente",
+            "tenseName": "Infinito Presente",
+            "tenseNameEn": "Present Infinitive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Dopo aver potuto aiutarti, ho studiato",
+                    "exampleSentenceEn": "After having been able to help you, I studied",
+                    "form": "aver potuto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Prima di aver potuto venire, ho lavorato",
+                    "exampleSentenceEn": "Before having been able to come, I worked",
+                    "form": "aver potuto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Dopo aver potuto parlare, ho cenato",
+                    "exampleSentenceEn": "After having been able to speak, I had dinner",
+                    "form": "aver potuto",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express actions that were completed before another action. Often used after modal verbs in the past.",
+            "tenseId": "infinito_passato",
+            "tenseName": "Infinito Passato",
+            "tenseNameEn": "Past Infinitive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Una persona potente",
+                    "exampleSentenceEn": "A powerful person",
+                    "form": "potente",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Il lavoro potente",
+                    "exampleSentenceEn": "The powerful work",
+                    "form": "potente",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "La macchina potente",
+                    "exampleSentenceEn": "The powerful machine",
+                    "form": "potente",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective or in progressive constructions. In modern Italian, it's mainly used as an adjective.",
+            "tenseId": "participio_presente",
+            "tenseName": "Participio Presente",
+            "tenseNameEn": "Present Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ho potuto aiutarti",
+                    "exampleSentenceEn": "I have been able to help you",
+                    "form": "potuto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Ha potuto venire",
+                    "exampleSentenceEn": "She has been able to come",
+                    "form": "potuto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Hanno potuto parlare",
+                    "exampleSentenceEn": "They have been able to speak",
+                    "form": "potuti",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to form compound tenses and as an adjective. Must agree in gender and number with the subject.",
+            "tenseId": "participio_passato",
+            "tenseName": "Participio Passato",
+            "tenseNameEn": "Past Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Sto potendo aiutarti",
+                    "exampleSentenceEn": "I am being able to help you",
+                    "form": "potendo",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Stai potendo venire",
+                    "exampleSentenceEn": "You are being able to come",
+                    "form": "potendo",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Sta potendo parlare",
+                    "exampleSentenceEn": "He is being able to speak",
+                    "form": "potendo",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express ongoing actions, often with 'stare' to form the present continuous tense.",
+            "tenseId": "gerundio_presente",
+            "tenseName": "Gerundio Presente",
+            "tenseNameEn": "Present Gerund"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Avendo potuto aiutarti, ho studiato",
+                    "exampleSentenceEn": "Having been able to help you, I studied",
+                    "form": "avendo potuto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Avendo potuto venire, ha riposato",
+                    "exampleSentenceEn": "Having been able to come, she rested",
+                    "form": "avendo potuto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Avendo potuto parlare, hanno cenato",
+                    "exampleSentenceEn": "Having been able to speak, they had dinner",
+                    "form": "avendo potuto",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express actions that were completed before another action. Rarely used in modern Italian.",
+            "tenseId": "gerundio_passato",
+            "tenseName": "Gerundio Passato",
+            "tenseNameEn": "Past Gerund"
+        }
+    ]
+}

@@ -9,21 +9,29 @@ Validates verb conjugation JSON files for:
 import json
 import os
 import sys
+import argparse
 from pathlib import Path
 from typing import Dict, List, Set, Any
+
+# Global verbose flag
+VERBOSE = False
 
 
 class Colors:
     """ANSI color codes for terminal output"""
-    RED = '\033[0;31m'
-    GREEN = '\033[0;32m'
-    YELLOW = '\033[1;33m'
-    BLUE = '\033[0;34m'
-    NC = '\033[0m'  # No Color
+
+    RED = "\033[0;31m"
+    GREEN = "\033[0;32m"
+    YELLOW = "\033[1;33m"
+    BLUE = "\033[0;34m"
+    NC = "\033[0m"  # No Color
 
 
 def print_status(status: str, message: str) -> None:
-    """Print colored status messages"""
+    """Print colored status messages (only in verbose mode)"""
+    if not VERBOSE:
+        return
+
     color_map = {
         "SUCCESS": Colors.GREEN + "✅ ",
         "ERROR": Colors.RED + "❌ ",
@@ -35,10 +43,16 @@ def print_status(status: str, message: str) -> None:
     print(f"{color}{message}{Colors.NC}")
 
 
+def print_verbose(message: str) -> None:
+    """Print a message only in verbose mode"""
+    if VERBOSE:
+        print(message)
+
+
 def validate_json_syntax(file_path: Path) -> tuple[bool, str]:
     """Validate JSON syntax of a file"""
     try:
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             json.load(f)
         return True, "Valid JSON syntax"
     except json.JSONDecodeError as e:
@@ -48,63 +62,45 @@ def validate_json_syntax(file_path: Path) -> tuple[bool, str]:
 
 
 def validate_tense_consistency(file_path: Path) -> tuple[bool, str, List[str]]:
-    """Validate that all verbs in a file have the same tenses"""
+    """Validate that a single verb file has proper tense structure"""
     try:
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             data = json.load(f)
 
-        # Check basic structure
-        if 'verbs' not in data:
-            return False, "No 'verbs' key found in file", []
+        # Check basic structure for single verb file
+        if "tenses" not in data:
+            return (
+                False,
+                f"Verb ('{data.get('infinitive', 'unknown')}') has no 'tenses' key",
+                [],
+            )
 
-        verbs = data['verbs']
-        if not verbs:
-            return False, "No verbs found in file", []
+        tenses = data["tenses"]
+        if not tenses:
+            return (
+                False,
+                f"Verb ('{data.get('infinitive', 'unknown')}') has no tenses",
+                [],
+            )
 
-        # Get tense IDs from the first verb as reference
-        first_verb = verbs[0]
-        if 'tenses' not in first_verb:
-            return False, f"First verb ('{first_verb.get('infinitive', 'unknown')}') has no 'tenses' key", []
-
-        reference_tense_ids = set()
-        for tense in first_verb['tenses']:
-            if 'tenseId' not in tense:
-                return False, f"First verb has tense missing 'tenseId'", []
-            reference_tense_ids.add(tense['tenseId'])
-
-        # Check each verb has the same tenses
+        # Check each tense has required fields
         errors = []
-        for i, verb in enumerate(verbs):
-            verb_name = verb.get('infinitive', f'verb_{i+1}')
-
-            if 'tenses' not in verb:
-                errors.append(f"Verb '{verb_name}' missing 'tenses' key")
+        tense_ids = set()
+        for i, tense in enumerate(tenses):
+            if "tenseId" not in tense:
+                errors.append(f"Tense {i + 1} missing 'tenseId'")
                 continue
-
-            verb_tense_ids = set()
-            for tense in verb['tenses']:
-                if 'tenseId' not in tense:
-                    errors.append(f"Verb '{verb_name}' has tense missing 'tenseId'")
-                    continue
-                verb_tense_ids.add(tense['tenseId'])
-
-            if verb_tense_ids != reference_tense_ids:
-                missing_in_verb = reference_tense_ids - verb_tense_ids
-                extra_in_verb = verb_tense_ids - reference_tense_ids
-
-                error_msg = f"Verb '{verb_name}' has inconsistent tenses"
-                if missing_in_verb:
-                    error_msg += f" (missing: {sorted(missing_in_verb)})"
-                if extra_in_verb:
-                    error_msg += f" (extra: {sorted(extra_in_verb)})"
-
-                errors.append(error_msg)
+            tense_ids.add(tense["tenseId"])
 
         if errors:
-            return False, "Inconsistent tenses between verbs", errors
+            return False, "Invalid tense structure", errors
 
-        tense_list = sorted(reference_tense_ids)
-        return True, f"All verbs have consistent tenses ({len(tense_list)} tenses)", tense_list
+        tense_list = sorted(tense_ids)
+        return (
+            True,
+            f"Verb has proper tense structure ({len(tense_list)} tenses)",
+            tense_list,
+        )
 
     except Exception as e:
         return False, f"Error validating file: {e}", []
@@ -113,57 +109,80 @@ def validate_tense_consistency(file_path: Path) -> tuple[bool, str, List[str]]:
 def validate_required_fields(file_path: Path) -> tuple[bool, str, List[str]]:
     """Validate that all required fields are present and non-empty"""
     try:
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             data = json.load(f)
 
-        if 'verbs' not in data:
-            return False, "No 'verbs' key found in file", []
-
-        verbs = data['verbs']
-        if not verbs:
-            return False, "No verbs found in file", []
-
         errors = []
+        verb_name = data.get("infinitive", "unknown")
 
-        # Check each verb
-        for i, verb in enumerate(verbs):
-            verb_name = verb.get('infinitive', f'verb_{i+1}')
+        # Check verb-level required fields
+        required_verb_fields = [
+            "language",
+            "languageName",
+            "infinitive",
+            "infinitiveEn",
+            "category",
+            "tenses",
+        ]
+        for field in required_verb_fields:
+            if field not in data:
+                errors.append(f"Verb '{verb_name}' missing required field '{field}'")
+            elif not data[field] or (
+                isinstance(data[field], str) and data[field].strip() == ""
+            ):
+                errors.append(f"Verb '{verb_name}' has empty '{field}' field")
 
-            # Check verb-level required fields
-            required_verb_fields = ['infinitive', 'infinitiveEn', 'category', 'tenses']
-            for field in required_verb_fields:
-                if field not in verb:
-                    errors.append(f"Verb '{verb_name}' missing required field '{field}'")
-                elif not verb[field] or (isinstance(verb[field], str) and verb[field].strip() == ""):
-                    errors.append(f"Verb '{verb_name}' has empty '{field}' field")
+        # Check tenses
+        if "tenses" in data and isinstance(data["tenses"], list):
+            for j, tense in enumerate(data["tenses"]):
+                tense_name = tense.get("tenseId", f"tense_{j + 1}")
 
-            # Check tenses
-            if 'tenses' in verb and isinstance(verb['tenses'], list):
-                for j, tense in enumerate(verb['tenses']):
-                    tense_name = tense.get('tenseId', f'tense_{j+1}')
+                # Check tense-level required fields
+                required_tense_fields = [
+                    "tenseId",
+                    "tenseName",
+                    "tenseNameEn",
+                    "description",
+                    "conjugations",
+                ]
+                for field in required_tense_fields:
+                    if field not in tense:
+                        errors.append(
+                            f"Verb '{verb_name}' tense '{tense_name}' missing required field '{field}'"
+                        )
+                    elif not tense[field] or (
+                        isinstance(tense[field], str) and tense[field].strip() == ""
+                    ):
+                        errors.append(
+                            f"Verb '{verb_name}' tense '{tense_name}' has empty '{field}' field"
+                        )
 
-                    # Check tense-level required fields
-                    required_tense_fields = ['tenseId', 'tenseName', 'tenseNameEn', 'description', 'conjugations']
-                    for field in required_tense_fields:
-                        if field not in tense:
-                            errors.append(f"Verb '{verb_name}' tense '{tense_name}' missing required field '{field}'")
-                        elif not tense[field] or (isinstance(tense[field], str) and tense[field].strip() == ""):
-                            errors.append(f"Verb '{verb_name}' tense '{tense_name}' has empty '{field}' field")
+                # Check conjugations
+                if "conjugations" in tense and isinstance(tense["conjugations"], list):
+                    for k, conjugation in enumerate(tense["conjugations"]):
+                        conj_name = f"conjugation_{k + 1}"
 
-                    # Check conjugations
-                    if 'conjugations' in tense and isinstance(tense['conjugations'], list):
-                        for k, conjugation in enumerate(tense['conjugations']):
-                            conj_name = f"conjugation_{k+1}"
-
-                            # Check conjugation-level required fields
-                            required_conj_fields = ['pronoun', 'form', 'exampleSentence', 'exampleSentenceEn']
-                            for field in required_conj_fields:
-                                if field not in conjugation:
-                                    errors.append(f"Verb '{verb_name}' tense '{tense_name}' {conj_name} missing required field '{field}'")
-                                elif not conjugation[field] or (isinstance(conjugation[field], str) and conjugation[field].strip() == ""):
-                                    # Allow "—" for unused forms
-                                    if conjugation[field] != "—":
-                                        errors.append(f"Verb '{verb_name}' tense '{tense_name}' {conj_name} has empty '{field}' field")
+                        # Check conjugation-level required fields
+                        required_conj_fields = [
+                            "pronoun",
+                            "form",
+                            "exampleSentence",
+                            "exampleSentenceEn",
+                        ]
+                        for field in required_conj_fields:
+                            if field not in conjugation:
+                                errors.append(
+                                    f"Verb '{verb_name}' tense '{tense_name}' {conj_name} missing required field '{field}'"
+                                )
+                            elif not conjugation[field] or (
+                                isinstance(conjugation[field], str)
+                                and conjugation[field].strip() == ""
+                            ):
+                                # Allow "—" for unused forms
+                                if conjugation[field] != "—":
+                                    errors.append(
+                                        f"Verb '{verb_name}' tense '{tense_name}' {conj_name} has empty '{field}' field"
+                                    )
 
         if errors:
             return False, "Missing or empty required fields", errors
@@ -174,86 +193,71 @@ def validate_required_fields(file_path: Path) -> tuple[bool, str, List[str]]:
         return False, f"Error validating required fields: {e}", []
 
 
-def validate_duplicate_verbs(file_path: Path) -> tuple[bool, str, List[str]]:
-    """Validate that there are no duplicate verbs within a language file"""
+def validate_filename_consistency(file_path: Path) -> tuple[bool, str, List[str]]:
+    """Validate that the verb infinitive in the file matches the filename"""
     try:
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             data = json.load(f)
 
-        if 'verbs' not in data:
-            return False, "No 'verbs' key found in file", []
+        if "infinitive" not in data:
+            return False, "No 'infinitive' field found in file", []
 
-        verbs = data['verbs']
-        if not verbs:
-            return False, "No verbs found in file", []
+        verb_infinitive = data["infinitive"]
+        expected_filename = f"{verb_infinitive}.json"
+        actual_filename = file_path.name
 
-        # Track infinitive forms and their indices
-        infinitive_to_indices = {}
-        for i, verb in enumerate(verbs):
-            if 'infinitive' in verb:
-                infinitive = verb['infinitive']
-                if infinitive not in infinitive_to_indices:
-                    infinitive_to_indices[infinitive] = []
-                infinitive_to_indices[infinitive].append(i)
+        if actual_filename != expected_filename:
+            return (
+                False,
+                f"Filename mismatch: expected '{expected_filename}', got '{actual_filename}'",
+                [],
+            )
 
-        # Check for duplicates
-        errors = []
-        for infinitive, indices in infinitive_to_indices.items():
-            if len(indices) > 1:
-                error_msg = f"Duplicate verb '{infinitive}' found at indices: {indices}"
-                errors.append(error_msg)
-
-        if errors:
-            return False, "Duplicate verbs found", errors
-
-        return True, "No duplicate verbs found", []
+        return True, f"Filename matches verb infinitive: {verb_infinitive}", []
 
     except Exception as e:
-        return False, f"Error validating duplicates: {e}", []
+        return False, f"Error validating filename consistency: {e}", []
 
 
 def validate_example_sentences(file_path: Path) -> tuple[bool, str, List[str]]:
     """Validate that example sentences are properly formatted"""
     try:
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             data = json.load(f)
 
-        if 'verbs' not in data:
-            return False, "No 'verbs' key found in file", []
-
-        verbs = data['verbs']
-        if not verbs:
-            return False, "No verbs found in file", []
-
         errors = []
+        verb_name = data.get("infinitive", "unknown")
 
-        # Check each verb's conjugations
-        for i, verb in enumerate(verbs):
-            verb_name = verb.get('infinitive', f'verb_{i+1}')
+        # Check verb's conjugations
+        if "tenses" in data and isinstance(data["tenses"], list):
+            for j, tense in enumerate(data["tenses"]):
+                tense_name = tense.get("tenseId", f"tense_{j + 1}")
 
-            if 'tenses' in verb and isinstance(verb['tenses'], list):
-                for j, tense in enumerate(verb['tenses']):
-                    tense_name = tense.get('tenseId', f'tense_{j+1}')
+                if "conjugations" in tense and isinstance(tense["conjugations"], list):
+                    for k, conjugation in enumerate(tense["conjugations"]):
+                        conj_name = f"conjugation_{k + 1}"
 
-                    if 'conjugations' in tense and isinstance(tense['conjugations'], list):
-                        for k, conjugation in enumerate(tense['conjugations']):
-                            conj_name = f"conjugation_{k+1}"
+                        # Check example sentences
+                        example_sentence = conjugation.get("exampleSentence", "")
+                        example_sentence_en = conjugation.get("exampleSentenceEn", "")
+                        form = conjugation.get("form", "")
 
-                            # Check example sentences
-                            example_sentence = conjugation.get('exampleSentence', '')
-                            example_sentence_en = conjugation.get('exampleSentenceEn', '')
-                            form = conjugation.get('form', '')
-
-                            # If form is "—", then example sentences should also be "—"
-                            if form == "—":
-                                if example_sentence != "—" or example_sentence_en != "—":
-                                    errors.append(f"Verb '{verb_name}' tense '{tense_name}' {conj_name}: when form is '—', example sentences should also be '—'")
-                            else:
-                                # If form is not "—", example sentences should not be "—" and should be different
-                                if example_sentence == "—" or example_sentence_en == "—":
-                                    errors.append(f"Verb '{verb_name}' tense '{tense_name}' {conj_name}: example sentences should not be '—' when form is not '—'")
-                                elif example_sentence == example_sentence_en:
-                                    errors.append(f"Verb '{verb_name}' tense '{tense_name}' {conj_name}: example sentences should be different (got same text for both languages)")
+                        # If form is "—", then example sentences should also be "—"
+                        if form == "—":
+                            if example_sentence != "—" or example_sentence_en != "—":
+                                errors.append(
+                                    f"Verb '{verb_name}' tense '{tense_name}' {conj_name}: when form is '—', example sentences should also be '—'"
+                                )
+                        else:
+                            # If form is not "—", example sentences should not be "—" and should be different
+                            if example_sentence == "—" or example_sentence_en == "—":
+                                errors.append(
+                                    f"Verb '{verb_name}' tense '{tense_name}' {conj_name}: example sentences should not be '—' when form is not '—'"
+                                )
+                            elif example_sentence == example_sentence_en:
+                                errors.append(
+                                    f"Verb '{verb_name}' tense '{tense_name}' {conj_name}: example sentences should be different (got same text for both languages)"
+                                )
 
         if errors:
             return False, "Example sentence validation failed", errors
@@ -264,15 +268,95 @@ def validate_example_sentences(file_path: Path) -> tuple[bool, str, List[str]]:
         return False, f"Error validating example sentences: {e}", []
 
 
+def validate_language_consistency(language_dir: Path) -> tuple[bool, str, List[str]]:
+    """Validate that all verbs in a language directory have consistent language metadata and tenses"""
+    try:
+        json_files = list(language_dir.glob("*.json"))
+        if not json_files:
+            return False, "No verb files found in language directory", []
+
+        errors = []
+        reference_language = None
+        reference_language_name = None
+        reference_tense_ids = None
+
+        for file_path in json_files:
+            with open(file_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+
+            # Check language consistency
+            if reference_language is None:
+                reference_language = data.get("language")
+                reference_language_name = data.get("languageName")
+            else:
+                if data.get("language") != reference_language:
+                    errors.append(
+                        f"File {file_path.name} has different language code: {data.get('language')} (expected {reference_language})"
+                    )
+                if data.get("languageName") != reference_language_name:
+                    errors.append(
+                        f"File {file_path.name} has different language name: {data.get('languageName')} (expected {reference_language_name})"
+                    )
+
+            # Check tense consistency
+            if "tenses" in data:
+                verb_tense_ids = set()
+                for tense in data["tenses"]:
+                    if "tenseId" in tense:
+                        verb_tense_ids.add(tense["tenseId"])
+
+                if reference_tense_ids is None:
+                    reference_tense_ids = verb_tense_ids
+                else:
+                    if verb_tense_ids != reference_tense_ids:
+                        missing = reference_tense_ids - verb_tense_ids
+                        extra = verb_tense_ids - reference_tense_ids
+                        error_msg = f"File {file_path.name} has inconsistent tenses"
+                        if missing:
+                            error_msg += f" (missing: {sorted(missing)})"
+                        if extra:
+                            error_msg += f" (extra: {sorted(extra)})"
+                        errors.append(error_msg)
+
+        if errors:
+            return False, "Language consistency validation failed", errors
+
+        return (
+            True,
+            f"All verbs have consistent language metadata and tenses ({len(reference_tense_ids)} tenses)",
+            [],
+        )
+
+    except Exception as e:
+        return False, f"Error validating language consistency: {e}", []
+
+
 def main():
     """Main validation function"""
+    global VERBOSE
+
+    parser = argparse.ArgumentParser(description="Validate verb conjugation JSON files")
+    parser.add_argument(
+        "-v", "--verbose", action="store_true", help="Enable verbose output"
+    )
+    args = parser.parse_args()
+
+    VERBOSE = args.verbose
+
     script_dir = Path(__file__).parent
     project_root = script_dir.parent
-    verb_conjugations_dir = project_root / "backend" / "internal" / "handlers" / "data" / "verb-conjugations"
+    verb_conjugations_dir = (
+        project_root
+        / "backend"
+        / "internal"
+        / "handlers"
+        / "data"
+        / "verb-conjugations"
+    )
 
-    print("🔍 Validating verb conjugation files...")
-    print(f"Directory: {verb_conjugations_dir}")
-    print()
+    print_verbose("🔍 Validating verb conjugation files...")
+    print_verbose(f"Directory: {verb_conjugations_dir}")
+    print_verbose("")
 
     # Counters
     total_files = 0
@@ -280,105 +364,151 @@ def main():
     invalid_json_files = 0
     inconsistent_files = 0
     required_fields_errors = 0
-    duplicate_errors = 0
     example_sentence_errors = 0
+    language_consistency_errors = 0
+    filename_consistency_errors = 0
 
     # Check if directory exists
     if not verb_conjugations_dir.exists():
-        print_status("ERROR", f"Verb conjugations directory not found: {verb_conjugations_dir}")
+        print_status(
+            "ERROR", f"Verb conjugations directory not found: {verb_conjugations_dir}"
+        )
         sys.exit(1)
 
-    # Find all JSON files (excluding info.json)
-    json_files = list(verb_conjugations_dir.glob("*.json"))
-    json_files = [f for f in json_files if f.name != "info.json"]
-    json_files.sort(key=lambda x: x.name)
+    # Find all language directories
+    language_dirs = [d for d in verb_conjugations_dir.iterdir() if d.is_dir()]
+    language_dirs.sort(key=lambda x: x.name)
 
-    if not json_files:
-        print_status("ERROR", f"No JSON files found in {verb_conjugations_dir}")
+    if not language_dirs:
+        print_status(
+            "ERROR", f"No language directories found in {verb_conjugations_dir}"
+        )
         sys.exit(1)
 
-    print("Found verb conjugation files:")
-    for file_path in json_files:
-        print(f"  - {file_path.name}")
-    print()
+    print_verbose("Found language directories:")
+    for lang_dir in language_dirs:
+        print_verbose(f"  - {lang_dir.name}")
+    print_verbose("")
 
-    # Validate each file
-    for file_path in json_files:
-        total_files += 1
-        print(f"🔍 Validating {file_path.name}...")
+    # Validate each language directory
+    for lang_dir in language_dirs:
+        print_verbose(f"🔍 Validating language: {lang_dir.name}")
 
-        # Check JSON syntax
-        json_valid, json_message = validate_json_syntax(file_path)
-        if json_valid:
-            print_status("SUCCESS", json_message)
-        else:
-            print_status("ERROR", json_message)
-            invalid_json_files += 1
-            print()
+        # Find all verb files in this language directory
+        json_files = list(lang_dir.glob("*.json"))
+        json_files.sort(key=lambda x: x.name)
+
+        if not json_files:
+            print_status("WARNING", f"No verb files found in {lang_dir.name}")
             continue
 
-        # Check tense consistency
-        consistent, consistency_message, tense_list = validate_tense_consistency(file_path)
-        if consistent:
-            print_status("SUCCESS", consistency_message)
-            if tense_list:
-                print_status("INFO", f"Tenses: {', '.join(tense_list)}")
+        print_verbose(f"  Found {len(json_files)} verb files")
+
+        # Validate language consistency
+        lang_consistent, lang_message, lang_errors = validate_language_consistency(
+            lang_dir
+        )
+        if lang_consistent:
+            print_status("SUCCESS", f"Language consistency: {lang_message}")
         else:
-            print_status("ERROR", consistency_message)
-            for error in tense_list:
-                print(f"    - {error}")
-            inconsistent_files += 1
+            print_status("ERROR", f"Language consistency: {lang_message}")
+            for error in lang_errors:
+                print_verbose(f"    - {error}")
+            language_consistency_errors += 1
 
-        # Check required fields
-        fields_valid, fields_message, fields_errors = validate_required_fields(file_path)
-        if fields_valid:
-            print_status("SUCCESS", fields_message)
-        else:
-            print_status("ERROR", fields_message)
-            for error in fields_errors:
-                print(f"    - {error}")
-            required_fields_errors += 1
+        # Validate each verb file
+        for file_path in json_files:
+            total_files += 1
+            print_verbose(f"  🔍 Validating {file_path.name}...")
 
-        # Check for duplicate verbs
-        no_duplicates, duplicates_message, duplicate_errors_list = validate_duplicate_verbs(file_path)
-        if no_duplicates:
-            print_status("SUCCESS", duplicates_message)
-        else:
-            print_status("ERROR", duplicates_message)
-            for error in duplicate_errors_list:
-                print(f"    - {error}")
-            duplicate_errors += 1
+            # Check JSON syntax
+            json_valid, json_message = validate_json_syntax(file_path)
+            if json_valid:
+                print_status("SUCCESS", f"  {json_message}")
+            else:
+                print_status("ERROR", f"  {json_message}")
+                invalid_json_files += 1
+                continue
 
-        # Check example sentences
-        examples_valid, examples_message, examples_errors = validate_example_sentences(file_path)
-        if examples_valid:
-            print_status("SUCCESS", examples_message)
-        else:
-            print_status("ERROR", examples_message)
-            for error in examples_errors:
-                print(f"    - {error}")
-            example_sentence_errors += 1
+            # Check tense consistency
+            consistent, consistency_message, tense_list = validate_tense_consistency(
+                file_path
+            )
+            if consistent:
+                print_status("SUCCESS", f"  {consistency_message}")
+            else:
+                print_status("ERROR", f"  {consistency_message}")
+                for error in tense_list:
+                    print_verbose(f"      - {error}")
+                inconsistent_files += 1
 
-        # Overall file validity
-        if consistent and fields_valid and no_duplicates and examples_valid:
-            valid_files += 1
+            # Check required fields
+            fields_valid, fields_message, fields_errors = validate_required_fields(
+                file_path
+            )
+            if fields_valid:
+                print_status("SUCCESS", f"  {fields_message}")
+            else:
+                print_status("ERROR", f"  {fields_message}")
+                for error in fields_errors:
+                    print_verbose(f"      - {error}")
+                required_fields_errors += 1
 
-        print()
+            # Check example sentences
+            examples_valid, examples_message, examples_errors = (
+                validate_example_sentences(file_path)
+            )
+            if examples_valid:
+                print_status("SUCCESS", f"  {examples_message}")
+            else:
+                print_status("ERROR", f"  {examples_message}")
+                for error in examples_errors:
+                    print_verbose(f"      - {error}")
+                example_sentence_errors += 1
 
-    # Summary
+            # Check filename consistency
+            filename_valid, filename_message, filename_errors = (
+                validate_filename_consistency(file_path)
+            )
+            if filename_valid:
+                print_status("SUCCESS", f"  {filename_message}")
+            else:
+                print_status("ERROR", f"  {filename_message}")
+                for error in filename_errors:
+                    print_verbose(f"      - {error}")
+                filename_consistency_errors += 1
+
+            # Overall file validity
+            if consistent and fields_valid and examples_valid and filename_valid:
+                valid_files += 1
+
+        print_verbose("")
+
+    # Summary - always print
     print("📊 Validation Summary:")
     print(f"  Total files: {total_files}")
     print(f"  Valid files: {valid_files}")
     print(f"  Invalid JSON: {invalid_json_files}")
     print(f"  Inconsistent tenses: {inconsistent_files}")
     print(f"  Required fields errors: {required_fields_errors}")
-    print(f"  Duplicate verbs: {duplicate_errors}")
     print(f"  Example sentence errors: {example_sentence_errors}")
+    print(f"  Language consistency errors: {language_consistency_errors}")
+    print(f"  Filename consistency errors: {filename_consistency_errors}")
 
-    if (invalid_json_files == 0 and inconsistent_files == 0 and
-        required_fields_errors == 0 and duplicate_errors == 0 and
-        example_sentence_errors == 0):
-        print_status("SUCCESS", "All verb conjugation files are valid and consistent! 🎉")
+    # Check if validation passed
+    validation_passed = (
+        invalid_json_files == 0
+        and inconsistent_files == 0
+        and required_fields_errors == 0
+        and example_sentence_errors == 0
+        and language_consistency_errors == 0
+        and filename_consistency_errors == 0
+    )
+
+    if validation_passed:
+        print_status(
+            "SUCCESS", "All verb conjugation files are valid and consistent! 🎉"
+        )
         sys.exit(0)
     else:
         print_status("ERROR", "Validation failed. Please fix the issues above.")

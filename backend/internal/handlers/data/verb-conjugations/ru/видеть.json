@@ -1,0 +1,409 @@
+{
+    "category": "essential",
+    "infinitive": "видеть",
+    "infinitiveEn": "to see",
+    "language": "ru",
+    "languageName": "Russian",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я вижу красивое здание вдалеке",
+                    "exampleSentenceEn": "I see a beautiful building in the distance",
+                    "form": "вижу",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты видишь фильм",
+                    "exampleSentenceEn": "You see the movie",
+                    "form": "видишь",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он видит звезду",
+                    "exampleSentenceEn": "He sees the star",
+                    "form": "видит",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы видим панораму",
+                    "exampleSentenceEn": "We see the view",
+                    "form": "видим",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы видите картину",
+                    "exampleSentenceEn": "You see the painting",
+                    "form": "видите",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они видят луну",
+                    "exampleSentenceEn": "They see the moon",
+                    "form": "видят",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in Russian.",
+            "tenseId": "present",
+            "tenseName": "Настоящее время",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я видел телевизор",
+                    "exampleSentenceEn": "I watched television",
+                    "form": "видел",
+                    "pronoun": "я (m)"
+                },
+                {
+                    "exampleSentence": "Я видела телевизор",
+                    "exampleSentenceEn": "I watched television",
+                    "form": "видела",
+                    "pronoun": "я (f)"
+                },
+                {
+                    "exampleSentence": "Ты видел фильм",
+                    "exampleSentenceEn": "You saw the movie",
+                    "form": "видел",
+                    "pronoun": "ты (m)"
+                },
+                {
+                    "exampleSentence": "Ты видела фильм",
+                    "exampleSentenceEn": "You saw the movie",
+                    "form": "видела",
+                    "pronoun": "ты (f)"
+                },
+                {
+                    "exampleSentence": "Он видел звезду",
+                    "exampleSentenceEn": "He saw the star",
+                    "form": "видел",
+                    "pronoun": "он"
+                },
+                {
+                    "exampleSentence": "Она видела звезду",
+                    "exampleSentenceEn": "She saw the star",
+                    "form": "видела",
+                    "pronoun": "она"
+                },
+                {
+                    "exampleSentence": "Оно видело звезду",
+                    "exampleSentenceEn": "It saw the star",
+                    "form": "видело",
+                    "pronoun": "оно"
+                },
+                {
+                    "exampleSentence": "Мы видели панораму",
+                    "exampleSentenceEn": "We saw the view",
+                    "form": "видели",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы видели картину",
+                    "exampleSentenceEn": "You saw the painting",
+                    "form": "видели",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они видели луну",
+                    "exampleSentenceEn": "They saw the moon",
+                    "form": "видели",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to describe completed actions in the past. The form changes based on gender and number.",
+            "tenseId": "past",
+            "tenseName": "Прошедшее время",
+            "tenseNameEn": "Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я буду видеть телевизор завтра",
+                    "exampleSentenceEn": "I will watch television tomorrow",
+                    "form": "буду видеть",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты будешь видеть фильм",
+                    "exampleSentenceEn": "You will see the movie",
+                    "form": "будешь видеть",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он будет видеть звезду",
+                    "exampleSentenceEn": "He will see the star",
+                    "form": "будет видеть",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы будем видеть панораму",
+                    "exampleSentenceEn": "We will see the view",
+                    "form": "будем видеть",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы будете видеть картину",
+                    "exampleSentenceEn": "You will see the painting",
+                    "form": "будете видеть",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они будут видеть луну",
+                    "exampleSentenceEn": "They will see the moon",
+                    "form": "будут видеть",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'завтра' (tomorrow).",
+            "tenseId": "future",
+            "tenseName": "Будущее время",
+            "tenseNameEn": "Future"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "вы"
+                }
+            ],
+            "description": "The verb 'видеть' (to see) has no imperative form in Russian. To give commands about looking/watching, use 'смотреть' (to look/watch) instead: смотри/смотрите.",
+            "tenseId": "imperative",
+            "tenseName": "Повелительное наклонение",
+            "tenseNameEn": "Imperative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я видел бы телевизор, если бы имел время",
+                    "exampleSentenceEn": "I would watch television if I had time",
+                    "form": "видел бы",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты видел бы фильм",
+                    "exampleSentenceEn": "You would see the movie",
+                    "form": "видел бы",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он видел бы звезду",
+                    "exampleSentenceEn": "He would see the star",
+                    "form": "видел бы",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы видели бы панораму",
+                    "exampleSentenceEn": "We would see the view",
+                    "form": "видели бы",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы видели бы картину",
+                    "exampleSentenceEn": "You would see the painting",
+                    "form": "видели бы",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они видели бы луну",
+                    "exampleSentenceEn": "They would see the moon",
+                    "form": "видели бы",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to express hypothetical situations or actions that would happen under certain conditions. Often used with 'если' (if) clauses.",
+            "tenseId": "conditional",
+            "tenseName": "Условное наклонение",
+            "tenseNameEn": "Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Видящий человек",
+                    "exampleSentenceEn": "A seeing person",
+                    "form": "видящий",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Видящая женщина",
+                    "exampleSentenceEn": "A seeing woman",
+                    "form": "видящая",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Видящее животное",
+                    "exampleSentenceEn": "A seeing animal",
+                    "form": "видящее",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Видящие люди",
+                    "exampleSentenceEn": "Seeing people",
+                    "form": "видящие",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe someone who is currently performing the action. Must agree in gender, number, and case.",
+            "tenseId": "present_active_participle",
+            "tenseName": "Причастие настоящего времени",
+            "tenseNameEn": "Present Active Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Видевший человек",
+                    "exampleSentenceEn": "A person who saw",
+                    "form": "видевший",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Видевшая женщина",
+                    "exampleSentenceEn": "A woman who saw",
+                    "form": "видевшая",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Видевшее животное",
+                    "exampleSentenceEn": "An animal that saw",
+                    "form": "видевшее",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Видевшие люди",
+                    "exampleSentenceEn": "People who saw",
+                    "form": "видевшие",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe someone who performed the action in the past. Must agree in gender, number, and case.",
+            "tenseId": "past_active_participle",
+            "tenseName": "Причастие прошедшего времени",
+            "tenseNameEn": "Past Active Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe something that is currently being acted upon. Must agree in gender, number, and case.",
+            "tenseId": "present_passive_participle",
+            "tenseName": "Страдательное причастие настоящего времени",
+            "tenseNameEn": "Present Passive Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe something that was acted upon in the past. Must agree in gender, number, and case.",
+            "tenseId": "past_passive_participle",
+            "tenseName": "Страдательное причастие прошедшего времени",
+            "tenseNameEn": "Past Passive Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Видя телевизор, я думаю",
+                    "exampleSentenceEn": "While watching television, I think",
+                    "form": "видя",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Видя фильм, он пел",
+                    "exampleSentenceEn": "While watching the movie, he sang",
+                    "form": "видя",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Видя звезду, мы разговаривали",
+                    "exampleSentenceEn": "While seeing the star, we talked",
+                    "form": "видя",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express an action that happens simultaneously with the main action. Often used to show manner or condition.",
+            "tenseId": "present_gerund",
+            "tenseName": "Деепричастие настоящего времени",
+            "tenseNameEn": "Present Gerund"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express an action that was completed before the main action. Often used to show sequence of events.",
+            "tenseId": "past_gerund",
+            "tenseName": "Деепричастие прошедшего времени",
+            "tenseNameEn": "Past Gerund"
+        }
+    ]
+}

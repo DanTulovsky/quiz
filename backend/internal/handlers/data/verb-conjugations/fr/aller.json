@@ -1,0 +1,607 @@
+{
+    "category": "essential",
+    "infinitive": "aller",
+    "infinitiveEn": "to go",
+    "language": "fr",
+    "languageName": "French",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Je vais à l'école",
+                    "exampleSentenceEn": "I go to school",
+                    "form": "vais",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu vas à la maison",
+                    "exampleSentenceEn": "You go home",
+                    "form": "vas",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il va au cinéma",
+                    "exampleSentenceEn": "He goes to the cinema",
+                    "form": "va",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous allons nous promener",
+                    "exampleSentenceEn": "We go for a walk",
+                    "form": "allons",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous allez faire les courses",
+                    "exampleSentenceEn": "You go shopping",
+                    "form": "allez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils vont au théâtre",
+                    "exampleSentenceEn": "They go to the theater",
+                    "form": "vont",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in French.",
+            "tenseId": "present",
+            "tenseName": "Présent",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'allais à l'école",
+                    "exampleSentenceEn": "I was going to school",
+                    "form": "allais",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu allais à la maison",
+                    "exampleSentenceEn": "You were going home",
+                    "form": "allais",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il allait au cinéma",
+                    "exampleSentenceEn": "He was going to the cinema",
+                    "form": "allait",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous allions nous promener",
+                    "exampleSentenceEn": "We were going for a walk",
+                    "form": "allions",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous alliez faire les courses",
+                    "exampleSentenceEn": "You were going shopping",
+                    "form": "alliez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils allaient au théâtre",
+                    "exampleSentenceEn": "They were going to the theater",
+                    "form": "allaient",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to describe ongoing, repeated, or habitual actions in the past. Also used for background information in storytelling.",
+            "tenseId": "imparfait",
+            "tenseName": "Imparfait",
+            "tenseNameEn": "Imperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Je irai à l'école demain",
+                    "exampleSentenceEn": "I will go to school tomorrow",
+                    "form": "irai",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu iras à la maison",
+                    "exampleSentenceEn": "You will go home",
+                    "form": "iras",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il ira au cinéma",
+                    "exampleSentenceEn": "He will go to the cinema",
+                    "form": "ira",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous irons nous promener",
+                    "exampleSentenceEn": "We will go for a walk",
+                    "form": "irons",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous irez faire les courses",
+                    "exampleSentenceEn": "You will go shopping",
+                    "form": "irez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils iront au théâtre",
+                    "exampleSentenceEn": "They will go to the theater",
+                    "form": "iront",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'demain' (tomorrow) or 'la semaine prochaine' (next week).",
+            "tenseId": "futur",
+            "tenseName": "Futur Simple",
+            "tenseNameEn": "Simple Future"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Je suis allé à l'école",
+                    "exampleSentenceEn": "I have gone to school",
+                    "form": "suis allé(e)",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu es allé à la maison",
+                    "exampleSentenceEn": "You have gone home",
+                    "form": "es allé(e)",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il est allé au cinéma",
+                    "exampleSentenceEn": "He has gone to the cinema",
+                    "form": "est allé(e)",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous sommes allés nous promener",
+                    "exampleSentenceEn": "We have gone for a walk",
+                    "form": "sommes allé(e)s",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous êtes allés faire les courses",
+                    "exampleSentenceEn": "You have gone shopping",
+                    "form": "êtes allé(e)(s)",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils sont allés au théâtre",
+                    "exampleSentenceEn": "They have gone to the theater",
+                    "form": "sont allé(e)s",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken French.",
+            "tenseId": "passe_compose",
+            "tenseName": "Passé Composé",
+            "tenseNameEn": "Present Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'allais à l'école",
+                    "exampleSentenceEn": "I went to school",
+                    "form": "allai",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu allas à la maison",
+                    "exampleSentenceEn": "You went home",
+                    "form": "allas",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il alla au cinéma",
+                    "exampleSentenceEn": "He went to the cinema",
+                    "form": "alla",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous allâmes nous promener",
+                    "exampleSentenceEn": "We went for a walk",
+                    "form": "allâmes",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous allâtes faire les courses",
+                    "exampleSentenceEn": "You went shopping",
+                    "form": "allâtes",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils allèrent au théâtre",
+                    "exampleSentenceEn": "They went to the theater",
+                    "form": "allèrent",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used primarily in formal and literary French to narrate completed past events. Rarely used in spoken French.",
+            "tenseId": "passe_simple",
+            "tenseName": "Passé Simple",
+            "tenseNameEn": "Simple Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'étais allé à l'école avant qu'il pleuve",
+                    "exampleSentenceEn": "I had gone to school before it rained",
+                    "form": "étais allé(e)",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu étais allé à la maison avant que je vienne",
+                    "exampleSentenceEn": "You had gone home before I came",
+                    "form": "étais allé(e)",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il était allé au cinéma avant que nous arrivions",
+                    "exampleSentenceEn": "He had gone to the cinema before we arrived",
+                    "form": "était allé(e)",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous étions allés nous promener avant qu'il fasse nuit",
+                    "exampleSentenceEn": "We had gone for a walk before it got dark",
+                    "form": "étions allé(e)s",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous étiez allés faire les courses avant la fermeture",
+                    "exampleSentenceEn": "You had gone shopping before closing",
+                    "form": "étiez allé(e)(s)",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils étaient allés au théâtre avant le spectacle",
+                    "exampleSentenceEn": "They had gone to the theater before the show",
+                    "form": "étaient allé(e)s",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+            "tenseId": "plus_que_parfait",
+            "tenseName": "Plus-que-parfait",
+            "tenseNameEn": "Pluperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Je serai allé à l'école d'ici demain",
+                    "exampleSentenceEn": "I will have gone to school by tomorrow",
+                    "form": "serai allé(e)",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu seras allé à la maison",
+                    "exampleSentenceEn": "You will have gone home",
+                    "form": "seras allé(e)",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il sera allé au cinéma",
+                    "exampleSentenceEn": "He will have gone to the cinema",
+                    "form": "sera allé(e)",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous serons allés nous promener",
+                    "exampleSentenceEn": "We will have gone for a walk",
+                    "form": "serons allé(e)s",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous serez allés faire les courses",
+                    "exampleSentenceEn": "You will have gone shopping",
+                    "form": "serez allé(e)(s)",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils seront allés au théâtre",
+                    "exampleSentenceEn": "They will have gone to the theater",
+                    "form": "seront allé(e)s",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express actions that will be completed before another future action. Often used with time expressions like 'd'ici demain' (by tomorrow).",
+            "tenseId": "futur_anterieur",
+            "tenseName": "Futur Antérieur",
+            "tenseNameEn": "Future Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'irais à l'école si j'avais le temps",
+                    "exampleSentenceEn": "I would go to school if I had time",
+                    "form": "irais",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu irais à la maison",
+                    "exampleSentenceEn": "You would go home",
+                    "form": "irais",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il irait au cinéma",
+                    "exampleSentenceEn": "He would go to the cinema",
+                    "form": "irait",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous irions nous promener",
+                    "exampleSentenceEn": "We would go for a walk",
+                    "form": "irions",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous iriez faire les courses",
+                    "exampleSentenceEn": "You would go shopping",
+                    "form": "iriez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils iraient au théâtre",
+                    "exampleSentenceEn": "They would go to the theater",
+                    "form": "iraient",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'si' (if) clauses.",
+            "tenseId": "conditionnel_present",
+            "tenseName": "Conditionnel Présent",
+            "tenseNameEn": "Present Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Je serais allé à l'école si j'avais pu",
+                    "exampleSentenceEn": "I would have gone to school if I could have",
+                    "form": "serais allé(e)",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu serais allé à la maison",
+                    "exampleSentenceEn": "You would have gone home",
+                    "form": "serais allé(e)",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il serait allé au cinéma",
+                    "exampleSentenceEn": "He would have gone to the cinema",
+                    "form": "serait allé(e)",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous serions allés nous promener",
+                    "exampleSentenceEn": "We would have gone for a walk",
+                    "form": "serions allé(e)s",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous seriez allés faire les courses",
+                    "exampleSentenceEn": "You would have gone shopping",
+                    "form": "seriez allé(e)(s)",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils seraient allés au théâtre",
+                    "exampleSentenceEn": "They would have gone to the theater",
+                    "form": "seraient allé(e)s",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express hypothetical past actions or regrets about things that didn't happen. Often used with 'si' (if) clauses referring to the past.",
+            "tenseId": "conditionnel_passe",
+            "tenseName": "Conditionnel Passé",
+            "tenseNameEn": "Past Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Il faut que j'aille à l'école",
+                    "exampleSentenceEn": "I must go to school",
+                    "form": "aille",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Je veux que tu ailles à la maison",
+                    "exampleSentenceEn": "I want you to go home",
+                    "form": "ailles",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il faut qu'il aille au cinéma",
+                    "exampleSentenceEn": "He must go to the cinema",
+                    "form": "aille",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Il faut que nous allions nous promener",
+                    "exampleSentenceEn": "We must go for a walk",
+                    "form": "allions",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Il faut que vous alliez faire les courses",
+                    "exampleSentenceEn": "You must go shopping",
+                    "form": "alliez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Il faut qu'ils aillent au théâtre",
+                    "exampleSentenceEn": "They must go to the theater",
+                    "form": "aillent",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used in dependent clauses after certain expressions of opinion, doubt, emotion, or necessity. Often used after 'il faut que', 'je veux que', etc.",
+            "tenseId": "subjonctif_present",
+            "tenseName": "Subjonctif Présent",
+            "tenseNameEn": "Present Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Va à l'école!",
+                    "exampleSentenceEn": "Go to school!",
+                    "form": "va",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Allons nous promener!",
+                    "exampleSentenceEn": "Let's go for a walk!",
+                    "form": "allons",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Allez faire les courses!",
+                    "exampleSentenceEn": "Go shopping!",
+                    "form": "allez",
+                    "pronoun": "vous"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (tu, nous, vous). The subject pronoun is omitted.",
+            "tenseId": "imperatif",
+            "tenseName": "Impératif",
+            "tenseNameEn": "Imperative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Il fallait que j'allasse à l'école",
+                    "exampleSentenceEn": "I had to go to school",
+                    "form": "allasse",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Je voulais que tu allasses à la maison",
+                    "exampleSentenceEn": "I wanted you to go home",
+                    "form": "allasses",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il fallait qu'il allât au cinéma",
+                    "exampleSentenceEn": "He had to go to the cinema",
+                    "form": "allât",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Il fallait que nous allassions nous promener",
+                    "exampleSentenceEn": "We had to go for a walk",
+                    "form": "allassions",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Il fallait que vous allassiez faire les courses",
+                    "exampleSentenceEn": "You had to go shopping",
+                    "form": "allassiez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Il fallait qu'ils allassent au théâtre",
+                    "exampleSentenceEn": "They had to go to the theater",
+                    "form": "allassent",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used in formal and literary French after the same triggers as present subjunctive, but referring to past events. Rarely used in modern spoken French.",
+            "tenseId": "subjonctif_imparfait",
+            "tenseName": "Subjonctif Imparfait",
+            "tenseNameEn": "Imperfect Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Il faut que je sois allé à l'école",
+                    "exampleSentenceEn": "I must have gone to school",
+                    "form": "sois allé(e)",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Je veux que tu sois allé à la maison",
+                    "exampleSentenceEn": "I want you to have gone home",
+                    "form": "sois allé(e)",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il faut qu'il soit allé au cinéma",
+                    "exampleSentenceEn": "He must have gone to the cinema",
+                    "form": "soit allé(e)",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Il faut que nous soyons allés nous promener",
+                    "exampleSentenceEn": "We must have gone for a walk",
+                    "form": "soyons allé(e)s",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Il faut que vous soyez allés faire les courses",
+                    "exampleSentenceEn": "You must have gone shopping",
+                    "form": "soyez allé(e)(s)",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Il faut qu'ils soient allés au théâtre",
+                    "exampleSentenceEn": "They must have gone to the theater",
+                    "form": "soient allé(e)s",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used in dependent clauses after expressions of doubt, emotion, or necessity when referring to a completed action in the past.",
+            "tenseId": "subjonctif_passe",
+            "tenseName": "Subjonctif Passé",
+            "tenseNameEn": "Past Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Dès que je fus allé à l'école, il pleuvit",
+                    "exampleSentenceEn": "As soon as I had gone to school, it rained",
+                    "form": "fus allé(e)",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Dès que tu fus allé à la maison, je vins",
+                    "exampleSentenceEn": "As soon as you had gone home, I came",
+                    "form": "fus allé(e)",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Dès qu'il fut allé au cinéma, nous arrivâmes",
+                    "exampleSentenceEn": "As soon as he had gone to the cinema, we arrived",
+                    "form": "fut allé(e)",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Dès que nous fûmes allés nous promener, il fit nuit",
+                    "exampleSentenceEn": "As soon as we had gone for a walk, it got dark",
+                    "form": "fûmes allé(e)s",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Dès que vous fûtes allés faire les courses, la boutique ferma",
+                    "exampleSentenceEn": "As soon as you had gone shopping, the store closed",
+                    "form": "fûtes allé(e)(s)",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Dès qu'ils furent allés au théâtre, le spectacle commença",
+                    "exampleSentenceEn": "As soon as they had gone to the theater, the show began",
+                    "form": "furent allé(e)s",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used in formal and literary French to express an action that was completed immediately before another past action. Rarely used in modern French.",
+            "tenseId": "passe_anterieur",
+            "tenseName": "Passé Antérieur",
+            "tenseNameEn": "Past Anterior"
+        }
+    ]
+}

@@ -1,0 +1,387 @@
+{
+    "category": "essential",
+    "infinitive": "sein",
+    "infinitiveEn": "to be",
+    "language": "de",
+    "languageName": "German",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich bin glücklich",
+                    "exampleSentenceEn": "I am happy",
+                    "form": "bin",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du bist gut",
+                    "exampleSentenceEn": "You are good",
+                    "form": "bist",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er ist Deutscher",
+                    "exampleSentenceEn": "He is German",
+                    "form": "ist",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir sind Freunde",
+                    "exampleSentenceEn": "We are friends",
+                    "form": "sind",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr seid Studenten",
+                    "exampleSentenceEn": "You are students",
+                    "form": "seid",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie sind hier",
+                    "exampleSentenceEn": "They are here",
+                    "form": "sind",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in German.",
+            "tenseId": "praesens",
+            "tenseName": "Präsens",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich war müde",
+                    "exampleSentenceEn": "I was tired",
+                    "form": "war",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du warst jung",
+                    "exampleSentenceEn": "You were young",
+                    "form": "warst",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Sie war schön",
+                    "exampleSentenceEn": "She was beautiful",
+                    "form": "war",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir waren zufrieden",
+                    "exampleSentenceEn": "We were satisfied",
+                    "form": "waren",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr wart hier",
+                    "exampleSentenceEn": "You were here",
+                    "form": "wart",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie waren Freunde",
+                    "exampleSentenceEn": "They were friends",
+                    "form": "waren",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used primarily in written German and formal speech to describe completed actions in the past. Also used in storytelling and narratives.",
+            "tenseId": "praeteritum",
+            "tenseName": "Präteritum",
+            "tenseNameEn": "Simple Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich werde zu Hause sein",
+                    "exampleSentenceEn": "I will be at home",
+                    "form": "werde sein",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du wirst gut sein",
+                    "exampleSentenceEn": "You will be good",
+                    "form": "wirst sein",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Sie wird glücklich sein",
+                    "exampleSentenceEn": "She will be happy",
+                    "form": "wird sein",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir werden hier sein",
+                    "exampleSentenceEn": "We will be here",
+                    "form": "werden sein",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr werdet bereit sein",
+                    "exampleSentenceEn": "You will be ready",
+                    "form": "werdet sein",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie werden Freunde sein",
+                    "exampleSentenceEn": "They will be friends",
+                    "form": "werden sein",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'morgen' (tomorrow) or 'nächste Woche' (next week).",
+            "tenseId": "futur_i",
+            "tenseName": "Futur I",
+            "tenseNameEn": "Future I"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Bis nächste Woche werde ich dort gewesen sein",
+                    "exampleSentenceEn": "By next week, I will have been there",
+                    "form": "werde gewesen sein",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du wirst sicher sehr müde gewesen sein nach der langen Reise",
+                    "exampleSentenceEn": "You will surely have been very tired after the long journey",
+                    "form": "wirst gewesen sein",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Sie wird wahrscheinlich zu Hause gewesen sein, als ich anrief",
+                    "exampleSentenceEn": "She will probably have been at home when I called",
+                    "form": "wird gewesen sein",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "In zwei Jahren werden wir verheiratet gewesen sein",
+                    "exampleSentenceEn": "In two years, we will have been married",
+                    "form": "werden gewesen sein",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr werdet mit der Arbeit fertig gewesen sein, bevor der Chef kommt",
+                    "exampleSentenceEn": "You will have been finished with the work before the boss arrives",
+                    "form": "werdet gewesen sein",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Bis Ende des Monats werden sie in drei Ländern gewesen sein",
+                    "exampleSentenceEn": "By the end of the month, they will have been to three countries",
+                    "form": "werden gewesen sein",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express actions that will be completed by a certain point in the future. Often used with time expressions like 'bis morgen' (by tomorrow) or to make assumptions about past events.",
+            "tenseId": "futur_ii",
+            "tenseName": "Futur II",
+            "tenseNameEn": "Future Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich bin in Berlin gewesen",
+                    "exampleSentenceEn": "I have been to Berlin",
+                    "form": "bin gewesen",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du bist gut gewesen",
+                    "exampleSentenceEn": "You have been good",
+                    "form": "bist gewesen",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Sie ist nett gewesen",
+                    "exampleSentenceEn": "She has been nice",
+                    "form": "ist gewesen",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir sind glücklich gewesen",
+                    "exampleSentenceEn": "We have been happy",
+                    "form": "sind gewesen",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr seid hier gewesen",
+                    "exampleSentenceEn": "You have been here",
+                    "form": "seid gewesen",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie sind Freunde gewesen",
+                    "exampleSentenceEn": "They have been friends",
+                    "form": "sind gewesen",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken German.",
+            "tenseId": "perfekt",
+            "tenseName": "Perfekt",
+            "tenseNameEn": "Present Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Als ich ankam, war ich schon einmal dort gewesen",
+                    "exampleSentenceEn": "When I arrived, I had already been there before",
+                    "form": "war gewesen",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du warst vor der Prüfung sehr nervös gewesen",
+                    "exampleSentenceEn": "You had been very nervous before the exam",
+                    "form": "warst gewesen",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Sie war lange Zeit Lehrerin gewesen, bevor sie Direktorin wurde",
+                    "exampleSentenceEn": "She had been a teacher for a long time before she became principal",
+                    "form": "war gewesen",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir waren im Museum gewesen, bevor wir ins Café gingen",
+                    "exampleSentenceEn": "We had been to the museum before we went to the café",
+                    "form": "waren gewesen",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr wart die ganze Nacht wach gewesen",
+                    "exampleSentenceEn": "You had been awake all night",
+                    "form": "wart gewesen",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie waren gute Freunde gewesen, bis der Streit sie trennte",
+                    "exampleSentenceEn": "They had been good friends until the argument separated them",
+                    "form": "waren gewesen",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+            "tenseId": "plusquamperfekt",
+            "tenseName": "Plusquamperfekt",
+            "tenseNameEn": "Pluperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Er sagt, er sei glücklich",
+                    "exampleSentenceEn": "He says he is happy",
+                    "form": "sei",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Er sagt, du seist gut",
+                    "exampleSentenceEn": "He says you are good",
+                    "form": "seist",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er sagt, sie sei nett",
+                    "exampleSentenceEn": "He says she is nice",
+                    "form": "sei",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Er sagt, wir seien hier",
+                    "exampleSentenceEn": "He says we are here",
+                    "form": "seien",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Er sagt, ihr seiet bereit",
+                    "exampleSentenceEn": "He says you are ready",
+                    "form": "seiet",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Er sagt, sie seien Freunde",
+                    "exampleSentenceEn": "He says they are friends",
+                    "form": "seien",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used primarily in indirect speech and formal writing to report what someone else has said. Also used in certain fixed expressions and formal contexts.",
+            "tenseId": "konjunktiv_i",
+            "tenseName": "Konjunktiv I",
+            "tenseNameEn": "Subjunctive I"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich wäre glücklich",
+                    "exampleSentenceEn": "I would be happy",
+                    "form": "wäre",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du wärst gut",
+                    "exampleSentenceEn": "You would be good",
+                    "form": "wärst",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Sie wäre nett",
+                    "exampleSentenceEn": "She would be nice",
+                    "form": "wäre",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir wären hier",
+                    "exampleSentenceEn": "We would be here",
+                    "form": "wären",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr wäret bereit",
+                    "exampleSentenceEn": "You would be ready",
+                    "form": "wäret",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie wären Freunde",
+                    "exampleSentenceEn": "They would be friends",
+                    "form": "wären",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'wenn' (if) clauses.",
+            "tenseId": "konjunktiv_ii",
+            "tenseName": "Konjunktiv II",
+            "tenseNameEn": "Subjunctive II"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Sei bitte pünktlich zum Meeting!",
+                    "exampleSentenceEn": "Please be on time for the meeting!",
+                    "form": "sei",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Seid vorsichtig, wenn ihr über die Straße geht!",
+                    "exampleSentenceEn": "Be careful when you cross the street!",
+                    "form": "seid",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Seien Sie so freundlich und helfen Sie mir!",
+                    "exampleSentenceEn": "Be so kind and help me!",
+                    "form": "seien Sie",
+                    "pronoun": "Sie"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (du, ihr) and formal address (Sie). The subject pronoun is usually omitted.",
+            "tenseId": "imperativ",
+            "tenseName": "Imperativ",
+            "tenseNameEn": "Imperative"
+        }
+    ]
+}

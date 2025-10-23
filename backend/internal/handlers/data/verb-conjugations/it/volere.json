@@ -1,0 +1,807 @@
+{
+    "category": "essential",
+    "infinitive": "volere",
+    "infinitiveEn": "to want",
+    "language": "it",
+    "languageName": "Italian",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io voglio mangiare",
+                    "exampleSentenceEn": "I want to eat",
+                    "form": "voglio",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu vuoi dormire",
+                    "exampleSentenceEn": "You want to sleep",
+                    "form": "vuoi",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui vuole studiare",
+                    "exampleSentenceEn": "He wants to study",
+                    "form": "vuole",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi vogliamo viaggiare",
+                    "exampleSentenceEn": "We want to travel",
+                    "form": "vogliamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi volete ballare",
+                    "exampleSentenceEn": "You want to dance",
+                    "form": "volete",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro vogliono cantare",
+                    "exampleSentenceEn": "They want to sing",
+                    "form": "vogliono",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in Italian.",
+            "tenseId": "presente",
+            "tenseName": "Presente",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io volevo mangiare",
+                    "exampleSentenceEn": "I wanted to eat",
+                    "form": "volevo",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu volevi dormire",
+                    "exampleSentenceEn": "You wanted to sleep",
+                    "form": "volevi",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui voleva studiare",
+                    "exampleSentenceEn": "He wanted to study",
+                    "form": "voleva",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi volevamo viaggiare",
+                    "exampleSentenceEn": "We wanted to travel",
+                    "form": "volevamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi volevate ballare",
+                    "exampleSentenceEn": "You wanted to dance",
+                    "form": "volevate",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro volevano cantare",
+                    "exampleSentenceEn": "They wanted to sing",
+                    "form": "volevano",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to describe ongoing, repeated, or habitual actions in the past. Also used for background information in storytelling.",
+            "tenseId": "imperfetto",
+            "tenseName": "Imperfetto",
+            "tenseNameEn": "Imperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io vorrò mangiare domani",
+                    "exampleSentenceEn": "I will want to eat tomorrow",
+                    "form": "vorrò",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu vorrai dormire",
+                    "exampleSentenceEn": "You will want to sleep",
+                    "form": "vorrai",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui vorrà studiare",
+                    "exampleSentenceEn": "He will want to study",
+                    "form": "vorrà",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi vorremo viaggiare",
+                    "exampleSentenceEn": "We will want to travel",
+                    "form": "vorremo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi vorrete ballare",
+                    "exampleSentenceEn": "You will want to dance",
+                    "form": "vorrete",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro vorranno cantare",
+                    "exampleSentenceEn": "They will want to sing",
+                    "form": "vorranno",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'domani' (tomorrow) or 'la settimana prossima' (next week).",
+            "tenseId": "futuro_semplice",
+            "tenseName": "Futuro Semplice",
+            "tenseNameEn": "Simple Future"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io ho voluto mangiare",
+                    "exampleSentenceEn": "I have wanted to eat",
+                    "form": "ho voluto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu hai voluto dormire",
+                    "exampleSentenceEn": "You have wanted to sleep",
+                    "form": "hai voluto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui ha voluto studiare",
+                    "exampleSentenceEn": "He has wanted to study",
+                    "form": "ha voluto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi abbiamo voluto viaggiare",
+                    "exampleSentenceEn": "We have wanted to travel",
+                    "form": "abbiamo voluto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avete voluto ballare",
+                    "exampleSentenceEn": "You have wanted to dance",
+                    "form": "avete voluto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro hanno voluto cantare",
+                    "exampleSentenceEn": "They have wanted to sing",
+                    "form": "hanno voluto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken Italian.",
+            "tenseId": "passato_prossimo",
+            "tenseName": "Passato Prossimo",
+            "tenseNameEn": "Present Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io volli mangiare",
+                    "exampleSentenceEn": "I wanted to eat",
+                    "form": "volli",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu volesti dormire",
+                    "exampleSentenceEn": "You wanted to sleep",
+                    "form": "volesti",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui volle studiare",
+                    "exampleSentenceEn": "He wanted to study",
+                    "form": "volle",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi volemmo viaggiare",
+                    "exampleSentenceEn": "We wanted to travel",
+                    "form": "volemmo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi voleste ballare",
+                    "exampleSentenceEn": "You wanted to dance",
+                    "form": "voleste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro vollero cantare",
+                    "exampleSentenceEn": "They wanted to sing",
+                    "form": "vollero",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used primarily in formal and literary Italian to narrate completed past events. Also used in southern Italy in spoken language.",
+            "tenseId": "passato_remoto",
+            "tenseName": "Passato Remoto",
+            "tenseNameEn": "Simple Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io avevo voluto mangiare prima che piovesse",
+                    "exampleSentenceEn": "I had wanted to eat before it rained",
+                    "form": "avevo voluto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu avevi voluto dormire prima che venissi",
+                    "exampleSentenceEn": "You had wanted to sleep before I came",
+                    "form": "avevi voluto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui aveva voluto studiare prima che arrivassimo",
+                    "exampleSentenceEn": "He had wanted to study before we arrived",
+                    "form": "aveva voluto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi avevamo voluto viaggiare prima che facesse buio",
+                    "exampleSentenceEn": "We had wanted to travel before it got dark",
+                    "form": "avevamo voluto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avevate voluto ballare prima della chiusura",
+                    "exampleSentenceEn": "You had wanted to dance before closing",
+                    "form": "avevate voluto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro avevano voluto cantare prima dello spettacolo",
+                    "exampleSentenceEn": "They had wanted to sing before the show",
+                    "form": "avevano voluto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+            "tenseId": "trapassato_prossimo",
+            "tenseName": "Trapassato Prossimo",
+            "tenseNameEn": "Pluperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Appena ebbi voluto mangiare, piovve",
+                    "exampleSentenceEn": "As soon as I had wanted to eat, it rained",
+                    "form": "ebbi voluto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Appena avesti voluto dormire, venni",
+                    "exampleSentenceEn": "As soon as you had wanted to sleep, I came",
+                    "form": "avesti voluto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Appena ebbe voluto studiare, arrivammo",
+                    "exampleSentenceEn": "As soon as he had wanted to study, we arrived",
+                    "form": "ebbe voluto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Appena avemmo voluto viaggiare, fece buio",
+                    "exampleSentenceEn": "As soon as we had wanted to travel, it got dark",
+                    "form": "avemmo voluto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Appena aveste voluto ballare, la discoteca chiuse",
+                    "exampleSentenceEn": "As soon as you had wanted to dance, the disco closed",
+                    "form": "aveste voluto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Appena ebbero voluto cantare, lo spettacolo cominciò",
+                    "exampleSentenceEn": "As soon as they had wanted to sing, the show began",
+                    "form": "ebbero voluto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in formal and literary Italian to express an action that was completed immediately before another past action. Rarely used in modern Italian.",
+            "tenseId": "trapassato_remoto",
+            "tenseName": "Trapassato Remoto",
+            "tenseNameEn": "Past Anterior"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io avrò voluto mangiare domani",
+                    "exampleSentenceEn": "I will have wanted to eat tomorrow",
+                    "form": "avrò voluto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu avrai voluto dormire",
+                    "exampleSentenceEn": "You will have wanted to sleep",
+                    "form": "avrai voluto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui avrà voluto studiare",
+                    "exampleSentenceEn": "He will have wanted to study",
+                    "form": "avrà voluto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi avremo voluto viaggiare",
+                    "exampleSentenceEn": "We will have wanted to travel",
+                    "form": "avremo voluto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avrete voluto ballare",
+                    "exampleSentenceEn": "You will have wanted to dance",
+                    "form": "avrete voluto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro avranno voluto cantare",
+                    "exampleSentenceEn": "They will have wanted to sing",
+                    "form": "avranno voluto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express actions that will be completed before another future action. Often used with time expressions like 'domani' (tomorrow).",
+            "tenseId": "futuro_anteriore",
+            "tenseName": "Futuro Anteriore",
+            "tenseNameEn": "Future Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io vorrei mangiare se avessi tempo",
+                    "exampleSentenceEn": "I would want to eat if I had time",
+                    "form": "vorrei",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu vorresti dormire",
+                    "exampleSentenceEn": "You would want to sleep",
+                    "form": "vorresti",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui vorrebbe studiare",
+                    "exampleSentenceEn": "He would want to study",
+                    "form": "vorrebbe",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi vorremmo viaggiare",
+                    "exampleSentenceEn": "We would want to travel",
+                    "form": "vorremmo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi vorreste ballare",
+                    "exampleSentenceEn": "You would want to dance",
+                    "form": "vorreste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro vorrebbero cantare",
+                    "exampleSentenceEn": "They would want to sing",
+                    "form": "vorrebbero",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'se' (if) clauses.",
+            "tenseId": "condizionale_presente",
+            "tenseName": "Condizionale Presente",
+            "tenseNameEn": "Present Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io avrei voluto mangiare se avessi potuto",
+                    "exampleSentenceEn": "I would have wanted to eat if I could have",
+                    "form": "avrei voluto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu avresti voluto dormire",
+                    "exampleSentenceEn": "You would have wanted to sleep",
+                    "form": "avresti voluto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui avrebbe voluto studiare",
+                    "exampleSentenceEn": "He would have wanted to study",
+                    "form": "avrebbe voluto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi avremmo voluto viaggiare",
+                    "exampleSentenceEn": "We would have wanted to travel",
+                    "form": "avremmo voluto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avreste voluto ballare",
+                    "exampleSentenceEn": "You would have wanted to dance",
+                    "form": "avreste voluto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro avrebbero voluto cantare",
+                    "exampleSentenceEn": "They would have wanted to sing",
+                    "form": "avrebbero voluto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express hypothetical past actions or regrets about things that didn't happen. Often used with 'se' (if) clauses referring to the past.",
+            "tenseId": "condizionale_passato",
+            "tenseName": "Condizionale Passato",
+            "tenseNameEn": "Past Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "È necessario che io voglia mangiare",
+                    "exampleSentenceEn": "I must want to eat",
+                    "form": "voglia",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Voglio che tu voglia dormire",
+                    "exampleSentenceEn": "I want you to want to sleep",
+                    "form": "voglia",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "È necessario che lui voglia studiare",
+                    "exampleSentenceEn": "He must want to study",
+                    "form": "voglia",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "È necessario che noi vogliamo viaggiare",
+                    "exampleSentenceEn": "We must want to travel",
+                    "form": "vogliamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "È necessario che voi vogliate ballare",
+                    "exampleSentenceEn": "You must want to dance",
+                    "form": "vogliate",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "È necessario che loro vogliano cantare",
+                    "exampleSentenceEn": "They must want to sing",
+                    "form": "vogliano",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in dependent clauses after certain expressions of opinion, doubt, emotion, or necessity. Often used after 'è necessario che', 'voglio che', etc.",
+            "tenseId": "congiuntivo_presente",
+            "tenseName": "Congiuntivo Presente",
+            "tenseNameEn": "Present Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Era necessario che io volessi mangiare",
+                    "exampleSentenceEn": "I had to want to eat",
+                    "form": "volessi",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Volevo che tu volessi dormire",
+                    "exampleSentenceEn": "I wanted you to want to sleep",
+                    "form": "volessi",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Era necessario che lui volesse studiare",
+                    "exampleSentenceEn": "He had to want to study",
+                    "form": "volesse",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Era necessario che noi volessimo viaggiare",
+                    "exampleSentenceEn": "We had to want to travel",
+                    "form": "volessimo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Era necessario che voi voleste ballare",
+                    "exampleSentenceEn": "You had to want to dance",
+                    "form": "voleste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Era necessario che loro volessero cantare",
+                    "exampleSentenceEn": "They had to want to sing",
+                    "form": "volessero",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in formal and literary Italian after the same triggers as present subjunctive, but referring to past events. Rarely used in modern spoken Italian.",
+            "tenseId": "congiuntivo_imperfetto",
+            "tenseName": "Congiuntivo Imperfetto",
+            "tenseNameEn": "Imperfect Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "È necessario che io abbia voluto mangiare",
+                    "exampleSentenceEn": "I must have wanted to eat",
+                    "form": "abbia voluto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Voglio che tu abbia voluto dormire",
+                    "exampleSentenceEn": "I want you to have wanted to sleep",
+                    "form": "abbia voluto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "È necessario che lui abbia voluto studiare",
+                    "exampleSentenceEn": "He must have wanted to study",
+                    "form": "abbia voluto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "È necessario che noi abbiamo voluto viaggiare",
+                    "exampleSentenceEn": "We must have wanted to travel",
+                    "form": "abbiamo voluto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "È necessario che voi abbiate voluto ballare",
+                    "exampleSentenceEn": "You must have wanted to dance",
+                    "form": "abbiate voluto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "È necessario che loro abbiano voluto cantare",
+                    "exampleSentenceEn": "They must have wanted to sing",
+                    "form": "abbiano voluto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in dependent clauses after expressions of doubt, emotion, or necessity when referring to a completed action in the past.",
+            "tenseId": "congiuntivo_passato",
+            "tenseName": "Congiuntivo Passato",
+            "tenseNameEn": "Past Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Era necessario che io avessi voluto mangiare",
+                    "exampleSentenceEn": "I had to have wanted to eat",
+                    "form": "avessi voluto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Volevo che tu avessi voluto dormire",
+                    "exampleSentenceEn": "I wanted you to have wanted to sleep",
+                    "form": "avessi voluto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Era necessario che lui avesse voluto studiare",
+                    "exampleSentenceEn": "He had to have wanted to study",
+                    "form": "avesse voluto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Era necessario che noi avessimo voluto viaggiare",
+                    "exampleSentenceEn": "We had to have wanted to travel",
+                    "form": "avessimo voluto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Era necessario che voi aveste voluto ballare",
+                    "exampleSentenceEn": "You had to have wanted to dance",
+                    "form": "aveste voluto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Era necessario che loro avessero voluto cantare",
+                    "exampleSentenceEn": "They had to have wanted to sing",
+                    "form": "avessero voluto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in formal and literary Italian after the same triggers as other subjunctive tenses, but referring to actions completed before another past action.",
+            "tenseId": "congiuntivo_trapassato",
+            "tenseName": "Congiuntivo Trapassato",
+            "tenseNameEn": "Pluperfect Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (tu, noi, voi). The subject pronoun is omitted.",
+            "tenseId": "imperativo",
+            "tenseName": "Imperativo",
+            "tenseNameEn": "Imperative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Voglio volere mangiare",
+                    "exampleSentenceEn": "I want to want to eat",
+                    "form": "volere",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Devo volere dormire",
+                    "exampleSentenceEn": "I must want to sleep",
+                    "form": "volere",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Posso volere studiare",
+                    "exampleSentenceEn": "I can want to study",
+                    "form": "volere",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "The base form of the verb, used after modal verbs, prepositions, and in many other constructions.",
+            "tenseId": "infinito_presente",
+            "tenseName": "Infinito Presente",
+            "tenseNameEn": "Present Infinitive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Dopo aver voluto mangiare, ho studiato",
+                    "exampleSentenceEn": "After having wanted to eat, I studied",
+                    "form": "aver voluto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Prima di aver voluto dormire, ho lavorato",
+                    "exampleSentenceEn": "Before having wanted to sleep, I worked",
+                    "form": "aver voluto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Dopo aver voluto studiare, ho cenato",
+                    "exampleSentenceEn": "After having wanted to study, I had dinner",
+                    "form": "aver voluto",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express actions that were completed before another action. Often used after modal verbs in the past.",
+            "tenseId": "infinito_passato",
+            "tenseName": "Infinito Passato",
+            "tenseNameEn": "Past Infinitive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Una persona volente",
+                    "exampleSentenceEn": "A wanting person",
+                    "form": "volente",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Il lavoro volente",
+                    "exampleSentenceEn": "The wanting work",
+                    "form": "volente",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "La macchina volente",
+                    "exampleSentenceEn": "The wanting machine",
+                    "form": "volente",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective or in progressive constructions. In modern Italian, it's mainly used as an adjective.",
+            "tenseId": "participio_presente",
+            "tenseName": "Participio Presente",
+            "tenseNameEn": "Present Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ho voluto mangiare",
+                    "exampleSentenceEn": "I have wanted to eat",
+                    "form": "voluto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Ha voluto dormire",
+                    "exampleSentenceEn": "She has wanted to sleep",
+                    "form": "voluto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Hanno voluto studiare",
+                    "exampleSentenceEn": "They have wanted to study",
+                    "form": "voluti",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to form compound tenses and as an adjective. Must agree in gender and number with the subject.",
+            "tenseId": "participio_passato",
+            "tenseName": "Participio Passato",
+            "tenseNameEn": "Past Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Sto volendo mangiare",
+                    "exampleSentenceEn": "I am wanting to eat",
+                    "form": "volendo",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Stai volendo dormire",
+                    "exampleSentenceEn": "You are wanting to sleep",
+                    "form": "volendo",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Sta volendo studiare",
+                    "exampleSentenceEn": "He is wanting to study",
+                    "form": "volendo",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express ongoing actions, often with 'stare' to form the present continuous tense.",
+            "tenseId": "gerundio_presente",
+            "tenseName": "Gerundio Presente",
+            "tenseNameEn": "Present Gerund"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Avendo voluto mangiare, ho studiato",
+                    "exampleSentenceEn": "Having wanted to eat, I studied",
+                    "form": "avendo voluto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Avendo voluto dormire, ha riposato",
+                    "exampleSentenceEn": "Having wanted to sleep, she rested",
+                    "form": "avendo voluto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Avendo voluto studiare, hanno cenato",
+                    "exampleSentenceEn": "Having wanted to study, they had dinner",
+                    "form": "avendo voluto",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express actions that were completed before another action. Rarely used in modern Italian.",
+            "tenseId": "gerundio_passato",
+            "tenseName": "Gerundio Passato",
+            "tenseNameEn": "Past Gerund"
+        }
+    ]
+}

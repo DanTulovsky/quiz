@@ -1,0 +1,807 @@
+{
+    "category": "essential",
+    "infinitive": "dire",
+    "infinitiveEn": "to say/tell",
+    "language": "it",
+    "languageName": "Italian",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io dico la verità",
+                    "exampleSentenceEn": "I tell the truth",
+                    "form": "dico",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu dici ciao",
+                    "exampleSentenceEn": "You say hello",
+                    "form": "dici",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui dice grazie",
+                    "exampleSentenceEn": "He says thank you",
+                    "form": "dice",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi diciamo arrivederci",
+                    "exampleSentenceEn": "We say goodbye",
+                    "form": "diciamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi dite per favore",
+                    "exampleSentenceEn": "You say please",
+                    "form": "dite",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro dicono buonasera",
+                    "exampleSentenceEn": "They say good evening",
+                    "form": "dicono",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in Italian.",
+            "tenseId": "presente",
+            "tenseName": "Presente",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io dicevo la verità",
+                    "exampleSentenceEn": "I was telling the truth",
+                    "form": "dicevo",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu dicevi ciao",
+                    "exampleSentenceEn": "You were saying hello",
+                    "form": "dicevi",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui diceva grazie",
+                    "exampleSentenceEn": "He was saying thank you",
+                    "form": "diceva",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi dicevamo arrivederci",
+                    "exampleSentenceEn": "We were saying goodbye",
+                    "form": "dicevamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi dicevate per favore",
+                    "exampleSentenceEn": "You were saying please",
+                    "form": "dicevate",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro dicevano buonasera",
+                    "exampleSentenceEn": "They were saying good evening",
+                    "form": "dicevano",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to describe ongoing, repeated, or habitual actions in the past. Also used for background information in storytelling.",
+            "tenseId": "imperfetto",
+            "tenseName": "Imperfetto",
+            "tenseNameEn": "Imperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io dirò la verità domani",
+                    "exampleSentenceEn": "I will tell the truth tomorrow",
+                    "form": "dirò",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu dirai ciao",
+                    "exampleSentenceEn": "You will say hello",
+                    "form": "dirai",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui dirà grazie",
+                    "exampleSentenceEn": "He will say thank you",
+                    "form": "dirà",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi diremo arrivederci",
+                    "exampleSentenceEn": "We will say goodbye",
+                    "form": "diremo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi direte per favore",
+                    "exampleSentenceEn": "You will say please",
+                    "form": "direte",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro diranno buonasera",
+                    "exampleSentenceEn": "They will say good evening",
+                    "form": "diranno",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'domani' (tomorrow) or 'la settimana prossima' (next week).",
+            "tenseId": "futuro_semplice",
+            "tenseName": "Futuro Semplice",
+            "tenseNameEn": "Simple Future"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io ho detto la verità",
+                    "exampleSentenceEn": "I have told the truth",
+                    "form": "ho detto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu hai detto ciao",
+                    "exampleSentenceEn": "You have said hello",
+                    "form": "hai detto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui ha detto grazie",
+                    "exampleSentenceEn": "He has said thank you",
+                    "form": "ha detto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi abbiamo detto arrivederci",
+                    "exampleSentenceEn": "We have said goodbye",
+                    "form": "abbiamo detto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avete detto per favore",
+                    "exampleSentenceEn": "You have said please",
+                    "form": "avete detto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro hanno detto buonasera",
+                    "exampleSentenceEn": "They have said good evening",
+                    "form": "hanno detto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken Italian.",
+            "tenseId": "passato_prossimo",
+            "tenseName": "Passato Prossimo",
+            "tenseNameEn": "Present Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io dissi la verità",
+                    "exampleSentenceEn": "I told the truth",
+                    "form": "dissi",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu dicesti ciao",
+                    "exampleSentenceEn": "You told hello",
+                    "form": "dicesti",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui disse grazie",
+                    "exampleSentenceEn": "He told thank you",
+                    "form": "disse",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi dicemmo arrivederci",
+                    "exampleSentenceEn": "We told goodbye",
+                    "form": "dicemmo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi diceste per favore",
+                    "exampleSentenceEn": "You told please",
+                    "form": "diceste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro dissero buonasera",
+                    "exampleSentenceEn": "They told good evening",
+                    "form": "dissero",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used primarily in formal and literary Italian to narrate completed past events. Also used in southern Italy in spoken language.",
+            "tenseId": "passato_remoto",
+            "tenseName": "Passato Remoto",
+            "tenseNameEn": "Simple Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io avevo detto la verità prima che piovesse",
+                    "exampleSentenceEn": "I had told the truth before it rained",
+                    "form": "avevo detto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu avevi detto ciao prima che venissi",
+                    "exampleSentenceEn": "You had said hello before I came",
+                    "form": "avevi detto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui aveva detto grazie prima che arrivassimo",
+                    "exampleSentenceEn": "He had said thank you before we arrived",
+                    "form": "aveva detto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi avevamo detto arrivederci prima che facesse buio",
+                    "exampleSentenceEn": "We had said goodbye before it got dark",
+                    "form": "avevamo detto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avevate detto per favore prima della chiusura",
+                    "exampleSentenceEn": "You had said please before closing",
+                    "form": "avevate detto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro avevano detto buonasera prima dello spettacolo",
+                    "exampleSentenceEn": "They had said good evening before the show",
+                    "form": "avevano detto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+            "tenseId": "trapassato_prossimo",
+            "tenseName": "Trapassato Prossimo",
+            "tenseNameEn": "Pluperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Appena ebbi detto la verità, piovve",
+                    "exampleSentenceEn": "As soon as I had told the truth, it rained",
+                    "form": "ebbi detto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Appena avesti detto ciao, venni",
+                    "exampleSentenceEn": "As soon as you had said hello, I came",
+                    "form": "avesti detto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Appena ebbe detto grazie, arrivammo",
+                    "exampleSentenceEn": "As soon as he had said thank you, we arrived",
+                    "form": "ebbe detto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Appena avemmo detto arrivederci, fece buio",
+                    "exampleSentenceEn": "As soon as we had said goodbye, it got dark",
+                    "form": "avemmo detto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Appena aveste detto per favore, il negozio chiuse",
+                    "exampleSentenceEn": "As soon as you had said please, the store closed",
+                    "form": "aveste detto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Appena ebbero detto buonasera, lo spettacolo cominciò",
+                    "exampleSentenceEn": "As soon as they had said good evening, the show began",
+                    "form": "ebbero detto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in formal and literary Italian to express an action that was completed immediately before another past action. Rarely used in modern Italian.",
+            "tenseId": "trapassato_remoto",
+            "tenseName": "Trapassato Remoto",
+            "tenseNameEn": "Past Anterior"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io avrò detto la verità domani",
+                    "exampleSentenceEn": "I will have told the truth tomorrow",
+                    "form": "avrò detto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu avrai detto ciao",
+                    "exampleSentenceEn": "You will have said hello",
+                    "form": "avrai detto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui avrà detto grazie",
+                    "exampleSentenceEn": "He will have said thank you",
+                    "form": "avrà detto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi avremo detto arrivederci",
+                    "exampleSentenceEn": "We will have said goodbye",
+                    "form": "avremo detto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avrete detto per favore",
+                    "exampleSentenceEn": "You will have said please",
+                    "form": "avrete detto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro avranno detto buonasera",
+                    "exampleSentenceEn": "They will have said good evening",
+                    "form": "avranno detto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express actions that will be completed before another future action. Often used with time expressions like 'domani' (tomorrow).",
+            "tenseId": "futuro_anteriore",
+            "tenseName": "Futuro Anteriore",
+            "tenseNameEn": "Future Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io direi la verità se avessi tempo",
+                    "exampleSentenceEn": "I would tell the truth if I had time",
+                    "form": "direi",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu diresti ciao",
+                    "exampleSentenceEn": "You would say hello",
+                    "form": "diresti",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui direbbe grazie",
+                    "exampleSentenceEn": "He would say thank you",
+                    "form": "direbbe",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi diremmo arrivederci",
+                    "exampleSentenceEn": "We would say goodbye",
+                    "form": "diremmo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi direste per favore",
+                    "exampleSentenceEn": "You would say please",
+                    "form": "direste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro direbbero buonasera",
+                    "exampleSentenceEn": "They would say good evening",
+                    "form": "direbbero",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'se' (if) clauses.",
+            "tenseId": "condizionale_presente",
+            "tenseName": "Condizionale Presente",
+            "tenseNameEn": "Present Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io avrei detto la verità se avessi potuto",
+                    "exampleSentenceEn": "I would have told the truth if I could have",
+                    "form": "avrei detto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu avresti detto ciao",
+                    "exampleSentenceEn": "You would have said hello",
+                    "form": "avresti detto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui avrebbe detto grazie",
+                    "exampleSentenceEn": "He would have said thank you",
+                    "form": "avrebbe detto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi avremmo detto arrivederci",
+                    "exampleSentenceEn": "We would have said goodbye",
+                    "form": "avremmo detto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avreste detto per favore",
+                    "exampleSentenceEn": "You would have said please",
+                    "form": "avreste detto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro avrebbero detto buonasera",
+                    "exampleSentenceEn": "They would have said good evening",
+                    "form": "avrebbero detto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express hypothetical past actions or regrets about things that didn't happen. Often used with 'se' (if) clauses referring to the past.",
+            "tenseId": "condizionale_passato",
+            "tenseName": "Condizionale Passato",
+            "tenseNameEn": "Past Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "È necessario che io dica la verità",
+                    "exampleSentenceEn": "I must tell the truth",
+                    "form": "dica",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Voglio che tu dica ciao",
+                    "exampleSentenceEn": "I want you to say hello",
+                    "form": "dica",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "È necessario che lui dica grazie",
+                    "exampleSentenceEn": "He must say thank you",
+                    "form": "dica",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "È necessario che noi diciamo arrivederci",
+                    "exampleSentenceEn": "We must say goodbye",
+                    "form": "diciamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "È necessario che voi diciate per favore",
+                    "exampleSentenceEn": "You must say please",
+                    "form": "diciate",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "È necessario che loro dicano buonasera",
+                    "exampleSentenceEn": "They must say good evening",
+                    "form": "dicano",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in dependent clauses after certain expressions of opinion, doubt, emotion, or necessity. Often used after 'è necessario che', 'voglio che', etc.",
+            "tenseId": "congiuntivo_presente",
+            "tenseName": "Congiuntivo Presente",
+            "tenseNameEn": "Present Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Era necessario che io dicessi la verità",
+                    "exampleSentenceEn": "I had to tell the truth",
+                    "form": "dicessi",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Volevo che tu dicessi ciao",
+                    "exampleSentenceEn": "I wanted you to say hello",
+                    "form": "dicessi",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Era necessario che lui dicesse grazie",
+                    "exampleSentenceEn": "He had to say thank you",
+                    "form": "dicesse",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Era necessario che noi dicessimo arrivederci",
+                    "exampleSentenceEn": "We had to say goodbye",
+                    "form": "dicessimo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Era necessario che voi diceste per favore",
+                    "exampleSentenceEn": "You had to say please",
+                    "form": "diceste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Era necessario che loro dicessero buonasera",
+                    "exampleSentenceEn": "They had to say good evening",
+                    "form": "dicessero",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in formal and literary Italian after the same triggers as present subjunctive, but referring to past events. Rarely used in modern spoken Italian.",
+            "tenseId": "congiuntivo_imperfetto",
+            "tenseName": "Congiuntivo Imperfetto",
+            "tenseNameEn": "Imperfect Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "È necessario che io abbia detto la verità",
+                    "exampleSentenceEn": "I must have told the truth",
+                    "form": "abbia detto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Voglio che tu abbia detto ciao",
+                    "exampleSentenceEn": "I want you to have said hello",
+                    "form": "abbia detto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "È necessario che lui abbia detto grazie",
+                    "exampleSentenceEn": "He must have said thank you",
+                    "form": "abbia detto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "È necessario che noi abbiamo detto arrivederci",
+                    "exampleSentenceEn": "We must have said goodbye",
+                    "form": "abbiamo detto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "È necessario che voi abbiate detto per favore",
+                    "exampleSentenceEn": "You must have said please",
+                    "form": "abbiate detto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "È necessario che loro abbiano detto buonasera",
+                    "exampleSentenceEn": "They must have said good evening",
+                    "form": "abbiano detto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in dependent clauses after expressions of doubt, emotion, or necessity when referring to a completed action in the past.",
+            "tenseId": "congiuntivo_passato",
+            "tenseName": "Congiuntivo Passato",
+            "tenseNameEn": "Past Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Era necessario che io avessi detto la verità",
+                    "exampleSentenceEn": "I had to have told the truth",
+                    "form": "avessi detto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Volevo che tu avessi detto ciao",
+                    "exampleSentenceEn": "I wanted you to have said hello",
+                    "form": "avessi detto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Era necessario che lui avesse detto grazie",
+                    "exampleSentenceEn": "He had to have said thank you",
+                    "form": "avesse detto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Era necessario che noi avessimo detto arrivederci",
+                    "exampleSentenceEn": "We had to have said goodbye",
+                    "form": "avessimo detto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Era necessario che voi aveste detto per favore",
+                    "exampleSentenceEn": "You had to have said please",
+                    "form": "aveste detto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Era necessario che loro avessero detto buonasera",
+                    "exampleSentenceEn": "They had to have said good evening",
+                    "form": "avessero detto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in formal and literary Italian after the same triggers as other subjunctive tenses, but referring to actions completed before another past action.",
+            "tenseId": "congiuntivo_trapassato",
+            "tenseName": "Congiuntivo Trapassato",
+            "tenseNameEn": "Pluperfect Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Dici la verità!",
+                    "exampleSentenceEn": "Tell the truth!",
+                    "form": "dici",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Diciamo ciao!",
+                    "exampleSentenceEn": "Let's say hello!",
+                    "form": "diciamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Dite grazie!",
+                    "exampleSentenceEn": "Say thank you!",
+                    "form": "dite",
+                    "pronoun": "voi"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (tu, noi, voi). The subject pronoun is omitted.",
+            "tenseId": "imperativo",
+            "tenseName": "Imperativo",
+            "tenseNameEn": "Imperative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Voglio dire la verità",
+                    "exampleSentenceEn": "I want to tell the truth",
+                    "form": "dire",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Devo dire ciao",
+                    "exampleSentenceEn": "I must say hello",
+                    "form": "dire",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Posso dire grazie",
+                    "exampleSentenceEn": "I can say thank you",
+                    "form": "dire",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "The base form of the verb, used after modal verbs, prepositions, and in many other constructions.",
+            "tenseId": "infinito_presente",
+            "tenseName": "Infinito Presente",
+            "tenseNameEn": "Present Infinitive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Dopo aver detto la verità, ho studiato",
+                    "exampleSentenceEn": "After having told the truth, I studied",
+                    "form": "aver detto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Prima di aver detto ciao, ho lavorato",
+                    "exampleSentenceEn": "Before having said hello, I worked",
+                    "form": "aver detto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Dopo aver detto grazie, ho cenato",
+                    "exampleSentenceEn": "After having said thank you, I had dinner",
+                    "form": "aver detto",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express actions that were completed before another action. Often used after modal verbs in the past.",
+            "tenseId": "infinito_passato",
+            "tenseName": "Infinito Passato",
+            "tenseNameEn": "Past Infinitive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Una persona dicente",
+                    "exampleSentenceEn": "A saying person",
+                    "form": "dicente",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Il lavoro dicente",
+                    "exampleSentenceEn": "The saying work",
+                    "form": "dicente",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "La macchina dicente",
+                    "exampleSentenceEn": "The saying machine",
+                    "form": "dicente",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective or in progressive constructions. In modern Italian, it's mainly used as an adjective.",
+            "tenseId": "participio_presente",
+            "tenseName": "Participio Presente",
+            "tenseNameEn": "Present Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ho detto la verità",
+                    "exampleSentenceEn": "I have told the truth",
+                    "form": "detto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Ha detto ciao",
+                    "exampleSentenceEn": "She has said hello",
+                    "form": "detto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Hanno detto grazie",
+                    "exampleSentenceEn": "They have said thank you",
+                    "form": "detti",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to form compound tenses and as an adjective. Must agree in gender and number with the subject.",
+            "tenseId": "participio_passato",
+            "tenseName": "Participio Passato",
+            "tenseNameEn": "Past Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Sto dicendo la verità",
+                    "exampleSentenceEn": "I am telling the truth",
+                    "form": "dicendo",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Stai dicendo ciao",
+                    "exampleSentenceEn": "You are saying hello",
+                    "form": "dicendo",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Sta dicendo grazie",
+                    "exampleSentenceEn": "He is saying thank you",
+                    "form": "dicendo",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express ongoing actions, often with 'stare' to form the present continuous tense.",
+            "tenseId": "gerundio_presente",
+            "tenseName": "Gerundio Presente",
+            "tenseNameEn": "Present Gerund"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Avendo detto la verità, ho studiato",
+                    "exampleSentenceEn": "Having told the truth, I studied",
+                    "form": "avendo detto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Avendo detto ciao, ha riposato",
+                    "exampleSentenceEn": "Having said hello, she rested",
+                    "form": "avendo detto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Avendo detto grazie, hanno cenato",
+                    "exampleSentenceEn": "Having said thank you, they had dinner",
+                    "form": "avendo detto",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express actions that were completed before another action. Rarely used in modern Italian.",
+            "tenseId": "gerundio_passato",
+            "tenseName": "Gerundio Passato",
+            "tenseNameEn": "Past Gerund"
+        }
+    ]
+}

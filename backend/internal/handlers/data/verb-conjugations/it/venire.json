@@ -1,0 +1,807 @@
+{
+    "category": "essential",
+    "infinitive": "venire",
+    "infinitiveEn": "to come",
+    "language": "it",
+    "languageName": "Italian",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io vengo a scuola",
+                    "exampleSentenceEn": "I come to school",
+                    "form": "vengo",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu vieni a casa",
+                    "exampleSentenceEn": "You come home",
+                    "form": "vieni",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui viene al cinema",
+                    "exampleSentenceEn": "He comes to the cinema",
+                    "form": "viene",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi veniamo a passeggio",
+                    "exampleSentenceEn": "We come for a walk",
+                    "form": "veniamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi venite a fare la spesa",
+                    "exampleSentenceEn": "You come shopping",
+                    "form": "venite",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro vengono a teatro",
+                    "exampleSentenceEn": "They come to the theater",
+                    "form": "vengono",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in Italian.",
+            "tenseId": "presente",
+            "tenseName": "Presente",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io venivo a scuola",
+                    "exampleSentenceEn": "I was coming to school",
+                    "form": "venivo",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu venivi a casa",
+                    "exampleSentenceEn": "You were coming home",
+                    "form": "venivi",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui veniva al cinema",
+                    "exampleSentenceEn": "He was coming to the cinema",
+                    "form": "veniva",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi venivamo a passeggio",
+                    "exampleSentenceEn": "We were coming for a walk",
+                    "form": "venivamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi venivate a fare la spesa",
+                    "exampleSentenceEn": "You were coming shopping",
+                    "form": "venivate",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro venivano a teatro",
+                    "exampleSentenceEn": "They were coming to the theater",
+                    "form": "venivano",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to describe ongoing, repeated, or habitual actions in the past. Also used for background information in storytelling.",
+            "tenseId": "imperfetto",
+            "tenseName": "Imperfetto",
+            "tenseNameEn": "Imperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io verrò a scuola domani",
+                    "exampleSentenceEn": "I will come to school tomorrow",
+                    "form": "verrò",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu verrai a casa",
+                    "exampleSentenceEn": "You will come home",
+                    "form": "verrai",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui verrà al cinema",
+                    "exampleSentenceEn": "He will come to the cinema",
+                    "form": "verrà",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi verremo a passeggio",
+                    "exampleSentenceEn": "We will come for a walk",
+                    "form": "verremo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi verrete a fare la spesa",
+                    "exampleSentenceEn": "You will come shopping",
+                    "form": "verrete",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro verranno a teatro",
+                    "exampleSentenceEn": "They will come to the theater",
+                    "form": "verranno",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'domani' (tomorrow) or 'la settimana prossima' (next week).",
+            "tenseId": "futuro_semplice",
+            "tenseName": "Futuro Semplice",
+            "tenseNameEn": "Simple Future"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io sono venuto a scuola",
+                    "exampleSentenceEn": "I have come to school",
+                    "form": "sono venuto/a",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu sei venuto a casa",
+                    "exampleSentenceEn": "You have come home",
+                    "form": "sei venuto/a",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui è venuto al cinema",
+                    "exampleSentenceEn": "He has come to the cinema",
+                    "form": "è venuto/a",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi siamo venuti a passeggio",
+                    "exampleSentenceEn": "We have come for a walk",
+                    "form": "siamo venuti/e",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi siete venuti a fare la spesa",
+                    "exampleSentenceEn": "You have come shopping",
+                    "form": "siete venuti/e",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro sono venuti a teatro",
+                    "exampleSentenceEn": "They have come to the theater",
+                    "form": "sono venuti/e",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken Italian.",
+            "tenseId": "passato_prossimo",
+            "tenseName": "Passato Prossimo",
+            "tenseNameEn": "Present Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io venni a scuola",
+                    "exampleSentenceEn": "I came to school",
+                    "form": "venni",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu venisti a casa",
+                    "exampleSentenceEn": "You came home",
+                    "form": "venisti",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui venne al cinema",
+                    "exampleSentenceEn": "He came to the cinema",
+                    "form": "venne",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi venimmo a passeggio",
+                    "exampleSentenceEn": "We came for a walk",
+                    "form": "venimmo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi veniste a fare la spesa",
+                    "exampleSentenceEn": "You came shopping",
+                    "form": "veniste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro vennero a teatro",
+                    "exampleSentenceEn": "They came to the theater",
+                    "form": "vennero",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used primarily in formal and literary Italian to narrate completed past events. Also used in southern Italy in spoken language.",
+            "tenseId": "passato_remoto",
+            "tenseName": "Passato Remoto",
+            "tenseNameEn": "Simple Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io ero venuto a scuola prima che piovesse",
+                    "exampleSentenceEn": "I had come to school before it rained",
+                    "form": "ero venuto/a",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu eri venuto a casa prima che arrivassi",
+                    "exampleSentenceEn": "You had come home before I arrived",
+                    "form": "eri venuto/a",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui era venuto al cinema prima che partissimo",
+                    "exampleSentenceEn": "He had come to the cinema before we left",
+                    "form": "era venuto/a",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi eravamo venuti a passeggio prima che facesse buio",
+                    "exampleSentenceEn": "We had come for a walk before it got dark",
+                    "form": "eravamo venuti/e",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi eravate venuti a fare la spesa prima della chiusura",
+                    "exampleSentenceEn": "You had come shopping before closing",
+                    "form": "eravate venuti/e",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro erano venuti a teatro prima dello spettacolo",
+                    "exampleSentenceEn": "They had come to the theater before the show",
+                    "form": "erano venuti/e",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+            "tenseId": "trapassato_prossimo",
+            "tenseName": "Trapassato Prossimo",
+            "tenseNameEn": "Pluperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Appena fui venuto a scuola, piovve",
+                    "exampleSentenceEn": "As soon as I had come to school, it rained",
+                    "form": "fui venuto/a",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Appena fosti venuto a casa, venni",
+                    "exampleSentenceEn": "As soon as you had come home, I came",
+                    "form": "fosti venuto/a",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Appena fu venuto al cinema, arrivammo",
+                    "exampleSentenceEn": "As soon as he had come to the cinema, we arrived",
+                    "form": "fu venuto/a",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Appena fummo venuti a passeggio, fece buio",
+                    "exampleSentenceEn": "As soon as we had come for a walk, it got dark",
+                    "form": "fummo venuti/e",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Appena foste venuti a fare la spesa, il negozio chiuse",
+                    "exampleSentenceEn": "As soon as you had come shopping, the store closed",
+                    "form": "foste venuti/e",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Appena furono venuti a teatro, lo spettacolo cominciò",
+                    "exampleSentenceEn": "As soon as they had come to the theater, the show began",
+                    "form": "furono venuti/e",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in formal and literary Italian to express an action that was completed immediately before another past action. Rarely used in modern Italian.",
+            "tenseId": "trapassato_remoto",
+            "tenseName": "Trapassato Remoto",
+            "tenseNameEn": "Past Anterior"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io sarò venuto a scuola domani",
+                    "exampleSentenceEn": "I will have come to school tomorrow",
+                    "form": "sarò venuto/a",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu sarai venuto a casa",
+                    "exampleSentenceEn": "You will have come home",
+                    "form": "sarai venuto/a",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui sarà venuto al cinema",
+                    "exampleSentenceEn": "He will have come to the cinema",
+                    "form": "sarà venuto/a",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi saremo venuti a passeggio",
+                    "exampleSentenceEn": "We will have come for a walk",
+                    "form": "saremo venuti/e",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi sarete venuti a fare la spesa",
+                    "exampleSentenceEn": "You will have come shopping",
+                    "form": "sarete venuti/e",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro saranno venuti a teatro",
+                    "exampleSentenceEn": "They will have come to the theater",
+                    "form": "saranno venuti/e",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express actions that will be completed before another future action. Often used with time expressions like 'domani' (tomorrow).",
+            "tenseId": "futuro_anteriore",
+            "tenseName": "Futuro Anteriore",
+            "tenseNameEn": "Future Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io verrei a scuola se avessi tempo",
+                    "exampleSentenceEn": "I would come to school if I had time",
+                    "form": "verrei",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu verresti a casa",
+                    "exampleSentenceEn": "You would come home",
+                    "form": "verresti",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui verrebbe al cinema",
+                    "exampleSentenceEn": "He would come to the cinema",
+                    "form": "verrebbe",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi verremmo a passeggio",
+                    "exampleSentenceEn": "We would come for a walk",
+                    "form": "verremmo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi verreste a fare la spesa",
+                    "exampleSentenceEn": "You would come shopping",
+                    "form": "verreste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro verrebbero a teatro",
+                    "exampleSentenceEn": "They would come to the theater",
+                    "form": "verrebbero",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'se' (if) clauses.",
+            "tenseId": "condizionale_presente",
+            "tenseName": "Condizionale Presente",
+            "tenseNameEn": "Present Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io sarei venuto a scuola se avessi potuto",
+                    "exampleSentenceEn": "I would have come to school if I could have",
+                    "form": "sarei venuto/a",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu saresti venuto a casa",
+                    "exampleSentenceEn": "You would have come home",
+                    "form": "saresti venuto/a",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui sarebbe venuto al cinema",
+                    "exampleSentenceEn": "He would have come to the cinema",
+                    "form": "sarebbe venuto/a",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi saremmo venuti a passeggio",
+                    "exampleSentenceEn": "We would have come for a walk",
+                    "form": "saremmo venuti/e",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi sareste venuti a fare la spesa",
+                    "exampleSentenceEn": "You would have come shopping",
+                    "form": "sareste venuti/e",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro sarebbero venuti a teatro",
+                    "exampleSentenceEn": "They would have come to the theater",
+                    "form": "sarebbero venuti/e",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express hypothetical past actions or regrets about things that didn't happen. Often used with 'se' (if) clauses referring to the past.",
+            "tenseId": "condizionale_passato",
+            "tenseName": "Condizionale Passato",
+            "tenseNameEn": "Past Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "È necessario che io venga a scuola",
+                    "exampleSentenceEn": "I must come to school",
+                    "form": "venga",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Voglio che tu venga a casa",
+                    "exampleSentenceEn": "I want you to come home",
+                    "form": "venga",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "È necessario che lui venga al cinema",
+                    "exampleSentenceEn": "He must come to the cinema",
+                    "form": "venga",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "È necessario che noi veniamo a passeggio",
+                    "exampleSentenceEn": "We must come for a walk",
+                    "form": "veniamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "È necessario che voi veniate a fare la spesa",
+                    "exampleSentenceEn": "You must come shopping",
+                    "form": "veniate",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "È necessario che loro vengano a teatro",
+                    "exampleSentenceEn": "They must come to the theater",
+                    "form": "vengano",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in dependent clauses after certain expressions of opinion, doubt, emotion, or necessity. Often used after 'è necessario che', 'voglio che', etc.",
+            "tenseId": "congiuntivo_presente",
+            "tenseName": "Congiuntivo Presente",
+            "tenseNameEn": "Present Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Era necessario che io venissi a scuola",
+                    "exampleSentenceEn": "I had to come to school",
+                    "form": "venissi",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Volevo che tu venissi a casa",
+                    "exampleSentenceEn": "I wanted you to come home",
+                    "form": "venissi",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Era necessario che lui venisse al cinema",
+                    "exampleSentenceEn": "He had to come to the cinema",
+                    "form": "venisse",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Era necessario che noi venissimo a passeggio",
+                    "exampleSentenceEn": "We had to come for a walk",
+                    "form": "venissimo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Era necessario che voi veniste a fare la spesa",
+                    "exampleSentenceEn": "You had to come shopping",
+                    "form": "veniste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Era necessario che loro venissero a teatro",
+                    "exampleSentenceEn": "They had to come to the theater",
+                    "form": "venissero",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in formal and literary Italian after the same triggers as present subjunctive, but referring to past events. Rarely used in modern spoken Italian.",
+            "tenseId": "congiuntivo_imperfetto",
+            "tenseName": "Congiuntivo Imperfetto",
+            "tenseNameEn": "Imperfect Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "È necessario che io sia venuto a scuola",
+                    "exampleSentenceEn": "I must have come to school",
+                    "form": "sia venuto/a",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Voglio che tu sia venuto a casa",
+                    "exampleSentenceEn": "I want you to have come home",
+                    "form": "sia venuto/a",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "È necessario che lui sia venuto al cinema",
+                    "exampleSentenceEn": "He must have come to the cinema",
+                    "form": "sia venuto/a",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "È necessario che noi siamo venuti a passeggio",
+                    "exampleSentenceEn": "We must have come for a walk",
+                    "form": "siamo venuti/e",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "È necessario che voi siate venuti a fare la spesa",
+                    "exampleSentenceEn": "You must have come shopping",
+                    "form": "siate venuti/e",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "È necessario che loro siano venuti a teatro",
+                    "exampleSentenceEn": "They must have come to the theater",
+                    "form": "siano venuti/e",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in dependent clauses after expressions of doubt, emotion, or necessity when referring to a completed action in the past.",
+            "tenseId": "congiuntivo_passato",
+            "tenseName": "Congiuntivo Passato",
+            "tenseNameEn": "Past Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Era necessario che io fossi venuto a scuola",
+                    "exampleSentenceEn": "I had to have come to school",
+                    "form": "fossi venuto/a",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Volevo che tu fossi venuto a casa",
+                    "exampleSentenceEn": "I wanted you to have come home",
+                    "form": "fossi venuto/a",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Era necessario che lui fosse venuto al cinema",
+                    "exampleSentenceEn": "He had to have come to the cinema",
+                    "form": "fosse venuto/a",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Era necessario che noi fossimo venuti a passeggio",
+                    "exampleSentenceEn": "We had to have come for a walk",
+                    "form": "fossimo venuti/e",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Era necessario che voi foste venuti a fare la spesa",
+                    "exampleSentenceEn": "You had to have come shopping",
+                    "form": "foste venuti/e",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Era necessario che loro fossero venuti a teatro",
+                    "exampleSentenceEn": "They had to have come to the theater",
+                    "form": "fossero venuti/e",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in formal and literary Italian after the same triggers as other subjunctive tenses, but referring to actions completed before another past action.",
+            "tenseId": "congiuntivo_trapassato",
+            "tenseName": "Congiuntivo Trapassato",
+            "tenseNameEn": "Pluperfect Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Vieni a scuola!",
+                    "exampleSentenceEn": "Come to school!",
+                    "form": "vieni",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Veniamo a passeggio!",
+                    "exampleSentenceEn": "Let's come for a walk!",
+                    "form": "veniamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Venite a fare la spesa!",
+                    "exampleSentenceEn": "Come shopping!",
+                    "form": "venite",
+                    "pronoun": "voi"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (tu, noi, voi). The subject pronoun is omitted.",
+            "tenseId": "imperativo",
+            "tenseName": "Imperativo",
+            "tenseNameEn": "Imperative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Voglio venire a scuola",
+                    "exampleSentenceEn": "I want to come to school",
+                    "form": "venire",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Devo venire a casa",
+                    "exampleSentenceEn": "I must come home",
+                    "form": "venire",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Posso venire al cinema",
+                    "exampleSentenceEn": "I can come to the cinema",
+                    "form": "venire",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "The base form of the verb, used after modal verbs, prepositions, and in many other constructions.",
+            "tenseId": "infinito_presente",
+            "tenseName": "Infinito Presente",
+            "tenseNameEn": "Present Infinitive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Dopo essere venuto a scuola, ho studiato",
+                    "exampleSentenceEn": "After having come to school, I studied",
+                    "form": "essere venuto/a",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Prima di essere venuto a casa, ho lavorato",
+                    "exampleSentenceEn": "Before having come home, I worked",
+                    "form": "essere venuto/a",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Dopo essere venuto al cinema, ho cenato",
+                    "exampleSentenceEn": "After having come to the cinema, I had dinner",
+                    "form": "essere venuto/a",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express actions that were completed before another action. Often used after modal verbs in the past.",
+            "tenseId": "infinito_passato",
+            "tenseName": "Infinito Passato",
+            "tenseNameEn": "Past Infinitive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Una persona veniente",
+                    "exampleSentenceEn": "A coming person",
+                    "form": "veniente",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Il treno veniente",
+                    "exampleSentenceEn": "The coming train",
+                    "form": "veniente",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "La macchina veniente",
+                    "exampleSentenceEn": "The coming car",
+                    "form": "veniente",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective or in progressive constructions. In modern Italian, it's mainly used as an adjective.",
+            "tenseId": "participio_presente",
+            "tenseName": "Participio Presente",
+            "tenseNameEn": "Present Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Sono venuto a scuola",
+                    "exampleSentenceEn": "I have come to school",
+                    "form": "venuto/a",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "È venuta a casa",
+                    "exampleSentenceEn": "She has come home",
+                    "form": "venuto/a",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Sono venuti al cinema",
+                    "exampleSentenceEn": "They have come to the cinema",
+                    "form": "venuti/e",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to form compound tenses and as an adjective. Must agree in gender and number with the subject.",
+            "tenseId": "participio_passato",
+            "tenseName": "Participio Passato",
+            "tenseNameEn": "Past Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Sto venendo a scuola",
+                    "exampleSentenceEn": "I am coming to school",
+                    "form": "venendo",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Stai venendo a casa",
+                    "exampleSentenceEn": "You are coming home",
+                    "form": "venendo",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Sta venendo al cinema",
+                    "exampleSentenceEn": "He is coming to the cinema",
+                    "form": "venendo",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express ongoing actions, often with 'stare' to form the present continuous tense.",
+            "tenseId": "gerundio_presente",
+            "tenseName": "Gerundio Presente",
+            "tenseNameEn": "Present Gerund"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Essendo venuto a scuola, ho studiato",
+                    "exampleSentenceEn": "Having come to school, I studied",
+                    "form": "essendo venuto/a",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Essendo venuta a casa, ha riposato",
+                    "exampleSentenceEn": "Having come home, she rested",
+                    "form": "essendo venuto/a",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Essendo venuti al cinema, hanno cenato",
+                    "exampleSentenceEn": "Having come to the cinema, they had dinner",
+                    "form": "essendo venuti/e",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express actions that were completed before another action. Rarely used in modern Italian.",
+            "tenseId": "gerundio_passato",
+            "tenseName": "Gerundio Passato",
+            "tenseNameEn": "Past Gerund"
+        }
+    ]
+}

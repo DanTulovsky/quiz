@@ -1,0 +1,409 @@
+{
+    "category": "essential",
+    "infinitive": "идти",
+    "infinitiveEn": "to go (on foot)",
+    "language": "ru",
+    "languageName": "Russian",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я иду в школу",
+                    "exampleSentenceEn": "I go to school",
+                    "form": "иду",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты идёшь домой",
+                    "exampleSentenceEn": "You go home",
+                    "form": "идёшь",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он идёт в кино",
+                    "exampleSentenceEn": "He goes to the cinema",
+                    "form": "идёт",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы идём гулять",
+                    "exampleSentenceEn": "We go for a walk",
+                    "form": "идём",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы идёте за покупками",
+                    "exampleSentenceEn": "You go shopping",
+                    "form": "идёте",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они идут в театр",
+                    "exampleSentenceEn": "They go to the theater",
+                    "form": "идут",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in Russian.",
+            "tenseId": "present",
+            "tenseName": "Настоящее время",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я шёл в школу",
+                    "exampleSentenceEn": "I went to school",
+                    "form": "шёл",
+                    "pronoun": "я (m)"
+                },
+                {
+                    "exampleSentence": "Я шла в школу",
+                    "exampleSentenceEn": "I went to school",
+                    "form": "шла",
+                    "pronoun": "я (f)"
+                },
+                {
+                    "exampleSentence": "Ты шёл домой",
+                    "exampleSentenceEn": "You went home",
+                    "form": "шёл",
+                    "pronoun": "ты (m)"
+                },
+                {
+                    "exampleSentence": "Ты шла домой",
+                    "exampleSentenceEn": "You went home",
+                    "form": "шла",
+                    "pronoun": "ты (f)"
+                },
+                {
+                    "exampleSentence": "Он шёл в кино",
+                    "exampleSentenceEn": "He went to the cinema",
+                    "form": "шёл",
+                    "pronoun": "он"
+                },
+                {
+                    "exampleSentence": "Она шла в кино",
+                    "exampleSentenceEn": "She went to the cinema",
+                    "form": "шла",
+                    "pronoun": "она"
+                },
+                {
+                    "exampleSentence": "Оно шло в кино",
+                    "exampleSentenceEn": "It went to the cinema",
+                    "form": "шло",
+                    "pronoun": "оно"
+                },
+                {
+                    "exampleSentence": "Мы шли гулять",
+                    "exampleSentenceEn": "We went for a walk",
+                    "form": "шли",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы шли за покупками",
+                    "exampleSentenceEn": "You went shopping",
+                    "form": "шли",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они шли в театр",
+                    "exampleSentenceEn": "They went to the theater",
+                    "form": "шли",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to describe completed actions in the past. The form changes based on gender and number.",
+            "tenseId": "past",
+            "tenseName": "Прошедшее время",
+            "tenseNameEn": "Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я буду идти в школу завтра",
+                    "exampleSentenceEn": "I will go to school tomorrow",
+                    "form": "буду идти",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты будешь идти домой",
+                    "exampleSentenceEn": "You will go home",
+                    "form": "будешь идти",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он будет идти в кино",
+                    "exampleSentenceEn": "He will go to the cinema",
+                    "form": "будет идти",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы будем идти гулять",
+                    "exampleSentenceEn": "We will go for a walk",
+                    "form": "будем идти",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы будете идти за покупками",
+                    "exampleSentenceEn": "You will go shopping",
+                    "form": "будете идти",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они будут идти в театр",
+                    "exampleSentenceEn": "They will go to the theater",
+                    "form": "будут идти",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'завтра' (tomorrow).",
+            "tenseId": "future",
+            "tenseName": "Будущее время",
+            "tenseNameEn": "Future"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Иди в школу!",
+                    "exampleSentenceEn": "Go to school!",
+                    "form": "иди",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Идите домой!",
+                    "exampleSentenceEn": "Go home!",
+                    "form": "идите",
+                    "pronoun": "вы"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (ты, вы).",
+            "tenseId": "imperative",
+            "tenseName": "Повелительное наклонение",
+            "tenseNameEn": "Imperative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я шёл бы в школу, если бы имел время",
+                    "exampleSentenceEn": "I would go to school if I had time",
+                    "form": "шёл бы",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты шёл бы домой",
+                    "exampleSentenceEn": "You would go home",
+                    "form": "шёл бы",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он шёл бы в кино",
+                    "exampleSentenceEn": "He would go to the cinema",
+                    "form": "шёл бы",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы шли бы гулять",
+                    "exampleSentenceEn": "We would go for a walk",
+                    "form": "шли бы",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы шли бы за покупками",
+                    "exampleSentenceEn": "You would go shopping",
+                    "form": "шли бы",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они шли бы в театр",
+                    "exampleSentenceEn": "They would go to the theater",
+                    "form": "шли бы",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to express hypothetical situations or actions that would happen under certain conditions. Often used with 'если' (if) clauses.",
+            "tenseId": "conditional",
+            "tenseName": "Условное наклонение",
+            "tenseNameEn": "Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Идущий человек",
+                    "exampleSentenceEn": "A walking person",
+                    "form": "идущий",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Идущая женщина",
+                    "exampleSentenceEn": "A walking woman",
+                    "form": "идущая",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Идущее животное",
+                    "exampleSentenceEn": "A walking animal",
+                    "form": "идущее",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Идущие люди",
+                    "exampleSentenceEn": "Walking people",
+                    "form": "идущие",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe someone who is currently performing the action. Must agree in gender, number, and case.",
+            "tenseId": "present_active_participle",
+            "tenseName": "Причастие настоящего времени",
+            "tenseNameEn": "Present Active Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Шедший человек",
+                    "exampleSentenceEn": "A person who went",
+                    "form": "шедший",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Шедшая женщина",
+                    "exampleSentenceEn": "A woman who went",
+                    "form": "шедшая",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Шедшее животное",
+                    "exampleSentenceEn": "An animal that went",
+                    "form": "шедшее",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Шедшие люди",
+                    "exampleSentenceEn": "People who went",
+                    "form": "шедшие",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe someone who performed the action in the past. Must agree in gender, number, and case.",
+            "tenseId": "past_active_participle",
+            "tenseName": "Причастие прошедшего времени",
+            "tenseNameEn": "Past Active Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe something that is currently being acted upon. Must agree in gender, number, and case.",
+            "tenseId": "present_passive_participle",
+            "tenseName": "Страдательное причастие настоящего времени",
+            "tenseNameEn": "Present Passive Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe something that was acted upon in the past. Must agree in gender, number, and case.",
+            "tenseId": "past_passive_participle",
+            "tenseName": "Страдательное причастие прошедшего времени",
+            "tenseNameEn": "Past Passive Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Идя в школу, я думаю о будущем",
+                    "exampleSentenceEn": "While going to school, I think about the future",
+                    "form": "идя",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Идя домой, он пел любимую песню",
+                    "exampleSentenceEn": "While going home, he sang his favorite song",
+                    "form": "идя",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Идя в кино, мы разговаривали о фильме",
+                    "exampleSentenceEn": "While going to the cinema, we talked about the movie",
+                    "form": "идя",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express an action that happens simultaneously with the main action. Often used to show manner or condition.",
+            "tenseId": "present_gerund",
+            "tenseName": "Деепричастие настоящего времени",
+            "tenseNameEn": "Present Gerund"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express an action that was completed before the main action. Often used to show sequence of events.",
+            "tenseId": "past_gerund",
+            "tenseName": "Деепричастие прошедшего времени",
+            "tenseNameEn": "Past Gerund"
+        }
+    ]
+}

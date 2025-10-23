@@ -1,0 +1,607 @@
+{
+    "category": "essential",
+    "infinitive": "faire",
+    "infinitiveEn": "to do/make",
+    "language": "fr",
+    "languageName": "French",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Je fais mes devoirs",
+                    "exampleSentenceEn": "I do my homework",
+                    "form": "fais",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu fais du sport",
+                    "exampleSentenceEn": "You do sports",
+                    "form": "fais",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il fait beau",
+                    "exampleSentenceEn": "The weather is nice",
+                    "form": "fait",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous faisons la cuisine",
+                    "exampleSentenceEn": "We cook",
+                    "form": "faisons",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous faites un gâteau",
+                    "exampleSentenceEn": "You make a cake",
+                    "form": "faites",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils font leurs devoirs",
+                    "exampleSentenceEn": "They do their homework",
+                    "form": "font",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in French.",
+            "tenseId": "present",
+            "tenseName": "Présent",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Je faisais mes devoirs",
+                    "exampleSentenceEn": "I was doing my homework",
+                    "form": "faisais",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu faisais du sport",
+                    "exampleSentenceEn": "You were doing sports",
+                    "form": "faisais",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il faisait beau",
+                    "exampleSentenceEn": "The weather was nice",
+                    "form": "faisait",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous faisions la cuisine",
+                    "exampleSentenceEn": "We were cooking",
+                    "form": "faisions",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous faisiez un gâteau",
+                    "exampleSentenceEn": "You were making a cake",
+                    "form": "faisiez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils faisaient leurs devoirs",
+                    "exampleSentenceEn": "They were doing their homework",
+                    "form": "faisaient",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to describe ongoing, repeated, or habitual actions in the past. Also used for background information in storytelling.",
+            "tenseId": "imparfait",
+            "tenseName": "Imparfait",
+            "tenseNameEn": "Imperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Je ferai mes devoirs demain",
+                    "exampleSentenceEn": "I will do my homework tomorrow",
+                    "form": "ferai",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu feras du sport",
+                    "exampleSentenceEn": "You will do sports",
+                    "form": "feras",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il fera beau",
+                    "exampleSentenceEn": "The weather will be nice",
+                    "form": "fera",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous ferons la cuisine",
+                    "exampleSentenceEn": "We will cook",
+                    "form": "ferons",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous ferez un gâteau",
+                    "exampleSentenceEn": "You will make a cake",
+                    "form": "ferez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils feront leurs devoirs",
+                    "exampleSentenceEn": "They will do their homework",
+                    "form": "feront",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'demain' (tomorrow) or 'la semaine prochaine' (next week).",
+            "tenseId": "futur",
+            "tenseName": "Futur Simple",
+            "tenseNameEn": "Simple Future"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'ai fait mes devoirs",
+                    "exampleSentenceEn": "I have done my homework",
+                    "form": "ai fait",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu as fait du sport",
+                    "exampleSentenceEn": "You have done sports",
+                    "form": "as fait",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il a fait beau",
+                    "exampleSentenceEn": "The weather has been nice",
+                    "form": "a fait",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous avons fait la cuisine",
+                    "exampleSentenceEn": "We have cooked",
+                    "form": "avons fait",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous avez fait un gâteau",
+                    "exampleSentenceEn": "You have made a cake",
+                    "form": "avez fait",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils ont fait leurs devoirs",
+                    "exampleSentenceEn": "They have done their homework",
+                    "form": "ont fait",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken French.",
+            "tenseId": "passe_compose",
+            "tenseName": "Passé Composé",
+            "tenseNameEn": "Present Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Je fis mes devoirs",
+                    "exampleSentenceEn": "I did my homework",
+                    "form": "fis",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu fis du sport",
+                    "exampleSentenceEn": "You did sports",
+                    "form": "fis",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il fit beau",
+                    "exampleSentenceEn": "The weather was nice",
+                    "form": "fit",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous fîmes la cuisine",
+                    "exampleSentenceEn": "We cooked",
+                    "form": "fîmes",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous fîtes un gâteau",
+                    "exampleSentenceEn": "You made a cake",
+                    "form": "fîtes",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils firent leurs devoirs",
+                    "exampleSentenceEn": "They did their homework",
+                    "form": "firent",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used primarily in formal and literary French to narrate completed past events. Rarely used in spoken French.",
+            "tenseId": "passe_simple",
+            "tenseName": "Passé Simple",
+            "tenseNameEn": "Simple Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'avais fait mes devoirs avant qu'il pleuve",
+                    "exampleSentenceEn": "I had done my homework before it rained",
+                    "form": "avais fait",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu avais fait du sport avant que je vienne",
+                    "exampleSentenceEn": "You had done sports before I came",
+                    "form": "avais fait",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il avait fait beau avant qu'il pleuve",
+                    "exampleSentenceEn": "The weather had been nice before it rained",
+                    "form": "avait fait",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous avions fait la cuisine avant qu'il fasse nuit",
+                    "exampleSentenceEn": "We had cooked before it got dark",
+                    "form": "avions fait",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous aviez fait un gâteau avant la fermeture",
+                    "exampleSentenceEn": "You had made a cake before closing",
+                    "form": "aviez fait",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils avaient fait leurs devoirs avant le spectacle",
+                    "exampleSentenceEn": "They had done their homework before the show",
+                    "form": "avaient fait",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+            "tenseId": "plus_que_parfait",
+            "tenseName": "Plus-que-parfait",
+            "tenseNameEn": "Pluperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'aurai fait mes devoirs d'ici demain",
+                    "exampleSentenceEn": "I will have done my homework by tomorrow",
+                    "form": "aurai fait",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu auras fait du sport",
+                    "exampleSentenceEn": "You will have done sports",
+                    "form": "auras fait",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il aura fait beau",
+                    "exampleSentenceEn": "The weather will have been nice",
+                    "form": "aura fait",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous aurons fait la cuisine",
+                    "exampleSentenceEn": "We will have cooked",
+                    "form": "aurons fait",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous aurez fait un gâteau",
+                    "exampleSentenceEn": "You will have made a cake",
+                    "form": "aurez fait",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils auront fait leurs devoirs",
+                    "exampleSentenceEn": "They will have done their homework",
+                    "form": "auront fait",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express actions that will be completed before another future action. Often used with time expressions like 'd'ici demain' (by tomorrow).",
+            "tenseId": "futur_anterieur",
+            "tenseName": "Futur Antérieur",
+            "tenseNameEn": "Future Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Je ferais mes devoirs si j'avais le temps",
+                    "exampleSentenceEn": "I would do my homework if I had time",
+                    "form": "ferais",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu ferais du sport",
+                    "exampleSentenceEn": "You would do sports",
+                    "form": "ferais",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il ferait beau",
+                    "exampleSentenceEn": "The weather would be nice",
+                    "form": "ferait",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous ferions la cuisine",
+                    "exampleSentenceEn": "We would cook",
+                    "form": "ferions",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous feriez un gâteau",
+                    "exampleSentenceEn": "You would make a cake",
+                    "form": "feriez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils feraient leurs devoirs",
+                    "exampleSentenceEn": "They would do their homework",
+                    "form": "feraient",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'si' (if) clauses.",
+            "tenseId": "conditionnel_present",
+            "tenseName": "Conditionnel Présent",
+            "tenseNameEn": "Present Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'aurais fait mes devoirs si j'avais pu",
+                    "exampleSentenceEn": "I would have done my homework if I could have",
+                    "form": "aurais fait",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu aurais fait du sport",
+                    "exampleSentenceEn": "You would have done sports",
+                    "form": "aurais fait",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il aurait fait beau",
+                    "exampleSentenceEn": "The weather would have been nice",
+                    "form": "aurait fait",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous aurions fait la cuisine",
+                    "exampleSentenceEn": "We would have cooked",
+                    "form": "aurions fait",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous auriez fait un gâteau",
+                    "exampleSentenceEn": "You would have made a cake",
+                    "form": "auriez fait",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils auraient fait leurs devoirs",
+                    "exampleSentenceEn": "They would have done their homework",
+                    "form": "auraient fait",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express hypothetical past actions or regrets about things that didn't happen. Often used with 'si' (if) clauses referring to the past.",
+            "tenseId": "conditionnel_passe",
+            "tenseName": "Conditionnel Passé",
+            "tenseNameEn": "Past Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Il faut que je fasse mes devoirs",
+                    "exampleSentenceEn": "I must do my homework",
+                    "form": "fasse",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Je veux que tu fasses du sport",
+                    "exampleSentenceEn": "I want you to do sports",
+                    "form": "fasses",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il faut qu'il fasse beau",
+                    "exampleSentenceEn": "The weather must be nice",
+                    "form": "fasse",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Il faut que nous fassions la cuisine",
+                    "exampleSentenceEn": "We must cook",
+                    "form": "fassions",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Il faut que vous fassiez un gâteau",
+                    "exampleSentenceEn": "You must make a cake",
+                    "form": "fassiez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Il faut qu'ils fassent leurs devoirs",
+                    "exampleSentenceEn": "They must do their homework",
+                    "form": "fassent",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used in dependent clauses after certain expressions of opinion, doubt, emotion, or necessity. Often used after 'il faut que', 'je veux que', etc.",
+            "tenseId": "subjonctif_present",
+            "tenseName": "Subjonctif Présent",
+            "tenseNameEn": "Present Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Fais tes devoirs!",
+                    "exampleSentenceEn": "Do your homework!",
+                    "form": "fais",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Faisons la cuisine!",
+                    "exampleSentenceEn": "Let's cook!",
+                    "form": "faisons",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Faites un gâteau!",
+                    "exampleSentenceEn": "Make a cake!",
+                    "form": "faites",
+                    "pronoun": "vous"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (tu, nous, vous). The subject pronoun is omitted.",
+            "tenseId": "imperatif",
+            "tenseName": "Impératif",
+            "tenseNameEn": "Imperative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Il fallait que je fisse mes devoirs",
+                    "exampleSentenceEn": "I had to do my homework",
+                    "form": "fisse",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Je voulais que tu fisses du sport",
+                    "exampleSentenceEn": "I wanted you to do sports",
+                    "form": "fisses",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il fallait qu'il fît beau",
+                    "exampleSentenceEn": "The weather had to be nice",
+                    "form": "fît",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Il fallait que nous fissions la cuisine",
+                    "exampleSentenceEn": "We had to cook",
+                    "form": "fissions",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Il fallait que vous fissiez un gâteau",
+                    "exampleSentenceEn": "You had to make a cake",
+                    "form": "fissiez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Il fallait qu'ils fissent leurs devoirs",
+                    "exampleSentenceEn": "They had to do their homework",
+                    "form": "fissent",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used in formal and literary French after the same triggers as present subjunctive, but referring to past events. Rarely used in modern spoken French.",
+            "tenseId": "subjonctif_imparfait",
+            "tenseName": "Subjonctif Imparfait",
+            "tenseNameEn": "Imperfect Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Il faut que j'aie fait mes devoirs",
+                    "exampleSentenceEn": "I must have done my homework",
+                    "form": "aie fait",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Je veux que tu aies fait du sport",
+                    "exampleSentenceEn": "I want you to have done sports",
+                    "form": "aies fait",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il faut qu'il ait fait beau",
+                    "exampleSentenceEn": "The weather must have been nice",
+                    "form": "ait fait",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Il faut que nous ayons fait la cuisine",
+                    "exampleSentenceEn": "We must have cooked",
+                    "form": "ayons fait",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Il faut que vous ayez fait un gâteau",
+                    "exampleSentenceEn": "You must have made a cake",
+                    "form": "ayez fait",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Il faut qu'ils aient fait leurs devoirs",
+                    "exampleSentenceEn": "They must have done their homework",
+                    "form": "aient fait",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used in dependent clauses after expressions of doubt, emotion, or necessity when referring to a completed action in the past.",
+            "tenseId": "subjonctif_passe",
+            "tenseName": "Subjonctif Passé",
+            "tenseNameEn": "Past Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Dès que j'eus fait mes devoirs, il pleuvit",
+                    "exampleSentenceEn": "As soon as I had done my homework, it rained",
+                    "form": "eus fait",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Dès que tu eus fait du sport, je vins",
+                    "exampleSentenceEn": "As soon as you had done sports, I came",
+                    "form": "eus fait",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Dès qu'il eut fait beau, nous arrivâmes",
+                    "exampleSentenceEn": "As soon as the weather had been nice, we arrived",
+                    "form": "eut fait",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Dès que nous eûmes fait la cuisine, il fit nuit",
+                    "exampleSentenceEn": "As soon as we had cooked, it got dark",
+                    "form": "eûmes fait",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Dès que vous eûtes fait un gâteau, la boutique ferma",
+                    "exampleSentenceEn": "As soon as you had made a cake, the store closed",
+                    "form": "eûtes fait",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Dès qu'ils eurent fait leurs devoirs, le spectacle commença",
+                    "exampleSentenceEn": "As soon as they had done their homework, the show began",
+                    "form": "eurent fait",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used in formal and literary French to express an action that was completed immediately before another past action. Rarely used in modern French.",
+            "tenseId": "passe_anterieur",
+            "tenseName": "Passé Antérieur",
+            "tenseNameEn": "Past Anterior"
+        }
+    ]
+}

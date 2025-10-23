@@ -1,0 +1,387 @@
+{
+    "category": "essential",
+    "infinitive": "sehen",
+    "infinitiveEn": "to see",
+    "language": "de",
+    "languageName": "German",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich sehe einen Film",
+                    "exampleSentenceEn": "I see a movie",
+                    "form": "sehe",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du siehst gut aus",
+                    "exampleSentenceEn": "You look good",
+                    "form": "siehst",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er sieht fern",
+                    "exampleSentenceEn": "He watches TV",
+                    "form": "sieht",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir sehen uns morgen",
+                    "exampleSentenceEn": "We see each other tomorrow",
+                    "form": "sehen",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr seht das Problem",
+                    "exampleSentenceEn": "You see the problem",
+                    "form": "seht",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie sehen die Lösung",
+                    "exampleSentenceEn": "They see the solution",
+                    "form": "sehen",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in German.",
+            "tenseId": "praesens",
+            "tenseName": "Präsens",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich sah einen Film",
+                    "exampleSentenceEn": "I saw a movie",
+                    "form": "sah",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du sahst gut aus",
+                    "exampleSentenceEn": "You looked good",
+                    "form": "sahst",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er sah fern",
+                    "exampleSentenceEn": "He watched TV",
+                    "form": "sah",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir sahen uns gestern",
+                    "exampleSentenceEn": "We saw each other yesterday",
+                    "form": "sahen",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr saht das Problem",
+                    "exampleSentenceEn": "You saw the problem",
+                    "form": "saht",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie sahen die Lösung",
+                    "exampleSentenceEn": "They saw the solution",
+                    "form": "sahen",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used primarily in written German and formal speech to describe completed actions in the past. Also used in storytelling and narratives.",
+            "tenseId": "praeteritum",
+            "tenseName": "Präteritum",
+            "tenseNameEn": "Simple Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich werde einen Film sehen",
+                    "exampleSentenceEn": "I will see a movie",
+                    "form": "werde sehen",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du wirst gut aussehen",
+                    "exampleSentenceEn": "You will look good",
+                    "form": "wirst sehen",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er wird fernsehen",
+                    "exampleSentenceEn": "He will watch TV",
+                    "form": "wird sehen",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir werden uns morgen sehen",
+                    "exampleSentenceEn": "We will see each other tomorrow",
+                    "form": "werden sehen",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr werdet das Problem sehen",
+                    "exampleSentenceEn": "You will see the problem",
+                    "form": "werdet sehen",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie werden die Lösung sehen",
+                    "exampleSentenceEn": "They will see the solution",
+                    "form": "werden sehen",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'morgen' (tomorrow) or 'nächste Woche' (next week).",
+            "tenseId": "futur_i",
+            "tenseName": "Futur I",
+            "tenseNameEn": "Future I"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Bis morgen werde ich den Film gesehen haben",
+                    "exampleSentenceEn": "By tomorrow, I will have seen the movie",
+                    "form": "werde gesehen haben",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du wirst sicher gut ausgesehen haben",
+                    "exampleSentenceEn": "You will surely have looked good",
+                    "form": "wirst gesehen haben",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er wird wahrscheinlich fern gesehen haben",
+                    "exampleSentenceEn": "He will probably have watched TV",
+                    "form": "wird gesehen haben",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir werden uns morgen gesehen haben",
+                    "exampleSentenceEn": "We will have seen each other tomorrow",
+                    "form": "werden gesehen haben",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr werdet das Problem gesehen haben",
+                    "exampleSentenceEn": "You will have seen the problem",
+                    "form": "werdet gesehen haben",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie werden die Lösung gesehen haben",
+                    "exampleSentenceEn": "They will have seen the solution",
+                    "form": "werden gesehen haben",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express actions that will be completed by a certain point in the future. Often used with time expressions like 'bis morgen' (by tomorrow) or to make assumptions about past events.",
+            "tenseId": "futur_ii",
+            "tenseName": "Futur II",
+            "tenseNameEn": "Future Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich habe einen Film gesehen",
+                    "exampleSentenceEn": "I have seen a movie",
+                    "form": "habe gesehen",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du hast gut ausgesehen",
+                    "exampleSentenceEn": "You have looked good",
+                    "form": "hast gesehen",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er hat fern gesehen",
+                    "exampleSentenceEn": "He has watched TV",
+                    "form": "hat gesehen",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir haben uns gestern gesehen",
+                    "exampleSentenceEn": "We have seen each other yesterday",
+                    "form": "haben gesehen",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr habt das Problem gesehen",
+                    "exampleSentenceEn": "You have seen the problem",
+                    "form": "habt gesehen",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie haben die Lösung gesehen",
+                    "exampleSentenceEn": "They have seen the solution",
+                    "form": "haben gesehen",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken German.",
+            "tenseId": "perfekt",
+            "tenseName": "Perfekt",
+            "tenseNameEn": "Present Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich hatte den Film gesehen, bevor er anrief",
+                    "exampleSentenceEn": "I had seen the movie before he called",
+                    "form": "hatte gesehen",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du hattest gut ausgesehen, bevor du krank wurdest",
+                    "exampleSentenceEn": "You had looked good before you got sick",
+                    "form": "hattest gesehen",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er hatte fern gesehen, bevor er schlief",
+                    "exampleSentenceEn": "He had watched TV before he slept",
+                    "form": "hatte gesehen",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir hatten uns gesehen, bevor wir gingen",
+                    "exampleSentenceEn": "We had seen each other before we left",
+                    "form": "hatten gesehen",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr hattet das Problem gesehen, bevor ihr es löstet",
+                    "exampleSentenceEn": "You had seen the problem before you solved it",
+                    "form": "hattet gesehen",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie hatten die Lösung gesehen, bevor sie handelten",
+                    "exampleSentenceEn": "They had seen the solution before they acted",
+                    "form": "hatten gesehen",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+            "tenseId": "plusquamperfekt",
+            "tenseName": "Plusquamperfekt",
+            "tenseNameEn": "Pluperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Er sagt, er sehe einen Film",
+                    "exampleSentenceEn": "He says he sees a movie",
+                    "form": "sehe",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Er sagt, du sehest gut aus",
+                    "exampleSentenceEn": "He says you look good",
+                    "form": "sehest",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er sagt, sie sehe fern",
+                    "exampleSentenceEn": "He says she watches TV",
+                    "form": "sehe",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Er sagt, wir sehen uns morgen",
+                    "exampleSentenceEn": "He says we see each other tomorrow",
+                    "form": "sehen",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Er sagt, ihr sehet das Problem",
+                    "exampleSentenceEn": "He says you see the problem",
+                    "form": "sehet",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Er sagt, sie sehen die Lösung",
+                    "exampleSentenceEn": "He says they see the solution",
+                    "form": "sehen",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used primarily in indirect speech and formal writing to report what someone else has said. Also used in certain fixed expressions and formal contexts.",
+            "tenseId": "konjunktiv_i",
+            "tenseName": "Konjunktiv I",
+            "tenseNameEn": "Subjunctive I"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich sähe gerne einen Film",
+                    "exampleSentenceEn": "I would gladly see a movie",
+                    "form": "sähe",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du sähest gut aus",
+                    "exampleSentenceEn": "You would look good",
+                    "form": "sähest",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Sie sähe fern",
+                    "exampleSentenceEn": "She would watch TV",
+                    "form": "sähe",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir sähen uns morgen",
+                    "exampleSentenceEn": "We would see each other tomorrow",
+                    "form": "sähen",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr sähet das Problem",
+                    "exampleSentenceEn": "You would see the problem",
+                    "form": "sähet",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie sähen die Lösung",
+                    "exampleSentenceEn": "They would see the solution",
+                    "form": "sähen",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'wenn' (if) clauses.",
+            "tenseId": "konjunktiv_ii",
+            "tenseName": "Konjunktiv II",
+            "tenseNameEn": "Subjunctive II"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Sieh bitte den Film!",
+                    "exampleSentenceEn": "Please see the movie!",
+                    "form": "sieh",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Seht das Problem!",
+                    "exampleSentenceEn": "See the problem!",
+                    "form": "seht",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sehen Sie bitte die Lösung!",
+                    "exampleSentenceEn": "Please see the solution!",
+                    "form": "sehen Sie",
+                    "pronoun": "Sie"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (du, ihr) and formal address (Sie). The subject pronoun is usually omitted.",
+            "tenseId": "imperativ",
+            "tenseName": "Imperativ",
+            "tenseNameEn": "Imperative"
+        }
+    ]
+}

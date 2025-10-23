@@ -1,0 +1,387 @@
+{
+    "category": "essential",
+    "infinitive": "werden",
+    "infinitiveEn": "to become",
+    "language": "de",
+    "languageName": "German",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich werde Arzt",
+                    "exampleSentenceEn": "I become a doctor",
+                    "form": "werde",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du wirst groß",
+                    "exampleSentenceEn": "You become big",
+                    "form": "wirst",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er wird alt",
+                    "exampleSentenceEn": "He becomes old",
+                    "form": "wird",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir werden Freunde",
+                    "exampleSentenceEn": "We become friends",
+                    "form": "werden",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr werdet müde",
+                    "exampleSentenceEn": "You become tired",
+                    "form": "werdet",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie werden glücklich",
+                    "exampleSentenceEn": "They become happy",
+                    "form": "werden",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in German.",
+            "tenseId": "praesens",
+            "tenseName": "Präsens",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich wurde Arzt",
+                    "exampleSentenceEn": "I became a doctor",
+                    "form": "wurde",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du wurdest groß",
+                    "exampleSentenceEn": "You became big",
+                    "form": "wurdest",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er wurde alt",
+                    "exampleSentenceEn": "He became old",
+                    "form": "wurde",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir wurden Freunde",
+                    "exampleSentenceEn": "We became friends",
+                    "form": "wurden",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr wurdet müde",
+                    "exampleSentenceEn": "You became tired",
+                    "form": "wurdet",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie wurden glücklich",
+                    "exampleSentenceEn": "They became happy",
+                    "form": "wurden",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used primarily in written German and formal speech to describe completed actions in the past. Also used in storytelling and narratives.",
+            "tenseId": "praeteritum",
+            "tenseName": "Präteritum",
+            "tenseNameEn": "Simple Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich werde Arzt werden",
+                    "exampleSentenceEn": "I will become a doctor",
+                    "form": "werde werden",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du wirst groß werden",
+                    "exampleSentenceEn": "You will become big",
+                    "form": "wirst werden",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er wird alt werden",
+                    "exampleSentenceEn": "He will become old",
+                    "form": "wird werden",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir werden Freunde werden",
+                    "exampleSentenceEn": "We will become friends",
+                    "form": "werden werden",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr werdet müde werden",
+                    "exampleSentenceEn": "You will become tired",
+                    "form": "werdet werden",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie werden glücklich werden",
+                    "exampleSentenceEn": "They will become happy",
+                    "form": "werden werden",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'morgen' (tomorrow) or 'nächste Woche' (next week).",
+            "tenseId": "futur_i",
+            "tenseName": "Futur I",
+            "tenseNameEn": "Future I"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Bis morgen werde ich Arzt geworden sein",
+                    "exampleSentenceEn": "By tomorrow, I will have become a doctor",
+                    "form": "werde geworden sein",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du wirst sicher groß geworden sein",
+                    "exampleSentenceEn": "You will surely have become big",
+                    "form": "wirst geworden sein",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er wird wahrscheinlich alt geworden sein",
+                    "exampleSentenceEn": "He will probably have become old",
+                    "form": "wird geworden sein",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir werden Freunde geworden sein",
+                    "exampleSentenceEn": "We will have become friends",
+                    "form": "werden geworden sein",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr werdet müde geworden sein",
+                    "exampleSentenceEn": "You will have become tired",
+                    "form": "werdet geworden sein",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie werden glücklich geworden sein",
+                    "exampleSentenceEn": "They will have become happy",
+                    "form": "werden geworden sein",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express actions that will be completed by a certain point in the future. Often used with time expressions like 'bis morgen' (by tomorrow) or to make assumptions about past events.",
+            "tenseId": "futur_ii",
+            "tenseName": "Futur II",
+            "tenseNameEn": "Future Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich bin Arzt geworden",
+                    "exampleSentenceEn": "I have become a doctor",
+                    "form": "bin geworden",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du bist groß geworden",
+                    "exampleSentenceEn": "You have become big",
+                    "form": "bist geworden",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er ist alt geworden",
+                    "exampleSentenceEn": "He has become old",
+                    "form": "ist geworden",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir sind Freunde geworden",
+                    "exampleSentenceEn": "We have become friends",
+                    "form": "sind geworden",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr seid müde geworden",
+                    "exampleSentenceEn": "You have become tired",
+                    "form": "seid geworden",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie sind glücklich geworden",
+                    "exampleSentenceEn": "They have become happy",
+                    "form": "sind geworden",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken German.",
+            "tenseId": "perfekt",
+            "tenseName": "Perfekt",
+            "tenseNameEn": "Present Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich war Arzt geworden, bevor ich nach Deutschland ging",
+                    "exampleSentenceEn": "I had become a doctor before I went to Germany",
+                    "form": "war geworden",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du warst groß geworden, bevor du zur Schule gingst",
+                    "exampleSentenceEn": "You had become big before you went to school",
+                    "form": "warst geworden",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er war alt geworden, bevor er starb",
+                    "exampleSentenceEn": "He had become old before he died",
+                    "form": "war geworden",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir waren Freunde geworden, bevor wir uns trennten",
+                    "exampleSentenceEn": "We had become friends before we separated",
+                    "form": "waren geworden",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr wart müde geworden, bevor ihr schliefet",
+                    "exampleSentenceEn": "You had become tired before you slept",
+                    "form": "wart geworden",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie waren glücklich geworden, bevor sie starben",
+                    "exampleSentenceEn": "They had become happy before they died",
+                    "form": "waren geworden",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+            "tenseId": "plusquamperfekt",
+            "tenseName": "Plusquamperfekt",
+            "tenseNameEn": "Pluperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Er sagt, er werde Arzt",
+                    "exampleSentenceEn": "He says he becomes a doctor",
+                    "form": "werde",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Er sagt, du werdest groß",
+                    "exampleSentenceEn": "He says you become big",
+                    "form": "werdest",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er sagt, sie werde alt",
+                    "exampleSentenceEn": "He says she becomes old",
+                    "form": "werde",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Er sagt, wir werden Freunde",
+                    "exampleSentenceEn": "He says we become friends",
+                    "form": "werden",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Er sagt, ihr werdet müde",
+                    "exampleSentenceEn": "He says you become tired",
+                    "form": "werdet",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Er sagt, sie werden glücklich",
+                    "exampleSentenceEn": "He says they become happy",
+                    "form": "werden",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used primarily in indirect speech and formal writing to report what someone else has said. Also used in certain fixed expressions and formal contexts.",
+            "tenseId": "konjunktiv_i",
+            "tenseName": "Konjunktiv I",
+            "tenseNameEn": "Subjunctive I"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich würde Arzt werden",
+                    "exampleSentenceEn": "I would become a doctor",
+                    "form": "würde",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du würdest groß werden",
+                    "exampleSentenceEn": "You would become big",
+                    "form": "würdest",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Sie würde alt werden",
+                    "exampleSentenceEn": "She would become old",
+                    "form": "würde",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir würden Freunde werden",
+                    "exampleSentenceEn": "We would become friends",
+                    "form": "würden",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr würdet müde werden",
+                    "exampleSentenceEn": "You would become tired",
+                    "form": "würdet",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie würden glücklich werden",
+                    "exampleSentenceEn": "They would become happy",
+                    "form": "würden",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'wenn' (if) clauses.",
+            "tenseId": "konjunktiv_ii",
+            "tenseName": "Konjunktiv II",
+            "tenseNameEn": "Subjunctive II"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (du, ihr) and formal address (Sie). The subject pronoun is usually omitted.",
+            "tenseId": "imperativ",
+            "tenseName": "Imperativ",
+            "tenseNameEn": "Imperative"
+        }
+    ]
+}

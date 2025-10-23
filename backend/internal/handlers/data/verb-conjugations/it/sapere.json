@@ -1,0 +1,807 @@
+{
+    "category": "essential",
+    "infinitive": "sapere",
+    "infinitiveEn": "to know",
+    "language": "it",
+    "languageName": "Italian",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io so la risposta",
+                    "exampleSentenceEn": "I know the answer",
+                    "form": "so",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu sai cantare",
+                    "exampleSentenceEn": "You know how to sing",
+                    "form": "sai",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui sa nuotare",
+                    "exampleSentenceEn": "He knows how to swim",
+                    "form": "sa",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi sappiamo ballare",
+                    "exampleSentenceEn": "We know how to dance",
+                    "form": "sappiamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi sapete cucinare",
+                    "exampleSentenceEn": "You know how to cook",
+                    "form": "sapete",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro sanno giocare",
+                    "exampleSentenceEn": "They know how to play",
+                    "form": "sanno",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in Italian.",
+            "tenseId": "presente",
+            "tenseName": "Presente",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io sapevo la risposta",
+                    "exampleSentenceEn": "I knew the answer",
+                    "form": "sapevo",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu sapevi cantare",
+                    "exampleSentenceEn": "You knew how to sing",
+                    "form": "sapevi",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui sapeva nuotare",
+                    "exampleSentenceEn": "He knew how to swim",
+                    "form": "sapeva",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi sapevamo ballare",
+                    "exampleSentenceEn": "We knew how to dance",
+                    "form": "sapevamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi sapevate cucinare",
+                    "exampleSentenceEn": "You knew how to cook",
+                    "form": "sapevate",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro sapevano giocare",
+                    "exampleSentenceEn": "They knew how to play",
+                    "form": "sapevano",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to describe ongoing, repeated, or habitual actions in the past. Also used for background information in storytelling.",
+            "tenseId": "imperfetto",
+            "tenseName": "Imperfetto",
+            "tenseNameEn": "Imperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io saprò la risposta domani",
+                    "exampleSentenceEn": "I will know the answer tomorrow",
+                    "form": "saprò",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu saprai cantare",
+                    "exampleSentenceEn": "You will know how to sing",
+                    "form": "saprai",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui saprà nuotare",
+                    "exampleSentenceEn": "He will know how to swim",
+                    "form": "saprà",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi sapremo ballare",
+                    "exampleSentenceEn": "We will know how to dance",
+                    "form": "sapremo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi saprete cucinare",
+                    "exampleSentenceEn": "You will know how to cook",
+                    "form": "saprete",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro sapranno giocare",
+                    "exampleSentenceEn": "They will know how to play",
+                    "form": "sapranno",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'domani' (tomorrow) or 'la settimana prossima' (next week).",
+            "tenseId": "futuro_semplice",
+            "tenseName": "Futuro Semplice",
+            "tenseNameEn": "Simple Future"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io ho saputo la risposta",
+                    "exampleSentenceEn": "I have known the answer",
+                    "form": "ho saputo",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu hai saputo cantare",
+                    "exampleSentenceEn": "You have known how to sing",
+                    "form": "hai saputo",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui ha saputo nuotare",
+                    "exampleSentenceEn": "He has known how to swim",
+                    "form": "ha saputo",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi abbiamo saputo ballare",
+                    "exampleSentenceEn": "We have known how to dance",
+                    "form": "abbiamo saputo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avete saputo cucinare",
+                    "exampleSentenceEn": "You have known how to cook",
+                    "form": "avete saputo",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro hanno saputo giocare",
+                    "exampleSentenceEn": "They have known how to play",
+                    "form": "hanno saputo",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken Italian.",
+            "tenseId": "passato_prossimo",
+            "tenseName": "Passato Prossimo",
+            "tenseNameEn": "Present Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io seppi la risposta",
+                    "exampleSentenceEn": "I knew the answer",
+                    "form": "seppi",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu sapesti cantare",
+                    "exampleSentenceEn": "You knew how to sing",
+                    "form": "sapesti",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui seppe nuotare",
+                    "exampleSentenceEn": "He knew how to swim",
+                    "form": "seppe",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi sapemmo ballare",
+                    "exampleSentenceEn": "We knew how to dance",
+                    "form": "sapemmo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi sapeste cucinare",
+                    "exampleSentenceEn": "You knew how to cook",
+                    "form": "sapeste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro seppero giocare",
+                    "exampleSentenceEn": "They knew how to play",
+                    "form": "seppero",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used primarily in formal and literary Italian to narrate completed past events. Also used in southern Italy in spoken language.",
+            "tenseId": "passato_remoto",
+            "tenseName": "Passato Remoto",
+            "tenseNameEn": "Simple Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io avevo saputo la risposta prima che piovesse",
+                    "exampleSentenceEn": "I had known the answer before it rained",
+                    "form": "avevo saputo",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu avevi saputo cantare prima che venissi",
+                    "exampleSentenceEn": "You had known how to sing before I came",
+                    "form": "avevi saputo",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui aveva saputo nuotare prima che arrivassimo",
+                    "exampleSentenceEn": "He had known how to swim before we arrived",
+                    "form": "aveva saputo",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi avevamo saputo ballare prima che facesse buio",
+                    "exampleSentenceEn": "We had known how to dance before it got dark",
+                    "form": "avevamo saputo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avevate saputo cucinare prima della chiusura",
+                    "exampleSentenceEn": "You had known how to cook before closing",
+                    "form": "avevate saputo",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro avevano saputo giocare prima dello spettacolo",
+                    "exampleSentenceEn": "They had known how to play before the show",
+                    "form": "avevano saputo",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+            "tenseId": "trapassato_prossimo",
+            "tenseName": "Trapassato Prossimo",
+            "tenseNameEn": "Pluperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Appena ebbi saputo la risposta, piovve",
+                    "exampleSentenceEn": "As soon as I had known the answer, it rained",
+                    "form": "ebbi saputo",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Appena avesti saputo cantare, venni",
+                    "exampleSentenceEn": "As soon as you had known how to sing, I came",
+                    "form": "avesti saputo",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Appena ebbe saputo nuotare, arrivammo",
+                    "exampleSentenceEn": "As soon as he had known how to swim, we arrived",
+                    "form": "ebbe saputo",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Appena avemmo saputo ballare, fece buio",
+                    "exampleSentenceEn": "As soon as we had known how to dance, it got dark",
+                    "form": "avemmo saputo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Appena aveste saputo cucinare, il ristorante chiuse",
+                    "exampleSentenceEn": "As soon as you had known how to cook, the restaurant closed",
+                    "form": "aveste saputo",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Appena ebbero saputo giocare, lo spettacolo cominciò",
+                    "exampleSentenceEn": "As soon as they had known how to play, the show began",
+                    "form": "ebbero saputo",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in formal and literary Italian to express an action that was completed immediately before another past action. Rarely used in modern Italian.",
+            "tenseId": "trapassato_remoto",
+            "tenseName": "Trapassato Remoto",
+            "tenseNameEn": "Past Anterior"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io avrò saputo la risposta domani",
+                    "exampleSentenceEn": "I will have known the answer tomorrow",
+                    "form": "avrò saputo",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu avrai saputo cantare",
+                    "exampleSentenceEn": "You will have known how to sing",
+                    "form": "avrai saputo",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui avrà saputo nuotare",
+                    "exampleSentenceEn": "He will have known how to swim",
+                    "form": "avrà saputo",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi avremo saputo ballare",
+                    "exampleSentenceEn": "We will have known how to dance",
+                    "form": "avremo saputo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avrete saputo cucinare",
+                    "exampleSentenceEn": "You will have known how to cook",
+                    "form": "avrete saputo",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro avranno saputo giocare",
+                    "exampleSentenceEn": "They will have known how to play",
+                    "form": "avranno saputo",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express actions that will be completed before another future action. Often used with time expressions like 'domani' (tomorrow).",
+            "tenseId": "futuro_anteriore",
+            "tenseName": "Futuro Anteriore",
+            "tenseNameEn": "Future Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io saprei la risposta se avessi tempo",
+                    "exampleSentenceEn": "I would know the answer if I had time",
+                    "form": "saprei",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu sapresti cantare",
+                    "exampleSentenceEn": "You would know how to sing",
+                    "form": "sapresti",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui saprebbe nuotare",
+                    "exampleSentenceEn": "He would know how to swim",
+                    "form": "saprebbe",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi sapremmo ballare",
+                    "exampleSentenceEn": "We would know how to dance",
+                    "form": "sapremmo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi sapreste cucinare",
+                    "exampleSentenceEn": "You would know how to cook",
+                    "form": "sapreste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro saprebbero giocare",
+                    "exampleSentenceEn": "They would know how to play",
+                    "form": "saprebbero",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'se' (if) clauses.",
+            "tenseId": "condizionale_presente",
+            "tenseName": "Condizionale Presente",
+            "tenseNameEn": "Present Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io avrei saputo la risposta se avessi potuto",
+                    "exampleSentenceEn": "I would have known the answer if I could have",
+                    "form": "avrei saputo",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu avresti saputo cantare",
+                    "exampleSentenceEn": "You would have known how to sing",
+                    "form": "avresti saputo",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui avrebbe saputo nuotare",
+                    "exampleSentenceEn": "He would have known how to swim",
+                    "form": "avrebbe saputo",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi avremmo saputo ballare",
+                    "exampleSentenceEn": "We would have known how to dance",
+                    "form": "avremmo saputo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avreste saputo cucinare",
+                    "exampleSentenceEn": "You would have known how to cook",
+                    "form": "avreste saputo",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro avrebbero saputo giocare",
+                    "exampleSentenceEn": "They would have known how to play",
+                    "form": "avrebbero saputo",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express hypothetical past actions or regrets about things that didn't happen. Often used with 'se' (if) clauses referring to the past.",
+            "tenseId": "condizionale_passato",
+            "tenseName": "Condizionale Passato",
+            "tenseNameEn": "Past Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "È necessario che io sappia la risposta",
+                    "exampleSentenceEn": "I must know the answer",
+                    "form": "sappia",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Voglio che tu sappia cantare",
+                    "exampleSentenceEn": "I want you to know how to sing",
+                    "form": "sappia",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "È necessario che lui sappia nuotare",
+                    "exampleSentenceEn": "He must know how to swim",
+                    "form": "sappia",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "È necessario che noi sappiamo ballare",
+                    "exampleSentenceEn": "We must know how to dance",
+                    "form": "sappiamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "È necessario che voi sappiate cucinare",
+                    "exampleSentenceEn": "You must know how to cook",
+                    "form": "sappiate",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "È necessario che loro sappiano giocare",
+                    "exampleSentenceEn": "They must know how to play",
+                    "form": "sappiano",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in dependent clauses after certain expressions of opinion, doubt, emotion, or necessity. Often used after 'è necessario che', 'voglio che', etc.",
+            "tenseId": "congiuntivo_presente",
+            "tenseName": "Congiuntivo Presente",
+            "tenseNameEn": "Present Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Era necessario che io sapessi la risposta",
+                    "exampleSentenceEn": "I had to know the answer",
+                    "form": "sapessi",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Volevo che tu sapessi cantare",
+                    "exampleSentenceEn": "I wanted you to know how to sing",
+                    "form": "sapessi",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Era necessario che lui sapesse nuotare",
+                    "exampleSentenceEn": "He had to know how to swim",
+                    "form": "sapesse",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Era necessario che noi sapessimo ballare",
+                    "exampleSentenceEn": "We had to know how to dance",
+                    "form": "sapessimo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Era necessario che voi sapeste cucinare",
+                    "exampleSentenceEn": "You had to know how to cook",
+                    "form": "sapeste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Era necessario che loro sapessero giocare",
+                    "exampleSentenceEn": "They had to know how to play",
+                    "form": "sapessero",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in formal and literary Italian after the same triggers as present subjunctive, but referring to past events. Rarely used in modern spoken Italian.",
+            "tenseId": "congiuntivo_imperfetto",
+            "tenseName": "Congiuntivo Imperfetto",
+            "tenseNameEn": "Imperfect Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "È necessario che io abbia saputo la risposta",
+                    "exampleSentenceEn": "I must have known the answer",
+                    "form": "abbia saputo",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Voglio che tu abbia saputo cantare",
+                    "exampleSentenceEn": "I want you to have known how to sing",
+                    "form": "abbia saputo",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "È necessario che lui abbia saputo nuotare",
+                    "exampleSentenceEn": "He must have known how to swim",
+                    "form": "abbia saputo",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "È necessario che noi abbiamo saputo ballare",
+                    "exampleSentenceEn": "We must have known how to dance",
+                    "form": "abbiamo saputo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "È necessario che voi abbiate saputo cucinare",
+                    "exampleSentenceEn": "You must have known how to cook",
+                    "form": "abbiate saputo",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "È necessario che loro abbiano saputo giocare",
+                    "exampleSentenceEn": "They must have known how to play",
+                    "form": "abbiano saputo",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in dependent clauses after expressions of doubt, emotion, or necessity when referring to a completed action in the past.",
+            "tenseId": "congiuntivo_passato",
+            "tenseName": "Congiuntivo Passato",
+            "tenseNameEn": "Past Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Era necessario che io avessi saputo la risposta",
+                    "exampleSentenceEn": "I had to have known the answer",
+                    "form": "avessi saputo",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Volevo che tu avessi saputo cantare",
+                    "exampleSentenceEn": "I wanted you to have known how to sing",
+                    "form": "avessi saputo",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Era necessario che lui avesse saputo nuotare",
+                    "exampleSentenceEn": "He had to have known how to swim",
+                    "form": "avesse saputo",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Era necessario che noi avessimo saputo ballare",
+                    "exampleSentenceEn": "We had to have known how to dance",
+                    "form": "avessimo saputo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Era necessario che voi aveste saputo cucinare",
+                    "exampleSentenceEn": "You had to have known how to cook",
+                    "form": "aveste saputo",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Era necessario che loro avessero saputo giocare",
+                    "exampleSentenceEn": "They had to have known how to play",
+                    "form": "avessero saputo",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in formal and literary Italian after the same triggers as other subjunctive tenses, but referring to actions completed before another past action.",
+            "tenseId": "congiuntivo_trapassato",
+            "tenseName": "Congiuntivo Trapassato",
+            "tenseNameEn": "Pluperfect Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (tu, noi, voi). The subject pronoun is omitted.",
+            "tenseId": "imperativo",
+            "tenseName": "Imperativo",
+            "tenseNameEn": "Imperative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Voglio sapere la risposta",
+                    "exampleSentenceEn": "I want to know the answer",
+                    "form": "sapere",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Devo sapere cantare",
+                    "exampleSentenceEn": "I must know how to sing",
+                    "form": "sapere",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Posso sapere nuotare",
+                    "exampleSentenceEn": "I can know how to swim",
+                    "form": "sapere",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "The base form of the verb, used after modal verbs, prepositions, and in many other constructions.",
+            "tenseId": "infinito_presente",
+            "tenseName": "Infinito Presente",
+            "tenseNameEn": "Present Infinitive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Dopo aver saputo la risposta, ho studiato",
+                    "exampleSentenceEn": "After having known the answer, I studied",
+                    "form": "aver saputo",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Prima di aver saputo cantare, ho lavorato",
+                    "exampleSentenceEn": "Before having known how to sing, I worked",
+                    "form": "aver saputo",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Dopo aver saputo nuotare, ho cenato",
+                    "exampleSentenceEn": "After having known how to swim, I had dinner",
+                    "form": "aver saputo",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express actions that were completed before another action. Often used after modal verbs in the past.",
+            "tenseId": "infinito_passato",
+            "tenseName": "Infinito Passato",
+            "tenseNameEn": "Past Infinitive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Una persona sapiente",
+                    "exampleSentenceEn": "A knowledgeable person",
+                    "form": "sapiente",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Il lavoro sapiente",
+                    "exampleSentenceEn": "The knowledgeable work",
+                    "form": "sapiente",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "La macchina sapiente",
+                    "exampleSentenceEn": "The knowledgeable machine",
+                    "form": "sapiente",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective or in progressive constructions. In modern Italian, it's mainly used as an adjective.",
+            "tenseId": "participio_presente",
+            "tenseName": "Participio Presente",
+            "tenseNameEn": "Present Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ho saputo la risposta",
+                    "exampleSentenceEn": "I have known the answer",
+                    "form": "saputo",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Ha saputo cantare",
+                    "exampleSentenceEn": "She has known how to sing",
+                    "form": "saputo",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Hanno saputo nuotare",
+                    "exampleSentenceEn": "They have known how to swim",
+                    "form": "saputi",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to form compound tenses and as an adjective. Must agree in gender and number with the subject.",
+            "tenseId": "participio_passato",
+            "tenseName": "Participio Passato",
+            "tenseNameEn": "Past Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Sto sapendo la risposta",
+                    "exampleSentenceEn": "I am knowing the answer",
+                    "form": "sapendo",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Stai sapendo cantare",
+                    "exampleSentenceEn": "You are knowing how to sing",
+                    "form": "sapendo",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Sta sapendo nuotare",
+                    "exampleSentenceEn": "He is knowing how to swim",
+                    "form": "sapendo",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express ongoing actions, often with 'stare' to form the present continuous tense.",
+            "tenseId": "gerundio_presente",
+            "tenseName": "Gerundio Presente",
+            "tenseNameEn": "Present Gerund"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Avendo saputo la risposta, ho studiato",
+                    "exampleSentenceEn": "Having known the answer, I studied",
+                    "form": "avendo saputo",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Avendo saputo cantare, ha riposato",
+                    "exampleSentenceEn": "Having known how to sing, she rested",
+                    "form": "avendo saputo",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Avendo saputo nuotare, hanno cenato",
+                    "exampleSentenceEn": "Having known how to swim, they had dinner",
+                    "form": "avendo saputo",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express actions that were completed before another action. Rarely used in modern Italian.",
+            "tenseId": "gerundio_passato",
+            "tenseName": "Gerundio Passato",
+            "tenseNameEn": "Past Gerund"
+        }
+    ]
+}

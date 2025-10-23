@@ -1,0 +1,387 @@
+{
+    "category": "essential",
+    "infinitive": "kommen",
+    "infinitiveEn": "to come",
+    "language": "de",
+    "languageName": "German",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich komme nach Hause",
+                    "exampleSentenceEn": "I come home",
+                    "form": "komme",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du kommst zu spät",
+                    "exampleSentenceEn": "You come too late",
+                    "form": "kommst",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er kommt morgen",
+                    "exampleSentenceEn": "He comes tomorrow",
+                    "form": "kommt",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir kommen zusammen",
+                    "exampleSentenceEn": "We come together",
+                    "form": "kommen",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr kommt mit",
+                    "exampleSentenceEn": "You come along",
+                    "form": "kommt",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie kommen heute",
+                    "exampleSentenceEn": "They come today",
+                    "form": "kommen",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in German.",
+            "tenseId": "praesens",
+            "tenseName": "Präsens",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich kam nach Hause",
+                    "exampleSentenceEn": "I came home",
+                    "form": "kam",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du kamst zu spät",
+                    "exampleSentenceEn": "You came too late",
+                    "form": "kamst",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er kam gestern",
+                    "exampleSentenceEn": "He came yesterday",
+                    "form": "kam",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir kamen zusammen",
+                    "exampleSentenceEn": "We came together",
+                    "form": "kamen",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr kamt mit",
+                    "exampleSentenceEn": "You came along",
+                    "form": "kamt",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie kamen gestern",
+                    "exampleSentenceEn": "They came yesterday",
+                    "form": "kamen",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used primarily in written German and formal speech to describe completed actions in the past. Also used in storytelling and narratives.",
+            "tenseId": "praeteritum",
+            "tenseName": "Präteritum",
+            "tenseNameEn": "Simple Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich werde morgen kommen",
+                    "exampleSentenceEn": "I will come tomorrow",
+                    "form": "werde kommen",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du wirst pünktlich kommen",
+                    "exampleSentenceEn": "You will come on time",
+                    "form": "wirst kommen",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er wird heute kommen",
+                    "exampleSentenceEn": "He will come today",
+                    "form": "wird kommen",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir werden zusammen kommen",
+                    "exampleSentenceEn": "We will come together",
+                    "form": "werden kommen",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr werdet mit kommen",
+                    "exampleSentenceEn": "You will come along",
+                    "form": "werdet kommen",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie werden bald kommen",
+                    "exampleSentenceEn": "They will come soon",
+                    "form": "werden kommen",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'morgen' (tomorrow) or 'nächste Woche' (next week).",
+            "tenseId": "futur_i",
+            "tenseName": "Futur I",
+            "tenseNameEn": "Future I"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Bis morgen werde ich gekommen sein",
+                    "exampleSentenceEn": "By tomorrow, I will have come",
+                    "form": "werde gekommen sein",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du wirst sicher gekommen sein",
+                    "exampleSentenceEn": "You will surely have come",
+                    "form": "wirst gekommen sein",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er wird wahrscheinlich gekommen sein",
+                    "exampleSentenceEn": "He will probably have come",
+                    "form": "wird gekommen sein",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir werden zusammen gekommen sein",
+                    "exampleSentenceEn": "We will have come together",
+                    "form": "werden gekommen sein",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr werdet mit gekommen sein",
+                    "exampleSentenceEn": "You will have come along",
+                    "form": "werdet gekommen sein",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie werden bald gekommen sein",
+                    "exampleSentenceEn": "They will have come soon",
+                    "form": "werden gekommen sein",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express actions that will be completed by a certain point in the future. Often used with time expressions like 'bis morgen' (by tomorrow) or to make assumptions about past events.",
+            "tenseId": "futur_ii",
+            "tenseName": "Futur II",
+            "tenseNameEn": "Future Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich bin nach Hause gekommen",
+                    "exampleSentenceEn": "I have come home",
+                    "form": "bin gekommen",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du bist zu spät gekommen",
+                    "exampleSentenceEn": "You have come too late",
+                    "form": "bist gekommen",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er ist gestern gekommen",
+                    "exampleSentenceEn": "He has come yesterday",
+                    "form": "ist gekommen",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir sind zusammen gekommen",
+                    "exampleSentenceEn": "We have come together",
+                    "form": "sind gekommen",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr seid mit gekommen",
+                    "exampleSentenceEn": "You have come along",
+                    "form": "seid gekommen",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie sind heute gekommen",
+                    "exampleSentenceEn": "They have come today",
+                    "form": "sind gekommen",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken German.",
+            "tenseId": "perfekt",
+            "tenseName": "Perfekt",
+            "tenseNameEn": "Present Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich war nach Hause gekommen, bevor er anrief",
+                    "exampleSentenceEn": "I had come home before he called",
+                    "form": "war gekommen",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du warst zu spät gekommen, bevor die Veranstaltung begann",
+                    "exampleSentenceEn": "You had come too late before the event began",
+                    "form": "warst gekommen",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er war gestern gekommen, bevor wir gingen",
+                    "exampleSentenceEn": "He had come yesterday before we left",
+                    "form": "war gekommen",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir waren zusammen gekommen, bevor es regnete",
+                    "exampleSentenceEn": "We had come together before it rained",
+                    "form": "waren gekommen",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr wart mit gekommen, bevor ihr gingt",
+                    "exampleSentenceEn": "You had come along before you left",
+                    "form": "wart gekommen",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie waren heute gekommen, bevor sie gingen",
+                    "exampleSentenceEn": "They had come today before they left",
+                    "form": "waren gekommen",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+            "tenseId": "plusquamperfekt",
+            "tenseName": "Plusquamperfekt",
+            "tenseNameEn": "Pluperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Er sagt, er komme nach Hause",
+                    "exampleSentenceEn": "He says he comes home",
+                    "form": "komme",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Er sagt, du kommest zu spät",
+                    "exampleSentenceEn": "He says you come too late",
+                    "form": "kommest",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er sagt, sie komme morgen",
+                    "exampleSentenceEn": "He says she comes tomorrow",
+                    "form": "komme",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Er sagt, wir kommen zusammen",
+                    "exampleSentenceEn": "He says we come together",
+                    "form": "kommen",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Er sagt, ihr kommet mit",
+                    "exampleSentenceEn": "He says you come along",
+                    "form": "kommet",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Er sagt, sie kommen heute",
+                    "exampleSentenceEn": "He says they come today",
+                    "form": "kommen",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used primarily in indirect speech and formal writing to report what someone else has said. Also used in certain fixed expressions and formal contexts.",
+            "tenseId": "konjunktiv_i",
+            "tenseName": "Konjunktiv I",
+            "tenseNameEn": "Subjunctive I"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich käme gerne nach Hause",
+                    "exampleSentenceEn": "I would gladly come home",
+                    "form": "käme",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du kämest zu spät",
+                    "exampleSentenceEn": "You would come too late",
+                    "form": "kämest",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Sie käme morgen",
+                    "exampleSentenceEn": "She would come tomorrow",
+                    "form": "käme",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir kämen zusammen",
+                    "exampleSentenceEn": "We would come together",
+                    "form": "kämen",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr kämet mit",
+                    "exampleSentenceEn": "You would come along",
+                    "form": "kämet",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie kämen heute",
+                    "exampleSentenceEn": "They would come today",
+                    "form": "kämen",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'wenn' (if) clauses.",
+            "tenseId": "konjunktiv_ii",
+            "tenseName": "Konjunktiv II",
+            "tenseNameEn": "Subjunctive II"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Komm bitte nach Hause!",
+                    "exampleSentenceEn": "Please come home!",
+                    "form": "komm",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Kommt mit!",
+                    "exampleSentenceEn": "Come along!",
+                    "form": "kommt",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Kommen Sie bitte heute!",
+                    "exampleSentenceEn": "Please come today!",
+                    "form": "kommen Sie",
+                    "pronoun": "Sie"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (du, ihr) and formal address (Sie). The subject pronoun is usually omitted.",
+            "tenseId": "imperativ",
+            "tenseName": "Imperativ",
+            "tenseNameEn": "Imperative"
+        }
+    ]
+}

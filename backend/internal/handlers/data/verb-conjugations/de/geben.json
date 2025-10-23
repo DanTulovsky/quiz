@@ -1,0 +1,387 @@
+{
+    "category": "essential",
+    "infinitive": "geben",
+    "infinitiveEn": "to give",
+    "language": "de",
+    "languageName": "German",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich gebe dir ein Geschenk",
+                    "exampleSentenceEn": "I give you a gift",
+                    "form": "gebe",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du gibst mir Hoffnung",
+                    "exampleSentenceEn": "You give me hope",
+                    "form": "gibst",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er gibt sein Bestes",
+                    "exampleSentenceEn": "He gives his best",
+                    "form": "gibt",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir geben nicht auf",
+                    "exampleSentenceEn": "We don't give up",
+                    "form": "geben",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr gebt euch Mühe",
+                    "exampleSentenceEn": "You make an effort",
+                    "form": "gebt",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie geben alles",
+                    "exampleSentenceEn": "They give everything",
+                    "form": "geben",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in German.",
+            "tenseId": "praesens",
+            "tenseName": "Präsens",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich gab dir ein Geschenk",
+                    "exampleSentenceEn": "I gave you a gift",
+                    "form": "gab",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du gabst mir Hoffnung",
+                    "exampleSentenceEn": "You gave me hope",
+                    "form": "gabst",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er gab sein Bestes",
+                    "exampleSentenceEn": "He gave his best",
+                    "form": "gab",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir gaben nicht auf",
+                    "exampleSentenceEn": "We didn't give up",
+                    "form": "gaben",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr gabt euch Mühe",
+                    "exampleSentenceEn": "You made an effort",
+                    "form": "gabt",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie gaben alles",
+                    "exampleSentenceEn": "They gave everything",
+                    "form": "gaben",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used primarily in written German and formal speech to describe completed actions in the past. Also used in storytelling and narratives.",
+            "tenseId": "praeteritum",
+            "tenseName": "Präteritum",
+            "tenseNameEn": "Simple Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich werde dir ein Geschenk geben",
+                    "exampleSentenceEn": "I will give you a gift",
+                    "form": "werde geben",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du wirst mir Hoffnung geben",
+                    "exampleSentenceEn": "You will give me hope",
+                    "form": "wirst geben",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er wird sein Bestes geben",
+                    "exampleSentenceEn": "He will give his best",
+                    "form": "wird geben",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir werden nicht aufgeben",
+                    "exampleSentenceEn": "We will not give up",
+                    "form": "werden geben",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr werdet euch Mühe geben",
+                    "exampleSentenceEn": "You will make an effort",
+                    "form": "werdet geben",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie werden alles geben",
+                    "exampleSentenceEn": "They will give everything",
+                    "form": "werden geben",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'morgen' (tomorrow) or 'nächste Woche' (next week).",
+            "tenseId": "futur_i",
+            "tenseName": "Futur I",
+            "tenseNameEn": "Future I"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Bis morgen werde ich dir ein Geschenk gegeben haben",
+                    "exampleSentenceEn": "By tomorrow, I will have given you a gift",
+                    "form": "werde gegeben haben",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du wirst sicher mir Hoffnung gegeben haben",
+                    "exampleSentenceEn": "You will surely have given me hope",
+                    "form": "wirst gegeben haben",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er wird wahrscheinlich sein Bestes gegeben haben",
+                    "exampleSentenceEn": "He will probably have given his best",
+                    "form": "wird gegeben haben",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir werden nicht aufgegeben haben",
+                    "exampleSentenceEn": "We will not have given up",
+                    "form": "werden gegeben haben",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr werdet euch Mühe gegeben haben",
+                    "exampleSentenceEn": "You will have made an effort",
+                    "form": "werdet gegeben haben",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie werden alles gegeben haben",
+                    "exampleSentenceEn": "They will have given everything",
+                    "form": "werden gegeben haben",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express actions that will be completed by a certain point in the future. Often used with time expressions like 'bis morgen' (by tomorrow) or to make assumptions about past events.",
+            "tenseId": "futur_ii",
+            "tenseName": "Futur II",
+            "tenseNameEn": "Future Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich habe dir ein Geschenk gegeben",
+                    "exampleSentenceEn": "I have given you a gift",
+                    "form": "habe gegeben",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du hast mir Hoffnung gegeben",
+                    "exampleSentenceEn": "You have given me hope",
+                    "form": "hast gegeben",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er hat sein Bestes gegeben",
+                    "exampleSentenceEn": "He has given his best",
+                    "form": "hat gegeben",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir haben nicht aufgegeben",
+                    "exampleSentenceEn": "We have not given up",
+                    "form": "haben gegeben",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr habt euch Mühe gegeben",
+                    "exampleSentenceEn": "You have made an effort",
+                    "form": "habt gegeben",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie haben alles gegeben",
+                    "exampleSentenceEn": "They have given everything",
+                    "form": "haben gegeben",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken German.",
+            "tenseId": "perfekt",
+            "tenseName": "Perfekt",
+            "tenseNameEn": "Present Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich hatte dir ein Geschenk gegeben, bevor du kamst",
+                    "exampleSentenceEn": "I had given you a gift before you came",
+                    "form": "hatte gegeben",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du hattest mir Hoffnung gegeben, bevor ich ging",
+                    "exampleSentenceEn": "You had given me hope before I left",
+                    "form": "hattest gegeben",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er hatte sein Bestes gegeben, bevor er aufhörte",
+                    "exampleSentenceEn": "He had given his best before he stopped",
+                    "form": "hatte gegeben",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir hatten nicht aufgegeben, bevor wir gewannen",
+                    "exampleSentenceEn": "We had not given up before we won",
+                    "form": "hatten gegeben",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr hattet euch Mühe gegeben, bevor ihr aufhörtet",
+                    "exampleSentenceEn": "You had made an effort before you stopped",
+                    "form": "hattet gegeben",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie hatten alles gegeben, bevor sie gingen",
+                    "exampleSentenceEn": "They had given everything before they left",
+                    "form": "hatten gegeben",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+            "tenseId": "plusquamperfekt",
+            "tenseName": "Plusquamperfekt",
+            "tenseNameEn": "Pluperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Er sagt, er gebe dir ein Geschenk",
+                    "exampleSentenceEn": "He says he gives you a gift",
+                    "form": "gebe",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Er sagt, du gebest mir Hoffnung",
+                    "exampleSentenceEn": "He says you give me hope",
+                    "form": "gebest",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Er sagt, sie gebe ihr Bestes",
+                    "exampleSentenceEn": "He says she gives her best",
+                    "form": "gebe",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Er sagt, wir geben nicht auf",
+                    "exampleSentenceEn": "He says we don't give up",
+                    "form": "geben",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Er sagt, ihr gebet euch Mühe",
+                    "exampleSentenceEn": "He says you make an effort",
+                    "form": "gebet",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Er sagt, sie geben alles",
+                    "exampleSentenceEn": "He says they give everything",
+                    "form": "geben",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used primarily in indirect speech and formal writing to report what someone else has said. Also used in certain fixed expressions and formal contexts.",
+            "tenseId": "konjunktiv_i",
+            "tenseName": "Konjunktiv I",
+            "tenseNameEn": "Subjunctive I"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ich gäbe dir gerne ein Geschenk",
+                    "exampleSentenceEn": "I would gladly give you a gift",
+                    "form": "gäbe",
+                    "pronoun": "ich"
+                },
+                {
+                    "exampleSentence": "Du gäbest mir Hoffnung",
+                    "exampleSentenceEn": "You would give me hope",
+                    "form": "gäbest",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Sie gäbe ihr Bestes",
+                    "exampleSentenceEn": "She would give her best",
+                    "form": "gäbe",
+                    "pronoun": "er/sie/es"
+                },
+                {
+                    "exampleSentence": "Wir gäben nicht auf",
+                    "exampleSentenceEn": "We would not give up",
+                    "form": "gäben",
+                    "pronoun": "wir"
+                },
+                {
+                    "exampleSentence": "Ihr gäbet euch Mühe",
+                    "exampleSentenceEn": "You would make an effort",
+                    "form": "gäbet",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Sie gäben alles",
+                    "exampleSentenceEn": "They would give everything",
+                    "form": "gäben",
+                    "pronoun": "sie/Sie"
+                }
+            ],
+            "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'wenn' (if) clauses.",
+            "tenseId": "konjunktiv_ii",
+            "tenseName": "Konjunktiv II",
+            "tenseNameEn": "Subjunctive II"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Gib mir das Buch!",
+                    "exampleSentenceEn": "Give me the book!",
+                    "form": "gib",
+                    "pronoun": "du"
+                },
+                {
+                    "exampleSentence": "Gebt nicht auf!",
+                    "exampleSentenceEn": "Don't give up!",
+                    "form": "gebt",
+                    "pronoun": "ihr"
+                },
+                {
+                    "exampleSentence": "Geben Sie mir bitte Zeit!",
+                    "exampleSentenceEn": "Please give me time!",
+                    "form": "geben Sie",
+                    "pronoun": "Sie"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (du, ihr) and formal address (Sie). The subject pronoun is usually omitted.",
+            "tenseId": "imperativ",
+            "tenseName": "Imperativ",
+            "tenseNameEn": "Imperative"
+        }
+    ]
+}

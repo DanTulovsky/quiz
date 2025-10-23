@@ -1,0 +1,391 @@
+{
+    "category": "essential",
+    "infinitive": "иметь",
+    "infinitiveEn": "to have",
+    "language": "ru",
+    "languageName": "Russian",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я имею книгу",
+                    "exampleSentenceEn": "I have a book",
+                    "form": "имею",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты имеешь возможность учиться за границей",
+                    "exampleSentenceEn": "You have the opportunity to study abroad",
+                    "form": "имеешь",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Она имеет кота",
+                    "exampleSentenceEn": "She has a cat",
+                    "form": "имеет",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы имеем время",
+                    "exampleSentenceEn": "We have time",
+                    "form": "имеем",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы имеете право выбирать свой путь",
+                    "exampleSentenceEn": "You have the right to choose your path",
+                    "form": "имеете",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они имеют дом",
+                    "exampleSentenceEn": "They have a house",
+                    "form": "имеют",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in Russian.",
+            "tenseId": "present",
+            "tenseName": "Настоящее время",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я имел возможность путешествовать по Европе",
+                    "exampleSentenceEn": "I had the opportunity to travel through Europe",
+                    "form": "имел/имела",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты имел интересную коллекцию марок",
+                    "exampleSentenceEn": "You had an interesting stamp collection",
+                    "form": "имел/имела",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он имел собаку",
+                    "exampleSentenceEn": "He had a dog",
+                    "form": "имел",
+                    "pronoun": "он"
+                },
+                {
+                    "exampleSentence": "Она имела время",
+                    "exampleSentenceEn": "She had time",
+                    "form": "имела",
+                    "pronoun": "она"
+                },
+                {
+                    "exampleSentence": "Мы имели время",
+                    "exampleSentenceEn": "We had time",
+                    "form": "имели",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы имели важные документы в сейфе",
+                    "exampleSentenceEn": "You had important documents in the safe",
+                    "form": "имели",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они имели машину",
+                    "exampleSentenceEn": "They had a car",
+                    "form": "имели",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to describe completed actions in the past. Russian past tense is formed by adding gender endings to the verb stem and doesn't require auxiliary verbs.",
+            "tenseId": "past",
+            "tenseName": "Прошедшее время",
+            "tenseNameEn": "Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я буду иметь время",
+                    "exampleSentenceEn": "I will have time",
+                    "form": "буду иметь",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты будешь иметь успех",
+                    "exampleSentenceEn": "You will succeed",
+                    "form": "будешь иметь",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Она будет иметь ребенка",
+                    "exampleSentenceEn": "She will have a child",
+                    "form": "будет иметь",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы будем иметь возможность встретиться снова",
+                    "exampleSentenceEn": "We will have the opportunity to meet again",
+                    "form": "будем иметь",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы будете иметь приоритет в этом проекте",
+                    "exampleSentenceEn": "You will have priority in this project",
+                    "form": "будете иметь",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они будут иметь вечеринку",
+                    "exampleSentenceEn": "They will have a party",
+                    "form": "будут иметь",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Russian future tense is formed using the auxiliary verb 'быть' (to be) in its future form plus the infinitive.",
+            "tenseId": "future",
+            "tenseName": "Будущее время",
+            "tenseNameEn": "Future"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Имей терпение!",
+                    "exampleSentenceEn": "Be patient!",
+                    "form": "имей",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Будем иметь мужество!",
+                    "exampleSentenceEn": "Let's be brave!",
+                    "form": "будем иметь",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Имейте веру!",
+                    "exampleSentenceEn": "Have faith!",
+                    "form": "имейте",
+                    "pronoun": "вы"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Russian imperative has different forms for singular and plural, and the subject pronoun is usually omitted.",
+            "tenseId": "imperative",
+            "tenseName": "Повелительное наклонение",
+            "tenseNameEn": "Imperative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я имел бы больше времени, если бы начал раньше",
+                    "exampleSentenceEn": "I would have more time if I had started earlier",
+                    "form": "имел/имела бы",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты имел бы больше друзей, если бы был более открытым",
+                    "exampleSentenceEn": "You would have more friends if you were more open",
+                    "form": "имел/имела бы",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он имел бы успех, если бы упорно работал",
+                    "exampleSentenceEn": "He would have success if he worked hard",
+                    "form": "имел бы",
+                    "pronoun": "он"
+                },
+                {
+                    "exampleSentence": "Она имела бы лучшую жизнь, если бы сделала другой выбор",
+                    "exampleSentenceEn": "She would have a better life if she had made a different choice",
+                    "form": "имела бы",
+                    "pronoun": "она"
+                },
+                {
+                    "exampleSentence": "Мы имели бы меньше проблем, если бы были лучше подготовлены",
+                    "exampleSentenceEn": "We would have fewer problems if we were better prepared",
+                    "form": "имели бы",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы имели бы возможность встретить его, если бы пришли",
+                    "exampleSentenceEn": "You would have had the opportunity to meet him if you had come",
+                    "form": "имели бы",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они имели бы больше успеха с другой стратегией",
+                    "exampleSentenceEn": "They would have more success with a different strategy",
+                    "form": "имели бы",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to express hypothetical situations, wishes, or actions that would happen under certain conditions. Formed by adding 'бы' to the past tense form.",
+            "tenseId": "conditional",
+            "tenseName": "Сослагательное наклонение",
+            "tenseNameEn": "Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Имея большой опыт, он легко решил проблему",
+                    "exampleSentenceEn": "Having great experience, he easily solved the problem",
+                    "form": "имея",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Имея свободное время, она читает книги",
+                    "exampleSentenceEn": "Having free time, she reads books",
+                    "form": "имея",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express an action occurring simultaneously with the main action. Functions as an adverb and is invariable.",
+            "tenseId": "present_gerund",
+            "tenseName": "Деепричастие настоящего времени",
+            "tenseNameEn": "Present Gerund"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Имев возможность учиться, он стал врачом",
+                    "exampleSentenceEn": "Having had the opportunity to study, he became a doctor",
+                    "form": "имев",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Имевши большие планы, они начали новый проект",
+                    "exampleSentenceEn": "Having had big plans, they started a new project",
+                    "form": "имевши",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express an action that occurred before the main action. Functions as an adverb and is invariable.",
+            "tenseId": "past_gerund",
+            "tenseName": "Деепричастие прошедшего времени",
+            "tenseNameEn": "Past Gerund"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Человек, имеющий власть, должен быть ответственным",
+                    "exampleSentenceEn": "A person having power must be responsible",
+                    "form": "имеющий",
+                    "pronoun": "он"
+                },
+                {
+                    "exampleSentence": "Компания, имеющая опыт, получила контракт",
+                    "exampleSentenceEn": "The company having experience got the contract",
+                    "form": "имеющая",
+                    "pronoun": "она"
+                },
+                {
+                    "exampleSentence": "Предложение, имеющее смысл, было принято",
+                    "exampleSentenceEn": "The proposal having sense was accepted",
+                    "form": "имеющее",
+                    "pronoun": "оно"
+                },
+                {
+                    "exampleSentence": "Студенты, имеющие вопросы, могут задать их",
+                    "exampleSentenceEn": "Students having questions can ask them",
+                    "form": "имеющие",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to describe a noun that is currently performing an action. Functions as an adjective and agrees with the noun in gender, number, and case.",
+            "tenseId": "present_active_participle",
+            "tenseName": "Причастие настоящего времени действительный залог",
+            "tenseNameEn": "Present Active Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Человек, имевший влияние, ушёл на пенсию",
+                    "exampleSentenceEn": "The person who had influence retired",
+                    "form": "имевший",
+                    "pronoun": "он"
+                },
+                {
+                    "exampleSentence": "Семья, имевшая традиции, переехала в город",
+                    "exampleSentenceEn": "The family that had traditions moved to the city",
+                    "form": "имевшая",
+                    "pronoun": "она"
+                },
+                {
+                    "exampleSentence": "Государство, имевшее колонии, распалось",
+                    "exampleSentenceEn": "The state that had colonies collapsed",
+                    "form": "имевшее",
+                    "pronoun": "оно"
+                },
+                {
+                    "exampleSentence": "Люди, имевшие надежду, продолжали бороться",
+                    "exampleSentenceEn": "People who had hope continued to fight",
+                    "form": "имевшие",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to describe a noun that performed an action in the past. Functions as an adjective and agrees with the noun in gender, number, and case.",
+            "tenseId": "past_active_participle",
+            "tenseName": "Причастие прошедшего времени действительный залог",
+            "tenseNameEn": "Past Active Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Успех, имеемый командой, впечатляет",
+                    "exampleSentenceEn": "The success had by the team is impressive",
+                    "form": "имеемый",
+                    "pronoun": "он"
+                },
+                {
+                    "exampleSentence": "Цель, имеемая всеми, объединяет людей",
+                    "exampleSentenceEn": "The goal had by everyone unites people",
+                    "form": "имеемая",
+                    "pronoun": "она"
+                },
+                {
+                    "exampleSentence": "Право, имеемое гражданами, защищено законом",
+                    "exampleSentenceEn": "The right had by citizens is protected by law",
+                    "form": "имеемое",
+                    "pronoun": "оно"
+                },
+                {
+                    "exampleSentence": "Возможности, имеемые молодёжью, безграничны",
+                    "exampleSentenceEn": "The opportunities had by youth are limitless",
+                    "form": "имеемые",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Rare in standard Russian usage, but theoretically possible in formal or bookish contexts.",
+            "tenseId": "present_passive_participle",
+            "tenseName": "Причастие настоящего времени страдательный залог",
+            "tenseNameEn": "Present Passive Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "The verb 'иметь' does not form standard past passive participles in modern Russian. These forms are archaic/theoretical and not used in practice.",
+            "tenseId": "past_passive_participle",
+            "tenseName": "Причастие прошедшего времени страдательный залог",
+            "tenseNameEn": "Past Passive Participle"
+        }
+    ]
+}

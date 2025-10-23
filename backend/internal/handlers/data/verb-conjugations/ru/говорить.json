@@ -1,0 +1,409 @@
+{
+    "category": "essential",
+    "infinitive": "говорить",
+    "infinitiveEn": "to speak/talk",
+    "language": "ru",
+    "languageName": "Russian",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я говорю по-русски",
+                    "exampleSentenceEn": "I speak Russian",
+                    "form": "говорю",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты говоришь с мамой",
+                    "exampleSentenceEn": "You talk to mom",
+                    "form": "говоришь",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он говорит правду",
+                    "exampleSentenceEn": "He tells the truth",
+                    "form": "говорит",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы говорим о работе",
+                    "exampleSentenceEn": "We talk about work",
+                    "form": "говорим",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы говорите по-английски",
+                    "exampleSentenceEn": "You speak English",
+                    "form": "говорите",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они говорят тихо",
+                    "exampleSentenceEn": "They speak quietly",
+                    "form": "говорят",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in Russian.",
+            "tenseId": "present",
+            "tenseName": "Настоящее время",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я говорил по-русски",
+                    "exampleSentenceEn": "I spoke Russian",
+                    "form": "говорил",
+                    "pronoun": "я (m)"
+                },
+                {
+                    "exampleSentence": "Я говорила по-русски",
+                    "exampleSentenceEn": "I spoke Russian",
+                    "form": "говорила",
+                    "pronoun": "я (f)"
+                },
+                {
+                    "exampleSentence": "Ты говорил с мамой",
+                    "exampleSentenceEn": "You talked to mom",
+                    "form": "говорил",
+                    "pronoun": "ты (m)"
+                },
+                {
+                    "exampleSentence": "Ты говорила с мамой",
+                    "exampleSentenceEn": "You talked to mom",
+                    "form": "говорила",
+                    "pronoun": "ты (f)"
+                },
+                {
+                    "exampleSentence": "Он говорил правду",
+                    "exampleSentenceEn": "He told the truth",
+                    "form": "говорил",
+                    "pronoun": "он"
+                },
+                {
+                    "exampleSentence": "Она говорила правду",
+                    "exampleSentenceEn": "She told the truth",
+                    "form": "говорила",
+                    "pronoun": "она"
+                },
+                {
+                    "exampleSentence": "Оно говорило правду",
+                    "exampleSentenceEn": "It told the truth",
+                    "form": "говорило",
+                    "pronoun": "оно"
+                },
+                {
+                    "exampleSentence": "Мы говорили о работе",
+                    "exampleSentenceEn": "We talked about work",
+                    "form": "говорили",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы говорили по-английски",
+                    "exampleSentenceEn": "You spoke English",
+                    "form": "говорили",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они говорили тихо",
+                    "exampleSentenceEn": "They spoke quietly",
+                    "form": "говорили",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to describe completed actions in the past. The form changes based on gender and number.",
+            "tenseId": "past",
+            "tenseName": "Прошедшее время",
+            "tenseNameEn": "Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я буду говорить по-русски завтра",
+                    "exampleSentenceEn": "I will speak Russian tomorrow",
+                    "form": "буду говорить",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты будешь говорить с мамой",
+                    "exampleSentenceEn": "You will talk to mom",
+                    "form": "будешь говорить",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он будет говорить правду",
+                    "exampleSentenceEn": "He will tell the truth",
+                    "form": "будет говорить",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы будем говорить о работе",
+                    "exampleSentenceEn": "We will talk about work",
+                    "form": "будем говорить",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы будете говорить по-английски",
+                    "exampleSentenceEn": "You will speak English",
+                    "form": "будете говорить",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они будут говорить тихо",
+                    "exampleSentenceEn": "They will speak quietly",
+                    "form": "будут говорить",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'завтра' (tomorrow).",
+            "tenseId": "future",
+            "tenseName": "Будущее время",
+            "tenseNameEn": "Future"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Говори правду!",
+                    "exampleSentenceEn": "Tell the truth!",
+                    "form": "говори",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Говорите громче!",
+                    "exampleSentenceEn": "Speak louder!",
+                    "form": "говорите",
+                    "pronoun": "вы"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (ты, вы).",
+            "tenseId": "imperative",
+            "tenseName": "Повелительное наклонение",
+            "tenseNameEn": "Imperative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я говорил бы по-русски, если бы имел время",
+                    "exampleSentenceEn": "I would speak Russian if I had time",
+                    "form": "говорил бы",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты говорил бы с мамой",
+                    "exampleSentenceEn": "You would talk to mom",
+                    "form": "говорил бы",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он говорил бы правду",
+                    "exampleSentenceEn": "He would tell the truth",
+                    "form": "говорил бы",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы говорили бы о работе",
+                    "exampleSentenceEn": "We would talk about work",
+                    "form": "говорили бы",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы говорили бы по-английски",
+                    "exampleSentenceEn": "You would speak English",
+                    "form": "говорили бы",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они говорили бы тихо",
+                    "exampleSentenceEn": "They would speak quietly",
+                    "form": "говорили бы",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to express hypothetical situations or actions that would happen under certain conditions. Often used with 'если' (if) clauses.",
+            "tenseId": "conditional",
+            "tenseName": "Условное наклонение",
+            "tenseNameEn": "Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Говорящий человек",
+                    "exampleSentenceEn": "A speaking person",
+                    "form": "говорящий",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Говорящая женщина",
+                    "exampleSentenceEn": "A speaking woman",
+                    "form": "говорящая",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Говорящее животное",
+                    "exampleSentenceEn": "A speaking animal",
+                    "form": "говорящее",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Говорящие люди",
+                    "exampleSentenceEn": "Speaking people",
+                    "form": "говорящие",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe someone who is currently performing the action. Must agree in gender, number, and case.",
+            "tenseId": "present_active_participle",
+            "tenseName": "Причастие настоящего времени",
+            "tenseNameEn": "Present Active Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Говоривший человек",
+                    "exampleSentenceEn": "A person who spoke",
+                    "form": "говоривший",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Говорившая женщина",
+                    "exampleSentenceEn": "A woman who spoke",
+                    "form": "говорившая",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Говорившее животное",
+                    "exampleSentenceEn": "An animal that spoke",
+                    "form": "говорившее",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Говорившие люди",
+                    "exampleSentenceEn": "People who spoke",
+                    "form": "говорившие",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe someone who performed the action in the past. Must agree in gender, number, and case.",
+            "tenseId": "past_active_participle",
+            "tenseName": "Причастие прошедшего времени",
+            "tenseNameEn": "Past Active Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe something that is currently being acted upon. Must agree in gender, number, and case.",
+            "tenseId": "present_passive_participle",
+            "tenseName": "Страдательное причастие настоящего времени",
+            "tenseNameEn": "Present Passive Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe something that was acted upon in the past. Must agree in gender, number, and case.",
+            "tenseId": "past_passive_participle",
+            "tenseName": "Страдательное причастие прошедшего времени",
+            "tenseNameEn": "Past Passive Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Говоря по-русски, я думаю",
+                    "exampleSentenceEn": "While speaking Russian, I think",
+                    "form": "говоря",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Говоря с мамой, он пел",
+                    "exampleSentenceEn": "While talking to mom, he sang",
+                    "form": "говоря",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Говоря правду, мы разговаривали",
+                    "exampleSentenceEn": "While telling the truth, we talked",
+                    "form": "говоря",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express an action that happens simultaneously with the main action. Often used to show manner or condition.",
+            "tenseId": "present_gerund",
+            "tenseName": "Деепричастие настоящего времени",
+            "tenseNameEn": "Present Gerund"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express an action that was completed before the main action. Often used to show sequence of events.",
+            "tenseId": "past_gerund",
+            "tenseName": "Деепричастие прошедшего времени",
+            "tenseNameEn": "Past Gerund"
+        }
+    ]
+}

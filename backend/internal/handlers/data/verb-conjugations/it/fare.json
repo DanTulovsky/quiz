@@ -1,0 +1,807 @@
+{
+    "category": "essential",
+    "infinitive": "fare",
+    "infinitiveEn": "to do/make",
+    "language": "it",
+    "languageName": "Italian",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io faccio i compiti",
+                    "exampleSentenceEn": "I do my homework",
+                    "form": "faccio",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu fai la spesa",
+                    "exampleSentenceEn": "You do the shopping",
+                    "form": "fai",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui fa il caffè",
+                    "exampleSentenceEn": "He makes coffee",
+                    "form": "fa",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi facciamo una passeggiata",
+                    "exampleSentenceEn": "We take a walk",
+                    "form": "facciamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi fate sport",
+                    "exampleSentenceEn": "You do sports",
+                    "form": "fate",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro fanno festa",
+                    "exampleSentenceEn": "They celebrate",
+                    "form": "fanno",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in Italian.",
+            "tenseId": "presente",
+            "tenseName": "Presente",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io facevo i compiti",
+                    "exampleSentenceEn": "I was doing my homework",
+                    "form": "facevo",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu facevi la spesa",
+                    "exampleSentenceEn": "You were doing the shopping",
+                    "form": "facevi",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui faceva il caffè",
+                    "exampleSentenceEn": "He was making coffee",
+                    "form": "faceva",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi facevamo una passeggiata",
+                    "exampleSentenceEn": "We were taking a walk",
+                    "form": "facevamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi facevate sport",
+                    "exampleSentenceEn": "You were doing sports",
+                    "form": "facevate",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro facevano festa",
+                    "exampleSentenceEn": "They were celebrating",
+                    "form": "facevano",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to describe ongoing, repeated, or habitual actions in the past. Also used for background information in storytelling.",
+            "tenseId": "imperfetto",
+            "tenseName": "Imperfetto",
+            "tenseNameEn": "Imperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io farò i compiti domani",
+                    "exampleSentenceEn": "I will do my homework tomorrow",
+                    "form": "farò",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu farai la spesa",
+                    "exampleSentenceEn": "You will do the shopping",
+                    "form": "farai",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui farà il caffè",
+                    "exampleSentenceEn": "He will make coffee",
+                    "form": "farà",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi faremo una passeggiata",
+                    "exampleSentenceEn": "We will take a walk",
+                    "form": "faremo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi farete sport",
+                    "exampleSentenceEn": "You will do sports",
+                    "form": "farete",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro faranno festa",
+                    "exampleSentenceEn": "They will celebrate",
+                    "form": "faranno",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'domani' (tomorrow) or 'la settimana prossima' (next week).",
+            "tenseId": "futuro_semplice",
+            "tenseName": "Futuro Semplice",
+            "tenseNameEn": "Simple Future"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io ho fatto i compiti",
+                    "exampleSentenceEn": "I have done my homework",
+                    "form": "ho fatto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu hai fatto la spesa",
+                    "exampleSentenceEn": "You have done the shopping",
+                    "form": "hai fatto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui ha fatto il caffè",
+                    "exampleSentenceEn": "He has made coffee",
+                    "form": "ha fatto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi abbiamo fatto una passeggiata",
+                    "exampleSentenceEn": "We have taken a walk",
+                    "form": "abbiamo fatto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avete fatto sport",
+                    "exampleSentenceEn": "You have done sports",
+                    "form": "avete fatto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro hanno fatto festa",
+                    "exampleSentenceEn": "They have celebrated",
+                    "form": "hanno fatto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken Italian.",
+            "tenseId": "passato_prossimo",
+            "tenseName": "Passato Prossimo",
+            "tenseNameEn": "Present Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io feci i compiti",
+                    "exampleSentenceEn": "I did my homework",
+                    "form": "feci",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu facesti la spesa",
+                    "exampleSentenceEn": "You did the shopping",
+                    "form": "facesti",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui fece il caffè",
+                    "exampleSentenceEn": "He made coffee",
+                    "form": "fece",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi facemmo una passeggiata",
+                    "exampleSentenceEn": "We took a walk",
+                    "form": "facemmo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi faceste sport",
+                    "exampleSentenceEn": "You did sports",
+                    "form": "faceste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro fecero festa",
+                    "exampleSentenceEn": "They celebrated",
+                    "form": "fecero",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used primarily in formal and literary Italian to narrate completed past events. Also used in southern Italy in spoken language.",
+            "tenseId": "passato_remoto",
+            "tenseName": "Passato Remoto",
+            "tenseNameEn": "Simple Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io avevo fatto i compiti prima che piovesse",
+                    "exampleSentenceEn": "I had done my homework before it rained",
+                    "form": "avevo fatto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu avevi fatto la spesa prima che venissi",
+                    "exampleSentenceEn": "You had done the shopping before I came",
+                    "form": "avevi fatto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui aveva fatto il caffè prima che arrivassimo",
+                    "exampleSentenceEn": "He had made coffee before we arrived",
+                    "form": "aveva fatto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi avevamo fatto una passeggiata prima che facesse buio",
+                    "exampleSentenceEn": "We had taken a walk before it got dark",
+                    "form": "avevamo fatto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avevate fatto sport prima della chiusura",
+                    "exampleSentenceEn": "You had done sports before closing",
+                    "form": "avevate fatto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro avevano fatto festa prima dello spettacolo",
+                    "exampleSentenceEn": "They had celebrated before the show",
+                    "form": "avevano fatto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+            "tenseId": "trapassato_prossimo",
+            "tenseName": "Trapassato Prossimo",
+            "tenseNameEn": "Pluperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Appena ebbi fatto i compiti, piovve",
+                    "exampleSentenceEn": "As soon as I had done my homework, it rained",
+                    "form": "ebbi fatto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Appena avesti fatto la spesa, venni",
+                    "exampleSentenceEn": "As soon as you had done the shopping, I came",
+                    "form": "avesti fatto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Appena ebbe fatto il caffè, arrivammo",
+                    "exampleSentenceEn": "As soon as he had made coffee, we arrived",
+                    "form": "ebbe fatto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Appena avemmo fatto una passeggiata, fece buio",
+                    "exampleSentenceEn": "As soon as we had taken a walk, it got dark",
+                    "form": "avemmo fatto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Appena aveste fatto sport, il negozio chiuse",
+                    "exampleSentenceEn": "As soon as you had done sports, the store closed",
+                    "form": "aveste fatto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Appena ebbero fatto festa, lo spettacolo cominciò",
+                    "exampleSentenceEn": "As soon as they had celebrated, the show began",
+                    "form": "ebbero fatto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in formal and literary Italian to express an action that was completed immediately before another past action. Rarely used in modern Italian.",
+            "tenseId": "trapassato_remoto",
+            "tenseName": "Trapassato Remoto",
+            "tenseNameEn": "Past Anterior"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io avrò fatto i compiti domani",
+                    "exampleSentenceEn": "I will have done my homework tomorrow",
+                    "form": "avrò fatto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu avrai fatto la spesa",
+                    "exampleSentenceEn": "You will have done the shopping",
+                    "form": "avrai fatto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui avrà fatto il caffè",
+                    "exampleSentenceEn": "He will have made coffee",
+                    "form": "avrà fatto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi avremo fatto una passeggiata",
+                    "exampleSentenceEn": "We will have taken a walk",
+                    "form": "avremo fatto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avrete fatto sport",
+                    "exampleSentenceEn": "You will have done sports",
+                    "form": "avrete fatto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro avranno fatto festa",
+                    "exampleSentenceEn": "They will have celebrated",
+                    "form": "avranno fatto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express actions that will be completed before another future action. Often used with time expressions like 'domani' (tomorrow).",
+            "tenseId": "futuro_anteriore",
+            "tenseName": "Futuro Anteriore",
+            "tenseNameEn": "Future Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io farei i compiti se avessi tempo",
+                    "exampleSentenceEn": "I would do my homework if I had time",
+                    "form": "farei",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu faresti la spesa",
+                    "exampleSentenceEn": "You would do the shopping",
+                    "form": "faresti",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui farebbe il caffè",
+                    "exampleSentenceEn": "He would make coffee",
+                    "form": "farebbe",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi faremmo una passeggiata",
+                    "exampleSentenceEn": "We would take a walk",
+                    "form": "faremmo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi fareste sport",
+                    "exampleSentenceEn": "You would do sports",
+                    "form": "fareste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro farebbero festa",
+                    "exampleSentenceEn": "They would celebrate",
+                    "form": "farebbero",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'se' (if) clauses.",
+            "tenseId": "condizionale_presente",
+            "tenseName": "Condizionale Presente",
+            "tenseNameEn": "Present Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Io avrei fatto i compiti se avessi potuto",
+                    "exampleSentenceEn": "I would have done my homework if I could have",
+                    "form": "avrei fatto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Tu avresti fatto la spesa",
+                    "exampleSentenceEn": "You would have done the shopping",
+                    "form": "avresti fatto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lui avrebbe fatto il caffè",
+                    "exampleSentenceEn": "He would have made coffee",
+                    "form": "avrebbe fatto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Noi avremmo fatto una passeggiata",
+                    "exampleSentenceEn": "We would have taken a walk",
+                    "form": "avremmo fatto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Voi avreste fatto sport",
+                    "exampleSentenceEn": "You would have done sports",
+                    "form": "avreste fatto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Loro avrebbero fatto festa",
+                    "exampleSentenceEn": "They would have celebrated",
+                    "form": "avrebbero fatto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used to express hypothetical past actions or regrets about things that didn't happen. Often used with 'se' (if) clauses referring to the past.",
+            "tenseId": "condizionale_passato",
+            "tenseName": "Condizionale Passato",
+            "tenseNameEn": "Past Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "È necessario che io faccia i compiti",
+                    "exampleSentenceEn": "I must do my homework",
+                    "form": "faccia",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Voglio che tu faccia la spesa",
+                    "exampleSentenceEn": "I want you to do the shopping",
+                    "form": "faccia",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "È necessario che lui faccia il caffè",
+                    "exampleSentenceEn": "He must make coffee",
+                    "form": "faccia",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "È necessario che noi facciamo una passeggiata",
+                    "exampleSentenceEn": "We must take a walk",
+                    "form": "facciamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "È necessario che voi facciate sport",
+                    "exampleSentenceEn": "You must do sports",
+                    "form": "facciate",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "È necessario che loro facciano festa",
+                    "exampleSentenceEn": "They must celebrate",
+                    "form": "facciano",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in dependent clauses after certain expressions of opinion, doubt, emotion, or necessity. Often used after 'è necessario che', 'voglio che', etc.",
+            "tenseId": "congiuntivo_presente",
+            "tenseName": "Congiuntivo Presente",
+            "tenseNameEn": "Present Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Era necessario che io facessi i compiti",
+                    "exampleSentenceEn": "I had to do my homework",
+                    "form": "facessi",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Volevo che tu facessi la spesa",
+                    "exampleSentenceEn": "I wanted you to do the shopping",
+                    "form": "facessi",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Era necessario che lui facesse il caffè",
+                    "exampleSentenceEn": "He had to make coffee",
+                    "form": "facesse",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Era necessario che noi facessimo una passeggiata",
+                    "exampleSentenceEn": "We had to take a walk",
+                    "form": "facessimo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Era necessario che voi faceste sport",
+                    "exampleSentenceEn": "You had to do sports",
+                    "form": "faceste",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Era necessario che loro facessero festa",
+                    "exampleSentenceEn": "They had to celebrate",
+                    "form": "facessero",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in formal and literary Italian after the same triggers as present subjunctive, but referring to past events. Rarely used in modern spoken Italian.",
+            "tenseId": "congiuntivo_imperfetto",
+            "tenseName": "Congiuntivo Imperfetto",
+            "tenseNameEn": "Imperfect Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "È necessario che io abbia fatto i compiti",
+                    "exampleSentenceEn": "I must have done my homework",
+                    "form": "abbia fatto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Voglio che tu abbia fatto la spesa",
+                    "exampleSentenceEn": "I want you to have done the shopping",
+                    "form": "abbia fatto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "È necessario che lui abbia fatto il caffè",
+                    "exampleSentenceEn": "He must have made coffee",
+                    "form": "abbia fatto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "È necessario che noi abbiamo fatto una passeggiata",
+                    "exampleSentenceEn": "We must have taken a walk",
+                    "form": "abbiamo fatto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "È necessario che voi abbiate fatto sport",
+                    "exampleSentenceEn": "You must have done sports",
+                    "form": "abbiate fatto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "È necessario che loro abbiano fatto festa",
+                    "exampleSentenceEn": "They must have celebrated",
+                    "form": "abbiano fatto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in dependent clauses after expressions of doubt, emotion, or necessity when referring to a completed action in the past.",
+            "tenseId": "congiuntivo_passato",
+            "tenseName": "Congiuntivo Passato",
+            "tenseNameEn": "Past Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Era necessario che io avessi fatto i compiti",
+                    "exampleSentenceEn": "I had to have done my homework",
+                    "form": "avessi fatto",
+                    "pronoun": "io"
+                },
+                {
+                    "exampleSentence": "Volevo che tu avessi fatto la spesa",
+                    "exampleSentenceEn": "I wanted you to have done the shopping",
+                    "form": "avessi fatto",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Era necessario che lui avesse fatto il caffè",
+                    "exampleSentenceEn": "He had to have made coffee",
+                    "form": "avesse fatto",
+                    "pronoun": "lui/lei"
+                },
+                {
+                    "exampleSentence": "Era necessario che noi avessimo fatto una passeggiata",
+                    "exampleSentenceEn": "We had to have taken a walk",
+                    "form": "avessimo fatto",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Era necessario che voi aveste fatto sport",
+                    "exampleSentenceEn": "You had to have done sports",
+                    "form": "aveste fatto",
+                    "pronoun": "voi"
+                },
+                {
+                    "exampleSentence": "Era necessario che loro avessero fatto festa",
+                    "exampleSentenceEn": "They had to have celebrated",
+                    "form": "avessero fatto",
+                    "pronoun": "loro"
+                }
+            ],
+            "description": "Used in formal and literary Italian after the same triggers as other subjunctive tenses, but referring to actions completed before another past action.",
+            "tenseId": "congiuntivo_trapassato",
+            "tenseName": "Congiuntivo Trapassato",
+            "tenseNameEn": "Pluperfect Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Fai i compiti!",
+                    "exampleSentenceEn": "Do your homework!",
+                    "form": "fai",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Facciamo una passeggiata!",
+                    "exampleSentenceEn": "Let's take a walk!",
+                    "form": "facciamo",
+                    "pronoun": "noi"
+                },
+                {
+                    "exampleSentence": "Fate sport!",
+                    "exampleSentenceEn": "Do sports!",
+                    "form": "fate",
+                    "pronoun": "voi"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (tu, noi, voi). The subject pronoun is omitted.",
+            "tenseId": "imperativo",
+            "tenseName": "Imperativo",
+            "tenseNameEn": "Imperative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Voglio fare i compiti",
+                    "exampleSentenceEn": "I want to do my homework",
+                    "form": "fare",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Devo fare la spesa",
+                    "exampleSentenceEn": "I must do the shopping",
+                    "form": "fare",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Posso fare il caffè",
+                    "exampleSentenceEn": "I can make coffee",
+                    "form": "fare",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "The base form of the verb, used after modal verbs, prepositions, and in many other constructions.",
+            "tenseId": "infinito_presente",
+            "tenseName": "Infinito Presente",
+            "tenseNameEn": "Present Infinitive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Dopo aver fatto i compiti, ho studiato",
+                    "exampleSentenceEn": "After having done my homework, I studied",
+                    "form": "aver fatto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Prima di aver fatto la spesa, ho lavorato",
+                    "exampleSentenceEn": "Before having done the shopping, I worked",
+                    "form": "aver fatto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Dopo aver fatto il caffè, ho cenato",
+                    "exampleSentenceEn": "After having made coffee, I had dinner",
+                    "form": "aver fatto",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express actions that were completed before another action. Often used after modal verbs in the past.",
+            "tenseId": "infinito_passato",
+            "tenseName": "Infinito Passato",
+            "tenseNameEn": "Past Infinitive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Una persona facente",
+                    "exampleSentenceEn": "A doing person",
+                    "form": "facente",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Il lavoro facente",
+                    "exampleSentenceEn": "The doing work",
+                    "form": "facente",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "La macchina facente",
+                    "exampleSentenceEn": "The doing machine",
+                    "form": "facente",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective or in progressive constructions. In modern Italian, it's mainly used as an adjective.",
+            "tenseId": "participio_presente",
+            "tenseName": "Participio Presente",
+            "tenseNameEn": "Present Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Ho fatto i compiti",
+                    "exampleSentenceEn": "I have done my homework",
+                    "form": "fatto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Ha fatto la spesa",
+                    "exampleSentenceEn": "She has done the shopping",
+                    "form": "fatto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Hanno fatto sport",
+                    "exampleSentenceEn": "They have done sports",
+                    "form": "fatti",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to form compound tenses and as an adjective. Must agree in gender and number with the subject.",
+            "tenseId": "participio_passato",
+            "tenseName": "Participio Passato",
+            "tenseNameEn": "Past Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Sto facendo i compiti",
+                    "exampleSentenceEn": "I am doing my homework",
+                    "form": "facendo",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Stai facendo la spesa",
+                    "exampleSentenceEn": "You are doing the shopping",
+                    "form": "facendo",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Sta facendo il caffè",
+                    "exampleSentenceEn": "He is making coffee",
+                    "form": "facendo",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express ongoing actions, often with 'stare' to form the present continuous tense.",
+            "tenseId": "gerundio_presente",
+            "tenseName": "Gerundio Presente",
+            "tenseNameEn": "Present Gerund"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Avendo fatto i compiti, ho studiato",
+                    "exampleSentenceEn": "Having done my homework, I studied",
+                    "form": "avendo fatto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Avendo fatto la spesa, ha riposato",
+                    "exampleSentenceEn": "Having done the shopping, she rested",
+                    "form": "avendo fatto",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Avendo fatto sport, hanno cenato",
+                    "exampleSentenceEn": "Having done sports, they had dinner",
+                    "form": "avendo fatto",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express actions that were completed before another action. Rarely used in modern Italian.",
+            "tenseId": "gerundio_passato",
+            "tenseName": "Gerundio Passato",
+            "tenseNameEn": "Past Gerund"
+        }
+    ]
+}

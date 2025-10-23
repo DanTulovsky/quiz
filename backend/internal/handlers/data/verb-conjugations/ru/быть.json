@@ -1,0 +1,331 @@
+{
+    "category": "essential",
+    "infinitive": "быть",
+    "infinitiveEn": "to be",
+    "language": "ru",
+    "languageName": "Russian",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я студент",
+                    "exampleSentenceEn": "I am a student",
+                    "form": "есть (archaic)",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты хороший учитель",
+                    "exampleSentenceEn": "You are a good teacher",
+                    "form": "есть (archaic)",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он русский писатель",
+                    "exampleSentenceEn": "He is a Russian writer",
+                    "form": "есть (archaic)",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы студенты университета",
+                    "exampleSentenceEn": "We are university students",
+                    "form": "есть (archaic)",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы опытные специалисты",
+                    "exampleSentenceEn": "You are experienced specialists",
+                    "form": "есть (archaic)",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они здесь каждый день",
+                    "exampleSentenceEn": "They are here every day",
+                    "form": "есть (archaic)",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "In modern Russian, the present tense of 'быть' is omitted in most contexts. The form 'есть' exists but is archaic/philosophical or used for emphasis. Standard usage omits the verb entirely.",
+            "tenseId": "present",
+            "tenseName": "Настоящее время",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я был счастлив",
+                    "exampleSentenceEn": "I was happy",
+                    "form": "был/была",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты был хорош",
+                    "exampleSentenceEn": "You were good",
+                    "form": "был/была",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он был русским",
+                    "exampleSentenceEn": "He was Russian",
+                    "form": "был",
+                    "pronoun": "он"
+                },
+                {
+                    "exampleSentence": "Она была красивой",
+                    "exampleSentenceEn": "She was beautiful",
+                    "form": "была",
+                    "pronoun": "она"
+                },
+                {
+                    "exampleSentence": "Мы были друзьями",
+                    "exampleSentenceEn": "We were friends",
+                    "form": "были",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы были здесь",
+                    "exampleSentenceEn": "You were here",
+                    "form": "были",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они были друзьями",
+                    "exampleSentenceEn": "They were friends",
+                    "form": "были",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to describe completed actions in the past. Russian past tense is formed by adding gender endings to the verb stem and doesn't require auxiliary verbs.",
+            "tenseId": "past",
+            "tenseName": "Прошедшее время",
+            "tenseNameEn": "Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я буду дома",
+                    "exampleSentenceEn": "I will be at home",
+                    "form": "буду",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты будешь хорошим",
+                    "exampleSentenceEn": "You will be good",
+                    "form": "будешь",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Она будет счастливой",
+                    "exampleSentenceEn": "She will be happy",
+                    "form": "будет",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы будем здесь",
+                    "exampleSentenceEn": "We will be here",
+                    "form": "будем",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы будете готовы",
+                    "exampleSentenceEn": "You will be ready",
+                    "form": "будете",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они будут друзьями",
+                    "exampleSentenceEn": "They will be friends",
+                    "form": "будут",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Russian future tense is formed using the auxiliary verb 'быть' (to be) in its future form plus the infinitive.",
+            "tenseId": "future",
+            "tenseName": "Будущее время",
+            "tenseNameEn": "Future"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Будь хорошим!",
+                    "exampleSentenceEn": "Be good!",
+                    "form": "будь",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Будем счастливыми!",
+                    "exampleSentenceEn": "Let's be happy!",
+                    "form": "будем",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Будьте добрыми!",
+                    "exampleSentenceEn": "Be kind!",
+                    "form": "будьте",
+                    "pronoun": "вы"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Russian imperative has different forms for singular and plural, and the subject pronoun is usually omitted.",
+            "tenseId": "imperative",
+            "tenseName": "Повелительное наклонение",
+            "tenseNameEn": "Imperative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я был бы счастлив, если бы ты пришёл",
+                    "exampleSentenceEn": "I would be happy if you came",
+                    "form": "был/была бы",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты был бы хорошим учителем",
+                    "exampleSentenceEn": "You would be a good teacher",
+                    "form": "был/была бы",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он был бы рад помочь тебе, если бы знал",
+                    "exampleSentenceEn": "He would be glad to help you if he knew",
+                    "form": "был бы",
+                    "pronoun": "он"
+                },
+                {
+                    "exampleSentence": "Она была бы здесь, если бы не опоздала на поезд",
+                    "exampleSentenceEn": "She would be here if she hadn't missed the train",
+                    "form": "была бы",
+                    "pronoun": "она"
+                },
+                {
+                    "exampleSentence": "Мы были бы там раньше, если бы не пробки",
+                    "exampleSentenceEn": "We would have been there earlier if not for the traffic",
+                    "form": "были бы",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы были бы удивлены, увидев эти изменения",
+                    "exampleSentenceEn": "You would be surprised to see these changes",
+                    "form": "были бы",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они были бы лучшими друзьями, если бы лучше понимали друг друга",
+                    "exampleSentenceEn": "They would be best friends if they understood each other better",
+                    "form": "были бы",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to express hypothetical situations, wishes, or actions that would happen under certain conditions. Formed by adding 'бы' to the past tense form.",
+            "tenseId": "conditional",
+            "tenseName": "Сослагательное наклонение",
+            "tenseNameEn": "Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "The verb 'быть' does not have a present gerund form in modern Russian, as it lacks a present tense conjugation in standard usage.",
+            "tenseId": "present_gerund",
+            "tenseName": "Деепричастие настоящего времени",
+            "tenseNameEn": "Present Gerund"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Будучи студентом, он много работал",
+                    "exampleSentenceEn": "Being a student, he worked a lot",
+                    "form": "будучи",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Бывши за границей, она узнала много нового",
+                    "exampleSentenceEn": "Having been abroad, she learned many new things",
+                    "form": "бывши",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express an action that occurred simultaneously with or before the main action. Functions as an adverb and is invariable.",
+            "tenseId": "past_gerund",
+            "tenseName": "Деепричастие прошедшего времени",
+            "tenseNameEn": "Past Gerund"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "The verb 'быть' does not have a present active participle in modern Russian.",
+            "tenseId": "present_active_participle",
+            "tenseName": "Причастие настоящего времени действительный залог",
+            "tenseNameEn": "Present Active Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Бывший президент выступил с речью",
+                    "exampleSentenceEn": "The former president gave a speech",
+                    "form": "бывший",
+                    "pronoun": "он"
+                },
+                {
+                    "exampleSentence": "Бывшая учительница навестила школу",
+                    "exampleSentenceEn": "The former teacher visited the school",
+                    "form": "бывшая",
+                    "pronoun": "она"
+                },
+                {
+                    "exampleSentence": "Бывшее здание было снесено",
+                    "exampleSentenceEn": "The former building was demolished",
+                    "form": "бывшее",
+                    "pronoun": "оно"
+                },
+                {
+                    "exampleSentence": "Бывшие коллеги встретились на конференции",
+                    "exampleSentenceEn": "Former colleagues met at the conference",
+                    "form": "бывшие",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to describe a noun that performed an action in the past. Functions as an adjective and agrees with the noun in gender, number, and case.",
+            "tenseId": "past_active_participle",
+            "tenseName": "Причастие прошедшего времени действительный залог",
+            "tenseNameEn": "Past Active Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "The verb 'быть' does not form a present passive participle.",
+            "tenseId": "present_passive_participle",
+            "tenseName": "Причастие настоящего времени страдательный залог",
+            "tenseNameEn": "Present Passive Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "The verb 'быть' does not form a past passive participle as it is intransitive.",
+            "tenseId": "past_passive_participle",
+            "tenseName": "Причастие прошедшего времени страдательный залог",
+            "tenseNameEn": "Past Passive Participle"
+        }
+    ]
+}

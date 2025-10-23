@@ -1,0 +1,607 @@
+{
+    "category": "essential",
+    "infinitive": "dire",
+    "infinitiveEn": "to say",
+    "language": "fr",
+    "languageName": "French",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Je dis la vérité",
+                    "exampleSentenceEn": "I tell the truth",
+                    "form": "dis",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu dis bonjour",
+                    "exampleSentenceEn": "You say hello",
+                    "form": "dis",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il dit merci",
+                    "exampleSentenceEn": "He says thank you",
+                    "form": "dit",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous disons au revoir",
+                    "exampleSentenceEn": "We say goodbye",
+                    "form": "disons",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous dites s'il vous plaît",
+                    "exampleSentenceEn": "You say please",
+                    "form": "dites",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils disent bonsoir",
+                    "exampleSentenceEn": "They say good evening",
+                    "form": "disent",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in French.",
+            "tenseId": "present",
+            "tenseName": "Présent",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Je disais la vérité",
+                    "exampleSentenceEn": "I was telling the truth",
+                    "form": "disais",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu disais bonjour",
+                    "exampleSentenceEn": "You were saying hello",
+                    "form": "disais",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il disait merci",
+                    "exampleSentenceEn": "He was saying thank you",
+                    "form": "disait",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous disions au revoir",
+                    "exampleSentenceEn": "We were saying goodbye",
+                    "form": "disions",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous disiez s'il vous plaît",
+                    "exampleSentenceEn": "You were saying please",
+                    "form": "disiez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils disaient bonsoir",
+                    "exampleSentenceEn": "They were saying good evening",
+                    "form": "disaient",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to describe ongoing, repeated, or habitual actions in the past. Also used for background information in storytelling.",
+            "tenseId": "imparfait",
+            "tenseName": "Imparfait",
+            "tenseNameEn": "Imperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Je dirai la vérité demain",
+                    "exampleSentenceEn": "I will tell the truth tomorrow",
+                    "form": "dirai",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu diras bonjour",
+                    "exampleSentenceEn": "You will say hello",
+                    "form": "diras",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il dira merci",
+                    "exampleSentenceEn": "He will say thank you",
+                    "form": "dira",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous dirons au revoir",
+                    "exampleSentenceEn": "We will say goodbye",
+                    "form": "dirons",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous direz s'il vous plaît",
+                    "exampleSentenceEn": "You will say please",
+                    "form": "direz",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils diront bonsoir",
+                    "exampleSentenceEn": "They will say good evening",
+                    "form": "diront",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'demain' (tomorrow) or 'la semaine prochaine' (next week).",
+            "tenseId": "futur",
+            "tenseName": "Futur Simple",
+            "tenseNameEn": "Simple Future"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'ai dit la vérité",
+                    "exampleSentenceEn": "I have told the truth",
+                    "form": "ai dit",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu as dit bonjour",
+                    "exampleSentenceEn": "You have said hello",
+                    "form": "as dit",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il a dit merci",
+                    "exampleSentenceEn": "He has said thank you",
+                    "form": "a dit",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous avons dit au revoir",
+                    "exampleSentenceEn": "We have said goodbye",
+                    "form": "avons dit",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous avez dit s'il vous plaît",
+                    "exampleSentenceEn": "You have said please",
+                    "form": "avez dit",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils ont dit bonsoir",
+                    "exampleSentenceEn": "They have said good evening",
+                    "form": "ont dit",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken French.",
+            "tenseId": "passe_compose",
+            "tenseName": "Passé Composé",
+            "tenseNameEn": "Present Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Je dis la vérité",
+                    "exampleSentenceEn": "I told the truth",
+                    "form": "dis",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu dis bonjour",
+                    "exampleSentenceEn": "You told hello",
+                    "form": "dis",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il dit merci",
+                    "exampleSentenceEn": "He told thank you",
+                    "form": "dit",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous dîmes au revoir",
+                    "exampleSentenceEn": "We told goodbye",
+                    "form": "dîmes",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous dîtes s'il vous plaît",
+                    "exampleSentenceEn": "You told please",
+                    "form": "dîtes",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils dirent bonsoir",
+                    "exampleSentenceEn": "They told good evening",
+                    "form": "dirent",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used primarily in formal and literary French to narrate completed past events. Rarely used in spoken French.",
+            "tenseId": "passe_simple",
+            "tenseName": "Passé Simple",
+            "tenseNameEn": "Simple Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'avais dit la vérité avant qu'il pleuve",
+                    "exampleSentenceEn": "I had told the truth before it rained",
+                    "form": "avais dit",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu avais dit bonjour avant que je vienne",
+                    "exampleSentenceEn": "You had said hello before I came",
+                    "form": "avais dit",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il avait dit merci avant qu'il pleuve",
+                    "exampleSentenceEn": "He had said thank you before it rained",
+                    "form": "avait dit",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous avions dit au revoir avant qu'il fasse nuit",
+                    "exampleSentenceEn": "We had said goodbye before it got dark",
+                    "form": "avions dit",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous aviez dit s'il vous plaît avant la fermeture",
+                    "exampleSentenceEn": "You had said please before closing",
+                    "form": "aviez dit",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils avaient dit bonsoir avant le spectacle",
+                    "exampleSentenceEn": "They had said good evening before the show",
+                    "form": "avaient dit",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+            "tenseId": "plus_que_parfait",
+            "tenseName": "Plus-que-parfait",
+            "tenseNameEn": "Pluperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'aurai dit la vérité d'ici demain",
+                    "exampleSentenceEn": "I will have told the truth by tomorrow",
+                    "form": "aurai dit",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu auras dit bonjour",
+                    "exampleSentenceEn": "You will have said hello",
+                    "form": "auras dit",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il aura dit merci",
+                    "exampleSentenceEn": "He will have said thank you",
+                    "form": "aura dit",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous aurons dit au revoir",
+                    "exampleSentenceEn": "We will have said goodbye",
+                    "form": "aurons dit",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous aurez dit s'il vous plaît",
+                    "exampleSentenceEn": "You will have said please",
+                    "form": "aurez dit",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils auront dit bonsoir",
+                    "exampleSentenceEn": "They will have said good evening",
+                    "form": "auront dit",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express actions that will be completed before another future action. Often used with time expressions like 'd'ici demain' (by tomorrow).",
+            "tenseId": "futur_anterieur",
+            "tenseName": "Futur Antérieur",
+            "tenseNameEn": "Future Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Je dirais la vérité si j'avais le temps",
+                    "exampleSentenceEn": "I would tell the truth if I had time",
+                    "form": "dirais",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu dirais bonjour",
+                    "exampleSentenceEn": "You would say hello",
+                    "form": "dirais",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il dirait merci",
+                    "exampleSentenceEn": "He would say thank you",
+                    "form": "dirait",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous dirions au revoir",
+                    "exampleSentenceEn": "We would say goodbye",
+                    "form": "dirions",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous diriez s'il vous plaît",
+                    "exampleSentenceEn": "You would say please",
+                    "form": "diriez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils diraient bonsoir",
+                    "exampleSentenceEn": "They would say good evening",
+                    "form": "diraient",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'si' (if) clauses.",
+            "tenseId": "conditionnel_present",
+            "tenseName": "Conditionnel Présent",
+            "tenseNameEn": "Present Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'aurais dit la vérité si j'avais pu",
+                    "exampleSentenceEn": "I would have told the truth if I could have",
+                    "form": "aurais dit",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu aurais dit bonjour",
+                    "exampleSentenceEn": "You would have said hello",
+                    "form": "aurais dit",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il aurait dit merci",
+                    "exampleSentenceEn": "He would have said thank you",
+                    "form": "aurait dit",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous aurions dit au revoir",
+                    "exampleSentenceEn": "We would have said goodbye",
+                    "form": "aurions dit",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous auriez dit s'il vous plaît",
+                    "exampleSentenceEn": "You would have said please",
+                    "form": "auriez dit",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils auraient dit bonsoir",
+                    "exampleSentenceEn": "They would have said good evening",
+                    "form": "auraient dit",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express hypothetical past actions or regrets about things that didn't happen. Often used with 'si' (if) clauses referring to the past.",
+            "tenseId": "conditionnel_passe",
+            "tenseName": "Conditionnel Passé",
+            "tenseNameEn": "Past Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Il faut que je dise la vérité",
+                    "exampleSentenceEn": "I must tell the truth",
+                    "form": "dise",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Je veux que tu dises bonjour",
+                    "exampleSentenceEn": "I want you to say hello",
+                    "form": "dises",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il faut qu'il dise merci",
+                    "exampleSentenceEn": "He must say thank you",
+                    "form": "dise",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Il faut que nous disions au revoir",
+                    "exampleSentenceEn": "We must say goodbye",
+                    "form": "disions",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Il faut que vous disiez s'il vous plaît",
+                    "exampleSentenceEn": "You must say please",
+                    "form": "disiez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Il faut qu'ils disent bonsoir",
+                    "exampleSentenceEn": "They must say good evening",
+                    "form": "disent",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used in dependent clauses after certain expressions of opinion, doubt, emotion, or necessity. Often used after 'il faut que', 'je veux que', etc.",
+            "tenseId": "subjonctif_present",
+            "tenseName": "Subjonctif Présent",
+            "tenseNameEn": "Present Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Dis bonjour!",
+                    "exampleSentenceEn": "Say hello!",
+                    "form": "dis",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Disons au revoir!",
+                    "exampleSentenceEn": "Let's say goodbye!",
+                    "form": "disons",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Dites s'il vous plaît!",
+                    "exampleSentenceEn": "Say please!",
+                    "form": "dites",
+                    "pronoun": "vous"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (tu, nous, vous). The subject pronoun is omitted.",
+            "tenseId": "imperatif",
+            "tenseName": "Impératif",
+            "tenseNameEn": "Imperative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Il fallait que je disse la vérité",
+                    "exampleSentenceEn": "I had to tell the truth",
+                    "form": "disse",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Je voulais que tu disses bonjour",
+                    "exampleSentenceEn": "I wanted you to say hello",
+                    "form": "disses",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il fallait qu'il dît merci",
+                    "exampleSentenceEn": "He had to say thank you",
+                    "form": "dît",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Il fallait que nous dissions au revoir",
+                    "exampleSentenceEn": "We had to say goodbye",
+                    "form": "dissions",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Il fallait que vous dissiez s'il vous plaît",
+                    "exampleSentenceEn": "You had to say please",
+                    "form": "dissiez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Il fallait qu'ils dissent bonsoir",
+                    "exampleSentenceEn": "They had to say good evening",
+                    "form": "dissent",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used in formal and literary French after the same triggers as present subjunctive, but referring to past events. Rarely used in modern spoken French.",
+            "tenseId": "subjonctif_imparfait",
+            "tenseName": "Subjonctif Imparfait",
+            "tenseNameEn": "Imperfect Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Il faut que j'aie dit la vérité",
+                    "exampleSentenceEn": "I must have told the truth",
+                    "form": "aie dit",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Je veux que tu aies dit bonjour",
+                    "exampleSentenceEn": "I want you to have said hello",
+                    "form": "aies dit",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il faut qu'il ait dit merci",
+                    "exampleSentenceEn": "He must have said thank you",
+                    "form": "ait dit",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Il faut que nous ayons dit au revoir",
+                    "exampleSentenceEn": "We must have said goodbye",
+                    "form": "ayons dit",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Il faut que vous ayez dit s'il vous plaît",
+                    "exampleSentenceEn": "You must have said please",
+                    "form": "ayez dit",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Il faut qu'ils aient dit bonsoir",
+                    "exampleSentenceEn": "They must have said good evening",
+                    "form": "aient dit",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used in dependent clauses after expressions of doubt, emotion, or necessity when referring to a completed action in the past.",
+            "tenseId": "subjonctif_passe",
+            "tenseName": "Subjonctif Passé",
+            "tenseNameEn": "Past Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Dès que j'eus dit la vérité, il pleuvit",
+                    "exampleSentenceEn": "As soon as I had told the truth, it rained",
+                    "form": "eus dit",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Dès que tu eus dit bonjour, je vins",
+                    "exampleSentenceEn": "As soon as you had said hello, I came",
+                    "form": "eus dit",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Dès qu'il eut dit merci, nous arrivâmes",
+                    "exampleSentenceEn": "As soon as he had said thank you, we arrived",
+                    "form": "eut dit",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Dès que nous eûmes dit au revoir, il fit nuit",
+                    "exampleSentenceEn": "As soon as we had said goodbye, it got dark",
+                    "form": "eûmes dit",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Dès que vous eûtes dit s'il vous plaît, la boutique ferma",
+                    "exampleSentenceEn": "As soon as you had said please, the store closed",
+                    "form": "eûtes dit",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Dès qu'ils eurent dit bonsoir, le spectacle commença",
+                    "exampleSentenceEn": "As soon as they had said good evening, the show began",
+                    "form": "eurent dit",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used in formal and literary French to express an action that was completed immediately before another past action. Rarely used in modern French.",
+            "tenseId": "passe_anterieur",
+            "tenseName": "Passé Antérieur",
+            "tenseNameEn": "Past Anterior"
+        }
+    ]
+}

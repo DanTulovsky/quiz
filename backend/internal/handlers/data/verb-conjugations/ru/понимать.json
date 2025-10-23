@@ -1,0 +1,409 @@
+{
+    "category": "essential",
+    "infinitive": "понимать",
+    "infinitiveEn": "to understand",
+    "language": "ru",
+    "languageName": "Russian",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я понимаю вопрос",
+                    "exampleSentenceEn": "I understand the question",
+                    "form": "понимаю",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты понимаешь проблему",
+                    "exampleSentenceEn": "You understand the problem",
+                    "form": "понимаешь",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он понимает ситуацию",
+                    "exampleSentenceEn": "He understands the situation",
+                    "form": "понимает",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы понимаем задачу",
+                    "exampleSentenceEn": "We understand the task",
+                    "form": "понимаем",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы понимаете урок",
+                    "exampleSentenceEn": "You understand the lesson",
+                    "form": "понимаете",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они понимают правило",
+                    "exampleSentenceEn": "They understand the rule",
+                    "form": "понимают",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in Russian.",
+            "tenseId": "present",
+            "tenseName": "Настоящее время",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я понимал вопрос",
+                    "exampleSentenceEn": "I understood the question",
+                    "form": "понимал",
+                    "pronoun": "я (m)"
+                },
+                {
+                    "exampleSentence": "Я понимала вопрос",
+                    "exampleSentenceEn": "I understood the question",
+                    "form": "понимала",
+                    "pronoun": "я (f)"
+                },
+                {
+                    "exampleSentence": "Ты понимал проблему",
+                    "exampleSentenceEn": "You understood the problem",
+                    "form": "понимал",
+                    "pronoun": "ты (m)"
+                },
+                {
+                    "exampleSentence": "Ты понимала проблему",
+                    "exampleSentenceEn": "You understood the problem",
+                    "form": "понимала",
+                    "pronoun": "ты (f)"
+                },
+                {
+                    "exampleSentence": "Он понимал ситуацию",
+                    "exampleSentenceEn": "He understood the situation",
+                    "form": "понимал",
+                    "pronoun": "он"
+                },
+                {
+                    "exampleSentence": "Она понимала ситуацию",
+                    "exampleSentenceEn": "She understood the situation",
+                    "form": "понимала",
+                    "pronoun": "она"
+                },
+                {
+                    "exampleSentence": "Оно понимало ситуацию",
+                    "exampleSentenceEn": "It understood the situation",
+                    "form": "понимало",
+                    "pronoun": "оно"
+                },
+                {
+                    "exampleSentence": "Мы понимали задачу",
+                    "exampleSentenceEn": "We understood the task",
+                    "form": "понимали",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы понимали урок",
+                    "exampleSentenceEn": "You understood the lesson",
+                    "form": "понимали",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они понимали правило",
+                    "exampleSentenceEn": "They understood the rule",
+                    "form": "понимали",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to describe completed actions in the past. The form changes based on gender and number.",
+            "tenseId": "past",
+            "tenseName": "Прошедшее время",
+            "tenseNameEn": "Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я буду понимать вопрос завтра",
+                    "exampleSentenceEn": "I will understand the question tomorrow",
+                    "form": "буду понимать",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты будешь понимать проблему",
+                    "exampleSentenceEn": "You will understand the problem",
+                    "form": "будешь понимать",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он будет понимать ситуацию",
+                    "exampleSentenceEn": "He will understand the situation",
+                    "form": "будет понимать",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы будем понимать задачу",
+                    "exampleSentenceEn": "We will understand the task",
+                    "form": "будем понимать",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы будете понимать урок",
+                    "exampleSentenceEn": "You will understand the lesson",
+                    "form": "будете понимать",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они будут понимать правило",
+                    "exampleSentenceEn": "They will understand the rule",
+                    "form": "будут понимать",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'завтра' (tomorrow).",
+            "tenseId": "future",
+            "tenseName": "Будущее время",
+            "tenseNameEn": "Future"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (ты, вы).",
+            "tenseId": "imperative",
+            "tenseName": "Повелительное наклонение",
+            "tenseNameEn": "Imperative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я понимал бы вопрос, если бы имел время",
+                    "exampleSentenceEn": "I would understand the question if I had time",
+                    "form": "понимал бы",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты понимал бы проблему",
+                    "exampleSentenceEn": "You would understand the problem",
+                    "form": "понимал бы",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он понимал бы ситуацию",
+                    "exampleSentenceEn": "He would understand the situation",
+                    "form": "понимал бы",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы понимали бы задачу",
+                    "exampleSentenceEn": "We would understand the task",
+                    "form": "понимали бы",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы понимали бы урок",
+                    "exampleSentenceEn": "You would understand the lesson",
+                    "form": "понимали бы",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они понимали бы правило",
+                    "exampleSentenceEn": "They would understand the rule",
+                    "form": "понимали бы",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to express hypothetical situations or actions that would happen under certain conditions. Often used with 'если' (if) clauses.",
+            "tenseId": "conditional",
+            "tenseName": "Условное наклонение",
+            "tenseNameEn": "Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Понимающий человек",
+                    "exampleSentenceEn": "An understanding person",
+                    "form": "понимающий",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Понимающая женщина",
+                    "exampleSentenceEn": "An understanding woman",
+                    "form": "понимающая",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Понимающее животное",
+                    "exampleSentenceEn": "An understanding animal",
+                    "form": "понимающее",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Понимающие люди",
+                    "exampleSentenceEn": "Understanding people",
+                    "form": "понимающие",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe someone who is currently performing the action. Must agree in gender, number, and case.",
+            "tenseId": "present_active_participle",
+            "tenseName": "Причастие настоящего времени",
+            "tenseNameEn": "Present Active Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Понимавший человек",
+                    "exampleSentenceEn": "A person who understood",
+                    "form": "понимавший",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Понимавшая женщина",
+                    "exampleSentenceEn": "A woman who understood",
+                    "form": "понимавшая",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Понимавшее животное",
+                    "exampleSentenceEn": "An animal that understood",
+                    "form": "понимавшее",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Понимавшие люди",
+                    "exampleSentenceEn": "People who understood",
+                    "form": "понимавшие",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe someone who performed the action in the past. Must agree in gender, number, and case.",
+            "tenseId": "past_active_participle",
+            "tenseName": "Причастие прошедшего времени",
+            "tenseNameEn": "Past Active Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe something that is currently being acted upon. Must agree in gender, number, and case.",
+            "tenseId": "present_passive_participle",
+            "tenseName": "Страдательное причастие настоящего времени",
+            "tenseNameEn": "Present Passive Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe something that was acted upon in the past. Must agree in gender, number, and case.",
+            "tenseId": "past_passive_participle",
+            "tenseName": "Страдательное причастие прошедшего времени",
+            "tenseNameEn": "Past Passive Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Понимая вопрос, я думаю",
+                    "exampleSentenceEn": "While understanding the question, I think",
+                    "form": "понимая",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Понимая проблему, он пел",
+                    "exampleSentenceEn": "While understanding the problem, he sang",
+                    "form": "понимая",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Понимая ситуацию, мы разговаривали",
+                    "exampleSentenceEn": "While understanding the situation, we talked",
+                    "form": "понимая",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express an action that happens simultaneously with the main action. Often used to show manner or condition.",
+            "tenseId": "present_gerund",
+            "tenseName": "Деепричастие настоящего времени",
+            "tenseNameEn": "Present Gerund"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express an action that was completed before the main action. Often used to show sequence of events.",
+            "tenseId": "past_gerund",
+            "tenseName": "Деепричастие прошедшего времени",
+            "tenseNameEn": "Past Gerund"
+        }
+    ]
+}

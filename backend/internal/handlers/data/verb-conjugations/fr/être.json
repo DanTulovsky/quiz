@@ -1,0 +1,651 @@
+{
+    "category": "essential",
+    "infinitive": "être",
+    "infinitiveEn": "to be",
+    "language": "fr",
+    "languageName": "French",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Je suis heureux",
+                    "exampleSentenceEn": "I am happy",
+                    "form": "suis",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu es bon",
+                    "exampleSentenceEn": "You are good",
+                    "form": "es",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il est français",
+                    "exampleSentenceEn": "He is French",
+                    "form": "est",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous sommes amis",
+                    "exampleSentenceEn": "We are friends",
+                    "form": "sommes",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous êtes étudiants",
+                    "exampleSentenceEn": "You are students",
+                    "form": "êtes",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils sont ici",
+                    "exampleSentenceEn": "They are here",
+                    "form": "sont",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in French.",
+            "tenseId": "present",
+            "tenseName": "Présent",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'étais fatigué",
+                    "exampleSentenceEn": "I was tired",
+                    "form": "étais",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu étais jeune",
+                    "exampleSentenceEn": "You were young",
+                    "form": "étais",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Elle était belle",
+                    "exampleSentenceEn": "She was beautiful",
+                    "form": "était",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous étions contents",
+                    "exampleSentenceEn": "We were happy",
+                    "form": "étions",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous étiez là",
+                    "exampleSentenceEn": "You were there",
+                    "form": "étiez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils étaient amis",
+                    "exampleSentenceEn": "They were friends",
+                    "form": "étaient",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to describe ongoing, repeated, or habitual actions in the past. Also used for descriptions, states of being, and background information in storytelling.",
+            "tenseId": "imparfait",
+            "tenseName": "Imparfait",
+            "tenseNameEn": "Imperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Je serai à la maison",
+                    "exampleSentenceEn": "I will be at home",
+                    "form": "serai",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu seras bon",
+                    "exampleSentenceEn": "You will be good",
+                    "form": "seras",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Elle sera heureuse",
+                    "exampleSentenceEn": "She will be happy",
+                    "form": "sera",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous serons ici",
+                    "exampleSentenceEn": "We will be here",
+                    "form": "serons",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous serez prêts",
+                    "exampleSentenceEn": "You will be ready",
+                    "form": "serez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils seront amis",
+                    "exampleSentenceEn": "They will be friends",
+                    "form": "seront",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'demain' (tomorrow) or 'la semaine prochaine' (next week).",
+            "tenseId": "futur",
+            "tenseName": "Futur Simple",
+            "tenseNameEn": "Simple Future"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'ai été à Paris",
+                    "exampleSentenceEn": "I have been to Paris",
+                    "form": "ai été",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu as été bon",
+                    "exampleSentenceEn": "You have been good",
+                    "form": "as été",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Elle a été gentille",
+                    "exampleSentenceEn": "She has been kind",
+                    "form": "a été",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous avons été heureux",
+                    "exampleSentenceEn": "We have been happy",
+                    "form": "avons été",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous avez été là",
+                    "exampleSentenceEn": "You have been there",
+                    "form": "avez été",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils ont été amis",
+                    "exampleSentenceEn": "They have been friends",
+                    "form": "ont été",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken French.",
+            "tenseId": "passe_compose",
+            "tenseName": "Passé Composé",
+            "tenseNameEn": "Present Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Je fus étonné quand je vis le résultat",
+                    "exampleSentenceEn": "I was astonished when I saw the result",
+                    "form": "fus",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu fus le premier à arriver à la réunion importante",
+                    "exampleSentenceEn": "You were the first to arrive at the important meeting",
+                    "form": "fus",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Elle fut une grande artiste pendant toute sa vie",
+                    "exampleSentenceEn": "She was a great artist throughout her life",
+                    "form": "fut",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous fûmes témoins d'un événement historique",
+                    "exampleSentenceEn": "We were witnesses to a historical event",
+                    "form": "fûmes",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous fûtes très courageux pendant la guerre",
+                    "exampleSentenceEn": "You were very brave during the war",
+                    "form": "fûtes",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils furent les meilleurs amis jusqu'à la fin",
+                    "exampleSentenceEn": "They were the best friends until the end",
+                    "form": "furent",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used primarily in formal and literary French to narrate completed past events. Common in written literature, historical texts, and formal storytelling, but rarely used in everyday speech.",
+            "tenseId": "passe_simple",
+            "tenseName": "Passé Simple",
+            "tenseNameEn": "Simple Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'avais été malade avant de partir en voyage",
+                    "exampleSentenceEn": "I had been sick before leaving on the trip",
+                    "form": "avais été",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu avais été très nerveux avant l'examen final",
+                    "exampleSentenceEn": "You had been very nervous before the final exam",
+                    "form": "avais été",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Elle avait été professeur pendant vingt ans avant de prendre sa retraite",
+                    "exampleSentenceEn": "She had been a teacher for twenty years before retiring",
+                    "form": "avait été",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous avions été au musée avant d'aller au restaurant",
+                    "exampleSentenceEn": "We had been to the museum before going to the restaurant",
+                    "form": "avions été",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous aviez été prévenus du danger qui nous attendait",
+                    "exampleSentenceEn": "You had been warned about the danger that awaited us",
+                    "form": "aviez été",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils avaient été de bons amis jusqu'à cette dispute",
+                    "exampleSentenceEn": "They had been good friends until that argument",
+                    "form": "avaient été",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express actions that were completed before another past action. Essential for establishing the sequence of past events and often used with 'avant' or 'après'.",
+            "tenseId": "plus_que_parfait",
+            "tenseName": "Plus-que-parfait",
+            "tenseNameEn": "Pluperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'aurai été partout dans le monde quand j'aurai cinquante ans",
+                    "exampleSentenceEn": "I will have been everywhere in the world when I'm fifty",
+                    "form": "aurai été",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu auras certainement été fatigué après ce long voyage",
+                    "exampleSentenceEn": "You will certainly have been tired after this long journey",
+                    "form": "auras été",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Elle aura été mariée pendant vingt ans l'année prochaine",
+                    "exampleSentenceEn": "She will have been married for twenty years next year",
+                    "form": "aura été",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous aurons été là-bas avant que tu arrives",
+                    "exampleSentenceEn": "We will have been there before you arrive",
+                    "form": "aurons été",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous aurez été prévenus des conséquences avant de prendre votre décision",
+                    "exampleSentenceEn": "You will have been warned of the consequences before making your decision",
+                    "form": "aurez été",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils auront été en réunion toute la journée quand nous arriverons",
+                    "exampleSentenceEn": "They will have been in a meeting all day when we arrive",
+                    "form": "auront été",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express actions that will be completed before another future action or before a specific time in the future. Often used with time expressions like 'quand' or 'dès que'.",
+            "tenseId": "futur_anterieur",
+            "tenseName": "Futur Antérieur",
+            "tenseNameEn": "Future Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Je serais heureux",
+                    "exampleSentenceEn": "I would be happy",
+                    "form": "serais",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu serais bon",
+                    "exampleSentenceEn": "You would be good",
+                    "form": "serais",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Elle serait gentille",
+                    "exampleSentenceEn": "She would be kind",
+                    "form": "serait",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous serions ici",
+                    "exampleSentenceEn": "We would be here",
+                    "form": "serions",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous seriez prêts",
+                    "exampleSentenceEn": "You would be ready",
+                    "form": "seriez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils seraient amis",
+                    "exampleSentenceEn": "They would be friends",
+                    "form": "seraient",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'si' (if) clauses.",
+            "tenseId": "conditionnel_present",
+            "tenseName": "Conditionnel Présent",
+            "tenseNameEn": "Present Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'aurais été plus heureux si tu étais venu avec moi",
+                    "exampleSentenceEn": "I would have been happier if you had come with me",
+                    "form": "aurais été",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu aurais été fier de voir son succès",
+                    "exampleSentenceEn": "You would have been proud to see his success",
+                    "form": "aurais été",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Elle aurait été une excellente directrice si elle avait accepté le poste",
+                    "exampleSentenceEn": "She would have been an excellent director if she had accepted the position",
+                    "form": "aurait été",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous aurions été là-bas plus tôt si le train n'avait pas eu de retard",
+                    "exampleSentenceEn": "We would have been there earlier if the train hadn't been delayed",
+                    "form": "aurions été",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous auriez été surpris de voir les changements",
+                    "exampleSentenceEn": "You would have been surprised to see the changes",
+                    "form": "auriez été",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils auraient été de meilleurs amis s'ils s'étaient mieux compris",
+                    "exampleSentenceEn": "They would have been better friends if they had understood each other better",
+                    "form": "auraient été",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express hypothetical past actions or regrets about things that didn't happen. Often used to describe what would have happened under different circumstances.",
+            "tenseId": "conditionnel_passe",
+            "tenseName": "Conditionnel Passé",
+            "tenseNameEn": "Past Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Il faut que je sois heureux",
+                    "exampleSentenceEn": "I need to be happy",
+                    "form": "sois",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Il faut que tu sois bon",
+                    "exampleSentenceEn": "You need to be good",
+                    "form": "sois",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il faut qu'elle soit gentille",
+                    "exampleSentenceEn": "She needs to be kind",
+                    "form": "soit",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Il faut que nous soyons ici",
+                    "exampleSentenceEn": "We need to be here",
+                    "form": "soyons",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Il faut que vous soyez prêts",
+                    "exampleSentenceEn": "You need to be ready",
+                    "form": "soyez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Il faut qu'ils soient amis",
+                    "exampleSentenceEn": "They need to be friends",
+                    "form": "soient",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used in dependent clauses after certain expressions of opinion, doubt, emotion, or necessity. Common triggers include 'il faut que' (it's necessary that) and 'je veux que' (I want that).",
+            "tenseId": "subjonctif_present",
+            "tenseName": "Subjonctif Présent",
+            "tenseNameEn": "Present Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Sois bon!",
+                    "exampleSentenceEn": "Be good!",
+                    "form": "sois",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Soyons heureux!",
+                    "exampleSentenceEn": "Let's be happy!",
+                    "form": "soyons",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Soyez gentils!",
+                    "exampleSentenceEn": "Be kind!",
+                    "form": "soyez",
+                    "pronoun": "vous"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (tu, vous) and first person plural (nous). The subject pronoun is usually omitted.",
+            "tenseId": "imperatif",
+            "tenseName": "Impératif",
+            "tenseNameEn": "Imperative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Il fallait que je fusse présent à la réunion",
+                    "exampleSentenceEn": "It was necessary that I be present at the meeting",
+                    "form": "fusse",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Il voulait que tu fusses plus patient",
+                    "exampleSentenceEn": "He wanted you to be more patient",
+                    "form": "fusses",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Bien qu'elle fût malade, elle vint travailler",
+                    "exampleSentenceEn": "Although she was sick, she came to work",
+                    "form": "fût",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Il était important que nous fussions à l'heure",
+                    "exampleSentenceEn": "It was important that we be on time",
+                    "form": "fussions",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Je craignais que vous fussiez perdus",
+                    "exampleSentenceEn": "I feared that you were lost",
+                    "form": "fussiez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Il demanda qu'ils fussent traités avec respect",
+                    "exampleSentenceEn": "He asked that they be treated with respect",
+                    "form": "fussent",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used in formal and literary French after the same triggers as present subjunctive, but when the main clause is in a past tense. Rarely used in modern spoken French.",
+            "tenseId": "subjonctif_imparfait",
+            "tenseName": "Subjonctif Imparfait",
+            "tenseNameEn": "Imperfect Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Je suis content que j'aie été accepté dans cette université",
+                    "exampleSentenceEn": "I'm happy that I was accepted into this university",
+                    "form": "aie été",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Il est surprenant que tu aies été choisi pour ce rôle",
+                    "exampleSentenceEn": "It's surprising that you were chosen for this role",
+                    "form": "aies été",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "C'est dommage qu'elle ait été absente hier",
+                    "exampleSentenceEn": "It's a pity that she was absent yesterday",
+                    "form": "ait été",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Bien que nous ayons été en retard, ils nous ont attendus",
+                    "exampleSentenceEn": "Although we were late, they waited for us",
+                    "form": "ayons été",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Je doute que vous ayez été complètement honnêtes",
+                    "exampleSentenceEn": "I doubt that you were completely honest",
+                    "form": "ayez été",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Il est possible qu'ils aient été mal informés",
+                    "exampleSentenceEn": "It's possible that they were misinformed",
+                    "form": "aient été",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used in dependent clauses after expressions of doubt, emotion, or necessity when referring to a completed action in the past. Formed with the present subjunctive of the auxiliary verb plus the past participle.",
+            "tenseId": "subjonctif_passe",
+            "tenseName": "Subjonctif Passé",
+            "tenseNameEn": "Past Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Dès que j'eus été informé, je partis immédiatement",
+                    "exampleSentenceEn": "As soon as I had been informed, I left immediately",
+                    "form": "eus été",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Quand tu eus été présenté à tous, la réunion commença",
+                    "exampleSentenceEn": "When you had been introduced to everyone, the meeting began",
+                    "form": "eus été",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Lorsqu'elle eut été élue présidente, elle prononça un discours",
+                    "exampleSentenceEn": "When she had been elected president, she gave a speech",
+                    "form": "eut été",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Après que nous eûmes été accueillis, on nous servit le dîner",
+                    "exampleSentenceEn": "After we had been welcomed, dinner was served to us",
+                    "form": "eûmes été",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Dès que vous eûtes été installés, le spectacle débuta",
+                    "exampleSentenceEn": "As soon as you had been seated, the show began",
+                    "form": "eûtes été",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Quand ils eurent été réunis, le chef prit la parole",
+                    "exampleSentenceEn": "When they had been gathered, the chief spoke",
+                    "form": "eurent été",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used in formal and literary French to express an action that was completed immediately before another past action. Typically follows time expressions like 'quand', 'lorsque', 'après que', 'dès que'.",
+            "tenseId": "passe_anterieur",
+            "tenseName": "Passé Antérieur",
+            "tenseNameEn": "Past Anterior"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Je fus surpris par cette nouvelle",
+                    "exampleSentenceEn": "I was surprised by this news",
+                    "form": "fus",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu fus le premier à arriver",
+                    "exampleSentenceEn": "You were the first to arrive",
+                    "form": "fus",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Elle fut élue présidente de l'association",
+                    "exampleSentenceEn": "She was elected president of the association",
+                    "form": "fut",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous fûmes très impressionnés par sa performance",
+                    "exampleSentenceEn": "We were very impressed by his performance",
+                    "form": "fûmes",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous fûtes choisis pour représenter l'équipe",
+                    "exampleSentenceEn": "You were chosen to represent the team",
+                    "form": "fûtes",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils furent reçus avec beaucoup d'honneur",
+                    "exampleSentenceEn": "They were received with great honor",
+                    "form": "furent",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used primarily in literary French and formal writing to narrate completed actions in the past. Rarely used in spoken French but essential for reading literature and formal documents.",
+            "tenseId": "passe_simple",
+            "tenseName": "Passé Simple",
+            "tenseNameEn": "Simple Past"
+        }
+    ]
+}

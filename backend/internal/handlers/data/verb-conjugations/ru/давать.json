@@ -1,0 +1,409 @@
+{
+    "category": "essential",
+    "infinitive": "давать",
+    "infinitiveEn": "to give",
+    "language": "ru",
+    "languageName": "Russian",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я даю подарок",
+                    "exampleSentenceEn": "I give a gift",
+                    "form": "даю",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты даёшь совет",
+                    "exampleSentenceEn": "You give advice",
+                    "form": "даёшь",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он даёт деньги",
+                    "exampleSentenceEn": "He gives money",
+                    "form": "даёт",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы даём урок",
+                    "exampleSentenceEn": "We give a lesson",
+                    "form": "даём",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы даёте помощь",
+                    "exampleSentenceEn": "You give help",
+                    "form": "даёте",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они дают обещание",
+                    "exampleSentenceEn": "They give a promise",
+                    "form": "дают",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in Russian.",
+            "tenseId": "present",
+            "tenseName": "Настоящее время",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я давал подарок",
+                    "exampleSentenceEn": "I gave a gift",
+                    "form": "давал",
+                    "pronoun": "я (m)"
+                },
+                {
+                    "exampleSentence": "Я давала подарок",
+                    "exampleSentenceEn": "I gave a gift",
+                    "form": "давала",
+                    "pronoun": "я (f)"
+                },
+                {
+                    "exampleSentence": "Ты давал совет",
+                    "exampleSentenceEn": "You gave advice",
+                    "form": "давал",
+                    "pronoun": "ты (m)"
+                },
+                {
+                    "exampleSentence": "Ты давала совет",
+                    "exampleSentenceEn": "You gave advice",
+                    "form": "давала",
+                    "pronoun": "ты (f)"
+                },
+                {
+                    "exampleSentence": "Он давал деньги",
+                    "exampleSentenceEn": "He gave money",
+                    "form": "давал",
+                    "pronoun": "он"
+                },
+                {
+                    "exampleSentence": "Она давала деньги",
+                    "exampleSentenceEn": "She gave money",
+                    "form": "давала",
+                    "pronoun": "она"
+                },
+                {
+                    "exampleSentence": "Оно давало деньги",
+                    "exampleSentenceEn": "It gave money",
+                    "form": "давало",
+                    "pronoun": "оно"
+                },
+                {
+                    "exampleSentence": "Мы давали урок",
+                    "exampleSentenceEn": "We gave a lesson",
+                    "form": "давали",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы давали помощь",
+                    "exampleSentenceEn": "You gave help",
+                    "form": "давали",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они давали обещание",
+                    "exampleSentenceEn": "They gave a promise",
+                    "form": "давали",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to describe completed actions in the past. The form changes based on gender and number.",
+            "tenseId": "past",
+            "tenseName": "Прошедшее время",
+            "tenseNameEn": "Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я буду давать подарок завтра",
+                    "exampleSentenceEn": "I will give a gift tomorrow",
+                    "form": "буду давать",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты будешь давать совет",
+                    "exampleSentenceEn": "You will give advice",
+                    "form": "будешь давать",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он будет давать деньги",
+                    "exampleSentenceEn": "He will give money",
+                    "form": "будет давать",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы будем давать урок",
+                    "exampleSentenceEn": "We will give a lesson",
+                    "form": "будем давать",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы будете давать помощь",
+                    "exampleSentenceEn": "You will give help",
+                    "form": "будете давать",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они будут давать обещание",
+                    "exampleSentenceEn": "They will give a promise",
+                    "form": "будут давать",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'завтра' (tomorrow).",
+            "tenseId": "future",
+            "tenseName": "Будущее время",
+            "tenseNameEn": "Future"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Давай подарок!",
+                    "exampleSentenceEn": "Give the gift!",
+                    "form": "давай",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Давайте совет!",
+                    "exampleSentenceEn": "Give advice!",
+                    "form": "давайте",
+                    "pronoun": "вы"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (ты, вы).",
+            "tenseId": "imperative",
+            "tenseName": "Повелительное наклонение",
+            "tenseNameEn": "Imperative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я давал бы подарок, если бы имел время",
+                    "exampleSentenceEn": "I would give a gift if I had time",
+                    "form": "давал бы",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты давал бы совет",
+                    "exampleSentenceEn": "You would give advice",
+                    "form": "давал бы",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он давал бы деньги",
+                    "exampleSentenceEn": "He would give money",
+                    "form": "давал бы",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы давали бы урок",
+                    "exampleSentenceEn": "We would give a lesson",
+                    "form": "давали бы",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы давали бы помощь",
+                    "exampleSentenceEn": "You would give help",
+                    "form": "давали бы",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они давали бы обещание",
+                    "exampleSentenceEn": "They would give a promise",
+                    "form": "давали бы",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to express hypothetical situations or actions that would happen under certain conditions. Often used with 'если' (if) clauses.",
+            "tenseId": "conditional",
+            "tenseName": "Условное наклонение",
+            "tenseNameEn": "Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Дающий человек",
+                    "exampleSentenceEn": "A giving person",
+                    "form": "дающий",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Дающая женщина",
+                    "exampleSentenceEn": "A giving woman",
+                    "form": "дающая",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Дающее животное",
+                    "exampleSentenceEn": "A giving animal",
+                    "form": "дающее",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Дающие люди",
+                    "exampleSentenceEn": "Giving people",
+                    "form": "дающие",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe someone who is currently performing the action. Must agree in gender, number, and case.",
+            "tenseId": "present_active_participle",
+            "tenseName": "Причастие настоящего времени",
+            "tenseNameEn": "Present Active Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Дававший человек",
+                    "exampleSentenceEn": "A person who gave",
+                    "form": "дававший",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Дававшая женщина",
+                    "exampleSentenceEn": "A woman who gave",
+                    "form": "дававшая",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Дававшее животное",
+                    "exampleSentenceEn": "An animal that gave",
+                    "form": "дававшее",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Дававшие люди",
+                    "exampleSentenceEn": "People who gave",
+                    "form": "дававшие",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe someone who performed the action in the past. Must agree in gender, number, and case.",
+            "tenseId": "past_active_participle",
+            "tenseName": "Причастие прошедшего времени",
+            "tenseNameEn": "Past Active Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe something that is currently being acted upon. Must agree in gender, number, and case.",
+            "tenseId": "present_passive_participle",
+            "tenseName": "Страдательное причастие настоящего времени",
+            "tenseNameEn": "Present Passive Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe something that was acted upon in the past. Must agree in gender, number, and case.",
+            "tenseId": "past_passive_participle",
+            "tenseName": "Страдательное причастие прошедшего времени",
+            "tenseNameEn": "Past Passive Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Давая подарок, я думаю",
+                    "exampleSentenceEn": "While giving a gift, I think",
+                    "form": "давая",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Давая совет, он пел",
+                    "exampleSentenceEn": "While giving advice, he sang",
+                    "form": "давая",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Давая деньги, мы разговаривали",
+                    "exampleSentenceEn": "While giving money, we talked",
+                    "form": "давая",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express an action that happens simultaneously with the main action. Often used to show manner or condition.",
+            "tenseId": "present_gerund",
+            "tenseName": "Деепричастие настоящего времени",
+            "tenseNameEn": "Present Gerund"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express an action that was completed before the main action. Often used to show sequence of events.",
+            "tenseId": "past_gerund",
+            "tenseName": "Деепричастие прошедшего времени",
+            "tenseNameEn": "Past Gerund"
+        }
+    ]
+}

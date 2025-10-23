@@ -1,0 +1,475 @@
+{
+    "category": "essential",
+    "infinitive": "是",
+    "infinitiveEn": "to be",
+    "language": "zh",
+    "languageName": "Chinese",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "我是学生",
+                    "exampleSentenceEn": "I am a student",
+                    "form": "是",
+                    "pronoun": "我"
+                },
+                {
+                    "exampleSentence": "你是个好人",
+                    "exampleSentenceEn": "You are a good person",
+                    "form": "是",
+                    "pronoun": "你"
+                },
+                {
+                    "exampleSentence": "他是中国人",
+                    "exampleSentenceEn": "He is Chinese",
+                    "form": "是",
+                    "pronoun": "他/她/它"
+                },
+                {
+                    "exampleSentence": "我们是朋友",
+                    "exampleSentenceEn": "We are friends",
+                    "form": "是",
+                    "pronoun": "我们"
+                },
+                {
+                    "exampleSentence": "你们是学生",
+                    "exampleSentenceEn": "You are students",
+                    "form": "是",
+                    "pronoun": "你们"
+                },
+                {
+                    "exampleSentence": "他们是学生",
+                    "exampleSentenceEn": "They are students",
+                    "form": "是",
+                    "pronoun": "他们/她们/它们"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. Chinese verbs don't change form, so tense is indicated by time words or context.",
+            "tenseId": "present",
+            "tenseName": "现在时",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "我以前是学生",
+                    "exampleSentenceEn": "I used to be a student",
+                    "form": "是",
+                    "pronoun": "我"
+                },
+                {
+                    "exampleSentence": "你以前是医生",
+                    "exampleSentenceEn": "You used to be a doctor",
+                    "form": "是",
+                    "pronoun": "你"
+                },
+                {
+                    "exampleSentence": "他以前是学生",
+                    "exampleSentenceEn": "He used to be a student",
+                    "form": "是",
+                    "pronoun": "他/她/它"
+                },
+                {
+                    "exampleSentence": "我们以前是朋友",
+                    "exampleSentenceEn": "We used to be friends",
+                    "form": "是",
+                    "pronoun": "我们"
+                },
+                {
+                    "exampleSentence": "你们以前是学生",
+                    "exampleSentenceEn": "You used to be students",
+                    "form": "是",
+                    "pronoun": "你们"
+                },
+                {
+                    "exampleSentence": "他们以前是学生",
+                    "exampleSentenceEn": "They used to be students",
+                    "form": "是",
+                    "pronoun": "他们/她们/它们"
+                }
+            ],
+            "description": "Used to describe completed actions in the past. Chinese indicates past tense using time words like '昨天' (yesterday) or aspect markers like '了'.",
+            "tenseId": "past",
+            "tenseName": "过去时",
+            "tenseNameEn": "Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "我明天会是新经理",
+                    "exampleSentenceEn": "I will be the new manager tomorrow",
+                    "form": "会是",
+                    "pronoun": "我"
+                },
+                {
+                    "exampleSentence": "你明天会是最忙的人",
+                    "exampleSentenceEn": "You will be the busiest person tomorrow",
+                    "form": "会是",
+                    "pronoun": "你"
+                },
+                {
+                    "exampleSentence": "他明天会是团队负责人",
+                    "exampleSentenceEn": "He will be the team leader tomorrow",
+                    "form": "会是",
+                    "pronoun": "他/她/它"
+                },
+                {
+                    "exampleSentence": "我们明天会是合作伙伴",
+                    "exampleSentenceEn": "We will be partners tomorrow",
+                    "form": "会是",
+                    "pronoun": "我们"
+                },
+                {
+                    "exampleSentence": "你们明天会是项目核心",
+                    "exampleSentenceEn": "You will be the core of the project tomorrow",
+                    "form": "会是",
+                    "pronoun": "你们"
+                },
+                {
+                    "exampleSentence": "他们明天会是行业专家",
+                    "exampleSentenceEn": "They will be industry experts tomorrow",
+                    "form": "会是",
+                    "pronoun": "他们/她们/它们"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Chinese indicates future tense using time words like '明天' (tomorrow) or auxiliary verbs like '会' (will).",
+            "tenseId": "future",
+            "tenseName": "将来时",
+            "tenseNameEn": "Future"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "我正在成为一个更好的人",
+                    "exampleSentenceEn": "I am becoming a better person",
+                    "form": "正在成为",
+                    "pronoun": "我"
+                },
+                {
+                    "exampleSentence": "你正在成为团队中最重要的成员",
+                    "exampleSentenceEn": "You are becoming the most important member of the team",
+                    "form": "正在成为",
+                    "pronoun": "你"
+                },
+                {
+                    "exampleSentence": "她正在成为一名优秀的老师",
+                    "exampleSentenceEn": "She is becoming an excellent teacher",
+                    "form": "正在成为",
+                    "pronoun": "他/她/它"
+                },
+                {
+                    "exampleSentence": "我们正在成为好朋友",
+                    "exampleSentenceEn": "We are becoming good friends",
+                    "form": "正在成为",
+                    "pronoun": "我们"
+                },
+                {
+                    "exampleSentence": "你们正在成为这个项目的核心",
+                    "exampleSentenceEn": "You are becoming the core of this project",
+                    "form": "正在成为",
+                    "pronoun": "你们"
+                },
+                {
+                    "exampleSentence": "他们正在成为行业领导者",
+                    "exampleSentenceEn": "They are becoming industry leaders",
+                    "form": "正在成为",
+                    "pronoun": "他们/她们/它们"
+                }
+            ],
+            "description": "Used to express ongoing process of becoming. Since '是' (to be) is a stative verb, the progressive form uses '正在成为' (becoming) to indicate an ongoing transformation or change in state.",
+            "tenseId": "progressive",
+            "tenseName": "进行时",
+            "tenseNameEn": "Progressive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "我现在是医生了",
+                    "exampleSentenceEn": "I am now a doctor (I have become a doctor)",
+                    "form": "是了",
+                    "pronoun": "我"
+                },
+                {
+                    "exampleSentence": "你是成年人了",
+                    "exampleSentenceEn": "You are an adult now",
+                    "form": "是了",
+                    "pronoun": "你"
+                },
+                {
+                    "exampleSentence": "他是经理了",
+                    "exampleSentenceEn": "He has become a manager",
+                    "form": "是了",
+                    "pronoun": "他/她/它"
+                },
+                {
+                    "exampleSentence": "我们是好朋友了",
+                    "exampleSentenceEn": "We have become good friends",
+                    "form": "是了",
+                    "pronoun": "我们"
+                },
+                {
+                    "exampleSentence": "你们都是大学生了",
+                    "exampleSentenceEn": "You all are university students now",
+                    "form": "是了",
+                    "pronoun": "你们"
+                },
+                {
+                    "exampleSentence": "他们是合作伙伴了",
+                    "exampleSentenceEn": "They have become partners",
+                    "form": "是了",
+                    "pronoun": "他们/她们/它们"
+                }
+            ],
+            "description": "Used to indicate that an action has been completed and has relevance to the present. The aspect marker '了' is used after the verb to show completion.",
+            "tenseId": "completed",
+            "tenseName": "完成时",
+            "tenseNameEn": "Completed"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "我以前是过老师",
+                    "exampleSentenceEn": "I have been a teacher before",
+                    "form": "是过",
+                    "pronoun": "我"
+                },
+                {
+                    "exampleSentence": "你是过班长吗",
+                    "exampleSentenceEn": "Have you been a class monitor before?",
+                    "form": "是过",
+                    "pronoun": "你"
+                },
+                {
+                    "exampleSentence": "她是过公司的经理",
+                    "exampleSentenceEn": "She has been a manager at a company",
+                    "form": "是过",
+                    "pronoun": "他/她/它"
+                },
+                {
+                    "exampleSentence": "我们以前是过邻居",
+                    "exampleSentenceEn": "We have been neighbors before",
+                    "form": "是过",
+                    "pronoun": "我们"
+                },
+                {
+                    "exampleSentence": "你们是过同学吗",
+                    "exampleSentenceEn": "Have you been classmates before?",
+                    "form": "是过",
+                    "pronoun": "你们"
+                },
+                {
+                    "exampleSentence": "他们是过竞争对手",
+                    "exampleSentenceEn": "They have been competitors",
+                    "form": "是过",
+                    "pronoun": "他们/她们/它们"
+                }
+            ],
+            "description": "Used to express that someone has had the experience of being something or doing something in the past. Formed with '过' after the verb.",
+            "tenseId": "experiential",
+            "tenseName": "经历时",
+            "tenseNameEn": "Experiential"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "我不是学生，我是老师",
+                    "exampleSentenceEn": "I am not a student, I am a teacher",
+                    "form": "不是",
+                    "pronoun": "我"
+                },
+                {
+                    "exampleSentence": "你不是一个人，我们都在这里",
+                    "exampleSentenceEn": "You are not alone, we are all here",
+                    "form": "不是",
+                    "pronoun": "你"
+                },
+                {
+                    "exampleSentence": "他不是中国人，他是日本人",
+                    "exampleSentenceEn": "He is not Chinese, he is Japanese",
+                    "form": "不是",
+                    "pronoun": "他/她/它"
+                },
+                {
+                    "exampleSentence": "我们不是敌人，我们是朋友",
+                    "exampleSentenceEn": "We are not enemies, we are friends",
+                    "form": "不是",
+                    "pronoun": "我们"
+                },
+                {
+                    "exampleSentence": "你们不是初学者，你们很有经验",
+                    "exampleSentenceEn": "You are not beginners, you have a lot of experience",
+                    "form": "不是",
+                    "pronoun": "你们"
+                },
+                {
+                    "exampleSentence": "他们不是这里的人",
+                    "exampleSentenceEn": "They are not from here",
+                    "form": "不是",
+                    "pronoun": "他们/她们/它们"
+                }
+            ],
+            "description": "Used to negate statements about being or identity. Chinese uses '不' before the verb '是' to form the negative.",
+            "tenseId": "negative",
+            "tenseName": "否定形式",
+            "tenseNameEn": "Negative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "我以前不是老师",
+                    "exampleSentenceEn": "I was not a teacher before",
+                    "form": "不是",
+                    "pronoun": "我"
+                },
+                {
+                    "exampleSentence": "你以前不是班长",
+                    "exampleSentenceEn": "You were not a class monitor before",
+                    "form": "不是",
+                    "pronoun": "你"
+                },
+                {
+                    "exampleSentence": "她以前不是学生",
+                    "exampleSentenceEn": "She was not a student before",
+                    "form": "不是",
+                    "pronoun": "他/她/它"
+                },
+                {
+                    "exampleSentence": "我们以前不是朋友",
+                    "exampleSentenceEn": "We were not friends before",
+                    "form": "不是",
+                    "pronoun": "我们"
+                },
+                {
+                    "exampleSentence": "你们以前不是同学",
+                    "exampleSentenceEn": "You were not classmates before",
+                    "form": "不是",
+                    "pronoun": "你们"
+                },
+                {
+                    "exampleSentence": "他们以前不是合作伙伴",
+                    "exampleSentenceEn": "They were not partners before",
+                    "form": "不是",
+                    "pronoun": "他们/她们/它们"
+                }
+            ],
+            "description": "Used to negate past states or experiences. Chinese typically uses '没(有)当过' for experiential negation with roles, or '不是' for simple past negation.",
+            "tenseId": "past_negative",
+            "tenseName": "过去否定形式",
+            "tenseNameEn": "Past Negative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "我能是一个好学生",
+                    "exampleSentenceEn": "I can be a good student",
+                    "form": "能是",
+                    "pronoun": "我"
+                },
+                {
+                    "exampleSentence": "你能是一个好老师",
+                    "exampleSentenceEn": "You can be a good teacher",
+                    "form": "能是",
+                    "pronoun": "你"
+                },
+                {
+                    "exampleSentence": "他能是一个好医生",
+                    "exampleSentenceEn": "He can be a good doctor",
+                    "form": "能是",
+                    "pronoun": "他/她/它"
+                },
+                {
+                    "exampleSentence": "我们能是好朋友",
+                    "exampleSentenceEn": "We can be good friends",
+                    "form": "能是",
+                    "pronoun": "我们"
+                },
+                {
+                    "exampleSentence": "你们能是好学生",
+                    "exampleSentenceEn": "You can be good students",
+                    "form": "能是",
+                    "pronoun": "你们"
+                },
+                {
+                    "exampleSentence": "他们能是好同事",
+                    "exampleSentenceEn": "They can be good colleagues",
+                    "form": "能是",
+                    "pronoun": "他们/她们/它们"
+                }
+            ],
+            "description": "Used to express ability, possibility, or permission. Chinese uses auxiliary verbs like '能' (can), '会' (can/will), '可以' (can/may) before the main verb.",
+            "tenseId": "potential",
+            "tenseName": "能愿式",
+            "tenseNameEn": "Potential"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "如果我是老师，我就会帮助学生",
+                    "exampleSentenceEn": "If I were a teacher, I would help students",
+                    "form": "如果是",
+                    "pronoun": "我"
+                },
+                {
+                    "exampleSentence": "如果你是医生，你就会救人",
+                    "exampleSentenceEn": "If you were a doctor, you would save people",
+                    "form": "如果是",
+                    "pronoun": "你"
+                },
+                {
+                    "exampleSentence": "如果他是老板，他就会管理公司",
+                    "exampleSentenceEn": "If he were a boss, he would manage the company",
+                    "form": "如果是",
+                    "pronoun": "他/她/它"
+                },
+                {
+                    "exampleSentence": "如果我们是朋友，我们就会互相帮助",
+                    "exampleSentenceEn": "If we were friends, we would help each other",
+                    "form": "如果是",
+                    "pronoun": "我们"
+                },
+                {
+                    "exampleSentence": "如果你们是学生，你们就会好好学习",
+                    "exampleSentenceEn": "If you were students, you would study hard",
+                    "form": "如果是",
+                    "pronoun": "你们"
+                },
+                {
+                    "exampleSentence": "如果他们是同事，他们就会合作",
+                    "exampleSentenceEn": "If they were colleagues, they would cooperate",
+                    "form": "如果是",
+                    "pronoun": "他们/她们/它们"
+                }
+            ],
+            "description": "Used to express hypothetical situations or conditions. Chinese uses '如果...就...' (if...then...) or '要是...就...' constructions.",
+            "tenseId": "conditional",
+            "tenseName": "条件式",
+            "tenseNameEn": "Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "做个好学生！",
+                    "exampleSentenceEn": "Be a good student!",
+                    "form": "做个",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "做个诚实的人！",
+                    "exampleSentenceEn": "Be an honest person!",
+                    "form": "做个",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "做个勇敢的人！",
+                    "exampleSentenceEn": "Be a brave person!",
+                    "form": "做个",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Chinese often uses the verb directly with '要' (must) or '应该' (should) for polite commands.",
+            "tenseId": "imperative",
+            "tenseName": "命令式",
+            "tenseNameEn": "Imperative"
+        }
+    ]
+}

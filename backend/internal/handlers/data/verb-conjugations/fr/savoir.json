@@ -1,0 +1,607 @@
+{
+    "category": "essential",
+    "infinitive": "savoir",
+    "infinitiveEn": "to know",
+    "language": "fr",
+    "languageName": "French",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Je sais la réponse",
+                    "exampleSentenceEn": "I know the answer",
+                    "form": "sais",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu sais chanter",
+                    "exampleSentenceEn": "You know how to sing",
+                    "form": "sais",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il sait nager",
+                    "exampleSentenceEn": "He knows how to swim",
+                    "form": "sait",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous savons danser",
+                    "exampleSentenceEn": "We know how to dance",
+                    "form": "savons",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous savez cuisiner",
+                    "exampleSentenceEn": "You know how to cook",
+                    "form": "savez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils savent jouer",
+                    "exampleSentenceEn": "They know how to play",
+                    "form": "savent",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in French.",
+            "tenseId": "present",
+            "tenseName": "Présent",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Je savais la réponse",
+                    "exampleSentenceEn": "I knew the answer",
+                    "form": "savais",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu savais chanter",
+                    "exampleSentenceEn": "You knew how to sing",
+                    "form": "savais",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il savait nager",
+                    "exampleSentenceEn": "He knew how to swim",
+                    "form": "savait",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous savions danser",
+                    "exampleSentenceEn": "We knew how to dance",
+                    "form": "savions",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous saviez cuisiner",
+                    "exampleSentenceEn": "You knew how to cook",
+                    "form": "saviez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils savaient jouer",
+                    "exampleSentenceEn": "They knew how to play",
+                    "form": "savaient",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to describe ongoing, repeated, or habitual actions in the past. Also used for background information in storytelling.",
+            "tenseId": "imparfait",
+            "tenseName": "Imparfait",
+            "tenseNameEn": "Imperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Je saurai la réponse demain",
+                    "exampleSentenceEn": "I will know the answer tomorrow",
+                    "form": "saurai",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu sauras chanter",
+                    "exampleSentenceEn": "You will know how to sing",
+                    "form": "sauras",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il saura nager",
+                    "exampleSentenceEn": "He will know how to swim",
+                    "form": "saura",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous saurons danser",
+                    "exampleSentenceEn": "We will know how to dance",
+                    "form": "saurons",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous saurez cuisiner",
+                    "exampleSentenceEn": "You will know how to cook",
+                    "form": "saurez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils sauront jouer",
+                    "exampleSentenceEn": "They will know how to play",
+                    "form": "sauront",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'demain' (tomorrow) or 'la semaine prochaine' (next week).",
+            "tenseId": "futur",
+            "tenseName": "Futur Simple",
+            "tenseNameEn": "Simple Future"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'ai su la réponse",
+                    "exampleSentenceEn": "I have known the answer",
+                    "form": "ai su",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu as su chanter",
+                    "exampleSentenceEn": "You have known how to sing",
+                    "form": "as su",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il a su nager",
+                    "exampleSentenceEn": "He has known how to swim",
+                    "form": "a su",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous avons su danser",
+                    "exampleSentenceEn": "We have known how to dance",
+                    "form": "avons su",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous avez su cuisiner",
+                    "exampleSentenceEn": "You have known how to cook",
+                    "form": "avez su",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils ont su jouer",
+                    "exampleSentenceEn": "They have known how to play",
+                    "form": "ont su",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken French.",
+            "tenseId": "passe_compose",
+            "tenseName": "Passé Composé",
+            "tenseNameEn": "Present Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Je sus la réponse",
+                    "exampleSentenceEn": "I knew the answer",
+                    "form": "sus",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu sus chanter",
+                    "exampleSentenceEn": "You knew how to sing",
+                    "form": "sus",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il sut nager",
+                    "exampleSentenceEn": "He knew how to swim",
+                    "form": "sut",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous sûmes danser",
+                    "exampleSentenceEn": "We knew how to dance",
+                    "form": "sûmes",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous sûtes cuisiner",
+                    "exampleSentenceEn": "You knew how to cook",
+                    "form": "sûtes",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils surent jouer",
+                    "exampleSentenceEn": "They knew how to play",
+                    "form": "surent",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used primarily in formal and literary French to narrate completed past events. Rarely used in spoken French.",
+            "tenseId": "passe_simple",
+            "tenseName": "Passé Simple",
+            "tenseNameEn": "Simple Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'avais su la réponse avant qu'il pleuve",
+                    "exampleSentenceEn": "I had known the answer before it rained",
+                    "form": "avais su",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu avais su chanter avant que je vienne",
+                    "exampleSentenceEn": "You had known how to sing before I came",
+                    "form": "avais su",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il avait su nager avant qu'il pleuve",
+                    "exampleSentenceEn": "He had known how to swim before it rained",
+                    "form": "avait su",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous avions su danser avant qu'il fasse nuit",
+                    "exampleSentenceEn": "We had known how to dance before it got dark",
+                    "form": "avions su",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous aviez su cuisiner avant la fermeture",
+                    "exampleSentenceEn": "You had known how to cook before closing",
+                    "form": "aviez su",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils avaient su jouer avant le spectacle",
+                    "exampleSentenceEn": "They had known how to play before the show",
+                    "form": "avaient su",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+            "tenseId": "plus_que_parfait",
+            "tenseName": "Plus-que-parfait",
+            "tenseNameEn": "Pluperfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'aurai su la réponse d'ici demain",
+                    "exampleSentenceEn": "I will have known the answer by tomorrow",
+                    "form": "aurai su",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu auras su chanter",
+                    "exampleSentenceEn": "You will have known how to sing",
+                    "form": "auras su",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il aura su nager",
+                    "exampleSentenceEn": "He will have known how to swim",
+                    "form": "aura su",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous aurons su danser",
+                    "exampleSentenceEn": "We will have known how to dance",
+                    "form": "aurons su",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous aurez su cuisiner",
+                    "exampleSentenceEn": "You will have known how to cook",
+                    "form": "aurez su",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils auront su jouer",
+                    "exampleSentenceEn": "They will have known how to play",
+                    "form": "auront su",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express actions that will be completed before another future action. Often used with time expressions like 'd'ici demain' (by tomorrow).",
+            "tenseId": "futur_anterieur",
+            "tenseName": "Futur Antérieur",
+            "tenseNameEn": "Future Perfect"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Je saurais la réponse si j'avais le temps",
+                    "exampleSentenceEn": "I would know the answer if I had time",
+                    "form": "saurais",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu saurais chanter",
+                    "exampleSentenceEn": "You would know how to sing",
+                    "form": "saurais",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il saurait nager",
+                    "exampleSentenceEn": "He would know how to swim",
+                    "form": "saurait",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous saurions danser",
+                    "exampleSentenceEn": "We would know how to dance",
+                    "form": "saurions",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous sauriez cuisiner",
+                    "exampleSentenceEn": "You would know how to cook",
+                    "form": "sauriez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils sauraient jouer",
+                    "exampleSentenceEn": "They would know how to play",
+                    "form": "sauraient",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'si' (if) clauses.",
+            "tenseId": "conditionnel_present",
+            "tenseName": "Conditionnel Présent",
+            "tenseNameEn": "Present Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "J'aurais su la réponse si j'avais pu",
+                    "exampleSentenceEn": "I would have known the answer if I could have",
+                    "form": "aurais su",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Tu aurais su chanter",
+                    "exampleSentenceEn": "You would have known how to sing",
+                    "form": "aurais su",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il aurait su nager",
+                    "exampleSentenceEn": "He would have known how to swim",
+                    "form": "aurait su",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Nous aurions su danser",
+                    "exampleSentenceEn": "We would have known how to dance",
+                    "form": "aurions su",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Vous auriez su cuisiner",
+                    "exampleSentenceEn": "You would have known how to cook",
+                    "form": "auriez su",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Ils auraient su jouer",
+                    "exampleSentenceEn": "They would have known how to play",
+                    "form": "auraient su",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used to express hypothetical past actions or regrets about things that didn't happen. Often used with 'si' (if) clauses referring to the past.",
+            "tenseId": "conditionnel_passe",
+            "tenseName": "Conditionnel Passé",
+            "tenseNameEn": "Past Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Il faut que je sache la réponse",
+                    "exampleSentenceEn": "I must know the answer",
+                    "form": "sache",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Je veux que tu saches chanter",
+                    "exampleSentenceEn": "I want you to know how to sing",
+                    "form": "saches",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il faut qu'il sache nager",
+                    "exampleSentenceEn": "He must know how to swim",
+                    "form": "sache",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Il faut que nous sachions danser",
+                    "exampleSentenceEn": "We must know how to dance",
+                    "form": "sachions",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Il faut que vous sachiez cuisiner",
+                    "exampleSentenceEn": "You must know how to cook",
+                    "form": "sachiez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Il faut qu'ils sachent jouer",
+                    "exampleSentenceEn": "They must know how to play",
+                    "form": "sachent",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used in dependent clauses after certain expressions of opinion, doubt, emotion, or necessity. Often used after 'il faut que', 'je veux que', etc.",
+            "tenseId": "subjonctif_present",
+            "tenseName": "Subjonctif Présent",
+            "tenseNameEn": "Present Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "—",
+                    "exampleSentenceEn": "—",
+                    "form": "—",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (tu, nous, vous). The subject pronoun is omitted.",
+            "tenseId": "imperatif",
+            "tenseName": "Impératif",
+            "tenseNameEn": "Imperative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Il fallait que je susse la réponse",
+                    "exampleSentenceEn": "I had to know the answer",
+                    "form": "susse",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Je voulais que tu susses chanter",
+                    "exampleSentenceEn": "I wanted you to know how to sing",
+                    "form": "susses",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il fallait qu'il sût nager",
+                    "exampleSentenceEn": "He had to know how to swim",
+                    "form": "sût",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Il fallait que nous sussions danser",
+                    "exampleSentenceEn": "We had to know how to dance",
+                    "form": "sussions",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Il fallait que vous sussiez cuisiner",
+                    "exampleSentenceEn": "You had to know how to cook",
+                    "form": "sussiez",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Il fallait qu'ils sussent jouer",
+                    "exampleSentenceEn": "They had to know how to play",
+                    "form": "sussent",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used in formal and literary French after the same triggers as present subjunctive, but referring to past events. Rarely used in modern spoken French.",
+            "tenseId": "subjonctif_imparfait",
+            "tenseName": "Subjonctif Imparfait",
+            "tenseNameEn": "Imperfect Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Il faut que j'aie su la réponse",
+                    "exampleSentenceEn": "I must have known the answer",
+                    "form": "aie su",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Je veux que tu aies su chanter",
+                    "exampleSentenceEn": "I want you to have known how to sing",
+                    "form": "aies su",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Il faut qu'il ait su nager",
+                    "exampleSentenceEn": "He must have known how to swim",
+                    "form": "ait su",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Il faut que nous ayons su danser",
+                    "exampleSentenceEn": "We must have known how to dance",
+                    "form": "ayons su",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Il faut que vous ayez su cuisiner",
+                    "exampleSentenceEn": "You must have known how to cook",
+                    "form": "ayez su",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Il faut qu'ils aient su jouer",
+                    "exampleSentenceEn": "They must have known how to play",
+                    "form": "aient su",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used in dependent clauses after expressions of doubt, emotion, or necessity when referring to a completed action in the past.",
+            "tenseId": "subjonctif_passe",
+            "tenseName": "Subjonctif Passé",
+            "tenseNameEn": "Past Subjunctive"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Dès que j'eus su la réponse, il pleuvit",
+                    "exampleSentenceEn": "As soon as I had known the answer, it rained",
+                    "form": "eus su",
+                    "pronoun": "je"
+                },
+                {
+                    "exampleSentence": "Dès que tu eus su chanter, je vins",
+                    "exampleSentenceEn": "As soon as you had known how to sing, I came",
+                    "form": "eus su",
+                    "pronoun": "tu"
+                },
+                {
+                    "exampleSentence": "Dès qu'il eut su nager, nous arrivâmes",
+                    "exampleSentenceEn": "As soon as he had known how to swim, we arrived",
+                    "form": "eut su",
+                    "pronoun": "il/elle"
+                },
+                {
+                    "exampleSentence": "Dès que nous eûmes su danser, il fit nuit",
+                    "exampleSentenceEn": "As soon as we had known how to dance, it got dark",
+                    "form": "eûmes su",
+                    "pronoun": "nous"
+                },
+                {
+                    "exampleSentence": "Dès que vous eûtes su cuisiner, la boutique ferma",
+                    "exampleSentenceEn": "As soon as you had known how to cook, the store closed",
+                    "form": "eûtes su",
+                    "pronoun": "vous"
+                },
+                {
+                    "exampleSentence": "Dès qu'ils eurent su jouer, le spectacle commença",
+                    "exampleSentenceEn": "As soon as they had known how to play, the show began",
+                    "form": "eurent su",
+                    "pronoun": "ils/elles"
+                }
+            ],
+            "description": "Used in formal and literary French to express an action that was completed immediately before another past action. Rarely used in modern French.",
+            "tenseId": "passe_anterieur",
+            "tenseName": "Passé Antérieur",
+            "tenseNameEn": "Past Anterior"
+        }
+    ]
+}

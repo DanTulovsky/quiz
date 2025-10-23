@@ -1,0 +1,409 @@
+{
+    "category": "essential",
+    "infinitive": "делать",
+    "infinitiveEn": "to do/make",
+    "language": "ru",
+    "languageName": "Russian",
+    "tenses": [
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я делаю уроки",
+                    "exampleSentenceEn": "I do my homework",
+                    "form": "делаю",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты делаешь покупки",
+                    "exampleSentenceEn": "You do shopping",
+                    "form": "делаешь",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он делает кофе",
+                    "exampleSentenceEn": "He makes coffee",
+                    "form": "делает",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы делаем прогулку",
+                    "exampleSentenceEn": "We take a walk",
+                    "form": "делаем",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы делаете спорт",
+                    "exampleSentenceEn": "You do sports",
+                    "form": "делаете",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они делают праздник",
+                    "exampleSentenceEn": "They celebrate",
+                    "form": "делают",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in Russian.",
+            "tenseId": "present",
+            "tenseName": "Настоящее время",
+            "tenseNameEn": "Present"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я делал уроки",
+                    "exampleSentenceEn": "I did my homework",
+                    "form": "делал",
+                    "pronoun": "я (m)"
+                },
+                {
+                    "exampleSentence": "Я делала уроки",
+                    "exampleSentenceEn": "I did my homework",
+                    "form": "делала",
+                    "pronoun": "я (f)"
+                },
+                {
+                    "exampleSentence": "Ты делал покупки",
+                    "exampleSentenceEn": "You did shopping",
+                    "form": "делал",
+                    "pronoun": "ты (m)"
+                },
+                {
+                    "exampleSentence": "Ты делала покупки",
+                    "exampleSentenceEn": "You did shopping",
+                    "form": "делала",
+                    "pronoun": "ты (f)"
+                },
+                {
+                    "exampleSentence": "Он делал кофе",
+                    "exampleSentenceEn": "He made coffee",
+                    "form": "делал",
+                    "pronoun": "он"
+                },
+                {
+                    "exampleSentence": "Она делала кофе",
+                    "exampleSentenceEn": "She made coffee",
+                    "form": "делала",
+                    "pronoun": "она"
+                },
+                {
+                    "exampleSentence": "Оно делало кофе",
+                    "exampleSentenceEn": "It made coffee",
+                    "form": "делало",
+                    "pronoun": "оно"
+                },
+                {
+                    "exampleSentence": "Мы делали прогулку",
+                    "exampleSentenceEn": "We took a walk",
+                    "form": "делали",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы делали спорт",
+                    "exampleSentenceEn": "You did sports",
+                    "form": "делали",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они делали праздник",
+                    "exampleSentenceEn": "They celebrated",
+                    "form": "делали",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to describe completed actions in the past. The form changes based on gender and number.",
+            "tenseId": "past",
+            "tenseName": "Прошедшее время",
+            "tenseNameEn": "Past"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я буду делать уроки завтра",
+                    "exampleSentenceEn": "I will do my homework tomorrow",
+                    "form": "буду делать",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты будешь делать покупки",
+                    "exampleSentenceEn": "You will do shopping",
+                    "form": "будешь делать",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он будет делать кофе",
+                    "exampleSentenceEn": "He will make coffee",
+                    "form": "будет делать",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы будем делать прогулку",
+                    "exampleSentenceEn": "We will take a walk",
+                    "form": "будем делать",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы будете делать спорт",
+                    "exampleSentenceEn": "You will do sports",
+                    "form": "будете делать",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они будут делать праздник",
+                    "exampleSentenceEn": "They will celebrate",
+                    "form": "будут делать",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'завтра' (tomorrow).",
+            "tenseId": "future",
+            "tenseName": "Будущее время",
+            "tenseNameEn": "Future"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Делай уроки!",
+                    "exampleSentenceEn": "Do your homework!",
+                    "form": "делай",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Делайте покупки!",
+                    "exampleSentenceEn": "Do shopping!",
+                    "form": "делайте",
+                    "pronoun": "вы"
+                }
+            ],
+            "description": "Used to give commands, orders, or instructions. Only exists for the second person (ты, вы).",
+            "tenseId": "imperative",
+            "tenseName": "Повелительное наклонение",
+            "tenseNameEn": "Imperative"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Я делал бы уроки, если бы имел время",
+                    "exampleSentenceEn": "I would do my homework if I had time",
+                    "form": "делал бы",
+                    "pronoun": "я"
+                },
+                {
+                    "exampleSentence": "Ты делал бы покупки",
+                    "exampleSentenceEn": "You would do shopping",
+                    "form": "делал бы",
+                    "pronoun": "ты"
+                },
+                {
+                    "exampleSentence": "Он делал бы кофе",
+                    "exampleSentenceEn": "He would make coffee",
+                    "form": "делал бы",
+                    "pronoun": "он/она/оно"
+                },
+                {
+                    "exampleSentence": "Мы делали бы прогулку",
+                    "exampleSentenceEn": "We would take a walk",
+                    "form": "делали бы",
+                    "pronoun": "мы"
+                },
+                {
+                    "exampleSentence": "Вы делали бы спорт",
+                    "exampleSentenceEn": "You would do sports",
+                    "form": "делали бы",
+                    "pronoun": "вы"
+                },
+                {
+                    "exampleSentence": "Они делали бы праздник",
+                    "exampleSentenceEn": "They would celebrate",
+                    "form": "делали бы",
+                    "pronoun": "они"
+                }
+            ],
+            "description": "Used to express hypothetical situations or actions that would happen under certain conditions. Often used with 'если' (if) clauses.",
+            "tenseId": "conditional",
+            "tenseName": "Условное наклонение",
+            "tenseNameEn": "Conditional"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Делающий человек",
+                    "exampleSentenceEn": "A doing person",
+                    "form": "делающий",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Делающая женщина",
+                    "exampleSentenceEn": "A doing woman",
+                    "form": "делающая",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Делающее животное",
+                    "exampleSentenceEn": "A doing animal",
+                    "form": "делающее",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Делающие люди",
+                    "exampleSentenceEn": "Doing people",
+                    "form": "делающие",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe someone who is currently performing the action. Must agree in gender, number, and case.",
+            "tenseId": "present_active_participle",
+            "tenseName": "Причастие настоящего времени",
+            "tenseNameEn": "Present Active Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Делавший человек",
+                    "exampleSentenceEn": "A person who did",
+                    "form": "делавший",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Делавшая женщина",
+                    "exampleSentenceEn": "A woman who did",
+                    "form": "делавшая",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Делавшее животное",
+                    "exampleSentenceEn": "An animal that did",
+                    "form": "делавшее",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Делавшие люди",
+                    "exampleSentenceEn": "People who did",
+                    "form": "делавшие",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe someone who performed the action in the past. Must agree in gender, number, and case.",
+            "tenseId": "past_active_participle",
+            "tenseName": "Причастие прошедшего времени",
+            "tenseNameEn": "Past Active Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Делаемый урок",
+                    "exampleSentenceEn": "A lesson being done",
+                    "form": "делаемый",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Делаемая работа",
+                    "exampleSentenceEn": "Work being done",
+                    "form": "делаемая",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Делаемое дело",
+                    "exampleSentenceEn": "A thing being done",
+                    "form": "делаемое",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Делаемые дела",
+                    "exampleSentenceEn": "Things being done",
+                    "form": "делаемые",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe something that is currently being acted upon. Must agree in gender, number, and case.",
+            "tenseId": "present_passive_participle",
+            "tenseName": "Страдательное причастие настоящего времени",
+            "tenseNameEn": "Present Passive Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Сделанный урок был очень сложным",
+                    "exampleSentenceEn": "The completed lesson was very difficult",
+                    "form": "сделанный",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Сделанная работа принесла успех",
+                    "exampleSentenceEn": "The completed work brought success",
+                    "form": "сделанная",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Сделанное дело радует всех",
+                    "exampleSentenceEn": "The completed task pleases everyone",
+                    "form": "сделанное",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Сделанные дела",
+                    "exampleSentenceEn": "Done things",
+                    "form": "сделанные",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used as an adjective to describe something that was acted upon in the past. Must agree in gender, number, and case. Note: 'сделанный' is from the perfective verb 'сделать', not the imperfective 'делать', but is commonly used in practice.",
+            "tenseId": "past_passive_participle",
+            "tenseName": "Страдательное причастие прошедшего времени",
+            "tenseNameEn": "Past Passive Participle"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Делая уроки, я думаю",
+                    "exampleSentenceEn": "While doing homework, I think",
+                    "form": "делая",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Делая покупки, он пел",
+                    "exampleSentenceEn": "While doing shopping, he sang",
+                    "form": "делая",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Делая кофе, мы разговаривали",
+                    "exampleSentenceEn": "While making coffee, we talked",
+                    "form": "делая",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express an action that happens simultaneously with the main action. Often used to show manner or condition.",
+            "tenseId": "present_gerund",
+            "tenseName": "Деепричастие настоящего времени",
+            "tenseNameEn": "Present Gerund"
+        },
+        {
+            "conjugations": [
+                {
+                    "exampleSentence": "Сделав уроки, я пошёл гулять",
+                    "exampleSentenceEn": "Having done homework, I went for a walk",
+                    "form": "сделав",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Сделав покупки, он пошёл домой",
+                    "exampleSentenceEn": "Having done shopping, he went home",
+                    "form": "сделав",
+                    "pronoun": "—"
+                },
+                {
+                    "exampleSentence": "Сделав кофе, мы сели за стол",
+                    "exampleSentenceEn": "Having made coffee, we sat at the table",
+                    "form": "сделав",
+                    "pronoun": "—"
+                }
+            ],
+            "description": "Used to express an action that was completed before the main action. Often used to show sequence of events.",
+            "tenseId": "past_gerund",
+            "tenseName": "Деепричастие прошедшего времени",
+            "tenseNameEn": "Past Gerund"
+        }
+    ]
+}
