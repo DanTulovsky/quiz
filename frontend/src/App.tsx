@@ -47,6 +47,7 @@ import MobileSnippetsPage from './pages/mobile/MobileSnippetsPage';
 import MobilePhrasebookIndexPage from './pages/mobile/MobilePhrasebookIndexPage';
 import MobilePhrasebookCategoryPage from './pages/mobile/MobilePhrasebookCategoryPage';
 import MobileVerbConjugationPage from './pages/mobile/MobileVerbConjugationPage';
+import MobileSettingsPage from './pages/mobile/MobileSettingsPage';
 import { Center, Loader } from '@mantine/core';
 
 function App() {
@@ -735,6 +736,20 @@ function App() {
             user ? (
               <MobileLayout>
                 <MobileBookmarkedMessagesPage />
+              </MobileLayout>
+            ) : (
+              <Navigate
+                to={`/m/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`}
+              />
+            )
+          }
+        />
+        <Route
+          path='/m/settings'
+          element={
+            user ? (
+              <MobileLayout>
+                <MobileSettingsPage />
               </MobileLayout>
             ) : (
               <Navigate
