@@ -14,7 +14,7 @@
           "description": "Used to describe actions happening now, general truths, or habitual actions. Chinese verbs don't change form, so tense is indicated by time words or context.",
           "conjugations": [
             { "pronoun": "我", "form": "是", "exampleSentence": "我是学生", "exampleSentenceEn": "I am a student" },
-            { "pronoun": "你", "form": "是", "exampleSentence": "你是好的", "exampleSentenceEn": "You are good" },
+            { "pronoun": "你", "form": "是", "exampleSentence": "你是个好人", "exampleSentenceEn": "You are a good person" },
             { "pronoun": "他/她/它", "form": "是", "exampleSentence": "他是中国人", "exampleSentenceEn": "He is Chinese" },
             { "pronoun": "我们", "form": "是", "exampleSentence": "我们是朋友", "exampleSentenceEn": "We are friends" },
             { "pronoun": "你们", "form": "是", "exampleSentence": "你们是学生", "exampleSentenceEn": "You are students" },
@@ -27,12 +27,12 @@
           "tenseNameEn": "Past",
           "description": "Used to describe completed actions in the past. Chinese indicates past tense using time words like '昨天' (yesterday) or aspect markers like '了'.",
           "conjugations": [
-            { "pronoun": "我", "form": "是", "exampleSentence": "我昨天是学生", "exampleSentenceEn": "I was a student yesterday" },
-            { "pronoun": "你", "form": "是", "exampleSentence": "你昨天是好的", "exampleSentenceEn": "You were good yesterday" },
-            { "pronoun": "他/她/它", "form": "是", "exampleSentence": "他昨天是中国人", "exampleSentenceEn": "He was Chinese yesterday" },
-            { "pronoun": "我们", "form": "是", "exampleSentence": "我们昨天是朋友", "exampleSentenceEn": "We were friends yesterday" },
-            { "pronoun": "你们", "form": "是", "exampleSentence": "你们昨天是学生", "exampleSentenceEn": "You were students yesterday" },
-            { "pronoun": "他们/她们/它们", "form": "是", "exampleSentence": "他们昨天是学生", "exampleSentenceEn": "They were students yesterday" }
+            { "pronoun": "我", "form": "是", "exampleSentence": "我以前是学生", "exampleSentenceEn": "I used to be a student" },
+            { "pronoun": "你", "form": "是", "exampleSentence": "你以前是医生", "exampleSentenceEn": "You used to be a doctor" },
+            { "pronoun": "他/她/它", "form": "是", "exampleSentence": "他以前是学生", "exampleSentenceEn": "He used to be a student" },
+            { "pronoun": "我们", "form": "是", "exampleSentence": "我们以前是朋友", "exampleSentenceEn": "We used to be friends" },
+            { "pronoun": "你们", "form": "是", "exampleSentence": "你们以前是学生", "exampleSentenceEn": "You used to be students" },
+            { "pronoun": "他们/她们/它们", "form": "是", "exampleSentence": "他们以前是学生", "exampleSentenceEn": "They used to be students" }
           ]
         },
         {
@@ -41,12 +41,12 @@
           "tenseNameEn": "Future",
           "description": "Used to express future actions, predictions, or intentions. Chinese indicates future tense using time words like '明天' (tomorrow) or auxiliary verbs like '会' (will).",
           "conjugations": [
-            { "pronoun": "我", "form": "会是", "exampleSentence": "我明天会是学生", "exampleSentenceEn": "I will be a student tomorrow" },
-            { "pronoun": "你", "form": "会是", "exampleSentence": "你明天会是好的", "exampleSentenceEn": "You will be good tomorrow" },
-            { "pronoun": "他/她/它", "form": "会是", "exampleSentence": "他明天会是中国人", "exampleSentenceEn": "He will be Chinese tomorrow" },
-            { "pronoun": "我们", "form": "会是", "exampleSentence": "我们明天会是朋友", "exampleSentenceEn": "We will be friends tomorrow" },
-            { "pronoun": "你们", "form": "会是", "exampleSentence": "你们明天会是学生", "exampleSentenceEn": "You will be students tomorrow" },
-            { "pronoun": "他们/她们/它们", "form": "会是", "exampleSentence": "他们明天会是学生", "exampleSentenceEn": "They will be students tomorrow" }
+            { "pronoun": "我", "form": "会是", "exampleSentence": "我明天会是新经理", "exampleSentenceEn": "I will be the new manager tomorrow" },
+            { "pronoun": "你", "form": "会是", "exampleSentence": "你明天会是最忙的人", "exampleSentenceEn": "You will be the busiest person tomorrow" },
+            { "pronoun": "他/她/它", "form": "会是", "exampleSentence": "他明天会是团队负责人", "exampleSentenceEn": "He will be the team leader tomorrow" },
+            { "pronoun": "我们", "form": "会是", "exampleSentence": "我们明天会是合作伙伴", "exampleSentenceEn": "We will be partners tomorrow" },
+            { "pronoun": "你们", "form": "会是", "exampleSentence": "你们明天会是项目核心", "exampleSentenceEn": "You will be the core of the project tomorrow" },
+            { "pronoun": "他们/她们/它们", "form": "会是", "exampleSentence": "他们明天会是行业专家", "exampleSentenceEn": "They will be industry experts tomorrow" }
           ]
         },
         {
@@ -109,14 +109,14 @@
           "tenseId": "past_negative",
           "tenseName": "过去否定形式",
           "tenseNameEn": "Past Negative",
-          "description": "Used to negate past states or experiences. Chinese uses '没有' before the verb for past negation, especially with experiential '过'.",
+          "description": "Used to negate past states or experiences. Chinese typically uses '没(有)当过' for experiential negation with roles, or '不是' for simple past negation.",
           "conjugations": [
-            { "pronoun": "我", "form": "没有是过", "exampleSentence": "我以前没有是过老师", "exampleSentenceEn": "I have never been a teacher before" },
-            { "pronoun": "你", "form": "没有是过", "exampleSentence": "你以前没有是过班长吗", "exampleSentenceEn": "Have you never been a class monitor before?" },
-            { "pronoun": "他/她/它", "form": "没有是过", "exampleSentence": "她没有是过这种情况", "exampleSentenceEn": "She has never been in this situation" },
-            { "pronoun": "我们", "form": "没有是过", "exampleSentence": "我们以前没有是过邻居", "exampleSentenceEn": "We have never been neighbors before" },
-            { "pronoun": "你们", "form": "没有是过", "exampleSentence": "你们没有是过同学", "exampleSentenceEn": "You have never been classmates" },
-            { "pronoun": "他们/她们/它们", "form": "没有是过", "exampleSentence": "他们没有是过竞争对手", "exampleSentenceEn": "They have never been competitors" }
+            { "pronoun": "我", "form": "不是", "exampleSentence": "我以前不是老师", "exampleSentenceEn": "I was not a teacher before" },
+            { "pronoun": "你", "form": "不是", "exampleSentence": "你以前不是班长", "exampleSentenceEn": "You were not a class monitor before" },
+            { "pronoun": "他/她/它", "form": "不是", "exampleSentence": "她以前不是学生", "exampleSentenceEn": "She was not a student before" },
+            { "pronoun": "我们", "form": "不是", "exampleSentence": "我们以前不是朋友", "exampleSentenceEn": "We were not friends before" },
+            { "pronoun": "你们", "form": "不是", "exampleSentence": "你们以前不是同学", "exampleSentenceEn": "You were not classmates before" },
+            { "pronoun": "他们/她们/它们", "form": "不是", "exampleSentence": "他们以前不是合作伙伴", "exampleSentenceEn": "They were not partners before" }
           ]
         },
         {
@@ -153,9 +153,9 @@
           "tenseNameEn": "Imperative",
           "description": "Used to give commands, orders, or instructions. Chinese often uses the verb directly with '要' (must) or '应该' (should) for polite commands.",
           "conjugations": [
-            { "pronoun": "—", "form": "要是", "exampleSentence": "要是好学生！", "exampleSentenceEn": "Be a good student!" },
-            { "pronoun": "—", "form": "要是", "exampleSentence": "要是诚实的人！", "exampleSentenceEn": "Be an honest person!" },
-            { "pronoun": "—", "form": "要是", "exampleSentence": "要是勇敢的人！", "exampleSentenceEn": "Be a brave person!" }
+            { "pronoun": "—", "form": "做个", "exampleSentence": "做个好学生！", "exampleSentenceEn": "Be a good student!" },
+            { "pronoun": "—", "form": "做个", "exampleSentence": "做个诚实的人！", "exampleSentenceEn": "Be an honest person!" },
+            { "pronoun": "—", "form": "做个", "exampleSentence": "做个勇敢的人！", "exampleSentenceEn": "Be a brave person!" }
           ]
         }
       ]
@@ -172,7 +172,7 @@
           "description": "Used to describe actions happening now, general truths, or habitual actions. Chinese verbs don't change form, so tense is indicated by time words or context.",
           "conjugations": [
             { "pronoun": "我", "form": "有", "exampleSentence": "我有一本书", "exampleSentenceEn": "I have a book" },
-            { "pronoun": "你", "form": "有", "exampleSentence": "你有饿的感觉", "exampleSentenceEn": "You have a feeling of hunger" },
+            { "pronoun": "你", "form": "有", "exampleSentence": "你有书吗", "exampleSentenceEn": "Do you have books?" },
             { "pronoun": "他/她/它", "form": "有", "exampleSentence": "她有一只猫", "exampleSentenceEn": "She has a cat" },
             { "pronoun": "我们", "form": "有", "exampleSentence": "我们有时间", "exampleSentenceEn": "We have time" },
             { "pronoun": "你们", "form": "有", "exampleSentence": "你们有道理", "exampleSentenceEn": "You are right (have reason)" },
@@ -185,12 +185,12 @@
           "tenseNameEn": "Past",
           "description": "Used to describe completed actions in the past. Chinese indicates past tense using time words like '昨天' (yesterday) or aspect markers like '了'.",
           "conjugations": [
-            { "pronoun": "我", "form": "有", "exampleSentence": "我昨天有一本书", "exampleSentenceEn": "I had a book yesterday" },
-            { "pronoun": "你", "form": "有", "exampleSentence": "你昨天有饿的感觉", "exampleSentenceEn": "You had a feeling of hunger yesterday" },
-            { "pronoun": "他/她/它", "form": "有", "exampleSentence": "她昨天有一只猫", "exampleSentenceEn": "She had a cat yesterday" },
-            { "pronoun": "我们", "form": "有", "exampleSentence": "我们昨天有时间", "exampleSentenceEn": "We had time yesterday" },
-            { "pronoun": "你们", "form": "有", "exampleSentence": "你们昨天有道理", "exampleSentenceEn": "You were right yesterday (had reason)" },
-            { "pronoun": "他们/她们/它们", "form": "有", "exampleSentence": "他们昨天有一所房子", "exampleSentenceEn": "They had a house yesterday" }
+            { "pronoun": "我", "form": "有", "exampleSentence": "我昨天有会议", "exampleSentenceEn": "I had a meeting yesterday" },
+            { "pronoun": "你", "form": "有", "exampleSentence": "你昨天有考试", "exampleSentenceEn": "You had an exam yesterday" },
+            { "pronoun": "他/她/它", "form": "有", "exampleSentence": "她昨天有约会", "exampleSentenceEn": "She had a date yesterday" },
+            { "pronoun": "我们", "form": "有", "exampleSentence": "我们昨天有活动", "exampleSentenceEn": "We had an activity yesterday" },
+            { "pronoun": "你们", "form": "有", "exampleSentence": "你们昨天有课", "exampleSentenceEn": "You had class yesterday" },
+            { "pronoun": "他们/她们/它们", "form": "有", "exampleSentence": "他们昨天有聚会", "exampleSentenceEn": "They had a party yesterday" }
           ]
         },
         {
@@ -199,12 +199,26 @@
           "tenseNameEn": "Future",
           "description": "Used to express future actions, predictions, or intentions. Chinese indicates future tense using time words like '明天' (tomorrow) or auxiliary verbs like '会' (will).",
           "conjugations": [
-            { "pronoun": "我", "form": "会有", "exampleSentence": "我明天会有一本书", "exampleSentenceEn": "I will have a book tomorrow" },
-            { "pronoun": "你", "form": "会有", "exampleSentence": "你明天会饿", "exampleSentenceEn": "You will be hungry tomorrow" },
+            { "pronoun": "我", "form": "会有", "exampleSentence": "我明天会有时间", "exampleSentenceEn": "I will have time tomorrow" },
+            { "pronoun": "你", "form": "会有", "exampleSentence": "你明天会有时间", "exampleSentenceEn": "You will have time tomorrow" },
             { "pronoun": "他/她/它", "form": "会有", "exampleSentence": "她明天会有一只猫", "exampleSentenceEn": "She will have a cat tomorrow" },
             { "pronoun": "我们", "form": "会有", "exampleSentence": "我们明天会有时间", "exampleSentenceEn": "We will have time tomorrow" },
-            { "pronoun": "你们", "form": "会有", "exampleSentence": "你们明天会有道理", "exampleSentenceEn": "You will be right tomorrow (will have reason)" },
+            { "pronoun": "你们", "form": "会有", "exampleSentence": "你们明天会有机会", "exampleSentenceEn": "You will have opportunities tomorrow" },
             { "pronoun": "他们/她们/它们", "form": "会有", "exampleSentence": "他们明天会有一所房子", "exampleSentenceEn": "They will have a house tomorrow" }
+          ]
+        },
+        {
+          "tenseId": "progressive",
+          "tenseName": "进行时",
+          "tenseNameEn": "Progressive",
+          "description": "Used to express ongoing states or gradual changes in possession. With '有', this describes the process of gaining or experiencing something over time using appropriate aspect markers.",
+          "conjugations": [
+            { "pronoun": "我", "form": "越来越有", "exampleSentence": "我越来越有信心", "exampleSentenceEn": "I am becoming more and more confident" },
+            { "pronoun": "你", "form": "开始有", "exampleSentence": "你开始有更好的理解", "exampleSentenceEn": "You are beginning to have a better understanding" },
+            { "pronoun": "他/她/它", "form": "逐渐有", "exampleSentence": "她逐渐有新的想法", "exampleSentenceEn": "She is gradually having new ideas" },
+            { "pronoun": "我们", "form": "不断有", "exampleSentence": "我们不断有更多的经验", "exampleSentenceEn": "We are continuously gaining more experience" },
+            { "pronoun": "你们", "form": "慢慢有", "exampleSentence": "你们慢慢有更好的结果", "exampleSentenceEn": "You are slowly achieving better results" },
+            { "pronoun": "他们/她们/它们", "form": "持续有", "exampleSentence": "他们持续有新的进展", "exampleSentenceEn": "They are continuously making new progress" }
           ]
         },
         {

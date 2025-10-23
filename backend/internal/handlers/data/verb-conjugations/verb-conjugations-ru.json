@@ -658,21 +658,7 @@
           "tenseId": "present_passive_participle",
           "tenseName": "Причастие настоящего времени страдательный залог",
           "tenseNameEn": "Present Passive Participle",
-          "description": "The verb 'иметь' does not form a present passive participle in standard Russian usage.",
-          "conjugations": [
-            {
-              "pronoun": "—",
-              "form": "—",
-              "exampleSentence": "—",
-              "exampleSentenceEn": "—"
-            }
-          ]
-        },
-        {
-          "tenseId": "past_passive_participle",
-          "tenseName": "Причастие прошедшего времени страдательный залог",
-          "tenseNameEn": "Past Passive Participle",
-          "description": "Used to describe a noun that was the object of an action in the past. Functions as an adjective and agrees with the noun in gender, number, and case. Rare for 'иметь'.",
+          "description": "Rare in standard Russian usage, but theoretically possible in formal or bookish contexts.",
           "conjugations": [
             {
               "pronoun": "он",
@@ -697,6 +683,38 @@
               "form": "имеемые",
               "exampleSentence": "Возможности, имеемые молодёжью, безграничны",
               "exampleSentenceEn": "The opportunities had by youth are limitless"
+            }
+          ]
+        },
+        {
+          "tenseId": "past_passive_participle",
+          "tenseName": "Причастие прошедшего времени страдательный залог",
+          "tenseNameEn": "Past Passive Participle",
+          "description": "The verb 'иметь' does not form standard past passive participles in modern Russian. These forms are archaic/theoretical and not used in practice.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
             }
           ]
         }
@@ -1063,21 +1081,21 @@
           "conjugations": [
             {
               "pronoun": "—",
-              "form": "идучи",
-              "exampleSentence": "Идучи в школу, я думаю",
-              "exampleSentenceEn": "While going to school, I think"
+              "form": "идя",
+              "exampleSentence": "Идя в школу, я думаю о будущем",
+              "exampleSentenceEn": "While going to school, I think about the future"
             },
             {
               "pronoun": "—",
-              "form": "идучи",
-              "exampleSentence": "Идучи домой, он пел",
-              "exampleSentenceEn": "While going home, he sang"
+              "form": "идя",
+              "exampleSentence": "Идя домой, он пел любимую песню",
+              "exampleSentenceEn": "While going home, he sang his favorite song"
             },
             {
               "pronoun": "—",
-              "form": "идучи",
-              "exampleSentence": "Идучи в кино, мы разговаривали",
-              "exampleSentenceEn": "While going to the cinema, we talked"
+              "form": "идя",
+              "exampleSentence": "Идя в кино, мы разговаривали о фильме",
+              "exampleSentenceEn": "While going to the cinema, we talked about the movie"
             }
           ]
         },
@@ -1434,25 +1452,25 @@
           "tenseId": "past_passive_participle",
           "tenseName": "Страдательное причастие прошедшего времени",
           "tenseNameEn": "Past Passive Participle",
-          "description": "Used as an adjective to describe something that was acted upon in the past. Must agree in gender, number, and case.",
+          "description": "Used as an adjective to describe something that was acted upon in the past. Must agree in gender, number, and case. Note: 'сделанный' is from the perfective verb 'сделать', not the imperfective 'делать', but is commonly used in practice.",
           "conjugations": [
             {
               "pronoun": "—",
               "form": "сделанный",
-              "exampleSentence": "Сделанный урок",
-              "exampleSentenceEn": "A done lesson"
+              "exampleSentence": "Сделанный урок был очень сложным",
+              "exampleSentenceEn": "The completed lesson was very difficult"
             },
             {
               "pronoun": "—",
               "form": "сделанная",
-              "exampleSentence": "Сделанная работа",
-              "exampleSentenceEn": "Done work"
+              "exampleSentence": "Сделанная работа принесла успех",
+              "exampleSentenceEn": "The completed work brought success"
             },
             {
               "pronoun": "—",
               "form": "сделанное",
-              "exampleSentence": "Сделанное дело",
-              "exampleSentenceEn": "A done thing"
+              "exampleSentence": "Сделанное дело радует всех",
+              "exampleSentenceEn": "The completed task pleases everyone"
             },
             {
               "pronoun": "—",
@@ -3719,16 +3737,16 @@
           "description": "Used to give commands, orders, or instructions. Only exists for the second person (ты, вы).",
           "conjugations": [
             {
-              "pronoun": "—",
-              "form": "—",
-              "exampleSentence": "—",
-              "exampleSentenceEn": "—"
+              "pronoun": "ты",
+              "form": "думай",
+              "exampleSentence": "Думай о решении проблемы!",
+              "exampleSentenceEn": "Think about solving the problem!"
             },
             {
-              "pronoun": "—",
-              "form": "—",
-              "exampleSentence": "—",
-              "exampleSentenceEn": "—"
+              "pronoun": "вы",
+              "form": "думайте",
+              "exampleSentence": "Думайте о будущем ваших детей!",
+              "exampleSentenceEn": "Think about your children's future!"
             }
           ]
         },
