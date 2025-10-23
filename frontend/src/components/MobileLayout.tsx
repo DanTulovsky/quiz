@@ -142,11 +142,11 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
       header={{ height: { base: 50, md: 70 } }}
     >
       <AppShell.Navbar
-        p='md'
+        p='sm'
         style={{ display: 'flex', flexDirection: 'column' }}
       >
-        <AppShell.Section grow>
-          <Stack gap='md'>
+        <AppShell.Section grow style={{ overflow: 'auto' }}>
+          <Stack gap='xs'>
             <Text fw={500}>Menu</Text>
             {/* Primary navigation moved from footer */}
             {navItems.map(item => {
@@ -154,17 +154,17 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
               return (
                 <React.Fragment key={item.key}>
                   {item.key === 'daily' && (
-                    <Divider my='sm' label='Practice' labelPosition='center' />
+                    <Divider my='xs' label='Practice' labelPosition='center' />
                   )}
                   {item.key === 'conversations' && (
                     <Divider
-                      my='sm'
+                      my='xs'
                       label='AI History'
                       labelPosition='center'
                     />
                   )}
                   {item.key === 'snippets' && (
-                    <Divider my='sm' label='Reference' labelPosition='center' />
+                    <Divider my='xs' label='Reference' labelPosition='center' />
                   )}
                   <Button
                     variant={activeTab === item.key ? 'light' : 'subtle'}
@@ -181,7 +181,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
                 </React.Fragment>
               );
             })}
-            <Divider my='sm' />
+            <Divider my='xs' />
             <Button
               variant='subtle'
               leftSection={<IconDeviceDesktop size={16} />}
@@ -194,7 +194,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
             >
               Desktop View
             </Button>
-            <Divider my='sm' />
+            <Divider my='xs' />
             <Button
               variant='subtle'
               color='red'
