@@ -24,6 +24,7 @@ import {
   Center,
   Alert,
   Anchor,
+  Tooltip,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import {
@@ -32,10 +33,12 @@ import {
   IconTrash,
   IconPlus,
   IconExternalLink,
+  IconLanguage,
 } from '@tabler/icons-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../hooks/useAuth';
 import { usePagination } from '../hooks/usePagination';
+import { useTranslation } from '../contexts/TranslationContext';
 import { PaginationControls } from '../components/PaginationControls';
 import {
   useDeleteV1SnippetsId,
@@ -104,6 +107,13 @@ const SnippetsPage: React.FC = () => {
     difficulty_level: string | null;
     created_at: string;
   } | null>(null);
+  const { translateText } = useTranslation();
+  const [translatingSnippetId, setTranslatingSnippetId] = useState<
+    number | null
+  >(null);
+  const [snippetTranslations, setSnippetTranslations] = useState<
+    Map<number, string>
+  >(new Map());
 
   // Create language options for dropdowns
   const languageOptions = useMemo(
@@ -374,6 +384,22 @@ const SnippetsPage: React.FC = () => {
     resetSnippets(); // Reset pagination when searching
   };
 
+  // Handle context translation
+  const handleTranslateContext = async (snippetId: number, context: string) => {
+    setTranslatingSnippetId(snippetId);
+    try {
+      const result = await translateText(context, 'en'); // Translate to English
+      // Store the translation locally for this snippet
+      setSnippetTranslations(
+        prev => new Map(prev.set(snippetId, result.translatedText))
+      );
+    } catch (err) {
+      console.error('Failed to translate context:', err);
+    } finally {
+      setTranslatingSnippetId(null);
+    }
+  };
+
   const handleEdit = (snippet: {
     id: number;
     original_text: string;
@@ -636,9 +662,60 @@ const SnippetsPage: React.FC = () => {
                   </Group>
 
                   {snippet.context && (
-                    <Text size='sm' c='dimmed' style={{ fontStyle: 'italic' }}>
-                      "{snippet.context}"
-                    </Text>
+                    <Stack gap='xs'>
+                      <Group gap='xs' align='flex-start'>
+                        <Tooltip label='Translate' position='top' withArrow>
+                          <ActionIcon
+                            size='sm'
+                            variant='subtle'
+                            color='blue'
+                            onClick={() => {
+                              console.log(
+                                'Translate button clicked for snippet:',
+                                snippet.id,
+                                'context:',
+                                snippet.context
+                              );
+                              handleTranslateContext(
+                                snippet.id,
+                                snippet.context!
+                              );
+                            }}
+                            loading={translatingSnippetId === snippet.id}
+                          >
+                            <IconLanguage size={14} />
+                          </ActionIcon>
+                        </Tooltip>
+                        <Text
+                          size='sm'
+                          c='dimmed'
+                          style={{
+                            fontStyle: 'italic',
+                            wordWrap: 'break-word',
+                            overflowWrap: 'break-word',
+                            whiteSpace: 'normal',
+                            flex: 1,
+                          }}
+                        >
+                          "{snippet.context}"
+                        </Text>
+                      </Group>
+                      {/* Show translation if available for this snippet */}
+                      {snippetTranslations.has(snippet.id) && (
+                        <Text
+                          size='sm'
+                          c='blue'
+                          style={{
+                            wordWrap: 'break-word',
+                            overflowWrap: 'break-word',
+                            whiteSpace: 'normal',
+                            paddingLeft: '32px',
+                          }}
+                        >
+                          "{snippetTranslations.get(snippet.id)}"
+                        </Text>
+                      )}
+                    </Stack>
                   )}
 
                   <Group justify='space-between' align='center'>
@@ -978,6 +1055,7 @@ const SnippetsPage: React.FC = () => {
         size='sm'
         centered
         closeOnClickOutside={true}
+        zIndex={2000}
       >
         <Stack gap='md'>
           <Text>

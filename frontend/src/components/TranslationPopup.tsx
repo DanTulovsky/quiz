@@ -207,6 +207,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
         translated_text: translation.translatedText,
         source_language: translation.sourceLanguage,
         target_language: targetLanguage,
+        context: selection.sentence, // Add the extracted sentence as context
         ...(currentQuestion &&
           'id' in currentQuestion && {
             question_id: (currentQuestion as Question).id,
@@ -281,7 +282,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
       p='md'
       style={{
         position: 'fixed',
-        zIndex: 1500, // Increased z-index to ensure dropdown appears on top
+        zIndex: 1500, // Lower than delete modals so they can appear on top
         width: 320,
         maxWidth: '90vw',
         ...position,
@@ -326,7 +327,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
           }}
           styles={{
             dropdown: {
-              zIndex: 2000,
+              zIndex: 1600,
             },
           }}
         />

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { extract } from 'sentence-extractor';
 
 export interface TextSelection {
   text: string;
@@ -6,7 +7,116 @@ export interface TextSelection {
   y: number;
   width: number;
   height: number;
+  sentence?: string; // The full sentence containing the selected text
 }
+
+/**
+ * Extracts the full sentence containing the selected text from the parent element's text content.
+ * @param selectedText The text that was selected by the user
+ * @param parentElement The parent element containing the selected text
+ * @returns The full sentence containing the selected text, or the selected text itself if no sentence can be extracted
+ */
+const extractSentence = (
+  selectedText: string,
+  parentElement: HTMLElement | null,
+  selectionRange?: Range
+): string => {
+  if (!parentElement || !selectedText) {
+    return selectedText;
+  }
+
+  // Get the text content from the parent element
+  let fullText = parentElement.textContent || '';
+
+  if (!fullText || !fullText.includes(selectedText)) {
+    return selectedText;
+  }
+
+  // Walk up the DOM tree to find a container with more context
+  // Keep going up until we find a container with substantially more text
+  let textContainer = parentElement;
+  while (textContainer && textContainer.parentElement) {
+    const parentText = textContainer.parentElement.textContent || '';
+    // If the parent has more text and includes our selected text, use it
+    if (
+      parentText.includes(selectedText) &&
+      parentText.length > fullText.length
+    ) {
+      textContainer = textContainer.parentElement;
+      fullText = parentText;
+    } else {
+      break;
+    }
+  }
+
+  // Use the sentence-extractor library for sentence detection
+  // Provide common abbreviations so it doesn't treat short quoted text as complete sentences
+  const abbreviations = [
+    'Dr',
+    'Mr',
+    'Mrs',
+    'Ms',
+    'Prof',
+    'etc',
+    'vs',
+    'Inc',
+    'Ltd',
+    'Co',
+  ];
+  const sentences = extract(fullText, abbreviations);
+
+  // Find the sentence that contains the selected text
+  // Use the actual selection range to get the correct position
+  let selectedIndex = fullText.indexOf(selectedText);
+
+  // If we have a selection range, try to get the actual position
+  if (selectionRange) {
+    try {
+      // Get the text before the selection in the full text
+      const range = selectionRange.cloneRange();
+      range.setStart(textContainer, 0);
+      range.setEnd(selectionRange.startContainer, selectionRange.startOffset);
+      const textBeforeSelection = range.toString();
+      selectedIndex = textBeforeSelection.length;
+    } catch {
+      // Fallback to indexOf if range calculation fails
+    }
+  }
+
+  let bestSentence = null;
+  let bestDistance = Infinity;
+
+  for (const sentence of sentences) {
+    if (sentence.includes(selectedText)) {
+      // Find the position of the selected text within this sentence
+      const sentenceStart = fullText.indexOf(sentence);
+      const sentenceEnd = sentenceStart + sentence.length;
+
+      // Check if the selected text position falls within this sentence
+      if (selectedIndex >= sentenceStart && selectedIndex < sentenceEnd) {
+        return sentence.trim();
+      }
+
+      // If not, calculate distance from selected text to sentence
+      const distance = Math.min(
+        Math.abs(selectedIndex - sentenceStart),
+        Math.abs(selectedIndex - sentenceEnd)
+      );
+
+      if (distance < bestDistance) {
+        bestSentence = sentence;
+        bestDistance = distance;
+      }
+    }
+  }
+
+  if (bestSentence) {
+    return bestSentence.trim();
+  }
+
+  // Fallback: return the selected text if we can't extract a sentence
+  return selectedText;
+};
 
 export const useTextSelection = () => {
   const [selection, setSelection] = useState<TextSelection | null>(null);
@@ -39,12 +149,19 @@ export const useTextSelection = () => {
         selectedElement.setAttribute('data-translation-enabled', 'true');
       }
 
+      // Extract the full sentence containing the selected text
+      const sentence = extractSentence(selectedText, selectedElement, range);
+
+      const x = rect.left + rect.width / 2; // Center of selection
+      const y = rect.top - 10; // Slightly above selection
+
       setSelection({
         text: selectedText,
-        x: rect.left + rect.width / 2, // Center of selection
-        y: rect.top - 10, // Slightly above selection
+        x: x,
+        y: y,
         width: rect.width,
         height: rect.height,
+        sentence: sentence,
       });
       setIsVisible(true);
     } else {

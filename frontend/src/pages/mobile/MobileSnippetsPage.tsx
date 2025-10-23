@@ -642,7 +642,12 @@ const MobileSnippetsPage: React.FC = () => {
                     <Text
                       size='xs'
                       c='dimmed'
-                      style={{ fontStyle: 'italic', wordBreak: 'break-word' }}
+                      style={{
+                        fontStyle: 'italic',
+                        wordWrap: 'break-word',
+                        overflowWrap: 'break-word',
+                        whiteSpace: 'normal',
+                      }}
                     >
                       "{snippet.context}"
                     </Text>
@@ -1018,6 +1023,7 @@ const MobileSnippetsPage: React.FC = () => {
         title='Delete Snippet'
         size='sm'
         centered
+        zIndex={2000}
       >
         <Stack gap='md'>
           <Text>

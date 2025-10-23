@@ -46,7 +46,8 @@
     "react-syntax-highlighter": "^15.6.6",
     "react-timezone-select": "^3.2.8",
     "recharts": "^3.3.0",
-    "remark-gfm": "^4.0.0"
+    "remark-gfm": "^4.0.0",
+    "sentence-extractor": "^1.0.7"
   },
   "devDependencies": {
     "@faker-js/faker": "^9.8.0",

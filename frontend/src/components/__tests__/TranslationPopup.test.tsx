@@ -150,6 +150,7 @@ vi.mock('../../hooks/useTextSelection', () => ({
       y: 100,
       width: 50,
       height: 20,
+      sentence: 'This is a test sentence with Hello world in it.',
     },
     isVisible: true,
     clearSelection: vi.fn(),
@@ -342,6 +343,7 @@ describe('TranslationPopup', () => {
             y: 100,
             width: 50,
             height: 20,
+            sentence: 'Je dis Bonjour à tout le monde.',
           }}
           onClose={mockOnClose}
         />
@@ -356,6 +358,7 @@ describe('TranslationPopup', () => {
       translated_text: 'Translated text',
       source_language: 'en',
       target_language: 'es',
+      context: 'Je dis Bonjour à tout le monde.',
     });
   });
 

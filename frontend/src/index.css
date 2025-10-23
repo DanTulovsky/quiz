@@ -183,7 +183,7 @@ html {
 
 /* Fix for TranslationPopup Select dropdown z-index */
 .translation-popup .mantine-Select-dropdown {
-  z-index: 2000 !important;
+  z-index: 1600 !important;
 }
 
 .animate-pulse-subtle {

@@ -84,6 +84,7 @@ export const SnippetHighlighter: React.FC<SnippetHighlighterProps> = ({
     closeDeleteModal();
     setSnippetToDelete(null);
   };
+
   const segments = useMemo(() => {
     // If no snippets and no target word, return the original text as a single segment
     if ((!snippets || snippets.length === 0) && !targetWord) {
@@ -296,7 +297,18 @@ export const SnippetHighlighter: React.FC<SnippetHighlighterProps> = ({
           {snippet.context && (
             <>
               <Divider size='xs' />
-              <Text size='xs' c='dimmed' fs='italic'>
+              <Text
+                size='xs'
+                c='dimmed'
+                fs='italic'
+                style={{
+                  wordWrap: 'break-word',
+                  overflowWrap: 'break-word',
+                  whiteSpace: 'normal',
+                  maxWidth: '280px',
+                  width: '100%',
+                }}
+              >
                 "{snippet.context}"
               </Text>
             </>
@@ -309,17 +321,23 @@ export const SnippetHighlighter: React.FC<SnippetHighlighterProps> = ({
           key={index}
           position='top'
           withArrow
-          withinPortal
           shadow='md'
           radius='md'
-          trigger='hover'
+          trigger='click'
+          width={300}
+          offset={8}
+          middlewares={{ flip: true, shift: true, inline: false }}
         >
           <Popover.Target>
             <span
               style={{
                 borderBottom: '1px dashed var(--mantine-color-blue-6)',
-                cursor: 'help',
+                cursor: 'pointer',
                 textDecoration: 'none',
+                display: 'inline-block',
+                position: 'relative',
+                padding: '2px 4px',
+                margin: '0 1px',
               }}
             >
               {segment.text}
@@ -344,6 +362,7 @@ export const SnippetHighlighter: React.FC<SnippetHighlighterProps> = ({
           onClose={closeDeleteModal}
           title='Delete Snippet'
           centered
+          zIndex={2000}
         >
           <Stack gap='md'>
             <Text>
@@ -373,6 +392,7 @@ export const SnippetHighlighter: React.FC<SnippetHighlighterProps> = ({
         onClose={closeDeleteModal}
         title='Delete Snippet'
         centered
+        zIndex={2000}
       >
         <Stack gap='md'>
           <Text>
