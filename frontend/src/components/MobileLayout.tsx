@@ -26,6 +26,7 @@ import {
   IconLanguage,
   IconNotes,
   IconLanguageHiragana,
+  IconSettings,
 } from '@tabler/icons-react';
 import { useAuth } from '../hooks/useAuth';
 import { useMobileDetection } from '../hooks/useMobileDetection';
@@ -73,6 +74,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
     if (path.startsWith('/m/snippets')) return 'snippets';
     if (path.startsWith('/m/phrasebook')) return 'phrasebook';
     if (path.startsWith('/m/verb-conjugation')) return 'verb-conjugation';
+    if (path.startsWith('/m/settings')) return 'settings';
     return 'quiz';
   };
 
@@ -182,6 +184,18 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
               );
             })}
             <Divider my='xs' />
+            <Button
+              variant={activeTab === 'settings' ? 'light' : 'subtle'}
+              leftSection={<IconSettings size={16} />}
+              onClick={() => {
+                handleNavigation('/m/settings');
+                if (opened) toggle();
+              }}
+              fullWidth
+              justify='flex-start'
+            >
+              Settings
+            </Button>
             <Button
               variant='subtle'
               leftSection={<IconDeviceDesktop size={16} />}
