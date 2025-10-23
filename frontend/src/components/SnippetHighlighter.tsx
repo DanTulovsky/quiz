@@ -256,7 +256,9 @@ export const SnippetHighlighter: React.FC<SnippetHighlighterProps> = ({
                 onClick={e => {
                   e.stopPropagation();
                   // Navigate to snippets page with search for this specific snippet
-                  const searchQuery = encodeURIComponent(snippet.original_text || '');
+                  const searchQuery = encodeURIComponent(
+                    snippet.original_text || ''
+                  );
                   navigate(`/snippets?q=${searchQuery}`);
                 }}
                 title='View this snippet in snippets page'

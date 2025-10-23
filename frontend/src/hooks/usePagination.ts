@@ -61,7 +61,9 @@ export function usePagination<TData = unknown>(
     queryKey: [...queryKey, 'pagination', currentPage],
     queryFn: ({ pageParam = 0 }) => {
       // For traditional pagination, calculate offset based on current page
-      const offset = enableInfiniteScroll ? pageParam * limit : (currentPage - 1) * limit;
+      const offset = enableInfiniteScroll
+        ? pageParam * limit
+        : (currentPage - 1) * limit;
       return queryFn({
         limit,
         offset,
