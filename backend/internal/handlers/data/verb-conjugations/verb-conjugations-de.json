@@ -13,12 +13,42 @@
           "tenseNameEn": "Present",
           "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in German.",
           "conjugations": [
-            { "pronoun": "ich", "form": "bin", "exampleSentence": "Ich bin glücklich", "exampleSentenceEn": "I am happy" },
-            { "pronoun": "du", "form": "bist", "exampleSentence": "Du bist gut", "exampleSentenceEn": "You are good" },
-            { "pronoun": "er/sie/es", "form": "ist", "exampleSentence": "Er ist Deutscher", "exampleSentenceEn": "He is German" },
-            { "pronoun": "wir", "form": "sind", "exampleSentence": "Wir sind Freunde", "exampleSentenceEn": "We are friends" },
-            { "pronoun": "ihr", "form": "seid", "exampleSentence": "Ihr seid Studenten", "exampleSentenceEn": "You are students" },
-            { "pronoun": "sie/Sie", "form": "sind", "exampleSentence": "Sie sind hier", "exampleSentenceEn": "They are here" }
+            {
+              "pronoun": "ich",
+              "form": "bin",
+              "exampleSentence": "Ich bin glücklich",
+              "exampleSentenceEn": "I am happy"
+            },
+            {
+              "pronoun": "du",
+              "form": "bist",
+              "exampleSentence": "Du bist gut",
+              "exampleSentenceEn": "You are good"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "ist",
+              "exampleSentence": "Er ist Deutscher",
+              "exampleSentenceEn": "He is German"
+            },
+            {
+              "pronoun": "wir",
+              "form": "sind",
+              "exampleSentence": "Wir sind Freunde",
+              "exampleSentenceEn": "We are friends"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "seid",
+              "exampleSentence": "Ihr seid Studenten",
+              "exampleSentenceEn": "You are students"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "sind",
+              "exampleSentence": "Sie sind hier",
+              "exampleSentenceEn": "They are here"
+            }
           ]
         },
         {
@@ -27,12 +57,42 @@
           "tenseNameEn": "Simple Past",
           "description": "Used primarily in written German and formal speech to describe completed actions in the past. Also used in storytelling and narratives.",
           "conjugations": [
-            { "pronoun": "ich", "form": "war", "exampleSentence": "Ich war müde", "exampleSentenceEn": "I was tired" },
-            { "pronoun": "du", "form": "warst", "exampleSentence": "Du warst jung", "exampleSentenceEn": "You were young" },
-            { "pronoun": "er/sie/es", "form": "war", "exampleSentence": "Sie war schön", "exampleSentenceEn": "She was beautiful" },
-            { "pronoun": "wir", "form": "waren", "exampleSentence": "Wir waren zufrieden", "exampleSentenceEn": "We were satisfied" },
-            { "pronoun": "ihr", "form": "wart", "exampleSentence": "Ihr wart hier", "exampleSentenceEn": "You were here" },
-            { "pronoun": "sie/Sie", "form": "waren", "exampleSentence": "Sie waren Freunde", "exampleSentenceEn": "They were friends" }
+            {
+              "pronoun": "ich",
+              "form": "war",
+              "exampleSentence": "Ich war müde",
+              "exampleSentenceEn": "I was tired"
+            },
+            {
+              "pronoun": "du",
+              "form": "warst",
+              "exampleSentence": "Du warst jung",
+              "exampleSentenceEn": "You were young"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "war",
+              "exampleSentence": "Sie war schön",
+              "exampleSentenceEn": "She was beautiful"
+            },
+            {
+              "pronoun": "wir",
+              "form": "waren",
+              "exampleSentence": "Wir waren zufrieden",
+              "exampleSentenceEn": "We were satisfied"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "wart",
+              "exampleSentence": "Ihr wart hier",
+              "exampleSentenceEn": "You were here"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "waren",
+              "exampleSentence": "Sie waren Freunde",
+              "exampleSentenceEn": "They were friends"
+            }
           ]
         },
         {
@@ -41,12 +101,42 @@
           "tenseNameEn": "Future I",
           "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'morgen' (tomorrow) or 'nächste Woche' (next week).",
           "conjugations": [
-            { "pronoun": "ich", "form": "werde sein", "exampleSentence": "Ich werde zu Hause sein", "exampleSentenceEn": "I will be at home" },
-            { "pronoun": "du", "form": "wirst sein", "exampleSentence": "Du wirst gut sein", "exampleSentenceEn": "You will be good" },
-            { "pronoun": "er/sie/es", "form": "wird sein", "exampleSentence": "Sie wird glücklich sein", "exampleSentenceEn": "She will be happy" },
-            { "pronoun": "wir", "form": "werden sein", "exampleSentence": "Wir werden hier sein", "exampleSentenceEn": "We will be here" },
-            { "pronoun": "ihr", "form": "werdet sein", "exampleSentence": "Ihr werdet bereit sein", "exampleSentenceEn": "You will be ready" },
-            { "pronoun": "sie/Sie", "form": "werden sein", "exampleSentence": "Sie werden Freunde sein", "exampleSentenceEn": "They will be friends" }
+            {
+              "pronoun": "ich",
+              "form": "werde sein",
+              "exampleSentence": "Ich werde zu Hause sein",
+              "exampleSentenceEn": "I will be at home"
+            },
+            {
+              "pronoun": "du",
+              "form": "wirst sein",
+              "exampleSentence": "Du wirst gut sein",
+              "exampleSentenceEn": "You will be good"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "wird sein",
+              "exampleSentence": "Sie wird glücklich sein",
+              "exampleSentenceEn": "She will be happy"
+            },
+            {
+              "pronoun": "wir",
+              "form": "werden sein",
+              "exampleSentence": "Wir werden hier sein",
+              "exampleSentenceEn": "We will be here"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "werdet sein",
+              "exampleSentence": "Ihr werdet bereit sein",
+              "exampleSentenceEn": "You will be ready"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "werden sein",
+              "exampleSentence": "Sie werden Freunde sein",
+              "exampleSentenceEn": "They will be friends"
+            }
           ]
         },
         {
@@ -55,12 +145,42 @@
           "tenseNameEn": "Future Perfect",
           "description": "Used to express actions that will be completed by a certain point in the future. Often used with time expressions like 'bis morgen' (by tomorrow) or to make assumptions about past events.",
           "conjugations": [
-            { "pronoun": "ich", "form": "werde gewesen sein", "exampleSentence": "Bis nächste Woche werde ich dort gewesen sein", "exampleSentenceEn": "By next week, I will have been there" },
-            { "pronoun": "du", "form": "wirst gewesen sein", "exampleSentence": "Du wirst sicher sehr müde gewesen sein nach der langen Reise", "exampleSentenceEn": "You will surely have been very tired after the long journey" },
-            { "pronoun": "er/sie/es", "form": "wird gewesen sein", "exampleSentence": "Sie wird wahrscheinlich zu Hause gewesen sein, als ich anrief", "exampleSentenceEn": "She will probably have been at home when I called" },
-            { "pronoun": "wir", "form": "werden gewesen sein", "exampleSentence": "In zwei Jahren werden wir verheiratet gewesen sein", "exampleSentenceEn": "In two years, we will have been married" },
-            { "pronoun": "ihr", "form": "werdet gewesen sein", "exampleSentence": "Ihr werdet mit der Arbeit fertig gewesen sein, bevor der Chef kommt", "exampleSentenceEn": "You will have been finished with the work before the boss arrives" },
-            { "pronoun": "sie/Sie", "form": "werden gewesen sein", "exampleSentence": "Bis Ende des Monats werden sie in drei Ländern gewesen sein", "exampleSentenceEn": "By the end of the month, they will have been to three countries" }
+            {
+              "pronoun": "ich",
+              "form": "werde gewesen sein",
+              "exampleSentence": "Bis nächste Woche werde ich dort gewesen sein",
+              "exampleSentenceEn": "By next week, I will have been there"
+            },
+            {
+              "pronoun": "du",
+              "form": "wirst gewesen sein",
+              "exampleSentence": "Du wirst sicher sehr müde gewesen sein nach der langen Reise",
+              "exampleSentenceEn": "You will surely have been very tired after the long journey"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "wird gewesen sein",
+              "exampleSentence": "Sie wird wahrscheinlich zu Hause gewesen sein, als ich anrief",
+              "exampleSentenceEn": "She will probably have been at home when I called"
+            },
+            {
+              "pronoun": "wir",
+              "form": "werden gewesen sein",
+              "exampleSentence": "In zwei Jahren werden wir verheiratet gewesen sein",
+              "exampleSentenceEn": "In two years, we will have been married"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "werdet gewesen sein",
+              "exampleSentence": "Ihr werdet mit der Arbeit fertig gewesen sein, bevor der Chef kommt",
+              "exampleSentenceEn": "You will have been finished with the work before the boss arrives"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "werden gewesen sein",
+              "exampleSentence": "Bis Ende des Monats werden sie in drei Ländern gewesen sein",
+              "exampleSentenceEn": "By the end of the month, they will have been to three countries"
+            }
           ]
         },
         {
@@ -69,12 +189,42 @@
           "tenseNameEn": "Present Perfect",
           "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken German.",
           "conjugations": [
-            { "pronoun": "ich", "form": "bin gewesen", "exampleSentence": "Ich bin in Berlin gewesen", "exampleSentenceEn": "I have been to Berlin" },
-            { "pronoun": "du", "form": "bist gewesen", "exampleSentence": "Du bist gut gewesen", "exampleSentenceEn": "You have been good" },
-            { "pronoun": "er/sie/es", "form": "ist gewesen", "exampleSentence": "Sie ist nett gewesen", "exampleSentenceEn": "She has been nice" },
-            { "pronoun": "wir", "form": "sind gewesen", "exampleSentence": "Wir sind glücklich gewesen", "exampleSentenceEn": "We have been happy" },
-            { "pronoun": "ihr", "form": "seid gewesen", "exampleSentence": "Ihr seid hier gewesen", "exampleSentenceEn": "You have been here" },
-            { "pronoun": "sie/Sie", "form": "sind gewesen", "exampleSentence": "Sie sind Freunde gewesen", "exampleSentenceEn": "They have been friends" }
+            {
+              "pronoun": "ich",
+              "form": "bin gewesen",
+              "exampleSentence": "Ich bin in Berlin gewesen",
+              "exampleSentenceEn": "I have been to Berlin"
+            },
+            {
+              "pronoun": "du",
+              "form": "bist gewesen",
+              "exampleSentence": "Du bist gut gewesen",
+              "exampleSentenceEn": "You have been good"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "ist gewesen",
+              "exampleSentence": "Sie ist nett gewesen",
+              "exampleSentenceEn": "She has been nice"
+            },
+            {
+              "pronoun": "wir",
+              "form": "sind gewesen",
+              "exampleSentence": "Wir sind glücklich gewesen",
+              "exampleSentenceEn": "We have been happy"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "seid gewesen",
+              "exampleSentence": "Ihr seid hier gewesen",
+              "exampleSentenceEn": "You have been here"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "sind gewesen",
+              "exampleSentence": "Sie sind Freunde gewesen",
+              "exampleSentenceEn": "They have been friends"
+            }
           ]
         },
         {
@@ -83,12 +233,42 @@
           "tenseNameEn": "Pluperfect",
           "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
           "conjugations": [
-            { "pronoun": "ich", "form": "war gewesen", "exampleSentence": "Als ich ankam, war ich schon einmal dort gewesen", "exampleSentenceEn": "When I arrived, I had already been there before" },
-            { "pronoun": "du", "form": "warst gewesen", "exampleSentence": "Du warst vor der Prüfung sehr nervös gewesen", "exampleSentenceEn": "You had been very nervous before the exam" },
-            { "pronoun": "er/sie/es", "form": "war gewesen", "exampleSentence": "Sie war lange Zeit Lehrerin gewesen, bevor sie Direktorin wurde", "exampleSentenceEn": "She had been a teacher for a long time before she became principal" },
-            { "pronoun": "wir", "form": "waren gewesen", "exampleSentence": "Wir waren im Museum gewesen, bevor wir ins Café gingen", "exampleSentenceEn": "We had been to the museum before we went to the café" },
-            { "pronoun": "ihr", "form": "wart gewesen", "exampleSentence": "Ihr wart die ganze Nacht wach gewesen", "exampleSentenceEn": "You had been awake all night" },
-            { "pronoun": "sie/Sie", "form": "waren gewesen", "exampleSentence": "Sie waren gute Freunde gewesen, bis der Streit sie trennte", "exampleSentenceEn": "They had been good friends until the argument separated them" }
+            {
+              "pronoun": "ich",
+              "form": "war gewesen",
+              "exampleSentence": "Als ich ankam, war ich schon einmal dort gewesen",
+              "exampleSentenceEn": "When I arrived, I had already been there before"
+            },
+            {
+              "pronoun": "du",
+              "form": "warst gewesen",
+              "exampleSentence": "Du warst vor der Prüfung sehr nervös gewesen",
+              "exampleSentenceEn": "You had been very nervous before the exam"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "war gewesen",
+              "exampleSentence": "Sie war lange Zeit Lehrerin gewesen, bevor sie Direktorin wurde",
+              "exampleSentenceEn": "She had been a teacher for a long time before she became principal"
+            },
+            {
+              "pronoun": "wir",
+              "form": "waren gewesen",
+              "exampleSentence": "Wir waren im Museum gewesen, bevor wir ins Café gingen",
+              "exampleSentenceEn": "We had been to the museum before we went to the café"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "wart gewesen",
+              "exampleSentence": "Ihr wart die ganze Nacht wach gewesen",
+              "exampleSentenceEn": "You had been awake all night"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "waren gewesen",
+              "exampleSentence": "Sie waren gute Freunde gewesen, bis der Streit sie trennte",
+              "exampleSentenceEn": "They had been good friends until the argument separated them"
+            }
           ]
         },
         {
@@ -97,12 +277,42 @@
           "tenseNameEn": "Subjunctive I",
           "description": "Used primarily in indirect speech and formal writing to report what someone else has said. Also used in certain fixed expressions and formal contexts.",
           "conjugations": [
-            { "pronoun": "ich", "form": "sei", "exampleSentence": "Er sagt, er sei glücklich", "exampleSentenceEn": "He says he is happy" },
-            { "pronoun": "du", "form": "seist", "exampleSentence": "Er sagt, du seist gut", "exampleSentenceEn": "He says you are good" },
-            { "pronoun": "er/sie/es", "form": "sei", "exampleSentence": "Er sagt, sie sei nett", "exampleSentenceEn": "He says she is nice" },
-            { "pronoun": "wir", "form": "seien", "exampleSentence": "Er sagt, wir seien hier", "exampleSentenceEn": "He says we are here" },
-            { "pronoun": "ihr", "form": "seiet", "exampleSentence": "Er sagt, ihr seiet bereit", "exampleSentenceEn": "He says you are ready" },
-            { "pronoun": "sie/Sie", "form": "seien", "exampleSentence": "Er sagt, sie seien Freunde", "exampleSentenceEn": "He says they are friends" }
+            {
+              "pronoun": "ich",
+              "form": "sei",
+              "exampleSentence": "Er sagt, er sei glücklich",
+              "exampleSentenceEn": "He says he is happy"
+            },
+            {
+              "pronoun": "du",
+              "form": "seist",
+              "exampleSentence": "Er sagt, du seist gut",
+              "exampleSentenceEn": "He says you are good"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "sei",
+              "exampleSentence": "Er sagt, sie sei nett",
+              "exampleSentenceEn": "He says she is nice"
+            },
+            {
+              "pronoun": "wir",
+              "form": "seien",
+              "exampleSentence": "Er sagt, wir seien hier",
+              "exampleSentenceEn": "He says we are here"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "seiet",
+              "exampleSentence": "Er sagt, ihr seiet bereit",
+              "exampleSentenceEn": "He says you are ready"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "seien",
+              "exampleSentence": "Er sagt, sie seien Freunde",
+              "exampleSentenceEn": "He says they are friends"
+            }
           ]
         },
         {
@@ -111,12 +321,42 @@
           "tenseNameEn": "Subjunctive II",
           "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'wenn' (if) clauses.",
           "conjugations": [
-            { "pronoun": "ich", "form": "wäre", "exampleSentence": "Ich wäre glücklich", "exampleSentenceEn": "I would be happy" },
-            { "pronoun": "du", "form": "wärst", "exampleSentence": "Du wärst gut", "exampleSentenceEn": "You would be good" },
-            { "pronoun": "er/sie/es", "form": "wäre", "exampleSentence": "Sie wäre nett", "exampleSentenceEn": "She would be nice" },
-            { "pronoun": "wir", "form": "wären", "exampleSentence": "Wir wären hier", "exampleSentenceEn": "We would be here" },
-            { "pronoun": "ihr", "form": "wäret", "exampleSentence": "Ihr wäret bereit", "exampleSentenceEn": "You would be ready" },
-            { "pronoun": "sie/Sie", "form": "wären", "exampleSentence": "Sie wären Freunde", "exampleSentenceEn": "They would be friends" }
+            {
+              "pronoun": "ich",
+              "form": "wäre",
+              "exampleSentence": "Ich wäre glücklich",
+              "exampleSentenceEn": "I would be happy"
+            },
+            {
+              "pronoun": "du",
+              "form": "wärst",
+              "exampleSentence": "Du wärst gut",
+              "exampleSentenceEn": "You would be good"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "wäre",
+              "exampleSentence": "Sie wäre nett",
+              "exampleSentenceEn": "She would be nice"
+            },
+            {
+              "pronoun": "wir",
+              "form": "wären",
+              "exampleSentence": "Wir wären hier",
+              "exampleSentenceEn": "We would be here"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "wäret",
+              "exampleSentence": "Ihr wäret bereit",
+              "exampleSentenceEn": "You would be ready"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "wären",
+              "exampleSentence": "Sie wären Freunde",
+              "exampleSentenceEn": "They would be friends"
+            }
           ]
         },
         {
@@ -125,9 +365,24 @@
           "tenseNameEn": "Imperative",
           "description": "Used to give commands, orders, or instructions. Only exists for the second person (du, ihr) and formal address (Sie). The subject pronoun is usually omitted.",
           "conjugations": [
-            { "pronoun": "du", "form": "sei", "exampleSentence": "Sei bitte pünktlich zum Meeting!", "exampleSentenceEn": "Please be on time for the meeting!" },
-            { "pronoun": "ihr", "form": "seid", "exampleSentence": "Seid vorsichtig, wenn ihr über die Straße geht!", "exampleSentenceEn": "Be careful when you cross the street!" },
-            { "pronoun": "Sie", "form": "seien Sie", "exampleSentence": "Seien Sie so freundlich und helfen Sie mir!", "exampleSentenceEn": "Be so kind and help me!" }
+            {
+              "pronoun": "du",
+              "form": "sei",
+              "exampleSentence": "Sei bitte pünktlich zum Meeting!",
+              "exampleSentenceEn": "Please be on time for the meeting!"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "seid",
+              "exampleSentence": "Seid vorsichtig, wenn ihr über die Straße geht!",
+              "exampleSentenceEn": "Be careful when you cross the street!"
+            },
+            {
+              "pronoun": "Sie",
+              "form": "seien Sie",
+              "exampleSentence": "Seien Sie so freundlich und helfen Sie mir!",
+              "exampleSentenceEn": "Be so kind and help me!"
+            }
           ]
         }
       ]
@@ -143,12 +398,42 @@
           "tenseNameEn": "Present",
           "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in German.",
           "conjugations": [
-            { "pronoun": "ich", "form": "habe", "exampleSentence": "Ich habe ein Buch", "exampleSentenceEn": "I have a book" },
-            { "pronoun": "du", "form": "hast", "exampleSentence": "Du hast Hunger", "exampleSentenceEn": "You are hungry" },
-            { "pronoun": "er/sie/es", "form": "hat", "exampleSentence": "Sie hat eine Katze", "exampleSentenceEn": "She has a cat" },
-            { "pronoun": "wir", "form": "haben", "exampleSentence": "Wir haben Zeit", "exampleSentenceEn": "We have time" },
-            { "pronoun": "ihr", "form": "habt", "exampleSentence": "Ihr habt recht", "exampleSentenceEn": "You are right" },
-            { "pronoun": "sie/Sie", "form": "haben", "exampleSentence": "Sie haben ein Haus", "exampleSentenceEn": "They have a house" }
+            {
+              "pronoun": "ich",
+              "form": "habe",
+              "exampleSentence": "Ich habe ein Buch",
+              "exampleSentenceEn": "I have a book"
+            },
+            {
+              "pronoun": "du",
+              "form": "hast",
+              "exampleSentence": "Du hast Hunger",
+              "exampleSentenceEn": "You are hungry"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "hat",
+              "exampleSentence": "Sie hat eine Katze",
+              "exampleSentenceEn": "She has a cat"
+            },
+            {
+              "pronoun": "wir",
+              "form": "haben",
+              "exampleSentence": "Wir haben Zeit",
+              "exampleSentenceEn": "We have time"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "habt",
+              "exampleSentence": "Ihr habt recht",
+              "exampleSentenceEn": "You are right"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "haben",
+              "exampleSentence": "Sie haben ein Haus",
+              "exampleSentenceEn": "They have a house"
+            }
           ]
         },
         {
@@ -157,12 +442,42 @@
           "tenseNameEn": "Simple Past",
           "description": "Used primarily in written German and formal speech to describe completed actions in the past. Also used in storytelling and narratives.",
           "conjugations": [
-            { "pronoun": "ich", "form": "hatte", "exampleSentence": "Ich hatte Hunger", "exampleSentenceEn": "I was hungry" },
-            { "pronoun": "du", "form": "hattest", "exampleSentence": "Du hattest recht", "exampleSentenceEn": "You were right" },
-            { "pronoun": "er/sie/es", "form": "hatte", "exampleSentence": "Sie hatte einen Hund", "exampleSentenceEn": "She had a dog" },
-            { "pronoun": "wir", "form": "hatten", "exampleSentence": "Wir hatten Zeit", "exampleSentenceEn": "We had time" },
-            { "pronoun": "ihr", "form": "hattet", "exampleSentence": "Ihr hattet Angst", "exampleSentenceEn": "You were afraid" },
-            { "pronoun": "sie/Sie", "form": "hatten", "exampleSentence": "Sie hatten ein Auto", "exampleSentenceEn": "They had a car" }
+            {
+              "pronoun": "ich",
+              "form": "hatte",
+              "exampleSentence": "Ich hatte Hunger",
+              "exampleSentenceEn": "I was hungry"
+            },
+            {
+              "pronoun": "du",
+              "form": "hattest",
+              "exampleSentence": "Du hattest recht",
+              "exampleSentenceEn": "You were right"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "hatte",
+              "exampleSentence": "Sie hatte einen Hund",
+              "exampleSentenceEn": "She had a dog"
+            },
+            {
+              "pronoun": "wir",
+              "form": "hatten",
+              "exampleSentence": "Wir hatten Zeit",
+              "exampleSentenceEn": "We had time"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "hattet",
+              "exampleSentence": "Ihr hattet Angst",
+              "exampleSentenceEn": "You were afraid"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "hatten",
+              "exampleSentence": "Sie hatten ein Auto",
+              "exampleSentenceEn": "They had a car"
+            }
           ]
         },
         {
@@ -171,12 +486,42 @@
           "tenseNameEn": "Future I",
           "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'morgen' (tomorrow) or 'nächste Woche' (next week).",
           "conjugations": [
-            { "pronoun": "ich", "form": "werde haben", "exampleSentence": "Ich werde Zeit haben", "exampleSentenceEn": "I will have time" },
-            { "pronoun": "du", "form": "wirst haben", "exampleSentence": "Du wirst Erfolg haben", "exampleSentenceEn": "You will succeed" },
-            { "pronoun": "er/sie/es", "form": "wird haben", "exampleSentence": "Sie wird ein Kind haben", "exampleSentenceEn": "She will have a child" },
-            { "pronoun": "wir", "form": "werden haben", "exampleSentence": "Wir werden Glück haben", "exampleSentenceEn": "We will be lucky" },
-            { "pronoun": "ihr", "form": "werdet haben", "exampleSentence": "Ihr werdet recht haben", "exampleSentenceEn": "You will be right" },
-            { "pronoun": "sie/Sie", "form": "werden haben", "exampleSentence": "Sie werden eine Party haben", "exampleSentenceEn": "They will have a party" }
+            {
+              "pronoun": "ich",
+              "form": "werde haben",
+              "exampleSentence": "Ich werde Zeit haben",
+              "exampleSentenceEn": "I will have time"
+            },
+            {
+              "pronoun": "du",
+              "form": "wirst haben",
+              "exampleSentence": "Du wirst Erfolg haben",
+              "exampleSentenceEn": "You will succeed"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "wird haben",
+              "exampleSentence": "Sie wird ein Kind haben",
+              "exampleSentenceEn": "She will have a child"
+            },
+            {
+              "pronoun": "wir",
+              "form": "werden haben",
+              "exampleSentence": "Wir werden Glück haben",
+              "exampleSentenceEn": "We will be lucky"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "werdet haben",
+              "exampleSentence": "Ihr werdet recht haben",
+              "exampleSentenceEn": "You will be right"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "werden haben",
+              "exampleSentence": "Sie werden eine Party haben",
+              "exampleSentenceEn": "They will have a party"
+            }
           ]
         },
         {
@@ -185,12 +530,42 @@
           "tenseNameEn": "Future Perfect",
           "description": "Used to express actions that will be completed by a certain point in the future. Often used with time expressions like 'bis morgen' (by tomorrow) or to make assumptions about past events.",
           "conjugations": [
-            { "pronoun": "ich", "form": "werde gehabt haben", "exampleSentence": "Bis morgen werde ich die Antwort gehabt haben", "exampleSentenceEn": "By tomorrow, I will have had the answer" },
-            { "pronoun": "du", "form": "wirst gehabt haben", "exampleSentence": "Du wirst sicher einen anstrengenden Tag gehabt haben", "exampleSentenceEn": "You will surely have had an exhausting day" },
-            { "pronoun": "er/sie/es", "form": "wird gehabt haben", "exampleSentence": "Er wird wahrscheinlich keine Zeit gehabt haben, dich anzurufen", "exampleSentenceEn": "He will probably not have had time to call you" },
-            { "pronoun": "wir", "form": "werden gehabt haben", "exampleSentence": "Bis Ende des Jahres werden wir genug Geld für die Reise gehabt haben", "exampleSentenceEn": "By the end of the year, we will have had enough money for the trip" },
-            { "pronoun": "ihr", "form": "werdet gehabt haben", "exampleSentence": "Ihr werdet bestimmt viel Spaß auf der Party gehabt haben", "exampleSentenceEn": "You will certainly have had a lot of fun at the party" },
-            { "pronoun": "sie/Sie", "form": "werden gehabt haben", "exampleSentence": "Sie werden bis dahin drei Meetings gehabt haben", "exampleSentenceEn": "They will have had three meetings by then" }
+            {
+              "pronoun": "ich",
+              "form": "werde gehabt haben",
+              "exampleSentence": "Bis morgen werde ich die Antwort gehabt haben",
+              "exampleSentenceEn": "By tomorrow, I will have had the answer"
+            },
+            {
+              "pronoun": "du",
+              "form": "wirst gehabt haben",
+              "exampleSentence": "Du wirst sicher einen anstrengenden Tag gehabt haben",
+              "exampleSentenceEn": "You will surely have had an exhausting day"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "wird gehabt haben",
+              "exampleSentence": "Er wird wahrscheinlich keine Zeit gehabt haben, dich anzurufen",
+              "exampleSentenceEn": "He will probably not have had time to call you"
+            },
+            {
+              "pronoun": "wir",
+              "form": "werden gehabt haben",
+              "exampleSentence": "Bis Ende des Jahres werden wir genug Geld für die Reise gehabt haben",
+              "exampleSentenceEn": "By the end of the year, we will have had enough money for the trip"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "werdet gehabt haben",
+              "exampleSentence": "Ihr werdet bestimmt viel Spaß auf der Party gehabt haben",
+              "exampleSentenceEn": "You will certainly have had a lot of fun at the party"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "werden gehabt haben",
+              "exampleSentence": "Sie werden bis dahin drei Meetings gehabt haben",
+              "exampleSentenceEn": "They will have had three meetings by then"
+            }
           ]
         },
         {
@@ -199,12 +574,42 @@
           "tenseNameEn": "Present Perfect",
           "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken German.",
           "conjugations": [
-            { "pronoun": "ich", "form": "habe gehabt", "exampleSentence": "Ich habe Glück gehabt", "exampleSentenceEn": "I have been lucky" },
-            { "pronoun": "du", "form": "hast gehabt", "exampleSentence": "Du hast recht gehabt", "exampleSentenceEn": "You have been right" },
-            { "pronoun": "er/sie/es", "form": "hat gehabt", "exampleSentence": "Sie hat ein Kind gehabt", "exampleSentenceEn": "She has had a child" },
-            { "pronoun": "wir", "form": "haben gehabt", "exampleSentence": "Wir haben Zeit gehabt", "exampleSentenceEn": "We have had time" },
-            { "pronoun": "ihr", "form": "habt gehabt", "exampleSentence": "Ihr habt Angst gehabt", "exampleSentenceEn": "You have been afraid" },
-            { "pronoun": "sie/Sie", "form": "haben gehabt", "exampleSentence": "Sie haben eine Party gehabt", "exampleSentenceEn": "They have had a party" }
+            {
+              "pronoun": "ich",
+              "form": "habe gehabt",
+              "exampleSentence": "Ich habe Glück gehabt",
+              "exampleSentenceEn": "I have been lucky"
+            },
+            {
+              "pronoun": "du",
+              "form": "hast gehabt",
+              "exampleSentence": "Du hast recht gehabt",
+              "exampleSentenceEn": "You have been right"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "hat gehabt",
+              "exampleSentence": "Sie hat ein Kind gehabt",
+              "exampleSentenceEn": "She has had a child"
+            },
+            {
+              "pronoun": "wir",
+              "form": "haben gehabt",
+              "exampleSentence": "Wir haben Zeit gehabt",
+              "exampleSentenceEn": "We have had time"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "habt gehabt",
+              "exampleSentence": "Ihr habt Angst gehabt",
+              "exampleSentenceEn": "You have been afraid"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "haben gehabt",
+              "exampleSentence": "Sie haben eine Party gehabt",
+              "exampleSentenceEn": "They have had a party"
+            }
           ]
         },
         {
@@ -213,12 +618,42 @@
           "tenseNameEn": "Pluperfect",
           "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
           "conjugations": [
-            { "pronoun": "ich", "form": "hatte gehabt", "exampleSentence": "Ich hatte vor dem Unfall noch nie Probleme mit dem Auto gehabt", "exampleSentenceEn": "I had never had problems with the car before the accident" },
-            { "pronoun": "du", "form": "hattest gehabt", "exampleSentence": "Du hattest großes Glück gehabt, dass nichts Schlimmes passiert war", "exampleSentenceEn": "You had been very lucky that nothing bad had happened" },
-            { "pronoun": "er/sie/es", "form": "hatte gehabt", "exampleSentence": "Sie hatte schon drei Katzen gehabt, bevor sie den Hund bekam", "exampleSentenceEn": "She had already had three cats before she got the dog" },
-            { "pronoun": "wir", "form": "hatten gehabt", "exampleSentence": "Wir hatten keine Ahnung gehabt, was uns erwartete", "exampleSentenceEn": "We had had no idea what was waiting for us" },
-            { "pronoun": "ihr", "form": "hattet gehabt", "exampleSentence": "Ihr hattet genug Zeit gehabt, um alles vorzubereiten", "exampleSentenceEn": "You had had enough time to prepare everything" },
-            { "pronoun": "sie/Sie", "form": "hatten gehabt", "exampleSentence": "Sie hatten lange Zweifel gehabt, bevor sie die Entscheidung trafen", "exampleSentenceEn": "They had had doubts for a long time before they made the decision" }
+            {
+              "pronoun": "ich",
+              "form": "hatte gehabt",
+              "exampleSentence": "Ich hatte vor dem Unfall noch nie Probleme mit dem Auto gehabt",
+              "exampleSentenceEn": "I had never had problems with the car before the accident"
+            },
+            {
+              "pronoun": "du",
+              "form": "hattest gehabt",
+              "exampleSentence": "Du hattest großes Glück gehabt, dass nichts Schlimmes passiert war",
+              "exampleSentenceEn": "You had been very lucky that nothing bad had happened"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "hatte gehabt",
+              "exampleSentence": "Sie hatte schon drei Katzen gehabt, bevor sie den Hund bekam",
+              "exampleSentenceEn": "She had already had three cats before she got the dog"
+            },
+            {
+              "pronoun": "wir",
+              "form": "hatten gehabt",
+              "exampleSentence": "Wir hatten keine Ahnung gehabt, was uns erwartete",
+              "exampleSentenceEn": "We had had no idea what was waiting for us"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "hattet gehabt",
+              "exampleSentence": "Ihr hattet genug Zeit gehabt, um alles vorzubereiten",
+              "exampleSentenceEn": "You had had enough time to prepare everything"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "hatten gehabt",
+              "exampleSentence": "Sie hatten lange Zweifel gehabt, bevor sie die Entscheidung trafen",
+              "exampleSentenceEn": "They had had doubts for a long time before they made the decision"
+            }
           ]
         },
         {
@@ -227,12 +662,42 @@
           "tenseNameEn": "Subjunctive I",
           "description": "Used primarily in indirect speech and formal writing to report what someone else has said. Also used in certain fixed expressions and formal contexts.",
           "conjugations": [
-            { "pronoun": "ich", "form": "habe", "exampleSentence": "Er sagt, er habe Zeit", "exampleSentenceEn": "He says he has time" },
-            { "pronoun": "du", "form": "habest", "exampleSentence": "Er sagt, du habest recht", "exampleSentenceEn": "He says you are right" },
-            { "pronoun": "er/sie/es", "form": "habe", "exampleSentence": "Er sagt, sie habe Glück", "exampleSentenceEn": "He says she is lucky" },
-            { "pronoun": "wir", "form": "haben", "exampleSentence": "Er sagt, wir haben Zeit", "exampleSentenceEn": "He says we have time" },
-            { "pronoun": "ihr", "form": "habet", "exampleSentence": "Er sagt, ihr habet Glück", "exampleSentenceEn": "He says you are lucky" },
-            { "pronoun": "sie/Sie", "form": "haben", "exampleSentence": "Er sagt, sie haben eine Party", "exampleSentenceEn": "He says they have a party" }
+            {
+              "pronoun": "ich",
+              "form": "habe",
+              "exampleSentence": "Er sagt, er habe Zeit",
+              "exampleSentenceEn": "He says he has time"
+            },
+            {
+              "pronoun": "du",
+              "form": "habest",
+              "exampleSentence": "Er sagt, du habest recht",
+              "exampleSentenceEn": "He says you are right"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "habe",
+              "exampleSentence": "Er sagt, sie habe Glück",
+              "exampleSentenceEn": "He says she is lucky"
+            },
+            {
+              "pronoun": "wir",
+              "form": "haben",
+              "exampleSentence": "Er sagt, wir haben Zeit",
+              "exampleSentenceEn": "He says we have time"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "habet",
+              "exampleSentence": "Er sagt, ihr habet Glück",
+              "exampleSentenceEn": "He says you are lucky"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "haben",
+              "exampleSentence": "Er sagt, sie haben eine Party",
+              "exampleSentenceEn": "He says they have a party"
+            }
           ]
         },
         {
@@ -241,12 +706,42 @@
           "tenseNameEn": "Subjunctive II",
           "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'wenn' (if) clauses.",
           "conjugations": [
-            { "pronoun": "ich", "form": "hätte", "exampleSentence": "Ich hätte Zeit", "exampleSentenceEn": "I would have time" },
-            { "pronoun": "du", "form": "hättest", "exampleSentence": "Du hättest recht", "exampleSentenceEn": "You would be right" },
-            { "pronoun": "er/sie/es", "form": "hätte", "exampleSentence": "Sie hätte ein Kind", "exampleSentenceEn": "She would have a child" },
-            { "pronoun": "wir", "form": "hätten", "exampleSentence": "Wir hätten Glück", "exampleSentenceEn": "We would be lucky" },
-            { "pronoun": "ihr", "form": "hättet", "exampleSentence": "Ihr hättet Angst", "exampleSentenceEn": "You would be afraid" },
-            { "pronoun": "sie/Sie", "form": "hätten", "exampleSentence": "Sie hätten eine Party", "exampleSentenceEn": "They would have a party" }
+            {
+              "pronoun": "ich",
+              "form": "hätte",
+              "exampleSentence": "Ich hätte Zeit",
+              "exampleSentenceEn": "I would have time"
+            },
+            {
+              "pronoun": "du",
+              "form": "hättest",
+              "exampleSentence": "Du hättest recht",
+              "exampleSentenceEn": "You would be right"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "hätte",
+              "exampleSentence": "Sie hätte ein Kind",
+              "exampleSentenceEn": "She would have a child"
+            },
+            {
+              "pronoun": "wir",
+              "form": "hätten",
+              "exampleSentence": "Wir hätten Glück",
+              "exampleSentenceEn": "We would be lucky"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "hättet",
+              "exampleSentence": "Ihr hättet Angst",
+              "exampleSentenceEn": "You would be afraid"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "hätten",
+              "exampleSentence": "Sie hätten eine Party",
+              "exampleSentenceEn": "They would have a party"
+            }
           ]
         },
         {
@@ -255,9 +750,3364 @@
           "tenseNameEn": "Imperative",
           "description": "Used to give commands, orders, or instructions. Only exists for the second person (du, ihr) and formal address (Sie). The subject pronoun is usually omitted.",
           "conjugations": [
-            { "pronoun": "du", "form": "hab", "exampleSentence": "Hab keine Angst vor der Herausforderung!", "exampleSentenceEn": "Don't be afraid of the challenge!" },
-            { "pronoun": "ihr", "form": "habt", "exampleSentence": "Habt Vertrauen in euch selbst!", "exampleSentenceEn": "Have confidence in yourselves!" },
-            { "pronoun": "Sie", "form": "haben Sie", "exampleSentence": "Haben Sie bitte etwas Geduld mit uns!", "exampleSentenceEn": "Please have some patience with us!" }
+            {
+              "pronoun": "du",
+              "form": "hab",
+              "exampleSentence": "Hab keine Angst vor der Herausforderung!",
+              "exampleSentenceEn": "Don't be afraid of the challenge!"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "habt",
+              "exampleSentence": "Habt Vertrauen in euch selbst!",
+              "exampleSentenceEn": "Have confidence in yourselves!"
+            },
+            {
+              "pronoun": "Sie",
+              "form": "haben Sie",
+              "exampleSentence": "Haben Sie bitte etwas Geduld mit uns!",
+              "exampleSentenceEn": "Please have some patience with us!"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "infinitive": "gehen",
+      "infinitiveEn": "to go",
+      "category": "essential",
+      "tenses": [
+        {
+          "tenseId": "praesens",
+          "tenseName": "Präsens",
+          "tenseNameEn": "Present",
+          "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in German.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "gehe",
+              "exampleSentence": "Ich gehe zur Schule",
+              "exampleSentenceEn": "I go to school"
+            },
+            {
+              "pronoun": "du",
+              "form": "gehst",
+              "exampleSentence": "Du gehst nach Hause",
+              "exampleSentenceEn": "You go home"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "geht",
+              "exampleSentence": "Er geht ins Kino",
+              "exampleSentenceEn": "He goes to the cinema"
+            },
+            {
+              "pronoun": "wir",
+              "form": "gehen",
+              "exampleSentence": "Wir gehen spazieren",
+              "exampleSentenceEn": "We go for a walk"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "geht",
+              "exampleSentence": "Ihr geht einkaufen",
+              "exampleSentenceEn": "You go shopping"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "gehen",
+              "exampleSentence": "Sie gehen ins Theater",
+              "exampleSentenceEn": "They go to the theater"
+            }
+          ]
+        },
+        {
+          "tenseId": "praeteritum",
+          "tenseName": "Präteritum",
+          "tenseNameEn": "Simple Past",
+          "description": "Used primarily in written German and formal speech to describe completed actions in the past. Also used in storytelling and narratives.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "ging",
+              "exampleSentence": "Ich ging gestern zur Schule",
+              "exampleSentenceEn": "I went to school yesterday"
+            },
+            {
+              "pronoun": "du",
+              "form": "gingst",
+              "exampleSentence": "Du gingst nach Hause",
+              "exampleSentenceEn": "You went home"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "ging",
+              "exampleSentence": "Sie ging ins Kino",
+              "exampleSentenceEn": "She went to the cinema"
+            },
+            {
+              "pronoun": "wir",
+              "form": "gingen",
+              "exampleSentence": "Wir gingen spazieren",
+              "exampleSentenceEn": "We went for a walk"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "gingt",
+              "exampleSentence": "Ihr gingt einkaufen",
+              "exampleSentenceEn": "You went shopping"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "gingen",
+              "exampleSentence": "Sie gingen ins Theater",
+              "exampleSentenceEn": "They went to the theater"
+            }
+          ]
+        },
+        {
+          "tenseId": "futur_i",
+          "tenseName": "Futur I",
+          "tenseNameEn": "Future I",
+          "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'morgen' (tomorrow) or 'nächste Woche' (next week).",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "werde gehen",
+              "exampleSentence": "Ich werde morgen zur Schule gehen",
+              "exampleSentenceEn": "I will go to school tomorrow"
+            },
+            {
+              "pronoun": "du",
+              "form": "wirst gehen",
+              "exampleSentence": "Du wirst nach Hause gehen",
+              "exampleSentenceEn": "You will go home"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "wird gehen",
+              "exampleSentence": "Sie wird ins Kino gehen",
+              "exampleSentenceEn": "She will go to the cinema"
+            },
+            {
+              "pronoun": "wir",
+              "form": "werden gehen",
+              "exampleSentence": "Wir werden spazieren gehen",
+              "exampleSentenceEn": "We will go for a walk"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "werdet gehen",
+              "exampleSentence": "Ihr werdet einkaufen gehen",
+              "exampleSentenceEn": "You will go shopping"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "werden gehen",
+              "exampleSentence": "Sie werden ins Theater gehen",
+              "exampleSentenceEn": "They will go to the theater"
+            }
+          ]
+        },
+        {
+          "tenseId": "futur_ii",
+          "tenseName": "Futur II",
+          "tenseNameEn": "Future Perfect",
+          "description": "Used to express actions that will be completed by a certain point in the future. Often used with time expressions like 'bis morgen' (by tomorrow) or to make assumptions about past events.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "werde gegangen sein",
+              "exampleSentence": "Bis morgen werde ich zur Schule gegangen sein",
+              "exampleSentenceEn": "By tomorrow, I will have gone to school"
+            },
+            {
+              "pronoun": "du",
+              "form": "wirst gegangen sein",
+              "exampleSentence": "Du wirst sicher nach Hause gegangen sein",
+              "exampleSentenceEn": "You will surely have gone home"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "wird gegangen sein",
+              "exampleSentence": "Sie wird wahrscheinlich ins Kino gegangen sein",
+              "exampleSentenceEn": "She will probably have gone to the cinema"
+            },
+            {
+              "pronoun": "wir",
+              "form": "werden gegangen sein",
+              "exampleSentence": "Bis dahin werden wir spazieren gegangen sein",
+              "exampleSentenceEn": "By then, we will have gone for a walk"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "werdet gegangen sein",
+              "exampleSentence": "Ihr werdet einkaufen gegangen sein",
+              "exampleSentenceEn": "You will have gone shopping"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "werden gegangen sein",
+              "exampleSentence": "Sie werden ins Theater gegangen sein",
+              "exampleSentenceEn": "They will have gone to the theater"
+            }
+          ]
+        },
+        {
+          "tenseId": "perfekt",
+          "tenseName": "Perfekt",
+          "tenseNameEn": "Present Perfect",
+          "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken German.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "bin gegangen",
+              "exampleSentence": "Ich bin zur Schule gegangen",
+              "exampleSentenceEn": "I have gone to school"
+            },
+            {
+              "pronoun": "du",
+              "form": "bist gegangen",
+              "exampleSentence": "Du bist nach Hause gegangen",
+              "exampleSentenceEn": "You have gone home"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "ist gegangen",
+              "exampleSentence": "Sie ist ins Kino gegangen",
+              "exampleSentenceEn": "She has gone to the cinema"
+            },
+            {
+              "pronoun": "wir",
+              "form": "sind gegangen",
+              "exampleSentence": "Wir sind spazieren gegangen",
+              "exampleSentenceEn": "We have gone for a walk"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "seid gegangen",
+              "exampleSentence": "Ihr seid einkaufen gegangen",
+              "exampleSentenceEn": "You have gone shopping"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "sind gegangen",
+              "exampleSentence": "Sie sind ins Theater gegangen",
+              "exampleSentenceEn": "They have gone to the theater"
+            }
+          ]
+        },
+        {
+          "tenseId": "plusquamperfekt",
+          "tenseName": "Plusquamperfekt",
+          "tenseNameEn": "Pluperfect",
+          "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "war gegangen",
+              "exampleSentence": "Als ich ankam, war ich schon zur Schule gegangen",
+              "exampleSentenceEn": "When I arrived, I had already gone to school"
+            },
+            {
+              "pronoun": "du",
+              "form": "warst gegangen",
+              "exampleSentence": "Du warst nach Hause gegangen, bevor ich kam",
+              "exampleSentenceEn": "You had gone home before I came"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "war gegangen",
+              "exampleSentence": "Sie war ins Kino gegangen, als wir anriefen",
+              "exampleSentenceEn": "She had gone to the cinema when we called"
+            },
+            {
+              "pronoun": "wir",
+              "form": "waren gegangen",
+              "exampleSentence": "Wir waren spazieren gegangen, bevor es regnete",
+              "exampleSentenceEn": "We had gone for a walk before it rained"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "wart gegangen",
+              "exampleSentence": "Ihr wart einkaufen gegangen, als der Sturm begann",
+              "exampleSentenceEn": "You had gone shopping when the storm began"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "waren gegangen",
+              "exampleSentence": "Sie waren ins Theater gegangen, bevor wir kamen",
+              "exampleSentenceEn": "They had gone to the theater before we came"
+            }
+          ]
+        },
+        {
+          "tenseId": "konjunktiv_i",
+          "tenseName": "Konjunktiv I",
+          "tenseNameEn": "Subjunctive I",
+          "description": "Used primarily in indirect speech and formal writing to report what someone else has said. Also used in certain fixed expressions and formal contexts.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "gehe",
+              "exampleSentence": "Er sagt, er gehe zur Schule",
+              "exampleSentenceEn": "He says he goes to school"
+            },
+            {
+              "pronoun": "du",
+              "form": "gehest",
+              "exampleSentence": "Er sagt, du gehest nach Hause",
+              "exampleSentenceEn": "He says you go home"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "gehe",
+              "exampleSentence": "Er sagt, sie gehe ins Kino",
+              "exampleSentenceEn": "He says she goes to the cinema"
+            },
+            {
+              "pronoun": "wir",
+              "form": "gehen",
+              "exampleSentence": "Er sagt, wir gehen spazieren",
+              "exampleSentenceEn": "He says we go for a walk"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "gehet",
+              "exampleSentence": "Er sagt, ihr gehet einkaufen",
+              "exampleSentenceEn": "He says you go shopping"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "gehen",
+              "exampleSentence": "Er sagt, sie gehen ins Theater",
+              "exampleSentenceEn": "He says they go to the theater"
+            }
+          ]
+        },
+        {
+          "tenseId": "konjunktiv_ii",
+          "tenseName": "Konjunktiv II",
+          "tenseNameEn": "Subjunctive II",
+          "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'wenn' (if) clauses.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "ginge",
+              "exampleSentence": "Ich ginge gerne zur Schule",
+              "exampleSentenceEn": "I would gladly go to school"
+            },
+            {
+              "pronoun": "du",
+              "form": "gingest",
+              "exampleSentence": "Du gingest nach Hause",
+              "exampleSentenceEn": "You would go home"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "ginge",
+              "exampleSentence": "Sie ginge ins Kino",
+              "exampleSentenceEn": "She would go to the cinema"
+            },
+            {
+              "pronoun": "wir",
+              "form": "gingen",
+              "exampleSentence": "Wir gingen spazieren",
+              "exampleSentenceEn": "We would go for a walk"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "ginget",
+              "exampleSentence": "Ihr ginget einkaufen",
+              "exampleSentenceEn": "You would go shopping"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "gingen",
+              "exampleSentence": "Sie gingen ins Theater",
+              "exampleSentenceEn": "They would go to the theater"
+            }
+          ]
+        },
+        {
+          "tenseId": "imperativ",
+          "tenseName": "Imperativ",
+          "tenseNameEn": "Imperative",
+          "description": "Used to give commands, orders, or instructions. Only exists for the second person (du, ihr) and formal address (Sie). The subject pronoun is usually omitted.",
+          "conjugations": [
+            {
+              "pronoun": "du",
+              "form": "geh",
+              "exampleSentence": "Geh bitte zur Schule!",
+              "exampleSentenceEn": "Please go to school!"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "geht",
+              "exampleSentence": "Geht nach Hause!",
+              "exampleSentenceEn": "Go home!"
+            },
+            {
+              "pronoun": "Sie",
+              "form": "gehen Sie",
+              "exampleSentence": "Gehen Sie bitte ins Theater!",
+              "exampleSentenceEn": "Please go to the theater!"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "infinitive": "machen",
+      "infinitiveEn": "to make",
+      "category": "essential",
+      "tenses": [
+        {
+          "tenseId": "praesens",
+          "tenseName": "Präsens",
+          "tenseNameEn": "Present",
+          "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in German.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "mache",
+              "exampleSentence": "Ich mache Hausaufgaben",
+              "exampleSentenceEn": "I do homework"
+            },
+            {
+              "pronoun": "du",
+              "form": "machst",
+              "exampleSentence": "Du machst einen Kuchen",
+              "exampleSentenceEn": "You make a cake"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "macht",
+              "exampleSentence": "Er macht Sport",
+              "exampleSentenceEn": "He does sports"
+            },
+            {
+              "pronoun": "wir",
+              "form": "machen",
+              "exampleSentence": "Wir machen Musik",
+              "exampleSentenceEn": "We make music"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "macht",
+              "exampleSentence": "Ihr macht einen Fehler",
+              "exampleSentenceEn": "You make a mistake"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "machen",
+              "exampleSentence": "Sie machen Fortschritte",
+              "exampleSentenceEn": "They make progress"
+            }
+          ]
+        },
+        {
+          "tenseId": "praeteritum",
+          "tenseName": "Präteritum",
+          "tenseNameEn": "Simple Past",
+          "description": "Used primarily in written German and formal speech to describe completed actions in the past. Also used in storytelling and narratives.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "machte",
+              "exampleSentence": "Ich machte Hausaufgaben",
+              "exampleSentenceEn": "I did homework"
+            },
+            {
+              "pronoun": "du",
+              "form": "machtest",
+              "exampleSentence": "Du machtest einen Kuchen",
+              "exampleSentenceEn": "You made a cake"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "machte",
+              "exampleSentence": "Er machte Sport",
+              "exampleSentenceEn": "He did sports"
+            },
+            {
+              "pronoun": "wir",
+              "form": "machten",
+              "exampleSentence": "Wir machten Musik",
+              "exampleSentenceEn": "We made music"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "machtet",
+              "exampleSentence": "Ihr machtet einen Fehler",
+              "exampleSentenceEn": "You made a mistake"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "machten",
+              "exampleSentence": "Sie machten Fortschritte",
+              "exampleSentenceEn": "They made progress"
+            }
+          ]
+        },
+        {
+          "tenseId": "futur_i",
+          "tenseName": "Futur I",
+          "tenseNameEn": "Future I",
+          "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'morgen' (tomorrow) or 'nächste Woche' (next week).",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "werde machen",
+              "exampleSentence": "Ich werde Hausaufgaben machen",
+              "exampleSentenceEn": "I will do homework"
+            },
+            {
+              "pronoun": "du",
+              "form": "wirst machen",
+              "exampleSentence": "Du wirst einen Kuchen machen",
+              "exampleSentenceEn": "You will make a cake"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "wird machen",
+              "exampleSentence": "Er wird Sport machen",
+              "exampleSentenceEn": "He will do sports"
+            },
+            {
+              "pronoun": "wir",
+              "form": "werden machen",
+              "exampleSentence": "Wir werden Musik machen",
+              "exampleSentenceEn": "We will make music"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "werdet machen",
+              "exampleSentence": "Ihr werdet einen Fehler machen",
+              "exampleSentenceEn": "You will make a mistake"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "werden machen",
+              "exampleSentence": "Sie werden Fortschritte machen",
+              "exampleSentenceEn": "They will make progress"
+            }
+          ]
+        },
+        {
+          "tenseId": "futur_ii",
+          "tenseName": "Futur II",
+          "tenseNameEn": "Future Perfect",
+          "description": "Used to express actions that will be completed by a certain point in the future. Often used with time expressions like 'bis morgen' (by tomorrow) or to make assumptions about past events.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "werde gemacht haben",
+              "exampleSentence": "Bis morgen werde ich die Hausaufgaben gemacht haben",
+              "exampleSentenceEn": "By tomorrow, I will have done the homework"
+            },
+            {
+              "pronoun": "du",
+              "form": "wirst gemacht haben",
+              "exampleSentence": "Du wirst sicher den Kuchen gemacht haben",
+              "exampleSentenceEn": "You will surely have made the cake"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "wird gemacht haben",
+              "exampleSentence": "Er wird wahrscheinlich Sport gemacht haben",
+              "exampleSentenceEn": "He will probably have done sports"
+            },
+            {
+              "pronoun": "wir",
+              "form": "werden gemacht haben",
+              "exampleSentence": "Wir werden die Musik gemacht haben",
+              "exampleSentenceEn": "We will have made the music"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "werdet gemacht haben",
+              "exampleSentence": "Ihr werdet den Fehler gemacht haben",
+              "exampleSentenceEn": "You will have made the mistake"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "werden gemacht haben",
+              "exampleSentence": "Sie werden Fortschritte gemacht haben",
+              "exampleSentenceEn": "They will have made progress"
+            }
+          ]
+        },
+        {
+          "tenseId": "perfekt",
+          "tenseName": "Perfekt",
+          "tenseNameEn": "Present Perfect",
+          "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken German.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "habe gemacht",
+              "exampleSentence": "Ich habe Hausaufgaben gemacht",
+              "exampleSentenceEn": "I have done homework"
+            },
+            {
+              "pronoun": "du",
+              "form": "hast gemacht",
+              "exampleSentence": "Du hast einen Kuchen gemacht",
+              "exampleSentenceEn": "You have made a cake"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "hat gemacht",
+              "exampleSentence": "Er hat Sport gemacht",
+              "exampleSentenceEn": "He has done sports"
+            },
+            {
+              "pronoun": "wir",
+              "form": "haben gemacht",
+              "exampleSentence": "Wir haben Musik gemacht",
+              "exampleSentenceEn": "We have made music"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "habt gemacht",
+              "exampleSentence": "Ihr habt einen Fehler gemacht",
+              "exampleSentenceEn": "You have made a mistake"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "haben gemacht",
+              "exampleSentence": "Sie haben Fortschritte gemacht",
+              "exampleSentenceEn": "They have made progress"
+            }
+          ]
+        },
+        {
+          "tenseId": "plusquamperfekt",
+          "tenseName": "Plusquamperfekt",
+          "tenseNameEn": "Pluperfect",
+          "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "hatte gemacht",
+              "exampleSentence": "Ich hatte die Hausaufgaben gemacht, bevor ich spielte",
+              "exampleSentenceEn": "I had done the homework before I played"
+            },
+            {
+              "pronoun": "du",
+              "form": "hattest gemacht",
+              "exampleSentence": "Du hattest den Kuchen gemacht, bevor ich kam",
+              "exampleSentenceEn": "You had made the cake before I came"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "hatte gemacht",
+              "exampleSentence": "Er hatte Sport gemacht, bevor er aß",
+              "exampleSentenceEn": "He had done sports before he ate"
+            },
+            {
+              "pronoun": "wir",
+              "form": "hatten gemacht",
+              "exampleSentence": "Wir hatten Musik gemacht, bevor es regnete",
+              "exampleSentenceEn": "We had made music before it rained"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "hattet gemacht",
+              "exampleSentence": "Ihr hattet den Fehler gemacht, bevor ihr es bemerktet",
+              "exampleSentenceEn": "You had made the mistake before you noticed it"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "hatten gemacht",
+              "exampleSentence": "Sie hatten Fortschritte gemacht, bevor sie aufhörten",
+              "exampleSentenceEn": "They had made progress before they stopped"
+            }
+          ]
+        },
+        {
+          "tenseId": "konjunktiv_i",
+          "tenseName": "Konjunktiv I",
+          "tenseNameEn": "Subjunctive I",
+          "description": "Used primarily in indirect speech and formal writing to report what someone else has said. Also used in certain fixed expressions and formal contexts.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "mache",
+              "exampleSentence": "Er sagt, er mache Hausaufgaben",
+              "exampleSentenceEn": "He says he does homework"
+            },
+            {
+              "pronoun": "du",
+              "form": "machest",
+              "exampleSentence": "Er sagt, du machest einen Kuchen",
+              "exampleSentenceEn": "He says you make a cake"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "mache",
+              "exampleSentence": "Er sagt, sie mache Sport",
+              "exampleSentenceEn": "He says she does sports"
+            },
+            {
+              "pronoun": "wir",
+              "form": "machen",
+              "exampleSentence": "Er sagt, wir machen Musik",
+              "exampleSentenceEn": "He says we make music"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "machet",
+              "exampleSentence": "Er sagt, ihr machet einen Fehler",
+              "exampleSentenceEn": "He says you make a mistake"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "machen",
+              "exampleSentence": "Er sagt, sie machen Fortschritte",
+              "exampleSentenceEn": "He says they make progress"
+            }
+          ]
+        },
+        {
+          "tenseId": "konjunktiv_ii",
+          "tenseName": "Konjunktiv II",
+          "tenseNameEn": "Subjunctive II",
+          "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'wenn' (if) clauses.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "machte",
+              "exampleSentence": "Ich machte gerne Hausaufgaben",
+              "exampleSentenceEn": "I would gladly do homework"
+            },
+            {
+              "pronoun": "du",
+              "form": "machtest",
+              "exampleSentence": "Du machtest einen Kuchen",
+              "exampleSentenceEn": "You would make a cake"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "machte",
+              "exampleSentence": "Sie machte Sport",
+              "exampleSentenceEn": "She would do sports"
+            },
+            {
+              "pronoun": "wir",
+              "form": "machten",
+              "exampleSentence": "Wir machten Musik",
+              "exampleSentenceEn": "We would make music"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "machtet",
+              "exampleSentence": "Ihr machtet einen Fehler",
+              "exampleSentenceEn": "You would make a mistake"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "machten",
+              "exampleSentence": "Sie machten Fortschritte",
+              "exampleSentenceEn": "They would make progress"
+            }
+          ]
+        },
+        {
+          "tenseId": "imperativ",
+          "tenseName": "Imperativ",
+          "tenseNameEn": "Imperative",
+          "description": "Used to give commands, orders, or instructions. Only exists for the second person (du, ihr) and formal address (Sie). The subject pronoun is usually omitted.",
+          "conjugations": [
+            {
+              "pronoun": "du",
+              "form": "mach",
+              "exampleSentence": "Mach bitte deine Hausaufgaben!",
+              "exampleSentenceEn": "Please do your homework!"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "macht",
+              "exampleSentence": "Macht einen Kuchen!",
+              "exampleSentenceEn": "Make a cake!"
+            },
+            {
+              "pronoun": "Sie",
+              "form": "machen Sie",
+              "exampleSentence": "Machen Sie bitte Sport!",
+              "exampleSentenceEn": "Please do sports!"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "infinitive": "können",
+      "infinitiveEn": "can",
+      "category": "essential",
+      "tenses": [
+        {
+          "tenseId": "praesens",
+          "tenseName": "Präsens",
+          "tenseNameEn": "Present",
+          "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in German.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "kann",
+              "exampleSentence": "Ich kann Deutsch sprechen",
+              "exampleSentenceEn": "I can speak German"
+            },
+            {
+              "pronoun": "du",
+              "form": "kannst",
+              "exampleSentence": "Du kannst gut singen",
+              "exampleSentenceEn": "You can sing well"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "kann",
+              "exampleSentence": "Er kann schwimmen",
+              "exampleSentenceEn": "He can swim"
+            },
+            {
+              "pronoun": "wir",
+              "form": "können",
+              "exampleSentence": "Wir können tanzen",
+              "exampleSentenceEn": "We can dance"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "könnt",
+              "exampleSentence": "Ihr könnt kochen",
+              "exampleSentenceEn": "You can cook"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "können",
+              "exampleSentence": "Sie können helfen",
+              "exampleSentenceEn": "They can help"
+            }
+          ]
+        },
+        {
+          "tenseId": "praeteritum",
+          "tenseName": "Präteritum",
+          "tenseNameEn": "Simple Past",
+          "description": "Used primarily in written German and formal speech to describe completed actions in the past. Also used in storytelling and narratives.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "konnte",
+              "exampleSentence": "Ich konnte Deutsch sprechen",
+              "exampleSentenceEn": "I could speak German"
+            },
+            {
+              "pronoun": "du",
+              "form": "konntest",
+              "exampleSentence": "Du konntest gut singen",
+              "exampleSentenceEn": "You could sing well"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "konnte",
+              "exampleSentence": "Er konnte schwimmen",
+              "exampleSentenceEn": "He could swim"
+            },
+            {
+              "pronoun": "wir",
+              "form": "konnten",
+              "exampleSentence": "Wir konnten tanzen",
+              "exampleSentenceEn": "We could dance"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "konntet",
+              "exampleSentence": "Ihr konntet kochen",
+              "exampleSentenceEn": "You could cook"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "konnten",
+              "exampleSentence": "Sie konnten helfen",
+              "exampleSentenceEn": "They could help"
+            }
+          ]
+        },
+        {
+          "tenseId": "futur_i",
+          "tenseName": "Futur I",
+          "tenseNameEn": "Future I",
+          "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'morgen' (tomorrow) or 'nächste Woche' (next week).",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "werde können",
+              "exampleSentence": "Ich werde Deutsch sprechen können",
+              "exampleSentenceEn": "I will be able to speak German"
+            },
+            {
+              "pronoun": "du",
+              "form": "wirst können",
+              "exampleSentence": "Du wirst gut singen können",
+              "exampleSentenceEn": "You will be able to sing well"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "wird können",
+              "exampleSentence": "Er wird schwimmen können",
+              "exampleSentenceEn": "He will be able to swim"
+            },
+            {
+              "pronoun": "wir",
+              "form": "werden können",
+              "exampleSentence": "Wir werden tanzen können",
+              "exampleSentenceEn": "We will be able to dance"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "werdet können",
+              "exampleSentence": "Ihr werdet kochen können",
+              "exampleSentenceEn": "You will be able to cook"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "werden können",
+              "exampleSentence": "Sie werden helfen können",
+              "exampleSentenceEn": "They will be able to help"
+            }
+          ]
+        },
+        {
+          "tenseId": "futur_ii",
+          "tenseName": "Futur II",
+          "tenseNameEn": "Future Perfect",
+          "description": "Used to express actions that will be completed by a certain point in the future. Often used with time expressions like 'bis morgen' (by tomorrow) or to make assumptions about past events.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "werde gekonnt haben",
+              "exampleSentence": "Bis morgen werde ich Deutsch sprechen gekonnt haben",
+              "exampleSentenceEn": "By tomorrow, I will have been able to speak German"
+            },
+            {
+              "pronoun": "du",
+              "form": "wirst gekonnt haben",
+              "exampleSentence": "Du wirst sicher gut singen gekonnt haben",
+              "exampleSentenceEn": "You will surely have been able to sing well"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "wird gekonnt haben",
+              "exampleSentence": "Er wird wahrscheinlich schwimmen gekonnt haben",
+              "exampleSentenceEn": "He will probably have been able to swim"
+            },
+            {
+              "pronoun": "wir",
+              "form": "werden gekonnt haben",
+              "exampleSentence": "Wir werden tanzen gekonnt haben",
+              "exampleSentenceEn": "We will have been able to dance"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "werdet gekonnt haben",
+              "exampleSentence": "Ihr werdet kochen gekonnt haben",
+              "exampleSentenceEn": "You will have been able to cook"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "werden gekonnt haben",
+              "exampleSentence": "Sie werden helfen gekonnt haben",
+              "exampleSentenceEn": "They will have been able to help"
+            }
+          ]
+        },
+        {
+          "tenseId": "perfekt",
+          "tenseName": "Perfekt",
+          "tenseNameEn": "Present Perfect",
+          "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken German.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "habe gekonnt",
+              "exampleSentence": "Ich habe Deutsch sprechen gekonnt",
+              "exampleSentenceEn": "I have been able to speak German"
+            },
+            {
+              "pronoun": "du",
+              "form": "hast gekonnt",
+              "exampleSentence": "Du hast gut singen gekonnt",
+              "exampleSentenceEn": "You have been able to sing well"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "hat gekonnt",
+              "exampleSentence": "Er hat schwimmen gekonnt",
+              "exampleSentenceEn": "He has been able to swim"
+            },
+            {
+              "pronoun": "wir",
+              "form": "haben gekonnt",
+              "exampleSentence": "Wir haben tanzen gekonnt",
+              "exampleSentenceEn": "We have been able to dance"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "habt gekonnt",
+              "exampleSentence": "Ihr habt kochen gekonnt",
+              "exampleSentenceEn": "You have been able to cook"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "haben gekonnt",
+              "exampleSentence": "Sie haben helfen gekonnt",
+              "exampleSentenceEn": "They have been able to help"
+            }
+          ]
+        },
+        {
+          "tenseId": "plusquamperfekt",
+          "tenseName": "Plusquamperfekt",
+          "tenseNameEn": "Pluperfect",
+          "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "hatte gekonnt",
+              "exampleSentence": "Ich hatte Deutsch sprechen gekonnt, bevor ich nach Deutschland ging",
+              "exampleSentenceEn": "I had been able to speak German before I went to Germany"
+            },
+            {
+              "pronoun": "du",
+              "form": "hattest gekonnt",
+              "exampleSentence": "Du hattest gut singen gekonnt, bevor du aufhörte",
+              "exampleSentenceEn": "You had been able to sing well before you stopped"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "hatte gekonnt",
+              "exampleSentence": "Er hatte schwimmen gekonnt, bevor er verletzt wurde",
+              "exampleSentenceEn": "He had been able to swim before he got injured"
+            },
+            {
+              "pronoun": "wir",
+              "form": "hatten gekonnt",
+              "exampleSentence": "Wir hatten tanzen gekonnt, bevor wir müde wurden",
+              "exampleSentenceEn": "We had been able to dance before we got tired"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "hattet gekonnt",
+              "exampleSentence": "Ihr hattet kochen gekonnt, bevor ihr umzogt",
+              "exampleSentenceEn": "You had been able to cook before you moved"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "hatten gekonnt",
+              "exampleSentence": "Sie hatten helfen gekonnt, bevor sie gingen",
+              "exampleSentenceEn": "They had been able to help before they left"
+            }
+          ]
+        },
+        {
+          "tenseId": "konjunktiv_i",
+          "tenseName": "Konjunktiv I",
+          "tenseNameEn": "Subjunctive I",
+          "description": "Used primarily in indirect speech and formal writing to report what someone else has said. Also used in certain fixed expressions and formal contexts.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "könne",
+              "exampleSentence": "Er sagt, er könne Deutsch sprechen",
+              "exampleSentenceEn": "He says he can speak German"
+            },
+            {
+              "pronoun": "du",
+              "form": "könnest",
+              "exampleSentence": "Er sagt, du könnest gut singen",
+              "exampleSentenceEn": "He says you can sing well"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "könne",
+              "exampleSentence": "Er sagt, sie könne schwimmen",
+              "exampleSentenceEn": "He says she can swim"
+            },
+            {
+              "pronoun": "wir",
+              "form": "können",
+              "exampleSentence": "Er sagt, wir können tanzen",
+              "exampleSentenceEn": "He says we can dance"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "könnet",
+              "exampleSentence": "Er sagt, ihr könnet kochen",
+              "exampleSentenceEn": "He says you can cook"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "können",
+              "exampleSentence": "Er sagt, sie können helfen",
+              "exampleSentenceEn": "He says they can help"
+            }
+          ]
+        },
+        {
+          "tenseId": "konjunktiv_ii",
+          "tenseName": "Konjunktiv II",
+          "tenseNameEn": "Subjunctive II",
+          "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'wenn' (if) clauses.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "könnte",
+              "exampleSentence": "Ich könnte Deutsch sprechen",
+              "exampleSentenceEn": "I could speak German"
+            },
+            {
+              "pronoun": "du",
+              "form": "könntest",
+              "exampleSentence": "Du könntest gut singen",
+              "exampleSentenceEn": "You could sing well"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "könnte",
+              "exampleSentence": "Sie könnte schwimmen",
+              "exampleSentenceEn": "She could swim"
+            },
+            {
+              "pronoun": "wir",
+              "form": "könnten",
+              "exampleSentence": "Wir könnten tanzen",
+              "exampleSentenceEn": "We could dance"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "könntet",
+              "exampleSentence": "Ihr könntet kochen",
+              "exampleSentenceEn": "You could cook"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "könnten",
+              "exampleSentence": "Sie könnten helfen",
+              "exampleSentenceEn": "They could help"
+            }
+          ]
+        },
+        {
+          "tenseId": "imperativ",
+          "tenseName": "Imperativ",
+          "tenseNameEn": "Imperative",
+          "description": "Used to give commands, orders, or instructions. Only exists for the second person (du, ihr) and formal address (Sie). The subject pronoun is usually omitted.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "infinitive": "sagen",
+      "infinitiveEn": "to say",
+      "category": "essential",
+      "tenses": [
+        {
+          "tenseId": "praesens",
+          "tenseName": "Präsens",
+          "tenseNameEn": "Present",
+          "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in German.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "sage",
+              "exampleSentence": "Ich sage die Wahrheit",
+              "exampleSentenceEn": "I tell the truth"
+            },
+            {
+              "pronoun": "du",
+              "form": "sagst",
+              "exampleSentence": "Du sagst immer das Richtige",
+              "exampleSentenceEn": "You always say the right thing"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "sagt",
+              "exampleSentence": "Er sagt hallo",
+              "exampleSentenceEn": "He says hello"
+            },
+            {
+              "pronoun": "wir",
+              "form": "sagen",
+              "exampleSentence": "Wir sagen danke",
+              "exampleSentenceEn": "We say thank you"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "sagt",
+              "exampleSentence": "Ihr sagt bitte",
+              "exampleSentenceEn": "You say please"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "sagen",
+              "exampleSentence": "Sie sagen auf Wiedersehen",
+              "exampleSentenceEn": "They say goodbye"
+            }
+          ]
+        },
+        {
+          "tenseId": "praeteritum",
+          "tenseName": "Präteritum",
+          "tenseNameEn": "Simple Past",
+          "description": "Used primarily in written German and formal speech to describe completed actions in the past. Also used in storytelling and narratives.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "sagte",
+              "exampleSentence": "Ich sagte die Wahrheit",
+              "exampleSentenceEn": "I told the truth"
+            },
+            {
+              "pronoun": "du",
+              "form": "sagtest",
+              "exampleSentence": "Du sagtest immer das Richtige",
+              "exampleSentenceEn": "You always told the right thing"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "sagte",
+              "exampleSentence": "Er sagte hallo",
+              "exampleSentenceEn": "He said hello"
+            },
+            {
+              "pronoun": "wir",
+              "form": "sagten",
+              "exampleSentence": "Wir sagten danke",
+              "exampleSentenceEn": "We said thank you"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "sagtet",
+              "exampleSentence": "Ihr sagtet bitte",
+              "exampleSentenceEn": "You said please"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "sagten",
+              "exampleSentence": "Sie sagten auf Wiedersehen",
+              "exampleSentenceEn": "They said goodbye"
+            }
+          ]
+        },
+        {
+          "tenseId": "futur_i",
+          "tenseName": "Futur I",
+          "tenseNameEn": "Future I",
+          "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'morgen' (tomorrow) or 'nächste Woche' (next week).",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "werde sagen",
+              "exampleSentence": "Ich werde die Wahrheit sagen",
+              "exampleSentenceEn": "I will tell the truth"
+            },
+            {
+              "pronoun": "du",
+              "form": "wirst sagen",
+              "exampleSentence": "Du wirst das Richtige sagen",
+              "exampleSentenceEn": "You will say the right thing"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "wird sagen",
+              "exampleSentence": "Er wird hallo sagen",
+              "exampleSentenceEn": "He will say hello"
+            },
+            {
+              "pronoun": "wir",
+              "form": "werden sagen",
+              "exampleSentence": "Wir werden danke sagen",
+              "exampleSentenceEn": "We will say thank you"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "werdet sagen",
+              "exampleSentence": "Ihr werdet bitte sagen",
+              "exampleSentenceEn": "You will say please"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "werden sagen",
+              "exampleSentence": "Sie werden auf Wiedersehen sagen",
+              "exampleSentenceEn": "They will say goodbye"
+            }
+          ]
+        },
+        {
+          "tenseId": "futur_ii",
+          "tenseName": "Futur II",
+          "tenseNameEn": "Future Perfect",
+          "description": "Used to express actions that will be completed by a certain point in the future. Often used with time expressions like 'bis morgen' (by tomorrow) or to make assumptions about past events.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "werde gesagt haben",
+              "exampleSentence": "Bis morgen werde ich die Wahrheit gesagt haben",
+              "exampleSentenceEn": "By tomorrow, I will have told the truth"
+            },
+            {
+              "pronoun": "du",
+              "form": "wirst gesagt haben",
+              "exampleSentence": "Du wirst sicher das Richtige gesagt haben",
+              "exampleSentenceEn": "You will surely have said the right thing"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "wird gesagt haben",
+              "exampleSentence": "Er wird wahrscheinlich hallo gesagt haben",
+              "exampleSentenceEn": "He will probably have said hello"
+            },
+            {
+              "pronoun": "wir",
+              "form": "werden gesagt haben",
+              "exampleSentence": "Wir werden danke gesagt haben",
+              "exampleSentenceEn": "We will have said thank you"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "werdet gesagt haben",
+              "exampleSentence": "Ihr werdet bitte gesagt haben",
+              "exampleSentenceEn": "You will have said please"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "werden gesagt haben",
+              "exampleSentence": "Sie werden auf Wiedersehen gesagt haben",
+              "exampleSentenceEn": "They will have said goodbye"
+            }
+          ]
+        },
+        {
+          "tenseId": "perfekt",
+          "tenseName": "Perfekt",
+          "tenseNameEn": "Present Perfect",
+          "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken German.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "habe gesagt",
+              "exampleSentence": "Ich habe die Wahrheit gesagt",
+              "exampleSentenceEn": "I have told the truth"
+            },
+            {
+              "pronoun": "du",
+              "form": "hast gesagt",
+              "exampleSentence": "Du hast das Richtige gesagt",
+              "exampleSentenceEn": "You have said the right thing"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "hat gesagt",
+              "exampleSentence": "Er hat hallo gesagt",
+              "exampleSentenceEn": "He has said hello"
+            },
+            {
+              "pronoun": "wir",
+              "form": "haben gesagt",
+              "exampleSentence": "Wir haben danke gesagt",
+              "exampleSentenceEn": "We have said thank you"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "habt gesagt",
+              "exampleSentence": "Ihr habt bitte gesagt",
+              "exampleSentenceEn": "You have said please"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "haben gesagt",
+              "exampleSentence": "Sie haben auf Wiedersehen gesagt",
+              "exampleSentenceEn": "They have said goodbye"
+            }
+          ]
+        },
+        {
+          "tenseId": "plusquamperfekt",
+          "tenseName": "Plusquamperfekt",
+          "tenseNameEn": "Pluperfect",
+          "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "hatte gesagt",
+              "exampleSentence": "Ich hatte die Wahrheit gesagt, bevor er kam",
+              "exampleSentenceEn": "I had told the truth before he came"
+            },
+            {
+              "pronoun": "du",
+              "form": "hattest gesagt",
+              "exampleSentence": "Du hattest das Richtige gesagt, bevor ich antwortete",
+              "exampleSentenceEn": "You had said the right thing before I answered"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "hatte gesagt",
+              "exampleSentence": "Er hatte hallo gesagt, bevor er ging",
+              "exampleSentenceEn": "He had said hello before he left"
+            },
+            {
+              "pronoun": "wir",
+              "form": "hatten gesagt",
+              "exampleSentence": "Wir hatten danke gesagt, bevor wir gingen",
+              "exampleSentenceEn": "We had said thank you before we left"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "hattet gesagt",
+              "exampleSentence": "Ihr hattet bitte gesagt, bevor ihr aufhörtet",
+              "exampleSentenceEn": "You had said please before you stopped"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "hatten gesagt",
+              "exampleSentence": "Sie hatten auf Wiedersehen gesagt, bevor sie gingen",
+              "exampleSentenceEn": "They had said goodbye before they left"
+            }
+          ]
+        },
+        {
+          "tenseId": "konjunktiv_i",
+          "tenseName": "Konjunktiv I",
+          "tenseNameEn": "Subjunctive I",
+          "description": "Used primarily in indirect speech and formal writing to report what someone else has said. Also used in certain fixed expressions and formal contexts.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "sage",
+              "exampleSentence": "Er sagt, er sage die Wahrheit",
+              "exampleSentenceEn": "He says he tells the truth"
+            },
+            {
+              "pronoun": "du",
+              "form": "sagest",
+              "exampleSentence": "Er sagt, du sagest das Richtige",
+              "exampleSentenceEn": "He says you tell the right thing"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "sage",
+              "exampleSentence": "Er sagt, sie sage hallo",
+              "exampleSentenceEn": "He says she says hello"
+            },
+            {
+              "pronoun": "wir",
+              "form": "sagen",
+              "exampleSentence": "Er sagt, wir sagen danke",
+              "exampleSentenceEn": "He says we say thank you"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "saget",
+              "exampleSentence": "Er sagt, ihr saget bitte",
+              "exampleSentenceEn": "He says you say please"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "sagen",
+              "exampleSentence": "Er sagt, sie sagen auf Wiedersehen",
+              "exampleSentenceEn": "He says they say goodbye"
+            }
+          ]
+        },
+        {
+          "tenseId": "konjunktiv_ii",
+          "tenseName": "Konjunktiv II",
+          "tenseNameEn": "Subjunctive II",
+          "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'wenn' (if) clauses.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "sagte",
+              "exampleSentence": "Ich sagte gerne die Wahrheit",
+              "exampleSentenceEn": "I would gladly tell the truth"
+            },
+            {
+              "pronoun": "du",
+              "form": "sagtest",
+              "exampleSentence": "Du sagtest das Richtige",
+              "exampleSentenceEn": "You would say the right thing"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "sagte",
+              "exampleSentence": "Sie sagte hallo",
+              "exampleSentenceEn": "She would say hello"
+            },
+            {
+              "pronoun": "wir",
+              "form": "sagten",
+              "exampleSentence": "Wir sagten danke",
+              "exampleSentenceEn": "We would say thank you"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "sagtet",
+              "exampleSentence": "Ihr sagtet bitte",
+              "exampleSentenceEn": "You would say please"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "sagten",
+              "exampleSentence": "Sie sagten auf Wiedersehen",
+              "exampleSentenceEn": "They would say goodbye"
+            }
+          ]
+        },
+        {
+          "tenseId": "imperativ",
+          "tenseName": "Imperativ",
+          "tenseNameEn": "Imperative",
+          "description": "Used to give commands, orders, or instructions. Only exists for the second person (du, ihr) and formal address (Sie). The subject pronoun is usually omitted.",
+          "conjugations": [
+            {
+              "pronoun": "du",
+              "form": "sag",
+              "exampleSentence": "Sag bitte die Wahrheit!",
+              "exampleSentenceEn": "Please tell the truth!"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "sagt",
+              "exampleSentence": "Sagt hallo!",
+              "exampleSentenceEn": "Say hello!"
+            },
+            {
+              "pronoun": "Sie",
+              "form": "sagen Sie",
+              "exampleSentence": "Sagen Sie bitte danke!",
+              "exampleSentenceEn": "Please say thank you!"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "infinitive": "wissen",
+      "infinitiveEn": "to know",
+      "category": "essential",
+      "tenses": [
+        {
+          "tenseId": "praesens",
+          "tenseName": "Präsens",
+          "tenseNameEn": "Present",
+          "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in German.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "weiß",
+              "exampleSentence": "Ich weiß die Antwort",
+              "exampleSentenceEn": "I know the answer"
+            },
+            {
+              "pronoun": "du",
+              "form": "weißt",
+              "exampleSentence": "Du weißt viel",
+              "exampleSentenceEn": "You know a lot"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "weiß",
+              "exampleSentence": "Er weiß den Weg",
+              "exampleSentenceEn": "He knows the way"
+            },
+            {
+              "pronoun": "wir",
+              "form": "wissen",
+              "exampleSentence": "Wir wissen Bescheid",
+              "exampleSentenceEn": "We know about it"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "wisst",
+              "exampleSentence": "Ihr wisst es",
+              "exampleSentenceEn": "You know it"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "wissen",
+              "exampleSentence": "Sie wissen alles",
+              "exampleSentenceEn": "They know everything"
+            }
+          ]
+        },
+        {
+          "tenseId": "praeteritum",
+          "tenseName": "Präteritum",
+          "tenseNameEn": "Simple Past",
+          "description": "Used primarily in written German and formal speech to describe completed actions in the past. Also used in storytelling and narratives.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "wusste",
+              "exampleSentence": "Ich wusste die Antwort",
+              "exampleSentenceEn": "I knew the answer"
+            },
+            {
+              "pronoun": "du",
+              "form": "wusstest",
+              "exampleSentence": "Du wusstest viel",
+              "exampleSentenceEn": "You knew a lot"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "wusste",
+              "exampleSentence": "Er wusste den Weg",
+              "exampleSentenceEn": "He knew the way"
+            },
+            {
+              "pronoun": "wir",
+              "form": "wussten",
+              "exampleSentence": "Wir wussten Bescheid",
+              "exampleSentenceEn": "We knew about it"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "wusstet",
+              "exampleSentence": "Ihr wusstet es",
+              "exampleSentenceEn": "You knew it"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "wussten",
+              "exampleSentence": "Sie wussten alles",
+              "exampleSentenceEn": "They knew everything"
+            }
+          ]
+        },
+        {
+          "tenseId": "futur_i",
+          "tenseName": "Futur I",
+          "tenseNameEn": "Future I",
+          "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'morgen' (tomorrow) or 'nächste Woche' (next week).",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "werde wissen",
+              "exampleSentence": "Ich werde die Antwort wissen",
+              "exampleSentenceEn": "I will know the answer"
+            },
+            {
+              "pronoun": "du",
+              "form": "wirst wissen",
+              "exampleSentence": "Du wirst viel wissen",
+              "exampleSentenceEn": "You will know a lot"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "wird wissen",
+              "exampleSentence": "Er wird den Weg wissen",
+              "exampleSentenceEn": "He will know the way"
+            },
+            {
+              "pronoun": "wir",
+              "form": "werden wissen",
+              "exampleSentence": "Wir werden Bescheid wissen",
+              "exampleSentenceEn": "We will know about it"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "werdet wissen",
+              "exampleSentence": "Ihr werdet es wissen",
+              "exampleSentenceEn": "You will know it"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "werden wissen",
+              "exampleSentence": "Sie werden alles wissen",
+              "exampleSentenceEn": "They will know everything"
+            }
+          ]
+        },
+        {
+          "tenseId": "futur_ii",
+          "tenseName": "Futur II",
+          "tenseNameEn": "Future Perfect",
+          "description": "Used to express actions that will be completed by a certain point in the future. Often used with time expressions like 'bis morgen' (by tomorrow) or to make assumptions about past events.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "werde gewusst haben",
+              "exampleSentence": "Bis morgen werde ich die Antwort gewusst haben",
+              "exampleSentenceEn": "By tomorrow, I will have known the answer"
+            },
+            {
+              "pronoun": "du",
+              "form": "wirst gewusst haben",
+              "exampleSentence": "Du wirst sicher viel gewusst haben",
+              "exampleSentenceEn": "You will surely have known a lot"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "wird gewusst haben",
+              "exampleSentence": "Er wird wahrscheinlich den Weg gewusst haben",
+              "exampleSentenceEn": "He will probably have known the way"
+            },
+            {
+              "pronoun": "wir",
+              "form": "werden gewusst haben",
+              "exampleSentence": "Wir werden Bescheid gewusst haben",
+              "exampleSentenceEn": "We will have known about it"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "werdet gewusst haben",
+              "exampleSentence": "Ihr werdet es gewusst haben",
+              "exampleSentenceEn": "You will have known it"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "werden gewusst haben",
+              "exampleSentence": "Sie werden alles gewusst haben",
+              "exampleSentenceEn": "They will have known everything"
+            }
+          ]
+        },
+        {
+          "tenseId": "perfekt",
+          "tenseName": "Perfekt",
+          "tenseNameEn": "Present Perfect",
+          "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken German.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "habe gewusst",
+              "exampleSentence": "Ich habe die Antwort gewusst",
+              "exampleSentenceEn": "I have known the answer"
+            },
+            {
+              "pronoun": "du",
+              "form": "hast gewusst",
+              "exampleSentence": "Du hast viel gewusst",
+              "exampleSentenceEn": "You have known a lot"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "hat gewusst",
+              "exampleSentence": "Er hat den Weg gewusst",
+              "exampleSentenceEn": "He has known the way"
+            },
+            {
+              "pronoun": "wir",
+              "form": "haben gewusst",
+              "exampleSentence": "Wir haben Bescheid gewusst",
+              "exampleSentenceEn": "We have known about it"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "habt gewusst",
+              "exampleSentence": "Ihr habt es gewusst",
+              "exampleSentenceEn": "You have known it"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "haben gewusst",
+              "exampleSentence": "Sie haben alles gewusst",
+              "exampleSentenceEn": "They have known everything"
+            }
+          ]
+        },
+        {
+          "tenseId": "plusquamperfekt",
+          "tenseName": "Plusquamperfekt",
+          "tenseNameEn": "Pluperfect",
+          "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "hatte gewusst",
+              "exampleSentence": "Ich hatte die Antwort gewusst, bevor ich sie vergaß",
+              "exampleSentenceEn": "I had known the answer before I forgot it"
+            },
+            {
+              "pronoun": "du",
+              "form": "hattest gewusst",
+              "exampleSentence": "Du hattest viel gewusst, bevor du es verlorst",
+              "exampleSentenceEn": "You had known a lot before you lost it"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "hatte gewusst",
+              "exampleSentence": "Er hatte den Weg gewusst, bevor er sich verirrte",
+              "exampleSentenceEn": "He had known the way before he got lost"
+            },
+            {
+              "pronoun": "wir",
+              "form": "hatten gewusst",
+              "exampleSentence": "Wir hatten Bescheid gewusst, bevor wir es vergaßen",
+              "exampleSentenceEn": "We had known about it before we forgot it"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "hattet gewusst",
+              "exampleSentence": "Ihr hattet es gewusst, bevor ihr es verlorst",
+              "exampleSentenceEn": "You had known it before you lost it"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "hatten gewusst",
+              "exampleSentence": "Sie hatten alles gewusst, bevor sie es vergaßen",
+              "exampleSentenceEn": "They had known everything before they forgot it"
+            }
+          ]
+        },
+        {
+          "tenseId": "konjunktiv_i",
+          "tenseName": "Konjunktiv I",
+          "tenseNameEn": "Subjunctive I",
+          "description": "Used primarily in indirect speech and formal writing to report what someone else has said. Also used in certain fixed expressions and formal contexts.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "wisse",
+              "exampleSentence": "Er sagt, er wisse die Antwort",
+              "exampleSentenceEn": "He says he knows the answer"
+            },
+            {
+              "pronoun": "du",
+              "form": "wissest",
+              "exampleSentence": "Er sagt, du wissest viel",
+              "exampleSentenceEn": "He says you know a lot"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "wisse",
+              "exampleSentence": "Er sagt, sie wisse den Weg",
+              "exampleSentenceEn": "He says she knows the way"
+            },
+            {
+              "pronoun": "wir",
+              "form": "wissen",
+              "exampleSentence": "Er sagt, wir wissen Bescheid",
+              "exampleSentenceEn": "He says we know about it"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "wisset",
+              "exampleSentence": "Er sagt, ihr wisset es",
+              "exampleSentenceEn": "He says you know it"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "wissen",
+              "exampleSentence": "Er sagt, sie wissen alles",
+              "exampleSentenceEn": "He says they know everything"
+            }
+          ]
+        },
+        {
+          "tenseId": "konjunktiv_ii",
+          "tenseName": "Konjunktiv II",
+          "tenseNameEn": "Subjunctive II",
+          "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'wenn' (if) clauses.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "wüsste",
+              "exampleSentence": "Ich wüsste die Antwort",
+              "exampleSentenceEn": "I would know the answer"
+            },
+            {
+              "pronoun": "du",
+              "form": "wüsstest",
+              "exampleSentence": "Du wüsstest viel",
+              "exampleSentenceEn": "You would know a lot"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "wüsste",
+              "exampleSentence": "Sie wüsste den Weg",
+              "exampleSentenceEn": "She would know the way"
+            },
+            {
+              "pronoun": "wir",
+              "form": "wüssten",
+              "exampleSentence": "Wir wüssten Bescheid",
+              "exampleSentenceEn": "We would know about it"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "wüsstet",
+              "exampleSentence": "Ihr wüsstet es",
+              "exampleSentenceEn": "You would know it"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "wüssten",
+              "exampleSentence": "Sie wüssten alles",
+              "exampleSentenceEn": "They would know everything"
+            }
+          ]
+        },
+        {
+          "tenseId": "imperativ",
+          "tenseName": "Imperativ",
+          "tenseNameEn": "Imperative",
+          "description": "Used to give commands, orders, or instructions. Only exists for the second person (du, ihr) and formal address (Sie). The subject pronoun is usually omitted.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "infinitive": "werden",
+      "infinitiveEn": "to become",
+      "category": "essential",
+      "tenses": [
+        {
+          "tenseId": "praesens",
+          "tenseName": "Präsens",
+          "tenseNameEn": "Present",
+          "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in German.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "werde",
+              "exampleSentence": "Ich werde Arzt",
+              "exampleSentenceEn": "I become a doctor"
+            },
+            {
+              "pronoun": "du",
+              "form": "wirst",
+              "exampleSentence": "Du wirst groß",
+              "exampleSentenceEn": "You become big"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "wird",
+              "exampleSentence": "Er wird alt",
+              "exampleSentenceEn": "He becomes old"
+            },
+            {
+              "pronoun": "wir",
+              "form": "werden",
+              "exampleSentence": "Wir werden Freunde",
+              "exampleSentenceEn": "We become friends"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "werdet",
+              "exampleSentence": "Ihr werdet müde",
+              "exampleSentenceEn": "You become tired"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "werden",
+              "exampleSentence": "Sie werden glücklich",
+              "exampleSentenceEn": "They become happy"
+            }
+          ]
+        },
+        {
+          "tenseId": "praeteritum",
+          "tenseName": "Präteritum",
+          "tenseNameEn": "Simple Past",
+          "description": "Used primarily in written German and formal speech to describe completed actions in the past. Also used in storytelling and narratives.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "wurde",
+              "exampleSentence": "Ich wurde Arzt",
+              "exampleSentenceEn": "I became a doctor"
+            },
+            {
+              "pronoun": "du",
+              "form": "wurdest",
+              "exampleSentence": "Du wurdest groß",
+              "exampleSentenceEn": "You became big"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "wurde",
+              "exampleSentence": "Er wurde alt",
+              "exampleSentenceEn": "He became old"
+            },
+            {
+              "pronoun": "wir",
+              "form": "wurden",
+              "exampleSentence": "Wir wurden Freunde",
+              "exampleSentenceEn": "We became friends"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "wurdet",
+              "exampleSentence": "Ihr wurdet müde",
+              "exampleSentenceEn": "You became tired"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "wurden",
+              "exampleSentence": "Sie wurden glücklich",
+              "exampleSentenceEn": "They became happy"
+            }
+          ]
+        },
+        {
+          "tenseId": "futur_i",
+          "tenseName": "Futur I",
+          "tenseNameEn": "Future I",
+          "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'morgen' (tomorrow) or 'nächste Woche' (next week).",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "werde werden",
+              "exampleSentence": "Ich werde Arzt werden",
+              "exampleSentenceEn": "I will become a doctor"
+            },
+            {
+              "pronoun": "du",
+              "form": "wirst werden",
+              "exampleSentence": "Du wirst groß werden",
+              "exampleSentenceEn": "You will become big"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "wird werden",
+              "exampleSentence": "Er wird alt werden",
+              "exampleSentenceEn": "He will become old"
+            },
+            {
+              "pronoun": "wir",
+              "form": "werden werden",
+              "exampleSentence": "Wir werden Freunde werden",
+              "exampleSentenceEn": "We will become friends"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "werdet werden",
+              "exampleSentence": "Ihr werdet müde werden",
+              "exampleSentenceEn": "You will become tired"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "werden werden",
+              "exampleSentence": "Sie werden glücklich werden",
+              "exampleSentenceEn": "They will become happy"
+            }
+          ]
+        },
+        {
+          "tenseId": "futur_ii",
+          "tenseName": "Futur II",
+          "tenseNameEn": "Future Perfect",
+          "description": "Used to express actions that will be completed by a certain point in the future. Often used with time expressions like 'bis morgen' (by tomorrow) or to make assumptions about past events.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "werde geworden sein",
+              "exampleSentence": "Bis morgen werde ich Arzt geworden sein",
+              "exampleSentenceEn": "By tomorrow, I will have become a doctor"
+            },
+            {
+              "pronoun": "du",
+              "form": "wirst geworden sein",
+              "exampleSentence": "Du wirst sicher groß geworden sein",
+              "exampleSentenceEn": "You will surely have become big"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "wird geworden sein",
+              "exampleSentence": "Er wird wahrscheinlich alt geworden sein",
+              "exampleSentenceEn": "He will probably have become old"
+            },
+            {
+              "pronoun": "wir",
+              "form": "werden geworden sein",
+              "exampleSentence": "Wir werden Freunde geworden sein",
+              "exampleSentenceEn": "We will have become friends"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "werdet geworden sein",
+              "exampleSentence": "Ihr werdet müde geworden sein",
+              "exampleSentenceEn": "You will have become tired"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "werden geworden sein",
+              "exampleSentence": "Sie werden glücklich geworden sein",
+              "exampleSentenceEn": "They will have become happy"
+            }
+          ]
+        },
+        {
+          "tenseId": "perfekt",
+          "tenseName": "Perfekt",
+          "tenseNameEn": "Present Perfect",
+          "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken German.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "bin geworden",
+              "exampleSentence": "Ich bin Arzt geworden",
+              "exampleSentenceEn": "I have become a doctor"
+            },
+            {
+              "pronoun": "du",
+              "form": "bist geworden",
+              "exampleSentence": "Du bist groß geworden",
+              "exampleSentenceEn": "You have become big"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "ist geworden",
+              "exampleSentence": "Er ist alt geworden",
+              "exampleSentenceEn": "He has become old"
+            },
+            {
+              "pronoun": "wir",
+              "form": "sind geworden",
+              "exampleSentence": "Wir sind Freunde geworden",
+              "exampleSentenceEn": "We have become friends"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "seid geworden",
+              "exampleSentence": "Ihr seid müde geworden",
+              "exampleSentenceEn": "You have become tired"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "sind geworden",
+              "exampleSentence": "Sie sind glücklich geworden",
+              "exampleSentenceEn": "They have become happy"
+            }
+          ]
+        },
+        {
+          "tenseId": "plusquamperfekt",
+          "tenseName": "Plusquamperfekt",
+          "tenseNameEn": "Pluperfect",
+          "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "war geworden",
+              "exampleSentence": "Ich war Arzt geworden, bevor ich nach Deutschland ging",
+              "exampleSentenceEn": "I had become a doctor before I went to Germany"
+            },
+            {
+              "pronoun": "du",
+              "form": "warst geworden",
+              "exampleSentence": "Du warst groß geworden, bevor du zur Schule gingst",
+              "exampleSentenceEn": "You had become big before you went to school"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "war geworden",
+              "exampleSentence": "Er war alt geworden, bevor er starb",
+              "exampleSentenceEn": "He had become old before he died"
+            },
+            {
+              "pronoun": "wir",
+              "form": "waren geworden",
+              "exampleSentence": "Wir waren Freunde geworden, bevor wir uns trennten",
+              "exampleSentenceEn": "We had become friends before we separated"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "wart geworden",
+              "exampleSentence": "Ihr wart müde geworden, bevor ihr schliefet",
+              "exampleSentenceEn": "You had become tired before you slept"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "waren geworden",
+              "exampleSentence": "Sie waren glücklich geworden, bevor sie starben",
+              "exampleSentenceEn": "They had become happy before they died"
+            }
+          ]
+        },
+        {
+          "tenseId": "konjunktiv_i",
+          "tenseName": "Konjunktiv I",
+          "tenseNameEn": "Subjunctive I",
+          "description": "Used primarily in indirect speech and formal writing to report what someone else has said. Also used in certain fixed expressions and formal contexts.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "werde",
+              "exampleSentence": "Er sagt, er werde Arzt",
+              "exampleSentenceEn": "He says he becomes a doctor"
+            },
+            {
+              "pronoun": "du",
+              "form": "werdest",
+              "exampleSentence": "Er sagt, du werdest groß",
+              "exampleSentenceEn": "He says you become big"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "werde",
+              "exampleSentence": "Er sagt, sie werde alt",
+              "exampleSentenceEn": "He says she becomes old"
+            },
+            {
+              "pronoun": "wir",
+              "form": "werden",
+              "exampleSentence": "Er sagt, wir werden Freunde",
+              "exampleSentenceEn": "He says we become friends"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "werdet",
+              "exampleSentence": "Er sagt, ihr werdet müde",
+              "exampleSentenceEn": "He says you become tired"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "werden",
+              "exampleSentence": "Er sagt, sie werden glücklich",
+              "exampleSentenceEn": "He says they become happy"
+            }
+          ]
+        },
+        {
+          "tenseId": "konjunktiv_ii",
+          "tenseName": "Konjunktiv II",
+          "tenseNameEn": "Subjunctive II",
+          "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'wenn' (if) clauses.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "würde",
+              "exampleSentence": "Ich würde Arzt werden",
+              "exampleSentenceEn": "I would become a doctor"
+            },
+            {
+              "pronoun": "du",
+              "form": "würdest",
+              "exampleSentence": "Du würdest groß werden",
+              "exampleSentenceEn": "You would become big"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "würde",
+              "exampleSentence": "Sie würde alt werden",
+              "exampleSentenceEn": "She would become old"
+            },
+            {
+              "pronoun": "wir",
+              "form": "würden",
+              "exampleSentence": "Wir würden Freunde werden",
+              "exampleSentenceEn": "We would become friends"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "würdet",
+              "exampleSentence": "Ihr würdet müde werden",
+              "exampleSentenceEn": "You would become tired"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "würden",
+              "exampleSentence": "Sie würden glücklich werden",
+              "exampleSentenceEn": "They would become happy"
+            }
+          ]
+        },
+        {
+          "tenseId": "imperativ",
+          "tenseName": "Imperativ",
+          "tenseNameEn": "Imperative",
+          "description": "Used to give commands, orders, or instructions. Only exists for the second person (du, ihr) and formal address (Sie). The subject pronoun is usually omitted.",
+          "conjugations": [
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            },
+            {
+              "pronoun": "—",
+              "form": "—",
+              "exampleSentence": "—",
+              "exampleSentenceEn": "—"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "infinitive": "kommen",
+      "infinitiveEn": "to come",
+      "category": "essential",
+      "tenses": [
+        {
+          "tenseId": "praesens",
+          "tenseName": "Präsens",
+          "tenseNameEn": "Present",
+          "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in German.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "komme",
+              "exampleSentence": "Ich komme nach Hause",
+              "exampleSentenceEn": "I come home"
+            },
+            {
+              "pronoun": "du",
+              "form": "kommst",
+              "exampleSentence": "Du kommst zu spät",
+              "exampleSentenceEn": "You come too late"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "kommt",
+              "exampleSentence": "Er kommt morgen",
+              "exampleSentenceEn": "He comes tomorrow"
+            },
+            {
+              "pronoun": "wir",
+              "form": "kommen",
+              "exampleSentence": "Wir kommen zusammen",
+              "exampleSentenceEn": "We come together"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "kommt",
+              "exampleSentence": "Ihr kommt mit",
+              "exampleSentenceEn": "You come along"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "kommen",
+              "exampleSentence": "Sie kommen heute",
+              "exampleSentenceEn": "They come today"
+            }
+          ]
+        },
+        {
+          "tenseId": "praeteritum",
+          "tenseName": "Präteritum",
+          "tenseNameEn": "Simple Past",
+          "description": "Used primarily in written German and formal speech to describe completed actions in the past. Also used in storytelling and narratives.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "kam",
+              "exampleSentence": "Ich kam nach Hause",
+              "exampleSentenceEn": "I came home"
+            },
+            {
+              "pronoun": "du",
+              "form": "kamst",
+              "exampleSentence": "Du kamst zu spät",
+              "exampleSentenceEn": "You came too late"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "kam",
+              "exampleSentence": "Er kam gestern",
+              "exampleSentenceEn": "He came yesterday"
+            },
+            {
+              "pronoun": "wir",
+              "form": "kamen",
+              "exampleSentence": "Wir kamen zusammen",
+              "exampleSentenceEn": "We came together"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "kamt",
+              "exampleSentence": "Ihr kamt mit",
+              "exampleSentenceEn": "You came along"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "kamen",
+              "exampleSentence": "Sie kamen gestern",
+              "exampleSentenceEn": "They came yesterday"
+            }
+          ]
+        },
+        {
+          "tenseId": "futur_i",
+          "tenseName": "Futur I",
+          "tenseNameEn": "Future I",
+          "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'morgen' (tomorrow) or 'nächste Woche' (next week).",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "werde kommen",
+              "exampleSentence": "Ich werde morgen kommen",
+              "exampleSentenceEn": "I will come tomorrow"
+            },
+            {
+              "pronoun": "du",
+              "form": "wirst kommen",
+              "exampleSentence": "Du wirst pünktlich kommen",
+              "exampleSentenceEn": "You will come on time"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "wird kommen",
+              "exampleSentence": "Er wird heute kommen",
+              "exampleSentenceEn": "He will come today"
+            },
+            {
+              "pronoun": "wir",
+              "form": "werden kommen",
+              "exampleSentence": "Wir werden zusammen kommen",
+              "exampleSentenceEn": "We will come together"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "werdet kommen",
+              "exampleSentence": "Ihr werdet mit kommen",
+              "exampleSentenceEn": "You will come along"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "werden kommen",
+              "exampleSentence": "Sie werden bald kommen",
+              "exampleSentenceEn": "They will come soon"
+            }
+          ]
+        },
+        {
+          "tenseId": "futur_ii",
+          "tenseName": "Futur II",
+          "tenseNameEn": "Future Perfect",
+          "description": "Used to express actions that will be completed by a certain point in the future. Often used with time expressions like 'bis morgen' (by tomorrow) or to make assumptions about past events.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "werde gekommen sein",
+              "exampleSentence": "Bis morgen werde ich gekommen sein",
+              "exampleSentenceEn": "By tomorrow, I will have come"
+            },
+            {
+              "pronoun": "du",
+              "form": "wirst gekommen sein",
+              "exampleSentence": "Du wirst sicher gekommen sein",
+              "exampleSentenceEn": "You will surely have come"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "wird gekommen sein",
+              "exampleSentence": "Er wird wahrscheinlich gekommen sein",
+              "exampleSentenceEn": "He will probably have come"
+            },
+            {
+              "pronoun": "wir",
+              "form": "werden gekommen sein",
+              "exampleSentence": "Wir werden zusammen gekommen sein",
+              "exampleSentenceEn": "We will have come together"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "werdet gekommen sein",
+              "exampleSentence": "Ihr werdet mit gekommen sein",
+              "exampleSentenceEn": "You will have come along"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "werden gekommen sein",
+              "exampleSentence": "Sie werden bald gekommen sein",
+              "exampleSentenceEn": "They will have come soon"
+            }
+          ]
+        },
+        {
+          "tenseId": "perfekt",
+          "tenseName": "Perfekt",
+          "tenseNameEn": "Present Perfect",
+          "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken German.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "bin gekommen",
+              "exampleSentence": "Ich bin nach Hause gekommen",
+              "exampleSentenceEn": "I have come home"
+            },
+            {
+              "pronoun": "du",
+              "form": "bist gekommen",
+              "exampleSentence": "Du bist zu spät gekommen",
+              "exampleSentenceEn": "You have come too late"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "ist gekommen",
+              "exampleSentence": "Er ist gestern gekommen",
+              "exampleSentenceEn": "He has come yesterday"
+            },
+            {
+              "pronoun": "wir",
+              "form": "sind gekommen",
+              "exampleSentence": "Wir sind zusammen gekommen",
+              "exampleSentenceEn": "We have come together"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "seid gekommen",
+              "exampleSentence": "Ihr seid mit gekommen",
+              "exampleSentenceEn": "You have come along"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "sind gekommen",
+              "exampleSentence": "Sie sind heute gekommen",
+              "exampleSentenceEn": "They have come today"
+            }
+          ]
+        },
+        {
+          "tenseId": "plusquamperfekt",
+          "tenseName": "Plusquamperfekt",
+          "tenseNameEn": "Pluperfect",
+          "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "war gekommen",
+              "exampleSentence": "Ich war nach Hause gekommen, bevor er anrief",
+              "exampleSentenceEn": "I had come home before he called"
+            },
+            {
+              "pronoun": "du",
+              "form": "warst gekommen",
+              "exampleSentence": "Du warst zu spät gekommen, bevor die Veranstaltung begann",
+              "exampleSentenceEn": "You had come too late before the event began"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "war gekommen",
+              "exampleSentence": "Er war gestern gekommen, bevor wir gingen",
+              "exampleSentenceEn": "He had come yesterday before we left"
+            },
+            {
+              "pronoun": "wir",
+              "form": "waren gekommen",
+              "exampleSentence": "Wir waren zusammen gekommen, bevor es regnete",
+              "exampleSentenceEn": "We had come together before it rained"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "wart gekommen",
+              "exampleSentence": "Ihr wart mit gekommen, bevor ihr gingt",
+              "exampleSentenceEn": "You had come along before you left"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "waren gekommen",
+              "exampleSentence": "Sie waren heute gekommen, bevor sie gingen",
+              "exampleSentenceEn": "They had come today before they left"
+            }
+          ]
+        },
+        {
+          "tenseId": "konjunktiv_i",
+          "tenseName": "Konjunktiv I",
+          "tenseNameEn": "Subjunctive I",
+          "description": "Used primarily in indirect speech and formal writing to report what someone else has said. Also used in certain fixed expressions and formal contexts.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "komme",
+              "exampleSentence": "Er sagt, er komme nach Hause",
+              "exampleSentenceEn": "He says he comes home"
+            },
+            {
+              "pronoun": "du",
+              "form": "kommest",
+              "exampleSentence": "Er sagt, du kommest zu spät",
+              "exampleSentenceEn": "He says you come too late"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "komme",
+              "exampleSentence": "Er sagt, sie komme morgen",
+              "exampleSentenceEn": "He says she comes tomorrow"
+            },
+            {
+              "pronoun": "wir",
+              "form": "kommen",
+              "exampleSentence": "Er sagt, wir kommen zusammen",
+              "exampleSentenceEn": "He says we come together"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "kommet",
+              "exampleSentence": "Er sagt, ihr kommet mit",
+              "exampleSentenceEn": "He says you come along"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "kommen",
+              "exampleSentence": "Er sagt, sie kommen heute",
+              "exampleSentenceEn": "He says they come today"
+            }
+          ]
+        },
+        {
+          "tenseId": "konjunktiv_ii",
+          "tenseName": "Konjunktiv II",
+          "tenseNameEn": "Subjunctive II",
+          "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'wenn' (if) clauses.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "käme",
+              "exampleSentence": "Ich käme gerne nach Hause",
+              "exampleSentenceEn": "I would gladly come home"
+            },
+            {
+              "pronoun": "du",
+              "form": "kämest",
+              "exampleSentence": "Du kämest zu spät",
+              "exampleSentenceEn": "You would come too late"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "käme",
+              "exampleSentence": "Sie käme morgen",
+              "exampleSentenceEn": "She would come tomorrow"
+            },
+            {
+              "pronoun": "wir",
+              "form": "kämen",
+              "exampleSentence": "Wir kämen zusammen",
+              "exampleSentenceEn": "We would come together"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "kämet",
+              "exampleSentence": "Ihr kämet mit",
+              "exampleSentenceEn": "You would come along"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "kämen",
+              "exampleSentence": "Sie kämen heute",
+              "exampleSentenceEn": "They would come today"
+            }
+          ]
+        },
+        {
+          "tenseId": "imperativ",
+          "tenseName": "Imperativ",
+          "tenseNameEn": "Imperative",
+          "description": "Used to give commands, orders, or instructions. Only exists for the second person (du, ihr) and formal address (Sie). The subject pronoun is usually omitted.",
+          "conjugations": [
+            {
+              "pronoun": "du",
+              "form": "komm",
+              "exampleSentence": "Komm bitte nach Hause!",
+              "exampleSentenceEn": "Please come home!"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "kommt",
+              "exampleSentence": "Kommt mit!",
+              "exampleSentenceEn": "Come along!"
+            },
+            {
+              "pronoun": "Sie",
+              "form": "kommen Sie",
+              "exampleSentence": "Kommen Sie bitte heute!",
+              "exampleSentenceEn": "Please come today!"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "infinitive": "sehen",
+      "infinitiveEn": "to see",
+      "category": "essential",
+      "tenses": [
+        {
+          "tenseId": "praesens",
+          "tenseName": "Präsens",
+          "tenseNameEn": "Present",
+          "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in German.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "sehe",
+              "exampleSentence": "Ich sehe einen Film",
+              "exampleSentenceEn": "I see a movie"
+            },
+            {
+              "pronoun": "du",
+              "form": "siehst",
+              "exampleSentence": "Du siehst gut aus",
+              "exampleSentenceEn": "You look good"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "sieht",
+              "exampleSentence": "Er sieht fern",
+              "exampleSentenceEn": "He watches TV"
+            },
+            {
+              "pronoun": "wir",
+              "form": "sehen",
+              "exampleSentence": "Wir sehen uns morgen",
+              "exampleSentenceEn": "We see each other tomorrow"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "seht",
+              "exampleSentence": "Ihr seht das Problem",
+              "exampleSentenceEn": "You see the problem"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "sehen",
+              "exampleSentence": "Sie sehen die Lösung",
+              "exampleSentenceEn": "They see the solution"
+            }
+          ]
+        },
+        {
+          "tenseId": "praeteritum",
+          "tenseName": "Präteritum",
+          "tenseNameEn": "Simple Past",
+          "description": "Used primarily in written German and formal speech to describe completed actions in the past. Also used in storytelling and narratives.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "sah",
+              "exampleSentence": "Ich sah einen Film",
+              "exampleSentenceEn": "I saw a movie"
+            },
+            {
+              "pronoun": "du",
+              "form": "sahst",
+              "exampleSentence": "Du sahst gut aus",
+              "exampleSentenceEn": "You looked good"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "sah",
+              "exampleSentence": "Er sah fern",
+              "exampleSentenceEn": "He watched TV"
+            },
+            {
+              "pronoun": "wir",
+              "form": "sahen",
+              "exampleSentence": "Wir sahen uns gestern",
+              "exampleSentenceEn": "We saw each other yesterday"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "saht",
+              "exampleSentence": "Ihr saht das Problem",
+              "exampleSentenceEn": "You saw the problem"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "sahen",
+              "exampleSentence": "Sie sahen die Lösung",
+              "exampleSentenceEn": "They saw the solution"
+            }
+          ]
+        },
+        {
+          "tenseId": "futur_i",
+          "tenseName": "Futur I",
+          "tenseNameEn": "Future I",
+          "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'morgen' (tomorrow) or 'nächste Woche' (next week).",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "werde sehen",
+              "exampleSentence": "Ich werde einen Film sehen",
+              "exampleSentenceEn": "I will see a movie"
+            },
+            {
+              "pronoun": "du",
+              "form": "wirst sehen",
+              "exampleSentence": "Du wirst gut aussehen",
+              "exampleSentenceEn": "You will look good"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "wird sehen",
+              "exampleSentence": "Er wird fernsehen",
+              "exampleSentenceEn": "He will watch TV"
+            },
+            {
+              "pronoun": "wir",
+              "form": "werden sehen",
+              "exampleSentence": "Wir werden uns morgen sehen",
+              "exampleSentenceEn": "We will see each other tomorrow"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "werdet sehen",
+              "exampleSentence": "Ihr werdet das Problem sehen",
+              "exampleSentenceEn": "You will see the problem"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "werden sehen",
+              "exampleSentence": "Sie werden die Lösung sehen",
+              "exampleSentenceEn": "They will see the solution"
+            }
+          ]
+        },
+        {
+          "tenseId": "futur_ii",
+          "tenseName": "Futur II",
+          "tenseNameEn": "Future Perfect",
+          "description": "Used to express actions that will be completed by a certain point in the future. Often used with time expressions like 'bis morgen' (by tomorrow) or to make assumptions about past events.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "werde gesehen haben",
+              "exampleSentence": "Bis morgen werde ich den Film gesehen haben",
+              "exampleSentenceEn": "By tomorrow, I will have seen the movie"
+            },
+            {
+              "pronoun": "du",
+              "form": "wirst gesehen haben",
+              "exampleSentence": "Du wirst sicher gut ausgesehen haben",
+              "exampleSentenceEn": "You will surely have looked good"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "wird gesehen haben",
+              "exampleSentence": "Er wird wahrscheinlich fern gesehen haben",
+              "exampleSentenceEn": "He will probably have watched TV"
+            },
+            {
+              "pronoun": "wir",
+              "form": "werden gesehen haben",
+              "exampleSentence": "Wir werden uns morgen gesehen haben",
+              "exampleSentenceEn": "We will have seen each other tomorrow"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "werdet gesehen haben",
+              "exampleSentence": "Ihr werdet das Problem gesehen haben",
+              "exampleSentenceEn": "You will have seen the problem"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "werden gesehen haben",
+              "exampleSentence": "Sie werden die Lösung gesehen haben",
+              "exampleSentenceEn": "They will have seen the solution"
+            }
+          ]
+        },
+        {
+          "tenseId": "perfekt",
+          "tenseName": "Perfekt",
+          "tenseNameEn": "Present Perfect",
+          "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken German.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "habe gesehen",
+              "exampleSentence": "Ich habe einen Film gesehen",
+              "exampleSentenceEn": "I have seen a movie"
+            },
+            {
+              "pronoun": "du",
+              "form": "hast gesehen",
+              "exampleSentence": "Du hast gut ausgesehen",
+              "exampleSentenceEn": "You have looked good"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "hat gesehen",
+              "exampleSentence": "Er hat fern gesehen",
+              "exampleSentenceEn": "He has watched TV"
+            },
+            {
+              "pronoun": "wir",
+              "form": "haben gesehen",
+              "exampleSentence": "Wir haben uns gestern gesehen",
+              "exampleSentenceEn": "We have seen each other yesterday"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "habt gesehen",
+              "exampleSentence": "Ihr habt das Problem gesehen",
+              "exampleSentenceEn": "You have seen the problem"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "haben gesehen",
+              "exampleSentence": "Sie haben die Lösung gesehen",
+              "exampleSentenceEn": "They have seen the solution"
+            }
+          ]
+        },
+        {
+          "tenseId": "plusquamperfekt",
+          "tenseName": "Plusquamperfekt",
+          "tenseNameEn": "Pluperfect",
+          "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "hatte gesehen",
+              "exampleSentence": "Ich hatte den Film gesehen, bevor er anrief",
+              "exampleSentenceEn": "I had seen the movie before he called"
+            },
+            {
+              "pronoun": "du",
+              "form": "hattest gesehen",
+              "exampleSentence": "Du hattest gut ausgesehen, bevor du krank wurdest",
+              "exampleSentenceEn": "You had looked good before you got sick"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "hatte gesehen",
+              "exampleSentence": "Er hatte fern gesehen, bevor er schlief",
+              "exampleSentenceEn": "He had watched TV before he slept"
+            },
+            {
+              "pronoun": "wir",
+              "form": "hatten gesehen",
+              "exampleSentence": "Wir hatten uns gesehen, bevor wir gingen",
+              "exampleSentenceEn": "We had seen each other before we left"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "hattet gesehen",
+              "exampleSentence": "Ihr hattet das Problem gesehen, bevor ihr es löstet",
+              "exampleSentenceEn": "You had seen the problem before you solved it"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "hatten gesehen",
+              "exampleSentence": "Sie hatten die Lösung gesehen, bevor sie handelten",
+              "exampleSentenceEn": "They had seen the solution before they acted"
+            }
+          ]
+        },
+        {
+          "tenseId": "konjunktiv_i",
+          "tenseName": "Konjunktiv I",
+          "tenseNameEn": "Subjunctive I",
+          "description": "Used primarily in indirect speech and formal writing to report what someone else has said. Also used in certain fixed expressions and formal contexts.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "sehe",
+              "exampleSentence": "Er sagt, er sehe einen Film",
+              "exampleSentenceEn": "He says he sees a movie"
+            },
+            {
+              "pronoun": "du",
+              "form": "sehest",
+              "exampleSentence": "Er sagt, du sehest gut aus",
+              "exampleSentenceEn": "He says you look good"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "sehe",
+              "exampleSentence": "Er sagt, sie sehe fern",
+              "exampleSentenceEn": "He says she watches TV"
+            },
+            {
+              "pronoun": "wir",
+              "form": "sehen",
+              "exampleSentence": "Er sagt, wir sehen uns morgen",
+              "exampleSentenceEn": "He says we see each other tomorrow"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "sehet",
+              "exampleSentence": "Er sagt, ihr sehet das Problem",
+              "exampleSentenceEn": "He says you see the problem"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "sehen",
+              "exampleSentence": "Er sagt, sie sehen die Lösung",
+              "exampleSentenceEn": "He says they see the solution"
+            }
+          ]
+        },
+        {
+          "tenseId": "konjunktiv_ii",
+          "tenseName": "Konjunktiv II",
+          "tenseNameEn": "Subjunctive II",
+          "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'wenn' (if) clauses.",
+          "conjugations": [
+            {
+              "pronoun": "ich",
+              "form": "sähe",
+              "exampleSentence": "Ich sähe gerne einen Film",
+              "exampleSentenceEn": "I would gladly see a movie"
+            },
+            {
+              "pronoun": "du",
+              "form": "sähest",
+              "exampleSentence": "Du sähest gut aus",
+              "exampleSentenceEn": "You would look good"
+            },
+            {
+              "pronoun": "er/sie/es",
+              "form": "sähe",
+              "exampleSentence": "Sie sähe fern",
+              "exampleSentenceEn": "She would watch TV"
+            },
+            {
+              "pronoun": "wir",
+              "form": "sähen",
+              "exampleSentence": "Wir sähen uns morgen",
+              "exampleSentenceEn": "We would see each other tomorrow"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "sähet",
+              "exampleSentence": "Ihr sähet das Problem",
+              "exampleSentenceEn": "You would see the problem"
+            },
+            {
+              "pronoun": "sie/Sie",
+              "form": "sähen",
+              "exampleSentence": "Sie sähen die Lösung",
+              "exampleSentenceEn": "They would see the solution"
+            }
+          ]
+        },
+        {
+          "tenseId": "imperativ",
+          "tenseName": "Imperativ",
+          "tenseNameEn": "Imperative",
+          "description": "Used to give commands, orders, or instructions. Only exists for the second person (du, ihr) and formal address (Sie). The subject pronoun is usually omitted.",
+          "conjugations": [
+            {
+              "pronoun": "du",
+              "form": "sieh",
+              "exampleSentence": "Sieh bitte den Film!",
+              "exampleSentenceEn": "Please see the movie!"
+            },
+            {
+              "pronoun": "ihr",
+              "form": "seht",
+              "exampleSentence": "Seht das Problem!",
+              "exampleSentenceEn": "See the problem!"
+            },
+            {
+              "pronoun": "Sie",
+              "form": "sehen Sie",
+              "exampleSentence": "Sehen Sie bitte die Lösung!",
+              "exampleSentenceEn": "Please see the solution!"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "infinitive": "geben",
+      "infinitiveEn": "to give",
+      "category": "essential",
+      "tenses": [
+        {
+          "tenseId": "praesens",
+          "tenseName": "Präsens",
+          "tenseNameEn": "Present",
+          "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in German.",
+          "conjugations": [
+            { "pronoun": "ich", "form": "gebe", "exampleSentence": "Ich gebe dir ein Geschenk", "exampleSentenceEn": "I give you a gift" },
+            { "pronoun": "du", "form": "gibst", "exampleSentence": "Du gibst mir Hoffnung", "exampleSentenceEn": "You give me hope" },
+            { "pronoun": "er/sie/es", "form": "gibt", "exampleSentence": "Er gibt sein Bestes", "exampleSentenceEn": "He gives his best" },
+            { "pronoun": "wir", "form": "geben", "exampleSentence": "Wir geben nicht auf", "exampleSentenceEn": "We don't give up" },
+            { "pronoun": "ihr", "form": "gebt", "exampleSentence": "Ihr gebt euch Mühe", "exampleSentenceEn": "You make an effort" },
+            { "pronoun": "sie/Sie", "form": "geben", "exampleSentence": "Sie geben alles", "exampleSentenceEn": "They give everything" }
+          ]
+        },
+        {
+          "tenseId": "praeteritum",
+          "tenseName": "Präteritum",
+          "tenseNameEn": "Simple Past",
+          "description": "Used primarily in written German and formal speech to describe completed actions in the past. Also used in storytelling and narratives.",
+          "conjugations": [
+            { "pronoun": "ich", "form": "gab", "exampleSentence": "Ich gab dir ein Geschenk", "exampleSentenceEn": "I gave you a gift" },
+            { "pronoun": "du", "form": "gabst", "exampleSentence": "Du gabst mir Hoffnung", "exampleSentenceEn": "You gave me hope" },
+            { "pronoun": "er/sie/es", "form": "gab", "exampleSentence": "Er gab sein Bestes", "exampleSentenceEn": "He gave his best" },
+            { "pronoun": "wir", "form": "gaben", "exampleSentence": "Wir gaben nicht auf", "exampleSentenceEn": "We didn't give up" },
+            { "pronoun": "ihr", "form": "gabt", "exampleSentence": "Ihr gabt euch Mühe", "exampleSentenceEn": "You made an effort" },
+            { "pronoun": "sie/Sie", "form": "gaben", "exampleSentence": "Sie gaben alles", "exampleSentenceEn": "They gave everything" }
+          ]
+        },
+        {
+          "tenseId": "futur_i",
+          "tenseName": "Futur I",
+          "tenseNameEn": "Future I",
+          "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'morgen' (tomorrow) or 'nächste Woche' (next week).",
+          "conjugations": [
+            { "pronoun": "ich", "form": "werde geben", "exampleSentence": "Ich werde dir ein Geschenk geben", "exampleSentenceEn": "I will give you a gift" },
+            { "pronoun": "du", "form": "wirst geben", "exampleSentence": "Du wirst mir Hoffnung geben", "exampleSentenceEn": "You will give me hope" },
+            { "pronoun": "er/sie/es", "form": "wird geben", "exampleSentence": "Er wird sein Bestes geben", "exampleSentenceEn": "He will give his best" },
+            { "pronoun": "wir", "form": "werden geben", "exampleSentence": "Wir werden nicht aufgeben", "exampleSentenceEn": "We will not give up" },
+            { "pronoun": "ihr", "form": "werdet geben", "exampleSentence": "Ihr werdet euch Mühe geben", "exampleSentenceEn": "You will make an effort" },
+            { "pronoun": "sie/Sie", "form": "werden geben", "exampleSentence": "Sie werden alles geben", "exampleSentenceEn": "They will give everything" }
+          ]
+        },
+        {
+          "tenseId": "futur_ii",
+          "tenseName": "Futur II",
+          "tenseNameEn": "Future Perfect",
+          "description": "Used to express actions that will be completed by a certain point in the future. Often used with time expressions like 'bis morgen' (by tomorrow) or to make assumptions about past events.",
+          "conjugations": [
+            { "pronoun": "ich", "form": "werde gegeben haben", "exampleSentence": "Bis morgen werde ich dir ein Geschenk gegeben haben", "exampleSentenceEn": "By tomorrow, I will have given you a gift" },
+            { "pronoun": "du", "form": "wirst gegeben haben", "exampleSentence": "Du wirst sicher mir Hoffnung gegeben haben", "exampleSentenceEn": "You will surely have given me hope" },
+            { "pronoun": "er/sie/es", "form": "wird gegeben haben", "exampleSentence": "Er wird wahrscheinlich sein Bestes gegeben haben", "exampleSentenceEn": "He will probably have given his best" },
+            { "pronoun": "wir", "form": "werden gegeben haben", "exampleSentence": "Wir werden nicht aufgegeben haben", "exampleSentenceEn": "We will not have given up" },
+            { "pronoun": "ihr", "form": "werdet gegeben haben", "exampleSentence": "Ihr werdet euch Mühe gegeben haben", "exampleSentenceEn": "You will have made an effort" },
+            { "pronoun": "sie/Sie", "form": "werden gegeben haben", "exampleSentence": "Sie werden alles gegeben haben", "exampleSentenceEn": "They will have given everything" }
+          ]
+        },
+        {
+          "tenseId": "perfekt",
+          "tenseName": "Perfekt",
+          "tenseNameEn": "Present Perfect",
+          "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken German.",
+          "conjugations": [
+            { "pronoun": "ich", "form": "habe gegeben", "exampleSentence": "Ich habe dir ein Geschenk gegeben", "exampleSentenceEn": "I have given you a gift" },
+            { "pronoun": "du", "form": "hast gegeben", "exampleSentence": "Du hast mir Hoffnung gegeben", "exampleSentenceEn": "You have given me hope" },
+            { "pronoun": "er/sie/es", "form": "hat gegeben", "exampleSentence": "Er hat sein Bestes gegeben", "exampleSentenceEn": "He has given his best" },
+            { "pronoun": "wir", "form": "haben gegeben", "exampleSentence": "Wir haben nicht aufgegeben", "exampleSentenceEn": "We have not given up" },
+            { "pronoun": "ihr", "form": "habt gegeben", "exampleSentence": "Ihr habt euch Mühe gegeben", "exampleSentenceEn": "You have made an effort" },
+            { "pronoun": "sie/Sie", "form": "haben gegeben", "exampleSentence": "Sie haben alles gegeben", "exampleSentenceEn": "They have given everything" }
+          ]
+        },
+        {
+          "tenseId": "plusquamperfekt",
+          "tenseName": "Plusquamperfekt",
+          "tenseNameEn": "Pluperfect",
+          "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+          "conjugations": [
+            { "pronoun": "ich", "form": "hatte gegeben", "exampleSentence": "Ich hatte dir ein Geschenk gegeben, bevor du kamst", "exampleSentenceEn": "I had given you a gift before you came" },
+            { "pronoun": "du", "form": "hattest gegeben", "exampleSentence": "Du hattest mir Hoffnung gegeben, bevor ich ging", "exampleSentenceEn": "You had given me hope before I left" },
+            { "pronoun": "er/sie/es", "form": "hatte gegeben", "exampleSentence": "Er hatte sein Bestes gegeben, bevor er aufhörte", "exampleSentenceEn": "He had given his best before he stopped" },
+            { "pronoun": "wir", "form": "hatten gegeben", "exampleSentence": "Wir hatten nicht aufgegeben, bevor wir gewannen", "exampleSentenceEn": "We had not given up before we won" },
+            { "pronoun": "ihr", "form": "hattet gegeben", "exampleSentence": "Ihr hattet euch Mühe gegeben, bevor ihr aufhörtet", "exampleSentenceEn": "You had made an effort before you stopped" },
+            { "pronoun": "sie/Sie", "form": "hatten gegeben", "exampleSentence": "Sie hatten alles gegeben, bevor sie gingen", "exampleSentenceEn": "They had given everything before they left" }
+          ]
+        },
+        {
+          "tenseId": "konjunktiv_i",
+          "tenseName": "Konjunktiv I",
+          "tenseNameEn": "Subjunctive I",
+          "description": "Used primarily in indirect speech and formal writing to report what someone else has said. Also used in certain fixed expressions and formal contexts.",
+          "conjugations": [
+            { "pronoun": "ich", "form": "gebe", "exampleSentence": "Er sagt, er gebe dir ein Geschenk", "exampleSentenceEn": "He says he gives you a gift" },
+            { "pronoun": "du", "form": "gebest", "exampleSentence": "Er sagt, du gebest mir Hoffnung", "exampleSentenceEn": "He says you give me hope" },
+            { "pronoun": "er/sie/es", "form": "gebe", "exampleSentence": "Er sagt, sie gebe ihr Bestes", "exampleSentenceEn": "He says she gives her best" },
+            { "pronoun": "wir", "form": "geben", "exampleSentence": "Er sagt, wir geben nicht auf", "exampleSentenceEn": "He says we don't give up" },
+            { "pronoun": "ihr", "form": "gebet", "exampleSentence": "Er sagt, ihr gebet euch Mühe", "exampleSentenceEn": "He says you make an effort" },
+            { "pronoun": "sie/Sie", "form": "geben", "exampleSentence": "Er sagt, sie geben alles", "exampleSentenceEn": "He says they give everything" }
+          ]
+        },
+        {
+          "tenseId": "konjunktiv_ii",
+          "tenseName": "Konjunktiv II",
+          "tenseNameEn": "Subjunctive II",
+          "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'wenn' (if) clauses.",
+          "conjugations": [
+            { "pronoun": "ich", "form": "gäbe", "exampleSentence": "Ich gäbe dir gerne ein Geschenk", "exampleSentenceEn": "I would gladly give you a gift" },
+            { "pronoun": "du", "form": "gäbest", "exampleSentence": "Du gäbest mir Hoffnung", "exampleSentenceEn": "You would give me hope" },
+            { "pronoun": "er/sie/es", "form": "gäbe", "exampleSentence": "Sie gäbe ihr Bestes", "exampleSentenceEn": "She would give her best" },
+            { "pronoun": "wir", "form": "gäben", "exampleSentence": "Wir gäben nicht auf", "exampleSentenceEn": "We would not give up" },
+            { "pronoun": "ihr", "form": "gäbet", "exampleSentence": "Ihr gäbet euch Mühe", "exampleSentenceEn": "You would make an effort" },
+            { "pronoun": "sie/Sie", "form": "gäben", "exampleSentence": "Sie gäben alles", "exampleSentenceEn": "They would give everything" }
+          ]
+        },
+        {
+          "tenseId": "imperativ",
+          "tenseName": "Imperativ",
+          "tenseNameEn": "Imperative",
+          "description": "Used to give commands, orders, or instructions. Only exists for the second person (du, ihr) and formal address (Sie). The subject pronoun is usually omitted.",
+          "conjugations": [
+            { "pronoun": "du", "form": "gib", "exampleSentence": "Gib mir das Buch!", "exampleSentenceEn": "Give me the book!" },
+            { "pronoun": "ihr", "form": "gebt", "exampleSentence": "Gebt nicht auf!", "exampleSentenceEn": "Don't give up!" },
+            { "pronoun": "Sie", "form": "geben Sie", "exampleSentence": "Geben Sie mir bitte Zeit!", "exampleSentenceEn": "Please give me time!" }
+          ]
+        }
+      ]
+    },
+    {
+      "infinitive": "wollen",
+      "infinitiveEn": "to want",
+      "category": "essential",
+      "tenses": [
+        {
+          "tenseId": "praesens",
+          "tenseName": "Präsens",
+          "tenseNameEn": "Present",
+          "description": "Used to describe actions happening now, general truths, or habitual actions. This is the most commonly used tense in German.",
+          "conjugations": [
+            { "pronoun": "ich", "form": "will", "exampleSentence": "Ich will lernen", "exampleSentenceEn": "I want to learn" },
+            { "pronoun": "du", "form": "willst", "exampleSentence": "Du willst spielen", "exampleSentenceEn": "You want to play" },
+            { "pronoun": "er/sie/es", "form": "will", "exampleSentence": "Er will arbeiten", "exampleSentenceEn": "He wants to work" },
+            { "pronoun": "wir", "form": "wollen", "exampleSentence": "Wir wollen reisen", "exampleSentenceEn": "We want to travel" },
+            { "pronoun": "ihr", "form": "wollt", "exampleSentence": "Ihr wollt essen", "exampleSentenceEn": "You want to eat" },
+            { "pronoun": "sie/Sie", "form": "wollen", "exampleSentence": "Sie wollen helfen", "exampleSentenceEn": "They want to help" }
+          ]
+        },
+        {
+          "tenseId": "praeteritum",
+          "tenseName": "Präteritum",
+          "tenseNameEn": "Simple Past",
+          "description": "Used primarily in written German and formal speech to describe completed actions in the past. Also used in storytelling and narratives.",
+          "conjugations": [
+            { "pronoun": "ich", "form": "wollte", "exampleSentence": "Ich wollte lernen", "exampleSentenceEn": "I wanted to learn" },
+            { "pronoun": "du", "form": "wolltest", "exampleSentence": "Du wolltest spielen", "exampleSentenceEn": "You wanted to play" },
+            { "pronoun": "er/sie/es", "form": "wollte", "exampleSentence": "Er wollte arbeiten", "exampleSentenceEn": "He wanted to work" },
+            { "pronoun": "wir", "form": "wollten", "exampleSentence": "Wir wollten reisen", "exampleSentenceEn": "We wanted to travel" },
+            { "pronoun": "ihr", "form": "wolltet", "exampleSentence": "Ihr wolltet essen", "exampleSentenceEn": "You wanted to eat" },
+            { "pronoun": "sie/Sie", "form": "wollten", "exampleSentence": "Sie wollten helfen", "exampleSentenceEn": "They wanted to help" }
+          ]
+        },
+        {
+          "tenseId": "futur_i",
+          "tenseName": "Futur I",
+          "tenseNameEn": "Future I",
+          "description": "Used to express future actions, predictions, or intentions. Often used with time expressions like 'morgen' (tomorrow) or 'nächste Woche' (next week).",
+          "conjugations": [
+            { "pronoun": "ich", "form": "werde wollen", "exampleSentence": "Ich werde lernen wollen", "exampleSentenceEn": "I will want to learn" },
+            { "pronoun": "du", "form": "wirst wollen", "exampleSentence": "Du wirst spielen wollen", "exampleSentenceEn": "You will want to play" },
+            { "pronoun": "er/sie/es", "form": "wird wollen", "exampleSentence": "Er wird arbeiten wollen", "exampleSentenceEn": "He will want to work" },
+            { "pronoun": "wir", "form": "werden wollen", "exampleSentence": "Wir werden reisen wollen", "exampleSentenceEn": "We will want to travel" },
+            { "pronoun": "ihr", "form": "werdet wollen", "exampleSentence": "Ihr werdet essen wollen", "exampleSentenceEn": "You will want to eat" },
+            { "pronoun": "sie/Sie", "form": "werden wollen", "exampleSentence": "Sie werden helfen wollen", "exampleSentenceEn": "They will want to help" }
+          ]
+        },
+        {
+          "tenseId": "futur_ii",
+          "tenseName": "Futur II",
+          "tenseNameEn": "Future Perfect",
+          "description": "Used to express actions that will be completed by a certain point in the future. Often used with time expressions like 'bis morgen' (by tomorrow) or to make assumptions about past events.",
+          "conjugations": [
+            { "pronoun": "ich", "form": "werde gewollt haben", "exampleSentence": "Bis morgen werde ich lernen gewollt haben", "exampleSentenceEn": "By tomorrow, I will have wanted to learn" },
+            { "pronoun": "du", "form": "wirst gewollt haben", "exampleSentence": "Du wirst sicher spielen gewollt haben", "exampleSentenceEn": "You will surely have wanted to play" },
+            { "pronoun": "er/sie/es", "form": "wird gewollt haben", "exampleSentence": "Er wird wahrscheinlich arbeiten gewollt haben", "exampleSentenceEn": "He will probably have wanted to work" },
+            { "pronoun": "wir", "form": "werden gewollt haben", "exampleSentence": "Wir werden reisen gewollt haben", "exampleSentenceEn": "We will have wanted to travel" },
+            { "pronoun": "ihr", "form": "werdet gewollt haben", "exampleSentence": "Ihr werdet essen gewollt haben", "exampleSentenceEn": "You will have wanted to eat" },
+            { "pronoun": "sie/Sie", "form": "werden gewollt haben", "exampleSentence": "Sie werden helfen gewollt haben", "exampleSentenceEn": "They will have wanted to help" }
+          ]
+        },
+        {
+          "tenseId": "perfekt",
+          "tenseName": "Perfekt",
+          "tenseNameEn": "Present Perfect",
+          "description": "Used to express completed actions in the past that have a connection to the present. This is the most common past tense in spoken German.",
+          "conjugations": [
+            { "pronoun": "ich", "form": "habe gewollt", "exampleSentence": "Ich habe lernen gewollt", "exampleSentenceEn": "I have wanted to learn" },
+            { "pronoun": "du", "form": "hast gewollt", "exampleSentence": "Du hast spielen gewollt", "exampleSentenceEn": "You have wanted to play" },
+            { "pronoun": "er/sie/es", "form": "hat gewollt", "exampleSentence": "Er hat arbeiten gewollt", "exampleSentenceEn": "He has wanted to work" },
+            { "pronoun": "wir", "form": "haben gewollt", "exampleSentence": "Wir haben reisen gewollt", "exampleSentenceEn": "We have wanted to travel" },
+            { "pronoun": "ihr", "form": "habt gewollt", "exampleSentence": "Ihr habt essen gewollt", "exampleSentenceEn": "You have wanted to eat" },
+            { "pronoun": "sie/Sie", "form": "haben gewollt", "exampleSentence": "Sie haben helfen gewollt", "exampleSentenceEn": "They have wanted to help" }
+          ]
+        },
+        {
+          "tenseId": "plusquamperfekt",
+          "tenseName": "Plusquamperfekt",
+          "tenseNameEn": "Pluperfect",
+          "description": "Used to express actions that were completed before another past action. Often used in storytelling to establish a sequence of past events.",
+          "conjugations": [
+            { "pronoun": "ich", "form": "hatte gewollt", "exampleSentence": "Ich hatte lernen gewollt, bevor ich aufhörte", "exampleSentenceEn": "I had wanted to learn before I stopped" },
+            { "pronoun": "du", "form": "hattest gewollt", "exampleSentence": "Du hattest spielen gewollt, bevor du gingst", "exampleSentenceEn": "You had wanted to play before you left" },
+            { "pronoun": "er/sie/es", "form": "hatte gewollt", "exampleSentence": "Er hatte arbeiten gewollt, bevor er krank wurde", "exampleSentenceEn": "He had wanted to work before he got sick" },
+            { "pronoun": "wir", "form": "hatten gewollt", "exampleSentence": "Wir hatten reisen gewollt, bevor wir aufhörten", "exampleSentenceEn": "We had wanted to travel before we stopped" },
+            { "pronoun": "ihr", "form": "hattet gewollt", "exampleSentence": "Ihr hattet essen gewollt, bevor ihr gingt", "exampleSentenceEn": "You had wanted to eat before you left" },
+            { "pronoun": "sie/Sie", "form": "hatten gewollt", "exampleSentence": "Sie hatten helfen gewollt, bevor sie gingen", "exampleSentenceEn": "They had wanted to help before they left" }
+          ]
+        },
+        {
+          "tenseId": "konjunktiv_i",
+          "tenseName": "Konjunktiv I",
+          "tenseNameEn": "Subjunctive I",
+          "description": "Used primarily in indirect speech and formal writing to report what someone else has said. Also used in certain fixed expressions and formal contexts.",
+          "conjugations": [
+            { "pronoun": "ich", "form": "wolle", "exampleSentence": "Er sagt, er wolle lernen", "exampleSentenceEn": "He says he wants to learn" },
+            { "pronoun": "du", "form": "wollest", "exampleSentence": "Er sagt, du wollest spielen", "exampleSentenceEn": "He says you want to play" },
+            { "pronoun": "er/sie/es", "form": "wolle", "exampleSentence": "Er sagt, sie wolle arbeiten", "exampleSentenceEn": "He says she wants to work" },
+            { "pronoun": "wir", "form": "wollen", "exampleSentence": "Er sagt, wir wollen reisen", "exampleSentenceEn": "He says we want to travel" },
+            { "pronoun": "ihr", "form": "wollet", "exampleSentence": "Er sagt, ihr wollet essen", "exampleSentenceEn": "He says you want to eat" },
+            { "pronoun": "sie/Sie", "form": "wollen", "exampleSentence": "Er sagt, sie wollen helfen", "exampleSentenceEn": "He says they want to help" }
+          ]
+        },
+        {
+          "tenseId": "konjunktiv_ii",
+          "tenseName": "Konjunktiv II",
+          "tenseNameEn": "Subjunctive II",
+          "description": "Used to express hypothetical situations, polite requests, or actions that would happen under certain conditions. Often used with 'wenn' (if) clauses.",
+          "conjugations": [
+            { "pronoun": "ich", "form": "wollte", "exampleSentence": "Ich wollte gerne lernen", "exampleSentenceEn": "I would gladly want to learn" },
+            { "pronoun": "du", "form": "wolltest", "exampleSentence": "Du wolltest spielen", "exampleSentenceEn": "You would want to play" },
+            { "pronoun": "er/sie/es", "form": "wollte", "exampleSentence": "Sie wollte arbeiten", "exampleSentenceEn": "She would want to work" },
+            { "pronoun": "wir", "form": "wollten", "exampleSentence": "Wir wollten reisen", "exampleSentenceEn": "We would want to travel" },
+            { "pronoun": "ihr", "form": "wolltet", "exampleSentence": "Ihr wolltet essen", "exampleSentenceEn": "You would want to eat" },
+            { "pronoun": "sie/Sie", "form": "wollten", "exampleSentence": "Sie wollten helfen", "exampleSentenceEn": "They would want to help" }
+          ]
+        },
+        {
+          "tenseId": "imperativ",
+          "tenseName": "Imperativ",
+          "tenseNameEn": "Imperative",
+          "description": "Used to give commands, orders, or instructions. Only exists for the second person (du, ihr) and formal address (Sie). The subject pronoun is usually omitted.",
+          "conjugations": [
+            { "pronoun": "—", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+            { "pronoun": "—", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+            { "pronoun": "—", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" }
           ]
         }
       ]
