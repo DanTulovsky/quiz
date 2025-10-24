@@ -579,7 +579,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             {/* Admin Section */}
             {adminNav.length > 0 && (
               <>
-                <Divider my='md' label='Administration' labelPosition='center' />
+                <Divider
+                  my='md'
+                  label='Administration'
+                  labelPosition='center'
+                />
                 {adminNav.map(item => (
                   <NavLink
                     key={item.name}
