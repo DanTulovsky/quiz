@@ -688,7 +688,7 @@ export const Chat: React.FC<ChatProps> = ({
   onRegisterActions,
 }) => {
   const { user } = useAuth();
-  const { fontSize } = useTheme();
+  // const { fontSize } = useTheme();
   const { data: providersData } = useGetV1SettingsAiProviders();
 
   const providers = providersData?.providers;
