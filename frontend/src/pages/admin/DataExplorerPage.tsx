@@ -55,6 +55,8 @@ const IconInfoCircle: React.ComponentType<any> =
   tablerIconMap.IconInfoCircle || (() => null);
 import { useAuth } from '../../hooks/useAuth';
 import { Navigate } from 'react-router-dom';
+import { useTheme } from '../../contexts/ThemeContext';
+import { fontScaleMap } from '../../theme/theme';
 import { notifications } from '@mantine/notifications';
 import {
   useAllQuestions,
@@ -88,6 +90,7 @@ interface LevelsApiResponse {
 
 const DataExplorerPage: React.FC = () => {
   const { user, isAuthenticated } = useAuth();
+  const { fontSize } = useTheme();
 
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedQuestion, setSelectedQuestion] =
@@ -696,7 +699,7 @@ const DataExplorerPage: React.FC = () => {
                           <div
                             style={{
                               color: '#6c757d',
-                              fontSize: '11px',
+                              fontSize: `${11 * fontScaleMap[fontSize]}px`,
                               marginTop: '2px',
                             }}
                           >
@@ -1003,7 +1006,7 @@ const DataExplorerPage: React.FC = () => {
                 background: 'rgba(255, 255, 255, 0.9)',
                 padding: '4px 8px',
                 borderRadius: '4px',
-                fontSize: '12px',
+                fontSize: `${12 * fontScaleMap[fontSize]}px`,
               }}
             >
               <Loader size='xs' />

@@ -37,6 +37,8 @@ import {
 } from '@tabler/icons-react';
 import { useAuth } from '../hooks/useAuth';
 import { playTTSOnce } from '../hooks/useTTS';
+import { useTheme } from '../contexts/ThemeContext';
+import { fontScaleMap } from '../theme/theme';
 import { defaultVoiceForLanguage } from '../utils/tts';
 import {
   loadCategoryData,
@@ -54,6 +56,7 @@ const PhrasebookCategoryPage = () => {
   const { category } = useParams<{ category: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { fontSize } = useTheme();
 
   const [data, setData] = useState<PhrasebookData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -525,7 +528,12 @@ const PhrasebookCategoryPage = () => {
                       <Table.Tbody>
                         {section.words.map((word, index) => {
                           const icon = word.icon ? (
-                            <Box style={{ fontSize: '24px', lineHeight: 1 }}>
+                            <Box
+                              style={{
+                                fontSize: `${24 * fontScaleMap[fontSize]}px`,
+                                lineHeight: 1,
+                              }}
+                            >
                               {word.icon}
                             </Box>
                           ) : null;
@@ -612,7 +620,12 @@ const PhrasebookCategoryPage = () => {
               <Table.Tbody>
                 {section.words.map((word, index) => {
                   const icon = word.icon ? (
-                    <Box style={{ fontSize: '24px', lineHeight: 1 }}>
+                    <Box
+                      style={{
+                        fontSize: `${24 * fontScaleMap[fontSize]}px`,
+                        lineHeight: 1,
+                      }}
+                    >
                       {word.icon}
                     </Box>
                   ) : null;

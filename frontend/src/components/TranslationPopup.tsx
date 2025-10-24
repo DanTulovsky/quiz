@@ -13,6 +13,8 @@ import { useTranslation } from '../contexts/TranslationContext';
 import { TextSelection } from '../hooks/useTextSelection';
 import { IconX, IconVolume, IconBookmark } from '@tabler/icons-react';
 import { postV1Snippets, Question } from '../api/api';
+import { useTheme } from '../contexts/ThemeContext';
+import { fontScaleMap } from '../theme/theme';
 
 // Type for story context when no question is available
 interface StoryContext {
@@ -32,6 +34,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
   currentQuestion,
 }) => {
   const queryClient = useQueryClient();
+  const { fontSize } = useTheme();
 
   // Load saved language from localStorage or use browser language or default to 'en'
   const [targetLanguage, setTargetLanguage] = useState(() => {
@@ -279,11 +282,11 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
       ref={popupRef}
       className='translation-popup'
       shadow='md'
-      p='md'
+      p='lg'
       style={{
         position: 'fixed',
         zIndex: 1500, // Lower than delete modals so they can appear on top
-        width: 320,
+        width: `${320 * fontScaleMap[fontSize]}px`,
         maxWidth: '90vw',
         ...position,
       }}
@@ -292,16 +295,16 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
       <Stack gap='xs'>
         {/* Header */}
         <Group justify='space-between' align='flex-start'>
-          <Text size='sm' fw={500} c='dimmed'>
+          <Text size='md' fw={500} c='dimmed'>
             Translation
           </Text>
-          <Button variant='subtle' size='xs' p={2} onClick={handleClose}>
-            <IconX size={14} />
+          <Button variant='subtle' size='sm' p={2} onClick={handleClose}>
+            <IconX size={16} />
           </Button>
         </Group>
 
         {/* Original text */}
-        <Text size='sm' style={{ fontStyle: 'italic' }}>
+        <Text size='md' style={{ fontStyle: 'italic' }}>
           "{selection.text}"
         </Text>
 
@@ -316,7 +319,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
               localStorage.setItem('quiz-translation-target-lang', value);
             }
           }}
-          size='xs'
+          size='sm'
           placeholder='Select language'
           style={{ width: '100%' }}
           onFocus={() => {
@@ -333,18 +336,18 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
         />
 
         {/* Translation result */}
-        <div style={{ minHeight: 60 }}>
+        <div style={{ minHeight: `${60 * fontScaleMap[fontSize]}px` }}>
           {translationLoading && (
             <Group gap='xs'>
-              <Loader size='sm' />
-              <Text size='sm' c='dimmed'>
+              <Loader size='md' />
+              <Text size='md' c='dimmed'>
                 Translating...
               </Text>
             </Group>
           )}
 
           {translationError && (
-            <Text size='sm' c='red'>
+            <Text size='md' c='red'>
               {translationError.includes('temporarily unavailable')
                 ? '🔄 Translation service is temporarily unavailable. Please wait a moment and try again.'
                 : translationError.includes('Rate limit exceeded')
@@ -355,12 +358,12 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
 
           {translation && !translationLoading && !translationError && (
             <Stack gap='xs'>
-              <Text size='sm'>{translation.translatedText}</Text>
+              <Text size='md'>{translation.translatedText}</Text>
               <Group gap='xs'>
                 <Button
                   variant='light'
-                  size='xs'
-                  leftSection={<IconVolume size={14} />}
+                  size='sm'
+                  leftSection={<IconVolume size={16} />}
                   onClick={() =>
                     speakText(translation.translatedText, targetLanguage)
                   }
@@ -369,8 +372,8 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
                 </Button>
                 <Button
                   variant='light'
-                  size='xs'
-                  leftSection={<IconVolume size={14} />}
+                  size='sm'
+                  leftSection={<IconVolume size={16} />}
                   onClick={() =>
                     speakText(selection.text, translation.sourceLanguage)
                   }
@@ -379,14 +382,14 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
                 </Button>
                 <Button
                   variant={isSaved ? 'filled' : 'light'}
-                  size='xs'
+                  size='sm'
                   leftSection={
                     isSaving ? (
-                      <Loader size={14} data-testid='loader' />
+                      <Loader size={16} data-testid='loader' />
                     ) : isSaved ? (
-                      <IconBookmark size={14} />
+                      <IconBookmark size={16} />
                     ) : (
-                      <IconBookmark size={14} />
+                      <IconBookmark size={16} />
                     )
                   }
                   onClick={handleSaveSnippet}
@@ -397,7 +400,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
                 </Button>
               </Group>
               {saveError && (
-                <Text size='xs' c='red'>
+                <Text size='sm' c='red'>
                   {saveError}
                 </Text>
               )}
@@ -406,7 +409,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
         </div>
 
         {/* Footer */}
-        <Text size='xs' c='dimmed' ta='center'>
+        <Text size='sm' c='dimmed' ta='center'>
           Powered by Google Translate
         </Text>
       </Stack>

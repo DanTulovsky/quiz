@@ -23,6 +23,8 @@ import { Volume2, VolumeX } from 'lucide-react';
 import { useTTS } from '../../hooks/useTTS';
 import { useGetV1PreferencesLearning } from '../../api/api';
 import { defaultVoiceForLanguage } from '../../utils/tts';
+import { useTheme } from '../../contexts/ThemeContext';
+import { fontScaleMap } from '../../theme/theme';
 
 import { useStory } from '../../hooks/useStory';
 import { splitIntoParagraphs } from '../../utils/passage';
@@ -336,8 +338,7 @@ const MobileStoryPage: React.FC = () => {
                 onClick={() => setViewMode('section')}
                 leftSection={<IconBook2 size={12} />}
                 styles={{
-                  root: { fontSize: '12px', padding: '1px 8px' },
-                  label: { fontSize: '12px' },
+                  root: { padding: '1px 8px' },
                 }}
               >
                 Section
@@ -348,8 +349,7 @@ const MobileStoryPage: React.FC = () => {
                 onClick={() => setViewMode('reading')}
                 leftSection={<IconMessage size={12} />}
                 styles={{
-                  root: { fontSize: '12px', padding: '1px 8px' },
-                  label: { fontSize: '12px' },
+                  root: { padding: '1px 8px' },
                 }}
               >
                 Reading
@@ -472,6 +472,9 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
   // Get user learning preferences for preferred voice
   const { data: userLearningPrefs } = useGetV1PreferencesLearning();
 
+  // Get font size from theme context
+  const { fontSize } = useTheme();
+
   // Fetch snippets for the current section
   const { snippets } = useSectionSnippets(section?.id);
   if (!section) {
@@ -507,11 +510,9 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
               disabled={sectionIndex === 0}
               styles={{
                 root: {
-                  fontSize: '11px',
                   padding: '2px 6px',
                   minHeight: '28px',
                 },
-                label: { fontSize: '11px' },
               }}
             >
               «
@@ -524,11 +525,9 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
               disabled={sectionIndex === 0}
               styles={{
                 root: {
-                  fontSize: '11px',
                   padding: '2px 6px',
                   minHeight: '28px',
                 },
-                label: { fontSize: '11px' },
               }}
             >
               ‹
@@ -549,11 +548,9 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
               disabled={sectionIndex >= totalSections - 1}
               styles={{
                 root: {
-                  fontSize: '11px',
                   padding: '2px 6px',
                   minHeight: '28px',
                 },
-                label: { fontSize: '11px' },
               }}
             >
               ›
@@ -566,11 +563,9 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
               disabled={sectionIndex >= totalSections - 1}
               styles={{
                 root: {
-                  fontSize: '11px',
                   padding: '2px 6px',
                   minHeight: '28px',
                 },
-                label: { fontSize: '11px' },
               }}
             >
               »
@@ -656,7 +651,7 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
                         componentProps={{
                           style: {
                             lineHeight: 1.6,
-                            fontSize: '16px',
+                            fontSize: `${16 * fontScaleMap[fontSize]}px`,
                             whiteSpace: 'pre-wrap',
                             paddingRight: '4px',
                             marginBottom:
@@ -767,10 +762,7 @@ const MobileStoryQuestionCard: React.FC<MobileStoryQuestionCardProps> = ({
               onChange={() => setSelectedAnswer(index)}
               disabled={showResult}
             />
-            <label
-              htmlFor={`option-${index}`}
-              style={{ marginLeft: 8, fontSize: '14px' }}
-            >
+            <label htmlFor={`option-${index}`} style={{ marginLeft: 8 }}>
               {option}
             </label>
           </div>
@@ -834,6 +826,9 @@ const MobileStoryReadingView: React.FC<MobileStoryReadingViewProps> = ({
 
   // Get user learning preferences for preferred voice
   const { data: userLearningPrefs } = useGetV1PreferencesLearning();
+
+  // Get font size from theme context
+  const { fontSize } = useTheme();
 
   // Fetch snippets for the entire story
   const { snippets } = useStorySnippets(story?.id);
@@ -954,7 +949,7 @@ const MobileStoryReadingView: React.FC<MobileStoryReadingViewProps> = ({
                             componentProps={{
                               style: {
                                 lineHeight: 1.7,
-                                fontSize: '16px',
+                                fontSize: `${16 * fontScaleMap[fontSize]}px`,
                                 whiteSpace: 'pre-wrap',
                                 marginBottom:
                                   paraIndex < paragraphs.length - 1

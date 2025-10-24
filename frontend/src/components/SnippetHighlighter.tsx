@@ -15,6 +15,8 @@ import { useDisclosure } from '@mantine/hooks';
 import { useNavigate } from 'react-router-dom';
 import { Snippet, deleteV1SnippetsId } from '../api/api';
 import { useQueryClient } from '@tanstack/react-query';
+import { useTheme } from '../contexts/ThemeContext';
+import { fontScaleMap } from '../theme/theme';
 
 interface SnippetHighlighterProps {
   text: string;
@@ -52,6 +54,7 @@ export const SnippetHighlighter: React.FC<SnippetHighlighterProps> = ({
 }) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { fontSize } = useTheme();
   const [
     deleteModalOpened,
     { open: openDeleteModal, close: closeDeleteModal },
@@ -246,12 +249,12 @@ export const SnippetHighlighter: React.FC<SnippetHighlighterProps> = ({
         <Stack gap='xs'>
           {/* Header with translation and action buttons */}
           <Group justify='space-between' align='flex-start'>
-            <Text size='sm' fw={500} style={{ flex: 1 }}>
+            <Text size='md' fw={500} style={{ flex: 1 }}>
               {snippet.translated_text || 'No translation available'}
             </Text>
             <Group gap='xs'>
               <ActionIcon
-                size='sm'
+                size='md'
                 variant='subtle'
                 color='blue'
                 onClick={e => {
@@ -264,10 +267,10 @@ export const SnippetHighlighter: React.FC<SnippetHighlighterProps> = ({
                 }}
                 title='View this snippet in snippets page'
               >
-                <IconExternalLink size={14} />
+                <IconExternalLink size={16} />
               </ActionIcon>
               <ActionIcon
-                size='sm'
+                size='md'
                 variant='subtle'
                 color='red'
                 onClick={e => {
@@ -276,18 +279,18 @@ export const SnippetHighlighter: React.FC<SnippetHighlighterProps> = ({
                 }}
                 title='Delete snippet'
               >
-                <IconTrash size={14} />
+                <IconTrash size={16} />
               </ActionIcon>
             </Group>
           </Group>
 
           {/* Language pair and difficulty */}
           <Group gap='xs' wrap='wrap'>
-            <Badge size='xs' variant='outline' color='blue'>
+            <Badge size='sm' variant='outline' color='blue'>
               {snippet.source_language} → {snippet.target_language}
             </Badge>
             {snippet.difficulty_level && (
-              <Badge size='xs' variant='outline' color='green'>
+              <Badge size='sm' variant='outline' color='green'>
                 {snippet.difficulty_level}
               </Badge>
             )}
@@ -298,14 +301,14 @@ export const SnippetHighlighter: React.FC<SnippetHighlighterProps> = ({
             <>
               <Divider size='xs' />
               <Text
-                size='xs'
+                size='sm'
                 c='dimmed'
                 fs='italic'
                 style={{
                   wordWrap: 'break-word',
                   overflowWrap: 'break-word',
                   whiteSpace: 'normal',
-                  maxWidth: '280px',
+                  maxWidth: `${280 * fontScaleMap[fontSize]}px`,
                   width: '100%',
                 }}
               >
@@ -324,7 +327,7 @@ export const SnippetHighlighter: React.FC<SnippetHighlighterProps> = ({
           shadow='md'
           radius='md'
           trigger='click'
-          width={300}
+          width={300 * fontScaleMap[fontSize]}
           offset={8}
           middlewares={{ flip: true, shift: true, inline: false }}
         >

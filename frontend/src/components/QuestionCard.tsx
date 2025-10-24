@@ -20,6 +20,8 @@ import { defaultVoiceForLanguage } from '../utils/tts';
 import logger from '../utils/logger';
 import { useAuth } from '../hooks/useAuth';
 import { useTTS } from '../hooks/useTTS';
+import { useTheme } from '../contexts/ThemeContext';
+import { fontScaleMap } from '../theme/theme';
 import { useQuestionSnippets } from '../hooks/useQuestionSnippets';
 import {
   usePostV1QuizQuestionIdReport,
@@ -190,6 +192,7 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
     ref
   ) => {
     const { ref: bottomBarRef, height: bottomBarHeight } = useElementSize();
+    const { fontSize } = useTheme();
     const [isSubmitted, setIsSubmitted] = useState(!!feedback);
     const [isLoading, setIsLoading] = useState(false);
     const [localFeedback, setLocalFeedback] = useState<Feedback | null>(
@@ -1460,7 +1463,7 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                           minWidth: '40px',
                           height: '40px',
                           textAlign: 'center',
-                          fontSize: '20px',
+                          fontSize: `${20 * fontScaleMap[fontSize]}px`,
                           fontWeight: 'bold',
                           display: 'flex',
                           alignItems: 'center',
@@ -1480,7 +1483,7 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                           right: '-4px',
                           minWidth: '16px',
                           height: '16px',
-                          fontSize: '10px',
+                          fontSize: `${10 * fontScaleMap[fontSize]}px`,
                           fontWeight: 'bold',
                           display: 'flex',
                           alignItems: 'center',

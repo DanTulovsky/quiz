@@ -8,17 +8,6 @@ import {
   supportsTouch,
 } from '../device';
 
-// Mock localStorage
-const localStorageMock = {
-  getItem: vi.fn(),
-  setItem: vi.fn(),
-  removeItem: vi.fn(),
-  clear: vi.fn(),
-};
-Object.defineProperty(window, 'localStorage', {
-  value: localStorageMock,
-});
-
 // Mock navigator
 Object.defineProperty(window, 'navigator', {
   value: {
@@ -36,8 +25,9 @@ Object.defineProperty(window, 'innerWidth', {
 
 describe('Device Detection Utilities', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
-    localStorageMock.getItem.mockReturnValue(null);
+    // Clear localStorage before each test
+    localStorage.clear();
+
     Object.defineProperty(window, 'innerWidth', {
       value: 375,
       writable: true,
@@ -89,17 +79,17 @@ describe('Device Detection Utilities', () => {
     });
 
     it('should respect localStorage override for mobile', () => {
-      localStorageMock.getItem.mockReturnValue('mobile');
+      localStorage.setItem('deviceView', 'mobile');
       expect(isMobileDevice()).toBe(true);
     });
 
     it('should respect localStorage override for desktop', () => {
-      localStorageMock.getItem.mockReturnValue('desktop');
+      localStorage.setItem('deviceView', 'desktop');
       expect(isMobileDevice()).toBe(false);
     });
 
     it('should ignore invalid localStorage values', () => {
-      localStorageMock.getItem.mockReturnValue('invalid');
+      localStorage.setItem('deviceView', 'invalid');
       expect(isMobileDevice()).toBe(true); // Falls back to detection
     });
   });
@@ -107,43 +97,37 @@ describe('Device Detection Utilities', () => {
   describe('forceMobileView', () => {
     it('should set localStorage to mobile', () => {
       forceMobileView();
-      expect(localStorageMock.setItem).toHaveBeenCalledWith(
-        'deviceView',
-        'mobile'
-      );
+      expect(localStorage.getItem('deviceView')).toBe('mobile');
     });
   });
 
   describe('forceDesktopView', () => {
     it('should set localStorage to desktop', () => {
       forceDesktopView();
-      expect(localStorageMock.setItem).toHaveBeenCalledWith(
-        'deviceView',
-        'desktop'
-      );
+      expect(localStorage.getItem('deviceView')).toBe('desktop');
     });
   });
 
   describe('clearDeviceOverride', () => {
     it('should remove deviceView from localStorage', () => {
+      localStorage.setItem('deviceView', 'mobile');
       clearDeviceOverride();
-      expect(localStorageMock.removeItem).toHaveBeenCalledWith('deviceView');
+      expect(localStorage.getItem('deviceView')).toBeNull();
     });
   });
 
   describe('getDeviceView', () => {
     it('should return mobile when localStorage is set to mobile', () => {
-      localStorageMock.getItem.mockReturnValue('mobile');
+      localStorage.setItem('deviceView', 'mobile');
       expect(getDeviceView()).toBe('mobile');
     });
 
     it('should return desktop when localStorage is set to desktop', () => {
-      localStorageMock.getItem.mockReturnValue('desktop');
+      localStorage.setItem('deviceView', 'desktop');
       expect(getDeviceView()).toBe('desktop');
     });
 
     it('should return auto when no override is set', () => {
-      localStorageMock.getItem.mockReturnValue(null);
       expect(getDeviceView()).toBe('auto');
     });
   });

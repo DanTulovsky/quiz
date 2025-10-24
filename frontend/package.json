@@ -75,7 +75,8 @@
     "ts-prune": "^0.10.3",
     "typescript": "^5.2.2",
     "vite": "^7.1.7",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "vitest-localstorage-mock": "^0.1.2"
   },
   "overrides": {
     "prismjs": "^1.30.0"

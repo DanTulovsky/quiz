@@ -706,12 +706,39 @@ const SettingsPage: React.FC = () => {
                   value={fontSize}
                   onChange={value => setFontSize(value as typeof fontSize)}
                   data={[
-                    { label: 'Small', value: 'small' },
-                    { label: 'Medium', value: 'medium' },
-                    { label: 'Large', value: 'large' },
-                    { label: 'Extra Large', value: 'extra-large' },
+                    {
+                      label: (
+                        <Text size='sm' style={{ fontSize: '0.875rem' }}>
+                          Small
+                        </Text>
+                      ),
+                      value: 'small'
+                    },
+                    {
+                      label: (
+                        <Text size='sm' style={{ fontSize: '1rem' }}>
+                          Medium
+                        </Text>
+                      ),
+                      value: 'medium'
+                    },
+                    {
+                      label: (
+                        <Text size='sm' style={{ fontSize: '1.125rem' }}>
+                          Large
+                        </Text>
+                      ),
+                      value: 'large'
+                    },
+                    {
+                      label: (
+                        <Text size='sm' style={{ fontSize: '1.25rem' }}>
+                          Extra Large
+                        </Text>
+                      ),
+                      value: 'extra-large'
+                    },
                   ]}
-                  fullWidth
                   data-testid='font-size-control'
                 />
               </Box>

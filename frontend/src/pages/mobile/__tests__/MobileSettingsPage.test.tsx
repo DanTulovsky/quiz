@@ -1,9 +1,7 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { MantineProvider } from '@mantine/core';
+import { screen, waitFor } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { renderWithProviders } from '../../../test-utils';
 import MobileSettingsPage from '../MobileSettingsPage';
 
 // Mock the hooks and contexts
@@ -24,21 +22,25 @@ vi.mock('../../../hooks/useAuth', () => ({
   }),
 }));
 
-vi.mock('../../../contexts/ThemeContext', () => ({
-  useTheme: () => ({
-    currentTheme: 'blue',
-    setTheme: vi.fn(),
-    themeNames: {
-      blue: 'Blue',
-      green: 'Green',
-      red: 'Red',
-    },
-    colorScheme: 'light',
-    setColorScheme: vi.fn(),
-    fontSize: 'medium',
-    setFontSize: vi.fn(),
-  }),
-}));
+vi.mock('../../../contexts/ThemeContext', async importOriginal => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    useTheme: () => ({
+      currentTheme: 'blue',
+      setTheme: vi.fn(),
+      themeNames: {
+        blue: 'Blue',
+        green: 'Green',
+        red: 'Red',
+      },
+      colorScheme: 'light',
+      setColorScheme: vi.fn(),
+      fontSize: 'medium',
+      setFontSize: vi.fn(),
+    }),
+  };
+});
 
 vi.mock('../../../api/api', () => ({
   useGetV1SettingsAiProviders: () => ({
@@ -57,12 +59,20 @@ vi.mock('../../../api/api', () => ({
   }),
   useGetV1SettingsLanguages: () => ({
     data: [{ name: 'spanish' }, { name: 'french' }],
+    isLoading: false,
+    error: null,
   }),
   useGetV1SettingsLevels: () => ({
     data: {
       levels: ['A1', 'A2', 'B1'],
-      level_descriptions: { A1: 'Beginner', A2: 'Elementary', B1: 'Intermediate' },
+      level_descriptions: {
+        A1: 'Beginner',
+        A2: 'Elementary',
+        B1: 'Intermediate',
+      },
     },
+    isLoading: false,
+    error: null,
     refetch: vi.fn(),
   }),
   useGetV1PreferencesLearning: () => ({
@@ -81,12 +91,15 @@ vi.mock('../../../api/api', () => ({
   }),
   usePutV1PreferencesLearning: () => ({
     mutateAsync: vi.fn(),
+    isPending: false,
   }),
   usePostV1SettingsTestAi: () => ({
     mutateAsync: vi.fn(),
+    isPending: false,
   }),
   usePutV1UserzProfile: () => ({
     mutateAsync: vi.fn(),
+    isPending: false,
   }),
   usePostV1SettingsTestEmail: () => ({
     mutateAsync: vi.fn(),
@@ -94,6 +107,8 @@ vi.mock('../../../api/api', () => ({
   }),
   useGetV1SettingsApiKeyProvider: () => ({
     data: { has_api_key: false },
+    isLoading: false,
+    error: null,
     refetch: vi.fn(),
   }),
   getGetV1PreferencesLearningQueryKey: () => ['learningPreferences'],
@@ -106,97 +121,103 @@ vi.mock('../../../api/settingsApi', () => ({
   clearAllSnippets: vi.fn(),
 }));
 
-const renderWithProviders = (children: React.ReactNode) => {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-      },
-    },
-  });
-
-  return render(
-    <QueryClientProvider client={queryClient}>
-      <MemoryRouter
-        future={{
-          v7_startTransition: false,
-          v7_relativeSplatPath: false,
-        }}
-      >
-        <MantineProvider>{children}</MantineProvider>
-      </MemoryRouter>
-    </QueryClientProvider>
-  );
-};
-
 describe('MobileSettingsPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
+  afterEach(() => {
+    vi.clearAllMocks();
+    vi.clearAllTimers();
+  });
+
   it('should render the settings page', async () => {
     renderWithProviders(<MobileSettingsPage />);
 
-    await waitFor(() => {
-      expect(screen.getByText('Settings')).toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        expect(screen.getByText('Settings')).toBeInTheDocument();
+      },
+      { timeout: 3000 }
+    );
   });
 
   it('should render theme section', async () => {
     renderWithProviders(<MobileSettingsPage />);
 
-    await waitFor(() => {
-      expect(screen.getByText('Theme')).toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        expect(screen.getByText('Theme')).toBeInTheDocument();
+      },
+      { timeout: 3000 }
+    );
   });
 
   it('should render account information section', async () => {
     renderWithProviders(<MobileSettingsPage />);
 
-    await waitFor(() => {
-      expect(screen.getByText('Account Information')).toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        expect(screen.getByText('Account Information')).toBeInTheDocument();
+      },
+      { timeout: 3000 }
+    );
   });
 
   it('should render learning preferences section', async () => {
     renderWithProviders(<MobileSettingsPage />);
 
-    await waitFor(() => {
-      expect(screen.getByText('Learning Preferences')).toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        expect(screen.getByText('Learning Preferences')).toBeInTheDocument();
+      },
+      { timeout: 3000 }
+    );
   });
 
   it('should render notifications section', async () => {
     renderWithProviders(<MobileSettingsPage />);
 
-    await waitFor(() => {
-      expect(screen.getByText('Notifications')).toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        expect(screen.getByText('Notifications')).toBeInTheDocument();
+      },
+      { timeout: 3000 }
+    );
   });
 
   it('should render AI settings section', async () => {
     renderWithProviders(<MobileSettingsPage />);
 
-    await waitFor(() => {
-      expect(screen.getByText('AI Settings')).toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        expect(screen.getByText('AI Settings')).toBeInTheDocument();
+      },
+      { timeout: 3000 }
+    );
   });
 
   it('should render data management section', async () => {
     renderWithProviders(<MobileSettingsPage />);
 
-    await waitFor(() => {
-      expect(screen.getByText('Data Management')).toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        expect(screen.getByText('Data Management')).toBeInTheDocument();
+      },
+      { timeout: 3000 }
+    );
   });
 
   it('should render save button', async () => {
     renderWithProviders(<MobileSettingsPage />);
 
-    await waitFor(() => {
-      expect(
-        screen.getByRole('button', { name: /Save Changes/i })
-      ).toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        expect(
+          screen.getByRole('button', { name: /Save Changes/i })
+        ).toBeInTheDocument();
+      },
+      { timeout: 3000 }
+    );
   });
 });

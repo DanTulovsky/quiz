@@ -28,6 +28,8 @@ import {
   IconCopy,
   IconVolume,
 } from '@tabler/icons-react';
+import { useTheme } from '../../contexts/ThemeContext';
+import { fontScaleMap } from '../../theme/theme';
 import { useAuth } from '../../hooks/useAuth';
 import { playTTSOnce } from '../../hooks/useTTS';
 import { defaultVoiceForLanguage } from '../../utils/tts';
@@ -58,6 +60,7 @@ const MobilePhrasebookCategoryPage = () => {
   const { category } = useParams<{ category: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { fontSize } = useTheme();
   const [data, setData] = useState<PhrasebookData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -356,7 +359,12 @@ const MobilePhrasebookCategoryPage = () => {
                   >
                     {/* Icon */}
                     {word.icon && (
-                      <Box style={{ fontSize: '20px', lineHeight: 1 }}>
+                      <Box
+                        style={{
+                          fontSize: `${20 * fontScaleMap[fontSize]}px`,
+                          lineHeight: 1,
+                        }}
+                      >
                         {word.icon}
                       </Box>
                     )}

@@ -23,6 +23,8 @@ import {
 } from '@tabler/icons-react';
 import { useAuth } from '../../hooks/useAuth';
 import { Navigate } from 'react-router-dom';
+import { useTheme } from '../../contexts/ThemeContext';
+import { fontScaleMap } from '../../theme/theme';
 import { notifications } from '@mantine/notifications';
 
 interface WorkerStatus {
@@ -127,6 +129,7 @@ interface ActivityLog {
 
 const WorkerAdminPage: React.FC = () => {
   const { user, isAuthenticated } = useAuth();
+  const { fontSize } = useTheme();
   const [workerStatus, setWorkerStatus] = useState<WorkerStatus | null>(null);
   const [aiConcurrency, setAiConcurrency] = useState<AIConcurrency | null>(
     null
@@ -650,7 +653,7 @@ const WorkerAdminPage: React.FC = () => {
               color: '#d4d4d4',
               fontFamily:
                 'SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace',
-              fontSize: '12px',
+              fontSize: `${12 * fontScaleMap[fontSize]}px`,
               padding: '10px',
               height: '300px',
               overflowY: 'auto',
@@ -1097,7 +1100,7 @@ const WorkerAdminPage: React.FC = () => {
             maxWidth: '100%',
             fontFamily:
               'SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace',
-            fontSize: '14px',
+            fontSize: `${14 * fontScaleMap[fontSize]}px`,
             lineHeight: '1.6',
             backgroundColor: '#f8f9fa',
             padding: '16px',

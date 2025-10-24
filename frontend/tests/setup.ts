@@ -31,6 +31,21 @@ beforeAll(() => {
   // Mock scrollIntoView for Mantine components
   Element.prototype.scrollIntoView = vi.fn();
 
+  // localStorage is now mocked by vitest-localstorage-mock
+
+  // Mock document for ThemeProvider
+  Object.defineProperty(global, 'document', {
+    value: {
+      documentElement: {
+        style: {},
+      },
+      body: {
+        style: {},
+      },
+    },
+    writable: true,
+  });
+
   // Mock URL.createObjectURL
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (global.URL as any).createObjectURL = vi.fn();

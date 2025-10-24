@@ -4,6 +4,8 @@ import { Volume2, VolumeX } from 'lucide-react';
 import { useTTS } from '../hooks/useTTS';
 import { defaultVoiceForLanguage } from '../utils/tts';
 import { useGetV1PreferencesLearning } from '../api/api';
+import { useTheme } from '../contexts/ThemeContext';
+import { fontScaleMap } from '../theme/theme';
 import { SnippetHighlighter } from './SnippetHighlighter';
 import { useSectionSnippets } from '../hooks/useSectionSnippets';
 import {
@@ -70,6 +72,9 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
 
   // Get user learning preferences for preferred voice
   const { data: userLearningPrefs } = useGetV1PreferencesLearning();
+
+  // Get font size from theme context
+  const { fontSize } = useTheme();
 
   // Get snippets for this specific section
   const { snippets } = useSectionSnippets(section?.id);
@@ -220,7 +225,7 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
           componentProps={{
             style: {
               lineHeight: 1.6,
-              fontSize: '16px',
+              fontSize: `${16 * fontScaleMap[fontSize]}px`,
               whiteSpace: 'pre-wrap',
               // Ensure text never overlaps the TTS icon in the top-right
               paddingRight: '56px',

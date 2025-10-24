@@ -1,6 +1,8 @@
 import React from 'react';
 import { Group, Text, Tooltip, Box, LoadingOverlay } from '@mantine/core';
 import { DailyQuestionHistory } from '../api/api';
+import { useTheme } from '../contexts/ThemeContext';
+import { fontScaleMap } from '../theme/theme';
 import dayjs from 'dayjs';
 
 // Extend with UTC plugin if available (for production)
@@ -22,6 +24,7 @@ export function QuestionHistoryChart({
   isLoading,
   questionId,
 }: QuestionHistoryChartProps) {
+  const { fontSize } = useTheme();
   // Show loading state
   if (isLoading) {
     return (
@@ -101,7 +104,7 @@ export function QuestionHistoryChart({
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: '10px',
+                fontSize: `${10 * fontScaleMap[fontSize]}px`,
                 color: 'white',
                 cursor: 'default',
               }}

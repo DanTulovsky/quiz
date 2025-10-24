@@ -23,6 +23,8 @@ import remarkGfm from 'remark-gfm';
 import ReactMarkdown from 'react-markdown';
 import { useAuth } from '../hooks/useAuth';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { useTheme } from '../contexts/ThemeContext';
+import { fontScaleMap } from '../theme/theme';
 import {
   Paper,
   Stack,
@@ -266,6 +268,8 @@ const ChatPanel: React.FC<
   onInputBlur,
   disableSaveConversation,
 }) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { fontSize } = useTheme();
   // For blinking fix: always render the last AI message bubble, with spinner if needed
   const lastAIIndex = getLastAIMessageIndex(messages);
   const renderedMessages = messages.map((msg, index) => {
@@ -347,7 +351,7 @@ const ChatPanel: React.FC<
               rightSection={<ChevronDown size={16} />}
               style={{
                 fontWeight: 600,
-                fontSize: 16,
+                fontSize: 16 * fontScaleMap[fontSize],
                 minWidth: 200,
                 display: 'flex',
                 alignItems: 'center',
@@ -367,7 +371,7 @@ const ChatPanel: React.FC<
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontWeight: 600,
-                  fontSize: 14,
+                  fontSize: 14 * fontScaleMap[fontSize],
                 }}
               >
                 Q
@@ -685,7 +689,10 @@ export const Chat: React.FC<ChatProps> = ({
   onRegisterActions,
 }) => {
   const { user } = useAuth();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { fontSize } = useTheme();
   const { data: providersData } = useGetV1SettingsAiProviders();
+
   const providers = providersData?.providers;
 
   // API mutations for saving conversations and bookmarking messages

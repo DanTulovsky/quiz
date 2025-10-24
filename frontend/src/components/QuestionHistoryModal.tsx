@@ -12,6 +12,8 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 dayjs.extend(utc);
 import type { DailyQuestionHistory as ApiDailyQuestionHistory } from '../api/api';
+import { useTheme } from '../contexts/ThemeContext';
+import { fontScaleMap } from '../theme/theme';
 
 interface QuestionHistoryModalProps {
   opened: boolean;
@@ -28,6 +30,7 @@ export function QuestionHistoryModal({
   isLoading,
   questionText,
 }: QuestionHistoryModalProps) {
+  const { fontSize } = useTheme();
   const formatDate = (dateString: string) => {
     // The frontend expects the backend to always send timezone-aware
     // timestamps (ISO with timezone). If a date-only string is received
@@ -62,24 +65,36 @@ export function QuestionHistoryModal({
   ) => {
     if (!isCompleted) {
       return (
-        <span aria-hidden style={{ fontSize: 16 }}>
+        <span
+          aria-hidden
+          style={{ fontSize: `${16 * fontScaleMap[fontSize]}px` }}
+        >
           ⏱️
         </span>
       );
     }
     if (isCorrect === null || isCorrect === undefined) {
       return (
-        <span aria-hidden style={{ fontSize: 16 }}>
+        <span
+          aria-hidden
+          style={{ fontSize: `${16 * fontScaleMap[fontSize]}px` }}
+        >
           ⏱️
         </span>
       );
     }
     return isCorrect ? (
-      <span aria-hidden style={{ fontSize: 16, color: 'green' }}>
+      <span
+        aria-hidden
+        style={{ fontSize: `${16 * fontScaleMap[fontSize]}px`, color: 'green' }}
+      >
         ✓
       </span>
     ) : (
-      <span aria-hidden style={{ fontSize: 16, color: 'red' }}>
+      <span
+        aria-hidden
+        style={{ fontSize: `${16 * fontScaleMap[fontSize]}px`, color: 'red' }}
+      >
         ✖
       </span>
     );

@@ -21,6 +21,8 @@ import remarkGfm from 'remark-gfm';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { useAuth } from '../hooks/useAuth';
 import { usePagination } from '../hooks/usePagination';
+import { useTheme } from '../contexts/ThemeContext';
+import { fontScaleMap } from '../theme/theme';
 import { PaginationControls } from '../components/PaginationControls';
 import { usePutV1AiConversationsBookmark, ChatMessage } from '../api/api';
 import { customInstance } from '../api/axios';
@@ -129,7 +131,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
                       backgroundColor: 'var(--mantine-color-gray-1)',
                       padding: '2px 4px',
                       borderRadius: '3px',
-                      fontSize: '0.85em',
+                      fontSize: `${0.85 * fontScaleMap[fontSize]}em`,
                     }}
                     {...props}
                   >
@@ -347,7 +349,10 @@ const MessageDetailModal: React.FC<MessageDetailModalProps> = ({
 
 export const BookmarkedMessagesPage: React.FC = () => {
   const {} = useAuth();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { fontSize } = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
+
   const [activeSearchQuery, setActiveSearchQuery] = useState('');
   const [selectedMessage, setSelectedMessage] = useState<ChatMessage | null>(
     null

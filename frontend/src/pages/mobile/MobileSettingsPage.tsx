@@ -32,7 +32,6 @@ import {
   Container,
   Title,
   Text,
-  Card,
   Stack,
   TextInput,
   Select,
@@ -61,7 +60,6 @@ import {
   IconTarget,
   IconPalette,
   IconBell,
-  IconChevronDown,
 } from '@tabler/icons-react';
 
 // Add this type for the levels API response
@@ -136,7 +134,6 @@ const MobileSettingsPage: React.FC = () => {
   const [availableVoices, setAvailableVoices] = useState<string[]>([]);
   // Local UI state for TTS sample button
   const [ttsBufferingLocal, setTtsBufferingLocal] = useState(false);
-  const [ttsBufferProgress, setTtsBufferProgress] = useState(0);
   const [ttsPlayingLocal, setTtsPlayingLocal] = useState(false);
   const queryClient = useQueryClient();
   const {
@@ -725,12 +722,10 @@ const MobileSettingsPage: React.FC = () => {
                       onChange={value =>
                         value && setTheme(value as keyof typeof themeNames)
                       }
-                      data={Object.entries(themeNames).map(
-                        ([key, name]) => ({
-                          value: key,
-                          label: name,
-                        })
-                      )}
+                      data={Object.entries(themeNames).map(([key, name]) => ({
+                        value: key,
+                        label: name,
+                      }))}
                       data-testid='theme-select'
                     />
                   </Box>
@@ -857,10 +852,7 @@ const MobileSettingsPage: React.FC = () => {
                             data-testid='tts-voice-select'
                             style={{ flex: 1 }}
                           />
-                          <Tooltip
-                            label='Play sample'
-                            position='top'
-                          >
+                          <Tooltip label='Play sample' position='top'>
                             <Button
                               variant='subtle'
                               size='xs'
@@ -895,7 +887,6 @@ const MobileSettingsPage: React.FC = () => {
 
                                   // Set local buffering indicator
                                   setTtsBufferingLocal(true);
-                                  setTtsBufferProgress(0);
 
                                   const { playTTSOnce, stopTTSOnce } =
                                     await import('../../hooks/useTTS');
@@ -905,13 +896,12 @@ const MobileSettingsPage: React.FC = () => {
                                     stopTTSOnce();
                                     setTtsPlayingLocal(false);
                                     setTtsBufferingLocal(false);
-                                    setTtsBufferProgress(0);
                                     return;
                                   }
 
                                   await playTTSOnce(sample, chosenVoice, {
-                                    onBuffering: (p: number) => {
-                                      setTtsBufferProgress(p);
+                                    onBuffering: () => {
+                                      // Buffering in progress
                                     },
                                     onPlayStart: () => {
                                       setTtsBufferingLocal(false);
@@ -929,7 +919,6 @@ const MobileSettingsPage: React.FC = () => {
                                   });
                                 } finally {
                                   setTtsBufferingLocal(false);
-                                  setTtsBufferProgress(0);
                                 }
                               }}
                               data-testid='tts-sample-button'
@@ -948,7 +937,7 @@ const MobileSettingsPage: React.FC = () => {
                         </Group>
 
                         <Group>
-                          <Tooltip label="See more questions from topics you struggle with">
+                          <Tooltip label='See more questions from topics you struggle with'>
                             <Lightbulb size={16} />
                           </Tooltip>
                           <Switch

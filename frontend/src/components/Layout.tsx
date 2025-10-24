@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useGetV1SettingsLevels } from '../api/api';
 import { useTheme } from '../contexts/ThemeContext';
+import { fontScaleMap } from '../theme/theme';
 import { useMobileDetection } from '../hooks/useMobileDetection';
 import { useQueryClient } from '@tanstack/react-query';
 import { useHotkeys } from 'react-hotkeys-hook';
@@ -60,7 +61,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const theme = useMantineTheme();
-  const { colorScheme, setColorScheme } = useTheme();
+  const { colorScheme, setColorScheme, fontSize } = useTheme();
   // Expose current override to determine if we should offer switch back to mobile
   const { setMobileView, deviceView } = useMobileDetection();
   const queryClient = useQueryClient();
@@ -557,7 +558,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          fontSize: '11px',
+                          fontSize: `${11 * fontScaleMap[fontSize]}px`,
                           letterSpacing: '0.5px',
                         },
                       }}
@@ -607,7 +608,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            fontSize: '11px',
+                            fontSize: `${11 * fontScaleMap[fontSize]}px`,
                             letterSpacing: '0.5px',
                           },
                         }}
