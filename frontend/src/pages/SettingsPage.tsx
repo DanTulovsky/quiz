@@ -712,7 +712,7 @@ const SettingsPage: React.FC = () => {
                           Small
                         </Text>
                       ),
-                      value: 'small'
+                      value: 'small',
                     },
                     {
                       label: (
@@ -720,7 +720,7 @@ const SettingsPage: React.FC = () => {
                           Medium
                         </Text>
                       ),
-                      value: 'medium'
+                      value: 'medium',
                     },
                     {
                       label: (
@@ -728,7 +728,7 @@ const SettingsPage: React.FC = () => {
                           Large
                         </Text>
                       ),
-                      value: 'large'
+                      value: 'large',
                     },
                     {
                       label: (
@@ -736,7 +736,7 @@ const SettingsPage: React.FC = () => {
                           Extra Large
                         </Text>
                       ),
-                      value: 'extra-large'
+                      value: 'extra-large',
                     },
                   ]}
                   data-testid='font-size-control'

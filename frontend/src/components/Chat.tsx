@@ -268,8 +268,6 @@ const ChatPanel: React.FC<
   onInputBlur,
   disableSaveConversation,
 }) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { fontSize } = useTheme();
   // For blinking fix: always render the last AI message bubble, with spinner if needed
   const lastAIIndex = getLastAIMessageIndex(messages);
   const renderedMessages = messages.map((msg, index) => {

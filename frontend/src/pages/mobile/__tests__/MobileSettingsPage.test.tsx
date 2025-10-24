@@ -23,7 +23,7 @@ vi.mock('../../../hooks/useAuth', () => ({
 }));
 
 vi.mock('../../../contexts/ThemeContext', async importOriginal => {
-  const actual = (await importOriginal()) as any;
+  const actual = (await importOriginal()) as Awaited<typeof importOriginal>;
   const mockTheme = { primaryColor: 'blue' };
   return {
     ...actual,
@@ -35,7 +35,11 @@ vi.mock('../../../contexts/ThemeContext', async importOriginal => {
         green: 'Green',
         red: 'Red',
       },
-      themes: actual.themes || { blue: mockTheme, green: mockTheme, red: mockTheme },
+      themes: actual.themes || {
+        blue: mockTheme,
+        green: mockTheme,
+        red: mockTheme,
+      },
       colorScheme: 'light',
       setColorScheme: vi.fn(),
       fontSize: 'medium',

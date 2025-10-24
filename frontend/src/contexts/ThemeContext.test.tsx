@@ -1,4 +1,10 @@
-import { render, screen, fireEvent, act, cleanup } from '@testing-library/react';
+import {
+  render,
+  screen,
+  fireEvent,
+  act,
+  cleanup,
+} from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ThemeProvider, useTheme } from './ThemeContext';
 import { Button, MantineProvider } from '@mantine/core';
@@ -112,7 +118,10 @@ describe('ThemeContext', () => {
     // Change to pink
     fireEvent.click(screen.getByText('Set Pink Theme'));
     expect(screen.getByTestId('current-theme')).toHaveTextContent('pink');
-    expect(window.localStorage.setItem).toHaveBeenCalledWith('quiz-theme', 'pink');
+    expect(window.localStorage.setItem).toHaveBeenCalledWith(
+      'quiz-theme',
+      'pink'
+    );
   });
 
   it('ignores invalid theme from localStorage', () => {

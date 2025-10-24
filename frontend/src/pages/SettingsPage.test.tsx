@@ -123,8 +123,8 @@ vi.mock('../hooks/useAuth', () => ({
 }));
 
 // Mock the useTheme hook
-vi.mock('../contexts/ThemeContext', async (importOriginal) => {
-  const actual = (await importOriginal()) as any;
+vi.mock('../contexts/ThemeContext', async importOriginal => {
+  const actual = (await importOriginal()) as Awaited<typeof importOriginal>;
   return {
     ...actual,
     useTheme: () => ({
