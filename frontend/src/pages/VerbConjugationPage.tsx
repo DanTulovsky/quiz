@@ -24,13 +24,7 @@ import {
 import { HoverTranslation } from '../components/HoverTranslation';
 import { useAuth } from '../hooks/useAuth';
 import { playTTSOnce } from '../hooks/useTTS';
-
-interface LanguageInfo {
-  code: string;
-  name: string;
-  tts_locale?: string;
-  tts_voice?: string;
-}
+import { useGetV1SettingsLanguages } from '../api/api';
 
 export function VerbConjugationPage() {
   const { user } = useAuth();
@@ -38,15 +32,17 @@ export function VerbConjugationPage() {
   const [selectedVerb, setSelectedVerb] = useState<string>('');
   const [selectedTense, setSelectedTense] = useState<string>('');
   const [verbData, setVerbData] = useState<VerbConjugation | null>(null);
-  const [languages, setLanguages] = useState<LanguageInfo[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const tenseRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
   const isProgrammaticScroll = useRef(false);
 
+  // Use React Query to fetch languages (with proper caching)
+  const { data: languages } = useGetV1SettingsLanguages();
+
   // Convert user's preferred language to language code using server data
   const getLanguageCode = (languageName: string): string => {
-    const languageInfo = languages.find(
+    const languageInfo = languages?.find(
       lang => lang.name.toLowerCase() === languageName.toLowerCase()
     );
     return languageInfo?.code || 'it'; // Default to Italian
@@ -57,52 +53,42 @@ export function VerbConjugationPage() {
     ? getLanguageCode(user.preferred_language)
     : 'it';
 
-  // Load available languages from server
-  useEffect(() => {
-    const loadLanguages = async () => {
-      try {
-        const response = await fetch('/v1/settings/languages');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setLanguages(data);
-      } catch (err) {
-        console.error('Error loading languages:', err);
-        setError('Failed to load language information');
-      }
-    };
-
-    loadLanguages();
-  }, []);
-
   // Load available verbs for the user's language on component mount
   useEffect(() => {
-    const loadVerbs = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await loadVerbConjugations(userLanguage);
-        if (data && data.verbs) {
-          setAvailableVerbs(data.verbs);
-          if (data.verbs.length > 0) {
-            setSelectedVerb(data.verbs[0].infinitive);
+    // Don't load verbs until languages array is populated (unless user has no preferred language)
+    // This prevents loading default 'it' verbs before we know the actual language code
+    if (!user?.preferred_language || (languages && languages.length > 0)) {
+      const loadVerbs = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+          const data = await loadVerbConjugations(userLanguage);
+          if (data && data.verbs) {
+            setAvailableVerbs(data.verbs);
+            if (data.verbs.length > 0) {
+              setSelectedVerb(data.verbs[0].infinitive);
+            }
           }
+        } catch (err) {
+          setError('Failed to load available verbs');
+          console.error('Error loading verbs:', err);
+        } finally {
+          setLoading(false);
         }
-      } catch (err) {
-        setError('Failed to load available verbs');
-        console.error('Error loading verbs:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+      };
 
-    loadVerbs();
-  }, [userLanguage]);
+      loadVerbs();
+    }
+  }, [userLanguage, user?.preferred_language, languages]);
 
   // Load specific verb conjugations when verb changes
   useEffect(() => {
-    if (selectedVerb) {
+    // Don't load verb data until languages array is populated (unless user has no preferred language)
+    // This prevents loading verbs with wrong language code
+    if (
+      selectedVerb &&
+      (!user?.preferred_language || (languages && languages.length > 0))
+    ) {
       const loadVerbData = async () => {
         setLoading(true);
         setError(null);
@@ -121,7 +107,7 @@ export function VerbConjugationPage() {
 
       loadVerbData();
     }
-  }, [selectedVerb, userLanguage]);
+  }, [selectedVerb, userLanguage, user?.preferred_language, languages]);
 
   // Scroll to selected tense
   useEffect(() => {
@@ -159,7 +145,7 @@ export function VerbConjugationPage() {
   }, []);
 
   const getLanguageName = (code: string): string => {
-    const languageInfo = languages.find(lang => lang.code === code);
+    const languageInfo = languages?.find(lang => lang.code === code);
     if (languageInfo) {
       return (
         languageInfo.name.charAt(0).toUpperCase() + languageInfo.name.slice(1)
@@ -171,7 +157,7 @@ export function VerbConjugationPage() {
   const handleTTSPlay = async (text: string) => {
     try {
       // Get the language info to find the correct TTS voice
-      const languageInfo = languages.find(lang => lang.code === userLanguage);
+      const languageInfo = languages?.find(lang => lang.code === userLanguage);
 
       if (!languageInfo) {
         console.error('Language info not found for:', userLanguage);

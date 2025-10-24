@@ -511,79 +511,30 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       </AppShell.Header>
 
       <AppShell.Navbar>
-        <Stack gap='xs' mt='md'>
-          {/* Main Navigation */}
-          {mainNav.map((item, index) => (
-            <React.Fragment key={item.name}>
-              {item.name === 'Daily' && (
-                <Divider my='xs' label='Practice' labelPosition='center' />
-              )}
-              {item.name === 'Saved AI Conversations' && (
-                <Divider my='xs' label='History' labelPosition='center' />
-              )}
-              {item.name === 'Phrasebook' && (
-                <Divider my='xs' label='Reference' labelPosition='center' />
-              )}
-              <NavLink
-                component={Link}
-                to={item.href}
-                onClick={
-                  item.name === 'Saved AI Conversations'
-                    ? () => {
-                        refreshAiConversations();
-                      }
-                    : undefined
-                }
-                label={
-                  <Group justify='space-between' w='100%' align='center'>
-                    <span>{item.name}</span>
-                    <Badge
-                      size='xs'
-                      variant='light'
-                      color={theme.colors.gray[6]}
-                      styles={{
-                        root: {
-                          backgroundColor:
-                            colorScheme === 'dark'
-                              ? theme.colors.gray[7]
-                              : theme.white,
-                          color:
-                            colorScheme === 'dark'
-                              ? theme.colors.gray[2]
-                              : theme.colors.gray[8],
-                          border: `1px solid ${colorScheme === 'dark' ? theme.colors.gray[6] : theme.colors.gray[3]}`,
-                          fontWeight: 600,
-                          minWidth: '32px',
-                          height: '22px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontSize: `${11 * fontScaleMap[fontSize]}px`,
-                          letterSpacing: '0.5px',
-                        },
-                      }}
-                    >
-                      ⇧{index + 1}
-                    </Badge>
-                  </Group>
-                }
-                leftSection={<item.icon size={20} />}
-                active={location.pathname.startsWith(item.href)}
-                data-testid={item.testId}
-                title={`${item.name} (Shift+${index + 1})`}
-              />
-            </React.Fragment>
-          ))}
-
-          {/* Admin Section */}
-          {adminNav.length > 0 && (
-            <>
-              <Divider my='md' label='Administration' labelPosition='center' />
-              {adminNav.map(item => (
+        <AppShell.Section grow style={{ overflow: 'auto' }}>
+          <Stack gap='xs' mt='md'>
+            {/* Main Navigation */}
+            {mainNav.map((item, index) => (
+              <React.Fragment key={item.name}>
+                {item.name === 'Daily' && (
+                  <Divider my='xs' label='Practice' labelPosition='center' />
+                )}
+                {item.name === 'Saved AI Conversations' && (
+                  <Divider my='xs' label='History' labelPosition='center' />
+                )}
+                {item.name === 'Phrasebook' && (
+                  <Divider my='xs' label='Reference' labelPosition='center' />
+                )}
                 <NavLink
-                  key={item.name}
                   component={Link}
                   to={item.href}
+                  onClick={
+                    item.name === 'Saved AI Conversations'
+                      ? () => {
+                          refreshAiConversations();
+                        }
+                      : undefined
+                  }
                   label={
                     <Group justify='space-between' w='100%' align='center'>
                       <span>{item.name}</span>
@@ -613,19 +564,70 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                           },
                         }}
                       >
-                        ⇧0
+                        ⇧{index + 1}
                       </Badge>
                     </Group>
                   }
                   leftSection={<item.icon size={20} />}
                   active={location.pathname.startsWith(item.href)}
                   data-testid={item.testId}
-                  title={`${item.name} (Shift+0)`}
+                  title={`${item.name} (Shift+${index + 1})`}
                 />
-              ))}
-            </>
-          )}
-        </Stack>
+              </React.Fragment>
+            ))}
+
+            {/* Admin Section */}
+            {adminNav.length > 0 && (
+              <>
+                <Divider my='md' label='Administration' labelPosition='center' />
+                {adminNav.map(item => (
+                  <NavLink
+                    key={item.name}
+                    component={Link}
+                    to={item.href}
+                    label={
+                      <Group justify='space-between' w='100%' align='center'>
+                        <span>{item.name}</span>
+                        <Badge
+                          size='xs'
+                          variant='light'
+                          color={theme.colors.gray[6]}
+                          styles={{
+                            root: {
+                              backgroundColor:
+                                colorScheme === 'dark'
+                                  ? theme.colors.gray[7]
+                                  : theme.white,
+                              color:
+                                colorScheme === 'dark'
+                                  ? theme.colors.gray[2]
+                                  : theme.colors.gray[8],
+                              border: `1px solid ${colorScheme === 'dark' ? theme.colors.gray[6] : theme.colors.gray[3]}`,
+                              fontWeight: 600,
+                              minWidth: '32px',
+                              height: '22px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              fontSize: `${11 * fontScaleMap[fontSize]}px`,
+                              letterSpacing: '0.5px',
+                            },
+                          }}
+                        >
+                          ⇧0
+                        </Badge>
+                      </Group>
+                    }
+                    leftSection={<item.icon size={20} />}
+                    active={location.pathname.startsWith(item.href)}
+                    data-testid={item.testId}
+                    title={`${item.name} (Shift+0)`}
+                  />
+                ))}
+              </>
+            )}
+          </Stack>
+        </AppShell.Section>
       </AppShell.Navbar>
 
       <AppShell.Main>{children}</AppShell.Main>
