@@ -83,6 +83,9 @@ const MobileDailyPage: React.FC = () => {
     stopTTS,
   } = useTTS();
 
+  // Media query for responsive paragraph splitting
+  const isSmall = useMediaQuery('(max-width: 768px)');
+
   // Set date from URL param
   useEffect(() => {
     if (dateParam && dateParam !== selectedDate) {
@@ -449,7 +452,6 @@ const MobileDailyPage: React.FC = () => {
                     zIndex={5}
                   />
                   {(() => {
-                    const isSmall = useMediaQuery('(max-width: 768px)');
                     const per = isSmall ? 2 : 4;
                     const paras = splitIntoParagraphs(
                       currentQuestion.question.content.passage,
