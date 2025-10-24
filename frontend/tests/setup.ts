@@ -31,20 +31,46 @@ beforeAll(() => {
   // Mock scrollIntoView for Mantine components
   Element.prototype.scrollIntoView = vi.fn();
 
-  // localStorage is now mocked by vitest-localstorage-mock
+  // Mock localStorage with a proper implementation
+  const localStorageMock = (() => {
+    let store: Record<string, string> = {};
+    return {
+      getItem: (key: string) => store[key] || null,
+      setItem: (key: string, value: string) => {
+        store[key] = value.toString();
+      },
+      removeItem: (key: string) => {
+        delete store[key];
+      },
+      clear: () => {
+        store = {};
+      },
+      key: (index: number) => Object.keys(store)[index] || null,
+      get length() {
+        return Object.keys(store).length;
+      },
+    };
+  })();
 
-  // Mock document for ThemeProvider
-  Object.defineProperty(global, 'document', {
-    value: {
-      documentElement: {
-        style: {},
-      },
-      body: {
-        style: {},
-      },
-    },
+  Object.defineProperty(window, 'localStorage', {
+    value: localStorageMock,
     writable: true,
+    configurable: true,
   });
+
+  Object.defineProperty(global, 'localStorage', {
+    value: localStorageMock,
+    writable: true,
+    configurable: true,
+  });
+
+  // Mock document properties for ThemeProvider - only override specific properties
+  if (global.document && global.document.documentElement) {
+    global.document.documentElement.style = global.document.documentElement.style || {};
+  }
+  if (global.document && global.document.body) {
+    global.document.body.style = global.document.body.style || {};
+  }
 
   // Mock URL.createObjectURL
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
