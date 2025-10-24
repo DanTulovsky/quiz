@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { MantineProvider } from '@mantine/core';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import StoryPage from '../StoryPage';
+import { ThemeProvider } from '../../contexts/ThemeContext';
 
 // Mock the story hook
 const mockUseStory = {
@@ -84,9 +85,11 @@ vi.mock('../../api/api', async () => {
 
 const renderPage = () =>
   render(
-    <MantineProvider>
-      <StoryPage />
-    </MantineProvider>
+    <ThemeProvider>
+      <MantineProvider>
+        <StoryPage />
+      </MantineProvider>
+    </ThemeProvider>
   );
 
 describe('StoryPage - New Story button', () => {

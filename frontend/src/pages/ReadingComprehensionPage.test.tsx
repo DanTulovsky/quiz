@@ -8,6 +8,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { MantineProvider } from '@mantine/core';
 import { QuestionProvider } from '../contexts/QuestionContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ThemeProvider } from '../contexts/ThemeContext';
 
 vi.mock('../api/api', async (importOriginal: () => Promise<unknown>) => {
   const actual = (await importOriginal()) as typeof api;
@@ -54,18 +55,20 @@ describe('ReadingComprehensionPage - lifecycle safety', () => {
     act(() => {
       const renderResult = render(
         <QueryClientProvider client={createTestQueryClient()}>
-          <MantineProvider>
-            <MemoryRouter
-              future={{
-                v7_startTransition: false,
-                v7_relativeSplatPath: false,
-              }}
-            >
-              <QuestionProvider>
-                <ReadingComprehensionPage />
-              </QuestionProvider>
-            </MemoryRouter>
-          </MantineProvider>
+          <ThemeProvider>
+            <MantineProvider>
+              <MemoryRouter
+                future={{
+                  v7_startTransition: false,
+                  v7_relativeSplatPath: false,
+                }}
+              >
+                <QuestionProvider>
+                  <ReadingComprehensionPage />
+                </QuestionProvider>
+              </MemoryRouter>
+            </MantineProvider>
+          </ThemeProvider>
         </QueryClientProvider>
       );
       unmount = renderResult.unmount;
@@ -97,18 +100,20 @@ describe('ReadingComprehensionPage - lifecycle safety', () => {
     act(() => {
       const renderResult = render(
         <QueryClientProvider client={createTestQueryClient()}>
-          <MantineProvider>
-            <MemoryRouter
-              future={{
-                v7_startTransition: false,
-                v7_relativeSplatPath: false,
-              }}
-            >
-              <QuestionProvider>
-                <ReadingComprehensionPage />
-              </QuestionProvider>
-            </MemoryRouter>
-          </MantineProvider>
+          <ThemeProvider>
+            <MantineProvider>
+              <MemoryRouter
+                future={{
+                  v7_startTransition: false,
+                  v7_relativeSplatPath: false,
+                }}
+              >
+                <QuestionProvider>
+                  <ReadingComprehensionPage />
+                </QuestionProvider>
+              </MemoryRouter>
+            </MantineProvider>
+          </ThemeProvider>
         </QueryClientProvider>
       );
       unmount = renderResult.unmount;

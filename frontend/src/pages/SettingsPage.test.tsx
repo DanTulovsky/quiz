@@ -123,15 +123,19 @@ vi.mock('../hooks/useAuth', () => ({
 }));
 
 // Mock the useTheme hook
-vi.mock('../contexts/ThemeContext', () => ({
-  useTheme: () => ({
-    currentTheme: 'teal',
-    setTheme: vi.fn(),
-    themeNames: ['teal', 'blue', 'indigo'],
-    colorScheme: 'light',
-    setColorScheme: vi.fn(),
-  }),
-}));
+vi.mock('../contexts/ThemeContext', async (importOriginal) => {
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    useTheme: () => ({
+      currentTheme: 'teal',
+      setTheme: vi.fn(),
+      themeNames: ['teal', 'blue', 'indigo'],
+      colorScheme: 'light',
+      setColorScheme: vi.fn(),
+    }),
+  };
+});
 
 // Mock the TimezoneSelector component
 vi.mock('../components/TimezoneSelector', () => ({
