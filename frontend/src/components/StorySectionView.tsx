@@ -256,6 +256,68 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
         </Alert>
       )}
 
+      {/* Bottom Section Navigation */}
+      <Paper p='md' radius='md'>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+            width: '100%',
+          }}
+        >
+          <Group spacing='xs'>
+            <Button
+              variant='light'
+              leftSection={<IconChevronsLeft size={16} />}
+              onClick={onFirst}
+              disabled={sectionIndex === 0}
+              size='sm'
+            >
+              First
+            </Button>
+
+            <Button
+              variant='light'
+              leftSection={<IconChevronLeft size={16} />}
+              onClick={onPrevious}
+              disabled={sectionIndex === 0}
+              size='sm'
+            >
+              Previous
+            </Button>
+
+            <Text
+              size='sm'
+              color='dimmed'
+              style={{ minWidth: '80px', textAlign: 'center' }}
+            >
+              {sectionIndex + 1} of {totalSections}
+            </Text>
+
+            <Button
+              variant='light'
+              rightSection={<IconChevronRight size={16} />}
+              onClick={onNext}
+              disabled={sectionIndex >= totalSections - 1}
+              size='sm'
+            >
+              Next
+            </Button>
+
+            <Button
+              variant='light'
+              rightSection={<IconChevronsRight size={16} />}
+              onClick={onLast}
+              disabled={sectionIndex >= totalSections - 1}
+              size='sm'
+            >
+              Last
+            </Button>
+          </Group>
+        </div>
+      </Paper>
+
       {/* Generate Next Section */}
       <Paper p='md' radius='md'>
         <div

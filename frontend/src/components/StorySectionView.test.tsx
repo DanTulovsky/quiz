@@ -145,7 +145,8 @@ describe('StorySectionView', () => {
     it('displays section content correctly', () => {
       renderComponent();
 
-      expect(screen.getByText('1 of 3')).toBeInTheDocument();
+      const sectionIndicators = screen.getAllByText('1 of 3');
+      expect(sectionIndicators.length).toBeGreaterThan(0);
       expect(screen.getByText('intermediate')).toBeInTheDocument();
       expect(
         screen.getByText(/This is the first section of the story/)
@@ -155,23 +156,24 @@ describe('StorySectionView', () => {
     it('displays section metadata correctly', () => {
       renderComponent();
 
-      expect(screen.getByText('1 of 3')).toBeInTheDocument();
+      const sectionIndicators = screen.getAllByText('1 of 3');
+      expect(sectionIndicators.length).toBeGreaterThan(0);
       expect(screen.getByText('intermediate')).toBeInTheDocument();
     });
 
     it('shows navigation controls', () => {
       renderComponent();
 
-      expect(
-        screen.getByRole('button', { name: /Previous/ })
-      ).toBeInTheDocument();
-      // Look for the navigation Next button (not the Generate Next Section button)
+      const prevButtons = screen.getAllByRole('button', { name: /Previous/ });
+      expect(prevButtons.length).toBeGreaterThan(0);
+      // Look for the navigation Next buttons (not the Generate Next Section button)
       const nextButtons = screen.getAllByRole('button', { name: /Next/ });
-      const navigationNextButton = nextButtons.find(
+      const navigationNextButtons = nextButtons.filter(
         button => button.textContent?.trim() === 'Next'
       );
-      expect(navigationNextButton).toBeInTheDocument();
-      expect(screen.getByText('1 of 3')).toBeInTheDocument();
+      expect(navigationNextButtons.length).toBeGreaterThan(0);
+      const sectionIndicators = screen.getAllByText('1 of 3');
+      expect(sectionIndicators.length).toBeGreaterThan(0);
     });
   });
 
@@ -179,33 +181,40 @@ describe('StorySectionView', () => {
     it('disables Previous button on first section', () => {
       renderComponent({ sectionIndex: 0 });
 
-      const prevButton = screen.getByRole('button', { name: /Previous/ });
-      expect(prevButton).toBeDisabled();
+      const prevButtons = screen.getAllByRole('button', { name: /Previous/ });
+      prevButtons.forEach(button => {
+        expect(button).toBeDisabled();
+      });
     });
 
     it('enables Previous button on later sections', () => {
       renderComponent({ sectionIndex: 1 });
 
-      const prevButton = screen.getByRole('button', { name: /Previous/ });
-      expect(prevButton).not.toBeDisabled();
+      const prevButtons = screen.getAllByRole('button', { name: /Previous/ });
+      prevButtons.forEach(button => {
+        expect(button).not.toBeDisabled();
+      });
     });
 
     it('disables Next button on last section', () => {
       renderComponent({ sectionIndex: 2, totalSections: 3 });
 
-      // Find the navigation Next button (not the Generate Next Section button)
+      // Find the navigation Next buttons (not the Generate Next Section button)
       const nextButtons = screen.getAllByRole('button', { name: /Next/ });
-      const navigationNextButton = nextButtons.find(
+      const navigationNextButtons = nextButtons.filter(
         button => button.textContent?.trim() === 'Next'
       );
-      expect(navigationNextButton).toBeDisabled();
+      navigationNextButtons.forEach(button => {
+        expect(button).toBeDisabled();
+      });
     });
 
     it('calls onPrevious when Previous button is clicked', () => {
       const mockOnPrevious = vi.fn();
       renderComponent({ sectionIndex: 1, onPrevious: mockOnPrevious });
 
-      const prevButton = screen.getByRole('button', { name: /Previous/ });
+      const prevButtons = screen.getAllByRole('button', { name: /Previous/ });
+      const prevButton = prevButtons[0]; // Click the first one (top navigation)
       fireEvent.click(prevButton);
 
       expect(mockOnPrevious).toHaveBeenCalled();
@@ -215,12 +224,12 @@ describe('StorySectionView', () => {
       const mockOnNext = vi.fn();
       renderComponent({ sectionIndex: 1, onNext: mockOnNext });
 
-      // Find the navigation Next button (not the Generate Next Section button)
+      // Find the navigation Next buttons (not the Generate Next Section button)
       const nextButtons = screen.getAllByRole('button', { name: /Next/ });
-      const navigationNextButton = nextButtons.find(
+      const navigationNextButtons = nextButtons.filter(
         button => button.textContent?.trim() === 'Next'
       );
-      fireEvent.click(navigationNextButton!);
+      fireEvent.click(navigationNextButtons[0]!); // Click the first one (top navigation)
 
       expect(mockOnNext).toHaveBeenCalled();
     });

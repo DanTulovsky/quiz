@@ -29,6 +29,7 @@ import StorySectionView from '../components/StorySectionView';
 import StoryReadingView from '../components/StoryReadingView';
 import StoryGenerationErrorModal from '../components/StoryGenerationErrorModal';
 import { CreateStoryRequest } from '../api/storyApi';
+import { getGeneratingMessage } from '../utils/storyMessages';
 
 const StoryPage: React.FC = () => {
   const { id: storyIdParam, sectionId: sectionIdParam } = useParams<{
@@ -261,22 +262,7 @@ const StoryPage: React.FC = () => {
 
   // Show generating state (informational, not an error) - check this before main interface
   if (isGenerating) {
-    const getGeneratingMessage = (): string => {
-      if (currentStory && 'message' in currentStory && currentStory.message) {
-        return currentStory.message as string;
-      }
-
-      switch (generationType) {
-        case 'story':
-          return 'Story created successfully. The first section is being generated. Please check back shortly.';
-        case 'section':
-          return 'Generating the next section of your story. Please check back shortly.';
-        default:
-          return 'Generating content. Please check back shortly.';
-      }
-    };
-
-    const message = getGeneratingMessage();
+    const message = getGeneratingMessage(generationType, currentStory);
 
     // If we have archived stories, show them below the generating message
     if (archivedStories && archivedStories.length > 0) {

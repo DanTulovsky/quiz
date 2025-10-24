@@ -18,7 +18,13 @@ import {
   Box,
   Loader,
 } from '@mantine/core';
-import { IconBook, IconBook2, IconMessage } from '@tabler/icons-react';
+import {
+  IconBook,
+  IconBook2,
+  IconMessage,
+  IconPlayerPlay,
+  IconPlayerPause,
+} from '@tabler/icons-react';
 import { Volume2, VolumeX } from 'lucide-react';
 import { useTTS } from '../../hooks/useTTS';
 import { useGetV1PreferencesLearning } from '../../api/api';
@@ -41,6 +47,7 @@ import {
   StorySectionQuestion,
   StorySectionWithQuestions,
 } from '../../api/storyApi';
+import { getGeneratingMessage } from '../../utils/storyMessages';
 
 const MobileStoryPage: React.FC = () => {
   const { id: storyIdParam, sectionId: sectionIdParam } = useParams<{
@@ -62,6 +69,7 @@ const MobileStoryPage: React.FC = () => {
     currentSectionWithQuestions,
     canGenerateToday,
     isGenerating,
+    generationType,
     generationDisabledReason,
     createStory,
     archiveStory,
@@ -74,6 +82,7 @@ const MobileStoryPage: React.FC = () => {
     setViewMode,
     generationErrorModal,
     closeGenerationErrorModal,
+    toggleAutoGeneration,
   } = useStory();
 
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -254,10 +263,7 @@ const MobileStoryPage: React.FC = () => {
 
   // Show generating state (informational, not an error) - check this before main interface
   if (isGenerating) {
-    const message: string =
-      currentStory && 'message' in currentStory
-        ? (currentStory.message as string)
-        : 'Story created successfully. The first section is being generated. Please check back shortly.';
+    const message = getGeneratingMessage(generationType, currentStory);
 
     // If we have archived stories, show them below the generating message
     if (archivedStories && archivedStories.length > 0) {
@@ -368,8 +374,16 @@ const MobileStoryPage: React.FC = () => {
             canGenerateToday={canGenerateToday}
             isGenerating={isGenerating}
             generationDisabledReason={generationDisabledReason}
+            story={currentStory}
             onGenerateNext={() =>
               currentStory && generateNextSection(currentStory.id!)
+            }
+            onToggleAutoGeneration={() =>
+              currentStory &&
+              toggleAutoGeneration(
+                currentStory.id!,
+                !currentStory.auto_generation_paused
+              )
             }
             onPrevious={goToPreviousSection}
             onNext={goToNextSection}
@@ -441,7 +455,9 @@ interface MobileStorySectionViewProps {
   canGenerateToday: boolean;
   isGenerating: boolean;
   generationDisabledReason?: string;
+  story: StoryWithSections | null;
   onGenerateNext: () => void;
+  onToggleAutoGeneration: () => void;
   onPrevious: () => void;
   onNext: () => void;
   onFirst: () => void;
@@ -456,7 +472,9 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
   canGenerateToday,
   isGenerating,
   generationDisabledReason,
+  story,
   onGenerateNext,
+  onToggleAutoGeneration,
   onPrevious,
   onNext,
   onFirst,
@@ -572,9 +590,44 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
             </Button>
           </Group>
 
-          <Badge variant='outline' size='sm'>
-            {section.language_level}
-          </Badge>
+          <Group gap={4}>
+            {/* Pause/Resume Auto-Generation Button */}
+            {story && (
+              <Tooltip
+                label={
+                  story.auto_generation_paused
+                    ? 'Resume automatic story generation'
+                    : 'Pause automatic story generation'
+                }
+                position='bottom'
+                withArrow
+              >
+                <Button
+                  variant='light'
+                  onClick={onToggleAutoGeneration}
+                  size='xs'
+                  px='xs'
+                  color={story.auto_generation_paused ? 'green' : 'blue'}
+                  styles={{
+                    root: {
+                      padding: '2px 6px',
+                      minHeight: '28px',
+                    },
+                  }}
+                >
+                  {story.auto_generation_paused ? (
+                    <IconPlayerPlay size={16} />
+                  ) : (
+                    <IconPlayerPause size={16} />
+                  )}
+                </Button>
+              </Tooltip>
+            )}
+
+            <Badge variant='outline' size='sm'>
+              {section.language_level}
+            </Badge>
+          </Group>
         </div>
       </Paper>
 
@@ -691,6 +744,88 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
           No questions available for this section yet.
         </Alert>
       )}
+
+      {/* Bottom Section Navigation */}
+      <Paper p='sm' radius='md'>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+            width: '100%',
+          }}
+        >
+          <Group gap={4}>
+            <Button
+              variant='light'
+              size='xs'
+              onClick={onFirst}
+              disabled={sectionIndex === 0}
+              styles={{
+                root: {
+                  padding: '2px 6px',
+                  minHeight: '28px',
+                },
+              }}
+            >
+              «
+            </Button>
+
+            <Button
+              variant='light'
+              size='xs'
+              onClick={onPrevious}
+              disabled={sectionIndex === 0}
+              styles={{
+                root: {
+                  padding: '2px 6px',
+                  minHeight: '28px',
+                },
+              }}
+            >
+              ‹
+            </Button>
+
+            <Text
+              size='xs'
+              color='dimmed'
+              style={{ minWidth: '50px', textAlign: 'center' }}
+            >
+              {sectionIndex + 1} / {totalSections}
+            </Text>
+
+            <Button
+              variant='light'
+              size='xs'
+              onClick={onNext}
+              disabled={sectionIndex >= totalSections - 1}
+              styles={{
+                root: {
+                  padding: '2px 6px',
+                  minHeight: '28px',
+                },
+              }}
+            >
+              ›
+            </Button>
+
+            <Button
+              variant='light'
+              size='xs'
+              onClick={onLast}
+              disabled={sectionIndex >= totalSections - 1}
+              styles={{
+                root: {
+                  padding: '2px 6px',
+                  minHeight: '28px',
+                },
+              }}
+            >
+              »
+            </Button>
+          </Group>
+        </div>
+      </Paper>
 
       {/* Generate Next Section */}
       <Paper p='md' radius='md'>
@@ -895,7 +1030,8 @@ const MobileStoryReadingView: React.FC<MobileStoryReadingViewProps> = ({
                   stopTTS();
                 } else {
                   // Combine the sections into one text blob
-                  const full = story.sections.map(s => s.content).join('\n\n');
+                  const full =
+                    story.sections?.map(s => s.content).join('\n\n') || '';
                   let preferredVoice: string | undefined;
                   if (
                     userLearningPrefs?.tts_voice &&
