@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MantineProvider } from '@mantine/core';
 import SettingsPage from './SettingsPage';
+import { ThemeProvider } from '../contexts/ThemeContext';
 
 // Mock the API hooks with realistic data
 const mockUser = {
@@ -235,16 +236,18 @@ describe('SettingsPage', () => {
     act(() => {
       render(
         <QueryClientProvider client={queryClient}>
-          <MantineProvider>
-            <BrowserRouter
-              future={{
-                v7_startTransition: false,
-                v7_relativeSplatPath: false,
-              }}
-            >
-              <SettingsPage />
-            </BrowserRouter>
-          </MantineProvider>
+          <ThemeProvider>
+            <MantineProvider>
+              <BrowserRouter
+                future={{
+                  v7_startTransition: false,
+                  v7_relativeSplatPath: false,
+                }}
+              >
+                <SettingsPage />
+              </BrowserRouter>
+            </MantineProvider>
+          </ThemeProvider>
         </QueryClientProvider>
       );
     });
@@ -302,16 +305,18 @@ describe('SettingsPage', () => {
     await act(async () => {
       render(
         <QueryClientProvider client={queryClient}>
-          <MantineProvider>
-            <BrowserRouter
-              future={{
-                v7_startTransition: false,
-                v7_relativeSplatPath: false,
-              }}
-            >
-              <SettingsPage />
-            </BrowserRouter>
-          </MantineProvider>
+          <ThemeProvider>
+            <MantineProvider>
+              <BrowserRouter
+                future={{
+                  v7_startTransition: false,
+                  v7_relativeSplatPath: false,
+                }}
+              >
+                <SettingsPage />
+              </BrowserRouter>
+            </MantineProvider>
+          </ThemeProvider>
         </QueryClientProvider>
       );
     });

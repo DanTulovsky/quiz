@@ -4,6 +4,7 @@ import { MantineProvider } from '@mantine/core';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import MobileStoryPage from '../MobileStoryPage';
 import { StoryWithSections, StorySection } from '../../../api/storyApi';
+import { ThemeProvider } from '../../../contexts/ThemeContext';
 
 // Mock the story hook
 const mockUseStory = {
@@ -141,9 +142,11 @@ describe('MobileStoryPage', () => {
 
   const renderComponent = (props = {}) => {
     return render(
-      <MantineProvider>
-        <MobileStoryPage {...props} />
-      </MantineProvider>
+      <ThemeProvider>
+        <MantineProvider>
+          <MobileStoryPage {...props} />
+        </MantineProvider>
+      </ThemeProvider>
     );
   };
 

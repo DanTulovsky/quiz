@@ -4,6 +4,7 @@ import { MantineProvider } from '@mantine/core';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import StoryReadingView from './StoryReadingView';
 import { StoryWithSections } from '../api/storyApi';
+import { ThemeProvider } from '../contexts/ThemeContext';
 
 // Mock the notifications module
 vi.mock('../notifications', () => ({
@@ -118,9 +119,11 @@ describe('StoryReadingView', () => {
 
     return act(() => {
       render(
-        <MantineProvider>
-          <StoryReadingView {...allProps} />
-        </MantineProvider>
+        <ThemeProvider>
+          <MantineProvider>
+            <StoryReadingView {...allProps} />
+          </MantineProvider>
+        </ThemeProvider>
       );
     });
   };

@@ -14,6 +14,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { MantineProvider } from '@mantine/core';
 import { QuestionProvider } from '../contexts/QuestionContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ThemeProvider } from '../contexts/ThemeContext';
 
 // Mock API functions used by the page/hook
 vi.mock('../api/api', async (importOriginal: () => Promise<unknown>) => {
@@ -63,18 +64,20 @@ describe('QuizPage - GeneratingResponse UI', () => {
     act(() => {
       render(
         <QueryClientProvider client={createTestQueryClient()}>
-          <MantineProvider>
-            <MemoryRouter
-              future={{
-                v7_startTransition: false,
-                v7_relativeSplatPath: false,
-              }}
-            >
-              <QuestionProvider>
-                <QuizPage />
-              </QuestionProvider>
-            </MemoryRouter>
-          </MantineProvider>
+          <ThemeProvider>
+            <MantineProvider>
+              <MemoryRouter
+                future={{
+                  v7_startTransition: false,
+                  v7_relativeSplatPath: false,
+                }}
+              >
+                <QuestionProvider>
+                  <QuizPage />
+                </QuestionProvider>
+              </MemoryRouter>
+            </MantineProvider>
+          </ThemeProvider>
         </QueryClientProvider>
       );
     });
@@ -98,18 +101,20 @@ describe('QuizPage - GeneratingResponse UI', () => {
     act(() => {
       render(
         <QueryClientProvider client={createTestQueryClient()}>
-          <MantineProvider>
-            <MemoryRouter
-              future={{
-                v7_startTransition: false,
-                v7_relativeSplatPath: false,
-              }}
-            >
-              <QuestionProvider>
-                <QuizPage />
-              </QuestionProvider>
-            </MemoryRouter>
-          </MantineProvider>
+          <ThemeProvider>
+            <MantineProvider>
+              <MemoryRouter
+                future={{
+                  v7_startTransition: false,
+                  v7_relativeSplatPath: false,
+                }}
+              >
+                <QuestionProvider>
+                  <QuizPage />
+                </QuestionProvider>
+              </MemoryRouter>
+            </MantineProvider>
+          </ThemeProvider>
         </QueryClientProvider>
       );
     });
@@ -170,18 +175,20 @@ describe('QuizPage - Level Change', () => {
     act(() => {
       const renderResult = render(
         <QueryClientProvider client={createTestQueryClient()}>
-          <MantineProvider>
-            <MemoryRouter
-              future={{
-                v7_startTransition: false,
-                v7_relativeSplatPath: false,
-              }}
-            >
-              <QuestionProvider>
-                <QuizPage />
-              </QuestionProvider>
-            </MemoryRouter>
-          </MantineProvider>
+          <ThemeProvider>
+            <MantineProvider>
+              <MemoryRouter
+                future={{
+                  v7_startTransition: false,
+                  v7_relativeSplatPath: false,
+                }}
+              >
+                <QuestionProvider>
+                  <QuizPage />
+                </QuestionProvider>
+              </MemoryRouter>
+            </MantineProvider>
+          </ThemeProvider>
         </QueryClientProvider>
       );
       rerender = renderResult.rerender;
@@ -204,18 +211,20 @@ describe('QuizPage - Level Change', () => {
     act(() => {
       rerender(
         <QueryClientProvider client={createTestQueryClient()}>
-          <MantineProvider>
-            <MemoryRouter
-              future={{
-                v7_startTransition: false,
-                v7_relativeSplatPath: false,
-              }}
-            >
-              <QuestionProvider>
-                <QuizPage />
-              </QuestionProvider>
-            </MemoryRouter>
-          </MantineProvider>
+          <ThemeProvider>
+            <MantineProvider>
+              <MemoryRouter
+                future={{
+                  v7_startTransition: false,
+                  v7_relativeSplatPath: false,
+                }}
+              >
+                <QuestionProvider>
+                  <QuizPage />
+                </QuestionProvider>
+              </MemoryRouter>
+            </MantineProvider>
+          </ThemeProvider>
         </QueryClientProvider>
       );
     });
@@ -252,18 +261,20 @@ describe('QuizPage - Level Change', () => {
     act(() => {
       const renderResult = render(
         <QueryClientProvider client={createTestQueryClient()}>
-          <MantineProvider>
-            <MemoryRouter
-              future={{
-                v7_startTransition: false,
-                v7_relativeSplatPath: false,
-              }}
-            >
-              <QuestionProvider>
-                <QuizPage />
-              </QuestionProvider>
-            </MemoryRouter>
-          </MantineProvider>
+          <ThemeProvider>
+            <MantineProvider>
+              <MemoryRouter
+                future={{
+                  v7_startTransition: false,
+                  v7_relativeSplatPath: false,
+                }}
+              >
+                <QuestionProvider>
+                  <QuizPage />
+                </QuestionProvider>
+              </MemoryRouter>
+            </MantineProvider>
+          </ThemeProvider>
         </QueryClientProvider>
       );
       rerender = renderResult.rerender;
@@ -286,18 +297,20 @@ describe('QuizPage - Level Change', () => {
     act(() => {
       rerender(
         <QueryClientProvider client={createTestQueryClient()}>
-          <MantineProvider>
-            <MemoryRouter
-              future={{
-                v7_startTransition: false,
-                v7_relativeSplatPath: false,
-              }}
-            >
-              <QuestionProvider>
-                <QuizPage />
-              </QuestionProvider>
-            </MemoryRouter>
-          </MantineProvider>
+          <ThemeProvider>
+            <MantineProvider>
+              <MemoryRouter
+                future={{
+                  v7_startTransition: false,
+                  v7_relativeSplatPath: false,
+                }}
+              >
+                <QuestionProvider>
+                  <QuizPage />
+                </QuestionProvider>
+              </MemoryRouter>
+            </MantineProvider>
+          </ThemeProvider>
         </QueryClientProvider>
       );
     });
@@ -346,18 +359,20 @@ describe('QuizPage - Answer Submission', () => {
     act(() => {
       render(
         <QueryClientProvider client={createTestQueryClient()}>
-          <MantineProvider>
-            <MemoryRouter
-              future={{
-                v7_startTransition: false,
-                v7_relativeSplatPath: false,
-              }}
-            >
-              <QuestionProvider>
-                <QuizPage />
-              </QuestionProvider>
-            </MemoryRouter>
-          </MantineProvider>
+          <ThemeProvider>
+            <MantineProvider>
+              <MemoryRouter
+                future={{
+                  v7_startTransition: false,
+                  v7_relativeSplatPath: false,
+                }}
+              >
+                <QuestionProvider>
+                  <QuizPage />
+                </QuestionProvider>
+              </MemoryRouter>
+            </MantineProvider>
+          </ThemeProvider>
         </QueryClientProvider>
       );
     });
@@ -413,18 +428,20 @@ describe('QuizPage - URL State Management', () => {
     act(() => {
       render(
         <QueryClientProvider client={createTestQueryClient()}>
-          <MantineProvider>
-            <MemoryRouter
-              future={{
-                v7_startTransition: false,
-                v7_relativeSplatPath: false,
-              }}
-            >
-              <QuestionProvider>
-                <QuizPage />
-              </QuestionProvider>
-            </MemoryRouter>
-          </MantineProvider>
+          <ThemeProvider>
+            <MantineProvider>
+              <MemoryRouter
+                future={{
+                  v7_startTransition: false,
+                  v7_relativeSplatPath: false,
+                }}
+              >
+                <QuestionProvider>
+                  <QuizPage />
+                </QuestionProvider>
+              </MemoryRouter>
+            </MantineProvider>
+          </ThemeProvider>
         </QueryClientProvider>
       );
     });
@@ -471,18 +488,20 @@ describe('QuizPage - Confidence Level Display', () => {
     act(() => {
       render(
         <QueryClientProvider client={createTestQueryClient()}>
-          <MantineProvider>
-            <MemoryRouter
-              future={{
-                v7_startTransition: false,
-                v7_relativeSplatPath: false,
-              }}
-            >
-              <QuestionProvider>
-                <QuizPage />
-              </QuestionProvider>
-            </MemoryRouter>
-          </MantineProvider>
+          <ThemeProvider>
+            <MantineProvider>
+              <MemoryRouter
+                future={{
+                  v7_startTransition: false,
+                  v7_relativeSplatPath: false,
+                }}
+              >
+                <QuestionProvider>
+                  <QuizPage />
+                </QuestionProvider>
+              </MemoryRouter>
+            </MantineProvider>
+          </ThemeProvider>
         </QueryClientProvider>
       );
     });
@@ -526,18 +545,20 @@ describe('QuizPage - Confidence Level Display', () => {
     act(() => {
       render(
         <QueryClientProvider client={createTestQueryClient()}>
-          <MantineProvider>
-            <MemoryRouter
-              future={{
-                v7_startTransition: false,
-                v7_relativeSplatPath: false,
-              }}
-            >
-              <QuestionProvider>
-                <QuizPage />
-              </QuestionProvider>
-            </MemoryRouter>
-          </MantineProvider>
+          <ThemeProvider>
+            <MantineProvider>
+              <MemoryRouter
+                future={{
+                  v7_startTransition: false,
+                  v7_relativeSplatPath: false,
+                }}
+              >
+                <QuestionProvider>
+                  <QuizPage />
+                </QuestionProvider>
+              </MemoryRouter>
+            </MantineProvider>
+          </ThemeProvider>
         </QueryClientProvider>
       );
     });

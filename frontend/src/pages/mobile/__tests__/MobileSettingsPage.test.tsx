@@ -23,7 +23,7 @@ vi.mock('../../../hooks/useAuth', () => ({
 }));
 
 vi.mock('../../../contexts/ThemeContext', async importOriginal => {
-  const actual = await importOriginal();
+  const actual = (await importOriginal()) as any;
   return {
     ...actual,
     useTheme: () => ({
@@ -34,6 +34,7 @@ vi.mock('../../../contexts/ThemeContext', async importOriginal => {
         green: 'Green',
         red: 'Red',
       },
+      themes: actual.themes || {},
       colorScheme: 'light',
       setColorScheme: vi.fn(),
       fontSize: 'medium',
@@ -43,6 +44,23 @@ vi.mock('../../../contexts/ThemeContext', async importOriginal => {
 });
 
 vi.mock('../../../api/api', () => ({
+  useGetV1AuthStatus: () => ({
+    data: { authenticated: true, user: { id: 1, role: 'user' } },
+    isLoading: false,
+    refetch: vi.fn(),
+  }),
+  usePostV1AuthLogin: () => ({
+    mutateAsync: vi.fn(),
+    isPending: false,
+  }),
+  usePostV1AuthLogout: () => ({
+    mutateAsync: vi.fn(),
+    isPending: false,
+  }),
+  usePutV1Settings: () => ({
+    mutateAsync: vi.fn(),
+    isPending: false,
+  }),
   useGetV1SettingsAiProviders: () => ({
     isLoading: false,
     error: null,

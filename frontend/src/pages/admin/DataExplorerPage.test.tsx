@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { MantineProvider } from '@mantine/core';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import DataExplorerPage from './DataExplorerPage';
+import { ThemeProvider } from '../../contexts/ThemeContext';
 import { useAuth } from '../../hooks/useAuth';
 import {
   useAllQuestions,
@@ -162,16 +163,18 @@ const renderDataExplorerPage = () => {
 
   return render(
     <QueryClientProvider client={queryClient}>
-      <MantineProvider>
-        <BrowserRouter
-          future={{
-            v7_startTransition: false,
-            v7_relativeSplatPath: false,
-          }}
-        >
-          <DataExplorerPage />
-        </BrowserRouter>
-      </MantineProvider>
+      <ThemeProvider>
+        <MantineProvider>
+          <BrowserRouter
+            future={{
+              v7_startTransition: false,
+              v7_relativeSplatPath: false,
+            }}
+          >
+            <DataExplorerPage />
+          </BrowserRouter>
+        </MantineProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 };

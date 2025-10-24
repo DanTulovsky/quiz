@@ -9,6 +9,7 @@ import { MantineProvider } from '@mantine/core';
 import { QuestionProvider } from '../contexts/QuestionContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { User, Question } from '../api/api';
+import { ThemeProvider } from '../contexts/ThemeContext';
 
 vi.mock('../api/api', async (importOriginal: () => Promise<unknown>) => {
   const actual = (await importOriginal()) as typeof api;
@@ -55,26 +56,28 @@ describe('Question + URL integration', () => {
     act(() => {
       render(
         <QueryClientProvider client={createTestQueryClient()}>
-          <MantineProvider>
-            <MemoryRouter
-              initialEntries={['/quiz/34']}
-              future={{
-                v7_startTransition: false,
-                v7_relativeSplatPath: false,
-              }}
-            >
-              <Routes>
-                <Route
-                  path='/quiz/:questionId'
-                  element={
-                    <QuestionProvider>
-                      <QuizPage />
-                    </QuestionProvider>
-                  }
-                />
-              </Routes>
-            </MemoryRouter>
-          </MantineProvider>
+          <ThemeProvider>
+            <MantineProvider>
+              <MemoryRouter
+                initialEntries={['/quiz/34']}
+                future={{
+                  v7_startTransition: false,
+                  v7_relativeSplatPath: false,
+                }}
+              >
+                <Routes>
+                  <Route
+                    path='/quiz/:questionId'
+                    element={
+                      <QuestionProvider>
+                        <QuizPage />
+                      </QuestionProvider>
+                    }
+                  />
+                </Routes>
+              </MemoryRouter>
+            </MantineProvider>
+          </ThemeProvider>
         </QueryClientProvider>
       );
     });
@@ -102,34 +105,36 @@ describe('Question + URL integration', () => {
     act(() => {
       render(
         <QueryClientProvider client={createTestQueryClient()}>
-          <MantineProvider>
-            <MemoryRouter
-              initialEntries={['/quiz']}
-              future={{
-                v7_startTransition: false,
-                v7_relativeSplatPath: false,
-              }}
-            >
-              <Routes>
-                <Route
-                  path='/quiz'
-                  element={
-                    <QuestionProvider>
-                      <QuizPage />
-                    </QuestionProvider>
-                  }
-                />
-                <Route
-                  path='/quiz/:questionId'
-                  element={
-                    <QuestionProvider>
-                      <QuizPage />
-                    </QuestionProvider>
-                  }
-                />
-              </Routes>
-            </MemoryRouter>
-          </MantineProvider>
+          <ThemeProvider>
+            <MantineProvider>
+              <MemoryRouter
+                initialEntries={['/quiz']}
+                future={{
+                  v7_startTransition: false,
+                  v7_relativeSplatPath: false,
+                }}
+              >
+                <Routes>
+                  <Route
+                    path='/quiz'
+                    element={
+                      <QuestionProvider>
+                        <QuizPage />
+                      </QuestionProvider>
+                    }
+                  />
+                  <Route
+                    path='/quiz/:questionId'
+                    element={
+                      <QuestionProvider>
+                        <QuizPage />
+                      </QuestionProvider>
+                    }
+                  />
+                </Routes>
+              </MemoryRouter>
+            </MantineProvider>
+          </ThemeProvider>
         </QueryClientProvider>
       );
     });
