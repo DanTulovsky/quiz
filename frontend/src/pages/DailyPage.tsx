@@ -480,8 +480,18 @@ const DailyPage: React.FC = () => {
             />
           )}
 
-          {/* Question completion status */}
-          <Group justify='flex-start' align='center' mb='md'>
+          {/* Question type and completion status */}
+          <Group justify='flex-start' align='center' mb='xs' gap={8}>
+            {currentQuestion?.question?.type && (
+              <Badge
+                color='indigo'
+                variant='dot'
+                size='lg'
+                style={{ textTransform: 'capitalize' }}
+              >
+                {currentQuestion.question.type.replace(/_/g, ' ')}
+              </Badge>
+            )}
             {currentQuestion?.is_completed ? (
               <Badge color='green' variant='filled' size='lg'>
                 ✓ Completed

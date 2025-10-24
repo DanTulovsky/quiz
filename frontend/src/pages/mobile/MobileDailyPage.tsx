@@ -382,6 +382,20 @@ const MobileDailyPage: React.FC = () => {
         {/* Current Question */}
         <Paper p='md' radius='md' withBorder>
           <Stack gap='md'>
+            {/* Question type badge */}
+            {currentQuestion?.question?.type && (
+              <Group justify='flex-start' align='center' gap={4} mb={0}>
+                <Badge
+                  color='indigo'
+                  variant='dot'
+                  size='sm'
+                  style={{ textTransform: 'capitalize' }}
+                >
+                  {currentQuestion.question.type.replace(/_/g, ' ')}
+                </Badge>
+              </Group>
+            )}
+
             <Group justify='space-between'>
               {/* TTS button for reading comprehension */}
               {currentQuestion.question.type === 'reading_comprehension' &&
