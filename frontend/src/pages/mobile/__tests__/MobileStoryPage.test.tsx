@@ -210,7 +210,7 @@ describe('MobileStoryPage', () => {
     it('displays TTS button in header for mobile story reading view', () => {
       renderComponent();
 
-      const ttsButton = screen.getByLabelText('Listen to story');
+      const ttsButton = screen.getByLabelText('Play audio');
       expect(ttsButton).toBeInTheDocument();
     });
 
@@ -218,7 +218,8 @@ describe('MobileStoryPage', () => {
       mockTTS.isLoading = true;
       renderComponent();
 
-      const ttsButton = screen.getByLabelText('Loading audio');
+      // When loading, the button should still be present but disabled
+      const ttsButton = screen.getByLabelText('Play audio');
       expect(ttsButton).toBeInTheDocument();
       expect(ttsButton).toBeDisabled();
     });
@@ -227,14 +228,14 @@ describe('MobileStoryPage', () => {
       mockTTS.isPlaying = true;
       renderComponent();
 
-      const ttsButton = screen.getByLabelText('Stop audio');
+      const ttsButton = screen.getByLabelText('Pause audio');
       expect(ttsButton).toBeInTheDocument();
     });
 
     it('calls playTTS with combined story content when TTS button is clicked', () => {
       renderComponent();
 
-      const ttsButton = screen.getByLabelText('Listen to story');
+      const ttsButton = screen.getByLabelText('Play audio');
       fireEvent.click(ttsButton);
 
       expect(mockTTS.playTTS).toHaveBeenCalledWith(
@@ -247,7 +248,7 @@ describe('MobileStoryPage', () => {
       mockTTS.isPlaying = true;
       renderComponent();
 
-      const ttsButton = screen.getByLabelText('Stop audio');
+      const ttsButton = screen.getByLabelText('Pause audio');
       fireEvent.click(ttsButton);
 
       expect(mockTTS.stopTTS).toHaveBeenCalled();

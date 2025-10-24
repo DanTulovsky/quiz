@@ -19,7 +19,7 @@ import {
   Loader,
 } from '@mantine/core';
 import { IconBook, IconBook2, IconMessage } from '@tabler/icons-react';
-import { Volume2, VolumeX } from 'lucide-react';
+import { Volume2, VolumeX, Play, Pause } from 'lucide-react';
 import { useTTS } from '../../hooks/useTTS';
 import { useGetV1PreferencesLearning } from '../../api/api';
 import { defaultVoiceForLanguage } from '../../utils/tts';
@@ -380,6 +380,12 @@ const MobileStoryPage: React.FC = () => {
           <MobileStoryReadingView
             story={currentStory}
             isGenerating={isGenerating}
+            currentSectionIndex={currentSectionIndex}
+            totalSections={sections.length}
+            onPrevious={goToPreviousSection}
+            onNext={goToNextSection}
+            onFirst={goToFirstSection}
+            onLast={goToLastSection}
           />
         )}
 
@@ -811,11 +817,23 @@ const MobileStoryQuestionCard: React.FC<MobileStoryQuestionCardProps> = ({
 interface MobileStoryReadingViewProps {
   story: StoryWithSections | null;
   isGenerating?: boolean;
+  currentSectionIndex: number;
+  totalSections: number;
+  onPrevious: () => void;
+  onNext: () => void;
+  onFirst: () => void;
+  onLast: () => void;
 }
 
 const MobileStoryReadingView: React.FC<MobileStoryReadingViewProps> = ({
   story,
   isGenerating = false,
+  currentSectionIndex,
+  totalSections,
+  onPrevious,
+  onNext,
+  onFirst,
+  onLast,
 }) => {
   const {
     isLoading: isTTSLoading,
@@ -870,67 +888,62 @@ const MobileStoryReadingView: React.FC<MobileStoryReadingViewProps> = ({
 
   return (
     <Stack gap='md'>
+      {/* Audio Control Bar */}
+      <Paper p='md' radius='md'>
+        <Group justify='center' gap='md'>
+          <ActionIcon
+            size='xl'
+            variant='filled'
+            color={isTTSPlaying ? 'orange' : 'blue'}
+            onClick={() => {
+              if (isTTSPlaying || isTTSLoading) {
+                stopTTS();
+              } else {
+                // Combine the sections into one text blob
+                const full = story.sections.map(s => s.content).join('\n\n');
+                let preferredVoice: string | undefined;
+                if (
+                  userLearningPrefs?.tts_voice &&
+                  userLearningPrefs.tts_voice.trim()
+                ) {
+                  preferredVoice = userLearningPrefs.tts_voice.trim();
+                }
+                const finalVoice =
+                  preferredVoice ??
+                  defaultVoiceForLanguage(story.language) ??
+                  'echo';
+                void playTTS(full, finalVoice);
+              }
+            }}
+            disabled={isTTSLoading}
+            aria-label={isTTSPlaying ? 'Pause audio' : 'Play audio'}
+          >
+            {isTTSLoading ? (
+              <Loader size={24} color='white' />
+            ) : isTTSPlaying ? (
+              <Pause size={24} />
+            ) : (
+              <Play size={24} />
+            )}
+          </ActionIcon>
+          <Text size='sm' color='dimmed'>
+            {isTTSLoading
+              ? 'Loading audio...'
+              : isTTSPlaying
+                ? 'Playing story'
+                : 'Listen to full story'}
+          </Text>
+        </Group>
+      </Paper>
+
       {/* Story Content */}
       <Paper
         p='lg'
         radius='md'
         style={{ flex: 1, overflow: 'hidden', position: 'relative' }}
       >
-        <Box style={{ position: 'absolute', top: 12, right: 12, zIndex: 10 }}>
-          <Tooltip
-            label={
-              isTTSPlaying
-                ? 'Stop audio'
-                : isTTSLoading
-                  ? 'Loading audio...'
-                  : 'Listen to story'
-            }
-          >
-            <ActionIcon
-              size='md'
-              variant='subtle'
-              color={isTTSPlaying ? 'red' : isTTSLoading ? 'orange' : 'blue'}
-              onClick={() => {
-                if (isTTSPlaying || isTTSLoading) {
-                  stopTTS();
-                } else {
-                  // Combine the sections into one text blob
-                  const full = story.sections.map(s => s.content).join('\n\n');
-                  let preferredVoice: string | undefined;
-                  if (
-                    userLearningPrefs?.tts_voice &&
-                    userLearningPrefs.tts_voice.trim()
-                  ) {
-                    preferredVoice = userLearningPrefs.tts_voice.trim();
-                  }
-                  const finalVoice =
-                    preferredVoice ??
-                    defaultVoiceForLanguage(story.language) ??
-                    'echo';
-                  void playTTS(full, finalVoice);
-                }
-              }}
-              aria-label={
-                isTTSPlaying
-                  ? 'Stop audio'
-                  : isTTSLoading
-                    ? 'Loading audio'
-                    : 'Listen to story'
-              }
-              disabled={isTTSLoading}
-            >
-              {isTTSLoading ? (
-                <Loader size={16} color='orange' />
-              ) : isTTSPlaying ? (
-                <VolumeX size={18} />
-              ) : (
-                <Volume2 size={18} />
-              )}
-            </ActionIcon>
-          </Tooltip>
-        </Box>
         <ScrollArea style={{ height: '100%' }}>
-          <div style={{ padding: '1rem 56px 1rem 20px' }}>
+          <div style={{ padding: '1rem 20px' }}>
             <Stack gap='lg'>
               {/* Story Sections */}
               {story.sections?.map((section: StorySection, index: number) => (
@@ -987,6 +1000,88 @@ const MobileStoryReadingView: React.FC<MobileStoryReadingViewProps> = ({
             </Stack>
           </div>
         </ScrollArea>
+      </Paper>
+
+      {/* Navigation Controls */}
+      <Paper p='md' radius='md'>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: '100%',
+          }}
+        >
+          <Group gap={4}>
+            <Button
+              variant='light'
+              size='xs'
+              onClick={onFirst}
+              disabled={currentSectionIndex === 0}
+              styles={{
+                root: {
+                  padding: '2px 6px',
+                  minHeight: '28px',
+                },
+              }}
+            >
+              «
+            </Button>
+
+            <Button
+              variant='light'
+              size='xs'
+              onClick={onPrevious}
+              disabled={currentSectionIndex === 0}
+              styles={{
+                root: {
+                  padding: '2px 6px',
+                  minHeight: '28px',
+                },
+              }}
+            >
+              ‹
+            </Button>
+
+            <Text
+              size='xs'
+              color='dimmed'
+              style={{ minWidth: '80px', textAlign: 'center' }}
+            >
+              Section {currentSectionIndex + 1} / {totalSections}
+            </Text>
+
+            <Button
+              variant='light'
+              size='xs'
+              onClick={onNext}
+              disabled={currentSectionIndex >= totalSections - 1}
+              styles={{
+                root: {
+                  padding: '2px 6px',
+                  minHeight: '28px',
+                },
+              }}
+            >
+              ›
+            </Button>
+
+            <Button
+              variant='light'
+              size='xs'
+              onClick={onLast}
+              disabled={currentSectionIndex >= totalSections - 1}
+              styles={{
+                root: {
+                  padding: '2px 6px',
+                  minHeight: '28px',
+                },
+              }}
+            >
+              »
+            </Button>
+          </Group>
+        </div>
       </Paper>
     </Stack>
   );
