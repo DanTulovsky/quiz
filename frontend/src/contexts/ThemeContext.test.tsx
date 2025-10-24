@@ -1,18 +1,25 @@
-import { render, screen, fireEvent, act } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, fireEvent, act, cleanup } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { ThemeProvider, useTheme } from './ThemeContext';
-import { Button } from '@mantine/core';
-import { AllProviders } from '../test-utils';
+import { Button, MantineProvider } from '@mantine/core';
 
-// Mock localStorage
-const localStorageMock = {
-  getItem: vi.fn(),
-  setItem: vi.fn(),
-  removeItem: vi.fn(),
-  clear: vi.fn(),
-};
-Object.defineProperty(window, 'localStorage', {
-  value: localStorageMock,
+// Create a storage object that will be reset per test
+let storage: Record<string, string> = {};
+
+// Create localStorage mock
+const createLocalStorageMock = () => ({
+  getItem: vi.fn((key: string) => storage[key] || null),
+  setItem: vi.fn((key: string, value: string) => {
+    storage[key] = value;
+  }),
+  removeItem: vi.fn((key: string) => {
+    delete storage[key];
+  }),
+  clear: vi.fn(() => {
+    storage = {};
+  }),
+  length: Object.keys(storage).length,
+  key: vi.fn((index: number) => Object.keys(storage)[index] || null),
 });
 
 // Test component that uses the theme context
@@ -29,20 +36,37 @@ const TestComponent = () => {
   );
 };
 
+// Simple test wrapper that doesn't reuse providers
+const TestWrapper = ({ children }: { children: React.ReactNode }) => (
+  <MantineProvider>
+    <ThemeProvider>{children}</ThemeProvider>
+  </MantineProvider>
+);
+
 describe('ThemeContext', () => {
   beforeEach(() => {
+    // Reset storage
+    storage = {};
+    // Create fresh localStorage mock for each test
+    Object.defineProperty(window, 'localStorage', {
+      value: createLocalStorageMock(),
+      writable: true,
+      configurable: true,
+    });
+  });
+
+  afterEach(() => {
+    cleanup();
     vi.clearAllMocks();
   });
 
   it('provides default theme', () => {
-    localStorageMock.getItem.mockReturnValue(undefined); // Ensure no theme is set
+    // Ensure no theme is set in storage
     act(() => {
       render(
-        <AllProviders>
-          <ThemeProvider>
-            <TestComponent />
-          </ThemeProvider>
-        </AllProviders>
+        <TestWrapper>
+          <TestComponent />
+        </TestWrapper>
       );
     });
 
@@ -51,15 +75,13 @@ describe('ThemeContext', () => {
   });
 
   it('loads theme from localStorage on mount', () => {
-    localStorageMock.getItem.mockReturnValue('green');
+    storage['quiz-theme'] = 'green';
 
     act(() => {
       render(
-        <AllProviders>
-          <ThemeProvider>
-            <TestComponent />
-          </ThemeProvider>
-        </AllProviders>
+        <TestWrapper>
+          <TestComponent />
+        </TestWrapper>
       );
     });
 
@@ -67,14 +89,12 @@ describe('ThemeContext', () => {
   });
 
   it('changes theme and saves to localStorage', () => {
-    localStorageMock.getItem.mockReturnValue(undefined); // Ensure no theme is set
+    // Ensure no theme is set in storage
     act(() => {
       render(
-        <AllProviders>
-          <ThemeProvider>
-            <TestComponent />
-          </ThemeProvider>
-        </AllProviders>
+        <TestWrapper>
+          <TestComponent />
+        </TestWrapper>
       );
     });
 
@@ -84,7 +104,7 @@ describe('ThemeContext', () => {
     // Change to green
     fireEvent.click(screen.getByText('Set Green Theme'));
     expect(screen.getByTestId('current-theme')).toHaveTextContent('green');
-    expect(localStorageMock.setItem).toHaveBeenCalledWith(
+    expect(window.localStorage.setItem).toHaveBeenCalledWith(
       'quiz-theme',
       'green'
     );
@@ -92,19 +112,17 @@ describe('ThemeContext', () => {
     // Change to pink
     fireEvent.click(screen.getByText('Set Pink Theme'));
     expect(screen.getByTestId('current-theme')).toHaveTextContent('pink');
-    expect(localStorageMock.setItem).toHaveBeenCalledWith('quiz-theme', 'pink');
+    expect(window.localStorage.setItem).toHaveBeenCalledWith('quiz-theme', 'pink');
   });
 
   it('ignores invalid theme from localStorage', () => {
-    localStorageMock.getItem.mockReturnValue('invalid-theme');
+    storage['quiz-theme'] = 'invalid-theme';
 
     act(() => {
       render(
-        <AllProviders>
-          <ThemeProvider>
-            <TestComponent />
-          </ThemeProvider>
-        </AllProviders>
+        <TestWrapper>
+          <TestComponent />
+        </TestWrapper>
       );
     });
 
