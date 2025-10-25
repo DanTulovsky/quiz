@@ -1077,7 +1077,8 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                 componentProps={{
                   order: 3,
                   'data-testid': 'question-content',
-                  mb: 0,
+                  mb: 'md',
+                  mt: 'md',
                 }}
               />
             )}
