@@ -458,9 +458,18 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
 
             {/* For reading comprehension, place the question after the passage */}
             {question.type === 'reading_comprehension' && (
-              <Text size='lg' fw={500}>
-                {question.content?.question}
-              </Text>
+              <SnippetHighlighter
+                text={question.content?.question || ''}
+                snippets={snippets}
+                component={Text}
+                componentProps={{
+                  size='xl',
+                  fw: 600,
+                  mb: 'sm',
+                  style: { lineHeight: 1.5 },
+                  'data-testid': 'reading-comprehension-question',
+                }}
+              />
             )}
 
             {/* For vocabulary, show sentence context */}

@@ -480,6 +480,22 @@ const MobileDailyPage: React.FC = () => {
                 </Paper>
               )}
 
+            {/* For reading comprehension, place the question after the passage */}
+            {currentQuestion.question.type === 'reading_comprehension' && (
+              <SnippetHighlighter
+                text={currentQuestion.question.content?.question || ''}
+                snippets={snippets}
+                component={Text}
+                componentProps={{
+                  size: 'xl',
+                  fw: 600,
+                  mb: 'sm',
+                  style: { lineHeight: 1.5 },
+                  'data-testid': 'reading-comprehension-question',
+                }}
+              />
+            )}
+
             {/* Vocabulary question: show sentence with highlighted target word */}
             {currentQuestion.question.type === 'vocabulary' &&
               (() => {
