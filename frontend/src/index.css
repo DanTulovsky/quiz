@@ -217,3 +217,18 @@ html {
   /* Position right below the main AppShell header */
   top: 70px !important;
 }
+
+/* iOS text selection handling - prevent native popup while keeping text selection */
+.selectable-text,
+[data-selectable-text] {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  -webkit-touch-callout: none !important; /* Prevent iOS native popup */
+  cursor: text;
+}
+
+/* Prevent context menu on mobile for selectable text */
+.selectable-text,
+[data-selectable-text] {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}

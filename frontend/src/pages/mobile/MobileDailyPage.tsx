@@ -71,6 +71,15 @@ const MobileDailyPage: React.FC = () => {
     explanation?: string;
   } | null>(null);
 
+  // Reporting & mark-known state (mobile parity)
+  const [isReported, setIsReported] = useState(false);
+  const [showMarkKnownModal, setShowMarkKnownModal] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportReason, setReportReason] = useState('');
+  const [isReporting, setIsReporting] = useState(false);
+  const [confidenceLevel, setConfidenceLevel] = useState<number | null>(null);
+  const [isMarkingKnown, setIsMarkingKnown] = useState(false);
+
   // Refs for buttons to enable scrolling
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const nextButtonRef = useRef<HTMLButtonElement>(null);
@@ -85,6 +94,9 @@ const MobileDailyPage: React.FC = () => {
 
   // Media query for responsive paragraph splitting
   const isSmall = useMediaQuery('(max-width: 768px)');
+
+  // Auth state
+  const { isAuthenticated, user } = useAuth();
 
   // Set date from URL param
   useEffect(() => {
@@ -171,8 +183,6 @@ const MobileDailyPage: React.FC = () => {
     }
   }, []);
 
-  const { isAuthenticated, user } = useAuth();
-
   const handleReport = async () => {
     if (isReported || reportMutation.isPending || !currentQuestion?.question_id)
       return;
@@ -188,15 +198,6 @@ const MobileDailyPage: React.FC = () => {
 
     setShowReportModal(true);
   };
-
-  // Reporting & mark-known state (mobile parity)
-  const [isReported, setIsReported] = useState(false);
-  const [showMarkKnownModal, setShowMarkKnownModal] = useState(false);
-  const [showReportModal, setShowReportModal] = useState(false);
-  const [reportReason, setReportReason] = useState('');
-  const [isReporting, setIsReporting] = useState(false);
-  const [confidenceLevel, setConfidenceLevel] = useState<number | null>(null);
-  const [isMarkingKnown, setIsMarkingKnown] = useState(false);
 
   const reportMutation = usePostV1QuizQuestionIdReport({
     mutation: {
@@ -458,7 +459,7 @@ const MobileDailyPage: React.FC = () => {
                       per
                     );
                     return (
-                      <div>
+                      <div className='selectable-text'>
                         {paras.map((p, i) => (
                           <Text
                             key={i}

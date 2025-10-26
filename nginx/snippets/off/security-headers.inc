@@ -13,3 +13,6 @@ add_header Referrer-Policy "strict-origin-when-cross-origin" always;
 add_header Cross-Origin-Resource-Policy "same-origin" always;
 add_header Cross-Origin-Embedder-Policy "require-corp" always;
 add_header Cross-Origin-Opener-Policy "same-origin" always;
+
+# Cache control - 24 hour max age for all content
+add_header Cache-Control "public, max-age=86400" always;

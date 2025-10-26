@@ -104,6 +104,26 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
     return () => clearTimeout(timeoutId);
   }, [selection?.text, targetLanguage, translateText]);
 
+  // Prevent iOS context menu from appearing
+  useEffect(() => {
+    const handleContextMenu = (event: Event) => {
+      // Prevent the default context menu on mobile devices
+      const target = event.target as Element;
+      if (
+        target.closest('[data-selectable-text]') ||
+        target.closest('.selectable-text')
+      ) {
+        event.preventDefault();
+      }
+    };
+
+    document.addEventListener('contextmenu', handleContextMenu);
+
+    return () => {
+      document.removeEventListener('contextmenu', handleContextMenu);
+    };
+  }, []);
+
   // Handle clicks outside to close popup
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

@@ -359,7 +359,12 @@ export const SnippetHighlighter: React.FC<SnippetHighlighterProps> = ({
   if (Component) {
     return (
       <>
-        <Component {...componentProps}>{content}</Component>
+        <Component
+          {...componentProps}
+          className={`selectable-text ${componentProps.className || ''}`}
+        >
+          {content}
+        </Component>
         <Modal
           opened={deleteModalOpened}
           onClose={closeDeleteModal}

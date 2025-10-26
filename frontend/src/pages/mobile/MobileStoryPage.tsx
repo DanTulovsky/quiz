@@ -765,7 +765,10 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
           </Tooltip>
         </Box>
         <ScrollArea style={{ height: '100%' }}>
-          <div style={{ padding: '1rem 56px 1rem 0' }}>
+          <div
+            className='selectable-text'
+            style={{ padding: '1rem 56px 1rem 0' }}
+          >
             {(() => {
               const paragraphs = splitIntoParagraphs(section.content, 2);
               return (
@@ -1141,7 +1144,10 @@ const MobileStoryReadingView: React.FC<MobileStoryReadingViewProps> = ({
           </Tooltip>
         </Box>
         <ScrollArea style={{ height: '100%' }}>
-          <div style={{ padding: '1rem 56px 1rem 20px' }}>
+          <div
+            className='selectable-text'
+            style={{ padding: '1rem 56px 1rem 20px' }}
+          >
             <Stack gap='lg'>
               {/* Story Sections */}
               {story.sections?.map((section: StorySection, index: number) => (
