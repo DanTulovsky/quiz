@@ -107,7 +107,9 @@ export interface UseStoryReturn {
   closeGenerationErrorModal: () => void;
 }
 
-export const useStory = (options?: { skipLocalStorage?: boolean }): UseStoryReturn => {
+export const useStory = (options?: {
+  skipLocalStorage?: boolean;
+}): UseStoryReturn => {
   const skipLocalStorage = options?.skipLocalStorage ?? false;
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -1136,7 +1138,7 @@ export const useStory = (options?: { skipLocalStorage?: boolean }): UseStoryRetu
   useEffect(() => {
     // Skip localStorage restoration if URL navigation is in progress
     if (skipLocalStorage) return;
-    
+
     if (
       currentStory &&
       currentStory.sections &&

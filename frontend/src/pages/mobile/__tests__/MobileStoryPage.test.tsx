@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MantineProvider } from '@mantine/core';
+import { BrowserRouter } from 'react-router-dom';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import MobileStoryPage from '../MobileStoryPage';
 import { StoryWithSections, StorySection } from '../../../api/storyApi';
@@ -142,11 +143,13 @@ describe('MobileStoryPage', () => {
 
   const renderComponent = (props = {}) => {
     return render(
-      <ThemeProvider>
-        <MantineProvider>
-          <MobileStoryPage {...props} />
-        </MantineProvider>
-      </ThemeProvider>
+      <BrowserRouter>
+        <ThemeProvider>
+          <MantineProvider>
+            <MobileStoryPage {...props} />
+          </MantineProvider>
+        </ThemeProvider>
+      </BrowserRouter>
     );
   };
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MantineProvider } from '@mantine/core';
+import { BrowserRouter } from 'react-router-dom';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import StoryPage from '../StoryPage';
 import { ThemeProvider } from '../../contexts/ThemeContext';
@@ -85,11 +86,13 @@ vi.mock('../../api/api', async () => {
 
 const renderPage = () =>
   render(
-    <ThemeProvider>
-      <MantineProvider>
-        <StoryPage />
-      </MantineProvider>
-    </ThemeProvider>
+    <BrowserRouter>
+      <ThemeProvider>
+        <MantineProvider>
+          <StoryPage />
+        </MantineProvider>
+      </ThemeProvider>
+    </BrowserRouter>
   );
 
 describe('StoryPage - New Story button', () => {

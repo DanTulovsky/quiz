@@ -71,8 +71,6 @@ const StoryPage: React.FC = () => {
 
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [isCreatingStory, setIsCreatingStory] = useState(false);
-  // Track if we've already navigated from the URL to prevent localStorage from overriding
-  const [hasNavigatedFromUrl, setHasNavigatedFromUrl] = useState(false);
 
   // Handle URL parameters for story and section navigation
   useEffect(() => {
@@ -80,8 +78,6 @@ const StoryPage: React.FC = () => {
       const storyId = parseInt(storyIdParam, 10);
       if (!isNaN(storyId) && (!currentStory || currentStory.id !== storyId)) {
         setCurrentStory(storyId);
-        // Reset flag when switching stories
-        setHasNavigatedFromUrl(false);
       }
     }
   }, [storyIdParam]); // Removed currentStory and setCurrentStory to prevent infinite loop
@@ -98,11 +94,15 @@ const StoryPage: React.FC = () => {
         // Navigate if we found the section AND it's different from current
         if (sectionIndex !== -1 && sectionIndex !== currentSectionIndex) {
           goToSection(sectionIndex);
-          setHasNavigatedFromUrl(true);
         }
       }
     }
-  }, [sectionIdParam, currentStory?.sections, currentSectionIndex, goToSection]);
+  }, [
+    sectionIdParam,
+    currentStory?.sections,
+    currentSectionIndex,
+    goToSection,
+  ]);
 
   const navigate = useNavigate();
 

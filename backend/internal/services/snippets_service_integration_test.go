@@ -556,48 +556,48 @@ func TestSnippetsService_GetSnippets_WithStoryContext_Integration(t *testing.T) 
 
 	service := NewSnippetsService(db, cfg, logger)
 
-	// Create test snippets with different contexts
-	snippets := []api.CreateSnippetRequest{
-		{
-			OriginalText:   "word_standalone",
-			TranslatedText: "translation_standalone",
-			SourceLanguage: "it",
-			TargetLanguage: "en",
-			// No question_id, section_id, or story_id - all will be null
-		},
-	}
+	// Create a snippet without story_id, section_id, or question_id (NULL values)
+	// This tests that SearchSnippets still returns these fields in the response structure
+	insertQuery := `
+		INSERT INTO snippets (user_id, original_text, translated_text, source_language,
+		                     target_language, context, created_at, updated_at)
+		VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())
+		RETURNING id
+	`
+	var snippetID int64
+	err = db.QueryRow(
+		insertQuery,
+		user.ID,
+		"кажется",
+		"seems",
+		"ru",
+		"en",
+		"test context",
+	).Scan(&snippetID)
+	require.NoError(t, err, "Should be able to insert snippet")
+	require.Greater(t, snippetID, int64(0), "Snippet ID should be positive")
 
-	// Create snippets for the test user
-	for _, req := range snippets {
-		_, err := service.CreateSnippet(context.Background(), int64(user.ID), req)
-		require.NoError(t, err, "Should be able to create snippet")
-	}
+	// Test SearchSnippets - this is the key test
+	snippets, total, err := service.SearchSnippets(context.Background(), int64(user.ID), "кажется", 10, 0)
+	require.NoError(t, err, "Should be able to search snippets")
+	require.Greater(t, total, 0, "Should find at least one snippet")
+	require.Len(t, snippets, 1, "Should return exactly one snippet")
 
-	// Test: Get all snippets and verify section_id and story_id fields are present in response
-	params := api.GetV1SnippetsParams{}
-	snippetList, err := service.GetSnippets(context.Background(), int64(user.ID), params)
-	require.NoError(t, err, "Should be able to get snippets")
-	require.NotNil(t, snippetList, "Snippet list should not be nil")
-	require.NotNil(t, snippetList.Snippets, "Snippets should not be nil")
-	assert.Equal(t, 1, *snippetList.Total, "Should return exactly 1 snippet")
-	assert.Len(t, *snippetList.Snippets, 1, "Should return exactly 1 snippet")
-
-	// Verify the snippet has the correct context fields (all should be null for this test)
-	snippet := (*snippetList.Snippets)[0]
+	// Verify the returned snippet has section_id and story_id fields (even if null)
+	snippet := snippets[0]
 	require.NotNil(t, snippet.OriginalText, "Original text should not be nil")
-	assert.Equal(t, "word_standalone", *snippet.OriginalText, "Should have correct original text")
-	assert.Equal(t, "translation_standalone", *snippet.TranslatedText, "Should have correct translated text")
+	assert.Equal(t, "кажется", *snippet.OriginalText)
 
-	// Verify that section_id and story_id fields are present in the response (even if null)
-	// This is the main test - ensuring these fields are returned by the API
-	assert.Nil(t, snippet.QuestionId, "QuestionId should be null")
-	assert.Nil(t, snippet.SectionId, "SectionId should be null")
-	assert.Nil(t, snippet.StoryId, "StoryId should be null")
+	// This is the main test: verify that section_id and story_id fields are present in the response
+	// These fields were previously missing from SearchSnippets
+	// The fields should exist in the struct even if they are null
+	assert.Nil(t, snippet.StoryId, "StoryId should be returned by SearchSnippets (null for this test)")
+	assert.Nil(t, snippet.SectionId, "SectionId should be returned by SearchSnippets (null for this test)")
+	assert.Nil(t, snippet.QuestionId, "QuestionId should be returned by SearchSnippets (null for this test)")
 
-	// The key test: verify that the fields exist in the response structure
-	// (We can't easily test non-null values due to foreign key constraints in test DB)
-	t.Logf("Snippet response includes SectionId field: %v", snippet.SectionId != nil || snippet.SectionId == nil)
-	t.Logf("Snippet response includes StoryId field: %v", snippet.StoryId != nil || snippet.StoryId == nil)
+	t.Logf("✓ SearchSnippets correctly returns StoryId field: %v", snippet.StoryId)
+	t.Logf("✓ SearchSnippets correctly returns SectionId field: %v", snippet.SectionId)
+	t.Logf("✓ SearchSnippets correctly returns QuestionId field: %v", snippet.QuestionId)
 }
 
 // TestSnippetsService_GetSnippets_WithFilters_Integration2 tests filtering by story_id and level

@@ -87,8 +87,6 @@ const MobileStoryPage: React.FC = () => {
   } = useStory({ skipLocalStorage: !!sectionIdParam });
 
   const [showCreateModal, setShowCreateModal] = useState(false);
-  // Track if we've already navigated from the URL to prevent localStorage from overriding
-  const [hasNavigatedFromUrl, setHasNavigatedFromUrl] = useState(false);
 
   const navigate = useNavigate();
 
@@ -98,8 +96,6 @@ const MobileStoryPage: React.FC = () => {
       const storyId = parseInt(storyIdParam, 10);
       if (!isNaN(storyId) && (!currentStory || currentStory.id !== storyId)) {
         setCurrentStory(storyId);
-        // Reset flag when switching stories
-        setHasNavigatedFromUrl(false);
       }
     }
   }, [storyIdParam]); // Removed currentStory and setCurrentStory to prevent infinite loop
@@ -116,11 +112,15 @@ const MobileStoryPage: React.FC = () => {
         // Navigate if we found the section AND it's different from current
         if (sectionIndex !== -1 && sectionIndex !== currentSectionIndex) {
           goToSection(sectionIndex);
-          setHasNavigatedFromUrl(true);
         }
       }
     }
-  }, [sectionIdParam, currentStory?.sections, currentSectionIndex, goToSection]);
+  }, [
+    sectionIdParam,
+    currentStory?.sections,
+    currentSectionIndex,
+    goToSection,
+  ]);
   const [isCreatingStory, setIsCreatingStory] = useState(false);
 
   const handleCreateStory = async (data: CreateStoryRequest) => {
