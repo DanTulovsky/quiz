@@ -463,7 +463,7 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
                 snippets={snippets}
                 component={Text}
                 componentProps={{
-                  size='xl',
+                  size: 'xl',
                   fw: 600,
                   mb: 'sm',
                   style: { lineHeight: 1.5 },
