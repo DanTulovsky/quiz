@@ -510,8 +510,8 @@ export const useStory = (): UseStoryReturn => {
       });
     },
     onError: (error: unknown) => {
-      let errorMessage =
-        'Failed to set current story. Please try again.' + error;
+      let errorMessage = 'Failed to set current story. Please try again.';
+      let isNotFound = false;
 
       if (typeof error === 'object' && error !== null) {
         // Check if error has response structure (axios-like error)
@@ -522,7 +522,12 @@ export const useStory = (): UseStoryReturn => {
             message?: string;
           };
 
-          if (axiosError.response?.data?.error) {
+          // Check if it's a 404 error (story not found)
+          if (axiosError.response?.status === 404) {
+            isNotFound = true;
+            errorMessage =
+              'Story not found. It may have been deleted or you do not have access to it.';
+          } else if (axiosError.response?.data?.error) {
             errorMessage = axiosError.response.data.error;
           } else if (
             axiosError.response?.data &&
@@ -561,6 +566,13 @@ export const useStory = (): UseStoryReturn => {
         message: errorMessage,
         type: 'error',
       });
+
+      // If story not found, navigate to /story to prevent showing wrong story
+      if (isNotFound && typeof window !== 'undefined') {
+        setTimeout(() => {
+          window.location.href = '/story';
+        }, 1500);
+      }
     },
   });
 
@@ -1122,7 +1134,8 @@ export const useStory = (): UseStoryReturn => {
     if (
       currentStory &&
       currentStory.sections &&
-      currentStory.sections.length > 0
+      currentStory.sections.length > 0 &&
+      globalCurrentSectionIndex === 0 // Only restore from localStorage if we're at the default (0)
     ) {
       const savedIndex = loadSectionIndex(currentStory.id!);
       if (

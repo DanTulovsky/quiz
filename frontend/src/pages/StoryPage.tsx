@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   Container,
   Title,
@@ -58,6 +58,7 @@ const StoryPage: React.FC = () => {
     setCurrentStory,
     generateNextSection,
     exportStoryPDF,
+    goToSection,
     goToNextSection,
     goToPreviousSection,
     goToFirstSection,
@@ -70,6 +71,8 @@ const StoryPage: React.FC = () => {
 
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [isCreatingStory, setIsCreatingStory] = useState(false);
+  // Track if we've already navigated from the URL to prevent localStorage from overriding
+  const [hasNavigatedFromUrl, setHasNavigatedFromUrl] = useState(false);
 
   // Handle URL parameters for story and section navigation
   useEffect(() => {
@@ -77,42 +80,114 @@ const StoryPage: React.FC = () => {
       const storyId = parseInt(storyIdParam, 10);
       if (!isNaN(storyId) && (!currentStory || currentStory.id !== storyId)) {
         setCurrentStory(storyId);
+        // Reset flag when switching stories
+        setHasNavigatedFromUrl(false);
       }
     }
   }, [storyIdParam]); // Removed currentStory and setCurrentStory to prevent infinite loop
 
   // Handle section ID parameter
   useEffect(() => {
-    if (sectionIdParam && currentStory && currentStory.sections) {
+    if (
+      sectionIdParam &&
+      currentStory &&
+      currentStory.sections &&
+      !hasNavigatedFromUrl
+    ) {
       const sectionId = parseInt(sectionIdParam, 10);
       if (!isNaN(sectionId)) {
+        console.log('Navigating to section ID:', sectionId);
+        console.log(
+          'Available sections:',
+          currentStory.sections.map(s => ({
+            id: s.id,
+            section_number: s.section_number,
+          }))
+        );
         const sectionIndex = currentStory.sections.findIndex(
           section => section.id === sectionId
         );
-        if (sectionIndex !== -1 && sectionIndex !== currentSectionIndex) {
-          // Navigate to the specific section
-          // Note: We need to add a function to set section index directly
-          // For now, we'll use the existing navigation functions
-          if (sectionIndex > currentSectionIndex) {
-            // Navigate forward
-            for (let i = currentSectionIndex; i < sectionIndex; i++) {
-              goToNextSection();
-            }
-          } else if (sectionIndex < currentSectionIndex) {
-            // Navigate backward
-            for (let i = currentSectionIndex; i > sectionIndex; i--) {
-              goToPreviousSection();
-            }
-          }
+        console.log(
+          'Found section at index:',
+          sectionIndex,
+          'current index:',
+          currentSectionIndex
+        );
+        if (sectionIndex !== -1) {
+          // Navigate directly to the specific section
+          console.log('Calling goToSection with index:', sectionIndex);
+          goToSection(sectionIndex);
+          // Mark that we've navigated from URL
+          setHasNavigatedFromUrl(true);
+          // Also update localStorage to prevent it from being overridden
+          localStorage.setItem(
+            `story_section_index_${currentStory.id}`,
+            String(sectionIndex)
+          );
         }
       }
+    } else if (!sectionIdParam && hasNavigatedFromUrl) {
+      // Reset flag when URL no longer has section parameter
+      setHasNavigatedFromUrl(false);
     }
   }, [
     sectionIdParam,
-    currentStory,
+    currentStory?.id,
+    currentStory?.sections,
     currentSectionIndex,
-    // Removed goToNextSection and goToPreviousSection to prevent unnecessary re-renders
+    goToSection,
+    hasNavigatedFromUrl,
   ]);
+
+  const navigate = useNavigate();
+
+  // Wrapper functions that update URL when navigating sections
+  const handleGoToPreviousSection = () => {
+    const targetIndex = currentSectionIndex - 1;
+    if (targetIndex >= 0) {
+      const targetSection = sections[targetIndex];
+      goToPreviousSection();
+      if (targetSection?.id !== undefined && currentStory?.id) {
+        navigate(`/story/${currentStory.id}/section/${targetSection.id}`);
+      }
+    }
+  };
+
+  const handleGoToNextSection = () => {
+    const targetIndex = currentSectionIndex + 1;
+    if (targetIndex < sections.length) {
+      const targetSection = sections[targetIndex];
+      goToNextSection();
+      if (targetSection?.id !== undefined && currentStory?.id) {
+        navigate(`/story/${currentStory.id}/section/${targetSection.id}`);
+      }
+    }
+  };
+
+  const handleGoToFirstSection = () => {
+    const firstSection = sections[0];
+    goToFirstSection();
+    if (firstSection?.id !== undefined && currentStory?.id) {
+      navigate(`/story/${currentStory.id}/section/${firstSection.id}`);
+    }
+  };
+
+  const handleGoToLastSection = () => {
+    const lastSection = sections[sections.length - 1];
+    goToLastSection();
+    if (lastSection?.id !== undefined && currentStory?.id) {
+      navigate(`/story/${currentStory.id}/section/${lastSection.id}`);
+    }
+  };
+
+  // Update URL when story loads or section changes without a section parameter in URL
+  useEffect(() => {
+    if (currentStory && !sectionIdParam && currentSection?.id) {
+      navigate(`/story/${currentStory.id}/section/${currentSection.id}`, {
+        replace: true,
+      });
+    }
+  }, [currentStory?.id, currentSection?.id, navigate, sectionIdParam]);
 
   const handleCreateStory = async (data: CreateStoryRequest) => {
     setIsCreatingStory(true);
@@ -445,10 +520,10 @@ const StoryPage: React.FC = () => {
             onGenerateNext={() =>
               currentStory && generateNextSection(currentStory.id!)
             }
-            onPrevious={goToPreviousSection}
-            onNext={goToNextSection}
-            onFirst={goToFirstSection}
-            onLast={goToLastSection}
+            onPrevious={handleGoToPreviousSection}
+            onNext={handleGoToNextSection}
+            onFirst={handleGoToFirstSection}
+            onLast={handleGoToLastSection}
           />
         ) : (
           <StoryReadingView story={currentStory} isGenerating={isGenerating} />

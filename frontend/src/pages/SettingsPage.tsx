@@ -529,13 +529,19 @@ const SettingsPage: React.FC = () => {
     try {
       await clearAllSnippets();
 
-      // Invalidate snippet queries to ensure UI updates immediately
-      // The SnippetsPage uses these query keys with pagination
+      // Invalidate ALL snippet queries to ensure UI updates immediately
+      // This includes queries used by SnippetHighlighter in Story views
       queryClient.invalidateQueries({
         queryKey: ['/v1/snippets'],
       });
       queryClient.invalidateQueries({
         queryKey: ['/v1/snippets/search'],
+      });
+      // Invalidate story-specific snippet queries used by useStorySnippets
+      queryClient.invalidateQueries({
+        predicate: query => {
+          return query.queryKey[0]?.toString().includes('/v1/snippets/story/');
+        },
       });
 
       showNotificationWithClean({
