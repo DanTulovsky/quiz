@@ -67,7 +67,7 @@ const StoryPage: React.FC = () => {
     generationErrorModal,
     closeGenerationErrorModal,
     toggleAutoGeneration,
-  } = useStory();
+  } = useStory({ skipLocalStorage: !!sectionIdParam });
 
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [isCreatingStory, setIsCreatingStory] = useState(false);
@@ -86,58 +86,23 @@ const StoryPage: React.FC = () => {
     }
   }, [storyIdParam]); // Removed currentStory and setCurrentStory to prevent infinite loop
 
-  // Handle section ID parameter
+  // Handle section ID parameter - prioritize URL over localStorage
+  // This must run AFTER sections are loaded but BEFORE localStorage restoration
   useEffect(() => {
-    if (
-      sectionIdParam &&
-      currentStory &&
-      currentStory.sections &&
-      !hasNavigatedFromUrl
-    ) {
+    if (sectionIdParam && currentStory && currentStory.sections) {
       const sectionId = parseInt(sectionIdParam, 10);
       if (!isNaN(sectionId)) {
-        console.log('Navigating to section ID:', sectionId);
-        console.log(
-          'Available sections:',
-          currentStory.sections.map(s => ({
-            id: s.id,
-            section_number: s.section_number,
-          }))
-        );
         const sectionIndex = currentStory.sections.findIndex(
           section => section.id === sectionId
         );
-        console.log(
-          'Found section at index:',
-          sectionIndex,
-          'current index:',
-          currentSectionIndex
-        );
-        if (sectionIndex !== -1) {
-          // Navigate directly to the specific section
-          console.log('Calling goToSection with index:', sectionIndex);
+        // Navigate if we found the section AND it's different from current
+        if (sectionIndex !== -1 && sectionIndex !== currentSectionIndex) {
           goToSection(sectionIndex);
-          // Mark that we've navigated from URL
           setHasNavigatedFromUrl(true);
-          // Also update localStorage to prevent it from being overridden
-          localStorage.setItem(
-            `story_section_index_${currentStory.id}`,
-            String(sectionIndex)
-          );
         }
       }
-    } else if (!sectionIdParam && hasNavigatedFromUrl) {
-      // Reset flag when URL no longer has section parameter
-      setHasNavigatedFromUrl(false);
     }
-  }, [
-    sectionIdParam,
-    currentStory?.id,
-    currentStory?.sections,
-    currentSectionIndex,
-    goToSection,
-    hasNavigatedFromUrl,
-  ]);
+  }, [sectionIdParam, currentStory?.sections, currentSectionIndex, goToSection]);
 
   const navigate = useNavigate();
 

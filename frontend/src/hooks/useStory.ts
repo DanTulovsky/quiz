@@ -107,7 +107,8 @@ export interface UseStoryReturn {
   closeGenerationErrorModal: () => void;
 }
 
-export const useStory = (): UseStoryReturn => {
+export const useStory = (options?: { skipLocalStorage?: boolean }): UseStoryReturn => {
+  const skipLocalStorage = options?.skipLocalStorage ?? false;
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
@@ -1129,13 +1130,18 @@ export const useStory = (): UseStoryReturn => {
     }
   }, [currentStoryError]);
 
-  // Load section index from localStorage when story changes, or default to first section
+  // Load section index from localStorage when story and sections are loaded
+  // Only restore from localStorage if we're at the default (0)
+  // This allows URL parameters to override localStorage
   useEffect(() => {
+    // Skip localStorage restoration if URL navigation is in progress
+    if (skipLocalStorage) return;
+    
     if (
       currentStory &&
       currentStory.sections &&
       currentStory.sections.length > 0 &&
-      globalCurrentSectionIndex === 0 // Only restore from localStorage if we're at the default (0)
+      globalCurrentSectionIndex === 0
     ) {
       const savedIndex = loadSectionIndex(currentStory.id!);
       if (
@@ -1143,15 +1149,19 @@ export const useStory = (): UseStoryReturn => {
         savedIndex >= 0 &&
         savedIndex < currentStory.sections.length
       ) {
-        // Use saved index if valid
-        setGlobalCurrentSectionIndex(savedIndex);
+        // Use saved index if valid, but only if index is still 0 (allowing URL override)
+        if (globalCurrentSectionIndex === 0) {
+          setGlobalCurrentSectionIndex(savedIndex);
+        }
       } else {
         // Default to first section (index 0) instead of last section
         // This prevents the initial load issue where users expect to start from section 1
-        setGlobalCurrentSectionIndex(0);
+        if (globalCurrentSectionIndex === 0) {
+          setGlobalCurrentSectionIndex(0);
+        }
       }
     }
-  }, [currentStory?.id]); // Remove loadSectionIndex from dependencies
+  }, [currentStory?.id, currentStory?.sections, skipLocalStorage]); // Wait for sections to be loaded
 
   // Save section index to localStorage whenever it changes
   useEffect(() => {
