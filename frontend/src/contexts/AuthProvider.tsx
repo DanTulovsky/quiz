@@ -117,6 +117,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
         queryClient.removeQueries({ queryKey: ['authStatus'] });
         setUser(response.user);
         setHasInitialized(true); // Ensure we're initialized after login
+
+        // Wait for React to process the state update before allowing navigation
+        // Use requestAnimationFrame twice to ensure state is flushed
+        await new Promise(resolve => {
+          requestAnimationFrame(() => {
+            requestAnimationFrame(resolve);
+          });
+        });
+
         // Clear the logging in flag after a short delay
         setTimeout(() => setIsLoggingIn(false), 1000);
         return true;
@@ -177,14 +186,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
   const logout = async (): Promise<void> => {
     try {
       setIsLoggingOut(true);
+
+      // Navigate to login page first, before clearing user state
+      navigate('/login');
+
       await logoutMutation.mutateAsync();
 
       // Clear auth status query cache to prevent stale data
       queryClient.removeQueries({ queryKey: ['authStatus'] });
-      setUser(null);
 
-      // Navigate to login page immediately
-      navigate('/login');
+      // Clear user state after navigation
+      setUser(null);
 
       // Reset initialization state after navigation
       setTimeout(() => setHasInitialized(false), 200);

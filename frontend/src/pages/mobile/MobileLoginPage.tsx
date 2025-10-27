@@ -72,7 +72,8 @@ const MobileLoginPage: React.FC = () => {
     try {
       const success = await login(formData.username, formData.password);
       if (success) {
-        navigate(redirectUrl);
+        // Use replace to avoid adding login page to history
+        navigate(redirectUrl, { replace: true });
       }
     } finally {
       setIsLoading(false);

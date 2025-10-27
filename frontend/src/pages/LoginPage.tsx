@@ -72,7 +72,8 @@ const LoginPage: React.FC = () => {
     try {
       const success = await login(formData.username, formData.password);
       if (success) {
-        navigate('/');
+        // Use replace to avoid adding login page to history
+        navigate('/', { replace: true });
       }
     } finally {
       setIsLoading(false);
