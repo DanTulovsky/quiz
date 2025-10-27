@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   Paper,
   Text,
@@ -7,14 +7,16 @@ import {
   Group,
   Select,
   Stack,
+  Tooltip,
+  Portal,
 } from '@mantine/core';
-import { useQueryClient } from '@tanstack/react-query';
-import { useTranslation } from '../contexts/TranslationContext';
-import { TextSelection } from '../hooks/useTextSelection';
-import { IconX, IconVolume, IconBookmark } from '@tabler/icons-react';
-import { postV1Snippets, Question } from '../api/api';
-import { useTheme } from '../contexts/ThemeContext';
-import { fontScaleMap } from '../theme/theme';
+import {useQueryClient} from '@tanstack/react-query';
+import {useTranslation} from '../contexts/TranslationContext';
+import {TextSelection} from '../hooks/useTextSelection';
+import {IconX, IconVolume, IconBookmark} from '@tabler/icons-react';
+import {postV1Snippets, Question} from '../api/api';
+import {useTheme} from '../contexts/ThemeContext';
+import {fontScaleMap} from '../theme/theme';
 
 // Type for story context when no question is available
 interface StoryContext {
@@ -34,7 +36,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
   currentQuestion,
 }) => {
   const queryClient = useQueryClient();
-  const { fontSize } = useTheme();
+  const {fontSize} = useTheme();
 
   // Load saved language from localStorage or use browser language or default to 'en'
   const [targetLanguage, setTargetLanguage] = useState(() => {
@@ -73,16 +75,16 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
 
   // Language options for the dropdown
   const languageOptions = [
-    { value: 'en', label: 'English' },
-    { value: 'es', label: 'Spanish' },
-    { value: 'fr', label: 'French' },
-    { value: 'de', label: 'German' },
-    { value: 'it', label: 'Italian' },
-    { value: 'pt', label: 'Portuguese' },
-    { value: 'ru', label: 'Russian' },
-    { value: 'ja', label: 'Japanese' },
-    { value: 'ko', label: 'Korean' },
-    { value: 'zh', label: 'Chinese' },
+    {value: 'en', label: 'English'},
+    {value: 'es', label: 'Spanish'},
+    {value: 'fr', label: 'French'},
+    {value: 'de', label: 'German'},
+    {value: 'it', label: 'Italian'},
+    {value: 'pt', label: 'Portuguese'},
+    {value: 'ru', label: 'Russian'},
+    {value: 'ja', label: 'Japanese'},
+    {value: 'ko', label: 'Korean'},
+    {value: 'zh', label: 'Chinese'},
   ];
 
   // Translate text when selection or target language changes
@@ -190,7 +192,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
       y = selection.y + selection.height + margin;
     }
 
-    return { left: x, top: y };
+    return {left: x, top: y};
   };
 
   const position = getPopupPosition();
@@ -233,16 +235,16 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
         context: selection.sentence, // Add the extracted sentence as context
         ...(currentQuestion &&
           'id' in currentQuestion && {
-            question_id: (currentQuestion as Question).id,
-          }),
+          question_id: (currentQuestion as Question).id,
+        }),
         ...(currentQuestion &&
           'section_id' in currentQuestion && {
-            section_id: (currentQuestion as StoryContext).section_id,
-          }),
+          section_id: (currentQuestion as StoryContext).section_id,
+        }),
         ...(currentQuestion &&
           'story_id' in currentQuestion && {
-            story_id: (currentQuestion as StoryContext).story_id,
-          }),
+          story_id: (currentQuestion as StoryContext).story_id,
+        }),
       };
 
       await postV1Snippets(payload);
@@ -298,141 +300,146 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
   };
 
   return (
-    <Paper
-      ref={popupRef}
-      className='translation-popup'
-      shadow='md'
-      p='lg'
-      style={{
-        position: 'fixed',
-        zIndex: 1500, // Lower than delete modals so they can appear on top
-        width: `${320 * fontScaleMap[fontSize]}px`,
-        maxWidth: '90vw',
-        ...position,
-      }}
-      withBorder
-    >
-      <Stack gap='xs'>
-        {/* Header */}
-        <Group justify='space-between' align='flex-start'>
-          <Text size='md' fw={500} c='dimmed'>
-            Translation
-          </Text>
-          <Button variant='subtle' size='sm' p={2} onClick={handleClose}>
-            <IconX size={16} />
-          </Button>
-        </Group>
-
-        {/* Original text */}
-        <Text size='md' style={{ fontStyle: 'italic' }}>
-          "{selection.text}"
-        </Text>
-
-        {/* Language selector */}
-        <Select
-          data={languageOptions}
-          value={targetLanguage}
-          onChange={value => {
-            if (value) {
-              setTargetLanguage(value);
-              // Persist language selection to localStorage
-              localStorage.setItem('quiz-translation-target-lang', value);
-            }
-          }}
-          size='sm'
-          placeholder='Select language'
-          style={{ width: '100%' }}
-          onFocus={() => {
-            setIsSelectFocused(true);
-          }}
-          onBlur={() => {
-            setIsSelectFocused(false);
-          }}
-          styles={{
-            dropdown: {
-              zIndex: 1600,
-            },
-          }}
-        />
-
-        {/* Translation result */}
-        <div style={{ minHeight: `${60 * fontScaleMap[fontSize]}px` }}>
-          {translationLoading && (
-            <Group gap='xs'>
-              <Loader size='md' />
-              <Text size='md' c='dimmed'>
-                Translating...
-              </Text>
-            </Group>
-          )}
-
-          {translationError && (
-            <Text size='md' c='red'>
-              {translationError.includes('temporarily unavailable')
-                ? '🔄 Translation service is temporarily unavailable. Please wait a moment and try again.'
-                : translationError.includes('Rate limit exceeded')
-                  ? '⏱️ Too many translation requests. Please wait a moment and try again.'
-                  : `❌ ${translationError}`}
+    <Portal zIndex={2500}>
+      <Paper
+        ref={popupRef}
+        className='translation-popup'
+        shadow='md'
+        p='lg'
+        style={{
+          position: 'fixed',
+          zIndex: 99999,
+          width: `${320 * fontScaleMap[fontSize]}px`,
+          maxWidth: '90vw',
+          ...position,
+        }}
+        withBorder
+      >
+        <Stack gap='xs'>
+          {/* Header */}
+          <Group justify='space-between' align='flex-start'>
+            <Text size='md' fw={500} c='dimmed'>
+              Translation
             </Text>
-          )}
+            <Button variant='subtle' size='sm' p={2} onClick={handleClose}>
+              <IconX size={16} />
+            </Button>
+          </Group>
 
-          {translation && !translationLoading && !translationError && (
-            <Stack gap='xs'>
-              <Text size='md'>{translation.translatedText}</Text>
+          {/* Original text */}
+          <Text size='md' style={{fontStyle: 'italic'}}>
+            "{selection.text}"
+          </Text>
+
+          {/* Language selector */}
+          <Select
+            data={languageOptions}
+            value={targetLanguage}
+            onChange={value => {
+              if (value) {
+                setTargetLanguage(value);
+                // Persist language selection to localStorage
+                localStorage.setItem('quiz-translation-target-lang', value);
+              }
+            }}
+            size='sm'
+            placeholder='Select language'
+            style={{width: '100%'}}
+            onFocus={() => {
+              setIsSelectFocused(true);
+            }}
+            onBlur={() => {
+              setIsSelectFocused(false);
+            }}
+            styles={{
+              dropdown: {
+                zIndex: 1600,
+              },
+            }}
+          />
+
+          {/* Translation result */}
+          <div style={{minHeight: `${60 * fontScaleMap[fontSize]}px`}}>
+            {translationLoading && (
               <Group gap='xs'>
-                <Button
-                  variant='light'
-                  size='sm'
-                  leftSection={<IconVolume size={16} />}
-                  onClick={() =>
-                    speakText(translation.translatedText, targetLanguage)
-                  }
-                >
-                  Listen
-                </Button>
-                <Button
-                  variant='light'
-                  size='sm'
-                  leftSection={<IconVolume size={16} />}
-                  onClick={() =>
-                    speakText(selection.text, translation.sourceLanguage)
-                  }
-                >
-                  Original
-                </Button>
-                <Button
-                  variant={isSaved ? 'filled' : 'light'}
-                  size='sm'
-                  leftSection={
-                    isSaving ? (
-                      <Loader size={16} data-testid='loader' />
-                    ) : isSaved ? (
-                      <IconBookmark size={16} />
-                    ) : (
-                      <IconBookmark size={16} />
-                    )
-                  }
-                  onClick={handleSaveSnippet}
-                  disabled={isSaving || isSaved}
-                  color={isSaved ? 'green' : undefined}
-                >
-                  {isSaving ? 'Saving...' : isSaved ? 'Saved!' : 'Save'}
-                </Button>
-              </Group>
-              {saveError && (
-                <Text size='sm' c='red'>
-                  {saveError}
+                <Loader size='md' />
+                <Text size='md' c='dimmed'>
+                  Translating...
                 </Text>
-              )}
-            </Stack>
-          )}
-        </div>
+              </Group>
+            )}
 
-        {/* Footer */}
-        <Text size='sm' c='dimmed' ta='center'>
-          Powered by Google Translate
-        </Text>
-      </Stack>
-    </Paper>
+            {translationError && (
+              <Text size='md' c='red'>
+                {translationError.includes('temporarily unavailable')
+                  ? '🔄 Translation service is temporarily unavailable. Please wait a moment and try again.'
+                  : translationError.includes('Rate limit exceeded')
+                    ? '⏱️ Too many translation requests. Please wait a moment and try again.'
+                    : `❌ ${translationError}`}
+              </Text>
+            )}
+
+            {translation && !translationLoading && !translationError && (
+              <Stack gap='xs'>
+                <Text size='md'>{translation.translatedText}</Text>
+                <Group gap='xs' wrap='nowrap'>
+                  <Button
+                    variant='light'
+                    size='xs'
+                    px={10}
+                    leftSection={<IconVolume size={14} />}
+                    onClick={() =>
+                      speakText(translation.translatedText, targetLanguage)
+                    }
+                  >
+                    Listen
+                  </Button>
+                  <Button
+                    variant='light'
+                    size='xs'
+                    px={10}
+                    leftSection={<IconVolume size={14} />}
+                    onClick={() =>
+                      speakText(selection.text, translation.sourceLanguage)
+                    }
+                  >
+                    Original
+                  </Button>
+                  <Tooltip label='Save to snippets' withArrow withinPortal={false}>
+                    <Button
+                      variant={isSaved ? 'filled' : 'light'}
+                      size='xs'
+                      px={10}
+                      leftSection={
+                        isSaving ? (
+                          <Loader size={14} data-testid='loader' />
+                        ) : (
+                          <IconBookmark size={14} />
+                        )
+                      }
+                      onClick={handleSaveSnippet}
+                      disabled={isSaving || isSaved}
+                      color={isSaved ? 'green' : undefined}
+                    >
+                      {isSaving ? 'Saving...' : isSaved ? 'Saved!' : 'Save'}
+                    </Button>
+                  </Tooltip>
+                </Group>
+                {saveError && (
+                  <Text size='sm' c='red'>
+                    {saveError}
+                  </Text>
+                )}
+              </Stack>
+            )}
+          </div>
+
+          {/* Footer */}
+          <Text size='sm' c='dimmed' ta='center'>
+            Powered by Google Translate
+          </Text>
+        </Stack>
+      </Paper>
+    </Portal>
   );
 };

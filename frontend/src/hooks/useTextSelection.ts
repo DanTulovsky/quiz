@@ -175,22 +175,25 @@ export const useTextSelection = () => {
     }
   }, []);
 
-  // Increased debounce delay to wait for selection completion
+  // Wait for mouse/touch release before showing popup
   useEffect(() => {
     let debounceTimer: NodeJS.Timeout;
 
     const debouncedHandler = () => {
       clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(handleSelectionChange, 400); // Increased from 150ms to 400ms
+      // Small debounce to ensure selection is stable after mouse/touch release
+      debounceTimer = setTimeout(handleSelectionChange, 100);
     };
 
-    document.addEventListener('selectionchange', debouncedHandler);
+    // Only listen to mouseup and touchend events so popup appears after
+    // mouse button is released (desktop) or finger is lifted (mobile)
     document.addEventListener('mouseup', debouncedHandler);
+    document.addEventListener('touchend', debouncedHandler);
 
     return () => {
       clearTimeout(debounceTimer);
-      document.removeEventListener('selectionchange', debouncedHandler);
       document.removeEventListener('mouseup', debouncedHandler);
+      document.removeEventListener('touchend', debouncedHandler);
     };
   }, [handleSelectionChange]);
 
