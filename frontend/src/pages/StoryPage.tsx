@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, {useState, useEffect} from 'react';
+import {useParams, useNavigate} from 'react-router-dom';
 import {
   Container,
   Title,
@@ -22,17 +22,17 @@ import {
   IconPlayerPlay,
 } from '@tabler/icons-react';
 
-import { useStory } from '../hooks/useStory';
+import {useStory} from '../hooks/useStory';
 import CreateStoryForm from '../components/CreateStoryForm';
 import ArchivedStoriesView from '../components/ArchivedStoriesView';
 import StorySectionView from '../components/StorySectionView';
 import StoryReadingView from '../components/StoryReadingView';
 import StoryGenerationErrorModal from '../components/StoryGenerationErrorModal';
-import { CreateStoryRequest } from '../api/storyApi';
-import { getGeneratingMessage } from '../utils/storyMessages';
+import {CreateStoryRequest} from '../api/storyApi';
+import {getGeneratingMessage} from '../utils/storyMessages';
 
 const StoryPage: React.FC = () => {
-  const { id: storyIdParam, sectionId: sectionIdParam } = useParams<{
+  const {id: storyIdParam, sectionId: sectionIdParam} = useParams<{
     id?: string;
     sectionId?: string;
   }>();
@@ -67,20 +67,20 @@ const StoryPage: React.FC = () => {
     generationErrorModal,
     closeGenerationErrorModal,
     toggleAutoGeneration,
-  } = useStory({ skipLocalStorage: !!sectionIdParam });
+  } = useStory({skipLocalStorage: !!sectionIdParam});
 
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [isCreatingStory, setIsCreatingStory] = useState(false);
 
   // Handle URL parameters for story and section navigation
   useEffect(() => {
-    if (storyIdParam) {
+    if (storyIdParam && !isLoading) {
       const storyId = parseInt(storyIdParam, 10);
       if (!isNaN(storyId) && (!currentStory || currentStory.id !== storyId)) {
         setCurrentStory(storyId);
       }
     }
-  }, [storyIdParam]); // Removed currentStory and setCurrentStory to prevent infinite loop
+  }, [storyIdParam, isLoading, currentStory, setCurrentStory]);
 
   // Handle section ID parameter - prioritize URL over localStorage
   // This must run AFTER sections are loaded but BEFORE localStorage restoration
@@ -369,12 +369,12 @@ const StoryPage: React.FC = () => {
             alignItems: 'center',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
             <IconBook size={24} />
             <Title order={3}>{currentStory?.title}</Title>
           </div>
 
-          <div style={{ display: 'flex', gap: '4px' }}>
+          <div style={{display: 'flex', gap: '4px'}}>
             {/* View Mode Toggle */}
             <Tooltip label='Section View' position='bottom' withArrow>
               <Button

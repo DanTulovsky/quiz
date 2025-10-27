@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, {useState, useEffect} from 'react';
+import {useParams, useNavigate} from 'react-router-dom';
 import {
   Container,
   Title,
@@ -25,21 +25,21 @@ import {
   IconPlayerPlay,
   IconPlayerPause,
 } from '@tabler/icons-react';
-import { Volume2, VolumeX } from 'lucide-react';
-import { useTTS } from '../../hooks/useTTS';
-import { useGetV1PreferencesLearning } from '../../api/api';
-import { defaultVoiceForLanguage } from '../../utils/tts';
-import { useTheme } from '../../contexts/ThemeContext';
-import { fontScaleMap } from '../../theme/theme';
+import {Volume2, VolumeX} from 'lucide-react';
+import {useTTS} from '../../hooks/useTTS';
+import {useGetV1PreferencesLearning} from '../../api/api';
+import {defaultVoiceForLanguage} from '../../utils/tts';
+import {useTheme} from '../../contexts/ThemeContext';
+import {fontScaleMap} from '../../theme/theme';
 
-import { useStory } from '../../hooks/useStory';
-import { splitIntoParagraphs } from '../../utils/passage';
+import {useStory} from '../../hooks/useStory';
+import {splitIntoParagraphs} from '../../utils/passage';
 import CreateStoryForm from '../../components/CreateStoryForm';
 import ArchivedStoriesView from '../../components/ArchivedStoriesView';
 import StoryGenerationErrorModal from '../../components/StoryGenerationErrorModal';
-import { SnippetHighlighter } from '../../components/SnippetHighlighter';
-import { useSectionSnippets } from '../../hooks/useSectionSnippets';
-import { useStorySnippets } from '../../hooks/useStorySnippets';
+import {SnippetHighlighter} from '../../components/SnippetHighlighter';
+import {useSectionSnippets} from '../../hooks/useSectionSnippets';
+import {useStorySnippets} from '../../hooks/useStorySnippets';
 import {
   CreateStoryRequest,
   StoryWithSections,
@@ -47,10 +47,10 @@ import {
   StorySectionQuestion,
   StorySectionWithQuestions,
 } from '../../api/storyApi';
-import { getGeneratingMessage } from '../../utils/storyMessages';
+import {getGeneratingMessage} from '../../utils/storyMessages';
 
 const MobileStoryPage: React.FC = () => {
-  const { id: storyIdParam, sectionId: sectionIdParam } = useParams<{
+  const {id: storyIdParam, sectionId: sectionIdParam} = useParams<{
     id?: string;
     sectionId?: string;
   }>();
@@ -84,7 +84,7 @@ const MobileStoryPage: React.FC = () => {
     generationErrorModal,
     closeGenerationErrorModal,
     toggleAutoGeneration,
-  } = useStory({ skipLocalStorage: !!sectionIdParam });
+  } = useStory({skipLocalStorage: !!sectionIdParam});
 
   const [showCreateModal, setShowCreateModal] = useState(false);
 
@@ -92,13 +92,13 @@ const MobileStoryPage: React.FC = () => {
 
   // Handle URL parameters for story and section navigation
   useEffect(() => {
-    if (storyIdParam) {
+    if (storyIdParam && !isLoading) {
       const storyId = parseInt(storyIdParam, 10);
       if (!isNaN(storyId) && (!currentStory || currentStory.id !== storyId)) {
         setCurrentStory(storyId);
       }
     }
-  }, [storyIdParam]); // Removed currentStory and setCurrentStory to prevent infinite loop
+  }, [storyIdParam, isLoading, currentStory, setCurrentStory]);
 
   // Handle section ID parameter - prioritize URL over localStorage
   // This must run AFTER sections are loaded but BEFORE localStorage restoration
@@ -362,16 +362,16 @@ const MobileStoryPage: React.FC = () => {
     <Container
       size='lg'
       py='lg'
-      style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}
+      style={{height: '100vh', display: 'flex', flexDirection: 'column'}}
     >
       <Stack
         gap='lg'
-        style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
+        style={{flex: 1, display: 'flex', flexDirection: 'column'}}
       >
         {/* Header */}
         <Paper p='sm' radius='md'>
           <Group justify='space-between' align='center'>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
               <IconBook size={20} />
               <Title order={5}>{currentStory?.title}</Title>
             </div>
@@ -384,7 +384,7 @@ const MobileStoryPage: React.FC = () => {
                 onClick={() => setViewMode('section')}
                 leftSection={<IconBook2 size={12} />}
                 styles={{
-                  root: { padding: '1px 8px' },
+                  root: {padding: '1px 8px'},
                 }}
               >
                 Section
@@ -395,7 +395,7 @@ const MobileStoryPage: React.FC = () => {
                 onClick={() => setViewMode('reading')}
                 leftSection={<IconMessage size={12} />}
                 styles={{
-                  root: { padding: '1px 8px' },
+                  root: {padding: '1px 8px'},
                 }}
               >
                 Reading
@@ -528,13 +528,13 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
   } = useTTS();
 
   // Get user learning preferences for preferred voice
-  const { data: userLearningPrefs } = useGetV1PreferencesLearning();
+  const {data: userLearningPrefs} = useGetV1PreferencesLearning();
 
   // Get font size from theme context
-  const { fontSize } = useTheme();
+  const {fontSize} = useTheme();
 
   // Fetch snippets for the current section
-  const { snippets } = useSectionSnippets(section?.id);
+  const {snippets} = useSectionSnippets(section?.id);
 
   // State to track if we should hide double arrows due to overflow
   const [shouldHideDoubleArrows, setShouldHideDoubleArrows] =
@@ -606,8 +606,8 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
   }, [sectionIndex, totalSections]);
   if (!section) {
     return (
-      <Paper p='xl' radius='md' style={{ textAlign: 'center' }}>
-        <IconBook size={48} style={{ opacity: 0.5, marginBottom: 16 }} />
+      <Paper p='xl' radius='md' style={{textAlign: 'center'}}>
+        <IconBook size={48} style={{opacity: 0.5, marginBottom: 16}} />
         <Title order={4}>No section to display</Title>
         <Text color='dimmed'>
           Create a new story or select a section to view.
@@ -665,7 +665,7 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
             <Text
               size='xs'
               color='dimmed'
-              style={{ minWidth: '50px', textAlign: 'center' }}
+              style={{minWidth: '50px', textAlign: 'center'}}
             >
               {sectionIndex + 1} / {totalSections}
             </Text>
@@ -747,9 +747,9 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
       <Paper
         p='lg'
         radius='md'
-        style={{ flex: 1, overflow: 'hidden', position: 'relative' }}
+        style={{flex: 1, overflow: 'hidden', position: 'relative'}}
       >
-        <Box style={{ position: 'absolute', top: 12, right: 12, zIndex: 10 }}>
+        <Box style={{position: 'absolute', top: 12, right: 12, zIndex: 10}}>
           <Tooltip
             label={
               isTTSPlaying
@@ -801,10 +801,10 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
             </ActionIcon>
           </Tooltip>
         </Box>
-        <ScrollArea style={{ height: '100%' }}>
+        <ScrollArea style={{height: '100%'}}>
           <div
             className='selectable-text'
-            style={{ padding: '1rem 56px 1rem 0' }}
+            style={{padding: '1rem 56px 1rem 0'}}
           >
             {(() => {
               const paragraphs = splitIntoParagraphs(section.content, 2);
@@ -838,7 +838,7 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
 
       {/* Comprehension Questions */}
       {sectionWithQuestions?.questions &&
-      sectionWithQuestions.questions.length > 0 ? (
+        sectionWithQuestions.questions.length > 0 ? (
         <Paper p='md' radius='md'>
           <Title order={5} mb='sm'>
             Comprehension Questions
@@ -904,7 +904,7 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
             <Text
               size='xs'
               color='dimmed'
-              style={{ minWidth: '50px', textAlign: 'center' }}
+              style={{minWidth: '50px', textAlign: 'center'}}
             >
               {sectionIndex + 1} / {totalSections}
             </Text>
@@ -995,7 +995,7 @@ const MobileStoryQuestionCard: React.FC<MobileStoryQuestionCardProps> = ({
   };
 
   return (
-    <Paper p='sm' radius='sm' style={{ backgroundColor: '#f8f9fa' }}>
+    <Paper p='sm' radius='sm' style={{backgroundColor: '#f8f9fa'}}>
       <Text size='sm' fw={500} mb='xs'>
         {question.question_text}
       </Text>
@@ -1012,7 +1012,7 @@ const MobileStoryQuestionCard: React.FC<MobileStoryQuestionCardProps> = ({
               onChange={() => setSelectedAnswer(index)}
               disabled={showResult}
             />
-            <label htmlFor={`option-${index}`} style={{ marginLeft: 8 }}>
+            <label htmlFor={`option-${index}`} style={{marginLeft: 8}}>
               {option}
             </label>
           </div>
@@ -1075,17 +1075,17 @@ const MobileStoryReadingView: React.FC<MobileStoryReadingViewProps> = ({
   } = useTTS();
 
   // Get user learning preferences for preferred voice
-  const { data: userLearningPrefs } = useGetV1PreferencesLearning();
+  const {data: userLearningPrefs} = useGetV1PreferencesLearning();
 
   // Get font size from theme context
-  const { fontSize } = useTheme();
+  const {fontSize} = useTheme();
 
   // Fetch snippets for the entire story
-  const { snippets } = useStorySnippets(story?.id);
+  const {snippets} = useStorySnippets(story?.id);
   if (!story) {
     return (
-      <Paper p='xl' radius='md' style={{ textAlign: 'center' }}>
-        <IconBook size={48} style={{ opacity: 0.5, marginBottom: 16 }} />
+      <Paper p='xl' radius='md' style={{textAlign: 'center'}}>
+        <IconBook size={48} style={{opacity: 0.5, marginBottom: 16}} />
         <Title order={4}>No story to display</Title>
         <Text color='dimmed'>Create a new story to start reading.</Text>
       </Paper>
@@ -1095,9 +1095,9 @@ const MobileStoryReadingView: React.FC<MobileStoryReadingViewProps> = ({
   if (!story.sections || story.sections.length === 0) {
     if (isGenerating) {
       return (
-        <Paper p='xl' radius='md' style={{ textAlign: 'center' }}>
+        <Paper p='xl' radius='md' style={{textAlign: 'center'}}>
           <Stack gap='md' align='center'>
-            <IconBook size={48} style={{ opacity: 0.5 }} />
+            <IconBook size={48} style={{opacity: 0.5}} />
             <Title order={4}>Generating Your Story</Title>
             <Text color='dimmed' ta='center'>
               We're creating the first section of your story.
@@ -1107,8 +1107,8 @@ const MobileStoryReadingView: React.FC<MobileStoryReadingViewProps> = ({
       );
     } else {
       return (
-        <Paper p='xl' radius='md' style={{ textAlign: 'center' }}>
-          <IconBook size={48} style={{ opacity: 0.5, marginBottom: 16 }} />
+        <Paper p='xl' radius='md' style={{textAlign: 'center'}}>
+          <IconBook size={48} style={{opacity: 0.5, marginBottom: 16}} />
           <Title order={4}>Story in Progress</Title>
           <Text color='dimmed'>
             Your story is being prepared. Check back soon for the first section!
@@ -1124,9 +1124,9 @@ const MobileStoryReadingView: React.FC<MobileStoryReadingViewProps> = ({
       <Paper
         p='lg'
         radius='md'
-        style={{ flex: 1, overflow: 'hidden', position: 'relative' }}
+        style={{flex: 1, overflow: 'hidden', position: 'relative'}}
       >
-        <Box style={{ position: 'absolute', top: 12, right: 12, zIndex: 10 }}>
+        <Box style={{position: 'absolute', top: 12, right: 12, zIndex: 10}}>
           <Tooltip
             label={
               isTTSPlaying
@@ -1180,10 +1180,10 @@ const MobileStoryReadingView: React.FC<MobileStoryReadingViewProps> = ({
             </ActionIcon>
           </Tooltip>
         </Box>
-        <ScrollArea style={{ height: '100%' }}>
+        <ScrollArea style={{height: '100%'}}>
           <div
             className='selectable-text'
-            style={{ padding: '1rem 56px 1rem 20px' }}
+            style={{padding: '1rem 56px 1rem 20px'}}
           >
             <Stack gap='lg'>
               {/* Story Sections */}
