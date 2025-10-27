@@ -391,7 +391,7 @@ const MobilePhrasebookCategoryPage = () => {
                     </Box>
 
                     {/* Action Buttons */}
-                    <Group gap={4} wrap='nowrap'>
+                    <Group gap={4} wrap='nowrap' style={{ flexShrink: 0 }}>
                       <ActionIcon
                         variant='subtle'
                         size='lg'
