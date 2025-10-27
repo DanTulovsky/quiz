@@ -14,5 +14,5 @@ add_header Cross-Origin-Resource-Policy "same-origin" always;
 add_header Cross-Origin-Embedder-Policy "require-corp" always;
 add_header Cross-Origin-Opener-Policy "same-origin" always;
 
-# Cache control - 24 hour max age for all content
-add_header Cache-Control "public, max-age=86400" always;
+# Cache control - 4 hour max age for static assets
+add_header Cache-Control "public, max-age=14400" always;
