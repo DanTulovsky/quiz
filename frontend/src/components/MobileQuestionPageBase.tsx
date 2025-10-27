@@ -46,6 +46,7 @@ interface Props {
 const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
   const isSmallScreen = useMediaQuery('(max-width: 768px)');
   const { questionId } = useParams();
+  const { user } = useAuth();
 
   const {
     quizFeedback,
@@ -58,6 +59,11 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
 
   const feedback = mode === 'quiz' ? quizFeedback : readingFeedback;
   const setFeedback = mode === 'quiz' ? setQuizFeedback : setReadingFeedback;
+
+  // Early return if not authenticated - prevents flash of error state before redirect
+  if (!user) {
+    return null;
+  }
 
   // Local UI state
   const [selectedAnswerLocal, setSelectedAnswerLocal] = useState<number | null>(

@@ -535,6 +535,75 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
 
   // Fetch snippets for the current section
   const { snippets } = useSectionSnippets(section?.id);
+
+  // State to track if we should hide double arrows due to overflow
+  const [shouldHideDoubleArrows, setShouldHideDoubleArrows] =
+    React.useState(false);
+  const navContainerRef = React.useRef<HTMLDivElement>(null);
+
+  // Check for overflow on mount and when content changes
+  React.useEffect(() => {
+    const checkOverflow = () => {
+      if (navContainerRef.current) {
+        const container = navContainerRef.current;
+        const leftGroup = container.querySelector(
+          '[data-nav-left-group]'
+        ) as HTMLElement;
+        const rightGroup = container.querySelector(
+          '[data-nav-right-group]'
+        ) as HTMLElement;
+
+        if (leftGroup && rightGroup) {
+          // Check if any child in leftGroup wraps to a different line
+          const leftChildren = leftGroup.children;
+          let previousBottom = 0;
+          let hasWrapped = false;
+
+          for (let i = 0; i < leftChildren.length; i++) {
+            const rect = (
+              leftChildren[i] as HTMLElement
+            ).getBoundingClientRect();
+            if (i > 0 && rect.top > previousBottom + 1) {
+              // This element is on a different line (with 1px tolerance)
+              hasWrapped = true;
+              break;
+            }
+            previousBottom = rect.bottom;
+          }
+
+          // If the left group has wrapped, hide the double arrows
+          if (!hasWrapped) {
+            // Also check if right group wraps (though it typically won't)
+            const rightChildren = rightGroup.children;
+            previousBottom = 0;
+            for (let i = 0; i < rightChildren.length; i++) {
+              const rect = (
+                rightChildren[i] as HTMLElement
+              ).getBoundingClientRect();
+              if (i > 0 && rect.top > previousBottom + 1) {
+                hasWrapped = true;
+                break;
+              }
+              previousBottom = rect.bottom;
+            }
+          }
+
+          setShouldHideDoubleArrows(hasWrapped);
+        }
+      }
+    };
+
+    // Delay the check to ensure the DOM has updated
+    const timeoutId = setTimeout(checkOverflow, 100);
+
+    // Also check on window resize
+    window.addEventListener('resize', checkOverflow);
+
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener('resize', checkOverflow);
+    };
+  }, [sectionIndex, totalSections]);
   if (!section) {
     return (
       <Paper p='xl' radius='md' style={{ textAlign: 'center' }}>
@@ -553,6 +622,7 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
       <Paper p='sm' radius='md'>
         {/* Section Navigation */}
         <div
+          ref={navContainerRef}
           style={{
             display: 'flex',
             justifyContent: 'space-between',
@@ -560,7 +630,7 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
             width: '100%',
           }}
         >
-          <Group gap={4}>
+          <Group gap={4} data-nav-left-group>
             <Button
               variant='light'
               size='xs'
@@ -570,6 +640,7 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
                 root: {
                   padding: '2px 6px',
                   minHeight: '28px',
+                  display: shouldHideDoubleArrows ? 'none' : undefined,
                 },
               }}
             >
@@ -623,6 +694,7 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
                 root: {
                   padding: '2px 6px',
                   minHeight: '28px',
+                  display: shouldHideDoubleArrows ? 'none' : undefined,
                 },
               }}
             >
@@ -630,7 +702,7 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
             </Button>
           </Group>
 
-          <Group gap={4}>
+          <Group gap={4} data-nav-right-group>
             {/* Pause/Resume Auto-Generation Button */}
             {story && (
               <Tooltip

@@ -497,6 +497,14 @@ function App() {
         {/* Mobile OAuth Callback */}
         <Route path='/m/oauth-callback' element={<OAuthCallbackPage />} />
 
+        {/* Mobile Root - redirect to login or quiz */}
+        <Route
+          path='/m'
+          element={
+            user ? <Navigate to='/m/quiz' /> : <Navigate to='/m/login' />
+          }
+        />
+
         {/* Mobile Routes */}
         <Route
           path='/m/login'
