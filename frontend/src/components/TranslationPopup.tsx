@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Paper,
   Text,
@@ -10,13 +10,13 @@ import {
   Tooltip,
   Portal,
 } from '@mantine/core';
-import {useQueryClient} from '@tanstack/react-query';
-import {useTranslation} from '../contexts/TranslationContext';
-import {TextSelection} from '../hooks/useTextSelection';
-import {IconX, IconVolume, IconBookmark} from '@tabler/icons-react';
-import {postV1Snippets, Question} from '../api/api';
-import {useTheme} from '../contexts/ThemeContext';
-import {fontScaleMap} from '../theme/theme';
+import { useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from '../contexts/TranslationContext';
+import { TextSelection } from '../hooks/useTextSelection';
+import { IconX, IconVolume, IconBookmark } from '@tabler/icons-react';
+import { postV1Snippets, Question } from '../api/api';
+import { useTheme } from '../contexts/ThemeContext';
+import { fontScaleMap } from '../theme/theme';
 
 // Type for story context when no question is available
 interface StoryContext {
@@ -36,7 +36,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
   currentQuestion,
 }) => {
   const queryClient = useQueryClient();
-  const {fontSize} = useTheme();
+  const { fontSize } = useTheme();
 
   // Load saved language from localStorage or use browser language or default to 'en'
   const [targetLanguage, setTargetLanguage] = useState(() => {
@@ -75,16 +75,16 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
 
   // Language options for the dropdown
   const languageOptions = [
-    {value: 'en', label: 'English'},
-    {value: 'es', label: 'Spanish'},
-    {value: 'fr', label: 'French'},
-    {value: 'de', label: 'German'},
-    {value: 'it', label: 'Italian'},
-    {value: 'pt', label: 'Portuguese'},
-    {value: 'ru', label: 'Russian'},
-    {value: 'ja', label: 'Japanese'},
-    {value: 'ko', label: 'Korean'},
-    {value: 'zh', label: 'Chinese'},
+    { value: 'en', label: 'English' },
+    { value: 'es', label: 'Spanish' },
+    { value: 'fr', label: 'French' },
+    { value: 'de', label: 'German' },
+    { value: 'it', label: 'Italian' },
+    { value: 'pt', label: 'Portuguese' },
+    { value: 'ru', label: 'Russian' },
+    { value: 'ja', label: 'Japanese' },
+    { value: 'ko', label: 'Korean' },
+    { value: 'zh', label: 'Chinese' },
   ];
 
   // Translate text when selection or target language changes
@@ -192,7 +192,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
       y = selection.y + selection.height + margin;
     }
 
-    return {left: x, top: y};
+    return { left: x, top: y };
   };
 
   const position = getPopupPosition();
@@ -235,16 +235,16 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
         context: selection.sentence, // Add the extracted sentence as context
         ...(currentQuestion &&
           'id' in currentQuestion && {
-          question_id: (currentQuestion as Question).id,
-        }),
+            question_id: (currentQuestion as Question).id,
+          }),
         ...(currentQuestion &&
           'section_id' in currentQuestion && {
-          section_id: (currentQuestion as StoryContext).section_id,
-        }),
+            section_id: (currentQuestion as StoryContext).section_id,
+          }),
         ...(currentQuestion &&
           'story_id' in currentQuestion && {
-          story_id: (currentQuestion as StoryContext).story_id,
-        }),
+            story_id: (currentQuestion as StoryContext).story_id,
+          }),
       };
 
       await postV1Snippets(payload);
@@ -327,7 +327,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
           </Group>
 
           {/* Original text */}
-          <Text size='md' style={{fontStyle: 'italic'}}>
+          <Text size='md' style={{ fontStyle: 'italic' }}>
             "{selection.text}"
           </Text>
 
@@ -344,7 +344,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
             }}
             size='sm'
             placeholder='Select language'
-            style={{width: '100%'}}
+            style={{ width: '100%' }}
             onFocus={() => {
               setIsSelectFocused(true);
             }}
@@ -359,7 +359,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
           />
 
           {/* Translation result */}
-          <div style={{minHeight: `${60 * fontScaleMap[fontSize]}px`}}>
+          <div style={{ minHeight: `${60 * fontScaleMap[fontSize]}px` }}>
             {translationLoading && (
               <Group gap='xs'>
                 <Loader size='md' />
@@ -405,7 +405,11 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
                   >
                     Original
                   </Button>
-                  <Tooltip label='Save to snippets' withArrow withinPortal={false}>
+                  <Tooltip
+                    label='Save to snippets'
+                    withArrow
+                    withinPortal={false}
+                  >
                     <Button
                       variant={isSaved ? 'filled' : 'light'}
                       size='xs'
