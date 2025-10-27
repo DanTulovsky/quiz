@@ -496,7 +496,7 @@ export const useStory = (options?: {
 
   const setCurrentStoryMutation = useMutation({
     mutationFn: apiSetCurrentStory,
-    onSuccess: () => {
+    onSuccess: (_data, storyId) => {
       queryClient.invalidateQueries({
         queryKey: ['currentStory', user?.id],
       });
@@ -506,11 +506,14 @@ export const useStory = (options?: {
       });
       setCurrentSectionIndexWithDebug(0);
       setViewMode('section');
-      showNotificationWithClean({
-        title: 'Story Activated',
-        message: 'Story has been set as your current active story.',
-        type: 'success',
-      });
+      // Only show notification if the story is actually changing
+      if (storyId !== currentStory?.id) {
+        showNotificationWithClean({
+          title: 'Story Activated',
+          message: 'Story has been set as your current active story.',
+          type: 'success',
+        });
+      }
     },
     onError: (error: unknown) => {
       let errorMessage = 'Failed to set current story. Please try again.';
