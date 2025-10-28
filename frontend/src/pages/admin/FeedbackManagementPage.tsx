@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   Container,
   Stack,
@@ -20,7 +20,7 @@ import {
   Divider,
   Box,
 } from '@mantine/core';
-import { IconRefresh, IconCheck, IconClock, IconX } from '@tabler/icons-react';
+import {IconRefresh, IconCheck, IconClock, IconX} from '@tabler/icons-react';
 import * as TablerIcons from '@tabler/icons-react';
 import {
   useGetV1AdminBackendFeedback,
@@ -31,10 +31,10 @@ import {
   GetV1AdminBackendFeedbackStatus,
   FeedbackReport,
 } from '../../api/api';
-import { customInstance } from '../../api/axios';
-import { notifications } from '@mantine/notifications';
-import { Alert } from '@mantine/core';
-import { useUsersPaginated } from '../../api/admin';
+import {customInstance} from '../../api/axios';
+import {notifications} from '@mantine/notifications';
+import {Alert} from '@mantine/core';
+import {useUsersPaginated} from '../../api/admin';
 
 const tablerIconMap = TablerIcons as unknown as Record<
   string,
@@ -68,7 +68,7 @@ const FeedbackManagementPage: React.FC = () => {
   const [deleteAllModalOpened, setDeleteAllModalOpened] = useState(false);
 
   // Fetch users for username display
-  const { data: usersData } = useUsersPaginated({
+  const {data: usersData} = useUsersPaginated({
     page: 1,
     pageSize: 1000,
   });
@@ -86,14 +86,14 @@ const FeedbackManagementPage: React.FC = () => {
     return mapping;
   }, [usersData]);
 
-  const { data, isLoading, refetch } = useGetV1AdminBackendFeedback(
+  const {data, isLoading, refetch} = useGetV1AdminBackendFeedback(
     {
       page,
       page_size: pageSize,
       ...(statusFilter && {
         status: statusFilter as GetV1AdminBackendFeedbackStatus,
       }),
-      ...(typeFilter && { feedback_type: typeFilter }),
+      ...(typeFilter && {feedback_type: typeFilter}),
     },
     {
       query: {
@@ -103,10 +103,10 @@ const FeedbackManagementPage: React.FC = () => {
     }
   );
 
-  const { mutate: updateFeedback, isPending: isUpdating } =
+  const {mutate: updateFeedback, isPending: isUpdating} =
     usePatchV1AdminBackendFeedbackId();
 
-  const { mutate: deleteFeedback, isPending: isDeleting } =
+  const {mutate: deleteFeedback, isPending: isDeleting} =
     useDeleteV1AdminBackendFeedbackId();
 
   const getStatusColor = (status: string) => {
@@ -127,7 +127,7 @@ const FeedbackManagementPage: React.FC = () => {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'new':
-        return <IconBug style={{ width: 14, height: 14 }} />;
+        return <IconBug style={{width: 14, height: 14}} />;
       case 'in_progress':
         return <IconClock size={14} />;
       case 'resolved':
@@ -135,7 +135,7 @@ const FeedbackManagementPage: React.FC = () => {
       case 'dismissed':
         return <IconX size={14} />;
       default:
-        return <IconBug style={{ width: 14, height: 14 }} />;
+        return <IconBug style={{width: 14, height: 14}} />;
     }
   };
 
@@ -171,7 +171,7 @@ const FeedbackManagementPage: React.FC = () => {
     if (!feedbackToDelete) return;
 
     deleteFeedback(
-      { id: feedbackToDelete.id },
+      {id: feedbackToDelete.id},
       {
         onSuccess: () => {
           notifications.show({
@@ -186,8 +186,8 @@ const FeedbackManagementPage: React.FC = () => {
         onError: (error: unknown) => {
           const errorMessage =
             error && typeof error === 'object' && 'response' in error
-              ? (error as { response?: { data?: { message?: string } } })
-                  .response?.data?.message
+              ? (error as {response?: {data?: {message?: string}}})
+                .response?.data?.message
               : undefined;
           notifications.show({
             title: 'Error',
@@ -201,10 +201,10 @@ const FeedbackManagementPage: React.FC = () => {
 
   const handleDeleteAllResolved = async () => {
     try {
-      await customInstance<{ deleted_count: number }>({
+      await customInstance<{deleted_count: number}>({
         url: '/v1/admin/backend/feedback',
         method: 'DELETE',
-        params: { status: 'resolved' },
+        params: {status: 'resolved'},
       });
       notifications.show({
         title: 'Success',
@@ -216,8 +216,8 @@ const FeedbackManagementPage: React.FC = () => {
     } catch (error: unknown) {
       const errorMessage =
         error && typeof error === 'object' && 'response' in error
-          ? (error as { response?: { data?: { message?: string } } }).response
-              ?.data?.message
+          ? (error as {response?: {data?: {message?: string}}}).response
+            ?.data?.message
           : undefined;
       notifications.show({
         title: 'Error',
@@ -229,10 +229,10 @@ const FeedbackManagementPage: React.FC = () => {
 
   const handleDeleteAllDismissed = async () => {
     try {
-      await customInstance<{ deleted_count: number }>({
+      await customInstance<{deleted_count: number}>({
         url: '/v1/admin/backend/feedback',
         method: 'DELETE',
-        params: { status: 'dismissed' },
+        params: {status: 'dismissed'},
       });
       notifications.show({
         title: 'Success',
@@ -244,8 +244,8 @@ const FeedbackManagementPage: React.FC = () => {
     } catch (error: unknown) {
       const errorMessage =
         error && typeof error === 'object' && 'response' in error
-          ? (error as { response?: { data?: { message?: string } } }).response
-              ?.data?.message
+          ? (error as {response?: {data?: {message?: string}}}).response
+            ?.data?.message
           : undefined;
       notifications.show({
         title: 'Error',
@@ -257,10 +257,10 @@ const FeedbackManagementPage: React.FC = () => {
 
   const handleDeleteAll = async () => {
     try {
-      await customInstance<{ deleted_count: number }>({
+      await customInstance<{deleted_count: number}>({
         url: '/v1/admin/backend/feedback',
         method: 'DELETE',
-        params: { all: 'true' },
+        params: {all: 'true'},
       });
       notifications.show({
         title: 'Success',
@@ -272,8 +272,8 @@ const FeedbackManagementPage: React.FC = () => {
     } catch (error: unknown) {
       const errorMessage =
         error && typeof error === 'object' && 'response' in error
-          ? (error as { response?: { data?: { message?: string } } }).response
-              ?.data?.message
+          ? (error as {response?: {data?: {message?: string}}}).response
+            ?.data?.message
           : undefined;
       notifications.show({
         title: 'Error',
@@ -317,8 +317,8 @@ const FeedbackManagementPage: React.FC = () => {
         onError: (error: unknown) => {
           const errorMessage =
             error && typeof error === 'object' && 'response' in error
-              ? (error as { response?: { data?: { message?: string } } })
-                  .response?.data?.message
+              ? (error as {response?: {data?: {message?: string}}})
+                .response?.data?.message
               : undefined;
           notifications.show({
             title: 'Error',
@@ -358,7 +358,7 @@ const FeedbackManagementPage: React.FC = () => {
     <Container size='xl' py='xl'>
       <Stack gap='xl'>
         {/* Stats Cards */}
-        <SimpleGrid cols={{ base: 1, sm: 2, md: 4 }} spacing='md'>
+        <SimpleGrid cols={{base: 1, sm: 2, md: 4}} spacing='md'>
           <Paper p='md' withBorder radius='md'>
             <Stack gap='xs'>
               <Text size='sm' c='dimmed'>
@@ -412,7 +412,7 @@ const FeedbackManagementPage: React.FC = () => {
                 {stats.resolved > 0 && (
                   <Button
                     leftSection={
-                      <IconTrash style={{ width: 16, height: 16 }} />
+                      <IconTrash style={{width: 16, height: 16}} />
                     }
                     onClick={() => setDeleteAllResolvedModalOpened(true)}
                     variant='outline'
@@ -425,7 +425,7 @@ const FeedbackManagementPage: React.FC = () => {
                 {stats.dismissed > 0 && (
                   <Button
                     leftSection={
-                      <IconTrash style={{ width: 16, height: 16 }} />
+                      <IconTrash style={{width: 16, height: 16}} />
                     }
                     onClick={() => setDeleteAllDismissedModalOpened(true)}
                     variant='outline'
@@ -438,7 +438,7 @@ const FeedbackManagementPage: React.FC = () => {
                 {stats.total > 0 && (
                   <Button
                     leftSection={
-                      <IconTrash style={{ width: 16, height: 16 }} />
+                      <IconTrash style={{width: 16, height: 16}} />
                     }
                     onClick={() => setDeleteAllModalOpened(true)}
                     variant='outline'
@@ -462,38 +462,38 @@ const FeedbackManagementPage: React.FC = () => {
             <Group gap='md'>
               <TextInput
                 placeholder='Search feedback...'
-                leftSection={<IconSearch style={{ width: 16, height: 16 }} />}
+                leftSection={<IconSearch style={{width: 16, height: 16}} />}
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                style={{ flex: 1 }}
+                style={{flex: 1}}
               />
 
               <Select
                 placeholder='Status'
                 data={[
-                  { value: '', label: 'All Statuses' },
-                  { value: 'new', label: 'New' },
-                  { value: 'in_progress', label: 'In Progress' },
-                  { value: 'resolved', label: 'Resolved' },
-                  { value: 'dismissed', label: 'Dismissed' },
+                  {value: '', label: 'All Statuses'},
+                  {value: 'new', label: 'New'},
+                  {value: 'in_progress', label: 'In Progress'},
+                  {value: 'resolved', label: 'Resolved'},
+                  {value: 'dismissed', label: 'Dismissed'},
                 ]}
                 value={statusFilter}
                 onChange={value => {
                   setStatusFilter(value || '');
                   setPage(1);
                 }}
-                leftSection={<IconFilter style={{ width: 16, height: 16 }} />}
+                leftSection={<IconFilter style={{width: 16, height: 16}} />}
                 clearable
               />
 
               <Select
                 placeholder='Type'
                 data={[
-                  { value: '', label: 'All Types' },
-                  { value: 'bug', label: 'Bug Report' },
-                  { value: 'feature_request', label: 'Feature Request' },
-                  { value: 'general', label: 'General' },
-                  { value: 'improvement', label: 'Improvement' },
+                  {value: '', label: 'All Types'},
+                  {value: 'bug', label: 'Bug Report'},
+                  {value: 'feature_request', label: 'Feature Request'},
+                  {value: 'general', label: 'General'},
+                  {value: 'improvement', label: 'Improvement'},
                 ]}
                 value={typeFilter}
                 onChange={value => {
@@ -530,7 +530,7 @@ const FeedbackManagementPage: React.FC = () => {
                     <Table.Tr
                       key={item.id}
                       onClick={() => handleViewDetails(item)}
-                      style={{ cursor: 'pointer' }}
+                      style={{cursor: 'pointer'}}
                     >
                       <Table.Td>{item.id}</Table.Td>
                       <Table.Td>
@@ -552,7 +552,7 @@ const FeedbackManagementPage: React.FC = () => {
                       </Table.Td>
                       <Table.Td>
                         <Tooltip label={item.feedback_text} withArrow>
-                          <Text size='sm' truncate style={{ maxWidth: 300 }}>
+                          <Text size='sm' truncate style={{maxWidth: 300}}>
                             {item.feedback_text}
                           </Text>
                         </Tooltip>
@@ -581,7 +581,7 @@ const FeedbackManagementPage: React.FC = () => {
                                 }
                                 alt='Screenshot thumbnail'
                                 fit='cover'
-                                style={{ width: '100%', height: '100%' }}
+                                style={{width: '100%', height: '100%'}}
                               />
                             </Box>
                           </Tooltip>
@@ -603,7 +603,7 @@ const FeedbackManagementPage: React.FC = () => {
                             onClick={() => handleViewDetails(item)}
                             title='View Details'
                           >
-                            <IconEye style={{ width: 18, height: 18 }} />
+                            <IconEye style={{width: 18, height: 18}} />
                           </ActionIcon>
                           <ActionIcon
                             variant='subtle'
@@ -611,7 +611,7 @@ const FeedbackManagementPage: React.FC = () => {
                             onClick={() => handleDeleteClick(item)}
                             title='Delete'
                           >
-                            <IconTrash style={{ width: 18, height: 18 }} />
+                            <IconTrash style={{width: 18, height: 18}} />
                           </ActionIcon>
                         </Group>
                       </Table.Td>
@@ -652,14 +652,14 @@ const FeedbackManagementPage: React.FC = () => {
                   </Text>
                   <Select
                     data={[
-                      { value: 'new', label: 'New' },
-                      { value: 'in_progress', label: 'In Progress' },
-                      { value: 'resolved', label: 'Resolved' },
-                      { value: 'dismissed', label: 'Dismissed' },
+                      {value: 'new', label: 'New'},
+                      {value: 'in_progress', label: 'In Progress'},
+                      {value: 'resolved', label: 'Resolved'},
+                      {value: 'dismissed', label: 'Dismissed'},
                     ]}
                     value={updateStatus}
                     onChange={value => setUpdateStatus(value || '')}
-                    style={{ minWidth: 200 }}
+                    style={{minWidth: 200}}
                   />
                 </Stack>
                 <Stack gap='xs'>
@@ -678,7 +678,7 @@ const FeedbackManagementPage: React.FC = () => {
                   Feedback
                 </Text>
                 <Paper p='md' withBorder>
-                  <Text size='sm' style={{ whiteSpace: 'pre-wrap' }}>
+                  <Text size='sm' style={{whiteSpace: 'pre-wrap'}}>
                     {selectedFeedback.feedback_text}
                   </Text>
                 </Paper>
@@ -687,25 +687,25 @@ const FeedbackManagementPage: React.FC = () => {
               {/* Screenshot */}
               {(selectedFeedback.screenshot_data ||
                 selectedFeedback.screenshot_url) && (
-                <Stack gap='xs'>
-                  <Text size='sm' fw={500}>
-                    Screenshot
-                  </Text>
-                  <Image
-                    src={
-                      selectedFeedback.screenshot_url ||
-                      (selectedFeedback.screenshot_data?.startsWith('data:')
-                        ? selectedFeedback.screenshot_data
-                        : `data:image/jpeg;base64,${selectedFeedback.screenshot_data}`)
-                    }
-                    alt='Feedback screenshot'
-                    radius='md'
-                    fit='contain'
-                    style={{ maxWidth: '100%', maxHeight: 600 }}
-                    fallbackSrc='data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect width="400" height="300" fill="%23f0f0f0"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="%23999"%3EFailed to load image%3C/text%3E%3C/svg%3E'
-                  />
-                </Stack>
-              )}
+                  <Stack gap='xs'>
+                    <Text size='sm' fw={500}>
+                      Screenshot
+                    </Text>
+                    <Image
+                      src={
+                        selectedFeedback.screenshot_url ||
+                        (selectedFeedback.screenshot_data?.startsWith('data:')
+                          ? selectedFeedback.screenshot_data
+                          : `data:image/jpeg;base64,${selectedFeedback.screenshot_data}`)
+                      }
+                      alt='Feedback screenshot'
+                      radius='md'
+                      fit='contain'
+                      style={{maxWidth: '100%', maxHeight: 600}}
+                      fallbackSrc='data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect width="400" height="300" fill="%23f0f0f0"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="%23999"%3EFailed to load image%3C/text%3E%3C/svg%3E'
+                    />
+                  </Stack>
+                )}
 
               {/* Context Data */}
               {selectedFeedback.context_data && (
@@ -806,7 +806,7 @@ const FeedbackManagementPage: React.FC = () => {
         >
           <Stack gap='md'>
             <Alert
-              icon={<IconAlertTriangle style={{ width: 16, height: 16 }} />}
+              icon={<IconAlertTriangle style={{width: 16, height: 16}} />}
               color='red'
             >
               Are you sure you want to delete feedback #{feedbackToDelete?.id}?
@@ -843,7 +843,7 @@ const FeedbackManagementPage: React.FC = () => {
         >
           <Stack gap='md'>
             <Alert
-              icon={<IconAlertTriangle style={{ width: 16, height: 16 }} />}
+              icon={<IconAlertTriangle style={{width: 16, height: 16}} />}
               color='red'
             >
               Are you sure you want to delete all {stats.resolved} resolved
@@ -859,7 +859,7 @@ const FeedbackManagementPage: React.FC = () => {
               <Button
                 color='red'
                 onClick={handleDeleteAllResolved}
-                leftSection={<IconTrash style={{ width: 16, height: 16 }} />}
+                leftSection={<IconTrash style={{width: 16, height: 16}} />}
               >
                 Delete All Resolved
               </Button>
@@ -876,7 +876,7 @@ const FeedbackManagementPage: React.FC = () => {
         >
           <Stack gap='md'>
             <Alert
-              icon={<IconAlertTriangle style={{ width: 16, height: 16 }} />}
+              icon={<IconAlertTriangle style={{width: 16, height: 16}} />}
               color='yellow'
             >
               Are you sure you want to delete all {stats.dismissed} dismissed
@@ -892,7 +892,7 @@ const FeedbackManagementPage: React.FC = () => {
               <Button
                 color='gray'
                 onClick={handleDeleteAllDismissed}
-                leftSection={<IconTrash style={{ width: 16, height: 16 }} />}
+                leftSection={<IconTrash style={{width: 16, height: 16}} />}
               >
                 Delete All Dismissed
               </Button>
@@ -909,7 +909,7 @@ const FeedbackManagementPage: React.FC = () => {
         >
           <Stack gap='md'>
             <Alert
-              icon={<IconAlertTriangle style={{ width: 16, height: 16 }} />}
+              icon={<IconAlertTriangle style={{width: 16, height: 16}} />}
               color='red'
             >
               Are you sure you want to delete ALL {stats.total} feedback reports
@@ -925,7 +925,7 @@ const FeedbackManagementPage: React.FC = () => {
               <Button
                 color='red'
                 onClick={handleDeleteAll}
-                leftSection={<IconTrash style={{ width: 16, height: 16 }} />}
+                leftSection={<IconTrash style={{width: 16, height: 16}} />}
               >
                 Delete All Feedback
               </Button>
