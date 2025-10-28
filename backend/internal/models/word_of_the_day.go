@@ -36,16 +36,15 @@ type WordOfTheDayWithContent struct {
 // WordOfTheDayDisplay represents the simplified display format for word of the day
 // This is used for API responses and contains the essential information
 type WordOfTheDayDisplay struct {
-	Date           time.Time      `json:"date"`
-	Word           string         `json:"word"`
-	Translation    string         `json:"translation"`
-	Sentence       string         `json:"sentence"`
-	SourceType     WordSourceType `json:"source_type"`
-	SourceID       int            `json:"source_id"`
-	Language       string         `json:"language"`
-	Level          string         `json:"level,omitempty"`
-	Context        string         `json:"context,omitempty"`
-	Explanation    string         `json:"explanation,omitempty"`
-	TopicCategory  string         `json:"topic_category,omitempty"`
+	Date          time.Time      `json:"date"`
+	Word          string         `json:"word"`
+	Translation   string         `json:"translation"`
+	Sentence      string         `json:"sentence"`
+	SourceType    WordSourceType `json:"source_type"`
+	SourceID      int            `json:"source_id"`
+	Language      string         `json:"language"`
+	Level         string         `json:"level,omitempty"`
+	Context       string         `json:"context,omitempty"`
+	Explanation   string         `json:"explanation,omitempty"`
+	TopicCategory string         `json:"topic_category,omitempty"`
 }
-

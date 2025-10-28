@@ -3,6 +3,7 @@ package serviceinterfaces
 import (
 	"context"
 	"testing"
+	"time"
 
 	"quizapp/internal/models"
 
@@ -12,6 +13,7 @@ import (
 // MockEmailService implements EmailService for testing
 type MockEmailService struct {
 	SendDailyReminderCalled      bool
+	SendWordOfTheDayEmailCalled  bool
 	SendEmailCalled              bool
 	RecordSentNotificationCalled bool
 	IsEnabledResult              bool
@@ -19,6 +21,11 @@ type MockEmailService struct {
 
 func (m *MockEmailService) SendDailyReminder(_ context.Context, _ *models.User) error {
 	m.SendDailyReminderCalled = true
+	return nil
+}
+
+func (m *MockEmailService) SendWordOfTheDayEmail(_ context.Context, _ int, _ time.Time, _ *models.WordOfTheDayDisplay) error {
+	m.SendWordOfTheDayEmailCalled = true
 	return nil
 }
 

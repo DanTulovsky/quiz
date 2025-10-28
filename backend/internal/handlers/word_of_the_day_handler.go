@@ -355,4 +355,3 @@ func (h *WordOfTheDayHandler) renderEmbedHTML(word *models.WordOfTheDayDisplay) 
 
 	return buf.String()
 }
-

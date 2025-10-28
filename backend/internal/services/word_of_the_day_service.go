@@ -210,7 +210,12 @@ func (s *WordOfTheDayService) GetWordHistory(ctx context.Context, userID int, st
 		span.SetStatus(codes.Error, err.Error())
 		return nil, contextutils.WrapError(err, "failed to query word history")
 	}
-	defer rows.Close()
+	defer func() {
+		if closeErr := rows.Close(); closeErr != nil {
+			span.RecordError(closeErr, trace.WithStackTrace(true))
+			s.logger.Warn(ctx, "Failed to close rows", map[string]interface{}{"error": closeErr.Error()})
+		}
+	}()
 
 	var words []*models.WordOfTheDay
 	for rows.Next() {
@@ -413,7 +418,6 @@ func (s *WordOfTheDayService) saveWordOfTheDay(ctx context.Context, word *models
 		word.SourceID,
 		time.Now(),
 	).Scan(&word.ID)
-
 	if err != nil {
 		return contextutils.WrapError(err, "failed to insert word of the day")
 	}
@@ -432,7 +436,8 @@ func (s *WordOfTheDayService) convertToDisplay(ctx context.Context, word *models
 		SourceID:   word.SourceID,
 	}
 
-	if word.SourceType == models.WordSourceVocabularyQuestion {
+	switch word.SourceType {
+	case models.WordSourceVocabularyQuestion:
 		question, err := s.getQuestionByID(ctx, word.SourceID)
 		if err != nil {
 			span.RecordError(err, trace.WithStackTrace(true))
@@ -459,7 +464,7 @@ func (s *WordOfTheDayService) convertToDisplay(ctx context.Context, word *models
 		display.Explanation = question.Explanation
 		display.TopicCategory = question.TopicCategory
 
-	} else if word.SourceType == models.WordSourceSnippet {
+	case models.WordSourceSnippet:
 		snippet, err := s.getSnippetByID(ctx, word.SourceID)
 		if err != nil {
 			span.RecordError(err, trace.WithStackTrace(true))
@@ -543,7 +548,6 @@ func (s *WordOfTheDayService) getQuestionByID(ctx context.Context, questionID in
 		&question.DifficultyModifier,
 		&question.TimeContext,
 	)
-
 	if err != nil {
 		return nil, contextutils.WrapError(err, "failed to query question")
 	}
@@ -584,7 +588,6 @@ func (s *WordOfTheDayService) getSnippetByID(ctx context.Context, snippetID int)
 		&snippet.CreatedAt,
 		&snippet.UpdatedAt,
 	)
-
 	if err != nil {
 		return nil, contextutils.WrapError(err, "failed to query snippet")
 	}

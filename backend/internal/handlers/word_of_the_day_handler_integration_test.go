@@ -249,7 +249,7 @@ func (suite *WordOfTheDayIntegrationTestSuite) TestGetWordHistory() {
 
 	var response struct {
 		Words []*models.WordOfTheDayDisplay `json:"words"`
-		Count int                            `json:"count"`
+		Count int                           `json:"count"`
 	}
 	err := json.Unmarshal(w.Body.Bytes(), &response)
 	require.NoError(suite.T(), err)
