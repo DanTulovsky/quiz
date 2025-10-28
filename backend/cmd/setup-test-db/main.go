@@ -220,6 +220,27 @@ type TestSnippets struct {
 	} `yaml:"snippets"`
 }
 
+// TestFeedbackData represents feedback data for E2E tests
+type TestFeedbackData struct {
+	ID           int                    `json:"id"`
+	Username     string                 `json:"username"`
+	FeedbackText string                 `json:"feedback_text"`
+	FeedbackType string                 `json:"feedback_type"`
+	Status       string                 `json:"status"`
+	ContextData  map[string]interface{} `json:"context_data"`
+}
+
+// TestFeedback represents a collection of test feedback
+type TestFeedback struct {
+	FeedbackReports []struct {
+		Username     string                 `yaml:"username"`
+		FeedbackText string                 `yaml:"feedback_text"`
+		FeedbackType string                 `yaml:"feedback_type"`
+		Status       string                 `yaml:"status"`
+		ContextData  map[string]interface{} `yaml:"context_data"`
+	} `yaml:"feedback_reports"`
+}
+
 func resetTestDatabase(databaseURL, testDB string, logger *observability.Logger) error {
 	ctx := context.Background()
 
@@ -488,6 +509,17 @@ func setupTestData(ctx context.Context, rootDir string, userService *services.Us
 	// Output conversation data for E2E tests
 	if err := outputConversationDataForTests(conversations, rootDir, logger); err != nil {
 		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to output conversation data: %w", err)
+	}
+
+	// 10. Load and create feedback reports
+	feedback, err := loadAndCreateFeedback(ctx, filepath.Join(dataDir, "test_feedback.yaml"), users, db, logger)
+	if err != nil {
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup feedback: %w", err)
+	}
+
+	// Output feedback data for E2E tests
+	if err := outputFeedbackDataForTests(feedback, rootDir, logger); err != nil {
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to output feedback data: %w", err)
 	}
 
 	return users, nil
@@ -1507,6 +1539,108 @@ func outputConversationDataForTests(conversations map[string]TestConversationDat
 	logger.Info(context.Background(), "Output conversations data for E2E tests", map[string]interface{}{
 		"file_path":           outputPath,
 		"conversations_count": len(conversations),
+	})
+
+	return nil
+}
+
+// loadAndCreateFeedback loads and creates feedback reports from test data
+func loadAndCreateFeedback(ctx context.Context, filePath string, users map[string]*models.User, db *sql.DB, logger *observability.Logger) (map[string]TestFeedbackData, error) {
+	feedback := make(map[string]TestFeedbackData)
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		// Feedback file is optional, so just return if it doesn't exist
+		logger.Info(ctx, "Feedback file not found, skipping", map[string]interface{}{
+			"file_path": filePath,
+		})
+		return feedback, nil
+	}
+
+	var testFeedback TestFeedback
+	if err := yaml.Unmarshal(data, &testFeedback); err != nil {
+		return feedback, contextutils.WrapError(err, "failed to parse feedback data")
+	}
+
+	for i, feedbackData := range testFeedback.FeedbackReports {
+		user, exists := users[feedbackData.Username]
+		if !exists {
+			return feedback, contextutils.ErrorWithContextf("user not found for feedback: %s", feedbackData.Username)
+		}
+
+		// Default values
+		feedbackType := feedbackData.FeedbackType
+		if feedbackType == "" {
+			feedbackType = "general"
+		}
+		status := feedbackData.Status
+		if status == "" {
+			status = "new"
+		}
+
+		// Marshal context_data to JSON
+		contextJSON, err := json.Marshal(feedbackData.ContextData)
+		if err != nil {
+			return feedback, contextutils.WrapErrorf(err, "failed to marshal context_data for feedback %d", i)
+		}
+
+		// Insert feedback directly into database
+		var feedbackID int
+		err = db.QueryRow(`
+			INSERT INTO feedback_reports (user_id, feedback_text, feedback_type, context_data, status, created_at, updated_at)
+			VALUES ($1, $2, $3, $4, $5, NOW(), NOW())
+			RETURNING id
+		`, user.ID, feedbackData.FeedbackText, feedbackType, contextJSON, status).Scan(&feedbackID)
+		if err != nil {
+			return feedback, contextutils.WrapErrorf(err, "failed to insert feedback %d", i)
+		}
+
+		// Store feedback data for test output
+		feedbackKey := fmt.Sprintf("%s_%d", feedbackData.Username, i)
+		feedback[feedbackKey] = TestFeedbackData{
+			ID:           feedbackID,
+			Username:     feedbackData.Username,
+			FeedbackText: feedbackData.FeedbackText,
+			FeedbackType: feedbackType,
+			Status:       status,
+			ContextData:  feedbackData.ContextData,
+		}
+
+		logger.Info(ctx, "Created test feedback", map[string]interface{}{
+			"username":      feedbackData.Username,
+			"feedback_id":   feedbackID,
+			"status":        status,
+			"feedback_type": feedbackType,
+		})
+	}
+
+	return feedback, nil
+}
+
+// outputFeedbackDataForTests outputs the created feedback data to a JSON file for E2E tests to read
+func outputFeedbackDataForTests(feedback map[string]TestFeedbackData, rootDir string, logger *observability.Logger) error {
+	// Write to JSON file in the frontend/tests directory
+	outputPath := filepath.Join(rootDir, "..", "frontend", "tests", "test-feedback.json")
+
+	// Ensure the directory exists
+	outputDir := filepath.Dir(outputPath)
+	if err := os.MkdirAll(outputDir, 0o755); err != nil {
+		return contextutils.WrapErrorf(err, "failed to create output directory: %s", outputDir)
+	}
+
+	// Marshal to JSON with pretty printing
+	jsonData, err := json.MarshalIndent(feedback, "", "  ")
+	if err != nil {
+		return contextutils.WrapErrorf(err, "failed to marshal feedback data to JSON")
+	}
+
+	// Write to file
+	if err := os.WriteFile(outputPath, jsonData, 0o644); err != nil {
+		return contextutils.WrapErrorf(err, "failed to write feedback data to file: %s", outputPath)
+	}
+
+	logger.Info(context.Background(), "Output feedback data for E2E tests", map[string]interface{}{
+		"file_path":      outputPath,
+		"feedback_count": len(feedback),
 	})
 
 	return nil

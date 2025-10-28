@@ -1,0 +1,36 @@
+feedback_reports:
+  - username: "apitestuser"
+    feedback_text: "This is a resolved feedback item for testing"
+    feedback_type: "bug"
+    status: "resolved"
+    context_data:
+      page: "/test-page"
+      action: "test-action"
+
+  - username: "apitestuser"
+    feedback_text: "Another resolved feedback for deletion testing"
+    feedback_type: "general"
+    status: "resolved"
+    context_data:
+      page: "/another-page"
+
+  - username: "apitestuser"
+    feedback_text: "Active feedback that should not be deleted"
+    feedback_type: "feature_request"
+    status: "new"
+    context_data:
+      page: "/feature-page"
+
+  - username: "apitestuser"
+    feedback_text: "In progress feedback"
+    feedback_type: "improvement"
+    status: "in_progress"
+    context_data:
+      page: "/improvement-page"
+
+  - username: "apitestadmin"
+    feedback_text: "Admin's feedback report"
+    feedback_type: "bug"
+    status: "resolved"
+    context_data:
+      page: "/admin-page"

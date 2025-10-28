@@ -422,3 +422,230 @@ func (suite *FeedbackIntegrationTestSuite) TestUpdateFeedback_NonAdmin() {
 
 	assert.Equal(suite.T(), http.StatusForbidden, w.Code)
 }
+
+func (suite *FeedbackIntegrationTestSuite) TestSubmitFeedback_InvalidJSON_Returns400() {
+	// Login to get session cookie
+	cookie := suite.login()
+
+	// Test with invalid JSON - number instead of string for feedback_text
+	w := httptest.NewRecorder()
+	reqBody := map[string]interface{}{
+		"feedback_text": 789, // Should be a string, not a number
+	}
+	jsonBody, _ := json.Marshal(reqBody)
+	req, _ := http.NewRequest("POST", "/v1/feedback", bytes.NewBuffer(jsonBody))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Cookie", cookie)
+
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusBadRequest, w.Code, "Should return 400 for invalid JSON type")
+	var response map[string]interface{}
+	err := json.Unmarshal(w.Body.Bytes(), &response)
+	require.NoError(suite.T(), err)
+	assert.Equal(suite.T(), "INVALID_INPUT", response["code"])
+}
+
+func (suite *FeedbackIntegrationTestSuite) TestSubmitFeedback_MissingRequiredField_Returns400() {
+	// Login to get session cookie
+	cookie := suite.login()
+
+	// Test with missing required feedback_text field
+	w := httptest.NewRecorder()
+	reqBody := map[string]interface{}{
+		"feedback_type": "bug",
+		// feedback_text is missing
+	}
+	jsonBody, _ := json.Marshal(reqBody)
+	req, _ := http.NewRequest("POST", "/v1/feedback", bytes.NewBuffer(jsonBody))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Cookie", cookie)
+
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusBadRequest, w.Code, "Should return 400 for missing required field")
+}
+
+func (suite *FeedbackIntegrationTestSuite) TestDeleteFeedbackByStatus_MissingStatus_Returns400() {
+	// Create admin user and login
+	admin, err := suite.userService.CreateUserWithPassword(context.Background(), "admin_delete", "adminpass", "english", "A1")
+	require.NoError(suite.T(), err)
+
+	// Assign admin role
+	err = suite.userService.AssignRoleByName(context.Background(), admin.ID, "admin")
+	require.NoError(suite.T(), err)
+
+	// Login as admin
+	loginReq := api.LoginRequest{
+		Username: "admin_delete",
+		Password: "adminpass",
+	}
+	loginBody, _ := json.Marshal(loginReq)
+	loginW := httptest.NewRecorder()
+	loginReqHTTP, _ := http.NewRequest("POST", "/v1/auth/login", bytes.NewBuffer(loginBody))
+	loginReqHTTP.Header.Set("Content-Type", "application/json")
+	suite.Router.ServeHTTP(loginW, loginReqHTTP)
+	adminCookie := loginW.Result().Header.Get("Set-Cookie")
+
+	// Try to delete without status parameter
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("DELETE", "/v1/admin/backend/feedback", nil)
+	req.Header.Set("Cookie", adminCookie)
+
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusBadRequest, w.Code, "Should return 400 for missing status parameter")
+	var response map[string]interface{}
+	err = json.Unmarshal(w.Body.Bytes(), &response)
+	require.NoError(suite.T(), err)
+	assert.Equal(suite.T(), "MISSING_REQUIRED_FIELD", response["code"])
+}
+
+func (suite *FeedbackIntegrationTestSuite) TestDeleteFeedbackByStatus_WithStatus_Returns200() {
+	// Submit some feedback with resolved status
+	cookie := suite.login()
+
+	// Create feedback service to directly set status
+	feedbackService := services.NewFeedbackService(suite.db, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+
+	w1 := httptest.NewRecorder()
+	reqBody := map[string]interface{}{
+		"feedback_text": "Test feedback for deletion",
+		"feedback_type": "bug",
+	}
+	jsonBody, _ := json.Marshal(reqBody)
+	req1, _ := http.NewRequest("POST", "/v1/feedback", bytes.NewBuffer(jsonBody))
+	req1.Header.Set("Content-Type", "application/json")
+	req1.Header.Set("Cookie", cookie)
+	suite.Router.ServeHTTP(w1, req1)
+
+	var createResponse map[string]interface{}
+	err := json.Unmarshal(w1.Body.Bytes(), &createResponse)
+	require.NoError(suite.T(), err)
+	feedbackID := int(createResponse["id"].(float64))
+
+	// Update status to resolved
+	_, err = feedbackService.UpdateFeedback(context.Background(), feedbackID, map[string]interface{}{
+		"status": "resolved",
+	})
+	require.NoError(suite.T(), err)
+
+	// Create admin user and login
+	admin, err := suite.userService.CreateUserWithPassword(context.Background(), "admin_delete2", "adminpass", "english", "A1")
+	require.NoError(suite.T(), err)
+
+	// Assign admin role
+	err = suite.userService.AssignRoleByName(context.Background(), admin.ID, "admin")
+	require.NoError(suite.T(), err)
+
+	// Login as admin
+	loginReq := api.LoginRequest{
+		Username: "admin_delete2",
+		Password: "adminpass",
+	}
+	loginBody, _ := json.Marshal(loginReq)
+	loginW := httptest.NewRecorder()
+	loginReqHTTP, _ := http.NewRequest("POST", "/v1/auth/login", bytes.NewBuffer(loginBody))
+	loginReqHTTP.Header.Set("Content-Type", "application/json")
+	suite.Router.ServeHTTP(loginW, loginReqHTTP)
+	adminCookie := loginW.Result().Header.Get("Set-Cookie")
+
+	// Delete feedback by status
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("DELETE", "/v1/admin/backend/feedback?status=resolved", nil)
+	req.Header.Set("Cookie", adminCookie)
+
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusOK, w.Code, "Should return 200 when deleting feedback by status")
+	var response map[string]interface{}
+	err = json.Unmarshal(w.Body.Bytes(), &response)
+	require.NoError(suite.T(), err)
+	assert.Contains(suite.T(), response, "deleted_count")
+	assert.GreaterOrEqual(suite.T(), response["deleted_count"], float64(1))
+}
+
+func (suite *FeedbackIntegrationTestSuite) TestGetFeedback_ByID_Success() {
+	// Submit feedback
+	cookie := suite.login()
+	w1 := httptest.NewRecorder()
+	reqBody := map[string]interface{}{
+		"feedback_text": "Test feedback for get",
+		"feedback_type": "bug",
+	}
+	jsonBody, _ := json.Marshal(reqBody)
+	req1, _ := http.NewRequest("POST", "/v1/feedback", bytes.NewBuffer(jsonBody))
+	req1.Header.Set("Content-Type", "application/json")
+	req1.Header.Set("Cookie", cookie)
+	suite.Router.ServeHTTP(w1, req1)
+
+	var createResponse map[string]interface{}
+	err := json.Unmarshal(w1.Body.Bytes(), &createResponse)
+	require.NoError(suite.T(), err)
+	feedbackID := int(createResponse["id"].(float64))
+
+	// Create admin user and login
+	admin, err := suite.userService.CreateUserWithPassword(context.Background(), "admin_get", "adminpass", "english", "A1")
+	require.NoError(suite.T(), err)
+
+	// Assign admin role
+	err = suite.userService.AssignRoleByName(context.Background(), admin.ID, "admin")
+	require.NoError(suite.T(), err)
+
+	// Login as admin
+	loginReq := api.LoginRequest{
+		Username: "admin_get",
+		Password: "adminpass",
+	}
+	loginBody, _ := json.Marshal(loginReq)
+	loginW := httptest.NewRecorder()
+	loginReqHTTP, _ := http.NewRequest("POST", "/v1/auth/login", bytes.NewBuffer(loginBody))
+	loginReqHTTP.Header.Set("Content-Type", "application/json")
+	suite.Router.ServeHTTP(loginW, loginReqHTTP)
+	adminCookie := loginW.Result().Header.Get("Set-Cookie")
+
+	// Get feedback by ID
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", fmt.Sprintf("/v1/admin/backend/feedback/%d", feedbackID), nil)
+	req.Header.Set("Cookie", adminCookie)
+
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusOK, w.Code, "Should return 200 for valid feedback ID")
+	var response map[string]interface{}
+	err = json.Unmarshal(w.Body.Bytes(), &response)
+	require.NoError(suite.T(), err)
+	assert.Equal(suite.T(), float64(feedbackID), response["id"])
+	assert.Equal(suite.T(), "Test feedback for get", response["feedback_text"])
+}
+
+func (suite *FeedbackIntegrationTestSuite) TestGetFeedback_ByID_NotFound_Returns404() {
+	// Create admin user and login
+	admin, err := suite.userService.CreateUserWithPassword(context.Background(), "admin_get2", "adminpass", "english", "A1")
+	require.NoError(suite.T(), err)
+
+	// Assign admin role
+	err = suite.userService.AssignRoleByName(context.Background(), admin.ID, "admin")
+	require.NoError(suite.T(), err)
+
+	// Login as admin
+	loginReq := api.LoginRequest{
+		Username: "admin_get2",
+		Password: "adminpass",
+	}
+	loginBody, _ := json.Marshal(loginReq)
+	loginW := httptest.NewRecorder()
+	loginReqHTTP, _ := http.NewRequest("POST", "/v1/auth/login", bytes.NewBuffer(loginBody))
+	loginReqHTTP.Header.Set("Content-Type", "application/json")
+	suite.Router.ServeHTTP(loginW, loginReqHTTP)
+	adminCookie := loginW.Result().Header.Get("Set-Cookie")
+
+	// Try to get non-existent feedback
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/v1/admin/backend/feedback/999999", nil)
+	req.Header.Set("Cookie", adminCookie)
+
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusNotFound, w.Code, "Should return 404 for non-existent feedback ID")
+}

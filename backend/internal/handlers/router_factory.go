@@ -368,6 +368,7 @@ func NewRouter(
 				backend.GET("", adminHandler.GetBackendAdminPage)
 				// Feedback management (admin only)
 				backend.GET("/feedback", feedbackHandler.ListFeedback)
+				backend.GET("/feedback/:id", feedbackHandler.GetFeedback)
 				backend.PATCH("/feedback/:id", feedbackHandler.UpdateFeedback)
 				backend.DELETE("/feedback/:id", feedbackHandler.DeleteFeedback)
 				backend.DELETE("/feedback", func(c *gin.Context) {

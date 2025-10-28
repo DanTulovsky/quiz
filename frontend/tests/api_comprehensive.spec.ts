@@ -134,6 +134,19 @@ interface TestStoriesData {
   [storyKey: string]: TestStoryData;
 }
 
+interface TestFeedbackData {
+  id: number;
+  username: string;
+  feedback_text: string;
+  feedback_type: string;
+  status: string;
+  context_data: Record<string, any>;
+}
+
+interface TestFeedbackDataCollection {
+  [feedbackKey: string]: TestFeedbackData;
+}
+
 
 /**
  * Comprehensive API E2E tests that dynamically build test cases from swagger.yaml
@@ -150,6 +163,7 @@ test.describe('Comprehensive API Tests', () => {
   let testRolesData: TestRolesData;
   let testConversationsData: TestConversationsData;
   let testStoriesData: TestStoriesData;
+  let testFeedbackData: TestFeedbackDataCollection;
 
   test.beforeAll(async () => {
     // Load swagger.yaml
@@ -216,6 +230,24 @@ test.describe('Comprehensive API Tests', () => {
       }
     } else {
       throw new Error('test-stories.json not found');
+    }
+
+    // Load feedback data
+    const feedbackPath = path.join(path.dirname(fileURLToPath(import.meta.url)), 'test-feedback.json');
+
+    if (fs.existsSync(feedbackPath)) {
+      try {
+        const feedbackContent = fs.readFileSync(feedbackPath, 'utf8');
+        testFeedbackData = JSON.parse(feedbackContent);
+        console.log(`Loaded ${Object.keys(testFeedbackData).length} feedback reports from test data`);
+      } catch (error) {
+        // Feedback data is optional, warn but don't fail
+        console.warn('Error loading feedback data:', error);
+        testFeedbackData = {};
+      }
+    } else {
+      console.warn('test-feedback.json not found, skipping feedback data');
+      testFeedbackData = {};
     }
 
     // Initialize available user IDs
@@ -610,7 +642,7 @@ test.describe('Comprehensive API Tests', () => {
       }
       if (prop.format === 'uuid') {
         // Generate a valid UUID for UUID format strings
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
           const r = Math.random() * 16 | 0;
           const v = c === 'x' ? r : (r & 0x3 | 0x8);
           return v.toString(16);
@@ -925,6 +957,13 @@ test.describe('Comprehensive API Tests', () => {
         } else if (param.name === 'date') {
           // Use the seeded test date for single-date queries
           queryParams[param.name] = '2025-08-04';
+        } else if (param.name === 'status') {
+          // Use a valid status value from the enum
+          if (param.schema?.enum && param.schema.enum.length > 0) {
+            queryParams[param.name] = param.schema.enum[0];
+          } else {
+            queryParams[param.name] = 'resolved';
+          }
         }
       }
     }
@@ -932,89 +971,90 @@ test.describe('Comprehensive API Tests', () => {
     return queryParams;
   }
 
-// Track available user IDs from test data
-let availableUserIds: number[] = [];
-let availableQuestionIds: number[] = [];
-let availableStoryIds: number[] = [];
-let availableSectionIds: number[] = [];
-let availableSnippetIds: number[] = [];
-let deletedConversationIds: Set<string> = new Set();
-let deletedStoryIds: Set<number> = new Set();
-let deletedSnippetIds: Set<number> = new Set();
+  // Track available user IDs from test data
+  let availableUserIds: number[] = [];
+  let availableQuestionIds: number[] = [];
+  let availableStoryIds: number[] = [];
+  let availableSectionIds: number[] = [];
+  let availableSnippetIds: number[] = [];
+  let deletedConversationIds: Set<string> = new Set();
+  let deletedStoryIds: Set<number> = new Set();
+  let deletedSnippetIds: Set<number> = new Set();
+  let deletedFeedbackIds: Set<number> = new Set();
 
-// Helper function to get stories from database for a specific user
-async function getStoriesFromDatabase(username?: string, request?: any): Promise<Array<{id: number, status: string}>> {
-  if (!request) {
-    console.log(`❌ No request object provided for database query`);
-    return [];
-  }
-
-  try {
-    const baseURL = process.env.TEST_BASE_URL || 'http://localhost:3001';
-
-    // Get user ID for the username
-    let userId = null;
-    if (username) {
-      const userDataPath = path.join(process.cwd(), 'tests', 'test-users.json');
-      if (fs.existsSync(userDataPath)) {
-        const userDataContent = fs.readFileSync(userDataPath, 'utf8');
-        const userData = JSON.parse(userDataContent);
-        const user = Object.values(userData).find((u: any) => u.username === username) as any;
-        userId = user?.id;
-      }
-    }
-
-    if (!userId) {
-      console.log(`❌ Could not find user ID for username: ${username}`);
+  // Helper function to get stories from database for a specific user
+  async function getStoriesFromDatabase(username?: string, request?: any): Promise<Array<{id: number, status: string}>> {
+    if (!request) {
+      console.log(`❌ No request object provided for database query`);
       return [];
     }
 
-    // Query the database directly using the backend API (requires admin auth)
-    const adminSession = await loginUser(request, ADMIN_USER);
-    const response = await request.get(`${baseURL}/v1/admin/backend/stories?user_id=${userId}`, {
-      headers: {
-        'Cookie': adminSession
-      }
-    });
+    try {
+      const baseURL = process.env.TEST_BASE_URL || 'http://localhost:3001';
 
-    if (response.ok) {
-      const data = await response.json();
-      return data.stories || [];
-    } else {
-      console.log(`❌ Failed to fetch stories from database: ${response.status()}`);
+      // Get user ID for the username
+      let userId = null;
+      if (username) {
+        const userDataPath = path.join(process.cwd(), 'tests', 'test-users.json');
+        if (fs.existsSync(userDataPath)) {
+          const userDataContent = fs.readFileSync(userDataPath, 'utf8');
+          const userData = JSON.parse(userDataContent);
+          const user = Object.values(userData).find((u: any) => u.username === username) as any;
+          userId = user?.id;
+        }
+      }
+
+      if (!userId) {
+        console.log(`❌ Could not find user ID for username: ${username}`);
+        return [];
+      }
+
+      // Query the database directly using the backend API (requires admin auth)
+      const adminSession = await loginUser(request, ADMIN_USER);
+      const response = await request.get(`${baseURL}/v1/admin/backend/stories?user_id=${userId}`, {
+        headers: {
+          'Cookie': adminSession
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        return data.stories || [];
+      } else {
+        console.log(`❌ Failed to fetch stories from database: ${response.status()}`);
+        return [];
+      }
+    } catch (error) {
+      console.log(`❌ Error fetching stories from database: ${error}`);
       return [];
     }
-  } catch (error) {
-    console.log(`❌ Error fetching stories from database: ${error}`);
-    return [];
   }
-}
 
-// Helper function to find a conversation for a specific user
-function findConversationForUser(username: string): any {
-  if (!testConversationsData) {
-    console.warn(`No conversation data available for user ${username}`);
+  // Helper function to find a conversation for a specific user
+  function findConversationForUser(username: string): any {
+    if (!testConversationsData) {
+      console.warn(`No conversation data available for user ${username}`);
+      return null;
+    }
+
+    // Look for conversations belonging to this user
+    for (const [key, conversation] of Object.entries(testConversationsData)) {
+      if (conversation.username === username && !deletedConversationIds.has(conversation.id)) {
+        return conversation;
+      }
+    }
+
+    // If no conversation found for this specific user, try to find any non-deleted conversation
+    for (const [key, conversation] of Object.entries(testConversationsData)) {
+      if (!deletedConversationIds.has(conversation.id)) {
+        console.warn(`Using conversation ${conversation.id} for user ${username} (not their own conversation)`);
+        return conversation;
+      }
+    }
+
+    console.warn(`No available conversations found for user ${username}`);
     return null;
   }
-
-  // Look for conversations belonging to this user
-  for (const [key, conversation] of Object.entries(testConversationsData)) {
-    if (conversation.username === username && !deletedConversationIds.has(conversation.id)) {
-      return conversation;
-    }
-  }
-
-  // If no conversation found for this specific user, try to find any non-deleted conversation
-  for (const [key, conversation] of Object.entries(testConversationsData)) {
-    if (!deletedConversationIds.has(conversation.id)) {
-      console.warn(`Using conversation ${conversation.id} for user ${username} (not their own conversation)`);
-      return conversation;
-    }
-  }
-
-  console.warn(`No available conversations found for user ${username}`);
-  return null;
-}
 
   let userIdToUsername: Record<number, string> = {};
   let usernameToStoryIds: Record<string, number[]> = {};
@@ -1142,7 +1182,7 @@ function findConversationForUser(username: string): any {
       // Get admin session to list users and retrieve the actual ID
       const adminSession = await loginUser(request, ADMIN_USER);
       const resp = await request.get(`${baseURL}/v1/admin/backend/userz`, {
-        headers: { 'Cookie': adminSession }
+        headers: {'Cookie': adminSession}
       });
       if (resp.status() === 200) {
         const data = await resp.json();
@@ -1539,6 +1579,26 @@ function findConversationForUser(username: string): any {
     return userSections[0]; // Return the first section belonging to this user
   }
 
+  function getAvailableFeedbackId(): number {
+    // Get all feedback IDs from test data that haven't been deleted
+    const allFeedback = Object.values(testFeedbackData || {});
+    const availableFeedback = allFeedback.filter(feedback => !deletedFeedbackIds.has(feedback.id));
+
+    if (availableFeedback.length === 0) {
+      throw new Error('No available feedback IDs for testing. All feedback may have been deleted.');
+    }
+
+    // Prefer non-resolved feedback (less likely to be deleted by DELETE by status operations)
+    const nonResolvedFeedback = availableFeedback.filter(feedback => feedback.status !== 'resolved');
+    if (nonResolvedFeedback.length > 0) {
+      // Return the first non-resolved feedback ID
+      return nonResolvedFeedback[0].id;
+    }
+
+    // Fall back to any available feedback ID
+    return availableFeedback[0].id;
+  }
+
   function removeUserId(id: number) {
     availableUserIds = availableUserIds.filter(userId => userId !== id);
   }
@@ -1577,8 +1637,12 @@ function findConversationForUser(username: string): any {
     // console.log(`🔴 AFTER DELETION - Available snippet IDs: ${availableSnippetIds.join(', ')}`);
   }
 
+  function markFeedbackAsDeleted(feedbackId: number) {
+    deletedFeedbackIds.add(feedbackId);
+  }
+
   // Helper function to determine what type of ID we need and get the appropriate value
-  async function getReplacementId(pathString: string, paramKey: string, request: any, userContext?: {username: string; password: string}, method?: string, isErrorCase: boolean = false): Promise<{value: number | string; type: 'user' | 'question' | 'daily_user' | 'date' | 'role' | 'provider' | 'story' | 'conversation' | 'snippet' | 'section'}> {
+  async function getReplacementId(pathString: string, paramKey: string, request: any, userContext?: {username: string; password: string}, method?: string, isErrorCase: boolean = false): Promise<{value: number | string; type: 'user' | 'question' | 'daily_user' | 'date' | 'role' | 'provider' | 'story' | 'conversation' | 'snippet' | 'section' | 'feedback'}> {
     if (paramKey === 'userId') {
       return {value: getUserIdWithDailyAssignments(), type: 'daily_user'};
     }
@@ -1652,6 +1716,17 @@ function findConversationForUser(username: string): any {
 
     if (paramKey === 'id' || paramKey === 'conversationId') {
       // console.log(`🔍 GETTING REPLACEMENT ID for param: ${paramKey}, path: ${pathString}, method: ${method}, isErrorCase: ${isErrorCase}`);
+      // Check if this is a feedback-related endpoint
+      if (pathString.includes('/feedback/') && pathString.includes('/{id}')) {
+        // For error cases (like 404 tests), use a fake ID that doesn't exist
+        if (isErrorCase) {
+          return {value: 999999999, type: 'feedback'};
+        }
+        // Get an available feedback ID that hasn't been deleted
+        const feedbackId = getAvailableFeedbackId();
+        return {value: feedbackId, type: 'feedback'};
+      }
+
       // Check if this is a conversation-related endpoint
       if (pathString.includes('/conversations/') || pathString.includes('/ai/conversations/')) {
         // For error cases (like 404 tests), use a fake UUID that doesn't exist
@@ -1884,7 +1959,7 @@ function findConversationForUser(username: string): any {
 
     // For bookmark endpoints, we need to handle conversation_id and message_id dynamically
     if (testCase.path.includes('/conversations/bookmark')) {
-      const requestBody = { ...testCase.requestBody };
+      const requestBody = {...testCase.requestBody};
 
       // Replace conversation_id and message_id with actual values from test data
       if (requestBody.conversation_id) {
@@ -2353,6 +2428,8 @@ function findConversationForUser(username: string): any {
         if (!testCase.requiresAdmin) continue;
         // Skip story endpoints for admin users
         if (testCase.path.includes('/story')) continue;
+        // Skip destructive DELETE feedback by status - this is tested separately at the end
+        if (testCase.method === 'DELETE' && testCase.path === '/v1/admin/backend/feedback' && testCase.queryParams?.status) continue;
         const expandedPath = await replacePathParameters(testCase.path, testCase.pathParams, request, ADMIN_USER, testCase.method, false);
         if (isExcludedPath(expandedPath)) continue;
         adminCases.push(testCase);
@@ -2390,7 +2467,7 @@ function findConversationForUser(username: string): any {
         if (
           testCase.method === 'DELETE' &&
           (testCase.path.includes('/v1/admin/backend/userz/{id}/roles/{roleId}') ||
-           (path.includes('/v1/admin/backend/userz/') && path.includes('/roles/')))
+            (path.includes('/v1/admin/backend/userz/') && path.includes('/roles/')))
         ) {
           const match = path.match(/\/v1\/admin\/backend\/userz\/(\d+)\/roles\/(\d+)/);
           if (match) {
@@ -2654,7 +2731,7 @@ function findConversationForUser(username: string): any {
         if (
           testCase.method === 'DELETE' &&
           (testCase.path.includes('/v1/admin/backend/userz/{id}/roles/{roleId}') ||
-           (path.includes('/v1/admin/backend/userz/') && path.includes('/roles/')))
+            (path.includes('/v1/admin/backend/userz/') && path.includes('/roles/')))
         ) {
           const match = path.match(/\/v1\/admin\/backend\/userz\/(\d+)\/roles\/(\d+)/);
           if (match) {
@@ -2721,6 +2798,35 @@ function findConversationForUser(username: string): any {
             markSnippetAsDeleted(deletedSnippetId);
           } else {
             console.log(`❌ Could not extract snippet ID from path: ${endpointPath}`);
+          }
+        }
+
+        // Mark feedback as deleted if this was a successful DELETE by status operation
+        if (testCase.method === 'DELETE' && response.status() === 200 && endpointPath.includes('/feedback') && !endpointPath.includes('/feedback/')) {
+          // This is a DELETE by status operation
+          const responseData = await response.json();
+          if (responseData && responseData.deleted_count > 0) {
+            // Extract status from query params
+            const urlObj = new URL(url.toString());
+            const status = urlObj.searchParams.get('status');
+            if (status) {
+              // Mark all feedback with this status as deleted
+              Object.values(testFeedbackData).forEach(feedback => {
+                if (feedback.status === status && !deletedFeedbackIds.has(feedback.id)) {
+                  markFeedbackAsDeleted(feedback.id);
+                }
+              });
+            }
+          }
+        }
+
+        // Mark feedback as deleted if this was a successful DELETE by ID operation
+        if (testCase.method === 'DELETE' && response.status() === 200 && endpointPath.includes('/feedback/')) {
+          // Extract feedback ID from the URL
+          const feedbackMatch = endpointPath.match(/\/feedback\/(\d+)/);
+          if (feedbackMatch) {
+            const deletedFeedbackId = parseInt(feedbackMatch[1]);
+            markFeedbackAsDeleted(deletedFeedbackId);
           }
         }
 
@@ -2869,6 +2975,34 @@ function findConversationForUser(username: string): any {
       expect(publicEndpoints).toBeGreaterThan(0);
       expect(protectedEndpoints).toBeGreaterThan(0);
       expect(adminEndpoints).toBeGreaterThan(0);
+    });
+  });
+
+  test.describe('Admin Destructive Operations', () => {
+    test('should test DELETE feedback by status (destructive operation)', async ({request}) => {
+      const adminSession = await loginUser(request, ADMIN_USER);
+
+      // Test DELETE feedback by status - this deletes all feedback with the specified status
+      // We use 'resolved' status to avoid deleting feedback needed by other tests
+      const deleteResponse = await request.delete(`${baseURL}/v1/admin/backend/feedback?status=resolved`, {
+        headers: {
+          'Cookie': adminSession
+        }
+      });
+
+      expect(deleteResponse.status()).toBe(200);
+      const responseData = await deleteResponse.json();
+      expect(responseData).toHaveProperty('deleted_count');
+      expect(responseData.deleted_count).toBeGreaterThanOrEqual(0);
+
+      // Mark resolved feedback as deleted
+      Object.values(testFeedbackData).forEach(feedback => {
+        if (feedback.status === 'resolved') {
+          markFeedbackAsDeleted(feedback.id);
+        }
+      });
+
+      console.log(`✅ DELETE feedback by status tested (deleted ${responseData.deleted_count} feedback reports)`);
     });
   });
 

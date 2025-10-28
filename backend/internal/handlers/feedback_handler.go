@@ -111,7 +111,13 @@ func (h *FeedbackHandler) SubmitFeedback(c *gin.Context) {
 
 	var req FeedbackSubmissionRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		HandleAppError(c, contextutils.WrapError(err, "invalid request body"))
+		HandleAppError(c, contextutils.NewAppErrorWithCause(
+			contextutils.ErrorCodeInvalidInput,
+			contextutils.SeverityWarn,
+			"Invalid request body",
+			"",
+			err,
+		))
 		return
 	}
 
@@ -142,6 +148,31 @@ func (h *FeedbackHandler) SubmitFeedback(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, convertFeedbackToResponse(*created))
+}
+
+// GetFeedback handles GET /v1/admin/backend/feedback/:id.
+func (h *FeedbackHandler) GetFeedback(c *gin.Context) {
+	ctx, span := observability.TraceHandlerFunction(c.Request.Context(), "get_feedback")
+	defer observability.FinishSpan(span, nil)
+
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		HandleAppError(c, contextutils.ErrInvalidFormat)
+		return
+	}
+
+	feedback, err := h.feedbackService.GetFeedbackByID(ctx, id)
+	if err != nil {
+		if contextutils.IsError(err, contextutils.ErrRecordNotFound) {
+			HandleAppError(c, contextutils.ErrRecordNotFound)
+			return
+		}
+		h.logger.Error(ctx, "get feedback failed", err, nil)
+		HandleAppError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, convertFeedbackToResponse(*feedback))
 }
 
 // ListFeedback handles GET /v1/admin/feedback.
@@ -232,7 +263,7 @@ func (h *FeedbackHandler) DeleteFeedbackByStatus(c *gin.Context) {
 
 	status := c.Query("status")
 	if status == "" {
-		HandleAppError(c, contextutils.ErrorWithContextf("status parameter is required"))
+		HandleAppError(c, contextutils.ErrMissingRequired)
 		return
 	}
 
