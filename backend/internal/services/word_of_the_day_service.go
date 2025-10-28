@@ -330,7 +330,7 @@ func (s *WordOfTheDayService) selectSnippet(ctx context.Context, userID int, lan
 			  AND wotd.source_id = s.id
 			  AND wotd.assignment_date > $3
 		  )
-		ORDER BY 
+		ORDER BY
 		  CASE WHEN s.created_at > $4 THEN 0 ELSE 1 END,
 		  RANDOM()
 		LIMIT 1
@@ -514,8 +514,8 @@ func (s *WordOfTheDayService) getUserByID(ctx context.Context, userID int) (*mod
 // getQuestionByID retrieves a question by ID
 func (s *WordOfTheDayService) getQuestionByID(ctx context.Context, questionID int) (*models.Question, error) {
 	query := `
-		SELECT id, type, language, level, difficulty_score, content, correct_answer, 
-		       explanation, created_at, status, topic_category, grammar_focus, 
+		SELECT id, type, language, level, difficulty_score, content, correct_answer,
+		       explanation, created_at, status, topic_category, grammar_focus,
 		       vocabulary_domain, scenario, style_modifier, difficulty_modifier, time_context
 		FROM questions
 		WHERE id = $1
@@ -561,8 +561,8 @@ func (s *WordOfTheDayService) getQuestionByID(ctx context.Context, questionID in
 // getSnippetByID retrieves a snippet by ID
 func (s *WordOfTheDayService) getSnippetByID(ctx context.Context, snippetID int) (*models.Snippet, error) {
 	query := `
-		SELECT id, user_id, original_text, translated_text, source_language, 
-		       target_language, question_id, section_id, story_id, context, 
+		SELECT id, user_id, original_text, translated_text, source_language,
+		       target_language, question_id, section_id, story_id, context,
 		       difficulty_level, created_at, updated_at
 		FROM snippets
 		WHERE id = $1
@@ -591,4 +591,3 @@ func (s *WordOfTheDayService) getSnippetByID(ctx context.Context, snippetID int)
 
 	return &snippet, nil
 }
-

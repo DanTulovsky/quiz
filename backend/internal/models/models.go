@@ -11,21 +11,22 @@ import (
 
 // User represents a user in the system
 type User struct {
-	ID                int            `json:"id" yaml:"id"`
-	Username          string         `json:"username" yaml:"username"`
-	Email             sql.NullString `json:"email" yaml:"email"`
-	Timezone          sql.NullString `json:"timezone" yaml:"timezone"`
-	PasswordHash      sql.NullString `json:"-" yaml:"-"` // Omit from JSON responses
-	LastActive        sql.NullTime   `json:"last_active" yaml:"last_active"`
-	PreferredLanguage sql.NullString `json:"preferred_language" yaml:"preferred_language"`
-	CurrentLevel      sql.NullString `json:"current_level" yaml:"current_level"`
-	AIProvider        sql.NullString `json:"ai_provider" yaml:"ai_provider"`
-	AIModel           sql.NullString `json:"ai_model" yaml:"ai_model"`
-	AIEnabled         sql.NullBool   `json:"ai_enabled" yaml:"ai_enabled"`
-	AIAPIKey          sql.NullString `json:"-" yaml:"ai_api_key"` // Omit from JSON responses
-	CreatedAt         time.Time      `json:"created_at" yaml:"created_at"`
-	UpdatedAt         time.Time      `json:"updated_at" yaml:"updated_at"`
-	Roles             []Role         `json:"roles,omitempty" yaml:"roles,omitempty"`
+	ID                    int            `json:"id" yaml:"id"`
+	Username              string         `json:"username" yaml:"username"`
+	Email                 sql.NullString `json:"email" yaml:"email"`
+	Timezone              sql.NullString `json:"timezone" yaml:"timezone"`
+	PasswordHash          sql.NullString `json:"-" yaml:"-"` // Omit from JSON responses
+	LastActive            sql.NullTime   `json:"last_active" yaml:"last_active"`
+	PreferredLanguage     sql.NullString `json:"preferred_language" yaml:"preferred_language"`
+	CurrentLevel          sql.NullString `json:"current_level" yaml:"current_level"`
+	AIProvider            sql.NullString `json:"ai_provider" yaml:"ai_provider"`
+	AIModel               sql.NullString `json:"ai_model" yaml:"ai_model"`
+	AIEnabled             sql.NullBool   `json:"ai_enabled" yaml:"ai_enabled"`
+	AIAPIKey              sql.NullString `json:"-" yaml:"ai_api_key"` // Omit from JSON responses
+	WordOfDayEmailEnabled sql.NullBool   `json:"word_of_day_email_enabled" yaml:"word_of_day_email_enabled"`
+	CreatedAt             time.Time      `json:"created_at" yaml:"created_at"`
+	UpdatedAt             time.Time      `json:"updated_at" yaml:"updated_at"`
+	Roles                 []Role         `json:"roles,omitempty" yaml:"roles,omitempty"`
 }
 
 // Role represents a role in the system

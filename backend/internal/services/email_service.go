@@ -247,6 +247,8 @@ func (e *EmailService) generateEmailContent(templateName string, data map[string
 		return e.generateDailyReminderTemplate(data)
 	case "test_email":
 		return e.generateTestEmailTemplate(data)
+	case "word_of_the_day":
+		return e.generateWordOfTheDayTemplate(data)
 	default:
 		return "", contextutils.ErrorWithContextf("unknown template: %s", templateName)
 	}
@@ -352,4 +354,163 @@ func (e *EmailService) generateTestEmailTemplate(data map[string]interface{}) (s
 	}
 
 	return buf.String(), nil
+}
+
+// SendWordOfTheDayEmail sends a word of the day email to a user
+func (e *EmailService) SendWordOfTheDayEmail(ctx context.Context, userID int, date time.Time, wordOfTheDay *models.WordOfTheDayDisplay) (err error) {
+	ctx, span := otel.Tracer("email-service").Start(ctx, "SendWordOfTheDayEmail",
+		trace.WithAttributes(
+			attribute.Int("email.user_id", userID),
+			attribute.String("email.date", date.Format("2006-01-02")),
+		),
+	)
+	defer observability.FinishSpan(span, &err)
+
+	if !e.IsEnabled() {
+		e.logger.Info(ctx, "Email disabled, skipping word of the day email", map[string]interface{}{
+			"user_id": userID,
+			"date":    date.Format("2006-01-02"),
+		})
+		return nil
+	}
+
+	// Get user to check email preferences
+	user, err := e.getUserByID(ctx, userID)
+	if err != nil {
+		return contextutils.WrapError(err, "failed to get user")
+	}
+
+	if user == nil {
+		return contextutils.ErrorWithContextf("user not found: %d", userID)
+	}
+
+	// Check if user has email disabled for word of the day
+	if !user.WordOfDayEmailEnabled.Bool {
+		e.logger.Info(ctx, "User has word of the day emails disabled", map[string]interface{}{
+			"user_id": userID,
+		})
+		return nil
+	}
+
+	if !user.Email.Valid || user.Email.String == "" {
+		return contextutils.ErrorWithContextf("user has no email address")
+	}
+
+	// Prepare email data
+	data := map[string]interface{}{
+		"Username":       user.Username,
+		"Word":           wordOfTheDay.Word,
+		"Translation":    wordOfTheDay.Translation,
+		"Sentence":       wordOfTheDay.Sentence,
+		"Date":           date.Format("January 2, 2006"),
+		"Language":       wordOfTheDay.Language,
+		"Level":          wordOfTheDay.Level,
+		"Explanation":    wordOfTheDay.Explanation,
+		"QuizAppURL":     e.cfg.Server.AppBaseURL,
+		"UnsubscribeURL": fmt.Sprintf("%s/settings?tab=notifications", e.cfg.Server.AppBaseURL),
+	}
+
+	subject := fmt.Sprintf("Word of the Day: %s - %s", wordOfTheDay.Word, date.Format("January 2, 2006"))
+
+	return e.SendEmail(ctx, user.Email.String, subject, "word_of_the_day", data)
+}
+
+// generateWordOfTheDayTemplate generates the word of the day email template
+func (e *EmailService) generateWordOfTheDayTemplate(data map[string]interface{}) (string, error) {
+	const templateStr = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word of the Day</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px 20px; text-align: center; border-radius: 8px 8px 0 0; }
+        .content { background-color: #ffffff; padding: 30px; border: 1px solid #e0e0e0; border-top: none; }
+        .date { color: #667eea; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; }
+        .word { font-size: 48px; font-weight: bold; color: #1a1a1a; margin-bottom: 15px; line-height: 1.2; }
+        .translation { font-size: 24px; color: #667eea; margin-bottom: 25px; font-style: italic; }
+        .sentence { font-size: 18px; line-height: 1.8; color: #555; background: #f7f7f7; padding: 25px; border-radius: 8px; border-left: 4px solid #667eea; margin-bottom: 20px; font-style: italic; }
+        .explanation { font-size: 15px; color: #666; margin-top: 20px; padding: 20px; background: #fafafa; border-radius: 8px; border-left: 3px solid #764ba2; }
+        .meta { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+        .badge { background: #e0e7ff; color: #667eea; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .button { display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; margin: 20px 0; font-weight: 600; }
+        .footer { background-color: #f5f5f5; padding: 20px; text-align: center; font-size: 12px; color: #666; border-radius: 0 0 8px 8px; border: 1px solid #e0e0e0; border-top: none; }
+        .footer a { color: #667eea; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 style="margin: 0; font-size: 28px;">📚 Word of the Day</h1>
+        </div>
+        <div class="content">
+            <div class="date">{{.Date}}</div>
+            <div class="word">{{.Word}}</div>
+            <div class="translation">{{.Translation}}</div>
+            {{if .Sentence}}
+            <div class="sentence">{{.Sentence}}</div>
+            {{end}}
+            {{if .Explanation}}
+            <div class="explanation">{{.Explanation}}</div>
+            {{end}}
+            <div class="meta">
+                {{if .Language}}<span class="badge">{{.Language}}</span>{{end}}
+                {{if .Level}}<span class="badge">{{.Level}}</span>{{end}}
+            </div>
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="{{.QuizAppURL}}/word-of-day" class="button">View in App</a>
+            </div>
+        </div>
+        <div class="footer">
+            <p>This email was sent by Quiz App. If you no longer wish to receive word of the day emails, you can <a href="{{.UnsubscribeURL}}">update your preferences here</a>.</p>
+        </div>
+    </div>
+</body>
+</html>`
+
+	tmpl, err := template.New("word_of_the_day").Parse(templateStr)
+	if err != nil {
+		return "", contextutils.WrapError(err, "failed to parse template")
+	}
+
+	var buf strings.Builder
+	if err := tmpl.Execute(&buf, data); err != nil {
+		return "", contextutils.WrapError(err, "failed to execute template")
+	}
+
+	return buf.String(), nil
+}
+
+// getUserByID retrieves a user by ID (helper method)
+func (e *EmailService) getUserByID(ctx context.Context, userID int) (*models.User, error) {
+	if e.db == nil {
+		return nil, contextutils.ErrorWithContextf("database connection not available")
+	}
+
+	query := `
+		SELECT id, username, email, word_of_day_email_enabled
+		FROM users
+		WHERE id = $1
+	`
+
+	var user models.User
+	err := e.db.QueryRowContext(ctx, query, userID).Scan(
+		&user.ID,
+		&user.Username,
+		&user.Email,
+		&user.WordOfDayEmailEnabled,
+	)
+
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+
+	if err != nil {
+		return nil, contextutils.WrapError(err, "failed to query user")
+	}
+
+	return &user, nil
 }

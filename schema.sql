@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS users (
     ai_model VARCHAR(100),
     ai_enabled BOOLEAN DEFAULT FALSE,
     ai_api_key TEXT,
+    word_of_day_email_enabled BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
@@ -354,38 +355,34 @@ CREATE INDEX IF NOT EXISTS idx_story_sections_date ON story_sections(generation_
 CREATE INDEX IF NOT EXISTS idx_story_sections_generated_by ON story_sections(story_id, generated_by, generation_date);
 -- Story section questions table indexes
 CREATE INDEX IF NOT EXISTS idx_story_section_questions_section_id ON story_section_questions(section_id);
-
 -- Story section views table indexes
 CREATE INDEX IF NOT EXISTS idx_story_section_views_user_id ON story_section_views(user_id);
 CREATE INDEX IF NOT EXISTS idx_story_section_views_section_id ON story_section_views(section_id);
 CREATE INDEX IF NOT EXISTS idx_story_section_views_user_viewed ON story_section_views(user_id, viewed_at);
 CREATE INDEX IF NOT EXISTS idx_story_section_views_section_viewed ON story_section_views(section_id, viewed_at);
-
 -- AI Conversations table - stores saved AI conversations
 CREATE TABLE IF NOT EXISTS ai_conversations (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  title TEXT,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    title TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
-
 -- AI Chat Messages table - stores individual messages within AI conversations
 CREATE TABLE IF NOT EXISTS ai_chat_messages (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  conversation_id UUID NOT NULL REFERENCES ai_conversations(id) ON DELETE CASCADE,
-  question_id INTEGER NULL REFERENCES questions(id) ON DELETE SET NULL,
-  role TEXT NOT NULL CHECK (role IN ('user', 'assistant')),
-  answer_json JSONB NOT NULL,
-  bookmarked BOOLEAN DEFAULT FALSE,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    conversation_id UUID NOT NULL REFERENCES ai_conversations(id) ON DELETE CASCADE,
+    question_id INTEGER NULL REFERENCES questions(id) ON DELETE
+    SET NULL,
+        role TEXT NOT NULL CHECK (role IN ('user', 'assistant')),
+        answer_json JSONB NOT NULL,
+        bookmarked BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
-
 -- AI Conversations table indexes
 CREATE INDEX IF NOT EXISTS idx_ai_conversations_user_id ON ai_conversations(user_id);
 CREATE INDEX IF NOT EXISTS idx_ai_conversations_created_at ON ai_conversations(created_at);
-
 -- AI Chat Messages table indexes
 -- Note: user_id derived from ai_conversations via conversation_id relationship
 CREATE INDEX IF NOT EXISTS idx_ai_chat_messages_conversation_id ON ai_chat_messages(conversation_id);
@@ -393,7 +390,6 @@ CREATE INDEX IF NOT EXISTS idx_ai_chat_messages_question_id ON ai_chat_messages(
 CREATE INDEX IF NOT EXISTS idx_ai_chat_messages_bookmarked ON ai_chat_messages(bookmarked);
 CREATE INDEX IF NOT EXISTS idx_ai_chat_messages_conversation_created ON ai_chat_messages(conversation_id, created_at);
 CREATE INDEX IF NOT EXISTS idx_ai_chat_messages_conversation_question ON ai_chat_messages(conversation_id, question_id);
-
 -- Create materialized view for analytics performance
 CREATE MATERIALIZED VIEW IF NOT EXISTS user_performance_analytics AS
 SELECT u.id as user_id,
@@ -452,20 +448,19 @@ CREATE TABLE IF NOT EXISTS stories (
     tone TEXT,
     character_names TEXT,
     custom_instructions TEXT,
-    section_length_override VARCHAR(10) CHECK (section_length_override IN ('short', 'medium', 'long')),
+    section_length_override VARCHAR(10) CHECK (
+        section_length_override IN ('short', 'medium', 'long')
+    ),
     status VARCHAR(20) NOT NULL CHECK (status IN ('active', 'archived', 'completed')) DEFAULT 'active',
     auto_generation_paused BOOLEAN NOT NULL DEFAULT FALSE,
     last_section_generated_at TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
-
 -- Create partial unique index to ensure only one active story per user per language
 -- (This replaces the old is_current logic)
-CREATE UNIQUE INDEX IF NOT EXISTS unique_active_story_per_user_language
-ON stories (user_id, language)
+CREATE UNIQUE INDEX IF NOT EXISTS unique_active_story_per_user_language ON stories (user_id, language)
 WHERE status = 'active';
-
 -- Story sections table - stores individual sections of stories
 CREATE TABLE IF NOT EXISTS story_sections (
     id SERIAL PRIMARY KEY,
@@ -477,21 +472,21 @@ CREATE TABLE IF NOT EXISTS story_sections (
     generated_by VARCHAR(10) NOT NULL DEFAULT 'user' CHECK (generated_by IN ('worker', 'user')),
     generated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     generation_date DATE NOT NULL DEFAULT CURRENT_DATE,
-
     CONSTRAINT unique_story_section_number UNIQUE (story_id, section_number) DEFERRABLE INITIALLY DEFERRED
 );
-
 -- Story section questions table - stores comprehension questions for each section
 CREATE TABLE IF NOT EXISTS story_section_questions (
     id SERIAL PRIMARY KEY,
     section_id INTEGER NOT NULL REFERENCES story_sections(id) ON DELETE CASCADE,
     question_text TEXT NOT NULL,
     options JSONB NOT NULL,
-    correct_answer_index INTEGER NOT NULL CHECK (correct_answer_index >= 0 AND correct_answer_index <= 3),
+    correct_answer_index INTEGER NOT NULL CHECK (
+        correct_answer_index >= 0
+        AND correct_answer_index <= 3
+    ),
     explanation TEXT,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
-
 -- Story section views table - tracks when users view/read story sections
 CREATE TABLE IF NOT EXISTS story_section_views (
     id SERIAL PRIMARY KEY,
@@ -499,11 +494,9 @@ CREATE TABLE IF NOT EXISTS story_section_views (
     section_id INTEGER NOT NULL REFERENCES story_sections(id) ON DELETE CASCADE,
     viewed_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-
     -- Ensure one view per user per section (most recent view wins)
     UNIQUE(user_id, section_id)
 );
-
 -- Snippets table - stores user-saved words and phrases from translation lookups
 CREATE TABLE IF NOT EXISTS snippets (
     id SERIAL PRIMARY KEY,
@@ -512,79 +505,103 @@ CREATE TABLE IF NOT EXISTS snippets (
     translated_text TEXT NOT NULL,
     source_language VARCHAR(10) NOT NULL,
     target_language VARCHAR(10) NOT NULL,
-    question_id INTEGER REFERENCES questions(id) ON DELETE SET NULL,
-    context TEXT,
-    difficulty_level VARCHAR(20), -- CEFR level (A1, A2, B1, B2, C1, C2) or calculated level
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-
-    -- Ensure one snippet per user per original text (case-insensitive)
-    UNIQUE(user_id, original_text, source_language, target_language),
-
-    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
-    FOREIGN KEY (question_id) REFERENCES questions (id)
+    question_id INTEGER REFERENCES questions(id) ON DELETE
+    SET NULL,
+        context TEXT,
+        difficulty_level VARCHAR(20),
+        -- CEFR level (A1, A2, B1, B2, C1, C2) or calculated level
+        created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+        -- Ensure one snippet per user per original text (case-insensitive)
+        UNIQUE(
+            user_id,
+            original_text,
+            source_language,
+            target_language
+        ),
+        FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+        FOREIGN KEY (question_id) REFERENCES questions (id)
 );
-
 -- Usage stats table - tracks usage statistics for various services (translation, TTS, AI) by month
 CREATE TABLE IF NOT EXISTS usage_stats (
     id SERIAL PRIMARY KEY,
-    service_name VARCHAR(100) NOT NULL, -- e.g., 'google', 'azure', 'aws'
-    usage_type VARCHAR(50) NOT NULL,    -- e.g., 'translation', 'tts', 'ai_generation'
-    usage_month DATE NOT NULL,          -- First day of the month (YYYY-MM-01)
+    service_name VARCHAR(100) NOT NULL,
+    -- e.g., 'google', 'azure', 'aws'
+    usage_type VARCHAR(50) NOT NULL,
+    -- e.g., 'translation', 'tts', 'ai_generation'
+    usage_month DATE NOT NULL,
+    -- First day of the month (YYYY-MM-01)
     characters_used INTEGER NOT NULL DEFAULT 0,
     requests_made INTEGER NOT NULL DEFAULT 0,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-
     -- Ensure one record per service per usage type per month
     UNIQUE(service_name, usage_type, usage_month)
 );
-
 -- User usage stats table - tracks AI token usage per user per API key per day
 CREATE TABLE IF NOT EXISTS user_usage_stats (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    api_key_id INTEGER REFERENCES user_api_keys(id) ON DELETE SET NULL,
-    usage_date DATE NOT NULL,           -- Date of usage (YYYY-MM-DD)
-    usage_hour INTEGER CHECK (usage_hour >= 0 AND usage_hour <= 23), -- Hour of day (0-23)
-    service_name VARCHAR(100) NOT NULL, -- e.g., 'openai', 'anthropic'
-    provider VARCHAR(100) NOT NULL,     -- e.g., 'openai', 'anthropic'
-    model VARCHAR(100) NOT NULL,        -- e.g., 'gpt-4', 'claude-3'
-    usage_type VARCHAR(50) NOT NULL,    -- e.g., 'question_generation', 'chat', 'story'
-    -- Token usage
-    prompt_tokens INTEGER NOT NULL DEFAULT 0,
-    completion_tokens INTEGER NOT NULL DEFAULT 0,
-    total_tokens INTEGER NOT NULL DEFAULT 0,
-    -- Request count
-    requests_made INTEGER NOT NULL DEFAULT 0,
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-
-    -- Ensure one record per user per API key per date per hour per service per model per usage type
-    UNIQUE(user_id, api_key_id, usage_date, usage_hour, service_name, provider, model, usage_type)
+    api_key_id INTEGER REFERENCES user_api_keys(id) ON DELETE
+    SET NULL,
+        usage_date DATE NOT NULL,
+        -- Date of usage (YYYY-MM-DD)
+        usage_hour INTEGER CHECK (
+            usage_hour >= 0
+            AND usage_hour <= 23
+        ),
+        -- Hour of day (0-23)
+        service_name VARCHAR(100) NOT NULL,
+        -- e.g., 'openai', 'anthropic'
+        provider VARCHAR(100) NOT NULL,
+        -- e.g., 'openai', 'anthropic'
+        model VARCHAR(100) NOT NULL,
+        -- e.g., 'gpt-4', 'claude-3'
+        usage_type VARCHAR(50) NOT NULL,
+        -- e.g., 'question_generation', 'chat', 'story'
+        -- Token usage
+        prompt_tokens INTEGER NOT NULL DEFAULT 0,
+        completion_tokens INTEGER NOT NULL DEFAULT 0,
+        total_tokens INTEGER NOT NULL DEFAULT 0,
+        -- Request count
+        requests_made INTEGER NOT NULL DEFAULT 0,
+        created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+        -- Ensure one record per user per API key per date per hour per service per model per usage type
+        UNIQUE(
+            user_id,
+            api_key_id,
+            usage_date,
+            usage_hour,
+            service_name,
+            provider,
+            model,
+            usage_type
+        )
 );
-
 -- Create indexes for efficient queries on user_usage_stats table
 CREATE INDEX IF NOT EXISTS idx_snippets_user_id ON snippets(user_id);
 CREATE INDEX IF NOT EXISTS idx_snippets_user_created ON snippets(user_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_snippets_source_language ON snippets(source_language);
 CREATE INDEX IF NOT EXISTS idx_snippets_target_language ON snippets(target_language);
 CREATE INDEX IF NOT EXISTS idx_snippets_question_id ON snippets(question_id);
-CREATE INDEX IF NOT EXISTS idx_snippets_search_text ON snippets USING gin(to_tsvector('english', original_text || ' ' || translated_text));
-
+CREATE INDEX IF NOT EXISTS idx_snippets_search_text ON snippets USING gin(
+    to_tsvector(
+        'english',
+        original_text || ' ' || translated_text
+    )
+);
 -- Create indexes for efficient queries on usage_stats table
 CREATE INDEX IF NOT EXISTS idx_usage_stats_service_month ON usage_stats(service_name, usage_month);
 CREATE INDEX IF NOT EXISTS idx_usage_stats_usage_type ON usage_stats(usage_type);
 CREATE INDEX IF NOT EXISTS idx_usage_stats_month ON usage_stats(usage_month);
 CREATE INDEX IF NOT EXISTS idx_usage_stats_created_at ON usage_stats(created_at);
-
 -- Create indexes for efficient queries on user_usage_stats table
 CREATE INDEX IF NOT EXISTS idx_user_usage_stats_user_id ON user_usage_stats(user_id);
 CREATE INDEX IF NOT EXISTS idx_user_usage_stats_user_date ON user_usage_stats(user_id, usage_date);
 CREATE INDEX IF NOT EXISTS idx_user_usage_stats_date_hour ON user_usage_stats(usage_date, usage_hour);
 CREATE INDEX IF NOT EXISTS idx_user_usage_stats_service_provider ON user_usage_stats(service_name, provider);
 CREATE INDEX IF NOT EXISTS idx_user_usage_stats_api_key ON user_usage_stats(api_key_id);
-
 -- Translation cache table - caches translation results to reduce API calls
 CREATE TABLE IF NOT EXISTS translation_cache (
     id SERIAL PRIMARY KEY,
@@ -595,14 +612,9 @@ CREATE TABLE IF NOT EXISTS translation_cache (
     translated_text TEXT NOT NULL,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     expires_at TIMESTAMPTZ NOT NULL,
-
     UNIQUE(text_hash, source_language, target_language)
 );
-
 -- Create indexes for efficient lookup and cleanup
-CREATE INDEX IF NOT EXISTS idx_translation_cache_lookup
-    ON translation_cache(text_hash, source_language, target_language);
-CREATE INDEX IF NOT EXISTS idx_translation_cache_expires_at
-    ON translation_cache(expires_at);
-
+CREATE INDEX IF NOT EXISTS idx_translation_cache_lookup ON translation_cache(text_hash, source_language, target_language);
+CREATE INDEX IF NOT EXISTS idx_translation_cache_expires_at ON translation_cache(expires_at);
 -- Insert default roles and assign them to existing users via migration files

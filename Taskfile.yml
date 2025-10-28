@@ -952,7 +952,13 @@ tasks:
 
   start-dev:
     desc: "Start development instance (preserves data, builds locally)"
-    deps: [build-all-with-version, merge-config, generate-api-types, update-vite-proxy]
+    deps:
+      [
+        build-all-with-version,
+        merge-config,
+        generate-api-types,
+        update-vite-proxy,
+      ]
     env:
       DOCKER_BUILDKIT: 1
       COMPOSE_DOCKER_CLI_BUILD: 1
@@ -1461,7 +1467,13 @@ tasks:
 
   restart-dev-frontend:
     desc: "Rebuild and restart only the frontend Docker container (production)"
-    deps: [build-frontend-with-version, setup-cache-dirs, generate-api-types, generate-phrasebook-index]
+    deps:
+      [
+        build-frontend-with-version,
+        setup-cache-dirs,
+        generate-api-types,
+        generate-phrasebook-index,
+      ]
     env:
       DOCKER_BUILDKIT: 1
       COMPOSE_DOCKER_CLI_BUILD: 1
@@ -1471,6 +1483,13 @@ tasks:
       - echo "Restarting only the frontend container (dev)..."
       - docker compose up -d --no-deps frontend
       - echo "✅ Frontend container rebuilt and restarted (dev)."
+
+  restart-dev-otel-collector:
+    desc: "Rebuild and restart only the otel-collector Docker container (production)"
+    cmds:
+      - echo "Restarting only the otel-collector container (dev)..."
+      - docker compose restart otel-collector
+      - echo "✅ otel-collector container rebuilt and restarted (dev)."
 
   test-merge-config:
     desc: "Test merge-config.sh script logic"
