@@ -220,10 +220,13 @@ html {
 
 /* iOS text selection handling - prevent native popup while keeping text selection */
 .selectable-text,
-[data-selectable-text] {
+[data-selectable-text],
+.selectable-text *,
+[data-selectable-text] * {
   user-select: text !important;
   -webkit-user-select: text !important;
-  -webkit-touch-callout: none !important; /* Prevent iOS native popup */
+  -webkit-touch-callout: none !important;
+  /* Prevent iOS native popup */
   cursor: text;
 }
 
@@ -231,4 +234,39 @@ html {
 .selectable-text,
 [data-selectable-text] {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Additional iOS-specific fix: prevent native selection menu on all body text in mobile view */
+@media (max-width: 768px) {
+  body {
+    -webkit-touch-callout: none !important;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
+  }
+
+  /* Allow text selection but suppress native menu */
+  p,
+  span,
+  div,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  li,
+  td,
+  th {
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: text !important;
+    user-select: text !important;
+  }
+}
+
+/* iOS-specific: Temporarily disable user-select when touch ends to prevent native menu */
+@media (max-width: 768px) {
+  .selectable-text,
+  [data-selectable-text] {
+    -webkit-user-select: text !important;
+    user-select: text !important;
+  }
 }

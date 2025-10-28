@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { extract } from 'sentence-extractor';
 
 export interface TextSelection {
@@ -121,8 +121,23 @@ const extractSentence = (
 export const useTextSelection = () => {
   const [selection, setSelection] = useState<TextSelection | null>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const visibilityTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const savedSelectionRef = useRef<{
+    text: string;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    sentence?: string;
+  } | null>(null);
 
   const handleSelectionChange = useCallback(() => {
+    // Clear any pending visibility timeout
+    if (visibilityTimeoutRef.current) {
+      clearTimeout(visibilityTimeoutRef.current);
+      visibilityTimeoutRef.current = null;
+    }
+
     // Check if we're in the annotation modal - if so, don't show translation
     const annotationModal = document.querySelector(
       '[data-no-translate="true"]'
@@ -135,6 +150,16 @@ export const useTextSelection = () => {
     const sel = window.getSelection();
 
     if (!sel || sel.rangeCount === 0) {
+      // If selection is cleared but we have a saved one, use it
+      if (savedSelectionRef.current) {
+        setSelection(savedSelectionRef.current);
+        visibilityTimeoutRef.current = setTimeout(() => {
+          setIsVisible(true);
+          visibilityTimeoutRef.current = null;
+        }, 50);
+        return;
+      }
+
       // Don't hide popup if user is interacting with translation interface
       const isInteractingWithTranslation =
         document.querySelector('.translation-popup') &&
@@ -188,15 +213,25 @@ export const useTextSelection = () => {
       const x = rect.left + rect.width / 2; // Center of selection
       const y = rect.top - 10; // Slightly above selection
 
-      setSelection({
+      const selectionData = {
         text: selectedText,
         x: x,
         y: y,
         width: rect.width,
         height: rect.height,
         sentence: sentence,
-      });
-      setIsVisible(true);
+      };
+
+      setSelection(selectionData);
+
+      // Save selection in case iOS clears it
+      savedSelectionRef.current = selectionData;
+
+      // Add a slight delay before showing the popup to make it feel less jarring
+      visibilityTimeoutRef.current = setTimeout(() => {
+        setIsVisible(true);
+        visibilityTimeoutRef.current = null;
+      }, 50);
     } else {
       // Don't hide popup if user is interacting with translation interface
       const isInteractingWithTranslation =
@@ -218,19 +253,87 @@ export const useTextSelection = () => {
       debounceTimer = setTimeout(handleSelectionChange, 100);
     };
 
+    // Also listen to selectionchange for more reliable selection detection
+    const selectionChangeHandler = () => {
+      clearTimeout(debounceTimer);
+      // Check if there's actually a selection before handling
+      const sel = window.getSelection();
+      if (sel && sel.rangeCount > 0 && sel.toString().trim().length > 1) {
+        debounceTimer = setTimeout(handleSelectionChange, 100);
+      }
+    };
+
+    // For iOS: prevent native menu by temporarily disabling user-select
+    // Based on: https://github.com/react-native-webview/react-native-webview/issues/1117
+    // Solution: set userSelect to 'none' temporarily to prevent native menu
+    const preventNativeMenuOnTouch = (event: TouchEvent) => {
+      const target = event.target as Element;
+      if (
+        target.closest('[data-selectable-text]') ||
+        target.closest('.selectable-text')
+      ) {
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount > 0) {
+          // Prevent default FIRST to stop iOS from showing menu
+          event.preventDefault();
+          event.stopPropagation();
+
+          // Temporarily set user-select to none to prevent native menu
+          // This is the key solution from the GitHub issue
+          const selectableElements = document.querySelectorAll(
+            '.selectable-text, [data-selectable-text]'
+          );
+          selectableElements.forEach((el: Element) => {
+            const htmlEl = el as HTMLElement;
+            htmlEl.style.userSelect = 'none';
+            htmlEl.style.webkitUserSelect = 'none';
+          });
+
+          // Clear selection immediately
+          sel.removeAllRanges();
+
+          // Re-enable user-select after a short delay
+          setTimeout(() => {
+            selectableElements.forEach((el: Element) => {
+              const htmlEl = el as HTMLElement;
+              htmlEl.style.userSelect = '';
+              htmlEl.style.webkitUserSelect = '';
+            });
+          }, 100);
+
+          // Trigger our handler to show the popup
+          debouncedHandler();
+        }
+      }
+    };
+
     // Only listen to mouseup and touchend events so popup appears after
     // mouse button is released (desktop) or finger is lifted (mobile)
     document.addEventListener('mouseup', debouncedHandler);
-    document.addEventListener('touchend', debouncedHandler);
+    document.addEventListener('touchend', preventNativeMenuOnTouch, {
+      passive: false,
+    });
+    // Also listen to selectionchange for better iOS support
+    document.addEventListener('selectionchange', selectionChangeHandler);
 
     return () => {
       clearTimeout(debounceTimer);
       document.removeEventListener('mouseup', debouncedHandler);
-      document.removeEventListener('touchend', debouncedHandler);
+      document.removeEventListener('touchend', preventNativeMenuOnTouch);
+      document.removeEventListener('selectionchange', selectionChangeHandler);
     };
   }, [handleSelectionChange]);
 
   const clearSelection = useCallback(() => {
+    // Clear any pending visibility timeout
+    if (visibilityTimeoutRef.current) {
+      clearTimeout(visibilityTimeoutRef.current);
+      visibilityTimeoutRef.current = null;
+    }
+
+    // Clear saved selection
+    savedSelectionRef.current = null;
+
     // Clean up data attributes from previously selected elements
     const elementsWithTranslation = document.querySelectorAll(
       '[data-translation-enabled]'

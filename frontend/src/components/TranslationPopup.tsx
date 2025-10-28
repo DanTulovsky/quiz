@@ -116,10 +116,13 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
         target.closest('.selectable-text')
       ) {
         event.preventDefault();
+        event.stopPropagation();
       }
     };
 
-    document.addEventListener('contextmenu', handleContextMenu);
+    document.addEventListener('contextmenu', handleContextMenu, {
+      passive: false,
+    });
 
     return () => {
       document.removeEventListener('contextmenu', handleContextMenu);
