@@ -72,6 +72,11 @@ exporters:
       insecure: ${env:SIGNZ_OTEL_COLLECTOR_INSECURE}
     headers:
       Authorization: Bearer ${env:SIGNZ_OTEL_COLLECTOR_TOKEN}
+  otlphttp/coroot:
+    endpoint: ${env:COROOT_HOST}:${env:COROOT_PORT}
+    encoding: proto
+    headers:
+      "x-api-key": ${env:COROOT_API_KEY}
 
 service:
   telemetry:
@@ -83,14 +88,14 @@ service:
     traces:
       receivers: [otlp]
       processors: [batch, resourcedetection, attributes, resource/env]
-      exporters: [otlp]
+      exporters: [otlp, otlphttp/coroot]
     metrics:
       receivers: [otlp, prometheus, postgresql]
       processors: [batch, resourcedetection, attributes, resource/env]
-      exporters: [otlp]
+      exporters: [otlp, otlphttp/coroot]
     logs:
       receivers: [otlp]
       processors: [batch, resourcedetection, attributes, resource/env]
-      exporters: [otlp]
+      exporters: [otlp, otlphttp/coroot]
 
   extensions: [health_check, pprof, zpages]

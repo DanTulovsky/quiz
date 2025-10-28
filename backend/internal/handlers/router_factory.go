@@ -43,6 +43,7 @@ func NewRouter(
 	translationService services.TranslationServiceInterface,
 	snippetsService services.SnippetsServiceInterface,
 	usageStatsService services.UsageStatsServiceInterface,
+	wordOfTheDayService services.WordOfTheDayServiceInterface,
 	logger *observability.Logger,
 ) *gin.Engine {
 	// Setup Gin router
@@ -179,6 +180,7 @@ func NewRouter(
 	aiConversationHandler := NewAIConversationHandler(conversationService, cfg, logger)
 	translationHandler := NewTranslationHandler(translationService, cfg, logger)
 	snippetsHandler := NewSnippetsHandler(snippetsService, cfg, logger)
+	wordOfTheDayHandler := NewWordOfTheDayHandler(userService, wordOfTheDayService, cfg, logger)
 	adminHandler := NewAdminHandlerWithLogger(userService, questionService, aiService, cfg, learningService, workerService, logger, usageStatsService)
 	// Inject story service into admin handler via exported field
 	adminHandler.storyService = storyService
@@ -284,6 +286,15 @@ func NewRouter(
 			daily.GET("/dates", dailyQuestionHandler.GetAvailableDates)
 			daily.GET("/progress/:date", dailyQuestionHandler.GetDailyProgress)
 			// Note: Assignment is handled automatically by the worker
+		}
+
+		wordOfDay := v1.Group("/word-of-day")
+		{
+			// Protected endpoints requiring authentication
+			wordOfDay.GET("/:date", middleware.RequireAuth(), wordOfTheDayHandler.GetWordOfTheDay)
+			wordOfDay.GET("/history", middleware.RequireAuth(), wordOfTheDayHandler.GetWordOfTheDayHistory)
+			// Public embed endpoint (requires user_id query param)
+			wordOfDay.GET("/:date/embed", wordOfTheDayHandler.GetWordOfTheDayEmbed)
 		}
 
 		story := v1.Group("/story")

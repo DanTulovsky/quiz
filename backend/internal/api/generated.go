@@ -160,6 +160,12 @@ const (
 	TTSResponseTypeUsage TTSResponseType = "usage"
 )
 
+// Defines values for WordOfTheDayDisplaySourceType.
+const (
+	WordOfTheDayDisplaySourceTypeSnippet            WordOfTheDayDisplaySourceType = "snippet"
+	WordOfTheDayDisplaySourceTypeVocabularyQuestion WordOfTheDayDisplaySourceType = "vocabulary_question"
+)
+
 // Defines values for WorkerStatusStatus.
 const (
 	Busy  WorkerStatusStatus = "busy"
@@ -1677,6 +1683,45 @@ type UserUsageStatsHourly struct {
 	UsageType             *string `json:"usage_type,omitempty"`
 }
 
+// WordOfTheDayDisplay defines model for WordOfTheDayDisplay.
+type WordOfTheDayDisplay struct {
+	// Context Additional context for the word (primarily for snippets)
+	Context *string `json:"context"`
+
+	// Date Date for the word of the day (YYYY-MM-DD)
+	Date openapi_types.Date `json:"date"`
+
+	// Explanation Explanation of the word meaning or usage
+	Explanation *string `json:"explanation"`
+
+	// Language Source language of the word
+	Language string `json:"language"`
+
+	// Level CEFR difficulty level
+	Level *string `json:"level"`
+
+	// Sentence Example sentence using the word in context
+	Sentence string `json:"sentence"`
+
+	// SourceId ID of the source (question ID or snippet ID)
+	SourceId int64 `json:"source_id"`
+
+	// SourceType Source type of the word (from vocabulary question or user snippet)
+	SourceType WordOfTheDayDisplaySourceType `json:"source_type"`
+
+	// TopicCategory Topic category for the word
+	TopicCategory *string `json:"topic_category"`
+
+	// Translation English translation of the word
+	Translation string `json:"translation"`
+
+	// Word The word or phrase being featured
+	Word string `json:"word"`
+}
+
+// WordOfTheDayDisplaySourceType Source type of the word (from vocabulary question or user snippet)
+type WordOfTheDayDisplaySourceType string
+
 // WorkerHealth defines model for WorkerHealth.
 type WorkerHealth struct {
 	GlobalPaused    *bool `json:"global_paused,omitempty"`
@@ -2167,6 +2212,21 @@ type GetV1SnippetsSearchParams struct {
 type GetV1StoryParams struct {
 	// IncludeArchived Include archived stories in the response
 	IncludeArchived *bool `form:"include_archived,omitempty" json:"include_archived,omitempty"`
+}
+
+// GetV1WordOfDayHistoryParams defines parameters for GetV1WordOfDayHistory.
+type GetV1WordOfDayHistoryParams struct {
+	// StartDate Start date in YYYY-MM-DD format
+	StartDate openapi_types.Date `form:"start_date" json:"start_date"`
+
+	// EndDate End date in YYYY-MM-DD format
+	EndDate openapi_types.Date `form:"end_date" json:"end_date"`
+}
+
+// GetV1WordOfDayDateEmbedParams defines parameters for GetV1WordOfDayDateEmbed.
+type GetV1WordOfDayDateEmbedParams struct {
+	// UserId User ID for which to retrieve the word
+	UserId int `form:"user_id" json:"user_id"`
 }
 
 // PatchV1AdminBackendFeedbackIdJSONRequestBody defines body for PatchV1AdminBackendFeedbackId for application/json ContentType.

@@ -4602,6 +4602,156 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /v1/word-of-day/{date}:
+    get:
+      tags:
+        - Word of the Day
+      summary: Get word of the day
+      description: Retrieve the word of the day for a specific date. If not yet assigned, a new word will be automatically selected.
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: date
+          in: path
+          required: true
+          description: Date in YYYY-MM-DD format
+          schema:
+            type: string
+            format: date
+            pattern: '^\d{4}-\d{2}-\d{2}$'
+            example: "2025-10-28"
+      responses:
+        "200":
+          description: Word of the day retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WordOfTheDayDisplay"
+        "400":
+          description: Invalid date format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Failed to retrieve word of the day
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/word-of-day/{date}/embed:
+    get:
+      tags:
+        - Word of the Day
+      summary: Get embeddable word of the day HTML
+      description: Retrieve word of the day as HTML for embedding in an iframe. This is a public endpoint that requires user_id as a query parameter.
+      parameters:
+        - name: date
+          in: path
+          required: true
+          description: Date in YYYY-MM-DD format
+          schema:
+            type: string
+            format: date
+            pattern: '^\d{4}-\d{2}-\d{2}$'
+            example: "2025-10-28"
+        - name: user_id
+          in: query
+          required: true
+          description: User ID for which to retrieve the word
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          description: HTML page for embedding
+          content:
+            text/html:
+              schema:
+                type: string
+                description: HTML content for iframe embedding
+        "400":
+          description: Invalid date format or user ID
+          content:
+            text/html:
+              schema:
+                type: string
+        "500":
+          description: Failed to retrieve word of the day
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /v1/word-of-day/history:
+    get:
+      tags:
+        - Word of the Day
+      summary: Get word of the day history
+      description: Retrieve historical words of the day for a date range
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: start_date
+          in: query
+          required: true
+          description: Start date in YYYY-MM-DD format
+          schema:
+            type: string
+            format: date
+            pattern: '^\d{4}-\d{2}-\d{2}$'
+            example: "2025-10-01"
+        - name: end_date
+          in: query
+          required: true
+          description: End date in YYYY-MM-DD format
+          schema:
+            type: string
+            format: date
+            pattern: '^\d{4}-\d{2}-\d{2}$'
+            example: "2025-10-28"
+      responses:
+        "200":
+          description: Word history retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  words:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/WordOfTheDayDisplay"
+                  count:
+                    type: integer
+                    description: Number of words returned
+                    example: 28
+        "400":
+          description: Invalid date format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Failed to retrieve word history
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /v1/story:
     post:
       tags:
@@ -6282,6 +6432,67 @@ components:
         - date
         - completed
         - total
+
+    WordOfTheDayDisplay:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+          description: Date for the word of the day (YYYY-MM-DD)
+          example: "2025-10-28"
+        word:
+          type: string
+          description: The word or phrase being featured
+          example: "veloce"
+        translation:
+          type: string
+          description: English translation of the word
+          example: "fast"
+        sentence:
+          type: string
+          description: Example sentence using the word in context
+          example: "Il treno è molto veloce oggi."
+        source_type:
+          type: string
+          enum:
+            - vocabulary_question
+            - snippet
+          description: Source type of the word (from vocabulary question or user snippet)
+        source_id:
+          type: integer
+          format: int64
+          description: ID of the source (question ID or snippet ID)
+        language:
+          type: string
+          description: Source language of the word
+          example: "italian"
+        level:
+          type: string
+          nullable: true
+          description: CEFR difficulty level
+          example: "B1"
+        context:
+          type: string
+          nullable: true
+          description: Additional context for the word (primarily for snippets)
+        explanation:
+          type: string
+          nullable: true
+          description: Explanation of the word meaning or usage
+        topic_category:
+          type: string
+          nullable: true
+          description: Topic category for the word
+          example: "travel"
+      required:
+        - date
+        - word
+        - translation
+        - sentence
+        - source_type
+        - source_id
+        - language
 
     ErrorResponse:
       type: object

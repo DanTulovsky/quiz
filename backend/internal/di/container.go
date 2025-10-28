@@ -30,6 +30,7 @@ type ServiceContainerInterface interface {
 	GetTranslationService() (services.TranslationServiceInterface, error)
 	GetSnippetsService() (services.SnippetsServiceInterface, error)
 	GetUsageStatsService() (services.UsageStatsServiceInterface, error)
+	GetWordOfTheDayService() (services.WordOfTheDayServiceInterface, error)
 	GetDatabase() *sql.DB
 	GetConfig() *config.Config
 	GetLogger() *observability.Logger
@@ -192,6 +193,11 @@ func (sc *ServiceContainer) GetUsageStatsService() (services.UsageStatsServiceIn
 	return GetServiceAs[services.UsageStatsServiceInterface](sc, "usage_stats")
 }
 
+// GetWordOfTheDayService returns the word of the day service
+func (sc *ServiceContainer) GetWordOfTheDayService() (services.WordOfTheDayServiceInterface, error) {
+	return GetServiceAs[services.WordOfTheDayServiceInterface](sc, "word_of_the_day")
+}
+
 // GetDatabase returns the database instance
 func (sc *ServiceContainer) GetDatabase() *sql.DB {
 	return sc.db
@@ -321,6 +327,10 @@ func (sc *ServiceContainer) initializeServices(_ context.Context) {
 	// Initialize snippets service
 	snippetsService := services.NewSnippetsService(sc.db, sc.cfg, sc.logger)
 	sc.services["snippets"] = snippetsService
+
+	// Initialize word of the day service
+	wordOfTheDayService := services.NewWordOfTheDayService(sc.db, sc.logger)
+	sc.services["word_of_the_day"] = wordOfTheDayService
 
 	// Register shutdown functions
 	sc.shutdownFuncs = append(sc.shutdownFuncs,

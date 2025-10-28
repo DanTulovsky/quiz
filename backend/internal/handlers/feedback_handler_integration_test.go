@@ -91,6 +91,7 @@ func (suite *FeedbackIntegrationTestSuite) SetupSuite() {
 		translationService,
 		snippetsService,
 		usageStatsService,
+		services.NewWordOfTheDayService(db, logger),
 		logger,
 	)
 

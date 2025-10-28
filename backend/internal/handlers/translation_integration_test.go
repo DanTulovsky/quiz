@@ -88,6 +88,7 @@ func (suite *TranslationIntegrationTestSuite) SetupSuite() {
 		translationService,
 		snippetsService,
 		usageStatsService,
+		services.NewWordOfTheDayService(suite.DB, logger),
 		logger,
 	)
 }

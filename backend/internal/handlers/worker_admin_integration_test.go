@@ -90,6 +90,7 @@ func (suite *WorkerAdminIntegrationTestSuite) SetupSuite() {
 		translationService,
 		snippetsService,
 		usageStatsService,
+		services.NewWordOfTheDayService(suite.DB, logger),
 		logger,
 	)
 

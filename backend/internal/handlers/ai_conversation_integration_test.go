@@ -80,6 +80,7 @@ func (suite *AIConversationIntegrationTestSuite) SetupSuite() {
 		translationService,
 		snippetsService,
 		usageStatsService,
+		services.NewWordOfTheDayService(db, logger),
 		logger,
 	)
 
