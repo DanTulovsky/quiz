@@ -167,12 +167,20 @@ const (
 	Idle  WorkerStatusStatus = "idle"
 )
 
+// Defines values for DeleteV1AdminBackendFeedbackParamsStatus.
+const (
+	DeleteV1AdminBackendFeedbackParamsStatusDismissed  DeleteV1AdminBackendFeedbackParamsStatus = "dismissed"
+	DeleteV1AdminBackendFeedbackParamsStatusInProgress DeleteV1AdminBackendFeedbackParamsStatus = "in_progress"
+	DeleteV1AdminBackendFeedbackParamsStatusNew        DeleteV1AdminBackendFeedbackParamsStatus = "new"
+	DeleteV1AdminBackendFeedbackParamsStatusResolved   DeleteV1AdminBackendFeedbackParamsStatus = "resolved"
+)
+
 // Defines values for GetV1AdminBackendFeedbackParamsStatus.
 const (
-	Dismissed  GetV1AdminBackendFeedbackParamsStatus = "dismissed"
-	InProgress GetV1AdminBackendFeedbackParamsStatus = "in_progress"
-	New        GetV1AdminBackendFeedbackParamsStatus = "new"
-	Resolved   GetV1AdminBackendFeedbackParamsStatus = "resolved"
+	GetV1AdminBackendFeedbackParamsStatusDismissed  GetV1AdminBackendFeedbackParamsStatus = "dismissed"
+	GetV1AdminBackendFeedbackParamsStatusInProgress GetV1AdminBackendFeedbackParamsStatus = "in_progress"
+	GetV1AdminBackendFeedbackParamsStatusNew        GetV1AdminBackendFeedbackParamsStatus = "new"
+	GetV1AdminBackendFeedbackParamsStatusResolved   GetV1AdminBackendFeedbackParamsStatus = "resolved"
 )
 
 // Defines values for GetV1AdminBackendUserzPaginatedParamsAiEnabled.
@@ -1729,6 +1737,15 @@ type WorkerStatusResponse struct {
 	// WorkerRunning Whether the worker is currently running
 	WorkerRunning bool `json:"worker_running"`
 }
+
+// DeleteV1AdminBackendFeedbackParams defines parameters for DeleteV1AdminBackendFeedback.
+type DeleteV1AdminBackendFeedbackParams struct {
+	// Status Status of feedback reports to delete
+	Status DeleteV1AdminBackendFeedbackParamsStatus `form:"status" json:"status"`
+}
+
+// DeleteV1AdminBackendFeedbackParamsStatus defines parameters for DeleteV1AdminBackendFeedback.
+type DeleteV1AdminBackendFeedbackParamsStatus string
 
 // GetV1AdminBackendFeedbackParams defines parameters for GetV1AdminBackendFeedback.
 type GetV1AdminBackendFeedbackParams struct {

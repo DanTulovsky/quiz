@@ -295,8 +295,8 @@ func (suite *FeedbackIntegrationTestSuite) TestGetFeedbackList_WithFilters() {
 	admin, err := suite.userService.CreateUserWithPassword(context.Background(), "admin_filter", "adminpass", "english", "A1")
 	require.NoError(suite.T(), err)
 
-	// Mark as admin
-	_, err = suite.db.Exec("UPDATE users SET is_admin = true WHERE id = $1", admin.ID)
+	// Assign admin role
+	err = suite.userService.AssignRoleByName(context.Background(), admin.ID, "admin")
 	require.NoError(suite.T(), err)
 
 	// Login as admin
@@ -353,8 +353,8 @@ func (suite *FeedbackIntegrationTestSuite) TestUpdateFeedback_AsAdmin() {
 	admin, err := suite.userService.CreateUserWithPassword(context.Background(), "admin_update", "adminpass", "english", "A1")
 	require.NoError(suite.T(), err)
 
-	// Mark as admin
-	_, err = suite.db.Exec("UPDATE users SET is_admin = true WHERE id = $1", admin.ID)
+	// Assign admin role
+	err = suite.userService.AssignRoleByName(context.Background(), admin.ID, "admin")
 	require.NoError(suite.T(), err)
 
 	// Login as admin

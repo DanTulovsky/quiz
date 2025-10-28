@@ -123,6 +123,15 @@ export const useTextSelection = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   const handleSelectionChange = useCallback(() => {
+    // Check if we're in the annotation modal - if so, don't show translation
+    const annotationModal = document.querySelector(
+      '[data-no-translate="true"]'
+    );
+    if (annotationModal) {
+      setIsVisible(false);
+      return;
+    }
+
     const sel = window.getSelection();
 
     if (!sel || sel.rangeCount === 0) {
@@ -145,6 +154,30 @@ export const useTextSelection = () => {
 
       // Mark the selected element as translation-enabled for click detection
       const selectedElement = range.commonAncestorContainer.parentElement;
+
+      // Check if element or any parent has data-no-translate attribute
+      if (selectedElement?.closest('[data-no-translate="true"]')) {
+        setIsVisible(false);
+        return;
+      }
+
+      // Check if selection is within a Fabric.js canvas (annotation tool)
+      // This includes the canvas elements and any Fabric.js text editing elements
+      if (
+        selectedElement?.closest('.canvas-container') ||
+        selectedElement?.closest('.upper-canvas') ||
+        selectedElement?.closest('.lower-canvas') ||
+        selectedElement?.classList.contains('canvas-container') ||
+        selectedElement?.tagName === 'TEXTAREA' ||
+        // Check if the modal title contains "Annotate Screenshot"
+        document
+          .querySelector('[class*="mantine-Modal-title"]')
+          ?.textContent?.includes('Annotate Screenshot')
+      ) {
+        setIsVisible(false);
+        return;
+      }
+
       if (selectedElement) {
         selectedElement.setAttribute('data-translation-enabled', 'true');
       }

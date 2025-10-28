@@ -5321,6 +5321,52 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+    delete:
+      tags:
+        - Admin
+        - Feedback
+      summary: Delete feedback reports by status
+      description: Delete all feedback reports with a specific status (bulk delete)
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: status
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [new, in_progress, resolved, dismissed]
+          description: Status of feedback reports to delete
+      responses:
+        "200":
+          description: Deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  deleted_count:
+                    type: integer
+                    description: Number of feedback reports deleted
+        "400":
+          description: Bad request (status parameter required)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden (admin only)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /v1/admin/backend/feedback/{id}:
     get:
       tags:
@@ -5383,6 +5429,42 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FeedbackReport"
+        "404":
+          description: Feedback report not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden (admin only)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      tags:
+        - Admin
+        - Feedback
+      summary: Delete a feedback report
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Feedback report ID
+      responses:
+        "204":
+          description: Feedback report deleted successfully
         "404":
           description: Feedback report not found
           content:

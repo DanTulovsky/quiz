@@ -165,3 +165,64 @@ func (s *FeedbackService) UpdateFeedback(ctx context.Context, id int, updates ma
 	}
 	return s.GetFeedbackByID(ctx, id)
 }
+
+// DeleteFeedback deletes a single feedback report by ID.
+func (s *FeedbackService) DeleteFeedback(ctx context.Context, id int) (err error) {
+	ctx, span := observability.TraceUserFunction(ctx, "delete_feedback", attribute.Int("feedback.id", id))
+	defer observability.FinishSpan(span, &err)
+
+	query := `DELETE FROM feedback_reports WHERE id=$1`
+	result, err := s.db.ExecContext(ctx, query, id)
+	if err != nil {
+		return contextutils.WrapError(err, "failed to delete feedback")
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return contextutils.WrapError(err, "failed to get rows affected")
+	}
+
+	if rowsAffected == 0 {
+		return contextutils.WrapErrorf(contextutils.ErrRecordNotFound, "feedback with ID %d not found", id)
+	}
+
+	return nil
+}
+
+// DeleteFeedbackByStatus deletes all feedback reports with a specific status.
+func (s *FeedbackService) DeleteFeedbackByStatus(ctx context.Context, status string) (result0 int, err error) {
+	ctx, span := observability.TraceUserFunction(ctx, "delete_feedback_by_status", attribute.String("status", status))
+	defer observability.FinishSpan(span, &err)
+
+	query := `DELETE FROM feedback_reports WHERE status=$1`
+	result, err := s.db.ExecContext(ctx, query, status)
+	if err != nil {
+		return 0, contextutils.WrapError(err, "failed to delete feedback by status")
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return 0, contextutils.WrapError(err, "failed to get rows affected")
+	}
+
+	return int(rowsAffected), nil
+}
+
+// DeleteAllFeedback deletes all feedback reports regardless of status.
+func (s *FeedbackService) DeleteAllFeedback(ctx context.Context) (result0 int, err error) {
+	ctx, span := observability.TraceUserFunction(ctx, "delete_all_feedback")
+	defer observability.FinishSpan(span, &err)
+
+	query := `DELETE FROM feedback_reports`
+	result, err := s.db.ExecContext(ctx, query)
+	if err != nil {
+		return 0, contextutils.WrapError(err, "failed to delete all feedback")
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return 0, contextutils.WrapError(err, "failed to get rows affected")
+	}
+
+	return int(rowsAffected), nil
+}

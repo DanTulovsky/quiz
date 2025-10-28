@@ -369,6 +369,15 @@ func NewRouter(
 				// Feedback management (admin only)
 				backend.GET("/feedback", feedbackHandler.ListFeedback)
 				backend.PATCH("/feedback/:id", feedbackHandler.UpdateFeedback)
+				backend.DELETE("/feedback/:id", feedbackHandler.DeleteFeedback)
+				backend.DELETE("/feedback", func(c *gin.Context) {
+					// Check if it's a delete all request
+					if c.Query("all") == "true" {
+						feedbackHandler.DeleteAllFeedback(c)
+					} else {
+						feedbackHandler.DeleteFeedbackByStatus(c)
+					}
+				})
 				// User management (admin only)
 				backend.GET("/userz", userAdminHandler.GetAllUsers)
 				backend.GET("/userz/paginated", userAdminHandler.GetUsersPaginated)

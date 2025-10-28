@@ -12,4 +12,7 @@ type FeedbackServiceInterface interface {
 	GetFeedbackByID(ctx context.Context, id int) (*models.FeedbackReport, error)
 	GetFeedbackPaginated(ctx context.Context, page, pageSize int, status, feedbackType string, userID *int) ([]models.FeedbackReport, int, error)
 	UpdateFeedback(ctx context.Context, id int, updates map[string]interface{}) (*models.FeedbackReport, error)
+	DeleteFeedback(ctx context.Context, id int) error
+	DeleteFeedbackByStatus(ctx context.Context, status string) (int, error)
+	DeleteAllFeedback(ctx context.Context) (int, error)
 }

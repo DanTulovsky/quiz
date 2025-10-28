@@ -3208,6 +3208,29 @@ export const GetV1AdminBackendFeedbackStatus = {
   dismissed: 'dismissed',
 } as const;
 
+export type DeleteV1AdminBackendFeedbackParams = {
+/**
+ * Status of feedback reports to delete
+ */
+status: DeleteV1AdminBackendFeedbackStatus;
+};
+
+export type DeleteV1AdminBackendFeedbackStatus = typeof DeleteV1AdminBackendFeedbackStatus[keyof typeof DeleteV1AdminBackendFeedbackStatus];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const DeleteV1AdminBackendFeedbackStatus = {
+  new: 'new',
+  in_progress: 'in_progress',
+  resolved: 'resolved',
+  dismissed: 'dismissed',
+} as const;
+
+export type DeleteV1AdminBackendFeedback200 = {
+  /** Number of feedback reports deleted */
+  deleted_count?: number;
+};
+
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
@@ -13097,6 +13120,70 @@ export function useGetV1AdminBackendFeedback<TData = Awaited<ReturnType<typeof g
 
 
 /**
+ * Delete all feedback reports with a specific status (bulk delete)
+ * @summary Delete feedback reports by status
+ */
+export const deleteV1AdminBackendFeedback = (
+    params: DeleteV1AdminBackendFeedbackParams,
+ options?: SecondParameter<typeof customInstance>,) => {
+      
+      
+      return customInstance<DeleteV1AdminBackendFeedback200>(
+      {url: `/v1/admin/backend/feedback`, method: 'DELETE',
+        params
+    },
+      options);
+    }
+  
+
+
+export const getDeleteV1AdminBackendFeedbackMutationOptions = <TError = ErrorResponse | ErrorResponse | ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendFeedback>>, TError,{params: DeleteV1AdminBackendFeedbackParams}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendFeedback>>, TError,{params: DeleteV1AdminBackendFeedbackParams}, TContext> => {
+
+const mutationKey = ['deleteV1AdminBackendFeedback'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteV1AdminBackendFeedback>>, {params: DeleteV1AdminBackendFeedbackParams}> = (props) => {
+          const {params} = props ?? {};
+
+          return  deleteV1AdminBackendFeedback(params,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteV1AdminBackendFeedbackMutationResult = NonNullable<Awaited<ReturnType<typeof deleteV1AdminBackendFeedback>>>
+    
+    export type DeleteV1AdminBackendFeedbackMutationError = ErrorResponse | ErrorResponse | ErrorResponse
+
+    /**
+ * @summary Delete feedback reports by status
+ */
+export const useDeleteV1AdminBackendFeedback = <TError = ErrorResponse | ErrorResponse | ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendFeedback>>, TError,{params: DeleteV1AdminBackendFeedbackParams}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteV1AdminBackendFeedback>>,
+        TError,
+        {params: DeleteV1AdminBackendFeedbackParams},
+        TContext
+      > => {
+
+      const mutationOptions = getDeleteV1AdminBackendFeedbackMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
  * @summary Get feedback report details
  */
 export const getV1AdminBackendFeedbackId = (
@@ -13245,6 +13332,68 @@ export const usePatchV1AdminBackendFeedbackId = <TError = ErrorResponse | ErrorR
       > => {
 
       const mutationOptions = getPatchV1AdminBackendFeedbackIdMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * @summary Delete a feedback report
+ */
+export const deleteV1AdminBackendFeedbackId = (
+    id: number,
+ options?: SecondParameter<typeof customInstance>,) => {
+      
+      
+      return customInstance<null>(
+      {url: `/v1/admin/backend/feedback/${id}`, method: 'DELETE'
+    },
+      options);
+    }
+  
+
+
+export const getDeleteV1AdminBackendFeedbackIdMutationOptions = <TError = ErrorResponse | ErrorResponse | ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendFeedbackId>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendFeedbackId>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['deleteV1AdminBackendFeedbackId'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteV1AdminBackendFeedbackId>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteV1AdminBackendFeedbackId(id,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteV1AdminBackendFeedbackIdMutationResult = NonNullable<Awaited<ReturnType<typeof deleteV1AdminBackendFeedbackId>>>
+    
+    export type DeleteV1AdminBackendFeedbackIdMutationError = ErrorResponse | ErrorResponse | ErrorResponse
+
+    /**
+ * @summary Delete a feedback report
+ */
+export const useDeleteV1AdminBackendFeedbackId = <TError = ErrorResponse | ErrorResponse | ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendFeedbackId>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteV1AdminBackendFeedbackId>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+
+      const mutationOptions = getDeleteV1AdminBackendFeedbackIdMutationOptions(options);
 
       return useMutation(mutationOptions , queryClient);
     }
@@ -13683,6 +13832,8 @@ export const getGetV1AdminWorkerDailyUsersUserIdQuestionsDateResponseMock = (ove
 export const getPostV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerateResponseMock = (overrideResponse: Partial< PostV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerate200 > = {}): PostV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerate200 => ({success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
 
 export const getGetV1AdminBackendFeedbackResponseMock = (overrideResponse: Partial< FeedbackListResponse > = {}): FeedbackListResponse => ({items: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), user_id: faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), feedback_text: faker.string.alpha({length: {min: 10, max: 5000}}), feedback_type: faker.helpers.arrayElement(['bug','feature_request','general','improvement'] as const), context_data: faker.helpers.arrayElement([{}, undefined]), screenshot_data: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), screenshot_url: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), status: faker.helpers.arrayElement(['new','in_progress','resolved','dismissed'] as const), admin_notes: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), assigned_to_user_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), null]), undefined]), resolved_at: faker.helpers.arrayElement([faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, null]), undefined]), resolved_by_user_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), null]), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`})), total: faker.number.int({min: 0, max: undefined, multipleOf: undefined}), page: faker.number.int({min: 1, max: undefined, multipleOf: undefined}), page_size: faker.number.int({min: 1, max: undefined, multipleOf: undefined}), ...overrideResponse})
+
+export const getDeleteV1AdminBackendFeedbackResponseMock = (overrideResponse: Partial< DeleteV1AdminBackendFeedback200 > = {}): DeleteV1AdminBackendFeedback200 => ({deleted_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), ...overrideResponse})
 
 export const getGetV1AdminBackendFeedbackIdResponseMock = (overrideResponse: Partial< FeedbackReport > = {}): FeedbackReport => ({id: faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), user_id: faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), feedback_text: faker.string.alpha({length: {min: 10, max: 5000}}), feedback_type: faker.helpers.arrayElement(['bug','feature_request','general','improvement'] as const), context_data: faker.helpers.arrayElement([{}, undefined]), screenshot_data: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), screenshot_url: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), status: faker.helpers.arrayElement(['new','in_progress','resolved','dismissed'] as const), admin_notes: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), assigned_to_user_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), null]), undefined]), resolved_at: faker.helpers.arrayElement([faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, null]), undefined]), resolved_by_user_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), null]), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, ...overrideResponse})
 
@@ -15189,6 +15340,18 @@ export const getGetV1AdminBackendFeedbackMockHandler = (overrideResponse?: Feedb
   })
 }
 
+export const getDeleteV1AdminBackendFeedbackMockHandler = (overrideResponse?: DeleteV1AdminBackendFeedback200 | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<DeleteV1AdminBackendFeedback200> | DeleteV1AdminBackendFeedback200)) => {
+  return http.delete('*/v1/admin/backend/feedback', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getDeleteV1AdminBackendFeedbackResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
 export const getGetV1AdminBackendFeedbackIdMockHandler = (overrideResponse?: FeedbackReport | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<FeedbackReport> | FeedbackReport)) => {
   return http.get('*/v1/admin/backend/feedback/:id', async (info) => {await delay(1000);
   
@@ -15209,6 +15372,16 @@ export const getPatchV1AdminBackendFeedbackIdMockHandler = (overrideResponse?: F
     : getPatchV1AdminBackendFeedbackIdResponseMock()),
       { status: 200,
         headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
+export const getDeleteV1AdminBackendFeedbackIdMockHandler = (overrideResponse?: null | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<null> | null)) => {
+  return http.delete('*/v1/admin/backend/feedback/:id', async (info) => {await delay(1000);
+  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
+    return new HttpResponse(null,
+      { status: 204,
+        
       })
   })
 }
@@ -15363,8 +15536,10 @@ export const getQuizApplicationAPIMock = () => [
   getGetV1AdminWorkerDailyUsersUserIdQuestionsDateMockHandler(),
   getPostV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerateMockHandler(),
   getGetV1AdminBackendFeedbackMockHandler(),
+  getDeleteV1AdminBackendFeedbackMockHandler(),
   getGetV1AdminBackendFeedbackIdMockHandler(),
   getPatchV1AdminBackendFeedbackIdMockHandler(),
+  getDeleteV1AdminBackendFeedbackIdMockHandler(),
   getPostV1TranslateMockHandler(),
   getPostV1AudioSpeechMockHandler()
 ]

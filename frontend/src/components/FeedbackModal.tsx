@@ -49,6 +49,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ opened, onClose }) => {
   const [isAnnotating, setIsAnnotating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { mutate: submitFeedback, isPending, reset } = usePostV1Feedback();
 
@@ -62,6 +63,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ opened, onClose }) => {
       setIsAnnotating(false);
       setError(null);
       setSuccess(false);
+      setIsSubmitting(false);
       reset();
     }
   }, [opened, reset]);
@@ -165,6 +167,9 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ opened, onClose }) => {
       return;
     }
 
+    // Immediately disable the button
+    setIsSubmitting(true);
+
     const context = captureContext();
 
     submitFeedback(
@@ -192,6 +197,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ opened, onClose }) => {
           setError(
             errorMessage || 'Failed to submit feedback. Please try again.'
           );
+          setIsSubmitting(false);
         },
       }
     );
@@ -216,11 +222,11 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ opened, onClose }) => {
         </Group>
       }
       size='lg'
-      closeOnClickOutside={!isPending}
-      closeOnEscape={!isPending}
+      closeOnClickOutside={!isSubmitting}
+      closeOnEscape={!isSubmitting}
       data-html2canvas-ignore
     >
-      <LoadingOverlay visible={isPending} />
+      <LoadingOverlay visible={isSubmitting} />
       <Stack gap='md'>
         {success && (
           <Alert
@@ -341,12 +347,13 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ opened, onClose }) => {
         </Text>
 
         <Group justify='flex-end' mt='md'>
-          <Button variant='subtle' onClick={onClose} disabled={isPending}>
+          <Button variant='subtle' onClick={onClose} disabled={isSubmitting}>
             Cancel
           </Button>
           <Button
             onClick={handleSubmit}
-            loading={isPending}
+            loading={isSubmitting}
+            disabled={isSubmitting}
             leftSection={<IconBug />}
           >
             Submit Feedback

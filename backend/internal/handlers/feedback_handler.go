@@ -31,6 +31,14 @@ type FeedbackResponse struct {
 	UpdatedAt        string                 `json:"updated_at"`
 }
 
+// ensureContextDataNotNull returns an empty map if the input is nil
+func ensureContextDataNotNull(data map[string]interface{}) map[string]interface{} {
+	if data == nil {
+		return map[string]interface{}{}
+	}
+	return data
+}
+
 // convertFeedbackToResponse converts FeedbackReport to FeedbackResponse
 func convertFeedbackToResponse(fr models.FeedbackReport) FeedbackResponse {
 	response := FeedbackResponse{
@@ -38,7 +46,7 @@ func convertFeedbackToResponse(fr models.FeedbackReport) FeedbackResponse {
 		UserID:       fr.UserID,
 		FeedbackText: fr.FeedbackText,
 		FeedbackType: fr.FeedbackType,
-		ContextData:  fr.ContextData,
+		ContextData:  ensureContextDataNotNull(fr.ContextData),
 		Status:       fr.Status,
 		CreatedAt:    fr.CreatedAt.Format("2006-01-02T15:04:05Z07:00"),
 		UpdatedAt:    fr.UpdatedAt.Format("2006-01-02T15:04:05Z07:00"),
@@ -194,4 +202,61 @@ func (h *FeedbackHandler) UpdateFeedback(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, convertFeedbackToResponse(*updated))
+}
+
+// DeleteFeedback handles DELETE /v1/admin/backend/feedback/:id.
+func (h *FeedbackHandler) DeleteFeedback(c *gin.Context) {
+	ctx, span := observability.TraceHandlerFunction(c.Request.Context(), "delete_feedback")
+	defer observability.FinishSpan(span, nil)
+
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		HandleAppError(c, contextutils.ErrorWithContextf("invalid feedback ID"))
+		return
+	}
+
+	err = h.feedbackService.DeleteFeedback(ctx, id)
+	if err != nil {
+		h.logger.Error(ctx, "delete feedback failed", err, nil)
+		HandleAppError(c, err)
+		return
+	}
+
+	c.Status(http.StatusNoContent)
+}
+
+// DeleteFeedbackByStatus handles DELETE /v1/admin/backend/feedback?status=resolved.
+func (h *FeedbackHandler) DeleteFeedbackByStatus(c *gin.Context) {
+	ctx, span := observability.TraceHandlerFunction(c.Request.Context(), "delete_feedback_by_status")
+	defer observability.FinishSpan(span, nil)
+
+	status := c.Query("status")
+	if status == "" {
+		HandleAppError(c, contextutils.ErrorWithContextf("status parameter is required"))
+		return
+	}
+
+	count, err := h.feedbackService.DeleteFeedbackByStatus(ctx, status)
+	if err != nil {
+		h.logger.Error(ctx, "delete feedback by status failed", err, nil)
+		HandleAppError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"deleted_count": count})
+}
+
+// DeleteAllFeedback handles DELETE /v1/admin/backend/feedback?all=true.
+func (h *FeedbackHandler) DeleteAllFeedback(c *gin.Context) {
+	ctx, span := observability.TraceHandlerFunction(c.Request.Context(), "delete_all_feedback")
+	defer observability.FinishSpan(span, nil)
+
+	count, err := h.feedbackService.DeleteAllFeedback(ctx)
+	if err != nil {
+		h.logger.Error(ctx, "delete all feedback failed", err, nil)
+		HandleAppError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"deleted_count": count})
 }
