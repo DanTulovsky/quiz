@@ -19,7 +19,6 @@ import {
   Tooltip,
   Divider,
   Box,
-  useMantineColorScheme,
 } from '@mantine/core';
 import { IconRefresh, IconCheck, IconClock, IconX } from '@tabler/icons-react';
 import * as TablerIcons from '@tabler/icons-react';
@@ -67,8 +66,6 @@ const FeedbackManagementPage: React.FC = () => {
   const [deleteAllDismissedModalOpened, setDeleteAllDismissedModalOpened] =
     useState(false);
   const [deleteAllModalOpened, setDeleteAllModalOpened] = useState(false);
-
-  const { colorScheme } = useMantineColorScheme();
 
   // Fetch users for username display
   const { data: usersData } = useUsersPaginated({
