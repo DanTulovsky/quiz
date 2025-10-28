@@ -622,6 +622,171 @@ export interface MarkQuestionKnownRequest {
   confidence_level?: number;
 }
 
+/**
+ * Type of feedback
+ */
+export type FeedbackSubmissionRequestFeedbackType = typeof FeedbackSubmissionRequestFeedbackType[keyof typeof FeedbackSubmissionRequestFeedbackType];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const FeedbackSubmissionRequestFeedbackType = {
+  bug: 'bug',
+  feature_request: 'feature_request',
+  general: 'general',
+  improvement: 'improvement',
+} as const;
+
+/**
+ * Context metadata as JSON object
+ */
+export type FeedbackSubmissionRequestContextData = { [key: string]: unknown };
+
+export interface FeedbackSubmissionRequest {
+  /**
+   * Feedback or issue description
+   * @maxLength 5000
+   */
+  feedback_text: string;
+  /** Type of feedback */
+  feedback_type?: FeedbackSubmissionRequestFeedbackType;
+  /** Context metadata as JSON object */
+  context_data?: FeedbackSubmissionRequestContextData;
+  /** Base64 encoded screenshot (optional) */
+  screenshot_data?: string;
+}
+
+/**
+ * Type of feedback
+ */
+export type FeedbackReportFeedbackType = typeof FeedbackReportFeedbackType[keyof typeof FeedbackReportFeedbackType];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const FeedbackReportFeedbackType = {
+  bug: 'bug',
+  feature_request: 'feature_request',
+  general: 'general',
+  improvement: 'improvement',
+} as const;
+
+/**
+ * Context metadata as JSON object
+ */
+export type FeedbackReportContextData = { [key: string]: unknown };
+
+/**
+ * Current status of the feedback
+ */
+export type FeedbackReportStatus = typeof FeedbackReportStatus[keyof typeof FeedbackReportStatus];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const FeedbackReportStatus = {
+  new: 'new',
+  in_progress: 'in_progress',
+  resolved: 'resolved',
+  dismissed: 'dismissed',
+} as const;
+
+export interface FeedbackReport {
+  /** Feedback report ID */
+  id: number;
+  /** User ID who submitted the feedback */
+  user_id: number;
+  /**
+   * Feedback or issue description
+   * @maxLength 5000
+   */
+  feedback_text: string;
+  /** Type of feedback */
+  feedback_type: FeedbackReportFeedbackType;
+  /** Context metadata as JSON object */
+  context_data?: FeedbackReportContextData;
+  /**
+   * Base64 encoded screenshot
+   * @nullable
+   */
+  screenshot_data?: string | null;
+  /**
+   * URL to stored screenshot file
+   * @nullable
+   */
+  screenshot_url?: string | null;
+  /** Current status of the feedback */
+  status: FeedbackReportStatus;
+  /**
+   * Notes from admin
+   * @nullable
+   */
+  admin_notes?: string | null;
+  /**
+   * User ID assigned to handle this feedback
+   * @nullable
+   */
+  assigned_to_user_id?: number | null;
+  /**
+   * When the feedback was resolved
+   * @nullable
+   */
+  resolved_at?: string | null;
+  /**
+   * User ID who resolved the feedback
+   * @nullable
+   */
+  resolved_by_user_id?: number | null;
+  /** When the feedback was created */
+  created_at: string;
+  /** When the feedback was last updated */
+  updated_at: string;
+}
+
+export interface FeedbackListResponse {
+  /** List of feedback reports */
+  items: FeedbackReport[];
+  /**
+   * Total number of feedback reports matching filters
+   * @minimum 0
+   */
+  total: number;
+  /**
+   * Current page number
+   * @minimum 1
+   */
+  page: number;
+  /**
+   * Number of items per page
+   * @minimum 1
+   */
+  page_size: number;
+}
+
+/**
+ * New status for the feedback
+ */
+export type FeedbackUpdateRequestStatus = typeof FeedbackUpdateRequestStatus[keyof typeof FeedbackUpdateRequestStatus];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const FeedbackUpdateRequestStatus = {
+  new: 'new',
+  in_progress: 'in_progress',
+  resolved: 'resolved',
+  dismissed: 'dismissed',
+} as const;
+
+export interface FeedbackUpdateRequest {
+  /** New status for the feedback */
+  status?: FeedbackUpdateRequestStatus;
+  /** Admin notes about this feedback */
+  admin_notes?: string;
+  /** User ID to assign this feedback to */
+  assigned_to_user_id?: number;
+  /** When the feedback was resolved (use current time if status is resolved) */
+  resolved_at?: string;
+  /** User ID who resolved the feedback */
+  resolved_by_user_id?: number;
+}
+
 export interface GeneratingResponse {
   /** @maxLength 100 */
   status?: string;
@@ -3005,6 +3170,43 @@ export type PostV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerate200 = {
   success?: boolean;
   message?: string;
 };
+
+export type GetV1AdminBackendFeedbackParams = {
+/**
+ * Page number
+ * @minimum 1
+ */
+page?: number;
+/**
+ * Number of items per page
+ * @minimum 1
+ * @maximum 100
+ */
+page_size?: number;
+/**
+ * Filter by status
+ */
+status?: GetV1AdminBackendFeedbackStatus;
+/**
+ * Filter by feedback type
+ */
+feedback_type?: string;
+/**
+ * Filter by user ID
+ */
+user_id?: number;
+};
+
+export type GetV1AdminBackendFeedbackStatus = typeof GetV1AdminBackendFeedbackStatus[keyof typeof GetV1AdminBackendFeedbackStatus];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const GetV1AdminBackendFeedbackStatus = {
+  new: 'new',
+  in_progress: 'in_progress',
+  resolved: 'resolved',
+  dismissed: 'dismissed',
+} as const;
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
@@ -6509,6 +6711,72 @@ export const usePutV1UserzProfile = <TError = ErrorResponse | ErrorResponse,
       > => {
 
       const mutationOptions = getPutV1UserzProfileMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * Submit feedback or bug report with optional screenshot and context data
+ * @summary Submit feedback or report an issue
+ */
+export const postV1Feedback = (
+    feedbackSubmissionRequest: FeedbackSubmissionRequest,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<FeedbackReport>(
+      {url: `/v1/feedback`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: feedbackSubmissionRequest, signal
+    },
+      options);
+    }
+  
+
+
+export const getPostV1FeedbackMutationOptions = <TError = ErrorResponse | ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1Feedback>>, TError,{data: FeedbackSubmissionRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof postV1Feedback>>, TError,{data: FeedbackSubmissionRequest}, TContext> => {
+
+const mutationKey = ['postV1Feedback'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1Feedback>>, {data: FeedbackSubmissionRequest}> = (props) => {
+          const {data} = props ?? {};
+
+          return  postV1Feedback(data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostV1FeedbackMutationResult = NonNullable<Awaited<ReturnType<typeof postV1Feedback>>>
+    export type PostV1FeedbackMutationBody = FeedbackSubmissionRequest
+    export type PostV1FeedbackMutationError = ErrorResponse | ErrorResponse
+
+    /**
+ * @summary Submit feedback or report an issue
+ */
+export const usePostV1Feedback = <TError = ErrorResponse | ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1Feedback>>, TError,{data: FeedbackSubmissionRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postV1Feedback>>,
+        TError,
+        {data: FeedbackSubmissionRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getPostV1FeedbackMutationOptions(options);
 
       return useMutation(mutationOptions , queryClient);
     }
@@ -12739,6 +13007,249 @@ export const usePostV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerate = <TErr
     }
     
 /**
+ * Retrieve feedback reports with filtering and pagination (admin only)
+ * @summary Get all feedback reports (paginated)
+ */
+export const getV1AdminBackendFeedback = (
+    params?: GetV1AdminBackendFeedbackParams,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<FeedbackListResponse>(
+      {url: `/v1/admin/backend/feedback`, method: 'GET',
+        params, signal
+    },
+      options);
+    }
+  
+
+export const getGetV1AdminBackendFeedbackQueryKey = (params?: GetV1AdminBackendFeedbackParams,) => {
+    return [`/v1/admin/backend/feedback`, ...(params ? [params]: [])] as const;
+    }
+
+    
+export const getGetV1AdminBackendFeedbackQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendFeedback>>, TError = ErrorResponse | ErrorResponse>(params?: GetV1AdminBackendFeedbackParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendFeedback>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetV1AdminBackendFeedbackQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendFeedback>>> = ({ signal }) => getV1AdminBackendFeedback(params, requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendFeedback>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetV1AdminBackendFeedbackQueryResult = NonNullable<Awaited<ReturnType<typeof getV1AdminBackendFeedback>>>
+export type GetV1AdminBackendFeedbackQueryError = ErrorResponse | ErrorResponse
+
+
+export function useGetV1AdminBackendFeedback<TData = Awaited<ReturnType<typeof getV1AdminBackendFeedback>>, TError = ErrorResponse | ErrorResponse>(
+ params: undefined |  GetV1AdminBackendFeedbackParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendFeedback>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1AdminBackendFeedback>>,
+          TError,
+          Awaited<ReturnType<typeof getV1AdminBackendFeedback>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1AdminBackendFeedback<TData = Awaited<ReturnType<typeof getV1AdminBackendFeedback>>, TError = ErrorResponse | ErrorResponse>(
+ params?: GetV1AdminBackendFeedbackParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendFeedback>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1AdminBackendFeedback>>,
+          TError,
+          Awaited<ReturnType<typeof getV1AdminBackendFeedback>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1AdminBackendFeedback<TData = Awaited<ReturnType<typeof getV1AdminBackendFeedback>>, TError = ErrorResponse | ErrorResponse>(
+ params?: GetV1AdminBackendFeedbackParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendFeedback>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get all feedback reports (paginated)
+ */
+
+export function useGetV1AdminBackendFeedback<TData = Awaited<ReturnType<typeof getV1AdminBackendFeedback>>, TError = ErrorResponse | ErrorResponse>(
+ params?: GetV1AdminBackendFeedbackParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendFeedback>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetV1AdminBackendFeedbackQueryOptions(params,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * @summary Get feedback report details
+ */
+export const getV1AdminBackendFeedbackId = (
+    id: number,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<FeedbackReport>(
+      {url: `/v1/admin/backend/feedback/${id}`, method: 'GET', signal
+    },
+      options);
+    }
+  
+
+export const getGetV1AdminBackendFeedbackIdQueryKey = (id?: number,) => {
+    return [`/v1/admin/backend/feedback/${id}`] as const;
+    }
+
+    
+export const getGetV1AdminBackendFeedbackIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendFeedbackId>>, TError = ErrorResponse | ErrorResponse>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendFeedbackId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetV1AdminBackendFeedbackIdQueryKey(id);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendFeedbackId>>> = ({ signal }) => getV1AdminBackendFeedbackId(id, requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendFeedbackId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetV1AdminBackendFeedbackIdQueryResult = NonNullable<Awaited<ReturnType<typeof getV1AdminBackendFeedbackId>>>
+export type GetV1AdminBackendFeedbackIdQueryError = ErrorResponse | ErrorResponse
+
+
+export function useGetV1AdminBackendFeedbackId<TData = Awaited<ReturnType<typeof getV1AdminBackendFeedbackId>>, TError = ErrorResponse | ErrorResponse>(
+ id: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendFeedbackId>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1AdminBackendFeedbackId>>,
+          TError,
+          Awaited<ReturnType<typeof getV1AdminBackendFeedbackId>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1AdminBackendFeedbackId<TData = Awaited<ReturnType<typeof getV1AdminBackendFeedbackId>>, TError = ErrorResponse | ErrorResponse>(
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendFeedbackId>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1AdminBackendFeedbackId>>,
+          TError,
+          Awaited<ReturnType<typeof getV1AdminBackendFeedbackId>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1AdminBackendFeedbackId<TData = Awaited<ReturnType<typeof getV1AdminBackendFeedbackId>>, TError = ErrorResponse | ErrorResponse>(
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendFeedbackId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get feedback report details
+ */
+
+export function useGetV1AdminBackendFeedbackId<TData = Awaited<ReturnType<typeof getV1AdminBackendFeedbackId>>, TError = ErrorResponse | ErrorResponse>(
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendFeedbackId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetV1AdminBackendFeedbackIdQueryOptions(id,options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * @summary Update feedback report status
+ */
+export const patchV1AdminBackendFeedbackId = (
+    id: number,
+    feedbackUpdateRequest: FeedbackUpdateRequest,
+ options?: SecondParameter<typeof customInstance>,) => {
+      
+      
+      return customInstance<FeedbackReport>(
+      {url: `/v1/admin/backend/feedback/${id}`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: feedbackUpdateRequest
+    },
+      options);
+    }
+  
+
+
+export const getPatchV1AdminBackendFeedbackIdMutationOptions = <TError = ErrorResponse | ErrorResponse | ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchV1AdminBackendFeedbackId>>, TError,{id: number;data: FeedbackUpdateRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof patchV1AdminBackendFeedbackId>>, TError,{id: number;data: FeedbackUpdateRequest}, TContext> => {
+
+const mutationKey = ['patchV1AdminBackendFeedbackId'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchV1AdminBackendFeedbackId>>, {id: number;data: FeedbackUpdateRequest}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  patchV1AdminBackendFeedbackId(id,data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PatchV1AdminBackendFeedbackIdMutationResult = NonNullable<Awaited<ReturnType<typeof patchV1AdminBackendFeedbackId>>>
+    export type PatchV1AdminBackendFeedbackIdMutationBody = FeedbackUpdateRequest
+    export type PatchV1AdminBackendFeedbackIdMutationError = ErrorResponse | ErrorResponse | ErrorResponse
+
+    /**
+ * @summary Update feedback report status
+ */
+export const usePatchV1AdminBackendFeedbackId = <TError = ErrorResponse | ErrorResponse | ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchV1AdminBackendFeedbackId>>, TError,{id: number;data: FeedbackUpdateRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof patchV1AdminBackendFeedbackId>>,
+        TError,
+        {id: number;data: FeedbackUpdateRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getPatchV1AdminBackendFeedbackIdMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
  * Translate text to a target language using configured translation provider
  * @summary Translate text
  */
@@ -12959,6 +13470,8 @@ export const getPutV1SnippetsIdResponseMock = (overrideResponse: Partial< Snippe
 
 export const getPutV1UserzProfileResponseMock = (overrideResponse: Partial< PutV1UserzProfile200 > = {}): PutV1UserzProfile200 => ({message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), user: faker.helpers.arrayElement([{id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), username: faker.helpers.arrayElement([faker.helpers.fromRegExp('^[a-zA-Z0-9_@.+-]+$'), undefined]), email: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), timezone: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), last_active: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), preferred_language: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), current_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ai_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), is_paused: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), updated_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, undefined]), ...overrideResponse})
 
+export const getPostV1FeedbackResponseMock = (overrideResponse: Partial< FeedbackReport > = {}): FeedbackReport => ({id: faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), user_id: faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), feedback_text: faker.string.alpha({length: {min: 10, max: 5000}}), feedback_type: faker.helpers.arrayElement(['bug','feature_request','general','improvement'] as const), context_data: faker.helpers.arrayElement([{}, undefined]), screenshot_data: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), screenshot_url: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), status: faker.helpers.arrayElement(['new','in_progress','resolved','dismissed'] as const), admin_notes: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), assigned_to_user_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), null]), undefined]), resolved_at: faker.helpers.arrayElement([faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, null]), undefined]), resolved_by_user_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), null]), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, ...overrideResponse})
+
 export const getGetV1AdminBackendResponseMock = (): string => (faker.word.sample())
 
 export const getGetV1AdminBackendUserzResponseMock = (overrideResponse: Partial< GetV1AdminBackendUserz200 > = {}): GetV1AdminBackendUserz200 => ({users: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 1000 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), username: faker.helpers.arrayElement([faker.helpers.fromRegExp('^[a-zA-Z0-9_@.+-]+$'), undefined]), email: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), timezone: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), last_active: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), preferred_language: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), current_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ai_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), is_paused: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), updated_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined]), ...overrideResponse})
@@ -13168,6 +13681,12 @@ export const getGetHealthResponseMock = (overrideResponse: Partial< GetHealth200
 export const getGetV1AdminWorkerDailyUsersUserIdQuestionsDateResponseMock = (overrideResponse: Partial< GetV1AdminWorkerDailyUsersUserIdQuestionsDate200 > = {}): GetV1AdminWorkerDailyUsersUserIdQuestionsDate200 => ({questions: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), user_id: faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), question_id: faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), assignment_date: faker.date.past().toISOString().split('T')[0], is_completed: faker.datatype.boolean(), completed_at: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), created_at: faker.string.alpha({length: {min: 10, max: 20}}), user_answer_index: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), null]), undefined]), submitted_at: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), user_shown_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), user_total_responses: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), user_correct_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), user_incorrect_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), question: {id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), type: faker.helpers.arrayElement([faker.helpers.arrayElement(Object.values(QuestionType)), undefined]), status: faker.helpers.arrayElement([faker.helpers.arrayElement(Object.values(QuestionStatus)), undefined]), difficulty_score: faker.helpers.arrayElement([faker.number.float({min: undefined, max: undefined, fractionDigits: 2}), undefined]), explanation: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), content: faker.helpers.arrayElement([{question: faker.string.alpha({length: {min: 1, max: 1000}}), options: Array.from({ length: faker.number.int({ min: 4, max: 10 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 1, max: 500}}))), sentence: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 2000}}), undefined]), passage: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 5000}}), undefined]), hint: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 500}}), undefined])}, undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), correct_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), incorrect_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), total_responses: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), user_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), correct_answer: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), reporters: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), topic_category: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), grammar_focus: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), vocabulary_domain: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), scenario: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), style_modifier: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), difficulty_modifier: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), time_context: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), confidence_level: faker.helpers.arrayElement([faker.number.int({min: 1, max: 5, multipleOf: undefined}), undefined])}})), undefined]), ...overrideResponse})
 
 export const getPostV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerateResponseMock = (overrideResponse: Partial< PostV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerate200 > = {}): PostV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerate200 => ({success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
+
+export const getGetV1AdminBackendFeedbackResponseMock = (overrideResponse: Partial< FeedbackListResponse > = {}): FeedbackListResponse => ({items: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), user_id: faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), feedback_text: faker.string.alpha({length: {min: 10, max: 5000}}), feedback_type: faker.helpers.arrayElement(['bug','feature_request','general','improvement'] as const), context_data: faker.helpers.arrayElement([{}, undefined]), screenshot_data: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), screenshot_url: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), status: faker.helpers.arrayElement(['new','in_progress','resolved','dismissed'] as const), admin_notes: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), assigned_to_user_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), null]), undefined]), resolved_at: faker.helpers.arrayElement([faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, null]), undefined]), resolved_by_user_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), null]), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`})), total: faker.number.int({min: 0, max: undefined, multipleOf: undefined}), page: faker.number.int({min: 1, max: undefined, multipleOf: undefined}), page_size: faker.number.int({min: 1, max: undefined, multipleOf: undefined}), ...overrideResponse})
+
+export const getGetV1AdminBackendFeedbackIdResponseMock = (overrideResponse: Partial< FeedbackReport > = {}): FeedbackReport => ({id: faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), user_id: faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), feedback_text: faker.string.alpha({length: {min: 10, max: 5000}}), feedback_type: faker.helpers.arrayElement(['bug','feature_request','general','improvement'] as const), context_data: faker.helpers.arrayElement([{}, undefined]), screenshot_data: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), screenshot_url: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), status: faker.helpers.arrayElement(['new','in_progress','resolved','dismissed'] as const), admin_notes: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), assigned_to_user_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), null]), undefined]), resolved_at: faker.helpers.arrayElement([faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, null]), undefined]), resolved_by_user_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), null]), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, ...overrideResponse})
+
+export const getPatchV1AdminBackendFeedbackIdResponseMock = (overrideResponse: Partial< FeedbackReport > = {}): FeedbackReport => ({id: faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), user_id: faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), feedback_text: faker.string.alpha({length: {min: 10, max: 5000}}), feedback_type: faker.helpers.arrayElement(['bug','feature_request','general','improvement'] as const), context_data: faker.helpers.arrayElement([{}, undefined]), screenshot_data: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), screenshot_url: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), status: faker.helpers.arrayElement(['new','in_progress','resolved','dismissed'] as const), admin_notes: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), assigned_to_user_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), null]), undefined]), resolved_at: faker.helpers.arrayElement([faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, null]), undefined]), resolved_by_user_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), null]), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, ...overrideResponse})
 
 export const getPostV1TranslateResponseMock = (overrideResponse: Partial< TranslateResponse > = {}): TranslateResponse => ({translated_text: faker.string.alpha({length: {min: 10, max: 20}}), source_language: faker.string.alpha({length: {min: 10, max: 20}}), target_language: faker.string.alpha({length: {min: 10, max: 20}}), confidence: faker.helpers.arrayElement([faker.number.float({min: 0, max: 1, fractionDigits: 2}), undefined]), ...overrideResponse})
 
@@ -13691,6 +14210,18 @@ export const getPutV1UserzProfileMockHandler = (overrideResponse?: PutV1UserzPro
     ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
     : getPutV1UserzProfileResponseMock()),
       { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
+export const getPostV1FeedbackMockHandler = (overrideResponse?: FeedbackReport | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<FeedbackReport> | FeedbackReport)) => {
+  return http.post('*/v1/feedback', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getPostV1FeedbackResponseMock()),
+      { status: 201,
         headers: { 'Content-Type': 'application/json' }
       })
   })
@@ -14646,6 +15177,42 @@ export const getPostV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerateMockHand
   })
 }
 
+export const getGetV1AdminBackendFeedbackMockHandler = (overrideResponse?: FeedbackListResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<FeedbackListResponse> | FeedbackListResponse)) => {
+  return http.get('*/v1/admin/backend/feedback', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetV1AdminBackendFeedbackResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
+export const getGetV1AdminBackendFeedbackIdMockHandler = (overrideResponse?: FeedbackReport | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<FeedbackReport> | FeedbackReport)) => {
+  return http.get('*/v1/admin/backend/feedback/:id', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetV1AdminBackendFeedbackIdResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
+export const getPatchV1AdminBackendFeedbackIdMockHandler = (overrideResponse?: FeedbackReport | ((info: Parameters<Parameters<typeof http.patch>[1]>[0]) => Promise<FeedbackReport> | FeedbackReport)) => {
+  return http.patch('*/v1/admin/backend/feedback/:id', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getPatchV1AdminBackendFeedbackIdResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
 export const getPostV1TranslateMockHandler = (overrideResponse?: TranslateResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<TranslateResponse> | TranslateResponse)) => {
   return http.post('*/v1/translate', async (info) => {await delay(1000);
   
@@ -14714,6 +15281,7 @@ export const getQuizApplicationAPIMock = () => [
   getPutV1SnippetsIdMockHandler(),
   getDeleteV1SnippetsIdMockHandler(),
   getPutV1UserzProfileMockHandler(),
+  getPostV1FeedbackMockHandler(),
   getGetV1AdminBackendMockHandler(),
   getGetV1AdminBackendUserzMockHandler(),
   getPostV1AdminBackendUserzMockHandler(),
@@ -14794,6 +15362,9 @@ export const getQuizApplicationAPIMock = () => [
   getGetHealthMockHandler(),
   getGetV1AdminWorkerDailyUsersUserIdQuestionsDateMockHandler(),
   getPostV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerateMockHandler(),
+  getGetV1AdminBackendFeedbackMockHandler(),
+  getGetV1AdminBackendFeedbackIdMockHandler(),
+  getPatchV1AdminBackendFeedbackIdMockHandler(),
   getPostV1TranslateMockHandler(),
   getPostV1AudioSpeechMockHandler()
 ]

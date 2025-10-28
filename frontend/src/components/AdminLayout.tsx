@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   AppShell,
   Text,
@@ -24,6 +24,8 @@ import {
 } from '@tabler/icons-react';
 import { useAuth } from '../hooks/useAuth';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
+import FeedbackModal from './FeedbackModal';
+import { IconBug } from '@tabler/icons-react';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -33,6 +35,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [feedbackModalOpened, setFeedbackModalOpened] = useState(false);
 
   const backendNavItems = [
     {
@@ -86,6 +89,11 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       icon: <IconTrendingUp size={16} />,
       path: '/admin/stats/translation',
     },
+    {
+      label: 'Feedback Reports',
+      icon: <IconBug size={16} />,
+      path: '/admin/feedback',
+    },
   ];
 
   const handleLogout = async () => {
@@ -110,6 +118,14 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
             Quiz Admin
           </Text>
           <Group>
+            <Button
+              variant='subtle'
+              leftSection={<IconBug size={16} />}
+              onClick={() => setFeedbackModalOpened(true)}
+              data-testid='feedback-button'
+            >
+              Feedback
+            </Button>
             <Text size='sm' c='dimmed'>
               {user?.username}
             </Text>
@@ -216,6 +232,10 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       </AppShell.Navbar>
 
       <AppShell.Main>{children}</AppShell.Main>
+      <FeedbackModal
+        opened={feedbackModalOpened}
+        onClose={() => setFeedbackModalOpened(false)}
+      />
     </AppShell>
   );
 };

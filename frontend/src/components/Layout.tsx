@@ -40,10 +40,12 @@ import {
   IconQuestionMark,
   IconBookmark,
   IconLanguage,
+  IconBug,
 } from '@tabler/icons-react';
 import WorkerStatus from './WorkerStatus';
 import VersionDisplay from './VersionDisplay';
 import HelpModal from './HelpModal';
+import FeedbackModal from './FeedbackModal';
 import { getGetV1AiConversationsQueryKey } from '../api/api';
 
 interface LayoutProps {
@@ -92,6 +94,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   // Help modal state
   const [helpModalOpened, setHelpModalOpened] = useState(false);
+
+  // Feedback modal state
+  const [feedbackModalOpened, setFeedbackModalOpened] = useState(false);
 
   // Check if user has seen help modal before (first login detection)
   useEffect(() => {
@@ -462,6 +467,21 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   </ActionIcon>
                 </Tooltip>
                 <Tooltip
+                  label='Report Issue or Give Feedback'
+                  position='bottom'
+                  withArrow
+                >
+                  <ActionIcon
+                    onClick={() => setFeedbackModalOpened(true)}
+                    variant='subtle'
+                    size='lg'
+                    aria-label='Feedback'
+                    data-testid='feedback-button'
+                  >
+                    <IconBug size={20} />
+                  </ActionIcon>
+                </Tooltip>
+                <Tooltip
                   label='Manage your account settings and preferences'
                   position='bottom'
                   withArrow
@@ -639,6 +659,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <HelpModal
         opened={helpModalOpened}
         onClose={() => setHelpModalOpened(false)}
+      />
+      <FeedbackModal
+        opened={feedbackModalOpened}
+        onClose={() => setFeedbackModalOpened(false)}
       />
     </AppShell>
   );

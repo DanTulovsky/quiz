@@ -44,6 +44,38 @@ const (
 	ErrorResponseSeverityWarn  ErrorResponseSeverity = "warn"
 )
 
+// Defines values for FeedbackReportFeedbackType.
+const (
+	FeedbackReportFeedbackTypeBug            FeedbackReportFeedbackType = "bug"
+	FeedbackReportFeedbackTypeFeatureRequest FeedbackReportFeedbackType = "feature_request"
+	FeedbackReportFeedbackTypeGeneral        FeedbackReportFeedbackType = "general"
+	FeedbackReportFeedbackTypeImprovement    FeedbackReportFeedbackType = "improvement"
+)
+
+// Defines values for FeedbackReportStatus.
+const (
+	FeedbackReportStatusDismissed  FeedbackReportStatus = "dismissed"
+	FeedbackReportStatusInProgress FeedbackReportStatus = "in_progress"
+	FeedbackReportStatusNew        FeedbackReportStatus = "new"
+	FeedbackReportStatusResolved   FeedbackReportStatus = "resolved"
+)
+
+// Defines values for FeedbackSubmissionRequestFeedbackType.
+const (
+	FeedbackSubmissionRequestFeedbackTypeBug            FeedbackSubmissionRequestFeedbackType = "bug"
+	FeedbackSubmissionRequestFeedbackTypeFeatureRequest FeedbackSubmissionRequestFeedbackType = "feature_request"
+	FeedbackSubmissionRequestFeedbackTypeGeneral        FeedbackSubmissionRequestFeedbackType = "general"
+	FeedbackSubmissionRequestFeedbackTypeImprovement    FeedbackSubmissionRequestFeedbackType = "improvement"
+)
+
+// Defines values for FeedbackUpdateRequestStatus.
+const (
+	FeedbackUpdateRequestStatusDismissed  FeedbackUpdateRequestStatus = "dismissed"
+	FeedbackUpdateRequestStatusInProgress FeedbackUpdateRequestStatus = "in_progress"
+	FeedbackUpdateRequestStatusNew        FeedbackUpdateRequestStatus = "new"
+	FeedbackUpdateRequestStatusResolved   FeedbackUpdateRequestStatus = "resolved"
+)
+
 // Defines values for NotificationErrorErrorType.
 const (
 	NotificationErrorErrorTypeEmailDisabled NotificationErrorErrorType = "email_disabled"
@@ -133,6 +165,14 @@ const (
 	Busy  WorkerStatusStatus = "busy"
 	Error WorkerStatusStatus = "error"
 	Idle  WorkerStatusStatus = "idle"
+)
+
+// Defines values for GetV1AdminBackendFeedbackParamsStatus.
+const (
+	Dismissed  GetV1AdminBackendFeedbackParamsStatus = "dismissed"
+	InProgress GetV1AdminBackendFeedbackParamsStatus = "in_progress"
+	New        GetV1AdminBackendFeedbackParamsStatus = "new"
+	Resolved   GetV1AdminBackendFeedbackParamsStatus = "resolved"
 )
 
 // Defines values for GetV1AdminBackendUserzPaginatedParamsAiEnabled.
@@ -515,6 +555,111 @@ type ErrorResponse struct {
 
 // ErrorResponseSeverity Severity level of the error
 type ErrorResponseSeverity string
+
+// FeedbackListResponse defines model for FeedbackListResponse.
+type FeedbackListResponse struct {
+	// Items List of feedback reports
+	Items []FeedbackReport `json:"items"`
+
+	// Page Current page number
+	Page int `json:"page"`
+
+	// PageSize Number of items per page
+	PageSize int `json:"page_size"`
+
+	// Total Total number of feedback reports matching filters
+	Total int `json:"total"`
+}
+
+// FeedbackReport defines model for FeedbackReport.
+type FeedbackReport struct {
+	// AdminNotes Notes from admin
+	AdminNotes *string `json:"admin_notes"`
+
+	// AssignedToUserId User ID assigned to handle this feedback
+	AssignedToUserId *int64 `json:"assigned_to_user_id"`
+
+	// ContextData Context metadata as JSON object
+	ContextData *map[string]interface{} `json:"context_data,omitempty"`
+
+	// CreatedAt When the feedback was created
+	CreatedAt time.Time `json:"created_at"`
+
+	// FeedbackText Feedback or issue description
+	FeedbackText string `json:"feedback_text"`
+
+	// FeedbackType Type of feedback
+	FeedbackType FeedbackReportFeedbackType `json:"feedback_type"`
+
+	// Id Feedback report ID
+	Id int64 `json:"id"`
+
+	// ResolvedAt When the feedback was resolved
+	ResolvedAt *time.Time `json:"resolved_at"`
+
+	// ResolvedByUserId User ID who resolved the feedback
+	ResolvedByUserId *int64 `json:"resolved_by_user_id"`
+
+	// ScreenshotData Base64 encoded screenshot
+	ScreenshotData *string `json:"screenshot_data"`
+
+	// ScreenshotUrl URL to stored screenshot file
+	ScreenshotUrl *string `json:"screenshot_url"`
+
+	// Status Current status of the feedback
+	Status FeedbackReportStatus `json:"status"`
+
+	// UpdatedAt When the feedback was last updated
+	UpdatedAt time.Time `json:"updated_at"`
+
+	// UserId User ID who submitted the feedback
+	UserId int64 `json:"user_id"`
+}
+
+// FeedbackReportFeedbackType Type of feedback
+type FeedbackReportFeedbackType string
+
+// FeedbackReportStatus Current status of the feedback
+type FeedbackReportStatus string
+
+// FeedbackSubmissionRequest defines model for FeedbackSubmissionRequest.
+type FeedbackSubmissionRequest struct {
+	// ContextData Context metadata as JSON object
+	ContextData *map[string]interface{} `json:"context_data,omitempty"`
+
+	// FeedbackText Feedback or issue description
+	FeedbackText string `json:"feedback_text"`
+
+	// FeedbackType Type of feedback
+	FeedbackType *FeedbackSubmissionRequestFeedbackType `json:"feedback_type,omitempty"`
+
+	// ScreenshotData Base64 encoded screenshot (optional)
+	ScreenshotData *[]byte `json:"screenshot_data,omitempty"`
+}
+
+// FeedbackSubmissionRequestFeedbackType Type of feedback
+type FeedbackSubmissionRequestFeedbackType string
+
+// FeedbackUpdateRequest defines model for FeedbackUpdateRequest.
+type FeedbackUpdateRequest struct {
+	// AdminNotes Admin notes about this feedback
+	AdminNotes *string `json:"admin_notes,omitempty"`
+
+	// AssignedToUserId User ID to assign this feedback to
+	AssignedToUserId *int64 `json:"assigned_to_user_id,omitempty"`
+
+	// ResolvedAt When the feedback was resolved (use current time if status is resolved)
+	ResolvedAt *time.Time `json:"resolved_at,omitempty"`
+
+	// ResolvedByUserId User ID who resolved the feedback
+	ResolvedByUserId *int64 `json:"resolved_by_user_id,omitempty"`
+
+	// Status New status for the feedback
+	Status *FeedbackUpdateRequestStatus `json:"status,omitempty"`
+}
+
+// FeedbackUpdateRequestStatus New status for the feedback
+type FeedbackUpdateRequestStatus string
 
 // ForceSendNotificationResponse defines model for ForceSendNotificationResponse.
 type ForceSendNotificationResponse struct {
@@ -1585,6 +1730,27 @@ type WorkerStatusResponse struct {
 	WorkerRunning bool `json:"worker_running"`
 }
 
+// GetV1AdminBackendFeedbackParams defines parameters for GetV1AdminBackendFeedback.
+type GetV1AdminBackendFeedbackParams struct {
+	// Page Page number
+	Page *int `form:"page,omitempty" json:"page,omitempty"`
+
+	// PageSize Number of items per page
+	PageSize *int `form:"page_size,omitempty" json:"page_size,omitempty"`
+
+	// Status Filter by status
+	Status *GetV1AdminBackendFeedbackParamsStatus `form:"status,omitempty" json:"status,omitempty"`
+
+	// FeedbackType Filter by feedback type
+	FeedbackType *string `form:"feedback_type,omitempty" json:"feedback_type,omitempty"`
+
+	// UserId Filter by user ID
+	UserId *int `form:"user_id,omitempty" json:"user_id,omitempty"`
+}
+
+// GetV1AdminBackendFeedbackParamsStatus defines parameters for GetV1AdminBackendFeedback.
+type GetV1AdminBackendFeedbackParamsStatus string
+
 // GetV1AdminBackendQuestionsParams defines parameters for GetV1AdminBackendQuestions.
 type GetV1AdminBackendQuestionsParams struct {
 	// Page Page number (1-based)
@@ -1986,6 +2152,9 @@ type GetV1StoryParams struct {
 	IncludeArchived *bool `form:"include_archived,omitempty" json:"include_archived,omitempty"`
 }
 
+// PatchV1AdminBackendFeedbackIdJSONRequestBody defines body for PatchV1AdminBackendFeedbackId for application/json ContentType.
+type PatchV1AdminBackendFeedbackIdJSONRequestBody = FeedbackUpdateRequest
+
 // PutV1AdminBackendQuestionsIdJSONRequestBody defines body for PutV1AdminBackendQuestionsId for application/json ContentType.
 type PutV1AdminBackendQuestionsIdJSONRequestBody PutV1AdminBackendQuestionsIdJSONBody
 
@@ -2042,6 +2211,9 @@ type PostV1AuthSignupJSONRequestBody = UserCreateRequest
 
 // PostV1DailyQuestionsDateAnswerQuestionIdJSONRequestBody defines body for PostV1DailyQuestionsDateAnswerQuestionId for application/json ContentType.
 type PostV1DailyQuestionsDateAnswerQuestionIdJSONRequestBody PostV1DailyQuestionsDateAnswerQuestionIdJSONBody
+
+// PostV1FeedbackJSONRequestBody defines body for PostV1Feedback for application/json ContentType.
+type PostV1FeedbackJSONRequestBody = FeedbackSubmissionRequest
 
 // PutV1PreferencesLearningJSONRequestBody defines body for PutV1PreferencesLearning for application/json ContentType.
 type PutV1PreferencesLearningJSONRequestBody = UserLearningPreferences

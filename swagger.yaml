@@ -1625,6 +1625,40 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /v1/feedback:
+    post:
+      tags:
+        - Feedback
+      summary: Submit feedback or report an issue
+      description: Submit feedback or bug report with optional screenshot and context data
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FeedbackSubmissionRequest"
+      responses:
+        "201":
+          description: Feedback submitted successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FeedbackReport"
+        "400":
+          description: Invalid request format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /v1/admin/backend:
     get:
       tags:
@@ -5226,6 +5260,148 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /v1/admin/backend/feedback:
+    get:
+      tags:
+        - Admin
+        - Feedback
+      summary: Get all feedback reports (paginated)
+      description: Retrieve feedback reports with filtering and pagination (admin only)
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+          description: Page number
+        - name: page_size
+          in: query
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+            minimum: 1
+          description: Number of items per page
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [new, in_progress, resolved, dismissed]
+          description: Filter by status
+        - name: feedback_type
+          in: query
+          schema:
+            type: string
+          description: Filter by feedback type
+        - name: user_id
+          in: query
+          schema:
+            type: integer
+          description: Filter by user ID
+      responses:
+        "200":
+          description: List of feedback reports
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FeedbackListResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden (admin only)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/admin/backend/feedback/{id}:
+    get:
+      tags:
+        - Admin
+        - Feedback
+      summary: Get feedback report details
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Feedback report ID
+      responses:
+        "200":
+          description: Feedback report details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FeedbackReport"
+        "404":
+          description: Feedback report not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    patch:
+      tags:
+        - Admin
+        - Feedback
+      summary: Update feedback report status
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Feedback report ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FeedbackUpdateRequest"
+      responses:
+        "200":
+          description: Updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FeedbackReport"
+        "404":
+          description: Feedback report not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden (admin only)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /v1/translate:
     post:
       tags:
@@ -5439,8 +5615,6 @@ components:
         conversation_title:
           type: string
           description: Title of the conversation (optional, included in search results)
-
-
 
     LoginRequest:
       type: object
@@ -6077,6 +6251,149 @@ components:
           minimum: 1
           maximum: 5
           description: User's confidence level (1-5, optional)
+
+    FeedbackSubmissionRequest:
+      type: object
+      required:
+        - feedback_text
+      properties:
+        feedback_text:
+          type: string
+          maxLength: 5000
+          description: Feedback or issue description
+        feedback_type:
+          type: string
+          enum: [bug, feature_request, general, improvement]
+          default: general
+          description: Type of feedback
+        context_data:
+          type: object
+          description: Context metadata as JSON object
+          additionalProperties: true
+        screenshot_data:
+          type: string
+          description: Base64 encoded screenshot (optional)
+          format: byte
+
+    FeedbackReport:
+      type: object
+      required:
+        - id
+        - user_id
+        - feedback_text
+        - feedback_type
+        - status
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Feedback report ID
+        user_id:
+          type: integer
+          format: int64
+          description: User ID who submitted the feedback
+        feedback_text:
+          type: string
+          maxLength: 5000
+          description: Feedback or issue description
+        feedback_type:
+          type: string
+          enum: [bug, feature_request, general, improvement]
+          description: Type of feedback
+        context_data:
+          type: object
+          description: Context metadata as JSON object
+          additionalProperties: true
+        screenshot_data:
+          type: string
+          nullable: true
+          description: Base64 encoded screenshot
+        screenshot_url:
+          type: string
+          nullable: true
+          description: URL to stored screenshot file
+        status:
+          type: string
+          enum: [new, in_progress, resolved, dismissed]
+          description: Current status of the feedback
+        admin_notes:
+          type: string
+          nullable: true
+          description: Notes from admin
+        assigned_to_user_id:
+          type: integer
+          nullable: true
+          format: int64
+          description: User ID assigned to handle this feedback
+        resolved_at:
+          type: string
+          nullable: true
+          format: date-time
+          description: When the feedback was resolved
+        resolved_by_user_id:
+          type: integer
+          nullable: true
+          format: int64
+          description: User ID who resolved the feedback
+        created_at:
+          type: string
+          format: date-time
+          description: When the feedback was created
+        updated_at:
+          type: string
+          format: date-time
+          description: When the feedback was last updated
+
+    FeedbackListResponse:
+      type: object
+      required:
+        - items
+        - total
+        - page
+        - page_size
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/FeedbackReport"
+          description: List of feedback reports
+        total:
+          type: integer
+          minimum: 0
+          description: Total number of feedback reports matching filters
+        page:
+          type: integer
+          minimum: 1
+          description: Current page number
+        page_size:
+          type: integer
+          minimum: 1
+          description: Number of items per page
+
+    FeedbackUpdateRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [new, in_progress, resolved, dismissed]
+          description: New status for the feedback
+        admin_notes:
+          type: string
+          description: Admin notes about this feedback
+        assigned_to_user_id:
+          type: integer
+          format: int64
+          description: User ID to assign this feedback to
+        resolved_at:
+          type: string
+          format: date-time
+          description: When the feedback was resolved (use current time if status is resolved)
+        resolved_by_user_id:
+          type: integer
+          format: int64
+          description: User ID who resolved the feedback
 
     GeneratingResponse:
       type: object
@@ -7342,7 +7659,13 @@ components:
           type: array
           items:
             type: string
-          example: ["A mysterious letter", "A phone call", "A visit from a stranger", "A newspaper article"]
+          example:
+            [
+              "A mysterious letter",
+              "A phone call",
+              "A visit from a stranger",
+              "A newspaper article",
+            ]
         correct_answer_index:
           type: integer
           minimum: 0

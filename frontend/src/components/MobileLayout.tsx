@@ -27,8 +27,10 @@ import {
   IconNotes,
   IconLanguageHiragana,
   IconSettings,
+  IconBug,
 } from '@tabler/icons-react';
 import { useAuth } from '../hooks/useAuth';
+import FeedbackModal from './FeedbackModal';
 import { useMobileDetection } from '../hooks/useMobileDetection';
 import { useTheme } from '../contexts/ThemeContext';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -47,6 +49,10 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
   const { colorScheme, setColorScheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
+  const [
+    feedbackModalOpened,
+    { open: openFeedbackModal, close: closeFeedbackModal },
+  ] = useDisclosure(false);
 
   const isDark = colorScheme === 'dark';
   const toggleTheme = () => {
@@ -244,6 +250,13 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
 
           <Group>
             <ActionIcon
+              variant='subtle'
+              onClick={openFeedbackModal}
+              title='Feedback'
+            >
+              <IconBug size={18} />
+            </ActionIcon>
+            <ActionIcon
               variant='outline'
               color={isDark ? 'yellow' : 'blue'}
               onClick={() => toggleTheme()}
@@ -262,6 +275,10 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
 
       <AppShell.Main>{children}</AppShell.Main>
       <TranslationOverlay />
+      <FeedbackModal
+        opened={feedbackModalOpened}
+        onClose={closeFeedbackModal}
+      />
     </AppShell>
   );
 };

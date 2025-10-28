@@ -30,6 +30,7 @@ import AnalyticsPage from './pages/admin/AnalyticsPage';
 import NotificationsPage from './pages/admin/NotificationsPage';
 import DailyAdminPage from './pages/admin/DailyAdminPage';
 import TranslationUsagePage from './pages/admin/TranslationUsagePage';
+import FeedbackManagementPage from './pages/admin/FeedbackManagementPage';
 import NotFoundPage from './pages/NotFoundPage';
 import Layout from './components/Layout';
 import AdminLayout from './components/AdminLayout';
@@ -472,6 +473,19 @@ function App() {
             user ? (
               <AdminLayout>
                 <TranslationUsagePage />
+              </AdminLayout>
+            ) : (
+              <Navigate to='/login' />
+            )
+          }
+        />
+
+        <Route
+          path='/admin/feedback'
+          element={
+            user ? (
+              <AdminLayout>
+                <FeedbackManagementPage />
               </AdminLayout>
             ) : (
               <Navigate to='/login' />

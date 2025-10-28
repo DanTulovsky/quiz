@@ -184,6 +184,8 @@ func NewRouter(
 	adminHandler.storyService = storyService
 	userAdminHandler := NewUserAdminHandler(userService, cfg, logger)
 	verbConjugationHandler := NewVerbConjugationHandler(logger)
+	feedbackService := services.NewFeedbackService(userService.GetDB(), logger)
+	feedbackHandler := NewFeedbackHandler(feedbackService, logger)
 
 	// V1 routes (matching swagger spec)
 	v1 := router.Group("/v1")
@@ -238,6 +240,9 @@ func NewRouter(
 
 		// Translation routes
 		v1.POST("/translate", middleware.RequireAuth(), translationHandler.TranslateText)
+
+		// Feedback routes
+		v1.POST("/feedback", middleware.RequireAuth(), feedbackHandler.SubmitFeedback)
 
 		// Snippets routes
 		v1.POST("/snippets", middleware.RequireAuth(), middleware.RequestValidationMiddleware(logger), snippetsHandler.CreateSnippet)
@@ -361,6 +366,9 @@ func NewRouter(
 			{
 				// Backend admin page
 				backend.GET("", adminHandler.GetBackendAdminPage)
+				// Feedback management (admin only)
+				backend.GET("/feedback", feedbackHandler.ListFeedback)
+				backend.PATCH("/feedback/:id", feedbackHandler.UpdateFeedback)
 				// User management (admin only)
 				backend.GET("/userz", userAdminHandler.GetAllUsers)
 				backend.GET("/userz/paginated", userAdminHandler.GetUsersPaginated)
