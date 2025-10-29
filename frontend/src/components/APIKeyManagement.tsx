@@ -66,7 +66,11 @@ export const APIKeyManagement: React.FC = () => {
   const [keyToTest, setKeyToTest] = useState<APIKey | null>(null);
   const [testFullKey, setTestFullKey] = useState('');
   const [testing, setTesting] = useState(false);
-  const [testResult, setTestResult] = useState<null | { ok: boolean; status: number; body?: any }>(null);
+  const [testResult, setTestResult] = useState<null | {
+    ok: boolean;
+    status: number;
+    body?: any;
+  }>(null);
 
   const fetchAPIKeys = async () => {
     try {
@@ -194,7 +198,8 @@ export const APIKeyManagement: React.FC = () => {
     setTestResult(null);
     try {
       const origin = window.location.origin;
-      const endpoint = mode === 'read' ? '/v1/api-keys/test-read' : '/v1/api-keys/test-write';
+      const endpoint =
+        mode === 'read' ? '/v1/api-keys/test-read' : '/v1/api-keys/test-write';
       const url = `${origin}${endpoint}`;
       const headers: Record<string, string> = {
         Authorization: `Bearer ${testFullKey.trim()}`,
@@ -222,7 +227,8 @@ export const APIKeyManagement: React.FC = () => {
 
   const curlSnippet = (mode: 'read' | 'write') => {
     const origin = window.location.origin;
-    const ep = mode === 'read' ? '/v1/api-keys/test-read' : '/v1/api-keys/test-write';
+    const ep =
+      mode === 'read' ? '/v1/api-keys/test-read' : '/v1/api-keys/test-write';
     const key = testFullKey.trim() || '<YOUR_API_KEY>';
     if (mode === 'read') {
       return `curl -sS -X GET "${origin}${ep}" -H "Authorization: Bearer ${key}"`;
@@ -298,27 +304,31 @@ export const APIKeyManagement: React.FC = () => {
                   <Table.Td>{formatDate(key.last_used_at)}</Table.Td>
                   <Table.Td>{formatDate(key.created_at)}</Table.Td>
                   <Table.Td>
-                    <Group gap="xs">
+                    <Group gap='xs'>
                       <Tooltip label='Test this key'>
-                        <Button size='xs' variant='light' onClick={() => {
-                          setKeyToTest(key);
-                          const prefill = prefillFullKeyIfAvailable(key);
-                          setTestFullKey(prefill);
-                          setTestResult(null);
-                          setTestModalOpen(true);
-                        }}>
+                        <Button
+                          size='xs'
+                          variant='light'
+                          onClick={() => {
+                            setKeyToTest(key);
+                            const prefill = prefillFullKeyIfAvailable(key);
+                            setTestFullKey(prefill);
+                            setTestResult(null);
+                            setTestModalOpen(true);
+                          }}
+                        >
                           Test
                         </Button>
                       </Tooltip>
-                    <Tooltip label='Delete key'>
-                      <ActionIcon
-                        color='red'
-                        variant='subtle'
-                        onClick={() => handleDeleteKey(key)}
-                      >
-                        <IconTrash size={16} />
-                      </ActionIcon>
-                    </Tooltip>
+                      <Tooltip label='Delete key'>
+                        <ActionIcon
+                          color='red'
+                          variant='subtle'
+                          onClick={() => handleDeleteKey(key)}
+                        >
+                          <IconTrash size={16} />
+                        </ActionIcon>
+                      </Tooltip>
                     </Group>
                   </Table.Td>
                 </Table.Tr>
@@ -466,7 +476,10 @@ export const APIKeyManagement: React.FC = () => {
         size='lg'
       >
         <Stack gap='md'>
-          <Text size='sm'>Paste the full API key to test. Requests ignore cookies and use Authorization: Bearer.</Text>
+          <Text size='sm'>
+            Paste the full API key to test. Requests ignore cookies and use
+            Authorization: Bearer.
+          </Text>
           <TextInput
             label='Full API Key'
             placeholder='qapp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
@@ -474,33 +487,64 @@ export const APIKeyManagement: React.FC = () => {
             onChange={e => setTestFullKey(e.currentTarget.value)}
           />
           <Group>
-            <Button onClick={() => runTest('read')} loading={testing} variant='default'>Test Read (GET)</Button>
-            <Button onClick={() => runTest('write')} loading={testing}>Test Write (POST)</Button>
+            <Button
+              onClick={() => runTest('read')}
+              loading={testing}
+              variant='default'
+            >
+              Test Read (GET)
+            </Button>
+            <Button onClick={() => runTest('write')} loading={testing}>
+              Test Write (POST)
+            </Button>
           </Group>
           {testResult && (
-            <Alert color={testResult.ok ? 'green' : 'red'} title={`HTTP ${testResult.status}`}>
-              <Code block style={{whiteSpace: 'pre-wrap'}}>{typeof testResult.body === 'string' ? testResult.body : JSON.stringify(testResult.body, null, 2)}</Code>
+            <Alert
+              color={testResult.ok ? 'green' : 'red'}
+              title={`HTTP ${testResult.status}`}
+            >
+              <Code block style={{ whiteSpace: 'pre-wrap' }}>
+                {typeof testResult.body === 'string'
+                  ? testResult.body
+                  : JSON.stringify(testResult.body, null, 2)}
+              </Code>
             </Alert>
           )}
           <Stack gap='xs'>
-            <Text size='sm' fw={500}>curl (read):</Text>
+            <Text size='sm' fw={500}>
+              curl (read):
+            </Text>
             <Group gap='xs'>
-              <Code style={{flex:1, wordBreak:'break-all', padding:'8px'}}>{curlSnippet('read')}</Code>
+              <Code style={{ flex: 1, wordBreak: 'break-all', padding: '8px' }}>
+                {curlSnippet('read')}
+              </Code>
               <CopyButton value={curlSnippet('read')}>
-                {({copied, copy}) => (
-                  <ActionIcon color={copied ? 'teal' : 'gray'} variant='subtle' onClick={copy}>
-                    {copied ? <IconCheck size={16}/> : <IconCopy size={16}/>}
+                {({ copied, copy }) => (
+                  <ActionIcon
+                    color={copied ? 'teal' : 'gray'}
+                    variant='subtle'
+                    onClick={copy}
+                  >
+                    {copied ? <IconCheck size={16} /> : <IconCopy size={16} />}
                   </ActionIcon>
                 )}
               </CopyButton>
             </Group>
-            <Text size='sm' fw={500} mt='sm'>curl (write):</Text>
+            <Text size='sm' fw={500} mt='sm'>
+              curl (write):
+            </Text>
             <Group gap='xs'>
-              <Code style={{flex:1, wordBreak:'break-all', padding:'8px'}}>{curlSnippet('write')}</Code>
+              <Code style={{ flex: 1, wordBreak: 'break-all', padding: '8px' }}>
+                {curlSnippet('write')}
+              </Code>
               <CopyButton value={curlSnippet('write')}>
-                {({copied, copy}) => (
-                  <ActionIcon color={copied ? 'teal' : 'gray'} variant='subtle' onClick={copy}>
-                    {copied ? <IconCheck size={16}/> : <IconCopy size={16}/>}
+                {({ copied, copy }) => (
+                  <ActionIcon
+                    color={copied ? 'teal' : 'gray'}
+                    variant='subtle'
+                    onClick={copy}
+                  >
+                    {copied ? <IconCheck size={16} /> : <IconCopy size={16} />}
                   </ActionIcon>
                 )}
               </CopyButton>

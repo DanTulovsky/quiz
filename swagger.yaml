@@ -4646,12 +4646,40 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /v1/word-of-day:
+    get:
+      tags:
+        - Word of the Day
+      summary: Get today's word of the day
+      description: Returns the word of the day for today when the date is omitted.
+      security:
+        - cookieAuth: []
+      responses:
+        "200":
+          description: Today's word of the day retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WordOfTheDayDisplay"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Failed to retrieve word of the day
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /v1/word-of-day/{date}/embed:
     get:
       tags:
         - Word of the Day
       summary: Get embeddable word of the day HTML
-      description: Retrieve word of the day as HTML for embedding in an iframe. This is a public endpoint that requires user_id as a query parameter.
+      description: Retrieve word of the day as HTML for embedding in an iframe. Public endpoint that accepts user_id as a query parameter.
       parameters:
         - name: date
           in: path
@@ -4909,7 +4937,7 @@ paths:
             type: integer
             format: int64
       responses:
-        "200":
+        "204":
           description: Story deleted successfully
         "404":
           description: Story not found

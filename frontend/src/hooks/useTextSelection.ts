@@ -189,6 +189,18 @@ export const useTextSelection = () => {
         return;
       }
 
+      // Allowlist: only show popup within approved content areas
+      // - Explicit allow attribute
+      // - Reading passage text
+      // - Selectable text regions used in content pages
+      const allowedContainer = selectedElement?.closest(
+        '[data-allow-translate="true"], .reading-passage-text, [data-selectable-text]'
+      );
+      if (!allowedContainer) {
+        setIsVisible(false);
+        return;
+      }
+
       // Check if selection is within a Fabric.js canvas (annotation tool)
       // This includes the canvas elements and any Fabric.js text editing elements
       if (
@@ -253,7 +265,7 @@ export const useTextSelection = () => {
     const debouncedHandler = () => {
       clearTimeout(debounceTimer);
       // Small debounce to ensure selection is stable after mouse/touch release
-      debounceTimer = setTimeout(handleSelectionChange, 100);
+      debounceTimer = setTimeout(handleSelectionChange, 50);
     };
 
     // Track mouse down events
@@ -284,7 +296,7 @@ export const useTextSelection = () => {
       // Check if there's actually a selection before handling
       const sel = window.getSelection();
       if (sel && sel.rangeCount > 0 && sel.toString().trim().length > 1) {
-        debounceTimer = setTimeout(handleSelectionChange, 100);
+        debounceTimer = setTimeout(handleSelectionChange, 50);
       }
     };
 

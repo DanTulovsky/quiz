@@ -480,7 +480,7 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
 
             {/* For vocabulary, show sentence context */}
             {question.type === 'vocabulary' && question.content?.sentence && (
-              <>
+              <div data-allow-translate='true'>
                 {/* Vocabulary sentence with snippet highlighting */}
                 <SnippetHighlighter
                   text={question.content.sentence}
@@ -490,35 +490,37 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
                   componentProps={{
                     size: 'lg',
                     'data-testid': 'vocab-sentence',
-                    style: { marginBottom: 4 },
+                    style: { marginBottom: 8 },
                   }}
                 />
                 {/* Prompt: What does X mean in this context? */}
                 <Text
                   size='sm'
                   c='dimmed'
-                  mt={-6}
-                  mb={8}
+                  mt={6}
+                  mb={10}
                   style={{ fontWeight: 500 }}
                 >
                   What does <strong>{question.content.question}</strong> mean in
                   this context?
                 </Text>
-              </>
+              </div>
             )}
 
             {/* For other question types (quiz, etc.) */}
             {question.type !== 'reading_comprehension' &&
               question.type !== 'vocabulary' && (
-                <SnippetHighlighter
-                  text={question.content?.question || ''}
-                  snippets={snippets}
-                  component={Text}
-                  componentProps={{
-                    size: 'lg',
-                    fw: 500,
-                  }}
-                />
+                <div data-allow-translate='true'>
+                  <SnippetHighlighter
+                    text={question.content?.question || ''}
+                    snippets={snippets}
+                    component={Text}
+                    componentProps={{
+                      size: 'lg',
+                      fw: 500,
+                    }}
+                  />
+                </div>
               )}
           </Stack>
         </Paper>

@@ -161,6 +161,75 @@ func (suite *WordOfTheDayIntegrationTestSuite) TestGetWordOfTheDay_CreatesNewWor
 	}
 }
 
+// Helper: create an API key for a user and return the raw key
+func (suite *WordOfTheDayIntegrationTestSuite) createAPIKeyRaw(userID int, name string) string {
+	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+	svc := services.NewAuthAPIKeyService(suite.db, logger)
+	_, raw, err := svc.CreateAPIKey(context.Background(), userID, name, "readonly")
+	require.NoError(suite.T(), err)
+	require.NotEmpty(suite.T(), raw)
+	return raw
+}
+
+func (suite *WordOfTheDayIntegrationTestSuite) TestGetWordOfTheDayToday_Session() {
+	user := suite.createTestUser("worduser_today_sess", "italian", "B1")
+	session := suite.loginUser(user.Username, "password123")
+
+	req, _ := http.NewRequest("GET", "/v1/word-of-day", nil)
+	req.AddCookie(&http.Cookie{Name: "quiz-session", Value: session})
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	// Accept 200 or 500 depending on seed data availability
+	if w.Code == http.StatusOK {
+		var word models.WordOfTheDayDisplay
+		err := json.Unmarshal(w.Body.Bytes(), &word)
+		require.NoError(suite.T(), err)
+		assert.NotEmpty(suite.T(), word.Date)
+	} else {
+		assert.Equal(suite.T(), http.StatusInternalServerError, w.Code)
+	}
+}
+
+func (suite *WordOfTheDayIntegrationTestSuite) TestGetWordOfTheDayToday_APIKey() {
+	user := suite.createTestUser("worduser_today_api", "italian", "B1")
+	rawKey := suite.createAPIKeyRaw(user.ID, "test-key")
+
+	req, _ := http.NewRequest("GET", "/v1/word-of-day", nil)
+	req.Header.Set("Authorization", "Bearer "+rawKey)
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	if w.Code == http.StatusOK {
+		var word models.WordOfTheDayDisplay
+		err := json.Unmarshal(w.Body.Bytes(), &word)
+		require.NoError(suite.T(), err)
+		assert.NotEmpty(suite.T(), word.Date)
+	} else {
+		assert.Equal(suite.T(), http.StatusInternalServerError, w.Code)
+	}
+}
+
+func (suite *WordOfTheDayIntegrationTestSuite) TestGetWordOfTheDay_ByDate_APIKey() {
+	user := suite.createTestUser("worduser_date_api", "italian", "B1")
+	rawKey := suite.createAPIKeyRaw(user.ID, "test-key-date")
+	today := time.Now().Format("2006-01-02")
+
+	req, _ := http.NewRequest("GET", fmt.Sprintf("/v1/word-of-day/%s", today), nil)
+	req.Header.Set("Authorization", "Bearer "+rawKey)
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	if w.Code == http.StatusOK {
+		var word models.WordOfTheDayDisplay
+		err := json.Unmarshal(w.Body.Bytes(), &word)
+		require.NoError(suite.T(), err)
+		assert.Equal(suite.T(), today, word.Date.Format("2006-01-02"))
+	} else {
+		assert.Equal(suite.T(), http.StatusInternalServerError, w.Code)
+	}
+}
+
 func (suite *WordOfTheDayIntegrationTestSuite) TestGetWordOfTheDay_ReturnsSameWordForSameDate() {
 	user := suite.createTestUser("worduser2", "italian", "B1")
 	session := suite.loginUser(user.Username, "password123")
@@ -211,14 +280,15 @@ func (suite *WordOfTheDayIntegrationTestSuite) TestGetWordOfTheDay_Unauthorized(
 	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code)
 }
 
-func (suite *WordOfTheDayIntegrationTestSuite) TestGetWordOfTheDayEmbed_HTML() {
+func (suite *WordOfTheDayIntegrationTestSuite) TestGetWordOfTheDayEmbed_HTML_WithAuth() {
 	user := suite.createTestUser("worduser3", "italian", "B1")
+	session := suite.loginUser(user.Username, "password123")
 
 	today := time.Now().Format("2006-01-02")
 
-	// Test the embed endpoint - it will try to create a word automatically
-	// If it fails due to no content, we'll just verify the endpoint structure is correct
-	req, _ := http.NewRequest("GET", fmt.Sprintf("/v1/word-of-day/%s/embed?user_id=%d", today, user.ID), nil)
+	// Authenticated request without user_id parameter
+	req, _ := http.NewRequest("GET", fmt.Sprintf("/v1/word-of-day/%s/embed", today), nil)
+	req.AddCookie(&http.Cookie{Name: "quiz-session", Value: session})
 	w := httptest.NewRecorder()
 	suite.Router.ServeHTTP(w, req)
 
@@ -226,6 +296,15 @@ func (suite *WordOfTheDayIntegrationTestSuite) TestGetWordOfTheDayEmbed_HTML() {
 	assert.Contains(suite.T(), w.Header().Get("Content-Type"), "text/html")
 	// Either success with word HTML or error HTML
 	assert.True(suite.T(), w.Code == http.StatusOK || w.Code == http.StatusInternalServerError)
+}
+
+func (suite *WordOfTheDayIntegrationTestSuite) TestGetWordOfTheDayEmbed_Unauthorized() {
+	today := time.Now().Format("2006-01-02")
+	req, _ := http.NewRequest("GET", fmt.Sprintf("/v1/word-of-day/%s/embed", today), nil)
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code)
 }
 
 func (suite *WordOfTheDayIntegrationTestSuite) TestGetWordHistory() {

@@ -164,7 +164,7 @@ test.describe('Comprehensive API Tests', () => {
   let testConversationsData: TestConversationsData;
   let testStoriesData: TestStoriesData;
   let testFeedbackData: TestFeedbackDataCollection;
-  let testApiKeysData: Record<string, { id: number; username: string; key_name: string; key_prefix: string; permission_level: string; created_at: string }>;
+  let testApiKeysData: Record<string, {id: number; username: string; key_name: string; key_prefix: string; permission_level: string; created_at: string}>;
 
   test.beforeAll(async () => {
     // Load swagger.yaml
@@ -324,7 +324,8 @@ test.describe('Comprehensive API Tests', () => {
       path.includes('/health') ||
       path.includes('/clear-database') ||
       path.includes('/clear-user-data') ||
-      path.includes('/test-email');
+      path.includes('/test-email') ||
+      path.includes('/api-keys/test-');
 
     if (shouldSkip) return true;
 
@@ -2049,7 +2050,7 @@ test.describe('Comprehensive API Tests', () => {
     return testCase.requestBody;
   }
 
-  async function logResponse(testCase: TestCase, response: any, userType: string, username: string, actualUrl?: string) {
+  async function logResponse(testCase: TestCase, response: any, userType: string, username: string, actualUrl?: string, requestHeaders?: Record<string, any>) {
     const statusCode = response.status().toString();
     const responseBody = await response.text();
     const urlToLog = actualUrl || testCase.path;
@@ -2069,10 +2070,12 @@ test.describe('Comprehensive API Tests', () => {
       console.log(`\n❌ UNEXPECTED STATUS CODE:`);
       console.log(`  Endpoint: ${testCase.method} ${urlToLog}`);
       console.log(`  User: ${userType} (${username})`);
+      console.log(`  Request Headers:`, JSON.stringify(requestHeaders || {}, null, 2));
       console.log(`  Payload: ${JSON.stringify(testCase.requestBody, null, 2)}`);
       console.log(`  Expected Status Codes: ${testCase.expectedStatusCodes.join(', ')}`);
       console.log(`  Actual Status Code: ${statusCode}`);
       console.log(`  Response Body: ${responseBody}`);
+      console.log(`  Response Headers:`, JSON.stringify(response.headers(), null, 2));
       console.log(``);
 
       // Fail the test on unexpected status code
@@ -2306,7 +2309,7 @@ test.describe('Comprehensive API Tests', () => {
         const response = await request[testCase.method.toLowerCase()](url.toString(), requestOptions);
 
         // Log the response details and assert status
-        await logResponse(testCase, response, isStoryEndpoint ? 'Story Test User' : 'Regular User', currentUser.username, url.toString());
+        await logResponse(testCase, response, isStoryEndpoint ? 'Story Test User' : 'Regular User', currentUser.username, url.toString(), requestOptions.headers);
         await assertStatus(response, testCase.expectedStatusCodes.map(code => parseInt(code, 10)), {
           method: testCase.method,
           url: url.toString(),
@@ -2374,6 +2377,9 @@ test.describe('Comprehensive API Tests', () => {
     });
 
     test('should test public endpoints without authentication', async ({request}) => {
+      // Clear any existing cookies/session before testing public endpoints
+      await request.get(`${baseURL}/v1/auth/logout`, {failOnStatusCode: false});
+
       const publicCases = testCases.filter(testCase => !testCase.requiresAuth);
 
       for (const testCase of publicCases) {
@@ -2419,7 +2425,7 @@ test.describe('Comprehensive API Tests', () => {
 
         const response = await request[testCase.method.toLowerCase()](url.toString(), requestOptions);
 
-        await logResponse(testCase, response, 'Admin User', 'apitestadmin', url.toString());
+        await logResponse(testCase, response, 'Admin User', 'apitestadmin', url.toString(), requestOptions.headers);
         await assertStatus(response, testCase.expectedStatusCodes.map(code => parseInt(code, 10)), {
           method: testCase.method,
           url: url.toString(),
@@ -2485,7 +2491,7 @@ test.describe('Comprehensive API Tests', () => {
 
         const response = await request[testCase.method.toLowerCase()](url.toString(), requestOptions);
 
-        await logResponse(testCase, response, 'Regular User', 'apitestuser', url.toString());
+        await logResponse(testCase, response, 'Regular User', 'apitestuser', url.toString(), requestOptions.headers);
         await assertStatus(response, testCase.expectedStatusCodes.map(code => parseInt(code, 10)), {
           method: testCase.method,
           url: url.toString(),
@@ -2623,7 +2629,7 @@ test.describe('Comprehensive API Tests', () => {
           }
         }
 
-        await logResponse(testCase, response, 'Admin User', 'apitestadmin', url.toString());
+        await logResponse(testCase, response, 'Admin User', 'apitestadmin', url.toString(), requestOptions.headers);
         await assertStatus(response, testCase.expectedStatusCodes.map(code => parseInt(code, 10)), {
           method: testCase.method,
           url: url.toString(),
@@ -2704,7 +2710,7 @@ test.describe('Comprehensive API Tests', () => {
           }
         }
 
-        await logResponse(testCase, response, 'Admin User', 'apitestadmin', url.toString());
+        await logResponse(testCase, response, 'Admin User', 'apitestadmin', url.toString(), requestOptions.headers);
         await assertStatus(response, testCase.expectedStatusCodes.map(code => parseInt(code, 10)), {
           method: testCase.method,
           url: url.toString(),
@@ -2752,7 +2758,7 @@ test.describe('Comprehensive API Tests', () => {
         const response = await request[testCase.method.toLowerCase()](url.toString(), requestOptions);
 
         // Log the response details
-        await logResponse(testCase, response, 'Admin User', 'apitestadmin', url.toString());
+        await logResponse(testCase, response, 'Admin User', 'apitestadmin', url.toString(), requestOptions.headers);
       }
     });
 
@@ -2913,7 +2919,7 @@ test.describe('Comprehensive API Tests', () => {
         }
 
         // Log the response details
-        await logResponse(testCase, response, 'Admin User', 'apitestadmin', url.toString());
+        await logResponse(testCase, response, 'Admin User', 'apitestadmin', url.toString(), requestOptions.headers);
       }
     });
   });
@@ -3060,6 +3066,57 @@ test.describe('Comprehensive API Tests', () => {
     });
   });
 
+  test.describe('API Key Auth Tests', () => {
+    async function createApiKey(request: any, username: string, level: 'readonly' | 'full'): Promise<string> {
+      const sessionCookie = await loginUser(request, {username, password: 'password'});
+      const createResp = await request.post(`${baseURL}/v1/api-keys`, {
+        headers: {
+          'Cookie': sessionCookie,
+          'Content-Type': 'application/json',
+        },
+        data: {key_name: `e2e-${level}`, permission_level: level},
+      });
+      await assertStatus(createResp, 201, {method: 'POST', url: `${baseURL}/v1/api-keys`});
+      const body = await createResp.json();
+      return body.key as string;
+    }
+
+    test('should validate readonly and full API keys against test endpoints', async ({request, context}) => {
+      await request.get(`${baseURL}/v1/auth/logout`, {failOnStatusCode: false});
+
+      const readonlyKey = await createApiKey(request, REGULAR_USER.username, 'readonly');
+      const fullKey = await createApiKey(request, REGULAR_USER.username, 'full');
+
+      const readResp = await request.get(`${baseURL}/v1/api-keys/test-read`, {
+        headers: {Authorization: `Bearer ${readonlyKey}`},
+      });
+      await assertStatus(readResp, 200, {method: 'GET', url: `${baseURL}/v1/api-keys/test-read`});
+
+      const writeForbidden = await request.post(`${baseURL}/v1/api-keys/test-write`, {
+        headers: {Authorization: `Bearer ${readonlyKey}`, 'Content-Type': 'application/json'},
+        data: {},
+      });
+      await assertStatus(writeForbidden, 403, {method: 'POST', url: `${baseURL}/v1/api-keys/test-write`});
+
+      const readWithFull = await request.get(`${baseURL}/v1/api-keys/test-read`, {
+        headers: {Authorization: `Bearer ${fullKey}`},
+      });
+      await assertStatus(readWithFull, 200, {method: 'GET', url: `${baseURL}/v1/api-keys/test-read`});
+
+      const writeWithFull = await request.post(`${baseURL}/v1/api-keys/test-write`, {
+        headers: {Authorization: `Bearer ${fullKey}`, 'Content-Type': 'application/json'},
+        data: {},
+      });
+      await assertStatus(writeWithFull, 200, {method: 'POST', url: `${baseURL}/v1/api-keys/test-write`});
+
+      // Create a new page with a fresh context (no cookies) to test unauthenticated access
+      const newPage = await context.newPage();
+      const unauth = await newPage.request.get(`${baseURL}/v1/api-keys/test-read`);
+      await assertStatus(unauth, 401, {method: 'GET', url: `${baseURL}/v1/api-keys/test-read`});
+      await newPage.close();
+    });
+  });
+
   test.describe('Admin Destructive Operations', () => {
     test('should test DELETE feedback by status (destructive operation)', async ({request}) => {
       const adminSession = await loginUser(request, ADMIN_USER);
@@ -3109,54 +3166,6 @@ test.describe('Comprehensive API Tests', () => {
       });
       expect(clearDatabaseResponse.status()).toBe(200);
       console.log('✅ Clear database endpoint tested');
-    });
-  });
-
-  test.describe('API Key Auth Tests', () => {
-    async function createApiKey(request: any, username: string, level: 'readonly' | 'full'): Promise<string> {
-      const sessionCookie = await loginUser(request, { username, password: 'password' });
-      const createResp = await request.post(`${baseURL}/v1/api-keys`, {
-        headers: {
-          'Cookie': sessionCookie,
-          'Content-Type': 'application/json',
-        },
-        data: { key_name: `e2e-${level}`, permission_level: level },
-      });
-      await assertStatus(createResp, 201, { method: 'POST', url: `${baseURL}/v1/api-keys` });
-      const body = await createResp.json();
-      return body.key as string;
-    }
-
-    test('should validate readonly and full API keys against test endpoints', async ({ request }) => {
-      await request.get(`${baseURL}/v1/auth/logout`, { failOnStatusCode: false });
-
-      const readonlyKey = await createApiKey(request, REGULAR_USER.username, 'readonly');
-      const fullKey = await createApiKey(request, REGULAR_USER.username, 'full');
-
-      const readResp = await request.get(`${baseURL}/v1/api-keys/test-read`, {
-        headers: { Authorization: `Bearer ${readonlyKey}` },
-      });
-      await assertStatus(readResp, 200, { method: 'GET', url: `${baseURL}/v1/api-keys/test-read` });
-
-      const writeForbidden = await request.post(`${baseURL}/v1/api-keys/test-write`, {
-        headers: { Authorization: `Bearer ${readonlyKey}`, 'Content-Type': 'application/json' },
-        data: {},
-      });
-      await assertStatus(writeForbidden, 403, { method: 'POST', url: `${baseURL}/v1/api-keys/test-write` });
-
-      const readWithFull = await request.get(`${baseURL}/v1/api-keys/test-read`, {
-        headers: { Authorization: `Bearer ${fullKey}` },
-      });
-      await assertStatus(readWithFull, 200, { method: 'GET', url: `${baseURL}/v1/api-keys/test-read` });
-
-      const writeWithFull = await request.post(`${baseURL}/v1/api-keys/test-write`, {
-        headers: { Authorization: `Bearer ${fullKey}`, 'Content-Type': 'application/json' },
-        data: {},
-      });
-      await assertStatus(writeWithFull, 200, { method: 'POST', url: `${baseURL}/v1/api-keys/test-write` });
-
-      const unauth = await request.get(`${baseURL}/v1/api-keys/test-read`);
-      await assertStatus(unauth, 401, { method: 'GET', url: `${baseURL}/v1/api-keys/test-read` });
     });
   });
 });

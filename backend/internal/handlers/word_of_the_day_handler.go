@@ -96,23 +96,57 @@ func (h *WordOfTheDayHandler) GetWordOfTheDay(c *gin.Context) {
 	c.JSON(http.StatusOK, word)
 }
 
+// GetWordOfTheDayToday handles GET /v1/word-of-day
+// It resolves "today" in the user's timezone and returns that day's word
+func (h *WordOfTheDayHandler) GetWordOfTheDayToday(c *gin.Context) {
+	ctx, span := observability.TraceHandlerFunction(c.Request.Context(), "get_word_of_the_day_today")
+	defer observability.FinishSpan(span, nil)
+
+	userID, exists := GetUserIDFromSession(c)
+	if !exists {
+		HandleAppError(c, contextutils.ErrUnauthorized)
+		return
+	}
+
+	// Determine today's date string and parse it in user's timezone
+	todayStr := time.Now().Format("2006-01-02")
+	date, timezone, err := h.ParseDateInUserTimezone(ctx, userID, todayStr)
+	if err != nil {
+		HandleAppError(c, contextutils.WrapError(err, "failed to resolve today's date"))
+		return
+	}
+
+	span.SetAttributes(
+		observability.AttributeUserID(userID),
+		attribute.String("date", todayStr),
+		attribute.String("timezone", timezone),
+	)
+
+	// Get word of the day
+	word, err := h.wordOfTheDayService.GetWordOfTheDay(ctx, userID, date)
+	if err != nil {
+		h.logger.Error(ctx, "Failed to get today's word of the day", err, map[string]interface{}{
+			"user_id": userID,
+			"date":    todayStr,
+		})
+		HandleAppError(c, contextutils.WrapError(err, "failed to get word of the day"))
+		return
+	}
+
+	c.JSON(http.StatusOK, word)
+}
+
 // GetWordOfTheDayEmbed handles GET /v1/word-of-day/:date/embed
-// This endpoint returns HTML for embedding in an iframe
+// This endpoint returns HTML for embedding in an iframe. Public endpoint that accepts user_id as query parameter.
 func (h *WordOfTheDayHandler) GetWordOfTheDayEmbed(c *gin.Context) {
 	ctx, span := observability.TraceHandlerFunction(c.Request.Context(), "get_word_of_the_day_embed")
 	defer observability.FinishSpan(span, nil)
 
-	// For embed, we allow passing user_id as query param for public sharing
-	// This is intentionally less secure for the embed use case
+	// Get user_id from query parameter (required for this public endpoint)
 	userIDStr := c.Query("user_id")
 	if userIDStr == "" {
-		// Try to get from session if available
-		userID, exists := GetUserIDFromSession(c)
-		if !exists {
-			c.Data(http.StatusUnauthorized, "text/html; charset=utf-8", []byte("User ID required"))
-			return
-		}
-		userIDStr = fmt.Sprintf("%d", userID)
+		c.Data(http.StatusBadRequest, "text/html; charset=utf-8", []byte("User ID required"))
+		return
 	}
 
 	var userID int

@@ -14,14 +14,31 @@ import {
   Title,
   Card,
   ThemeIcon,
+  Modal,
+  CopyButton,
+  Tooltip,
+  Textarea,
+  Code,
+  ActionIcon,
 } from '@mantine/core';
-import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
+import {
+  ChevronLeft,
+  ChevronRight,
+  Calendar,
+  Copy,
+  Check,
+  Link as LinkIcon,
+  TerminalSquare,
+  Info,
+} from 'lucide-react';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const WordOfTheDayPage: React.FC = () => {
   const { date: dateParam } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [showEmbedModal, setShowEmbedModal] = React.useState(false);
+  const [showApiModal, setShowApiModal] = React.useState(false);
 
   const {
     selectedDate,
@@ -76,6 +93,22 @@ const WordOfTheDayPage: React.FC = () => {
     );
   }
 
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  const embedUrl = `${origin}/word-of-day/embed/${selectedDate}?user_id=${user.id}`;
+  const iframeSnippet = `<iframe src="${embedUrl}" width="100%" height="300" style="border:none"></iframe>`;
+  const apiUrlToday = `${origin}/v1/word-of-day`;
+  const apiUrlWithDate = `${origin}/v1/word-of-day/${selectedDate}`;
+
+  const apiCurlApiKeyToday = `curl -i \
+  '${apiUrlToday}' \
+  -H 'Accept: application/json' \
+  -H 'Authorization: Bearer YOUR_API_KEY'`;
+
+  const apiCurlApiKeyWithDate = `curl -i \
+  '${apiUrlWithDate}' \
+  -H 'Accept: application/json' \
+  -H 'Authorization: Bearer YOUR_API_KEY'`;
+
   return (
     <Container size='md' py='xl'>
       <Stack gap='lg'>
@@ -91,6 +124,24 @@ const WordOfTheDayPage: React.FC = () => {
             >
               Today
             </Button>
+            <Tooltip label='Show iframe embed snippet' withArrow>
+              <Button
+                variant='light'
+                size='xs'
+                onClick={() => setShowEmbedModal(true)}
+              >
+                Embed
+              </Button>
+            </Tooltip>
+            <Tooltip label='Show API request examples' withArrow>
+              <Button
+                variant='light'
+                size='xs'
+                onClick={() => setShowApiModal(true)}
+              >
+                API
+              </Button>
+            </Tooltip>
           </Group>
         </Group>
 
@@ -250,6 +301,182 @@ const WordOfTheDayPage: React.FC = () => {
             </Stack>
           </Center>
         )}
+        {/* Embed snippet modal */}
+        <Modal
+          opened={showEmbedModal}
+          onClose={() => setShowEmbedModal(false)}
+          title='Embed this Word of the Day'
+          centered
+        >
+          <Stack gap='sm'>
+            <Text size='sm'>Copy and paste this iframe into your page:</Text>
+            <Textarea
+              value={iframeSnippet}
+              readOnly
+              minRows={3}
+              autosize
+              styles={{ input: { fontFamily: 'monospace' } }}
+            />
+            <Group justify='space-between' align='center'>
+              <Code>{embedUrl}</Code>
+              <CopyButton value={iframeSnippet} timeout={1500}>
+                {({ copied, copy }) => (
+                  <Button
+                    onClick={copy}
+                    size='xs'
+                    color={copied ? 'green' : 'primary'}
+                  >
+                    {copied ? 'Copied' : 'Copy iframe'}
+                  </Button>
+                )}
+              </CopyButton>
+            </Group>
+          </Stack>
+        </Modal>
+
+        {/* API examples modal */}
+        <Modal
+          opened={showApiModal}
+          onClose={() => setShowApiModal(false)}
+          title='API requests for Word of the Day'
+          size='lg'
+          centered
+        >
+          <Stack gap='sm'>
+            <Group gap='xs' align='flex-start'>
+              <Info size={16} color='var(--mantine-color-dimmed)' />
+              <Text c='dimmed' size='sm'>
+                Date is optional. If omitted, today’s date is used.
+              </Text>
+            </Group>
+
+            <Group justify='space-between' align='center' mt='xs'>
+              <Group gap='xs'>
+                <LinkIcon size={16} />
+                <Text fw={600}>API URL (today)</Text>
+              </Group>
+              <CopyButton value={apiUrlToday} timeout={1500}>
+                {({ copied, copy }) => (
+                  <ActionIcon
+                    onClick={copy}
+                    variant='light'
+                    color={copied ? 'teal' : 'primary'}
+                    aria-label='Copy URL'
+                  >
+                    {copied ? <Check size={16} /> : <Copy size={16} />}
+                  </ActionIcon>
+                )}
+              </CopyButton>
+            </Group>
+            <Paper
+              withBorder
+              radius='md'
+              p='xs'
+              bg='var(--mantine-color-default-hover)'
+            >
+              <Text
+                style={{ fontFamily: 'monospace', wordBreak: 'break-all' }}
+                size='sm'
+              >
+                {apiUrlToday}
+              </Text>
+            </Paper>
+
+            <Group justify='space-between' align='center' mt='sm'>
+              <Group gap='xs'>
+                <LinkIcon size={16} />
+                <Text fw={600}>API URL (specific date)</Text>
+              </Group>
+              <CopyButton value={apiUrlWithDate} timeout={1500}>
+                {({ copied, copy }) => (
+                  <ActionIcon
+                    onClick={copy}
+                    variant='light'
+                    color={copied ? 'teal' : 'primary'}
+                    aria-label='Copy URL'
+                  >
+                    {copied ? <Check size={16} /> : <Copy size={16} />}
+                  </ActionIcon>
+                )}
+              </CopyButton>
+            </Group>
+            <Paper
+              withBorder
+              radius='md'
+              p='xs'
+              bg='var(--mantine-color-default-hover)'
+            >
+              <Text
+                style={{ fontFamily: 'monospace', wordBreak: 'break-all' }}
+                size='sm'
+              >
+                {apiUrlWithDate}
+              </Text>
+            </Paper>
+
+            <Group justify='space-between' align='center' mt='xs'>
+              <Group gap='xs'>
+                <TerminalSquare size={16} />
+                <Text fw={600}>curl (today) — JSON with API Key</Text>
+              </Group>
+              <CopyButton value={apiCurlApiKeyToday} timeout={1500}>
+                {({ copied, copy }) => (
+                  <ActionIcon
+                    onClick={copy}
+                    variant='light'
+                    color={copied ? 'teal' : 'primary'}
+                    aria-label='Copy curl'
+                  >
+                    {copied ? <Check size={16} /> : <Copy size={16} />}
+                  </ActionIcon>
+                )}
+              </CopyButton>
+            </Group>
+            <Textarea
+              value={apiCurlApiKeyToday}
+              readOnly
+              autosize
+              minRows={3}
+              styles={{
+                input: {
+                  fontFamily: 'monospace',
+                  background: 'var(--mantine-color-default-hover)',
+                },
+              }}
+            />
+
+            <Group justify='space-between' align='center' mt='sm'>
+              <Group gap='xs'>
+                <TerminalSquare size={16} />
+                <Text fw={600}>curl (specific date) — JSON with API Key</Text>
+              </Group>
+              <CopyButton value={apiCurlApiKeyWithDate} timeout={1500}>
+                {({ copied, copy }) => (
+                  <ActionIcon
+                    onClick={copy}
+                    variant='light'
+                    color={copied ? 'teal' : 'primary'}
+                    aria-label='Copy curl'
+                  >
+                    {copied ? <Check size={16} /> : <Copy size={16} />}
+                  </ActionIcon>
+                )}
+              </CopyButton>
+            </Group>
+            <Textarea
+              value={apiCurlApiKeyWithDate}
+              readOnly
+              autosize
+              minRows={3}
+              styles={{
+                input: {
+                  fontFamily: 'monospace',
+                  background: 'var(--mantine-color-default-hover)',
+                },
+              }}
+            />
+          </Stack>
+        </Modal>
       </Stack>
     </Container>
   );

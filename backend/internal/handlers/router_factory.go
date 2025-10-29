@@ -244,7 +244,7 @@ func NewRouter(
 
 		// API Keys routes (for programmatic API access)
 		apiKeys := v1.Group("/api-keys")
-		apiKeys.Use(middleware.RequireAuth()) // Require session auth to manage API keys
+		apiKeys.Use(middleware.RequireAuth()) // Keep session-only auth for managing API keys
 		{
 			apiKeys.POST("", middleware.RequestValidationMiddleware(logger), authAPIKeyHandler.CreateAPIKey)
 			apiKeys.GET("", authAPIKeyHandler.ListAPIKeys)
@@ -260,25 +260,25 @@ func NewRouter(
 		}
 
 		// Translation routes
-		v1.POST("/translate", middleware.RequireAuth(), translationHandler.TranslateText)
+		v1.POST("/translate", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), translationHandler.TranslateText)
 
 		// Feedback routes
-		v1.POST("/feedback", middleware.RequireAuth(), feedbackHandler.SubmitFeedback)
+		v1.POST("/feedback", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), feedbackHandler.SubmitFeedback)
 
 		// Snippets routes
-		v1.POST("/snippets", middleware.RequireAuth(), middleware.RequestValidationMiddleware(logger), snippetsHandler.CreateSnippet)
-		v1.GET("/snippets", middleware.RequireAuth(), snippetsHandler.GetSnippets)
-		v1.DELETE("/snippets", middleware.RequireAuth(), snippetsHandler.DeleteAllSnippets)
-		v1.GET("/snippets/search", middleware.RequireAuth(), snippetsHandler.SearchSnippets)
-		v1.GET("/snippets/by-question/:question_id", middleware.RequireAuth(), snippetsHandler.GetSnippetsByQuestion)
-		v1.GET("/snippets/by-section/:section_id", middleware.RequireAuth(), snippetsHandler.GetSnippetsBySection)
-		v1.GET("/snippets/by-story/:story_id", middleware.RequireAuth(), snippetsHandler.GetSnippetsByStory)
-		v1.GET("/snippets/:id", middleware.RequireAuth(), snippetsHandler.GetSnippet)
-		v1.PUT("/snippets/:id", middleware.RequireAuth(), middleware.RequestValidationMiddleware(logger), snippetsHandler.UpdateSnippet)
-		v1.DELETE("/snippets/:id", middleware.RequireAuth(), snippetsHandler.DeleteSnippet)
+		v1.POST("/snippets", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), middleware.RequestValidationMiddleware(logger), snippetsHandler.CreateSnippet)
+		v1.GET("/snippets", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), snippetsHandler.GetSnippets)
+		v1.DELETE("/snippets", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), snippetsHandler.DeleteAllSnippets)
+		v1.GET("/snippets/search", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), snippetsHandler.SearchSnippets)
+		v1.GET("/snippets/by-question/:question_id", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), snippetsHandler.GetSnippetsByQuestion)
+		v1.GET("/snippets/by-section/:section_id", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), snippetsHandler.GetSnippetsBySection)
+		v1.GET("/snippets/by-story/:story_id", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), snippetsHandler.GetSnippetsByStory)
+		v1.GET("/snippets/:id", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), snippetsHandler.GetSnippet)
+		v1.PUT("/snippets/:id", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), middleware.RequestValidationMiddleware(logger), snippetsHandler.UpdateSnippet)
+		v1.DELETE("/snippets/:id", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), snippetsHandler.DeleteSnippet)
 
 		quiz := v1.Group("/quiz")
-		quiz.Use(middleware.RequireAuth())
+		quiz.Use(middleware.RequireAuthWithAPIKey(authAPIKeyService, userService))
 		quiz.Use(middleware.RequestValidationMiddleware(logger))
 		{
 			quiz.GET("/question", quizHandler.GetQuestion)
@@ -294,7 +294,7 @@ func NewRouter(
 			quiz.POST("/chat/stream", quizHandler.ChatStream)
 		}
 		daily := v1.Group("/daily")
-		daily.Use(middleware.RequireAuth())
+		daily.Use(middleware.RequireAuthWithAPIKey(authAPIKeyService, userService))
 		daily.Use(middleware.RequestValidationMiddleware(logger))
 		{
 			daily.GET("/questions/:date", dailyQuestionHandler.GetDailyQuestions)
@@ -309,15 +309,16 @@ func NewRouter(
 
 		wordOfDay := v1.Group("/word-of-day")
 		{
-			// Protected endpoints requiring authentication
-			wordOfDay.GET("/:date", middleware.RequireAuth(), wordOfTheDayHandler.GetWordOfTheDay)
-			wordOfDay.GET("/history", middleware.RequireAuth(), wordOfTheDayHandler.GetWordOfTheDayHistory)
-			// Public embed endpoint (requires user_id query param)
+			// Protected endpoints requiring authentication (API key or session)
+			wordOfDay.GET("", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), wordOfTheDayHandler.GetWordOfTheDayToday)
+			wordOfDay.GET("/history", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), wordOfTheDayHandler.GetWordOfTheDayHistory)
+			// Embed endpoint (public - no authentication required) - must come before /:date to avoid route matching
 			wordOfDay.GET("/:date/embed", wordOfTheDayHandler.GetWordOfTheDayEmbed)
+			wordOfDay.GET("/:date", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), wordOfTheDayHandler.GetWordOfTheDay)
 		}
 
 		story := v1.Group("/story")
-		story.Use(middleware.RequireAuth())
+		story.Use(middleware.RequireAuthWithAPIKey(authAPIKeyService, userService))
 		story.Use(middleware.RequestValidationMiddleware(logger))
 		{
 			story.POST("", storyHandler.CreateStory)
@@ -335,17 +336,17 @@ func NewRouter(
 		}
 		settings := v1.Group("/settings")
 		{
-			settings.GET("/ai-providers", middleware.RequireAuth(), settingsHandler.GetProviders)
+			settings.GET("/ai-providers", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), settingsHandler.GetProviders)
 			settings.GET("/levels", settingsHandler.GetLevels)
 			settings.GET("/languages", settingsHandler.GetLanguages)
-			settings.POST("/test-ai", middleware.RequireAuth(), middleware.RequestValidationMiddleware(logger), settingsHandler.TestAIConnection)
-			settings.POST("/test-email", middleware.RequireAuth(), middleware.RequestValidationMiddleware(logger), settingsHandler.SendTestEmail)
-			settings.PUT("", middleware.RequireAuth(), middleware.RequestValidationMiddleware(logger), settingsHandler.UpdateUserSettings)
+			settings.POST("/test-ai", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), middleware.RequestValidationMiddleware(logger), settingsHandler.TestAIConnection)
+			settings.POST("/test-email", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), middleware.RequestValidationMiddleware(logger), settingsHandler.SendTestEmail)
+			settings.PUT("", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), middleware.RequestValidationMiddleware(logger), settingsHandler.UpdateUserSettings)
 			// User data management endpoints
-			settings.POST("/clear-stories", middleware.RequireAuth(), middleware.RequestValidationMiddleware(logger), settingsHandler.ClearAllStories)
-			settings.POST("/clear-ai-chats", middleware.RequireAuth(), middleware.RequestValidationMiddleware(logger), settingsHandler.ClearAllAIChats)
-			settings.POST("/reset-account", middleware.RequireAuth(), middleware.RequestValidationMiddleware(logger), settingsHandler.ResetAccount)
-			settings.GET("/api-key/:provider", middleware.RequireAuth(), settingsHandler.CheckAPIKeyAvailability)
+			settings.POST("/clear-stories", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), middleware.RequestValidationMiddleware(logger), settingsHandler.ClearAllStories)
+			settings.POST("/clear-ai-chats", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), middleware.RequestValidationMiddleware(logger), settingsHandler.ClearAllAIChats)
+			settings.POST("/reset-account", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), middleware.RequestValidationMiddleware(logger), settingsHandler.ResetAccount)
+			settings.GET("/api-key/:provider", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), settingsHandler.CheckAPIKeyAvailability)
 		}
 
 		// Verb conjugation endpoints
@@ -359,7 +360,7 @@ func NewRouter(
 
 		// AI conversation endpoints
 		ai := v1.Group("/ai")
-		ai.Use(middleware.RequireAuth())
+		ai.Use(middleware.RequireAuthWithAPIKey(authAPIKeyService, userService))
 		ai.Use(middleware.RequestValidationMiddleware(logger))
 		{
 			ai.GET("/conversations", aiConversationHandler.GetConversations)
@@ -373,7 +374,7 @@ func NewRouter(
 			ai.GET("/bookmarks", aiConversationHandler.GetBookmarkedMessages)
 		}
 		preferences := v1.Group("/preferences")
-		preferences.Use(middleware.RequireAuth())
+		preferences.Use(middleware.RequireAuthWithAPIKey(authAPIKeyService, userService))
 		preferences.Use(middleware.RequestValidationMiddleware(logger))
 		{
 			preferences.GET("/learning", settingsHandler.GetLearningPreferences)
@@ -383,7 +384,7 @@ func NewRouter(
 		// User management endpoints (non-admin)
 		userz := v1.Group("/userz")
 		{
-			userz.PUT("/profile", middleware.RequireAuth(), middleware.RequestValidationMiddleware(logger), userAdminHandler.UpdateCurrentUserProfile)
+			userz.PUT("/profile", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), middleware.RequestValidationMiddleware(logger), userAdminHandler.UpdateCurrentUserProfile)
 		}
 
 		// Admin endpoints

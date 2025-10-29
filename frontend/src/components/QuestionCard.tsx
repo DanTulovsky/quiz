@@ -875,43 +875,46 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
             }}
           >
             {/* Question text and context at the top (except reading comprehension) */}
-            {question.type !== 'reading_comprehension' &&
-              (question.type === 'vocabulary' &&
-              question.content?.sentence &&
-              question.content?.question ? (
-                <>
-                  <Title order={3} data-testid='question-content' mb={0}>
-                    <SnippetHighlighter
-                      text={question.content.sentence}
-                      snippets={snippets}
-                      targetWord={question.content.question}
-                      component='span'
-                      componentProps={{}}
-                    />
-                  </Title>
-                  <Text
-                    size='sm'
-                    c='dimmed'
-                    mt={-8}
-                    mb={8}
-                    style={{ fontWeight: 500 }}
-                  >
-                    What does <strong>{question.content.question}</strong> mean
-                    in this context?
-                  </Text>
-                </>
-              ) : (
-                <SnippetHighlighter
-                  text={question.content?.question || ''}
-                  snippets={snippets}
-                  component={Title}
-                  componentProps={{
-                    order: 3,
-                    'data-testid': 'question-content',
-                    mb: 0,
-                  }}
-                />
-              ))}
+            {question.type !== 'reading_comprehension' && (
+              <div data-allow-translate='true'>
+                {question.type === 'vocabulary' &&
+                question.content?.sentence &&
+                question.content?.question ? (
+                  <>
+                    <Title order={3} data-testid='question-content' mb={6}>
+                      <SnippetHighlighter
+                        text={question.content.sentence}
+                        snippets={snippets}
+                        targetWord={question.content.question}
+                        component='span'
+                        componentProps={{}}
+                      />
+                    </Title>
+                    <Text
+                      size='sm'
+                      c='dimmed'
+                      mt={4}
+                      mb={10}
+                      style={{ fontWeight: 500 }}
+                    >
+                      What does <strong>{question.content.question}</strong>{' '}
+                      mean in this context?
+                    </Text>
+                  </>
+                ) : (
+                  <SnippetHighlighter
+                    text={question.content?.question || ''}
+                    snippets={snippets}
+                    component={Title}
+                    componentProps={{
+                      order: 3,
+                      'data-testid': 'question-content',
+                      mb: 0,
+                    }}
+                  />
+                )}
+              </div>
+            )}
 
             {/* Show passage for reading comprehension questions */}
             {question.type === 'reading_comprehension' &&
@@ -1070,17 +1073,19 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
 
             {/* For reading comprehension, place the question after the passage */}
             {question.type === 'reading_comprehension' && (
-              <SnippetHighlighter
-                text={question.content?.question || ''}
-                snippets={snippets}
-                component={Title}
-                componentProps={{
-                  order: 3,
-                  'data-testid': 'question-content',
-                  mb: 'md',
-                  mt: 'md',
-                }}
-              />
+              <div data-allow-translate='true'>
+                <SnippetHighlighter
+                  text={question.content?.question || ''}
+                  snippets={snippets}
+                  component={Title}
+                  componentProps={{
+                    order: 3,
+                    'data-testid': 'question-content',
+                    mb: 'md',
+                    mt: 'md',
+                  }}
+                />
+              </div>
             )}
 
             {/* Show hint for fill_blank questions */}

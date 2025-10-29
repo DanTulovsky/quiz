@@ -218,20 +218,22 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
           </Tooltip>
         </Box>
 
-        <SnippetHighlighter
-          text={section.content || ''}
-          snippets={snippets}
-          component={Text}
-          componentProps={{
-            style: {
-              lineHeight: 1.6,
-              fontSize: `${16 * fontScaleMap[fontSize]}px`,
-              whiteSpace: 'pre-wrap',
-              // Ensure text never overlaps the TTS icon in the top-right
-              paddingRight: '56px',
-            },
-          }}
-        />
+        <div data-allow-translate='true'>
+          <SnippetHighlighter
+            text={section.content || ''}
+            snippets={snippets}
+            component={Text}
+            componentProps={{
+              style: {
+                lineHeight: 1.6,
+                fontSize: `${16 * fontScaleMap[fontSize]}px`,
+                whiteSpace: 'pre-wrap',
+                // Ensure text never overlaps the TTS icon in the top-right
+                paddingRight: '56px',
+              },
+            }}
+          />
+        </div>
       </Paper>
 
       {/* Comprehension Questions */}

@@ -57,7 +57,8 @@ func ResponseValidationMiddleware(logger *observability.Logger) gin.HandlerFunc 
 			statusCode = c.Writer.Status()
 		}
 
-		if statusCode == http.StatusOK {
+		// Only validate 2xx responses
+		if statusCode >= http.StatusOK && statusCode < http.StatusMultipleChoices {
 			// Skip validation for streaming responses
 			contentType := c.Writer.Header().Get("Content-Type")
 			if contentType == "text/event-stream" {
@@ -181,10 +182,18 @@ type responseCaptureWriter struct {
 
 func (w *responseCaptureWriter) WriteHeader(statusCode int) {
 	w.status = statusCode
+	w.ResponseWriter.WriteHeader(statusCode)
 }
 
 func (w *responseCaptureWriter) Write(b []byte) (int, error) {
 	return w.body.Write(b)
+}
+
+func (w *responseCaptureWriter) Status() int {
+	if w.status != 0 {
+		return w.status
+	}
+	return w.ResponseWriter.Status()
 }
 
 // isStaticFile checks if a path is a static file that should be allowed to pass through

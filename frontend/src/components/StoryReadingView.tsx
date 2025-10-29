@@ -155,7 +155,7 @@ const StoryReadingView: React.FC<StoryReadingViewProps> = ({
         </Box>
 
         <ScrollArea style={{ height: '60vh' }}>
-          <div style={{ paddingRight: '56px' }}>
+          <div style={{ paddingRight: '56px' }} data-allow-translate='true'>
             <Stack spacing='lg'>
               {/* Story Metadata */}
               {(story.subject || story.author_style || story.genre) && (
