@@ -69,7 +69,7 @@ export const APIKeyManagement: React.FC = () => {
   const [testResult, setTestResult] = useState<null | {
     ok: boolean;
     status: number;
-    body?: any;
+    body?: unknown;
   }>(null);
 
   const fetchAPIKeys = async () => {
@@ -211,7 +211,7 @@ export const APIKeyManagement: React.FC = () => {
         credentials: 'omit',
         body: mode === 'write' ? JSON.stringify({}) : undefined,
       });
-      let body: any = undefined;
+      let body: unknown = undefined;
       try {
         body = await resp.json();
       } catch {
