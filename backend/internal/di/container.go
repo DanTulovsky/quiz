@@ -31,6 +31,7 @@ type ServiceContainerInterface interface {
 	GetSnippetsService() (services.SnippetsServiceInterface, error)
 	GetUsageStatsService() (services.UsageStatsServiceInterface, error)
 	GetWordOfTheDayService() (services.WordOfTheDayServiceInterface, error)
+	GetAuthAPIKeyService() (services.AuthAPIKeyServiceInterface, error)
 	GetDatabase() *sql.DB
 	GetConfig() *config.Config
 	GetLogger() *observability.Logger
@@ -198,6 +199,11 @@ func (sc *ServiceContainer) GetWordOfTheDayService() (services.WordOfTheDayServi
 	return GetServiceAs[services.WordOfTheDayServiceInterface](sc, "word_of_the_day")
 }
 
+// GetAuthAPIKeyService returns the auth API key service
+func (sc *ServiceContainer) GetAuthAPIKeyService() (services.AuthAPIKeyServiceInterface, error) {
+	return GetServiceAs[services.AuthAPIKeyServiceInterface](sc, "auth_api_key")
+}
+
 // GetDatabase returns the database instance
 func (sc *ServiceContainer) GetDatabase() *sql.DB {
 	return sc.db
@@ -331,6 +337,10 @@ func (sc *ServiceContainer) initializeServices(_ context.Context) {
 	// Initialize word of the day service
 	wordOfTheDayService := services.NewWordOfTheDayService(sc.db, sc.logger)
 	sc.services["word_of_the_day"] = wordOfTheDayService
+
+	// Initialize auth API key service
+	authAPIKeyService := services.NewAuthAPIKeyService(sc.db, sc.logger)
+	sc.services["auth_api_key"] = authAPIKeyService
 
 	// Register shutdown functions
 	sc.shutdownFuncs = append(sc.shutdownFuncs,

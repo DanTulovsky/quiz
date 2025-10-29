@@ -21,6 +21,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { getGetV1PreferencesLearningQueryKey } from '../api/api';
 import TimezoneSelector from '../components/TimezoneSelector';
 import { useTheme } from '../contexts/ThemeContext';
+import { APIKeyManagement } from '../components/APIKeyManagement';
 import {
   defaultVoiceForLanguage,
   extractVoiceName,
@@ -846,6 +847,9 @@ const SettingsPage: React.FC = () => {
               </Grid>
             </Stack>
           </Card>
+
+          {/* API Keys */}
+          <APIKeyManagement />
 
           {/* Learning Settings */}
           <Card shadow='sm' padding='lg' radius='md' withBorder>

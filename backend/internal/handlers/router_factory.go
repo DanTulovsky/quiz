@@ -44,6 +44,7 @@ func NewRouter(
 	snippetsService services.SnippetsServiceInterface,
 	usageStatsService services.UsageStatsServiceInterface,
 	wordOfTheDayService services.WordOfTheDayServiceInterface,
+	authAPIKeyService services.AuthAPIKeyServiceInterface,
 	logger *observability.Logger,
 ) *gin.Engine {
 	// Setup Gin router
@@ -172,6 +173,7 @@ func NewRouter(
 
 	// Initialize handlers
 	authHandler := NewAuthHandler(userService, oauthService, cfg, logger)
+	authAPIKeyHandler := NewAuthAPIKeyHandler(authAPIKeyService, logger)
 	emailService := services.CreateEmailService(cfg, logger)
 	settingsHandler := NewSettingsHandler(userService, storyService, conversationService, aiService, learningService, emailService, usageStatsService, cfg, logger)
 	quizHandler := NewQuizHandler(userService, questionService, aiService, learningService, workerService, generationHintService, usageStatsService, cfg, logger)
@@ -238,6 +240,15 @@ func NewRouter(
 			auth.GET("/signup/status", authHandler.SignupStatus)
 			auth.GET("/google/login", authHandler.GoogleLogin)
 			auth.GET("/google/callback", authHandler.GoogleCallback)
+		}
+
+		// API Keys routes (for programmatic API access)
+		apiKeys := v1.Group("/api-keys")
+		apiKeys.Use(middleware.RequireAuth()) // Require session auth to manage API keys
+		{
+			apiKeys.POST("", middleware.RequestValidationMiddleware(logger), authAPIKeyHandler.CreateAPIKey)
+			apiKeys.GET("", authAPIKeyHandler.ListAPIKeys)
+			apiKeys.DELETE("/:id", authAPIKeyHandler.DeleteAPIKey)
 		}
 
 		// Translation routes
