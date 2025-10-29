@@ -137,21 +137,15 @@ func (h *WordOfTheDayHandler) GetWordOfTheDayToday(c *gin.Context) {
 }
 
 // GetWordOfTheDayEmbed handles GET /v1/word-of-day/:date/embed
-// This endpoint returns HTML for embedding in an iframe. Public endpoint that accepts user_id as query parameter.
+// This endpoint returns HTML for embedding in an iframe. Requires an authenticated session.
 func (h *WordOfTheDayHandler) GetWordOfTheDayEmbed(c *gin.Context) {
 	ctx, span := observability.TraceHandlerFunction(c.Request.Context(), "get_word_of_the_day_embed")
 	defer observability.FinishSpan(span, nil)
 
-	// Get user_id from query parameter (required for this public endpoint)
-	userIDStr := c.Query("user_id")
-	if userIDStr == "" {
-		c.Data(http.StatusBadRequest, "text/html; charset=utf-8", []byte("User ID required"))
-		return
-	}
-
-	var userID int
-	if _, err := fmt.Sscanf(userIDStr, "%d", &userID); err != nil {
-		c.Data(http.StatusBadRequest, "text/html; charset=utf-8", []byte("Invalid user ID"))
+	// Determine user via session; no query parameters are supported
+	userID, exists := GetUserIDFromSession(c)
+	if !exists {
+		c.Data(http.StatusUnauthorized, "text/html; charset=utf-8", []byte("Unauthorized"))
 		return
 	}
 
