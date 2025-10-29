@@ -251,6 +251,14 @@ func NewRouter(
 			apiKeys.DELETE("/:id", authAPIKeyHandler.DeleteAPIKey)
 		}
 
+		// API Key test endpoints using API key auth (no cookies)
+		apiKeysTest := v1.Group("/api-keys")
+		apiKeysTest.Use(middleware.RequireAuthWithAPIKey(authAPIKeyService, userService))
+		{
+			apiKeysTest.GET("/test-read", authAPIKeyHandler.TestRead)
+			apiKeysTest.POST("/test-write", authAPIKeyHandler.TestWrite)
+		}
+
 		// Translation routes
 		v1.POST("/translate", middleware.RequireAuth(), translationHandler.TranslateText)
 

@@ -3111,4 +3111,52 @@ test.describe('Comprehensive API Tests', () => {
       console.log('✅ Clear database endpoint tested');
     });
   });
+
+  test.describe('API Key Auth Tests', () => {
+    async function createApiKey(request: any, username: string, level: 'readonly' | 'full'): Promise<string> {
+      const sessionCookie = await loginUser(request, { username, password: 'password' });
+      const createResp = await request.post(`${baseURL}/v1/api-keys`, {
+        headers: {
+          'Cookie': sessionCookie,
+          'Content-Type': 'application/json',
+        },
+        data: { key_name: `e2e-${level}`, permission_level: level },
+      });
+      await assertStatus(createResp, 201, { method: 'POST', url: `${baseURL}/v1/api-keys` });
+      const body = await createResp.json();
+      return body.key as string;
+    }
+
+    test('should validate readonly and full API keys against test endpoints', async ({ request }) => {
+      await request.get(`${baseURL}/v1/auth/logout`, { failOnStatusCode: false });
+
+      const readonlyKey = await createApiKey(request, REGULAR_USER.username, 'readonly');
+      const fullKey = await createApiKey(request, REGULAR_USER.username, 'full');
+
+      const readResp = await request.get(`${baseURL}/v1/api-keys/test-read`, {
+        headers: { Authorization: `Bearer ${readonlyKey}` },
+      });
+      await assertStatus(readResp, 200, { method: 'GET', url: `${baseURL}/v1/api-keys/test-read` });
+
+      const writeForbidden = await request.post(`${baseURL}/v1/api-keys/test-write`, {
+        headers: { Authorization: `Bearer ${readonlyKey}`, 'Content-Type': 'application/json' },
+        data: {},
+      });
+      await assertStatus(writeForbidden, 403, { method: 'POST', url: `${baseURL}/v1/api-keys/test-write` });
+
+      const readWithFull = await request.get(`${baseURL}/v1/api-keys/test-read`, {
+        headers: { Authorization: `Bearer ${fullKey}` },
+      });
+      await assertStatus(readWithFull, 200, { method: 'GET', url: `${baseURL}/v1/api-keys/test-read` });
+
+      const writeWithFull = await request.post(`${baseURL}/v1/api-keys/test-write`, {
+        headers: { Authorization: `Bearer ${fullKey}`, 'Content-Type': 'application/json' },
+        data: {},
+      });
+      await assertStatus(writeWithFull, 200, { method: 'POST', url: `${baseURL}/v1/api-keys/test-write` });
+
+      const unauth = await request.get(`${baseURL}/v1/api-keys/test-read`);
+      await assertStatus(unauth, 401, { method: 'GET', url: `${baseURL}/v1/api-keys/test-read` });
+    });
+  });
 });

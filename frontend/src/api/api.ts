@@ -2366,6 +2366,24 @@ export interface ServiceUsageStatsResponse {
   data: ServiceUsageStatsResponseDataItem[];
 }
 
+export type APIKeyTestResponsePermissionLevel = typeof APIKeyTestResponsePermissionLevel[keyof typeof APIKeyTestResponsePermissionLevel];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const APIKeyTestResponsePermissionLevel = {
+  readonly: 'readonly',
+  full: 'full',
+} as const;
+
+export interface APIKeyTestResponse {
+  ok?: boolean;
+  user_id?: number;
+  username?: string;
+  permission_level?: APIKeyTestResponsePermissionLevel;
+  api_key_id?: number;
+  method?: string;
+}
+
 export type GetV1AuthGoogleCallbackParams = {
 /**
  * Authorization code from Google
@@ -14059,6 +14077,159 @@ export const useDeleteV1ApiKeysId = <TError = ErrorResponse | ErrorResponse,
     }
     
 /**
+ * Verifies an API key can authenticate for read-only operations. Requires Authorization header and ignores cookies.
+ * @summary Test API key (readonly)
+ */
+export const getV1ApiKeysTestRead = (
+    
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<APIKeyTestResponse>(
+      {url: `/v1/api-keys/test-read`, method: 'GET', signal
+    },
+      options);
+    }
+  
+
+export const getGetV1ApiKeysTestReadQueryKey = () => {
+    return [`/v1/api-keys/test-read`] as const;
+    }
+
+    
+export const getGetV1ApiKeysTestReadQueryOptions = <TData = Awaited<ReturnType<typeof getV1ApiKeysTestRead>>, TError = ErrorResponse | ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1ApiKeysTestRead>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetV1ApiKeysTestReadQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1ApiKeysTestRead>>> = ({ signal }) => getV1ApiKeysTestRead(requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getV1ApiKeysTestRead>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetV1ApiKeysTestReadQueryResult = NonNullable<Awaited<ReturnType<typeof getV1ApiKeysTestRead>>>
+export type GetV1ApiKeysTestReadQueryError = ErrorResponse | ErrorResponse
+
+
+export function useGetV1ApiKeysTestRead<TData = Awaited<ReturnType<typeof getV1ApiKeysTestRead>>, TError = ErrorResponse | ErrorResponse>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1ApiKeysTestRead>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1ApiKeysTestRead>>,
+          TError,
+          Awaited<ReturnType<typeof getV1ApiKeysTestRead>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1ApiKeysTestRead<TData = Awaited<ReturnType<typeof getV1ApiKeysTestRead>>, TError = ErrorResponse | ErrorResponse>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1ApiKeysTestRead>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1ApiKeysTestRead>>,
+          TError,
+          Awaited<ReturnType<typeof getV1ApiKeysTestRead>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1ApiKeysTestRead<TData = Awaited<ReturnType<typeof getV1ApiKeysTestRead>>, TError = ErrorResponse | ErrorResponse>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1ApiKeysTestRead>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Test API key (readonly)
+ */
+
+export function useGetV1ApiKeysTestRead<TData = Awaited<ReturnType<typeof getV1ApiKeysTestRead>>, TError = ErrorResponse | ErrorResponse>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1ApiKeysTestRead>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetV1ApiKeysTestReadQueryOptions(options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * Verifies an API key can authenticate for write operations. Readonly keys will receive 403. Requires Authorization header and ignores cookies.
+ * @summary Test API key (write)
+ */
+export const postV1ApiKeysTestWrite = (
+    
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<APIKeyTestResponse>(
+      {url: `/v1/api-keys/test-write`, method: 'POST', signal
+    },
+      options);
+    }
+  
+
+
+export const getPostV1ApiKeysTestWriteMutationOptions = <TError = ErrorResponse | ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1ApiKeysTestWrite>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof postV1ApiKeysTestWrite>>, TError,void, TContext> => {
+
+const mutationKey = ['postV1ApiKeysTestWrite'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1ApiKeysTestWrite>>, void> = () => {
+          
+
+          return  postV1ApiKeysTestWrite(requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostV1ApiKeysTestWriteMutationResult = NonNullable<Awaited<ReturnType<typeof postV1ApiKeysTestWrite>>>
+    
+    export type PostV1ApiKeysTestWriteMutationError = ErrorResponse | ErrorResponse
+
+    /**
+ * @summary Test API key (write)
+ */
+export const usePostV1ApiKeysTestWrite = <TError = ErrorResponse | ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1ApiKeysTestWrite>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postV1ApiKeysTestWrite>>,
+        TError,
+        void,
+        TContext
+      > => {
+
+      const mutationOptions = getPostV1ApiKeysTestWriteMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
  * Translate text to a target language using configured translation provider
  * @summary Translate text
  */
@@ -14510,6 +14681,10 @@ export const getPostV1ApiKeysResponseMock = (overrideResponse: Partial< CreateAP
 export const getGetV1ApiKeysResponseMock = (overrideResponse: Partial< APIKeysListResponse > = {}): APIKeysListResponse => ({api_keys: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), key_name: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), key_prefix: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), permission_level: faker.helpers.arrayElement([faker.helpers.arrayElement(['readonly','full'] as const), undefined]), last_used_at: faker.helpers.arrayElement([faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, null]), undefined]), created_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), updated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined])})), undefined]), count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), ...overrideResponse})
 
 export const getDeleteV1ApiKeysIdResponseMock = (overrideResponse: Partial< DeleteAPIKeyResponse > = {}): DeleteAPIKeyResponse => ({success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
+
+export const getGetV1ApiKeysTestReadResponseMock = (overrideResponse: Partial< APIKeyTestResponse > = {}): APIKeyTestResponse => ({ok: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), username: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), permission_level: faker.helpers.arrayElement([faker.helpers.arrayElement(['readonly','full'] as const), undefined]), api_key_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), method: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
+
+export const getPostV1ApiKeysTestWriteResponseMock = (overrideResponse: Partial< APIKeyTestResponse > = {}): APIKeyTestResponse => ({ok: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), username: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), permission_level: faker.helpers.arrayElement([faker.helpers.arrayElement(['readonly','full'] as const), undefined]), api_key_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), method: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
 
 export const getPostV1TranslateResponseMock = (overrideResponse: Partial< TranslateResponse > = {}): TranslateResponse => ({translated_text: faker.string.alpha({length: {min: 10, max: 20}}), source_language: faker.string.alpha({length: {min: 10, max: 20}}), target_language: faker.string.alpha({length: {min: 10, max: 20}}), confidence: faker.helpers.arrayElement([faker.number.float({min: 0, max: 1, fractionDigits: 2}), undefined]), ...overrideResponse})
 
@@ -16130,6 +16305,30 @@ export const getDeleteV1ApiKeysIdMockHandler = (overrideResponse?: DeleteAPIKeyR
   })
 }
 
+export const getGetV1ApiKeysTestReadMockHandler = (overrideResponse?: APIKeyTestResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<APIKeyTestResponse> | APIKeyTestResponse)) => {
+  return http.get('*/v1/api-keys/test-read', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetV1ApiKeysTestReadResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
+export const getPostV1ApiKeysTestWriteMockHandler = (overrideResponse?: APIKeyTestResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<APIKeyTestResponse> | APIKeyTestResponse)) => {
+  return http.post('*/v1/api-keys/test-write', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getPostV1ApiKeysTestWriteResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
 export const getPostV1TranslateMockHandler = (overrideResponse?: TranslateResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<TranslateResponse> | TranslateResponse)) => {
   return http.post('*/v1/translate', async (info) => {await delay(1000);
   
@@ -16290,6 +16489,8 @@ export const getQuizApplicationAPIMock = () => [
   getPostV1ApiKeysMockHandler(),
   getGetV1ApiKeysMockHandler(),
   getDeleteV1ApiKeysIdMockHandler(),
+  getGetV1ApiKeysTestReadMockHandler(),
+  getPostV1ApiKeysTestWriteMockHandler(),
   getPostV1TranslateMockHandler(),
   getPostV1AudioSpeechMockHandler()
 ]

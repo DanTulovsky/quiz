@@ -189,3 +189,59 @@ func (h *AuthAPIKeyHandler) DeleteAPIKey(c *gin.Context) {
 		"message": "API key deleted successfully",
 	})
 }
+
+// TestRead handles GET /v1/api-keys/test-read
+// Requires API key auth (readonly or full). Returns basic info for verification.
+func (h *AuthAPIKeyHandler) TestRead(c *gin.Context) {
+    ctx, span := observability.TraceHandlerFunction(c.Request.Context(), "TestAPIKeyRead")
+    defer observability.FinishSpan(span, nil)
+
+    // Extract context set by middleware
+    userID := c.GetInt(middleware.UserIDKey)
+    username := c.GetString(middleware.UsernameKey)
+    apiKeyID := c.GetInt(middleware.APIKeyIDKey)
+
+    // Fetch permission level using the key id
+    var permissionLevel string
+    if apiKeyID != 0 && userID != 0 {
+        if apiKey, err := h.apiKeyService.GetAPIKeyByID(ctx, userID, apiKeyID); err == nil && apiKey != nil {
+            permissionLevel = apiKey.PermissionLevel
+        }
+    }
+
+    c.JSON(http.StatusOK, gin.H{
+        "ok":               true,
+        "user_id":          userID,
+        "username":         username,
+        "permission_level": permissionLevel,
+        "api_key_id":       apiKeyID,
+        "method":           c.Request.Method,
+    })
+}
+
+// TestWrite handles POST /v1/api-keys/test-write
+// Requires API key auth. Middleware enforces permission by HTTP method.
+func (h *AuthAPIKeyHandler) TestWrite(c *gin.Context) {
+    ctx, span := observability.TraceHandlerFunction(c.Request.Context(), "TestAPIKeyWrite")
+    defer observability.FinishSpan(span, nil)
+
+    userID := c.GetInt(middleware.UserIDKey)
+    username := c.GetString(middleware.UsernameKey)
+    apiKeyID := c.GetInt(middleware.APIKeyIDKey)
+
+    var permissionLevel string
+    if apiKeyID != 0 && userID != 0 {
+        if apiKey, err := h.apiKeyService.GetAPIKeyByID(ctx, userID, apiKeyID); err == nil && apiKey != nil {
+            permissionLevel = apiKey.PermissionLevel
+        }
+    }
+
+    c.JSON(http.StatusOK, gin.H{
+        "ok":               true,
+        "user_id":          userID,
+        "username":         username,
+        "permission_level": permissionLevel,
+        "api_key_id":       apiKeyID,
+        "method":           c.Request.Method,
+    })
+}

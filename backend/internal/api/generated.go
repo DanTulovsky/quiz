@@ -13,6 +13,7 @@ import (
 )
 
 const (
+	BearerAuthScopes  = "bearerAuth.Scopes"
 	CookieAuthScopes  = "cookieAuth.Scopes"
 	SessionAuthScopes = "sessionAuth.Scopes"
 )
@@ -21,6 +22,12 @@ const (
 const (
 	APIKeySummaryPermissionLevelFull     APIKeySummaryPermissionLevel = "full"
 	APIKeySummaryPermissionLevelReadonly APIKeySummaryPermissionLevel = "readonly"
+)
+
+// Defines values for APIKeyTestResponsePermissionLevel.
+const (
+	APIKeyTestResponsePermissionLevelFull     APIKeyTestResponsePermissionLevel = "full"
+	APIKeyTestResponsePermissionLevelReadonly APIKeyTestResponsePermissionLevel = "readonly"
 )
 
 // Defines values for ChatMessageRole.
@@ -37,8 +44,8 @@ const (
 
 // Defines values for CreateAPIKeyResponsePermissionLevel.
 const (
-	Full     CreateAPIKeyResponsePermissionLevel = "full"
-	Readonly CreateAPIKeyResponsePermissionLevel = "readonly"
+	CreateAPIKeyResponsePermissionLevelFull     CreateAPIKeyResponsePermissionLevel = "full"
+	CreateAPIKeyResponsePermissionLevelReadonly CreateAPIKeyResponsePermissionLevel = "readonly"
 )
 
 // Defines values for CreateMessageRequestRole.
@@ -322,6 +329,19 @@ type APIKeySummary struct {
 
 // APIKeySummaryPermissionLevel Permission level
 type APIKeySummaryPermissionLevel string
+
+// APIKeyTestResponse defines model for APIKeyTestResponse.
+type APIKeyTestResponse struct {
+	ApiKeyId        *int                               `json:"api_key_id,omitempty"`
+	Method          *string                            `json:"method,omitempty"`
+	Ok              *bool                              `json:"ok,omitempty"`
+	PermissionLevel *APIKeyTestResponsePermissionLevel `json:"permission_level,omitempty"`
+	UserId          *int                               `json:"user_id,omitempty"`
+	Username        *string                            `json:"username,omitempty"`
+}
+
+// APIKeyTestResponsePermissionLevel defines model for APIKeyTestResponse.PermissionLevel.
+type APIKeyTestResponsePermissionLevel string
 
 // APIKeysListResponse defines model for APIKeysListResponse.
 type APIKeysListResponse struct {

@@ -16,6 +16,10 @@
 - Follow established patterns in the codebase with respect to tracing, error handling, etc...
 - Keep business logic in service layers
 
+## API
+
+- When writing openapi files, always use $ref references
+
 ## Code
 
 - Never update generated code directly, always use proper commands: generate-api-types

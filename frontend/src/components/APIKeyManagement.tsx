@@ -27,6 +27,7 @@ import {
   IconAlertCircle,
 } from '@tabler/icons-react';
 import { showNotification } from '@mantine/notifications';
+import ConfirmationModal from './ConfirmationModal';
 
 interface APIKey {
   id: number;
@@ -59,6 +60,13 @@ export const APIKeyManagement: React.FC = () => {
   const [createdKey, setCreatedKey] = useState<string | null>(null);
   const [showKeyModal, setShowKeyModal] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [keyToDelete, setKeyToDelete] = useState<APIKey | null>(null);
+  const [testModalOpen, setTestModalOpen] = useState(false);
+  const [keyToTest, setKeyToTest] = useState<APIKey | null>(null);
+  const [testFullKey, setTestFullKey] = useState('');
+  const [testing, setTesting] = useState(false);
+  const [testResult, setTestResult] = useState<null | { ok: boolean; status: number; body?: any }>(null);
 
   const fetchAPIKeys = async () => {
     try {
@@ -138,17 +146,15 @@ export const APIKeyManagement: React.FC = () => {
     }
   };
 
-  const handleDeleteKey = async (id: number, name: string) => {
-    if (
-      !window.confirm(
-        `Are you sure you want to delete the API key "${name}"? This action cannot be undone.`
-      )
-    ) {
-      return;
-    }
+  const handleDeleteKey = (key: APIKey) => {
+    setKeyToDelete(key);
+    setDeleteModalOpen(true);
+  };
 
+  const confirmDeleteKey = async () => {
+    if (!keyToDelete) return;
     try {
-      const response = await fetch(`/v1/api-keys/${id}`, {
+      const response = await fetch(`/v1/api-keys/${keyToDelete.id}`, {
         method: 'DELETE',
         credentials: 'include',
       });
@@ -169,7 +175,59 @@ export const APIKeyManagement: React.FC = () => {
         message: 'Failed to delete API key',
         color: 'red',
       });
+    } finally {
+      setDeleteModalOpen(false);
+      setKeyToDelete(null);
     }
+  };
+
+  const prefillFullKeyIfAvailable = (k: APIKey) => {
+    if (!createdKey) return '';
+    // If the created key matches this key's prefix, prefill
+    const prefix = createdKey.substring(0, Math.min(createdKey.length, 12));
+    if (k.key_prefix && prefix === k.key_prefix) return createdKey;
+    return '';
+  };
+
+  const runTest = async (mode: 'read' | 'write') => {
+    setTesting(true);
+    setTestResult(null);
+    try {
+      const origin = window.location.origin;
+      const endpoint = mode === 'read' ? '/v1/api-keys/test-read' : '/v1/api-keys/test-write';
+      const url = `${origin}${endpoint}`;
+      const headers: Record<string, string> = {
+        Authorization: `Bearer ${testFullKey.trim()}`,
+      };
+      if (mode === 'write') headers['Content-Type'] = 'application/json';
+      const resp = await fetch(url, {
+        method: mode === 'read' ? 'GET' : 'POST',
+        headers,
+        credentials: 'omit',
+        body: mode === 'write' ? JSON.stringify({}) : undefined,
+      });
+      let body: any = undefined;
+      try {
+        body = await resp.json();
+      } catch {
+        body = await resp.text();
+      }
+      setTestResult({ ok: resp.ok, status: resp.status, body });
+    } catch (e) {
+      setTestResult({ ok: false, status: 0, body: String(e) });
+    } finally {
+      setTesting(false);
+    }
+  };
+
+  const curlSnippet = (mode: 'read' | 'write') => {
+    const origin = window.location.origin;
+    const ep = mode === 'read' ? '/v1/api-keys/test-read' : '/v1/api-keys/test-write';
+    const key = testFullKey.trim() || '<YOUR_API_KEY>';
+    if (mode === 'read') {
+      return `curl -sS -X GET "${origin}${ep}" -H "Authorization: Bearer ${key}"`;
+    }
+    return `curl -sS -X POST "${origin}${ep}" -H "Authorization: Bearer ${key}" -H "Content-Type: application/json" -d '{}'`;
   };
 
   const formatDate = (dateString: string | null) => {
@@ -240,15 +298,28 @@ export const APIKeyManagement: React.FC = () => {
                   <Table.Td>{formatDate(key.last_used_at)}</Table.Td>
                   <Table.Td>{formatDate(key.created_at)}</Table.Td>
                   <Table.Td>
+                    <Group gap="xs">
+                      <Tooltip label='Test this key'>
+                        <Button size='xs' variant='light' onClick={() => {
+                          setKeyToTest(key);
+                          const prefill = prefillFullKeyIfAvailable(key);
+                          setTestFullKey(prefill);
+                          setTestResult(null);
+                          setTestModalOpen(true);
+                        }}>
+                          Test
+                        </Button>
+                      </Tooltip>
                     <Tooltip label='Delete key'>
                       <ActionIcon
                         color='red'
                         variant='subtle'
-                        onClick={() => handleDeleteKey(key.id, key.key_name)}
+                        onClick={() => handleDeleteKey(key)}
                       >
                         <IconTrash size={16} />
                       </ActionIcon>
                     </Tooltip>
+                    </Group>
                   </Table.Td>
                 </Table.Tr>
               ))}
@@ -256,6 +327,20 @@ export const APIKeyManagement: React.FC = () => {
           </Table>
         )}
       </Stack>
+
+      {/* Delete API Key Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={deleteModalOpen}
+        onClose={() => {
+          setDeleteModalOpen(false);
+          setKeyToDelete(null);
+        }}
+        onConfirm={confirmDeleteKey}
+        title='Delete API key'
+        message={`Are you sure you want to delete the API key "${keyToDelete?.key_name ?? ''}"? This action cannot be undone.`}
+        confirmText='Delete'
+        cancelText='Cancel'
+      />
 
       {/* Create API Key Modal */}
       <Modal
@@ -370,6 +455,57 @@ export const APIKeyManagement: React.FC = () => {
               I've Saved My Key
             </Button>
           </Group>
+        </Stack>
+      </Modal>
+
+      {/* Test API Key Modal */}
+      <Modal
+        opened={testModalOpen}
+        onClose={() => setTestModalOpen(false)}
+        title={`Test API Key${keyToTest ? `: ${keyToTest.key_name}` : ''}`}
+        size='lg'
+      >
+        <Stack gap='md'>
+          <Text size='sm'>Paste the full API key to test. Requests ignore cookies and use Authorization: Bearer.</Text>
+          <TextInput
+            label='Full API Key'
+            placeholder='qapp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+            value={testFullKey}
+            onChange={e => setTestFullKey(e.currentTarget.value)}
+          />
+          <Group>
+            <Button onClick={() => runTest('read')} loading={testing} variant='default'>Test Read (GET)</Button>
+            <Button onClick={() => runTest('write')} loading={testing}>Test Write (POST)</Button>
+          </Group>
+          {testResult && (
+            <Alert color={testResult.ok ? 'green' : 'red'} title={`HTTP ${testResult.status}`}>
+              <Code block style={{whiteSpace: 'pre-wrap'}}>{typeof testResult.body === 'string' ? testResult.body : JSON.stringify(testResult.body, null, 2)}</Code>
+            </Alert>
+          )}
+          <Stack gap='xs'>
+            <Text size='sm' fw={500}>curl (read):</Text>
+            <Group gap='xs'>
+              <Code style={{flex:1, wordBreak:'break-all', padding:'8px'}}>{curlSnippet('read')}</Code>
+              <CopyButton value={curlSnippet('read')}>
+                {({copied, copy}) => (
+                  <ActionIcon color={copied ? 'teal' : 'gray'} variant='subtle' onClick={copy}>
+                    {copied ? <IconCheck size={16}/> : <IconCopy size={16}/>}
+                  </ActionIcon>
+                )}
+              </CopyButton>
+            </Group>
+            <Text size='sm' fw={500} mt='sm'>curl (write):</Text>
+            <Group gap='xs'>
+              <Code style={{flex:1, wordBreak:'break-all', padding:'8px'}}>{curlSnippet('write')}</Code>
+              <CopyButton value={curlSnippet('write')}>
+                {({copied, copy}) => (
+                  <ActionIcon color={copied ? 'teal' : 'gray'} variant='subtle' onClick={copy}>
+                    {copied ? <IconCheck size={16}/> : <IconCopy size={16}/>}
+                  </ActionIcon>
+                )}
+              </CopyButton>
+            </Group>
+          </Stack>
         </Stack>
       </Modal>
     </Card>
