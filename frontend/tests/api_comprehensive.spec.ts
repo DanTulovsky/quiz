@@ -948,10 +948,10 @@ test.describe('Comprehensive API Tests', () => {
           queryParams[param.name] = 'test query';
         } else if (param.name === 'user_id') {
           queryParams[param.name] = 1;
-        } else if (param.name === 'startDate') {
+        } else if (param.name === 'startDate' || param.name === 'start_date') {
           // Use a recent date range for token usage queries
           queryParams[param.name] = '2025-08-01';
-        } else if (param.name === 'endDate') {
+        } else if (param.name === 'endDate' || param.name === 'end_date') {
           // Use a recent date range for token usage queries
           queryParams[param.name] = '2025-08-31';
         } else if (param.name === 'date') {
@@ -963,6 +963,21 @@ test.describe('Comprehensive API Tests', () => {
             queryParams[param.name] = param.schema.enum[0];
           } else {
             queryParams[param.name] = 'resolved';
+          }
+        } else if (param.required) {
+          // For required query parameters that don't match special cases,
+          // generate a default value based on the parameter type
+          if (param.schema?.type === 'string') {
+            if (param.schema?.format === 'date') {
+              // Generate a date value for date-format strings
+              queryParams[param.name] = '2025-08-01';
+            } else {
+              queryParams[param.name] = 'test';
+            }
+          } else if (param.schema?.type === 'integer' || param.schema?.type === 'number') {
+            queryParams[param.name] = 1;
+          } else if (param.schema?.type === 'boolean') {
+            queryParams[param.name] = true;
           }
         }
       }

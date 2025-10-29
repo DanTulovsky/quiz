@@ -11,6 +11,8 @@ import (
 	"go.opentelemetry.io/contrib/bridges/otelzap"
 	"go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploggrpc"
 	"go.opentelemetry.io/otel/sdk/log"
+	"go.opentelemetry.io/otel/sdk/resource"
+	semconv "go.opentelemetry.io/otel/semconv/v1.21.0"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -59,38 +61,51 @@ func NewLoggerWithLevel(cfg *config.OpenTelemetryConfig, level zapcore.Level) *L
 		// Create OTLP exporter with proper endpoint format
 		endpoint := cfg.Endpoint
 
-		exporter, err := otlploggrpc.New(context.Background(),
-			otlploggrpc.WithEndpoint(endpoint),
-			otlploggrpc.WithInsecure(),
+		// Set up resource attributes
+		res, err := resource.New(context.Background(),
+			resource.WithAttributes(
+				semconv.ServiceName(cfg.ServiceName),
+				semconv.ServiceVersion(cfg.ServiceVersion),
+			),
 		)
 		if err != nil {
 			// Log the error but continue with stdout logging
-			zapLogger.Error("Failed to create OTLP exporter", zap.Error(err), zap.String("endpoint", endpoint))
+			zapLogger.Error("Failed to create otel resource", zap.Error(err))
 		} else {
-			zapLogger.Info("Successfully created OTLP exporter", zap.String("endpoint", endpoint))
-
-			// Create batch processor
-			processor := log.NewBatchProcessor(exporter)
-
-			// Create logger provider
-			provider := log.NewLoggerProvider(
-				log.WithProcessor(processor),
+			exporter, err := otlploggrpc.New(context.Background(),
+				otlploggrpc.WithEndpoint(endpoint),
+				otlploggrpc.WithInsecure(),
 			)
+			if err != nil {
+				// Log the error but continue with stdout logging
+				zapLogger.Error("Failed to create OTLP exporter", zap.Error(err), zap.String("endpoint", endpoint))
+			} else {
+				zapLogger.Info("Successfully created OTLP exporter", zap.String("endpoint", endpoint))
 
-			// Create OpenTelemetry core
-			otelCore := otelzap.NewCore("quizapp", otelzap.WithLoggerProvider(provider))
+				// Create batch processor
+				processor := log.NewBatchProcessor(exporter)
 
-			// Create a new zap logger with both stdout and OTLP cores
-			cores := []zapcore.Core{
-				zapLogger.Core(),
-				otelCore,
+				// Create logger provider with resource
+				provider := log.NewLoggerProvider(
+					log.WithProcessor(processor),
+					log.WithResource(res),
+				)
+
+				// Create OpenTelemetry core
+				otelCore := otelzap.NewCore("quizapp", otelzap.WithLoggerProvider(provider))
+
+				// Create a new zap logger with both stdout and OTLP cores
+				cores := []zapcore.Core{
+					zapLogger.Core(),
+					otelCore,
+				}
+
+				// Create a new logger with multiple cores
+				multiCore := zapcore.NewTee(cores...)
+				zapLogger = zap.New(multiCore)
+
+				zapLogger.Info("OTLP logging successfully configured", zap.String("endpoint", endpoint))
 			}
-
-			// Create a new logger with multiple cores
-			multiCore := zapcore.NewTee(cores...)
-			zapLogger = zap.New(multiCore)
-
-			zapLogger.Info("OTLP logging successfully configured", zap.String("endpoint", endpoint))
 		}
 	} else {
 		zapLogger.Info("OTLP logging not enabled", zap.Bool("enable_logging", cfg.EnableLogging), zap.String("endpoint", cfg.Endpoint))

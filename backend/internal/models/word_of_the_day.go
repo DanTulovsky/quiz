@@ -1,6 +1,7 @@
 package models
 
 import (
+	"encoding/json"
 	"time"
 )
 
@@ -47,4 +48,34 @@ type WordOfTheDayDisplay struct {
 	Context       string         `json:"context,omitempty"`
 	Explanation   string         `json:"explanation,omitempty"`
 	TopicCategory string         `json:"topic_category,omitempty"`
+}
+
+// MarshalJSON customizes JSON marshaling for WordOfTheDayDisplay to format the date field as YYYY-MM-DD
+// This ensures compliance with OpenAPI date format (not date-time)
+func (w WordOfTheDayDisplay) MarshalJSON() ([]byte, error) {
+	return json.Marshal(&struct {
+		Date          string         `json:"date"`
+		Word          string         `json:"word"`
+		Translation   string         `json:"translation"`
+		Sentence      string         `json:"sentence"`
+		SourceType    WordSourceType `json:"source_type"`
+		SourceID      int            `json:"source_id"`
+		Language      string         `json:"language"`
+		Level         string         `json:"level,omitempty"`
+		Context       string         `json:"context,omitempty"`
+		Explanation   string         `json:"explanation,omitempty"`
+		TopicCategory string         `json:"topic_category,omitempty"`
+	}{
+		Date:          w.Date.UTC().Format("2006-01-02"),
+		Word:          w.Word,
+		Translation:   w.Translation,
+		Sentence:      w.Sentence,
+		SourceType:    w.SourceType,
+		SourceID:      w.SourceID,
+		Language:      w.Language,
+		Level:         w.Level,
+		Context:       w.Context,
+		Explanation:   w.Explanation,
+		TopicCategory: w.TopicCategory,
+	})
 }
