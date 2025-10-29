@@ -617,4 +617,22 @@ CREATE TABLE IF NOT EXISTS translation_cache (
 -- Create indexes for efficient lookup and cleanup
 CREATE INDEX IF NOT EXISTS idx_translation_cache_lookup ON translation_cache(text_hash, source_language, target_language);
 CREATE INDEX IF NOT EXISTS idx_translation_cache_expires_at ON translation_cache(expires_at);
+-- Auth API Keys table - stores API keys for programmatic authentication
+-- This is separate from user_api_keys which stores AI provider API keys
+CREATE TABLE IF NOT EXISTS auth_api_keys (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    key_name VARCHAR(255) NOT NULL,
+    key_hash TEXT NOT NULL,
+    key_prefix VARCHAR(20) NOT NULL,
+    permission_level VARCHAR(20) NOT NULL CHECK (permission_level IN ('readonly', 'full')),
+    last_used_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(key_hash)
+);
+-- Create indexes for efficient lookups
+CREATE INDEX IF NOT EXISTS idx_auth_api_keys_user_id ON auth_api_keys(user_id);
+CREATE INDEX IF NOT EXISTS idx_auth_api_keys_key_hash ON auth_api_keys(key_hash);
+CREATE INDEX IF NOT EXISTS idx_auth_api_keys_key_prefix ON auth_api_keys(key_prefix);
 -- Insert default roles and assign them to existing users via migration files

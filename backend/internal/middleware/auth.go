@@ -4,6 +4,9 @@ package middleware
 import (
 	"context"
 	"net/http"
+	"strings"
+
+	"quizapp/internal/models"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -15,11 +18,34 @@ const (
 	UserIDKey = "user_id"
 	// UsernameKey is the key used to store username in session
 	UsernameKey = "username"
+	// AuthMethodKey is the key used to store authentication method
+	AuthMethodKey = "auth_method"
+	// APIKeyIDKey is the key used to store API key ID (for API key auth)
+	APIKeyIDKey = "api_key_id"
 )
 
+// AuthMethod constants
+const (
+	AuthMethodSession = "session"
+	AuthMethodAPIKey  = "api_key"
+)
+
+// AuthAPIKeyValidator is an interface for validating API keys
+type AuthAPIKeyValidator interface {
+	ValidateAPIKey(ctx context.Context, rawKey string) (*models.AuthAPIKey, error)
+	UpdateLastUsed(ctx context.Context, keyID int) error
+}
+
+// AuthUserServiceGetter is an interface for getting user info
+type AuthUserServiceGetter interface {
+	GetUserByID(ctx context.Context, userID int) (*models.User, error)
+}
+
 // RequireAuth returns a middleware that requires authentication
+// This version only supports session-based auth for backward compatibility
 func RequireAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		// Fall back to session authentication
 		session := sessions.Default(c)
 		userID := session.Get(UserIDKey)
 
@@ -72,6 +98,122 @@ func RequireAuth() gin.HandlerFunc {
 		// Store user info in context for handlers to use
 		c.Set(UserIDKey, userIDInt)
 		c.Set(UsernameKey, usernameStr)
+		c.Set(AuthMethodKey, AuthMethodSession)
+
+		c.Next()
+	}
+}
+
+// RequireAuthWithAPIKey returns a middleware that requires authentication via API key or session
+// It checks for API key authentication first, then falls back to session authentication
+func RequireAuthWithAPIKey(apiKeyService AuthAPIKeyValidator, userService AuthUserServiceGetter) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// Check for API key authentication first
+		authHeader := c.GetHeader("Authorization")
+		if authHeader != "" && strings.HasPrefix(authHeader, "Bearer ") {
+			rawKey := strings.TrimPrefix(authHeader, "Bearer ")
+
+			// Validate API key
+			apiKey, err := apiKeyService.ValidateAPIKey(c.Request.Context(), rawKey)
+			if err == nil && apiKey != nil {
+				// Check permission level against request method
+				if !apiKey.CanPerformMethod(c.Request.Method) {
+					c.JSON(http.StatusForbidden, gin.H{
+						"error": "This API key does not have permission for this operation",
+						"code":  "FORBIDDEN",
+					})
+					c.Abort()
+					return
+				}
+
+				// Get user info to set username in context
+				user, err := userService.GetUserByID(c.Request.Context(), apiKey.UserID)
+				if err != nil || user == nil {
+					c.JSON(http.StatusUnauthorized, gin.H{
+						"error": "Invalid API key - user not found",
+						"code":  "UNAUTHORIZED",
+					})
+					c.Abort()
+					return
+				}
+
+				// Set user context
+				c.Set(UserIDKey, apiKey.UserID)
+				c.Set(UsernameKey, user.Username)
+				c.Set(AuthMethodKey, AuthMethodAPIKey)
+				c.Set(APIKeyIDKey, apiKey.ID)
+
+				// Update last used timestamp asynchronously
+				go func() {
+					_ = apiKeyService.UpdateLastUsed(context.Background(), apiKey.ID)
+				}()
+
+				c.Next()
+				return
+			}
+			// If we got here with a Bearer token, it's invalid
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"error": "Invalid API key",
+				"code":  "UNAUTHORIZED",
+			})
+			c.Abort()
+			return
+		}
+
+		// Fall back to session authentication
+		session := sessions.Default(c)
+		userID := session.Get(UserIDKey)
+
+		if userID == nil {
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"error": "Authentication required",
+				"code":  "UNAUTHORIZED",
+			})
+			c.Abort()
+			return
+		}
+
+		// Validate user_id is an integer
+		userIDInt, ok := userID.(int)
+		if !ok {
+			// Try to convert from float64 (JSON numbers are often stored as float64)
+			if userIDFloat, ok := userID.(float64); ok {
+				userIDInt = int(userIDFloat)
+			} else {
+				c.JSON(http.StatusUnauthorized, gin.H{
+					"error": "Authentication required",
+					"code":  "UNAUTHORIZED",
+				})
+				c.Abort()
+				return
+			}
+		}
+
+		// Validate username is a string and not empty
+		username := session.Get(UsernameKey)
+		if username == nil {
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"error": "Authentication required",
+				"code":  "UNAUTHORIZED",
+			})
+			c.Abort()
+			return
+		}
+
+		usernameStr, ok := username.(string)
+		if !ok || usernameStr == "" {
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"error": "Authentication required",
+				"code":  "UNAUTHORIZED",
+			})
+			c.Abort()
+			return
+		}
+
+		// Store user info in context for handlers to use
+		c.Set(UserIDKey, userIDInt)
+		c.Set(UsernameKey, usernameStr)
+		c.Set(AuthMethodKey, AuthMethodSession)
 
 		c.Next()
 	}
