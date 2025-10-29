@@ -80,8 +80,12 @@ func ResponseValidationMiddleware(logger *observability.Logger) gin.HandlerFunc 
 			var responseData interface{}
 			err := json.Unmarshal(responseWriter.body.Bytes(), &responseData)
 			if err == nil {
-				// Automatically determine schema name from the endpoint
-				schemaName := schemaLoader.DetermineSchemaFromPath(c.Request.URL.Path, c.Request.Method)
+				// Determine schema name from the endpoint for the actual status code
+				schemaName := schemaLoader.DetermineResponseSchemaFromPath(c.Request.URL.Path, c.Request.Method, fmt.Sprintf("%d", statusCode))
+				if schemaName == "" {
+					// Fallback to generic success schema resolution if exact status not found
+					schemaName = schemaLoader.DetermineSchemaFromPath(c.Request.URL.Path, c.Request.Method)
+				}
 
 				// Add tracing attributes
 				span.SetAttributes(

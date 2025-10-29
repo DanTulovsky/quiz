@@ -80,6 +80,15 @@ func HandleValidationError(c *gin.Context, field string, value interface{}, reas
 // HandleAppError handles any AppError and sends appropriate HTTP response
 func HandleAppError(c *gin.Context, err error) {
 	if appErr, ok := err.(*contextutils.AppError); ok {
+		// Special-case: no questions available should return 202 with GeneratingResponse body
+		if appErr.Code == contextutils.ErrorCodeNoQuestionsAvailable {
+			// 202 Accepted with generating payload (matches swagger GeneratingResponse)
+			c.JSON(http.StatusAccepted, gin.H{
+				"status":  "generating",
+				"message": "No questions available. Please try again shortly.",
+			})
+			return
+		}
 		StandardizeAppError(c, appErr)
 	} else {
 		// Fallback for non-AppError types
@@ -90,6 +99,8 @@ func HandleAppError(c *gin.Context, err error) {
 // mapErrorCodeToHTTPStatus maps AppError codes to appropriate HTTP status codes
 func mapErrorCodeToHTTPStatus(code contextutils.ErrorCode) int {
 	switch code {
+	case contextutils.ErrorCodeNoQuestionsAvailable:
+		return http.StatusAccepted
 	// 4xx Client Errors
 	case contextutils.ErrorCodeInvalidInput, contextutils.ErrorCodeMissingRequired,
 		contextutils.ErrorCodeInvalidFormat, contextutils.ErrorCodeValidationFailed,

@@ -732,3 +732,154 @@ func (sl *SchemaLoader) DetermineSchemaFromPath(path, method string) string {
 
 	return ""
 }
+
+// DetermineResponseSchemaFromPath determines the schema name for a given path, method, and HTTP status code
+func (sl *SchemaLoader) DetermineResponseSchemaFromPath(path, method, statusCode string) string {
+	// Use cached swagger data if available
+	if sl.swaggerData == nil {
+		return ""
+	}
+	swagger := sl.swaggerData
+
+	// Extract paths
+	paths, ok := swagger["paths"].(map[string]interface{})
+	if !ok {
+		// Try with interface{} keys
+		pathsInterface, ok := swagger["paths"].(map[interface{}]interface{})
+		if !ok {
+			return ""
+		}
+		// Convert to string keys
+		paths = convertInterfaceMapToStringMap(pathsInterface)
+	}
+
+	// First, try exact match
+	pathInfo, exists := paths[path]
+	if !exists {
+		// If exact match fails, try pattern matching for path parameters
+		for swaggerPath := range paths {
+			if sl.pathMatchesPattern(path, swaggerPath) {
+				pathInfo = paths[swaggerPath]
+				break
+			}
+		}
+		if pathInfo == nil {
+			return ""
+		}
+	}
+
+	pathMap, ok := pathInfo.(map[string]interface{})
+	if !ok {
+		// Try with interface{} keys
+		pathMapInterface, ok := pathInfo.(map[interface{}]interface{})
+		if !ok {
+			return ""
+		}
+		// Convert to string keys
+		pathMap = convertInterfaceMapToStringMap(pathMapInterface)
+	}
+
+	// Look for the specific HTTP method
+	methodInfo, exists := pathMap[strings.ToLower(method)]
+	if !exists {
+		return ""
+	}
+
+	methodMap, ok := methodInfo.(map[string]interface{})
+	if !ok {
+		// Try with interface{} keys
+		methodMapInterface, ok := methodInfo.(map[interface{}]interface{})
+		if !ok {
+			return ""
+		}
+		// Convert to string keys
+		methodMap = convertInterfaceMapToStringMap(methodMapInterface)
+	}
+
+	// Extract the response schema map
+	responses, ok := methodMap["responses"].(map[string]interface{})
+	if !ok {
+		// Try with interface{} keys
+		responsesInterface, ok := methodMap["responses"].(map[interface{}]interface{})
+		if !ok {
+			return ""
+		}
+		// Convert to string keys
+		responses = convertInterfaceMapToStringMap(responsesInterface)
+	}
+
+	// Get response for the exact status code
+	successResponse, exists := responses[statusCode]
+	if !exists {
+		return ""
+	}
+
+	responseMap, ok := successResponse.(map[string]interface{})
+	if !ok {
+		// Try with interface{} keys
+		responseMapInterface, ok := successResponse.(map[interface{}]interface{})
+		if !ok {
+			return ""
+		}
+		// Convert to string keys
+		responseMap = convertInterfaceMapToStringMap(responseMapInterface)
+	}
+
+	// Extract content
+	content, ok := responseMap["content"].(map[string]interface{})
+	if !ok {
+		// Try with interface{} keys
+		contentInterface, ok := responseMap["content"].(map[interface{}]interface{})
+		if !ok {
+			return ""
+		}
+		// Convert to string keys
+		content = convertInterfaceMapToStringMap(contentInterface)
+	}
+
+	// Look for application/json
+	jsonContent, exists := content["application/json"]
+	if !exists {
+		return ""
+	}
+
+	jsonMap, ok := jsonContent.(map[string]interface{})
+	if !ok {
+		// Try with interface{} keys
+		jsonMapInterface, ok := jsonContent.(map[interface{}]interface{})
+		if !ok {
+			return ""
+		}
+		// Convert to string keys
+		jsonMap = convertInterfaceMapToStringMap(jsonMapInterface)
+	}
+
+	// Extract schema reference
+	schema, exists := jsonMap["schema"]
+	if !exists {
+		return ""
+	}
+
+	schemaMap, ok := schema.(map[string]interface{})
+	if !ok {
+		// Try with interface{} keys
+		schemaMapInterface, ok := schema.(map[interface{}]interface{})
+		if !ok {
+			return ""
+		}
+		// Convert to string keys
+		schemaMap = convertInterfaceMapToStringMap(schemaMapInterface)
+	}
+
+	// Extract $ref directly
+	if ref, exists := schemaMap["$ref"]; exists {
+		if refStr, ok := ref.(string); ok {
+			if strings.HasPrefix(refStr, "#/components/schemas/") {
+				schemaName := strings.TrimPrefix(refStr, "#/components/schemas/")
+				return schemaName
+			}
+		}
+	}
+
+	return ""
+}
