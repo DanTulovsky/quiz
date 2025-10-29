@@ -66,11 +66,13 @@ processors:
 #      action: upsert
 
 exporters:
-  otlp:
-    endpoint: ${env:SIGNZ_OTEL_COLLECTOR_HOST}:${env:SIGNZ_OTEL_COLLECTOR_PORT}
+  otlp/uptrace:
+    endpoints: ${env:SIGNZ_OTEL_COLLECTOR_HOST}:${env:SIGNZ_OTEL_COLLECTOR_PORT}
     tls:
       insecure: ${env:SIGNZ_OTEL_COLLECTOR_INSECURE}
     headers:
+      uptrace-dsn: ${env:UPTRACE_DSN}
+      # Old signoz one, can be deleted soon
       Authorization: Bearer ${env:SIGNZ_OTEL_COLLECTOR_TOKEN}
 
 service:
@@ -83,14 +85,14 @@ service:
     traces:
       receivers: [otlp]
       processors: [batch, resourcedetection, attributes, resource/env]
-      exporters: [otlp]
+      exporters: [otlp/uptrace]
     metrics:
       receivers: [otlp, prometheus, postgresql]
       processors: [batch, resourcedetection, attributes, resource/env]
-      exporters: [otlp]
+      exporters: [otlp/uptrace]
     logs:
       receivers: [otlp]
       processors: [batch, resourcedetection, attributes, resource/env]
-      exporters: [otlp]
+      exporters: [otlp/uptrace]
 
   extensions: [health_check, pprof, zpages]
