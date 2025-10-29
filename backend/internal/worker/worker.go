@@ -80,6 +80,7 @@ type Worker struct {
 	learningService        services.LearningServiceInterface
 	workerService          services.WorkerServiceInterface
 	dailyQuestionService   services.DailyQuestionServiceInterface
+	wordOfTheDayService    services.WordOfTheDayServiceInterface
 	storyService           services.StoryServiceInterface
 	emailService           mailer.Mailer
 	hintService            services.GenerationHintServiceInterface
@@ -493,8 +494,253 @@ func (w *Worker) getUsersEligibleForDailyQuestions(ctx context.Context) ([]model
 	return eligibleUsers, nil
 }
 
+// checkForWordOfTheDayAssignments assigns word of the day to all eligible users
+func (w *Worker) checkForWordOfTheDayAssignments(ctx context.Context) error {
+	ctx, span := observability.TraceWorkerFunction(ctx, "check_for_word_of_the_day_assignments",
+		attribute.String("worker.instance", w.instance),
+	)
+	defer observability.FinishSpan(span, nil)
+
+	w.logger.Info(ctx, "Checking for word of the day assignments", map[string]interface{}{
+		"instance": w.instance,
+	})
+
+	// Get users who are eligible for word of the day
+	users, err := w.getUsersEligibleForWordOfTheDay(ctx)
+	if err != nil {
+		span.RecordError(err)
+		w.logger.Error(ctx, "Failed to get users eligible for word of the day", err, nil)
+		return contextutils.WrapError(err, "failed to get users eligible for word of the day")
+	}
+
+	if len(users) == 0 {
+		w.logger.Info(ctx, "No users eligible for word of the day assignments", map[string]interface{}{
+			"instance": w.instance,
+		})
+		return nil
+	}
+
+	span.SetAttributes(
+		attribute.Int("users.total", len(users)),
+	)
+
+	successfulAssignments := 0
+	failedAssignments := 0
+
+	for _, user := range users {
+		// Get user's timezone, default to UTC if not set
+		timezone := "UTC"
+		if user.Timezone.Valid && user.Timezone.String != "" {
+			timezone = user.Timezone.String
+		}
+
+		// Get today's date in the user's timezone
+		loc, err := time.LoadLocation(timezone)
+		if err != nil {
+			w.logger.Warn(ctx, "Invalid timezone for user, using UTC", map[string]interface{}{
+				"user_id":  user.ID,
+				"username": user.Username,
+				"timezone": timezone,
+				"error":    err.Error(),
+			})
+			loc = time.UTC
+		}
+
+		// Get today's date in the user's timezone
+		now := w.timeNow().In(loc)
+		today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, loc)
+
+		// Select and assign word of the day for today
+		_, err = w.wordOfTheDayService.SelectWordOfTheDay(ctx, user.ID, today)
+		if err != nil {
+			failedAssignments++
+			w.logger.Error(ctx, "Failed to assign word of the day", err, map[string]interface{}{
+				"user_id":  user.ID,
+				"username": user.Username,
+				"timezone": timezone,
+				"date":     today.Format("2006-01-02"),
+			})
+		} else {
+			successfulAssignments++
+		}
+	}
+
+	span.SetAttributes(
+		attribute.Int("assignments.successful", successfulAssignments),
+		attribute.Int("assignments.failed", failedAssignments),
+	)
+
+	return nil
+}
+
+// getUsersEligibleForWordOfTheDay returns users who should receive word of the day
+func (w *Worker) getUsersEligibleForWordOfTheDay(ctx context.Context) ([]models.User, error) {
+	ctx, span := otel.Tracer("worker").Start(ctx, "getUsersEligibleForWordOfTheDay")
+	defer span.End()
+
+	// Get all users
+	users, err := w.userService.GetAllUsers(ctx)
+	if err != nil {
+		span.RecordError(err)
+		return nil, contextutils.WrapError(err, "failed to get users")
+	}
+
+	var eligibleUsers []models.User
+
+	for _, user := range users {
+		// Check if user has language and level preferences set
+		if !user.PreferredLanguage.Valid || user.PreferredLanguage.String == "" {
+			continue
+		}
+
+		if !user.CurrentLevel.Valid || user.CurrentLevel.String == "" {
+			continue
+		}
+
+		eligibleUsers = append(eligibleUsers, user)
+	}
+
+	w.logger.Info(ctx, "Found users eligible for word of the day", map[string]interface{}{
+		"total_users":    len(users),
+		"eligible_users": len(eligibleUsers),
+	})
+
+	return eligibleUsers, nil
+}
+
+// checkForWordOfTheDayEmails sends word of the day emails to eligible users
+func (w *Worker) checkForWordOfTheDayEmails(ctx context.Context) error {
+	ctx, span := observability.TraceWorkerFunction(ctx, "check_for_word_of_the_day_emails",
+		attribute.String("worker.instance", w.instance),
+	)
+	defer observability.FinishSpan(span, nil)
+
+	if !w.cfg.Email.DailyReminder.Enabled {
+		w.logger.Info(ctx, "Email disabled, skipping word of the day emails", nil)
+		return nil
+	}
+
+	// Get current time in UTC
+	now := w.timeNow().UTC()
+	currentHour := now.Hour()
+
+	// Send word of the day emails at the same hour as daily reminders (default: 9 AM)
+	reminderHour := w.cfg.Email.DailyReminder.Hour
+	if currentHour != reminderHour {
+		return nil
+	}
+
+	// Get users who should receive word of the day emails
+	users, err := w.getUsersNeedingWordOfTheDayEmails(ctx)
+	if err != nil {
+		span.RecordError(err)
+		return contextutils.WrapError(err, "failed to get users needing word of the day emails")
+	}
+
+	span.SetAttributes(
+		attribute.Int("users.total", len(users)),
+	)
+
+	emailsSent := 0
+	failedEmails := 0
+
+	for _, user := range users {
+		// Get user's timezone
+		timezone := "UTC"
+		if user.Timezone.Valid && user.Timezone.String != "" {
+			timezone = user.Timezone.String
+		}
+
+		loc, err := time.LoadLocation(timezone)
+		if err != nil {
+			loc = time.UTC
+		}
+
+		now := w.timeNow().In(loc)
+		today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, loc)
+
+		// Get word of the day for today
+		word, err := w.wordOfTheDayService.GetWordOfTheDay(ctx, user.ID, today)
+		if err != nil {
+			failedEmails++
+			w.logger.Error(ctx, "Failed to get word of the day for email", err, map[string]interface{}{
+				"user_id":  user.ID,
+				"username": user.Username,
+			})
+			continue
+		}
+
+		if word == nil {
+			// No word available, skip
+			continue
+		}
+
+		// Send email (convert mailer.Mailer to services.EmailServiceInterface)
+		emailSvc, ok := w.emailService.(services.EmailServiceInterface)
+		if !ok {
+			w.logger.Warn(ctx, "Email service does not support word of the day emails", map[string]interface{}{
+				"user_id": user.ID,
+			})
+			continue
+		}
+		
+		if err := emailSvc.SendWordOfTheDayEmail(ctx, user.ID, today, word); err != nil {
+			failedEmails++
+			w.logger.Error(ctx, "Failed to send word of the day email", err, map[string]interface{}{
+				"user_id":  user.ID,
+				"username": user.Username,
+			})
+		} else {
+			emailsSent++
+		}
+	}
+
+	span.SetAttributes(
+		attribute.Int("emails.sent", emailsSent),
+		attribute.Int("emails.failed", failedEmails),
+	)
+
+	return nil
+}
+
+// getUsersNeedingWordOfTheDayEmails returns users who should receive word of the day emails
+func (w *Worker) getUsersNeedingWordOfTheDayEmails(ctx context.Context) ([]models.User, error) {
+	ctx, span := otel.Tracer("worker").Start(ctx, "getUsersNeedingWordOfTheDayEmails")
+	defer span.End()
+
+	// Get all users
+	users, err := w.userService.GetAllUsers(ctx)
+	if err != nil {
+		span.RecordError(err)
+		return nil, contextutils.WrapError(err, "failed to get users")
+	}
+
+	var eligibleUsers []models.User
+
+	for _, user := range users {
+		// Check if user has email address
+		if !user.Email.Valid || user.Email.String == "" {
+			continue
+		}
+
+		// Check if word of the day emails are enabled for this user
+		if !user.WordOfDayEmailEnabled.Bool {
+			continue
+		}
+
+		eligibleUsers = append(eligibleUsers, user)
+	}
+
+	w.logger.Info(ctx, "Found users eligible for word of the day emails", map[string]interface{}{
+		"total_users":    len(users),
+		"eligible_users": len(eligibleUsers),
+	})
+
+	return eligibleUsers, nil
+}
+
 // NewWorker creates a new Worker instance
-func NewWorker(userService services.UserServiceInterface, questionService services.QuestionServiceInterface, aiService services.AIServiceInterface, learningService services.LearningServiceInterface, workerService services.WorkerServiceInterface, dailyQuestionService services.DailyQuestionServiceInterface, storyService services.StoryServiceInterface, emailService mailer.Mailer, hintService services.GenerationHintServiceInterface, translationCacheRepo services.TranslationCacheRepository, instance string, cfg *config.Config, logger *observability.Logger) *Worker {
+func NewWorker(userService services.UserServiceInterface, questionService services.QuestionServiceInterface, aiService services.AIServiceInterface, learningService services.LearningServiceInterface, workerService services.WorkerServiceInterface, dailyQuestionService services.DailyQuestionServiceInterface, wordOfTheDayService services.WordOfTheDayServiceInterface, storyService services.StoryServiceInterface, emailService mailer.Mailer, hintService services.GenerationHintServiceInterface, translationCacheRepo services.TranslationCacheRepository, instance string, cfg *config.Config, logger *observability.Logger) *Worker {
 	if instance == "" {
 		instance = "default"
 	}
@@ -514,6 +760,7 @@ func NewWorker(userService services.UserServiceInterface, questionService servic
 		learningService:      learningService,
 		workerService:        workerService,
 		dailyQuestionService: dailyQuestionService,
+		wordOfTheDayService:  wordOfTheDayService,
 		storyService:         storyService,
 		emailService:         emailService,
 		hintService:          hintService,
@@ -702,6 +949,20 @@ func (w *Worker) run() {
 	// Check for daily email reminders
 	if err := w.checkForDailyReminders(ctx); err != nil {
 		w.logger.Error(ctx, "Failed to check daily reminders", err, map[string]interface{}{
+			"instance": w.instance,
+		})
+	}
+
+	// Check for word of the day assignments
+	if err := w.checkForWordOfTheDayAssignments(ctx); err != nil {
+		w.logger.Error(ctx, "Failed to check word of the day assignments", err, map[string]interface{}{
+			"instance": w.instance,
+		})
+	}
+
+	// Check for word of the day emails
+	if err := w.checkForWordOfTheDayEmails(ctx); err != nil {
+		w.logger.Error(ctx, "Failed to check word of the day emails", err, map[string]interface{}{
 			"instance": w.instance,
 		})
 	}

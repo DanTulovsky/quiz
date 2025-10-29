@@ -91,6 +91,9 @@ func main() {
 	// Create daily question service
 	dailyQuestionService := services.NewDailyQuestionService(db, logger, questionService, learningService)
 
+	// Create word of the day service
+	wordOfTheDayService := services.NewWordOfTheDayService(db, logger)
+
 	// Create story service
 	storyService := services.NewStoryService(db, cfg, logger)
 
@@ -98,7 +101,7 @@ func main() {
 	translationCacheRepo := services.NewTranslationCacheRepository(db, logger)
 
 	// Initialize worker with the observability logger
-	workerInstance := worker.NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, storyService, emailService, generationHintService, translationCacheRepo, "default", cfg, logger)
+	workerInstance := worker.NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, emailService, generationHintService, translationCacheRepo, "default", cfg, logger)
 	go workerInstance.Start(ctx)
 
 	// Initialize admin handler for worker UI
