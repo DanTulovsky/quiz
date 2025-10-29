@@ -157,7 +157,12 @@ const WordOfTheDayPage: React.FC = () => {
               </Text>
 
               {/* Word */}
-              <Title order={1} size='3.5rem' style={{ lineHeight: 1.2 }} c='primary'>
+              <Title
+                order={1}
+                size='3.5rem'
+                style={{ lineHeight: 1.2 }}
+                c='primary'
+              >
                 {word.word}
               </Title>
 
