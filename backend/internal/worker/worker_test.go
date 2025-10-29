@@ -3039,6 +3039,7 @@ func createTestWorkerWithConfig(cfg *config.Config) *Worker {
 		&mockLearningService{},
 		&mockWorkerService{},
 		&mockDailyQuestionService{},
+		&mockWordOfTheDayService{},
 		&mockStoryService{},
 		&mockEmailService{},
 		&mockGenerationHintService{},
