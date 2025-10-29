@@ -41,6 +41,7 @@ import {
   IconBookmark,
   IconLanguage,
   IconBug,
+  IconSparkles,
 } from '@tabler/icons-react';
 import WorkerStatus from './WorkerStatus';
 import VersionDisplay from './VersionDisplay';
@@ -173,6 +174,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         href: '/daily',
         icon: IconCalendar,
         testId: 'nav-daily',
+      },
+      {
+        name: 'Word of the Day',
+        href: '/word-of-day',
+        icon: IconSparkles,
+        testId: 'nav-word-of-day',
       },
       {
         name: 'Story',

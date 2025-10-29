@@ -1,0 +1,272 @@
+import React from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+import { useWordOfTheDay } from '../hooks/useWordOfTheDay';
+import {
+  Container,
+  Stack,
+  Text,
+  Center,
+  Paper,
+  Button,
+  Group,
+  Badge,
+  Title,
+  Card,
+  ThemeIcon,
+} from '@mantine/core';
+import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
+import LoadingSpinner from '../components/LoadingSpinner';
+
+const WordOfTheDayPage: React.FC = () => {
+  const { date: dateParam } = useParams();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const {
+    selectedDate,
+    setSelectedDate,
+    word,
+    isLoading,
+    goToPreviousDay,
+    goToNextDay,
+    goToToday,
+    canGoPrevious,
+    canGoNext,
+  } = useWordOfTheDay(dateParam);
+
+  // Update URL when date changes
+  React.useEffect(() => {
+    if (dateParam !== selectedDate) {
+      navigate(`/word-of-day/${selectedDate}`, { replace: true });
+    }
+  }, [selectedDate, dateParam, navigate]);
+
+  // Format date for display
+  const formatDisplayDate = (dateStr: string): string => {
+    const date = new Date(dateStr + 'T00:00:00');
+    return date.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
+
+  // Format date for date picker (YYYY-MM-DD)
+  const formatDateForInput = (dateStr: string): string => {
+    return dateStr;
+  };
+
+  // Handle date input change
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newDate = e.target.value;
+    if (newDate) {
+      setSelectedDate(newDate);
+    }
+  };
+
+  if (!user) {
+    return (
+      <Container size='md' py='xl'>
+        <Center h='60vh'>
+          <Text>Please log in to view your word of the day.</Text>
+        </Center>
+      </Container>
+    );
+  }
+
+  return (
+    <Container size='md' py='xl'>
+      <Stack gap='lg'>
+        {/* Header with date navigation */}
+        <Group justify='space-between' align='center'>
+          <Title order={2}>Word of the Day</Title>
+          <Group gap='xs'>
+            <Button
+              variant='subtle'
+              size='sm'
+              leftSection={<Calendar size={16} />}
+              onClick={goToToday}
+            >
+              Today
+            </Button>
+          </Group>
+        </Group>
+
+        {/* Date navigation */}
+        <Group justify='center' align='center'>
+          <Button
+            variant='subtle'
+            leftSection={<ChevronLeft size={20} />}
+            onClick={goToPreviousDay}
+            disabled={!canGoPrevious || isLoading}
+          >
+            Previous
+          </Button>
+
+          <input
+            type='date'
+            value={formatDateForInput(selectedDate)}
+            onChange={handleDateChange}
+            max={new Date().toISOString().split('T')[0]}
+            style={{
+              padding: '8px 12px',
+              borderRadius: '4px',
+              border: '1px solid #dee2e6',
+              fontSize: '14px',
+              cursor: 'pointer',
+            }}
+          />
+
+          <Button
+            variant='subtle'
+            rightSection={<ChevronRight size={20} />}
+            onClick={goToNextDay}
+            disabled={!canGoNext || isLoading}
+          >
+            Next
+          </Button>
+        </Group>
+
+        {/* Word display */}
+        {isLoading ? (
+          <Center h='60vh'>
+            <LoadingSpinner />
+          </Center>
+        ) : word ? (
+          <Card
+            shadow='md'
+            padding='xl'
+            radius='md'
+            style={{
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              color: 'white',
+            }}
+          >
+            <Stack gap='md'>
+              {/* Date */}
+              <Text
+                size='sm'
+                fw={600}
+                style={{ textTransform: 'uppercase', letterSpacing: '1px' }}
+              >
+                {formatDisplayDate(word.date)}
+              </Text>
+
+              {/* Word */}
+              <Title order={1} size='3.5rem' style={{ lineHeight: 1.2 }}>
+                {word.word}
+              </Title>
+
+              {/* Translation */}
+              <Text size='xl' style={{ fontStyle: 'italic', opacity: 0.95 }}>
+                {word.translation}
+              </Text>
+
+              {/* Example sentence */}
+              {word.sentence && (
+                <Paper
+                  p='md'
+                  radius='md'
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.15)',
+                    backdropFilter: 'blur(10px)',
+                  }}
+                >
+                  <Text
+                    size='lg'
+                    style={{ lineHeight: 1.8, fontStyle: 'italic' }}
+                  >
+                    {word.sentence}
+                  </Text>
+                </Paper>
+              )}
+
+              {/* Explanation */}
+              {word.explanation && (
+                <Paper
+                  p='md'
+                  radius='md'
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    borderLeft: '3px solid rgba(255, 255, 255, 0.5)',
+                  }}
+                >
+                  <Text size='sm'>{word.explanation}</Text>
+                </Paper>
+              )}
+
+              {/* Metadata badges */}
+              <Group gap='xs' mt='md'>
+                {word.language && (
+                  <Badge
+                    size='lg'
+                    variant='light'
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.2)',
+                      color: 'white',
+                    }}
+                  >
+                    {word.language}
+                  </Badge>
+                )}
+                {word.level && (
+                  <Badge
+                    size='lg'
+                    variant='light'
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.2)',
+                      color: 'white',
+                    }}
+                  >
+                    {word.level}
+                  </Badge>
+                )}
+                {word.source_type && (
+                  <Badge
+                    size='lg'
+                    variant='light'
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.2)',
+                      color: 'white',
+                    }}
+                  >
+                    {word.source_type === 'vocabulary_question'
+                      ? 'Vocabulary'
+                      : 'Snippet'}
+                  </Badge>
+                )}
+                {word.topic_category && (
+                  <Badge
+                    size='lg'
+                    variant='light'
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.2)',
+                      color: 'white',
+                    }}
+                  >
+                    {word.topic_category}
+                  </Badge>
+                )}
+              </Group>
+            </Stack>
+          </Card>
+        ) : (
+          <Center h='60vh'>
+            <Stack align='center' gap='md'>
+              <ThemeIcon size={64} radius='xl' color='gray' variant='light'>
+                <Text size='xl'>📚</Text>
+              </ThemeIcon>
+              <Text size='lg' c='dimmed'>
+                No word available for this date.
+              </Text>
+            </Stack>
+          </Center>
+        )}
+      </Stack>
+    </Container>
+  );
+};
+
+export default WordOfTheDayPage;

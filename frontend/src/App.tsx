@@ -15,6 +15,8 @@ import PhrasebookIndexPage from './pages/PhrasebookIndexPage';
 import PhrasebookCategoryPage from './pages/PhrasebookCategoryPage';
 import { VerbConjugationPage } from './pages/VerbConjugationPage';
 import DailyPage from './pages/DailyPage';
+import WordOfTheDayPage from './pages/WordOfTheDayPage';
+import WordOfTheDayEmbedPage from './pages/WordOfTheDayEmbedPage';
 import ProgressPage from './pages/ProgressPage';
 import SettingsPage from './pages/SettingsPage';
 import StoryPage from './pages/StoryPage';
@@ -41,6 +43,7 @@ import MobileQuizPage from './pages/mobile/MobileQuizPage';
 import MobileVocabularyPage from './pages/mobile/MobileVocabularyPage';
 import MobileReadingComprehensionPage from './pages/mobile/MobileReadingComprehensionPage';
 import MobileDailyPage from './pages/mobile/MobileDailyPage';
+import MobileWordOfTheDayPage from './pages/mobile/MobileWordOfTheDayPage';
 import MobileStoryPage from './pages/mobile/MobileStoryPage';
 import MobileSavedConversationsPage from './pages/mobile/MobileSavedConversationsPage';
 import MobileBookmarkedMessagesPage from './pages/mobile/MobileBookmarkedMessagesPage';
@@ -255,6 +258,50 @@ function App() {
               />
             )
           }
+        />
+        <Route
+          path='/word-of-day/:date'
+          element={
+            user ? (
+              isMobile ? (
+                <MobileLayout>
+                  <MobileWordOfTheDayPage />
+                </MobileLayout>
+              ) : (
+                <Layout>
+                  <WordOfTheDayPage />
+                </Layout>
+              )
+            ) : (
+              <Navigate
+                to={`/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`}
+              />
+            )
+          }
+        />
+        <Route
+          path='/word-of-day'
+          element={
+            user ? (
+              isMobile ? (
+                <MobileLayout>
+                  <MobileWordOfTheDayPage />
+                </MobileLayout>
+              ) : (
+                <Layout>
+                  <WordOfTheDayPage />
+                </Layout>
+              )
+            ) : (
+              <Navigate
+                to={`/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`}
+              />
+            )
+          }
+        />
+        <Route
+          path='/word-of-day/embed/:date'
+          element={<WordOfTheDayEmbedPage />}
         />
         <Route
           path='/story'

@@ -28,6 +28,7 @@ import {
   IconLanguageHiragana,
   IconSettings,
   IconBug,
+  IconSparkles,
 } from '@tabler/icons-react';
 import { useAuth } from '../hooks/useAuth';
 import FeedbackModal from './FeedbackModal';
@@ -102,6 +103,12 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
     },
     { key: 'story', label: 'Story', icon: IconBook, path: '/m/story' },
     { key: 'daily', label: 'Daily', icon: IconCalendar, path: '/m/daily' },
+    {
+      key: 'word-of-day',
+      label: 'Word of the Day',
+      icon: IconSparkles,
+      path: '/word-of-day',
+    },
     {
       key: 'conversations',
       label: 'AI Conversations',
