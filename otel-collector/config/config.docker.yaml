@@ -67,7 +67,7 @@ processors:
 
 exporters:
   otlp/uptrace:
-    endpoints: ${env:SIGNZ_OTEL_COLLECTOR_HOST}:${env:SIGNZ_OTEL_COLLECTOR_PORT}
+    endpoint: ${env:SIGNZ_OTEL_COLLECTOR_HOST}:${env:SIGNZ_OTEL_COLLECTOR_PORT}
     tls:
       insecure: ${env:SIGNZ_OTEL_COLLECTOR_INSECURE}
     headers:
