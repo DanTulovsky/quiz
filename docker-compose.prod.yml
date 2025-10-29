@@ -10,10 +10,15 @@ services:
       - POSTGRES_HOST_AUTH_METHOD=trust
     ports:
       - "5432:5432"
+    restart: unless-stopped
     volumes:
       - postgres_prod_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-quiz_user} -d ${POSTGRES_DB:-quiz_db}"]
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-quiz_user} -d ${POSTGRES_DB:-quiz_db}",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -27,6 +32,7 @@ services:
       - ./config.local.yaml:/etc/quiz/config.local.yaml:ro
     env_file:
       - .env
+    restart: unless-stopped
     environment:
       - SERVER_ADMIN_USERNAME=${SERVER_ADMIN_USERNAME:-admin}
       - SERVER_ADMIN_PASSWORD=${SERVER_ADMIN_PASSWORD:-password}
@@ -68,7 +74,13 @@ services:
       - OTEL_SEMCONV_STABILITY_OPT_IN=http/dup
       - SERVER_APP_BASE_URL=${SERVER_APP_BASE_URL:-http://localhost:3000}
     healthcheck:
-      test: ["CMD", "sh", "-c", "curl -f http://localhost:8080/health || wget --quiet --tries=1 --spider http://localhost:8080/health"]
+      test:
+        [
+          "CMD",
+          "sh",
+          "-c",
+          "curl -f http://localhost:8080/health || wget --quiet --tries=1 --spider http://localhost:8080/health",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -86,6 +98,7 @@ services:
       - ./config.local.yaml:/etc/quiz/config.local.yaml:ro
     env_file:
       - .env
+    restart: unless-stopped
     environment:
       - START_WORKER_PAUSED=${START_WORKER_PAUSED:-false}
       - DATABASE_URL=postgres://${POSTGRES_USER:-quiz_user}:${POSTGRES_PASSWORD:-quiz_password}@postgres:5432/${POSTGRES_DB:-quiz_db}?sslmode=disable
@@ -118,7 +131,13 @@ services:
       - EMAIL_DAILY_REMINDER_HOUR=${EMAIL_DAILY_REMINDER_HOUR:-9}
       - OTEL_SEMCONV_STABILITY_OPT_IN=http/dup
     healthcheck:
-      test: ["CMD", "sh", "-c", "curl -f http://localhost:${SERVER_WORKER_PORT:-8081}/v1/health" ]
+      test:
+        [
+          "CMD",
+          "sh",
+          "-c",
+          "curl -f http://localhost:${SERVER_WORKER_PORT:-8081}/v1/health",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -134,10 +153,11 @@ services:
     depends_on:
       backend:
         condition: service_healthy
+    restart: unless-stopped
     env_file:
       - .env
     healthcheck:
-      test: ["CMD", "sh", "-c", "curl -f http://localhost/health" ]
+      test: ["CMD", "sh", "-c", "curl -f http://localhost/health"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -145,7 +165,7 @@ services:
   otel-collector:
     image: otel/opentelemetry-collector-contrib:latest
     command: ["--config", "/etc/otel/config.yaml"]
-    restart: always
+    restart: unless-stopped
     hostname: quiz
     env_file:
       - path: ./.env
@@ -163,7 +183,7 @@ services:
     image: mrwetsnow/openai-edge-tts:latest
     restart: unless-stopped
     ports:
-      - '${TTS_PORT:-5050}:5050'
+      - "${TTS_PORT:-5050}:5050"
     env_file:
       - .env
     environment:
@@ -184,5 +204,3 @@ volumes:
 networks:
   default:
     driver: bridge
-
-

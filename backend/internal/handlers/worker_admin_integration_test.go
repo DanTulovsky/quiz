@@ -66,9 +66,10 @@ func (suite *WorkerAdminIntegrationTestSuite) SetupSuite() {
 	emailService := services.NewEmailService(cfg, logger)
 	dailyQuestionService := services.NewDailyQuestionService(suite.DB, logger, questionService, learningService)
 	storyService := services.NewStoryService(suite.DB, cfg, logger)
+	wordOfTheDayService := services.NewWordOfTheDayService(suite.DB, logger)
 	generationHintService := services.NewGenerationHintService(suite.DB, logger)
 	translationCacheRepo := services.NewTranslationCacheRepository(db, logger)
-	workerInstance := worker.NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, storyService, emailService, generationHintService, translationCacheRepo, "test-instance", cfg, logger)
+	workerInstance := worker.NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, emailService, generationHintService, translationCacheRepo, "test-instance", cfg, logger)
 	suite.Worker = workerInstance
 
 	// Use the real application router

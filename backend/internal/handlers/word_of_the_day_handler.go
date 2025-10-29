@@ -109,7 +109,7 @@ func (h *WordOfTheDayHandler) GetWordOfTheDayEmbed(c *gin.Context) {
 		// Try to get from session if available
 		userID, exists := GetUserIDFromSession(c)
 		if !exists {
-			c.HTML(http.StatusUnauthorized, "", "User ID required")
+			c.Data(http.StatusUnauthorized, "text/html; charset=utf-8", []byte("User ID required"))
 			return
 		}
 		userIDStr = fmt.Sprintf("%d", userID)
@@ -117,21 +117,21 @@ func (h *WordOfTheDayHandler) GetWordOfTheDayEmbed(c *gin.Context) {
 
 	var userID int
 	if _, err := fmt.Sscanf(userIDStr, "%d", &userID); err != nil {
-		c.HTML(http.StatusBadRequest, "", "Invalid user ID")
+		c.Data(http.StatusBadRequest, "text/html; charset=utf-8", []byte("Invalid user ID"))
 		return
 	}
 
 	// Parse date parameter
 	dateStr := c.Param("date")
 	if dateStr == "" {
-		c.HTML(http.StatusBadRequest, "", "Date required")
+		c.Data(http.StatusBadRequest, "text/html; charset=utf-8", []byte("Date required"))
 		return
 	}
 
 	// Parse date in user's timezone
 	date, _, err := h.ParseDateInUserTimezone(ctx, userID, dateStr)
 	if err != nil {
-		c.HTML(http.StatusBadRequest, "", "Invalid date format")
+		c.Data(http.StatusBadRequest, "text/html; charset=utf-8", []byte("Invalid date format"))
 		return
 	}
 
@@ -147,7 +147,7 @@ func (h *WordOfTheDayHandler) GetWordOfTheDayEmbed(c *gin.Context) {
 			"user_id": userID,
 			"date":    dateStr,
 		})
-		c.HTML(http.StatusInternalServerError, "", "Failed to load word of the day")
+		c.Data(http.StatusInternalServerError, "text/html; charset=utf-8", []byte("Failed to load word of the day"))
 		return
 	}
 
@@ -215,6 +215,10 @@ func (h *WordOfTheDayHandler) GetWordOfTheDayHistory(c *gin.Context) {
 
 // renderEmbedHTML renders the embed HTML template
 func (h *WordOfTheDayHandler) renderEmbedHTML(word *models.WordOfTheDayDisplay) string {
+	if word == nil {
+		// Gracefully handle missing word to avoid panics in tests/environments with no data
+		return "<html><head><meta charset=\"UTF-8\"></head><body>Word of the Day is unavailable.</body></html>"
+	}
 	const embedTemplate = `
 <!DOCTYPE html>
 <html lang="en">

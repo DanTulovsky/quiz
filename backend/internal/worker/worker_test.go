@@ -786,6 +786,7 @@ func TestSaveGeneratedQuestions_PopulatesVarietyFields(t *testing.T) {
 		mockLearningService,
 		mockWorkerService,
 		&mockDailyQuestionService{},
+		&mockWordOfTheDayService{},
 		mockStoryService,
 		&mockEmailService{},
 		mockGenerationHintService,
@@ -880,6 +881,7 @@ func TestSaveGeneratedQuestions_NilVarietyElements(t *testing.T) {
 		mockLearningService,
 		mockWorkerService,
 		&mockDailyQuestionService{},
+		&mockWordOfTheDayService{},
 		mockStoryService,
 		&mockEmailService{},
 		mockGenerationHintService,
@@ -952,6 +954,7 @@ func TestSaveGeneratedQuestions_PartialVarietyElements(t *testing.T) {
 		mockLearningService,
 		mockWorkerService,
 		&mockDailyQuestionService{},
+		&mockWordOfTheDayService{},
 		mockStoryService,
 		&mockEmailService{},
 		mockGenerationHintService,
@@ -2406,7 +2409,7 @@ func TestWorker_DailyReminderIntegration(t *testing.T) {
 	dailyQuestionService := &mockDailyQuestionService{}
 	cfg := testWorkerConfig()
 
-	w := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, &mockStoryService{}, &mockEmailService{}, nil, services.NewInMemoryTranslationCacheRepository(), "test-instance", cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, &mockWordOfTheDayService{}, &mockStoryService{}, &mockEmailService{}, nil, services.NewInMemoryTranslationCacheRepository(), "test-instance", cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	// Test user with daily reminder enabled
 	userWithReminder := &models.User{
@@ -2544,7 +2547,7 @@ func TestWorker_CheckForDailyReminders_WrongHour(t *testing.T) {
 	cfg.Email.DailyReminder.Hour = 9
 	cfg.Email.DailyReminder.Enabled = true
 
-	w := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, &mockStoryService{}, emailService, nil, services.NewInMemoryTranslationCacheRepository(), "test-instance", cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, &mockWordOfTheDayService{}, &mockStoryService{}, emailService, nil, services.NewInMemoryTranslationCacheRepository(), "test-instance", cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	// Mock current time to be 2 PM (not 9 AM)
 	// We can't easily mock time.Now() in unit tests, so we'll test the logic
@@ -2574,7 +2577,7 @@ func TestWorker_CheckForDailyReminders_Disabled(t *testing.T) {
 	// Disable daily reminders
 	cfg.Email.DailyReminder.Enabled = false
 
-	w := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, &mockStoryService{}, emailService, nil, services.NewInMemoryTranslationCacheRepository(), "test-instance", cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	w := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, &mockWordOfTheDayService{}, &mockStoryService{}, emailService, nil, services.NewInMemoryTranslationCacheRepository(), "test-instance", cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	// Test the daily reminder check
 	ctx := context.Background()
@@ -2796,6 +2799,7 @@ func TestCheckForDailyQuestionAssignments(t *testing.T) {
 				&mockLearningService{},
 				&mockWorkerService{},
 				mockDailyQuestionSvc,
+				&mockWordOfTheDayService{},
 				mockStorySvc,
 				&mockEmailService{},
 				mockGenerationHintSvc,
@@ -2931,6 +2935,7 @@ func TestGetUsersEligibleForDailyQuestions(t *testing.T) {
 				&mockLearningService{},
 				&mockWorkerService{},
 				&mockDailyQuestionService{},
+				&mockWordOfTheDayService{},
 				mockStorySvc,
 				&mockEmailService{},
 				mockGenerationHintSvc,

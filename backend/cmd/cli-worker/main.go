@@ -236,11 +236,14 @@ func main() {
 	// Create story service
 	storyService := services.NewStoryService(db, cfg, logger)
 
+	// Create word of the day service
+	wordOfTheDayService := services.NewWordOfTheDayService(db, logger)
+
 	// Create translation cache repository
 	translationCacheRepo := services.NewTranslationCacheRepository(db, logger)
 
 	// Create a minimal worker instance for question generation
-	workerInstance := worker.NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, storyService, emailService, nil, translationCacheRepo, "cli", cfg, logger)
+	workerInstance := worker.NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, emailService, nil, translationCacheRepo, "cli", cfg, logger)
 
 	// Create context with timeout
 	ctx, cancel := context.WithTimeout(ctx, config.CLIWorkerTimeout)

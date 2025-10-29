@@ -304,8 +304,8 @@ func (sc *ServiceContainer) initializeServices(_ context.Context) {
 	conversationService := services.NewConversationService(sc.db)
 	sc.services["conversation"] = conversationService
 
-	// Email service
-	emailService := services.CreateEmailService(sc.cfg, sc.logger)
+	// Email service (use concrete implementation with DB to satisfy EmailServiceInterface)
+	emailService := services.NewEmailServiceWithDB(sc.cfg, sc.logger, sc.db)
 	sc.services["email"] = emailService
 
 	// Usage stats service

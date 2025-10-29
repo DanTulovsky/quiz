@@ -85,8 +85,11 @@ func TestWorkerIntegration_StartAndShutdown(t *testing.T) {
 	// Create generation hint service
 	generationHintService := services.NewGenerationHintService(db, logger)
 
+	// Create word of the day service
+	wordOfTheDayService := services.NewWordOfTheDayService(db, logger)
+
 	// Create worker
-	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
+	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
 
 	// Test worker startup
 	ctx, cancel := context.WithCancel(context.Background())
@@ -139,8 +142,11 @@ func TestWorkerIntegration_HeartbeatLoop(t *testing.T) {
 	// Create generation hint service
 	generationHintService := services.NewGenerationHintService(db, logger)
 
+	// Create word of the day service
+	wordOfTheDayService := services.NewWordOfTheDayService(db, logger)
+
 	// Create worker
-	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
+	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
 
 	// Test heartbeat loop
 	ctx, cancel := context.WithCancel(context.Background())
@@ -184,8 +190,11 @@ func TestWorkerIntegration_RunWithNoUsers(t *testing.T) {
 	// Create generation hint service
 	generationHintService := services.NewGenerationHintService(db, logger)
 
+	// Create word of the day service
+	wordOfTheDayService := services.NewWordOfTheDayService(db, logger)
+
 	// Create worker
-	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
+	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
 
 	// Test run with no users
 	worker.run()
@@ -235,8 +244,11 @@ func TestWorkerIntegration_RunWithUsers(t *testing.T) {
 	// Create generation hint service
 	generationHintService := services.NewGenerationHintService(db, logger)
 
+	// Create word of the day service
+	wordOfTheDayService := services.NewWordOfTheDayService(db, logger)
+
 	// Create worker
-	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
+	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
 
 	// Test run with user
 	worker.run()
@@ -303,11 +315,14 @@ func TestWorkerIntegration_GenerateNeededQuestions(t *testing.T) {
 	// Create story service
 	storyService := services.NewStoryService(db, cfg, logger)
 
+	// Create word of the day service
+	wordOfTheDayService := services.NewWordOfTheDayService(db, logger)
+
 	// Create generation hint service
 	generationHintService := services.NewGenerationHintService(db, logger)
 
 	// Create worker with mock AI service
-	worker := NewWorker(userService, questionService, mockAIService, learningService, workerService, dailyQuestionService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
+	worker := NewWorker(userService, questionService, mockAIService, learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
 
 	// Test question generation
 	result, err := worker.GenerateQuestionsForUser(context.Background(), user, "english", "A1", models.Vocabulary, 1, "test")
@@ -334,10 +349,13 @@ func TestWorkerIntegration_EligibleCount_RecentCorrectExclusion(t *testing.T) {
 	// Create story service
 	storyService := services.NewStoryService(db, cfg, logger)
 
+	// Create word of the day service
+	wordOfTheDayService := services.NewWordOfTheDayService(db, logger)
+
 	// Create generation hint service
 	generationHintService := services.NewGenerationHintService(db, logger)
 
-	worker := NewWorker(userService, questionService, services.NewAIService(cfg, logger, services.NewNoopUsageStatsService()), learningService, workerService, dailyQuestionService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
+	worker := NewWorker(userService, questionService, services.NewAIService(cfg, logger, services.NewNoopUsageStatsService()), learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
 
 	// Create user and two questions
 	user, err := userService.CreateUser(context.Background(), "eligibleuser", "italian", "A1")
@@ -394,11 +412,14 @@ func TestWorkerIntegration_HandleAIQuestionStream(t *testing.T) {
 	// Create story service
 	storyService := services.NewStoryService(db, cfg, logger)
 
+	// Create word of the day service
+	wordOfTheDayService := services.NewWordOfTheDayService(db, logger)
+
 	// Create generation hint service
 	generationHintService := services.NewGenerationHintService(db, logger)
 
 	// Create worker
-	_ = NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
+	_ = NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
 
 	// Test AI stream handling (simplified test)
 	// Note: This is a basic test that verifies the function exists and can be called
@@ -433,8 +454,11 @@ func TestWorkerIntegration_ErrorHandling(t *testing.T) {
 	// Create generation hint service
 	generationHintService := services.NewGenerationHintService(db, logger)
 
+	// Create word of the day service
+	wordOfTheDayService := services.NewWordOfTheDayService(db, logger)
+
 	// Create worker
-	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
+	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
 
 	// Test error handling with invalid context
 	ctx, cancel := context.WithCancel(context.Background())
@@ -481,11 +505,14 @@ func TestWorkerIntegration_PauseResumeFlow(t *testing.T) {
 	// Create story service
 	storyService := services.NewStoryService(db, cfg, logger)
 
+	// Create word of the day service
+	wordOfTheDayService := services.NewWordOfTheDayService(db, logger)
+
 	// Create generation hint service
 	generationHintService := services.NewGenerationHintService(db, logger)
 
 	// Create worker
-	_ = NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
+	_ = NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
 
 	// Test pause functionality
 	err = workerService.SetGlobalPause(context.Background(), true)
@@ -522,12 +549,15 @@ func TestWorkerIntegration_StartupPause(t *testing.T) {
 	// Create story service
 	storyService := services.NewStoryService(db, cfg, logger)
 
+	// Create word of the day service
+	wordOfTheDayService := services.NewWordOfTheDayService(db, logger)
+
 	// Create generation hint service
 	generationHintService := services.NewGenerationHintService(db, logger)
 
 	// Create worker
 	emailService := services.NewEmailService(cfg, logger)
-	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
+	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
 
 	// Run worker (should respect global pause)
 	worker.run()
@@ -572,8 +602,11 @@ func TestWorkerIntegration_ActivityLogging(t *testing.T) {
 	// Create generation hint service
 	generationHintService := services.NewGenerationHintService(db, logger)
 
+	// Create word of the day service
+	wordOfTheDayService := services.NewWordOfTheDayService(db, logger)
+
 	// Create worker
-	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
+	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
 
 	// Test activity logging
 	worker.logActivity(context.Background(), "INFO", "Test activity", nil, nil)
@@ -618,8 +651,11 @@ func TestWorkerIntegration_UserFailureTracking(t *testing.T) {
 	// Create generation hint service
 	generationHintService := services.NewGenerationHintService(db, logger)
 
+	// Create word of the day service
+	wordOfTheDayService := services.NewWordOfTheDayService(db, logger)
+
 	// Create worker
-	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
+	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
 
 	// Test user failure tracking
 	worker.recordUserFailure(context.Background(), user.ID, "Test failure")
@@ -656,8 +692,11 @@ func TestWorkerIntegration_ManualTrigger(t *testing.T) {
 	// Create generation hint service
 	generationHintService := services.NewGenerationHintService(db, logger)
 
+	// Create word of the day service
+	wordOfTheDayService := services.NewWordOfTheDayService(db, logger)
+
 	// Create worker
-	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
+	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
 
 	// Test manual trigger
 	worker.TriggerManualRun()
@@ -699,8 +738,11 @@ func TestWorkerIntegration_Shutdown(t *testing.T) {
 	// Create generation hint service
 	generationHintService := services.NewGenerationHintService(db, logger)
 
+	// Create word of the day service
+	wordOfTheDayService := services.NewWordOfTheDayService(db, logger)
+
 	// Create worker
-	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
+	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
 
 	// Test shutdown
 	ctx := context.Background()
@@ -734,12 +776,15 @@ func TestWorkerPriorityFunctions_Integration(t *testing.T) {
 	// Create story service
 	storyService := services.NewStoryService(db, cfg, logger)
 
+	// Create word of the day service
+	wordOfTheDayService := services.NewWordOfTheDayService(db, logger)
+
 	// Create generation hint service
 	generationHintService := services.NewGenerationHintService(db, logger)
 
 	// Create worker instance
 	emailService := services.NewEmailService(cfg, logger)
-	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-worker", cfg, logger)
+	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-worker", cfg, logger)
 
 	// Create a test user
 	user, err := userService.CreateUserWithPassword(context.Background(), "testuser", "password", "italian", "A1")
@@ -944,12 +989,15 @@ func TestWorkerPriorityFunctions_EmptyData_Integration(t *testing.T) {
 	// Create story service
 	storyService := services.NewStoryService(db, cfg, logger)
 
+	// Create word of the day service
+	wordOfTheDayService := services.NewWordOfTheDayService(db, logger)
+
 	// Create generation hint service
 	generationHintService := services.NewGenerationHintService(db, logger)
 
 	// Create worker instance
 	emailService := services.NewEmailService(cfg, logger)
-	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-worker", cfg, logger)
+	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-worker", cfg, logger)
 
 	// Create test user
 	user, err := userService.CreateUserWithPassword(context.Background(), "testuser2", "testpass", "italian", "A1")
@@ -997,12 +1045,15 @@ func TestWorkerPriorityFunctions_DifferentLanguages_Integration(t *testing.T) {
 	// Create story service
 	storyService := services.NewStoryService(db, cfg, logger)
 
+	// Create word of the day service
+	wordOfTheDayService := services.NewWordOfTheDayService(db, logger)
+
 	// Create generation hint service
 	generationHintService := services.NewGenerationHintService(db, logger)
 
 	// Create worker instance
 	emailService := services.NewEmailService(cfg, logger)
-	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-worker", cfg, logger)
+	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-worker", cfg, logger)
 
 	// Create test user
 	user, err := userService.CreateUserWithPassword(context.Background(), "testuser3", "testpass", "spanish", "A2")
@@ -1097,8 +1148,11 @@ func TestWorker_EngagementBasedGeneration_Integration(t *testing.T) {
 	// Create generation hint service
 	generationHintService := services.NewGenerationHintService(db, logger)
 
+	// Create word of the day service
+	wordOfTheDayService := services.NewWordOfTheDayService(db, logger)
+
 	// Create worker
-	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
+	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
 
 	ctx := context.Background()
 
@@ -1190,8 +1244,11 @@ func TestWorker_EngagementBasedGeneration_Disabled_Integration(t *testing.T) {
 	// Create generation hint service
 	generationHintService := services.NewGenerationHintService(db, logger)
 
+	// Create word of the day service
+	wordOfTheDayService := services.NewWordOfTheDayService(db, logger)
+
 	// Create worker
-	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
+	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
 
 	ctx := context.Background()
 
