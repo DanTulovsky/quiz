@@ -522,7 +522,93 @@ func setupTestData(ctx context.Context, rootDir string, userService *services.Us
 		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to output feedback data: %w", err)
 	}
 
+	// 11. Create API Keys for test users
+	if err := createAndOutputAPIKeysForTests(ctx, users, db, rootDir, logger); err != nil {
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup api keys: %w", err)
+	}
+
 	return users, nil
+}
+
+// TestAPIKeyData represents API key data for E2E tests (non-sensitive)
+type TestAPIKeyData struct {
+	ID              int       `json:"id"`
+	Username        string    `json:"username"`
+	KeyName         string    `json:"key_name"`
+	KeyPrefix       string    `json:"key_prefix"`
+	PermissionLevel string    `json:"permission_level"`
+	CreatedAt       time.Time `json:"created_at"`
+}
+
+// createAndOutputAPIKeysForTests creates API keys for selected users and writes a JSON artifact for tests
+func createAndOutputAPIKeysForTests(ctx context.Context, users map[string]*models.User, db *sql.DB, rootDir string, logger *observability.Logger) error {
+	// Initialize service
+	apiKeyService := services.NewAuthAPIKeyService(db, logger)
+
+	// Strategy:
+	// - apitestuser: 2 keys (readonly, full)
+	// - apitestadmin: 2 keys (readonly, full)
+	// - others: 1 readonly key
+
+	// Helper to create a key and capture minimal info
+	create := func(username string, userID int, keyName, perm string) (*TestAPIKeyData, error) {
+		key, _, err := apiKeyService.CreateAPIKey(ctx, userID, keyName, perm)
+		if err != nil {
+			return nil, err
+		}
+		return &TestAPIKeyData{
+			ID:              key.ID,
+			Username:        username,
+			KeyName:         key.KeyName,
+			KeyPrefix:       key.KeyPrefix,
+			PermissionLevel: key.PermissionLevel,
+			CreatedAt:       key.CreatedAt,
+		}, nil
+	}
+
+	apiKeys := make(map[string]TestAPIKeyData)
+
+	for username, user := range users {
+		if username == "apitestuser" || username == "apitestadmin" {
+			if d, err := create(username, user.ID, "test_key_readonly", string(models.PermissionLevelReadonly)); err == nil {
+				apiKeys[fmt.Sprintf("%s_ro", username)] = *d
+			} else {
+				return contextutils.WrapErrorf(err, "failed creating readonly api key for %s", username)
+			}
+			if d, err := create(username, user.ID, "test_key_full", string(models.PermissionLevelFull)); err == nil {
+				apiKeys[fmt.Sprintf("%s_full", username)] = *d
+			} else {
+				return contextutils.WrapErrorf(err, "failed creating full api key for %s", username)
+			}
+		} else {
+			if d, err := create(username, user.ID, "test_key_readonly", string(models.PermissionLevelReadonly)); err == nil {
+				apiKeys[fmt.Sprintf("%s_ro", username)] = *d
+			} else {
+				return contextutils.WrapErrorf(err, "failed creating readonly api key for %s", username)
+			}
+		}
+	}
+
+	// Write to JSON file in the frontend/tests directory
+	outputPath := filepath.Join(rootDir, "..", "frontend", "tests", "test-api-keys.json")
+	outputDir := filepath.Dir(outputPath)
+	if err := os.MkdirAll(outputDir, 0o755); err != nil {
+		return contextutils.WrapErrorf(err, "failed to create output directory: %s", outputDir)
+	}
+	jsonData, err := json.MarshalIndent(apiKeys, "", "  ")
+	if err != nil {
+		return contextutils.WrapErrorf(err, "failed to marshal api keys data to JSON")
+	}
+	if err := os.WriteFile(outputPath, jsonData, 0o644); err != nil {
+		return contextutils.WrapErrorf(err, "failed to write api keys data to file: %s", outputPath)
+	}
+
+	logger.Info(context.Background(), "Output API keys data for E2E tests", map[string]interface{}{
+		"file_path":  outputPath,
+		"keys_count": len(apiKeys),
+	})
+
+	return nil
 }
 
 func loadAndCreateUsers(ctx context.Context, filePath string, userService *services.UserService, logger *observability.Logger) (result0 map[string]*models.User, err error) {

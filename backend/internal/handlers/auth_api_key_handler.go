@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"quizapp/internal/api"
 	"quizapp/internal/middleware"
 	"quizapp/internal/observability"
 	"quizapp/internal/services"
@@ -125,11 +126,14 @@ func (h *AuthAPIKeyHandler) ListAPIKeys(c *gin.Context) {
 
 	span.SetAttributes(attribute.Int("count", len(apiKeys)))
 
-	// Return list of API keys (without full keys or hashes)
-	c.JSON(http.StatusOK, gin.H{
-		"api_keys": apiKeys,
-		"count":    len(apiKeys),
-	})
+	// Convert to generated API types to ensure schema-correct serialization
+	apiSummaries := convertAuthAPIKeysToAPI(apiKeys)
+	count := len(apiSummaries)
+	resp := api.APIKeysListResponse{
+		ApiKeys: &apiSummaries,
+		Count:   &count,
+	}
+	c.JSON(http.StatusOK, resp)
 }
 
 // DeleteAPIKey handles DELETE /v1/api-keys/:id

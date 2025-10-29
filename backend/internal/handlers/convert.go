@@ -64,6 +64,57 @@ func formatTime(t time.Time) string {
 	return t.In(time.UTC).Format(time.RFC3339)
 }
 
+// Convert models.AuthAPIKey to api.APIKeySummary
+func convertAuthAPIKeyToAPI(key *models.AuthAPIKey) api.APIKeySummary {
+	apiKey := api.APIKeySummary{}
+
+	// Scalars
+	if key.ID != 0 {
+		apiKey.Id = intPtr(key.ID)
+	}
+	if key.KeyName != "" {
+		apiKey.KeyName = stringPtr(key.KeyName)
+	}
+	if key.KeyPrefix != "" {
+		apiKey.KeyPrefix = stringPtr(key.KeyPrefix)
+	}
+	if key.PermissionLevel != "" {
+		pl := api.APIKeySummaryPermissionLevel(key.PermissionLevel)
+		apiKey.PermissionLevel = &pl
+	}
+
+	// Times
+	if !key.CreatedAt.IsZero() {
+		t := key.CreatedAt
+		apiKey.CreatedAt = &t
+	}
+	if !key.UpdatedAt.IsZero() {
+		t := key.UpdatedAt
+		apiKey.UpdatedAt = &t
+	}
+	if key.LastUsedAt.Valid {
+		t := key.LastUsedAt.Time
+		apiKey.LastUsedAt = &t
+	} else {
+		// Leave nil to represent null
+		apiKey.LastUsedAt = nil
+	}
+
+	return apiKey
+}
+
+// Convert slice of models.AuthAPIKey to []api.APIKeySummary
+func convertAuthAPIKeysToAPI(keys []models.AuthAPIKey) []api.APIKeySummary {
+	if len(keys) == 0 {
+		return []api.APIKeySummary{}
+	}
+	out := make([]api.APIKeySummary, 0, len(keys))
+	for i := range keys {
+		out = append(out, convertAuthAPIKeyToAPI(&keys[i]))
+	}
+	return out
+}
+
 // Convert models.User to api.User
 func convertUserToAPI(user *models.User) api.User {
 	apiUser := api.User{

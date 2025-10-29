@@ -164,6 +164,7 @@ test.describe('Comprehensive API Tests', () => {
   let testConversationsData: TestConversationsData;
   let testStoriesData: TestStoriesData;
   let testFeedbackData: TestFeedbackDataCollection;
+  let testApiKeysData: Record<string, { id: number; username: string; key_name: string; key_prefix: string; permission_level: string; created_at: string }>;
 
   test.beforeAll(async () => {
     // Load swagger.yaml
@@ -250,6 +251,21 @@ test.describe('Comprehensive API Tests', () => {
       testFeedbackData = {};
     }
 
+    // Load API keys data
+    const apiKeysPath = path.join(path.dirname(fileURLToPath(import.meta.url)), 'test-api-keys.json');
+    if (fs.existsSync(apiKeysPath)) {
+      try {
+        const apiKeysContent = fs.readFileSync(apiKeysPath, 'utf8');
+        testApiKeysData = JSON.parse(apiKeysContent);
+      } catch (error) {
+        console.warn('Error loading api keys data:', error);
+        testApiKeysData = {} as any;
+      }
+    } else {
+      console.warn('test-api-keys.json not found');
+      testApiKeysData = {} as any;
+    }
+
     // Initialize available user IDs
     initializeAvailableUserIds();
 
@@ -258,6 +274,7 @@ test.describe('Comprehensive API Tests', () => {
     initializeAvailableQuestionIds();
     initializeAvailableSectionIds();
     initializeAvailableSnippetIds();
+    initializeAvailableApiKeyIds();
 
     // Generate test cases from swagger spec
     testCases = generateTestCases(swaggerSpec);
@@ -996,6 +1013,8 @@ test.describe('Comprehensive API Tests', () => {
   let deletedStoryIds: Set<number> = new Set();
   let deletedSnippetIds: Set<number> = new Set();
   let deletedFeedbackIds: Set<number> = new Set();
+  let deletedApiKeyIds: Set<number> = new Set();
+  let availableApiKeyIdsByUser: Record<string, number[]> = {};
 
   // Helper function to get stories from database for a specific user
   async function getStoriesFromDatabase(username?: string, request?: any): Promise<Array<{id: number, status: string}>> {
@@ -1091,6 +1110,19 @@ test.describe('Comprehensive API Tests', () => {
     Object.values(userData).forEach((user: any) => {
       userIdToUsername[(user as any).id] = (user as any).username;
     });
+  }
+
+  function initializeAvailableApiKeyIds() {
+    availableApiKeyIdsByUser = {};
+    if (!testApiKeysData) return;
+    for (const entry of Object.values(testApiKeysData)) {
+      const username = (entry as any).username as string;
+      const id = (entry as any).id as number;
+      if (!deletedApiKeyIds.has(id)) {
+        if (!availableApiKeyIdsByUser[username]) availableApiKeyIdsByUser[username] = [];
+        availableApiKeyIdsByUser[username].push(id);
+      }
+    }
   }
 
   function initializeAvailableStoryIds() {
@@ -1730,6 +1762,16 @@ test.describe('Comprehensive API Tests', () => {
     // with the story endpoint logic
 
     if (paramKey === 'id' || paramKey === 'conversationId') {
+      // API keys endpoints
+      if (pathString.includes('/api-keys/')) {
+        const currentUsername = userContext?.username || 'apitestuser';
+        const ids = availableApiKeyIdsByUser[currentUsername] || [];
+        const available = ids.filter(id => !deletedApiKeyIds.has(id));
+        if (available.length === 0) {
+          throw new Error(`No available API key IDs for user ${currentUsername}. Test data may be missing.`);
+        }
+        return {value: available[0], type: 'user'}; // reuse 'user' type for generic numeric
+      }
       // console.log(`🔍 GETTING REPLACEMENT ID for param: ${paramKey}, path: ${pathString}, method: ${method}, isErrorCase: ${isErrorCase}`);
       // Check if this is a feedback-related endpoint
       if (pathString.includes('/feedback/') && pathString.includes('/{id}')) {
@@ -2282,6 +2324,18 @@ test.describe('Comprehensive API Tests', () => {
           }
         }
 
+        // Mark API key as deleted if this was a successful DELETE operation (admin tests block)
+        if (testCase.method === 'DELETE' && response.status() === 200 && endpointPath.includes('/api-keys/')) {
+          const match = endpointPath.match(/\/api-keys\/(\d+)/);
+          if (match) {
+            const deletedId = parseInt(match[1]);
+            deletedApiKeyIds.add(deletedId);
+            for (const uname of Object.keys(availableApiKeyIdsByUser)) {
+              availableApiKeyIdsByUser[uname] = (availableApiKeyIdsByUser[uname] || []).filter(id => id !== deletedId);
+            }
+          }
+        }
+
         // Mark story as deleted if this was a successful DELETE operation
         if (testCase.method === 'DELETE' && response.status() === 200 && (endpointPath.includes('/story/') || endpointPath.includes('/stories/'))) {
           // Extract story ID from the URL - handle both /story/ and /stories/ patterns
@@ -2301,6 +2355,19 @@ test.describe('Comprehensive API Tests', () => {
             markSnippetAsDeleted(deletedSnippetId);
           } else {
             console.log(`❌ Could not extract snippet ID from path: ${endpointPath}`);
+          }
+        }
+
+        // Mark API key as deleted if this was a successful DELETE operation
+        if (testCase.method === 'DELETE' && response.status() === 200 && endpointPath.includes('/api-keys/')) {
+          const match = endpointPath.match(/\/api-keys\/(\d+)/);
+          if (match) {
+            const deletedId = parseInt(match[1]);
+            deletedApiKeyIds.add(deletedId);
+            // Remove from available map for all users
+            for (const uname of Object.keys(availableApiKeyIdsByUser)) {
+              availableApiKeyIdsByUser[uname] = (availableApiKeyIdsByUser[uname] || []).filter(id => id !== deletedId);
+            }
           }
         }
       }

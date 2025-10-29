@@ -5647,57 +5647,14 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - key_name
-                - permission_level
-              properties:
-                key_name:
-                  type: string
-                  description: A descriptive name for the API key
-                  example: "Production App Key"
-                permission_level:
-                  type: string
-                  enum: [readonly, full]
-                  description: "Permission level: 'readonly' for GET requests only, 'full' for all operations"
-                  example: "full"
+              $ref: "#/components/schemas/CreateAPIKeyRequest"
       responses:
         "201":
           description: API key created successfully
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                    description: Unique ID of the API key
-                    example: 1
-                  key_name:
-                    type: string
-                    description: Name of the API key
-                    example: "Production App Key"
-                  key:
-                    type: string
-                    description: Full API key - only shown once!
-                    example: "qapp_1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p"
-                  key_prefix:
-                    type: string
-                    description: First characters of key for identification
-                    example: "qapp_1a2b3c4d"
-                  permission_level:
-                    type: string
-                    enum: [readonly, full]
-                    description: Permission level
-                    example: "full"
-                  created_at:
-                    type: string
-                    format: date-time
-                    description: Creation timestamp
-                  message:
-                    type: string
-                    description: Warning message
-                    example: "Save this API key now. You won't be able to see it again!"
+                $ref: "#/components/schemas/CreateAPIKeyResponse"
         "400":
           description: Invalid request
           content:
@@ -5723,47 +5680,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  api_keys:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                          description: Unique ID
-                          example: 1
-                        key_name:
-                          type: string
-                          description: Name of the key
-                          example: "Production App Key"
-                        key_prefix:
-                          type: string
-                          description: First characters for identification
-                          example: "qapp_1a2b3c4d"
-                        permission_level:
-                          type: string
-                          enum: [readonly, full]
-                          description: Permission level
-                          example: "full"
-                        last_used_at:
-                          type: string
-                          format: date-time
-                          nullable: true
-                          description: Last time this key was used
-                        created_at:
-                          type: string
-                          format: date-time
-                          description: Creation timestamp
-                        updated_at:
-                          type: string
-                          format: date-time
-                          description: Last update timestamp
-                  count:
-                    type: integer
-                    description: Total number of keys
-                    example: 2
+                $ref: "#/components/schemas/APIKeysListResponse"
         "401":
           description: Authentication required
           content:
@@ -5793,14 +5710,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: "API key deleted successfully"
+                $ref: "#/components/schemas/DeleteAPIKeyResponse"
         "401":
           description: Authentication required
           content:
@@ -7747,6 +7657,111 @@ components:
           description: Whether the user has a saved API key for this provider
       required:
         - has_api_key
+
+    CreateAPIKeyRequest:
+      type: object
+      required:
+        - key_name
+        - permission_level
+      properties:
+        key_name:
+          type: string
+          description: A descriptive name for the API key
+          example: "Production App Key"
+        permission_level:
+          type: string
+          enum: [readonly, full]
+          description: "Permission level: 'readonly' for GET requests only, 'full' for all operations"
+          example: "full"
+
+    CreateAPIKeyResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique ID of the API key
+          example: 1
+        key_name:
+          type: string
+          description: Name of the API key
+          example: "Production App Key"
+        key:
+          type: string
+          description: Full API key - only shown once!
+          example: "qapp_1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p"
+        key_prefix:
+          type: string
+          description: First characters of key for identification
+          example: "qapp_1a2b3c4d"
+        permission_level:
+          type: string
+          enum: [readonly, full]
+          description: Permission level
+          example: "full"
+        created_at:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        message:
+          type: string
+          description: Warning message
+          example: "Save this API key now. You won't be able to see it again!"
+
+    APIKeySummary:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique ID
+          example: 1
+        key_name:
+          type: string
+          description: Name of the key
+          example: "Production App Key"
+        key_prefix:
+          type: string
+          description: First characters for identification
+          example: "qapp_1a2b3c4d"
+        permission_level:
+          type: string
+          enum: [readonly, full]
+          description: Permission level
+          example: "full"
+        last_used_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: Last time this key was used
+        created_at:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        updated_at:
+          type: string
+          format: date-time
+          description: Last update timestamp
+
+    APIKeysListResponse:
+      type: object
+      properties:
+        api_keys:
+          type: array
+          items:
+            $ref: "#/components/schemas/APIKeySummary"
+        count:
+          type: integer
+          description: Total number of keys
+          example: 2
+
+    DeleteAPIKeyResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "API key deleted successfully"
 
     GoogleOAuthLoginResponse:
       type: object

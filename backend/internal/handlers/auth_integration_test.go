@@ -75,7 +75,7 @@ func (suite *AuthIntegrationTestSuite) SetupSuite() {
 	translationService := services.NewTranslationService(suite.cfg, usageStatsService, translationCacheRepo, logger)
 	snippetsService := services.NewSnippetsService(suite.db, suite.cfg, logger)
 	wordOfTheDayService := services.NewWordOfTheDayService(suite.db, logger)
-    suite.Router = NewRouter(suite.cfg, userService, questionService, learningService, aiService, workerService, dailyQuestionService, storyService, services.NewConversationService(db), oauthService, generationHintService, translationService, snippetsService, usageStatsService, wordOfTheDayService, services.NewAuthAPIKeyService(db, logger), logger)
+	suite.Router = NewRouter(suite.cfg, userService, questionService, learningService, aiService, workerService, dailyQuestionService, storyService, services.NewConversationService(db), oauthService, generationHintService, translationService, snippetsService, usageStatsService, wordOfTheDayService, services.NewAuthAPIKeyService(db, logger), logger)
 }
 
 func (suite *AuthIntegrationTestSuite) TearDownSuite() {

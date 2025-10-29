@@ -563,8 +563,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                       : undefined
                   }
                   label={
-                    <Group justify='space-between' w='100%' align='center'>
-                      <span>{item.name}</span>
+                    <Group
+                      justify='space-between'
+                      w='100%'
+                      align='center'
+                      gap='xs'
+                    >
+                      <Text size='sm' truncate style={{ flex: 1, minWidth: 0 }}>
+                        {item.name}
+                      </Text>
                       <Badge
                         size='xs'
                         variant='light'
@@ -588,6 +595,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                             justifyContent: 'center',
                             fontSize: `${11 * fontScaleMap[fontSize]}px`,
                             letterSpacing: '0.5px',
+                            flexShrink: 0,
                           },
                         }}
                       >

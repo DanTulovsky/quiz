@@ -17,10 +17,28 @@ const (
 	SessionAuthScopes = "sessionAuth.Scopes"
 )
 
+// Defines values for APIKeySummaryPermissionLevel.
+const (
+	APIKeySummaryPermissionLevelFull     APIKeySummaryPermissionLevel = "full"
+	APIKeySummaryPermissionLevelReadonly APIKeySummaryPermissionLevel = "readonly"
+)
+
 // Defines values for ChatMessageRole.
 const (
 	ChatMessageRoleAssistant ChatMessageRole = "assistant"
 	ChatMessageRoleUser      ChatMessageRole = "user"
+)
+
+// Defines values for CreateAPIKeyRequestPermissionLevel.
+const (
+	CreateAPIKeyRequestPermissionLevelFull     CreateAPIKeyRequestPermissionLevel = "full"
+	CreateAPIKeyRequestPermissionLevelReadonly CreateAPIKeyRequestPermissionLevel = "readonly"
+)
+
+// Defines values for CreateAPIKeyResponsePermissionLevel.
+const (
+	Full     CreateAPIKeyResponsePermissionLevel = "full"
+	Readonly CreateAPIKeyResponsePermissionLevel = "readonly"
 )
 
 // Defines values for CreateMessageRequestRole.
@@ -235,12 +253,6 @@ const (
 	GetV1AdminWorkerNotificationsSentParamsStatusSent    GetV1AdminWorkerNotificationsSentParamsStatus = "sent"
 )
 
-// Defines values for PostV1ApiKeysJSONBodyPermissionLevel.
-const (
-	Full     PostV1ApiKeysJSONBodyPermissionLevel = "full"
-	Readonly PostV1ApiKeysJSONBodyPermissionLevel = "readonly"
-)
-
 // Defines values for GetV1SnippetsParamsLevel.
 const (
 	A1 GetV1SnippetsParamsLevel = "A1"
@@ -282,6 +294,41 @@ type AIProviders struct {
 type APIKeyAvailabilityResponse struct {
 	// HasApiKey Whether the user has a saved API key for this provider
 	HasApiKey bool `json:"has_api_key"`
+}
+
+// APIKeySummary defines model for APIKeySummary.
+type APIKeySummary struct {
+	// CreatedAt Creation timestamp
+	CreatedAt *time.Time `json:"created_at,omitempty"`
+
+	// Id Unique ID
+	Id *int `json:"id,omitempty"`
+
+	// KeyName Name of the key
+	KeyName *string `json:"key_name,omitempty"`
+
+	// KeyPrefix First characters for identification
+	KeyPrefix *string `json:"key_prefix,omitempty"`
+
+	// LastUsedAt Last time this key was used
+	LastUsedAt *time.Time `json:"last_used_at"`
+
+	// PermissionLevel Permission level
+	PermissionLevel *APIKeySummaryPermissionLevel `json:"permission_level,omitempty"`
+
+	// UpdatedAt Last update timestamp
+	UpdatedAt *time.Time `json:"updated_at,omitempty"`
+}
+
+// APIKeySummaryPermissionLevel Permission level
+type APIKeySummaryPermissionLevel string
+
+// APIKeysListResponse defines model for APIKeysListResponse.
+type APIKeysListResponse struct {
+	ApiKeys *[]APIKeySummary `json:"api_keys,omitempty"`
+
+	// Count Total number of keys
+	Count *int `json:"count,omitempty"`
 }
 
 // AggregatedVersion defines model for AggregatedVersion.
@@ -394,6 +441,45 @@ type Conversation struct {
 	// UserId ID of the user who owns this conversation
 	UserId int `json:"user_id"`
 }
+
+// CreateAPIKeyRequest defines model for CreateAPIKeyRequest.
+type CreateAPIKeyRequest struct {
+	// KeyName A descriptive name for the API key
+	KeyName string `json:"key_name"`
+
+	// PermissionLevel Permission level: 'readonly' for GET requests only, 'full' for all operations
+	PermissionLevel CreateAPIKeyRequestPermissionLevel `json:"permission_level"`
+}
+
+// CreateAPIKeyRequestPermissionLevel Permission level: 'readonly' for GET requests only, 'full' for all operations
+type CreateAPIKeyRequestPermissionLevel string
+
+// CreateAPIKeyResponse defines model for CreateAPIKeyResponse.
+type CreateAPIKeyResponse struct {
+	// CreatedAt Creation timestamp
+	CreatedAt *time.Time `json:"created_at,omitempty"`
+
+	// Id Unique ID of the API key
+	Id *int `json:"id,omitempty"`
+
+	// Key Full API key - only shown once!
+	Key *string `json:"key,omitempty"`
+
+	// KeyName Name of the API key
+	KeyName *string `json:"key_name,omitempty"`
+
+	// KeyPrefix First characters of key for identification
+	KeyPrefix *string `json:"key_prefix,omitempty"`
+
+	// Message Warning message
+	Message *string `json:"message,omitempty"`
+
+	// PermissionLevel Permission level
+	PermissionLevel *CreateAPIKeyResponsePermissionLevel `json:"permission_level,omitempty"`
+}
+
+// CreateAPIKeyResponsePermissionLevel Permission level
+type CreateAPIKeyResponsePermissionLevel string
 
 // CreateConversationRequest defines model for CreateConversationRequest.
 type CreateConversationRequest struct {
@@ -547,6 +633,12 @@ type DashboardUser struct {
 	Progress      *UserProgress      `json:"progress,omitempty"`
 	QuestionStats *UserQuestionStats `json:"question_stats,omitempty"`
 	User          *UserProfile       `json:"user,omitempty"`
+}
+
+// DeleteAPIKeyResponse defines model for DeleteAPIKeyResponse.
+type DeleteAPIKeyResponse struct {
+	Message *string `json:"message,omitempty"`
+	Success *bool   `json:"success,omitempty"`
 }
 
 // EmptyRequest Empty request body for endpoints that don't require request data
@@ -2115,18 +2207,6 @@ type GetV1AiSearchParams struct {
 	Offset *int `form:"offset,omitempty" json:"offset,omitempty"`
 }
 
-// PostV1ApiKeysJSONBody defines parameters for PostV1ApiKeys.
-type PostV1ApiKeysJSONBody struct {
-	// KeyName A descriptive name for the API key
-	KeyName string `json:"key_name"`
-
-	// PermissionLevel Permission level: 'readonly' for GET requests only, 'full' for all operations
-	PermissionLevel PostV1ApiKeysJSONBodyPermissionLevel `json:"permission_level"`
-}
-
-// PostV1ApiKeysJSONBodyPermissionLevel defines parameters for PostV1ApiKeys.
-type PostV1ApiKeysJSONBodyPermissionLevel string
-
 // GetV1AuthGoogleCallbackParams defines parameters for GetV1AuthGoogleCallback.
 type GetV1AuthGoogleCallbackParams struct {
 	// Code Authorization code from Google
@@ -2296,7 +2376,7 @@ type PostV1AiConversationsConversationIdMessagesJSONRequestBody = CreateMessageR
 type PutV1AiConversationsIdJSONRequestBody = UpdateConversationRequest
 
 // PostV1ApiKeysJSONRequestBody defines body for PostV1ApiKeys for application/json ContentType.
-type PostV1ApiKeysJSONRequestBody PostV1ApiKeysJSONBody
+type PostV1ApiKeysJSONRequestBody = CreateAPIKeyRequest
 
 // PostV1AudioSpeechJSONRequestBody defines body for PostV1AudioSpeech for application/json ContentType.
 type PostV1AudioSpeechJSONRequestBody = TTSRequest

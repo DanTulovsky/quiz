@@ -67,7 +67,7 @@ func (suite *SettingsIntegrationTestSuite) SetupSuite() {
 	translationCacheRepo := services.NewTranslationCacheRepository(db, logger)
 	translationService := services.NewTranslationService(cfg, usageStatsService, translationCacheRepo, logger)
 	snippetsService := services.NewSnippetsService(db, cfg, logger)
-    authAPIKeyService := services.NewAuthAPIKeyService(db, logger)
+	authAPIKeyService := services.NewAuthAPIKeyService(db, logger)
 	suite.Router = NewRouter(
 		suite.Config,
 		userService,

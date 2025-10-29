@@ -95,9 +95,9 @@ func (suite *AdminIntegrationTestSuite) SetupSuite() {
 	snippetsService := services.NewSnippetsService(db, suite.cfg, logger)
 	authAPIKeyService := services.NewAuthAPIKeyService(db, logger)
 
-    suite.BackendRouter = handlers.NewRouter(
+	suite.BackendRouter = handlers.NewRouter(
 		suite.cfg,
-        userService,
+		userService,
 		questionService,
 		learningService,
 		suite.mockAIService, // Use mock AI service for faster tests

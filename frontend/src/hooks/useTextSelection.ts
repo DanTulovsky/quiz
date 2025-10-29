@@ -130,6 +130,9 @@ export const useTextSelection = () => {
     height: number;
     sentence?: string;
   } | null>(null);
+  // Track mouse and touch interaction state to prevent premature popup display
+  const isMouseDownRef = useRef<boolean>(false);
+  const isTouchActiveRef = useRef<boolean>(false);
 
   const handleSelectionChange = useCallback(() => {
     // Clear any pending visibility timeout
@@ -253,8 +256,30 @@ export const useTextSelection = () => {
       debounceTimer = setTimeout(handleSelectionChange, 100);
     };
 
+    // Track mouse down events
+    const handleMouseDown = () => {
+      isMouseDownRef.current = true;
+    };
+
+    // Track mouse up events
+    const handleMouseUp = () => {
+      isMouseDownRef.current = false;
+      debouncedHandler();
+    };
+
+    // Track touch start events
+    const handleTouchStart = () => {
+      isTouchActiveRef.current = true;
+    };
+
     // Also listen to selectionchange for more reliable selection detection
+    // BUT: only trigger if mouse/touch is not currently active
     const selectionChangeHandler = () => {
+      // Don't trigger if mouse button is pressed or touch is active
+      if (isMouseDownRef.current || isTouchActiveRef.current) {
+        return;
+      }
+
       clearTimeout(debounceTimer);
       // Check if there's actually a selection before handling
       const sel = window.getSelection();
@@ -277,6 +302,9 @@ export const useTextSelection = () => {
           // Prevent default FIRST to stop iOS from showing menu
           event.preventDefault();
           event.stopPropagation();
+
+          // Clear touch active state
+          isTouchActiveRef.current = false;
 
           // Temporarily set user-select to none to prevent native menu
           // This is the key solution from the GitHub issue
@@ -307,18 +335,24 @@ export const useTextSelection = () => {
       }
     };
 
-    // Only listen to mouseup and touchend events so popup appears after
+    // Track mouse and touch state changes
+    document.addEventListener('mousedown', handleMouseDown);
+    document.addEventListener('touchstart', handleTouchStart);
+
+    // Listen to mouseup and touchend events so popup appears after
     // mouse button is released (desktop) or finger is lifted (mobile)
-    document.addEventListener('mouseup', debouncedHandler);
+    document.addEventListener('mouseup', handleMouseUp);
     document.addEventListener('touchend', preventNativeMenuOnTouch, {
       passive: false,
     });
-    // Also listen to selectionchange for better iOS support
+    // Also listen to selectionchange for better iOS support (but only when not actively selecting)
     document.addEventListener('selectionchange', selectionChangeHandler);
 
     return () => {
       clearTimeout(debounceTimer);
-      document.removeEventListener('mouseup', debouncedHandler);
+      document.removeEventListener('mousedown', handleMouseDown);
+      document.removeEventListener('touchstart', handleTouchStart);
+      document.removeEventListener('mouseup', handleMouseUp);
       document.removeEventListener('touchend', preventNativeMenuOnTouch);
       document.removeEventListener('selectionchange', selectionChangeHandler);
     };

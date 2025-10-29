@@ -77,14 +77,14 @@ func (suite *WordOfTheDayIntegrationTestSuite) SetupSuite() {
 	translationCacheRepo := services.NewTranslationCacheRepository(suite.db, logger)
 	translationService := services.NewTranslationService(suite.cfg, usageStatsService, translationCacheRepo, logger)
 	snippetsService := services.NewSnippetsService(suite.db, suite.cfg, logger)
-    wordOfTheDayService := services.NewWordOfTheDayService(suite.db, logger)
-    authAPIKeyService := services.NewAuthAPIKeyService(suite.db, logger)
+	wordOfTheDayService := services.NewWordOfTheDayService(suite.db, logger)
+	authAPIKeyService := services.NewAuthAPIKeyService(suite.db, logger)
 
 	suite.userService = userService
 	suite.wordOfTheDayService = wordOfTheDayService
 	suite.snippetsService = snippetsService
 
-    suite.Router = NewRouter(suite.cfg, userService, questionService, learningService, aiService, workerService, dailyQuestionService, storyService, services.NewConversationService(db), oauthService, generationHintService, translationService, snippetsService, usageStatsService, wordOfTheDayService, authAPIKeyService, logger)
+	suite.Router = NewRouter(suite.cfg, userService, questionService, learningService, aiService, workerService, dailyQuestionService, storyService, services.NewConversationService(db), oauthService, generationHintService, translationService, snippetsService, usageStatsService, wordOfTheDayService, authAPIKeyService, logger)
 }
 
 func (suite *WordOfTheDayIntegrationTestSuite) TearDownSuite() {
