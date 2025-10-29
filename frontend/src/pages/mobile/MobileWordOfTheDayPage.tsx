@@ -117,9 +117,10 @@ const MobileWordOfTheDayPage: React.FC = () => {
             padding='lg'
             radius='md'
             style={{
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              color: 'white',
+              background: `var(--mantine-primary-color-0)`,
+              border: `2px solid var(--mantine-primary-color-4)`,
               minHeight: '400px',
+              position: 'relative',
             }}
           >
             <Stack gap='md'>
@@ -129,6 +130,7 @@ const MobileWordOfTheDayPage: React.FC = () => {
                 size='2.5rem'
                 ta='center'
                 style={{ lineHeight: 1.2 }}
+                c='primary'
               >
                 {word.word}
               </Title>
@@ -137,7 +139,8 @@ const MobileWordOfTheDayPage: React.FC = () => {
               <Text
                 size='xl'
                 ta='center'
-                style={{ fontStyle: 'italic', opacity: 0.95 }}
+                c='primary'
+                style={{ fontStyle: 'italic' }}
               >
                 {word.translation}
               </Text>
@@ -148,8 +151,8 @@ const MobileWordOfTheDayPage: React.FC = () => {
                   p='md'
                   radius='md'
                   style={{
-                    background: 'rgba(255, 255, 255, 0.15)',
-                    backdropFilter: 'blur(10px)',
+                    background: 'var(--mantine-color-body)',
+                    borderLeft: '3px solid var(--mantine-primary-color-4)',
                     marginTop: '16px',
                   }}
                 >
@@ -168,8 +171,8 @@ const MobileWordOfTheDayPage: React.FC = () => {
                   p='sm'
                   radius='md'
                   style={{
-                    background: 'rgba(255, 255, 255, 0.1)',
-                    borderLeft: '3px solid rgba(255, 255, 255, 0.5)',
+                    background: 'var(--mantine-color-body)',
+                    borderLeft: '3px solid var(--mantine-primary-color-4)',
                     marginTop: '8px',
                   }}
                 >
@@ -180,38 +183,17 @@ const MobileWordOfTheDayPage: React.FC = () => {
               {/* Metadata badges */}
               <Group gap='xs' justify='center' mt='md'>
                 {word.language && (
-                  <Badge
-                    size='sm'
-                    variant='light'
-                    style={{
-                      background: 'rgba(255, 255, 255, 0.2)',
-                      color: 'white',
-                    }}
-                  >
+                  <Badge size='sm' variant='light' color='primary'>
                     {word.language}
                   </Badge>
                 )}
                 {word.level && (
-                  <Badge
-                    size='sm'
-                    variant='light'
-                    style={{
-                      background: 'rgba(255, 255, 255, 0.2)',
-                      color: 'white',
-                    }}
-                  >
+                  <Badge size='sm' variant='light' color='primary'>
                     {word.level}
                   </Badge>
                 )}
                 {word.source_type && (
-                  <Badge
-                    size='sm'
-                    variant='light'
-                    style={{
-                      background: 'rgba(255, 255, 255, 0.2)',
-                      color: 'white',
-                    }}
-                  >
+                  <Badge size='sm' variant='light' color='primary'>
                     {word.source_type === 'vocabulary_question'
                       ? 'Vocabulary'
                       : 'Snippet'}

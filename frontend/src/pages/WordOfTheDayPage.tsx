@@ -140,8 +140,9 @@ const WordOfTheDayPage: React.FC = () => {
             padding='xl'
             radius='md'
             style={{
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              color: 'white',
+              background: `var(--mantine-primary-color-0)`,
+              border: `2px solid var(--mantine-primary-color-4)`,
+              position: 'relative',
             }}
           >
             <Stack gap='md'>
@@ -149,18 +150,19 @@ const WordOfTheDayPage: React.FC = () => {
               <Text
                 size='sm'
                 fw={600}
+                c='dimmed'
                 style={{ textTransform: 'uppercase', letterSpacing: '1px' }}
               >
                 {formatDisplayDate(word.date)}
               </Text>
 
               {/* Word */}
-              <Title order={1} size='3.5rem' style={{ lineHeight: 1.2 }}>
+              <Title order={1} size='3.5rem' style={{ lineHeight: 1.2 }} c='primary'>
                 {word.word}
               </Title>
 
               {/* Translation */}
-              <Text size='xl' style={{ fontStyle: 'italic', opacity: 0.95 }}>
+              <Text size='xl' c='primary' style={{ fontStyle: 'italic' }}>
                 {word.translation}
               </Text>
 
@@ -170,8 +172,8 @@ const WordOfTheDayPage: React.FC = () => {
                   p='md'
                   radius='md'
                   style={{
-                    background: 'rgba(255, 255, 255, 0.15)',
-                    backdropFilter: 'blur(10px)',
+                    background: 'var(--mantine-color-body)',
+                    borderLeft: '3px solid var(--mantine-primary-color-4)',
                   }}
                 >
                   <Text
@@ -189,8 +191,8 @@ const WordOfTheDayPage: React.FC = () => {
                   p='md'
                   radius='md'
                   style={{
-                    background: 'rgba(255, 255, 255, 0.1)',
-                    borderLeft: '3px solid rgba(255, 255, 255, 0.5)',
+                    background: 'var(--mantine-color-body)',
+                    borderLeft: '3px solid var(--mantine-primary-color-4)',
                   }}
                 >
                   <Text size='sm'>{word.explanation}</Text>
@@ -200,52 +202,24 @@ const WordOfTheDayPage: React.FC = () => {
               {/* Metadata badges */}
               <Group gap='xs' mt='md'>
                 {word.language && (
-                  <Badge
-                    size='lg'
-                    variant='light'
-                    style={{
-                      background: 'rgba(255, 255, 255, 0.2)',
-                      color: 'white',
-                    }}
-                  >
+                  <Badge size='lg' variant='light' color='primary'>
                     {word.language}
                   </Badge>
                 )}
                 {word.level && (
-                  <Badge
-                    size='lg'
-                    variant='light'
-                    style={{
-                      background: 'rgba(255, 255, 255, 0.2)',
-                      color: 'white',
-                    }}
-                  >
+                  <Badge size='lg' variant='light' color='primary'>
                     {word.level}
                   </Badge>
                 )}
                 {word.source_type && (
-                  <Badge
-                    size='lg'
-                    variant='light'
-                    style={{
-                      background: 'rgba(255, 255, 255, 0.2)',
-                      color: 'white',
-                    }}
-                  >
+                  <Badge size='lg' variant='light' color='primary'>
                     {word.source_type === 'vocabulary_question'
                       ? 'Vocabulary'
                       : 'Snippet'}
                   </Badge>
                 )}
                 {word.topic_category && (
-                  <Badge
-                    size='lg'
-                    variant='light'
-                    style={{
-                      background: 'rgba(255, 255, 255, 0.2)',
-                      color: 'white',
-                    }}
-                  >
+                  <Badge size='lg' variant='light' color='primary'>
                     {word.topic_category}
                   </Badge>
                 )}

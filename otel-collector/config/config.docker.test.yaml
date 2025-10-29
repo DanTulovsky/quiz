@@ -67,8 +67,6 @@ exporters:
       insecure: ${env:SIGNZ_OTEL_COLLECTOR_INSECURE}
     headers:
       uptrace-dsn: ${env:UPTRACE_DSN}
-      # Old signoz one, can be deleted soon
-      Authorization: Bearer ${env:SIGNZ_OTEL_COLLECTOR_TOKEN}
 
 service:
   telemetry:

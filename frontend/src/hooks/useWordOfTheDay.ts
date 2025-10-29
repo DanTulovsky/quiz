@@ -53,7 +53,9 @@ export const useWordOfTheDay = (
 
   // Helper to add/subtract days
   const addDays = useCallback((date: string, days: number): string => {
-    const d = new Date(date);
+    // Parse the date string as local date to avoid timezone issues
+    const [year, month, day] = date.split('-').map(Number);
+    const d = new Date(year, month - 1, day);
     d.setDate(d.getDate() + days);
     return formatDateLocal(d);
   }, []);
@@ -73,7 +75,9 @@ export const useWordOfTheDay = (
   // Can navigate if not before a reasonable limit (e.g., 1 year ago)
   const oneYearAgo = addDays(today, -365);
   const canGoPrevious = selectedDate > oneYearAgo;
-  const canGoNext = selectedDate < today;
+  // Can go next if selected date is before today (allow navigation up to but not including today)
+  // Use explicit string comparison since YYYY-MM-DD format compares correctly as strings
+  const canGoNext = selectedDate < today && selectedDate !== today;
 
   return {
     selectedDate,
