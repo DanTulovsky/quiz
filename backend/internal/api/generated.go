@@ -235,6 +235,12 @@ const (
 	GetV1AdminWorkerNotificationsSentParamsStatusSent    GetV1AdminWorkerNotificationsSentParamsStatus = "sent"
 )
 
+// Defines values for PostV1ApiKeysJSONBodyPermissionLevel.
+const (
+	Full     PostV1ApiKeysJSONBodyPermissionLevel = "full"
+	Readonly PostV1ApiKeysJSONBodyPermissionLevel = "readonly"
+)
+
 // Defines values for GetV1SnippetsParamsLevel.
 const (
 	A1 GetV1SnippetsParamsLevel = "A1"
@@ -2109,6 +2115,18 @@ type GetV1AiSearchParams struct {
 	Offset *int `form:"offset,omitempty" json:"offset,omitempty"`
 }
 
+// PostV1ApiKeysJSONBody defines parameters for PostV1ApiKeys.
+type PostV1ApiKeysJSONBody struct {
+	// KeyName A descriptive name for the API key
+	KeyName string `json:"key_name"`
+
+	// PermissionLevel Permission level: 'readonly' for GET requests only, 'full' for all operations
+	PermissionLevel PostV1ApiKeysJSONBodyPermissionLevel `json:"permission_level"`
+}
+
+// PostV1ApiKeysJSONBodyPermissionLevel defines parameters for PostV1ApiKeys.
+type PostV1ApiKeysJSONBodyPermissionLevel string
+
 // GetV1AuthGoogleCallbackParams defines parameters for GetV1AuthGoogleCallback.
 type GetV1AuthGoogleCallbackParams struct {
 	// Code Authorization code from Google
@@ -2276,6 +2294,9 @@ type PostV1AiConversationsConversationIdMessagesJSONRequestBody = CreateMessageR
 
 // PutV1AiConversationsIdJSONRequestBody defines body for PutV1AiConversationsId for application/json ContentType.
 type PutV1AiConversationsIdJSONRequestBody = UpdateConversationRequest
+
+// PostV1ApiKeysJSONRequestBody defines body for PostV1ApiKeys for application/json ContentType.
+type PostV1ApiKeysJSONRequestBody PostV1ApiKeysJSONBody
 
 // PostV1AudioSpeechJSONRequestBody defines body for PostV1AudioSpeech for application/json ContentType.
 type PostV1AudioSpeechJSONRequestBody = TTSRequest

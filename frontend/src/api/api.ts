@@ -3306,6 +3306,97 @@ export type DeleteV1AdminBackendFeedback200 = {
   deleted_count?: number;
 };
 
+/**
+ * Permission level: 'readonly' for GET requests only, 'full' for all operations
+ */
+export type PostV1ApiKeysBodyPermissionLevel = typeof PostV1ApiKeysBodyPermissionLevel[keyof typeof PostV1ApiKeysBodyPermissionLevel];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PostV1ApiKeysBodyPermissionLevel = {
+  readonly: 'readonly',
+  full: 'full',
+} as const;
+
+export type PostV1ApiKeysBody = {
+  /** A descriptive name for the API key */
+  key_name: string;
+  /** Permission level: 'readonly' for GET requests only, 'full' for all operations */
+  permission_level: PostV1ApiKeysBodyPermissionLevel;
+};
+
+/**
+ * Permission level
+ */
+export type PostV1ApiKeys201PermissionLevel = typeof PostV1ApiKeys201PermissionLevel[keyof typeof PostV1ApiKeys201PermissionLevel];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PostV1ApiKeys201PermissionLevel = {
+  readonly: 'readonly',
+  full: 'full',
+} as const;
+
+export type PostV1ApiKeys201 = {
+  /** Unique ID of the API key */
+  id?: number;
+  /** Name of the API key */
+  key_name?: string;
+  /** Full API key - only shown once! */
+  key?: string;
+  /** First characters of key for identification */
+  key_prefix?: string;
+  /** Permission level */
+  permission_level?: PostV1ApiKeys201PermissionLevel;
+  /** Creation timestamp */
+  created_at?: string;
+  /** Warning message */
+  message?: string;
+};
+
+/**
+ * Permission level
+ */
+export type GetV1ApiKeys200ApiKeysItemPermissionLevel = typeof GetV1ApiKeys200ApiKeysItemPermissionLevel[keyof typeof GetV1ApiKeys200ApiKeysItemPermissionLevel];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const GetV1ApiKeys200ApiKeysItemPermissionLevel = {
+  readonly: 'readonly',
+  full: 'full',
+} as const;
+
+export type GetV1ApiKeys200ApiKeysItem = {
+  /** Unique ID */
+  id?: number;
+  /** Name of the key */
+  key_name?: string;
+  /** First characters for identification */
+  key_prefix?: string;
+  /** Permission level */
+  permission_level?: GetV1ApiKeys200ApiKeysItemPermissionLevel;
+  /**
+   * Last time this key was used
+   * @nullable
+   */
+  last_used_at?: string | null;
+  /** Creation timestamp */
+  created_at?: string;
+  /** Last update timestamp */
+  updated_at?: string;
+};
+
+export type GetV1ApiKeys200 = {
+  api_keys?: GetV1ApiKeys200ApiKeysItem[];
+  /** Total number of keys */
+  count?: number;
+};
+
+export type DeleteV1ApiKeysId200 = {
+  success?: boolean;
+  message?: string;
+};
+
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
@@ -13750,6 +13841,224 @@ export const useDeleteV1AdminBackendFeedbackId = <TError = ErrorResponse | Error
     }
     
 /**
+ * Generate a new API key for programmatic access. The full key is only returned once during creation.
+ * @summary Create API key
+ */
+export const postV1ApiKeys = (
+    postV1ApiKeysBody: PostV1ApiKeysBody,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<PostV1ApiKeys201>(
+      {url: `/v1/api-keys`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: postV1ApiKeysBody, signal
+    },
+      options);
+    }
+  
+
+
+export const getPostV1ApiKeysMutationOptions = <TError = ErrorResponse | ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1ApiKeys>>, TError,{data: PostV1ApiKeysBody}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof postV1ApiKeys>>, TError,{data: PostV1ApiKeysBody}, TContext> => {
+
+const mutationKey = ['postV1ApiKeys'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1ApiKeys>>, {data: PostV1ApiKeysBody}> = (props) => {
+          const {data} = props ?? {};
+
+          return  postV1ApiKeys(data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostV1ApiKeysMutationResult = NonNullable<Awaited<ReturnType<typeof postV1ApiKeys>>>
+    export type PostV1ApiKeysMutationBody = PostV1ApiKeysBody
+    export type PostV1ApiKeysMutationError = ErrorResponse | ErrorResponse
+
+    /**
+ * @summary Create API key
+ */
+export const usePostV1ApiKeys = <TError = ErrorResponse | ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1ApiKeys>>, TError,{data: PostV1ApiKeysBody}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postV1ApiKeys>>,
+        TError,
+        {data: PostV1ApiKeysBody},
+        TContext
+      > => {
+
+      const mutationOptions = getPostV1ApiKeysMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
+ * Get all API keys for the current user (without exposing the actual keys)
+ * @summary List API keys
+ */
+export const getV1ApiKeys = (
+    
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<GetV1ApiKeys200>(
+      {url: `/v1/api-keys`, method: 'GET', signal
+    },
+      options);
+    }
+  
+
+export const getGetV1ApiKeysQueryKey = () => {
+    return [`/v1/api-keys`] as const;
+    }
+
+    
+export const getGetV1ApiKeysQueryOptions = <TData = Awaited<ReturnType<typeof getV1ApiKeys>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1ApiKeys>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetV1ApiKeysQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1ApiKeys>>> = ({ signal }) => getV1ApiKeys(requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getV1ApiKeys>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetV1ApiKeysQueryResult = NonNullable<Awaited<ReturnType<typeof getV1ApiKeys>>>
+export type GetV1ApiKeysQueryError = ErrorResponse
+
+
+export function useGetV1ApiKeys<TData = Awaited<ReturnType<typeof getV1ApiKeys>>, TError = ErrorResponse>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1ApiKeys>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1ApiKeys>>,
+          TError,
+          Awaited<ReturnType<typeof getV1ApiKeys>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1ApiKeys<TData = Awaited<ReturnType<typeof getV1ApiKeys>>, TError = ErrorResponse>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1ApiKeys>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getV1ApiKeys>>,
+          TError,
+          Awaited<ReturnType<typeof getV1ApiKeys>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetV1ApiKeys<TData = Awaited<ReturnType<typeof getV1ApiKeys>>, TError = ErrorResponse>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1ApiKeys>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List API keys
+ */
+
+export function useGetV1ApiKeys<TData = Awaited<ReturnType<typeof getV1ApiKeys>>, TError = ErrorResponse>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1ApiKeys>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetV1ApiKeysQueryOptions(options)
+
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * Permanently delete an API key. This action cannot be undone.
+ * @summary Delete API key
+ */
+export const deleteV1ApiKeysId = (
+    id: number,
+ options?: SecondParameter<typeof customInstance>,) => {
+      
+      
+      return customInstance<DeleteV1ApiKeysId200>(
+      {url: `/v1/api-keys/${id}`, method: 'DELETE'
+    },
+      options);
+    }
+  
+
+
+export const getDeleteV1ApiKeysIdMutationOptions = <TError = ErrorResponse | ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1ApiKeysId>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteV1ApiKeysId>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['deleteV1ApiKeysId'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteV1ApiKeysId>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteV1ApiKeysId(id,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteV1ApiKeysIdMutationResult = NonNullable<Awaited<ReturnType<typeof deleteV1ApiKeysId>>>
+    
+    export type DeleteV1ApiKeysIdMutationError = ErrorResponse | ErrorResponse
+
+    /**
+ * @summary Delete API key
+ */
+export const useDeleteV1ApiKeysId = <TError = ErrorResponse | ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1ApiKeysId>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteV1ApiKeysId>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+
+      const mutationOptions = getDeleteV1ApiKeysIdMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
  * Translate text to a target language using configured translation provider
  * @summary Translate text
  */
@@ -14195,6 +14504,12 @@ export const getDeleteV1AdminBackendFeedbackResponseMock = (overrideResponse: Pa
 export const getGetV1AdminBackendFeedbackIdResponseMock = (overrideResponse: Partial< FeedbackReport > = {}): FeedbackReport => ({id: faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), user_id: faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), feedback_text: faker.string.alpha({length: {min: 10, max: 5000}}), feedback_type: faker.helpers.arrayElement(['bug','feature_request','general','improvement'] as const), context_data: faker.helpers.arrayElement([{}, undefined]), screenshot_data: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), screenshot_url: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), status: faker.helpers.arrayElement(['new','in_progress','resolved','dismissed'] as const), admin_notes: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), assigned_to_user_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), null]), undefined]), resolved_at: faker.helpers.arrayElement([faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, null]), undefined]), resolved_by_user_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), null]), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, ...overrideResponse})
 
 export const getPatchV1AdminBackendFeedbackIdResponseMock = (overrideResponse: Partial< FeedbackReport > = {}): FeedbackReport => ({id: faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), user_id: faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), feedback_text: faker.string.alpha({length: {min: 10, max: 5000}}), feedback_type: faker.helpers.arrayElement(['bug','feature_request','general','improvement'] as const), context_data: faker.helpers.arrayElement([{}, undefined]), screenshot_data: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), screenshot_url: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), status: faker.helpers.arrayElement(['new','in_progress','resolved','dismissed'] as const), admin_notes: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), assigned_to_user_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), null]), undefined]), resolved_at: faker.helpers.arrayElement([faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, null]), undefined]), resolved_by_user_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), null]), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, ...overrideResponse})
+
+export const getPostV1ApiKeysResponseMock = (overrideResponse: Partial< PostV1ApiKeys201 > = {}): PostV1ApiKeys201 => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), key_name: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), key: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), key_prefix: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), permission_level: faker.helpers.arrayElement([faker.helpers.arrayElement(['readonly','full'] as const), undefined]), created_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
+
+export const getGetV1ApiKeysResponseMock = (overrideResponse: Partial< GetV1ApiKeys200 > = {}): GetV1ApiKeys200 => ({api_keys: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), key_name: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), key_prefix: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), permission_level: faker.helpers.arrayElement([faker.helpers.arrayElement(['readonly','full'] as const), undefined]), last_used_at: faker.helpers.arrayElement([faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, null]), undefined]), created_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), updated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined])})), undefined]), count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined, multipleOf: undefined}), undefined]), ...overrideResponse})
+
+export const getDeleteV1ApiKeysIdResponseMock = (overrideResponse: Partial< DeleteV1ApiKeysId200 > = {}): DeleteV1ApiKeysId200 => ({success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
 
 export const getPostV1TranslateResponseMock = (overrideResponse: Partial< TranslateResponse > = {}): TranslateResponse => ({translated_text: faker.string.alpha({length: {min: 10, max: 20}}), source_language: faker.string.alpha({length: {min: 10, max: 20}}), target_language: faker.string.alpha({length: {min: 10, max: 20}}), confidence: faker.helpers.arrayElement([faker.number.float({min: 0, max: 1, fractionDigits: 2}), undefined]), ...overrideResponse})
 
@@ -15779,6 +16094,42 @@ export const getDeleteV1AdminBackendFeedbackIdMockHandler = (overrideResponse?: 
   })
 }
 
+export const getPostV1ApiKeysMockHandler = (overrideResponse?: PostV1ApiKeys201 | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<PostV1ApiKeys201> | PostV1ApiKeys201)) => {
+  return http.post('*/v1/api-keys', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getPostV1ApiKeysResponseMock()),
+      { status: 201,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
+export const getGetV1ApiKeysMockHandler = (overrideResponse?: GetV1ApiKeys200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1ApiKeys200> | GetV1ApiKeys200)) => {
+  return http.get('*/v1/api-keys', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getGetV1ApiKeysResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
+export const getDeleteV1ApiKeysIdMockHandler = (overrideResponse?: DeleteV1ApiKeysId200 | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<DeleteV1ApiKeysId200> | DeleteV1ApiKeysId200)) => {
+  return http.delete('*/v1/api-keys/:id', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getDeleteV1ApiKeysIdResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
 export const getPostV1TranslateMockHandler = (overrideResponse?: TranslateResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<TranslateResponse> | TranslateResponse)) => {
   return http.post('*/v1/translate', async (info) => {await delay(1000);
   
@@ -15936,6 +16287,9 @@ export const getQuizApplicationAPIMock = () => [
   getGetV1AdminBackendFeedbackIdMockHandler(),
   getPatchV1AdminBackendFeedbackIdMockHandler(),
   getDeleteV1AdminBackendFeedbackIdMockHandler(),
+  getPostV1ApiKeysMockHandler(),
+  getGetV1ApiKeysMockHandler(),
+  getDeleteV1ApiKeysIdMockHandler(),
   getPostV1TranslateMockHandler(),
   getPostV1AudioSpeechMockHandler()
 ]

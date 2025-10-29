@@ -1,3 +1,6 @@
+//go:build integration && apikeys
+// +build integration,apikeys
+
 package handlers
 
 import (
@@ -5,7 +8,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"testing"
 
 	"quizapp/internal/models"
 

@@ -53,7 +53,9 @@ export const APIKeyManagement: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [newKeyName, setNewKeyName] = useState('');
-  const [newKeyPermission, setNewKeyPermission] = useState<'readonly' | 'full'>('full');
+  const [newKeyPermission, setNewKeyPermission] = useState<'readonly' | 'full'>(
+    'full'
+  );
   const [createdKey, setCreatedKey] = useState<string | null>(null);
   const [showKeyModal, setShowKeyModal] = useState(false);
   const [creating, setCreating] = useState(false);
@@ -115,7 +117,7 @@ export const APIKeyManagement: React.FC = () => {
       setCreateModalOpen(false);
       setNewKeyName('');
       setNewKeyPermission('full');
-      
+
       // Refresh the list
       await fetchAPIKeys();
 
@@ -137,7 +139,11 @@ export const APIKeyManagement: React.FC = () => {
   };
 
   const handleDeleteKey = async (id: number, name: string) => {
-    if (!window.confirm(`Are you sure you want to delete the API key "${name}"? This action cannot be undone.`)) {
+    if (
+      !window.confirm(
+        `Are you sure you want to delete the API key "${name}"? This action cannot be undone.`
+      )
+    ) {
       return;
     }
 
@@ -188,7 +194,8 @@ export const APIKeyManagement: React.FC = () => {
         </Group>
 
         <Text size='sm' c='dimmed'>
-          API keys allow you to access the Quiz App API programmatically. Keep your keys secure and never share them publicly.
+          API keys allow you to access the Quiz App API programmatically. Keep
+          your keys secure and never share them publicly.
         </Text>
 
         {loading ? (
@@ -196,8 +203,13 @@ export const APIKeyManagement: React.FC = () => {
             <Loader />
           </Group>
         ) : apiKeys.length === 0 ? (
-          <Alert icon={<IconAlertCircle size={16} />} title='No API keys yet' color='blue'>
-            You haven't created any API keys. Create one to start using the API programmatically.
+          <Alert
+            icon={<IconAlertCircle size={16} />}
+            title='No API keys yet'
+            color='blue'
+          >
+            You haven't created any API keys. Create one to start using the API
+            programmatically.
           </Alert>
         ) : (
           <Table striped highlightOnHover>
@@ -212,14 +224,16 @@ export const APIKeyManagement: React.FC = () => {
               </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
-              {apiKeys.map((key) => (
+              {apiKeys.map(key => (
                 <Table.Tr key={key.id}>
                   <Table.Td>{key.key_name}</Table.Td>
                   <Table.Td>
                     <Code>{key.key_prefix}...</Code>
                   </Table.Td>
                   <Table.Td>
-                    <Badge color={key.permission_level === 'full' ? 'green' : 'blue'}>
+                    <Badge
+                      color={key.permission_level === 'full' ? 'green' : 'blue'}
+                    >
                       {key.permission_level}
                     </Badge>
                   </Table.Td>
@@ -255,14 +269,16 @@ export const APIKeyManagement: React.FC = () => {
             label='Key Name'
             placeholder='e.g., Production App Key'
             value={newKeyName}
-            onChange={(e) => setNewKeyName(e.currentTarget.value)}
+            onChange={e => setNewKeyName(e.currentTarget.value)}
             required
           />
 
           <Select
             label='Permission Level'
             value={newKeyPermission}
-            onChange={(value) => setNewKeyPermission(value as 'readonly' | 'full')}
+            onChange={value =>
+              setNewKeyPermission(value as 'readonly' | 'full')
+            }
             data={[
               { value: 'readonly', label: 'Read Only - GET requests only' },
               { value: 'full', label: 'Full Access - All operations' },
@@ -294,9 +310,13 @@ export const APIKeyManagement: React.FC = () => {
         closeOnEscape={false}
       >
         <Stack gap='md'>
-          <Alert icon={<IconAlertCircle size={16} />} title='Important!' color='yellow'>
-            This is the only time you'll see this key. Copy it now and store it securely.
-            You won't be able to see it again!
+          <Alert
+            icon={<IconAlertCircle size={16} />}
+            title='Important!'
+            color='yellow'
+          >
+            This is the only time you'll see this key. Copy it now and store it
+            securely. You won't be able to see it again!
           </Alert>
 
           <Stack gap='xs'>
@@ -304,7 +324,14 @@ export const APIKeyManagement: React.FC = () => {
               Your API Key:
             </Text>
             <Group gap='xs'>
-              <Code style={{ flex: 1, padding: '8px', fontSize: '12px', wordBreak: 'break-all' }}>
+              <Code
+                style={{
+                  flex: 1,
+                  padding: '8px',
+                  fontSize: '12px',
+                  wordBreak: 'break-all',
+                }}
+              >
                 {createdKey}
               </Code>
               <CopyButton value={createdKey || ''}>
@@ -315,7 +342,11 @@ export const APIKeyManagement: React.FC = () => {
                       variant='subtle'
                       onClick={copy}
                     >
-                      {copied ? <IconCheck size={16} /> : <IconCopy size={16} />}
+                      {copied ? (
+                        <IconCheck size={16} />
+                      ) : (
+                        <IconCopy size={16} />
+                      )}
                     </ActionIcon>
                   </Tooltip>
                 )}
@@ -324,11 +355,10 @@ export const APIKeyManagement: React.FC = () => {
           </Stack>
 
           <Text size='sm' c='dimmed'>
-            Use this key in your API requests by adding the Authorization header:
+            Use this key in your API requests by adding the Authorization
+            header:
           </Text>
-          <Code block>
-            Authorization: Bearer {createdKey}
-          </Code>
+          <Code block>Authorization: Bearer {createdKey}</Code>
 
           <Group justify='flex-end' mt='md'>
             <Button

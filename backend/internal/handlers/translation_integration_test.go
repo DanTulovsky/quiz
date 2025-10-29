@@ -63,6 +63,7 @@ func (suite *TranslationIntegrationTestSuite) SetupSuite() {
 	translationCacheRepo := services.NewTranslationCacheRepository(suite.DB, logger)
 	translationService := services.NewTranslationService(cfg, usageStatsService, translationCacheRepo, logger)
 	snippetsService := services.NewSnippetsService(suite.DB, cfg, logger)
+    authAPIKeyService := services.NewAuthAPIKeyService(suite.DB, logger)
 
 	suite.UserService = userService
 	suite.LearningService = learningService
@@ -89,6 +90,7 @@ func (suite *TranslationIntegrationTestSuite) SetupSuite() {
 		snippetsService,
 		usageStatsService,
 		services.NewWordOfTheDayService(suite.DB, logger),
+		authAPIKeyService,
 		logger,
 	)
 }

@@ -67,7 +67,7 @@ func (suite *ValidationIntegrationTestSuite) SetupSuite() {
 	translationCacheRepo := services.NewTranslationCacheRepository(db, logger)
 	translationService := services.NewTranslationService(cfg, usageStatsService, translationCacheRepo, logger)
 	snippetsService := services.NewSnippetsService(db, cfg, logger)
-	router := handlers.NewRouter(cfg, userService, questionService, learningService, aiService, workerService, dailyQuestionService, storyService, services.NewConversationService(db), oauthService, generationHintService, translationService, snippetsService, usageStatsService, services.NewWordOfTheDayService(db, logger), logger)
+router := handlers.NewRouter(cfg, userService, questionService, learningService, aiService, workerService, dailyQuestionService, storyService, services.NewConversationService(db), oauthService, generationHintService, translationService, snippetsService, usageStatsService, services.NewWordOfTheDayService(db, logger), services.NewAuthAPIKeyService(db, logger), logger)
 	suite.Router = router
 }
 

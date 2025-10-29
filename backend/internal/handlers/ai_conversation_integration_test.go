@@ -65,6 +65,7 @@ func (suite *AIConversationIntegrationTestSuite) SetupSuite() {
 
 	// Use the real application router
 	snippetsService := services.NewSnippetsService(db, suite.Config, logger)
+    authAPIKeyService := services.NewAuthAPIKeyService(db, logger)
 	suite.Router = NewRouter(
 		suite.Config,
 		userService,
@@ -81,6 +82,7 @@ func (suite *AIConversationIntegrationTestSuite) SetupSuite() {
 		snippetsService,
 		usageStatsService,
 		services.NewWordOfTheDayService(db, logger),
+		authAPIKeyService,
 		logger,
 	)
 

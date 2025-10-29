@@ -75,6 +75,7 @@ func (suite *FeedbackIntegrationTestSuite) SetupSuite() {
 	translationService := services.NewTranslationService(suite.cfg, usageStatsService, translationCacheRepo, logger)
 	snippetsService := services.NewSnippetsService(db, suite.cfg, logger)
 	conversationService := services.NewConversationService(db)
+	authAPIKeyService := services.NewAuthAPIKeyService(db, logger)
 
 	suite.Router = handlers.NewRouter(
 		suite.cfg,
@@ -92,6 +93,7 @@ func (suite *FeedbackIntegrationTestSuite) SetupSuite() {
 		snippetsService,
 		usageStatsService,
 		services.NewWordOfTheDayService(db, logger),
+		authAPIKeyService,
 		logger,
 	)
 

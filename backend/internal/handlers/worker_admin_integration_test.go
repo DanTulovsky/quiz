@@ -76,6 +76,7 @@ func (suite *WorkerAdminIntegrationTestSuite) SetupSuite() {
 	usageStatsService := services.NewUsageStatsService(cfg, db, logger)
 	translationService := services.NewTranslationService(cfg, usageStatsService, translationCacheRepo, logger)
 	snippetsService := services.NewSnippetsService(db, cfg, logger)
+	authAPIKeyService := services.NewAuthAPIKeyService(db, logger)
 	suite.Router = NewRouter(
 		cfg,
 		userService,
@@ -92,6 +93,7 @@ func (suite *WorkerAdminIntegrationTestSuite) SetupSuite() {
 		snippetsService,
 		usageStatsService,
 		services.NewWordOfTheDayService(suite.DB, logger),
+		authAPIKeyService,
 		logger,
 	)
 

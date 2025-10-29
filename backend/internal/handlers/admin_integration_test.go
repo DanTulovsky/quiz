@@ -93,9 +93,11 @@ func (suite *AdminIntegrationTestSuite) SetupSuite() {
 	translationCacheRepo := services.NewTranslationCacheRepository(suite.db, logger)
 	translationService := services.NewTranslationService(suite.cfg, usageStatsService, translationCacheRepo, logger)
 	snippetsService := services.NewSnippetsService(db, suite.cfg, logger)
-	suite.BackendRouter = handlers.NewRouter(
+	authAPIKeyService := services.NewAuthAPIKeyService(db, logger)
+
+    suite.BackendRouter = handlers.NewRouter(
 		suite.cfg,
-		userService,
+        userService,
 		questionService,
 		learningService,
 		suite.mockAIService, // Use mock AI service for faster tests
@@ -109,6 +111,7 @@ func (suite *AdminIntegrationTestSuite) SetupSuite() {
 		snippetsService,
 		usageStatsService,
 		services.NewWordOfTheDayService(db, logger),
+		authAPIKeyService,
 		logger,
 	)
 

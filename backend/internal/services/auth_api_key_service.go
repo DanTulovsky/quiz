@@ -6,7 +6,6 @@ import (
 	"database/sql"
 	"encoding/hex"
 	"errors"
-	"fmt"
 	"time"
 
 	"quizapp/internal/models"
@@ -20,10 +19,10 @@ import (
 
 // AuthAPIKeyServiceInterface defines the interface for auth API key operations
 type AuthAPIKeyServiceInterface interface {
-	CreateAPIKey(ctx context.Context, userID int, keyName string, permissionLevel string) (*models.AuthAPIKey, string, error)
+	CreateAPIKey(ctx context.Context, userID int, keyName, permissionLevel string) (*models.AuthAPIKey, string, error)
 	ListAPIKeys(ctx context.Context, userID int) ([]models.AuthAPIKey, error)
-	GetAPIKeyByID(ctx context.Context, userID int, keyID int) (*models.AuthAPIKey, error)
-	DeleteAPIKey(ctx context.Context, userID int, keyID int) error
+	GetAPIKeyByID(ctx context.Context, userID, keyID int) (*models.AuthAPIKey, error)
+	DeleteAPIKey(ctx context.Context, userID, keyID int) error
 	ValidateAPIKey(ctx context.Context, rawKey string) (*models.AuthAPIKey, error)
 	UpdateLastUsed(ctx context.Context, keyID int) error
 }
@@ -54,7 +53,7 @@ func generateAPIKey() (string, error) {
 	// Generate 32 random bytes
 	randomBytes := make([]byte, KeyLength/2) // 16 bytes = 32 hex characters
 	if _, err := rand.Read(randomBytes); err != nil {
-		return "", fmt.Errorf("failed to generate random key: %w", err)
+		return "", contextutils.WrapErrorf(err, "failed to generate random key: %w", err)
 	}
 
 	// Convert to hex string
@@ -68,14 +67,14 @@ func generateAPIKey() (string, error) {
 func hashAPIKey(key string) (string, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(key), bcrypt.DefaultCost)
 	if err != nil {
-		return "", fmt.Errorf("failed to hash API key: %w", err)
+		return "", contextutils.WrapErrorf(err, "failed to hash API key: %w", err)
 	}
 	return string(hash), nil
 }
 
 // CreateAPIKey creates a new API key for a user
-func (s *AuthAPIKeyService) CreateAPIKey(ctx context.Context, userID int, keyName string, permissionLevel string) (*models.AuthAPIKey, string, error) {
-	ctx, span := observability.TraceFunction(ctx, "AuthAPIKeyService.CreateAPIKey")
+func (s *AuthAPIKeyService) CreateAPIKey(ctx context.Context, userID int, keyName, permissionLevel string) (*models.AuthAPIKey, string, error) {
+	ctx, span := observability.TraceFunction(ctx, "auth_api_key_service", "create_api_key")
 	defer observability.FinishSpan(span, nil)
 
 	span.SetAttributes(
@@ -149,7 +148,6 @@ func (s *AuthAPIKeyService) CreateAPIKey(ctx context.Context, userID int, keyNam
 
 	err = s.db.QueryRowContext(ctx, query, userID, keyName, keyHash, keyPrefix, permissionLevel, now, now).
 		Scan(&apiKey.ID, &apiKey.CreatedAt, &apiKey.UpdatedAt)
-
 	if err != nil {
 		s.logger.Error(ctx, "Failed to create API key", err, map[string]interface{}{
 			"user_id":          userID,
@@ -175,7 +173,7 @@ func (s *AuthAPIKeyService) CreateAPIKey(ctx context.Context, userID int, keyNam
 
 // ListAPIKeys returns all API keys for a user
 func (s *AuthAPIKeyService) ListAPIKeys(ctx context.Context, userID int) ([]models.AuthAPIKey, error) {
-	ctx, span := observability.TraceFunction(ctx, "AuthAPIKeyService.ListAPIKeys")
+	ctx, span := observability.TraceFunction(ctx, "auth_api_key_service", "list_api_keys")
 	defer observability.FinishSpan(span, nil)
 
 	span.SetAttributes(attribute.Int("user_id", userID))
@@ -194,7 +192,7 @@ func (s *AuthAPIKeyService) ListAPIKeys(ctx context.Context, userID int) ([]mode
 		span.SetStatus(codes.Error, "failed to query API keys")
 		return nil, contextutils.WrapError(err, "failed to list API keys")
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	var apiKeys []models.AuthAPIKey
 	for rows.Next() {
@@ -231,8 +229,8 @@ func (s *AuthAPIKeyService) ListAPIKeys(ctx context.Context, userID int) ([]mode
 }
 
 // GetAPIKeyByID retrieves a specific API key by ID for a user
-func (s *AuthAPIKeyService) GetAPIKeyByID(ctx context.Context, userID int, keyID int) (*models.AuthAPIKey, error) {
-	ctx, span := observability.TraceFunction(ctx, "AuthAPIKeyService.GetAPIKeyByID")
+func (s *AuthAPIKeyService) GetAPIKeyByID(ctx context.Context, userID, keyID int) (*models.AuthAPIKey, error) {
+	ctx, span := observability.TraceFunction(ctx, "auth_api_key_service", "get_api_key_by_id")
 	defer observability.FinishSpan(span, nil)
 
 	span.SetAttributes(
@@ -277,8 +275,8 @@ func (s *AuthAPIKeyService) GetAPIKeyByID(ctx context.Context, userID int, keyID
 }
 
 // DeleteAPIKey deletes an API key
-func (s *AuthAPIKeyService) DeleteAPIKey(ctx context.Context, userID int, keyID int) error {
-	ctx, span := observability.TraceFunction(ctx, "AuthAPIKeyService.DeleteAPIKey")
+func (s *AuthAPIKeyService) DeleteAPIKey(ctx context.Context, userID, keyID int) error {
+	ctx, span := observability.TraceFunction(ctx, "auth_api_key_service", "delete_api_key")
 	defer observability.FinishSpan(span, nil)
 
 	span.SetAttributes(
@@ -312,7 +310,7 @@ func (s *AuthAPIKeyService) DeleteAPIKey(ctx context.Context, userID int, keyID 
 
 	if rowsAffected == 0 {
 		err := contextutils.NewAppError(
-			contextutils.ErrorCodeNotFound,
+			contextutils.ErrorCodeRecordNotFound,
 			contextutils.SeverityWarn,
 			"API key not found",
 			"",
@@ -332,7 +330,7 @@ func (s *AuthAPIKeyService) DeleteAPIKey(ctx context.Context, userID int, keyID 
 
 // ValidateAPIKey validates a raw API key and returns the associated key info
 func (s *AuthAPIKeyService) ValidateAPIKey(ctx context.Context, rawKey string) (*models.AuthAPIKey, error) {
-	ctx, span := observability.TraceFunction(ctx, "AuthAPIKeyService.ValidateAPIKey")
+	ctx, span := observability.TraceFunction(ctx, "auth_api_key_service", "validate_api_key")
 	defer observability.FinishSpan(span, nil)
 
 	// Basic validation
@@ -359,7 +357,7 @@ func (s *AuthAPIKeyService) ValidateAPIKey(ctx context.Context, rawKey string) (
 		span.SetStatus(codes.Error, "failed to query API keys")
 		return nil, contextutils.WrapError(err, "failed to validate API key")
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	// Check each key by comparing bcrypt hash
 	for rows.Next() {
@@ -408,7 +406,7 @@ func (s *AuthAPIKeyService) ValidateAPIKey(ctx context.Context, rawKey string) (
 // UpdateLastUsed updates the last_used_at timestamp for an API key
 // This should be called asynchronously to avoid blocking requests
 func (s *AuthAPIKeyService) UpdateLastUsed(ctx context.Context, keyID int) error {
-	ctx, span := observability.TraceFunction(ctx, "AuthAPIKeyService.UpdateLastUsed")
+	ctx, span := observability.TraceFunction(ctx, "auth_api_key_service", "update_last_used")
 	defer observability.FinishSpan(span, nil)
 
 	span.SetAttributes(attribute.Int("key_id", keyID))
