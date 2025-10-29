@@ -107,7 +107,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
       key: 'word-of-day',
       label: 'Word of the Day',
       icon: IconSparkles,
-      path: '/word-of-day',
+      path: '/m/word-of-day',
     },
     {
       key: 'conversations',

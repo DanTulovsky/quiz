@@ -827,6 +827,34 @@ function App() {
             )
           }
         />
+        <Route
+          path='/m/word-of-day/:date'
+          element={
+            user ? (
+              <MobileLayout>
+                <MobileWordOfTheDayPage />
+              </MobileLayout>
+            ) : (
+              <Navigate
+                to={`/m/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`}
+              />
+            )
+          }
+        />
+        <Route
+          path='/m/word-of-day'
+          element={
+            user ? (
+              <MobileLayout>
+                <MobileWordOfTheDayPage />
+              </MobileLayout>
+            ) : (
+              <Navigate
+                to={`/m/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`}
+              />
+            )
+          }
+        />
 
         {/* Catch-all route for 404 */}
         <Route path='*' element={<NotFoundPage />} />

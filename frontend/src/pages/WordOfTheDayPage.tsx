@@ -143,6 +143,8 @@ const WordOfTheDayPage: React.FC = () => {
               background: `var(--mantine-primary-color-0)`,
               border: `2px solid var(--mantine-primary-color-4)`,
               position: 'relative',
+              overflow: 'visible',
+              wordWrap: 'break-word',
             }}
           >
             <Stack gap='md'>
@@ -159,8 +161,13 @@ const WordOfTheDayPage: React.FC = () => {
               {/* Word */}
               <Title
                 order={1}
-                size='3.5rem'
-                style={{ lineHeight: 1.2 }}
+                style={{
+                  lineHeight: 1.2,
+                  fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+                  wordBreak: 'break-word',
+                  overflowWrap: 'anywhere',
+                  hyphens: 'auto',
+                }}
                 c='primary'
               >
                 {word.word}

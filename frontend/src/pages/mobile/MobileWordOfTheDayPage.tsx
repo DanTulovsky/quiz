@@ -38,7 +38,7 @@ const MobileWordOfTheDayPage: React.FC = () => {
   // Update URL when date changes (using effect to sync URL)
   React.useEffect(() => {
     if (dateParam !== selectedDate) {
-      navigate(`/word-of-day/${selectedDate}`, { replace: true });
+      navigate(`/m/word-of-day/${selectedDate}`, { replace: true });
     }
   }, [selectedDate, dateParam, navigate]);
 
@@ -121,15 +121,22 @@ const MobileWordOfTheDayPage: React.FC = () => {
               border: `2px solid var(--mantine-primary-color-4)`,
               minHeight: '400px',
               position: 'relative',
+              overflow: 'visible',
+              wordWrap: 'break-word',
             }}
           >
             <Stack gap='md'>
               {/* Word */}
               <Title
                 order={1}
-                size='2.5rem'
                 ta='center'
-                style={{ lineHeight: 1.2 }}
+                style={{
+                  lineHeight: 1.2,
+                  fontSize: 'clamp(1.5rem, 8vw, 2.5rem)',
+                  wordBreak: 'break-word',
+                  overflowWrap: 'anywhere',
+                  hyphens: 'auto',
+                }}
                 c='primary'
               >
                 {word.word}
