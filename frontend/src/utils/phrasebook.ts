@@ -1,4 +1,4 @@
-import {normalizeLanguageKey, languageFallbackChain} from './locale';
+import { normalizeLanguageKey, languageFallbackChain } from './locale';
 
 export type PhrasebookWord = Record<string, string | undefined> & {
   term?: string;
@@ -24,7 +24,7 @@ export function getNormalizedLanguage(input?: string): string | undefined {
   return normalizeLanguageKey(input);
 }
 
-import {IconCalendar} from '@tabler/icons-react';
+import { IconCalendar } from '@tabler/icons-react';
 
 export interface PhrasebookWord {
   term: string; // English term (default)
