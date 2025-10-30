@@ -1,0 +1,538 @@
+{
+  "language": "hi",
+  "languageName": "Hindi",
+  "infinitive": "लेना",
+  "infinitiveEn": "to take",
+  "slug": "lena",
+  "category": "core",
+  "tenses": [
+    {
+      "tenseId": "present_simple",
+      "tenseName": "वर्तमान काल",
+      "tenseNameEn": "Present Simple",
+      "description": "Basic present forms",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "लेता/लेती हूँ",
+          "exampleSentence": "मैं किताब लेता/लेती हूँ।",
+          "exampleSentenceEn": "I take a book."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "लेते हो",
+          "exampleSentence": "तुम किताब लेते हो।",
+          "exampleSentenceEn": "You take a book."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "लेता/लेती है",
+          "exampleSentence": "वह/यह किताब लेता/लेती है।",
+          "exampleSentenceEn": "He/She take a book."
+        },
+        {
+          "pronoun": "हम",
+          "form": "लेते हैं",
+          "exampleSentence": "हम किताब लेते हैं।",
+          "exampleSentenceEn": "We take a book."
+        },
+        {
+          "pronoun": "आप",
+          "form": "लेते हैं",
+          "exampleSentence": "आप किताब लेते हैं।",
+          "exampleSentenceEn": "You take a book."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "लेते हैं",
+          "exampleSentence": "वे/ये किताब लेते हैं।",
+          "exampleSentenceEn": "They take a book."
+        }
+      ]
+    },
+    {
+      "tenseId": "present_continuous",
+      "tenseName": "वर्तमान निरंतर",
+      "tenseNameEn": "Present Continuous",
+      "description": "Action in progress now",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "ले रहा/रही हूँ",
+          "exampleSentence": "मैं किताब ले रहा/रही हूँ।",
+          "exampleSentenceEn": "I am taking a book."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "ले रहे हो",
+          "exampleSentence": "तुम किताब ले रहा/रही हो।",
+          "exampleSentenceEn": "You are taking a book."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "ले रहा/रही है",
+          "exampleSentence": "वह/यह किताब ले रहा/रही है।",
+          "exampleSentenceEn": "He/She is taking a book."
+        },
+        {
+          "pronoun": "हम",
+          "form": "ले रहे हैं",
+          "exampleSentence": "हम किताब ले रहे हैं।",
+          "exampleSentenceEn": "We are taking a book."
+        },
+        {
+          "pronoun": "आप",
+          "form": "ले रहे हैं",
+          "exampleSentence": "आप किताब ले रहे हैं।",
+          "exampleSentenceEn": "You are taking a book."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "ले रहे हैं",
+          "exampleSentence": "वे/ये किताब ले रहे हैं।",
+          "exampleSentenceEn": "They are taking a book."
+        }
+      ]
+    },
+    {
+      "tenseId": "present_perfect",
+      "tenseName": "पूर्ण वर्तमान",
+      "tenseNameEn": "Present Perfect",
+      "description": "Recently completed action",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "ले चुका/चुकी हूँ",
+          "exampleSentence": "मैं किताब ले चुका/चुकी हूँ।",
+          "exampleSentenceEn": "I have taken a book."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "ले चुके हो",
+          "exampleSentence": "तुम किताब ले चुके हो।",
+          "exampleSentenceEn": "You have taken a book."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "ले चुका/चुकी है",
+          "exampleSentence": "वह/यह किताब ले चुका/चुकी है।",
+          "exampleSentenceEn": "He/She has taken a book."
+        },
+        {
+          "pronoun": "हम",
+          "form": "ले चुके हैं",
+          "exampleSentence": "हम किताब ले चुके हैं।",
+          "exampleSentenceEn": "We have taken a book."
+        },
+        {
+          "pronoun": "आप",
+          "form": "ले चुके हैं",
+          "exampleSentence": "आप किताब ले चुके हैं।",
+          "exampleSentenceEn": "You have taken a book."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "ले चुके हैं",
+          "exampleSentence": "वे/ये किताब ले चुके हैं।",
+          "exampleSentenceEn": "They have taken a book."
+        }
+      ]
+    },
+    {
+      "tenseId": "present_perfect_continuous",
+      "tenseName": "पूर्ण निरंतर वर्तमान",
+      "tenseNameEn": "Present Perfect Continuous",
+      "description": "Action started earlier and continuing now",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "लेता/लेती आ रहा/रही हूँ",
+          "exampleSentence": "मैं रोज़ किताबें लेता/लेती आ रहा/रही हूँ।",
+          "exampleSentenceEn": "I have been taking books daily."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "लेते आ रहे हो",
+          "exampleSentence": "तुम सुबह से सामान लेते आ रहे हो।",
+          "exampleSentenceEn": "You have been taking items since morning."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "लेता/लेती आ रहा/रही है",
+          "exampleSentence": "वह/यह मदद लेता/लेती आ रहा/रही है।",
+          "exampleSentenceEn": "He/She has been taking help."
+        },
+        {
+          "pronoun": "हम",
+          "form": "लेते आ रहे हैं",
+          "exampleSentence": "हम सेवाएँ लेते आ रहे हैं।",
+          "exampleSentenceEn": "We have been taking services."
+        },
+        {
+          "pronoun": "आप",
+          "form": "लेते आ रहे हैं",
+          "exampleSentence": "आप सुझाव लेते आ रहे हैं।",
+          "exampleSentenceEn": "You have been taking suggestions."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "लेते आ रहे हैं",
+          "exampleSentence": "वे/ये आवश्यकताएँ लेते आ रहे हैं।",
+          "exampleSentenceEn": "They have been taking requirements."
+        }
+      ]
+    },
+    {
+      "tenseId": "past_simple",
+      "tenseName": "साधारण भूतकाल",
+      "tenseNameEn": "Simple Past",
+      "description": "Completed action in the past",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "लिया/ली/लिए",
+          "exampleSentence": "मैंने किताब ली।",
+          "exampleSentenceEn": "I took a book."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "लिया/ली/लिए",
+          "exampleSentence": "तुमने किताब ली।",
+          "exampleSentenceEn": "You took a book."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "लिया/ली/लिए",
+          "exampleSentence": "उसने किताब ली।",
+          "exampleSentenceEn": "He/She took a book."
+        },
+        {
+          "pronoun": "हम",
+          "form": "लिया/ली/लिए",
+          "exampleSentence": "हमने किताब ली।",
+          "exampleSentenceEn": "We took a book."
+        },
+        {
+          "pronoun": "आप",
+          "form": "लिया/ली/लिए",
+          "exampleSentence": "आपने किताब ली।",
+          "exampleSentenceEn": "You took a book."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "लिया/ली/लिए",
+          "exampleSentence": "उन्होंने किताब ली।",
+          "exampleSentenceEn": "They took a book."
+        }
+      ]
+    },
+    {
+      "tenseId": "past_continuous",
+      "tenseName": "अपूर्ण भूतकाल",
+      "tenseNameEn": "Past Continuous",
+      "description": "Ongoing past action",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "ले रहा/रही था/थी",
+          "exampleSentence": "मैं किताब ले रहा/रही था/थी।",
+          "exampleSentenceEn": "I was taking a book."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "ले रहे थे",
+          "exampleSentence": "तुम किताब ले रहे थे।",
+          "exampleSentenceEn": "You were taking a book."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "ले रहा/रही था/थी",
+          "exampleSentence": "वह/यह किताब ले रहा/रही था/थी।",
+          "exampleSentenceEn": "He/She was taking a book."
+        },
+        {
+          "pronoun": "हम",
+          "form": "ले रहे थे",
+          "exampleSentence": "हम किताब ले रहे थे।",
+          "exampleSentenceEn": "We were taking a book."
+        },
+        {
+          "pronoun": "आप",
+          "form": "ले रहे थे",
+          "exampleSentence": "आप किताब ले रहे थे।",
+          "exampleSentenceEn": "You were taking a book."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "ले रहे थे",
+          "exampleSentence": "वे/ये किताब ले रहे थे।",
+          "exampleSentenceEn": "They were taking a book."
+        }
+      ]
+    },
+    {
+      "tenseId": "past_perfect",
+      "tenseName": "पूर्ण भूतकाल",
+      "tenseNameEn": "Past Perfect",
+      "description": "Action completed before another past action",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "ले चुका/चुकी था/थी",
+          "exampleSentence": "मैं किताब ले चुका/चुकी था/थी।",
+          "exampleSentenceEn": "I had taken a book."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "ले चुके थे",
+          "exampleSentence": "तुम किताब ले चुके थे।",
+          "exampleSentenceEn": "You had taken a book."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "ले चुका/चुकी था/थी",
+          "exampleSentence": "वह/यह किताब ले चुका/चुकी था/थी।",
+          "exampleSentenceEn": "He/She had taken a book."
+        },
+        {
+          "pronoun": "हम",
+          "form": "ले चुके थे",
+          "exampleSentence": "हम किताब ले चुके थे।",
+          "exampleSentenceEn": "We had taken a book."
+        },
+        {
+          "pronoun": "आप",
+          "form": "ले चुके थे",
+          "exampleSentence": "आप किताब ले चुके थे।",
+          "exampleSentenceEn": "You had taken a book."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "ले चुके थे",
+          "exampleSentence": "वे/ये किताब ले चुके थे।",
+          "exampleSentenceEn": "They had taken a book."
+        }
+      ]
+    },
+    {
+      "tenseId": "past_perfect_continuous",
+      "tenseName": "पूर्ण निरंतर भूतकाल",
+      "tenseNameEn": "Past Perfect Continuous",
+      "description": "Action ongoing up to a point in the past",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "लेता/लेती आ रहा/रही था/थी",
+          "exampleSentence": "मैं महीनों से लेता/लेती आ रहा/रही था/थी।",
+          "exampleSentenceEn": "I had been taking for months."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "लेते आ रहे थे",
+          "exampleSentence": "तुम सुबह से लेते आ रहे थे।",
+          "exampleSentenceEn": "You had been taking since morning."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "लेता/लेती आ रहा/रही था/थी",
+          "exampleSentence": "वह/यह लगातार लेता/लेती आ रहा/रही था/थी।",
+          "exampleSentenceEn": "He/She had been taking continuously."
+        },
+        {
+          "pronoun": "हम",
+          "form": "लेते आ रहे थे",
+          "exampleSentence": "हम सेवाएँ लेते आ रहे थे।",
+          "exampleSentenceEn": "We had been taking services."
+        },
+        {
+          "pronoun": "आप",
+          "form": "लेते आ रहे थे",
+          "exampleSentence": "आप सुझाव लेते आ रहे थे।",
+          "exampleSentenceEn": "You had been taking suggestions."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "लेते आ रहे थे",
+          "exampleSentence": "वे/ये सुविधाएँ लेते आ रहे थे।",
+          "exampleSentenceEn": "They had been taking facilities."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_simple",
+      "tenseName": "साधारण भविष्य",
+      "tenseNameEn": "Simple Future",
+      "description": "Action that will occur",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "लूँगा/लूँगी",
+          "exampleSentence": "मैं किताब लूँगा/लूँगी।",
+          "exampleSentenceEn": "I will take a book."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "लोगे",
+          "exampleSentence": "तुम किताब लोगे।",
+          "exampleSentenceEn": "You will take a book."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "लेगा/लेगी",
+          "exampleSentence": "वह/यह किताब लेगा/लेगी।",
+          "exampleSentenceEn": "He/She will take a book."
+        },
+        {
+          "pronoun": "हम",
+          "form": "लेंगे",
+          "exampleSentence": "हम किताब लेंगे।",
+          "exampleSentenceEn": "We will take a book."
+        },
+        {
+          "pronoun": "आप",
+          "form": "लेंगे",
+          "exampleSentence": "आप किताब लेंगे।",
+          "exampleSentenceEn": "You will take a book."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "लेंगे",
+          "exampleSentence": "वे/ये किताब लेंगे।",
+          "exampleSentenceEn": "They will take a book."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_continuous",
+      "tenseName": "भविष्य निरंतर",
+      "tenseNameEn": "Future Continuous",
+      "description": "Ongoing action in the future",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "ले रहा/रही होऊँगा/हूँगी",
+          "exampleSentence": "मैं किताब ले रहा/रही होऊँगा/हूँगी।",
+          "exampleSentenceEn": "I will be taking a book."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "ले रहे होगे",
+          "exampleSentence": "तुम किताब ले रहे होगे।",
+          "exampleSentenceEn": "You will be taking a book."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "ले रहा/रही होगा/होगी",
+          "exampleSentence": "वह/यह किताब ले रहा/रही होगा/होगी।",
+          "exampleSentenceEn": "He/She will be taking a book."
+        },
+        {
+          "pronoun": "हम",
+          "form": "ले रहे होंगे",
+          "exampleSentence": "हम किताब ले रहे होंगे।",
+          "exampleSentenceEn": "We will be taking a book."
+        },
+        {
+          "pronoun": "आप",
+          "form": "ले रहे होंगे",
+          "exampleSentence": "आप किताब ले रहे होंगे।",
+          "exampleSentenceEn": "You will be taking a book."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "ले रहे होंगे",
+          "exampleSentence": "वे/ये किताब ले रहे होंगे।",
+          "exampleSentenceEn": "They will be taking a book."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_perfect",
+      "tenseName": "पूर्ण भविष्य",
+      "tenseNameEn": "Future Perfect",
+      "description": "Action completed before a future time",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "ले चुका/चुकी होऊँगा/हूँगी",
+          "exampleSentence": "मैं किताब ले चुका/चुकी होऊँगा/हूँगी।",
+          "exampleSentenceEn": "I will have taken a book."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "ले चुके होगे",
+          "exampleSentence": "तुम किताब ले चुके होगे।",
+          "exampleSentenceEn": "You will have taken a book."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "ले चुका/चुकी होगा/होगी",
+          "exampleSentence": "वह/यह किताब ले चुका/चुकी होगा/होगी।",
+          "exampleSentenceEn": "He/She will have taken a book."
+        },
+        {
+          "pronoun": "हम",
+          "form": "ले चुके होंगे",
+          "exampleSentence": "हम किताब ले चुके होंगे।",
+          "exampleSentenceEn": "We will have taken a book."
+        },
+        {
+          "pronoun": "आप",
+          "form": "ले चुके होंगे",
+          "exampleSentence": "आप किताब ले चुके होंगे।",
+          "exampleSentenceEn": "You will have taken a book."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "ले चुके होंगे",
+          "exampleSentence": "वे/ये किताब ले चुके होंगे।",
+          "exampleSentenceEn": "They will have taken a book."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_perfect_continuous",
+      "tenseName": "पूर्ण निरंतर भविष्य",
+      "tenseNameEn": "Future Perfect Continuous",
+      "description": "Action ongoing up to a future point",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "लेता/लेती आ रहा/रही होऊँगा/हूँगी",
+          "exampleSentence": "मैं महीनों से लेता/लेती आ रहा/रही होऊँगा/हूँगी।",
+          "exampleSentenceEn": "I will have been taking for months."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "लेते आ रहे होगे",
+          "exampleSentence": "तुम सप्ताहों से लेते आ रहे होगे।",
+          "exampleSentenceEn": "You will have been taking for weeks."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "लेता/लेती आ रहा/रही होगा/होगी",
+          "exampleSentence": "वह/यह लेता/लेती आ रहा/रही होगा/होगी।",
+          "exampleSentenceEn": "He/She will have been taking."
+        },
+        {
+          "pronoun": "हम",
+          "form": "लेते आ रहे होंगे",
+          "exampleSentence": "हम वर्षों से लेते आ रहे होंगे।",
+          "exampleSentenceEn": "We will have been taking for years."
+        },
+        {
+          "pronoun": "आप",
+          "form": "लेते आ रहे होंगे",
+          "exampleSentence": "आप लगातार लेते आ रहे होंगे।",
+          "exampleSentenceEn": "You will have been taking continuously."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "लेते आ रहे होंगे",
+          "exampleSentence": "वे/ये नियमित रूप से लेते आ रहे होंगे।",
+          "exampleSentenceEn": "They will have been taking regularly."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,208 @@
+{
+  "language": "hi",
+  "languageName": "Hindi",
+  "infinitive": "होना",
+  "infinitiveEn": "to be",
+  "slug": "hona",
+  "category": "essential",
+  "tenses": [
+    {
+      "tenseId": "present_simple",
+      "tenseName": "वर्तमान काल",
+      "tenseNameEn": "Present Simple",
+      "description": "Basic present forms",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "हूँ",
+          "exampleSentence": "मैं ठीक हूँ।",
+          "exampleSentenceEn": "I am fine."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "हो",
+          "exampleSentence": "तुम छात्र हो।",
+          "exampleSentenceEn": "You are a student."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "है",
+          "exampleSentence": "वह यहाँ है।",
+          "exampleSentenceEn": "He/She is here."
+        },
+        {
+          "pronoun": "हम",
+          "form": "हैं",
+          "exampleSentence": "हम तैयार हैं।",
+          "exampleSentenceEn": "We are ready."
+        },
+        {
+          "pronoun": "आप",
+          "form": "हैं",
+          "exampleSentence": "आप सही हैं।",
+          "exampleSentenceEn": "You are correct."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "हैं",
+          "exampleSentence": "वे घर पर हैं।",
+          "exampleSentenceEn": "They are at home."
+        }
+      ]
+    },
+    {
+      "tenseId": "present_continuous",
+      "tenseName": "वर्तमान निरंतर",
+      "tenseNameEn": "Present Continuous",
+      "description": "Not typically used with होना; use present simple (हूँ/है/हो/हैं).",
+      "conjugations": [
+        { "pronoun": "मैं", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "तुम", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "वह/यह", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "हम", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "आप", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "वे/ये", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" }
+      ]
+    },
+    {
+      "tenseId": "present_perfect",
+      "tenseName": "पूर्ण वर्तमान",
+      "tenseNameEn": "Present Perfect",
+      "description": "Not used with होना in Hindi; use present simple or past forms as appropriate.",
+      "conjugations": [
+        { "pronoun": "मैं", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "तुम", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "वह/यह", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "हम", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "आप", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "वे/ये", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" }
+      ]
+    },
+    {
+      "tenseId": "present_perfect_continuous",
+      "tenseName": "पूर्ण निरंतर वर्तमान",
+      "tenseNameEn": "Present Perfect Continuous",
+      "description": "Not used with होना; prefer present simple.",
+      "conjugations": [
+        { "pronoun": "मैं", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "तुम", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "वह/यह", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "हम", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "आप", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "वे/ये", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" }
+      ]
+    },
+    {
+      "tenseId": "past_simple",
+      "tenseName": "साधारण भूतकाल",
+      "tenseNameEn": "Simple Past",
+      "description": "State in the past; forms: था/थी/थे.",
+      "conjugations": [
+        { "pronoun": "मैं", "form": "था/थी", "exampleSentence": "मैं ठीक था/थी।", "exampleSentenceEn": "I was fine." },
+        { "pronoun": "तुम", "form": "थे", "exampleSentence": "तुम वहाँ थे।", "exampleSentenceEn": "You were there." },
+        { "pronoun": "वह/यह", "form": "था/थी", "exampleSentence": "वह/यह यहाँ था/थी।", "exampleSentenceEn": "He/She was here." },
+        { "pronoun": "हम", "form": "थे", "exampleSentence": "हम तैयार थे।", "exampleSentenceEn": "We were ready." },
+        { "pronoun": "आप", "form": "थे", "exampleSentence": "आप सही थे।", "exampleSentenceEn": "You were correct." },
+        { "pronoun": "वे/ये", "form": "थे", "exampleSentence": "वे/ये घर पर थे।", "exampleSentenceEn": "They were at home." }
+      ]
+    },
+    {
+      "tenseId": "past_continuous",
+      "tenseName": "अपूर्ण भूतकाल",
+      "tenseNameEn": "Past Continuous",
+      "description": "Not used with होना; use past simple (था/थी/थे).",
+      "conjugations": [
+        { "pronoun": "मैं", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "तुम", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "वह/यह", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "हम", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "आप", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "वे/ये", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" }
+      ]
+    },
+    {
+      "tenseId": "past_perfect",
+      "tenseName": "पूर्ण भूतकाल",
+      "tenseNameEn": "Past Perfect",
+      "description": "Rare with होना; prefer था/थी/थे or context-specific forms.",
+      "conjugations": [
+        { "pronoun": "मैं", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "तुम", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "वह/यह", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "हम", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "आप", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "वे/ये", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" }
+      ]
+    },
+    {
+      "tenseId": "past_perfect_continuous",
+      "tenseName": "पूर्ण निरंतर भूतकाल",
+      "tenseNameEn": "Past Perfect Continuous",
+      "description": "Not used with होना.",
+      "conjugations": [
+        { "pronoun": "मैं", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "तुम", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "वह/यह", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "हम", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "आप", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "वे/ये", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" }
+      ]
+    },
+    {
+      "tenseId": "future_simple",
+      "tenseName": "साधारण भविष्य",
+      "tenseNameEn": "Simple Future",
+      "description": "Action that will occur",
+      "conjugations": [
+        { "pronoun": "मैं", "form": "होऊँगा/होऊँगी", "exampleSentence": "मैं तैयार होऊँगा/होऊँगी।", "exampleSentenceEn": "I will be ready." },
+        { "pronoun": "तुम", "form": "होगे", "exampleSentence": "तुम वहाँ होगे।", "exampleSentenceEn": "You will be there." },
+        { "pronoun": "वह/यह", "form": "होगा/होगी", "exampleSentence": "वह/यह खुश होगा/होगी।", "exampleSentenceEn": "He/She will be happy." },
+        { "pronoun": "हम", "form": "होंगे", "exampleSentence": "हम समय पर होंगे।", "exampleSentenceEn": "We will be on time." },
+        { "pronoun": "आप", "form": "होंगे", "exampleSentence": "आप व्यस्त होंगे।", "exampleSentenceEn": "You will be busy." },
+        { "pronoun": "वे/ये", "form": "होंगे", "exampleSentence": "वे/ये वहाँ होंगे।", "exampleSentenceEn": "They will be there." }
+      ]
+    },
+    {
+      "tenseId": "future_continuous",
+      "tenseName": "भविष्य निरंतर",
+      "tenseNameEn": "Future Continuous",
+      "description": "Not used with होना; use future simple (होगा/होंगे).",
+      "conjugations": [
+        { "pronoun": "मैं", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "तुम", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "वह/यह", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "हम", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "आप", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "वे/ये", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" }
+      ]
+    },
+    {
+      "tenseId": "future_perfect",
+      "tenseName": "पूर्ण भविष्य",
+      "tenseNameEn": "Future Perfect",
+      "description": "Rare with होना; usually avoid.",
+      "conjugations": [
+        { "pronoun": "मैं", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "तुम", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "वह/यह", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "हम", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "आप", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "वे/ये", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" }
+      ]
+    },
+    {
+      "tenseId": "future_perfect_continuous",
+      "tenseName": "पूर्ण निरंतर भविष्य",
+      "tenseNameEn": "Future Perfect Continuous",
+      "description": "Not used with होना.",
+      "conjugations": [
+        { "pronoun": "मैं", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "तुम", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "वह/यह", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "हम", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "आप", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "वे/ये", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" }
+      ]
+    }
+  ]
+}

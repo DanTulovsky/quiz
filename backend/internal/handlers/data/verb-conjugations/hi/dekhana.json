@@ -1,0 +1,538 @@
+{
+  "language": "hi",
+  "languageName": "Hindi",
+  "infinitive": "देखना",
+  "infinitiveEn": "to see",
+  "slug": "dekhana",
+  "category": "perception",
+  "tenses": [
+    {
+      "tenseId": "present_simple",
+      "tenseName": "वर्तमान काल",
+      "tenseNameEn": "Present Simple",
+      "description": "Basic present forms",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "देखता/देखती हूँ",
+          "exampleSentence": "मैं फ़िल्म देखता/देखती हूँ।",
+          "exampleSentenceEn": "I watch a movie."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "देखते हो",
+          "exampleSentence": "तुम फ़िल्म देखते हो।",
+          "exampleSentenceEn": "You watch a movie."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "देखता/देखती है",
+          "exampleSentence": "वह/यह फ़िल्म देखता/देखती है।",
+          "exampleSentenceEn": "He/She watch a movie."
+        },
+        {
+          "pronoun": "हम",
+          "form": "देखते हैं",
+          "exampleSentence": "हम फ़िल्म देखते हैं।",
+          "exampleSentenceEn": "We watch a movie."
+        },
+        {
+          "pronoun": "आप",
+          "form": "देखते हैं",
+          "exampleSentence": "आप फ़िल्म देखते हैं।",
+          "exampleSentenceEn": "You watch a movie."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "देखते हैं",
+          "exampleSentence": "वे/ये फ़िल्म देखते हैं।",
+          "exampleSentenceEn": "They watch a movie."
+        }
+      ]
+    },
+    {
+      "tenseId": "present_continuous",
+      "tenseName": "वर्तमान निरंतर",
+      "tenseNameEn": "Present Continuous",
+      "description": "Action in progress now",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "देख रहा/रही हूँ",
+          "exampleSentence": "मैं फ़िल्म देख रहा/रही हूँ।",
+          "exampleSentenceEn": "I am watching a movie."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "देख रहे हो",
+          "exampleSentence": "तुम फ़िल्म देख रहा/रही हो।",
+          "exampleSentenceEn": "You are watching a movie."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "देख रहा/रही है",
+          "exampleSentence": "वह/यह फ़िल्म देख रहा/रही है।",
+          "exampleSentenceEn": "He/She is watching a movie."
+        },
+        {
+          "pronoun": "हम",
+          "form": "देख रहे हैं",
+          "exampleSentence": "हम फ़िल्म देख रहे हैं।",
+          "exampleSentenceEn": "We are watching a movie."
+        },
+        {
+          "pronoun": "आप",
+          "form": "देख रहे हैं",
+          "exampleSentence": "आप फ़िल्म देख रहे हैं।",
+          "exampleSentenceEn": "You are watching a movie."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "देख रहे हैं",
+          "exampleSentence": "वे/ये फ़िल्म देख रहे हैं।",
+          "exampleSentenceEn": "They are watching a movie."
+        }
+      ]
+    },
+    {
+      "tenseId": "present_perfect",
+      "tenseName": "पूर्ण वर्तमान",
+      "tenseNameEn": "Present Perfect",
+      "description": "Recently completed action",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "देख चुका/चुकी हूँ",
+          "exampleSentence": "मैं फ़िल्म देख चुका/चुकी हूँ।",
+          "exampleSentenceEn": "I have watched a movie."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "देख चुके हो",
+          "exampleSentence": "तुम फ़िल्म देख चुके हो।",
+          "exampleSentenceEn": "You have watched a movie."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "देख चुका/चुकी है",
+          "exampleSentence": "वह/यह फ़िल्म देख चुका/चुकी है।",
+          "exampleSentenceEn": "He/She has watched a movie."
+        },
+        {
+          "pronoun": "हम",
+          "form": "देख चुके हैं",
+          "exampleSentence": "हम फ़िल्म देख चुके हैं।",
+          "exampleSentenceEn": "We have watched a movie."
+        },
+        {
+          "pronoun": "आप",
+          "form": "देख चुके हैं",
+          "exampleSentence": "आप फ़िल्म देख चुके हैं।",
+          "exampleSentenceEn": "You have watched a movie."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "देख चुके हैं",
+          "exampleSentence": "वे/ये फ़िल्म देख चुके हैं।",
+          "exampleSentenceEn": "They have watched a movie."
+        }
+      ]
+    },
+    {
+      "tenseId": "present_perfect_continuous",
+      "tenseName": "पूर्ण निरंतर वर्तमान",
+      "tenseNameEn": "Present Perfect Continuous",
+      "description": "Action started earlier and continuing now",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "देखता/देखती आ रहा/रही हूँ",
+          "exampleSentence": "मैं फ़िल्म देख रहा/रही हूँ।",
+          "exampleSentenceEn": "I am watching a movie."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "देखते आ रहे हो",
+          "exampleSentence": "तुम फ़िल्म देख रहा/रही हो।",
+          "exampleSentenceEn": "You are watching a movie."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "देखता/देखती आ रहा/रही है",
+          "exampleSentence": "वह/यह फ़िल्म देख रहा/रही है।",
+          "exampleSentenceEn": "He/She is watching a movie."
+        },
+        {
+          "pronoun": "हम",
+          "form": "देखते आ रहे हैं",
+          "exampleSentence": "हम फ़िल्म देख रहा/रही हैं।",
+          "exampleSentenceEn": "We are watching a movie."
+        },
+        {
+          "pronoun": "आप",
+          "form": "देखते आ रहे हैं",
+          "exampleSentence": "आप फ़िल्म देख रहा/रही हैं।",
+          "exampleSentenceEn": "You are watching a movie."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "देखते आ रहे हैं",
+          "exampleSentence": "वे/ये फ़िल्म देख रहा/रही हैं।",
+          "exampleSentenceEn": "They are watching a movie."
+        }
+      ]
+    },
+    {
+      "tenseId": "past_simple",
+      "tenseName": "साधारण भूतकाल",
+      "tenseNameEn": "Simple Past",
+      "description": "Completed action in the past",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "देखा/देखी/देखे",
+          "exampleSentence": "मैंने फ़िल्म देखी।",
+          "exampleSentenceEn": "I watched a movie."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "देखा/देखी/देखे",
+          "exampleSentence": "तुमने फ़िल्म देखी।",
+          "exampleSentenceEn": "You watched a movie."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "देखा/देखी/देखे",
+          "exampleSentence": "उसने फ़िल्म देखी।",
+          "exampleSentenceEn": "He/She watched a movie."
+        },
+        {
+          "pronoun": "हम",
+          "form": "देखा/देखी/देखे",
+          "exampleSentence": "हमने फ़िल्म देखी।",
+          "exampleSentenceEn": "We watched a movie."
+        },
+        {
+          "pronoun": "आप",
+          "form": "देखा/देखी/देखे",
+          "exampleSentence": "आपने फ़िल्म देखी।",
+          "exampleSentenceEn": "You watched a movie."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "देखा/देखी/देखे",
+          "exampleSentence": "उन्होंने फ़िल्म देखी।",
+          "exampleSentenceEn": "They watched a movie."
+        }
+      ]
+    },
+    {
+      "tenseId": "past_continuous",
+      "tenseName": "अपूर्ण भूतकाल",
+      "tenseNameEn": "Past Continuous",
+      "description": "Ongoing past action",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "देख रहा/रही था/थी",
+          "exampleSentence": "मैं फ़िल्म देख रहा/रही था/थी।",
+          "exampleSentenceEn": "I was watching a movie."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "देख रहे थे",
+          "exampleSentence": "तुम फ़िल्म देख रहे थे।",
+          "exampleSentenceEn": "You were watching a movie."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "देख रहा/रही था/थी",
+          "exampleSentence": "वह/यह फ़िल्म देख रहा/रही था/थी।",
+          "exampleSentenceEn": "He/She was watching a movie."
+        },
+        {
+          "pronoun": "हम",
+          "form": "देख रहे थे",
+          "exampleSentence": "हम फ़िल्म देख रहे थे।",
+          "exampleSentenceEn": "We were watching a movie."
+        },
+        {
+          "pronoun": "आप",
+          "form": "देख रहे थे",
+          "exampleSentence": "आप फ़िल्म देख रहे थे।",
+          "exampleSentenceEn": "You were watching a movie."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "देख रहे थे",
+          "exampleSentence": "वे/ये फ़िल्म देख रहे थे।",
+          "exampleSentenceEn": "They were watching a movie."
+        }
+      ]
+    },
+    {
+      "tenseId": "past_perfect",
+      "tenseName": "पूर्ण भूतकाल",
+      "tenseNameEn": "Past Perfect",
+      "description": "Action completed before another past action",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "देख चुका/चुकी था/थी",
+          "exampleSentence": "मैं फ़िल्म देख चुका/चुकी था/थी।",
+          "exampleSentenceEn": "I had watched a movie."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "देख चुके थे",
+          "exampleSentence": "तुम फ़िल्म देख चुके थे।",
+          "exampleSentenceEn": "You had watched a movie."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "देख चुका/चुकी था/थी",
+          "exampleSentence": "वह/यह फ़िल्म देख चुका/चुकी था/थी।",
+          "exampleSentenceEn": "He/She had watched a movie."
+        },
+        {
+          "pronoun": "हम",
+          "form": "देख चुके थे",
+          "exampleSentence": "हम फ़िल्म देख चुके थे।",
+          "exampleSentenceEn": "We had watched a movie."
+        },
+        {
+          "pronoun": "आप",
+          "form": "देख चुके थे",
+          "exampleSentence": "आप फ़िल्म देख चुके थे।",
+          "exampleSentenceEn": "You had watched a movie."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "देख चुके थे",
+          "exampleSentence": "वे/ये फ़िल्म देख चुके थे।",
+          "exampleSentenceEn": "They had watched a movie."
+        }
+      ]
+    },
+    {
+      "tenseId": "past_perfect_continuous",
+      "tenseName": "पूर्ण निरंतर भूतकाल",
+      "tenseNameEn": "Past Perfect Continuous",
+      "description": "Action ongoing up to a point in the past",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "देखता/देखती आ रहा/रही था/थी",
+          "exampleSentence": "मैं कई दिनों से फ़िल्में देखता/देखती आ रहा/रही था/थी।",
+          "exampleSentenceEn": "I had been watching movies for many days."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "देखते आ रहे थे",
+          "exampleSentence": "तुम सुबह से देख रहे थे।",
+          "exampleSentenceEn": "You had been watching since morning."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "देखता/देखती आ रहा/रही था/थी",
+          "exampleSentence": "वह/यह लगातार देखता/देखती आ रहा/रही था/थी।",
+          "exampleSentenceEn": "He/She had been watching continuously."
+        },
+        {
+          "pronoun": "हम",
+          "form": "देखते आ रहे थे",
+          "exampleSentence": "हम समय से देख रहे थे।",
+          "exampleSentenceEn": "We had been watching for some time."
+        },
+        {
+          "pronoun": "आप",
+          "form": "देखते आ रहे थे",
+          "exampleSentence": "आप नियमित रूप से देखते आ रहे थे।",
+          "exampleSentenceEn": "You had been watching regularly."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "देखते आ रहे थे",
+          "exampleSentence": "वे/ये लंबे समय से देखते आ रहे थे।",
+          "exampleSentenceEn": "They had been watching for a long time."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_simple",
+      "tenseName": "साधारण भविष्य",
+      "tenseNameEn": "Simple Future",
+      "description": "Action that will occur",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "देखूँगा/देखूँगी",
+          "exampleSentence": "मैं देखूँगा/देखूँगी।",
+          "exampleSentenceEn": "I will watch a movie."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "देखोगे",
+          "exampleSentence": "तुम देखोगे।",
+          "exampleSentenceEn": "You will watch a movie."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "देखेगा/देखेगी",
+          "exampleSentence": "वह/यह देखेगा/देखेगी।",
+          "exampleSentenceEn": "He/She will watch a movie."
+        },
+        {
+          "pronoun": "हम",
+          "form": "देखेंगे",
+          "exampleSentence": "हम देखेंगे।",
+          "exampleSentenceEn": "We will watch a movie."
+        },
+        {
+          "pronoun": "आप",
+          "form": "देखेंगे",
+          "exampleSentence": "आप देखेंगे।",
+          "exampleSentenceEn": "You will watch a movie."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "देखेंगे",
+          "exampleSentence": "वे/ये देखेंगे।",
+          "exampleSentenceEn": "They will watch a movie."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_continuous",
+      "tenseName": "भविष्य निरंतर",
+      "tenseNameEn": "Future Continuous",
+      "description": "Ongoing action in the future",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "देख रहा/रही होऊँगा/हूँगी",
+          "exampleSentence": "मैं फ़िल्म देख रहा/रही होऊँगा/हूँगी।",
+          "exampleSentenceEn": "I will be watching a movie."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "देख रहे होगे",
+          "exampleSentence": "तुम फ़िल्म देख रहे होगे।",
+          "exampleSentenceEn": "You will be watching a movie."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "देख रहा/रही होगा/होगी",
+          "exampleSentence": "वह/यह फ़िल्म देख रहा/रही होगा/होगी।",
+          "exampleSentenceEn": "He/She will be watching a movie."
+        },
+        {
+          "pronoun": "हम",
+          "form": "देख रहे होंगे",
+          "exampleSentence": "हम फ़िल्म देख रहे होंगे।",
+          "exampleSentenceEn": "We will be watching a movie."
+        },
+        {
+          "pronoun": "आप",
+          "form": "देख रहे होंगे",
+          "exampleSentence": "आप फ़िल्म देख रहे होंगे।",
+          "exampleSentenceEn": "You will be watching a movie."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "देख रहे होंगे",
+          "exampleSentence": "वे/ये फ़िल्म देख रहे होंगे।",
+          "exampleSentenceEn": "They will be watching a movie."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_perfect",
+      "tenseName": "पूर्ण भविष्य",
+      "tenseNameEn": "Future Perfect",
+      "description": "Action completed before a future time",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "देख चुका/चुकी होऊँगा/हूँगी",
+          "exampleSentence": "मैं फ़िल्म देख चुका/चुकी होऊँगा/हूँगी।",
+          "exampleSentenceEn": "I will have watched a movie."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "देख चुके होगे",
+          "exampleSentence": "तुम फ़िल्म देख चुके होगे।",
+          "exampleSentenceEn": "You will have watched a movie."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "देख चुका/चुकी होगा/होगी",
+          "exampleSentence": "वह/यह फ़िल्म देख चुका/चुकी होगा/होगी।",
+          "exampleSentenceEn": "He/She will have watched a movie."
+        },
+        {
+          "pronoun": "हम",
+          "form": "देख चुके होंगे",
+          "exampleSentence": "हम फ़िल्म देख चुके होंगे।",
+          "exampleSentenceEn": "We will have watched a movie."
+        },
+        {
+          "pronoun": "आप",
+          "form": "देख चुके होंगे",
+          "exampleSentence": "आप फ़िल्म देख चुके होंगे।",
+          "exampleSentenceEn": "You will have watched a movie."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "देख चुके होंगे",
+          "exampleSentence": "वे/ये फ़िल्म देख चुके होंगे।",
+          "exampleSentenceEn": "They will have watched a movie."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_perfect_continuous",
+      "tenseName": "पूर्ण निरंतर भविष्य",
+      "tenseNameEn": "Future Perfect Continuous",
+      "description": "Action ongoing up to a future point",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "देखता/देखती आ रहा/रही होऊँगा/हूँगी",
+          "exampleSentence": "मैं फ़िल्म देखता/देखती आ रहा/रही होऊँगा/हूँगी।",
+          "exampleSentenceEn": "I will have been watching a movie."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "देखते आ रहे होगे",
+          "exampleSentence": "तुम फ़िल्म देखते आ रहे होगे।",
+          "exampleSentenceEn": "You will have been watching a movie."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "देखता/देखती आ रहा/रही होगा/होगी",
+          "exampleSentence": "वह/यह फ़िल्म देखता/देखती आ रहा/रही होगा/होगी।",
+          "exampleSentenceEn": "He/She will have been watching a movie."
+        },
+        {
+          "pronoun": "हम",
+          "form": "देखते आ रहे होंगे",
+          "exampleSentence": "हम फ़िल्म देखते आ रहे होंगे।",
+          "exampleSentenceEn": "We will have been watching a movie."
+        },
+        {
+          "pronoun": "आप",
+          "form": "देखते आ रहे होंगे",
+          "exampleSentence": "आप फ़िल्म देखते आ रहे होंगे।",
+          "exampleSentenceEn": "You will have been watching a movie."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "देखते आ रहे होंगे",
+          "exampleSentence": "वे/ये फ़िल्म देखते आ रहे होंगे।",
+          "exampleSentenceEn": "They will have been watching a movie."
+        }
+      ]
+    }
+  ]
+}

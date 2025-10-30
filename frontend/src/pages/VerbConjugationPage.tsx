@@ -93,7 +93,16 @@ export function VerbConjugationPage() {
         setLoading(true);
         setError(null);
         try {
-          const data = await loadVerbConjugation(userLanguage, selectedVerb);
+          // Find the verb object to get its slug if available
+          const verbObj = availableVerbs.find(
+            v => v.infinitive === selectedVerb
+          );
+          const slug = verbObj?.slug;
+          const data = await loadVerbConjugation(
+            userLanguage,
+            selectedVerb,
+            slug
+          );
           setVerbData(data);
           // Reset tense selection when verb changes
           setSelectedTense('');
@@ -107,7 +116,13 @@ export function VerbConjugationPage() {
 
       loadVerbData();
     }
-  }, [selectedVerb, userLanguage, user?.preferred_language, languages]);
+  }, [
+    selectedVerb,
+    userLanguage,
+    user?.preferred_language,
+    languages,
+    availableVerbs,
+  ]);
 
   // Scroll to selected tense
   useEffect(() => {

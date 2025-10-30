@@ -1725,6 +1725,160 @@ describe('QuestionCard', () => {
       const radios = screen.getAllByRole('radio');
       expect(radios[expectedShuffledIndex]).toBeChecked();
     });
+
+    it('maps badges by original indices when option texts are duplicated', async () => {
+      const questionWithDuplicates: Question = {
+        id: 7,
+        type: 'vocabulary',
+        content: {
+          question: 'Pick A (two As present)',
+          options: ['A', 'A', 'B', 'C'],
+        },
+        level: 'A1',
+        created_at: '2023-01-01T00:00:00Z',
+      } as unknown as Question;
+
+      // Mark the SECOND 'A' (original index 1) as correct, and FIRST 'A' as user selection
+      const feedback: AnswerResponse = {
+        user_answer_index: 0,
+        correct_answer_index: 1,
+        is_correct: false,
+        user_answer: 'A',
+        explanation: 'Second A is correct',
+      };
+
+      function Wrapper() {
+        const [selectedAnswer, setSelectedAnswer] = React.useState<number | null>(null);
+        const [showExplanation, setShowExplanation] = React.useState(false);
+        return (
+          <QuestionCard
+            question={questionWithDuplicates}
+            onAnswer={async () => feedback}
+            onNext={() => {}}
+            feedback={feedback}
+            selectedAnswer={selectedAnswer}
+            onAnswerSelect={setSelectedAnswer}
+            showExplanation={showExplanation}
+            setShowExplanation={setShowExplanation}
+          />
+        );
+      }
+
+      renderWithProviders(<Wrapper />);
+
+      // There are two visual 'A's; ensure both badges appear but on different rows
+      const yourAnswerBadges = screen.getAllByText('Your answer');
+      const correctAnswerBadges = screen.getAllByText('Correct answer');
+      expect(yourAnswerBadges.length).toBeGreaterThan(0);
+      expect(correctAnswerBadges.length).toBeGreaterThan(0);
+
+      // The closest container to each text should contain distinct badges
+      const firstAContainer = screen.getAllByText('A')[0].closest('div');
+      const secondAContainer = screen.getAllByText('A')[1].closest('div');
+      expect(firstAContainer).toHaveTextContent('Your answer');
+      expect(secondAContainer).toHaveTextContent('Correct answer');
+    });
+
+    it('handles five options and preserves original index submission and badges', async () => {
+      const question5: Question = {
+        id: 13,
+        type: 'vocabulary',
+        content: {
+          question: 'Five options test',
+          options: ['O0', 'O1', 'O2', 'O3', 'O4'],
+        },
+        level: 'A1',
+        created_at: '2023-01-01T00:00:00Z',
+      } as unknown as Question;
+
+      // Correct is original index 4; user selected original index 2
+      const feedback5: AnswerResponse = {
+        user_answer_index: 2,
+        correct_answer_index: 4,
+        is_correct: false,
+        user_answer: 'O2',
+        explanation: 'O4 is correct',
+      };
+
+      let capturedOriginalIndex: number | null = null;
+      function Wrapper() {
+        const [selectedAnswer, setSelectedAnswer] = React.useState<number | null>(null);
+        const [showExplanation, setShowExplanation] = React.useState(false);
+        const onAnswer = async (_qid: number, answer: string) => {
+          capturedOriginalIndex = parseInt(answer, 10);
+          return feedback5;
+        };
+        return (
+          <QuestionCard
+            question={question5}
+            onAnswer={onAnswer}
+            onNext={() => {}}
+            feedback={feedback5}
+            selectedAnswer={selectedAnswer}
+            onAnswerSelect={setSelectedAnswer}
+            showExplanation={showExplanation}
+            setShowExplanation={setShowExplanation}
+          />
+        );
+      }
+
+      renderWithProviders(<Wrapper />);
+
+      // Choose some shuffled index and submit
+      const radios = screen.getAllByRole('radio');
+      fireEvent.click(radios[1]);
+      fireEvent.click(screen.getByRole('button', { name: /submit/i }));
+
+      await waitFor(() => {
+        expect(screen.getByText('Incorrect')).toBeInTheDocument();
+      });
+
+      // Submission should be a valid original index within 0..4
+      expect(capturedOriginalIndex).not.toBeNull();
+      expect(capturedOriginalIndex as number).toBeGreaterThanOrEqual(0);
+      expect(capturedOriginalIndex as number).toBeLessThan(5);
+
+      // Verify badges exist for both user and correct
+      expect(screen.getAllByText('Your answer').length).toBeGreaterThan(0);
+      expect(screen.getAllByText('Correct answer').length).toBeGreaterThan(0);
+    });
+
+    it('changes the shuffled order when question id changes (deterministic per id)', () => {
+      const base: Omit<Question, 'id'> = {
+        type: 'vocabulary',
+        content: { question: 'Order?', options: ['A', 'B', 'C', 'D'] },
+        level: 'A1',
+        created_at: '2023-01-01T00:00:00Z',
+      } as unknown as Question;
+
+      function Wrapper({ id }: { id: number }) {
+        const q = { ...(base as Question), id } as Question;
+        return (
+          <QuestionCard
+            question={q}
+            onAnswer={async () => ({}) as AnswerResponse}
+            onNext={() => {}}
+            showExplanation={false}
+            setShowExplanation={() => {}}
+          />
+        );
+      }
+
+      const { rerender } = renderWithProviders(<Wrapper id={101} />);
+      const order1 = screen
+        .getAllByRole('radio')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .map((r: any) => r.value);
+
+      rerender(<Wrapper id={202} />);
+      const order2 = screen
+        .getAllByRole('radio')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .map((r: any) => r.value);
+
+      // Orders should differ for different ids
+      expect(order1).not.toEqual(order2);
+    });
   });
 
   describe('Confidence Level Display', () => {

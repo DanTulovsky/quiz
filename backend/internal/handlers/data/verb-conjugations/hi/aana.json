@@ -1,0 +1,508 @@
+{
+  "language": "hi",
+  "languageName": "Hindi",
+  "infinitive": "आना",
+  "infinitiveEn": "to come",
+  "slug": "aana",
+  "category": "movement",
+  "tenses": [
+    {
+      "tenseId": "present_simple",
+      "tenseName": "वर्तमान काल",
+      "tenseNameEn": "Present Simple",
+      "description": "Basic present forms",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "आता/आती हूँ",
+          "exampleSentence": "मैं घर आता/आती हूँ।",
+          "exampleSentenceEn": "I come home."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "आते हो",
+          "exampleSentence": "तुम कब आते हो?",
+          "exampleSentenceEn": "When do you come?"
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "आता/आती है",
+          "exampleSentence": "वह जल्दी आता/आती है।",
+          "exampleSentenceEn": "He/She comes early."
+        },
+        {
+          "pronoun": "हम",
+          "form": "आते हैं",
+          "exampleSentence": "हम साथ आते हैं।",
+          "exampleSentenceEn": "We come together."
+        },
+        {
+          "pronoun": "आप",
+          "form": "आते हैं",
+          "exampleSentence": "आप भी आते हैं।",
+          "exampleSentenceEn": "You also come."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "आते हैं",
+          "exampleSentence": "वे यहाँ आते हैं।",
+          "exampleSentenceEn": "They come here."
+        }
+      ]
+    },
+    {
+      "tenseId": "present_continuous",
+      "tenseName": "वर्तमान निरंतर",
+      "tenseNameEn": "Present Continuous",
+      "description": "Action in progress now",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "आ रहा/रही हूँ",
+          "exampleSentence": "मैं आ रहा/रही हूँ।",
+          "exampleSentenceEn": "I am coming."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "आ रहे हो",
+          "exampleSentence": "तुम आ रहे हो।",
+          "exampleSentenceEn": "You are coming."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "आ रहा/रही है",
+          "exampleSentence": "वह/यह आ रहा/रही है।",
+          "exampleSentenceEn": "He/She is coming."
+        },
+        {
+          "pronoun": "हम",
+          "form": "आ रहे हैं",
+          "exampleSentence": "हम आ रहे हैं।",
+          "exampleSentenceEn": "We are coming."
+        },
+        {
+          "pronoun": "आप",
+          "form": "आ रहे हैं",
+          "exampleSentence": "आप आ रहे हैं।",
+          "exampleSentenceEn": "You are coming."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "आ रहे हैं",
+          "exampleSentence": "वे/ये आ रहे हैं।",
+          "exampleSentenceEn": "They are coming."
+        }
+      ]
+    },
+    {
+      "tenseId": "present_perfect",
+      "tenseName": "पूर्ण वर्तमान",
+      "tenseNameEn": "Present Perfect",
+      "description": "Recently completed action",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "आ चुका/चुकी हूँ",
+          "exampleSentence": "मैं आ चुका/चुकी हूँ।",
+          "exampleSentenceEn": "I have come."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "आ चुके हो",
+          "exampleSentence": "तुम आ चुके हो।",
+          "exampleSentenceEn": "You have come."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "आ चुका/चुकी है",
+          "exampleSentence": "वह/यह आ चुका/चुकी है।",
+          "exampleSentenceEn": "He/She has come."
+        },
+        {
+          "pronoun": "हम",
+          "form": "आ चुके हैं",
+          "exampleSentence": "हम आ चुके हैं।",
+          "exampleSentenceEn": "We have come."
+        },
+        {
+          "pronoun": "आप",
+          "form": "आ चुके हैं",
+          "exampleSentence": "आप आ चुके हैं।",
+          "exampleSentenceEn": "You have come."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "आ चुके हैं",
+          "exampleSentence": "वे/ये आ चुके हैं।",
+          "exampleSentenceEn": "They have come."
+        }
+      ]
+    },
+    {
+      "tenseId": "present_perfect_continuous",
+      "tenseName": "पूर्ण निरंतर वर्तमान",
+      "tenseNameEn": "Present Perfect Continuous",
+      "description": "Action started earlier and continuing now",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "आता/आती आ रहा/रही हूँ",
+          "exampleSentence": "मैं आता/आती आ रहा/रही हूँ।",
+          "exampleSentenceEn": "I have been coming."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "आते आ रहे हो",
+          "exampleSentence": "तुम आते आ रहे हो।",
+          "exampleSentenceEn": "You have been coming."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "आता/आती आ रहा/रही है",
+          "exampleSentence": "वह/यह आता/आती आ रहा/रही है।",
+          "exampleSentenceEn": "He/She has been coming."
+        },
+        {
+          "pronoun": "हम",
+          "form": "आते आ रहे हैं",
+          "exampleSentence": "हम आते आ रहे हैं।",
+          "exampleSentenceEn": "We have been coming."
+        },
+        {
+          "pronoun": "आप",
+          "form": "आते आ रहे हैं",
+          "exampleSentence": "आप आते आ रहे हैं।",
+          "exampleSentenceEn": "You have been coming."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "आते आ रहे हैं",
+          "exampleSentence": "वे/ये आते आ रहे हैं।",
+          "exampleSentenceEn": "They have been coming."
+        }
+      ]
+    },
+    {
+      "tenseId": "past_simple",
+      "tenseName": "साधारण भूतकाल",
+      "tenseNameEn": "Simple Past",
+      "description": "Completed action in the past",
+      "conjugations": [
+        { "pronoun": "मैं", "form": "आया/आई", "exampleSentence": "मैं आया/आई।", "exampleSentenceEn": "I came." },
+        { "pronoun": "तुम", "form": "आए", "exampleSentence": "तुम आए।", "exampleSentenceEn": "You came." },
+        { "pronoun": "वह/यह", "form": "आया/आई", "exampleSentence": "वह/यह आया/आई।", "exampleSentenceEn": "He/She came." },
+        { "pronoun": "हम", "form": "आए", "exampleSentence": "हम आए।", "exampleSentenceEn": "We came." },
+        { "pronoun": "आप", "form": "आए", "exampleSentence": "आप आए।", "exampleSentenceEn": "You came." },
+        { "pronoun": "वे/ये", "form": "आए", "exampleSentence": "वे/ये आए।", "exampleSentenceEn": "They came." }
+      ]
+    },
+    {
+      "tenseId": "past_continuous",
+      "tenseName": "अपूर्ण भूतकाल",
+      "tenseNameEn": "Past Continuous",
+      "description": "Ongoing past action",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "आ रहा/रही था/थी",
+          "exampleSentence": "मैं आ रहा/रही था/थी।",
+          "exampleSentenceEn": "I was coming."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "आ रहे थे",
+          "exampleSentence": "तुम आ रहे थे।",
+          "exampleSentenceEn": "You were coming."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "आ रहा/रही था/थी",
+          "exampleSentence": "वह/यह आ रहा/रही था/थी।",
+          "exampleSentenceEn": "He/She was coming."
+        },
+        {
+          "pronoun": "हम",
+          "form": "आ रहे थे",
+          "exampleSentence": "हम आ रहे थे।",
+          "exampleSentenceEn": "We were coming."
+        },
+        {
+          "pronoun": "आप",
+          "form": "आ रहे थे",
+          "exampleSentence": "आप आ रहे थे।",
+          "exampleSentenceEn": "You were coming."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "आ रहे थे",
+          "exampleSentence": "वे/ये आ रहे थे।",
+          "exampleSentenceEn": "They were coming."
+        }
+      ]
+    },
+    {
+      "tenseId": "past_perfect",
+      "tenseName": "पूर्ण भूतकाल",
+      "tenseNameEn": "Past Perfect",
+      "description": "Action completed before another past action",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "आ चुका/चुकी था/थी",
+          "exampleSentence": "मैं आ चुका/चुकी था/थी।",
+          "exampleSentenceEn": "I had come."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "आ चुके थे",
+          "exampleSentence": "तुम आ चुके थे।",
+          "exampleSentenceEn": "You had come."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "आ चुका/चुकी था/थी",
+          "exampleSentence": "वह/यह आ चुका/चुकी था/थी।",
+          "exampleSentenceEn": "He/She had come."
+        },
+        {
+          "pronoun": "हम",
+          "form": "आ चुके थे",
+          "exampleSentence": "हम आ चुके थे।",
+          "exampleSentenceEn": "We had come."
+        },
+        {
+          "pronoun": "आप",
+          "form": "आ चुके थे",
+          "exampleSentence": "आप आ चुके थे।",
+          "exampleSentenceEn": "You had come."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "आ चुके थे",
+          "exampleSentence": "वे/ये आ चुके थे।",
+          "exampleSentenceEn": "They had come."
+        }
+      ]
+    },
+    {
+      "tenseId": "past_perfect_continuous",
+      "tenseName": "पूर्ण निरंतर भूतकाल",
+      "tenseNameEn": "Past Perfect Continuous",
+      "description": "Action ongoing up to a point in the past",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "आता/आती आ रहा/रही था/थी",
+          "exampleSentence": "मैं आता/आती आ रहा/रही था/थी।",
+          "exampleSentenceEn": "I had been coming."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "आते आ रहे थे",
+          "exampleSentence": "तुम आते आ रहे थे।",
+          "exampleSentenceEn": "You had been coming."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "आता/आती आ रहा/रही था/थी",
+          "exampleSentence": "वह/यह आता/आती आ रहा/रही था/थी।",
+          "exampleSentenceEn": "He/She had been coming."
+        },
+        {
+          "pronoun": "हम",
+          "form": "आते आ रहे थे",
+          "exampleSentence": "हम आते आ रहे थे।",
+          "exampleSentenceEn": "We had been coming."
+        },
+        {
+          "pronoun": "आप",
+          "form": "आते आ रहे थे",
+          "exampleSentence": "आप आते आ रहे थे।",
+          "exampleSentenceEn": "You had been coming."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "आते आ रहे थे",
+          "exampleSentence": "वे/ये आते आ रहे थे।",
+          "exampleSentenceEn": "They had been coming."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_simple",
+      "tenseName": "साधारण भविष्य",
+      "tenseNameEn": "Simple Future",
+      "description": "Action that will occur",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "आऊँगा/आऊँगी",
+          "exampleSentence": "मैं आऊँगा/आऊँगी।",
+          "exampleSentenceEn": "I will come."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "आओगे",
+          "exampleSentence": "तुम आओगे।",
+          "exampleSentenceEn": "You will come."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "आएगा/आएगी",
+          "exampleSentence": "वह/यह आएगा/आएगी।",
+          "exampleSentenceEn": "He/She will come."
+        },
+        {
+          "pronoun": "हम",
+          "form": "आएंगे",
+          "exampleSentence": "हम आएंगे।",
+          "exampleSentenceEn": "We will come."
+        },
+        {
+          "pronoun": "आप",
+          "form": "आएंगे",
+          "exampleSentence": "आप आएंगे।",
+          "exampleSentenceEn": "You will come."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "आएंगे",
+          "exampleSentence": "वे/ये आएंगे।",
+          "exampleSentenceEn": "They will come."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_continuous",
+      "tenseName": "भविष्य निरंतर",
+      "tenseNameEn": "Future Continuous",
+      "description": "Ongoing action in the future",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "आ रहा/रही होऊँगा/हूँगी",
+          "exampleSentence": "मैं आ रहा/रही होऊँगा/हूँगी।",
+          "exampleSentenceEn": "I will be coming."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "आ रहे होगे",
+          "exampleSentence": "तुम आ रहे होगे।",
+          "exampleSentenceEn": "You will be coming."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "आ रहा/रही होगा/होगी",
+          "exampleSentence": "वह/यह आ रहा/रही होगा/होगी।",
+          "exampleSentenceEn": "He/She will be coming."
+        },
+        {
+          "pronoun": "हम",
+          "form": "आ रहे होंगे",
+          "exampleSentence": "हम आ रहे होंगे।",
+          "exampleSentenceEn": "We will be coming."
+        },
+        {
+          "pronoun": "आप",
+          "form": "आ रहे होंगे",
+          "exampleSentence": "आप आ रहे होंगे।",
+          "exampleSentenceEn": "You will be coming."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "आ रहे होंगे",
+          "exampleSentence": "वे/ये आ रहे होंगे।",
+          "exampleSentenceEn": "They will be coming."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_perfect",
+      "tenseName": "पूर्ण भविष्य",
+      "tenseNameEn": "Future Perfect",
+      "description": "Action completed before a future time",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "आ चुका/चुकी होऊँगा/हूँगी",
+          "exampleSentence": "मैं आ चुका/चुकी होऊँगा/हूँगी।",
+          "exampleSentenceEn": "I will have come."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "आ चुके होगे",
+          "exampleSentence": "तुम आ चुके होगे।",
+          "exampleSentenceEn": "You will have come."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "आ चुका/चुकी होगा/होगी",
+          "exampleSentence": "वह/यह आ चुका/चुकी होगा/होगी।",
+          "exampleSentenceEn": "He/She will have come."
+        },
+        {
+          "pronoun": "हम",
+          "form": "आ चुके होंगे",
+          "exampleSentence": "हम आ चुके होंगे।",
+          "exampleSentenceEn": "We will have come."
+        },
+        {
+          "pronoun": "आप",
+          "form": "आ चुके होंगे",
+          "exampleSentence": "आप आ चुके होंगे।",
+          "exampleSentenceEn": "You will have come."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "आ चुके होंगे",
+          "exampleSentence": "वे/ये आ चुके होंगे।",
+          "exampleSentenceEn": "They will have come."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_perfect_continuous",
+      "tenseName": "पूर्ण निरंतर भविष्य",
+      "tenseNameEn": "Future Perfect Continuous",
+      "description": "Action ongoing up to a future point",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "आता/आती आ रहा/रही होऊँगा/हूँगी",
+          "exampleSentence": "मैं आता/आती आ रहा/रही होऊँगा/हूँगी।",
+          "exampleSentenceEn": "I will have been coming."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "आते आ रहे होगे",
+          "exampleSentence": "तुम आते आ रहे होगे।",
+          "exampleSentenceEn": "You will have been coming."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "आता/आती आ रहा/रही होगा/होगी",
+          "exampleSentence": "वह/यह आता/आती आ रहा/रही होगा/होगी।",
+          "exampleSentenceEn": "He/She will have been coming."
+        },
+        {
+          "pronoun": "हम",
+          "form": "आते आ रहे होंगे",
+          "exampleSentence": "हम आते आ रहे होंगे।",
+          "exampleSentenceEn": "We will have been coming."
+        },
+        {
+          "pronoun": "आप",
+          "form": "आते आ रहे होंगे",
+          "exampleSentence": "आप आते आ रहे होंगे।",
+          "exampleSentenceEn": "You will have been coming."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "आते आ रहे होंगे",
+          "exampleSentence": "वे/ये आते आ रहे होंगे।",
+          "exampleSentenceEn": "They will have been coming."
+        }
+      ]
+    }
+  ]
+}

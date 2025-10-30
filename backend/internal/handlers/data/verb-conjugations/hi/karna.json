@@ -1,0 +1,538 @@
+{
+  "language": "hi",
+  "languageName": "Hindi",
+  "infinitive": "करना",
+  "infinitiveEn": "to do",
+  "slug": "karna",
+  "category": "essential",
+  "tenses": [
+    {
+      "tenseId": "present_simple",
+      "tenseName": "वर्तमान काल",
+      "tenseNameEn": "Present Simple",
+      "description": "Basic present forms",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "करता/करती हूँ",
+          "exampleSentence": "मैं काम करता/करती हूँ।",
+          "exampleSentenceEn": "I work."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "करते हो",
+          "exampleSentence": "तुम क्या करते हो?",
+          "exampleSentenceEn": "What do you do?"
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "करता/करती है",
+          "exampleSentence": "वह पढ़ाई करता/करती है।",
+          "exampleSentenceEn": "He/She studies."
+        },
+        {
+          "pronoun": "हम",
+          "form": "करते हैं",
+          "exampleSentence": "हम मदद करते हैं।",
+          "exampleSentenceEn": "We help."
+        },
+        {
+          "pronoun": "आप",
+          "form": "करते हैं",
+          "exampleSentence": "आप अच्छा काम करते हैं।",
+          "exampleSentenceEn": "You do good work."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "करते हैं",
+          "exampleSentence": "वे खेलते हैं।",
+          "exampleSentenceEn": "They play."
+        }
+      ]
+    },
+    {
+      "tenseId": "present_continuous",
+      "tenseName": "वर्तमान निरंतर",
+      "tenseNameEn": "Present Continuous",
+      "description": "Action in progress now",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "कर रहा/रही हूँ",
+          "exampleSentence": "मैं प्रोजेक्ट पर काम कर रहा/रही हूँ।",
+          "exampleSentenceEn": "I am working on the project."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "कर रहे हो",
+          "exampleSentence": "तुम खाना बना रहे हो।",
+          "exampleSentenceEn": "You are cooking."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "कर रहा/रही है",
+          "exampleSentence": "वह पढ़ाई कर रहा/रही है।",
+          "exampleSentenceEn": "He/She is studying."
+        },
+        {
+          "pronoun": "हम",
+          "form": "कर रहे हैं",
+          "exampleSentence": "हम तैयारी कर रहे हैं।",
+          "exampleSentenceEn": "We are preparing."
+        },
+        {
+          "pronoun": "आप",
+          "form": "कर रहे हैं",
+          "exampleSentence": "आप फॉर्म भर रहे हैं।",
+          "exampleSentenceEn": "You are filling the form."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "कर रहे हैं",
+          "exampleSentence": "वे अभ्यास कर रहे हैं।",
+          "exampleSentenceEn": "They are practicing."
+        }
+      ]
+    },
+    {
+      "tenseId": "present_perfect",
+      "tenseName": "पूर्ण वर्तमान",
+      "tenseNameEn": "Present Perfect",
+      "description": "Recently completed action",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "कर चुका/चुकी हूँ",
+          "exampleSentence": "मैं काम कर चुका/चुकी हूँ।",
+          "exampleSentenceEn": "I have done the work."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "कर चुके हो",
+          "exampleSentence": "तुम होमवर्क कर चुके हो।",
+          "exampleSentenceEn": "You have done the homework."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "कर चुका/चुकी है",
+          "exampleSentence": "वह आवेदन कर चुका/चुकी है।",
+          "exampleSentenceEn": "He/She has applied."
+        },
+        {
+          "pronoun": "हम",
+          "form": "कर चुके हैं",
+          "exampleSentence": "हम भुगतान कर चुके हैं।",
+          "exampleSentenceEn": "We have paid."
+        },
+        {
+          "pronoun": "आप",
+          "form": "कर चुके हैं",
+          "exampleSentence": "आप रजिस्ट्रेशन कर चुके हैं।",
+          "exampleSentenceEn": "You have registered."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "कर चुके हैं",
+          "exampleSentence": "वे काम कर चुके हैं।",
+          "exampleSentenceEn": "They have done the work."
+        }
+      ]
+    },
+    {
+      "tenseId": "present_perfect_continuous",
+      "tenseName": "पूर्ण निरंतर वर्तमान",
+      "tenseNameEn": "Present Perfect Continuous",
+      "description": "Action started earlier and continuing now",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "करता/करती आ रहा/रही हूँ",
+          "exampleSentence": "मैं कई दिनों से अभ्यास करता/करती आ रहा/रही हूँ।",
+          "exampleSentenceEn": "I have been practicing for many days."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "करते आ रहे हो",
+          "exampleSentence": "तुम सुबह से काम करते आ रहे हो।",
+          "exampleSentenceEn": "You have been working since morning."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "करता/करती आ रहा/रही है",
+          "exampleSentence": "वह लगातार पढ़ाई करता/करती आ रहा/रही है।",
+          "exampleSentenceEn": "He/She has been studying continuously."
+        },
+        {
+          "pronoun": "हम",
+          "form": "करते आ रहे हैं",
+          "exampleSentence": "हम लंबे समय से सेवा करते आ रहे हैं।",
+          "exampleSentenceEn": "We have been serving for a long time."
+        },
+        {
+          "pronoun": "आप",
+          "form": "करते आ रहे हैं",
+          "exampleSentence": "आप वर्षों से यह काम करते आ रहे हैं।",
+          "exampleSentenceEn": "You have been doing this work for years."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "करते आ रहे हैं",
+          "exampleSentence": "वे नियमित अभ्यास करते आ रहे हैं।",
+          "exampleSentenceEn": "They have been practicing regularly."
+        }
+      ]
+    },
+    {
+      "tenseId": "past_simple",
+      "tenseName": "साधारण भूतकाल",
+      "tenseNameEn": "Simple Past",
+      "description": "Completed action in the past",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "किया",
+          "exampleSentence": "मैंने काम किया।",
+          "exampleSentenceEn": "I did the work."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "किया",
+          "exampleSentence": "तुमने फोन किया।",
+          "exampleSentenceEn": "You called."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "किया",
+          "exampleSentence": "उसने प्रयास किया।",
+          "exampleSentenceEn": "He/She tried."
+        },
+        {
+          "pronoun": "हम",
+          "form": "किया",
+          "exampleSentence": "हमने मतदान किया।",
+          "exampleSentenceEn": "We voted."
+        },
+        {
+          "pronoun": "आप",
+          "form": "किया",
+          "exampleSentence": "आपने सुझाव दिया और काम किया।",
+          "exampleSentenceEn": "You suggested and did the work."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "किया",
+          "exampleSentence": "उन्होंने सहयोग किया।",
+          "exampleSentenceEn": "They cooperated."
+        }
+      ]
+    },
+    {
+      "tenseId": "past_continuous",
+      "tenseName": "अपूर्ण भूतकाल",
+      "tenseNameEn": "Past Continuous",
+      "description": "Ongoing past action",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "कर रहा/रही था/थी",
+          "exampleSentence": "मैं लिख रहा/रही था/थी।",
+          "exampleSentenceEn": "I was writing."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "कर रहे थे",
+          "exampleSentence": "तुम खेल रहे थे।",
+          "exampleSentenceEn": "You were playing."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "कर रहा/रही था/थी",
+          "exampleSentence": "वह पढ़ रहा/रही था/थी।",
+          "exampleSentenceEn": "He/She was reading."
+        },
+        {
+          "pronoun": "हम",
+          "form": "कर रहे थे",
+          "exampleSentence": "हम तैयारी कर रहे थे।",
+          "exampleSentenceEn": "We were preparing."
+        },
+        {
+          "pronoun": "आप",
+          "form": "कर रहे थे",
+          "exampleSentence": "आप प्रतीक्षा कर रहे थे।",
+          "exampleSentenceEn": "You were waiting."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "कर रहे थे",
+          "exampleSentence": "वे अभ्यास कर रहे थे।",
+          "exampleSentenceEn": "They were practicing."
+        }
+      ]
+    },
+    {
+      "tenseId": "past_perfect",
+      "tenseName": "पूर्ण भूतकाल",
+      "tenseNameEn": "Past Perfect",
+      "description": "Action completed before another past action",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "कर चुका/चुकी था/थी",
+          "exampleSentence": "मैं काम कर चुका/चुकी था/थी।",
+          "exampleSentenceEn": "I had finished the work."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "कर चुके थे",
+          "exampleSentence": "तुम पहले ही कर चुके थे।",
+          "exampleSentenceEn": "You had already done it."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "कर चुका/चुकी था/थी",
+          "exampleSentence": "वह भुगतान कर चुका/चुकी था/थी।",
+          "exampleSentenceEn": "He/She had paid."
+        },
+        {
+          "pronoun": "हम",
+          "form": "कर चुके थे",
+          "exampleSentence": "हम रिपोर्ट जमा कर चुके थे।",
+          "exampleSentenceEn": "We had submitted the report."
+        },
+        {
+          "pronoun": "आप",
+          "form": "कर चुके थे",
+          "exampleSentence": "आप पहले पंजीकरण कर चुके थे।",
+          "exampleSentenceEn": "You had registered earlier."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "कर चुके थे",
+          "exampleSentence": "वे पहले ही काम कर चुके थे।",
+          "exampleSentenceEn": "They had done it already."
+        }
+      ]
+    },
+    {
+      "tenseId": "past_perfect_continuous",
+      "tenseName": "पूर्ण निरंतर भूतकाल",
+      "tenseNameEn": "Past Perfect Continuous",
+      "description": "Action ongoing up to a point in the past",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "करता/करती आ रहा/रही था/थी",
+          "exampleSentence": "मैं कई घंटों से काम करता/करती आ रहा/रही था/थी।",
+          "exampleSentenceEn": "I had been working for hours."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "करते आ रहे थे",
+          "exampleSentence": "तुम सुबह से करते आ रहे थे।",
+          "exampleSentenceEn": "You had been doing it since morning."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "करता/करती आ रहा/रही था/थी",
+          "exampleSentence": "वह लगातार अभ्यास करता/करती आ रहा/रही था/थी।",
+          "exampleSentenceEn": "He/She had been practicing continuously."
+        },
+        {
+          "pronoun": "हम",
+          "form": "करते आ रहे थे",
+          "exampleSentence": "हम कई दिनों से सेवा करते आ रहे थे।",
+          "exampleSentenceEn": "We had been serving for days."
+        },
+        {
+          "pronoun": "आप",
+          "form": "करते आ रहे थे",
+          "exampleSentence": "आप वर्षों से यह कर रहे थे।",
+          "exampleSentenceEn": "You had been doing this for years."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "करते आ रहे थे",
+          "exampleSentence": "वे लंबे समय से तैयारी करते आ रहे थे।",
+          "exampleSentenceEn": "They had been preparing for a long time."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_simple",
+      "tenseName": "साधारण भविष्य",
+      "tenseNameEn": "Simple Future",
+      "description": "Action that will occur",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "करूँगा/करूँगी",
+          "exampleSentence": "मैं कल काम करूँगा/करूँगी।",
+          "exampleSentenceEn": "I will work tomorrow."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "करोगे",
+          "exampleSentence": "तुम समय पर करोगे।",
+          "exampleSentenceEn": "You will do it on time."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "करेगा/करेगी",
+          "exampleSentence": "वह आवेदन करेगा/करेगी।",
+          "exampleSentenceEn": "He/She will apply."
+        },
+        {
+          "pronoun": "हम",
+          "form": "करेंगे",
+          "exampleSentence": "हम मदद करेंगे।",
+          "exampleSentenceEn": "We will help."
+        },
+        {
+          "pronoun": "आप",
+          "form": "करेंगे",
+          "exampleSentence": "आप भाग लेंगे और करेंगे।",
+          "exampleSentenceEn": "You will participate and do it."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "करेंगे",
+          "exampleSentence": "वे परियोजना पूरी करेंगे।",
+          "exampleSentenceEn": "They will complete the project."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_continuous",
+      "tenseName": "भविष्य निरंतर",
+      "tenseNameEn": "Future Continuous",
+      "description": "Ongoing action in the future",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "कर रहा/रही होऊँगा/हूँगी",
+          "exampleSentence": "मैं शाम को काम कर रहा/रही होऊँगा/हूँगी।",
+          "exampleSentenceEn": "I will be working in the evening."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "कर रहे होगे",
+          "exampleSentence": "तुम तैयारी कर रहे होगे।",
+          "exampleSentenceEn": "You will be preparing."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "कर रहा/रही होगा/होगी",
+          "exampleSentence": "वह पढ़ रहा/रही होगा/होगी।",
+          "exampleSentenceEn": "He/She will be reading."
+        },
+        {
+          "pronoun": "हम",
+          "form": "कर रहे होंगे",
+          "exampleSentence": "हम यात्रा कर रहे होंगे।",
+          "exampleSentenceEn": "We will be traveling."
+        },
+        {
+          "pronoun": "आप",
+          "form": "कर रहे होंगे",
+          "exampleSentence": "आप मीटिंग कर रहे होंगे।",
+          "exampleSentenceEn": "You will be meeting."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "कर रहे होंगे",
+          "exampleSentence": "वे अभ्यास कर रहे होंगे।",
+          "exampleSentenceEn": "They will be practicing."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_perfect",
+      "tenseName": "पूर्ण भविष्य",
+      "tenseNameEn": "Future Perfect",
+      "description": "Action completed before a future time",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "कर चुका/चुकी होऊँगा/हूँगी",
+          "exampleSentence": "मैं तब तक काम कर चुका/चुकी होऊँगा/हूँगी।",
+          "exampleSentenceEn": "I will have finished by then."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "कर चुके होगे",
+          "exampleSentence": "तुम समय सीमा तक कर चुके होगे।",
+          "exampleSentenceEn": "You will have done it by the deadline."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "कर चुका/चुकी होगा/होगी",
+          "exampleSentence": "वह रिपोर्ट जमा कर चुका/चुकी होगा/होगी।",
+          "exampleSentenceEn": "He/She will have submitted the report."
+        },
+        {
+          "pronoun": "हम",
+          "form": "कर चुके होंगे",
+          "exampleSentence": "हम तैयारी कर चुके होंगे।",
+          "exampleSentenceEn": "We will have prepared."
+        },
+        {
+          "pronoun": "आप",
+          "form": "कर चुके होंगे",
+          "exampleSentence": "आप रजिस्ट्रेशन कर चुके होंगे।",
+          "exampleSentenceEn": "You will have registered."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "कर चुके होंगे",
+          "exampleSentence": "वे प्रोजेक्ट पूरा कर चुके होंगे।",
+          "exampleSentenceEn": "They will have completed the project."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_perfect_continuous",
+      "tenseName": "पूर्ण निरंतर भविष्य",
+      "tenseNameEn": "Future Perfect Continuous",
+      "description": "Action ongoing up to a future point",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "करता/करती आ रहा/रही होऊँगा/हूँगी",
+          "exampleSentence": "मैं महीनों से करता आ रहा/रही होऊँगा/हूँगी।",
+          "exampleSentenceEn": "I will have been doing this for months."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "करते आ रहे होगे",
+          "exampleSentence": "तुम सप्ताहों से करते आ रहे होगे।",
+          "exampleSentenceEn": "You will have been doing it for weeks."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "करता/करती आ रहा/रही होगा/होगी",
+          "exampleSentence": "वह लंबे समय से करता आ रहा/रही होगा/होगी।",
+          "exampleSentenceEn": "He/She will have been doing it for a long time."
+        },
+        {
+          "pronoun": "हम",
+          "form": "करते आ रहे होंगे",
+          "exampleSentence": "हम वर्षों से करते आ रहे होंगे।",
+          "exampleSentenceEn": "We will have been doing this for years."
+        },
+        {
+          "pronoun": "आप",
+          "form": "करते आ रहे होंगे",
+          "exampleSentence": "आप लगातार करते आ रहे होंगे।",
+          "exampleSentenceEn": "You will have been doing it continuously."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "करते आ रहे होंगे",
+          "exampleSentence": "वे नियमित रूप से करते आ रहे होंगे।",
+          "exampleSentenceEn": "They will have been doing it regularly."
+        }
+      ]
+    }
+  ]
+}

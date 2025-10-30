@@ -271,6 +271,36 @@ test.describe('Settings Persistence', () => {
     }
   });
 
+  test('should send test email for Word of the Day when enabled', async ({page}) => {
+    // Navigate to settings
+    await page.locator('header').getByLabel('Settings').click();
+    await expect(page).toHaveURL('/settings');
+
+    // Ensure Notifications card is visible
+    await expect(page.getByText('Notifications')).toBeVisible({timeout: 2000});
+
+    // Enable Word of the Day Emails if disabled
+    const wotdSwitch = page.locator('[data-testid="wotd-email-switch"]');
+    const wotdTrack = wotdSwitch.locator('..').locator('.mantine-Switch-track');
+    await expect(wotdTrack).toBeVisible({timeout: 5000});
+    if (!(await wotdSwitch.isChecked())) {
+      await wotdTrack.click();
+    }
+
+    // Click Test Email button
+    const btn = page.locator('[data-testid="wotd-test-email-button"]');
+    await expect(btn).toBeVisible({timeout: 3000});
+    await btn.click();
+
+    // Expect success notification
+    const notification = page
+      .locator('div.mantine-Notification-description', {
+        hasText: 'Test email sent successfully',
+      })
+      .first();
+    await expect(notification).toBeVisible({timeout: 5000});
+  });
+
   test('should preserve API keys per provider when switching between providers', async ({page}) => {
     await page.locator('header').getByLabel('Settings').click();
     await expect(page).toHaveURL('/settings');

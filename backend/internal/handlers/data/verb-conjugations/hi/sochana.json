@@ -1,0 +1,538 @@
+{
+  "language": "hi",
+  "languageName": "Hindi",
+  "infinitive": "सोचना",
+  "infinitiveEn": "to think",
+  "slug": "sochana",
+  "category": "cognitive",
+  "tenses": [
+    {
+      "tenseId": "present_simple",
+      "tenseName": "वर्तमान काल",
+      "tenseNameEn": "Present Simple",
+      "description": "Basic present forms",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "सोचता/सोचती हूँ",
+          "exampleSentence": "मैं सोचता/सोचती हूँ।",
+          "exampleSentenceEn": "I think."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "सोचते हो",
+          "exampleSentence": "तुम सोचते हो।",
+          "exampleSentenceEn": "You think."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "सोचता/सोचती है",
+          "exampleSentence": "वह/यह सोचता/सोचती है।",
+          "exampleSentenceEn": "He/She thinks."
+        },
+        {
+          "pronoun": "हम",
+          "form": "सोचते हैं",
+          "exampleSentence": "हम सोचते हैं।",
+          "exampleSentenceEn": "We think."
+        },
+        {
+          "pronoun": "आप",
+          "form": "सोचते हैं",
+          "exampleSentence": "आप सोचते हैं।",
+          "exampleSentenceEn": "You think."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "सोचते हैं",
+          "exampleSentence": "वे/ये सोचते हैं।",
+          "exampleSentenceEn": "They think."
+        }
+      ]
+    },
+    {
+      "tenseId": "present_continuous",
+      "tenseName": "वर्तमान निरंतर",
+      "tenseNameEn": "Present Continuous",
+      "description": "Action in progress now",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "सोच रहा/रही हूँ",
+          "exampleSentence": "मैं सोच रहा/रही हूँ।",
+          "exampleSentenceEn": "I am thinking."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "सोच रहे हो",
+          "exampleSentence": "तुम सोच रहा/रही हो।",
+          "exampleSentenceEn": "You are thinking."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "सोच रहा/रही है",
+          "exampleSentence": "वह/यह सोच रहा/रही है।",
+          "exampleSentenceEn": "He/She is thinking."
+        },
+        {
+          "pronoun": "हम",
+          "form": "सोच रहे हैं",
+          "exampleSentence": "हम सोच रहे हैं।",
+          "exampleSentenceEn": "We are thinking."
+        },
+        {
+          "pronoun": "आप",
+          "form": "सोच रहे हैं",
+          "exampleSentence": "आप सोच रहे हैं।",
+          "exampleSentenceEn": "You are thinking."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "सोच रहे हैं",
+          "exampleSentence": "वे/ये सोच रहे हैं।",
+          "exampleSentenceEn": "They are thinking."
+        }
+      ]
+    },
+    {
+      "tenseId": "present_perfect",
+      "tenseName": "पूर्ण वर्तमान",
+      "tenseNameEn": "Present Perfect",
+      "description": "Recently completed action",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "सोच चुका/चुकी हूँ",
+          "exampleSentence": "मैं सोच चुका/चुकी हूँ।",
+          "exampleSentenceEn": "I have thought."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "सोच चुके हो",
+          "exampleSentence": "तुम सोच चुके हो।",
+          "exampleSentenceEn": "You have thought."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "सोच चुका/चुकी है",
+          "exampleSentence": "वह/यह सोच चुका/चुकी है।",
+          "exampleSentenceEn": "He/She has thought."
+        },
+        {
+          "pronoun": "हम",
+          "form": "सोच चुके हैं",
+          "exampleSentence": "हम सोच चुके हैं।",
+          "exampleSentenceEn": "We have thought."
+        },
+        {
+          "pronoun": "आप",
+          "form": "सोच चुके हैं",
+          "exampleSentence": "आप सोच चुके हैं।",
+          "exampleSentenceEn": "You have thought."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "सोच चुके हैं",
+          "exampleSentence": "वे/ये सोच चुके हैं।",
+          "exampleSentenceEn": "They have thought."
+        }
+      ]
+    },
+    {
+      "tenseId": "present_perfect_continuous",
+      "tenseName": "पूर्ण निरंतर वर्तमान",
+      "tenseNameEn": "Present Perfect Continuous",
+      "description": "Action started earlier and continuing now",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "सोचता/सोचती आ रहा/रही हूँ",
+          "exampleSentence": "मैं सोच रहा/रही हूँ।",
+          "exampleSentenceEn": "I am thinking."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "सोचते आ रहे हो",
+          "exampleSentence": "तुम सोच रहा/रही हो।",
+          "exampleSentenceEn": "You are thinking."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "सोचता/सोचती आ रहा/रही है",
+          "exampleSentence": "वह/यह सोच रहा/रही है।",
+          "exampleSentenceEn": "He/She is thinking."
+        },
+        {
+          "pronoun": "हम",
+          "form": "सोचते आ रहे हैं",
+          "exampleSentence": "हम सोच रहा/रही हैं।",
+          "exampleSentenceEn": "We are thinking."
+        },
+        {
+          "pronoun": "आप",
+          "form": "सोचते आ रहे हैं",
+          "exampleSentence": "आप सोच रहा/रही हैं।",
+          "exampleSentenceEn": "You are thinking."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "सोचते आ रहे हैं",
+          "exampleSentence": "वे/ये सोच रहा/रही हैं।",
+          "exampleSentenceEn": "They are thinking."
+        }
+      ]
+    },
+    {
+      "tenseId": "past_simple",
+      "tenseName": "साधारण भूतकाल",
+      "tenseNameEn": "Simple Past",
+      "description": "Completed action in the past",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "सोचा",
+          "exampleSentence": "मैंने सोचा।",
+          "exampleSentenceEn": "I thought."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "सोचा",
+          "exampleSentence": "तुमने सोचा।",
+          "exampleSentenceEn": "You thought."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "सोचा",
+          "exampleSentence": "उसने सोचा।",
+          "exampleSentenceEn": "He/She thought."
+        },
+        {
+          "pronoun": "हम",
+          "form": "सोचा",
+          "exampleSentence": "हमने सोचा।",
+          "exampleSentenceEn": "We thought."
+        },
+        {
+          "pronoun": "आप",
+          "form": "सोचा",
+          "exampleSentence": "आपने सोचा।",
+          "exampleSentenceEn": "You thought."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "सोचा",
+          "exampleSentence": "उन्होंने सोचा।",
+          "exampleSentenceEn": "They thought."
+        }
+      ]
+    },
+    {
+      "tenseId": "past_continuous",
+      "tenseName": "अपूर्ण भूतकाल",
+      "tenseNameEn": "Past Continuous",
+      "description": "Ongoing past action",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "सोच रहा/रही था/थी",
+          "exampleSentence": "मैं सोच रहा/रही था/थी।",
+          "exampleSentenceEn": "I was thinking."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "सोच रहे थे",
+          "exampleSentence": "तुम सोच रहे थे।",
+          "exampleSentenceEn": "You were thinking."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "सोच रहा/रही था/थी",
+          "exampleSentence": "वह/यह सोच रहा/रही था/थी।",
+          "exampleSentenceEn": "He/She was thinking."
+        },
+        {
+          "pronoun": "हम",
+          "form": "सोच रहे थे",
+          "exampleSentence": "हम सोच रहे थे।",
+          "exampleSentenceEn": "We were thinking."
+        },
+        {
+          "pronoun": "आप",
+          "form": "सोच रहे थे",
+          "exampleSentence": "आप सोच रहे थे।",
+          "exampleSentenceEn": "You were thinking."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "सोच रहे थे",
+          "exampleSentence": "वे/ये सोच रहे थे।",
+          "exampleSentenceEn": "They were thinking."
+        }
+      ]
+    },
+    {
+      "tenseId": "past_perfect",
+      "tenseName": "पूर्ण भूतकाल",
+      "tenseNameEn": "Past Perfect",
+      "description": "Action completed before another past action",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "सोच चुका/चुकी था/थी",
+          "exampleSentence": "मैं सोच चुका/चुकी था/थी।",
+          "exampleSentenceEn": "I had thought."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "सोच चुके थे",
+          "exampleSentence": "तुम सोच चुके थे।",
+          "exampleSentenceEn": "You had thought."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "सोच चुका/चुकी था/थी",
+          "exampleSentence": "वह/यह सोच चुका/चुकी था/थी।",
+          "exampleSentenceEn": "He/She had thought."
+        },
+        {
+          "pronoun": "हम",
+          "form": "सोच चुके थे",
+          "exampleSentence": "हम सोच चुके थे।",
+          "exampleSentenceEn": "We had thought."
+        },
+        {
+          "pronoun": "आप",
+          "form": "सोच चुके थे",
+          "exampleSentence": "आप सोच चुके थे।",
+          "exampleSentenceEn": "You had thought."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "सोच चुके थे",
+          "exampleSentence": "वे/ये सोच चुके थे।",
+          "exampleSentenceEn": "They had thought."
+        }
+      ]
+    },
+    {
+      "tenseId": "past_perfect_continuous",
+      "tenseName": "पूर्ण निरंतर भूतकाल",
+      "tenseNameEn": "Past Perfect Continuous",
+      "description": "Action ongoing up to a point in the past",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "सोचता/सोचती आ रहा/रही था/थी",
+          "exampleSentence": "मैं सोचता/सोचती आ रहा/रही था/थी।",
+          "exampleSentenceEn": "I had been thinking."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "सोचते आ रहे थे",
+          "exampleSentence": "तुम सुबह से सोचते आ रहे थे।",
+          "exampleSentenceEn": "You had been thinking since morning."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "सोचता/सोचती आ रहा/रही था/थी",
+          "exampleSentence": "वह/यह लगातार सोचता/सोचती आ रहा/रही था/थी।",
+          "exampleSentenceEn": "He/She had been thinking continuously."
+        },
+        {
+          "pronoun": "हम",
+          "form": "सोचते आ रहे थे",
+          "exampleSentence": "हम कई दिनों से सोचते आ रहे थे।",
+          "exampleSentenceEn": "We had been thinking for many days."
+        },
+        {
+          "pronoun": "आप",
+          "form": "सोचते आ रहे थे",
+          "exampleSentence": "आप सोचते आ रहे थे।",
+          "exampleSentenceEn": "You had been thinking."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "सोचते आ रहे थे",
+          "exampleSentence": "वे/ये लंबे समय से सोचते आ रहे थे।",
+          "exampleSentenceEn": "They had been thinking for a long time."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_simple",
+      "tenseName": "साधारण भविष्य",
+      "tenseNameEn": "Simple Future",
+      "description": "Action that will occur",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "सोचूँगा/सोचूँगी",
+          "exampleSentence": "मैं सोचूँगा/सोचूँगी।",
+          "exampleSentenceEn": "I will think."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "सोचोगे",
+          "exampleSentence": "तुम सोचोगे।",
+          "exampleSentenceEn": "You will think."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "सोचेगा/सोचेगी",
+          "exampleSentence": "वह/यह सोचेगा/सोचेगी।",
+          "exampleSentenceEn": "He/She will think."
+        },
+        {
+          "pronoun": "हम",
+          "form": "सोचेंगे",
+          "exampleSentence": "हम सोचेंगे।",
+          "exampleSentenceEn": "We will think."
+        },
+        {
+          "pronoun": "आप",
+          "form": "सोचेंगे",
+          "exampleSentence": "आप सोचेंगे।",
+          "exampleSentenceEn": "You will think."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "सोचेंगे",
+          "exampleSentence": "वे/ये सोचेंगे।",
+          "exampleSentenceEn": "They will think."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_continuous",
+      "tenseName": "भविष्य निरंतर",
+      "tenseNameEn": "Future Continuous",
+      "description": "Ongoing action in the future",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "सोच रहा/रही होऊँगा/हूँगी",
+          "exampleSentence": "मैं सोच रहा/रही होऊँगा/हूँगी।",
+          "exampleSentenceEn": "I will be thinking."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "सोच रहे होगे",
+          "exampleSentence": "तुम सोच रहे होगे।",
+          "exampleSentenceEn": "You will be thinking."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "सोच रहा/रही होगा/होगी",
+          "exampleSentence": "वह/यह सोच रहा/रही होगा/होगी।",
+          "exampleSentenceEn": "He/She will be thinking."
+        },
+        {
+          "pronoun": "हम",
+          "form": "सोच रहे होंगे",
+          "exampleSentence": "हम सोच रहे होंगे।",
+          "exampleSentenceEn": "We will be thinking."
+        },
+        {
+          "pronoun": "आप",
+          "form": "सोच रहे होंगे",
+          "exampleSentence": "आप सोच रहे होंगे।",
+          "exampleSentenceEn": "You will be thinking."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "सोच रहे होंगे",
+          "exampleSentence": "वे/ये सोच रहे होंगे।",
+          "exampleSentenceEn": "They will be thinking."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_perfect",
+      "tenseName": "पूर्ण भविष्य",
+      "tenseNameEn": "Future Perfect",
+      "description": "Action completed before a future time",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "सोच चुका/चुकी होऊँगा/हूँगी",
+          "exampleSentence": "मैं सोच चुका/चुकी होऊँगा/हूँगी।",
+          "exampleSentenceEn": "I will have thought."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "सोच चुके होगे",
+          "exampleSentence": "तुम सोच चुके होगे।",
+          "exampleSentenceEn": "You will have thought."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "सोच चुका/चुकी होगा/होगी",
+          "exampleSentence": "वह/यह सोच चुका/चुकी होगा/होगी।",
+          "exampleSentenceEn": "He/She will have thought."
+        },
+        {
+          "pronoun": "हम",
+          "form": "सोच चुके होंगे",
+          "exampleSentence": "हम सोच चुके होंगे।",
+          "exampleSentenceEn": "We will have thought."
+        },
+        {
+          "pronoun": "आप",
+          "form": "सोच चुके होंगे",
+          "exampleSentence": "आप सोच चुके होंगे।",
+          "exampleSentenceEn": "You will have thought."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "सोच चुके होंगे",
+          "exampleSentence": "वे/ये सोच चुके होंगे।",
+          "exampleSentenceEn": "They will have thought."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_perfect_continuous",
+      "tenseName": "पूर्ण निरंतर भविष्य",
+      "tenseNameEn": "Future Perfect Continuous",
+      "description": "Action ongoing up to a future point",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "सोचता/सोचती आ रहा/रही होऊँगा/हूँगी",
+          "exampleSentence": "मैं सोचता/सोचती आ रहा/रही होऊँगा/हूँगी।",
+          "exampleSentenceEn": "I will have been thinking."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "सोचते आ रहे होगे",
+          "exampleSentence": "तुम सोचते आ रहे होगे।",
+          "exampleSentenceEn": "You will have been thinking."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "सोचता/सोचती आ रहा/रही होगा/होगी",
+          "exampleSentence": "वह/यह सोचता/सोचती आ रहा/रही होगा/होगी।",
+          "exampleSentenceEn": "He/She will have been thinking."
+        },
+        {
+          "pronoun": "हम",
+          "form": "सोचते आ रहे होंगे",
+          "exampleSentence": "हम सोचते आ रहे होंगे।",
+          "exampleSentenceEn": "We will have been thinking."
+        },
+        {
+          "pronoun": "आप",
+          "form": "सोचते आ रहे होंगे",
+          "exampleSentence": "आप सोचते आ रहे होंगे।",
+          "exampleSentenceEn": "You will have been thinking."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "सोचते आ रहे होंगे",
+          "exampleSentence": "वे/ये सोचते आ रहे होंगे।",
+          "exampleSentenceEn": "They will have been thinking."
+        }
+      ]
+    }
+  ]
+}

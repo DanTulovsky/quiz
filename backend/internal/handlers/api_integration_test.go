@@ -1789,7 +1789,7 @@ func (suite *APIIntegrationTestSuite) TestGetVerbConjugation_NonExistentLanguage
 
 func (suite *APIIntegrationTestSuite) TestVerbConjugationDataIntegrity() {
 	// Test that all languages have proper data structure
-	languages := []string{"it", "fr", "de", "ru", "ja", "zh"}
+	languages := []string{"it", "fr", "de", "ru", "ja", "zh", "hi"}
 
 	for _, lang := range languages {
 		cookie := suite.login()
@@ -1831,6 +1831,33 @@ func (suite *APIIntegrationTestSuite) TestVerbConjugationDataIntegrity() {
 			}
 		}
 	}
+}
+
+func (suite *APIIntegrationTestSuite) TestGetVerbConjugation_HindiWithSlug() {
+	cookie := suite.login()
+	req, _ := http.NewRequest("GET", "/v1/verb-conjugations/hi/aana", nil)
+	req.Header.Set("Cookie", cookie)
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusOK, w.Code)
+
+	var verb map[string]interface{}
+	err := json.Unmarshal(w.Body.Bytes(), &verb)
+	assert.NoError(suite.T(), err)
+
+	// Verify the response structure for Hindi verb using slug
+	assert.Equal(suite.T(), "आना", verb["infinitive"])
+	assert.Equal(suite.T(), "to come", verb["infinitiveEn"])
+	assert.Equal(suite.T(), "aana", verb["slug"])
+	assert.Equal(suite.T(), "hi", verb["language"])
+	assert.Equal(suite.T(), "Hindi", verb["languageName"])
+
+	// Verify tenses array
+	tenses, ok := verb["tenses"].([]interface{})
+	assert.True(suite.T(), ok, "Tenses should be an array")
+	assert.Greater(suite.T(), len(tenses), 0, "Should have at least one tense")
 }
 
 func TestAPIIntegrationTestSuite(t *testing.T) {

@@ -100,7 +100,16 @@ export default function MobileVerbConjugationPage() {
         setLoading(true);
         setError(null);
         try {
-          const data = await loadVerbConjugation(userLanguage, selectedVerb);
+          // Find the verb object to get its slug if available
+          const verbObj = availableVerbs.find(
+            v => v.infinitive === selectedVerb
+          );
+          const slug = verbObj?.slug;
+          const data = await loadVerbConjugation(
+            userLanguage,
+            selectedVerb,
+            slug
+          );
           setVerbData(data);
           // Reset accordion when verb changes
           setAccordionValue(null);
@@ -114,7 +123,13 @@ export default function MobileVerbConjugationPage() {
 
       loadVerbData();
     }
-  }, [selectedVerb, userLanguage, user?.preferred_language, languages]);
+  }, [
+    selectedVerb,
+    userLanguage,
+    user?.preferred_language,
+    languages,
+    availableVerbs,
+  ]);
 
   const getLanguageName = (code: string): string => {
     const languageInfo = languages?.find(lang => lang.code === code);

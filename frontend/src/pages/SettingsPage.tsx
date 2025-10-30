@@ -1298,6 +1298,27 @@ const SettingsPage: React.FC = () => {
                       data-testid='wotd-email-switch'
                     />
                   </Group>
+                  {wordOfDayEmailEnabled && (
+                    <Group align='end' gap='xs'>
+                      <Box style={{ flex: 1 }}>
+                        <Text size='sm' fw={500} mb='xs'>
+                          Test Email Settings
+                        </Text>
+                        <Text size='xs' c='dimmed'>
+                          Send a test email to verify your email settings are
+                          working correctly.
+                        </Text>
+                      </Box>
+                      <Button
+                        variant='outline'
+                        onClick={handleTestEmail}
+                        loading={testEmailMutation.isPending}
+                        data-testid='wotd-test-email-button'
+                      >
+                        Test Email
+                      </Button>
+                    </Group>
+                  )}
                 </Stack>
               </Card>
             </Stack>

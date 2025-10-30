@@ -42,6 +42,7 @@ type VerbConjugation struct {
 	LanguageName string  `json:"languageName"`
 	Infinitive   string  `json:"infinitive"`
 	InfinitiveEn string  `json:"infinitiveEn"`
+	Slug         string  `json:"slug,omitempty"` // Optional ASCII slug for filename when infinitive has Unicode combining characters
 	Category     string  `json:"category"`
 	Tenses       []Tense `json:"tenses"`
 }

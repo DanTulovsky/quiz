@@ -40,6 +40,8 @@ import { playTTSOnce } from '../hooks/useTTS';
 import { useTheme } from '../contexts/ThemeContext';
 import { fontScaleMap } from '../theme/theme';
 import { defaultVoiceForLanguage } from '../utils/tts';
+import { getTermForLanguage } from '../utils/phrasebook';
+import { ensureLanguagesLoaded } from '../utils/locale';
 import {
   loadCategoryData,
   getCategoryInfo,
@@ -71,28 +73,7 @@ const PhrasebookCategoryPage = () => {
     null
   );
 
-  // Helper function to get the term for the current language
-  const getTermForLanguage = (
-    word: PhrasebookWord,
-    languageCode: string
-  ): string => {
-    // Map language names to codes
-    const languageCodeMap: { [key: string]: string } = {
-      english: 'en',
-      italian: 'it',
-      french: 'fr',
-      german: 'de',
-      russian: 'ru',
-      japanese: 'ja',
-      chinese: 'zh',
-    };
-
-    const code =
-      languageCodeMap[languageCode.toLowerCase()] || languageCode.toLowerCase();
-
-    // Return the language-specific term if available, otherwise fall back to English
-    return word[code] || word.term || word.en || '';
-  };
+  // Translation (English) for display alongside the term
 
   // Helper function to get the translation (English) for display
   const getTranslation = (word: PhrasebookWord): string => {
@@ -112,7 +93,7 @@ const PhrasebookCategoryPage = () => {
         const wordsWithIndex = section.words.map((word, index) => ({
           ...word,
           originalIndex: index,
-          displayTerm: getTermForLanguage(word, languageCode),
+          displayTerm: getTermForLanguage(word as any, languageCode),
           translation: getTranslation(word),
         }));
 
@@ -212,7 +193,7 @@ const PhrasebookCategoryPage = () => {
     const text = processedSections
       .map(section =>
         section.words
-          .map(word => `${word.term}\t${word.translation}`)
+          .map(word => `${word.displayTerm}\t${word.translation}`)
           .join('\n')
       )
       .join('\n');
@@ -225,7 +206,7 @@ const PhrasebookCategoryPage = () => {
       ...processedSections.flatMap(section =>
         section.words.map(word =>
           [
-            `"${word.term}"`,
+            `"${word.displayTerm}"`,
             `"${word.translation}"`,
             `"${section.title}"`,
             `"${word.note || ''}"`,
@@ -270,6 +251,8 @@ const PhrasebookCategoryPage = () => {
       setError(null);
 
       try {
+        // Ensure runtime language map is loaded for normalization
+        await ensureLanguagesLoaded();
         // Load category info and navigation
         const [
           categoryInfoData,

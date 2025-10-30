@@ -1,0 +1,508 @@
+{
+  "language": "hi",
+  "languageName": "Hindi",
+  "infinitive": "जाना",
+  "infinitiveEn": "to go",
+  "slug": "jana",
+  "category": "movement",
+  "tenses": [
+    {
+      "tenseId": "present_simple",
+      "tenseName": "वर्तमान काल",
+      "tenseNameEn": "Present Simple",
+      "description": "Basic present forms",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "जाता/जाती हूँ",
+          "exampleSentence": "मैं स्कूल जाता/जाती हूँ।",
+          "exampleSentenceEn": "I go to school."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "जाते हो",
+          "exampleSentence": "तुम कहाँ जाते हो?",
+          "exampleSentenceEn": "Where do you go?"
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "जाता/जाती है",
+          "exampleSentence": "वह बाज़ार जाता/जाती है।",
+          "exampleSentenceEn": "He/She goes to the market."
+        },
+        {
+          "pronoun": "हम",
+          "form": "जाते हैं",
+          "exampleSentence": "हम एक साथ जाते हैं।",
+          "exampleSentenceEn": "We go together."
+        },
+        {
+          "pronoun": "आप",
+          "form": "जाते हैं",
+          "exampleSentence": "आप रोज़ जाते हैं।",
+          "exampleSentenceEn": "You go daily."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "जाते हैं",
+          "exampleSentence": "वे मन्दिर जाते हैं।",
+          "exampleSentenceEn": "They go to the temple."
+        }
+      ]
+    },
+    {
+      "tenseId": "present_continuous",
+      "tenseName": "वर्तमान निरंतर",
+      "tenseNameEn": "Present Continuous",
+      "description": "Action in progress now",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "जा रहा/रही हूँ",
+          "exampleSentence": "मैं जा रहा/रही हूँ।",
+          "exampleSentenceEn": "I am going."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "जा रहे हो",
+          "exampleSentence": "तुम जा रहे हो।",
+          "exampleSentenceEn": "You are going."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "जा रहा/रही है",
+          "exampleSentence": "वह/यह जा रहा/रही है।",
+          "exampleSentenceEn": "He/She is going."
+        },
+        {
+          "pronoun": "हम",
+          "form": "जा रहे हैं",
+          "exampleSentence": "हम जा रहे हैं।",
+          "exampleSentenceEn": "We are going."
+        },
+        {
+          "pronoun": "आप",
+          "form": "जा रहे हैं",
+          "exampleSentence": "आप जा रहे हैं।",
+          "exampleSentenceEn": "You are going."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "जा रहे हैं",
+          "exampleSentence": "वे/ये जा रहे हैं।",
+          "exampleSentenceEn": "They are going."
+        }
+      ]
+    },
+    {
+      "tenseId": "present_perfect",
+      "tenseName": "पूर्ण वर्तमान",
+      "tenseNameEn": "Present Perfect",
+      "description": "Recently completed action",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "जा चुका/चुकी हूँ",
+          "exampleSentence": "मैं जा चुका/चुकी हूँ।",
+          "exampleSentenceEn": "I have gone."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "जा चुके हो",
+          "exampleSentence": "तुम जा चुके हो।",
+          "exampleSentenceEn": "You have gone."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "जा चुका/चुकी है",
+          "exampleSentence": "वह/यह जा चुका/चुकी है।",
+          "exampleSentenceEn": "He/She has gone."
+        },
+        {
+          "pronoun": "हम",
+          "form": "जा चुके हैं",
+          "exampleSentence": "हम जा चुके हैं।",
+          "exampleSentenceEn": "We have gone."
+        },
+        {
+          "pronoun": "आप",
+          "form": "जा चुके हैं",
+          "exampleSentence": "आप जा चुके हैं।",
+          "exampleSentenceEn": "You have gone."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "जा चुके हैं",
+          "exampleSentence": "वे/ये जा चुके हैं।",
+          "exampleSentenceEn": "They have gone."
+        }
+      ]
+    },
+    {
+      "tenseId": "present_perfect_continuous",
+      "tenseName": "पूर्ण निरंतर वर्तमान",
+      "tenseNameEn": "Present Perfect Continuous",
+      "description": "Action started earlier and continuing now",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "जाता/जाती आ रहा/रही हूँ",
+          "exampleSentence": "मैं जाता/जाती आ रहा/रही हूँ।",
+          "exampleSentenceEn": "I have been going."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "जाते आ रहे हो",
+          "exampleSentence": "तुम जाते आ रहे हो।",
+          "exampleSentenceEn": "You have been going."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "जाता/जाती आ रहा/रही है",
+          "exampleSentence": "वह/यह जाता/जाती आ रहा/रही है।",
+          "exampleSentenceEn": "He/She has been going."
+        },
+        {
+          "pronoun": "हम",
+          "form": "जाते आ रहे हैं",
+          "exampleSentence": "हम जाते आ रहे हैं।",
+          "exampleSentenceEn": "We have been going."
+        },
+        {
+          "pronoun": "आप",
+          "form": "जाते आ रहे हैं",
+          "exampleSentence": "आप जाते आ रहे हैं।",
+          "exampleSentenceEn": "You have been going."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "जाते आ रहे हैं",
+          "exampleSentence": "वे/ये जाते आ रहे हैं।",
+          "exampleSentenceEn": "They have been going."
+        }
+      ]
+    },
+    {
+      "tenseId": "past_simple",
+      "tenseName": "साधारण भूतकाल",
+      "tenseNameEn": "Simple Past",
+      "description": "Completed action in the past",
+      "conjugations": [
+        { "pronoun": "मैं", "form": "गया/गई", "exampleSentence": "मैं गया/गई।", "exampleSentenceEn": "I went." },
+        { "pronoun": "तुम", "form": "गए", "exampleSentence": "तुम गए।", "exampleSentenceEn": "You went." },
+        { "pronoun": "वह/यह", "form": "गया/गई", "exampleSentence": "वह/यह गया/गई।", "exampleSentenceEn": "He/She went." },
+        { "pronoun": "हम", "form": "गए", "exampleSentence": "हम गए।", "exampleSentenceEn": "We went." },
+        { "pronoun": "आप", "form": "गए", "exampleSentence": "आप गए।", "exampleSentenceEn": "You went." },
+        { "pronoun": "वे/ये", "form": "गए", "exampleSentence": "वे/ये गए।", "exampleSentenceEn": "They went." }
+      ]
+    },
+    {
+      "tenseId": "past_continuous",
+      "tenseName": "अपूर्ण भूतकाल",
+      "tenseNameEn": "Past Continuous",
+      "description": "Ongoing past action",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "जा रहा/रही था/थी",
+          "exampleSentence": "मैं जा रहा/रही था/थी।",
+          "exampleSentenceEn": "I was going."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "जा रहे थे",
+          "exampleSentence": "तुम जा रहे थे।",
+          "exampleSentenceEn": "You were going."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "जा रहा/रही था/थी",
+          "exampleSentence": "वह/यह जा रहा/रही था/थी।",
+          "exampleSentenceEn": "He/She was going."
+        },
+        {
+          "pronoun": "हम",
+          "form": "जा रहे थे",
+          "exampleSentence": "हम जा रहे थे।",
+          "exampleSentenceEn": "We were going."
+        },
+        {
+          "pronoun": "आप",
+          "form": "जा रहे थे",
+          "exampleSentence": "आप जा रहे थे।",
+          "exampleSentenceEn": "You were going."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "जा रहे थे",
+          "exampleSentence": "वे/ये जा रहे थे।",
+          "exampleSentenceEn": "They were going."
+        }
+      ]
+    },
+    {
+      "tenseId": "past_perfect",
+      "tenseName": "पूर्ण भूतकाल",
+      "tenseNameEn": "Past Perfect",
+      "description": "Action completed before another past action",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "जा चुका/चुकी था/थी",
+          "exampleSentence": "मैं जा चुका/चुकी था/थी।",
+          "exampleSentenceEn": "I had gone."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "जा चुके थे",
+          "exampleSentence": "तुम जा चुके थे।",
+          "exampleSentenceEn": "You had gone."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "जा चुका/चुकी था/थी",
+          "exampleSentence": "वह/यह जा चुका/चुकी था/थी।",
+          "exampleSentenceEn": "He/She had gone."
+        },
+        {
+          "pronoun": "हम",
+          "form": "जा चुके थे",
+          "exampleSentence": "हम जा चुके थे।",
+          "exampleSentenceEn": "We had gone."
+        },
+        {
+          "pronoun": "आप",
+          "form": "जा चुके थे",
+          "exampleSentence": "आप जा चुके थे।",
+          "exampleSentenceEn": "You had gone."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "जा चुके थे",
+          "exampleSentence": "वे/ये जा चुके थे।",
+          "exampleSentenceEn": "They had gone."
+        }
+      ]
+    },
+    {
+      "tenseId": "past_perfect_continuous",
+      "tenseName": "पूर्ण निरंतर भूतकाल",
+      "tenseNameEn": "Past Perfect Continuous",
+      "description": "Action ongoing up to a point in the past",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "जाता/जाती आ रहा/रही था/थी",
+          "exampleSentence": "मैं जाता/जाती आ रहा/रही था/थी।",
+          "exampleSentenceEn": "I had been going."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "जाते आ रहे थे",
+          "exampleSentence": "तुम जाते आ रहे थे।",
+          "exampleSentenceEn": "You had been going."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "जाता/जाती आ रहा/रही था/थी",
+          "exampleSentence": "वह/यह जाता/जाती आ रहा/रही था/थी।",
+          "exampleSentenceEn": "He/She had been going."
+        },
+        {
+          "pronoun": "हम",
+          "form": "जाते आ रहे थे",
+          "exampleSentence": "हम जाते आ रहे थे।",
+          "exampleSentenceEn": "We had been going."
+        },
+        {
+          "pronoun": "आप",
+          "form": "जाते आ रहे थे",
+          "exampleSentence": "आप जाते आ रहे थे।",
+          "exampleSentenceEn": "You had been going."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "जाते आ रहे थे",
+          "exampleSentence": "वे/ये जाते आ रहे थे।",
+          "exampleSentenceEn": "They had been going."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_simple",
+      "tenseName": "साधारण भविष्य",
+      "tenseNameEn": "Simple Future",
+      "description": "Action that will occur",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "जाऊँगा/जाऊँगी",
+          "exampleSentence": "मैं जाऊँगा/जाऊँगी।",
+          "exampleSentenceEn": "I will go."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "जाओगे",
+          "exampleSentence": "तुम जाओगे।",
+          "exampleSentenceEn": "You will go."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "जाएगा/जाएगी",
+          "exampleSentence": "वह/यह जाएगा/जाएगी।",
+          "exampleSentenceEn": "He/She will go."
+        },
+        {
+          "pronoun": "हम",
+          "form": "जाएंगे",
+          "exampleSentence": "हम जाएंगे।",
+          "exampleSentenceEn": "We will go."
+        },
+        {
+          "pronoun": "आप",
+          "form": "जाएंगे",
+          "exampleSentence": "आप जाएंगे।",
+          "exampleSentenceEn": "You will go."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "जाएंगे",
+          "exampleSentence": "वे/ये जाएंगे।",
+          "exampleSentenceEn": "They will go."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_continuous",
+      "tenseName": "भविष्य निरंतर",
+      "tenseNameEn": "Future Continuous",
+      "description": "Ongoing action in the future",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "जा रहा/रही होऊँगा/हूँगी",
+          "exampleSentence": "मैं जा रहा/रही होऊँगा/हूँगी।",
+          "exampleSentenceEn": "I will be going."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "जा रहे होगे",
+          "exampleSentence": "तुम जा रहे होगे।",
+          "exampleSentenceEn": "You will be going."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "जा रहा/रही होगा/होगी",
+          "exampleSentence": "वह/यह जा रहा/रही होगा/होगी।",
+          "exampleSentenceEn": "He/She will be going."
+        },
+        {
+          "pronoun": "हम",
+          "form": "जा रहे होंगे",
+          "exampleSentence": "हम जा रहे होंगे।",
+          "exampleSentenceEn": "We will be going."
+        },
+        {
+          "pronoun": "आप",
+          "form": "जा रहे होंगे",
+          "exampleSentence": "आप जा रहे होंगे।",
+          "exampleSentenceEn": "You will be going."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "जा रहे होंगे",
+          "exampleSentence": "वे/ये जा रहे होंगे।",
+          "exampleSentenceEn": "They will be going."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_perfect",
+      "tenseName": "पूर्ण भविष्य",
+      "tenseNameEn": "Future Perfect",
+      "description": "Action completed before a future time",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "जा चुका/चुकी होऊँगा/हूँगी",
+          "exampleSentence": "मैं जा चुका/चुकी होऊँगा/हूँगी।",
+          "exampleSentenceEn": "I will have gone."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "जा चुके होगे",
+          "exampleSentence": "तुम जा चुके होगे।",
+          "exampleSentenceEn": "You will have gone."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "जा चुका/चुकी होगा/होगी",
+          "exampleSentence": "वह/यह जा चुका/चुकी होगा/होगी।",
+          "exampleSentenceEn": "He/She will have gone."
+        },
+        {
+          "pronoun": "हम",
+          "form": "जा चुके होंगे",
+          "exampleSentence": "हम जा चुके होंगे।",
+          "exampleSentenceEn": "We will have gone."
+        },
+        {
+          "pronoun": "आप",
+          "form": "जा चुके होंगे",
+          "exampleSentence": "आप जा चुके होंगे।",
+          "exampleSentenceEn": "You will have gone."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "जा चुके होंगे",
+          "exampleSentence": "वे/ये जा चुके होंगे।",
+          "exampleSentenceEn": "They will have gone."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_perfect_continuous",
+      "tenseName": "पूर्ण निरंतर भविष्य",
+      "tenseNameEn": "Future Perfect Continuous",
+      "description": "Action ongoing up to a future point",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "जाता/जाती आ रहा/रही होऊँगा/हूँगी",
+          "exampleSentence": "मैं जाता/जाती आ रहा/रही होऊँगा/हूँगी।",
+          "exampleSentenceEn": "I will have been going."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "जाते आ रहे होगे",
+          "exampleSentence": "तुम जाते आ रहे होगे।",
+          "exampleSentenceEn": "You will have been going."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "जाता/जाती आ रहा/रही होगा/होगी",
+          "exampleSentence": "वह/यह जाता/जाती आ रहा/रही होगा/होगी।",
+          "exampleSentenceEn": "He/She will have been going."
+        },
+        {
+          "pronoun": "हम",
+          "form": "जाते आ रहे होंगे",
+          "exampleSentence": "हम जाते आ रहे होंगे।",
+          "exampleSentenceEn": "We will have been going."
+        },
+        {
+          "pronoun": "आप",
+          "form": "जाते आ रहे होंगे",
+          "exampleSentence": "आप जाते आ रहे होंगे।",
+          "exampleSentenceEn": "You will have been going."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "जाते आ रहे होंगे",
+          "exampleSentence": "वे/ये जाते आ रहे होंगे।",
+          "exampleSentenceEn": "They will have been going."
+        }
+      ]
+    }
+  ]
+}

@@ -396,6 +396,16 @@ func (suite *SettingsIntegrationTestSuite) TestGetLanguages_Success() {
 		assert.NotEmpty(suite.T(), lang.Code)
 		assert.NotEmpty(suite.T(), lang.Name)
 	}
+
+	// Verify Hindi is present when configured
+	foundHi := false
+	for _, lang := range languages {
+		if lang.Code == "hi" || lang.Name == "hindi" {
+			foundHi = true
+			break
+		}
+	}
+	assert.True(suite.T(), foundHi, "expected Hindi (code 'hi') to be present in languages list")
 }
 
 func (suite *SettingsIntegrationTestSuite) TestClearAllStoriesEndpoint() {

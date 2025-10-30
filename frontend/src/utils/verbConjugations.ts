@@ -18,6 +18,7 @@ export interface Tense {
 export interface VerbConjugation {
   infinitive: string;
   infinitiveEn: string;
+  slug?: string;
   category: string;
   tenses: Tense[];
 }
@@ -61,11 +62,14 @@ export async function loadVerbConjugations(
  */
 export async function loadVerbConjugation(
   languageCode: string,
-  verbInfinitive: string
+  verbInfinitive: string,
+  slug?: string
 ): Promise<VerbConjugation | null> {
   try {
+    // Use slug if available (for Hindi), otherwise use infinitive
+    const identifier = slug || verbInfinitive;
     const response = await fetch(
-      `/v1/verb-conjugations/${languageCode}/${verbInfinitive}`
+      `/v1/verb-conjugations/${languageCode}/${identifier}`
     );
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);

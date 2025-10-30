@@ -1,0 +1,538 @@
+{
+  "language": "hi",
+  "languageName": "Hindi",
+  "infinitive": "देना",
+  "infinitiveEn": "to give",
+  "slug": "dena",
+  "category": "core",
+  "tenses": [
+    {
+      "tenseId": "present_simple",
+      "tenseName": "वर्तमान काल",
+      "tenseNameEn": "Present Simple",
+      "description": "Basic present forms",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "देता/देती हूँ",
+          "exampleSentence": "मैं किताब देता/देती हूँ।",
+          "exampleSentenceEn": "I give a book."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "देते हो",
+          "exampleSentence": "तुम किताब देते हो।",
+          "exampleSentenceEn": "You give a book."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "देता/देती है",
+          "exampleSentence": "वह/यह किताब देता/देती है।",
+          "exampleSentenceEn": "He/She give a book."
+        },
+        {
+          "pronoun": "हम",
+          "form": "देते हैं",
+          "exampleSentence": "हम किताब देते हैं।",
+          "exampleSentenceEn": "We give a book."
+        },
+        {
+          "pronoun": "आप",
+          "form": "देते हैं",
+          "exampleSentence": "आप किताब देते हैं।",
+          "exampleSentenceEn": "You give a book."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "देते हैं",
+          "exampleSentence": "वे/ये किताब देते हैं।",
+          "exampleSentenceEn": "They give a book."
+        }
+      ]
+    },
+    {
+      "tenseId": "present_continuous",
+      "tenseName": "वर्तमान निरंतर",
+      "tenseNameEn": "Present Continuous",
+      "description": "Action in progress now",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "दे रहा/रही हूँ",
+          "exampleSentence": "मैं किताब दे रहा/रही हूँ।",
+          "exampleSentenceEn": "I am giving a book."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "दे रहे हो",
+          "exampleSentence": "तुम किताब दे रहा/रही हो।",
+          "exampleSentenceEn": "You are giving a book."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "दे रहा/रही है",
+          "exampleSentence": "वह/यह किताब दे रहा/रही है।",
+          "exampleSentenceEn": "He/She is giving a book."
+        },
+        {
+          "pronoun": "हम",
+          "form": "दे रहे हैं",
+          "exampleSentence": "हम किताब दे रहे हैं।",
+          "exampleSentenceEn": "We are giving a book."
+        },
+        {
+          "pronoun": "आप",
+          "form": "दे रहे हैं",
+          "exampleSentence": "आप किताब दे रहे हैं।",
+          "exampleSentenceEn": "You are giving a book."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "दे रहे हैं",
+          "exampleSentence": "वे/ये किताब दे रहे हैं।",
+          "exampleSentenceEn": "They are giving a book."
+        }
+      ]
+    },
+    {
+      "tenseId": "present_perfect",
+      "tenseName": "पूर्ण वर्तमान",
+      "tenseNameEn": "Present Perfect",
+      "description": "Recently completed action",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "दे चुका/चुकी हूँ",
+          "exampleSentence": "मैं किताब दे चुका/चुकी हूँ।",
+          "exampleSentenceEn": "I have given a book."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "दे चुके हो",
+          "exampleSentence": "तुम किताब दे चुके हो।",
+          "exampleSentenceEn": "You have given a book."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "दे चुका/चुकी है",
+          "exampleSentence": "वह/यह किताब दे चुका/चुकी है।",
+          "exampleSentenceEn": "He/She has given a book."
+        },
+        {
+          "pronoun": "हम",
+          "form": "दे चुके हैं",
+          "exampleSentence": "हम किताब दे चुके हैं।",
+          "exampleSentenceEn": "We have given a book."
+        },
+        {
+          "pronoun": "आप",
+          "form": "दे चुके हैं",
+          "exampleSentence": "आप किताब दे चुके हैं।",
+          "exampleSentenceEn": "You have given a book."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "दे चुके हैं",
+          "exampleSentence": "वे/ये किताब दे चुके हैं।",
+          "exampleSentenceEn": "They have given a book."
+        }
+      ]
+    },
+    {
+      "tenseId": "present_perfect_continuous",
+      "tenseName": "पूर्ण निरंतर वर्तमान",
+      "tenseNameEn": "Present Perfect Continuous",
+      "description": "Action started earlier and continuing now",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "देता/देती आ रहा/रही हूँ",
+          "exampleSentence": "मैं नियमित रूप से किताबें देता/देती आ रहा/रही हूँ।",
+          "exampleSentenceEn": "I have been giving books regularly."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "देते आ रहे हो",
+          "exampleSentence": "तुम सुबह से मदद देते आ रहे हो।",
+          "exampleSentenceEn": "You have been giving help since morning."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "देता/देती आ रहा/रही है",
+          "exampleSentence": "वह/यह दान देता/देती आ रहा/रही है।",
+          "exampleSentenceEn": "He/She has been giving donations."
+        },
+        {
+          "pronoun": "हम",
+          "form": "देते आ रहे हैं",
+          "exampleSentence": "हम समय देते आ रहे हैं।",
+          "exampleSentenceEn": "We have been giving time."
+        },
+        {
+          "pronoun": "आप",
+          "form": "देते आ रहे हैं",
+          "exampleSentence": "आप सहयोग देते आ रहे हैं।",
+          "exampleSentenceEn": "You have been giving support."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "देते आ रहे हैं",
+          "exampleSentence": "वे/ये जानकारी देते आ रहे हैं।",
+          "exampleSentenceEn": "They have been giving information."
+        }
+      ]
+    },
+    {
+      "tenseId": "past_simple",
+      "tenseName": "साधारण भूतकाल",
+      "tenseNameEn": "Simple Past",
+      "description": "Completed action in the past",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "दिया/दी/दिए",
+          "exampleSentence": "मैंने किताब दी।",
+          "exampleSentenceEn": "I gave a book."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "दिया/दी/दिए",
+          "exampleSentence": "तुमने किताब दी।",
+          "exampleSentenceEn": "You gave a book."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "दिया/दी/दिए",
+          "exampleSentence": "उसने किताब दी।",
+          "exampleSentenceEn": "He/She gave a book."
+        },
+        {
+          "pronoun": "हम",
+          "form": "दिया/दी/दिए",
+          "exampleSentence": "हमने किताब दी।",
+          "exampleSentenceEn": "We gave a book."
+        },
+        {
+          "pronoun": "आप",
+          "form": "दिया/दी/दिए",
+          "exampleSentence": "आपने किताब दी।",
+          "exampleSentenceEn": "You gave a book."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "दिया/दी/दिए",
+          "exampleSentence": "उन्होंने किताब दी।",
+          "exampleSentenceEn": "They gave a book."
+        }
+      ]
+    },
+    {
+      "tenseId": "past_continuous",
+      "tenseName": "अपूर्ण भूतकाल",
+      "tenseNameEn": "Past Continuous",
+      "description": "Ongoing past action",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "दे रहा/रही था/थी",
+          "exampleSentence": "मैं किताब दे रहा/रही था/थी।",
+          "exampleSentenceEn": "I was giving a book."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "दे रहे थे",
+          "exampleSentence": "तुम किताब दे रहे थे।",
+          "exampleSentenceEn": "You were giving a book."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "दे रहा/रही था/थी",
+          "exampleSentence": "वह/यह किताब दे रहा/रही था/थी।",
+          "exampleSentenceEn": "He/She was giving a book."
+        },
+        {
+          "pronoun": "हम",
+          "form": "दे रहे थे",
+          "exampleSentence": "हम किताब दे रहे थे।",
+          "exampleSentenceEn": "We were giving a book."
+        },
+        {
+          "pronoun": "आप",
+          "form": "दे रहे थे",
+          "exampleSentence": "आप किताब दे रहे थे।",
+          "exampleSentenceEn": "You were giving a book."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "दे रहे थे",
+          "exampleSentence": "वे/ये किताब दे रहे थे।",
+          "exampleSentenceEn": "They were giving a book."
+        }
+      ]
+    },
+    {
+      "tenseId": "past_perfect",
+      "tenseName": "पूर्ण भूतकाल",
+      "tenseNameEn": "Past Perfect",
+      "description": "Action completed before another past action",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "दे चुका/चुकी था/थी",
+          "exampleSentence": "मैं किताब दे चुका/चुकी था/थी।",
+          "exampleSentenceEn": "I had given a book."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "दे चुके थे",
+          "exampleSentence": "तुम किताब दे चुके थे।",
+          "exampleSentenceEn": "You had given a book."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "दे चुका/चुकी था/थी",
+          "exampleSentence": "वह/यह किताब दे चुका/चुकी था/थी।",
+          "exampleSentenceEn": "He/She had given a book."
+        },
+        {
+          "pronoun": "हम",
+          "form": "दे चुके थे",
+          "exampleSentence": "हम किताब दे चुके थे।",
+          "exampleSentenceEn": "We had given a book."
+        },
+        {
+          "pronoun": "आप",
+          "form": "दे चुके थे",
+          "exampleSentence": "आप किताब दे चुके थे।",
+          "exampleSentenceEn": "You had given a book."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "दे चुके थे",
+          "exampleSentence": "वे/ये किताब दे चुके थे।",
+          "exampleSentenceEn": "They had given a book."
+        }
+      ]
+    },
+    {
+      "tenseId": "past_perfect_continuous",
+      "tenseName": "पूर्ण निरंतर भूतकाल",
+      "tenseNameEn": "Past Perfect Continuous",
+      "description": "Action ongoing up to a point in the past",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "देता/देती आ रहा/रही था/थी",
+          "exampleSentence": "मैं लंबे समय से किताबें देता/देती आ रहा/रही था/थी।",
+          "exampleSentenceEn": "I had been giving books for a long time."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "देते आ रहे थे",
+          "exampleSentence": "तुम सुबह से देते आ रहे थे।",
+          "exampleSentenceEn": "You had been giving since morning."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "देता/देती आ रहा/रही था/थी",
+          "exampleSentence": "वह/यह लगातार देता/देती आ रहा/रही था/थी।",
+          "exampleSentenceEn": "He/She had been giving continuously."
+        },
+        {
+          "pronoun": "हम",
+          "form": "देते आ रहे थे",
+          "exampleSentence": "हम समय देते आ रहे थे।",
+          "exampleSentenceEn": "We had been giving time."
+        },
+        {
+          "pronoun": "आप",
+          "form": "देते आ रहे थे",
+          "exampleSentence": "आप मदद देते आ रहे थे।",
+          "exampleSentenceEn": "You had been giving help."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "देते आ रहे थे",
+          "exampleSentence": "वे/ये दान देते आ रहे थे।",
+          "exampleSentenceEn": "They had been giving donations."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_simple",
+      "tenseName": "साधारण भविष्य",
+      "tenseNameEn": "Simple Future",
+      "description": "Action that will occur",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "दूँगा/दूँगी",
+          "exampleSentence": "मैं किताब दूँगा/दूँगी।",
+          "exampleSentenceEn": "I will give a book."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "दोगे",
+          "exampleSentence": "तुम किताब दोगे।",
+          "exampleSentenceEn": "You will give a book."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "देगा/देगी",
+          "exampleSentence": "वह/यह किताब देगा/देगी।",
+          "exampleSentenceEn": "He/She will give a book."
+        },
+        {
+          "pronoun": "हम",
+          "form": "देंगे",
+          "exampleSentence": "हम किताब देंगे।",
+          "exampleSentenceEn": "We will give a book."
+        },
+        {
+          "pronoun": "आप",
+          "form": "देंगे",
+          "exampleSentence": "आप किताब देंगे।",
+          "exampleSentenceEn": "You will give a book."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "देंगे",
+          "exampleSentence": "वे/ये किताब देंगे।",
+          "exampleSentenceEn": "They will give a book."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_continuous",
+      "tenseName": "भविष्य निरंतर",
+      "tenseNameEn": "Future Continuous",
+      "description": "Ongoing action in the future",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "दे रहा/रही होऊँगा/हूँगी",
+          "exampleSentence": "मैं किताब दे रहा/रही होऊँगा/हूँगी।",
+          "exampleSentenceEn": "I will be giving a book."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "दे रहे होगे",
+          "exampleSentence": "तुम किताब दे रहे होगे।",
+          "exampleSentenceEn": "You will be giving a book."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "दे रहा/रही होगा/होगी",
+          "exampleSentence": "वह/यह किताब दे रहा/रही होगा/होगी।",
+          "exampleSentenceEn": "He/She will be giving a book."
+        },
+        {
+          "pronoun": "हम",
+          "form": "दे रहे होंगे",
+          "exampleSentence": "हम किताब दे रहे होंगे।",
+          "exampleSentenceEn": "We will be giving a book."
+        },
+        {
+          "pronoun": "आप",
+          "form": "दे रहे होंगे",
+          "exampleSentence": "आप किताब दे रहे होंगे।",
+          "exampleSentenceEn": "You will be giving a book."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "दे रहे होंगे",
+          "exampleSentence": "वे/ये किताब दे रहे होंगे।",
+          "exampleSentenceEn": "They will be giving a book."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_perfect",
+      "tenseName": "पूर्ण भविष्य",
+      "tenseNameEn": "Future Perfect",
+      "description": "Action completed before a future time",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "दे चुका/चुकी होऊँगा/हूँगी",
+          "exampleSentence": "मैं किताब दे चुका/चुकी होऊँगा/हूँगी।",
+          "exampleSentenceEn": "I will have given a book."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "दे चुके होगे",
+          "exampleSentence": "तुम किताब दे चुके होगे।",
+          "exampleSentenceEn": "You will have given a book."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "दे चुका/चुकी होगा/होगी",
+          "exampleSentence": "वह/यह किताब दे चुका/चुकी होगा/होगी।",
+          "exampleSentenceEn": "He/She will have given a book."
+        },
+        {
+          "pronoun": "हम",
+          "form": "दे चुके होंगे",
+          "exampleSentence": "हम किताब दे चुके होंगे।",
+          "exampleSentenceEn": "We will have given a book."
+        },
+        {
+          "pronoun": "आप",
+          "form": "दे चुके होंगे",
+          "exampleSentence": "आप किताब दे चुके होंगे।",
+          "exampleSentenceEn": "You will have given a book."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "दे चुके होंगे",
+          "exampleSentence": "वे/ये किताब दे चुके होंगे।",
+          "exampleSentenceEn": "They will have given a book."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_perfect_continuous",
+      "tenseName": "पूर्ण निरंतर भविष्य",
+      "tenseNameEn": "Future Perfect Continuous",
+      "description": "Action ongoing up to a future point",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "देता/देती आ रहा/रही होऊँगा/हूँगी",
+          "exampleSentence": "मैं लंबे समय से देता/देती आ रहा/रही होऊँगा/हूँगी।",
+          "exampleSentenceEn": "I will have been giving for a long time."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "देते आ रहे होगे",
+          "exampleSentence": "तुम सप्ताहों से देते आ रहे होगे।",
+          "exampleSentenceEn": "You will have been giving for weeks."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "देता/देती आ रहा/रही होगा/होगी",
+          "exampleSentence": "वह/यह देता/देती आ रहा/रही होगा/होगी।",
+          "exampleSentenceEn": "He/She will have been giving."
+        },
+        {
+          "pronoun": "हम",
+          "form": "देते आ रहे होंगे",
+          "exampleSentence": "हम वर्षों से देते आ रहे होंगे।",
+          "exampleSentenceEn": "We will have been giving for years."
+        },
+        {
+          "pronoun": "आप",
+          "form": "देते आ रहे होंगे",
+          "exampleSentence": "आप लगातार देते आ रहे होंगे।",
+          "exampleSentenceEn": "You will have been giving continuously."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "देते आ रहे होंगे",
+          "exampleSentence": "वे/ये नियमित रूप से देते आ रहे होंगे।",
+          "exampleSentenceEn": "They will have been giving regularly."
+        }
+      ]
+    }
+  ]
+}

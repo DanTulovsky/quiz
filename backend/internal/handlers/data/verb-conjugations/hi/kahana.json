@@ -1,0 +1,538 @@
+{
+  "language": "hi",
+  "languageName": "Hindi",
+  "infinitive": "कहना",
+  "infinitiveEn": "to say",
+  "slug": "kahana",
+  "category": "communication",
+  "tenses": [
+    {
+      "tenseId": "present_simple",
+      "tenseName": "वर्तमान काल",
+      "tenseNameEn": "Present Simple",
+      "description": "Basic present forms",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "कहता/कहती हूँ",
+          "exampleSentence": "मैं कहता/कहती हूँ।",
+          "exampleSentenceEn": "I say."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "कहते हो",
+          "exampleSentence": "तुम कहते हो।",
+          "exampleSentenceEn": "You say."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "कहता/कहती है",
+          "exampleSentence": "वह/यह कहता/कहती है।",
+          "exampleSentenceEn": "He/She says."
+        },
+        {
+          "pronoun": "हम",
+          "form": "कहते हैं",
+          "exampleSentence": "हम कहते हैं।",
+          "exampleSentenceEn": "We say."
+        },
+        {
+          "pronoun": "आप",
+          "form": "कहते हैं",
+          "exampleSentence": "आप कहते हैं।",
+          "exampleSentenceEn": "You say."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "कहते हैं",
+          "exampleSentence": "वे/ये कहते हैं।",
+          "exampleSentenceEn": "They say."
+        }
+      ]
+    },
+    {
+      "tenseId": "present_continuous",
+      "tenseName": "वर्तमान निरंतर",
+      "tenseNameEn": "Present Continuous",
+      "description": "Action in progress now",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "कह रहा/रही हूँ",
+          "exampleSentence": "मैं कह रहा/रही हूँ।",
+          "exampleSentenceEn": "I am saying."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "कह रहे हो",
+          "exampleSentence": "तुम कह रहा/रही हो।",
+          "exampleSentenceEn": "You are saying."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "कह रहा/रही है",
+          "exampleSentence": "वह/यह कह रहा/रही है।",
+          "exampleSentenceEn": "He/She is saying."
+        },
+        {
+          "pronoun": "हम",
+          "form": "कह रहे हैं",
+          "exampleSentence": "हम कह रहे हैं।",
+          "exampleSentenceEn": "We are saying."
+        },
+        {
+          "pronoun": "आप",
+          "form": "कह रहे हैं",
+          "exampleSentence": "आप कह रहे हैं।",
+          "exampleSentenceEn": "You are saying."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "कह रहे हैं",
+          "exampleSentence": "वे/ये कह रहे हैं।",
+          "exampleSentenceEn": "They are saying."
+        }
+      ]
+    },
+    {
+      "tenseId": "present_perfect",
+      "tenseName": "पूर्ण वर्तमान",
+      "tenseNameEn": "Present Perfect",
+      "description": "Recently completed action",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "कह चुका/चुकी हूँ",
+          "exampleSentence": "मैं कह चुका/चुकी हूँ।",
+          "exampleSentenceEn": "I have said."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "कह चुके हो",
+          "exampleSentence": "तुम कह चुके हो।",
+          "exampleSentenceEn": "You have said."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "कह चुका/चुकी है",
+          "exampleSentence": "वह/यह कह चुका/चुकी है।",
+          "exampleSentenceEn": "He/She has said."
+        },
+        {
+          "pronoun": "हम",
+          "form": "कह चुके हैं",
+          "exampleSentence": "हम कह चुके हैं।",
+          "exampleSentenceEn": "We have said."
+        },
+        {
+          "pronoun": "आप",
+          "form": "कह चुके हैं",
+          "exampleSentence": "आप कह चुके हैं।",
+          "exampleSentenceEn": "You have said."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "कह चुके हैं",
+          "exampleSentence": "वे/ये कह चुके हैं।",
+          "exampleSentenceEn": "They have said."
+        }
+      ]
+    },
+    {
+      "tenseId": "present_perfect_continuous",
+      "tenseName": "पूर्ण निरंतर वर्तमान",
+      "tenseNameEn": "Present Perfect Continuous",
+      "description": "Action started earlier and continuing now",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "कहता/कहती आ रहा/रही हूँ",
+          "exampleSentence": "मैं कह रहा/रही हूँ।",
+          "exampleSentenceEn": "I am saying."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "कहते आ रहे हो",
+          "exampleSentence": "तुम कह रहा/रही हो।",
+          "exampleSentenceEn": "You are saying."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "कहता/कहती आ रहा/रही है",
+          "exampleSentence": "वह/यह कह रहा/रही है।",
+          "exampleSentenceEn": "He/She is saying."
+        },
+        {
+          "pronoun": "हम",
+          "form": "कहते आ रहे हैं",
+          "exampleSentence": "हम कह रहा/रही हैं।",
+          "exampleSentenceEn": "We are saying."
+        },
+        {
+          "pronoun": "आप",
+          "form": "कहते आ रहे हैं",
+          "exampleSentence": "आप कह रहा/रही हैं।",
+          "exampleSentenceEn": "You are saying."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "कहते आ रहे हैं",
+          "exampleSentence": "वे/ये कह रहा/रही हैं।",
+          "exampleSentenceEn": "They are saying."
+        }
+      ]
+    },
+    {
+      "tenseId": "past_simple",
+      "tenseName": "साधारण भूतकाल",
+      "tenseNameEn": "Simple Past",
+      "description": "Completed action in the past",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "कहा",
+          "exampleSentence": "मैंने कहा।",
+          "exampleSentenceEn": "I said."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "कहा",
+          "exampleSentence": "तुमने कहा।",
+          "exampleSentenceEn": "You said."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "कहा",
+          "exampleSentence": "उसने कहा।",
+          "exampleSentenceEn": "He/She said."
+        },
+        {
+          "pronoun": "हम",
+          "form": "कहा",
+          "exampleSentence": "हमने कहा।",
+          "exampleSentenceEn": "We said."
+        },
+        {
+          "pronoun": "आप",
+          "form": "कहा",
+          "exampleSentence": "आपने कहा।",
+          "exampleSentenceEn": "You said."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "कहा",
+          "exampleSentence": "उन्होंने कहा।",
+          "exampleSentenceEn": "They said."
+        }
+      ]
+    },
+    {
+      "tenseId": "past_continuous",
+      "tenseName": "अपूर्ण भूतकाल",
+      "tenseNameEn": "Past Continuous",
+      "description": "Ongoing past action",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "कह रहा/रही था/थी",
+          "exampleSentence": "मैं कह रहा/रही था/थी।",
+          "exampleSentenceEn": "I was saying."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "कह रहे थे",
+          "exampleSentence": "तुम कह रहे थे।",
+          "exampleSentenceEn": "You were saying."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "कह रहा/रही था/थी",
+          "exampleSentence": "वह/यह कह रहा/रही था/थी।",
+          "exampleSentenceEn": "He/She was saying."
+        },
+        {
+          "pronoun": "हम",
+          "form": "कह रहे थे",
+          "exampleSentence": "हम कह रहे थे।",
+          "exampleSentenceEn": "We were saying."
+        },
+        {
+          "pronoun": "आप",
+          "form": "कह रहे थे",
+          "exampleSentence": "आप कह रहे थे।",
+          "exampleSentenceEn": "You were saying."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "कह रहे थे",
+          "exampleSentence": "वे/ये कह रहे थे।",
+          "exampleSentenceEn": "They were saying."
+        }
+      ]
+    },
+    {
+      "tenseId": "past_perfect",
+      "tenseName": "पूर्ण भूतकाल",
+      "tenseNameEn": "Past Perfect",
+      "description": "Action completed before another past action",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "कह चुका/चुकी था/थी",
+          "exampleSentence": "मैं कह चुका/चुकी था/थी।",
+          "exampleSentenceEn": "I had said."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "कह चुके थे",
+          "exampleSentence": "तुम कह चुके थे।",
+          "exampleSentenceEn": "You had said."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "कह चुका/चुकी था/थी",
+          "exampleSentence": "वह/यह कह चुका/चुकी था/थी।",
+          "exampleSentenceEn": "He/She had said."
+        },
+        {
+          "pronoun": "हम",
+          "form": "कह चुके थे",
+          "exampleSentence": "हम कह चुके थे।",
+          "exampleSentenceEn": "We had said."
+        },
+        {
+          "pronoun": "आप",
+          "form": "कह चुके थे",
+          "exampleSentence": "आप कह चुके थे।",
+          "exampleSentenceEn": "You had said."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "कह चुके थे",
+          "exampleSentence": "वे/ये कह चुके थे।",
+          "exampleSentenceEn": "They had said."
+        }
+      ]
+    },
+    {
+      "tenseId": "past_perfect_continuous",
+      "tenseName": "पूर्ण निरंतर भूतकाल",
+      "tenseNameEn": "Past Perfect Continuous",
+      "description": "Action ongoing up to a point in the past",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "कहता/कहती आ रहा/रही था/थी",
+          "exampleSentence": "मैं कहता/कहती आ रहा/रही था/थी।",
+          "exampleSentenceEn": "I had been saying."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "कहते आ रहे थे",
+          "exampleSentence": "तुम सुबह से कहते आ रहे थे।",
+          "exampleSentenceEn": "You had been saying since morning."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "कहता/कहती आ रहा/रही था/थी",
+          "exampleSentence": "वह/यह लगातार कहता/कहती आ रहा/रही था/थी।",
+          "exampleSentenceEn": "He/She had been saying continuously."
+        },
+        {
+          "pronoun": "हम",
+          "form": "कहते आ रहे थे",
+          "exampleSentence": "हम कई दिनों से कहते आ रहे थे।",
+          "exampleSentenceEn": "We had been saying for many days."
+        },
+        {
+          "pronoun": "आप",
+          "form": "कहते आ रहे थे",
+          "exampleSentence": "आप कहते आ रहे थे।",
+          "exampleSentenceEn": "You had been saying."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "कहते आ रहे थे",
+          "exampleSentence": "वे/ये लंबे समय से कहते आ रहे थे।",
+          "exampleSentenceEn": "They had been saying for a long time."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_simple",
+      "tenseName": "साधारण भविष्य",
+      "tenseNameEn": "Simple Future",
+      "description": "Action that will occur",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "कहूँगा/कहूँगी",
+          "exampleSentence": "मैं कहूँगा/कहूँगी।",
+          "exampleSentenceEn": "I will say."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "कहोगे",
+          "exampleSentence": "तुम कहोगे।",
+          "exampleSentenceEn": "You will say."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "कहेगा/कहेगी",
+          "exampleSentence": "वह/यह कहेगा/कहेगी।",
+          "exampleSentenceEn": "He/She will say."
+        },
+        {
+          "pronoun": "हम",
+          "form": "कहेंगे",
+          "exampleSentence": "हम कहेंगे।",
+          "exampleSentenceEn": "We will say."
+        },
+        {
+          "pronoun": "आप",
+          "form": "कहेंगे",
+          "exampleSentence": "आप कहेंगे।",
+          "exampleSentenceEn": "You will say."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "कहेंगे",
+          "exampleSentence": "वे/ये कहेंगे।",
+          "exampleSentenceEn": "They will say."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_continuous",
+      "tenseName": "भविष्य निरंतर",
+      "tenseNameEn": "Future Continuous",
+      "description": "Ongoing action in the future",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "कह रहा/रही होऊँगा/हूँगी",
+          "exampleSentence": "मैं कह रहा/रही होऊँगा/हूँगी।",
+          "exampleSentenceEn": "I will be saying."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "कह रहे होगे",
+          "exampleSentence": "तुम कह रहे होगे।",
+          "exampleSentenceEn": "You will be saying."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "कह रहा/रही होगा/होगी",
+          "exampleSentence": "वह/यह कह रहा/रही होगा/होगी।",
+          "exampleSentenceEn": "He/She will be saying."
+        },
+        {
+          "pronoun": "हम",
+          "form": "कह रहे होंगे",
+          "exampleSentence": "हम कह रहे होंगे।",
+          "exampleSentenceEn": "We will be saying."
+        },
+        {
+          "pronoun": "आप",
+          "form": "कह रहे होंगे",
+          "exampleSentence": "आप कह रहे होंगे।",
+          "exampleSentenceEn": "You will be saying."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "कह रहे होंगे",
+          "exampleSentence": "वे/ये कह रहे होंगे।",
+          "exampleSentenceEn": "They will be saying."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_perfect",
+      "tenseName": "पूर्ण भविष्य",
+      "tenseNameEn": "Future Perfect",
+      "description": "Action completed before a future time",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "कह चुका/चुकी होऊँगा/हूँगी",
+          "exampleSentence": "मैं कह चुका/चुकी होऊँगा/हूँगी।",
+          "exampleSentenceEn": "I will have said."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "कह चुके होगे",
+          "exampleSentence": "तुम कह चुके होगे।",
+          "exampleSentenceEn": "You will have said."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "कह चुका/चुकी होगा/होगी",
+          "exampleSentence": "वह/यह कह चुका/चुकी होगा/होगी।",
+          "exampleSentenceEn": "He/She will have said."
+        },
+        {
+          "pronoun": "हम",
+          "form": "कह चुके होंगे",
+          "exampleSentence": "हम कह चुके होंगे।",
+          "exampleSentenceEn": "We will have said."
+        },
+        {
+          "pronoun": "आप",
+          "form": "कह चुके होंगे",
+          "exampleSentence": "आप कह चुके होंगे।",
+          "exampleSentenceEn": "You will have said."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "कह चुके होंगे",
+          "exampleSentence": "वे/ये कह चुके होंगे।",
+          "exampleSentenceEn": "They will have said."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_perfect_continuous",
+      "tenseName": "पूर्ण निरंतर भविष्य",
+      "tenseNameEn": "Future Perfect Continuous",
+      "description": "Action ongoing up to a future point",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "कहता/कहती आ रहा/रही होऊँगा/हूँगी",
+          "exampleSentence": "मैं कहता/कहती आ रहा/रही होऊँगा/हूँगी।",
+          "exampleSentenceEn": "I will have been saying."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "कहते आ रहे होगे",
+          "exampleSentence": "तुम कहते आ रहे होगे।",
+          "exampleSentenceEn": "You will have been saying."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "कहता/कहती आ रहा/रही होगा/होगी",
+          "exampleSentence": "वह/यह कहता/कहती आ रहा/रही होगा/होगी।",
+          "exampleSentenceEn": "He/She will have been saying."
+        },
+        {
+          "pronoun": "हम",
+          "form": "कहते आ रहे होंगे",
+          "exampleSentence": "हम कहते आ रहे होंगे।",
+          "exampleSentenceEn": "We will have been saying."
+        },
+        {
+          "pronoun": "आप",
+          "form": "कहते आ रहे होंगे",
+          "exampleSentence": "आप कहते आ रहे होंगे।",
+          "exampleSentenceEn": "You will have been saying."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "कहते आ रहे होंगे",
+          "exampleSentence": "वे/ये कहते आ रहे होंगे।",
+          "exampleSentenceEn": "They will have been saying."
+        }
+      ]
+    }
+  ]
+}

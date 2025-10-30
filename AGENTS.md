@@ -45,7 +45,7 @@
 ## Tests
 
 - To run backend and worker golang unit tests: task test-go-unit
-- To run backend and worker golang integration tests: task test-go-integration
+- To run backend and worker golang integration tests: task test-go-integration (DO NOT run go test -tage=integration ... it won't work!)
 - To run backend and worker golang tests (both unit and integration): task test-go
 - To run frontend unit tests: task test-frontend
 - To run end-to-end (e2e) tests: task test-e2e

@@ -33,6 +33,8 @@ import { fontScaleMap } from '../../theme/theme';
 import { useAuth } from '../../hooks/useAuth';
 import { playTTSOnce } from '../../hooks/useTTS';
 import { defaultVoiceForLanguage } from '../../utils/tts';
+import { getTermForLanguage } from '../../utils/phrasebook';
+import { ensureLanguagesLoaded } from '../../utils/locale';
 import {
   loadCategoryData,
   getCategoryInfo,
@@ -73,28 +75,7 @@ const MobilePhrasebookCategoryPage = () => {
     null
   );
 
-  // Helper function to get the term for the current language
-  const getTermForLanguage = (
-    word: PhrasebookWord,
-    languageCode: string
-  ): string => {
-    // Map language names to codes
-    const languageCodeMap: { [key: string]: string } = {
-      english: 'en',
-      italian: 'it',
-      french: 'fr',
-      german: 'de',
-      russian: 'ru',
-      japanese: 'ja',
-      chinese: 'zh',
-    };
-
-    const code =
-      languageCodeMap[languageCode.toLowerCase()] || languageCode.toLowerCase();
-
-    // Return the language-specific term if available, otherwise fall back to English
-    return word[code] || word.term || word.en || '';
-  };
+  // Term resolution is handled by shared helper
 
   // Helper function to get the translation (English) for display
   const getTranslation = (word: PhrasebookWord): string => {
@@ -123,7 +104,7 @@ const MobilePhrasebookCategoryPage = () => {
         const wordsWithData = section.words.map((word, index) => ({
           ...word,
           originalIndex: index,
-          displayTerm: getTermForLanguage(word, languageCode),
+          displayTerm: getTermForLanguage(word as any, languageCode),
           translation: getTranslation(word),
         }));
 
@@ -196,6 +177,8 @@ const MobilePhrasebookCategoryPage = () => {
       setError(null);
 
       try {
+        // Ensure runtime language map is loaded for normalization
+        await ensureLanguagesLoaded();
         // Load category info and navigation
         const [
           categoryInfoData,

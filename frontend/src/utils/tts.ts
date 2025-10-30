@@ -14,6 +14,8 @@ export function languageToLocale(
 
   // Otherwise, it's a language name string, return the corresponding locale
   switch ((languageName || '').toLowerCase()) {
+    case 'hindi':
+      return 'hi-IN';
     case 'italian':
       return 'it-IT';
     case 'french':
@@ -47,6 +49,8 @@ export function defaultVoiceForLanguage(
 
   // Otherwise, it's a language name string, return the corresponding voice
   switch ((languageName || '').toLowerCase()) {
+    case 'hindi':
+      return 'hi-IN-SwaraNeural';
     case 'italian':
       return 'it-IT-IsabellaNeural';
     case 'french':
@@ -89,6 +93,12 @@ export function sampleTextForLanguage(
   const langName = typeof language === 'object' ? language.name : language;
 
   switch ((langName || '').toLowerCase()) {
+    case 'hindi':
+      return (
+        'नमस्ते! यह आवाज़ का एक उदाहरण है। ' +
+        'आप इन छोटे वाक्यों में उच्चारण और उतार-चढ़ाव सुन सकते हैं। ' +
+        'सुनने का आनंद लें!'
+      );
     case 'italian':
       return (
         'Ciao! Questo è un esempio di voce. ' +

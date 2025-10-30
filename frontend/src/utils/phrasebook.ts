@@ -1,3 +1,29 @@
+import { normalizeLanguageKey, languageFallbackChain } from './locale';
+
+export type PhrasebookWord = Record<string, string | undefined> & {
+  term?: string;
+  en?: string;
+  icon?: string;
+  note?: string;
+};
+
+export function getTermForLanguage(
+  word: PhrasebookWord,
+  language?: string
+): string {
+  const fallbacks = languageFallbackChain(language);
+  for (const code of fallbacks) {
+    const value = word[code];
+    if (typeof value === 'string' && value.trim().length > 0) return value;
+  }
+  // Final fallback: legacy fields
+  return word.term || word.en || '';
+}
+
+export function getNormalizedLanguage(input?: string): string | undefined {
+  return normalizeLanguageKey(input);
+}
+
 import { IconCalendar } from '@tabler/icons-react';
 
 export interface PhrasebookWord {

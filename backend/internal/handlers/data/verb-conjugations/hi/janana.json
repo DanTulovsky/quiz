@@ -1,0 +1,328 @@
+{
+  "language": "hi",
+  "languageName": "Hindi",
+  "infinitive": "जानना",
+  "infinitiveEn": "to know",
+  "slug": "janana",
+  "category": "cognitive",
+  "tenses": [
+    {
+      "tenseId": "present_simple",
+      "tenseName": "वर्तमान काल",
+      "tenseNameEn": "Present Simple",
+      "description": "Basic present forms",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "जानता/जानती हूँ",
+          "exampleSentence": "मैं जानता/जानती हूँ।",
+          "exampleSentenceEn": "I know."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "जानते हो",
+          "exampleSentence": "तुम जानता/जानती हो।",
+          "exampleSentenceEn": "You know."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "जानता/जानती है",
+          "exampleSentence": "वह/यह जानता/जानती है।",
+          "exampleSentenceEn": "He/She knows."
+        },
+        {
+          "pronoun": "हम",
+          "form": "जानते हैं",
+          "exampleSentence": "हम जानता/जानती हैं।",
+          "exampleSentenceEn": "We know."
+        },
+        {
+          "pronoun": "आप",
+          "form": "जानते हैं",
+          "exampleSentence": "आप जानता/जानती हैं।",
+          "exampleSentenceEn": "You know."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "जानते हैं",
+          "exampleSentence": "वे/ये जानता/जानती हैं।",
+          "exampleSentenceEn": "They know."
+        }
+      ]
+    },
+    {
+      "tenseId": "present_continuous",
+      "tenseName": "वर्तमान निरंतर",
+      "tenseNameEn": "Present Continuous",
+      "description": "Not used with जानना; use present simple (जानता/जानती हूँ/हैं).",
+      "conjugations": [
+        { "pronoun": "मैं", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "तुम", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "वह/यह", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "हम", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "आप", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "वे/ये", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" }
+      ]
+    },
+    {
+      "tenseId": "present_perfect",
+      "tenseName": "पूर्ण वर्तमान",
+      "tenseNameEn": "Present Perfect",
+      "description": "Recently completed/attained knowledge.",
+      "conjugations": [
+        { "pronoun": "मैं", "form": "जान चुका/चुकी हूँ", "exampleSentence": "मैं जान चुका/चुकी हूँ।", "exampleSentenceEn": "I have known." },
+        { "pronoun": "तुम", "form": "जान चुके हो", "exampleSentence": "तुम जान चुके हो।", "exampleSentenceEn": "You have known." },
+        { "pronoun": "वह/यह", "form": "जान चुका/चुकी है", "exampleSentence": "वह/यह जान चुका/चुकी है।", "exampleSentenceEn": "He/She has known." },
+        { "pronoun": "हम", "form": "जान चुके हैं", "exampleSentence": "हम जान चुके हैं।", "exampleSentenceEn": "We have known." },
+        { "pronoun": "आप", "form": "जान चुके हैं", "exampleSentence": "आप जान चुके हैं।", "exampleSentenceEn": "You have known." },
+        { "pronoun": "वे/ये", "form": "जान चुके हैं", "exampleSentence": "वे/ये जान चुके हैं।", "exampleSentenceEn": "They have known." }
+      ]
+    },
+    {
+      "tenseId": "present_perfect_continuous",
+      "tenseName": "पूर्ण निरंतर वर्तमान",
+      "tenseNameEn": "Present Perfect Continuous",
+      "description": "Not used with जानना.",
+      "conjugations": [
+        { "pronoun": "मैं", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "तुम", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "वह/यह", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "हम", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "आप", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "वे/ये", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" }
+      ]
+    },
+    {
+      "tenseId": "past_simple",
+      "tenseName": "साधारण भूतकाल",
+      "tenseNameEn": "Simple Past",
+      "description": "Completed action in the past",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "जाना",
+          "exampleSentence": "मैंने जाना।",
+          "exampleSentenceEn": "I knew."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "जाना",
+          "exampleSentence": "तुमने जाना।",
+          "exampleSentenceEn": "You knew."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "जाना",
+          "exampleSentence": "उसने जाना।",
+          "exampleSentenceEn": "He/She knew."
+        },
+        {
+          "pronoun": "हम",
+          "form": "जाना",
+          "exampleSentence": "हमने जाना।",
+          "exampleSentenceEn": "We knew."
+        },
+        {
+          "pronoun": "आप",
+          "form": "जाना",
+          "exampleSentence": "आपने जाना।",
+          "exampleSentenceEn": "You knew."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "जाना",
+          "exampleSentence": "उन्होंने जाना।",
+          "exampleSentenceEn": "They knew."
+        }
+      ]
+    },
+    {
+      "tenseId": "past_continuous",
+      "tenseName": "अपूर्ण भूतकाल",
+      "tenseNameEn": "Past Continuous",
+      "description": "Not used with जानना; use appropriate simple or perfect forms.",
+      "conjugations": [
+        { "pronoun": "मैं", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "तुम", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "वह/यह", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "हम", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "आप", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "वे/ये", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" }
+      ]
+    },
+    {
+      "tenseId": "past_perfect",
+      "tenseName": "पूर्ण भूतकाल",
+      "tenseNameEn": "Past Perfect",
+      "description": "Action completed before another past action",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "जान चुका/चुकी था/थी",
+          "exampleSentence": "मैं जान चुके था/थी।",
+          "exampleSentenceEn": "I had known."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "जान चुके थे",
+          "exampleSentence": "तुम जान चुके थे।",
+          "exampleSentenceEn": "You had known."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "जान चुका/चुकी था/थी",
+          "exampleSentence": "वह/यह जान चुके था/थी।",
+          "exampleSentenceEn": "He/She had known."
+        },
+        {
+          "pronoun": "हम",
+          "form": "जान चुके थे",
+          "exampleSentence": "हम जान चुके थे।",
+          "exampleSentenceEn": "We had known."
+        },
+        {
+          "pronoun": "आप",
+          "form": "जान चुके थे",
+          "exampleSentence": "आप जान चुके थे।",
+          "exampleSentenceEn": "You had known."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "जान चुके थे",
+          "exampleSentence": "वे/ये जान चुके थे।",
+          "exampleSentenceEn": "They had known."
+        }
+      ]
+    },
+    {
+      "tenseId": "past_perfect_continuous",
+      "tenseName": "पूर्ण निरंतर भूतकाल",
+      "tenseNameEn": "Past Perfect Continuous",
+      "description": "Not used with जानना.",
+      "conjugations": [
+        { "pronoun": "मैं", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "तुम", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "वह/यह", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "हम", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "आप", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "वे/ये", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" }
+      ]
+    },
+    {
+      "tenseId": "future_simple",
+      "tenseName": "साधारण भविष्य",
+      "tenseNameEn": "Simple Future",
+      "description": "Action that will occur",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "जानूँगा/जानूँगी",
+          "exampleSentence": "मैं जानऊँगा/ऊँगी।",
+          "exampleSentenceEn": "I will know."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "जानोगे",
+          "exampleSentence": "तुम जानओगे।",
+          "exampleSentenceEn": "You will know."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "जानेगा/जानेगी",
+          "exampleSentence": "वह/यह जानएगा/एगी।",
+          "exampleSentenceEn": "He/She will know."
+        },
+        {
+          "pronoun": "हम",
+          "form": "जानेंगे",
+          "exampleSentence": "हम जानएंगे।",
+          "exampleSentenceEn": "We will know."
+        },
+        {
+          "pronoun": "आप",
+          "form": "जानेंगे",
+          "exampleSentence": "आप जानएंगे।",
+          "exampleSentenceEn": "You will know."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "जानेंगे",
+          "exampleSentence": "वे/ये जानएंगे।",
+          "exampleSentenceEn": "They will know."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_continuous",
+      "tenseName": "भविष्य निरंतर",
+      "tenseNameEn": "Future Continuous",
+      "description": "Not used with जानना.",
+      "conjugations": [
+        { "pronoun": "मैं", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "तुम", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "वह/यह", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "हम", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "आप", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "वे/ये", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" }
+      ]
+    },
+    {
+      "tenseId": "future_perfect",
+      "tenseName": "पूर्ण भविष्य",
+      "tenseNameEn": "Future Perfect",
+      "description": "Action completed before a future time",
+      "conjugations": [
+        {
+          "pronoun": "मैं",
+          "form": "जान चुका/चुकी होऊँगा/हूँगी",
+          "exampleSentence": "मैं जान चुके होऊँगा/हूँगी।",
+          "exampleSentenceEn": "I will have known."
+        },
+        {
+          "pronoun": "तुम",
+          "form": "जान चुके होगे",
+          "exampleSentence": "तुम जान चुके होगे।",
+          "exampleSentenceEn": "You will have known."
+        },
+        {
+          "pronoun": "वह/यह",
+          "form": "जान चुका/चुकी होगा/होगी",
+          "exampleSentence": "वह/यह जान चुके होगा/होगी।",
+          "exampleSentenceEn": "He/She will have known."
+        },
+        {
+          "pronoun": "हम",
+          "form": "जान चुके होंगे",
+          "exampleSentence": "हम जान चुके होंगे।",
+          "exampleSentenceEn": "We will have known."
+        },
+        {
+          "pronoun": "आप",
+          "form": "जान चुके होंगे",
+          "exampleSentence": "आप जान चुके होंगे।",
+          "exampleSentenceEn": "You will have known."
+        },
+        {
+          "pronoun": "वे/ये",
+          "form": "जान चुके होंगे",
+          "exampleSentence": "वे/ये जान चुके होंगे।",
+          "exampleSentenceEn": "They will have known."
+        }
+      ]
+    },
+    {
+      "tenseId": "future_perfect_continuous",
+      "tenseName": "पूर्ण निरंतर भविष्य",
+      "tenseNameEn": "Future Perfect Continuous",
+      "description": "Not used with जानना.",
+      "conjugations": [
+        { "pronoun": "मैं", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "तुम", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "वह/यह", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "हम", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "आप", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" },
+        { "pronoun": "वे/ये", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—" }
+      ]
+    }
+  ]
+}

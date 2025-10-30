@@ -133,15 +133,15 @@ story:
   # Section length defaults by proficiency level (in words)
   # These levels are language-agnostic and can be mapped to any framework
   section_lengths:
-    beginner:          # Maps to: A1, JLPT N5, HSK 1-2, etc.
+    beginner: # Maps to: A1, JLPT N5, HSK 1-2, etc.
       short: 50
       medium: 80
       long: 120
-    elementary:        # Maps to: A2, JLPT N4, HSK 3, etc.
+    elementary: # Maps to: A2, JLPT N4, HSK 3, etc.
       short: 80
       medium: 120
       long: 180
-    intermediate:      # Maps to: B1, JLPT N3, HSK 4, etc.
+    intermediate: # Maps to: B1, JLPT N3, HSK 4, etc.
       short: 150
       medium: 220
       long: 300
@@ -149,11 +149,11 @@ story:
       short: 250
       medium: 350
       long: 450
-    advanced:          # Maps to: C1, JLPT N1, HSK 6, etc.
+    advanced: # Maps to: C1, JLPT N1, HSK 6, etc.
       short: 350
       medium: 500
       long: 650
-    proficient:        # Maps to: C2, native-like proficiency
+    proficient: # Maps to: C2, native-like proficiency
       short: 500
       medium: 700
       long: 900
@@ -161,7 +161,7 @@ story:
     # Language-specific overrides (optional)
     # Example: For languages with different writing systems or reading patterns
     overrides:
-      ja:  # Japanese - adjust for kanji complexity
+      ja: # Japanese - adjust for kanji complexity
         beginner:
           short: 40
           medium: 60
@@ -170,7 +170,7 @@ story:
           short: 60
           medium: 90
           long: 130
-      zh:  # Chinese - adjust for character density
+      zh: # Chinese - adjust for character density
         beginner:
           short: 30
           medium: 50
@@ -181,7 +181,7 @@ story:
           long: 120
 
   # Number of comprehension questions
-  questions_per_section: 3  # Generate this many
+  questions_per_section: 3 # Generate this many
 
 # OpenTelemetry Configuration
 #
@@ -334,6 +334,29 @@ language_levels:
     code: "ru"
     tts_locale: "ru-RU"
     tts_voice: "ru-RU-DariyaNeural"
+    levels:
+      - "A1"
+      - "A2"
+      - "B1"
+      - "B1+"
+      - "B1++"
+      - "B2"
+      - "C1"
+      - "C2"
+    descriptions:
+      A1: "Beginner"
+      A2: "Elementary"
+      B1: "Intermediate"
+      B1+: "Intermediate Plus"
+      B1++: "Strong Intermediate"
+      B2: "Upper-Intermediate"
+      C1: "Advanced"
+      C2: "Proficient"
+
+  hindi:
+    code: "hi"
+    tts_locale: "hi-IN"
+    tts_voice: "hi-IN-SwaraNeural"
     levels:
       - "A1"
       - "A2"
