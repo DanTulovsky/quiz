@@ -194,7 +194,7 @@ def validate_required_fields(file_path: Path) -> tuple[bool, str, List[str]]:
 
 
 def validate_filename_consistency(file_path: Path) -> tuple[bool, str, List[str]]:
-    """Validate that the verb infinitive in the file matches the filename"""
+    """Validate that the filename matches either slug or infinitive."""
     try:
         with open(file_path, "r", encoding="utf-8") as f:
             data = json.load(f)
@@ -203,7 +203,9 @@ def validate_filename_consistency(file_path: Path) -> tuple[bool, str, List[str]
             return False, "No 'infinitive' field found in file", []
 
         verb_infinitive = data["infinitive"]
-        expected_filename = f"{verb_infinitive}.json"
+        slug = data.get("slug")
+        expected_stem = slug if slug else verb_infinitive
+        expected_filename = f"{expected_stem}.json"
         actual_filename = file_path.name
 
         if actual_filename != expected_filename:
@@ -213,7 +215,7 @@ def validate_filename_consistency(file_path: Path) -> tuple[bool, str, List[str]
                 [],
             )
 
-        return True, f"Filename matches verb infinitive: {verb_infinitive}", []
+        return True, f"Filename matches: {actual_filename}", []
 
     except Exception as e:
         return False, f"Error validating filename consistency: {e}", []
@@ -368,6 +370,14 @@ def main():
     language_consistency_errors = 0
     filename_consistency_errors = 0
 
+    # Failure details (always printed if any)
+    failed_invalid_json: List[str] = []
+    failed_inconsistent_tenses: List[tuple[str, str, List[str]]] = []
+    failed_required_fields: List[tuple[str, str, List[str]]] = []
+    failed_example_sentences: List[tuple[str, str, List[str]]] = []
+    failed_language_consistency: List[tuple[str, List[str]]] = []
+    failed_filename_mismatches: List[tuple[str, str]] = []
+
     # Check if directory exists
     if not verb_conjugations_dir.exists():
         print_status(
@@ -415,6 +425,7 @@ def main():
             for error in lang_errors:
                 print_verbose(f"    - {error}")
             language_consistency_errors += 1
+            failed_language_consistency.append((lang_dir.name, lang_errors))
 
         # Validate each verb file
         for file_path in json_files:
@@ -428,6 +439,7 @@ def main():
             else:
                 print_status("ERROR", f"  {json_message}")
                 invalid_json_files += 1
+                failed_invalid_json.append(f"{lang_dir.name}/{file_path.name}: {json_message}")
                 continue
 
             # Check tense consistency
@@ -441,6 +453,7 @@ def main():
                 for error in tense_list:
                     print_verbose(f"      - {error}")
                 inconsistent_files += 1
+                failed_inconsistent_tenses.append((f"{lang_dir.name}/{file_path.name}", consistency_message, tense_list))
 
             # Check required fields
             fields_valid, fields_message, fields_errors = validate_required_fields(
@@ -453,6 +466,7 @@ def main():
                 for error in fields_errors:
                     print_verbose(f"      - {error}")
                 required_fields_errors += 1
+                failed_required_fields.append((f"{lang_dir.name}/{file_path.name}", fields_message, fields_errors))
 
             # Check example sentences
             examples_valid, examples_message, examples_errors = (
@@ -465,6 +479,7 @@ def main():
                 for error in examples_errors:
                     print_verbose(f"      - {error}")
                 example_sentence_errors += 1
+                failed_example_sentences.append((f"{lang_dir.name}/{file_path.name}", examples_message, examples_errors))
 
             # Check filename consistency
             filename_valid, filename_message, filename_errors = (
@@ -477,6 +492,7 @@ def main():
                 for error in filename_errors:
                     print_verbose(f"      - {error}")
                 filename_consistency_errors += 1
+                failed_filename_mismatches.append((f"{lang_dir.name}/{file_path.name}", filename_message))
 
             # Overall file validity
             if consistent and fields_valid and examples_valid and filename_valid:
@@ -494,6 +510,49 @@ def main():
     print(f"  Example sentence errors: {example_sentence_errors}")
     print(f"  Language consistency errors: {language_consistency_errors}")
     print(f"  Filename consistency errors: {filename_consistency_errors}")
+
+    # Failure details (always printed when any errors exist)
+    if not (
+        invalid_json_files
+        or inconsistent_files
+        or required_fields_errors
+        or example_sentence_errors
+        or language_consistency_errors
+        or filename_consistency_errors
+    ):
+        pass
+    else:
+        print("")
+        print("Failure details:")
+        if invalid_json_files:
+            print("  Invalid JSON files:")
+            for item in failed_invalid_json:
+                print(f"    - {item}")
+        if language_consistency_errors:
+            print("  Language consistency issues:")
+            for lang, errs in failed_language_consistency:
+                print(f"    - {lang}:")
+                for e in errs[:5]:
+                    print(f"      * {e}")
+        if inconsistent_files:
+            print("  Tense structure issues:")
+            for fname, msg, errs in failed_inconsistent_tenses:
+                suffix = f" (e.g., {', '.join(errs[:5])})" if errs else ""
+                print(f"    - {fname}: {msg}{suffix}")
+        if required_fields_errors:
+            print("  Required fields issues:")
+            for fname, msg, errs in failed_required_fields:
+                suffix = f" (e.g., {', '.join(errs[:5])})" if errs else ""
+                print(f"    - {fname}: {msg}{suffix}")
+        if example_sentence_errors:
+            print("  Example sentence issues:")
+            for fname, msg, errs in failed_example_sentences:
+                suffix = f" (e.g., {', '.join(errs[:5])})" if errs else ""
+                print(f"    - {fname}: {msg}{suffix}")
+        if filename_consistency_errors:
+            print("  Filename mismatches:")
+            for fname, msg in failed_filename_mismatches:
+                print(f"    - {fname}: {msg}")
 
     # Check if validation passed
     validation_passed = (
