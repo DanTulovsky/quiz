@@ -287,42 +287,42 @@
       "tenseId": "progressive_present",
       "tenseName": "Progresivo (presente)",
       "tenseNameEn": "Present Progressive",
-      "description": "Acción en progreso en el presente.",
+      "description": "Forma no usada para 'estar' en español estándar.",
       "conjugations": [
-        {"pronoun": "yo", "form": "estoy estando", "exampleSentence": "Estoy estando más tranquilo.", "exampleSentenceEn": "I am being calmer."},
-        {"pronoun": "tú", "form": "estás estando", "exampleSentence": "Estás estando atento.", "exampleSentenceEn": "You are being attentive."},
-        {"pronoun": "él/ella/usted", "form": "está estando", "exampleSentence": "Está estando amable.", "exampleSentenceEn": "He is being kind."},
-        {"pronoun": "nosotros", "form": "estamos estando", "exampleSentence": "Estamos estando pacientes.", "exampleSentenceEn": "We are being patient."},
-        {"pronoun": "vosotros", "form": "estáis estando", "exampleSentence": "Estáis estando silenciosos.", "exampleSentenceEn": "You all are being quiet."},
-        {"pronoun": "ellos/ustedes", "form": "están estando", "exampleSentence": "Están estando respetuosos.", "exampleSentenceEn": "They are being respectful."}
+        {"pronoun": "yo", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—"},
+        {"pronoun": "tú", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—"},
+        {"pronoun": "él/ella/usted", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—"},
+        {"pronoun": "nosotros", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—"},
+        {"pronoun": "vosotros", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—"},
+        {"pronoun": "ellos/ustedes", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—"}
       ]
     },
     {
       "tenseId": "progressive_past",
       "tenseName": "Progresivo (pasado)",
       "tenseNameEn": "Past Progressive",
-      "description": "Acción en progreso en el pasado.",
+      "description": "Forma no usada para 'estar' en español estándar.",
       "conjugations": [
-        {"pronoun": "yo", "form": "estaba estando", "exampleSentence": "Estaba estando nervioso.", "exampleSentenceEn": "I was being nervous."},
-        {"pronoun": "tú", "form": "estabas estando", "exampleSentence": "Estabas estando impaciente.", "exampleSentenceEn": "You were being impatient."},
-        {"pronoun": "él/ella/usted", "form": "estaba estando", "exampleSentence": "Estaba estando callado.", "exampleSentenceEn": "He was being quiet."},
-        {"pronoun": "nosotros", "form": "estábamos estando", "exampleSentence": "Estábamos estando cautelosos.", "exampleSentenceEn": "We were being cautious."},
-        {"pronoun": "vosotros", "form": "estabais estando", "exampleSentence": "Estabais estando discretos.", "exampleSentenceEn": "You all were being discreet."},
-        {"pronoun": "ellos/ustedes", "form": "estaban estando", "exampleSentence": "Estaban estando amables.", "exampleSentenceEn": "They were being kind."}
+        {"pronoun": "yo", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—"},
+        {"pronoun": "tú", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—"},
+        {"pronoun": "él/ella/usted", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—"},
+        {"pronoun": "nosotros", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—"},
+        {"pronoun": "vosotros", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—"},
+        {"pronoun": "ellos/ustedes", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—"}
       ]
     },
     {
       "tenseId": "progressive_future",
       "tenseName": "Progresivo (futuro)",
       "tenseNameEn": "Future Progressive",
-      "description": "Acción en progreso en el futuro.",
+      "description": "Forma no usada para 'estar' en español estándar.",
       "conjugations": [
-        {"pronoun": "yo", "form": "estaré estando", "exampleSentence": "Estaré estando disponible.", "exampleSentenceEn": "I will be being available."},
-        {"pronoun": "tú", "form": "estarás estando", "exampleSentence": "Estarás estando atento.", "exampleSentenceEn": "You will be being attentive."},
-        {"pronoun": "él/ella/usted", "form": "estará estando", "exampleSentence": "Estará estando tranquilo.", "exampleSentenceEn": "He will be being calm."},
-        {"pronoun": "nosotros", "form": "estaremos estando", "exampleSentence": "Estaremos estando listos.", "exampleSentenceEn": "We will be being ready."},
-        {"pronoun": "vosotros", "form": "estaréis estando", "exampleSentence": "Estaréis estando presentes.", "exampleSentenceEn": "You all will be being present."},
-        {"pronoun": "ellos/ustedes", "form": "estarán estando", "exampleSentence": "Estarán estando serios.", "exampleSentenceEn": "They will be being serious."}
+        {"pronoun": "yo", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—"},
+        {"pronoun": "tú", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—"},
+        {"pronoun": "él/ella/usted", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—"},
+        {"pronoun": "nosotros", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—"},
+        {"pronoun": "vosotros", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—"},
+        {"pronoun": "ellos/ustedes", "form": "—", "exampleSentence": "—", "exampleSentenceEn": "—"}
       ]
     }
   ]

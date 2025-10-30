@@ -109,8 +109,14 @@
       {"pronoun":"vosotros","form":"supieseis","exampleSentence":"Si supieseis esto, decidiríais.","exampleSentenceEn":"If you all knew this, you'd decide."},
       {"pronoun":"ellos/ustedes","form":"supiesen","exampleSentence":"Si supiesen la verdad, cambiarían.","exampleSentenceEn":"If they knew the truth, they'd change."}
     ]},
-    {"tenseId":"subjunctive_future","tenseName":"Futuro (subjuntivo)","tenseNameEn":"Subjunctive Future","description":"Uso arcaico/jurídico.","conjugations")[
-      ]},
+    {"tenseId":"subjunctive_future","tenseName":"Futuro (subjuntivo)","tenseNameEn":"Subjunctive Future","description":"Uso arcaico/jurídico.","conjugations":[
+      {"pronoun":"yo","form":"supiere","exampleSentence":"Si supiere la verdad, hablaré.","exampleSentenceEn":"If I shall know the truth, I will speak."},
+      {"pronoun":"tú","form":"supieres","exampleSentence":"Si supieres el camino, guía.","exampleSentenceEn":"If you shall know the way, guide us."},
+      {"pronoun":"él/ella/usted","form":"supiere","exampleSentence":"Si supiere la fecha, avisará.","exampleSentenceEn":"If he shall know the date, he will notify."},
+      {"pronoun":"nosotros","form":"supiéremos","exampleSentence":"Si supiéremos la respuesta, diremos.","exampleSentenceEn":"If we shall know the answer, we will say."},
+      {"pronoun":"vosotros","form":"supiereis","exampleSentence":"Si supiereis la verdad, actuad.","exampleSentenceEn":"If you shall know the truth, act."},
+      {"pronoun":"ellos/ustedes","form":"supieren","exampleSentence":"Si supieren los hechos, decidirán.","exampleSentenceEn":"If they shall know the facts, they will decide."}
+    ]},
     {"tenseId":"subjunctive_present_perfect","tenseName":"Pretérito perfecto (subj.)","tenseNameEn":"Subjunctive Present Perfect","description":"Conocimiento pasado con relación al presente de subjuntivo.","conjugations":[
       {"pronoun":"yo","form":"haya sabido","exampleSentence":"Dudo que haya sabido esto.","exampleSentenceEn":"I doubt I have known this."},
       {"pronoun":"tú","form":"hayas sabido","exampleSentence":"No creo que hayas sabido decidir.","exampleSentenceEn":"I don't think you have known how to decide."},
@@ -143,43 +149,43 @@
       {"pronoun":"vosotros","form":"hubiereis sabido","exampleSentence":"Si hubiereis sabido esto, actuad.","exampleSentenceEn":"If you shall have known this, act."},
       {"pronoun":"ellos/ustedes","form":"hubieren sabido","exampleSentence":"Si hubieren sabido la verdad, cambiarán.","exampleSentenceEn":"If they shall have known the truth, they will change."}
     ]},
-    {"tenseId":"imperative_affirmative","tenseName":"Imperativo afirmativo","tenseNameEn":"Imperative Affirmative","description":"Órdenes afirmativas con saber (poco usadas).","conjugations":[
-      {"pronoun":"tú","form":"sabe","exampleSentence":"Sabe esperar.","exampleSentenceEn":"Know how to wait."},
-      {"pronoun":"usted","form":"sepa","exampleSentence":"Sepa que cuenta con nosotros.","exampleSentenceEn":"Know that you have our support."},
-      {"pronoun":"nosotros","form":"sepamos","exampleSentence":"Sepamos escuchar.","exampleSentenceEn":"Let's know how to listen."},
-      {"pronoun":"vosotros","form":"sabed","exampleSentence":"Sabed decidir.","exampleSentenceEn":"Know how to decide (you all)."},
-      {"pronoun":"ustedes","form":"sepan","exampleSentence":"Sepan que estamos aquí.","exampleSentenceEn":"Know that we are here (you all)."}
+    {"tenseId":"imperative_affirmative","tenseName":"Imperativo afirmativo","tenseNameEn":"Imperative Affirmative","description":"No se usa imperativo con 'saber' en español estándar.","conjugations":[
+      {"pronoun":"tú","form":"—","exampleSentence":"—","exampleSentenceEn":"—"},
+      {"pronoun":"usted","form":"—","exampleSentence":"—","exampleSentenceEn":"—"},
+      {"pronoun":"nosotros","form":"—","exampleSentence":"—","exampleSentenceEn":"—"},
+      {"pronoun":"vosotros","form":"—","exampleSentence":"—","exampleSentenceEn":"—"},
+      {"pronoun":"ustedes","form":"—","exampleSentence":"—","exampleSentenceEn":"—"}
     ]},
-    {"tenseId":"imperative_negative","tenseName":"Imperativo negativo","tenseNameEn":"Imperative Negative","description":"Órdenes negativas.","conjugations":[
-      {"pronoun":"tú","form":"no sepas","exampleSentence":"No sepas de todo.","exampleSentenceEn":"Don't pretend to know everything."},
-      {"pronoun":"usted","form":"no sepa","exampleSentence":"No sepa mal.","exampleSentenceEn":"Don't take it the wrong way."},
-      {"pronoun":"nosotros","form":"no sepamos","exampleSentence":"No sepamos menos que ayer.","exampleSentenceEn":"Let's not know less than yesterday."},
-      {"pronoun":"vosotros","form":"no sepáis","exampleSentence":"No sepáis tarde la verdad.","exampleSentenceEn":"Don't learn the truth late (you all)."},
-      {"pronoun":"ustedes","form":"no sepan","exampleSentence":"No sepan poco.","exampleSentenceEn":"Don't know too little (you all)."}
+    {"tenseId":"imperative_negative","tenseName":"Imperativo negativo","tenseNameEn":"Imperative Negative","description":"No se usa imperativo con 'saber' en español estándar.","conjugations":[
+      {"pronoun":"tú","form":"—","exampleSentence":"—","exampleSentenceEn":"—"},
+      {"pronoun":"usted","form":"—","exampleSentence":"—","exampleSentenceEn":"—"},
+      {"pronoun":"nosotros","form":"—","exampleSentence":"—","exampleSentenceEn":"—"},
+      {"pronoun":"vosotros","form":"—","exampleSentence":"—","exampleSentenceEn":"—"},
+      {"pronoun":"ustedes","form":"—","exampleSentence":"—","exampleSentenceEn":"—"}
     ]},
-    {"tenseId":"progressive_present","tenseName":"Progresivo (presente)","tenseNameEn":"Present Progressive","description":"Acción en progreso (usos limitados).","conjugations":[
-      {"pronoun":"yo","form":"estoy sabiendo","exampleSentence":"Estoy sabiendo más del tema.","exampleSentenceEn":"I am getting to know more about the topic."},
-      {"pronoun":"tú","form":"estás sabiendo","exampleSentence":"Estás sabiendo cómo funciona.","exampleSentenceEn":"You are getting to know how it works."},
-      {"pronoun":"él/ella/usted","form":"está sabiendo","exampleSentence":"Está sabiendo organizarse.","exampleSentenceEn":"He is learning to organize himself."},
-      {"pronoun":"nosotros","form":"estamos sabiendo","exampleSentence":"Estamos sabiendo decidir.","exampleSentenceEn":"We are learning to decide."},
-      {"pronoun":"vosotros","form":"estáis sabiendo","exampleSentence":"Estáis sabiendo priorizar.","exampleSentenceEn":"You all are learning to prioritize."},
-      {"pronoun":"ellos/ustedes","form":"están sabiendo","exampleSentence":"Están sabiendo responder.","exampleSentenceEn":"They are learning to respond."}
+    {"tenseId":"progressive_present","tenseName":"Progresivo (presente)","tenseNameEn":"Present Progressive","description":"Forma no usada con 'saber' en español estándar.","conjugations":[
+      {"pronoun":"yo","form":"—","exampleSentence":"—","exampleSentenceEn":"—"},
+      {"pronoun":"tú","form":"—","exampleSentence":"—","exampleSentenceEn":"—"},
+      {"pronoun":"él/ella/usted","form":"—","exampleSentence":"—","exampleSentenceEn":"—"},
+      {"pronoun":"nosotros","form":"—","exampleSentence":"—","exampleSentenceEn":"—"},
+      {"pronoun":"vosotros","form":"—","exampleSentence":"—","exampleSentenceEn":"—"},
+      {"pronoun":"ellos/ustedes","form":"—","exampleSentence":"—","exampleSentenceEn":"—"}
     ]},
-    {"tenseId":"progressive_past","tenseName":"Progresivo (pasado)","tenseNameEn":"Past Progressive","description":"Acción en progreso en el pasado.","conjugations":[
-      {"pronoun":"yo","form":"estaba sabiendo","exampleSentence":"Estaba sabiendo más del tema.","exampleSentenceEn":"I was getting to know more about the topic."},
-      {"pronoun":"tú","form":"estabas sabiendo","exampleSentence":"Estabas sabiendo cómo funciona.","exampleSentenceEn":"You were getting to know how it works."},
-      {"pronoun":"él/ella/usted","form":"estaba sabiendo","exampleSentence":"Estaba sabiendo organizarse.","exampleSentenceEn":"He was learning to organize himself."},
-      {"pronoun":"nosotros","form":"estábamos sabiendo","exampleSentence":"Estábamos sabiendo decidir.","exampleSentenceEn":"We were learning to decide."},
-      {"pronoun":"vosotros","form":"estabais sabiendo","exampleSentence":"Estabais sabiendo priorizar.","exampleSentenceEn":"You all were learning to prioritize."},
-      {"pronoun":"ellos/ustedes","form":"estaban sabiendo","exampleSentence":"Estaban sabiendo responder.","exampleSentenceEn":"They were learning to respond."}
+    {"tenseId":"progressive_past","tenseName":"Progresivo (pasado)","tenseNameEn":"Past Progressive","description":"Forma no usada con 'saber' en español estándar.","conjugations":[
+      {"pronoun":"yo","form":"—","exampleSentence":"—","exampleSentenceEn":"—"},
+      {"pronoun":"tú","form":"—","exampleSentence":"—","exampleSentenceEn":"—"},
+      {"pronoun":"él/ella/usted","form":"—","exampleSentence":"—","exampleSentenceEn":"—"},
+      {"pronoun":"nosotros","form":"—","exampleSentence":"—","exampleSentenceEn":"—"},
+      {"pronoun":"vosotros","form":"—","exampleSentence":"—","exampleSentenceEn":"—"},
+      {"pronoun":"ellos/ustedes","form":"—","exampleSentence":"—","exampleSentenceEn":"—"}
     ]},
-    {"tenseId":"progressive_future","tenseName":"Progresivo (futuro)","tenseNameEn":"Future Progressive","description":"Acción en progreso en el futuro.","conjugations":[
-      {"pronoun":"yo","form":"estaré sabiendo","exampleSentence":"Estaré sabiendo más del tema.","exampleSentenceEn":"I will be getting to know more about the topic."},
-      {"pronoun":"tú","form":"estarás sabiendo","exampleSentence":"Estarás sabiendo cómo funciona.","exampleSentenceEn":"You will be getting to know how it works."},
-      {"pronoun":"él/ella/usted","form":"estará sabiendo","exampleSentence":"Estará sabiendo organizarse.","exampleSentenceEn":"He will be learning to organize himself."},
-      {"pronoun":"nosotros","form":"estaremos sabiendo","exampleSentence":"Estaremos sabiendo decidir.","exampleSentenceEn":"We will be learning to decide."},
-      {"pronoun":"vosotros","form":"estaréis sabiendo","exampleSentence":"Estaréis sabiendo priorizar.","exampleSentenceEn":"You all will be learning to prioritize."},
-      {"pronoun":"ellos/ustedes","form":"estarán sabiendo","exampleSentence":"Estarán sabiendo responder.","exampleSentenceEn":"They will be learning to respond."}
+    {"tenseId":"progressive_future","tenseName":"Progresivo (futuro)","tenseNameEn":"Future Progressive","description":"Forma no usada con 'saber' en español estándar.","conjugations":[
+      {"pronoun":"yo","form":"—","exampleSentence":"—","exampleSentenceEn":"—"},
+      {"pronoun":"tú","form":"—","exampleSentence":"—","exampleSentenceEn":"—"},
+      {"pronoun":"él/ella/usted","form":"—","exampleSentence":"—","exampleSentenceEn":"—"},
+      {"pronoun":"nosotros","form":"—","exampleSentence":"—","exampleSentenceEn":"—"},
+      {"pronoun":"vosotros","form":"—","exampleSentence":"—","exampleSentenceEn":"—"},
+      {"pronoun":"ellos/ustedes","form":"—","exampleSentence":"—","exampleSentenceEn":"—"}
     ]}
   ]
 }
