@@ -1,219 +1,219 @@
 {
   "apitestadmin_Admin Discussion": {
-    "id": "8065c491-da74-42a3-bf7f-95eaaaeb7a46",
+    "id": "5452a651-9b9e-44f0-8576-b54327c8d8a4",
     "username": "apitestadmin",
     "title": "Admin Discussion",
     "messages": [
       {
-        "id": "7d8fd502-e77f-4148-970c-bb910bb3335a",
-        "conversation_id": "8065c491-da74-42a3-bf7f-95eaaaeb7a46",
+        "id": "f8b028c3-4562-46d6-9818-10399a0af34a",
+        "conversation_id": "5452a651-9b9e-44f0-8576-b54327c8d8a4",
         "role": "user",
         "content": "As an admin, I need to understand the system better. Can you explain the user roles system?",
         "bookmarked": false,
-        "created_at": "2025-10-30T01:59:27Z",
-        "updated_at": "2025-10-30T01:59:27Z"
+        "created_at": "2025-10-30T14:40:17Z",
+        "updated_at": "2025-10-30T14:40:17Z"
       },
       {
-        "id": "74b6c423-fbd5-46d4-8589-bd424e022868",
-        "conversation_id": "8065c491-da74-42a3-bf7f-95eaaaeb7a46",
+        "id": "1df4c230-eb5e-4d28-bb2c-cdc5c2f6c994",
+        "conversation_id": "5452a651-9b9e-44f0-8576-b54327c8d8a4",
         "role": "assistant",
         "content": "Certo! Ecco come funziona il sistema dei ruoli nel quiz:\n\n**Ruoli disponibili:**\n- **admin**: Accesso completo a tutte le funzionalità amministrative\n- **user**: Ruolo standard per gli utenti normali\n- **moderator**: (se implementato) accesso moderato alle funzionalità\n\n**Permessi admin:**\n- Gestione utenti (creazione, modifica, eliminazione)\n- Gestione domande (aggiunta, modifica, approvazione)\n- Visualizzazione statistiche avanzate\n- Accesso a endpoint amministrativi\n- Gestione ruoli utente\n\n**Permessi user:**\n- Rispondere alle domande\n- Visualizzare il proprio progresso\n- Modificare le proprie impostazioni\n- Utilizzare funzionalità AI (se abilitate)\n- Creare storie (se implementato)\n\nIl sistema usa cookie di sessione per l'autenticazione e verifica i ruoli per ogni richiesta.",
         "bookmarked": false,
-        "created_at": "2025-10-30T01:59:27Z",
-        "updated_at": "2025-10-30T01:59:27Z"
+        "created_at": "2025-10-30T14:40:17Z",
+        "updated_at": "2025-10-30T14:40:17Z"
       }
     ]
   },
   "apitestadmin_Admin Discussion - To Be Deleted": {
-    "id": "28bfe364-cd25-4d7d-a7d1-7941a9a3a404",
+    "id": "b0134626-9b00-440d-bb54-b47643e40ea7",
     "username": "apitestadmin",
     "title": "Admin Discussion - To Be Deleted",
     "messages": [
       {
-        "id": "7a8a0741-6224-4d28-99bd-0ecd34dc7c52",
-        "conversation_id": "28bfe364-cd25-4d7d-a7d1-7941a9a3a404",
+        "id": "6a0a5469-a799-4d07-bfa3-b3f0eb0cf9e1",
+        "conversation_id": "b0134626-9b00-440d-bb54-b47643e40ea7",
         "role": "user",
         "content": "I want to delete this conversation after testing the delete functionality.",
         "bookmarked": false,
-        "created_at": "2025-10-30T01:59:27Z",
-        "updated_at": "2025-10-30T01:59:27Z"
+        "created_at": "2025-10-30T14:40:17Z",
+        "updated_at": "2025-10-30T14:40:17Z"
       },
       {
-        "id": "e41ee5eb-8e38-4691-b222-c3898e0dc934",
-        "conversation_id": "28bfe364-cd25-4d7d-a7d1-7941a9a3a404",
+        "id": "3814be20-1e60-42a7-90ce-22dd8c472b5b",
+        "conversation_id": "b0134626-9b00-440d-bb54-b47643e40ea7",
         "role": "assistant",
         "content": "This conversation is specifically created for testing the delete functionality. You can safely delete it without affecting other tests.",
         "bookmarked": false,
-        "created_at": "2025-10-30T01:59:27Z",
-        "updated_at": "2025-10-30T01:59:27Z"
+        "created_at": "2025-10-30T14:40:17Z",
+        "updated_at": "2025-10-30T14:40:17Z"
       }
     ]
   },
   "apitestuser_Italian Language Learning": {
-    "id": "f4bf5ad7-1887-4b0d-ac78-830a5d0334b2",
+    "id": "24937395-ec3d-4a24-9f42-f7e6c7389bdc",
     "username": "apitestuser",
     "title": "Italian Language Learning",
     "messages": [
       {
-        "id": "b7b33922-f9b4-4022-a254-05706f97e8ef",
-        "conversation_id": "f4bf5ad7-1887-4b0d-ac78-830a5d0334b2",
+        "id": "781dc69a-b5c5-47f5-98d2-d8608df522eb",
+        "conversation_id": "24937395-ec3d-4a24-9f42-f7e6c7389bdc",
         "role": "user",
         "content": "Ciao! I'm learning Italian and I need help with basic greetings. Can you help me?",
         "bookmarked": false,
-        "created_at": "2025-10-30T01:59:27Z",
-        "updated_at": "2025-10-30T01:59:27Z"
+        "created_at": "2025-10-30T14:40:17Z",
+        "updated_at": "2025-10-30T14:40:17Z"
       },
       {
-        "id": "3d0f732f-02c8-4e94-b76a-6c29278edbb4",
-        "conversation_id": "f4bf5ad7-1887-4b0d-ac78-830a5d0334b2",
+        "id": "04d2247d-ee3a-45e6-9b43-aa8f40ad44ab",
+        "conversation_id": "24937395-ec3d-4a24-9f42-f7e6c7389bdc",
         "role": "assistant",
         "content": "Ciao! Certo che posso aiutarti con i saluti italiani! Ecco alcuni saluti di base:\n\n- Ciao = Hello (informal)\n- Buongiorno = Good morning/Good day\n- Buonasera = Good evening\n- Buonanotte = Good night\n- Come stai? = How are you?\n- Bene, grazie! = Fine, thank you!\n\nVuoi che ti dia più esempi o hai domande specifiche?",
         "bookmarked": false,
-        "created_at": "2025-10-30T01:59:27Z",
-        "updated_at": "2025-10-30T01:59:27Z"
+        "created_at": "2025-10-30T14:40:17Z",
+        "updated_at": "2025-10-30T14:40:17Z"
       },
       {
-        "id": "ba46f5e1-bf28-4dcd-b8c0-d1e2f0f03993",
-        "conversation_id": "f4bf5ad7-1887-4b0d-ac78-830a5d0334b2",
+        "id": "aa22d4b8-0272-47e6-b4ed-d8706c7c97dc",
+        "conversation_id": "24937395-ec3d-4a24-9f42-f7e6c7389bdc",
         "role": "user",
         "content": "Thanks! Can you explain the difference between 'ciao' and 'salve'?",
         "bookmarked": false,
-        "created_at": "2025-10-30T01:59:27Z",
-        "updated_at": "2025-10-30T01:59:27Z"
+        "created_at": "2025-10-30T14:40:17Z",
+        "updated_at": "2025-10-30T14:40:17Z"
       },
       {
-        "id": "c1308865-7a3f-4f62-839d-b2b1fae8b73b",
-        "conversation_id": "f4bf5ad7-1887-4b0d-ac78-830a5d0334b2",
+        "id": "b58b1550-5f31-4536-9768-bf306a350063",
+        "conversation_id": "24937395-ec3d-4a24-9f42-f7e6c7389bdc",
         "role": "assistant",
         "content": "Certo! Ecco la differenza:\n\n**Ciao**: È un saluto informale usato con amici, familiari, e persone che conosci bene. È anche usato per salutare quando ci si incontra e quando ci si saluta. È molto comune tra i giovani.\n\n**Salve**: È un saluto più formale e neutrale. Si usa con persone che non conosci bene o in situazioni professionali. È meno personale di 'ciao' e si usa principalmente per salutare, non per accomiatarsi.\n\nIn generale:\n- Usa 'Ciao' con amici e familiari\n- Usa 'Salve' con estranei o in contesti formali\n- 'Buongiorno' è sempre appropriato fino al tardo pomeriggio",
         "bookmarked": false,
-        "created_at": "2025-10-30T01:59:27Z",
-        "updated_at": "2025-10-30T01:59:27Z"
+        "created_at": "2025-10-30T14:40:17Z",
+        "updated_at": "2025-10-30T14:40:17Z"
       }
     ]
   },
   "apitestuser_Italian Language Learning - To Be Deleted": {
-    "id": "36e40a73-4ba0-4e4a-9d2a-17e01df54858",
+    "id": "9ed0f024-d1be-4e07-9f44-c946c3c3ff4e",
     "username": "apitestuser",
     "title": "Italian Language Learning - To Be Deleted",
     "messages": [
       {
-        "id": "06f2cfe4-6491-49b4-830c-b275ac845539",
-        "conversation_id": "36e40a73-4ba0-4e4a-9d2a-17e01df54858",
+        "id": "676d0e1a-d1e0-499d-ad92-da232761a1b8",
+        "conversation_id": "9ed0f024-d1be-4e07-9f44-c946c3c3ff4e",
         "role": "user",
         "content": "I want to delete this conversation after testing the delete functionality.",
         "bookmarked": false,
-        "created_at": "2025-10-30T01:59:27Z",
-        "updated_at": "2025-10-30T01:59:27Z"
+        "created_at": "2025-10-30T14:40:17Z",
+        "updated_at": "2025-10-30T14:40:17Z"
       },
       {
-        "id": "3887d0eb-c6a0-491e-b306-875c74de65d0",
-        "conversation_id": "36e40a73-4ba0-4e4a-9d2a-17e01df54858",
+        "id": "2be640f6-92fe-402c-817f-66df66a9ff2a",
+        "conversation_id": "9ed0f024-d1be-4e07-9f44-c946c3c3ff4e",
         "role": "assistant",
         "content": "This conversation is specifically created for testing the delete functionality. You can safely delete it without affecting other tests.",
         "bookmarked": false,
-        "created_at": "2025-10-30T01:59:27Z",
-        "updated_at": "2025-10-30T01:59:27Z"
+        "created_at": "2025-10-30T14:40:17Z",
+        "updated_at": "2025-10-30T14:40:17Z"
       }
     ]
   },
   "apitestuserstory1_Story Writing Discussion": {
-    "id": "96ee3231-21b2-4fbe-9ef8-c5cbbf4e6804",
+    "id": "1bcbcee3-ca89-49bc-b068-871694aeeedb",
     "username": "apitestuserstory1",
     "title": "Story Writing Discussion",
     "messages": [
       {
-        "id": "41f4b18a-35ae-4683-90e4-494c8bad73ed",
-        "conversation_id": "96ee3231-21b2-4fbe-9ef8-c5cbbf4e6804",
+        "id": "b4ea9aa5-7d38-43e8-9b93-e29caf567bd8",
+        "conversation_id": "1bcbcee3-ca89-49bc-b068-871694aeeedb",
         "role": "user",
         "content": "I'm writing a story in Italian and need help with vocabulary for describing emotions. Can you help?",
         "bookmarked": false,
-        "created_at": "2025-10-30T01:59:27Z",
-        "updated_at": "2025-10-30T01:59:27Z"
+        "created_at": "2025-10-30T14:40:17Z",
+        "updated_at": "2025-10-30T14:40:17Z"
       },
       {
-        "id": "6008cde5-4648-4d97-ae06-7a84fd7e6b97",
-        "conversation_id": "96ee3231-21b2-4fbe-9ef8-c5cbbf4e6804",
+        "id": "f335cc0e-1cec-4738-9159-61e448a79878",
+        "conversation_id": "1bcbcee3-ca89-49bc-b068-871694aeeedb",
         "role": "assistant",
         "content": "Assolutamente! Ecco alcuni vocaboli utili per descrivere le emozioni in italiano:\n\n**Emozioni positive:**\n- Felice (happy)\n- Gioioso/a (joyful)\n- Entusiasta (enthusiastic)\n- Eccitato/a (excited)\n- Tranquillo/a (calm)\n- Rilassato/a (relaxed)\n- Contento/a (content)\n\n**Emozioni negative:**\n- Triste (sad)\n- Arrabbiato/a (angry)\n- Preoccupato/a (worried)\n- Nervoso/a (nervous)\n- Spaventato/a (scared)\n- Confuso/a (confused)\n- Frustrato/a (frustrated)\n\n**Espressioni utili:**\n- Sono felice di vederti = I'm happy to see you\n- Mi sento triste oggi = I feel sad today\n- È molto arrabbiato = He is very angry\n\nVuoi esempi di frasi o altri tipi di emozioni?",
         "bookmarked": false,
-        "created_at": "2025-10-30T01:59:27Z",
-        "updated_at": "2025-10-30T01:59:27Z"
+        "created_at": "2025-10-30T14:40:17Z",
+        "updated_at": "2025-10-30T14:40:17Z"
       }
     ]
   },
   "apitestuserstory1_Story Writing Discussion - To Be Deleted": {
-    "id": "71b8d7b6-22e6-4864-9f80-a1d2e7798c12",
+    "id": "6da006ac-9ad6-41d1-8e1f-5224c19eecbd",
     "username": "apitestuserstory1",
     "title": "Story Writing Discussion - To Be Deleted",
     "messages": [
       {
-        "id": "682e8065-8c8e-453c-9d30-f5c7ad2481ae",
-        "conversation_id": "71b8d7b6-22e6-4864-9f80-a1d2e7798c12",
+        "id": "0edf9752-2b06-4269-adff-ce3301dd50b6",
+        "conversation_id": "6da006ac-9ad6-41d1-8e1f-5224c19eecbd",
         "role": "user",
         "content": "I want to delete this conversation after testing the delete functionality.",
         "bookmarked": false,
-        "created_at": "2025-10-30T01:59:27Z",
-        "updated_at": "2025-10-30T01:59:27Z"
+        "created_at": "2025-10-30T14:40:17Z",
+        "updated_at": "2025-10-30T14:40:17Z"
       },
       {
-        "id": "863f853b-059e-4507-af8d-7ecad4f2b637",
-        "conversation_id": "71b8d7b6-22e6-4864-9f80-a1d2e7798c12",
+        "id": "f1eb35f6-e442-4812-a729-8985ffbfa4dc",
+        "conversation_id": "6da006ac-9ad6-41d1-8e1f-5224c19eecbd",
         "role": "assistant",
         "content": "This conversation is specifically created for testing the delete functionality. You can safely delete it without affecting other tests.",
         "bookmarked": false,
-        "created_at": "2025-10-30T01:59:27Z",
-        "updated_at": "2025-10-30T01:59:27Z"
+        "created_at": "2025-10-30T14:40:17Z",
+        "updated_at": "2025-10-30T14:40:17Z"
       }
     ]
   },
   "testuser_General Language Questions": {
-    "id": "273c1331-ab3b-4716-bd62-7cfcaf059edf",
+    "id": "f9b5ecc2-359a-4eb9-99a4-4ad2cccdb6d8",
     "username": "testuser",
     "title": "General Language Questions",
     "messages": [
       {
-        "id": "1b8f06d5-eb82-4457-9768-5ad0c3801b6d",
-        "conversation_id": "273c1331-ab3b-4716-bd62-7cfcaf059edf",
+        "id": "2545504f-77db-4a66-aae5-54e4d566ed5f",
+        "conversation_id": "f9b5ecc2-359a-4eb9-99a4-4ad2cccdb6d8",
         "role": "user",
         "content": "What's the difference between 'essere' and 'stare' in Italian?",
         "bookmarked": false,
-        "created_at": "2025-10-30T01:59:27Z",
-        "updated_at": "2025-10-30T01:59:27Z"
+        "created_at": "2025-10-30T14:40:17Z",
+        "updated_at": "2025-10-30T14:40:17Z"
       },
       {
-        "id": "caf99eb5-5906-44fa-9099-2b42d31a96a6",
-        "conversation_id": "273c1331-ab3b-4716-bd62-7cfcaf059edf",
+        "id": "6f75eb3f-02ad-4dbe-b87f-4c6e4ac0e652",
+        "conversation_id": "f9b5ecc2-359a-4eb9-99a4-4ad2cccdb6d8",
         "role": "assistant",
         "content": "Ottima domanda! 'Essere' e 'stare' sono entrambi verbi che significano 'to be' in inglese, ma hanno usi diversi:\n\n**Essere** (permanente):\n- Identità: Sono Marco (I am Marco)\n- Nazionalità: Sono italiano (I am Italian)\n- Professione: Sono un insegnante (I am a teacher)\n- Caratteristiche permanenti: Sono alto (I am tall)\n\n**Stare** (temporaneo):\n- Stato di salute: Sto bene (I am well/I feel fine)\n- Posizione: Sto seduto (I am sitting)\n- Condizioni temporanee: Sto studiando (I am studying)\n- Espressioni idiomatiche: Come stai? (How are you?)\n\nLa regola generale è: usa 'essere' per caratteristiche permanenti e 'stare' per stati temporanei o posizioni.",
         "bookmarked": false,
-        "created_at": "2025-10-30T01:59:27Z",
-        "updated_at": "2025-10-30T01:59:27Z"
+        "created_at": "2025-10-30T14:40:17Z",
+        "updated_at": "2025-10-30T14:40:17Z"
       }
     ]
   },
   "testuser_General Language Questions - To Be Deleted": {
-    "id": "eb8d0359-dd52-4fa6-8b90-0d2435b309ab",
+    "id": "1bdda6d9-9c74-466b-a013-4654ed7d7df1",
     "username": "testuser",
     "title": "General Language Questions - To Be Deleted",
     "messages": [
       {
-        "id": "6cd47575-2904-43b7-92b2-59287349cf77",
-        "conversation_id": "eb8d0359-dd52-4fa6-8b90-0d2435b309ab",
+        "id": "9ea3e7f6-7115-4ee9-b40f-3b99ca51ca72",
+        "conversation_id": "1bdda6d9-9c74-466b-a013-4654ed7d7df1",
         "role": "user",
         "content": "I want to delete this conversation after testing the delete functionality.",
         "bookmarked": false,
-        "created_at": "2025-10-30T01:59:27Z",
-        "updated_at": "2025-10-30T01:59:27Z"
+        "created_at": "2025-10-30T14:40:17Z",
+        "updated_at": "2025-10-30T14:40:17Z"
       },
       {
-        "id": "084e7275-a53d-4b26-9830-5e6dde656b1b",
-        "conversation_id": "eb8d0359-dd52-4fa6-8b90-0d2435b309ab",
+        "id": "2f6cf517-67eb-4a61-aa7f-e008ac9f5c67",
+        "conversation_id": "1bdda6d9-9c74-466b-a013-4654ed7d7df1",
         "role": "assistant",
         "content": "This conversation is specifically created for testing the delete functionality. You can safely delete it without affecting other tests.",
         "bookmarked": false,
-        "created_at": "2025-10-30T01:59:27Z",
-        "updated_at": "2025-10-30T01:59:27Z"
+        "created_at": "2025-10-30T14:40:17Z",
+        "updated_at": "2025-10-30T14:40:17Z"
       }
     ]
   }
