@@ -176,6 +176,7 @@ services:
       - POSTGRES_USER=${POSTGRES_USER:-quiz_user}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-quiz_password}
       - ENVIRONMENT=${ENVIRONMENT:-prod}
+      - HOSTNAME=${HOSTNAME:-quiz}
     volumes:
       - ./otel-collector/config/config.docker.yaml:/etc/otel/config.yaml
 

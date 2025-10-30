@@ -59,6 +59,9 @@ processors:
       - key: deployment.environment
         value: ${env:ENVIRONMENT}
         action: upsert
+      - key: host_name
+        value: ${env:HOSTNAME}
+        action: upsert
 #  resource:
 #    attributes:
 #    - key: custom
