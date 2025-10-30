@@ -147,38 +147,38 @@
         {
           "pronoun": "मैं",
           "form": "कहता/कहती आ रहा/रही हूँ",
-          "exampleSentence": "मैं कह रहा/रही हूँ।",
-          "exampleSentenceEn": "I am saying."
+          "exampleSentence": "मैं कई दिनों से कहता/कहती आ रहा/रही हूँ।",
+          "exampleSentenceEn": "I have been saying for many days."
         },
         {
           "pronoun": "तुम",
           "form": "कहते आ रहे हो",
-          "exampleSentence": "तुम कह रहा/रही हो।",
-          "exampleSentenceEn": "You are saying."
+          "exampleSentence": "तुम सुबह से कहते आ रहे हो।",
+          "exampleSentenceEn": "You have been saying since morning."
         },
         {
           "pronoun": "वह/यह",
           "form": "कहता/कहती आ रहा/रही है",
-          "exampleSentence": "वह/यह कह रहा/रही है।",
-          "exampleSentenceEn": "He/She is saying."
+          "exampleSentence": "वह/यह लगातार कहता/कहती आ रहा/रही है।",
+          "exampleSentenceEn": "He/She has been saying continuously."
         },
         {
           "pronoun": "हम",
           "form": "कहते आ रहे हैं",
-          "exampleSentence": "हम कह रहा/रही हैं।",
-          "exampleSentenceEn": "We are saying."
+          "exampleSentence": "हम समय से कहते आ रहे हैं।",
+          "exampleSentenceEn": "We have been saying for some time."
         },
         {
           "pronoun": "आप",
           "form": "कहते आ रहे हैं",
-          "exampleSentence": "आप कह रहा/रही हैं।",
-          "exampleSentenceEn": "You are saying."
+          "exampleSentence": "आप नियमित रूप से कहते आ रहे हैं।",
+          "exampleSentenceEn": "You have been saying regularly."
         },
         {
           "pronoun": "वे/ये",
           "form": "कहते आ रहे हैं",
-          "exampleSentence": "वे/ये कह रहा/रही हैं।",
-          "exampleSentenceEn": "They are saying."
+          "exampleSentence": "वे/ये लंबे समय से कहते आ रहे हैं।",
+          "exampleSentenceEn": "They have been saying for a long time."
         }
       ]
     },

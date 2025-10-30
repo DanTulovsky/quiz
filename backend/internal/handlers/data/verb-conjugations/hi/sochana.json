@@ -147,38 +147,38 @@
         {
           "pronoun": "मैं",
           "form": "सोचता/सोचती आ रहा/रही हूँ",
-          "exampleSentence": "मैं सोच रहा/रही हूँ।",
-          "exampleSentenceEn": "I am thinking."
+          "exampleSentence": "मैं कई दिनों से सोचता/सोचती आ रहा/रही हूँ।",
+          "exampleSentenceEn": "I have been thinking for many days."
         },
         {
           "pronoun": "तुम",
           "form": "सोचते आ रहे हो",
-          "exampleSentence": "तुम सोच रहा/रही हो।",
-          "exampleSentenceEn": "You are thinking."
+          "exampleSentence": "तुम सुबह से सोचते आ रहे हो।",
+          "exampleSentenceEn": "You have been thinking since morning."
         },
         {
           "pronoun": "वह/यह",
           "form": "सोचता/सोचती आ रहा/रही है",
-          "exampleSentence": "वह/यह सोच रहा/रही है।",
-          "exampleSentenceEn": "He/She is thinking."
+          "exampleSentence": "वह/यह लगातार सोचता/सोचती आ रहा/रही है।",
+          "exampleSentenceEn": "He/She has been thinking continuously."
         },
         {
           "pronoun": "हम",
           "form": "सोचते आ रहे हैं",
-          "exampleSentence": "हम सोच रहा/रही हैं।",
-          "exampleSentenceEn": "We are thinking."
+          "exampleSentence": "हम समय से सोचते आ रहे हैं।",
+          "exampleSentenceEn": "We have been thinking for some time."
         },
         {
           "pronoun": "आप",
           "form": "सोचते आ रहे हैं",
-          "exampleSentence": "आप सोच रहा/रही हैं।",
-          "exampleSentenceEn": "You are thinking."
+          "exampleSentence": "आप नियमित रूप से सोचते आ रहे हैं।",
+          "exampleSentenceEn": "You have been thinking regularly."
         },
         {
           "pronoun": "वे/ये",
           "form": "सोचते आ रहे हैं",
-          "exampleSentence": "वे/ये सोच रहा/रही हैं।",
-          "exampleSentenceEn": "They are thinking."
+          "exampleSentence": "वे/ये लंबे समय से सोचते आ रहे हैं।",
+          "exampleSentenceEn": "They have been thinking for a long time."
         }
       ]
     },

@@ -147,38 +147,38 @@
         {
           "pronoun": "मैं",
           "form": "देखता/देखती आ रहा/रही हूँ",
-          "exampleSentence": "मैं फ़िल्म देख रहा/रही हूँ।",
-          "exampleSentenceEn": "I am watching a movie."
+          "exampleSentence": "मैं कई दिनों से फ़िल्में देखता/देखती आ रहा/रही हूँ।",
+          "exampleSentenceEn": "I have been watching movies for many days."
         },
         {
           "pronoun": "तुम",
           "form": "देखते आ रहे हो",
-          "exampleSentence": "तुम फ़िल्म देख रहा/रही हो।",
-          "exampleSentenceEn": "You are watching a movie."
+          "exampleSentence": "तुम सुबह से देखते आ रहे हो।",
+          "exampleSentenceEn": "You have been watching since morning."
         },
         {
           "pronoun": "वह/यह",
           "form": "देखता/देखती आ रहा/रही है",
-          "exampleSentence": "वह/यह फ़िल्म देख रहा/रही है।",
-          "exampleSentenceEn": "He/She is watching a movie."
+          "exampleSentence": "वह/यह लगातार देखता/देखती आ रहा/रही है।",
+          "exampleSentenceEn": "He/She has been watching continuously."
         },
         {
           "pronoun": "हम",
           "form": "देखते आ रहे हैं",
-          "exampleSentence": "हम फ़िल्म देख रहा/रही हैं।",
-          "exampleSentenceEn": "We are watching a movie."
+          "exampleSentence": "हम कुछ समय से देखते आ रहे हैं।",
+          "exampleSentenceEn": "We have been watching for some time."
         },
         {
           "pronoun": "आप",
           "form": "देखते आ रहे हैं",
-          "exampleSentence": "आप फ़िल्म देख रहा/रही हैं।",
-          "exampleSentenceEn": "You are watching a movie."
+          "exampleSentence": "आप नियमित रूप से देखते आ रहे हैं।",
+          "exampleSentenceEn": "You have been watching regularly."
         },
         {
           "pronoun": "वे/ये",
           "form": "देखते आ रहे हैं",
-          "exampleSentence": "वे/ये फ़िल्म देख रहा/रही हैं।",
-          "exampleSentenceEn": "They are watching a movie."
+          "exampleSentence": "वे/ये लंबे समय से देखते आ रहे हैं।",
+          "exampleSentenceEn": "They have been watching for a long time."
         }
       ]
     },
