@@ -104,7 +104,7 @@ const MobilePhrasebookCategoryPage = () => {
         const wordsWithData = section.words.map((word, index) => ({
           ...word,
           originalIndex: index,
-          displayTerm: getTermForLanguage(word as any, languageCode),
+          displayTerm: getTermForLanguage(word as PhrasebookWord, languageCode),
           translation: getTranslation(word),
         }));
 

@@ -40,7 +40,7 @@ import { playTTSOnce } from '../hooks/useTTS';
 import { useTheme } from '../contexts/ThemeContext';
 import { fontScaleMap } from '../theme/theme';
 import { defaultVoiceForLanguage } from '../utils/tts';
-import { getTermForLanguage } from '../utils/phrasebook';
+import { getTermForLanguage, type PhrasebookWord } from '../utils/phrasebook';
 import { ensureLanguagesLoaded } from '../utils/locale';
 import {
   loadCategoryData,
@@ -93,7 +93,7 @@ const PhrasebookCategoryPage = () => {
         const wordsWithIndex = section.words.map((word, index) => ({
           ...word,
           originalIndex: index,
-          displayTerm: getTermForLanguage(word as any, languageCode),
+          displayTerm: getTermForLanguage(word as PhrasebookWord, languageCode),
           translation: getTranslation(word),
         }));
 
