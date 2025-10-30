@@ -1,0 +1,193 @@
+{
+  "language": "es",
+  "languageName": "Spanish",
+  "infinitive": "decir",
+  "infinitiveEn": "to say/tell",
+  "category": "communication",
+  "tenses": [
+    {"tenseId":"indicative_present","tenseName":"Presente","tenseNameEn":"Indicative Present","description":"Decir en presente.","conjugations":[
+      {"pronoun":"yo","form":"digo","exampleSentence":"Digo la verdad.","exampleSentenceEn":"I tell the truth."},
+      {"pronoun":"tú","form":"dices","exampleSentence":"¿Dices eso en serio?","exampleSentenceEn":"Do you mean that seriously?"},
+      {"pronoun":"él/ella/usted","form":"dice","exampleSentence":"Dice que vendrá.","exampleSentenceEn":"He says he will come."},
+      {"pronoun":"nosotros","form":"decimos","exampleSentence":"Decimos gracias.","exampleSentenceEn":"We say thanks."},
+      {"pronoun":"vosotros","form":"decís","exampleSentence":"¿Decís la verdad?","exampleSentenceEn":"Do you all tell the truth?"},
+      {"pronoun":"ellos/ustedes","form":"dicen","exampleSentence":"Dicen que llueve.","exampleSentenceEn":"They say it's raining."}
+    ]},
+    {"tenseId":"indicative_imperfect","tenseName":"Pretérito imperfecto","tenseNameEn":"Imperfect","description":"Decir habitual en el pasado.","conjugations":[
+      {"pronoun":"yo","form":"decía","exampleSentence":"Decía cuentos a mis hijos.","exampleSentenceEn":"I used to tell stories to my kids."},
+      {"pronoun":"tú","form":"decías","exampleSentence":"Decías la verdad siempre.","exampleSentenceEn":"You always told the truth."},
+      {"pronoun":"él/ella/usted","form":"decía","exampleSentence":"Decía que era tarde.","exampleSentenceEn":"He used to say it was late."},
+      {"pronoun":"nosotros","form":"decíamos","exampleSentence":"Decíamos buenas noches.","exampleSentenceEn":"We used to say good night."},
+      {"pronoun":"vosotros","form":"decíais","exampleSentence":"Decíais bromas.","exampleSentenceEn":"You all used to tell jokes."},
+      {"pronoun":"ellos/ustedes","form":"decían","exampleSentence":"Decían muchas cosas.","exampleSentenceEn":"They used to say many things."}
+    ]},
+    {"tenseId":"indicative_preterite","tenseName":"Pretérito perfecto simple","tenseNameEn":"Preterite","description":"Decir completado en el pasado.","conjugations":[
+      {"pronoun":"yo","form":"dije","exampleSentence":"Dije tu nombre.","exampleSentenceEn":"I said your name."},
+      {"pronoun":"tú","form":"dijiste","exampleSentence":"Dijiste la verdad.","exampleSentenceEn":"You told the truth."},
+      {"pronoun":"él/ella/usted","form":"dijo","exampleSentence":"Dijo que no podía.","exampleSentenceEn":"He said he couldn't."},
+      {"pronoun":"nosotros","form":"dijimos","exampleSentence":"Dijimos basta.","exampleSentenceEn":"We said enough."},
+      {"pronoun":"vosotros","form":"dijisteis","exampleSentence":"Dijisteis todo.","exampleSentenceEn":"You all said everything."},
+      {"pronoun":"ellos/ustedes","form":"dijeron","exampleSentence":"Dijeron adiós.","exampleSentenceEn":"They said goodbye."}
+    ]},
+    {"tenseId":"indicative_future","tenseName":"Futuro simple","tenseNameEn":"Simple Future","description":"Decir en el futuro.","conjugations":[
+      {"pronoun":"yo","form":"diré","exampleSentence":"Diré la verdad.","exampleSentenceEn":"I will tell the truth."},
+      {"pronoun":"tú","form":"dirás","exampleSentence":"Dirás lo que viste.","exampleSentenceEn":"You will say what you saw."},
+      {"pronoun":"él/ella/usted","form":"dirá","exampleSentence":"Dirá su opinión.","exampleSentenceEn":"He will state his opinion."},
+      {"pronoun":"nosotros","form":"diremos","exampleSentence":"Diremos gracias.","exampleSentenceEn":"We will say thanks."},
+      {"pronoun":"vosotros","form":"diréis","exampleSentence":"Diréis la respuesta.","exampleSentenceEn":"You all will say the answer."},
+      {"pronoun":"ellos/ustedes","form":"dirán","exampleSentence":"Dirán la verdad.","exampleSentenceEn":"They will tell the truth."}
+    ]},
+    {"tenseId":"indicative_conditional","tenseName":"Condicional simple","tenseNameEn":"Conditional","description":"Decir hipotético o cortesía.","conjugations":[
+      {"pronoun":"yo","form":"diría","exampleSentence":"Diría que sí.","exampleSentenceEn":"I would say yes."},
+      {"pronoun":"tú","form":"dirías","exampleSentence":"¿Dirías la verdad?","exampleSentenceEn":"Would you tell the truth?"},
+      {"pronoun":"él/ella/usted","form":"diría","exampleSentence":"Diría otra cosa.","exampleSentenceEn":"He would say something else."},
+      {"pronoun":"nosotros","form":"diríamos","exampleSentence":"Diríamos lo mismo.","exampleSentenceEn":"We would say the same."},
+      {"pronoun":"vosotros","form":"diríais","exampleSentence":"Diríais que no.","exampleSentenceEn":"You all would say no."},
+      {"pronoun":"ellos/ustedes","form":"dirían","exampleSentence":"Dirían la verdad.","exampleSentenceEn":"They would tell the truth."}
+    ]},
+    {"tenseId":"indicative_present_perfect","tenseName":"Pretérito perfecto compuesto","tenseNameEn":"Present Perfect","description":"Decir pasado con relevancia actual.","conjugations":[
+      {"pronoun":"yo","form":"he dicho","exampleSentence":"He dicho todo.","exampleSentenceEn":"I have said everything."},
+      {"pronoun":"tú","form":"has dicho","exampleSentence":"Has dicho la verdad.","exampleSentenceEn":"You have told the truth."},
+      {"pronoun":"él/ella/usted","form":"ha dicho","exampleSentence":"Ha dicho su opinión.","exampleSentenceEn":"He has stated his opinion."},
+      {"pronoun":"nosotros","form":"hemos dicho","exampleSentence":"Hemos dicho basta.","exampleSentenceEn":"We have said enough."},
+      {"pronoun":"vosotros","form":"habéis dicho","exampleSentence":"Habéis dicho mucho.","exampleSentenceEn":"You all have said a lot."},
+      {"pronoun":"ellos/ustedes","form":"han dicho","exampleSentence":"Han dicho mentiras.","exampleSentenceEn":"They have told lies."}
+    ]},
+    {"tenseId":"indicative_pluperfect","tenseName":"Pluscuamperfecto","tenseNameEn":"Pluperfect","description":"Decir anterior a otra acción pasada.","conjugations":[
+      {"pronoun":"yo","form":"había dicho","exampleSentence":"Había dicho que no.","exampleSentenceEn":"I had said no."},
+      {"pronoun":"tú","form":"habías dicho","exampleSentence":"Habías dicho la verdad.","exampleSentenceEn":"You had told the truth."},
+      {"pronoun":"él/ella/usted","form":"había dicho","exampleSentence":"Había dicho su nombre.","exampleSentenceEn":"He had said his name."},
+      {"pronoun":"nosotros","form":"habíamos dicho","exampleSentence":"Habíamos dicho todo.","exampleSentenceEn":"We had said everything."},
+      {"pronoun":"vosotros","form":"habíais dicho","exampleSentence":"Habíais dicho bastante.","exampleSentenceEn":"You all had said enough."},
+      {"pronoun":"ellos/ustedes","form":"habían dicho","exampleSentence":"Habían dicho adiós.","exampleSentenceEn":"They had said goodbye."}
+    ]},
+    {"tenseId":"indicative_preterite_perfect","tenseName":"Pretérito anterior","tenseNameEn":"Preterite Perfect","description":"Uso literario.","conjugations":[
+      {"pronoun":"yo","form":"hube dicho","exampleSentence":"Apenas hube dicho eso, me fui.","exampleSentenceEn":"As soon as I had said that, I left."},
+      {"pronoun":"tú","form":"hubiste dicho","exampleSentence":"Cuando hubiste dicho su nombre, entró.","exampleSentenceEn":"When you had said his name, he entered."},
+      {"pronoun":"él/ella/usted","form":"hubo dicho","exampleSentence":"Apenas hubo dicho adiós, salió.","exampleSentenceEn":"As soon as he had said goodbye, he left."},
+      {"pronoun":"nosotros","form":"hubimos dicho","exampleSentence":"Hubimos dicho todo.","exampleSentenceEn":"We had said everything."},
+      {"pronoun":"vosotros","form":"hubisteis dicho","exampleSentence":"Hubisteis dicho bastante.","exampleSentenceEn":"You all had said enough."},
+      {"pronoun":"ellos/ustedes","form":"hubieron dicho","exampleSentence":"Hubieron dicho la verdad.","exampleSentenceEn":"They had told the truth."}
+    ]},
+    {"tenseId":"indicative_future_perfect","tenseName":"Futuro perfecto","tenseNameEn":"Future Perfect","description":"Acción completada antes de un punto futuro.","conjugations":[
+      {"pronoun":"yo","form":"habré dicho","exampleSentence":"Para entonces habré dicho todo.","exampleSentenceEn":"By then I will have said everything."},
+      {"pronoun":"tú","form":"habrás dicho","exampleSentence":"Habrás dicho suficiente.","exampleSentenceEn":"You will have said enough."},
+      {"pronoun":"él/ella/usted","form":"habrá dicho","exampleSentence":"Habrá dicho su opinión.","exampleSentenceEn":"He will have stated his opinion."},
+      {"pronoun":"nosotros","form":"habremos dicho","exampleSentence":"Habremos dicho lo necesario.","exampleSentenceEn":"We will have said what is necessary."},
+      {"pronoun":"vosotros","form":"habréis dicho","exampleSentence":"Habréis dicho bastante.","exampleSentenceEn":"You all will have said enough."},
+      {"pronoun":"ellos/ustedes","form":"habrán dicho","exampleSentence":"Habrán dicho todo.","exampleSentenceEn":"They will have said everything."}
+    ]},
+    {"tenseId":"indicative_conditional_perfect","tenseName":"Condicional perfecto","tenseNameEn":"Conditional Perfect","description":"Decir hipotético completado.","conjugations":[
+      {"pronoun":"yo","form":"habría dicho","exampleSentence":"Habría dicho que sí.","exampleSentenceEn":"I would have said yes."},
+      {"pronoun":"tú","form":"habrías dicho","exampleSentence":"Habrías dicho otra cosa.","exampleSentenceEn":"You would have said something else."},
+      {"pronoun":"él/ella/usted","form":"habría dicho","exampleSentence":"Habría dicho la verdad.","exampleSentenceEn":"He would have told the truth."},
+      {"pronoun":"nosotros","form":"habríamos dicho","exampleSentence":"Habríamos dicho más.","exampleSentenceEn":"We would have said more."},
+      {"pronoun":"vosotros","form":"habríais dicho","exampleSentence":"Habríais dicho todo.","exampleSentenceEn":"You all would have said everything."},
+      {"pronoun":"ellos/ustedes","form":"habrían dicho","exampleSentence":"Habrían dicho suficiente.","exampleSentenceEn":"They would have said enough."}
+    ]},
+    {"tenseId":"subjunctive_present","tenseName":"Presente (subjuntivo)","tenseNameEn":"Subjunctive Present","description":"Deseos o posibilidad de decir.","conjugations":[
+      {"pronoun":"yo","form":"diga","exampleSentence":"Ojalá diga la verdad.","exampleSentenceEn":"I hope I tell the truth."},
+      {"pronoun":"tú","form":"digas","exampleSentence":"Espero que digas tu opinión.","exampleSentenceEn":"I hope you say your opinion."},
+      {"pronoun":"él/ella/usted","form":"diga","exampleSentence":"Es mejor que diga menos.","exampleSentenceEn":"It's better that he say less."},
+      {"pronoun":"nosotros","form":"digamos","exampleSentence":"Quieren que digamos gracias.","exampleSentenceEn":"They want us to say thanks."},
+      {"pronoun":"vosotros","form":"digáis","exampleSentence":"Es bueno que digáis la verdad.","exampleSentenceEn":"It's good that you all tell the truth."},
+      {"pronoun":"ellos/ustedes","form":"digan","exampleSentence":"Temen que digan mentiras.","exampleSentenceEn":"They fear that you tell lies."}
+    ]},
+    {"tenseId":"subjunctive_imperfect_ra","tenseName":"Imperfecto (ra)","tenseNameEn":"Subjunctive Imperfect (-ra)","description":"Decir hipotético pasado.","conjugations":[
+      {"pronoun":"yo","form":"dijera","exampleSentence":"Si dijera eso, me creerían.","exampleSentenceEn":"If I said that, they'd believe me."},
+      {"pronoun":"tú","form":"dijeras","exampleSentence":"Ojalá dijeras la verdad.","exampleSentenceEn":"I wish you told the truth."},
+      {"pronoun":"él/ella/usted","form":"dijera","exampleSentence":"Quisiera que dijera más.","exampleSentenceEn":"I'd like him to say more."},
+      {"pronoun":"nosotros","form":"dijéramos","exampleSentence":"Si dijéramos esto, cambiaría.","exampleSentenceEn":"If we said this, it would change."},
+      {"pronoun":"vosotros","form":"dijerais","exampleSentence":"Si dijerais la verdad, confiarían.","exampleSentenceEn":"If you all told the truth, they'd trust."},
+      {"pronoun":"ellos/ustedes","form":"dijeran","exampleSentence":"Si dijeran adiós, acabaría.","exampleSentenceEn":"If they said goodbye, it would end."}
+    ]},
+    {"tenseId":"subjunctive_imperfect_se","tenseName":"Imperfecto (se)","tenseNameEn":"Subjunctive Imperfect (-se)","description":"Variante -se.","conjugations":[
+      {"pronoun":"yo","form":"dijese","exampleSentence":"Si dijese eso, me creerían.","exampleSentenceEn":"If I said that, they'd believe me."},
+      {"pronoun":"tú","form":"dijeses","exampleSentence":"Quisiera que dijeses más.","exampleSentenceEn":"I'd like you to say more."},
+      {"pronoun":"él/ella/usted","form":"dijese","exampleSentence":"No creía que dijese la verdad.","exampleSentenceEn":"I didn't think he told the truth."},
+      {"pronoun":"nosotros","form":"dijésemos","exampleSentence":"Si dijésemos todo, entenderían.","exampleSentenceEn":"If we said everything, they'd understand."},
+      {"pronoun":"vosotros","form":"dijeseis","exampleSentence":"Si dijeseis poco, bastaría.","exampleSentenceEn":"If you said little, it would suffice."},
+      {"pronoun":"ellos/ustedes","form":"dijesen","exampleSentence":"Si dijesen adiós, terminaría.","exampleSentenceEn":"If they said goodbye, it would end."}
+    ]},
+    {"tenseId":"subjunctive_future","tenseName":"Futuro (subjuntivo)","tenseNameEn":"Subjunctive Future","description":"Uso arcaico/jurídico.","conjugations":[
+      {"pronoun":"yo","form":"dijere","exampleSentence":"Quien dijere la verdad, será absuelto.","exampleSentenceEn":"Whoever tell the truth shall be acquitted."},
+      {"pronoun":"tú","form":"dijeres","exampleSentence":"Si dijeres tu nombre, entrarás.","exampleSentenceEn":"If you tell your name, you shall enter."},
+      {"pronoun":"él/ella/usted","form":"dijere","exampleSentence":"Si dijere eso, cambiará.","exampleSentenceEn":"If he say that, it shall change."},
+      {"pronoun":"nosotros","form":"dijéremos","exampleSentence":"Si dijéremos todo, sabrán.","exampleSentenceEn":"If we say everything, they shall know."},
+      {"pronoun":"vosotros","form":"dijereis","exampleSentence":"Si dijereis nada, callad.","exampleSentenceEn":"If you say nothing, be silent."},
+      {"pronoun":"ellos/ustedes","form":"dijeren","exampleSentence":"Si dijeren mentiras, serán sancionados.","exampleSentenceEn":"If they tell lies, they shall be sanctioned."}
+    ]},
+    {"tenseId":"subjunctive_present_perfect","tenseName":"Pretérito perfecto (subj.)","tenseNameEn":"Subjunctive Present Perfect","description":"Acción pasada con relación al presente de subjuntivo.","conjugations":[
+      {"pronoun":"yo","form":"haya dicho","exampleSentence":"Dudo que haya dicho eso.","exampleSentenceEn":"I doubt I have said that."},
+      {"pronoun":"tú","form":"hayas dicho","exampleSentence":"No creo que hayas dicho la verdad.","exampleSentenceEn":"I don't think you have told the truth."},
+      {"pronoun":"él/ella/usted","form":"haya dicho","exampleSentence":"Es posible que haya dicho demasiado.","exampleSentenceEn":"It's possible he has said too much."},
+      {"pronoun":"nosotros","form":"hayamos dicho","exampleSentence":"Ojalá hayamos dicho suficiente.","exampleSentenceEn":"I hope we have said enough."},
+      {"pronoun":"vosotros","form":"hayáis dicho","exampleSentence":"Puede que hayáis dicho bastante.","exampleSentenceEn":"You all may have said enough."},
+      {"pronoun":"ellos/ustedes","form":"hayan dicho","exampleSentence":"No piensan que hayan dicho nada.","exampleSentenceEn":"They don't think you have said anything."}
+    ]},
+    {"tenseId":"subjunctive_pluperfect_ra","tenseName":"Pluscuamperfecto (ra)","tenseNameEn":"Subjunctive Pluperfect (-ra)","description":"Acción anterior hipotética.","conjugations":[
+      {"pronoun":"yo","form":"hubiera dicho","exampleSentence":"Si hubiera dicho la verdad, confiarían.","exampleSentenceEn":"If I had told the truth, they would trust."},
+      {"pronoun":"tú","form":"hubieras dicho","exampleSentence":"Si hubieras dicho eso, te creería.","exampleSentenceEn":"If you had said that, I would believe you."},
+      {"pronoun":"él/ella/usted","form":"hubiera dicho","exampleSentence":"Si hubiera dicho menos, estaría bien.","exampleSentenceEn":"If he had said less, it would be fine."},
+      {"pronoun":"nosotros","form":"hubiéramos dicho","exampleSentence":"Si hubiéramos dicho algo, sabrían.","exampleSentenceEn":"If we had said something, they would know."},
+      {"pronoun":"vosotros","form":"hubierais dicho","exampleSentence":"Si hubierais dicho todo, acabaría.","exampleSentenceEn":"If you all had said everything, it would end."},
+      {"pronoun":"ellos/ustedes","form":"hubieran dicho","exampleSentence":"Si hubieran dicho mentiras, dudaríamos.","exampleSentenceEn":"If they had told lies, we would doubt."}
+    ]},
+    {"tenseId":"subjunctive_pluperfect_se","tenseName":"Pluscuamperfecto (se)","tenseNameEn":"Subjunctive Pluperfect (-se)","description":"Acción anterior hipotética (variante -se).","conjugations":[
+      {"pronoun":"yo","form":"hubiese dicho","exampleSentence":"Si hubiese dicho todo, sabrían.","exampleSentenceEn":"If I had said everything, they'd know."},
+      {"pronoun":"tú","form":"hubieses dicho","exampleSentence":"Si hubieses dicho la verdad, confiarían.","exampleSentenceEn":"If you had told the truth, they'd trust."},
+      {"pronoun":"él/ella/usted","form":"hubiese dicho","exampleSentence":"No pensé que hubiese dicho eso.","exampleSentenceEn":"I didn't think he had said that."},
+      {"pronoun":"nosotros","form":"hubiésemos dicho","exampleSentence":"Si hubiésemos dicho poco, bastaría.","exampleSentenceEn":"If we had said little, it would suffice."},
+      {"pronoun":"vosotros","form":"hubieseis dicho","exampleSentence":"Si hubieseis dicho más, entenderían.","exampleSentenceEn":"If you all had said more, they'd understand."},
+      {"pronoun":"ellos/ustedes","form":"hubiesen dicho","exampleSentence":"Si hubiesen dicho menos, estaría bien.","exampleSentenceEn":"If they had said less, it would be fine."}
+    ]},
+    {"tenseId":"subjunctive_future_perfect","tenseName":"Futuro perfecto (subj.)","tenseNameEn":"Subjunctive Future Perfect","description":"Uso arcaico.","conjugations":[
+      {"pronoun":"yo","form":"hubiere dicho","exampleSentence":"Si hubiere dicho la verdad, será absuelto.","exampleSentenceEn":"If he shall have told the truth, he shall be acquitted."},
+      {"pronoun":"tú","form":"hubieres dicho","exampleSentence":"Si hubieres dicho tu nombre, entrarás.","exampleSentenceEn":"If you shall have said your name, you shall enter."},
+      {"pronoun":"él/ella/usted","form":"hubiere dicho","exampleSentence":"Si hubiere dicho menos, bastará.","exampleSentenceEn":"If he shall have said less, it shall suffice."},
+      {"pronoun":"nosotros","form":"hubiéremos dicho","exampleSentence":"Si hubiéremos dicho todo, sabrán.","exampleSentenceEn":"If we shall have said everything, they will know."},
+      {"pronoun":"vosotros","form":"hubiereis dicho","exampleSentence":"Si hubiereis dicho nada, callad.","exampleSentenceEn":"If you shall have said nothing, be silent."},
+      {"pronoun":"ellos/ustedes","form":"hubieren dicho","exampleSentence":"Si hubieren dicho mentiras, serán sancionados.","exampleSentenceEn":"If they shall have told lies, they will be sanctioned."}
+    ]},
+    {"tenseId":"imperative_affirmative","tenseName":"Imperativo afirmativo","tenseNameEn":"Imperative Affirmative","description":"Órdenes afirmativas con decir.","conjugations":[
+      {"pronoun":"tú","form":"di","exampleSentence":"Di la verdad.","exampleSentenceEn":"Tell the truth."},
+      {"pronoun":"usted","form":"diga","exampleSentence":"Diga su nombre.","exampleSentenceEn":"Say your name, please."},
+      {"pronoun":"nosotros","form":"digamos","exampleSentence":"Digamos gracias.","exampleSentenceEn":"Let's say thanks."},
+      {"pronoun":"vosotros","form":"decid","exampleSentence":"Decid lo que pensáis.","exampleSentenceEn":"Say what you think (you all)."},
+      {"pronoun":"ustedes","form":"digan","exampleSentence":"Digan la verdad.","exampleSentenceEn":"Tell the truth (you all)."}
+    ]},
+    {"tenseId":"imperative_negative","tenseName":"Imperativo negativo","tenseNameEn":"Imperative Negative","description":"Órdenes negativas con decir.","conjugations":[
+      {"pronoun":"tú","form":"no digas","exampleSentence":"No digas mentiras.","exampleSentenceEn":"Don't tell lies."},
+      {"pronoun":"usted","form":"no diga","exampleSentence":"No diga eso.","exampleSentenceEn":"Don't say that."},
+      {"pronoun":"nosotros","form":"no digamos","exampleSentence":"No digamos más.","exampleSentenceEn":"Let's not say more."},
+      {"pronoun":"vosotros","form":"no digáis","exampleSentence":"No digáis nada.","exampleSentenceEn":"Don't say anything (you all)."},
+      {"pronoun":"ustedes","form":"no digan","exampleSentence":"No digan mentiras.","exampleSentenceEn":"Don't tell lies (you all)."}
+    ]},
+    {"tenseId":"progressive_present","tenseName":"Progresivo (presente)","tenseNameEn":"Present Progressive","description":"Acción en progreso.","conjugations":[
+      {"pronoun":"yo","form":"estoy diciendo","exampleSentence":"Estoy diciendo la verdad.","exampleSentenceEn":"I am telling the truth."},
+      {"pronoun":"tú","form":"estás diciendo","exampleSentence":"Estás diciendo demasiado.","exampleSentenceEn":"You are saying too much."},
+      {"pronoun":"él/ella/usted","form":"está diciendo","exampleSentence":"Está diciendo su opinión.","exampleSentenceEn":"He is stating his opinion."},
+      {"pronoun":"nosotros","form":"estamos diciendo","exampleSentence":"Estamos diciendo gracias.","exampleSentenceEn":"We are saying thanks."},
+      {"pronoun":"vosotros","form":"estáis diciendo","exampleSentence":"Estáis diciendo cosas importantes.","exampleSentenceEn":"You all are saying important things."},
+      {"pronoun":"ellos/ustedes","form":"están diciendo","exampleSentence":"Están diciendo mentiras.","exampleSentenceEn":"They are telling lies."}
+    ]},
+    {"tenseId":"progressive_past","tenseName":"Progresivo (pasado)","tenseNameEn":"Past Progressive","description":"Acción en progreso en el pasado.","conjugations":[
+      {"pronoun":"yo","form":"estaba diciendo","exampleSentence":"Estaba diciendo tu nombre.","exampleSentenceEn":"I was saying your name."},
+      {"pronoun":"tú","form":"estabas diciendo","exampleSentence":"Estabas diciendo muchas cosas.","exampleSentenceEn":"You were saying many things."},
+      {"pronoun":"él/ella/usted","form":"estaba diciendo","exampleSentence":"Estaba diciendo su opinión.","exampleSentenceEn":"He was stating his opinion."},
+      {"pronoun":"nosotros","form":"estábamos diciendo","exampleSentence":"Estábamos diciendo gracias.","exampleSentenceEn":"We were saying thanks."},
+      {"pronoun":"vosotros","form":"estabais diciendo","exampleSentence":"Estabais diciendo la verdad.","exampleSentenceEn":"You all were telling the truth."},
+      {"pronoun":"ellos/ustedes","form":"estaban diciendo","exampleSentence":"Estaban diciendo mentiras.","exampleSentenceEn":"They were telling lies."}
+    ]},
+    {"tenseId":"progressive_future","tenseName":"Progresivo (futuro)","tenseNameEn":"Future Progressive","description":"Acción en progreso en el futuro.","conjugations":[
+      {"pronoun":"yo","form":"estaré diciendo","exampleSentence":"Estaré diciendo unas palabras.","exampleSentenceEn":"I will be saying a few words."},
+      {"pronoun":"tú","form":"estarás diciendo","exampleSentence":"Estarás diciendo lo mismo.","exampleSentenceEn":"You will be saying the same."},
+      {"pronoun":"él/ella/usted","form":"estará diciendo","exampleSentence":"Estará diciendo su discurso.","exampleSentenceEn":"He will be delivering his speech."},
+      {"pronoun":"nosotros","form":"estaremos diciendo","exampleSentence":"Estaremos diciendo gracias.","exampleSentenceEn":"We will be saying thanks."},
+      {"pronoun":"vosotros","form":"estaréis diciendo","exampleSentence":"Estaréis diciendo todo.","exampleSentenceEn":"You all will be saying everything."},
+      {"pronoun":"ellos/ustedes","form":"estarán diciendo","exampleSentence":"Estarán diciendo la verdad.","exampleSentenceEn":"They will be telling the truth."}
+    ]}
+  ]
+}
+
+

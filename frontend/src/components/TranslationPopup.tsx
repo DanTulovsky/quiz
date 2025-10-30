@@ -28,12 +28,15 @@ interface TranslationPopupProps {
   selection: TextSelection;
   onClose: () => void;
   currentQuestion?: Question | StoryContext | null;
+  // When true, saving requires a valid question id to be present
+  requireQuestionId?: boolean;
 }
 
 export const TranslationPopup: React.FC<TranslationPopupProps> = ({
   selection,
   onClose,
   currentQuestion,
+  requireQuestionId = false,
 }) => {
   const queryClient = useQueryClient();
   const { fontSize } = useTheme();
@@ -199,6 +202,11 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
   };
 
   const position = getPopupPosition();
+
+  // Determine whether a valid question id is available
+  const hasQuestionId = Boolean(currentQuestion && 'id' in currentQuestion);
+  const saveDisabled =
+    isSaving || isSaved || (requireQuestionId && !hasQuestionId);
 
   const speakText = (text: string, lang: string) => {
     if ('speechSynthesis' in window) {
@@ -409,7 +417,11 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
                     Original
                   </Button>
                   <Tooltip
-                    label='Save to snippets'
+                    label={
+                      requireQuestionId && !hasQuestionId
+                        ? 'Waiting for question id…'
+                        : 'Save to snippets'
+                    }
                     withArrow
                     withinPortal={false}
                   >
@@ -425,7 +437,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
                         )
                       }
                       onClick={handleSaveSnippet}
-                      disabled={isSaving || isSaved}
+                      disabled={saveDisabled}
                       color={isSaved ? 'green' : undefined}
                     >
                       {isSaving ? 'Saving...' : isSaved ? 'Saved!' : 'Save'}

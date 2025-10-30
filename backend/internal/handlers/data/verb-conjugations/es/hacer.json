@@ -1,0 +1,331 @@
+{
+  "language": "es",
+  "languageName": "Spanish",
+  "infinitive": "hacer",
+  "infinitiveEn": "to do/make",
+  "category": "core",
+  "tenses": [
+    {
+      "tenseId": "indicative_present",
+      "tenseName": "Presente",
+      "tenseNameEn": "Indicative Present",
+      "description": "Acción de hacer en el presente.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "hago", "exampleSentence": "Hago ejercicio.", "exampleSentenceEn": "I exercise."},
+        {"pronoun": "tú", "form": "haces", "exampleSentence": "¿Haces la tarea?", "exampleSentenceEn": "Do you do your homework?"},
+        {"pronoun": "él/ella/usted", "form": "hace", "exampleSentence": "Ella hace café.", "exampleSentenceEn": "She makes coffee."},
+        {"pronoun": "nosotros", "form": "hacemos", "exampleSentence": "Hacemos planes.", "exampleSentenceEn": "We make plans."},
+        {"pronoun": "vosotros", "form": "hacéis", "exampleSentence": "¿Hacéis preguntas?", "exampleSentenceEn": "Do you all ask questions?"},
+        {"pronoun": "ellos/ustedes", "form": "hacen", "exampleSentence": "Hacen ruido.", "exampleSentenceEn": "They make noise."}
+      ]
+    },
+    {
+      "tenseId": "indicative_imperfect",
+      "tenseName": "Pretérito imperfecto",
+      "tenseNameEn": "Imperfect",
+      "description": "Acción habitual en el pasado.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "hacía", "exampleSentence": "Hacía deporte cada día.", "exampleSentenceEn": "I used to do sports every day."},
+        {"pronoun": "tú", "form": "hacías", "exampleSentence": "Hacías muchas preguntas.", "exampleSentenceEn": "You used to ask many questions."},
+        {"pronoun": "él/ella/usted", "form": "hacía", "exampleSentence": "Hacía tareas por la tarde.", "exampleSentenceEn": "He used to do homework in the afternoon."},
+        {"pronoun": "nosotros", "form": "hacíamos", "exampleSentence": "Hacíamos excursiones.", "exampleSentenceEn": "We used to take trips."},
+        {"pronoun": "vosotros", "form": "hacíais", "exampleSentence": "Hacíais proyectos juntos.", "exampleSentenceEn": "You all used to do projects together."},
+        {"pronoun": "ellos/ustedes", "form": "hacían", "exampleSentence": "Hacían mucho ruido.", "exampleSentenceEn": "They used to make a lot of noise."}
+      ]
+    },
+    {
+      "tenseId": "indicative_preterite",
+      "tenseName": "Pretérito perfecto simple",
+      "tenseNameEn": "Preterite",
+      "description": "Acción completada en el pasado.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "hice", "exampleSentence": "Hice la cena.", "exampleSentenceEn": "I made dinner."},
+        {"pronoun": "tú", "form": "hiciste", "exampleSentence": "Hiciste un buen trabajo.", "exampleSentenceEn": "You did a good job."},
+        {"pronoun": "él/ella/usted", "form": "hizo", "exampleSentence": "Hizo un pastel.", "exampleSentenceEn": "He made a cake."},
+        {"pronoun": "nosotros", "form": "hicimos", "exampleSentence": "Hicimos planes ayer.", "exampleSentenceEn": "We made plans yesterday."},
+        {"pronoun": "vosotros", "form": "hicisteis", "exampleSentence": "Hicisteis ejercicio.", "exampleSentenceEn": "You all worked out."},
+        {"pronoun": "ellos/ustedes", "form": "hicieron", "exampleSentence": "Hicieron lo posible.", "exampleSentenceEn": "They did what they could."}
+      ]
+    },
+    {
+      "tenseId": "indicative_future",
+      "tenseName": "Futuro simple",
+      "tenseNameEn": "Simple Future",
+      "description": "Acción futura de hacer.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "haré", "exampleSentence": "Haré la compra.", "exampleSentenceEn": "I will do the shopping."},
+        {"pronoun": "tú", "form": "harás", "exampleSentence": "Harás la tarea luego.", "exampleSentenceEn": "You will do the homework later."},
+        {"pronoun": "él/ella/usted", "form": "hará", "exampleSentence": "Hará un informe.", "exampleSentenceEn": "He will make a report."},
+        {"pronoun": "nosotros", "form": "haremos", "exampleSentence": "Haremos una fiesta.", "exampleSentenceEn": "We will throw a party."},
+        {"pronoun": "vosotros", "form": "haréis", "exampleSentence": "Haréis los deberes.", "exampleSentenceEn": "You all will do the homework."},
+        {"pronoun": "ellos/ustedes", "form": "harán", "exampleSentence": "Harán llamadas.", "exampleSentenceEn": "They will make calls."}
+      ]
+    },
+    {
+      "tenseId": "indicative_conditional",
+      "tenseName": "Condicional simple",
+      "tenseNameEn": "Conditional",
+      "description": "Hacer hipotético o cortés.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "haría", "exampleSentence": "Haría eso por ti.", "exampleSentenceEn": "I would do that for you."},
+        {"pronoun": "tú", "form": "harías", "exampleSentence": "¿Harías el favor?", "exampleSentenceEn": "Would you do the favor?"},
+        {"pronoun": "él/ella/usted", "form": "haría", "exampleSentence": "Haría una excepción.", "exampleSentenceEn": "He would make an exception."},
+        {"pronoun": "nosotros", "form": "haríamos", "exampleSentence": "Haríamos lo mismo.", "exampleSentenceEn": "We would do the same."},
+        {"pronoun": "vosotros", "form": "haríais", "exampleSentence": "Haríais bien en venir.", "exampleSentenceEn": "You all would do well to come."},
+        {"pronoun": "ellos/ustedes", "form": "harían", "exampleSentence": "Harían cualquier cosa.", "exampleSentenceEn": "They would do anything."}
+      ]
+    },
+    {
+      "tenseId": "indicative_present_perfect",
+      "tenseName": "Pretérito perfecto compuesto",
+      "tenseNameEn": "Present Perfect",
+      "description": "Hacer en el pasado con relevancia actual.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "he hecho", "exampleSentence": "He hecho la cama.", "exampleSentenceEn": "I have made the bed."},
+        {"pronoun": "tú", "form": "has hecho", "exampleSentence": "Has hecho bien.", "exampleSentenceEn": "You have done well."},
+        {"pronoun": "él/ella/usted", "form": "ha hecho", "exampleSentence": "Ha hecho un pastel.", "exampleSentenceEn": "He has made a cake."},
+        {"pronoun": "nosotros", "form": "hemos hecho", "exampleSentence": "Hemos hecho planes.", "exampleSentenceEn": "We have made plans."},
+        {"pronoun": "vosotros", "form": "habéis hecho", "exampleSentence": "Habéis hecho la tarea.", "exampleSentenceEn": "You all have done the homework."},
+        {"pronoun": "ellos/ustedes", "form": "han hecho", "exampleSentence": "Han hecho cambios.", "exampleSentenceEn": "They have made changes."}
+      ]
+    },
+    {
+      "tenseId": "indicative_pluperfect",
+      "tenseName": "Pluscuamperfecto",
+      "tenseNameEn": "Pluperfect",
+      "description": "Hacer antes de otro hecho pasado.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "había hecho", "exampleSentence": "Ya había hecho la comida.", "exampleSentenceEn": "I had already made lunch."},
+        {"pronoun": "tú", "form": "habías hecho", "exampleSentence": "Habías hecho los deberes.", "exampleSentenceEn": "You had done your homework."},
+        {"pronoun": "él/ella/usted", "form": "había hecho", "exampleSentence": "Había hecho una lista.", "exampleSentenceEn": "He had made a list."},
+        {"pronoun": "nosotros", "form": "habíamos hecho", "exampleSentence": "Habíamos hecho reservas.", "exampleSentenceEn": "We had made reservations."},
+        {"pronoun": "vosotros", "form": "habíais hecho", "exampleSentence": "Habíais hecho planes.", "exampleSentenceEn": "You all had made plans."},
+        {"pronoun": "ellos/ustedes", "form": "habían hecho", "exampleSentence": "Habían hecho arreglos.", "exampleSentenceEn": "They had made arrangements."}
+      ]
+    },
+    {
+      "tenseId": "indicative_preterite_perfect",
+      "tenseName": "Pretérito anterior",
+      "tenseNameEn": "Preterite Perfect",
+      "description": "Uso literario para acción inmediatamente anterior.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "hube hecho", "exampleSentence": "Apenas hube hecho la tarea, salí.", "exampleSentenceEn": "As soon as I had done the homework, I went out."},
+        {"pronoun": "tú", "form": "hubiste hecho", "exampleSentence": "Cuando hubiste hecho la lista, compraste.", "exampleSentenceEn": "When you had made the list, you shopped."},
+        {"pronoun": "él/ella/usted", "form": "hubo hecho", "exampleSentence": "Apenas hubo hecho el informe, lo envió.", "exampleSentenceEn": "As soon as he had made the report, he sent it."},
+        {"pronoun": "nosotros", "form": "hubimos hecho", "exampleSentence": "Hubimos hecho todo.", "exampleSentenceEn": "We had done everything."},
+        {"pronoun": "vosotros", "form": "hubisteis hecho", "exampleSentence": "Hubisteis hecho lo acordado.", "exampleSentenceEn": "You all had done what was agreed."},
+        {"pronoun": "ellos/ustedes", "form": "hubieron hecho", "exampleSentence": "Hubieron hecho cambios.", "exampleSentenceEn": "They had made changes."}
+      ]
+    },
+    {
+      "tenseId": "indicative_future_perfect",
+      "tenseName": "Futuro perfecto",
+      "tenseNameEn": "Future Perfect",
+      "description": "Acción completada antes de un futuro.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "habré hecho", "exampleSentence": "Para entonces habré hecho la compra.", "exampleSentenceEn": "By then I will have done the shopping."},
+        {"pronoun": "tú", "form": "habrás hecho", "exampleSentence": "Habrás hecho progreso.", "exampleSentenceEn": "You will have made progress."},
+        {"pronoun": "él/ella/usted", "form": "habrá hecho", "exampleSentence": "Habrá hecho el informe.", "exampleSentenceEn": "He will have made the report."},
+        {"pronoun": "nosotros", "form": "habremos hecho", "exampleSentence": "Habremos hecho reservas.", "exampleSentenceEn": "We will have made reservations."},
+        {"pronoun": "vosotros", "form": "habréis hecho", "exampleSentence": "Habréis hecho práctica.", "exampleSentenceEn": "You all will have practiced."},
+        {"pronoun": "ellos/ustedes", "form": "habrán hecho", "exampleSentence": "Habrán hecho mejoras.", "exampleSentenceEn": "They will have made improvements."}
+      ]
+    },
+    {
+      "tenseId": "indicative_conditional_perfect",
+      "tenseName": "Condicional perfecto",
+      "tenseNameEn": "Conditional Perfect",
+      "description": "Hacer hipotético completado.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "habría hecho", "exampleSentence": "Habría hecho más si podía.", "exampleSentenceEn": "I would have done more if I could."},
+        {"pronoun": "tú", "form": "habrías hecho", "exampleSentence": "Habrías hecho bien.", "exampleSentenceEn": "You would have done well."},
+        {"pronoun": "él/ella/usted", "form": "habría hecho", "exampleSentence": "Habría hecho lo correcto.", "exampleSentenceEn": "He would have done the right thing."},
+        {"pronoun": "nosotros", "form": "habríamos hecho", "exampleSentence": "Habríamos hecho cambios.", "exampleSentenceEn": "We would have made changes."},
+        {"pronoun": "vosotros", "form": "habríais hecho", "exampleSentence": "Habríais hecho la tarea.", "exampleSentenceEn": "You all would have done the homework."},
+        {"pronoun": "ellos/ustedes", "form": "habrían hecho", "exampleSentence": "Habrían hecho mejor.", "exampleSentenceEn": "They would have done better."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_present",
+      "tenseName": "Presente (subjuntivo)",
+      "tenseNameEn": "Subjunctive Present",
+      "description": "Deseos o posibilidad de hacer.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "haga", "exampleSentence": "Ojalá haga buen tiempo.", "exampleSentenceEn": "I hope the weather is good (it makes good weather)."},
+        {"pronoun": "tú", "form": "hagas", "exampleSentence": "Espero que hagas la tarea.", "exampleSentenceEn": "I hope you do your homework."},
+        {"pronoun": "él/ella/usted", "form": "haga", "exampleSentence": "Es mejor que haga silencio.", "exampleSentenceEn": "It's better that he be quiet."},
+        {"pronoun": "nosotros", "form": "hagamos", "exampleSentence": "Quieren que hagamos más.", "exampleSentenceEn": "They want us to do more."},
+        {"pronoun": "vosotros", "form": "hagáis", "exampleSentence": "Es bueno que hagáis preguntas.", "exampleSentenceEn": "It's good that you all ask questions."},
+        {"pronoun": "ellos/ustedes", "form": "hagan", "exampleSentence": "Temen que hagan ruido.", "exampleSentenceEn": "They fear that you make noise."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_imperfect_ra",
+      "tenseName": "Imperfecto (ra)",
+      "tenseNameEn": "Subjunctive Imperfect (-ra)",
+      "description": "Hacer hipotético pasado.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "hiciera", "exampleSentence": "Si hiciera sol, saldríamos.", "exampleSentenceEn": "If it were sunny, we'd go out."},
+        {"pronoun": "tú", "form": "hicieras", "exampleSentence": "Ojalá hicieras más ejercicio.", "exampleSentenceEn": "I wish you did more exercise."},
+        {"pronoun": "él/ella/usted", "form": "hiciera", "exampleSentence": "Quisiera que hiciera silencio.", "exampleSentenceEn": "I'd like him to be quiet."},
+        {"pronoun": "nosotros", "form": "hiciéramos", "exampleSentence": "Si hiciéramos esto, ganaríamos tiempo.", "exampleSentenceEn": "If we did this, we'd save time."},
+        {"pronoun": "vosotros", "form": "hicierais", "exampleSentence": "Si hicierais la tarea, aprenderíais.", "exampleSentenceEn": "If you all did the homework, you'd learn."},
+        {"pronoun": "ellos/ustedes", "form": "hicieran", "exampleSentence": "Si hicieran cambios, mejoraría.", "exampleSentenceEn": "If they made changes, it would improve."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_imperfect_se",
+      "tenseName": "Imperfecto (se)",
+      "tenseNameEn": "Subjunctive Imperfect (-se)",
+      "description": "Variante -se del imperfecto de subjuntivo.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "hiciese", "exampleSentence": "Si hiciese frío, me abrigaría.", "exampleSentenceEn": "If it were cold, I'd bundle up."},
+        {"pronoun": "tú", "form": "hicieses", "exampleSentence": "Quisiera que hicieses silencio.", "exampleSentenceEn": "I'd like you to be quiet."},
+        {"pronoun": "él/ella/usted", "form": "hiciese", "exampleSentence": "No creía que hiciese falta.", "exampleSentenceEn": "I didn't think it was necessary."},
+        {"pronoun": "nosotros", "form": "hiciésemos", "exampleSentence": "Si hiciésemos esto, ahorraríamos.", "exampleSentenceEn": "If we did this, we'd save."},
+        {"pronoun": "vosotros", "form": "hicieseis", "exampleSentence": "Si hicieseis prácticas, mejoraríais.", "exampleSentenceEn": "If you all did practice, you'd improve."},
+        {"pronoun": "ellos/ustedes", "form": "hiciesen", "exampleSentence": "Si hiciesen cambios, crecerían.", "exampleSentenceEn": "If they made changes, they'd grow."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_future",
+      "tenseName": "Futuro (subjuntivo)",
+      "tenseNameEn": "Subjunctive Future",
+      "description": "Uso arcaico/jurídico.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "hiciere", "exampleSentence": "Quien hiciere daño, pagará.", "exampleSentenceEn": "Whoever do harm shall pay."},
+        {"pronoun": "tú", "form": "hicieres", "exampleSentence": "Si hicieres esto, ganarás.", "exampleSentenceEn": "If you do this, you shall win."},
+        {"pronoun": "él/ella/usted", "form": "hiciere", "exampleSentence": "Si hiciere falta, actuará.", "exampleSentenceEn": "If it be necessary, he shall act."},
+        {"pronoun": "nosotros", "form": "hiciéremos", "exampleSentence": "Si hiciéremos mejoras, informaremos.", "exampleSentenceEn": "If we make improvements, we shall inform."},
+        {"pronoun": "vosotros", "form": "hiciereis", "exampleSentence": "Si hiciereis cambios, notificad.", "exampleSentenceEn": "If you make changes, notify."},
+        {"pronoun": "ellos/ustedes", "form": "hicieren", "exampleSentence": "Si hicieren ruido, saldrán.", "exampleSentenceEn": "If they make noise, they shall leave."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_present_perfect",
+      "tenseName": "Pretérito perfecto (subj.)",
+      "tenseNameEn": "Subjunctive Present Perfect",
+      "description": "Acción pasada con relación al presente de subjuntivo.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "haya hecho", "exampleSentence": "Dudo que haya hecho la tarea.", "exampleSentenceEn": "I doubt I have done the homework."},
+        {"pronoun": "tú", "form": "hayas hecho", "exampleSentence": "No creo que hayas hecho eso.", "exampleSentenceEn": "I don't think you have done that."},
+        {"pronoun": "él/ella/usted", "form": "haya hecho", "exampleSentence": "Es posible que haya hecho avances.", "exampleSentenceEn": "It's possible he has made progress."},
+        {"pronoun": "nosotros", "form": "hayamos hecho", "exampleSentence": "Ojalá hayamos hecho lo correcto.", "exampleSentenceEn": "I hope we have done the right thing."},
+        {"pronoun": "vosotros", "form": "hayáis hecho", "exampleSentence": "Puede que hayáis hecho cambios.", "exampleSentenceEn": "You all may have made changes."},
+        {"pronoun": "ellos/ustedes", "form": "hayan hecho", "exampleSentence": "No piensan que hayan hecho suficiente.", "exampleSentenceEn": "They don't think you have done enough."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_pluperfect_ra",
+      "tenseName": "Pluscuamperfecto (ra)",
+      "tenseNameEn": "Subjunctive Pluperfect (-ra)",
+      "description": "Acción anterior hipotética (variante -ra).",
+      "conjugations": [
+        {"pronoun": "yo", "form": "hubiera hecho", "exampleSentence": "Si hubiera hecho más, aprobaría.", "exampleSentenceEn": "If I had done more, I would pass."},
+        {"pronoun": "tú", "form": "hubieras hecho", "exampleSentence": "Si hubieras hecho caso, evitarías esto.", "exampleSentenceEn": "If you had listened, you'd avoid this."},
+        {"pronoun": "él/ella/usted", "form": "hubiera hecho", "exampleSentence": "Si hubiera hecho ejercicio, estaría mejor.", "exampleSentenceEn": "If he had exercised, he'd be better."},
+        {"pronoun": "nosotros", "form": "hubiéramos hecho", "exampleSentence": "Si hubiéramos hecho copias, ahorraríamos tiempo.", "exampleSentenceEn": "If we had made copies, we'd save time."},
+        {"pronoun": "vosotros", "form": "hubierais hecho", "exampleSentence": "Si hubierais hecho reservas, entraríais.", "exampleSentenceEn": "If you all had made reservations, you'd enter."},
+        {"pronoun": "ellos/ustedes", "form": "hubieran hecho", "exampleSentence": "Si hubieran hecho cambios, mejorarían.", "exampleSentenceEn": "If they had made changes, they'd improve."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_pluperfect_se",
+      "tenseName": "Pluscuamperfecto (se)",
+      "tenseNameEn": "Subjunctive Pluperfect (-se)",
+      "description": "Acción anterior hipotética (variante -se).",
+      "conjugations": [
+        {"pronoun": "yo", "form": "hubiese hecho", "exampleSentence": "Si hubiese hecho más, ganaría.", "exampleSentenceEn": "If I had done more, I'd win."},
+        {"pronoun": "tú", "form": "hubieses hecho", "exampleSentence": "Si hubieses hecho la tarea, pasarías.", "exampleSentenceEn": "If you had done the homework, you'd pass."},
+        {"pronoun": "él/ella/usted", "form": "hubiese hecho", "exampleSentence": "No pensé que hubiese hecho tanto.", "exampleSentenceEn": "I didn't think he had done so much."},
+        {"pronoun": "nosotros", "form": "hubiésemos hecho", "exampleSentence": "Si hubiésemos hecho pruebas, sabríamos.", "exampleSentenceEn": "If we had tested, we'd know."},
+        {"pronoun": "vosotros", "form": "hubieseis hecho", "exampleSentence": "Si hubieseis hecho cambios, veríais mejoras.", "exampleSentenceEn": "If you all had made changes, you'd see improvements."},
+        {"pronoun": "ellos/ustedes", "form": "hubiesen hecho", "exampleSentence": "Si hubiesen hecho más, alcanzarían metas.", "exampleSentenceEn": "If they had done more, they'd reach goals."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_future_perfect",
+      "tenseName": "Futuro perfecto (subj.)",
+      "tenseNameEn": "Subjunctive Future Perfect",
+      "description": "Uso arcaico para acción completa previa a futuro hipotético.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "hubiere hecho", "exampleSentence": "Si hubiere hecho falta, actuaré.", "exampleSentenceEn": "If it shall have been needed, I will act."},
+        {"pronoun": "tú", "form": "hubieres hecho", "exampleSentence": "Si hubieres hecho los cambios, publica.", "exampleSentenceEn": "If you shall have made the changes, publish."},
+        {"pronoun": "él/ella/usted", "form": "hubiere hecho", "exampleSentence": "Si hubiere hecho mejoras, presentará.", "exampleSentenceEn": "If he shall have made improvements, he will present."},
+        {"pronoun": "nosotros", "form": "hubiéremos hecho", "exampleSentence": "Si hubiéremos hecho avances, informaremos.", "exampleSentenceEn": "If we shall have made progress, we will inform."},
+        {"pronoun": "vosotros", "form": "hubiereis hecho", "exampleSentence": "Si hubiereis hecho pruebas, continuad.", "exampleSentenceEn": "If you shall have tested, continue."},
+        {"pronoun": "ellos/ustedes", "form": "hubieren hecho", "exampleSentence": "Si hubieren hecho ruido, saldrán.", "exampleSentenceEn": "If they shall have made noise, they will leave."}
+      ]
+    },
+    {
+      "tenseId": "imperative_affirmative",
+      "tenseName": "Imperativo afirmativo",
+      "tenseNameEn": "Imperative Affirmative",
+      "description": "Órdenes afirmativas con hacer.",
+      "conjugations": [
+        {"pronoun": "tú", "form": "haz", "exampleSentence": "Haz la tarea.", "exampleSentenceEn": "Do the homework."},
+        {"pronoun": "usted", "form": "haga", "exampleSentence": "Haga silencio, por favor.", "exampleSentenceEn": "Be quiet, please."},
+        {"pronoun": "nosotros", "form": "hagamos", "exampleSentence": "Hagamos una pausa.", "exampleSentenceEn": "Let's take a break."},
+        {"pronoun": "vosotros", "form": "haced", "exampleSentence": "Haced los ejercicios.", "exampleSentenceEn": "Do the exercises (you all)."},
+        {"pronoun": "ustedes", "form": "hagan", "exampleSentence": "Hagan fila.", "exampleSentenceEn": "Form a line (you all)."}
+      ]
+    },
+    {
+      "tenseId": "imperative_negative",
+      "tenseName": "Imperativo negativo",
+      "tenseNameEn": "Imperative Negative",
+      "description": "Órdenes negativas con hacer.",
+      "conjugations": [
+        {"pronoun": "tú", "form": "no hagas", "exampleSentence": "No hagas ruido.", "exampleSentenceEn": "Don't make noise."},
+        {"pronoun": "usted", "form": "no haga", "exampleSentence": "No haga eso.", "exampleSentenceEn": "Don't do that."},
+        {"pronoun": "nosotros", "form": "no hagamos", "exampleSentence": "No hagamos suposiciones.", "exampleSentenceEn": "Let's not make assumptions."},
+        {"pronoun": "vosotros", "form": "no hagáis", "exampleSentence": "No hagáis trampas.", "exampleSentenceEn": "Don't cheat (you all)."},
+        {"pronoun": "ustedes", "form": "no hagan", "exampleSentence": "No hagan ruido.", "exampleSentenceEn": "Don't make noise (you all)."}
+      ]
+    },
+    {
+      "tenseId": "progressive_present",
+      "tenseName": "Progresivo (presente)",
+      "tenseNameEn": "Present Progressive",
+      "description": "Acción en progreso ahora.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "estoy haciendo", "exampleSentence": "Estoy haciendo la cena.", "exampleSentenceEn": "I am making dinner."},
+        {"pronoun": "tú", "form": "estás haciendo", "exampleSentence": "Estás haciendo ruido.", "exampleSentenceEn": "You are making noise."},
+        {"pronoun": "él/ella/usted", "form": "está haciendo", "exampleSentence": "Está haciendo ejercicio.", "exampleSentenceEn": "He is exercising."},
+        {"pronoun": "nosotros", "form": "estamos haciendo", "exampleSentence": "Estamos haciendo planes.", "exampleSentenceEn": "We are making plans."},
+        {"pronoun": "vosotros", "form": "estáis haciendo", "exampleSentence": "Estáis haciendo pruebas.", "exampleSentenceEn": "You all are doing tests."},
+        {"pronoun": "ellos/ustedes", "form": "están haciendo", "exampleSentence": "Están haciendo reformas.", "exampleSentenceEn": "They are doing renovations."}
+      ]
+    },
+    {
+      "tenseId": "progressive_past",
+      "tenseName": "Progresivo (pasado)",
+      "tenseNameEn": "Past Progressive",
+      "description": "Acción en progreso en el pasado.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "estaba haciendo", "exampleSentence": "Estaba haciendo la maleta.", "exampleSentenceEn": "I was packing the suitcase."},
+        {"pronoun": "tú", "form": "estabas haciendo", "exampleSentence": "Estabas haciendo cola.", "exampleSentenceEn": "You were standing in line."},
+        {"pronoun": "él/ella/usted", "form": "estaba haciendo", "exampleSentence": "Estaba haciendo llamadas.", "exampleSentenceEn": "He was making calls."},
+        {"pronoun": "nosotros", "form": "estábamos haciendo", "exampleSentence": "Estábamos haciendo limpieza.", "exampleSentenceEn": "We were cleaning."},
+        {"pronoun": "vosotros", "form": "estabais haciendo", "exampleSentence": "Estabais haciendo trámites.", "exampleSentenceEn": "You all were doing paperwork."},
+        {"pronoun": "ellos/ustedes", "form": "estaban haciendo", "exampleSentence": "Estaban haciendo ruido.", "exampleSentenceEn": "They were making noise."}
+      ]
+    },
+    {
+      "tenseId": "progressive_future",
+      "tenseName": "Progresivo (futuro)",
+      "tenseNameEn": "Future Progressive",
+      "description": "Acción en progreso en el futuro.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "estaré haciendo", "exampleSentence": "Estaré haciendo un informe.", "exampleSentenceEn": "I will be making a report."},
+        {"pronoun": "tú", "form": "estarás haciendo", "exampleSentence": "Estarás haciendo tarea.", "exampleSentenceEn": "You will be doing homework."},
+        {"pronoun": "él/ella/usted", "form": "estará haciendo", "exampleSentence": "Estará haciendo ajustes.", "exampleSentenceEn": "He will be making adjustments."},
+        {"pronoun": "nosotros", "form": "estaremos haciendo", "exampleSentence": "Estaremos haciendo pruebas.", "exampleSentenceEn": "We will be running tests."},
+        {"pronoun": "vosotros", "form": "estaréis haciendo", "exampleSentence": "Estaréis haciendo cola.", "exampleSentenceEn": "You all will be waiting in line."},
+        {"pronoun": "ellos/ustedes", "form": "estarán haciendo", "exampleSentence": "Estarán haciendo cambios.", "exampleSentenceEn": "They will be making changes."}
+      ]
+    }
+  ]
+}
+
+

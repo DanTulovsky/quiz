@@ -1,0 +1,193 @@
+{
+  "language": "es",
+  "languageName": "Spanish",
+  "infinitive": "venir",
+  "infinitiveEn": "to come",
+  "category": "movement",
+  "tenses": [
+    {"tenseId":"indicative_present","tenseName":"Presente","tenseNameEn":"Indicative Present","description":"Venir en presente.","conjugations":[
+      {"pronoun":"yo","form":"vengo","exampleSentence":"Vengo ahora.","exampleSentenceEn":"I am coming now."},
+      {"pronoun":"tú","form":"vienes","exampleSentence":"¿Vienes conmigo?","exampleSentenceEn":"Are you coming with me?"},
+      {"pronoun":"él/ella/usted","form":"viene","exampleSentence":"Él viene mañana.","exampleSentenceEn":"He is coming tomorrow."},
+      {"pronoun":"nosotros","form":"venimos","exampleSentence":"Venimos en coche.","exampleSentenceEn":"We come by car."},
+      {"pronoun":"vosotros","form":"venís","exampleSentence":"¿Venís también?","exampleSentenceEn":"Are you all coming too?"},
+      {"pronoun":"ellos/ustedes","form":"vienen","exampleSentence":"Ellos vienen juntos.","exampleSentenceEn":"They come together."}
+    ]},
+    {"tenseId":"indicative_imperfect","tenseName":"Pretérito imperfecto","tenseNameEn":"Imperfect","description":"Venir habitual en el pasado.","conjugations":[
+      {"pronoun":"yo","form":"venía","exampleSentence":"Venía a menudo.","exampleSentenceEn":"I used to come often."},
+      {"pronoun":"tú","form":"venías","exampleSentence":"Venías los sábados.","exampleSentenceEn":"You used to come on Saturdays."},
+      {"pronoun":"él/ella/usted","form":"venía","exampleSentence":"Venía temprano.","exampleSentenceEn":"He used to come early."},
+      {"pronoun":"nosotros","form":"veníamos","exampleSentence":"Veníamos con amigos.","exampleSentenceEn":"We used to come with friends."},
+      {"pronoun":"vosotros","form":"veníais","exampleSentence":"Veníais a veces.","exampleSentenceEn":"You all used to come sometimes."},
+      {"pronoun":"ellos/ustedes","form":"venían","exampleSentence":"Venían en grupo.","exampleSentenceEn":"They used to come in a group."}
+    ]},
+    {"tenseId":"indicative_preterite","tenseName":"Pretérito perfecto simple","tenseNameEn":"Preterite","description":"Venir completado en el pasado.","conjugations":[
+      {"pronoun":"yo","form":"vine","exampleSentence":"Vine ayer.","exampleSentenceEn":"I came yesterday."},
+      {"pronoun":"tú","form":"viniste","exampleSentence":"Viniste temprano.","exampleSentenceEn":"You came early."},
+      {"pronoun":"él/ella/usted","form":"vino","exampleSentence":"Vino a pie.","exampleSentenceEn":"He came on foot."},
+      {"pronoun":"nosotros","form":"vinimos","exampleSentence":"Vinimos juntos.","exampleSentenceEn":"We came together."},
+      {"pronoun":"vosotros","form":"vinisteis","exampleSentence":"Vinisteis en bus.","exampleSentenceEn":"You all came by bus."},
+      {"pronoun":"ellos/ustedes","form":"vinieron","exampleSentence":"Vinieron tarde.","exampleSentenceEn":"They came late."}
+    ]},
+    {"tenseId":"indicative_future","tenseName":"Futuro simple","tenseNameEn":"Simple Future","description":"Venir en el futuro.","conjugations":[
+      {"pronoun":"yo","form":"vendré","exampleSentence":"Vendré mañana.","exampleSentenceEn":"I will come tomorrow."},
+      {"pronoun":"tú","form":"vendrás","exampleSentence":"Vendrás con nosotros.","exampleSentenceEn":"You will come with us."},
+      {"pronoun":"él/ella/usted","form":"vendrá","exampleSentence":"Vendrá en tren.","exampleSentenceEn":"He will come by train."},
+      {"pronoun":"nosotros","form":"vendremos","exampleSentence":"Vendremos temprano.","exampleSentenceEn":"We will come early."},
+      {"pronoun":"vosotros","form":"vendréis","exampleSentence":"Vendréis por la tarde.","exampleSentenceEn":"You all will come in the afternoon."},
+      {"pronoun":"ellos/ustedes","form":"vendrán","exampleSentence":"Vendrán juntos.","exampleSentenceEn":"They will come together."}
+    ]},
+    {"tenseId":"indicative_conditional","tenseName":"Condicional simple","tenseNameEn":"Conditional","description":"Venir hipotético o cortesía.","conjugations":[
+      {"pronoun":"yo","form":"vendría","exampleSentence":"Vendría si pudiera.","exampleSentenceEn":"I would come if I could."},
+      {"pronoun":"tú","form":"vendrías","exampleSentence":"¿Vendrías mañana?","exampleSentenceEn":"Would you come tomorrow?"},
+      {"pronoun":"él/ella/usted","form":"vendría","exampleSentence":"Vendría encantado.","exampleSentenceEn":"He would gladly come."},
+      {"pronoun":"nosotros","form":"vendríamos","exampleSentence":"Vendríamos más tarde.","exampleSentenceEn":"We would come later."},
+      {"pronoun":"vosotros","form":"vendríais","exampleSentence":"Vendríais con ellos.","exampleSentenceEn":"You all would come with them."},
+      {"pronoun":"ellos/ustedes","form":"vendrían","exampleSentence":"Vendrían después.","exampleSentenceEn":"They would come later."}
+    ]},
+    {"tenseId":"indicative_present_perfect","tenseName":"Pretérito perfecto compuesto","tenseNameEn":"Present Perfect","description":"Venir pasado con relevancia actual.","conjugations":[
+      {"pronoun":"yo","form":"he venido","exampleSentence":"He venido a verte.","exampleSentenceEn":"I have come to see you."},
+      {"pronoun":"tú","form":"has venido","exampleSentence":"Has venido temprano.","exampleSentenceEn":"You have come early."},
+      {"pronoun":"él/ella/usted","form":"ha venido","exampleSentence":"Ha venido a ayudar.","exampleSentenceEn":"He has come to help."},
+      {"pronoun":"nosotros","form":"hemos venido","exampleSentence":"Hemos venido juntos.","exampleSentenceEn":"We have come together."},
+      {"pronoun":"vosotros","form":"habéis venido","exampleSentence":"Habéis venido tarde.","exampleSentenceEn":"You all have come late."},
+      {"pronoun":"ellos/ustedes","form":"han venido","exampleSentence":"Han venido todos.","exampleSentenceEn":"They have all come."}
+    ]},
+    {"tenseId":"indicative_pluperfect","tenseName":"Pluscuamperfecto","tenseNameEn":"Pluperfect","description":"Venir anterior a otra acción pasada.","conjugations":[
+      {"pronoun":"yo","form":"había venido","exampleSentence":"Había venido antes.","exampleSentenceEn":"I had come before."},
+      {"pronoun":"tú","form":"habías venido","exampleSentence":"Habías venido muchas veces.","exampleSentenceEn":"You had come many times."},
+      {"pronoun":"él/ella/usted","form":"había venido","exampleSentence":"Había venido tarde.","exampleSentenceEn":"He had come late."},
+      {"pronoun":"nosotros","form":"habíamos venido","exampleSentence":"Habíamos venido juntos.","exampleSentenceEn":"We had come together."},
+      {"pronoun":"vosotros","form":"habíais venido","exampleSentence":"Habíais venido temprano.","exampleSentenceEn":"You all had come early."},
+      {"pronoun":"ellos/ustedes","form":"habían venido","exampleSentence":"Habían venido todos.","exampleSentenceEn":"They had all come."}
+    ]},
+    {"tenseId":"indicative_preterite_perfect","tenseName":"Pretérito anterior","tenseNameEn":"Preterite Perfect","description":"Uso literario.","conjugations":[
+      {"pronoun":"yo","form":"hube venido","exampleSentence":"Apenas hube venido, me fui.","exampleSentenceEn":"As soon as I had come, I left."},
+      {"pronoun":"tú","form":"hubiste venido","exampleSentence":"Cuando hubiste venido, empezó.","exampleSentenceEn":"When you had come, it started."},
+      {"pronoun":"él/ella/usted","form":"hubo venido","exampleSentence":"Apenas hubo venido, llamó.","exampleSentenceEn":"As soon as he had come, he called."},
+      {"pronoun":"nosotros","form":"hubimos venido","exampleSentence":"Hubimos venido temprano.","exampleSentenceEn":"We had come early."},
+      {"pronoun":"vosotros","form":"hubisteis venido","exampleSentence":"Hubisteis venido juntos.","exampleSentenceEn":"You all had come together."},
+      {"pronoun":"ellos/ustedes","form":"hubieron venido","exampleSentence":"Hubieron venido todos.","exampleSentenceEn":"They had all come."}
+    ]},
+    {"tenseId":"indicative_future_perfect","tenseName":"Futuro perfecto","tenseNameEn":"Future Perfect","description":"Acción completada antes de un punto futuro.","conjugations":[
+      {"pronoun":"yo","form":"habré venido","exampleSentence":"Para entonces habré venido.","exampleSentenceEn":"By then I will have come."},
+      {"pronoun":"tú","form":"habrás venido","exampleSentence":"Habrás venido temprano.","exampleSentenceEn":"You will have come early."},
+      {"pronoun":"él/ella/usted","form":"habrá venido","exampleSentence":"Habrá venido ya.","exampleSentenceEn":"He will have come already."},
+      {"pronoun":"nosotros","form":"habremos venido","exampleSentence":"Habremos venido juntos.","exampleSentenceEn":"We will have come together."},
+      {"pronoun":"vosotros","form":"habréis venido","exampleSentence":"Habréis venido tarde.","exampleSentenceEn":"You all will have come late."},
+      {"pronoun":"ellos/ustedes","form":"habrán venido","exampleSentence":"Habrán venido todos.","exampleSentenceEn":"They will have all come."}
+    ]},
+    {"tenseId":"indicative_conditional_perfect","tenseName":"Condicional perfecto","tenseNameEn":"Conditional Perfect","description":"Venir hipotético completado.","conjugations":[
+      {"pronoun":"yo","form":"habría venido","exampleSentence":"Habría venido si podía.","exampleSentenceEn":"I would have come if I could."},
+      {"pronoun":"tú","form":"habrías venido","exampleSentence":"Habrías venido conmigo.","exampleSentenceEn":"You would have come with me."},
+      {"pronoun":"él/ella/usted","form":"habría venido","exampleSentence":"Habría venido antes.","exampleSentenceEn":"He would have come earlier."},
+      {"pronoun":"nosotros","form":"habríamos venido","exampleSentence":"Habríamos venido juntos.","exampleSentenceEn":"We would have come together."},
+      {"pronoun":"vosotros","form":"habríais venido","exampleSentence":"Habríais venido temprano.","exampleSentenceEn":"You all would have come early."},
+      {"pronoun":"ellos/ustedes","form":"habrían venido","exampleSentence":"Habrían venido todos.","exampleSentenceEn":"They would have all come."}
+    ]},
+    {"tenseId":"subjunctive_present","tenseName":"Presente (subjuntivo)","tenseNameEn":"Subjunctive Present","description":"Deseo o posibilidad de venir.","conjugations":[
+      {"pronoun":"yo","form":"venga","exampleSentence":"Ojalá venga pronto.","exampleSentenceEn":"I hope I come soon."},
+      {"pronoun":"tú","form":"vengas","exampleSentence":"Espero que vengas.","exampleSentenceEn":"I hope you come."},
+      {"pronoun":"él/ella/usted","form":"venga","exampleSentence":"Es posible que venga.","exampleSentenceEn":"It's possible he will come."},
+      {"pronoun":"nosotros","form":"vengamos","exampleSentence":"Quieren que vengamos.","exampleSentenceEn":"They want us to come."},
+      {"pronoun":"vosotros","form":"vengáis","exampleSentence":"Es bueno que vengáis.","exampleSentenceEn":"It's good that you all come."},
+      {"pronoun":"ellos/ustedes","form":"vengan","exampleSentence":"Temen que vengan tarde.","exampleSentenceEn":"They fear that you come late."}
+    ]},
+    {"tenseId":"subjunctive_imperfect_ra","tenseName":"Imperfecto (ra)","tenseNameEn":"Subjunctive Imperfect (-ra)","description":"Venir hipotético pasado.","conjugations":[
+      {"pronoun":"yo","form":"viniera","exampleSentence":"Si viniera ahora, ayudaría.","exampleSentenceEn":"If I came now, I would help."},
+      {"pronoun":"tú","form":"vinieras","exampleSentence":"Ojalá vinieras mañana.","exampleSentenceEn":"I wish you came tomorrow."},
+      {"pronoun":"él/ella/usted","form":"viniera","exampleSentence":"Quisiera que viniera temprano.","exampleSentenceEn":"I'd like him to come early."},
+      {"pronoun":"nosotros","form":"viniéramos","exampleSentence":"Si viniéramos juntos, sería mejor.","exampleSentenceEn":"If we came together, it would be better."},
+      {"pronoun":"vosotros","form":"vinierais","exampleSentence":"Si vinierais con ellos, viajaríais más cómodos.","exampleSentenceEn":"If you all came with them, you'd travel more comfortably."},
+      {"pronoun":"ellos/ustedes","form":"vinieran","exampleSentence":"Si vinieran hoy, cenaríamos.","exampleSentenceEn":"If they came today, we'd have dinner."}
+    ]},
+    {"tenseId":"subjunctive_imperfect_se","tenseName":"Imperfecto (se)","tenseNameEn":"Subjunctive Imperfect (-se)","description":"Variante -se.","conjugations":[
+      {"pronoun":"yo","form":"viniese","exampleSentence":"Si viniese ahora, ayudaría.","exampleSentenceEn":"If I came now, I would help."},
+      {"pronoun":"tú","form":"vinieses","exampleSentence":"Quisiera que vinieses.","exampleSentenceEn":"I'd like you to come."},
+      {"pronoun":"él/ella/usted","form":"viniese","exampleSentence":"No creía que viniese temprano.","exampleSentenceEn":"I didn't think he came early."},
+      {"pronoun":"nosotros","form":"viniésemos","exampleSentence":"Si viniésemos juntos, sería mejor.","exampleSentenceEn":"If we came together, it would be better."},
+      {"pronoun":"vosotros","form":"vinieseis","exampleSentence":"Si vinieseis con ellos, viajaríais más cómodos.","exampleSentenceEn":"If you all came with them, you'd travel more comfortably."},
+      {"pronoun":"ellos/ustedes","form":"viniesen","exampleSentence":"Si viniesen hoy, cenaríamos.","exampleSentenceEn":"If they came today, we'd have dinner."}
+    ]},
+    {"tenseId":"subjunctive_future","tenseName":"Futuro (subjuntivo)","tenseNameEn":"Subjunctive Future","description":"Uso arcaico/jurídico.","conjugations":[
+      {"pronoun":"yo","form":"viniere","exampleSentence":"Quien viniere tarde, esperará afuera.","exampleSentenceEn":"Whoever come late shall wait outside."},
+      {"pronoun":"tú","form":"vinieres","exampleSentence":"Si vinieres mañana, llama.","exampleSentenceEn":"If you come tomorrow, call."},
+      {"pronoun":"él/ella/usted","form":"viniere","exampleSentence":"Si viniere hoy, avisará.","exampleSentenceEn":"If he come today, he shall notify."},
+      {"pronoun":"nosotros","form":"viniéremos","exampleSentence":"Si viniéremos juntos, entraremos.","exampleSentenceEn":"If we come together, we shall enter."},
+      {"pronoun":"vosotros","form":"viniereis","exampleSentence":"Si viniereis tarde, esperad.","exampleSentenceEn":"If you come late, wait."},
+      {"pronoun":"ellos/ustedes","form":"vinieren","exampleSentence":"Si vinieren mañana, participarán.","exampleSentenceEn":"If they come tomorrow, they shall participate."}
+    ]},
+    {"tenseId":"subjunctive_present_perfect","tenseName":"Pretérito perfecto (subj.)","tenseNameEn":"Subjunctive Present Perfect","description":"Acción pasada con relación al presente de subjuntivo.","conjugations":[
+      {"pronoun":"yo","form":"haya venido","exampleSentence":"Dudo que haya venido todavía.","exampleSentenceEn":"I doubt I have come yet."},
+      {"pronoun":"tú","form":"hayas venido","exampleSentence":"No creo que hayas venido.","exampleSentenceEn":"I don't think you have come."},
+      {"pronoun":"él/ella/usted","form":"haya venido","exampleSentence":"Es posible que haya venido.","exampleSentenceEn":"It's possible he has come."},
+      {"pronoun":"nosotros","form":"hayamos venido","exampleSentence":"Ojalá hayamos venido a tiempo.","exampleSentenceEn":"I hope we have come on time."},
+      {"pronoun":"vosotros","form":"hayáis venido","exampleSentence":"Puede que hayáis venido tarde.","exampleSentenceEn":"You all may have come late."},
+      {"pronoun":"ellos/ustedes","form":"hayan venido","exampleSentence":"No piensan que hayan venido.","exampleSentenceEn":"They don't think you have come."}
+    ]},
+    {"tenseId":"subjunctive_pluperfect_ra","tenseName":"Pluscuamperfecto (ra)","tenseNameEn":"Subjunctive Pluperfect (-ra)","description":"Acción anterior hipotética.","conjugations":[
+      {"pronoun":"yo","form":"hubiera venido","exampleSentence":"Si hubiera venido antes, le vería.","exampleSentenceEn":"If I had come earlier, I'd see him."},
+      {"pronoun":"tú","form":"hubieras venido","exampleSentence":"Si hubieras venido, cenaríamos juntos.","exampleSentenceEn":"If you had come, we'd dine together."},
+      {"pronoun":"él/ella/usted","form":"hubiera venido","exampleSentence":"Si hubiera venido, llamaría.","exampleSentenceEn":"If he had come, he'd call."},
+      {"pronoun":"nosotros","form":"hubiéramos venido","exampleSentence":"Si hubiéramos venido, entraríamos.","exampleSentenceEn":"If we had come, we'd enter."},
+      {"pronoun":"vosotros","form":"hubierais venido","exampleSentence":"Si hubierais venido, hablaríamos.","exampleSentenceEn":"If you all had come, we'd talk."},
+      {"pronoun":"ellos/ustedes","form":"hubieran venido","exampleSentence":"Si hubieran venido, participarían.","exampleSentenceEn":"If they had come, they'd participate."}
+    ]},
+    {"tenseId":"subjunctive_pluperfect_se","tenseName":"Pluscuamperfecto (se)","tenseNameEn":"Subjunctive Pluperfect (-se)","description":"Acción anterior hipotética (variante -se).","conjugations":[
+      {"pronoun":"yo","form":"hubiese venido","exampleSentence":"Si hubiese venido antes, le vería.","exampleSentenceEn":"If I had come earlier, I'd see him."},
+      {"pronoun":"tú","form":"hubieses venido","exampleSentence":"Si hubieses venido, cenaríamos juntos.","exampleSentenceEn":"If you had come, we'd dine together."},
+      {"pronoun":"él/ella/usted","form":"hubiese venido","exampleSentence":"No pensé que hubiese venido.","exampleSentenceEn":"I didn't think he had come."},
+      {"pronoun":"nosotros","form":"hubiésemos venido","exampleSentence":"Si hubiésemos venido, entraríamos.","exampleSentenceEn":"If we had come, we'd enter."},
+      {"pronoun":"vosotros","form":"hubieseis venido","exampleSentence":"Si hubieseis venido, hablaríamos.","exampleSentenceEn":"If you all had come, we'd talk."},
+      {"pronoun":"ellos/ustedes","form":"hubiesen venido","exampleSentence":"Si hubiesen venido, participarían.","exampleSentenceEn":"If they had come, they'd participate."}
+    ]},
+    {"tenseId":"subjunctive_future_perfect","tenseName":"Futuro perfecto (subj.)","tenseNameEn":"Subjunctive Future Perfect","description":"Uso arcaico.","conjugations":[
+      {"pronoun":"yo","form":"hubiere venido","exampleSentence":"Si hubiere venido, avisaré.","exampleSentenceEn":"If I shall have come, I will notify."},
+      {"pronoun":"tú","form":"hubieres venido","exampleSentence":"Si hubieres venido, llama.","exampleSentenceEn":"If you shall have come, call."},
+      {"pronoun":"él/ella/usted","form":"hubiere venido","exampleSentence":"Si hubiere venido, entrará.","exampleSentenceEn":"If he shall have come, he will enter."},
+      {"pronoun":"nosotros","form":"hubiéremos venido","exampleSentence":"Si hubiéremos venido, esperaremos dentro.","exampleSentenceEn":"If we shall have come, we will wait inside."},
+      {"pronoun":"vosotros","form":"hubiereis venido","exampleSentence":"Si hubiereis venido, pasad.","exampleSentenceEn":"If you shall have come, proceed."},
+      {"pronoun":"ellos/ustedes","form":"hubieren venido","exampleSentence":"Si hubieren venido, participarán.","exampleSentenceEn":"If they shall have come, they will participate."}
+    ]},
+    {"tenseId":"imperative_affirmative","tenseName":"Imperativo afirmativo","tenseNameEn":"Imperative Affirmative","description":"Órdenes afirmativas con venir.","conjugations":[
+      {"pronoun":"tú","form":"ven","exampleSentence":"Ven aquí.","exampleSentenceEn":"Come here."},
+      {"pronoun":"usted","form":"venga","exampleSentence":"Venga por favor.","exampleSentenceEn":"Please come."},
+      {"pronoun":"nosotros","form":"vengamos","exampleSentence":"Vengamos temprano.","exampleSentenceEn":"Let's come early."},
+      {"pronoun":"vosotros","form":"venid","exampleSentence":"Venid todos.","exampleSentenceEn":"Come, everyone (you all)."},
+      {"pronoun":"ustedes","form":"vengan","exampleSentence":"Vengan mañana.","exampleSentenceEn":"Come tomorrow (you all)."}
+    ]},
+    {"tenseId":"imperative_negative","tenseName":"Imperativo negativo","tenseNameEn":"Imperative Negative","description":"Órdenes negativas.","conjugations":[
+      {"pronoun":"tú","form":"no vengas","exampleSentence":"No vengas tarde.","exampleSentenceEn":"Don't come late."},
+      {"pronoun":"usted","form":"no venga","exampleSentence":"No venga sin avisar.","exampleSentenceEn":"Don't come without notice."},
+      {"pronoun":"nosotros","form":"no vengamos","exampleSentence":"No vengamos sin entradas.","exampleSentenceEn":"Let's not come without tickets."},
+      {"pronoun":"vosotros","form":"no vengáis","exampleSentence":"No vengáis cansados.","exampleSentenceEn":"Don't come tired (you all)."},
+      {"pronoun":"ustedes","form":"no vengan","exampleSentence":"No vengan hoy.","exampleSentenceEn":"Don't come today (you all)."}
+    ]},
+    {"tenseId":"progressive_present","tenseName":"Progresivo (presente)","tenseNameEn":"Present Progressive","description":"Acción en progreso.","conjugations":[
+      {"pronoun":"yo","form":"estoy viniendo","exampleSentence":"Estoy viniendo ahora.","exampleSentenceEn":"I am coming now."},
+      {"pronoun":"tú","form":"estás viniendo","exampleSentence":"Estás viniendo en metro.","exampleSentenceEn":"You are coming by subway."},
+      {"pronoun":"él/ella/usted","form":"está viniendo","exampleSentence":"Está viniendo en taxi.","exampleSentenceEn":"He is coming by taxi."},
+      {"pronoun":"nosotros","form":"estamos viniendo","exampleSentence":"Estamos viniendo juntos.","exampleSentenceEn":"We are coming together."},
+      {"pronoun":"vosotros","form":"estáis viniendo","exampleSentence":"Estáis viniendo tarde.","exampleSentenceEn":"You all are coming late."},
+      {"pronoun":"ellos/ustedes","form":"están viniendo","exampleSentence":"Están viniendo a pie.","exampleSentenceEn":"They are coming on foot."}
+    ]},
+    {"tenseId":"progressive_past","tenseName":"Progresivo (pasado)","tenseNameEn":"Past Progressive","description":"Acción en progreso en el pasado.","conjugations":[
+      {"pronoun":"yo","form":"estaba viniendo","exampleSentence":"Estaba viniendo cuando llamaste.","exampleSentenceEn":"I was coming when you called."},
+      {"pronoun":"tú","form":"estabas viniendo","exampleSentence":"Estabas viniendo en bus.","exampleSentenceEn":"You were coming by bus."},
+      {"pronoun":"él/ella/usted","form":"estaba viniendo","exampleSentence":"Estaba viniendo en coche.","exampleSentenceEn":"He was coming by car."},
+      {"pronoun":"nosotros","form":"estábamos viniendo","exampleSentence":"Estábamos viniendo juntos.","exampleSentenceEn":"We were coming together."},
+      {"pronoun":"vosotros","form":"estabais viniendo","exampleSentence":"Estabais viniendo tarde.","exampleSentenceEn":"You all were coming late."},
+      {"pronoun":"ellos/ustedes","form":"estaban viniendo","exampleSentence":"Estaban viniendo a pie.","exampleSentenceEn":"They were coming on foot."}
+    ]},
+    {"tenseId":"progressive_future","tenseName":"Progresivo (futuro)","tenseNameEn":"Future Progressive","description":"Acción en progreso en el futuro.","conjugations":[
+      {"pronoun":"yo","form":"estaré viniendo","exampleSentence":"Estaré viniendo por la tarde.","exampleSentenceEn":"I will be coming in the afternoon."},
+      {"pronoun":"tú","form":"estarás viniendo","exampleSentence":"Estarás viniendo en tren.","exampleSentenceEn":"You will be coming by train."},
+      {"pronoun":"él/ella/usted","form":"estará viniendo","exampleSentence":"Estará viniendo pronto.","exampleSentenceEn":"He will be coming soon."},
+      {"pronoun":"nosotros","form":"estaremos viniendo","exampleSentence":"Estaremos viniendo juntos.","exampleSentenceEn":"We will be coming together."},
+      {"pronoun":"vosotros","form":"estaréis viniendo","exampleSentence":"Estaréis viniendo tarde.","exampleSentenceEn":"You all will be coming late."},
+      {"pronoun":"ellos/ustedes","form":"estarán viniendo","exampleSentence":"Estarán viniendo a pie.","exampleSentenceEn":"They will be coming on foot."}
+    ]}
+  ]
+}
+
+

@@ -1,0 +1,331 @@
+{
+  "language": "es",
+  "languageName": "Spanish",
+  "infinitive": "tener",
+  "infinitiveEn": "to have",
+  "category": "core",
+  "tenses": [
+    {
+      "tenseId": "indicative_present",
+      "tenseName": "Presente",
+      "tenseNameEn": "Indicative Present",
+      "description": "Posesión u obligación en el presente.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "tengo", "exampleSentence": "Tengo hambre.", "exampleSentenceEn": "I am hungry."},
+        {"pronoun": "tú", "form": "tienes", "exampleSentence": "¿Tienes tiempo?", "exampleSentenceEn": "Do you have time?"},
+        {"pronoun": "él/ella/usted", "form": "tiene", "exampleSentence": "Tiene un coche nuevo.", "exampleSentenceEn": "He has a new car."},
+        {"pronoun": "nosotros", "form": "tenemos", "exampleSentence": "Tenemos una idea.", "exampleSentenceEn": "We have an idea."},
+        {"pronoun": "vosotros", "form": "tenéis", "exampleSentence": "¿Tenéis preguntas?", "exampleSentenceEn": "Do you all have questions?"},
+        {"pronoun": "ellos/ustedes", "form": "tienen", "exampleSentence": "Ellos tienen dos hijos.", "exampleSentenceEn": "They have two children."}
+      ]
+    },
+    {
+      "tenseId": "indicative_imperfect",
+      "tenseName": "Pretérito imperfecto",
+      "tenseNameEn": "Imperfect",
+      "description": "Posesión habitual en el pasado.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "tenía", "exampleSentence": "Tenía un perro de niño.", "exampleSentenceEn": "I had a dog as a child."},
+        {"pronoun": "tú", "form": "tenías", "exampleSentence": "Tenías muchos libros.", "exampleSentenceEn": "You had many books."},
+        {"pronoun": "él/ella/usted", "form": "tenía", "exampleSentence": "Tenía tiempo libre.", "exampleSentenceEn": "He had free time."},
+        {"pronoun": "nosotros", "form": "teníamos", "exampleSentence": "Teníamos clases los lunes.", "exampleSentenceEn": "We had classes on Mondays."},
+        {"pronoun": "vosotros", "form": "teníais", "exampleSentence": "Teníais pocas tareas.", "exampleSentenceEn": "You all had few assignments."},
+        {"pronoun": "ellos/ustedes", "form": "tenían", "exampleSentence": "Tenían amigos cerca.", "exampleSentenceEn": "They had friends nearby."}
+      ]
+    },
+    {
+      "tenseId": "indicative_preterite",
+      "tenseName": "Pretérito perfecto simple",
+      "tenseNameEn": "Preterite",
+      "description": "Posesión/obligación puntual en el pasado.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "tuve", "exampleSentence": "Tuve una reunión.", "exampleSentenceEn": "I had a meeting."},
+        {"pronoun": "tú", "form": "tuviste", "exampleSentence": "Tuviste suerte.", "exampleSentenceEn": "You had luck."},
+        {"pronoun": "él/ella/usted", "form": "tuvo", "exampleSentence": "Tuvo un problema.", "exampleSentenceEn": "He had a problem."},
+        {"pronoun": "nosotros", "form": "tuvimos", "exampleSentence": "Tuvimos que esperar.", "exampleSentenceEn": "We had to wait."},
+        {"pronoun": "vosotros", "form": "tuvisteis", "exampleSentence": "Tuvisteis razón.", "exampleSentenceEn": "You all were right."},
+        {"pronoun": "ellos/ustedes", "form": "tuvieron", "exampleSentence": "Tuvieron noticias.", "exampleSentenceEn": "They got news."}
+      ]
+    },
+    {
+      "tenseId": "indicative_future",
+      "tenseName": "Futuro simple",
+      "tenseNameEn": "Simple Future",
+      "description": "Posesión/obligación futura.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "tendré", "exampleSentence": "Tendré tiempo mañana.", "exampleSentenceEn": "I will have time tomorrow."},
+        {"pronoun": "tú", "form": "tendrás", "exampleSentence": "Tendrás vacaciones pronto.", "exampleSentenceEn": "You will have vacation soon."},
+        {"pronoun": "él/ella/usted", "form": "tendrá", "exampleSentence": "Tendrá una entrevista.", "exampleSentenceEn": "He will have an interview."},
+        {"pronoun": "nosotros", "form": "tendremos", "exampleSentence": "Tendremos una reunión.", "exampleSentenceEn": "We will have a meeting."},
+        {"pronoun": "vosotros", "form": "tendréis", "exampleSentence": "Tendréis tiempo después.", "exampleSentenceEn": "You all will have time later."},
+        {"pronoun": "ellos/ustedes", "form": "tendrán", "exampleSentence": "Tendrán resultados mañana.", "exampleSentenceEn": "They will have results tomorrow."}
+      ]
+    },
+    {
+      "tenseId": "indicative_conditional",
+      "tenseName": "Condicional simple",
+      "tenseNameEn": "Conditional",
+      "description": "Posesión hipotética o cortesía.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "tendría", "exampleSentence": "Tendría más tiempo si acabara esto.", "exampleSentenceEn": "I would have more time if I finished this."},
+        {"pronoun": "tú", "form": "tendrías", "exampleSentence": "Tendrías ayuda si la pidieras.", "exampleSentenceEn": "You would have help if you asked."},
+        {"pronoun": "él/ella/usted", "form": "tendría", "exampleSentence": "Tendría sentido hacerlo.", "exampleSentenceEn": "It would make sense to do it."},
+        {"pronoun": "nosotros", "form": "tendríamos", "exampleSentence": "Tendríamos tiempo después.", "exampleSentenceEn": "We would have time later."},
+        {"pronoun": "vosotros", "form": "tendríais", "exampleSentence": "Tendríais ventaja con esto.", "exampleSentenceEn": "You all would have an advantage with this."},
+        {"pronoun": "ellos/ustedes", "form": "tendrían", "exampleSentence": "Tendrían menos trabajo.", "exampleSentenceEn": "They would have less work."}
+      ]
+    },
+    {
+      "tenseId": "indicative_present_perfect",
+      "tenseName": "Pretérito perfecto compuesto",
+      "tenseNameEn": "Present Perfect",
+      "description": "Posesión pasada con relevancia actual.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "he tenido", "exampleSentence": "He tenido suerte hoy.", "exampleSentenceEn": "I have had luck today."},
+        {"pronoun": "tú", "form": "has tenido", "exampleSentence": "Has tenido tiempo.", "exampleSentenceEn": "You have had time."},
+        {"pronoun": "él/ella/usted", "form": "ha tenido", "exampleSentence": "Ha tenido problemas.", "exampleSentenceEn": "He has had problems."},
+        {"pronoun": "nosotros", "form": "hemos tenido", "exampleSentence": "Hemos tenido una idea.", "exampleSentenceEn": "We have had an idea."},
+        {"pronoun": "vosotros", "form": "habéis tenido", "exampleSentence": "Habéis tenido ayuda.", "exampleSentenceEn": "You all have had help."},
+        {"pronoun": "ellos/ustedes", "form": "han tenido", "exampleSentence": "Han tenido éxito.", "exampleSentenceEn": "They have had success."}
+      ]
+    },
+    {
+      "tenseId": "indicative_pluperfect",
+      "tenseName": "Pluscuamperfecto",
+      "tenseNameEn": "Pluperfect",
+      "description": "Posesión anterior a otra acción pasada.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "había tenido", "exampleSentence": "Había tenido tiempo antes.", "exampleSentenceEn": "I had had time before."},
+        {"pronoun": "tú", "form": "habías tenido", "exampleSentence": "Habías tenido ayuda.", "exampleSentenceEn": "You had had help."},
+        {"pronoun": "él/ella/usted", "form": "había tenido", "exampleSentence": "Había tenido suerte.", "exampleSentenceEn": "He had had luck."},
+        {"pronoun": "nosotros", "form": "habíamos tenido", "exampleSentence": "Habíamos tenido problemas.", "exampleSentenceEn": "We had had problems."},
+        {"pronoun": "vosotros", "form": "habíais tenido", "exampleSentence": "Habíais tenido una oportunidad.", "exampleSentenceEn": "You all had had an opportunity."},
+        {"pronoun": "ellos/ustedes", "form": "habían tenido", "exampleSentence": "Habían tenido noticias.", "exampleSentenceEn": "They had had news."}
+      ]
+    },
+    {
+      "tenseId": "indicative_preterite_perfect",
+      "tenseName": "Pretérito anterior",
+      "tenseNameEn": "Preterite Perfect",
+      "description": "Uso literario para acción inmediatamente anterior.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "hube tenido", "exampleSentence": "Apenas hube tenido tiempo, salí.", "exampleSentenceEn": "As soon as I had had time, I left."},
+        {"pronoun": "tú", "form": "hubiste tenido", "exampleSentence": "Cuando hubiste tenido noticias, llamaste.", "exampleSentenceEn": "When you had had news, you called."},
+        {"pronoun": "él/ella/usted", "form": "hubo tenido", "exampleSentence": "Apenas hubo tenido ocasión, respondió.", "exampleSentenceEn": "As soon as he had had a chance, he responded."},
+        {"pronoun": "nosotros", "form": "hubimos tenido", "exampleSentence": "Hubimos tenido tiempo suficiente.", "exampleSentenceEn": "We had had enough time."},
+        {"pronoun": "vosotros", "form": "hubisteis tenido", "exampleSentence": "Hubisteis tenido ayuda.", "exampleSentenceEn": "You all had had help."},
+        {"pronoun": "ellos/ustedes", "form": "hubieron tenido", "exampleSentence": "Hubieron tenido éxito.", "exampleSentenceEn": "They had had success."}
+      ]
+    },
+    {
+      "tenseId": "indicative_future_perfect",
+      "tenseName": "Futuro perfecto",
+      "tenseNameEn": "Future Perfect",
+      "description": "Acción completada antes de un punto futuro.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "habré tenido", "exampleSentence": "Para entonces habré tenido tiempo.", "exampleSentenceEn": "By then I will have had time."},
+        {"pronoun": "tú", "form": "habrás tenido", "exampleSentence": "Habrás tenido descanso.", "exampleSentenceEn": "You will have had rest."},
+        {"pronoun": "él/ella/usted", "form": "habrá tenido", "exampleSentence": "Habrá tenido suficiente.", "exampleSentenceEn": "He will have had enough."},
+        {"pronoun": "nosotros", "form": "habremos tenido", "exampleSentence": "Habremos tenido noticias.", "exampleSentenceEn": "We will have had news."},
+        {"pronoun": "vosotros", "form": "habréis tenido", "exampleSentence": "Habréis tenido resultados.", "exampleSentenceEn": "You all will have had results."},
+        {"pronoun": "ellos/ustedes", "form": "habrán tenido", "exampleSentence": "Habrán tenido oportunidades.", "exampleSentenceEn": "They will have had opportunities."}
+      ]
+    },
+    {
+      "tenseId": "indicative_conditional_perfect",
+      "tenseName": "Condicional perfecto",
+      "tenseNameEn": "Conditional Perfect",
+      "description": "Posesión hipotética completada.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "habría tenido", "exampleSentence": "Habría tenido tiempo si empezara antes.", "exampleSentenceEn": "I would have had time if I started earlier."},
+        {"pronoun": "tú", "form": "habrías tenido", "exampleSentence": "Habrías tenido ventaja.", "exampleSentenceEn": "You would have had an advantage."},
+        {"pronoun": "él/ella/usted", "form": "habría tenido", "exampleSentence": "Habría tenido éxito.", "exampleSentenceEn": "He would have had success."},
+        {"pronoun": "nosotros", "form": "habríamos tenido", "exampleSentence": "Habríamos tenido más opciones.", "exampleSentenceEn": "We would have had more options."},
+        {"pronoun": "vosotros", "form": "habríais tenido", "exampleSentence": "Habríais tenido más tiempo.", "exampleSentenceEn": "You all would have had more time."},
+        {"pronoun": "ellos/ustedes", "form": "habrían tenido", "exampleSentence": "Habrían tenido menos problemas.", "exampleSentenceEn": "They would have had fewer problems."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_present",
+      "tenseName": "Presente (subjuntivo)",
+      "tenseNameEn": "Subjunctive Present",
+      "description": "Deseos o posibilidad de tener.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "tenga", "exampleSentence": "Ojalá tenga suerte.", "exampleSentenceEn": "I hope I have luck."},
+        {"pronoun": "tú", "form": "tengas", "exampleSentence": "Espero que tengas tiempo.", "exampleSentenceEn": "I hope you have time."},
+        {"pronoun": "él/ella/usted", "form": "tenga", "exampleSentence": "Es posible que tenga problemas.", "exampleSentenceEn": "It's possible he has problems."},
+        {"pronoun": "nosotros", "form": "tengamos", "exampleSentence": "Quieren que tengamos éxito.", "exampleSentenceEn": "They want us to have success."},
+        {"pronoun": "vosotros", "form": "tengáis", "exampleSentence": "Es bueno que tengáis paciencia.", "exampleSentenceEn": "It's good that you all have patience."},
+        {"pronoun": "ellos/ustedes", "form": "tengan", "exampleSentence": "Temen que tengan dificultades.", "exampleSentenceEn": "They fear that you have difficulties."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_imperfect_ra",
+      "tenseName": "Imperfecto (ra)",
+      "tenseNameEn": "Subjunctive Imperfect (-ra)",
+      "description": "Tener hipotético pasado (variante -ra).",
+      "conjugations": [
+        {"pronoun": "yo", "form": "tuviera", "exampleSentence": "Si tuviera tiempo, viajaría.", "exampleSentenceEn": "If I had time, I would travel."},
+        {"pronoun": "tú", "form": "tuvieras", "exampleSentence": "Ojalá tuvieras ayuda.", "exampleSentenceEn": "I wish you had help."},
+        {"pronoun": "él/ella/usted", "form": "tuviera", "exampleSentence": "Quisiera que tuviera paciencia.", "exampleSentenceEn": "I would like him to have patience."},
+        {"pronoun": "nosotros", "form": "tuviéramos", "exampleSentence": "Si tuviéramos coche, iríamos.", "exampleSentenceEn": "If we had a car, we would go."},
+        {"pronoun": "vosotros", "form": "tuvierais", "exampleSentence": "Si tuvierais tiempo, estudiaríais.", "exampleSentenceEn": "If you all had time, you'd study."},
+        {"pronoun": "ellos/ustedes", "form": "tuvieran", "exampleSentence": "Si tuvieran dinero, comprarían.", "exampleSentenceEn": "If they had money, they would buy."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_imperfect_se",
+      "tenseName": "Imperfecto (se)",
+      "tenseNameEn": "Subjunctive Imperfect (-se)",
+      "description": "Tener hipotético pasado (variante -se).",
+      "conjugations": [
+        {"pronoun": "yo", "form": "tuviese", "exampleSentence": "Si tuviese tiempo, leería más.", "exampleSentenceEn": "If I had time, I would read more."},
+        {"pronoun": "tú", "form": "tuvieses", "exampleSentence": "Quisiera que tuvieses ayuda.", "exampleSentenceEn": "I would like you to have help."},
+        {"pronoun": "él/ella/usted", "form": "tuviese", "exampleSentence": "No creía que tuviese sentido.", "exampleSentenceEn": "I did not think it made sense."},
+        {"pronoun": "nosotros", "form": "tuviésemos", "exampleSentence": "Si tuviésemos más datos, decidiríamos.", "exampleSentenceEn": "If we had more data, we would decide."},
+        {"pronoun": "vosotros", "form": "tuvieseis", "exampleSentence": "Si tuvieseis coche, vendríais.", "exampleSentenceEn": "If you all had a car, you would come."},
+        {"pronoun": "ellos/ustedes", "form": "tuviesen", "exampleSentence": "Si tuviesen tiempo, viajarían.", "exampleSentenceEn": "If they had time, they would travel."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_future",
+      "tenseName": "Futuro (subjuntivo)",
+      "tenseNameEn": "Subjunctive Future",
+      "description": "Uso arcaico/jurídico para futuro hipotético.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "tuviere", "exampleSentence": "Quien tuviere duda, pregunte.", "exampleSentenceEn": "Whoever have a doubt, ask."},
+        {"pronoun": "tú", "form": "tuvieres", "exampleSentence": "Si tuvieres tiempo, ven.", "exampleSentenceEn": "If you have time, come."},
+        {"pronoun": "él/ella/usted", "form": "tuviere", "exampleSentence": "Si tuviere opción, elegirá.", "exampleSentenceEn": "If he have an option, he shall choose."},
+        {"pronoun": "nosotros", "form": "tuviéremos", "exampleSentence": "Si tuviéremos pruebas, presentaremos.", "exampleSentenceEn": "If we have evidence, we shall present."},
+        {"pronoun": "vosotros", "form": "tuviereis", "exampleSentence": "Si tuviereis queja, informad.", "exampleSentenceEn": "If you have a complaint, inform."},
+        {"pronoun": "ellos/ustedes", "form": "tuvieren", "exampleSentence": "Si tuvieren dudas, consultarán.", "exampleSentenceEn": "If they have doubts, they shall consult."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_present_perfect",
+      "tenseName": "Pretérito perfecto (subj.)",
+      "tenseNameEn": "Subjunctive Present Perfect",
+      "description": "Posesión pasada con relación al presente de subjuntivo.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "haya tenido", "exampleSentence": "Dudo que haya tenido tiempo.", "exampleSentenceEn": "I doubt I have had time."},
+        {"pronoun": "tú", "form": "hayas tenido", "exampleSentence": "No creo que hayas tenido ayuda.", "exampleSentenceEn": "I don't think you have had help."},
+        {"pronoun": "él/ella/usted", "form": "haya tenido", "exampleSentence": "Es posible que haya tenido suerte.", "exampleSentenceEn": "It's possible he has had luck."},
+        {"pronoun": "nosotros", "form": "hayamos tenido", "exampleSentence": "Ojalá hayamos tenido éxito.", "exampleSentenceEn": "I hope we have had success."},
+        {"pronoun": "vosotros", "form": "hayáis tenido", "exampleSentence": "Puede que hayáis tenido dudas.", "exampleSentenceEn": "You all may have had doubts."},
+        {"pronoun": "ellos/ustedes", "form": "hayan tenido", "exampleSentence": "No piensan que hayan tenido tiempo.", "exampleSentenceEn": "They don't think you have had time."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_pluperfect_ra",
+      "tenseName": "Pluscuamperfecto (ra)",
+      "tenseNameEn": "Subjunctive Pluperfect (-ra)",
+      "description": "Posesión anterior hipotética (variante -ra).",
+      "conjugations": [
+        {"pronoun": "yo", "form": "hubiera tenido", "exampleSentence": "Si hubiera tenido tiempo, habría ido.", "exampleSentenceEn": "If I had had time, I would have gone."},
+        {"pronoun": "tú", "form": "hubieras tenido", "exampleSentence": "Si hubieras tenido coche, irías.", "exampleSentenceEn": "If you had had a car, you would go."},
+        {"pronoun": "él/ella/usted", "form": "hubiera tenido", "exampleSentence": "Si hubiera tenido ayuda, acabaría antes.", "exampleSentenceEn": "If he had had help, he'd finish earlier."},
+        {"pronoun": "nosotros", "form": "hubiéramos tenido", "exampleSentence": "Si hubiéramos tenido más datos, decidiríamos.", "exampleSentenceEn": "If we had had more data, we would decide."},
+        {"pronoun": "vosotros", "form": "hubierais tenido", "exampleSentence": "Si hubierais tenido tiempo, vendríais.", "exampleSentenceEn": "If you all had had time, you would come."},
+        {"pronoun": "ellos/ustedes", "form": "hubieran tenido", "exampleSentence": "Si hubieran tenido apoyo, continuarían.", "exampleSentenceEn": "If they had had support, they would continue."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_pluperfect_se",
+      "tenseName": "Pluscuamperfecto (se)",
+      "tenseNameEn": "Subjunctive Pluperfect (-se)",
+      "description": "Posesión anterior hipotética (variante -se).",
+      "conjugations": [
+        {"pronoun": "yo", "form": "hubiese tenido", "exampleSentence": "Si hubiese tenido tiempo, estudiaría más.", "exampleSentenceEn": "If I had had time, I would study more."},
+        {"pronoun": "tú", "form": "hubieses tenido", "exampleSentence": "Si hubieses tenido ayuda, terminarías.", "exampleSentenceEn": "If you had had help, you'd finish."},
+        {"pronoun": "él/ella/usted", "form": "hubiese tenido", "exampleSentence": "No pensé que hubiese tenido suerte.", "exampleSentenceEn": "I didn't think he had had luck."},
+        {"pronoun": "nosotros", "form": "hubiésemos tenido", "exampleSentence": "Si hubiésemos tenido más recursos, creceríamos.", "exampleSentenceEn": "If we had had more resources, we would grow."},
+        {"pronoun": "vosotros", "form": "hubieseis tenido", "exampleSentence": "Si hubieseis tenido tiempo, vendríais.", "exampleSentenceEn": "If you all had had time, you'd come."},
+        {"pronoun": "ellos/ustedes", "form": "hubiesen tenido", "exampleSentence": "Si hubiesen tenido calma, decidirían mejor.", "exampleSentenceEn": "If they had had calm, they'd decide better."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_future_perfect",
+      "tenseName": "Futuro perfecto (subj.)",
+      "tenseNameEn": "Subjunctive Future Perfect",
+      "description": "Uso arcaico para acción completa previa a futuro hipotético.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "hubiere tenido", "exampleSentence": "Si hubiere tenido tiempo, asistiré.", "exampleSentenceEn": "If I shall have had time, I will attend."},
+        {"pronoun": "tú", "form": "hubieres tenido", "exampleSentence": "Si hubieres tenido dudas, pregunta.", "exampleSentenceEn": "If you shall have had doubts, ask."},
+        {"pronoun": "él/ella/usted", "form": "hubiere tenido", "exampleSentence": "Si hubiere tenido opción, elegirá.", "exampleSentenceEn": "If he shall have had an option, he will choose."},
+        {"pronoun": "nosotros", "form": "hubiéremos tenido", "exampleSentence": "Si hubiéremos tenido señales, avisaremos.", "exampleSentenceEn": "If we shall have had signs, we will notify."},
+        {"pronoun": "vosotros", "form": "hubiereis tenido", "exampleSentence": "Si hubiereis tenido turno, pasad.", "exampleSentenceEn": "If you shall have had a turn, proceed."},
+        {"pronoun": "ellos/ustedes", "form": "hubieren tenido", "exampleSentence": "Si hubieren tenido permiso, entrarán.", "exampleSentenceEn": "If they shall have had permission, they will enter."}
+      ]
+    },
+    {
+      "tenseId": "imperative_affirmative",
+      "tenseName": "Imperativo afirmativo",
+      "tenseNameEn": "Imperative Affirmative",
+      "description": "Órdenes/indicaciones con tener.",
+      "conjugations": [
+        {"pronoun": "tú", "form": "ten", "exampleSentence": "Ten paciencia.", "exampleSentenceEn": "Have patience."},
+        {"pronoun": "usted", "form": "tenga", "exampleSentence": "Tenga cuidado.", "exampleSentenceEn": "Be careful."},
+        {"pronoun": "nosotros", "form": "tengamos", "exampleSentence": "Tengamos fe.", "exampleSentenceEn": "Let's have faith."},
+        {"pronoun": "vosotros", "form": "tened", "exampleSentence": "Tened calma.", "exampleSentenceEn": "Have calm (you all)."},
+        {"pronoun": "ustedes", "form": "tengan", "exampleSentence": "Tengan respeto.", "exampleSentenceEn": "Have respect (you all)."}
+      ]
+    },
+    {
+      "tenseId": "imperative_negative",
+      "tenseName": "Imperativo negativo",
+      "tenseNameEn": "Imperative Negative",
+      "description": "Órdenes negativas con tener.",
+      "conjugations": [
+        {"pronoun": "tú", "form": "no tengas", "exampleSentence": "No tengas miedo.", "exampleSentenceEn": "Don't be afraid."},
+        {"pronoun": "usted", "form": "no tenga", "exampleSentence": "No tenga prisa.", "exampleSentenceEn": "Don't be in a hurry."},
+        {"pronoun": "nosotros", "form": "no tengamos", "exampleSentence": "No tengamos dudas.", "exampleSentenceEn": "Let's not have doubts."},
+        {"pronoun": "vosotros", "form": "no tengáis", "exampleSentence": "No tengáis prisa.", "exampleSentenceEn": "Don't rush (you all)."},
+        {"pronoun": "ustedes", "form": "no tengan", "exampleSentence": "No tengan miedo.", "exampleSentenceEn": "Don't be afraid (you all)."}
+      ]
+    },
+    {
+      "tenseId": "progressive_present",
+      "tenseName": "Progresivo (presente)",
+      "tenseNameEn": "Present Progressive",
+      "description": "Acción en progreso con tener.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "estoy teniendo", "exampleSentence": "Estoy teniendo problemas.", "exampleSentenceEn": "I am having problems."},
+        {"pronoun": "tú", "form": "estás teniendo", "exampleSentence": "Estás teniendo ideas.", "exampleSentenceEn": "You are having ideas."},
+        {"pronoun": "él/ella/usted", "form": "está teniendo", "exampleSentence": "Está teniendo dificultades.", "exampleSentenceEn": "He is having difficulties."},
+        {"pronoun": "nosotros", "form": "estamos teniendo", "exampleSentence": "Estamos teniendo éxito.", "exampleSentenceEn": "We are having success."},
+        {"pronoun": "vosotros", "form": "estáis teniendo", "exampleSentence": "Estáis teniendo suerte.", "exampleSentenceEn": "You all are having luck."},
+        {"pronoun": "ellos/ustedes", "form": "están teniendo", "exampleSentence": "Están teniendo apoyo.", "exampleSentenceEn": "They are having support."}
+      ]
+    },
+    {
+      "tenseId": "progressive_past",
+      "tenseName": "Progresivo (pasado)",
+      "tenseNameEn": "Past Progressive",
+      "description": "Acción en progreso en el pasado.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "estaba teniendo", "exampleSentence": "Estaba teniendo dudas.", "exampleSentenceEn": "I was having doubts."},
+        {"pronoun": "tú", "form": "estabas teniendo", "exampleSentence": "Estabas teniendo problemas.", "exampleSentenceEn": "You were having problems."},
+        {"pronoun": "él/ella/usted", "form": "estaba teniendo", "exampleSentence": "Estaba teniendo dolores.", "exampleSentenceEn": "He was having pains."},
+        {"pronoun": "nosotros", "form": "estábamos teniendo", "exampleSentence": "Estábamos teniendo reuniones.", "exampleSentenceEn": "We were having meetings."},
+        {"pronoun": "vosotros", "form": "estabais teniendo", "exampleSentence": "Estabais teniendo dificultades.", "exampleSentenceEn": "You all were having difficulties."},
+        {"pronoun": "ellos/ustedes", "form": "estaban teniendo", "exampleSentence": "Estaban teniendo resultados.", "exampleSentenceEn": "They were having results."}
+      ]
+    },
+    {
+      "tenseId": "progressive_future",
+      "tenseName": "Progresivo (futuro)",
+      "tenseNameEn": "Future Progressive",
+      "description": "Acción en progreso en el futuro.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "estaré teniendo", "exampleSentence": "Estaré teniendo reuniones.", "exampleSentenceEn": "I will be having meetings."},
+        {"pronoun": "tú", "form": "estarás teniendo", "exampleSentence": "Estarás teniendo clases.", "exampleSentenceEn": "You will be having classes."},
+        {"pronoun": "él/ella/usted", "form": "estará teniendo", "exampleSentence": "Estará teniendo entrevistas.", "exampleSentenceEn": "He will be having interviews."},
+        {"pronoun": "nosotros", "form": "estaremos teniendo", "exampleSentence": "Estaremos teniendo prácticas.", "exampleSentenceEn": "We will be having practice."},
+        {"pronoun": "vosotros", "form": "estaréis teniendo", "exampleSentence": "Estaréis teniendo eventos.", "exampleSentenceEn": "You all will be having events."},
+        {"pronoun": "ellos/ustedes", "form": "estarán teniendo", "exampleSentence": "Estarán teniendo problemas.", "exampleSentenceEn": "They will be having problems."}
+      ]
+    }
+  ]
+}
+
+

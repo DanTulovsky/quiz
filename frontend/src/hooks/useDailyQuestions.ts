@@ -89,6 +89,7 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
   );
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [hasInitialized, setHasInitialized] = useState<boolean>(false);
+  const storageKey = `/daily/index/${selectedDate}`;
 
   // API hooks
   const {
@@ -153,6 +154,13 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
     setCurrentQuestionIndex(0);
     setHasInitialized(false);
   }, [selectedDate]);
+
+  // Persist current index per date to survive navigation/unmounts
+  useEffect(() => {
+    try {
+      window.sessionStorage.setItem(storageKey, String(currentQuestionIndex));
+    } catch {}
+  }, [currentQuestionIndex, storageKey]);
 
   // Actions
   const completeQuestion = useCallback(
@@ -360,20 +368,36 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
     }
   }, [questions, currentQuestionIndex, getNextUnansweredIndex]);
 
-  // Navigate to first unanswered question when questions are loaded
+  // Initialize current index on first load: restore persisted index if valid,
+  // otherwise navigate to first unanswered question.
   useEffect(() => {
     if (
       questionsResponse?.questions &&
       questionsResponse.questions.length > 0 &&
       !hasInitialized
     ) {
-      const allCompleted = questionsResponse.questions.every(
-        q => q.is_completed
-      );
-      if (!allCompleted) {
-        const firstUnanswered = getFirstUnansweredIndex();
-        if (firstUnanswered !== currentQuestionIndex) {
-          setCurrentQuestionIndex(firstUnanswered);
+      // Try restore
+      let restoredIndex: number | null = null;
+      try {
+        const raw = window.sessionStorage.getItem(storageKey);
+        if (raw != null) restoredIndex = Number(raw);
+      } catch {}
+
+      if (
+        restoredIndex != null &&
+        restoredIndex >= 0 &&
+        restoredIndex < questionsResponse.questions.length
+      ) {
+        setCurrentQuestionIndex(restoredIndex);
+      } else {
+        const allCompleted = questionsResponse.questions.every(
+          q => q.is_completed
+        );
+        if (!allCompleted) {
+          const firstUnanswered = getFirstUnansweredIndex();
+          if (firstUnanswered !== currentQuestionIndex) {
+            setCurrentQuestionIndex(firstUnanswered);
+          }
         }
       }
       setHasInitialized(true);
@@ -383,6 +407,7 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
     getFirstUnansweredIndex,
     currentQuestionIndex,
     hasInitialized,
+    storageKey,
   ]);
 
   // Computed values

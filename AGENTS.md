@@ -59,7 +59,7 @@
 FORMAT and LINT
 
 - To format files run: task format
-- To lint files run: task lint
+- To lint files run: task lint (do not do "npm lint")
 - To find dead code run: task deadcode
 
 TO Regenerate API types after changing swagger.yaml

@@ -1,0 +1,331 @@
+{
+  "language": "es",
+  "languageName": "Spanish",
+  "infinitive": "poder",
+  "infinitiveEn": "to be able to/can",
+  "category": "modal",
+  "tenses": [
+    {
+      "tenseId": "indicative_present",
+      "tenseName": "Presente",
+      "tenseNameEn": "Indicative Present",
+      "description": "Capacidad o posibilidad presente.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "puedo", "exampleSentence": "Puedo ayudar.", "exampleSentenceEn": "I can help."},
+        {"pronoun": "tú", "form": "puedes", "exampleSentence": "¿Puedes venir?", "exampleSentenceEn": "Can you come?"},
+        {"pronoun": "él/ella/usted", "form": "puede", "exampleSentence": "Puede esperar.", "exampleSentenceEn": "He can wait."},
+        {"pronoun": "nosotros", "form": "podemos", "exampleSentence": "Podemos empezar.", "exampleSentenceEn": "We can start."},
+        {"pronoun": "vosotros", "form": "podéis", "exampleSentence": "¿Podéis entrar?", "exampleSentenceEn": "Can you all enter?"},
+        {"pronoun": "ellos/ustedes", "form": "pueden", "exampleSentence": "Pueden participar.", "exampleSentenceEn": "They can participate."}
+      ]
+    },
+    {
+      "tenseId": "indicative_imperfect",
+      "tenseName": "Pretérito imperfecto",
+      "tenseNameEn": "Imperfect",
+      "description": "Capacidad habitual en el pasado o cortesía.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "podía", "exampleSentence": "Podía correr más.", "exampleSentenceEn": "I could run more."},
+        {"pronoun": "tú", "form": "podías", "exampleSentence": "Podías venir cuando querías.", "exampleSentenceEn": "You could come whenever you wanted."},
+        {"pronoun": "él/ella/usted", "form": "podía", "exampleSentence": "Podía ayudar a todos.", "exampleSentenceEn": "He could help everyone."},
+        {"pronoun": "nosotros", "form": "podíamos", "exampleSentence": "Podíamos salir tarde.", "exampleSentenceEn": "We could go out late."},
+        {"pronoun": "vosotros", "form": "podíais", "exampleSentence": "Podíais pedir más.", "exampleSentenceEn": "You all could ask for more."},
+        {"pronoun": "ellos/ustedes", "form": "podían", "exampleSentence": "Podían jugar afuera.", "exampleSentenceEn": "They could play outside."}
+      ]
+    },
+    {
+      "tenseId": "indicative_preterite",
+      "tenseName": "Pretérito perfecto simple",
+      "tenseNameEn": "Preterite",
+      "description": "Capacidad lograda puntualmente.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "pude", "exampleSentence": "Pude terminar.", "exampleSentenceEn": "I managed to finish."},
+        {"pronoun": "tú", "form": "pudiste", "exampleSentence": "Pudiste entrar a tiempo.", "exampleSentenceEn": "You managed to enter on time."},
+        {"pronoun": "él/ella/usted", "form": "pudo", "exampleSentence": "Pudo resolverlo.", "exampleSentenceEn": "He managed to solve it."},
+        {"pronoun": "nosotros", "form": "pudimos", "exampleSentence": "Pudimos verlo.", "exampleSentenceEn": "We managed to see it."},
+        {"pronoun": "vosotros", "form": "pudisteis", "exampleSentence": "Pudisteis ganar.", "exampleSentenceEn": "You all managed to win."},
+        {"pronoun": "ellos/ustedes", "form": "pudieron", "exampleSentence": "Pudieron venir.", "exampleSentenceEn": "They managed to come."}
+      ]
+    },
+    {
+      "tenseId": "indicative_future",
+      "tenseName": "Futuro simple",
+      "tenseNameEn": "Simple Future",
+      "description": "Capacidad o permiso futuro.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "podré", "exampleSentence": "Podré asistir mañana.", "exampleSentenceEn": "I will be able to attend tomorrow."},
+        {"pronoun": "tú", "form": "podrás", "exampleSentence": "Podrás entrar más tarde.", "exampleSentenceEn": "You will be able to enter later."},
+        {"pronoun": "él/ella/usted", "form": "podrá", "exampleSentence": "Podrá ayudar después.", "exampleSentenceEn": "He will be able to help later."},
+        {"pronoun": "nosotros", "form": "podremos", "exampleSentence": "Podremos viajar en junio.", "exampleSentenceEn": "We will be able to travel in June."},
+        {"pronoun": "vosotros", "form": "podréis", "exampleSentence": "Podréis verlo mañana.", "exampleSentenceEn": "You all will be able to see it tomorrow."},
+        {"pronoun": "ellos/ustedes", "form": "podrán", "exampleSentence": "Podrán participar la próxima vez.", "exampleSentenceEn": "They will be able to participate next time."}
+      ]
+    },
+    {
+      "tenseId": "indicative_conditional",
+      "tenseName": "Condicional simple",
+      "tenseNameEn": "Conditional",
+      "description": "Capacidad hipotética o cortesía.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "podría", "exampleSentence": "Podría ayudar si fuera necesario.", "exampleSentenceEn": "I could help if necessary."},
+        {"pronoun": "tú", "form": "podrías", "exampleSentence": "¿Podrías abrir la ventana?", "exampleSentenceEn": "Could you open the window?"},
+        {"pronoun": "él/ella/usted", "form": "podría", "exampleSentence": "Podría hacerlo mañana.", "exampleSentenceEn": "He could do it tomorrow."},
+        {"pronoun": "nosotros", "form": "podríamos", "exampleSentence": "Podríamos intentarlo luego.", "exampleSentenceEn": "We could try it later."},
+        {"pronoun": "vosotros", "form": "podríais", "exampleSentence": "Podríais venir con nosotros.", "exampleSentenceEn": "You all could come with us."},
+        {"pronoun": "ellos/ustedes", "form": "podrían", "exampleSentence": "Podrían ganar si se esfuerzan.", "exampleSentenceEn": "They could win if they make an effort."}
+      ]
+    },
+    {
+      "tenseId": "indicative_present_perfect",
+      "tenseName": "Pretérito perfecto compuesto",
+      "tenseNameEn": "Present Perfect",
+      "description": "Capacidad/posibilidad pasada relevante.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "he podido", "exampleSentence": "He podido terminar.", "exampleSentenceEn": "I have been able to finish."},
+        {"pronoun": "tú", "form": "has podido", "exampleSentence": "Has podido entrar.", "exampleSentenceEn": "You have been able to enter."},
+        {"pronoun": "él/ella/usted", "form": "ha podido", "exampleSentence": "Ha podido ayudar.", "exampleSentenceEn": "He has been able to help."},
+        {"pronoun": "nosotros", "form": "hemos podido", "exampleSentence": "Hemos podido viajar.", "exampleSentenceEn": "We have been able to travel."},
+        {"pronoun": "vosotros", "form": "habéis podido", "exampleSentence": "Habéis podido continuar.", "exampleSentenceEn": "You all have been able to continue."},
+        {"pronoun": "ellos/ustedes", "form": "han podido", "exampleSentence": "Han podido participar.", "exampleSentenceEn": "They have been able to participate."}
+      ]
+    },
+    {
+      "tenseId": "indicative_pluperfect",
+      "tenseName": "Pluscuamperfecto",
+      "tenseNameEn": "Pluperfect",
+      "description": "Capacidad anterior a otra acción pasada.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "había podido", "exampleSentence": "Había podido verlo antes.", "exampleSentenceEn": "I had been able to see it before."},
+        {"pronoun": "tú", "form": "habías podido", "exampleSentence": "Habías podido entrar.", "exampleSentenceEn": "You had been able to enter."},
+        {"pronoun": "él/ella/usted", "form": "había podido", "exampleSentence": "Había podido ayudar.", "exampleSentenceEn": "He had been able to help."},
+        {"pronoun": "nosotros", "form": "habíamos podido", "exampleSentence": "Habíamos podido salir.", "exampleSentenceEn": "We had been able to go out."},
+        {"pronoun": "vosotros", "form": "habíais podido", "exampleSentence": "Habíais podido asistir.", "exampleSentenceEn": "You all had been able to attend."},
+        {"pronoun": "ellos/ustedes", "form": "habían podido", "exampleSentence": "Habían podido terminar.", "exampleSentenceEn": "They had been able to finish."}
+      ]
+    },
+    {
+      "tenseId": "indicative_preterite_perfect",
+      "tenseName": "Pretérito anterior",
+      "tenseNameEn": "Preterite Perfect",
+      "description": "Uso literario.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "hube podido", "exampleSentence": "Apenas hube podido, avisé.", "exampleSentenceEn": "As soon as I had been able, I informed."},
+        {"pronoun": "tú", "form": "hubiste podido", "exampleSentence": "Cuando hubiste podido entrar, pasaste.", "exampleSentenceEn": "When you had been able to enter, you went in."},
+        {"pronoun": "él/ella/usted", "form": "hubo podido", "exampleSentence": "Apenas hubo podido, salió.", "exampleSentenceEn": "As soon as he had been able, he left."},
+        {"pronoun": "nosotros", "form": "hubimos podido", "exampleSentence": "Hubimos podido ayudar.", "exampleSentenceEn": "We had been able to help."},
+        {"pronoun": "vosotros", "form": "hubisteis podido", "exampleSentence": "Hubisteis podido continuar.", "exampleSentenceEn": "You all had been able to continue."},
+        {"pronoun": "ellos/ustedes", "form": "hubieron podido", "exampleSentence": "Hubieron podido asistir.", "exampleSentenceEn": "They had been able to attend."}
+      ]
+    },
+    {
+      "tenseId": "indicative_future_perfect",
+      "tenseName": "Futuro perfecto",
+      "tenseNameEn": "Future Perfect",
+      "description": "Capacidad completada antes de un punto futuro.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "habré podido", "exampleSentence": "Para entonces habré podido terminar.", "exampleSentenceEn": "By then I will have been able to finish."},
+        {"pronoun": "tú", "form": "habrás podido", "exampleSentence": "Habrás podido entrar.", "exampleSentenceEn": "You will have been able to enter."},
+        {"pronoun": "él/ella/usted", "form": "habrá podido", "exampleSentence": "Habrá podido resolverlo.", "exampleSentenceEn": "He will have been able to solve it."},
+        {"pronoun": "nosotros", "form": "habremos podido", "exampleSentence": "Habremos podido viajar.", "exampleSentenceEn": "We will have been able to travel."},
+        {"pronoun": "vosotros", "form": "habréis podido", "exampleSentence": "Habréis podido asistir.", "exampleSentenceEn": "You all will have been able to attend."},
+        {"pronoun": "ellos/ustedes", "form": "habrán podido", "exampleSentence": "Habrán podido participar.", "exampleSentenceEn": "They will have been able to participate."}
+      ]
+    },
+    {
+      "tenseId": "indicative_conditional_perfect",
+      "tenseName": "Condicional perfecto",
+      "tenseNameEn": "Conditional Perfect",
+      "description": "Capacidad hipotética completada.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "habría podido", "exampleSentence": "Habría podido ayudar si me avisabas.", "exampleSentenceEn": "I could have helped if you told me."},
+        {"pronoun": "tú", "form": "habrías podido", "exampleSentence": "Habrías podido ganar.", "exampleSentenceEn": "You could have won."},
+        {"pronoun": "él/ella/usted", "form": "habría podido", "exampleSentence": "Habría podido venir.", "exampleSentenceEn": "He could have come."},
+        {"pronoun": "nosotros", "form": "habríamos podido", "exampleSentence": "Habríamos podido salir.", "exampleSentenceEn": "We could have gone out."},
+        {"pronoun": "vosotros", "form": "habríais podido", "exampleSentence": "Habríais podido terminar.", "exampleSentenceEn": "You all could have finished."},
+        {"pronoun": "ellos/ustedes", "form": "habrían podido", "exampleSentence": "Habrían podido participar.", "exampleSentenceEn": "They could have participated."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_present",
+      "tenseName": "Presente (subjuntivo)",
+      "tenseNameEn": "Subjunctive Present",
+      "description": "Deseo o posibilidad de poder.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "pueda", "exampleSentence": "Ojalá pueda ir.", "exampleSentenceEn": "I hope I can go."},
+        {"pronoun": "tú", "form": "puedas", "exampleSentence": "Espero que puedas ayudar.", "exampleSentenceEn": "I hope you can help."},
+        {"pronoun": "él/ella/usted", "form": "pueda", "exampleSentence": "Es posible que pueda venir.", "exampleSentenceEn": "It's possible he can come."},
+        {"pronoun": "nosotros", "form": "podamos", "exampleSentence": "Quieren que podamos viajar.", "exampleSentenceEn": "They want us to be able to travel."},
+        {"pronoun": "vosotros", "form": "podáis", "exampleSentence": "Es bueno que podáis entrar.", "exampleSentenceEn": "It's good that you all can enter."},
+        {"pronoun": "ellos/ustedes", "form": "puedan", "exampleSentence": "Temen que puedan fallar.", "exampleSentenceEn": "They fear that you might fail."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_imperfect_ra",
+      "tenseName": "Imperfecto (ra)",
+      "tenseNameEn": "Subjunctive Imperfect (-ra)",
+      "description": "Poder hipotético pasado.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "pudiera", "exampleSentence": "Si pudiera, iría.", "exampleSentenceEn": "If I could, I would go."},
+        {"pronoun": "tú", "form": "pudieras", "exampleSentence": "Ojalá pudieras venir.", "exampleSentenceEn": "I wish you could come."},
+        {"pronoun": "él/ella/usted", "form": "pudiera", "exampleSentence": "Quisiera que pudiera ayudar.", "exampleSentenceEn": "I'd like him to be able to help."},
+        {"pronoun": "nosotros", "form": "pudiéramos", "exampleSentence": "Si pudiéramos salir, lo haríamos.", "exampleSentenceEn": "If we could go out, we would."},
+        {"pronoun": "vosotros", "form": "pudierais", "exampleSentence": "Si pudierais, vendríais.", "exampleSentenceEn": "If you all could, you would come."},
+        {"pronoun": "ellos/ustedes", "form": "pudieran", "exampleSentence": "Si pudieran hacerlo, lo harían.", "exampleSentenceEn": "If they could do it, they would."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_imperfect_se",
+      "tenseName": "Imperfecto (se)",
+      "tenseNameEn": "Subjunctive Imperfect (-se)",
+      "description": "Variante -se del imperfecto de subjuntivo.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "pudiese", "exampleSentence": "Si pudiese, ayudaría.", "exampleSentenceEn": "If I could, I'd help."},
+        {"pronoun": "tú", "form": "pudieses", "exampleSentence": "Quisiera que pudieses asistir.", "exampleSentenceEn": "I'd like you to be able to attend."},
+        {"pronoun": "él/ella/usted", "form": "pudiese", "exampleSentence": "No creía que pudiese venir.", "exampleSentenceEn": "I didn't think he could come."},
+        {"pronoun": "nosotros", "form": "pudiésemos", "exampleSentence": "Si pudiésemos entrar, pasaríamos.", "exampleSentenceEn": "If we could enter, we'd go in."},
+        {"pronoun": "vosotros", "form": "pudieseis", "exampleSentence": "Si pudieseis, ayudaríais.", "exampleSentenceEn": "If you all could, you'd help."},
+        {"pronoun": "ellos/ustedes", "form": "pudiesen", "exampleSentence": "Si pudiesen salir, irían.", "exampleSentenceEn": "If they could go out, they'd go."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_future",
+      "tenseName": "Futuro (subjuntivo)",
+      "tenseNameEn": "Subjunctive Future",
+      "description": "Uso arcaico/jurídico.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "pudiere", "exampleSentence": "Quien pudiere, acuda.", "exampleSentenceEn": "Whoever be able, attend."},
+        {"pronoun": "tú", "form": "pudieres", "exampleSentence": "Si pudieres venir, avisa.", "exampleSentenceEn": "If you be able to come, let me know."},
+        {"pronoun": "él/ella/usted", "form": "pudiere", "exampleSentence": "Si pudiere ayudar, lo hará.", "exampleSentenceEn": "If he be able to help, he shall."},
+        {"pronoun": "nosotros", "form": "pudiéremos", "exampleSentence": "Si pudiéremos asistir, iremos.", "exampleSentenceEn": "If we be able to attend, we shall go."},
+        {"pronoun": "vosotros", "form": "pudiereis", "exampleSentence": "Si pudiereis entrar, pasad.", "exampleSentenceEn": "If you be able to enter, proceed."},
+        {"pronoun": "ellos/ustedes", "form": "pudieren", "exampleSentence": "Si pudieren venir, llegarán temprano.", "exampleSentenceEn": "If they be able to come, they'll arrive early."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_present_perfect",
+      "tenseName": "Pretérito perfecto (subj.)",
+      "tenseNameEn": "Subjunctive Present Perfect",
+      "description": "Capacidad pasada con relación al presente de subjuntivo.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "haya podido", "exampleSentence": "Dudo que haya podido terminar.", "exampleSentenceEn": "I doubt I have been able to finish."},
+        {"pronoun": "tú", "form": "hayas podido", "exampleSentence": "No creo que hayas podido entrar.", "exampleSentenceEn": "I don't think you have been able to enter."},
+        {"pronoun": "él/ella/usted", "form": "haya podido", "exampleSentence": "Es posible que haya podido ayudar.", "exampleSentenceEn": "It's possible he has been able to help."},
+        {"pronoun": "nosotros", "form": "hayamos podido", "exampleSentence": "Ojalá hayamos podido viajar.", "exampleSentenceEn": "I hope we have been able to travel."},
+        {"pronoun": "vosotros", "form": "hayáis podido", "exampleSentence": "Puede que hayáis podido continuar.", "exampleSentenceEn": "You all may have been able to continue."},
+        {"pronoun": "ellos/ustedes", "form": "hayan podido", "exampleSentence": "No piensan que hayan podido participar.", "exampleSentenceEn": "They don't think you have been able to participate."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_pluperfect_ra",
+      "tenseName": "Pluscuamperfecto (ra)",
+      "tenseNameEn": "Subjunctive Pluperfect (-ra)",
+      "description": "Capacidad anterior hipotética (variante -ra).",
+      "conjugations": [
+        {"pronoun": "yo", "form": "hubiera podido", "exampleSentence": "Si hubiera podido, habría ido.", "exampleSentenceEn": "If I had been able, I would have gone."},
+        {"pronoun": "tú", "form": "hubieras podido", "exampleSentence": "Si hubieras podido, habrías llamado.", "exampleSentenceEn": "If you had been able, you would have called."},
+        {"pronoun": "él/ella/usted", "form": "hubiera podido", "exampleSentence": "Si hubiera podido, lo haría.", "exampleSentenceEn": "If he had been able, he'd do it."},
+        {"pronoun": "nosotros", "form": "hubiéramos podido", "exampleSentence": "Si hubiéramos podido, habríamos asistido.", "exampleSentenceEn": "If we had been able, we would have attended."},
+        {"pronoun": "vosotros", "form": "hubierais podido", "exampleSentence": "Si hubierais podido, vendríais.", "exampleSentenceEn": "If you all had been able, you would come."},
+        {"pronoun": "ellos/ustedes", "form": "hubieran podido", "exampleSentence": "Si hubieran podido, participarían.", "exampleSentenceEn": "If they had been able, they'd participate."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_pluperfect_se",
+      "tenseName": "Pluscuamperfecto (se)",
+      "tenseNameEn": "Subjunctive Pluperfect (-se)",
+      "description": "Capacidad anterior hipotética (variante -se).",
+      "conjugations": [
+        {"pronoun": "yo", "form": "hubiese podido", "exampleSentence": "Si hubiese podido, habría ayudado.", "exampleSentenceEn": "If I had been able, I would have helped."},
+        {"pronoun": "tú", "form": "hubieses podido", "exampleSentence": "Si hubieses podido, habrías venido.", "exampleSentenceEn": "If you had been able, you would have come."},
+        {"pronoun": "él/ella/usted", "form": "hubiese podido", "exampleSentence": "No pensé que hubiese podido hacerlo.", "exampleSentenceEn": "I didn't think he had been able to do it."},
+        {"pronoun": "nosotros", "form": "hubiésemos podido", "exampleSentence": "Si hubiésemos podido, viajaríamos.", "exampleSentenceEn": "If we had been able, we would travel."},
+        {"pronoun": "vosotros", "form": "hubieseis podido", "exampleSentence": "Si hubieseis podido, entraríais.", "exampleSentenceEn": "If you all had been able, you'd enter."},
+        {"pronoun": "ellos/ustedes", "form": "hubiesen podido", "exampleSentence": "Si hubiesen podido, seguirían.", "exampleSentenceEn": "If they had been able, they'd continue."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_future_perfect",
+      "tenseName": "Futuro perfecto (subj.)",
+      "tenseNameEn": "Subjunctive Future Perfect",
+      "description": "Uso arcaico.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "hubiere podido", "exampleSentence": "Si hubiere podido, asistiré.", "exampleSentenceEn": "If I shall have been able, I will attend."},
+        {"pronoun": "tú", "form": "hubieres podido", "exampleSentence": "Si hubieres podido, ven.", "exampleSentenceEn": "If you shall have been able, come."},
+        {"pronoun": "él/ella/usted", "form": "hubiere podido", "exampleSentence": "Si hubiere podido, actuará.", "exampleSentenceEn": "If he shall have been able, he will act."},
+        {"pronoun": "nosotros", "form": "hubiéremos podido", "exampleSentence": "Si hubiéremos podido, iremos.", "exampleSentenceEn": "If we shall have been able, we will go."},
+        {"pronoun": "vosotros", "form": "hubiereis podido", "exampleSentence": "Si hubiereis podido, responded.", "exampleSentenceEn": "If you shall have been able, respond."},
+        {"pronoun": "ellos/ustedes", "form": "hubieren podido", "exampleSentence": "Si hubieren podido, informarán.", "exampleSentenceEn": "If they shall have been able, they will inform."}
+      ]
+    },
+    {
+      "tenseId": "imperative_affirmative",
+      "tenseName": "Imperativo afirmativo",
+      "tenseNameEn": "Imperative Affirmative",
+      "description": "Órdenes afirmativas (uso limitado).",
+      "conjugations": [
+        {"pronoun": "tú", "form": "puede", "exampleSentence": "Puede pasar.", "exampleSentenceEn": "You may come in."},
+        {"pronoun": "usted", "form": "pueda", "exampleSentence": "Pueda esperar aquí.", "exampleSentenceEn": "Please be able to wait here."},
+        {"pronoun": "nosotros", "form": "podamos", "exampleSentence": "Podamos intentarlo.", "exampleSentenceEn": "Let's be able to try it."},
+        {"pronoun": "vosotros", "form": "poded", "exampleSentence": "Poded entrar.", "exampleSentenceEn": "Be able to enter (you all)."},
+        {"pronoun": "ustedes", "form": "puedan", "exampleSentence": "Puedan sentarse.", "exampleSentenceEn": "You may sit (you all)."}
+      ]
+    },
+    {
+      "tenseId": "imperative_negative",
+      "tenseName": "Imperativo negativo",
+      "tenseNameEn": "Imperative Negative",
+      "description": "Órdenes negativas.",
+      "conjugations": [
+        {"pronoun": "tú", "form": "no puedas", "exampleSentence": "No puedas rendirte.", "exampleSentenceEn": "Don't be able to give up."},
+        {"pronoun": "usted", "form": "no pueda", "exampleSentence": "No pueda entrar aún.", "exampleSentenceEn": "Do not be able to enter yet."},
+        {"pronoun": "nosotros", "form": "no podamos", "exampleSentence": "No podamos fallar.", "exampleSentenceEn": "Let's not be able to fail."},
+        {"pronoun": "vosotros", "form": "no podáis", "exampleSentence": "No podáis dudar.", "exampleSentenceEn": "Don't be able to doubt (you all)."},
+        {"pronoun": "ustedes", "form": "no puedan", "exampleSentence": "No puedan pasar aún.", "exampleSentenceEn": "You may not pass yet (you all)."}
+      ]
+    },
+    {
+      "tenseId": "progressive_present",
+      "tenseName": "Progresivo (presente)",
+      "tenseNameEn": "Present Progressive",
+      "description": "Acción en progreso (forma defectiva).",
+      "conjugations": [
+        {"pronoun": "yo", "form": "estoy pudiendo", "exampleSentence": "Estoy pudiendo correr más.", "exampleSentenceEn": "I am managing to run more."},
+        {"pronoun": "tú", "form": "estás pudiendo", "exampleSentence": "Estás pudiendo concentrarte.", "exampleSentenceEn": "You are managing to concentrate."},
+        {"pronoun": "él/ella/usted", "form": "está pudiendo", "exampleSentence": "Está pudiendo trabajar mejor.", "exampleSentenceEn": "He is managing to work better."},
+        {"pronoun": "nosotros", "form": "estamos pudiendo", "exampleSentence": "Estamos pudiendo avanzar.", "exampleSentenceEn": "We are managing to advance."},
+        {"pronoun": "vosotros", "form": "estáis pudiendo", "exampleSentence": "Estáis pudiendo seguir el ritmo.", "exampleSentenceEn": "You all are managing to keep pace."},
+        {"pronoun": "ellos/ustedes", "form": "están pudiendo", "exampleSentence": "Están pudiendo resolverlo.", "exampleSentenceEn": "They are managing to solve it."}
+      ]
+    },
+    {
+      "tenseId": "progressive_past",
+      "tenseName": "Progresivo (pasado)",
+      "tenseNameEn": "Past Progressive",
+      "description": "Acción en progreso en el pasado.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "estaba pudiendo", "exampleSentence": "Estaba pudiendo concentrarme.", "exampleSentenceEn": "I was managing to concentrate."},
+        {"pronoun": "tú", "form": "estabas pudiendo", "exampleSentence": "Estabas pudiendo estudiar.", "exampleSentenceEn": "You were managing to study."},
+        {"pronoun": "él/ella/usted", "form": "estaba pudiendo", "exampleSentence": "Estaba pudiendo correr más.", "exampleSentenceEn": "He was managing to run more."},
+        {"pronoun": "nosotros", "form": "estábamos pudiendo", "exampleSentence": "Estábamos pudiendo avanzar.", "exampleSentenceEn": "We were managing to advance."},
+        {"pronoun": "vosotros", "form": "estabais pudiendo", "exampleSentence": "Estabais pudiendo mantener el ritmo.", "exampleSentenceEn": "You all were managing to keep pace."},
+        {"pronoun": "ellos/ustedes", "form": "estaban pudiendo", "exampleSentence": "Estaban pudiendo resolverlo.", "exampleSentenceEn": "They were managing to solve it."}
+      ]
+    },
+    {
+      "tenseId": "progressive_future",
+      "tenseName": "Progresivo (futuro)",
+      "tenseNameEn": "Future Progressive",
+      "description": "Acción en progreso en el futuro.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "estaré pudiendo", "exampleSentence": "Estaré pudiendo ayudar mañana.", "exampleSentenceEn": "I will be able to help tomorrow (be managing)."},
+        {"pronoun": "tú", "form": "estarás pudiendo", "exampleSentence": "Estarás pudiendo concentrarte más.", "exampleSentenceEn": "You will be managing to concentrate more."},
+        {"pronoun": "él/ella/usted", "form": "estará pudiendo", "exampleSentence": "Estará pudiendo trabajar mejor.", "exampleSentenceEn": "He will be managing to work better."},
+        {"pronoun": "nosotros", "form": "estaremos pudiendo", "exampleSentence": "Estaremos pudiendo avanzar.", "exampleSentenceEn": "We will be managing to advance."},
+        {"pronoun": "vosotros", "form": "estaréis pudiendo", "exampleSentence": "Estaréis pudiendo seguir.", "exampleSentenceEn": "You all will be managing to continue."},
+        {"pronoun": "ellos/ustedes", "form": "estarán pudiendo", "exampleSentence": "Estarán pudiendo resolverlo.", "exampleSentenceEn": "They will be managing to solve it."}
+      ]
+    }
+  ]
+}
+
+

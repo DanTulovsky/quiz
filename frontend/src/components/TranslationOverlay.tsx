@@ -34,39 +34,39 @@ export const TranslationOverlay: React.FC = () => {
   // Mobile pages now update the QuestionContext just like desktop pages,
   // so we don't need special handling for mobile question pages
 
-  // Get the current question from either quiz, reading, daily, story, or mobile context
-  // Use useMemo to ensure it updates when story context changes
+  // Get the current question strictly based on active route to avoid stale IDs
   const currentQuestion = useMemo((): Question | StoryContext | null => {
-    let question: Question | StoryContext | null =
-      quizQuestion || readingQuestion;
+    // Daily routes: prefer the globally-published question from QuestionContext
+    // (kept in sync by DailyPage). Fall back to hook-based dailyQuestion only
+    // if context is not yet populated.
+    if (isDailyPage) {
+      // Zero-risk mode: only trust the globally published question from
+      // QuestionContext; do not fall back to a separate hook value.
+      return quizQuestion || null;
+    }
 
-    if (isDailyPage && dailyQuestion) {
-      // For daily questions, we need to create a question object with the correct ID
-      question = {
-        ...dailyQuestion.question,
-        id: dailyQuestion.question_id,
-      };
-    } else if (isStoryPage && currentStory) {
-      // For stories, create a context object with story/section info
-      // NOTE: Do NOT set 'id' field here - stories don't have questions, so question_id should not be set
-      question = {
-        story_id: currentStory.id!, // Always set story_id to the story ID
-        // Add section context if we're in section view and have a current section
+    // Story routes: provide story/section context, without an id
+    if (isStoryPage && currentStory) {
+      return {
+        story_id: currentStory.id!,
         ...(viewMode === 'section' &&
-          currentSection && { section_id: currentSection.id }),
+          currentSection && {
+            section_id: currentSection.id,
+          }),
       };
     }
 
-    return question;
+    // Quiz/Reading routes: use question context
+    return quizQuestion || readingQuestion || null;
   }, [
-    quizQuestion,
-    readingQuestion,
     isDailyPage,
     dailyQuestion,
     isStoryPage,
     currentStory,
     currentSection,
     viewMode,
+    quizQuestion,
+    readingQuestion,
   ]);
 
   if (!isVisible || !selection) {
@@ -79,6 +79,7 @@ export const TranslationOverlay: React.FC = () => {
       selection={selection}
       onClose={clearSelection}
       currentQuestion={currentQuestion}
+      requireQuestionId={isDailyPage}
     />
   );
 };

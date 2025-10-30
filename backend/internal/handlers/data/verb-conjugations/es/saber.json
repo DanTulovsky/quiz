@@ -1,0 +1,187 @@
+{
+  "language": "es",
+  "languageName": "Spanish",
+  "infinitive": "saber",
+  "infinitiveEn": "to know",
+  "category": "cognition",
+  "tenses": [
+    {"tenseId":"indicative_present","tenseName":"Presente","tenseNameEn":"Indicative Present","description":"Conocimiento presente.","conjugations":[
+      {"pronoun":"yo","form":"sé","exampleSentence":"Sé la respuesta.","exampleSentenceEn":"I know the answer."},
+      {"pronoun":"tú","form":"sabes","exampleSentence":"¿Sabes español?","exampleSentenceEn":"Do you know Spanish?"},
+      {"pronoun":"él/ella/usted","form":"sabe","exampleSentence":"Él sabe conducir.","exampleSentenceEn":"He knows how to drive."},
+      {"pronoun":"nosotros","form":"sabemos","exampleSentence":"Sabemos la verdad.","exampleSentenceEn":"We know the truth."},
+      {"pronoun":"vosotros","form":"sabéis","exampleSentence":"¿Sabéis la hora?","exampleSentenceEn":"Do you all know the time?"},
+      {"pronoun":"ellos/ustedes","form":"saben","exampleSentence":"Ellos saben mucho.","exampleSentenceEn":"They know a lot."}
+    ]},
+    {"tenseId":"indicative_imperfect","tenseName":"Pretérito imperfecto","tenseNameEn":"Imperfect","description":"Conocimiento habitual en el pasado.","conjugations":[
+      {"pronoun":"yo","form":"sabía","exampleSentence":"Sabía tocar piano.","exampleSentenceEn":"I used to know how to play piano."},
+      {"pronoun":"tú","form":"sabías","exampleSentence":"Sabías la ruta.","exampleSentenceEn":"You used to know the route."},
+      {"pronoun":"él/ella/usted","form":"sabía","exampleSentence":"Sabía el tema.","exampleSentenceEn":"He knew the topic."},
+      {"pronoun":"nosotros","form":"sabíamos","exampleSentence":"Sabíamos la historia.","exampleSentenceEn":"We knew the story."},
+      {"pronoun":"vosotros","form":"sabíais","exampleSentence":"Sabíais los pasos.","exampleSentenceEn":"You all knew the steps."},
+      {"pronoun":"ellos/ustedes","form":"sabían","exampleSentence":"Sabían las reglas.","exampleSentenceEn":"They knew the rules."}
+    ]},
+    {"tenseId":"indicative_preterite","tenseName":"Pretérito perfecto simple","tenseNameEn":"Preterite","description":"Enterarse puntualmente.","conjugations":[
+      {"pronoun":"yo","form":"supe","exampleSentence":"Supe la noticia ayer.","exampleSentenceEn":"I found out the news yesterday."},
+      {"pronoun":"tú","form":"supiste","exampleSentence":"Supiste el resultado.","exampleSentenceEn":"You found out the result."},
+      {"pronoun":"él/ella/usted","form":"supo","exampleSentence":"Supo la verdad.","exampleSentenceEn":"He found out the truth."},
+      {"pronoun":"nosotros","form":"supimos","exampleSentence":"Supimos de su llegada.","exampleSentenceEn":"We learned of his arrival."},
+      {"pronoun":"vosotros","form":"supisteis","exampleSentence":"Supisteis el horario.","exampleSentenceEn":"You all learned the schedule."},
+      {"pronoun":"ellos/ustedes","form":"supieron","exampleSentence":"Supieron el motivo.","exampleSentenceEn":"They learned the reason."}
+    ]},
+    {"tenseId":"indicative_future","tenseName":"Futuro simple","tenseNameEn":"Simple Future","description":"Conocimiento futuro.","conjugations":[
+      {"pronoun":"yo","form":"sabré","exampleSentence":"Sabré la respuesta mañana.","exampleSentenceEn":"I will know the answer tomorrow."},
+      {"pronoun":"tú","form":"sabrás","exampleSentence":"Sabrás la verdad pronto.","exampleSentenceEn":"You will know the truth soon."},
+      {"pronoun":"él/ella/usted","form":"sabrá","exampleSentence":"Sabrá la dirección.","exampleSentenceEn":"He will know the address."},
+      {"pronoun":"nosotros","form":"sabremos","exampleSentence":"Sabremos el resultado.","exampleSentenceEn":"We will know the result."},
+      {"pronoun":"vosotros","form":"sabréis","exampleSentence":"Sabréis la fecha.","exampleSentenceEn":"You all will know the date."},
+      {"pronoun":"ellos/ustedes","form":"sabrán","exampleSentence":"Sabrán la noticia.","exampleSentenceEn":"They will know the news."}
+    ]},
+    {"tenseId":"indicative_conditional","tenseName":"Condicional simple","tenseNameEn":"Conditional","description":"Conocimiento hipotético o cortesía.","conjugations":[
+      {"pronoun":"yo","form":"sabría","exampleSentence":"Sabría qué hacer.","exampleSentenceEn":"I would know what to do."},
+      {"pronoun":"tú","form":"sabrías","exampleSentence":"¿Sabrías la ruta?","exampleSentenceEn":"Would you know the route?"},
+      {"pronoun":"él/ella/usted","form":"sabría","exampleSentence":"Sabría explicarlo.","exampleSentenceEn":"He would know how to explain it."},
+      {"pronoun":"nosotros","form":"sabríamos","exampleSentence":"Sabríamos decidir.","exampleSentenceEn":"We would know how to decide."},
+      {"pronoun":"vosotros","form":"sabríais","exampleSentence":"Sabríais elegir.","exampleSentenceEn":"You all would know how to choose."},
+      {"pronoun":"ellos/ustedes","form":"sabrían","exampleSentence":"Sabrían responder.","exampleSentenceEn":"They would know how to reply."}
+    ]},
+    {"tenseId":"indicative_present_perfect","tenseName":"Pretérito perfecto compuesto","tenseNameEn":"Present Perfect","description":"Conocimiento pasado relevante.","conjugations":[
+      {"pronoun":"yo","form":"he sabido","exampleSentence":"He sabido la verdad.","exampleSentenceEn":"I have known the truth."},
+      {"pronoun":"tú","form":"has sabido","exampleSentence":"Has sabido decidir.","exampleSentenceEn":"You have known how to decide."},
+      {"pronoun":"él/ella/usted","form":"ha sabido","exampleSentence":"Ha sabido actuar.","exampleSentenceEn":"He has known how to act."},
+      {"pronoun":"nosotros","form":"hemos sabido","exampleSentence":"Hemos sabido la respuesta.","exampleSentenceEn":"We have known the answer."},
+      {"pronoun":"vosotros","form":"habéis sabido","exampleSentence":"Habéis sabido elegir.","exampleSentenceEn":"You all have known how to choose."},
+      {"pronoun":"ellos/ustedes","form":"han sabido","exampleSentence":"Han sabido responder.","exampleSentenceEn":"They have known how to respond."}
+    ]},
+    {"tenseId":"indicative_pluperfect","tenseName":"Pluscuamperfecto","tenseNameEn":"Pluperfect","description":"Conocimiento anterior a otra acción pasada.","conjugations":[
+      {"pronoun":"yo","form":"había sabido","exampleSentence":"Había sabido la noticia.","exampleSentenceEn":"I had known the news."},
+      {"pronoun":"tú","form":"habías sabido","exampleSentence":"Habías sabido el plan.","exampleSentenceEn":"You had known the plan."},
+      {"pronoun":"él/ella/usted","form":"había sabido","exampleSentence":"Había sabido la fecha.","exampleSentenceEn":"He had known the date."},
+      {"pronoun":"nosotros","form":"habíamos sabido","exampleSentence":"Habíamos sabido la dirección.","exampleSentenceEn":"We had known the address."},
+      {"pronoun":"vosotros","form":"habíais sabido","exampleSentence":"Habíais sabido el resultado.","exampleSentenceEn":"You all had known the result."},
+      {"pronoun":"ellos/ustedes","form":"habían sabido","exampleSentence":"Habían sabido la verdad.","exampleSentenceEn":"They had known the truth."}
+    ]},
+    {"tenseId":"indicative_preterite_perfect","tenseName":"Pretérito anterior","tenseNameEn":"Preterite Perfect","description":"Uso literario.","conjugations":[
+      {"pronoun":"yo","form":"hube sabido","exampleSentence":"Apenas hube sabido eso, llamé.","exampleSentenceEn":"As soon as I had known that, I called."},
+      {"pronoun":"tú","form":"hubiste sabido","exampleSentence":"Cuando hubiste sabido la fecha, reservaste.","exampleSentenceEn":"When you had known the date, you booked."},
+      {"pronoun":"él/ella/usted","form":"hubo sabido","exampleSentence":"Apenas hubo sabido la verdad, habló.","exampleSentenceEn":"As soon as he had known the truth, he spoke."},
+      {"pronoun":"nosotros","form":"hubimos sabido","exampleSentence":"Hubimos sabido el horario.","exampleSentenceEn":"We had known the schedule."},
+      {"pronoun":"vosotros","form":"hubisteis sabido","exampleSentence":"Hubisteis sabido el resultado.","exampleSentenceEn":"You all had known the result."},
+      {"pronoun":"ellos/ustedes","form":"hubieron sabido","exampleSentence":"Hubieron sabido la respuesta.","exampleSentenceEn":"They had known the answer."}
+    ]},
+    {"tenseId":"indicative_future_perfect","tenseName":"Futuro perfecto","tenseNameEn":"Future Perfect","description":"Conocimiento completado antes de un punto futuro.","conjugations":[
+      {"pronoun":"yo","form":"habré sabido","exampleSentence":"Para entonces habré sabido la verdad.","exampleSentenceEn":"By then I will have known the truth."},
+      {"pronoun":"tú","form":"habrás sabido","exampleSentence":"Habrás sabido decidir.","exampleSentenceEn":"You will have known how to decide."},
+      {"pronoun":"él/ella/usted","form":"habrá sabido","exampleSentence":"Habrá sabido actuar.","exampleSentenceEn":"He will have known how to act."},
+      {"pronoun":"nosotros","form":"habremos sabido","exampleSentence":"Habremos sabido el resultado.","exampleSentenceEn":"We will have known the result."},
+      {"pronoun":"vosotros","form":"habréis sabido","exampleSentence":"Habréis sabido elegir.","exampleSentenceEn":"You all will have known how to choose."},
+      {"pronoun":"ellos/ustedes","form":"habrán sabido","exampleSentence":"Habrán sabido responder.","exampleSentenceEn":"They will have known how to respond."}
+    ]},
+    {"tenseId":"indicative_conditional_perfect","tenseName":"Condicional perfecto","tenseNameEn":"Conditional Perfect","description":"Conocimiento hipotético completado.","conjugations":[
+      {"pronoun":"yo","form":"habría sabido","exampleSentence":"Habría sabido qué hacer.","exampleSentenceEn":"I would have known what to do."},
+      {"pronoun":"tú","form":"habrías sabido","exampleSentence":"Habrías sabido la ruta.","exampleSentenceEn":"You would have known the route."},
+      {"pronoun":"él/ella/usted","form":"habría sabido","exampleSentence":"Habría sabido responder.","exampleSentenceEn":"He would have known how to respond."},
+      {"pronoun":"nosotros","form":"habríamos sabido","exampleSentence":"Habríamos sabido decidir.","exampleSentenceEn":"We would have known how to decide."},
+      {"pronoun":"vosotros","form":"habríais sabido","exampleSentence":"Habríais sabido elegir.","exampleSentenceEn":"You all would have known how to choose."},
+      {"pronoun":"ellos/ustedes","form":"habrían sabido","exampleSentence":"Habrían sabido actuar.","exampleSentenceEn":"They would have known how to act."}
+    ]},
+    {"tenseId":"subjunctive_present","tenseName":"Presente (subjuntivo)","tenseNameEn":"Subjunctive Present","description":"Deseo o posibilidad de saber.","conjugations":[
+      {"pronoun":"yo","form":"sepa","exampleSentence":"Ojalá sepa la verdad.","exampleSentenceEn":"I hope I know the truth."},
+      {"pronoun":"tú","form":"sepas","exampleSentence":"Espero que sepas esto.","exampleSentenceEn":"I hope you know this."},
+      {"pronoun":"él/ella/usted","form":"sepa","exampleSentence":"Es posible que sepa el tema.","exampleSentenceEn":"It's possible he knows the topic."},
+      {"pronoun":"nosotros","form":"sepamos","exampleSentence":"Quieren que sepamos la respuesta.","exampleSentenceEn":"They want us to know the answer."},
+      {"pronoun":"vosotros","form":"sepáis","exampleSentence":"Es bueno que sepáis la ruta.","exampleSentenceEn":"It's good that you all know the route."},
+      {"pronoun":"ellos/ustedes","form":"sepan","exampleSentence":"Temen que sepan demasiado.","exampleSentenceEn":"They fear that you know too much."}
+    ]},
+    {"tenseId":"subjunctive_imperfect_ra","tenseName":"Imperfecto (ra)","tenseNameEn":"Subjunctive Imperfect (-ra)","description":"Saber hipotético pasado.","conjugations":[
+      {"pronoun":"yo","form":"supiera","exampleSentence":"Si supiera esto, actuaría.","exampleSentenceEn":"If I knew this, I would act."},
+      {"pronoun":"tú","form":"supieras","exampleSentence":"Ojalá supieras la verdad.","exampleSentenceEn":"I wish you knew the truth."},
+      {"pronoun":"él/ella/usted","form":"supiera","exampleSentence":"Quisiera que supiera más.","exampleSentenceEn":"I'd like him to know more."},
+      {"pronoun":"nosotros","form":"supiéramos","exampleSentence":"Si supiéramos la ruta, llegaríamos.","exampleSentenceEn":"If we knew the route, we'd arrive."},
+      {"pronoun":"vosotros","form":"supierais","exampleSentence":"Si supierais esto, decidiríais.","exampleSentenceEn":"If you all knew this, you'd decide."},
+      {"pronoun":"ellos/ustedes","form":"supieran","exampleSentence":"Si supieran la verdad, cambiarían.","exampleSentenceEn":"If they knew the truth, they'd change."}
+    ]},
+    {"tenseId":"subjunctive_imperfect_se","tenseName":"Imperfecto (se)","tenseNameEn":"Subjunctive Imperfect (-se)","description":"Variante -se.","conjugations":[
+      {"pronoun":"yo","form":"supiese","exampleSentence":"Si supiese esto, actuaría.","exampleSentenceEn":"If I knew this, I'd act."},
+      {"pronoun":"tú","form":"supieses","exampleSentence":"Quisiera que supieses la verdad.","exampleSentenceEn":"I'd like you to know the truth."},
+      {"pronoun":"él/ella/usted","form":"supiese","exampleSentence":"No creía que supiese tanto.","exampleSentenceEn":"I didn't think he knew so much."},
+      {"pronoun":"nosotros","form":"supiésemos","exampleSentence":"Si supiésemos la ruta, llegaríamos.","exampleSentenceEn":"If we knew the route, we'd arrive."},
+      {"pronoun":"vosotros","form":"supieseis","exampleSentence":"Si supieseis esto, decidiríais.","exampleSentenceEn":"If you all knew this, you'd decide."},
+      {"pronoun":"ellos/ustedes","form":"supiesen","exampleSentence":"Si supiesen la verdad, cambiarían.","exampleSentenceEn":"If they knew the truth, they'd change."}
+    ]},
+    {"tenseId":"subjunctive_future","tenseName":"Futuro (subjuntivo)","tenseNameEn":"Subjunctive Future","description":"Uso arcaico/jurídico.","conjugations")[
+      ]},
+    {"tenseId":"subjunctive_present_perfect","tenseName":"Pretérito perfecto (subj.)","tenseNameEn":"Subjunctive Present Perfect","description":"Conocimiento pasado con relación al presente de subjuntivo.","conjugations":[
+      {"pronoun":"yo","form":"haya sabido","exampleSentence":"Dudo que haya sabido esto.","exampleSentenceEn":"I doubt I have known this."},
+      {"pronoun":"tú","form":"hayas sabido","exampleSentence":"No creo que hayas sabido decidir.","exampleSentenceEn":"I don't think you have known how to decide."},
+      {"pronoun":"él/ella/usted","form":"haya sabido","exampleSentence":"Es posible que haya sabido actuar.","exampleSentenceEn":"It's possible he has known how to act."},
+      {"pronoun":"nosotros","form":"hayamos sabido","exampleSentence":"Ojalá hayamos sabido elegir.","exampleSentenceEn":"I hope we have known how to choose."},
+      {"pronoun":"vosotros","form":"hayáis sabido","exampleSentence":"Puede que hayáis sabido responder.","exampleSentenceEn":"You all may have known how to respond."},
+      {"pronoun":"ellos/ustedes","form":"hayan sabido","exampleSentence":"No piensan que hayan sabido decidir.","exampleSentenceEn":"They don't think you have known how to decide."}
+    ]},
+    {"tenseId":"subjunctive_pluperfect_ra","tenseName":"Pluscuamperfecto (ra)","tenseNameEn":"Subjunctive Pluperfect (-ra)","description":"Conocimiento anterior hipotético.","conjugations":[
+      {"pronoun":"yo","form":"hubiera sabido","exampleSentence":"Si hubiera sabido esto, cambiaría.","exampleSentenceEn":"If I had known this, I'd change."},
+      {"pronoun":"tú","form":"hubieras sabido","exampleSentence":"Si hubieras sabido la ruta, llegarías.","exampleSentenceEn":"If you had known the route, you'd arrive."},
+      {"pronoun":"él/ella/usted","form":"hubiera sabido","exampleSentence":"Si hubiera sabido la verdad, hablaría.","exampleSentenceEn":"If he had known the truth, he'd speak."},
+      {"pronoun":"nosotros","form":"hubiéramos sabido","exampleSentence":"Si hubiéramos sabido el plan, decidiríamos.","exampleSentenceEn":"If we had known the plan, we'd decide."},
+      {"pronoun":"vosotros","form":"hubierais sabido","exampleSentence":"Si hubierais sabido esto, actuaríais.","exampleSentenceEn":"If you all had known this, you'd act."},
+      {"pronoun":"ellos/ustedes","form":"hubieran sabido","exampleSentence":"Si hubieran sabido la verdad, cambiarían.","exampleSentenceEn":"If they had known the truth, they'd change."}
+    ]},
+    {"tenseId":"subjunctive_pluperfect_se","tenseName":"Pluscuamperfecto (se)","tenseNameEn":"Subjunctive Pluperfect (-se)","description":"Conocimiento anterior hipotético (variante -se).","conjugations":[
+      {"pronoun":"yo","form":"hubiese sabido","exampleSentence":"Si hubiese sabido esto, llamaría.","exampleSentenceEn":"If I had known this, I'd call."},
+      {"pronoun":"tú","form":"hubieses sabido","exampleSentence":"Si hubieses sabido la ruta, llegarías.","exampleSentenceEn":"If you had known the route, you'd arrive."},
+      {"pronoun":"él/ella/usted","form":"hubiese sabido","exampleSentence":"No pensé que hubiese sabido tanto.","exampleSentenceEn":"I didn't think he had known so much."},
+      {"pronoun":"nosotros","form":"hubiésemos sabido","exampleSentence":"Si hubiésemos sabido el plan, decidiríamos.","exampleSentenceEn":"If we had known the plan, we'd decide."},
+      {"pronoun":"vosotros","form":"hubieseis sabido","exampleSentence":"Si hubieseis sabido esto, actuaríais.","exampleSentenceEn":"If you all had known this, you'd act."},
+      {"pronoun":"ellos/ustedes","form":"hubiesen sabido","exampleSentence":"Si hubiesen sabido la verdad, cambiarían.","exampleSentenceEn":"If they had known the truth, they'd change."}
+    ]},
+    {"tenseId":"subjunctive_future_perfect","tenseName":"Futuro perfecto (subj.)","tenseNameEn":"Subjunctive Future Perfect","description":"Uso arcaico.","conjugations":[
+      {"pronoun":"yo","form":"hubiere sabido","exampleSentence":"Si hubiere sabido la verdad, hablaré.","exampleSentenceEn":"If I shall have known the truth, I will speak."},
+      {"pronoun":"tú","form":"hubieres sabido","exampleSentence":"Si hubieres sabido la ruta, guía.","exampleSentenceEn":"If you shall have known the route, guide us."},
+      {"pronoun":"él/ella/usted","form":"hubiere sabido","exampleSentence":"Si hubiere sabido esto, actuará.","exampleSentenceEn":"If he shall have known this, he will act."},
+      {"pronoun":"nosotros","form":"hubiéremos sabido","exampleSentence":"Si hubiéremos sabido el plan, decidiremos.","exampleSentenceEn":"If we shall have known the plan, we will decide."},
+      {"pronoun":"vosotros","form":"hubiereis sabido","exampleSentence":"Si hubiereis sabido esto, actuad.","exampleSentenceEn":"If you shall have known this, act."},
+      {"pronoun":"ellos/ustedes","form":"hubieren sabido","exampleSentence":"Si hubieren sabido la verdad, cambiarán.","exampleSentenceEn":"If they shall have known the truth, they will change."}
+    ]},
+    {"tenseId":"imperative_affirmative","tenseName":"Imperativo afirmativo","tenseNameEn":"Imperative Affirmative","description":"Órdenes afirmativas con saber (poco usadas).","conjugations":[
+      {"pronoun":"tú","form":"sabe","exampleSentence":"Sabe esperar.","exampleSentenceEn":"Know how to wait."},
+      {"pronoun":"usted","form":"sepa","exampleSentence":"Sepa que cuenta con nosotros.","exampleSentenceEn":"Know that you have our support."},
+      {"pronoun":"nosotros","form":"sepamos","exampleSentence":"Sepamos escuchar.","exampleSentenceEn":"Let's know how to listen."},
+      {"pronoun":"vosotros","form":"sabed","exampleSentence":"Sabed decidir.","exampleSentenceEn":"Know how to decide (you all)."},
+      {"pronoun":"ustedes","form":"sepan","exampleSentence":"Sepan que estamos aquí.","exampleSentenceEn":"Know that we are here (you all)."}
+    ]},
+    {"tenseId":"imperative_negative","tenseName":"Imperativo negativo","tenseNameEn":"Imperative Negative","description":"Órdenes negativas.","conjugations":[
+      {"pronoun":"tú","form":"no sepas","exampleSentence":"No sepas de todo.","exampleSentenceEn":"Don't pretend to know everything."},
+      {"pronoun":"usted","form":"no sepa","exampleSentence":"No sepa mal.","exampleSentenceEn":"Don't take it the wrong way."},
+      {"pronoun":"nosotros","form":"no sepamos","exampleSentence":"No sepamos menos que ayer.","exampleSentenceEn":"Let's not know less than yesterday."},
+      {"pronoun":"vosotros","form":"no sepáis","exampleSentence":"No sepáis tarde la verdad.","exampleSentenceEn":"Don't learn the truth late (you all)."},
+      {"pronoun":"ustedes","form":"no sepan","exampleSentence":"No sepan poco.","exampleSentenceEn":"Don't know too little (you all)."}
+    ]},
+    {"tenseId":"progressive_present","tenseName":"Progresivo (presente)","tenseNameEn":"Present Progressive","description":"Acción en progreso (usos limitados).","conjugations":[
+      {"pronoun":"yo","form":"estoy sabiendo","exampleSentence":"Estoy sabiendo más del tema.","exampleSentenceEn":"I am getting to know more about the topic."},
+      {"pronoun":"tú","form":"estás sabiendo","exampleSentence":"Estás sabiendo cómo funciona.","exampleSentenceEn":"You are getting to know how it works."},
+      {"pronoun":"él/ella/usted","form":"está sabiendo","exampleSentence":"Está sabiendo organizarse.","exampleSentenceEn":"He is learning to organize himself."},
+      {"pronoun":"nosotros","form":"estamos sabiendo","exampleSentence":"Estamos sabiendo decidir.","exampleSentenceEn":"We are learning to decide."},
+      {"pronoun":"vosotros","form":"estáis sabiendo","exampleSentence":"Estáis sabiendo priorizar.","exampleSentenceEn":"You all are learning to prioritize."},
+      {"pronoun":"ellos/ustedes","form":"están sabiendo","exampleSentence":"Están sabiendo responder.","exampleSentenceEn":"They are learning to respond."}
+    ]},
+    {"tenseId":"progressive_past","tenseName":"Progresivo (pasado)","tenseNameEn":"Past Progressive","description":"Acción en progreso en el pasado.","conjugations":[
+      {"pronoun":"yo","form":"estaba sabiendo","exampleSentence":"Estaba sabiendo más del tema.","exampleSentenceEn":"I was getting to know more about the topic."},
+      {"pronoun":"tú","form":"estabas sabiendo","exampleSentence":"Estabas sabiendo cómo funciona.","exampleSentenceEn":"You were getting to know how it works."},
+      {"pronoun":"él/ella/usted","form":"estaba sabiendo","exampleSentence":"Estaba sabiendo organizarse.","exampleSentenceEn":"He was learning to organize himself."},
+      {"pronoun":"nosotros","form":"estábamos sabiendo","exampleSentence":"Estábamos sabiendo decidir.","exampleSentenceEn":"We were learning to decide."},
+      {"pronoun":"vosotros","form":"estabais sabiendo","exampleSentence":"Estabais sabiendo priorizar.","exampleSentenceEn":"You all were learning to prioritize."},
+      {"pronoun":"ellos/ustedes","form":"estaban sabiendo","exampleSentence":"Estaban sabiendo responder.","exampleSentenceEn":"They were learning to respond."}
+    ]},
+    {"tenseId":"progressive_future","tenseName":"Progresivo (futuro)","tenseNameEn":"Future Progressive","description":"Acción en progreso en el futuro.","conjugations":[
+      {"pronoun":"yo","form":"estaré sabiendo","exampleSentence":"Estaré sabiendo más del tema.","exampleSentenceEn":"I will be getting to know more about the topic."},
+      {"pronoun":"tú","form":"estarás sabiendo","exampleSentence":"Estarás sabiendo cómo funciona.","exampleSentenceEn":"You will be getting to know how it works."},
+      {"pronoun":"él/ella/usted","form":"estará sabiendo","exampleSentence":"Estará sabiendo organizarse.","exampleSentenceEn":"He will be learning to organize himself."},
+      {"pronoun":"nosotros","form":"estaremos sabiendo","exampleSentence":"Estaremos sabiendo decidir.","exampleSentenceEn":"We will be learning to decide."},
+      {"pronoun":"vosotros","form":"estaréis sabiendo","exampleSentence":"Estaréis sabiendo priorizar.","exampleSentenceEn":"You all will be learning to prioritize."},
+      {"pronoun":"ellos/ustedes","form":"estarán sabiendo","exampleSentence":"Estarán sabiendo responder.","exampleSentenceEn":"They will be learning to respond."}
+    ]}
+  ]
+}
+
+

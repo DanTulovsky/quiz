@@ -1,0 +1,331 @@
+{
+  "language": "es",
+  "languageName": "Spanish",
+  "infinitive": "ser",
+  "infinitiveEn": "to be",
+  "category": "core",
+  "tenses": [
+    {
+      "tenseId": "indicative_present",
+      "tenseName": "Presente",
+      "tenseNameEn": "Indicative Present",
+      "description": "Estado o identidad en el presente.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "soy", "exampleSentence": "Yo soy profesor.", "exampleSentenceEn": "I am a teacher."},
+        {"pronoun": "tú", "form": "eres", "exampleSentence": "Tú eres mi amigo.", "exampleSentenceEn": "You are my friend."},
+        {"pronoun": "él/ella/usted", "form": "es", "exampleSentence": "Ella es médica.", "exampleSentenceEn": "She is a doctor."},
+        {"pronoun": "nosotros", "form": "somos", "exampleSentence": "Nosotros somos de México.", "exampleSentenceEn": "We are from Mexico."},
+        {"pronoun": "vosotros", "form": "sois", "exampleSentence": "Vosotros sois estudiantes.", "exampleSentenceEn": "You all are students."},
+        {"pronoun": "ellos/ustedes", "form": "son", "exampleSentence": "Ellos son hermanos.", "exampleSentenceEn": "They are brothers."}
+      ]
+    },
+    {
+      "tenseId": "indicative_imperfect",
+      "tenseName": "Pretérito imperfecto",
+      "tenseNameEn": "Imperfect",
+      "description": "Estado habitual o continuo en el pasado.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "era", "exampleSentence": "Cuando era niño, era tímido.", "exampleSentenceEn": "When I was a child, I was shy."},
+        {"pronoun": "tú", "form": "eras", "exampleSentence": "Tú eras muy curioso.", "exampleSentenceEn": "You were very curious."},
+        {"pronoun": "él/ella/usted", "form": "era", "exampleSentence": "Él era mi vecino.", "exampleSentenceEn": "He was my neighbor."},
+        {"pronoun": "nosotros", "form": "éramos", "exampleSentence": "Éramos compañeros de clase.", "exampleSentenceEn": "We were classmates."},
+        {"pronoun": "vosotros", "form": "erais", "exampleSentence": "Vosotros erais buenos.", "exampleSentenceEn": "You all were good."},
+        {"pronoun": "ellos/ustedes", "form": "eran", "exampleSentence": "Ellos eran muy amables.", "exampleSentenceEn": "They were very kind."}
+      ]
+    },
+    {
+      "tenseId": "indicative_preterite",
+      "tenseName": "Pretérito perfecto simple",
+      "tenseNameEn": "Preterite",
+      "description": "Acción completa en el pasado.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "fui", "exampleSentence": "Fui el primero en llegar.", "exampleSentenceEn": "I was the first to arrive."},
+        {"pronoun": "tú", "form": "fuiste", "exampleSentence": "Fuiste muy claro.", "exampleSentenceEn": "You were very clear."},
+        {"pronoun": "él/ella/usted", "form": "fue", "exampleSentence": "Fue un buen día.", "exampleSentenceEn": "It was a good day."},
+        {"pronoun": "nosotros", "form": "fuimos", "exampleSentence": "Fuimos felices.", "exampleSentenceEn": "We were happy."},
+        {"pronoun": "vosotros", "form": "fuisteis", "exampleSentence": "Fuisteis puntuales.", "exampleSentenceEn": "You all were punctual."},
+        {"pronoun": "ellos/ustedes", "form": "fueron", "exampleSentence": "Fueron muy generosos.", "exampleSentenceEn": "They were very generous."}
+      ]
+    },
+    {
+      "tenseId": "indicative_future",
+      "tenseName": "Futuro simple",
+      "tenseNameEn": "Simple Future",
+      "description": "Estado o identidad futura.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "seré", "exampleSentence": "Seré ingeniero.", "exampleSentenceEn": "I will be an engineer."},
+        {"pronoun": "tú", "form": "serás", "exampleSentence": "Serás feliz.", "exampleSentenceEn": "You will be happy."},
+        {"pronoun": "él/ella/usted", "form": "será", "exampleSentence": "Ella será líder.", "exampleSentenceEn": "She will be a leader."},
+        {"pronoun": "nosotros", "form": "seremos", "exampleSentence": "Seremos puntuales.", "exampleSentenceEn": "We will be punctual."},
+        {"pronoun": "vosotros", "form": "seréis", "exampleSentence": "Seréis bienvenidos.", "exampleSentenceEn": "You all will be welcome."},
+        {"pronoun": "ellos/ustedes", "form": "serán", "exampleSentence": "Serán grandes amigos.", "exampleSentenceEn": "They will be great friends."}
+      ]
+    },
+    {
+      "tenseId": "indicative_conditional",
+      "tenseName": "Condicional simple",
+      "tenseNameEn": "Conditional",
+      "description": "Estado potencial o hipotético.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "sería", "exampleSentence": "Sería un honor.", "exampleSentenceEn": "It would be an honor."},
+        {"pronoun": "tú", "form": "serías", "exampleSentence": "Serías un buen guía.", "exampleSentenceEn": "You would be a good guide."},
+        {"pronoun": "él/ella/usted", "form": "sería", "exampleSentence": "Sería difícil.", "exampleSentenceEn": "It would be difficult."},
+        {"pronoun": "nosotros", "form": "seríamos", "exampleSentence": "Seríamos felices allí.", "exampleSentenceEn": "We would be happy there."},
+        {"pronoun": "vosotros", "form": "seríais", "exampleSentence": "Seríais bien recibidos.", "exampleSentenceEn": "You all would be well received."},
+        {"pronoun": "ellos/ustedes", "form": "serían", "exampleSentence": "Serían buenos vecinos.", "exampleSentenceEn": "They would be good neighbors."}
+      ]
+    },
+    {
+      "tenseId": "indicative_present_perfect",
+      "tenseName": "Pretérito perfecto compuesto",
+      "tenseNameEn": "Present Perfect",
+      "description": "Acción pasada con relevancia en el presente.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "he sido", "exampleSentence": "He sido paciente.", "exampleSentenceEn": "I have been patient."},
+        {"pronoun": "tú", "form": "has sido", "exampleSentence": "Has sido claro.", "exampleSentenceEn": "You have been clear."},
+        {"pronoun": "él/ella/usted", "form": "ha sido", "exampleSentence": "Ha sido útil.", "exampleSentenceEn": "It has been useful."},
+        {"pronoun": "nosotros", "form": "hemos sido", "exampleSentence": "Hemos sido honestos.", "exampleSentenceEn": "We have been honest."},
+        {"pronoun": "vosotros", "form": "habéis sido", "exampleSentence": "Habéis sido puntuales.", "exampleSentenceEn": "You all have been punctual."},
+        {"pronoun": "ellos/ustedes", "form": "han sido", "exampleSentence": "Han sido amables.", "exampleSentenceEn": "They have been kind."}
+      ]
+    },
+    {
+      "tenseId": "indicative_pluperfect",
+      "tenseName": "Pluscuamperfecto",
+      "tenseNameEn": "Pluperfect",
+      "description": "Acción ocurrida antes de otra en el pasado.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "había sido", "exampleSentence": "Ya había sido decidido.", "exampleSentenceEn": "It had already been decided."},
+        {"pronoun": "tú", "form": "habías sido", "exampleSentence": "Habías sido elegido.", "exampleSentenceEn": "You had been chosen."},
+        {"pronoun": "él/ella/usted", "form": "había sido", "exampleSentence": "Había sido complicado.", "exampleSentenceEn": "It had been complicated."},
+        {"pronoun": "nosotros", "form": "habíamos sido", "exampleSentence": "Habíamos sido informados.", "exampleSentenceEn": "We had been informed."},
+        {"pronoun": "vosotros", "form": "habíais sido", "exampleSentence": "Habíais sido invitados.", "exampleSentenceEn": "You all had been invited."},
+        {"pronoun": "ellos/ustedes", "form": "habían sido", "exampleSentence": "Habían sido llamados.", "exampleSentenceEn": "They had been called."}
+      ]
+    },
+    {
+      "tenseId": "indicative_preterite_perfect",
+      "tenseName": "Pretérito anterior",
+      "tenseNameEn": "Preterite Perfect",
+      "description": "Uso literario para acción inmediatamente anterior al pasado.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "hube sido", "exampleSentence": "Apenas hube sido avisado, salí.", "exampleSentenceEn": "As soon as I had been notified, I left."},
+        {"pronoun": "tú", "form": "hubiste sido", "exampleSentence": "Cuando hubiste sido elegido, celebramos.", "exampleSentenceEn": "When you had been elected, we celebrated."},
+        {"pronoun": "él/ella/usted", "form": "hubo sido", "exampleSentence": "Apenas hubo sido anunciado, aplaudieron.", "exampleSentenceEn": "As soon as it had been announced, they applauded."},
+        {"pronoun": "nosotros", "form": "hubimos sido", "exampleSentence": "Hubimos sido recibidos con honra.", "exampleSentenceEn": "We had been received with honor."},
+        {"pronoun": "vosotros", "form": "hubisteis sido", "exampleSentence": "Hubisteis sido informados antes.", "exampleSentenceEn": "You had been informed before."},
+        {"pronoun": "ellos/ustedes", "form": "hubieron sido", "exampleSentence": "Hubieron sido vistos allá.", "exampleSentenceEn": "They had been seen there."}
+      ]
+    },
+    {
+      "tenseId": "indicative_future_perfect",
+      "tenseName": "Futuro perfecto",
+      "tenseNameEn": "Future Perfect",
+      "description": "Acción completada antes de un punto futuro.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "habré sido", "exampleSentence": "Para entonces habré sido informado.", "exampleSentenceEn": "By then I will have been informed."},
+        {"pronoun": "tú", "form": "habrás sido", "exampleSentence": "Habrás sido evaluado.", "exampleSentenceEn": "You will have been evaluated."},
+        {"pronoun": "él/ella/usted", "form": "habrá sido", "exampleSentence": "Habrá sido suficiente.", "exampleSentenceEn": "It will have been enough."},
+        {"pronoun": "nosotros", "form": "habremos sido", "exampleSentence": "Habremos sido claros.", "exampleSentenceEn": "We will have been clear."},
+        {"pronoun": "vosotros", "form": "habréis sido", "exampleSentence": "Habréis sido citados.", "exampleSentenceEn": "You all will have been summoned."},
+        {"pronoun": "ellos/ustedes", "form": "habrán sido", "exampleSentence": "Habrán sido notificados.", "exampleSentenceEn": "They will have been notified."}
+      ]
+    },
+    {
+      "tenseId": "indicative_conditional_perfect",
+      "tenseName": "Condicional perfecto",
+      "tenseNameEn": "Conditional Perfect",
+      "description": "Acción hipotética completada.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "habría sido", "exampleSentence": "Habría sido mejor llegar antes.", "exampleSentenceEn": "It would have been better to arrive earlier."},
+        {"pronoun": "tú", "form": "habrías sido", "exampleSentence": "Habrías sido un gran apoyo.", "exampleSentenceEn": "You would have been great support."},
+        {"pronoun": "él/ella/usted", "form": "habría sido", "exampleSentence": "Habría sido posible.", "exampleSentenceEn": "It would have been possible."},
+        {"pronoun": "nosotros", "form": "habríamos sido", "exampleSentence": "Habríamos sido más rápidos.", "exampleSentenceEn": "We would have been faster."},
+        {"pronoun": "vosotros", "form": "habríais sido", "exampleSentence": "Habríais sido avisados.", "exampleSentenceEn": "You all would have been notified."},
+        {"pronoun": "ellos/ustedes", "form": "habrían sido", "exampleSentence": "Habrían sido escuchados.", "exampleSentenceEn": "They would have been heard."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_present",
+      "tenseName": "Presente (subjuntivo)",
+      "tenseNameEn": "Subjunctive Present",
+      "description": "Deseos, dudas o hipótesis en el presente.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "sea", "exampleSentence": "Espero que sea posible.", "exampleSentenceEn": "I hope it is possible."},
+        {"pronoun": "tú", "form": "seas", "exampleSentence": "Ojalá seas feliz.", "exampleSentenceEn": "I hope you are happy."},
+        {"pronoun": "él/ella/usted", "form": "sea", "exampleSentence": "Es probable que sea cierto.", "exampleSentenceEn": "It is likely that it is true."},
+        {"pronoun": "nosotros", "form": "seamos", "exampleSentence": "Quieren que seamos puntuales.", "exampleSentenceEn": "They want us to be punctual."},
+        {"pronoun": "vosotros", "form": "seáis", "exampleSentence": "Es bueno que seáis honestos.", "exampleSentenceEn": "It's good that you all are honest."},
+        {"pronoun": "ellos/ustedes", "form": "sean", "exampleSentence": "Temen que sean tarde.", "exampleSentenceEn": "They fear that it is late."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_imperfect_ra",
+      "tenseName": "Imperfecto (ra)",
+      "tenseNameEn": "Subjunctive Imperfect (-ra)",
+      "description": "Hipótesis o cortesía en pasado.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "fuera", "exampleSentence": "Si fuera fácil, lo haríamos.", "exampleSentenceEn": "If it were easy, we would do it."},
+        {"pronoun": "tú", "form": "fueras", "exampleSentence": "Ojalá fueras aquí.", "exampleSentenceEn": "I wish you were here."},
+        {"pronoun": "él/ella/usted", "form": "fuera", "exampleSentence": "Quisiera que fuera verdad.", "exampleSentenceEn": "I would like it to be true."},
+        {"pronoun": "nosotros", "form": "fuéramos", "exampleSentence": "Si fuéramos más, sería mejor.", "exampleSentenceEn": "If we were more, it would be better."},
+        {"pronoun": "vosotros", "form": "fuerais", "exampleSentence": "Si fuerais puntuales, empezaríamos.", "exampleSentenceEn": "If you all were punctual, we would start."},
+        {"pronoun": "ellos/ustedes", "form": "fueran", "exampleSentence": "Si fueran sinceros, confiaríamos.", "exampleSentenceEn": "If they were sincere, we would trust."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_imperfect_se",
+      "tenseName": "Imperfecto (se)",
+      "tenseNameEn": "Subjunctive Imperfect (-se)",
+      "description": "Variante en -se del imperfecto de subjuntivo.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "fuese", "exampleSentence": "Si fuese necesario, iría.", "exampleSentenceEn": "If it were necessary, I would go."},
+        {"pronoun": "tú", "form": "fueses", "exampleSentence": "Quisiera que fueses feliz.", "exampleSentenceEn": "I would like you to be happy."},
+        {"pronoun": "él/ella/usted", "form": "fuese", "exampleSentence": "No creía que fuese posible.", "exampleSentenceEn": "I did not believe it was possible."},
+        {"pronoun": "nosotros", "form": "fuésemos", "exampleSentence": "Si fuésemos más rápidos, ganaríamos.", "exampleSentenceEn": "If we were faster, we would win."},
+        {"pronoun": "vosotros", "form": "fueseis", "exampleSentence": "Si fueseis honestos, confiarían.", "exampleSentenceEn": "If you all were honest, they would trust."},
+        {"pronoun": "ellos/ustedes", "form": "fuesen", "exampleSentence": "Si fuesen puntuales, empezaríamos.", "exampleSentenceEn": "If they were punctual, we would start."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_future",
+      "tenseName": "Futuro (subjuntivo)",
+      "tenseNameEn": "Subjunctive Future",
+      "description": "Uso arcaico/jurídico para acciones futuras hipotéticas.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "fuere", "exampleSentence": "Si fuere necesario, actuaré.", "exampleSentenceEn": "If it be necessary, I shall act."},
+        {"pronoun": "tú", "form": "fueres", "exampleSentence": "Quien fueres culpable, pagará.", "exampleSentenceEn": "Whoever be guilty shall pay."},
+        {"pronoun": "él/ella/usted", "form": "fuere", "exampleSentence": "Si fuere el caso, procederemos.", "exampleSentenceEn": "If it be the case, we shall proceed."},
+        {"pronoun": "nosotros", "form": "fuéremos", "exampleSentence": "Si fuéremos llamados, iremos.", "exampleSentenceEn": "If we be called, we shall go."},
+        {"pronoun": "vosotros", "form": "fuereis", "exampleSentence": "Si fuereis elegidos, servid.", "exampleSentenceEn": "If you be elected, serve."},
+        {"pronoun": "ellos/ustedes", "form": "fueren", "exampleSentence": "Si fueren hallados culpables, serán sancionados.", "exampleSentenceEn": "If they be found guilty, they shall be sanctioned."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_present_perfect",
+      "tenseName": "Pretérito perfecto (subj.)",
+      "tenseNameEn": "Subjunctive Present Perfect",
+      "description": "Acción pasada con relación al presente de subjuntivo.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "haya sido", "exampleSentence": "Dudo que haya sido fácil.", "exampleSentenceEn": "I doubt it has been easy."},
+        {"pronoun": "tú", "form": "hayas sido", "exampleSentence": "No creo que hayas sido tú.", "exampleSentenceEn": "I don't think it has been you."},
+        {"pronoun": "él/ella/usted", "form": "haya sido", "exampleSentence": "Es posible que haya sido cierto.", "exampleSentenceEn": "It's possible that it has been true."},
+        {"pronoun": "nosotros", "form": "hayamos sido", "exampleSentence": "Ojalá hayamos sido útiles.", "exampleSentenceEn": "I hope we have been useful."},
+        {"pronoun": "vosotros", "form": "hayáis sido", "exampleSentence": "Puede que hayáis sido llamados.", "exampleSentenceEn": "You may have been called."},
+        {"pronoun": "ellos/ustedes", "form": "hayan sido", "exampleSentence": "No piensan que hayan sido honestos.", "exampleSentenceEn": "They don't think you have been honest."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_pluperfect_ra",
+      "tenseName": "Pluscuamperfecto (ra)",
+      "tenseNameEn": "Subjunctive Pluperfect (-ra)",
+      "description": "Acción anterior hipotética en pasado (variante -ra).",
+      "conjugations": [
+        {"pronoun": "yo", "form": "hubiera sido", "exampleSentence": "Si hubiera sido fácil, lo habría hecho.", "exampleSentenceEn": "If it had been easy, I would have done it."},
+        {"pronoun": "tú", "form": "hubieras sido", "exampleSentence": "Si hubieras sido tú, te habría llamado.", "exampleSentenceEn": "If it had been you, I would have called you."},
+        {"pronoun": "él/ella/usted", "form": "hubiera sido", "exampleSentence": "Si hubiera sido verdad, lo sabríamos.", "exampleSentenceEn": "If it had been true, we would know."},
+        {"pronoun": "nosotros", "form": "hubiéramos sido", "exampleSentence": "Si hubiéramos sido más, ganaríamos.", "exampleSentenceEn": "If we had been more, we would win."},
+        {"pronoun": "vosotros", "form": "hubierais sido", "exampleSentence": "Si hubierais sido puntuales, empezaríamos.", "exampleSentenceEn": "If you all had been punctual, we would start."},
+        {"pronoun": "ellos/ustedes", "form": "hubieran sido", "exampleSentence": "Si hubieran sido sinceros, confiaríamos.", "exampleSentenceEn": "If they had been sincere, we would trust."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_pluperfect_se",
+      "tenseName": "Pluscuamperfecto (se)",
+      "tenseNameEn": "Subjunctive Pluperfect (-se)",
+      "description": "Acción anterior hipotética en pasado (variante -se).",
+      "conjugations": [
+        {"pronoun": "yo", "form": "hubiese sido", "exampleSentence": "Si hubiese sido necesario, habría ido.", "exampleSentenceEn": "If it had been necessary, I would have gone."},
+        {"pronoun": "tú", "form": "hubieses sido", "exampleSentence": "Si hubieses sido tú, vendría.", "exampleSentenceEn": "If it had been you, I would come."},
+        {"pronoun": "él/ella/usted", "form": "hubiese sido", "exampleSentence": "No creí que hubiese sido justo.", "exampleSentenceEn": "I didn't think it had been fair."},
+        {"pronoun": "nosotros", "form": "hubiésemos sido", "exampleSentence": "Si hubiésemos sido avisados, iríamos.", "exampleSentenceEn": "If we had been notified, we would go."},
+        {"pronoun": "vosotros", "form": "hubieseis sido", "exampleSentence": "Si hubieseis sido elegidos, serviríais.", "exampleSentenceEn": "If you all had been elected, you would serve."},
+        {"pronoun": "ellos/ustedes", "form": "hubiesen sido", "exampleSentence": "Si hubiesen sido escuchados, cambiarían.", "exampleSentenceEn": "If they had been heard, they would change."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_future_perfect",
+      "tenseName": "Futuro perfecto (subj.)",
+      "tenseNameEn": "Subjunctive Future Perfect",
+      "description": "Uso arcaico para acción completa previa a un futuro hipotético.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "hubiere sido", "exampleSentence": "Si hubiere sido llamado, asistiré.", "exampleSentenceEn": "If I shall have been called, I will attend."},
+        {"pronoun": "tú", "form": "hubieres sido", "exampleSentence": "Si hubieres sido elegido, servirás.", "exampleSentenceEn": "If you shall have been elected, you will serve."},
+        {"pronoun": "él/ella/usted", "form": "hubiere sido", "exampleSentence": "Si hubiere sido el caso, actuaremos.", "exampleSentenceEn": "If it shall have been the case, we will act."},
+        {"pronoun": "nosotros", "form": "hubiéremos sido", "exampleSentence": "Si hubiéremos sido citados, iremos.", "exampleSentenceEn": "If we shall have been summoned, we will go."},
+        {"pronoun": "vosotros", "form": "hubiereis sido", "exampleSentence": "Si hubiereis sido avisados, presentaros.", "exampleSentenceEn": "If you shall have been notified, present yourselves."},
+        {"pronoun": "ellos/ustedes", "form": "hubieren sido", "exampleSentence": "Si hubieren sido encontrados, informarán.", "exampleSentenceEn": "If they shall have been found, they will report."}
+      ]
+    },
+    {
+      "tenseId": "imperative_affirmative",
+      "tenseName": "Imperativo afirmativo",
+      "tenseNameEn": "Imperative Affirmative",
+      "description": "Órdenes o exhortaciones afirmativas.",
+      "conjugations": [
+        {"pronoun": "tú", "form": "sé", "exampleSentence": "Sé valiente.", "exampleSentenceEn": "Be brave."},
+        {"pronoun": "usted", "form": "sea", "exampleSentence": "Sea puntual, por favor.", "exampleSentenceEn": "Be punctual, please."},
+        {"pronoun": "nosotros", "form": "seamos", "exampleSentence": "Seamos claros.", "exampleSentenceEn": "Let's be clear."},
+        {"pronoun": "vosotros", "form": "sed", "exampleSentence": "Sed honestos.", "exampleSentenceEn": "Be honest (you all)."},
+        {"pronoun": "ustedes", "form": "sean", "exampleSentence": "Sean respetuosos.", "exampleSentenceEn": "Be respectful (you all)."}
+      ]
+    },
+    {
+      "tenseId": "imperative_negative",
+      "tenseName": "Imperativo negativo",
+      "tenseNameEn": "Imperative Negative",
+      "description": "Órdenes negativas.",
+      "conjugations": [
+        {"pronoun": "tú", "form": "no seas", "exampleSentence": "No seas impaciente.", "exampleSentenceEn": "Don't be impatient."},
+        {"pronoun": "usted", "form": "no sea", "exampleSentence": "No sea descortés.", "exampleSentenceEn": "Don't be rude."},
+        {"pronoun": "nosotros", "form": "no seamos", "exampleSentence": "No seamos injustos.", "exampleSentenceEn": "Let's not be unfair."},
+        {"pronoun": "vosotros", "form": "no seáis", "exampleSentence": "No seáis ruidosos.", "exampleSentenceEn": "Don't be noisy (you all)."},
+        {"pronoun": "ustedes", "form": "no sean", "exampleSentence": "No sean groseros.", "exampleSentenceEn": "Don't be rude (you all)."}
+      ]
+    },
+    {
+      "tenseId": "progressive_present",
+      "tenseName": "Progresivo (presente)",
+      "tenseNameEn": "Present Progressive",
+      "description": "Acción en progreso en el presente.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "estoy siendo", "exampleSentence": "Estoy siendo sincero.", "exampleSentenceEn": "I am being honest."},
+        {"pronoun": "tú", "form": "estás siendo", "exampleSentence": "Estás siendo amable.", "exampleSentenceEn": "You are being kind."},
+        {"pronoun": "él/ella/usted", "form": "está siendo", "exampleSentence": "Está siendo difícil.", "exampleSentenceEn": "It is being difficult."},
+        {"pronoun": "nosotros", "form": "estamos siendo", "exampleSentence": "Estamos siendo claros.", "exampleSentenceEn": "We are being clear."},
+        {"pronoun": "vosotros", "form": "estáis siendo", "exampleSentence": "Estáis siendo justos.", "exampleSentenceEn": "You all are being fair."},
+        {"pronoun": "ellos/ustedes", "form": "están siendo", "exampleSentence": "Están siendo ruidosos.", "exampleSentenceEn": "They are being noisy."}
+      ]
+    },
+    {
+      "tenseId": "progressive_past",
+      "tenseName": "Progresivo (pasado)",
+      "tenseNameEn": "Past Progressive",
+      "description": "Acción en progreso en el pasado.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "estaba siendo", "exampleSentence": "Estaba siendo paciente.", "exampleSentenceEn": "I was being patient."},
+        {"pronoun": "tú", "form": "estabas siendo", "exampleSentence": "Estabas siendo grosero.", "exampleSentenceEn": "You were being rude."},
+        {"pronoun": "él/ella/usted", "form": "estaba siendo", "exampleSentence": "Estaba siendo complicado.", "exampleSentenceEn": "It was being complicated."},
+        {"pronoun": "nosotros", "form": "estábamos siendo", "exampleSentence": "Estábamos siendo honestos.", "exampleSentenceEn": "We were being honest."},
+        {"pronoun": "vosotros", "form": "estabais siendo", "exampleSentence": "Estabais siendo injustos.", "exampleSentenceEn": "You all were being unfair."},
+        {"pronoun": "ellos/ustedes", "form": "estaban siendo", "exampleSentence": "Estaban siendo lentos.", "exampleSentenceEn": "They were being slow."}
+      ]
+    },
+    {
+      "tenseId": "progressive_future",
+      "tenseName": "Progresivo (futuro)",
+      "tenseNameEn": "Future Progressive",
+      "description": "Acción en progreso en el futuro.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "estaré siendo", "exampleSentence": "Estaré siendo objetivo.", "exampleSentenceEn": "I will be being objective."},
+        {"pronoun": "tú", "form": "estarás siendo", "exampleSentence": "Estarás siendo observado.", "exampleSentenceEn": "You will be being observed."},
+        {"pronoun": "él/ella/usted", "form": "estará siendo", "exampleSentence": "Estará siendo evaluado.", "exampleSentenceEn": "He will be being evaluated."},
+        {"pronoun": "nosotros", "form": "estaremos siendo", "exampleSentence": "Estaremos siendo sinceros.", "exampleSentenceEn": "We will be being sincere."},
+        {"pronoun": "vosotros", "form": "estaréis siendo", "exampleSentence": "Estaréis siendo guiados.", "exampleSentenceEn": "You all will be being guided."},
+        {"pronoun": "ellos/ustedes", "form": "estarán siendo", "exampleSentence": "Estarán siendo entrevistados.", "exampleSentenceEn": "They will be being interviewed."}
+      ]
+    }
+  ]
+}
+
+

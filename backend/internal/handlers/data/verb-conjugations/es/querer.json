@@ -1,0 +1,193 @@
+{
+  "language": "es",
+  "languageName": "Spanish",
+  "infinitive": "querer",
+  "infinitiveEn": "to want/love",
+  "category": "desire",
+  "tenses": [
+    {"tenseId":"indicative_present","tenseName":"Presente","tenseNameEn":"Indicative Present","description":"Deseo presente.","conjugations":[
+      {"pronoun":"yo","form":"quiero","exampleSentence":"Quiero café.","exampleSentenceEn":"I want coffee."},
+      {"pronoun":"tú","form":"quieres","exampleSentence":"¿Quieres venir?","exampleSentenceEn":"Do you want to come?"},
+      {"pronoun":"él/ella/usted","form":"quiere","exampleSentence":"Él quiere descansar.","exampleSentenceEn":"He wants to rest."},
+      {"pronoun":"nosotros","form":"queremos","exampleSentence":"Queremos salir.","exampleSentenceEn":"We want to go out."},
+      {"pronoun":"vosotros","form":"queréis","exampleSentence":"¿Queréis pizza?","exampleSentenceEn":"Do you all want pizza?"},
+      {"pronoun":"ellos/ustedes","form":"quieren","exampleSentence":"Ellos quieren viajar.","exampleSentenceEn":"They want to travel."}
+    ]},
+    {"tenseId":"indicative_imperfect","tenseName":"Pretérito imperfecto","tenseNameEn":"Imperfect","description":"Deseo habitual o cortesía pasada.","conjugations":[
+      {"pronoun":"yo","form":"quería","exampleSentence":"Quería aprender francés.","exampleSentenceEn":"I wanted to learn French."},
+      {"pronoun":"tú","form":"querías","exampleSentence":"Querías salir mucho.","exampleSentenceEn":"You wanted to go out a lot."},
+      {"pronoun":"él/ella/usted","form":"quería","exampleSentence":"Quería descansar.","exampleSentenceEn":"He wanted to rest."},
+      {"pronoun":"nosotros","form":"queríamos","exampleSentence":"Queríamos viajar.","exampleSentenceEn":"We wanted to travel."},
+      {"pronoun":"vosotros","form":"queríais","exampleSentence":"Queríais más tiempo.","exampleSentenceEn":"You all wanted more time."},
+      {"pronoun":"ellos/ustedes","form":"querían","exampleSentence":"Querían volver tarde.","exampleSentenceEn":"They wanted to come back late."}
+    ]},
+    {"tenseId":"indicative_preterite","tenseName":"Pretérito perfecto simple","tenseNameEn":"Preterite","description":"Intento/voluntad puntual en el pasado.","conjugations":[
+      {"pronoun":"yo","form":"quise","exampleSentence":"Quise ayudarte.","exampleSentenceEn":"I tried/wanted to help you."},
+      {"pronoun":"tú","form":"quisiste","exampleSentence":"Quisiste entrar.","exampleSentenceEn":"You tried/wanted to enter."},
+      {"pronoun":"él/ella/usted","form":"quiso","exampleSentence":"Quiso venir.","exampleSentenceEn":"He tried/wanted to come."},
+      {"pronoun":"nosotros","form":"quisimos","exampleSentence":"Quisimos salir temprano.","exampleSentenceEn":"We tried/wanted to leave early."},
+      {"pronoun":"vosotros","form":"quisisteis","exampleSentence":"Quisisteis continuar.","exampleSentenceEn":"You all tried/wanted to continue."},
+      {"pronoun":"ellos/ustedes","form":"quisieron","exampleSentence":"Quisieron participar.","exampleSentenceEn":"They tried/wanted to participate."}
+    ]},
+    {"tenseId":"indicative_future","tenseName":"Futuro simple","tenseNameEn":"Simple Future","description":"Deseo futuro.","conjugations":[
+      {"pronoun":"yo","form":"querré","exampleSentence":"Querré descansar mañana.","exampleSentenceEn":"I will want to rest tomorrow."},
+      {"pronoun":"tú","form":"querrás","exampleSentence":"Querrás verlo pronto.","exampleSentenceEn":"You will want to see it soon."},
+      {"pronoun":"él/ella/usted","form":"querrá","exampleSentence":"Querrá hablar después.","exampleSentenceEn":"He will want to talk later."},
+      {"pronoun":"nosotros","form":"querremos","exampleSentence":"Querremos salir.","exampleSentenceEn":"We will want to go out."},
+      {"pronoun":"vosotros","form":"querréis","exampleSentence":"Querréis cenar fuera.","exampleSentenceEn":"You all will want to dine out."},
+      {"pronoun":"ellos/ustedes","form":"querrán","exampleSentence":"Querrán viajar.","exampleSentenceEn":"They will want to travel."}
+    ]},
+    {"tenseId":"indicative_conditional","tenseName":"Condicional simple","tenseNameEn":"Conditional","description":"Deseo hipotético o cortesía.","conjugations":[
+      {"pronoun":"yo","form":"querría","exampleSentence":"Querría reservar mesa.","exampleSentenceEn":"I would like to reserve a table."},
+      {"pronoun":"tú","form":"querrías","exampleSentence":"¿Querrías venir?","exampleSentenceEn":"Would you like to come?"},
+      {"pronoun":"él/ella/usted","form":"querría","exampleSentence":"Querría hablar contigo.","exampleSentenceEn":"He would like to talk with you."},
+      {"pronoun":"nosotros","form":"querríamos","exampleSentence":"Querríamos ayuda.","exampleSentenceEn":"We would like help."},
+      {"pronoun":"vosotros","form":"querríais","exampleSentence":"Querríais más información.","exampleSentenceEn":"You all would like more information."},
+      {"pronoun":"ellos/ustedes","form":"querrían","exampleSentence":"Querrían participar.","exampleSentenceEn":"They would like to participate."}
+    ]},
+    {"tenseId":"indicative_present_perfect","tenseName":"Pretérito perfecto compuesto","tenseNameEn":"Present Perfect","description":"Deseo pasado con relevancia actual.","conjugations":[
+      {"pronoun":"yo","form":"he querido","exampleSentence":"He querido llamarte.","exampleSentenceEn":"I have wanted to call you."},
+      {"pronoun":"tú","form":"has querido","exampleSentence":"Has querido venir.","exampleSentenceEn":"You have wanted to come."},
+      {"pronoun":"él/ella/usted","form":"ha querido","exampleSentence":"Ha querido ayudar.","exampleSentenceEn":"He has wanted to help."},
+      {"pronoun":"nosotros","form":"hemos querido","exampleSentence":"Hemos querido salir.","exampleSentenceEn":"We have wanted to go out."},
+      {"pronoun":"vosotros","form":"habéis querido","exampleSentence":"Habéis querido entrar.","exampleSentenceEn":"You all have wanted to enter."},
+      {"pronoun":"ellos/ustedes","form":"han querido","exampleSentence":"Han querido participar.","exampleSentenceEn":"They have wanted to participate."}
+    ]},
+    {"tenseId":"indicative_pluperfect","tenseName":"Pluscuamperfecto","tenseNameEn":"Pluperfect","description":"Deseo anterior a otra acción pasada.","conjugations":[
+      {"pronoun":"yo","form":"había querido","exampleSentence":"Había querido viajar.","exampleSentenceEn":"I had wanted to travel."},
+      {"pronoun":"tú","form":"habías querido","exampleSentence":"Habías querido salir.","exampleSentenceEn":"You had wanted to go out."},
+      {"pronoun":"él/ella/usted","form":"había querido","exampleSentence":"Había querido verte.","exampleSentenceEn":"He had wanted to see you."},
+      {"pronoun":"nosotros","form":"habíamos querido","exampleSentence":"Habíamos querido cambiar.","exampleSentenceEn":"We had wanted to change."},
+      {"pronoun":"vosotros","form":"habíais querido","exampleSentence":"Habíais querido ayudar.","exampleSentenceEn":"You all had wanted to help."},
+      {"pronoun":"ellos/ustedes","form":"habían querido","exampleSentence":"Habían querido participar.","exampleSentenceEn":"They had wanted to participate."}
+    ]},
+    {"tenseId":"indicative_preterite_perfect","tenseName":"Pretérito anterior","tenseNameEn":"Preterite Perfect","description":"Uso literario.","conjugations":[
+      {"pronoun":"yo","form":"hube querido","exampleSentence":"Apenas hube querido salir, me llamaron.","exampleSentenceEn":"As soon as I had wanted to leave, they called me."},
+      {"pronoun":"tú","form":"hubiste querido","exampleSentence":"Cuando hubiste querido entrar, cerraron.","exampleSentenceEn":"When you had wanted to enter, they closed."},
+      {"pronoun":"él/ella/usted","form":"hubo querido","exampleSentence":"Apenas hubo querido hablar, lo interrumpieron.","exampleSentenceEn":"As soon as he had wanted to speak, he was interrupted."},
+      {"pronoun":"nosotros","form":"hubimos querido","exampleSentence":"Hubimos querido viajar.","exampleSentenceEn":"We had wanted to travel."},
+      {"pronoun":"vosotros","form":"hubisteis querido","exampleSentence":"Hubisteis querido participar.","exampleSentenceEn":"You all had wanted to participate."},
+      {"pronoun":"ellos/ustedes","form":"hubieron querido","exampleSentence":"Hubieron querido cambiar.","exampleSentenceEn":"They had wanted to change."}
+    ]},
+    {"tenseId":"indicative_future_perfect","tenseName":"Futuro perfecto","tenseNameEn":"Future Perfect","description":"Deseo completado antes de un punto futuro.","conjugations":[
+      {"pronoun":"yo","form":"habré querido","exampleSentence":"Para entonces habré querido volver.","exampleSentenceEn":"By then I will have wanted to return."},
+      {"pronoun":"tú","form":"habrás querido","exampleSentence":"Habrás querido salir.","exampleSentenceEn":"You will have wanted to go out."},
+      {"pronoun":"él/ella/usted","form":"habrá querido","exampleSentence":"Habrá querido hablar.","exampleSentenceEn":"He will have wanted to speak."},
+      {"pronoun":"nosotros","form":"habremos querido","exampleSentence":"Habremos querido cambiar.","exampleSentenceEn":"We will have wanted to change."},
+      {"pronoun":"vosotros","form":"habréis querido","exampleSentence":"Habréis querido participar.","exampleSentenceEn":"You all will have wanted to participate."},
+      {"pronoun":"ellos/ustedes","form":"habrán querido","exampleSentence":"Habrán querido viajar.","exampleSentenceEn":"They will have wanted to travel."}
+    ]},
+    {"tenseId":"indicative_conditional_perfect","tenseName":"Condicional perfecto","tenseNameEn":"Conditional Perfect","description":"Deseo hipotético completado.","conjugations":[
+      {"pronoun":"yo","form":"habría querido","exampleSentence":"Habría querido quedarme.","exampleSentenceEn":"I would have wanted to stay."},
+      {"pronoun":"tú","form":"habrías querido","exampleSentence":"Habrías querido entrar.","exampleSentenceEn":"You would have wanted to enter."},
+      {"pronoun":"él/ella/usted","form":"habría querido","exampleSentence":"Habría querido salir.","exampleSentenceEn":"He would have wanted to go out."},
+      {"pronoun":"nosotros","form":"habríamos querido","exampleSentence":"Habríamos querido ayudar.","exampleSentenceEn":"We would have wanted to help."},
+      {"pronoun":"vosotros","form":"habríais querido","exampleSentence":"Habríais querido cambiar.","exampleSentenceEn":"You all would have wanted to change."},
+      {"pronoun":"ellos/ustedes","form":"habrían querido","exampleSentence":"Habrían querido participar.","exampleSentenceEn":"They would have wanted to participate."}
+    ]},
+    {"tenseId":"subjunctive_present","tenseName":"Presente (subjuntivo)","tenseNameEn":"Subjunctive Present","description":"Deseos o posibilidad de querer.","conjugations":[
+      {"pronoun":"yo","form":"quiera","exampleSentence":"Ojalá quiera venir.","exampleSentenceEn":"I hope I want to come."},
+      {"pronoun":"tú","form":"quieras","exampleSentence":"Espero que quieras quedarte.","exampleSentenceEn":"I hope you want to stay."},
+      {"pronoun":"él/ella/usted","form":"quiera","exampleSentence":"Es posible que quiera hablar.","exampleSentenceEn":"It's possible he wants to speak."},
+      {"pronoun":"nosotros","form":"queramos","exampleSentence":"Quieren que queramos aprender.","exampleSentenceEn":"They want us to want to learn."},
+      {"pronoun":"vosotros","form":"queráis","exampleSentence":"Es bueno que queráis ayudar.","exampleSentenceEn":"It's good that you all want to help."},
+      {"pronoun":"ellos/ustedes","form":"quieran","exampleSentence":"Temen que quieran irse.","exampleSentenceEn":"They fear that you want to leave."}
+    ]},
+    {"tenseId":"subjunctive_imperfect_ra","tenseName":"Imperfecto (ra)","tenseNameEn":"Subjunctive Imperfect (-ra)","description":"Querer hipotético pasado.","conjugations":[
+      {"pronoun":"yo","form":"quisiera","exampleSentence":"Si quisiera, iría.","exampleSentenceEn":"If I wanted, I would go."},
+      {"pronoun":"tú","form":"quisieras","exampleSentence":"Ojalá quisieras volver.","exampleSentenceEn":"I wish you wanted to return."},
+      {"pronoun":"él/ella/usted","form":"quisiera","exampleSentence":"Quisiera que quisiera quedarse.","exampleSentenceEn":"I'd like him to want to stay."},
+      {"pronoun":"nosotros","form":"quisiéramos","exampleSentence":"Si quisiéramos, ayudaríamos.","exampleSentenceEn":"If we wanted, we would help."},
+      {"pronoun":"vosotros","form":"quisierais","exampleSentence":"Si quisierais, vendríais.","exampleSentenceEn":"If you all wanted, you would come."},
+      {"pronoun":"ellos/ustedes","form":"quisieran","exampleSentence":"Si quisieran, participarían.","exampleSentenceEn":"If they wanted, they would participate."}
+    ]},
+    {"tenseId":"subjunctive_imperfect_se","tenseName":"Imperfecto (se)","tenseNameEn":"Subjunctive Imperfect (-se)","description":"Variante -se.","conjugations":[
+      {"pronoun":"yo","form":"quisiese","exampleSentence":"Si quisiese, iría.","exampleSentenceEn":"If I wanted, I would go."},
+      {"pronoun":"tú","form":"quisieses","exampleSentence":"Quisiera que quisieses quedarte.","exampleSentenceEn":"I'd like you to want to stay."},
+      {"pronoun":"él/ella/usted","form":"quisiese","exampleSentence":"No creía que quisiese hablar.","exampleSentenceEn":"I didn't think he wanted to speak."},
+      {"pronoun":"nosotros","form":"quisiésemos","exampleSentence":"Si quisiésemos, ayudaríamos.","exampleSentenceEn":"If we wanted, we would help."},
+      {"pronoun":"vosotros","form":"quisieseis","exampleSentence":"Si quisieseis, vendríais.","exampleSentenceEn":"If you all wanted, you would come."},
+      {"pronoun":"ellos/ustedes","form":"quisiesen","exampleSentence":"Si quisiesen, participarían.","exampleSentenceEn":"If they wanted, they would participate."}
+    ]},
+    {"tenseId":"subjunctive_future","tenseName":"Futuro (subjuntivo)","tenseNameEn":"Subjunctive Future","description":"Uso arcaico/jurídico.","conjugations":[
+      {"pronoun":"yo","form":"quisiere","exampleSentence":"Quien quisiere entrar, llame.","exampleSentenceEn":"Whoever wish to enter, knock."},
+      {"pronoun":"tú","form":"quisieres","exampleSentence":"Si quisieres ayuda, pide.","exampleSentenceEn":"If you wish help, ask."},
+      {"pronoun":"él/ella/usted","form":"quisiere","exampleSentence":"Si quisiere hablar, escucharemos.","exampleSentenceEn":"If he wish to speak, we shall listen."},
+      {"pronoun":"nosotros","form":"quisiéremos","exampleSentence":"Si quisiéremos viajar, iremos.","exampleSentenceEn":"If we wish to travel, we shall go."},
+      {"pronoun":"vosotros","form":"quisiereis","exampleSentence":"Si quisiereis salir, seguid.","exampleSentenceEn":"If you wish to leave, proceed."},
+      {"pronoun":"ellos/ustedes","form":"quisieren","exampleSentence":"Si quisieren venir, serán bienvenidos.","exampleSentenceEn":"If they wish to come, they shall be welcome."}
+    ]},
+    {"tenseId":"subjunctive_present_perfect","tenseName":"Pretérito perfecto (subj.)","tenseNameEn":"Subjunctive Present Perfect","description":"Deseo pasado con relación al presente de subjuntivo.","conjugations":[
+      {"pronoun":"yo","form":"haya querido","exampleSentence":"Dudo que haya querido ofender.","exampleSentenceEn":"I doubt he has wanted to offend."},
+      {"pronoun":"tú","form":"hayas querido","exampleSentence":"No creo que hayas querido ir.","exampleSentenceEn":"I don't think you have wanted to go."},
+      {"pronoun":"él/ella/usted","form":"haya querido","exampleSentence":"Es posible que haya querido ayudar.","exampleSentenceEn":"It's possible he has wanted to help."},
+      {"pronoun":"nosotros","form":"hayamos querido","exampleSentence":"Ojalá hayamos querido cambiar.","exampleSentenceEn":"I hope we have wanted to change."},
+      {"pronoun":"vosotros","form":"hayáis querido","exampleSentence":"Puede que hayáis querido venir.","exampleSentenceEn":"You all may have wanted to come."},
+      {"pronoun":"ellos/ustedes","form":"hayan querido","exampleSentence":"No piensan que hayan querido salir.","exampleSentenceEn":"They don't think you have wanted to leave."}
+    ]},
+    {"tenseId":"subjunctive_pluperfect_ra","tenseName":"Pluscuamperfecto (ra)","tenseNameEn":"Subjunctive Pluperfect (-ra)","description":"Deseo anterior hipotético.","conjugations":[
+      {"pronoun":"yo","form":"hubiera querido","exampleSentence":"Si hubiera querido, vendría.","exampleSentenceEn":"If I had wanted, I would come."},
+      {"pronoun":"tú","form":"hubieras querido","exampleSentence":"Si hubieras querido, ayudarías.","exampleSentenceEn":"If you had wanted, you would help."},
+      {"pronoun":"él/ella/usted","form":"hubiera querido","exampleSentence":"Si hubiera querido, hablaría.","exampleSentenceEn":"If he had wanted, he'd speak."},
+      {"pronoun":"nosotros","form":"hubiéramos querido","exampleSentence":"Si hubiéramos querido, viajaríamos.","exampleSentenceEn":"If we had wanted, we would travel."},
+      {"pronoun":"vosotros","form":"hubierais querido","exampleSentence":"Si hubierais querido, vendríais.","exampleSentenceEn":"If you all had wanted, you would come."},
+      {"pronoun":"ellos/ustedes","form":"hubieran querido","exampleSentence":"Si hubieran querido, participarían.","exampleSentenceEn":"If they had wanted, they would participate."}
+    ]},
+    {"tenseId":"subjunctive_pluperfect_se","tenseName":"Pluscuamperfecto (se)","tenseNameEn":"Subjunctive Pluperfect (-se)","description":"Deseo anterior hipotético (variante -se).","conjugations":[
+      {"pronoun":"yo","form":"hubiese querido","exampleSentence":"Si hubiese querido, vendría.","exampleSentenceEn":"If I had wanted, I would come."},
+      {"pronoun":"tú","form":"hubieses querido","exampleSentence":"Si hubieses querido, ayudarías.","exampleSentenceEn":"If you had wanted, you'd help."},
+      {"pronoun":"él/ella/usted","form":"hubiese querido","exampleSentence":"No pensé que hubiese querido ir.","exampleSentenceEn":"I didn't think he had wanted to go."},
+      {"pronoun":"nosotros","form":"hubiésemos querido","exampleSentence":"Si hubiésemos querido, viajaríamos.","exampleSentenceEn":"If we had wanted, we would travel."},
+      {"pronoun":"vosotros","form":"hubieseis querido","exampleSentence":"Si hubieseis querido, vendríais.","exampleSentenceEn":"If you all had wanted, you'd come."},
+      {"pronoun":"ellos/ustedes","form":"hubiesen querido","exampleSentence":"Si hubiesen querido, participarían.","exampleSentenceEn":"If they had wanted, they would participate."}
+    ]},
+    {"tenseId":"subjunctive_future_perfect","tenseName":"Futuro perfecto (subj.)","tenseNameEn":"Subjunctive Future Perfect","description":"Uso arcaico.","conjugations":[
+      {"pronoun":"yo","form":"hubiere querido","exampleSentence":"Si hubiere querido, vendré.","exampleSentenceEn":"If I shall have wanted, I will come."},
+      {"pronoun":"tú","form":"hubieres querido","exampleSentence":"Si hubieres querido, ayudarás.","exampleSentenceEn":"If you shall have wanted, you will help."},
+      {"pronoun":"él/ella/usted","form":"hubiere querido","exampleSentence":"Si hubiere querido, hablará.","exampleSentenceEn":"If he shall have wanted, he will speak."},
+      {"pronoun":"nosotros","form":"hubiéremos querido","exampleSentence":"Si hubiéremos querido, viajaremos.","exampleSentenceEn":"If we shall have wanted, we will travel."},
+      {"pronoun":"vosotros","form":"hubiereis querido","exampleSentence":"Si hubiereis querido, vendréis.","exampleSentenceEn":"If you all shall have wanted, you will come."},
+      {"pronoun":"ellos/ustedes","form":"hubieren querido","exampleSentence":"Si hubieren querido, participarán.","exampleSentenceEn":"If they shall have wanted, they will participate."}
+    ]},
+    {"tenseId":"imperative_affirmative","tenseName":"Imperativo afirmativo","tenseNameEn":"Imperative Affirmative","description":"Órdenes afirmativas con querer (usos idiomáticos).","conjugations":[
+      {"pronoun":"tú","form":"quiere","exampleSentence":"Quiere aprender.","exampleSentenceEn":"Resolve to learn."},
+      {"pronoun":"usted","form":"quiera","exampleSentence":"Quiera tomar asiento.","exampleSentenceEn":"Please take a seat."},
+      {"pronoun":"nosotros","form":"queramos","exampleSentence":"Queramos mejorar.","exampleSentenceEn":"Let's strive to improve."},
+      {"pronoun":"vosotros","form":"quered","exampleSentence":"Quered la paz.","exampleSentenceEn":"Desire peace (you all)."},
+      {"pronoun":"ustedes","form":"quieran","exampleSentence":"Quieran colaborar.","exampleSentenceEn":"Please be willing to collaborate (you all)."}
+    ]},
+    {"tenseId":"imperative_negative","tenseName":"Imperativo negativo","tenseNameEn":"Imperative Negative","description":"Órdenes negativas.","conjugations":[
+      {"pronoun":"tú","form":"no quieras","exampleSentence":"No quieras tener razón siempre.","exampleSentenceEn":"Don't always insist on being right."},
+      {"pronoun":"usted","form":"no quiera","exampleSentence":"No quiera precipitarse.","exampleSentenceEn":"Don't be quick to jump in."},
+      {"pronoun":"nosotros","form":"no queramos","exampleSentence":"No queramos lo imposible.","exampleSentenceEn":"Let's not want the impossible."},
+      {"pronoun":"vosotros","form":"no queráis","exampleSentence":"No queráis competir por todo.","exampleSentenceEn":"Don't want to compete over everything (you all)."},
+      {"pronoun":"ustedes","form":"no quieran","exampleSentence":"No quieran provocar conflictos.","exampleSentenceEn":"Don't seek to cause conflicts (you all)."}
+    ]},
+    {"tenseId":"progressive_present","tenseName":"Progresivo (presente)","tenseNameEn":"Present Progressive","description":"Acción en progreso.","conjugations":[
+      {"pronoun":"yo","form":"estoy queriendo","exampleSentence":"Estoy queriendo cambiar de trabajo.","exampleSentenceEn":"I am wanting to change jobs."},
+      {"pronoun":"tú","form":"estás queriendo","exampleSentence":"Estás queriendo aprender.","exampleSentenceEn":"You are wanting to learn."},
+      {"pronoun":"él/ella/usted","form":"está queriendo","exampleSentence":"Está queriendo ayudar.","exampleSentenceEn":"He is wanting to help."},
+      {"pronoun":"nosotros","form":"estamos queriendo","exampleSentence":"Estamos queriendo viajar.","exampleSentenceEn":"We are wanting to travel."},
+      {"pronoun":"vosotros","form":"estáis queriendo","exampleSentence":"Estáis queriendo participar.","exampleSentenceEn":"You all are wanting to participate."},
+      {"pronoun":"ellos/ustedes","form":"están queriendo","exampleSentence":"Están queriendo volver.","exampleSentenceEn":"They are wanting to return."}
+    ]},
+    {"tenseId":"progressive_past","tenseName":"Progresivo (pasado)","tenseNameEn":"Past Progressive","description":"Acción en progreso en el pasado.","conjugations":[
+      {"pronoun":"yo","form":"estaba queriendo","exampleSentence":"Estaba queriendo descansar.","exampleSentenceEn":"I was wanting to rest."},
+      {"pronoun":"tú","form":"estabas queriendo","exampleSentence":"Estabas queriendo salir.","exampleSentenceEn":"You were wanting to go out."},
+      {"pronoun":"él/ella/usted","form":"estaba queriendo","exampleSentence":"Estaba queriendo hablar.","exampleSentenceEn":"He was wanting to speak."},
+      {"pronoun":"nosotros","form":"estábamos queriendo","exampleSentence":"Estábamos queriendo cambiar.","exampleSentenceEn":"We were wanting to change."},
+      {"pronoun":"vosotros","form":"estabais queriendo","exampleSentence":"Estabais queriendo venir.","exampleSentenceEn":"You all were wanting to come."},
+      {"pronoun":"ellos/ustedes","form":"estaban queriendo","exampleSentence":"Estaban queriendo participar.","exampleSentenceEn":"They were wanting to participate."}
+    ]},
+    {"tenseId":"progressive_future","tenseName":"Progresivo (futuro)","tenseNameEn":"Future Progressive","description":"Acción en progreso en el futuro.","conjugations":[
+      {"pronoun":"yo","form":"estaré queriendo","exampleSentence":"Estaré queriendo salir temprano.","exampleSentenceEn":"I will be wanting to leave early."},
+      {"pronoun":"tú","form":"estarás queriendo","exampleSentence":"Estarás queriendo descansar.","exampleSentenceEn":"You will be wanting to rest."},
+      {"pronoun":"él/ella/usted","form":"estará queriendo","exampleSentence":"Estará queriendo hablar.","exampleSentenceEn":"He will be wanting to speak."},
+      {"pronoun":"nosotros","form":"estaremos queriendo","exampleSentence":"Estaremos queriendo cambiar.","exampleSentenceEn":"We will be wanting to change."},
+      {"pronoun":"vosotros","form":"estaréis queriendo","exampleSentence":"Estaréis queriendo venir.","exampleSentenceEn":"You all will be wanting to come."},
+      {"pronoun":"ellos/ustedes","form":"estarán queriendo","exampleSentence":"Estarán queriendo participar.","exampleSentenceEn":"They will be wanting to participate."}
+    ]}
+  ]
+}
+
+

@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useEffect,
 } from 'react';
-import {useLocation} from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import {
   Container,
   Title,
@@ -26,7 +26,7 @@ import {
   Anchor,
   Tooltip,
 } from '@mantine/core';
-import {useDisclosure} from '@mantine/hooks';
+import { useDisclosure } from '@mantine/hooks';
 import {
   IconSearch,
   IconEdit,
@@ -35,11 +35,11 @@ import {
   IconExternalLink,
   IconLanguage,
 } from '@tabler/icons-react';
-import {useQueryClient} from '@tanstack/react-query';
-import {useAuth} from '../hooks/useAuth';
-import {usePagination} from '../hooks/usePagination';
-import {useTranslation} from '../contexts/TranslationContext';
-import {PaginationControls} from '../components/PaginationControls';
+import { useQueryClient } from '@tanstack/react-query';
+import { useAuth } from '../hooks/useAuth';
+import { usePagination } from '../hooks/usePagination';
+import { useTranslation } from '../contexts/TranslationContext';
+import { PaginationControls } from '../components/PaginationControls';
 import {
   useDeleteV1SnippetsId,
   usePutV1SnippetsId,
@@ -48,22 +48,22 @@ import {
   useGetV1SettingsLevels,
   useGetV1Story,
 } from '../api/api';
-import {customInstance} from '../api/axios';
+import { customInstance } from '../api/axios';
 
 const SnippetsPage: React.FC = () => {
-  const {user} = useAuth();
+  const { user } = useAuth();
   const location = useLocation();
 
   // Fetch available languages
-  const {data: languages = []} = useGetV1SettingsLanguages();
+  const { data: languages = [] } = useGetV1SettingsLanguages();
 
   // Fetch user's stories for the dropdown
-  const {data: stories = []} = useGetV1Story();
+  const { data: stories = [] } = useGetV1Story();
 
   // Fetch available levels for the user's language
-  const {data: levelsData, isLoading: levelsLoading} = useGetV1SettingsLevels(
+  const { data: levelsData, isLoading: levelsLoading } = useGetV1SettingsLevels(
     user?.preferred_language
-      ? {language: user.preferred_language}
+      ? { language: user.preferred_language }
       : undefined,
     {
       query: {
@@ -91,13 +91,13 @@ const SnippetsPage: React.FC = () => {
       setActiveSearchQuery(q);
     }
   }, [location.search]);
-  const [editModalOpened, {open: openEditModal, close: closeEditModal}] =
+  const [editModalOpened, { open: openEditModal, close: closeEditModal }] =
     useDisclosure(false);
-  const [addModalOpened, {open: openAddModal, close: closeAddModal}] =
+  const [addModalOpened, { open: openAddModal, close: closeAddModal }] =
     useDisclosure(false);
   const [
     deleteModalOpened,
-    {open: openDeleteModal, close: closeDeleteModal},
+    { open: openDeleteModal, close: closeDeleteModal },
   ] = useDisclosure(false);
   const [snippetToDelete, setSnippetToDelete] = useState<number | null>(null);
   const [editingSnippet, setEditingSnippet] = useState<{
@@ -110,7 +110,7 @@ const SnippetsPage: React.FC = () => {
     difficulty_level: string | null;
     created_at: string;
   } | null>(null);
-  const {translateText} = useTranslation();
+  const { translateText } = useTranslation();
   const [translatingSnippetId, setTranslatingSnippetId] = useState<
     number | null
   >(null);
@@ -224,14 +224,14 @@ const SnippetsPage: React.FC = () => {
   } = usePagination(
     activeSearchQuery
       ? [
-        '/v1/snippets/search',
-        activeSearchQuery,
-        selectedStoryId,
-        selectedLevel,
-        selectedSourceLang,
-      ]
+          '/v1/snippets/search',
+          activeSearchQuery,
+          selectedStoryId,
+          selectedLevel,
+          selectedSourceLang,
+        ]
       : ['/v1/snippets', selectedStoryId, selectedLevel, selectedSourceLang],
-    async ({limit, offset}) => {
+    async ({ limit, offset }) => {
       if (activeSearchQuery.trim()) {
         // Use search API
         const params: {
@@ -471,7 +471,7 @@ const SnippetsPage: React.FC = () => {
 
   const confirmDelete = () => {
     if (snippetToDelete) {
-      deleteSnippetMutation.mutate({id: snippetToDelete});
+      deleteSnippetMutation.mutate({ id: snippetToDelete });
       closeDeleteModal();
       setSnippetToDelete(null);
     }
@@ -563,7 +563,7 @@ const SnippetsPage: React.FC = () => {
                 value={searchQuery}
                 onChange={handleSearchChange}
                 onKeyDown={handleKeyPress}
-                style={{flex: 1}}
+                style={{ flex: 1 }}
                 disabled={isLoading || isFetching}
               />
               <Group gap='xs'>
@@ -590,7 +590,7 @@ const SnippetsPage: React.FC = () => {
                 onChange={setSelectedStoryId}
                 clearable
                 disabled={isLoading || isFetching}
-                style={{width: storyDropdownWidth}}
+                style={{ width: storyDropdownWidth }}
                 searchable
               />
               <Select
@@ -599,18 +599,18 @@ const SnippetsPage: React.FC = () => {
                   levelOptions.length > 0
                     ? levelOptions
                     : [
-                      {
-                        value: 'loading',
-                        label: 'Loading levels...',
-                        disabled: true,
-                      },
-                    ]
+                        {
+                          value: 'loading',
+                          label: 'Loading levels...',
+                          disabled: true,
+                        },
+                      ]
                 }
                 value={selectedLevel}
                 onChange={setSelectedLevel}
                 clearable
                 disabled={isLoading || isFetching || levelsLoading}
-                style={{width: levelDropdownWidth}}
+                style={{ width: levelDropdownWidth }}
                 searchable
               />
               <Select
@@ -620,7 +620,7 @@ const SnippetsPage: React.FC = () => {
                 onChange={setSelectedSourceLang}
                 clearable
                 disabled={isLoading || isFetching}
-                style={{width: 220}}
+                style={{ width: 220 }}
                 searchable
               />
               {(selectedStoryId || selectedLevel || selectedSourceLang) && (
@@ -646,7 +646,7 @@ const SnippetsPage: React.FC = () => {
               <Card key={snippet.id} withBorder>
                 <Stack gap='sm'>
                   <Group justify='space-between' align='flex-start'>
-                    <div style={{flex: 1}}>
+                    <div style={{ flex: 1 }}>
                       <Text size='lg' fw={500}>
                         {snippet.original_text}
                       </Text>
@@ -676,7 +676,7 @@ const SnippetsPage: React.FC = () => {
                       </Badge>
                       {snippet.difficulty_level &&
                         snippet.difficulty_level.toLowerCase() !==
-                        'unknown' && (
+                          'unknown' && (
                           <Badge variant='light' color='blue'>
                             {snippet.difficulty_level}
                           </Badge>
@@ -845,10 +845,10 @@ const SnippetsPage: React.FC = () => {
                       // If source and target become the same, update target to something else
                       target_language:
                         newSourceLang === prev.target_language &&
-                          languageOptions.length > 1
+                        languageOptions.length > 1
                           ? languageOptions.find(
-                            opt => opt.value !== newSourceLang
-                          )?.value || prev.target_language
+                              opt => opt.value !== newSourceLang
+                            )?.value || prev.target_language
                           : prev.target_language,
                     }));
                   }
@@ -876,10 +876,10 @@ const SnippetsPage: React.FC = () => {
                       // If source and target become the same, update source to something else
                       source_language:
                         newTargetLang === prev.source_language &&
-                          languageOptions.length > 1
+                        languageOptions.length > 1
                           ? languageOptions.find(
-                            opt => opt.value !== newTargetLang
-                          )?.value || prev.source_language
+                              opt => opt.value !== newTargetLang
+                            )?.value || prev.source_language
                           : prev.source_language,
                     }));
                   }
@@ -978,10 +978,10 @@ const SnippetsPage: React.FC = () => {
                     // If source and target become the same, update target to something else
                     target_language:
                       newSourceLang === prev.target_language &&
-                        languageOptions.length > 1
+                      languageOptions.length > 1
                         ? languageOptions.find(
-                          opt => opt.value !== newSourceLang
-                        )?.value || prev.target_language
+                            opt => opt.value !== newSourceLang
+                          )?.value || prev.target_language
                         : prev.target_language,
                   }));
                 }
@@ -1014,10 +1014,10 @@ const SnippetsPage: React.FC = () => {
                     // If source and target become the same, update source to something else
                     source_language:
                       newTargetLang === prev.source_language &&
-                        languageOptions.length > 1
+                      languageOptions.length > 1
                         ? languageOptions.find(
-                          opt => opt.value !== newTargetLang
-                        )?.value || prev.source_language
+                            opt => opt.value !== newTargetLang
+                          )?.value || prev.source_language
                         : prev.source_language,
                   }));
                 }

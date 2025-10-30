@@ -68,9 +68,9 @@ const DailyPage: React.FC = () => {
     isHistoryLoading,
   } = useDailyQuestions();
 
-  // Keep feedback local to DailyPage to avoid affecting QuizPage or other pages
-  // (previously this used quizFeedback from shared context which leaked state).
-  useQuestion();
+  // Share the currently visible question with global QuestionContext so
+  // components like TranslationOverlay can read the exact on-screen question id.
+  const { setQuizQuestion } = useQuestion();
   const [feedbackLocal, setFeedbackLocal] = useState<Feedback | null>(null);
 
   // Local selection/UI state (isolated per-page)
@@ -118,6 +118,20 @@ const DailyPage: React.FC = () => {
     setFeedbackLocal(null);
     setShowCompletionScreen(false);
   }, [currentQuestionIndex, setSelectedAnswerQuestionIdLocal]);
+
+  // Publish the visible daily question to QuestionContext with the correct id
+  useEffect(() => {
+    if (currentQuestion?.question && currentQuestion.question_id != null) {
+      setQuizQuestion({
+        ...currentQuestion.question,
+        id: currentQuestion.question_id,
+      });
+    }
+  }, [
+    currentQuestion?.question,
+    currentQuestion?.question_id,
+    setQuizQuestion,
+  ]);
 
   // Set feedback for completed questions
   useEffect(() => {

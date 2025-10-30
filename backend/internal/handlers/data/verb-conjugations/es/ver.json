@@ -1,0 +1,193 @@
+{
+  "language": "es",
+  "languageName": "Spanish",
+  "infinitive": "ver",
+  "infinitiveEn": "to see",
+  "category": "perception",
+  "tenses": [
+    {"tenseId":"indicative_present","tenseName":"Presente","tenseNameEn":"Indicative Present","description":"Ver en presente.","conjugations":[
+      {"pronoun":"yo","form":"veo","exampleSentence":"Veo la televisión.","exampleSentenceEn":"I watch TV."},
+      {"pronoun":"tú","form":"ves","exampleSentence":"¿Ves eso?","exampleSentenceEn":"Do you see that?"},
+      {"pronoun":"él/ella/usted","form":"ve","exampleSentence":"Él ve el mar.","exampleSentenceEn":"He sees the sea."},
+      {"pronoun":"nosotros","form":"vemos","exampleSentence":"Vemos una película.","exampleSentenceEn":"We watch a movie."},
+      {"pronoun":"vosotros","form":"veis","exampleSentence":"¿Veis el problema?","exampleSentenceEn":"Do you all see the problem?"},
+      {"pronoun":"ellos/ustedes","form":"ven","exampleSentence":"Ellos ven las estrellas.","exampleSentenceEn":"They see the stars."}
+    ]},
+    {"tenseId":"indicative_imperfect","tenseName":"Pretérito imperfecto","tenseNameEn":"Imperfect","description":"Ver habitual en el pasado.","conjugations":[
+      {"pronoun":"yo","form":"veía","exampleSentence":"Veía dibujos animados.","exampleSentenceEn":"I used to watch cartoons."},
+      {"pronoun":"tú","form":"veías","exampleSentence":"Veías el amanecer.","exampleSentenceEn":"You used to watch the sunrise."},
+      {"pronoun":"él/ella/usted","form":"veía","exampleSentence":"Veía a sus amigos.","exampleSentenceEn":"He used to see his friends."},
+      {"pronoun":"nosotros","form":"veíamos","exampleSentence":"Veíamos pelis los sábados.","exampleSentenceEn":"We used to watch movies on Saturdays."},
+      {"pronoun":"vosotros","form":"veíais","exampleSentence":"Veíais a menudo a la familia.","exampleSentenceEn":"You all often used to see the family."},
+      {"pronoun":"ellos/ustedes","form":"veían","exampleSentence":"Veían el atardecer.","exampleSentenceEn":"They used to watch the sunset."}
+    ]},
+    {"tenseId":"indicative_preterite","tenseName":"Pretérito perfecto simple","tenseNameEn":"Preterite","description":"Ver completado en el pasado.","conjugations":[
+      {"pronoun":"yo","form":"vi","exampleSentence":"Vi la noticia ayer.","exampleSentenceEn":"I saw the news yesterday."},
+      {"pronoun":"tú","form":"viste","exampleSentence":"Viste la película.","exampleSentenceEn":"You saw the movie."},
+      {"pronoun":"él/ella/usted","form":"vio","exampleSentence":"Vio un accidente.","exampleSentenceEn":"He saw an accident."},
+      {"pronoun":"nosotros","form":"vimos","exampleSentence":"Vimos a tus padres.","exampleSentenceEn":"We saw your parents."},
+      {"pronoun":"vosotros","form":"visteis","exampleSentence":"Visteis el partido.","exampleSentenceEn":"You all watched the match."},
+      {"pronoun":"ellos/ustedes","form":"vieron","exampleSentence":"Vieron un cometa.","exampleSentenceEn":"They saw a comet."}
+    ]},
+    {"tenseId":"indicative_future","tenseName":"Futuro simple","tenseNameEn":"Simple Future","description":"Ver en el futuro.","conjugations":[
+      {"pronoun":"yo","form":"veré","exampleSentence":"Veré esa serie mañana.","exampleSentenceEn":"I will watch that series tomorrow."},
+      {"pronoun":"tú","form":"verás","exampleSentence":"Verás los resultados pronto.","exampleSentenceEn":"You will see the results soon."},
+      {"pronoun":"él/ella/usted","form":"verá","exampleSentence":"Verá al doctor.","exampleSentenceEn":"He will see the doctor."},
+      {"pronoun":"nosotros","form":"veremos","exampleSentence":"Veremos qué pasa.","exampleSentenceEn":"We will see what happens."},
+      {"pronoun":"vosotros","form":"veréis","exampleSentence":"Veréis el concierto.","exampleSentenceEn":"You all will see the concert."},
+      {"pronoun":"ellos/ustedes","form":"verán","exampleSentence":"Verán la exposición.","exampleSentenceEn":"They will see the exhibition."}
+    ]},
+    {"tenseId":"indicative_conditional","tenseName":"Condicional simple","tenseNameEn":"Conditional","description":"Ver hipotético o cortesía.","conjugations":[
+      {"pronoun":"yo","form":"vería","exampleSentence":"Vería esa película otra vez.","exampleSentenceEn":"I would watch that movie again."},
+      {"pronoun":"tú","form":"verías","exampleSentence":"¿Verías este video?","exampleSentenceEn":"Would you watch this video?"},
+      {"pronoun":"él/ella/usted","form":"vería","exampleSentence":"Vería a los amigos.","exampleSentenceEn":"He would see friends."},
+      {"pronoun":"nosotros","form":"veríamos","exampleSentence":"Veríamos más opciones.","exampleSentenceEn":"We would see more options."},
+      {"pronoun":"vosotros","form":"veríais","exampleSentence":"Veríais resultados mejores.","exampleSentenceEn":"You all would see better results."},
+      {"pronoun":"ellos/ustedes","form":"verían","exampleSentence":"Verían el problema.","exampleSentenceEn":"They would see the problem."}
+    ]},
+    {"tenseId":"indicative_present_perfect","tenseName":"Pretérito perfecto compuesto","tenseNameEn":"Present Perfect","description":"Ver pasado con relevancia actual.","conjugations":[
+      {"pronoun":"yo","form":"he visto","exampleSentence":"He visto la noticia.","exampleSentenceEn":"I have seen the news."},
+      {"pronoun":"tú","form":"has visto","exampleSentence":"Has visto la luna.","exampleSentenceEn":"You have seen the moon."},
+      {"pronoun":"él/ella/usted","form":"ha visto","exampleSentence":"Ha visto el informe.","exampleSentenceEn":"He has seen the report."},
+      {"pronoun":"nosotros","form":"hemos visto","exampleSentence":"Hemos visto resultados.","exampleSentenceEn":"We have seen results."},
+      {"pronoun":"vosotros","form":"habéis visto","exampleSentence":"Habéis visto la película.","exampleSentenceEn":"You all have seen the movie."},
+      {"pronoun":"ellos/ustedes","form":"han visto","exampleSentence":"Han visto avances.","exampleSentenceEn":"They have seen progress."}
+    ]},
+    {"tenseId":"indicative_pluperfect","tenseName":"Pluscuamperfecto","tenseNameEn":"Pluperfect","description":"Ver anterior a otra acción pasada.","conjugations":[
+      {"pronoun":"yo","form":"había visto","exampleSentence":"Había visto eso antes.","exampleSentenceEn":"I had seen that before."},
+      {"pronoun":"tú","form":"habías visto","exampleSentence":"Habías visto la señal.","exampleSentenceEn":"You had seen the sign."},
+      {"pronoun":"él/ella/usted","form":"había visto","exampleSentence":"Había visto al médico.","exampleSentenceEn":"He had seen the doctor."},
+      {"pronoun":"nosotros","form":"habíamos visto","exampleSentence":"Habíamos visto el problema.","exampleSentenceEn":"We had seen the problem."},
+      {"pronoun":"vosotros","form":"habíais visto","exampleSentence":"Habíais visto el partido.","exampleSentenceEn":"You all had seen the match."},
+      {"pronoun":"ellos/ustedes","form":"habían visto","exampleSentence":"Habían visto suficientes pruebas.","exampleSentenceEn":"They had seen enough evidence."}
+    ]},
+    {"tenseId":"indicative_preterite_perfect","tenseName":"Pretérito anterior","tenseNameEn":"Preterite Perfect","description":"Uso literario.","conjugations":[
+      {"pronoun":"yo","form":"hube visto","exampleSentence":"Apenas hube visto eso, avisé.","exampleSentenceEn":"As soon as I had seen that, I informed."},
+      {"pronoun":"tú","form":"hubiste visto","exampleSentence":"Cuando hubiste visto el error, corregiste.","exampleSentenceEn":"When you had seen the error, you corrected it."},
+      {"pronoun":"él/ella/usted","form":"hubo visto","exampleSentence":"Apenas hubo visto la señal, frenó.","exampleSentenceEn":"As soon as he had seen the sign, he braked."},
+      {"pronoun":"nosotros","form":"hubimos visto","exampleSentence":"Hubimos visto bastante.","exampleSentenceEn":"We had seen enough."},
+      {"pronoun":"vosotros","form":"hubisteis visto","exampleSentence":"Hubisteis visto la obra.","exampleSentenceEn":"You all had seen the play."},
+      {"pronoun":"ellos/ustedes","form":"hubieron visto","exampleSentence":"Hubieron visto el problema.","exampleSentenceEn":"They had seen the problem."}
+    ]},
+    {"tenseId":"indicative_future_perfect","tenseName":"Futuro perfecto","tenseNameEn":"Future Perfect","description":"Acción completada antes de un punto futuro.","conjugations":[
+      {"pronoun":"yo","form":"habré visto","exampleSentence":"Para entonces habré visto la película.","exampleSentenceEn":"By then I will have seen the movie."},
+      {"pronoun":"tú","form":"habrás visto","exampleSentence":"Habrás visto el correo.","exampleSentenceEn":"You will have seen the mail."},
+      {"pronoun":"él/ella/usted","form":"habrá visto","exampleSentence":"Habrá visto el informe.","exampleSentenceEn":"He will have seen the report."},
+      {"pronoun":"nosotros","form":"habremos visto","exampleSentence":"Habremos visto resultados.","exampleSentenceEn":"We will have seen results."},
+      {"pronoun":"vosotros","form":"habréis visto","exampleSentence":"Habréis visto el anuncio.","exampleSentenceEn":"You all will have seen the announcement."},
+      {"pronoun":"ellos/ustedes","form":"habrán visto","exampleSentence":"Habrán visto la exposición.","exampleSentenceEn":"They will have seen the exhibition."}
+    ]},
+    {"tenseId":"indicative_conditional_perfect","tenseName":"Condicional perfecto","tenseNameEn":"Conditional Perfect","description":"Ver hipotético completado.","conjugations":[
+      {"pronoun":"yo","form":"habría visto","exampleSentence":"Habría visto más si llegaba antes.","exampleSentenceEn":"I would have seen more if I'd arrived earlier."},
+      {"pronoun":"tú","form":"habrías visto","exampleSentence":"Habrías visto el final.","exampleSentenceEn":"You would have seen the ending."},
+      {"pronoun":"él/ella/usted","form":"habría visto","exampleSentence":"Habría visto el error.","exampleSentenceEn":"He would have seen the error."},
+      {"pronoun":"nosotros","form":"habríamos visto","exampleSentence":"Habríamos visto opciones.","exampleSentenceEn":"We would have seen options."},
+      {"pronoun":"vosotros","form":"habríais visto","exampleSentence":"Habríais visto la obra.","exampleSentenceEn":"You all would have seen the play."},
+      {"pronoun":"ellos/ustedes","form":"habrían visto","exampleSentence":"Habrían visto mejoras.","exampleSentenceEn":"They would have seen improvements."}
+    ]},
+    {"tenseId":"subjunctive_present","tenseName":"Presente (subjuntivo)","tenseNameEn":"Subjunctive Present","description":"Deseo o posibilidad de ver.","conjugations":[
+      {"pronoun":"yo","form":"vea","exampleSentence":"Ojalá vea resultados.","exampleSentenceEn":"I hope I see results."},
+      {"pronoun":"tú","form":"veas","exampleSentence":"Espero que veas esto.","exampleSentenceEn":"I hope you see this."},
+      {"pronoun":"él/ella/usted","form":"vea","exampleSentence":"Es posible que vea la señal.","exampleSentenceEn":"It's possible he sees the sign."},
+      {"pronoun":"nosotros","form":"veamos","exampleSentence":"Quieren que veamos la exposición.","exampleSentenceEn":"They want us to see the exhibition."},
+      {"pronoun":"vosotros","form":"veáis","exampleSentence":"Es bueno que veáis el informe.","exampleSentenceEn":"It's good that you all see the report."},
+      {"pronoun":"ellos/ustedes","form":"vean","exampleSentence":"Temen que vean el error.","exampleSentenceEn":"They fear that you see the error."}
+    ]},
+    {"tenseId":"subjunctive_imperfect_ra","tenseName":"Imperfecto (ra)","tenseNameEn":"Subjunctive Imperfect (-ra)","description":"Ver hipotético pasado.","conjugations":[
+      {"pronoun":"yo","form":"viera","exampleSentence":"Si viera eso, avisaría.","exampleSentenceEn":"If I saw that, I would inform."},
+      {"pronoun":"tú","form":"vieras","exampleSentence":"Ojalá vieras la vista.","exampleSentenceEn":"I wish you saw the view."},
+      {"pronoun":"él/ella/usted","form":"viera","exampleSentence":"Quisiera que viera el documento.","exampleSentenceEn":"I'd like him to see the document."},
+      {"pronoun":"nosotros","form":"viéramos","exampleSentence":"Si viéramos señales, pararíamos.","exampleSentenceEn":"If we saw signs, we'd stop."},
+      {"pronoun":"vosotros","form":"vierais","exampleSentence":"Si vierais el error, corregiríais.","exampleSentenceEn":"If you all saw the error, you'd fix it."},
+      {"pronoun":"ellos/ustedes","form":"vieran","exampleSentence":"Si vieran el peligro, evitarían.","exampleSentenceEn":"If they saw the danger, they'd avoid it."}
+    ]},
+    {"tenseId":"subjunctive_imperfect_se","tenseName":"Imperfecto (se)","tenseNameEn":"Subjunctive Imperfect (-se)","description":"Variante -se.","conjugations":[
+      {"pronoun":"yo","form":"viese","exampleSentence":"Si viese eso, llamaría.","exampleSentenceEn":"If I saw that, I'd call."},
+      {"pronoun":"tú","form":"vieses","exampleSentence":"Quisiera que vieses el informe.","exampleSentenceEn":"I'd like you to see the report."},
+      {"pronoun":"él/ella/usted","form":"viese","exampleSentence":"No creía que viese bien.","exampleSentenceEn":"I didn't think he could see well."},
+      {"pronoun":"nosotros","form":"viésemos","exampleSentence":"Si viésemos el cartel, saldríamos.","exampleSentenceEn":"If we saw the sign, we'd exit."},
+      {"pronoun":"vosotros","form":"vieseis","exampleSentence":"Si vieseis la señal, frenaríais.","exampleSentenceEn":"If you all saw the sign, you'd brake."},
+      {"pronoun":"ellos/ustedes","form":"viesen","exampleSentence":"Si viesen el error, corregirían.","exampleSentenceEn":"If they saw the error, they'd correct it."}
+    ]},
+    {"tenseId":"subjunctive_future","tenseName":"Futuro (subjuntivo)","tenseNameEn":"Subjunctive Future","description":"Uso arcaico/jurídico.","conjugations":[
+      {"pronoun":"yo","form":"viere","exampleSentence":"Quien viere peligro, avise.","exampleSentenceEn":"Whoever see danger, notify."},
+      {"pronoun":"tú","form":"vieres","exampleSentence":"Si vieres la señal, detente.","exampleSentenceEn":"If you see the sign, stop."},
+      {"pronoun":"él/ella/usted","form":"viere","exampleSentence":"Si viere algo, informará.","exampleSentenceEn":"If he see something, he shall inform."},
+      {"pronoun":"nosotros","form":"viéremos","exampleSentence":"Si viéremos errores, corregiremos.","exampleSentenceEn":"If we see errors, we shall correct."},
+      {"pronoun":"vosotros","form":"viereis","exampleSentence":"Si viereis la salida, seguid.","exampleSentenceEn":"If you see the exit, proceed."},
+      {"pronoun":"ellos/ustedes","form":"vieren","exampleSentence":"Si vieren problemas, avisarán.","exampleSentenceEn":"If they see problems, they will notify."}
+    ]},
+    {"tenseId":"subjunctive_present_perfect","tenseName":"Pretérito perfecto (subj.)","tenseNameEn":"Subjunctive Present Perfect","description":"Acción pasada con relación al presente de subjuntivo.","conjugations":[
+      {"pronoun":"yo","form":"haya visto","exampleSentence":"Dudo que haya visto eso.","exampleSentenceEn":"I doubt I have seen that."},
+      {"pronoun":"tú","form":"hayas visto","exampleSentence":"No creo que hayas visto el informe.","exampleSentenceEn":"I don't think you have seen the report."},
+      {"pronoun":"él/ella/usted","form":"haya visto","exampleSentence":"Es posible que haya visto la señal.","exampleSentenceEn":"It's possible he has seen the sign."},
+      {"pronoun":"nosotros","form":"hayamos visto","exampleSentence":"Ojalá hayamos visto resultados.","exampleSentenceEn":"I hope we have seen results."},
+      {"pronoun":"vosotros","form":"hayáis visto","exampleSentence":"Puede que hayáis visto el mensaje.","exampleSentenceEn":"You all may have seen the message."},
+      {"pronoun":"ellos/ustedes","form":"hayan visto","exampleSentence":"No piensan que hayan visto suficiente.","exampleSentenceEn":"They don't think you have seen enough."}
+    ]},
+    {"tenseId":"subjunctive_pluperfect_ra","tenseName":"Pluscuamperfecto (ra)","tenseNameEn":"Subjunctive Pluperfect (-ra)","description":"Acción anterior hipotética.","conjugations":[
+      {"pronoun":"yo","form":"hubiera visto","exampleSentence":"Si hubiera visto eso, pararía.","exampleSentenceEn":"If I had seen that, I would stop."},
+      {"pronoun":"tú","form":"hubieras visto","exampleSentence":"Si hubieras visto la señal, frenarías.","exampleSentenceEn":"If you had seen the sign, you'd brake."},
+      {"pronoun":"él/ella/usted","form":"hubiera visto","exampleSentence":"Si hubiera visto el error, lo corregiría.","exampleSentenceEn":"If he had seen the error, he'd fix it."},
+      {"pronoun":"nosotros","form":"hubiéramos visto","exampleSentence":"Si hubiéramos visto a tiempo, evitaríamos.","exampleSentenceEn":"If we had seen in time, we'd avoid it."},
+      {"pronoun":"vosotros","form":"hubierais visto","exampleSentence":"Si hubierais visto el final, entenderíais.","exampleSentenceEn":"If you all had seen the ending, you'd understand."},
+      {"pronoun":"ellos/ustedes","form":"hubieran visto","exampleSentence":"Si hubieran visto señales, pararían.","exampleSentenceEn":"If they had seen signs, they'd stop."}
+    ]},
+    {"tenseId":"subjunctive_pluperfect_se","tenseName":"Pluscuamperfecto (se)","tenseNameEn":"Subjunctive Pluperfect (-se)","description":"Acción anterior hipotética (variante -se).","conjugations":[
+      {"pronoun":"yo","form":"hubiese visto","exampleSentence":"Si hubiese visto eso, llamaría.","exampleSentenceEn":"If I had seen that, I'd call."},
+      {"pronoun":"tú","form":"hubieses visto","exampleSentence":"Si hubieses visto el mensaje, responderías.","exampleSentenceEn":"If you had seen the message, you'd reply."},
+      {"pronoun":"él/ella/usted","form":"hubiese visto","exampleSentence":"No pensé que hubiese visto bien.","exampleSentenceEn":"I didn't think he had seen well."},
+      {"pronoun":"nosotros","form":"hubiésemos visto","exampleSentence":"Si hubiésemos visto el aviso, pararíamos.","exampleSentenceEn":"If we had seen the notice, we'd stop."},
+      {"pronoun":"vosotros","form":"hubieseis visto","exampleSentence":"Si hubieseis visto la salida, saldríais.","exampleSentenceEn":"If you all had seen the exit, you'd leave."},
+      {"pronoun":"ellos/ustedes","form":"hubiesen visto","exampleSentence":"Si hubiesen visto el error, corregirían.","exampleSentenceEn":"If they had seen the error, they'd correct it."}
+    ]},
+    {"tenseId":"subjunctive_future_perfect","tenseName":"Futuro perfecto (subj.)","tenseNameEn":"Subjunctive Future Perfect","description":"Uso arcaico.","conjugations":[
+      {"pronoun":"yo","form":"hubiere visto","exampleSentence":"Si hubiere visto el peligro, avisaré.","exampleSentenceEn":"If I shall have seen the danger, I will notify."},
+      {"pronoun":"tú","form":"hubieres visto","exampleSentence":"Si hubieres visto la señal, detente.","exampleSentenceEn":"If you shall have seen the sign, stop."},
+      {"pronoun":"él/ella/usted","form":"hubiere visto","exampleSentence":"Si hubiere visto algo, informará.","exampleSentenceEn":"If he shall have seen something, he will inform."},
+      {"pronoun":"nosotros","form":"hubiéremos visto","exampleSentence":"Si hubiéremos visto errores, corregiremos.","exampleSentenceEn":"If we shall have seen errors, we will correct."},
+      {"pronoun":"vosotros","form":"hubiereis visto","exampleSentence":"Si hubiereis visto la salida, seguid.","exampleSentenceEn":"If you shall have seen the exit, continue."},
+      {"pronoun":"ellos/ustedes","form":"hubieren visto","exampleSentence":"Si hubieren visto problemas, avisarán.","exampleSentenceEn":"If they shall have seen problems, they will notify."}
+    ]},
+    {"tenseId":"imperative_affirmative","tenseName":"Imperativo afirmativo","tenseNameEn":"Imperative Affirmative","description":"Órdenes afirmativas con ver.","conjugations":[
+      {"pronoun":"tú","form":"ve","exampleSentence":"Ve esto.","exampleSentenceEn":"See this."},
+      {"pronoun":"usted","form":"vea","exampleSentence":"Vea el documento.","exampleSentenceEn":"See the document, please."},
+      {"pronoun":"nosotros","form":"veamos","exampleSentence":"Veamos la película.","exampleSentenceEn":"Let's watch the movie."},
+      {"pronoun":"vosotros","form":"ved","exampleSentence":"Ved el informe.","exampleSentenceEn":"See the report (you all)."},
+      {"pronoun":"ustedes","form":"vean","exampleSentence":"Vean la presentación.","exampleSentenceEn":"See the presentation (you all)."}
+    ]},
+    {"tenseId":"imperative_negative","tenseName":"Imperativo negativo","tenseNameEn":"Imperative Negative","description":"Órdenes negativas con ver.","conjugations":[
+      {"pronoun":"tú","form":"no veas","exampleSentence":"No veas eso ahora.","exampleSentenceEn":"Don't watch that now."},
+      {"pronoun":"usted","form":"no vea","exampleSentence":"No vea el archivo.","exampleSentenceEn":"Don't view the file."},
+      {"pronoun":"nosotros","form":"no veamos","exampleSentence":"No veamos spoilers.","exampleSentenceEn":"Let's not watch spoilers."},
+      {"pronoun":"vosotros","form":"no veáis","exampleSentence":"No veáis esa serie.","exampleSentenceEn":"Don't watch that series (you all)."},
+      {"pronoun":"ustedes","form":"no vean","exampleSentence":"No vean el vídeo ahora.","exampleSentenceEn":"Don't watch the video now (you all)."}
+    ]},
+    {"tenseId":"progressive_present","tenseName":"Progresivo (presente)","tenseNameEn":"Present Progressive","description":"Acción en progreso.","conjugations":[
+      {"pronoun":"yo","form":"estoy viendo","exampleSentence":"Estoy viendo la tele.","exampleSentenceEn":"I am watching TV."},
+      {"pronoun":"tú","form":"estás viendo","exampleSentence":"Estás viendo una serie.","exampleSentenceEn":"You are watching a series."},
+      {"pronoun":"él/ella/usted","form":"está viendo","exampleSentence":"Está viendo un informe.","exampleSentenceEn":"He is viewing a report."},
+      {"pronoun":"nosotros","form":"estamos viendo","exampleSentence":"Estamos viendo opciones.","exampleSentenceEn":"We are seeing options."},
+      {"pronoun":"vosotros","form":"estáis viendo","exampleSentence":"Estáis viendo el partido.","exampleSentenceEn":"You all are watching the match."},
+      {"pronoun":"ellos/ustedes","form":"están viendo","exampleSentence":"Están viendo mejoras.","exampleSentenceEn":"They are seeing improvements."}
+    ]},
+    {"tenseId":"progressive_past","tenseName":"Progresivo (pasado)","tenseNameEn":"Past Progressive","description":"Acción en progreso en el pasado.","conjugations":[
+      {"pronoun":"yo","form":"estaba viendo","exampleSentence":"Estaba viendo una peli.","exampleSentenceEn":"I was watching a movie."},
+      {"pronoun":"tú","form":"estabas viendo","exampleSentence":"Estabas viendo el partido.","exampleSentenceEn":"You were watching the match."},
+      {"pronoun":"él/ella/usted","form":"estaba viendo","exampleSentence":"Estaba viendo las noticias.","exampleSentenceEn":"He was watching the news."},
+      {"pronoun":"nosotros","form":"estábamos viendo","exampleSentence":"Estábamos viendo el mar.","exampleSentenceEn":"We were watching the sea."},
+      {"pronoun":"vosotros","form":"estabais viendo","exampleSentence":"Estabais viendo el informe.","exampleSentenceEn":"You all were viewing the report."},
+      {"pronoun":"ellos/ustedes","form":"estaban viendo","exampleSentence":"Estaban viendo la ciudad.","exampleSentenceEn":"They were seeing the city."}
+    ]},
+    {"tenseId":"progressive_future","tenseName":"Progresivo (futuro)","tenseNameEn":"Future Progressive","description":"Acción en progreso en el futuro.","conjugations":[
+      {"pronoun":"yo","form":"estaré viendo","exampleSentence":"Estaré viendo la final.","exampleSentenceEn":"I will be watching the final."},
+      {"pronoun":"tú","form":"estarás viendo","exampleSentence":"Estarás viendo el concierto.","exampleSentenceEn":"You will be watching the concert."},
+      {"pronoun":"él/ella/usted","form":"estará viendo","exampleSentence":"Estará viendo el informe.","exampleSentenceEn":"He will be viewing the report."},
+      {"pronoun":"nosotros","form":"estaremos viendo","exampleSentence":"Estaremos viendo resultados.","exampleSentenceEn":"We will be seeing results."},
+      {"pronoun":"vosotros","form":"estaréis viendo","exampleSentence":"Estaréis viendo la obra.","exampleSentenceEn":"You all will be watching the play."},
+      {"pronoun":"ellos/ustedes","form":"estarán viendo","exampleSentence":"Estarán viendo mejoras.","exampleSentenceEn":"They will be seeing improvements."}
+    ]}
+  ]
+}
+
+

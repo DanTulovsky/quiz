@@ -1,7 +1,7 @@
-import React, {useState, useMemo} from 'react';
-import {useMediaQuery} from '@mantine/hooks';
-import {splitIntoParagraphs} from '../utils/passage';
-import {useMobileDetection} from '../hooks/useMobileDetection';
+import React, { useState, useMemo } from 'react';
+import { useMediaQuery } from '@mantine/hooks';
+import { splitIntoParagraphs } from '../utils/passage';
+import { useMobileDetection } from '../hooks/useMobileDetection';
 import {
   Check,
   X,
@@ -14,24 +14,24 @@ import {
   VolumeX,
   Copy,
 } from 'lucide-react';
-import {Question, AnswerResponse as Feedback} from '../api/api';
+import { Question, AnswerResponse as Feedback } from '../api/api';
 import * as Api from '../api/api';
-import {defaultVoiceForLanguage} from '../utils/tts';
+import { defaultVoiceForLanguage } from '../utils/tts';
 import logger from '../utils/logger';
-import {useAuth} from '../hooks/useAuth';
-import {useTTS} from '../hooks/useTTS';
-import {useTheme} from '../contexts/ThemeContext';
-import {fontScaleMap} from '../theme/theme';
-import {useQuestionSnippets} from '../hooks/useQuestionSnippets';
+import { useAuth } from '../hooks/useAuth';
+import { useTTS } from '../hooks/useTTS';
+import { useTheme } from '../contexts/ThemeContext';
+import { fontScaleMap } from '../theme/theme';
+import { useQuestionSnippets } from '../hooks/useQuestionSnippets';
 import {
   usePostV1QuizQuestionIdReport,
   usePostV1QuizQuestionIdMarkKnown,
   useGetV1DailyHistoryQuestionId,
   ErrorResponse,
 } from '../api/api';
-import {showNotificationWithClean} from '../notifications';
-import {QuestionHistoryChart} from './QuestionHistoryChart';
-import {SnippetHighlighter} from './SnippetHighlighter';
+import { showNotificationWithClean } from '../notifications';
+import { QuestionHistoryChart } from './QuestionHistoryChart';
+import { SnippetHighlighter } from './SnippetHighlighter';
 import {
   Stack,
   Group,
@@ -50,8 +50,8 @@ import {
   ActionIcon,
   LoadingOverlay,
 } from '@mantine/core';
-import {useElementSize} from '@mantine/hooks';
-import {useHotkeys} from 'react-hotkeys-hook';
+import { useElementSize } from '@mantine/hooks';
+import { useHotkeys } from 'react-hotkeys-hook';
 // Tabler icons package provides named exports under '@tabler/icons-react' in this repo's setup.
 // Keep the import but fall back to a lightweight local mapping when types are missing.
 import * as TablerIcons from '@tabler/icons-react';
@@ -60,11 +60,11 @@ const tablerIconMap = TablerIcons as unknown as Record<
   string,
   React.ComponentType<React.SVGProps<SVGSVGElement>>
 >;
-type IconProps = React.SVGProps<SVGSVGElement> & {size?: number};
+type IconProps = React.SVGProps<SVGSVGElement> & { size?: number };
 const IconMoodSad: React.ComponentType<IconProps> =
   (tablerIconMap.IconMoodSad as unknown as React.ComponentType<IconProps>) ||
   ((props: IconProps) => {
-    const {size, ...rest} = props;
+    const { size, ...rest } = props;
     const s = size ?? 16;
     return (
       <svg
@@ -79,7 +79,7 @@ const IconMoodSad: React.ComponentType<IconProps> =
 const IconMoodNeutral: React.ComponentType<IconProps> =
   (tablerIconMap.IconMoodNeutral as unknown as React.ComponentType<IconProps>) ||
   ((props: IconProps) => {
-    const {size, ...rest} = props;
+    const { size, ...rest } = props;
     const s = size ?? 16;
     return (
       <svg
@@ -94,7 +94,7 @@ const IconMoodNeutral: React.ComponentType<IconProps> =
 const IconMoodSmile: React.ComponentType<IconProps> =
   (tablerIconMap.IconMoodSmile as unknown as React.ComponentType<IconProps>) ||
   ((props: IconProps) => {
-    const {size, ...rest} = props;
+    const { size, ...rest } = props;
     const s = size ?? 16;
     return (
       <svg
@@ -109,7 +109,7 @@ const IconMoodSmile: React.ComponentType<IconProps> =
 const IconMoodHappy: React.ComponentType<IconProps> =
   (tablerIconMap.IconMoodHappy as unknown as React.ComponentType<IconProps>) ||
   ((props: IconProps) => {
-    const {size, ...rest} = props;
+    const { size, ...rest } = props;
     const s = size ?? 16;
     return (
       <svg
@@ -124,7 +124,7 @@ const IconMoodHappy: React.ComponentType<IconProps> =
 const IconMoodCry: React.ComponentType<IconProps> =
   (tablerIconMap.IconMoodCry as unknown as React.ComponentType<IconProps>) ||
   ((props: IconProps) => {
-    const {size, ...rest} = props;
+    const { size, ...rest } = props;
     const s = size ?? 16;
     return (
       <svg
@@ -192,8 +192,8 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
     ref
   ) => {
     const lastSelectedOriginalRef = React.useRef<number | null>(null);
-    const {ref: bottomBarRef, height: bottomBarHeight} = useElementSize();
-    const {fontSize} = useTheme();
+    const { ref: bottomBarRef, height: bottomBarHeight } = useElementSize();
+    const { fontSize } = useTheme();
     const [isSubmitted, setIsSubmitted] = useState(!!feedback);
     const [isLoading, setIsLoading] = useState(false);
     const [localFeedback, setLocalFeedback] = useState<Feedback | null>(
@@ -216,11 +216,11 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
       isBuffering,
       bufferingProgress,
     } = useTTS();
-    const {isAuthenticated} = useAuth();
-    const {isMobile} = useMobileDetection();
+    const { isAuthenticated } = useAuth();
+    const { isMobile } = useMobileDetection();
 
     // Load snippets for this question (async, non-blocking)
-    const {snippets} = useQuestionSnippets(question?.id);
+    const { snippets } = useQuestionSnippets(question?.id);
 
     // Copy to clipboard functionality for reading comprehension passages
     const handleCopyPassage = async () => {
@@ -264,7 +264,7 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
     }));
 
     // Create shuffled options and mapping when question changes
-    const {shuffledOptions, shuffledToOriginalMap} = useMemo(() => {
+    const { shuffledOptions, shuffledToOriginalMap } = useMemo(() => {
       if (!question.content?.options || question.content.options.length === 0) {
         return {
           shuffledOptions: [],
@@ -301,7 +301,7 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
       });
       textToPositions.forEach(posList => {
         if (posList.length <= 1) return;
-        const entries = posList.map(p => ({p, item: shuffled[p]}));
+        const entries = posList.map(p => ({ p, item: shuffled[p] }));
         entries.sort((a, b) => a.item.originalIndex - b.item.originalIndex);
         entries.forEach((entry, i) => {
           const targetPos = posList[i];
@@ -403,7 +403,7 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
           return false;
         }
       },
-      {enableOnFormTags: true, preventDefault: true}
+      { enableOnFormTags: true, preventDefault: true }
     );
 
     // Enter to submit
@@ -423,7 +423,7 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
           return false;
         }
       },
-      {enableOnFormTags: false, preventDefault: true}
+      { enableOnFormTags: false, preventDefault: true }
     );
 
     // 'i' key to focus text area in report modal
@@ -442,7 +442,7 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
           return false;
         }
       },
-      {enableOnFormTags: false, preventDefault: true}
+      { enableOnFormTags: false, preventDefault: true }
     );
 
     const reportMutation = usePostV1QuizQuestionIdReport({
@@ -511,10 +511,10 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
     });
 
     // Get user from auth context for query key
-    const {user} = useAuth();
+    const { user } = useAuth();
 
     // Fetch question history - only for daily questions
-    const {data: historyData, isLoading: isHistoryLoading} =
+    const { data: historyData, isLoading: isHistoryLoading } =
       useGetV1DailyHistoryQuestionId(
         question.user_total_responses !== undefined ? question.id : 0,
         {
@@ -548,7 +548,7 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
       try {
         reportMutation.mutate({
           id: question.id,
-          data: {report_reason: reportReason},
+          data: { report_reason: reportReason },
         });
       } finally {
         setIsReporting(false);
@@ -562,7 +562,7 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
       try {
         markKnownMutation.mutate({
           id: question.id,
-          data: {confidence_level: confidenceLevel},
+          data: { confidence_level: confidenceLevel },
         });
       } finally {
         setIsMarkingKnown(false);
@@ -625,7 +625,7 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
       ];
       if (typeof maybeHook === 'function') {
         const result = (maybeHook as () => unknown)();
-        userLearningPrefs = (result as {data?: {tts_voice?: string}})?.data;
+        userLearningPrefs = (result as { data?: { tts_voice?: string } })?.data;
       }
     } catch {
       userLearningPrefs = undefined;
@@ -636,7 +636,7 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
       let preferredVoice: string | undefined;
       try {
         const saved = (
-          userLearningPrefs as unknown as {tts_voice?: string} | undefined
+          userLearningPrefs as unknown as { tts_voice?: string } | undefined
         )?.tts_voice;
         if (saved && saved.trim()) {
           preferredVoice = saved.trim();
@@ -745,15 +745,15 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
           key={`${groupScopeId ?? 'q'}-${question.id}`}
           value={
             computedSelectedShuffledIndex !== null &&
-              computedSelectedShuffledIndex !== undefined
+            computedSelectedShuffledIndex !== undefined
               ? (() => {
-                const mappedOriginal = shuffledToOriginalMap.get(
-                  computedSelectedShuffledIndex
-                );
-                return mappedOriginal !== undefined
-                  ? mappedOriginal.toString()
-                  : undefined;
-              })()
+                  const mappedOriginal = shuffledToOriginalMap.get(
+                    computedSelectedShuffledIndex
+                  );
+                  return mappedOriginal !== undefined
+                    ? mappedOriginal.toString()
+                    : undefined;
+                })()
               : undefined
           }
           onChange={value => {
@@ -815,7 +815,7 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                         // Ensure long words wrap on small screens
                       }}
                     >
-                      <div style={{flex: '0 0 auto'}}>
+                      <div style={{ flex: '0 0 auto' }}>
                         <Badge
                           size='xs'
                           color='gray'
@@ -826,9 +826,9 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                           {shuffledIndex + 1}
                         </Badge>
                       </div>
-                      <div style={{flex: '1 1 auto', minWidth: 0}}>
+                      <div style={{ flex: '1 1 auto', minWidth: 0 }}>
                         {/* option text and badges share the same inline container to aid test selectors */}
-                        <div style={{display: 'inline'}}>
+                        <div style={{ display: 'inline' }}>
                           {option}
                           {isUserAnswer && (
                             <Badge
@@ -925,8 +925,8 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
             {question.type !== 'reading_comprehension' && (
               <div data-allow-translate='true'>
                 {question.type === 'vocabulary' &&
-                  question.content?.sentence &&
-                  question.content?.question ? (
+                question.content?.sentence &&
+                question.content?.question ? (
                   <>
                     <Title order={3} data-testid='question-content' mb={6}>
                       <SnippetHighlighter
@@ -942,7 +942,7 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                       c='dimmed'
                       mt={4}
                       mb={10}
-                      style={{fontWeight: 500}}
+                      style={{ fontWeight: 500 }}
                     >
                       What does <strong>{question.content.question}</strong>{' '}
                       mean in this context?
@@ -971,11 +971,11 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                   bg='var(--mantine-color-body)'
                   radius='md'
                   withBorder
-                  style={{marginBottom: 8, position: 'relative'}}
+                  style={{ marginBottom: 8, position: 'relative' }}
                 >
                   <LoadingOverlay
                     visible={isTTSLoading}
-                    overlayProps={{backgroundOpacity: 0.35, blur: 1}}
+                    overlayProps={{ backgroundOpacity: 0.35, blur: 1 }}
                     zIndex={5}
                   />
                   <Box
@@ -1043,7 +1043,7 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                       {/* Small inline buffering indicator (progress bar) */}
                       <Box
                         ml={8}
-                        style={{display: 'inline-flex', alignItems: 'center'}}
+                        style={{ display: 'inline-flex', alignItems: 'center' }}
                       >
                         {isBuffering ? (
                           <div
@@ -1053,7 +1053,7 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                               gap: 8,
                             }}
                           >
-                            <div style={{width: 96}}>
+                            <div style={{ width: 96 }}>
                               <div
                                 style={{
                                   height: 6,
@@ -1174,13 +1174,13 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                         style={
                           currentFeedback.is_correct
                             ? {
-                              backgroundColor:
-                                'var(--mantine-color-green-light, #e6fcf5)',
-                            }
+                                backgroundColor:
+                                  'var(--mantine-color-green-light, #e6fcf5)',
+                              }
                             : {
-                              backgroundColor:
-                                'var(--mantine-color-red-light, #fff5f5)',
-                            }
+                                backgroundColor:
+                                  'var(--mantine-color-red-light, #fff5f5)',
+                              }
                         }
                       >
                         <Text size='sm'>
@@ -1246,7 +1246,7 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                               <Lightbulb size={18} />
                               <Text fw={500}>Explanation</Text>
                             </Group>
-                            <Text size='sm' style={{whiteSpace: 'pre-line'}}>
+                            <Text size='sm' style={{ whiteSpace: 'pre-line' }}>
                               {currentFeedback.explanation}
                             </Text>
                           </Paper>
@@ -1418,7 +1418,7 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                       };
                       return (
                         confidenceIcons[
-                        question.confidence_level as keyof typeof confidenceIcons
+                          question.confidence_level as keyof typeof confidenceIcons
                         ] || <IconMoodNeutral size={16} />
                       );
                     })()}
@@ -1486,7 +1486,7 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                   description: 'Complete confidence',
                   icon: <IconMoodHappy size={24} />,
                 },
-              ].map(({level, label, icon}) => (
+              ].map(({ level, label, icon }) => (
                 <Tooltip
                   key={level}
                   label={label}
@@ -1509,7 +1509,7 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                     }}
                     data-testid={`confidence-level-${level}`}
                   >
-                    <div style={{position: 'relative'}}>
+                    <div style={{ position: 'relative' }}>
                       <Badge
                         size='xl'
                         variant={confidenceLevel === level ? 'filled' : 'light'}
@@ -1648,7 +1648,7 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
             <Group
               justify='space-between'
               mt='md'
-              style={{flexWrap: 'nowrap'}}
+              style={{ flexWrap: 'nowrap' }}
             >
               <Button
                 variant='subtle'
@@ -1657,7 +1657,7 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                   setReportReason('');
                 }}
                 data-testid='cancel-report'
-                style={{flexShrink: 0}}
+                style={{ flexShrink: 0 }}
               >
                 Cancel{' '}
                 <Badge
@@ -1676,7 +1676,7 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                 loading={isReporting}
                 color='red'
                 data-testid='submit-report'
-                style={{flexShrink: 0}}
+                style={{ flexShrink: 0 }}
               >
                 Report Question{' '}
                 <Badge

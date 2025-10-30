@@ -330,6 +330,29 @@ language_levels:
       C1: "Advanced"
       C2: "Proficient"
 
+  spanish:
+    code: "es"
+    tts_locale: "es-ES"
+    tts_voice: "es-ES-ElviraNeural"
+    levels:
+      - "A1"
+      - "A2"
+      - "B1"
+      - "B1+"
+      - "B1++"
+      - "B2"
+      - "C1"
+      - "C2"
+    descriptions:
+      A1: "Beginner"
+      A2: "Elementary"
+      B1: "Intermediate"
+      B1+: "Intermediate Plus"
+      B1++: "Strong Intermediate"
+      B2: "Upper-Intermediate"
+      C1: "Advanced"
+      C2: "Proficient"
+
   russian:
     code: "ru"
     tts_locale: "ru-RU"

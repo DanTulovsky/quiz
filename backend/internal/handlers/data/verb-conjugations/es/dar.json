@@ -1,0 +1,193 @@
+{
+  "language": "es",
+  "languageName": "Spanish",
+  "infinitive": "dar",
+  "infinitiveEn": "to give",
+  "category": "core",
+  "tenses": [
+    {"tenseId":"indicative_present","tenseName":"Presente","tenseNameEn":"Indicative Present","description":"Dar en presente.","conjugations":[
+      {"pronoun":"yo","form":"doy","exampleSentence":"Doy un regalo.","exampleSentenceEn":"I give a gift."},
+      {"pronoun":"tú","form":"das","exampleSentence":"¿Das clases?","exampleSentenceEn":"Do you give classes?"},
+      {"pronoun":"él/ella/usted","form":"da","exampleSentence":"Él da consejos.","exampleSentenceEn":"He gives advice."},
+      {"pronoun":"nosotros","form":"damos","exampleSentence":"Damos las gracias.","exampleSentenceEn":"We give thanks."},
+      {"pronoun":"vosotros","form":"dais","exampleSentence":"¿Dais apoyo?","exampleSentenceEn":"Do you all give support?"},
+      {"pronoun":"ellos/ustedes","form":"dan","exampleSentence":"Ellos dan comida.","exampleSentenceEn":"They give food."}
+    ]},
+    {"tenseId":"indicative_imperfect","tenseName":"Pretérito imperfecto","tenseNameEn":"Imperfect","description":"Dar habitual en el pasado.","conjugations":[
+      {"pronoun":"yo","form":"daba","exampleSentence":"Daba paseos.","exampleSentenceEn":"I used to take walks."},
+      {"pronoun":"tú","form":"dabas","exampleSentence":"Dabas regalos.","exampleSentenceEn":"You used to give gifts."},
+      {"pronoun":"él/ella/usted","form":"daba","exampleSentence":"Daba clases.","exampleSentenceEn":"He used to give classes."},
+      {"pronoun":"nosotros","form":"dábamos","exampleSentence":"Dábamos ayudas.","exampleSentenceEn":"We used to give aid."},
+      {"pronoun":"vosotros","form":"dabais","exampleSentence":"Dabais charlas.","exampleSentenceEn":"You all used to give talks."},
+      {"pronoun":"ellos/ustedes","form":"daban","exampleSentence":"Daban comida.","exampleSentenceEn":"They used to give food."}
+    ]},
+    {"tenseId":"indicative_preterite","tenseName":"Pretérito perfecto simple","tenseNameEn":"Preterite","description":"Dar completado en el pasado.","conjugations":[
+      {"pronoun":"yo","form":"di","exampleSentence":"Di un discurso.","exampleSentenceEn":"I gave a speech."},
+      {"pronoun":"tú","form":"diste","exampleSentence":"Diste tu número.","exampleSentenceEn":"You gave your number."},
+      {"pronoun":"él/ella/usted","form":"dio","exampleSentence":"Dio las gracias.","exampleSentenceEn":"He gave thanks."},
+      {"pronoun":"nosotros","form":"dimos","exampleSentence":"Dimos apoyo.","exampleSentenceEn":"We gave support."},
+      {"pronoun":"vosotros","form":"disteis","exampleSentence":"Disteis regalos.","exampleSentenceEn":"You all gave gifts."},
+      {"pronoun":"ellos/ustedes","form":"dieron","exampleSentence":"Dieron comida.","exampleSentenceEn":"They gave food."}
+    ]},
+    {"tenseId":"indicative_future","tenseName":"Futuro simple","tenseNameEn":"Simple Future","description":"Dar en el futuro.","conjugations":[
+      {"pronoun":"yo","form":"daré","exampleSentence":"Daré mi opinión.","exampleSentenceEn":"I will give my opinion."},
+      {"pronoun":"tú","form":"darás","exampleSentence":"Darás un discurso.","exampleSentenceEn":"You will give a speech."},
+      {"pronoun":"él/ella/usted","form":"dará","exampleSentence":"Dará clases.","exampleSentenceEn":"He will give classes."},
+      {"pronoun":"nosotros","form":"daremos","exampleSentence":"Daremos apoyo.","exampleSentenceEn":"We will give support."},
+      {"pronoun":"vosotros","form":"daréis","exampleSentence":"Daréis un regalo.","exampleSentenceEn":"You all will give a gift."},
+      {"pronoun":"ellos/ustedes","form":"darán","exampleSentence":"Darán noticias.","exampleSentenceEn":"They will give news."}
+    ]},
+    {"tenseId":"indicative_conditional","tenseName":"Condicional simple","tenseNameEn":"Conditional","description":"Dar hipotético o cortesía.","conjugations":[
+      {"pronoun":"yo","form":"daría","exampleSentence":"Daría ayuda.","exampleSentenceEn":"I would give help."},
+      {"pronoun":"tú","form":"darías","exampleSentence":"¿Darías tu opinión?","exampleSentenceEn":"Would you give your opinion?"},
+      {"pronoun":"él/ella/usted","form":"daría","exampleSentence":"Daría una charla.","exampleSentenceEn":"He would give a talk."},
+      {"pronoun":"nosotros","form":"daríamos","exampleSentence":"Daríamos consejos.","exampleSentenceEn":"We would give advice."},
+      {"pronoun":"vosotros","form":"daríais","exampleSentence":"Daríais ayuda.","exampleSentenceEn":"You all would give help."},
+      {"pronoun":"ellos/ustedes","form":"darían","exampleSentence":"Darían comida.","exampleSentenceEn":"They would give food."}
+    ]},
+    {"tenseId":"indicative_present_perfect","tenseName":"Pretérito perfecto compuesto","tenseNameEn":"Present Perfect","description":"Dar pasado con relevancia actual.","conjugations":[
+      {"pronoun":"yo","form":"he dado","exampleSentence":"He dado mi número.","exampleSentenceEn":"I have given my number."},
+      {"pronoun":"tú","form":"has dado","exampleSentence":"Has dado un ejemplo.","exampleSentenceEn":"You have given an example."},
+      {"pronoun":"él/ella/usted","form":"ha dado","exampleSentence":"Ha dado la bienvenida.","exampleSentenceEn":"He has given the welcome."},
+      {"pronoun":"nosotros","form":"hemos dado","exampleSentence":"Hemos dado apoyo.","exampleSentenceEn":"We have given support."},
+      {"pronoun":"vosotros","form":"habéis dado","exampleSentence":"Habéis dado regalos.","exampleSentenceEn":"You all have given gifts."},
+      {"pronoun":"ellos/ustedes","form":"han dado","exampleSentence":"Han dado noticias.","exampleSentenceEn":"They have given news."}
+    ]},
+    {"tenseId":"indicative_pluperfect","tenseName":"Pluscuamperfecto","tenseNameEn":"Pluperfect","description":"Dar anterior a otra acción pasada.","conjugations":[
+      {"pronoun":"yo","form":"había dado","exampleSentence":"Había dado mi respuesta.","exampleSentenceEn":"I had given my answer."},
+      {"pronoun":"tú","form":"habías dado","exampleSentence":"Habías dado tu opinión.","exampleSentenceEn":"You had given your opinion."},
+      {"pronoun":"él/ella/usted","form":"había dado","exampleSentence":"Había dado su palabra.","exampleSentenceEn":"He had given his word."},
+      {"pronoun":"nosotros","form":"habíamos dado","exampleSentence":"Habíamos dado apoyo.","exampleSentenceEn":"We had given support."},
+      {"pronoun":"vosotros","form":"habíais dado","exampleSentence":"Habíais dado regalos.","exampleSentenceEn":"You all had given gifts."},
+      {"pronoun":"ellos/ustedes","form":"habían dado","exampleSentence":"Habían dado comida.","exampleSentenceEn":"They had given food."}
+    ]},
+    {"tenseId":"indicative_preterite_perfect","tenseName":"Pretérito anterior","tenseNameEn":"Preterite Perfect","description":"Uso literario.","conjugations":[
+      {"pronoun":"yo","form":"hube dado","exampleSentence":"Apenas hube dado el aviso, salí.","exampleSentenceEn":"As soon as I had given the notice, I left."},
+      {"pronoun":"tú","form":"hubiste dado","exampleSentence":"Cuando hubiste dado tu opinión, votaron.","exampleSentenceEn":"When you had given your opinion, they voted."},
+      {"pronoun":"él/ella/usted","form":"hubo dado","exampleSentence":"Apenas hubo dado la señal, corrieron.","exampleSentenceEn":"As soon as he had given the signal, they ran."},
+      {"pronoun":"nosotros","form":"hubimos dado","exampleSentence":"Hubimos dado todo.","exampleSentenceEn":"We had given everything."},
+      {"pronoun":"vosotros","form":"hubisteis dado","exampleSentence":"Hubisteis dado ejemplos.","exampleSentenceEn":"You all had given examples."},
+      {"pronoun":"ellos/ustedes","form":"hubieron dado","exampleSentence":"Hubieron dado razones.","exampleSentenceEn":"They had given reasons."}
+    ]},
+    {"tenseId":"indicative_future_perfect","tenseName":"Futuro perfecto","tenseNameEn":"Future Perfect","description":"Acción completada antes de un punto futuro.","conjugations":[
+      {"pronoun":"yo","form":"habré dado","exampleSentence":"Para entonces habré dado mi respuesta.","exampleSentenceEn":"By then I will have given my answer."},
+      {"pronoun":"tú","form":"habrás dado","exampleSentence":"Habrás dado tu opinión.","exampleSentenceEn":"You will have given your opinion."},
+      {"pronoun":"él/ella/usted","form":"habrá dado","exampleSentence":"Habrá dado su palabra.","exampleSentenceEn":"He will have given his word."},
+      {"pronoun":"nosotros","form":"habremos dado","exampleSentence":"Habremos dado apoyo.","exampleSentenceEn":"We will have given support."},
+      {"pronoun":"vosotros","form":"habréis dado","exampleSentence":"Habréis dado ejemplos.","exampleSentenceEn":"You all will have given examples."},
+      {"pronoun":"ellos/ustedes","form":"habrán dado","exampleSentence":"Habrán dado razones.","exampleSentenceEn":"They will have given reasons."}
+    ]},
+    {"tenseId":"indicative_conditional_perfect","tenseName":"Condicional perfecto","tenseNameEn":"Conditional Perfect","description":"Dar hipotético completado.","conjugations":[
+      {"pronoun":"yo","form":"habría dado","exampleSentence":"Habría dado más tiempo.","exampleSentenceEn":"I would have given more time."},
+      {"pronoun":"tú","form":"habrías dado","exampleSentence":"Habrías dado apoyo.","exampleSentenceEn":"You would have given support."},
+      {"pronoun":"él/ella/usted","form":"habría dado","exampleSentence":"Habría dado su palabra.","exampleSentenceEn":"He would have given his word."},
+      {"pronoun":"nosotros","form":"habríamos dado","exampleSentence":"Habríamos dado ejemplos.","exampleSentenceEn":"We would have given examples."},
+      {"pronoun":"vosotros","form":"habríais dado","exampleSentence":"Habríais dado razones.","exampleSentenceEn":"You all would have given reasons."},
+      {"pronoun":"ellos/ustedes","form":"habrían dado","exampleSentence":"Habrían dado más.","exampleSentenceEn":"They would have given more."}
+    ]},
+    {"tenseId":"subjunctive_present","tenseName":"Presente (subjuntivo)","tenseNameEn":"Subjunctive Present","description":"Deseo o posibilidad de dar.","conjugations":[
+      {"pronoun":"yo","form":"dé","exampleSentence":"Ojalá dé buen resultado.","exampleSentenceEn":"I hope it gives a good result."},
+      {"pronoun":"tú","form":"des","exampleSentence":"Espero que des tu opinión.","exampleSentenceEn":"I hope you give your opinion."},
+      {"pronoun":"él/ella/usted","form":"dé","exampleSentence":"Es posible que dé su palabra.","exampleSentenceEn":"It's possible he gives his word."},
+      {"pronoun":"nosotros","form":"demos","exampleSentence":"Quieren que demos apoyo.","exampleSentenceEn":"They want us to give support."},
+      {"pronoun":"vosotros","form":"deis","exampleSentence":"Es bueno que deis ejemplos.","exampleSentenceEn":"It's good that you all give examples."},
+      {"pronoun":"ellos/ustedes","form":"den","exampleSentence":"Temen que den razones.","exampleSentenceEn":"They fear that you give reasons."}
+    ]},
+    {"tenseId":"subjunctive_imperfect_ra","tenseName":"Imperfecto (ra)","tenseNameEn":"Subjunctive Imperfect (-ra)","description":"Dar hipotético pasado.","conjugations":[
+      {"pronoun":"yo","form":"diera","exampleSentence":"Si diera más tiempo, ayudaría.","exampleSentenceEn":"If I gave more time, I would help."},
+      {"pronoun":"tú","form":"dieras","exampleSentence":"Ojalá dieras apoyo.","exampleSentenceEn":"I wish you gave support."},
+      {"pronoun":"él/ella/usted","form":"diera","exampleSentence":"Quisiera que diera su palabra.","exampleSentenceEn":"I'd like him to give his word."},
+      {"pronoun":"nosotros","form":"diéramos","exampleSentence":"Si diéramos ejemplos, entenderían.","exampleSentenceEn":"If we gave examples, they'd understand."},
+      {"pronoun":"vosotros","form":"dierais","exampleSentence":"Si dierais razones, aceptarían.","exampleSentenceEn":"If you all gave reasons, they'd accept."},
+      {"pronoun":"ellos/ustedes","form":"dieran","exampleSentence":"Si dieran más, bastaría.","exampleSentenceEn":"If they gave more, it would suffice."}
+    ]},
+    {"tenseId":"subjunctive_imperfect_se","tenseName":"Imperfecto (se)","tenseNameEn":"Subjunctive Imperfect (-se)","description":"Variante -se.","conjugations":[
+      {"pronoun":"yo","form":"diese","exampleSentence":"Si diese tiempo, ayudaría.","exampleSentenceEn":"If I gave time, I'd help."},
+      {"pronoun":"tú","form":"dieses","exampleSentence":"Quisiera que dieses apoyo.","exampleSentenceEn":"I'd like you to give support."},
+      {"pronoun":"él/ella/usted","form":"diese","exampleSentence":"No creía que diese su palabra.","exampleSentenceEn":"I didn't think he gave his word."},
+      {"pronoun":"nosotros","form":"diésemos","exampleSentence":"Si diésemos razones, aceptarían.","exampleSentenceEn":"If we gave reasons, they'd accept."},
+      {"pronoun":"vosotros","form":"dieseis","exampleSentence":"Si dieseis ejemplos, bastaría.","exampleSentenceEn":"If you all gave examples, it would suffice."},
+      {"pronoun":"ellos/ustedes","form":"diesen","exampleSentence":"Si diesen más, ayudaría.","exampleSentenceEn":"If they gave more, it would help."}
+    ]},
+    {"tenseId":"subjunctive_future","tenseName":"Futuro (subjuntivo)","tenseNameEn":"Subjunctive Future","description":"Uso arcaico/jurídico.","conjugations":[
+      {"pronoun":"yo","form":"diere","exampleSentence":"Quien diere razón, será oído.","exampleSentenceEn":"Whoever give reason shall be heard."},
+      {"pronoun":"tú","form":"dieres","exampleSentence":"Si dieres tu palabra, cúmplela.","exampleSentenceEn":"If you give your word, keep it."},
+      {"pronoun":"él/ella/usted","form":"diere","exampleSentence":"Si diere ayuda, agradeceremos.","exampleSentenceEn":"If he give help, we shall be grateful."},
+      {"pronoun":"nosotros","form":"diéremos","exampleSentence":"Si diéremos apoyo, avanzaremos.","exampleSentenceEn":"If we give support, we shall advance."},
+      {"pronoun":"vosotros","form":"diereis","exampleSentence":"Si diereis ejemplos, bastará.","exampleSentenceEn":"If you give examples, it shall suffice."},
+      {"pronoun":"ellos/ustedes","form":"dieren","exampleSentence":"Si dieren razones, aceptaremos.","exampleSentenceEn":"If they give reasons, we shall accept."}
+    ]},
+    {"tenseId":"subjunctive_present_perfect","tenseName":"Pretérito perfecto (subj.)","tenseNameEn":"Subjunctive Present Perfect","description":"Acción pasada con relación al presente de subjuntivo.","conjugations":[
+      {"pronoun":"yo","form":"haya dado","exampleSentence":"Dudo que haya dado su palabra.","exampleSentenceEn":"I doubt he has given his word."},
+      {"pronoun":"tú","form":"hayas dado","exampleSentence":"No creo que hayas dado tu opinión.","exampleSentenceEn":"I don't think you have given your opinion."},
+      {"pronoun":"él/ella/usted","form":"haya dado","exampleSentence":"Es posible que haya dado ejemplos.","exampleSentenceEn":"It's possible he has given examples."},
+      {"pronoun":"nosotros","form":"hayamos dado","exampleSentence":"Ojalá hayamos dado apoyo.","exampleSentenceEn":"I hope we have given support."},
+      {"pronoun":"vosotros","form":"hayáis dado","exampleSentence":"Puede que hayáis dado razones.","exampleSentenceEn":"You all may have given reasons."},
+      {"pronoun":"ellos/ustedes","form":"hayan dado","exampleSentence":"No piensan que hayan dado suficiente.","exampleSentenceEn":"They don't think you have given enough."}
+    ]},
+    {"tenseId":"subjunctive_pluperfect_ra","tenseName":"Pluscuamperfecto (ra)","tenseNameEn":"Subjunctive Pluperfect (-ra)","description":"Acción anterior hipotética.","conjugations":[
+      {"pronoun":"yo","form":"hubiera dado","exampleSentence":"Si hubiera dado más, bastaría.","exampleSentenceEn":"If I had given more, it would suffice."},
+      {"pronoun":"tú","form":"hubieras dado","exampleSentence":"Si hubieras dado apoyo, avanzarían.","exampleSentenceEn":"If you had given support, they'd advance."},
+      {"pronoun":"él/ella/usted","form":"hubiera dado","exampleSentence":"Si hubiera dado su palabra, confiarían.","exampleSentenceEn":"If he had given his word, they'd trust."},
+      {"pronoun":"nosotros","form":"hubiéramos dado","exampleSentence":"Si hubiéramos dado razones, aceptarían.","exampleSentenceEn":"If we had given reasons, they'd accept."},
+      {"pronoun":"vosotros","form":"hubierais dado","exampleSentence":"Si hubierais dado más, ayudaría.","exampleSentenceEn":"If you all had given more, it would help."},
+      {"pronoun":"ellos/ustedes","form":"hubieran dado","exampleSentence":"Si hubieran dado apoyo, seguirían.","exampleSentenceEn":"If they had given support, they'd continue."}
+    ]},
+    {"tenseId":"subjunctive_pluperfect_se","tenseName":"Pluscuamperfecto (se)","tenseNameEn":"Subjunctive Pluperfect (-se)","description":"Acción anterior hipotética (variante -se).","conjugations":[
+      {"pronoun":"yo","form":"hubiese dado","exampleSentence":"Si hubiese dado más, bastaría.","exampleSentenceEn":"If I had given more, it would suffice."},
+      {"pronoun":"tú","form":"hubieses dado","exampleSentence":"Si hubieses dado apoyo, avanzarían.","exampleSentenceEn":"If you had given support, they'd advance."},
+      {"pronoun":"él/ella/usted","form":"hubiese dado","exampleSentence":"No pensé que hubiese dado su palabra.","exampleSentenceEn":"I didn't think he had given his word."},
+      {"pronoun":"nosotros","form":"hubiésemos dado","exampleSentence":"Si hubiésemos dado razones, aceptarían.","exampleSentenceEn":"If we had given reasons, they'd accept."},
+      {"pronoun":"vosotros","form":"hubieseis dado","exampleSentence":"Si hubieseis dado más, ayudaría.","exampleSentenceEn":"If you all had given more, it would help."},
+      {"pronoun":"ellos/ustedes","form":"hubiesen dado","exampleSentence":"Si hubiesen dado apoyo, seguirían.","exampleSentenceEn":"If they had given support, they'd continue."}
+    ]},
+    {"tenseId":"subjunctive_future_perfect","tenseName":"Futuro perfecto (subj.)","tenseNameEn":"Subjunctive Future Perfect","description":"Uso arcaico.","conjugations":[
+      {"pronoun":"yo","form":"hubiere dado","exampleSentence":"Si hubiere dado su palabra, confiaremos.","exampleSentenceEn":"If he shall have given his word, we shall trust."},
+      {"pronoun":"tú","form":"hubieres dado","exampleSentence":"Si hubieres dado razones, aceptarán.","exampleSentenceEn":"If you shall have given reasons, they shall accept."},
+      {"pronoun":"él/ella/usted","form":"hubiere dado","exampleSentence":"Si hubiere dado apoyo, avanzarán.","exampleSentenceEn":"If he shall have given support, they shall advance."},
+      {"pronoun":"nosotros","form":"hubiéremos dado","exampleSentence":"Si hubiéremos dado ejemplos, bastará.","exampleSentenceEn":"If we shall have given examples, it shall suffice."},
+      {"pronoun":"vosotros","form":"hubiereis dado","exampleSentence":"Si hubiereis dado más, agradecerán.","exampleSentenceEn":"If you shall have given more, they shall be grateful."},
+      {"pronoun":"ellos/ustedes","form":"hubieren dado","exampleSentence":"Si hubieren dado apoyo, continuarán.","exampleSentenceEn":"If they shall have given support, they shall continue."}
+    ]},
+    {"tenseId":"imperative_affirmative","tenseName":"Imperativo afirmativo","tenseNameEn":"Imperative Affirmative","description":"Órdenes afirmativas con dar.","conjugations":[
+      {"pronoun":"tú","form":"da","exampleSentence":"Da tu opinión.","exampleSentenceEn":"Give your opinion."},
+      {"pronoun":"usted","form":"dé","exampleSentence":"Dé su palabra, por favor.","exampleSentenceEn":"Give your word, please."},
+      {"pronoun":"nosotros","form":"demos","exampleSentence":"Demos las gracias.","exampleSentenceEn":"Let's give thanks."},
+      {"pronoun":"vosotros","form":"dad","exampleSentence":"Dad ejemplos.","exampleSentenceEn":"Give examples (you all)."},
+      {"pronoun":"ustedes","form":"den","exampleSentence":"Den apoyo.","exampleSentenceEn":"Give support (you all)."}
+    ]},
+    {"tenseId":"imperative_negative","tenseName":"Imperativo negativo","tenseNameEn":"Imperative Negative","description":"Órdenes negativas con dar.","conjugations":[
+      {"pronoun":"tú","form":"no des","exampleSentence":"No des excusas.","exampleSentenceEn":"Don't give excuses."},
+      {"pronoun":"usted","form":"no dé","exampleSentence":"No dé información falsa.","exampleSentenceEn":"Don't give false information."},
+      {"pronoun":"nosotros","form":"no demos","exampleSentence":"No demos por hecho nada.","exampleSentenceEn":"Let's not take anything for granted."},
+      {"pronoun":"vosotros","form":"no deis","exampleSentence":"No deis portazos.","exampleSentenceEn":"Don't slam doors (you all)."},
+      {"pronoun":"ustedes","form":"no den","exampleSentence":"No den mal ejemplo.","exampleSentenceEn":"Don't set a bad example (you all)."}
+    ]},
+    {"tenseId":"progressive_present","tenseName":"Progresivo (presente)","tenseNameEn":"Present Progressive","description":"Acción en progreso.","conjugations":[
+      {"pronoun":"yo","form":"estoy dando","exampleSentence":"Estoy dando una charla.","exampleSentenceEn":"I am giving a talk."},
+      {"pronoun":"tú","form":"estás dando","exampleSentence":"Estás dando un ejemplo.","exampleSentenceEn":"You are giving an example."},
+      {"pronoun":"él/ella/usted","form":"está dando","exampleSentence":"Está dando clases.","exampleSentenceEn":"He is giving classes."},
+      {"pronoun":"nosotros","form":"estamos dando","exampleSentence":"Estamos dando apoyo.","exampleSentenceEn":"We are giving support."},
+      {"pronoun":"vosotros","form":"estáis dando","exampleSentence":"Estáis dando regalos.","exampleSentenceEn":"You all are giving gifts."},
+      {"pronoun":"ellos/ustedes","form":"están dando","exampleSentence":"Están dando comida.","exampleSentenceEn":"They are giving food."}
+    ]},
+    {"tenseId":"progressive_past","tenseName":"Progresivo (pasado)","tenseNameEn":"Past Progressive","description":"Acción en progreso en el pasado.","conjugations":[
+      {"pronoun":"yo","form":"estaba dando","exampleSentence":"Estaba dando una clase.","exampleSentenceEn":"I was giving a class."},
+      {"pronoun":"tú","form":"estabas dando","exampleSentence":"Estabas dando un discurso.","exampleSentenceEn":"You were giving a speech."},
+      {"pronoun":"él/ella/usted","form":"estaba dando","exampleSentence":"Estaba dando conferencias.","exampleSentenceEn":"He was giving lectures."},
+      {"pronoun":"nosotros","form":"estábamos dando","exampleSentence":"Estábamos dando apoyo.","exampleSentenceEn":"We were giving support."},
+      {"pronoun":"vosotros","form":"estabais dando","exampleSentence":"Estabais dando ejemplos.","exampleSentenceEn":"You all were giving examples."},
+      {"pronoun":"ellos/ustedes","form":"estaban dando","exampleSentence":"Estaban dando comida.","exampleSentenceEn":"They were giving food."}
+    ]},
+    {"tenseId":"progressive_future","tenseName":"Progresivo (futuro)","tenseNameEn":"Future Progressive","description":"Acción en progreso en el futuro.","conjugations":[
+      {"pronoun":"yo","form":"estaré dando","exampleSentence":"Estaré dando una charla.","exampleSentenceEn":"I will be giving a talk."},
+      {"pronoun":"tú","form":"estarás dando","exampleSentence":"Estarás dando tu opinión.","exampleSentenceEn":"You will be giving your opinion."},
+      {"pronoun":"él/ella/usted","form":"estará dando","exampleSentence":"Estará dando clases.","exampleSentenceEn":"He will be giving classes."},
+      {"pronoun":"nosotros","form":"estaremos dando","exampleSentence":"Estaremos dando apoyo.","exampleSentenceEn":"We will be giving support."},
+      {"pronoun":"vosotros","form":"estaréis dando","exampleSentence":"Estaréis dando ejemplos.","exampleSentenceEn":"You all will be giving examples."},
+      {"pronoun":"ellos/ustedes","form":"estarán dando","exampleSentence":"Estarán dando comida.","exampleSentenceEn":"They will be giving food."}
+    ]}
+  ]
+}
+
+

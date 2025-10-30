@@ -1,0 +1,331 @@
+{
+  "language": "es",
+  "languageName": "Spanish",
+  "infinitive": "ir",
+  "infinitiveEn": "to go",
+  "category": "movement",
+  "tenses": [
+    {
+      "tenseId": "indicative_present",
+      "tenseName": "Presente",
+      "tenseNameEn": "Indicative Present",
+      "description": "Movimiento o plan en el presente.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "voy", "exampleSentence": "Voy al trabajo.", "exampleSentenceEn": "I go to work."},
+        {"pronoun": "tú", "form": "vas", "exampleSentence": "¿Vas al cine?", "exampleSentenceEn": "Are you going to the cinema?"},
+        {"pronoun": "él/ella/usted", "form": "va", "exampleSentence": "Él va a casa.", "exampleSentenceEn": "He goes home."},
+        {"pronoun": "nosotros", "form": "vamos", "exampleSentence": "Vamos al parque.", "exampleSentenceEn": "We go to the park."},
+        {"pronoun": "vosotros", "form": "vais", "exampleSentence": "¿Vais al concierto?", "exampleSentenceEn": "Are you all going to the concert?"},
+        {"pronoun": "ellos/ustedes", "form": "van", "exampleSentence": "Ellos van al museo.", "exampleSentenceEn": "They go to the museum."}
+      ]
+    },
+    {
+      "tenseId": "indicative_imperfect",
+      "tenseName": "Pretérito imperfecto",
+      "tenseNameEn": "Imperfect",
+      "description": "Acción habitual o en progreso en el pasado.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "iba", "exampleSentence": "De niño iba al campo.", "exampleSentenceEn": "As a child I used to go to the countryside."},
+        {"pronoun": "tú", "form": "ibas", "exampleSentence": "Ibas a clases de música.", "exampleSentenceEn": "You used to go to music classes."},
+        {"pronoun": "él/ella/usted", "form": "iba", "exampleSentence": "Ella iba a la biblioteca.", "exampleSentenceEn": "She used to go to the library."},
+        {"pronoun": "nosotros", "form": "íbamos", "exampleSentence": "Íbamos al parque los domingos.", "exampleSentenceEn": "We used to go to the park on Sundays."},
+        {"pronoun": "vosotros", "form": "ibais", "exampleSentence": "Ibais juntos al colegio.", "exampleSentenceEn": "You all used to go to school together."},
+        {"pronoun": "ellos/ustedes", "form": "iban", "exampleSentence": "Iban al mercado temprano.", "exampleSentenceEn": "They used to go to the market early."}
+      ]
+    },
+    {
+      "tenseId": "indicative_preterite",
+      "tenseName": "Pretérito perfecto simple",
+      "tenseNameEn": "Preterite",
+      "description": "Acción de ir completada en el pasado.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "fui", "exampleSentence": "Fui al médico ayer.", "exampleSentenceEn": "I went to the doctor yesterday."},
+        {"pronoun": "tú", "form": "fuiste", "exampleSentence": "Fuiste al supermercado.", "exampleSentenceEn": "You went to the supermarket."},
+        {"pronoun": "él/ella/usted", "form": "fue", "exampleSentence": "Fue a la playa.", "exampleSentenceEn": "He went to the beach."},
+        {"pronoun": "nosotros", "form": "fuimos", "exampleSentence": "Fuimos al concierto.", "exampleSentenceEn": "We went to the concert."},
+        {"pronoun": "vosotros", "form": "fuisteis", "exampleSentence": "Fuisteis al teatro.", "exampleSentenceEn": "You all went to the theater."},
+        {"pronoun": "ellos/ustedes", "form": "fueron", "exampleSentence": "Fueron al centro.", "exampleSentenceEn": "They went downtown."}
+      ]
+    },
+    {
+      "tenseId": "indicative_future",
+      "tenseName": "Futuro simple",
+      "tenseNameEn": "Simple Future",
+      "description": "Acción futura de ir.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "iré", "exampleSentence": "Iré mañana.", "exampleSentenceEn": "I will go tomorrow."},
+        {"pronoun": "tú", "form": "irás", "exampleSentence": "Irás con nosotros.", "exampleSentenceEn": "You will go with us."},
+        {"pronoun": "él/ella/usted", "form": "irá", "exampleSentence": "Irá a Madrid.", "exampleSentenceEn": "He will go to Madrid."},
+        {"pronoun": "nosotros", "form": "iremos", "exampleSentence": "Iremos en coche.", "exampleSentenceEn": "We will go by car."},
+        {"pronoun": "vosotros", "form": "iréis", "exampleSentence": "Iréis por la tarde.", "exampleSentenceEn": "You all will go in the afternoon."},
+        {"pronoun": "ellos/ustedes", "form": "irán", "exampleSentence": "Irán juntos.", "exampleSentenceEn": "They will go together."}
+      ]
+    },
+    {
+      "tenseId": "indicative_conditional",
+      "tenseName": "Condicional simple",
+      "tenseNameEn": "Conditional",
+      "description": "Ir hipotético o cortés.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "iría", "exampleSentence": "Iría si tuviera tiempo.", "exampleSentenceEn": "I would go if I had time."},
+        {"pronoun": "tú", "form": "irías", "exampleSentence": "¿Irías conmigo?", "exampleSentenceEn": "Would you go with me?"},
+        {"pronoun": "él/ella/usted", "form": "iría", "exampleSentence": "Él iría encantado.", "exampleSentenceEn": "He would gladly go."},
+        {"pronoun": "nosotros", "form": "iríamos", "exampleSentence": "Iríamos más tarde.", "exampleSentenceEn": "We would go later."},
+        {"pronoun": "vosotros", "form": "iríais", "exampleSentence": "Iríais si fuese necesario.", "exampleSentenceEn": "You all would go if necessary."},
+        {"pronoun": "ellos/ustedes", "form": "irían", "exampleSentence": "Irían mañana.", "exampleSentenceEn": "They would go tomorrow."}
+      ]
+    },
+    {
+      "tenseId": "indicative_present_perfect",
+      "tenseName": "Pretérito perfecto compuesto",
+      "tenseNameEn": "Present Perfect",
+      "description": "Ir en el pasado con relación al presente.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "he ido", "exampleSentence": "He ido muchas veces.", "exampleSentenceEn": "I have gone many times."},
+        {"pronoun": "tú", "form": "has ido", "exampleSentence": "Has ido con ellos.", "exampleSentenceEn": "You have gone with them."},
+        {"pronoun": "él/ella/usted", "form": "ha ido", "exampleSentence": "Ha ido al médico.", "exampleSentenceEn": "He has gone to the doctor."},
+        {"pronoun": "nosotros", "form": "hemos ido", "exampleSentence": "Hemos ido juntos.", "exampleSentenceEn": "We have gone together."},
+        {"pronoun": "vosotros", "form": "habéis ido", "exampleSentence": "Habéis ido temprano.", "exampleSentenceEn": "You all have gone early."},
+        {"pronoun": "ellos/ustedes", "form": "han ido", "exampleSentence": "Han ido al centro.", "exampleSentenceEn": "They have gone downtown."}
+      ]
+    },
+    {
+      "tenseId": "indicative_pluperfect",
+      "tenseName": "Pluscuamperfecto",
+      "tenseNameEn": "Pluperfect",
+      "description": "Ir antes de otro hecho pasado.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "había ido", "exampleSentence": "Ya había ido cuando llamaste.", "exampleSentenceEn": "I had already gone when you called."},
+        {"pronoun": "tú", "form": "habías ido", "exampleSentence": "Habías ido sin aviso.", "exampleSentenceEn": "You had gone without notice."},
+        {"pronoun": "él/ella/usted", "form": "había ido", "exampleSentence": "Había ido temprano.", "exampleSentenceEn": "He had gone early."},
+        {"pronoun": "nosotros", "form": "habíamos ido", "exampleSentence": "Habíamos ido juntos.", "exampleSentenceEn": "We had gone together."},
+        {"pronoun": "vosotros", "form": "habíais ido", "exampleSentence": "Habíais ido la semana pasada.", "exampleSentenceEn": "You all had gone last week."},
+        {"pronoun": "ellos/ustedes", "form": "habían ido", "exampleSentence": "Habían ido lejos.", "exampleSentenceEn": "They had gone far."}
+      ]
+    },
+    {
+      "tenseId": "indicative_preterite_perfect",
+      "tenseName": "Pretérito anterior",
+      "tenseNameEn": "Preterite Perfect",
+      "description": "Uso literario para acción inmediatamente anterior.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "hube ido", "exampleSentence": "Apenas hube ido, empezó a llover.", "exampleSentenceEn": "As soon as I had gone, it started raining."},
+        {"pronoun": "tú", "form": "hubiste ido", "exampleSentence": "Cuando hubiste ido, llamaron.", "exampleSentenceEn": "When you had gone, they called."},
+        {"pronoun": "él/ella/usted", "form": "hubo ido", "exampleSentence": "Apenas hubo ido, llegó.", "exampleSentenceEn": "As soon as he had gone, he arrived."},
+        {"pronoun": "nosotros", "form": "hubimos ido", "exampleSentence": "Hubimos ido temprano.", "exampleSentenceEn": "We had gone early."},
+        {"pronoun": "vosotros", "form": "hubisteis ido", "exampleSentence": "Hubisteis ido sin prisa.", "exampleSentenceEn": "You all had gone unhurriedly."},
+        {"pronoun": "ellos/ustedes", "form": "hubieron ido", "exampleSentence": "Hubieron ido lejos.", "exampleSentenceEn": "They had gone far away."}
+      ]
+    },
+    {
+      "tenseId": "indicative_future_perfect",
+      "tenseName": "Futuro perfecto",
+      "tenseNameEn": "Future Perfect",
+      "description": "Acción de ir completa antes de un futuro.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "habré ido", "exampleSentence": "Habré ido para entonces.", "exampleSentenceEn": "I will have gone by then."},
+        {"pronoun": "tú", "form": "habrás ido", "exampleSentence": "Habrás ido con ellos.", "exampleSentenceEn": "You will have gone with them."},
+        {"pronoun": "él/ella/usted", "form": "habrá ido", "exampleSentence": "Habrá ido a casa.", "exampleSentenceEn": "He will have gone home."},
+        {"pronoun": "nosotros", "form": "habremos ido", "exampleSentence": "Habremos ido temprano.", "exampleSentenceEn": "We will have gone early."},
+        {"pronoun": "vosotros", "form": "habréis ido", "exampleSentence": "Habréis ido en tren.", "exampleSentenceEn": "You all will have gone by train."},
+        {"pronoun": "ellos/ustedes", "form": "habrán ido", "exampleSentence": "Habrán ido sin problema.", "exampleSentenceEn": "They will have gone without issue."}
+      ]
+    },
+    {
+      "tenseId": "indicative_conditional_perfect",
+      "tenseName": "Condicional perfecto",
+      "tenseNameEn": "Conditional Perfect",
+      "description": "Ir hipotético completado.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "habría ido", "exampleSentence": "Habría ido si me avisabas.", "exampleSentenceEn": "I would have gone if you had told me."},
+        {"pronoun": "tú", "form": "habrías ido", "exampleSentence": "Habrías ido con gusto.", "exampleSentenceEn": "You would have gone gladly."},
+        {"pronoun": "él/ella/usted", "form": "habría ido", "exampleSentence": "Habría ido de inmediato.", "exampleSentenceEn": "He would have gone immediately."},
+        {"pronoun": "nosotros", "form": "habríamos ido", "exampleSentence": "Habríamos ido juntos.", "exampleSentenceEn": "We would have gone together."},
+        {"pronoun": "vosotros", "form": "habríais ido", "exampleSentence": "Habríais ido temprano.", "exampleSentenceEn": "You all would have gone early."},
+        {"pronoun": "ellos/ustedes", "form": "habrían ido", "exampleSentence": "Habrían ido sin dudas.", "exampleSentenceEn": "They would have gone without doubts."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_present",
+      "tenseName": "Presente (subjuntivo)",
+      "tenseNameEn": "Subjunctive Present",
+      "description": "Deseo o posibilidad de ir.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "vaya", "exampleSentence": "Ojalá vaya mañana.", "exampleSentenceEn": "I hope I go tomorrow."},
+        {"pronoun": "tú", "form": "vayas", "exampleSentence": "Espero que vayas con ellos.", "exampleSentenceEn": "I hope you go with them."},
+        {"pronoun": "él/ella/usted", "form": "vaya", "exampleSentence": "Es mejor que vaya ahora.", "exampleSentenceEn": "It's better that he goes now."},
+        {"pronoun": "nosotros", "form": "vayamos", "exampleSentence": "Quieren que vayamos temprano.", "exampleSentenceEn": "They want us to go early."},
+        {"pronoun": "vosotros", "form": "vayáis", "exampleSentence": "Es bueno que vayáis juntos.", "exampleSentenceEn": "It's good that you all go together."},
+        {"pronoun": "ellos/ustedes", "form": "vayan", "exampleSentence": "Temen que vayan lejos.", "exampleSentenceEn": "They fear that you go far."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_imperfect_ra",
+      "tenseName": "Imperfecto (ra)",
+      "tenseNameEn": "Subjunctive Imperfect (-ra)",
+      "description": "Ir hipotético pasado.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "fuera", "exampleSentence": "Si fuera contigo, estaría feliz.", "exampleSentenceEn": "If I went with you, I would be happy."},
+        {"pronoun": "tú", "form": "fueras", "exampleSentence": "Ojalá fueras conmigo.", "exampleSentenceEn": "I wish you went with me."},
+        {"pronoun": "él/ella/usted", "form": "fuera", "exampleSentence": "Quisiera que fuera ahora.", "exampleSentenceEn": "I would like him to go now."},
+        {"pronoun": "nosotros", "form": "fuéramos", "exampleSentence": "Si fuéramos temprano, llegaríamos a tiempo.", "exampleSentenceEn": "If we went early, we would arrive on time."},
+        {"pronoun": "vosotros", "form": "fuerais", "exampleSentence": "Si fuerais juntos, sería mejor.", "exampleSentenceEn": "If you all went together, it would be better."},
+        {"pronoun": "ellos/ustedes", "form": "fueran", "exampleSentence": "Si fueran ahora, evitarían tráfico.", "exampleSentenceEn": "If they went now, they would avoid traffic."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_imperfect_se",
+      "tenseName": "Imperfecto (se)",
+      "tenseNameEn": "Subjunctive Imperfect (-se)",
+      "description": "Variante -se del imperfecto de subjuntivo.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "fuese", "exampleSentence": "Si fuese contigo, me alegraría.", "exampleSentenceEn": "If I went with you, I would be glad."},
+        {"pronoun": "tú", "form": "fueses", "exampleSentence": "Quisiera que fueses hoy.", "exampleSentenceEn": "I would like you to go today."},
+        {"pronoun": "él/ella/usted", "form": "fuese", "exampleSentence": "No creía que fuese necesario ir.", "exampleSentenceEn": "I did not think it was necessary to go."},
+        {"pronoun": "nosotros", "form": "fuésemos", "exampleSentence": "Si fuésemos ahora, llegaríamos.", "exampleSentenceEn": "If we went now, we would arrive."},
+        {"pronoun": "vosotros", "form": "fueseis", "exampleSentence": "Si fueseis temprano, evitaríais cola.", "exampleSentenceEn": "If you all went early, you'd avoid the line."},
+        {"pronoun": "ellos/ustedes", "form": "fuesen", "exampleSentence": "Si fuesen mañana, estarían libres hoy.", "exampleSentenceEn": "If they went tomorrow, they'd be free today."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_future",
+      "tenseName": "Futuro (subjuntivo)",
+      "tenseNameEn": "Subjunctive Future",
+      "description": "Uso arcaico/jurídico para futuro hipotético.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "fuere", "exampleSentence": "Quien fuere primero, entrará.", "exampleSentenceEn": "Whoever be first shall enter."},
+        {"pronoun": "tú", "form": "fueres", "exampleSentence": "Si fueres llamado, acude.", "exampleSentenceEn": "If you be called, attend."},
+        {"pronoun": "él/ella/usted", "form": "fuere", "exampleSentence": "Si fuere necesario, irá.", "exampleSentenceEn": "If it be necessary, he shall go."},
+        {"pronoun": "nosotros", "form": "fuéremos", "exampleSentence": "Si fuéremos avisados, iremos.", "exampleSentenceEn": "If we be notified, we shall go."},
+        {"pronoun": "vosotros", "form": "fuereis", "exampleSentence": "Si fuereis citados, acudid.", "exampleSentenceEn": "If you be summoned, attend."},
+        {"pronoun": "ellos/ustedes", "form": "fueren", "exampleSentence": "Si fueren elegidos, servirán.", "exampleSentenceEn": "If they be elected, they shall serve."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_present_perfect",
+      "tenseName": "Pretérito perfecto (subj.)",
+      "tenseNameEn": "Subjunctive Present Perfect",
+      "description": "Ir pasado con relación al presente de subjuntivo.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "haya ido", "exampleSentence": "Dudo que haya ido todavía.", "exampleSentenceEn": "I doubt I have gone yet."},
+        {"pronoun": "tú", "form": "hayas ido", "exampleSentence": "No creo que hayas ido.", "exampleSentenceEn": "I don't think you have gone."},
+        {"pronoun": "él/ella/usted", "form": "haya ido", "exampleSentence": "Es posible que haya ido ya.", "exampleSentenceEn": "It's possible he has gone already."},
+        {"pronoun": "nosotros", "form": "hayamos ido", "exampleSentence": "Ojalá hayamos ido a tiempo.", "exampleSentenceEn": "I hope we have gone on time."},
+        {"pronoun": "vosotros", "form": "hayáis ido", "exampleSentence": "Puede que hayáis ido sin avisar.", "exampleSentenceEn": "You all may have gone without notice."},
+        {"pronoun": "ellos/ustedes", "form": "hayan ido", "exampleSentence": "No piensan que hayan ido lejos.", "exampleSentenceEn": "They don't think you have gone far."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_pluperfect_ra",
+      "tenseName": "Pluscuamperfecto (ra)",
+      "tenseNameEn": "Subjunctive Pluperfect (-ra)",
+      "description": "Ir anterior hipotético (variante -ra).",
+      "conjugations": [
+        {"pronoun": "yo", "form": "hubiera ido", "exampleSentence": "Si hubiera ido, te habría visto.", "exampleSentenceEn": "If I had gone, I would have seen you."},
+        {"pronoun": "tú", "form": "hubieras ido", "exampleSentence": "Si hubieras ido, lo sabrías.", "exampleSentenceEn": "If you had gone, you would know."},
+        {"pronoun": "él/ella/usted", "form": "hubiera ido", "exampleSentence": "Si hubiera ido temprano, llegaría a tiempo.", "exampleSentenceEn": "If he had gone early, he'd arrive on time."},
+        {"pronoun": "nosotros", "form": "hubiéramos ido", "exampleSentence": "Si hubiéramos ido juntos, sería mejor.", "exampleSentenceEn": "If we had gone together, it would be better."},
+        {"pronoun": "vosotros", "form": "hubierais ido", "exampleSentence": "Si hubierais ido ayer, no haría falta hoy.", "exampleSentenceEn": "If you all had gone yesterday, today wouldn't be needed."},
+        {"pronoun": "ellos/ustedes", "form": "hubieran ido", "exampleSentence": "Si hubieran ido antes, evitarían la cola.", "exampleSentenceEn": "If they had gone earlier, they'd avoid the line."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_pluperfect_se",
+      "tenseName": "Pluscuamperfecto (se)",
+      "tenseNameEn": "Subjunctive Pluperfect (-se)",
+      "description": "Ir anterior hipotético (variante -se).",
+      "conjugations": [
+        {"pronoun": "yo", "form": "hubiese ido", "exampleSentence": "Si hubiese ido, habría vuelto temprano.", "exampleSentenceEn": "If I had gone, I would have returned early."},
+        {"pronoun": "tú", "form": "hubieses ido", "exampleSentence": "Si hubieses ido, te habría visto.", "exampleSentenceEn": "If you had gone, I would have seen you."},
+        {"pronoun": "él/ella/usted", "form": "hubiese ido", "exampleSentence": "No pensé que hubiese ido.", "exampleSentenceEn": "I didn't think he had gone."},
+        {"pronoun": "nosotros", "form": "hubiésemos ido", "exampleSentence": "Si hubiésemos ido, llegaríamos antes.", "exampleSentenceEn": "If we had gone, we'd arrive earlier."},
+        {"pronoun": "vosotros", "form": "hubieseis ido", "exampleSentence": "Si hubieseis ido, estaríais libres.", "exampleSentenceEn": "If you all had gone, you'd be free."},
+        {"pronoun": "ellos/ustedes", "form": "hubiesen ido", "exampleSentence": "Si hubiesen ido, entenderían.", "exampleSentenceEn": "If they had gone, they would understand."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_future_perfect",
+      "tenseName": "Futuro perfecto (subj.)",
+      "tenseNameEn": "Subjunctive Future Perfect",
+      "description": "Uso arcaico para acción completa previa a futuro hipotético.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "hubiere ido", "exampleSentence": "Si hubiere ido, avisaré.", "exampleSentenceEn": "If I shall have gone, I will notify."},
+        {"pronoun": "tú", "form": "hubieres ido", "exampleSentence": "Si hubieres ido, volverás pronto.", "exampleSentenceEn": "If you shall have gone, you will return soon."},
+        {"pronoun": "él/ella/usted", "form": "hubiere ido", "exampleSentence": "Si hubiere ido, actuará.", "exampleSentenceEn": "If he shall have gone, he will act."},
+        {"pronoun": "nosotros", "form": "hubiéremos ido", "exampleSentence": "Si hubiéremos ido, llamaremos.", "exampleSentenceEn": "If we shall have gone, we will call."},
+        {"pronoun": "vosotros", "form": "hubiereis ido", "exampleSentence": "Si hubiereis ido, responded.", "exampleSentenceEn": "If you shall have gone, respond."},
+        {"pronoun": "ellos/ustedes", "form": "hubieren ido", "exampleSentence": "Si hubieren ido, informarán.", "exampleSentenceEn": "If they shall have gone, they will inform."}
+      ]
+    },
+    {
+      "tenseId": "imperative_affirmative",
+      "tenseName": "Imperativo afirmativo",
+      "tenseNameEn": "Imperative Affirmative",
+      "description": "Órdenes afirmativas de ir.",
+      "conjugations": [
+        {"pronoun": "tú", "form": "ve", "exampleSentence": "Ve ahora.", "exampleSentenceEn": "Go now."},
+        {"pronoun": "usted", "form": "vaya", "exampleSentence": "Vaya por aquí, por favor.", "exampleSentenceEn": "Go this way, please."},
+        {"pronoun": "nosotros", "form": "vayamos", "exampleSentence": "Vayamos juntos.", "exampleSentenceEn": "Let's go together."},
+        {"pronoun": "vosotros", "form": "id", "exampleSentence": "Id con cuidado.", "exampleSentenceEn": "Go carefully (you all)."},
+        {"pronoun": "ustedes", "form": "vayan", "exampleSentence": "Vayan por la sombra.", "exampleSentenceEn": "Go through the shade (you all)."}
+      ]
+    },
+    {
+      "tenseId": "imperative_negative",
+      "tenseName": "Imperativo negativo",
+      "tenseNameEn": "Imperative Negative",
+      "description": "Órdenes negativas de ir.",
+      "conjugations": [
+        {"pronoun": "tú", "form": "no vayas", "exampleSentence": "No vayas solo.", "exampleSentenceEn": "Don't go alone."},
+        {"pronoun": "usted", "form": "no vaya", "exampleSentence": "No vaya por ahí.", "exampleSentenceEn": "Don't go that way."},
+        {"pronoun": "nosotros", "form": "no vayamos", "exampleSentence": "No vayamos tarde.", "exampleSentenceEn": "Let's not go late."},
+        {"pronoun": "vosotros", "form": "no vayáis", "exampleSentence": "No vayáis rápido.", "exampleSentenceEn": "Don't go fast (you all)."},
+        {"pronoun": "ustedes", "form": "no vayan", "exampleSentence": "No vayan sin mapa.", "exampleSentenceEn": "Don't go without a map (you all)."}
+      ]
+    },
+    {
+      "tenseId": "progressive_present",
+      "tenseName": "Progresivo (presente)",
+      "tenseNameEn": "Present Progressive",
+      "description": "Acción en progreso de ir ahora.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "estoy yendo", "exampleSentence": "Estoy yendo al trabajo.", "exampleSentenceEn": "I am going to work."},
+        {"pronoun": "tú", "form": "estás yendo", "exampleSentence": "Estás yendo muy rápido.", "exampleSentenceEn": "You are going very fast."},
+        {"pronoun": "él/ella/usted", "form": "está yendo", "exampleSentence": "Está yendo al centro.", "exampleSentenceEn": "He is going downtown."},
+        {"pronoun": "nosotros", "form": "estamos yendo", "exampleSentence": "Estamos yendo en bus.", "exampleSentenceEn": "We are going by bus."},
+        {"pronoun": "vosotros", "form": "estáis yendo", "exampleSentence": "Estáis yendo por la ruta larga.", "exampleSentenceEn": "You all are going by the long route."},
+        {"pronoun": "ellos/ustedes", "form": "están yendo", "exampleSentence": "Están yendo al aeropuerto.", "exampleSentenceEn": "They are going to the airport."}
+      ]
+    },
+    {
+      "tenseId": "progressive_past",
+      "tenseName": "Progresivo (pasado)",
+      "tenseNameEn": "Past Progressive",
+      "description": "Acción en progreso de ir en el pasado.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "estaba yendo", "exampleSentence": "Estaba yendo a casa cuando llamaste.", "exampleSentenceEn": "I was going home when you called."},
+        {"pronoun": "tú", "form": "estabas yendo", "exampleSentence": "Estabas yendo al médico.", "exampleSentenceEn": "You were going to the doctor."},
+        {"pronoun": "él/ella/usted", "form": "estaba yendo", "exampleSentence": "Estaba yendo al trabajo.", "exampleSentenceEn": "He was going to work."},
+        {"pronoun": "nosotros", "form": "estábamos yendo", "exampleSentence": "Estábamos yendo juntos.", "exampleSentenceEn": "We were going together."},
+        {"pronoun": "vosotros", "form": "estabais yendo", "exampleSentence": "Estabais yendo por otro camino.", "exampleSentenceEn": "You all were going another way."},
+        {"pronoun": "ellos/ustedes", "form": "estaban yendo", "exampleSentence": "Estaban yendo tarde.", "exampleSentenceEn": "They were going late."}
+      ]
+    },
+    {
+      "tenseId": "progressive_future",
+      "tenseName": "Progresivo (futuro)",
+      "tenseNameEn": "Future Progressive",
+      "description": "Acción en progreso de ir en el futuro.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "estaré yendo", "exampleSentence": "Estaré yendo a la reunión.", "exampleSentenceEn": "I will be going to the meeting."},
+        {"pronoun": "tú", "form": "estarás yendo", "exampleSentence": "Estarás yendo con ellos.", "exampleSentenceEn": "You will be going with them."},
+        {"pronoun": "él/ella/usted", "form": "estará yendo", "exampleSentence": "Estará yendo en tren.", "exampleSentenceEn": "He will be going by train."},
+        {"pronoun": "nosotros", "form": "estaremos yendo", "exampleSentence": "Estaremos yendo temprano.", "exampleSentenceEn": "We will be going early."},
+        {"pronoun": "vosotros", "form": "estaréis yendo", "exampleSentence": "Estaréis yendo por la mañana.", "exampleSentenceEn": "You all will be going in the morning."},
+        {"pronoun": "ellos/ustedes", "form": "estarán yendo", "exampleSentence": "Estarán yendo en grupo.", "exampleSentenceEn": "They will be going in a group."}
+      ]
+    }
+  ]
+}
+
+

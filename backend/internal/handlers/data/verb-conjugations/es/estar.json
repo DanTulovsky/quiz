@@ -1,0 +1,331 @@
+{
+  "language": "es",
+  "languageName": "Spanish",
+  "infinitive": "estar",
+  "infinitiveEn": "to be",
+  "category": "core",
+  "tenses": [
+    {
+      "tenseId": "indicative_present",
+      "tenseName": "Presente",
+      "tenseNameEn": "Indicative Present",
+      "description": "Estado temporal o ubicación en el presente.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "estoy", "exampleSentence": "Estoy cansado.", "exampleSentenceEn": "I am tired."},
+        {"pronoun": "tú", "form": "estás", "exampleSentence": "¿Estás listo?", "exampleSentenceEn": "Are you ready?"},
+        {"pronoun": "él/ella/usted", "form": "está", "exampleSentence": "Ella está en casa.", "exampleSentenceEn": "She is at home."},
+        {"pronoun": "nosotros", "form": "estamos", "exampleSentence": "Estamos contentos.", "exampleSentenceEn": "We are happy."},
+        {"pronoun": "vosotros", "form": "estáis", "exampleSentence": "¿Estáis aquí?", "exampleSentenceEn": "Are you all here?"},
+        {"pronoun": "ellos/ustedes", "form": "están", "exampleSentence": "Ellos están ocupados.", "exampleSentenceEn": "They are busy."}
+      ]
+    },
+    {
+      "tenseId": "indicative_imperfect",
+      "tenseName": "Pretérito imperfecto",
+      "tenseNameEn": "Imperfect",
+      "description": "Estado habitual o continuo en el pasado.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "estaba", "exampleSentence": "Estaba enfermo la semana pasada.", "exampleSentenceEn": "I was sick last week."},
+        {"pronoun": "tú", "form": "estabas", "exampleSentence": "Tú estabas en clase.", "exampleSentenceEn": "You were in class."},
+        {"pronoun": "él/ella/usted", "form": "estaba", "exampleSentence": "Él estaba cansado.", "exampleSentenceEn": "He was tired."},
+        {"pronoun": "nosotros", "form": "estábamos", "exampleSentence": "Estábamos ocupados.", "exampleSentenceEn": "We were busy."},
+        {"pronoun": "vosotros", "form": "estabais", "exampleSentence": "Estabais de viaje.", "exampleSentenceEn": "You all were traveling."},
+        {"pronoun": "ellos/ustedes", "form": "estaban", "exampleSentence": "Estaban en la reunión.", "exampleSentenceEn": "They were at the meeting."}
+      ]
+    },
+    {
+      "tenseId": "indicative_preterite",
+      "tenseName": "Pretérito perfecto simple",
+      "tenseNameEn": "Preterite",
+      "description": "Acción o estado puntual y completado en el pasado.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "estuve", "exampleSentence": "Estuve en Madrid ayer.", "exampleSentenceEn": "I was in Madrid yesterday."},
+        {"pronoun": "tú", "form": "estuviste", "exampleSentence": "¿Estuviste en la oficina?", "exampleSentenceEn": "Were you at the office?"},
+        {"pronoun": "él/ella/usted", "form": "estuvo", "exampleSentence": "Estuvo genial el concierto.", "exampleSentenceEn": "The concert was great."},
+        {"pronoun": "nosotros", "form": "estuvimos", "exampleSentence": "Estuvimos ocupados todo el día.", "exampleSentenceEn": "We were busy all day."},
+        {"pronoun": "vosotros", "form": "estuvisteis", "exampleSentence": "Estuvisteis cerca.", "exampleSentenceEn": "You all were close."},
+        {"pronoun": "ellos/ustedes", "form": "estuvieron", "exampleSentence": "Estuvieron de acuerdo.", "exampleSentenceEn": "They agreed."}
+      ]
+    },
+    {
+      "tenseId": "indicative_future",
+      "tenseName": "Futuro simple",
+      "tenseNameEn": "Simple Future",
+      "description": "Estado o ubicación futura.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "estaré", "exampleSentence": "Estaré disponible mañana.", "exampleSentenceEn": "I will be available tomorrow."},
+        {"pronoun": "tú", "form": "estarás", "exampleSentence": "Estarás listo a las ocho.", "exampleSentenceEn": "You will be ready at eight."},
+        {"pronoun": "él/ella/usted", "form": "estará", "exampleSentence": "Estará aquí pronto.", "exampleSentenceEn": "He will be here soon."},
+        {"pronoun": "nosotros", "form": "estaremos", "exampleSentence": "Estaremos en casa.", "exampleSentenceEn": "We will be at home."},
+        {"pronoun": "vosotros", "form": "estaréis", "exampleSentence": "Estaréis ocupados.", "exampleSentenceEn": "You all will be busy."},
+        {"pronoun": "ellos/ustedes", "form": "estarán", "exampleSentence": "Estarán listos a tiempo.", "exampleSentenceEn": "They will be ready on time."}
+      ]
+    },
+    {
+      "tenseId": "indicative_conditional",
+      "tenseName": "Condicional simple",
+      "tenseNameEn": "Conditional",
+      "description": "Estado hipotético o cortesía.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "estaría", "exampleSentence": "Estaría encantado de ayudar.", "exampleSentenceEn": "I would be glad to help."},
+        {"pronoun": "tú", "form": "estarías", "exampleSentence": "Estarías mejor con descanso.", "exampleSentenceEn": "You would be better with rest."},
+        {"pronoun": "él/ella/usted", "form": "estaría", "exampleSentence": "Estaría bien llegar temprano.", "exampleSentenceEn": "It would be good to arrive early."},
+        {"pronoun": "nosotros", "form": "estaríamos", "exampleSentence": "Estaríamos listos mañana.", "exampleSentenceEn": "We would be ready tomorrow."},
+        {"pronoun": "vosotros", "form": "estaríais", "exampleSentence": "Estaríais contentos con el cambio.", "exampleSentenceEn": "You all would be happy with the change."},
+        {"pronoun": "ellos/ustedes", "form": "estarían", "exampleSentence": "Estarían tranquilos en casa.", "exampleSentenceEn": "They would be calm at home."}
+      ]
+    },
+    {
+      "tenseId": "indicative_present_perfect",
+      "tenseName": "Pretérito perfecto compuesto",
+      "tenseNameEn": "Present Perfect",
+      "description": "Acción pasada relevante al presente.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "he estado", "exampleSentence": "He estado ocupado.", "exampleSentenceEn": "I have been busy."},
+        {"pronoun": "tú", "form": "has estado", "exampleSentence": "Has estado enfermo.", "exampleSentenceEn": "You have been sick."},
+        {"pronoun": "él/ella/usted", "form": "ha estado", "exampleSentence": "Ha estado en casa.", "exampleSentenceEn": "He has been at home."},
+        {"pronoun": "nosotros", "form": "hemos estado", "exampleSentence": "Hemos estado aquí todo el día.", "exampleSentenceEn": "We have been here all day."},
+        {"pronoun": "vosotros", "form": "habéis estado", "exampleSentence": "Habéis estado muy ocupados.", "exampleSentenceEn": "You all have been very busy."},
+        {"pronoun": "ellos/ustedes", "form": "han estado", "exampleSentence": "Han estado fuera.", "exampleSentenceEn": "They have been away."}
+      ]
+    },
+    {
+      "tenseId": "indicative_pluperfect",
+      "tenseName": "Pluscuamperfecto",
+      "tenseNameEn": "Pluperfect",
+      "description": "Acción anterior a otra pasada.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "había estado", "exampleSentence": "Había estado esperando.", "exampleSentenceEn": "I had been waiting."},
+        {"pronoun": "tú", "form": "habías estado", "exampleSentence": "Habías estado en clase.", "exampleSentenceEn": "You had been in class."},
+        {"pronoun": "él/ella/usted", "form": "había estado", "exampleSentence": "Había estado ocupado.", "exampleSentenceEn": "He had been busy."},
+        {"pronoun": "nosotros", "form": "habíamos estado", "exampleSentence": "Habíamos estado en la oficina.", "exampleSentenceEn": "We had been in the office."},
+        {"pronoun": "vosotros", "form": "habíais estado", "exampleSentence": "Habíais estado de viaje.", "exampleSentenceEn": "You all had been traveling."},
+        {"pronoun": "ellos/ustedes", "form": "habían estado", "exampleSentence": "Habían estado ausentes.", "exampleSentenceEn": "They had been absent."}
+      ]
+    },
+    {
+      "tenseId": "indicative_preterite_perfect",
+      "tenseName": "Pretérito anterior",
+      "tenseNameEn": "Preterite Perfect",
+      "description": "Uso literario para acción inmediatamente anterior.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "hube estado", "exampleSentence": "Apenas hube estado allí, me fui.", "exampleSentenceEn": "As soon as I had been there, I left."},
+        {"pronoun": "tú", "form": "hubiste estado", "exampleSentence": "Cuando hubiste estado listo, salimos.", "exampleSentenceEn": "When you had been ready, we left."},
+        {"pronoun": "él/ella/usted", "form": "hubo estado", "exampleSentence": "Apenas hubo estado listo, empezó.", "exampleSentenceEn": "As soon as he had been ready, it started."},
+        {"pronoun": "nosotros", "form": "hubimos estado", "exampleSentence": "Hubimos estado esperando horas.", "exampleSentenceEn": "We had been waiting for hours."},
+        {"pronoun": "vosotros", "form": "hubisteis estado", "exampleSentence": "Hubisteis estado ocupados.", "exampleSentenceEn": "You all had been busy."},
+        {"pronoun": "ellos/ustedes", "form": "hubieron estado", "exampleSentence": "Hubieron estado lejos.", "exampleSentenceEn": "They had been far away."}
+      ]
+    },
+    {
+      "tenseId": "indicative_future_perfect",
+      "tenseName": "Futuro perfecto",
+      "tenseNameEn": "Future Perfect",
+      "description": "Acción completada antes de un punto futuro.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "habré estado", "exampleSentence": "Habré estado ocupado por la mañana.", "exampleSentenceEn": "I will have been busy in the morning."},
+        {"pronoun": "tú", "form": "habrás estado", "exampleSentence": "Habrás estado en casa.", "exampleSentenceEn": "You will have been at home."},
+        {"pronoun": "él/ella/usted", "form": "habrá estado", "exampleSentence": "Habrá estado listo.", "exampleSentenceEn": "He will have been ready."},
+        {"pronoun": "nosotros", "form": "habremos estado", "exampleSentence": "Habremos estado de viaje.", "exampleSentenceEn": "We will have been traveling."},
+        {"pronoun": "vosotros", "form": "habréis estado", "exampleSentence": "Habréis estado ocupados.", "exampleSentenceEn": "You all will have been busy."},
+        {"pronoun": "ellos/ustedes", "form": "habrán estado", "exampleSentence": "Habrán estado fuera.", "exampleSentenceEn": "They will have been away."}
+      ]
+    },
+    {
+      "tenseId": "indicative_conditional_perfect",
+      "tenseName": "Condicional perfecto",
+      "tenseNameEn": "Conditional Perfect",
+      "description": "Acción hipotética completada.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "habría estado", "exampleSentence": "Habría estado allí si me avisabas.", "exampleSentenceEn": "I would have been there if you told me."},
+        {"pronoun": "tú", "form": "habrías estado", "exampleSentence": "Habrías estado más cómodo con abrigo.", "exampleSentenceEn": "You would have been more comfortable with a coat."},
+        {"pronoun": "él/ella/usted", "form": "habría estado", "exampleSentence": "Habría estado mejor preparado.", "exampleSentenceEn": "He would have been better prepared."},
+        {"pronoun": "nosotros", "form": "habríamos estado", "exampleSentence": "Habríamos estado listos antes.", "exampleSentenceEn": "We would have been ready earlier."},
+        {"pronoun": "vosotros", "form": "habríais estado", "exampleSentence": "Habríais estado de acuerdo.", "exampleSentenceEn": "You all would have been in agreement."},
+        {"pronoun": "ellos/ustedes", "form": "habrían estado", "exampleSentence": "Habrían estado satisfechos.", "exampleSentenceEn": "They would have been satisfied."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_present",
+      "tenseName": "Presente (subjuntivo)",
+      "tenseNameEn": "Subjunctive Present",
+      "description": "Deseos, dudas o hipótesis en presente.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "esté", "exampleSentence": "Ojalá esté bien.", "exampleSentenceEn": "I hope I am well."},
+        {"pronoun": "tú", "form": "estés", "exampleSentence": "Espero que estés cómodo.", "exampleSentenceEn": "I hope you are comfortable."},
+        {"pronoun": "él/ella/usted", "form": "esté", "exampleSentence": "Es posible que esté ocupado.", "exampleSentenceEn": "It's possible he is busy."},
+        {"pronoun": "nosotros", "form": "estemos", "exampleSentence": "Quieren que estemos listos.", "exampleSentenceEn": "They want us to be ready."},
+        {"pronoun": "vosotros", "form": "estéis", "exampleSentence": "Es bueno que estéis tranquilos.", "exampleSentenceEn": "It's good that you all are calm."},
+        {"pronoun": "ellos/ustedes", "form": "estén", "exampleSentence": "Temen que estén lejos.", "exampleSentenceEn": "They fear that you are far away."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_imperfect_ra",
+      "tenseName": "Imperfecto (ra)",
+      "tenseNameEn": "Subjunctive Imperfect (-ra)",
+      "description": "Hipótesis o cortesía en pasado.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "estuviera", "exampleSentence": "Si estuviera libre, iría.", "exampleSentenceEn": "If I were free, I would go."},
+        {"pronoun": "tú", "form": "estuvieras", "exampleSentence": "Ojalá estuvieras aquí.", "exampleSentenceEn": "I wish you were here."},
+        {"pronoun": "él/ella/usted", "form": "estuviera", "exampleSentence": "Quisiera que estuviera listo.", "exampleSentenceEn": "I would like him to be ready."},
+        {"pronoun": "nosotros", "form": "estuviéramos", "exampleSentence": "Si estuviéramos cerca, iríamos.", "exampleSentenceEn": "If we were close, we would go."},
+        {"pronoun": "vosotros", "form": "estuvierais", "exampleSentence": "Si estuvierais listos, empezaríamos.", "exampleSentenceEn": "If you all were ready, we would start."},
+        {"pronoun": "ellos/ustedes", "form": "estuvieran", "exampleSentence": "Si estuvieran aquí, hablaríamos.", "exampleSentenceEn": "If they were here, we would talk."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_imperfect_se",
+      "tenseName": "Imperfecto (se)",
+      "tenseNameEn": "Subjunctive Imperfect (-se)",
+      "description": "Variante en -se del imperfecto de subjuntivo.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "estuviese", "exampleSentence": "Si estuviese enfermo, no iría.", "exampleSentenceEn": "If I were ill, I wouldn't go."},
+        {"pronoun": "tú", "form": "estuvieses", "exampleSentence": "Quisiera que estuvieses tranquilo.", "exampleSentenceEn": "I would like you to be calm."},
+        {"pronoun": "él/ella/usted", "form": "estuviese", "exampleSentence": "No creía que estuviese allí.", "exampleSentenceEn": "I did not think he was there."},
+        {"pronoun": "nosotros", "form": "estuviésemos", "exampleSentence": "Si estuviésemos listos, saldríamos.", "exampleSentenceEn": "If we were ready, we would leave."},
+        {"pronoun": "vosotros", "form": "estuvieseis", "exampleSentence": "Si estuvieseis aquí, empezaríamos.", "exampleSentenceEn": "If you all were here, we would start."},
+        {"pronoun": "ellos/ustedes", "form": "estuviesen", "exampleSentence": "Si estuviesen lejos, llamarían.", "exampleSentenceEn": "If they were far, they would call."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_future",
+      "tenseName": "Futuro (subjuntivo)",
+      "tenseNameEn": "Subjunctive Future",
+      "description": "Uso arcaico/jurídico para futuro hipotético.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "estuviere", "exampleSentence": "Quien estuviere ausente, avisará.", "exampleSentenceEn": "Whoever be absent shall notify."},
+        {"pronoun": "tú", "form": "estuvieres", "exampleSentence": "Si estuvieres listo, ven.", "exampleSentenceEn": "If you be ready, come."},
+        {"pronoun": "él/ella/usted", "form": "estuviere", "exampleSentence": "Si estuviere de acuerdo, firmará.", "exampleSentenceEn": "If he be in agreement, he shall sign."},
+        {"pronoun": "nosotros", "form": "estuviéremos", "exampleSentence": "Si estuviéremos presentes, votaremos.", "exampleSentenceEn": "If we be present, we shall vote."},
+        {"pronoun": "vosotros", "form": "estuviereis", "exampleSentence": "Si estuviereis convocados, acudid.", "exampleSentenceEn": "If you be summoned, attend."},
+        {"pronoun": "ellos/ustedes", "form": "estuvieren", "exampleSentence": "Si estuvieren ausentes, serán informados.", "exampleSentenceEn": "If they be absent, they shall be informed."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_present_perfect",
+      "tenseName": "Pretérito perfecto (subj.)",
+      "tenseNameEn": "Subjunctive Present Perfect",
+      "description": "Acción pasada con relación al presente de subjuntivo.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "haya estado", "exampleSentence": "Dudo que haya estado allí.", "exampleSentenceEn": "I doubt I have been there."},
+        {"pronoun": "tú", "form": "hayas estado", "exampleSentence": "No creo que hayas estado enfermo.", "exampleSentenceEn": "I don't think you have been sick."},
+        {"pronoun": "él/ella/usted", "form": "haya estado", "exampleSentence": "Es posible que haya estado listo.", "exampleSentenceEn": "It's possible he has been ready."},
+        {"pronoun": "nosotros", "form": "hayamos estado", "exampleSentence": "Ojalá hayamos estado a tiempo.", "exampleSentenceEn": "I hope we have been on time."},
+        {"pronoun": "vosotros", "form": "hayáis estado", "exampleSentence": "Puede que hayáis estado ocupados.", "exampleSentenceEn": "You all may have been busy."},
+        {"pronoun": "ellos/ustedes", "form": "hayan estado", "exampleSentence": "No piensan que hayan estado aquí.", "exampleSentenceEn": "They don't think you have been here."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_pluperfect_ra",
+      "tenseName": "Pluscuamperfecto (ra)",
+      "tenseNameEn": "Subjunctive Pluperfect (-ra)",
+      "description": "Acción anterior hipotética (variante -ra).",
+      "conjugations": [
+        {"pronoun": "yo", "form": "hubiera estado", "exampleSentence": "Si hubiera estado libre, habría ido.", "exampleSentenceEn": "If I had been free, I would have gone."},
+        {"pronoun": "tú", "form": "hubieras estado", "exampleSentence": "Si hubieras estado aquí, habría llamado.", "exampleSentenceEn": "If you had been here, I would have called."},
+        {"pronoun": "él/ella/usted", "form": "hubiera estado", "exampleSentence": "Si hubiera estado listo, saldríamos.", "exampleSentenceEn": "If he had been ready, we would leave."},
+        {"pronoun": "nosotros", "form": "hubiéramos estado", "exampleSentence": "Si hubiéramos estado cerca, vendríamos.", "exampleSentenceEn": "If we had been close, we would come."},
+        {"pronoun": "vosotros", "form": "hubierais estado", "exampleSentence": "Si hubierais estado a tiempo, empezaríamos.", "exampleSentenceEn": "If you all had been on time, we would start."},
+        {"pronoun": "ellos/ustedes", "form": "hubieran estado", "exampleSentence": "Si hubieran estado aquí, decidiríamos.", "exampleSentenceEn": "If they had been here, we would decide."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_pluperfect_se",
+      "tenseName": "Pluscuamperfecto (se)",
+      "tenseNameEn": "Subjunctive Pluperfect (-se)",
+      "description": "Acción anterior hipotética (variante -se).",
+      "conjugations": [
+        {"pronoun": "yo", "form": "hubiese estado", "exampleSentence": "Si hubiese estado enfermo, no habría ido.", "exampleSentenceEn": "If I had been ill, I wouldn't have gone."},
+        {"pronoun": "tú", "form": "hubieses estado", "exampleSentence": "Si hubieses estado aquí, te habría visto.", "exampleSentenceEn": "If you had been here, I would have seen you."},
+        {"pronoun": "él/ella/usted", "form": "hubiese estado", "exampleSentence": "No pensé que hubiese estado listo.", "exampleSentenceEn": "I didn't think he had been ready."},
+        {"pronoun": "nosotros", "form": "hubiésemos estado", "exampleSentence": "Si hubiésemos estado libres, habríamos salido.", "exampleSentenceEn": "If we had been free, we would have gone out."},
+        {"pronoun": "vosotros", "form": "hubieseis estado", "exampleSentence": "Si hubieseis estado puntuales, entraríais.", "exampleSentenceEn": "If you all had been punctual, you would enter."},
+        {"pronoun": "ellos/ustedes", "form": "hubiesen estado", "exampleSentence": "Si hubiesen estado cerca, ayudarían.", "exampleSentenceEn": "If they had been nearby, they would help."}
+      ]
+    },
+    {
+      "tenseId": "subjunctive_future_perfect",
+      "tenseName": "Futuro perfecto (subj.)",
+      "tenseNameEn": "Subjunctive Future Perfect",
+      "description": "Uso arcaico para acción completa previa a futuro hipotético.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "hubiere estado", "exampleSentence": "Si hubiere estado presente, firmaré.", "exampleSentenceEn": "If I shall have been present, I will sign."},
+        {"pronoun": "tú", "form": "hubieres estado", "exampleSentence": "Si hubieres estado listo, saldrás.", "exampleSentenceEn": "If you shall have been ready, you will leave."},
+        {"pronoun": "él/ella/usted", "form": "hubiere estado", "exampleSentence": "Si hubiere estado de acuerdo, actuará.", "exampleSentenceEn": "If he shall have been in agreement, he will act."},
+        {"pronoun": "nosotros", "form": "hubiéremos estado", "exampleSentence": "Si hubiéremos estado citados, acudiremos.", "exampleSentenceEn": "If we shall have been summoned, we will attend."},
+        {"pronoun": "vosotros", "form": "hubiereis estado", "exampleSentence": "Si hubiereis estado avisados, venid.", "exampleSentenceEn": "If you shall have been notified, come."},
+        {"pronoun": "ellos/ustedes", "form": "hubieren estado", "exampleSentence": "Si hubieren estado lejos, informarán.", "exampleSentenceEn": "If they shall have been far, they will inform."}
+      ]
+    },
+    {
+      "tenseId": "imperative_affirmative",
+      "tenseName": "Imperativo afirmativo",
+      "tenseNameEn": "Imperative Affirmative",
+      "description": "Órdenes/indicaciones afirmativas.",
+      "conjugations": [
+        {"pronoun": "tú", "form": "está", "exampleSentence": "Está atento.", "exampleSentenceEn": "Be attentive."},
+        {"pronoun": "usted", "form": "esté", "exampleSentence": "Esté tranquilo, por favor.", "exampleSentenceEn": "Be calm, please."},
+        {"pronoun": "nosotros", "form": "estemos", "exampleSentence": "Estemos listos.", "exampleSentenceEn": "Let's be ready."},
+        {"pronoun": "vosotros", "form": "estad", "exampleSentence": "Estad atentos.", "exampleSentenceEn": "Be attentive (you all)."},
+        {"pronoun": "ustedes", "form": "estén", "exampleSentence": "Estén preparados.", "exampleSentenceEn": "Be prepared (you all)."}
+      ]
+    },
+    {
+      "tenseId": "imperative_negative",
+      "tenseName": "Imperativo negativo",
+      "tenseNameEn": "Imperative Negative",
+      "description": "Órdenes negativas.",
+      "conjugations": [
+        {"pronoun": "tú", "form": "no estés", "exampleSentence": "No estés nervioso.", "exampleSentenceEn": "Don't be nervous."},
+        {"pronoun": "usted", "form": "no esté", "exampleSentence": "No esté preocupado.", "exampleSentenceEn": "Don't be worried."},
+        {"pronoun": "nosotros", "form": "no estemos", "exampleSentence": "No estemos distraídos.", "exampleSentenceEn": "Let's not be distracted."},
+        {"pronoun": "vosotros", "form": "no estéis", "exampleSentence": "No estéis tristes.", "exampleSentenceEn": "Don't be sad (you all)."},
+        {"pronoun": "ustedes", "form": "no estén", "exampleSentence": "No estén impacientes.", "exampleSentenceEn": "Don't be impatient (you all)."}
+      ]
+    },
+    {
+      "tenseId": "progressive_present",
+      "tenseName": "Progresivo (presente)",
+      "tenseNameEn": "Present Progressive",
+      "description": "Acción en progreso en el presente.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "estoy estando", "exampleSentence": "Estoy estando más tranquilo.", "exampleSentenceEn": "I am being calmer."},
+        {"pronoun": "tú", "form": "estás estando", "exampleSentence": "Estás estando atento.", "exampleSentenceEn": "You are being attentive."},
+        {"pronoun": "él/ella/usted", "form": "está estando", "exampleSentence": "Está estando amable.", "exampleSentenceEn": "He is being kind."},
+        {"pronoun": "nosotros", "form": "estamos estando", "exampleSentence": "Estamos estando pacientes.", "exampleSentenceEn": "We are being patient."},
+        {"pronoun": "vosotros", "form": "estáis estando", "exampleSentence": "Estáis estando silenciosos.", "exampleSentenceEn": "You all are being quiet."},
+        {"pronoun": "ellos/ustedes", "form": "están estando", "exampleSentence": "Están estando respetuosos.", "exampleSentenceEn": "They are being respectful."}
+      ]
+    },
+    {
+      "tenseId": "progressive_past",
+      "tenseName": "Progresivo (pasado)",
+      "tenseNameEn": "Past Progressive",
+      "description": "Acción en progreso en el pasado.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "estaba estando", "exampleSentence": "Estaba estando nervioso.", "exampleSentenceEn": "I was being nervous."},
+        {"pronoun": "tú", "form": "estabas estando", "exampleSentence": "Estabas estando impaciente.", "exampleSentenceEn": "You were being impatient."},
+        {"pronoun": "él/ella/usted", "form": "estaba estando", "exampleSentence": "Estaba estando callado.", "exampleSentenceEn": "He was being quiet."},
+        {"pronoun": "nosotros", "form": "estábamos estando", "exampleSentence": "Estábamos estando cautelosos.", "exampleSentenceEn": "We were being cautious."},
+        {"pronoun": "vosotros", "form": "estabais estando", "exampleSentence": "Estabais estando discretos.", "exampleSentenceEn": "You all were being discreet."},
+        {"pronoun": "ellos/ustedes", "form": "estaban estando", "exampleSentence": "Estaban estando amables.", "exampleSentenceEn": "They were being kind."}
+      ]
+    },
+    {
+      "tenseId": "progressive_future",
+      "tenseName": "Progresivo (futuro)",
+      "tenseNameEn": "Future Progressive",
+      "description": "Acción en progreso en el futuro.",
+      "conjugations": [
+        {"pronoun": "yo", "form": "estaré estando", "exampleSentence": "Estaré estando disponible.", "exampleSentenceEn": "I will be being available."},
+        {"pronoun": "tú", "form": "estarás estando", "exampleSentence": "Estarás estando atento.", "exampleSentenceEn": "You will be being attentive."},
+        {"pronoun": "él/ella/usted", "form": "estará estando", "exampleSentence": "Estará estando tranquilo.", "exampleSentenceEn": "He will be being calm."},
+        {"pronoun": "nosotros", "form": "estaremos estando", "exampleSentence": "Estaremos estando listos.", "exampleSentenceEn": "We will be being ready."},
+        {"pronoun": "vosotros", "form": "estaréis estando", "exampleSentence": "Estaréis estando presentes.", "exampleSentenceEn": "You all will be being present."},
+        {"pronoun": "ellos/ustedes", "form": "estarán estando", "exampleSentence": "Estarán estando serios.", "exampleSentenceEn": "They will be being serious."}
+      ]
+    }
+  ]
+}
+
+
