@@ -1549,6 +1549,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Conflict - a snippet with the same text and language already exists in this context
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "401":
           description: User not authenticated
           content:
@@ -4679,7 +4685,9 @@ paths:
       tags:
         - Word of the Day
       summary: Get embeddable word of the day HTML
-      description: Retrieve word of the day as HTML for embedding in an iframe. Public endpoint that accepts user_id as a query parameter.
+      description: Retrieve word of the day as HTML for embedding in an iframe. Requires session authentication.
+      security:
+        - cookieAuth: []
       parameters:
         - name: date
           in: path
@@ -4690,13 +4698,6 @@ paths:
             format: date
             pattern: '^\d{4}-\d{2}-\d{2}$'
             example: "2025-10-28"
-        - name: user_id
-          in: query
-          required: true
-          description: User ID for which to retrieve the word
-          schema:
-            type: integer
-            example: 1
       responses:
         "200":
           description: HTML page for embedding
@@ -4705,8 +4706,14 @@ paths:
               schema:
                 type: string
                 description: HTML content for iframe embedding
+        "401":
+          description: User not authenticated
+          content:
+            text/html:
+              schema:
+                type: string
         "400":
-          description: Invalid date format or user ID
+          description: Invalid date format
           content:
             text/html:
               schema:

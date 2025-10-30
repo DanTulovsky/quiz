@@ -505,6 +505,14 @@ test.describe('Comprehensive API Tests', () => {
                 errorRequestBody = generateRequestBody(methodObj.requestBody, path, method);
               }
               break;
+            case '409':
+              errorDescription = 'Conflict';
+              // For 409 errors (conflicts), generate valid request body that will cause a conflict
+              // This will be handled specially for snippet updates to match another snippet's unique key
+              if (methodObj.requestBody) {
+                errorRequestBody = generateRequestBody(methodObj.requestBody, path, method);
+              }
+              break;
           }
 
           // Only create error test cases for meaningful scenarios
@@ -542,6 +550,21 @@ test.describe('Comprehensive API Tests', () => {
 
               cases.push(testCase);
             }
+          } else if (errorCode === '409' && path.includes('/snippets/') && method === 'put') {
+            // Only create 409 test cases for snippet updates (which can have unique constraint conflicts)
+            const testCase: TestCase = {
+              path: errorPath,
+              method: method.toUpperCase(),
+              description: `${method.toUpperCase()} ${path} - ${errorDescription}`,
+              requiresAuth,
+              requiresAdmin,
+              expectedStatusCodes: [errorCode], // Expect exactly one error code
+              requestBody: errorRequestBody,
+              pathParams: generatePathParams(methodObj.parameters || [], errorPath),
+              queryParams: generateQueryParams(methodObj.parameters || [])
+            };
+
+            cases.push(testCase);
           }
         }
       }
@@ -2306,6 +2329,40 @@ test.describe('Comprehensive API Tests', () => {
           requestOptions.data.question_id = questionId;
         }
 
+        // For snippet updates, fetch current snippet first and ensure updates don't violate unique constraint
+        // The unique constraint is on (user_id, original_text, source_language, target_language, question_id, section_id, story_id)
+        if (testCase.method === 'PUT' && testCase.path.includes('/snippets/') && testCase.path.includes('/{id}')) {
+          try {
+            const getResponse = await request.get(endpointPath, {
+              headers: {
+                'Cookie': currentSessionCookie
+              }
+            });
+            if (getResponse.status() === 200) {
+              const currentSnippet = await getResponse.json();
+              // Preserve current snippet's unique key fields to avoid creating duplicate entries
+              // This ensures the update modifies only non-constraint fields (like translated_text, context)
+              // while maintaining the unique key that identifies this snippet
+              if (requestOptions.data.original_text !== undefined) {
+                requestOptions.data.original_text = currentSnippet.original_text;
+              }
+              if (requestOptions.data.source_language !== undefined) {
+                requestOptions.data.source_language = currentSnippet.source_language;
+              }
+              if (requestOptions.data.target_language !== undefined) {
+                requestOptions.data.target_language = currentSnippet.target_language;
+              }
+              // Preserve context-related fields that are part of unique constraint
+              if (requestOptions.data.question_id !== undefined) {
+                requestOptions.data.question_id = currentSnippet.question_id;
+              }
+            }
+          } catch (e) {
+            // If fetching current snippet fails, proceed with generated values
+            // (snippet might not exist, in which case update should return 404)
+          }
+        }
+
         const response = await request[testCase.method.toLowerCase()](url.toString(), requestOptions);
 
         // Log the response details and assert status
@@ -2489,12 +2546,71 @@ test.describe('Comprehensive API Tests', () => {
           requestOptions.headers['Content-Type'] = 'application/json';
         }
 
-        const response = await request[testCase.method.toLowerCase()](url.toString(), requestOptions);
+        // Special handling for 409 conflict tests on snippet updates
+        // We need to update one snippet to match another snippet's unique key, causing a conflict
+        if (testCase.expectedStatusCodes.includes('409') &&
+            testCase.method === 'PUT' &&
+            testCase.path.includes('/snippets/') &&
+            testCase.requiresAuth) {
+          try {
+            const sessionCookie = await loginUser(request, REGULAR_USER);
 
-        await logResponse(testCase, response, 'Regular User', 'apitestuser', url.toString(), requestOptions.headers);
+            // Get all snippets for this user
+            const snippetsResponse = await request.get(`${baseURL}/v1/snippets`, {
+              headers: {'Cookie': sessionCookie}
+            });
+
+            if (snippetsResponse.status() === 200) {
+              const snippetsData = await snippetsResponse.json();
+              const snippets = snippetsData.snippets || [];
+
+              // Need at least 2 snippets to create a conflict
+              if (snippets.length >= 2) {
+                // Use the first snippet as the one we'll update
+                const snippetToUpdate = snippets[0];
+                // Use the second snippet's unique key fields to cause a conflict
+                const otherSnippet = snippets[1];
+
+                // Update the endpoint path to use the first snippet's ID
+                endpointPath = endpointPath.replace(/\/snippets\/\d+/, `/snippets/${snippetToUpdate.id}`);
+
+                // Update the first snippet to match the second snippet's unique key fields
+                // This will cause a 409 conflict
+                requestOptions.data = {
+                  original_text: otherSnippet.original_text,
+                  source_language: otherSnippet.source_language,
+                  target_language: otherSnippet.target_language,
+                  question_id: otherSnippet.question_id,
+                  section_id: otherSnippet.section_id,
+                  story_id: otherSnippet.story_id,
+                  translated_text: 'conflict test translation',
+                  context: 'conflict test context'
+                };
+
+                // Ensure we have auth headers
+                requestOptions.headers = requestOptions.headers || {};
+                requestOptions.headers['Cookie'] = sessionCookie;
+                requestOptions.headers['Content-Type'] = 'application/json';
+              }
+            }
+          } catch (e) {
+            // If setup fails, proceed with generated request body
+            // The test may fail but that's acceptable
+            console.warn('Failed to setup 409 conflict test for snippet update:', e);
+          }
+        }
+
+        // Recreate URL if endpointPath was modified (e.g., for 409 conflict tests)
+        const finalUrl = endpointPath !== expandedPath
+          ? new URL(`${baseURL}${endpointPath}`)
+          : url;
+
+        const response = await request[testCase.method.toLowerCase()](finalUrl.toString(), requestOptions);
+
+        await logResponse(testCase, response, 'Regular User', 'apitestuser', finalUrl.toString(), requestOptions.headers);
         await assertStatus(response, testCase.expectedStatusCodes.map(code => parseInt(code, 10)), {
           method: testCase.method,
-          url: url.toString(),
+          url: finalUrl.toString(),
           requestHeaders: requestOptions.headers,
           requestBody: requestOptions.data
         });
@@ -2688,6 +2804,35 @@ test.describe('Comprehensive API Tests', () => {
           }
 
           requestOptions.headers['Content-Type'] = 'application/json';
+        }
+
+        // For snippet updates, fetch current snippet first and ensure updates don't violate unique constraint
+        if (testCase.method === 'PUT' && testCase.path.includes('/snippets/') && testCase.path.includes('/{id}')) {
+          try {
+            const getResponse = await request.get(endpointPath, {
+              headers: {
+                'Cookie': sessionCookie
+              }
+            });
+            if (getResponse.status() === 200) {
+              const currentSnippet = await getResponse.json();
+              // Preserve current snippet's unique key fields to avoid creating duplicate entries
+              if (requestOptions.data && requestOptions.data.original_text !== undefined) {
+                requestOptions.data.original_text = currentSnippet.original_text;
+              }
+              if (requestOptions.data && requestOptions.data.source_language !== undefined) {
+                requestOptions.data.source_language = currentSnippet.source_language;
+              }
+              if (requestOptions.data && requestOptions.data.target_language !== undefined) {
+                requestOptions.data.target_language = currentSnippet.target_language;
+              }
+              if (requestOptions.data && requestOptions.data.question_id !== undefined) {
+                requestOptions.data.question_id = currentSnippet.question_id;
+              }
+            }
+          } catch (e) {
+            // If fetching current snippet fails, proceed with generated values
+          }
         }
 
         const response = await request[testCase.method.toLowerCase()](url.toString(), requestOptions);

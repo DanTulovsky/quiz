@@ -13,6 +13,7 @@ import (
 	"quizapp/internal/serviceinterfaces"
 	contextutils "quizapp/internal/utils"
 
+	"github.com/lib/pq"
 	"go.opentelemetry.io/otel/attribute"
 )
 
@@ -859,6 +860,10 @@ func (s *SnippetsService) UpdateSnippet(ctx context.Context, userID, snippetID i
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, contextutils.WrapError(contextutils.ErrRecordNotFound, "snippet not found")
+		}
+		// Map unique constraint violations to conflict error (409)
+		if pqErr, ok := err.(*pq.Error); ok && pqErr.Code == "23505" {
+			return nil, contextutils.WrapError(contextutils.ErrRecordExists, "a snippet with the same text and language already exists in this context")
 		}
 		return nil, contextutils.WrapErrorf(err, "failed to update snippet")
 	}
