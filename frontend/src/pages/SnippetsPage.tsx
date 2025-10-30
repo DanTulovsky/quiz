@@ -78,6 +78,9 @@ const SnippetsPage: React.FC = () => {
   const [activeSearchQuery, setActiveSearchQuery] = useState('');
   const [selectedStoryId, setSelectedStoryId] = useState<string | null>(null);
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
+  const [selectedSourceLang, setSelectedSourceLang] = useState<string | null>(
+    null
+  );
 
   // Handle URL search parameters
   useEffect(() => {
@@ -225,8 +228,9 @@ const SnippetsPage: React.FC = () => {
           activeSearchQuery,
           selectedStoryId,
           selectedLevel,
+          selectedSourceLang,
         ]
-      : ['/v1/snippets', selectedStoryId, selectedLevel],
+      : ['/v1/snippets', selectedStoryId, selectedLevel, selectedSourceLang],
     async ({ limit, offset }) => {
       if (activeSearchQuery.trim()) {
         // Use search API
@@ -236,6 +240,7 @@ const SnippetsPage: React.FC = () => {
           offset: number;
           story_id?: number;
           level?: string;
+          source_lang?: string;
         } = {
           q: activeSearchQuery.trim(),
           limit,
@@ -246,6 +251,9 @@ const SnippetsPage: React.FC = () => {
         }
         if (selectedLevel) {
           params.level = selectedLevel;
+        }
+        if (selectedSourceLang) {
+          params.source_lang = selectedSourceLang;
         }
         const responseData = await customInstance({
           url: '/v1/snippets/search',
@@ -263,6 +271,7 @@ const SnippetsPage: React.FC = () => {
           offset: number;
           story_id?: number;
           level?: string;
+          source_lang?: string;
         } = {
           limit,
           offset,
@@ -272,6 +281,9 @@ const SnippetsPage: React.FC = () => {
         }
         if (selectedLevel) {
           params.level = selectedLevel;
+        }
+        if (selectedSourceLang) {
+          params.source_lang = selectedSourceLang;
         }
         const responseData = await customInstance({
           url: '/v1/snippets',
@@ -601,12 +613,23 @@ const SnippetsPage: React.FC = () => {
                 style={{ width: levelDropdownWidth }}
                 searchable
               />
-              {(selectedStoryId || selectedLevel) && (
+              <Select
+                placeholder='Filter by source language'
+                data={languageOptions}
+                value={selectedSourceLang}
+                onChange={setSelectedSourceLang}
+                clearable
+                disabled={isLoading || isFetching}
+                style={{ width: 220 }}
+                searchable
+              />
+              {(selectedStoryId || selectedLevel || selectedSourceLang) && (
                 <Button
                   variant='subtle'
                   onClick={() => {
                     setSelectedStoryId(null);
                     setSelectedLevel(null);
+                    setSelectedSourceLang(null);
                   }}
                 >
                   Clear Filters

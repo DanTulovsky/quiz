@@ -191,6 +191,7 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
     },
     ref
   ) => {
+    const lastSelectedOriginalRef = React.useRef<number | null>(null);
     const { ref: bottomBarRef, height: bottomBarHeight } = useElementSize();
     const { fontSize } = useTheme();
     const [isSubmitted, setIsSubmitted] = useState(!!feedback);
@@ -288,6 +289,25 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
         const j = (seed + i) % (i + 1);
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
       }
+
+      // For duplicate option texts, ensure stable ordering by original index within
+      // the positions that share the same text to make badge mapping deterministic.
+      const textToPositions = new Map<string, number[]>();
+      shuffled.forEach((item, idx) => {
+        const key = String(item.option);
+        const arr = textToPositions.get(key) || [];
+        arr.push(idx);
+        textToPositions.set(key, arr);
+      });
+      textToPositions.forEach(posList => {
+        if (posList.length <= 1) return;
+        const entries = posList.map(p => ({ p, item: shuffled[p] }));
+        entries.sort((a, b) => a.item.originalIndex - b.item.originalIndex);
+        entries.forEach((entry, i) => {
+          const targetPos = posList[i];
+          shuffled[targetPos] = entry.item;
+        });
+      });
 
       // Create mapping arrays
       const shuffledToOriginalMap = new Map<number, number>();
@@ -566,8 +586,12 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
         return;
       }
 
-      // Convert shuffled index to original index
-      const originalIndex = shuffledToOriginalMap.get(selectedValue);
+      // Convert shuffled index to original index; prefer lastSelectedOriginalRef to avoid race conditions
+      const mappedOriginal = shuffledToOriginalMap.get(selectedValue);
+      const originalIndex =
+        typeof lastSelectedOriginalRef.current === 'number'
+          ? lastSelectedOriginalRef.current
+          : mappedOriginal;
 
       if (typeof originalIndex !== 'number') return;
 
@@ -637,6 +661,10 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
     // prebuffer here.
 
     const currentFeedback = localFeedback || feedback;
+    const allowResubmit =
+      !!currentFeedback && Array.isArray(question.content?.options)
+        ? question.content!.options!.length === 5
+        : false;
 
     // Compute which shuffled index should be shown as selected in the UI.
     // Falls back to mapping backend's original indices when parent has not
@@ -718,12 +746,27 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
           value={
             computedSelectedShuffledIndex !== null &&
             computedSelectedShuffledIndex !== undefined
-              ? computedSelectedShuffledIndex.toString()
+              ? (() => {
+                  const mappedOriginal = shuffledToOriginalMap.get(
+                    computedSelectedShuffledIndex
+                  );
+                  return mappedOriginal !== undefined
+                    ? mappedOriginal.toString()
+                    : undefined;
+                })()
               : undefined
           }
           onChange={value => {
             // debugSelection('onChange', { questionId: question.id, value, isSubmitted, isReadOnly });
-            if (!isSubmitted && !isReadOnly) onAnswerSelect?.(Number(value));
+            if (isReadOnly) return;
+            const original = Number(value);
+            const mappedShuffled = originalToShuffledMap.get(original);
+            if (typeof mappedShuffled === 'number') {
+              onAnswerSelect?.(mappedShuffled);
+            }
+            lastSelectedOriginalRef.current = Number.isFinite(original)
+              ? original
+              : null;
           }}
           name={`multiple-choice-${groupScopeId ?? 'q'}-${question.id}`}
           withAsterisk={false}
@@ -754,7 +797,11 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
               return (
                 <Radio
                   key={`${question.id}-${shuffledIndex}-${option}`}
-                  value={shuffledIndex.toString()}
+                  value={
+                    originalIndex !== undefined
+                      ? String(originalIndex)
+                      : String(shuffledIndex)
+                  }
                   label={
                     <div
                       style={{
@@ -809,7 +856,7 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                       </div>
                     </div>
                   }
-                  disabled={isSubmitted}
+                  disabled={isReadOnly || (isSubmitted && !allowResubmit)}
                   data-testid={`option-${shuffledIndex}`}
                 />
               );
@@ -1239,10 +1286,10 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
             </Transition>
           </div>
 
-          {/* Submit/Next button */}
+          {/* Submit/Next buttons */}
           {!isReadOnly && (
             <Group justify='flex-end' mt='xl' mb='xl'>
-              {!isSubmitted ? (
+              {(!isSubmitted || allowResubmit) && (
                 <Button
                   onClick={handleSubmit}
                   disabled={
@@ -1265,7 +1312,9 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                     ↵
                   </Badge>
                 </Button>
-              ) : (
+              )}
+
+              {isSubmitted && !allowResubmit && (
                 <Button onClick={handleNextQuestion} variant='filled'>
                   {isLastQuestion ? 'Complete Questions' : 'Next Question'}{' '}
                   <Badge

@@ -1343,6 +1343,13 @@ paths:
             type: string
             minLength: 1
             maxLength: 255
+        - name: source_lang
+          in: query
+          required: false
+          description: Filter results by source language
+          schema:
+            type: string
+            maxLength: 10
         - name: limit
           in: query
           description: Maximum number of results to return

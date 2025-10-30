@@ -578,7 +578,7 @@ func TestSnippetsService_GetSnippets_WithStoryContext_Integration(t *testing.T) 
 	require.Greater(t, snippetID, int64(0), "Snippet ID should be positive")
 
 	// Test SearchSnippets - this is the key test
-	snippets, total, err := service.SearchSnippets(context.Background(), int64(user.ID), "кажется", 10, 0)
+	snippets, total, err := service.SearchSnippets(context.Background(), int64(user.ID), "кажется", 10, 0, nil)
 	require.NoError(t, err, "Should be able to search snippets")
 	require.Greater(t, total, 0, "Should find at least one snippet")
 	require.Len(t, snippets, 1, "Should return exactly one snippet")
@@ -598,6 +598,21 @@ func TestSnippetsService_GetSnippets_WithStoryContext_Integration(t *testing.T) 
 	t.Logf("✓ SearchSnippets correctly returns StoryId field: %v", snippet.StoryId)
 	t.Logf("✓ SearchSnippets correctly returns SectionId field: %v", snippet.SectionId)
 	t.Logf("✓ SearchSnippets correctly returns QuestionId field: %v", snippet.QuestionId)
+
+	// Additional: filter by source language should include/exclude accordingly
+	// Matching source language 'ru' should find the snippet
+	ru := "ru"
+	filtered, total2, err := service.SearchSnippets(context.Background(), int64(user.ID), "кажется", 10, 0, &ru)
+	require.NoError(t, err)
+	require.Equal(t, 1, total2)
+	require.Len(t, filtered, 1)
+
+	// Non-matching source language should return zero
+	it := "it"
+	none, total3, err := service.SearchSnippets(context.Background(), int64(user.ID), "кажется", 10, 0, &it)
+	require.NoError(t, err)
+	require.Equal(t, 0, total3)
+	require.Len(t, none, 0)
 }
 
 // TestSnippetsService_GetSnippets_WithFilters_Integration2 tests filtering by story_id and level

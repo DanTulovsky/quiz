@@ -1234,8 +1234,8 @@ tasks:
     dir: frontend
     cmds:
       - echo "Installing frontend dependencies..."
-      - npm ci --silent --legacy-peer-deps
-    silent: true
+      - npm ci --legacy-peer-deps
+    # silent: true
 
   format-backend:
     desc: "Format backend code with gofmt, goimports, and gofumpt (modern Go formatting)"

@@ -2325,6 +2325,9 @@ type GetV1SnippetsSearchParams struct {
 	// Q Search query string
 	Q string `form:"q" json:"q"`
 
+	// SourceLang Filter results by source language
+	SourceLang *string `form:"source_lang,omitempty" json:"source_lang,omitempty"`
+
 	// Limit Maximum number of results to return
 	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
 

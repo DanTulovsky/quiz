@@ -26,7 +26,7 @@ type SnippetsService interface {
 	GetSnippetsByStory(ctx context.Context, userID, storyID int64) ([]api.Snippet, error)
 
 	// SearchSnippets searches across all snippets for a user
-	SearchSnippets(ctx context.Context, userID int64, query string, limit, offset int) ([]api.Snippet, int, error)
+	SearchSnippets(ctx context.Context, userID int64, query string, limit, offset int, sourceLang *string) ([]api.Snippet, int, error)
 
 	// GetSnippet retrieves a specific snippet by ID
 	GetSnippet(ctx context.Context, userID, snippetID int64) (*models.Snippet, error)

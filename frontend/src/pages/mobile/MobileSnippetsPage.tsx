@@ -81,6 +81,9 @@ const MobileSnippetsPage: React.FC = () => {
   const [activeSearchQuery, setActiveSearchQuery] = useState('');
   const [selectedStoryId, setSelectedStoryId] = useState<string | null>(null);
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
+  const [selectedSourceLang, setSelectedSourceLang] = useState<string | null>(
+    null
+  );
   const [translatingSnippetId, setTranslatingSnippetId] = useState<
     number | null
   >(null);
@@ -227,8 +230,9 @@ const MobileSnippetsPage: React.FC = () => {
           activeSearchQuery,
           selectedStoryId,
           selectedLevel,
+          selectedSourceLang,
         ]
-      : ['/v1/snippets', selectedStoryId, selectedLevel],
+      : ['/v1/snippets', selectedStoryId, selectedLevel, selectedSourceLang],
     async ({ limit, offset }) => {
       if (activeSearchQuery.trim()) {
         // Use search API
@@ -238,6 +242,7 @@ const MobileSnippetsPage: React.FC = () => {
           offset: number;
           story_id?: number;
           level?: string;
+          source_lang?: string;
         } = {
           q: activeSearchQuery.trim(),
           limit,
@@ -248,6 +253,9 @@ const MobileSnippetsPage: React.FC = () => {
         }
         if (selectedLevel) {
           params.level = selectedLevel;
+        }
+        if (selectedSourceLang) {
+          params.source_lang = selectedSourceLang;
         }
         const responseData = await customInstance({
           url: '/v1/snippets/search',
@@ -265,6 +273,7 @@ const MobileSnippetsPage: React.FC = () => {
           offset: number;
           story_id?: number;
           level?: string;
+          source_lang?: string;
         } = {
           limit,
           offset,
@@ -274,6 +283,9 @@ const MobileSnippetsPage: React.FC = () => {
         }
         if (selectedLevel) {
           params.level = selectedLevel;
+        }
+        if (selectedSourceLang) {
+          params.source_lang = selectedSourceLang;
         }
         const responseData = await customInstance({
           url: '/v1/snippets',
@@ -611,12 +623,22 @@ const MobileSnippetsPage: React.FC = () => {
             style={{ width: levelDropdownWidth }}
             searchable
           />
-          {(selectedStoryId || selectedLevel) && (
+          <Select
+            placeholder='Filter by source language'
+            data={languageOptions}
+            value={selectedSourceLang}
+            onChange={setSelectedSourceLang}
+            clearable
+            disabled={isLoading || isFetching}
+            searchable
+          />
+          {(selectedStoryId || selectedLevel || selectedSourceLang) && (
             <Button
               variant='subtle'
               onClick={() => {
                 setSelectedStoryId(null);
                 setSelectedLevel(null);
+                setSelectedSourceLang(null);
               }}
               fullWidth
             >

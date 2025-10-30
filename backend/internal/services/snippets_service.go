@@ -615,7 +615,7 @@ func (s *SnippetsService) GetSnippetsByStory(ctx context.Context, userID, storyI
 }
 
 // SearchSnippets searches across all snippets for a user
-func (s *SnippetsService) SearchSnippets(ctx context.Context, userID int64, query string, limit, offset int) (result []api.Snippet, totalCount int, err error) {
+func (s *SnippetsService) SearchSnippets(ctx context.Context, userID int64, query string, limit, offset int, sourceLang *string) (result []api.Snippet, totalCount int, err error) {
 	ctx, span := observability.TraceFunction(ctx, "snippets", "search_snippets")
 	defer observability.FinishSpan(span, &err)
 
@@ -637,26 +637,41 @@ func (s *SnippetsService) SearchSnippets(ctx context.Context, userID int64, quer
 
 	// Get total count of matching snippets
 	totalQuery := `
-		SELECT COUNT(*)
-		FROM snippets
-		WHERE user_id = $1 AND (LOWER(original_text) LIKE $2 OR LOWER(translated_text) LIKE $3)`
+        SELECT COUNT(*)
+        FROM snippets
+        WHERE user_id = $1 AND (LOWER(original_text) LIKE $2 OR LOWER(translated_text) LIKE $3)`
 
 	var total int
-	err = s.db.QueryRowContext(ctx, totalQuery, userID, searchTerm, searchTerm).Scan(&total)
+	// Add optional source language filter
+	totalArgs := []any{userID, searchTerm, searchTerm}
+	if sourceLang != nil && *sourceLang != "" {
+		totalQuery += " AND source_language = $4"
+		totalArgs = append(totalArgs, *sourceLang)
+	}
+
+	err = s.db.QueryRowContext(ctx, totalQuery, totalArgs...).Scan(&total)
 	if err != nil {
 		return nil, 0, contextutils.WrapErrorf(err, "failed to get total count for search")
 	}
 
 	// Get matching snippets
 	queryStr := `
-		SELECT id, user_id, original_text, translated_text, source_language, target_language,
-		       question_id, section_id, story_id, context, difficulty_level, created_at, updated_at
-		FROM snippets
-		WHERE user_id = $1 AND (LOWER(original_text) LIKE $2 OR LOWER(translated_text) LIKE $3)
-		ORDER BY created_at DESC
-		LIMIT $4 OFFSET $5`
+        SELECT id, user_id, original_text, translated_text, source_language, target_language,
+               question_id, section_id, story_id, context, difficulty_level, created_at, updated_at
+        FROM snippets
+        WHERE user_id = $1 AND (LOWER(original_text) LIKE $2 OR LOWER(translated_text) LIKE $3)`
+	args := []any{userID, searchTerm, searchTerm}
+	if sourceLang != nil && *sourceLang != "" {
+		queryStr += " AND source_language = $4"
+		args = append(args, *sourceLang)
+		queryStr += " ORDER BY created_at DESC LIMIT $5 OFFSET $6"
+		args = append(args, limit, offset)
+	} else {
+		queryStr += " ORDER BY created_at DESC LIMIT $4 OFFSET $5"
+		args = append(args, limit, offset)
+	}
 
-	rows, err := s.db.QueryContext(ctx, queryStr, userID, searchTerm, searchTerm, limit, offset)
+	rows, err := s.db.QueryContext(ctx, queryStr, args...)
 	if err != nil {
 		return nil, 0, contextutils.WrapErrorf(err, "failed to search snippets")
 	}

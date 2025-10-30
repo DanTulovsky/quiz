@@ -384,6 +384,9 @@ func (h *SnippetsHandler) SearchSnippets(c *gin.Context) {
 	limitStr := c.DefaultQuery("limit", "20")
 	offsetStr := c.DefaultQuery("offset", "0")
 
+	// Optional filters
+	sourceLang := c.Query("source_lang")
+
 	limit, err := strconv.Atoi(limitStr)
 	if err != nil || limit < 1 {
 		limit = 20
@@ -402,9 +405,16 @@ func (h *SnippetsHandler) SearchSnippets(c *gin.Context) {
 		attribute.Int("limit", limit),
 		attribute.Int("offset", offset),
 	)
+	if sourceLang != "" {
+		span.SetAttributes(attribute.String("params.source_lang", sourceLang))
+	}
 
 	// Search snippets
-	snippets, total, err := h.snippetsService.SearchSnippets(ctx, int64(userID), query, limit, offset)
+	var sourceLangPtr *string
+	if sourceLang != "" {
+		sourceLangPtr = &sourceLang
+	}
+	snippets, total, err := h.snippetsService.SearchSnippets(ctx, int64(userID), query, limit, offset, sourceLangPtr)
 	if err != nil {
 		h.logger.Error(ctx, "Failed to search snippets", err, map[string]any{
 			"user_id": userID,
