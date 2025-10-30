@@ -1,4 +1,4 @@
-import {useAuth} from '../../hooks/useAuth';
+import { useAuth } from '../../hooks/useAuth';
 import {
   useGetV1SettingsAiProviders,
   usePostV1SettingsTestAi,
@@ -12,15 +12,15 @@ import {
   UserLearningPreferences,
   UserUpdateRequest,
 } from '../../api/api';
-import {Save, Lightbulb} from 'lucide-react';
-import React, {useEffect, useState, useRef} from 'react';
-import {showNotificationWithClean} from '../../notifications';
+import { Save, Lightbulb } from 'lucide-react';
+import React, { useEffect, useState, useRef } from 'react';
+import { showNotificationWithClean } from '../../notifications';
 import ErrorModal from '../../components/ErrorModal';
 import ConfirmationModal from '../../components/ConfirmationModal';
-import {useQueryClient} from '@tanstack/react-query';
-import {getGetV1PreferencesLearningQueryKey} from '../../api/api';
+import { useQueryClient } from '@tanstack/react-query';
+import { getGetV1PreferencesLearningQueryKey } from '../../api/api';
 import TimezoneSelector from '../../components/TimezoneSelector';
-import {useTheme} from '../../contexts/ThemeContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import {
   defaultVoiceForLanguage,
   extractVoiceName,
@@ -78,7 +78,7 @@ interface ApiError {
 }
 
 const MobileSettingsPage: React.FC = () => {
-  const {user, refreshUser} = useAuth();
+  const { user, refreshUser } = useAuth();
   const {
     currentTheme,
     setTheme,
@@ -104,9 +104,9 @@ const MobileSettingsPage: React.FC = () => {
   const providers = providersData?.providers;
 
   const hasValidLanguage = Boolean(language && language.trim() !== '');
-  const {data: levelsData, refetch: refetchLevels} =
+  const { data: levelsData, refetch: refetchLevels } =
     useGetV1SettingsLevels<LevelsApiResponse>(
-      hasValidLanguage ? {language} : undefined,
+      hasValidLanguage ? { language } : undefined,
       {
         query: {
           enabled: hasValidLanguage,
@@ -116,7 +116,7 @@ const MobileSettingsPage: React.FC = () => {
   const levels = levelsData?.levels;
   const levelDescriptions = levelsData?.level_descriptions || {};
 
-  const {data: languagesData} = useGetV1SettingsLanguages();
+  const { data: languagesData } = useGetV1SettingsLanguages();
   const languages = languagesData;
 
   // Find the current language object for TTS configuration
@@ -161,9 +161,9 @@ const MobileSettingsPage: React.FC = () => {
   const testEmailMutation = usePostV1SettingsTestEmail();
 
   // Check API key availability for the currently selected provider (no special case for ollama)
-  const {data: apiKeyAvailable, refetch: refetchApiKeyAvailability} =
+  const { data: apiKeyAvailable, refetch: refetchApiKeyAvailability } =
     useGetV1SettingsApiKeyProvider(aiProvider, {
-      query: {enabled: !!aiProvider},
+      query: { enabled: !!aiProvider },
     });
 
   // Refetch API key availability when AI provider changes
@@ -208,7 +208,7 @@ const MobileSettingsPage: React.FC = () => {
         const json: unknown = await res.json();
         const rawVoices: EdgeTTSVoiceInfo[] = Array.isArray(json)
           ? (json as EdgeTTSVoiceInfo[])
-          : ((json as {voices?: EdgeTTSVoiceInfo[]})?.voices ?? []);
+          : ((json as { voices?: EdgeTTSVoiceInfo[] })?.voices ?? []);
         const voices = (rawVoices || [])
           .map(extractVoiceName)
           .filter((v): v is string => !!v);
@@ -230,7 +230,7 @@ const MobileSettingsPage: React.FC = () => {
   // Ensure TTS voice is properly selected when learning preferences or voices change
   useEffect(() => {
     if (learningPrefs && availableVoices.length > 0) {
-      const saved = (learningPrefs as unknown as {tts_voice?: string})
+      const saved = (learningPrefs as unknown as { tts_voice?: string })
         .tts_voice;
       const preferred = defaultVoiceForLanguage(currentLanguageObj);
       const chosen =
@@ -241,7 +241,7 @@ const MobileSettingsPage: React.FC = () => {
       if (chosen && chosen !== saved) {
         setLearningPrefs(prev =>
           prev
-            ? ({...prev, tts_voice: chosen} as UserLearningPreferences)
+            ? ({ ...prev, tts_voice: chosen } as UserLearningPreferences)
             : prev
         );
       }
@@ -349,7 +349,7 @@ const MobileSettingsPage: React.FC = () => {
     field: keyof UserLearningPreferences,
     value: string | number | boolean
   ) => {
-    setLearningPrefs(prev => (prev ? {...prev, [field]: value} : prev));
+    setLearningPrefs(prev => (prev ? { ...prev, [field]: value } : prev));
   };
 
   // Function to update all user settings using the unified profile endpoint
@@ -605,7 +605,7 @@ const MobileSettingsPage: React.FC = () => {
       });
       // Save learning preferences if loaded
       if (learningPrefs) {
-        await prefsMutation.mutateAsync({data: learningPrefs});
+        await prefsMutation.mutateAsync({ data: learningPrefs });
         // Immediately update cache so other pages see the new voice without reload
         queryClient.setQueryData(
           getGetV1PreferencesLearningQueryKey(),
@@ -628,8 +628,8 @@ const MobileSettingsPage: React.FC = () => {
       });
     } catch (error: unknown) {
       errorMsg =
-        (error as {error?: string; message?: string})?.error ||
-        (error as {error?: string; message?: string})?.message ||
+        (error as { error?: string; message?: string })?.error ||
+        (error as { error?: string; message?: string })?.message ||
         'Failed to save settings';
       showNotificationWithClean({
         title: 'Error',
@@ -709,10 +709,10 @@ const MobileSettingsPage: React.FC = () => {
                       value={fontSize}
                       onChange={value => setFontSize(value as typeof fontSize)}
                       data={[
-                        {label: 'S', value: 'small'},
-                        {label: 'M', value: 'medium'},
-                        {label: 'L', value: 'large'},
-                        {label: 'XL', value: 'extra-large'},
+                        { label: 'S', value: 'small' },
+                        { label: 'M', value: 'medium' },
+                        { label: 'L', value: 'large' },
+                        { label: 'XL', value: 'extra-large' },
                       ]}
                       fullWidth
                       data-testid='font-size-control'
@@ -791,9 +791,9 @@ const MobileSettingsPage: React.FC = () => {
                         value: lang.name || lang,
                         label: lang.name
                           ? lang.name.charAt(0).toUpperCase() +
-                          lang.name.slice(1)
+                            lang.name.slice(1)
                           : (lang.name || lang).charAt(0).toUpperCase() +
-                          (lang.name || lang).slice(1),
+                            (lang.name || lang).slice(1),
                       })) || []
                     }
                     placeholder='Select language'
@@ -856,7 +856,7 @@ const MobileSettingsPage: React.FC = () => {
                             nothingFoundMessage='No voices'
                             disabled={!availableVoices.length}
                             data-testid='tts-voice-select'
-                            style={{flex: 1}}
+                            style={{ flex: 1 }}
                           />
                           <Tooltip label='Play sample' position='top'>
                             <Button
@@ -894,7 +894,7 @@ const MobileSettingsPage: React.FC = () => {
                                   // Set local buffering indicator
                                   setTtsBufferingLocal(true);
 
-                                  const {playTTSOnce, stopTTSOnce} =
+                                  const { playTTSOnce, stopTTSOnce } =
                                     await import('../../hooks/useTTS');
 
                                   // If already playing, stop instead of starting another
@@ -977,9 +977,9 @@ const MobileSettingsPage: React.FC = () => {
                               handlePrefsChange('fresh_question_ratio', v)
                             }
                             marks={[
-                              {value: 0, label: '0%'},
-                              {value: 0.5, label: '50%'},
-                              {value: 1, label: '100%'},
+                              { value: 0, label: '0%' },
+                              { value: 0.5, label: '50%' },
+                              { value: 1, label: '100%' },
                             ]}
                             data-testid='fresh-question-ratio-slider'
                           />
@@ -1003,9 +1003,9 @@ const MobileSettingsPage: React.FC = () => {
                               handlePrefsChange('known_question_penalty', v)
                             }
                             marks={[
-                              {value: 0, label: '0'},
-                              {value: 0.5, label: '0.5'},
-                              {value: 1, label: '1'},
+                              { value: 0, label: '0' },
+                              { value: 0.5, label: '0.5' },
+                              { value: 1, label: '1' },
                             ]}
                             data-testid='known-question-penalty-slider'
                           />
@@ -1029,9 +1029,9 @@ const MobileSettingsPage: React.FC = () => {
                               handlePrefsChange('weak_area_boost', v)
                             }
                             marks={[
-                              {value: 1, label: '1x'},
-                              {value: 3, label: '3x'},
-                              {value: 5, label: '5x'},
+                              { value: 1, label: '1x' },
+                              { value: 3, label: '3x' },
+                              { value: 5, label: '5x' },
                             ]}
                             data-testid='weak-area-boost-slider'
                           />
@@ -1083,7 +1083,7 @@ const MobileSettingsPage: React.FC = () => {
               <Accordion.Panel>
                 <Stack gap='md'>
                   <Group justify='space-between' align='flex-start'>
-                    <Box style={{flex: 1}}>
+                    <Box style={{ flex: 1 }}>
                       <Text fw={500} mb='xs'>
                         Daily Email Reminders
                       </Text>
@@ -1127,7 +1127,7 @@ const MobileSettingsPage: React.FC = () => {
               <Accordion.Panel>
                 <Stack gap='md'>
                   <Group justify='space-between' align='flex-start'>
-                    <Box style={{flex: 1}}>
+                    <Box style={{ flex: 1 }}>
                       <Text fw={500} mb='xs'>
                         Word of the Day Emails
                       </Text>
@@ -1139,7 +1139,7 @@ const MobileSettingsPage: React.FC = () => {
                       checked={Boolean(user?.word_of_day_email_enabled)}
                       onChange={async e => {
                         try {
-                          const {updateWordOfDayEmailPreference} =
+                          const { updateWordOfDayEmailPreference } =
                             await import('../../api/settingsApi');
                           await updateWordOfDayEmailPreference(
                             e.currentTarget.checked
@@ -1176,7 +1176,7 @@ const MobileSettingsPage: React.FC = () => {
               <Accordion.Panel>
                 <Stack gap='md'>
                   <Group justify='space-between' align='flex-start'>
-                    <Box style={{flex: 1}}>
+                    <Box style={{ flex: 1 }}>
                       <Text fw={500} mb='xs'>
                         Enable AI Features
                       </Text>
@@ -1211,7 +1211,7 @@ const MobileSettingsPage: React.FC = () => {
                         data={
                           providers
                             ?.filter(p => p.name && p.code)
-                            .map(p => ({value: p.code!, label: p.name!})) ||
+                            .map(p => ({ value: p.code!, label: p.name! })) ||
                           []
                         }
                         placeholder='Select a provider'
@@ -1226,7 +1226,7 @@ const MobileSettingsPage: React.FC = () => {
                           providers
                             ?.find(p => p.code === aiProvider)
                             ?.models?.filter(m => m.name && m.code)
-                            .map(m => ({value: m.code!, label: m.name!})) ||
+                            .map(m => ({ value: m.code!, label: m.name! })) ||
                           []
                         }
                         placeholder='Select a model'
@@ -1347,7 +1347,7 @@ const MobileSettingsPage: React.FC = () => {
       {/* Error Modal */}
       <ErrorModal
         isOpen={errorModal.isOpen}
-        onClose={() => setErrorModal({...errorModal, isOpen: false})}
+        onClose={() => setErrorModal({ ...errorModal, isOpen: false })}
         title={errorModal.title}
         message={errorModal.message}
       />

@@ -1748,7 +1748,9 @@ describe('QuestionCard', () => {
       };
 
       function Wrapper() {
-        const [selectedAnswer, setSelectedAnswer] = React.useState<number | null>(null);
+        const [selectedAnswer, setSelectedAnswer] = React.useState<
+          number | null
+        >(null);
         const [showExplanation, setShowExplanation] = React.useState(false);
         return (
           <QuestionCard
@@ -1802,7 +1804,9 @@ describe('QuestionCard', () => {
 
       let capturedOriginalIndex: number | null = null;
       function Wrapper() {
-        const [selectedAnswer, setSelectedAnswer] = React.useState<number | null>(null);
+        const [selectedAnswer, setSelectedAnswer] = React.useState<
+          number | null
+        >(null);
         const [showExplanation, setShowExplanation] = React.useState(false);
         const onAnswer = async (_qid: number, answer: string) => {
           capturedOriginalIndex = parseInt(answer, 10);
