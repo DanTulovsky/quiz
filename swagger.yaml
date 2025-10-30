@@ -689,6 +689,40 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /v1/settings/word-of-day-email:
+    put:
+      tags:
+        - Settings
+      summary: Update Word of the Day email preference
+      description: Enable or disable Word of the Day emails for the authenticated user
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WordOfDayEmailPreferenceRequest"
+      responses:
+        "200":
+          description: Preference updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /v1/settings/levels:
     get:
       tags:
@@ -5903,6 +5937,15 @@ paths:
 
 components:
   schemas:
+    WordOfDayEmailPreferenceRequest:
+      type: object
+      required:
+        - enabled
+      properties:
+        enabled:
+          type: boolean
+          description: Whether to enable Word of the Day emails
+          example: true
     CreateConversationRequest:
       type: object
       required:

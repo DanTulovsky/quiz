@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"math/rand"
 	"time"
@@ -31,6 +32,9 @@ type WordOfTheDayService struct {
 	logger *observability.Logger
 }
 
+// ErrNoSuitableWord indicates there was no suitable word available for the user/date.
+var ErrNoSuitableWord = errors.New("no suitable word found")
+
 // NewWordOfTheDayService creates a new WordOfTheDayService instance
 func NewWordOfTheDayService(db *sql.DB, logger *observability.Logger) *WordOfTheDayService {
 	return &WordOfTheDayService{
@@ -54,6 +58,10 @@ func (s *WordOfTheDayService) GetWordOfTheDay(ctx context.Context, userID int, d
 	date = time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)
 
 	// Try to get existing word of the day
+	// Attach username to span (best-effort)
+	if u, _ := s.getUserByID(ctx, userID); u != nil {
+		span.SetAttributes(attribute.String("user.username", u.Username))
+	}
 	word, err := s.getWordOfTheDayFromDB(ctx, userID, date)
 	if err != nil && err != sql.ErrNoRows {
 		span.RecordError(err, trace.WithStackTrace(true))
@@ -120,6 +128,7 @@ func (s *WordOfTheDayService) SelectWordOfTheDay(ctx context.Context, userID int
 	span.SetAttributes(
 		attribute.String("language", language),
 		attribute.String("level", level),
+		attribute.String("user.username", user.Username),
 	)
 
 	// Randomly decide between vocabulary question (70%) or snippet (30%)
@@ -153,10 +162,9 @@ func (s *WordOfTheDayService) SelectWordOfTheDay(ctx context.Context, userID int
 	}
 
 	if word == nil {
-		err := contextutils.ErrorWithContextf("no suitable word found for user")
-		span.RecordError(err, trace.WithStackTrace(true))
-		span.SetStatus(codes.Error, err.Error())
-		return nil, err
+		// No available word is a normal condition: surface as a typed sentinel without error status
+		span.SetAttributes(attribute.Bool("no_word_available", true))
+		return nil, ErrNoSuitableWord
 	}
 
 	// Save to database
@@ -192,6 +200,10 @@ func (s *WordOfTheDayService) GetWordHistory(ctx context.Context, userID int, st
 		),
 	)
 	defer observability.FinishSpan(span, nil)
+
+	if u, _ := s.getUserByID(ctx, userID); u != nil {
+		span.SetAttributes(attribute.String("user.username", u.Username))
+	}
 
 	// Normalize dates
 	startDate = time.Date(startDate.Year(), startDate.Month(), startDate.Day(), 0, 0, 0, 0, time.UTC)
@@ -257,8 +269,18 @@ func (s *WordOfTheDayService) GetWordHistory(ctx context.Context, userID int, st
 
 // selectVocabularyQuestion selects a vocabulary question for word of the day
 func (s *WordOfTheDayService) selectVocabularyQuestion(ctx context.Context, userID int, language, level string, date time.Time) (*models.WordOfTheDay, error) {
-	ctx, span := otel.Tracer("word-of-the-day-service").Start(ctx, "selectVocabularyQuestion")
+	ctx, span := otel.Tracer("word-of-the-day-service").Start(ctx, "selectVocabularyQuestion",
+		trace.WithAttributes(
+			attribute.Int("user.id", userID),
+			attribute.String("language", language),
+			attribute.String("level", level),
+		),
+	)
 	defer observability.FinishSpan(span, nil)
+
+	if u, _ := s.getUserByID(ctx, userID); u != nil {
+		span.SetAttributes(attribute.String("user.username", u.Username))
+	}
 
 	// Query for vocabulary questions that haven't been used as word of the day recently
 	query := `
@@ -318,8 +340,17 @@ func (s *WordOfTheDayService) selectVocabularyQuestion(ctx context.Context, user
 
 // selectSnippet selects a user snippet for word of the day
 func (s *WordOfTheDayService) selectSnippet(ctx context.Context, userID int, language string, date time.Time) (*models.WordOfTheDay, error) {
-	ctx, span := otel.Tracer("word-of-the-day-service").Start(ctx, "selectSnippet")
+	ctx, span := otel.Tracer("word-of-the-day-service").Start(ctx, "selectSnippet",
+		trace.WithAttributes(
+			attribute.Int("user.id", userID),
+			attribute.String("language", language),
+		),
+	)
 	defer observability.FinishSpan(span, nil)
+
+	if u, _ := s.getUserByID(ctx, userID); u != nil {
+		span.SetAttributes(attribute.String("user.username", u.Username))
+	}
 
 	// Query for user's snippets that haven't been used as word of the day recently
 	// Prefer more recent snippets (created in last 30 days)
@@ -429,6 +460,13 @@ func (s *WordOfTheDayService) saveWordOfTheDay(ctx context.Context, word *models
 func (s *WordOfTheDayService) convertToDisplay(ctx context.Context, word *models.WordOfTheDay) (*models.WordOfTheDayDisplay, error) {
 	ctx, span := otel.Tracer("word-of-the-day-service").Start(ctx, "convertToDisplay")
 	defer observability.FinishSpan(span, nil)
+
+	if u, _ := s.getUserByID(ctx, word.UserID); u != nil {
+		span.SetAttributes(
+			attribute.Int("user.id", u.ID),
+			attribute.String("user.username", u.Username),
+		)
+	}
 
 	display := &models.WordOfTheDayDisplay{
 		Date:       word.AssignmentDate,

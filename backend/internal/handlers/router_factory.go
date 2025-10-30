@@ -342,6 +342,7 @@ func NewRouter(
 			settings.POST("/test-ai", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), middleware.RequestValidationMiddleware(logger), settingsHandler.TestAIConnection)
 			settings.POST("/test-email", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), middleware.RequestValidationMiddleware(logger), settingsHandler.SendTestEmail)
 			settings.PUT("", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), middleware.RequestValidationMiddleware(logger), settingsHandler.UpdateUserSettings)
+			settings.PUT("/word-of-day-email", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), middleware.RequestValidationMiddleware(logger), settingsHandler.UpdateWordOfDayEmailPreference)
 			// User data management endpoints
 			settings.POST("/clear-stories", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), middleware.RequestValidationMiddleware(logger), settingsHandler.ClearAllStories)
 			settings.POST("/clear-ai-chats", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), middleware.RequestValidationMiddleware(logger), settingsHandler.ClearAllAIChats)
@@ -351,6 +352,7 @@ func NewRouter(
 
 		// Verb conjugation endpoints
 		verbConjugations := v1.Group("/verb-conjugations")
+		verbConjugations.Use(middleware.RequireAuthWithAPIKey(authAPIKeyService, userService))
 		{
 			verbConjugations.GET("/info", verbConjugationHandler.GetVerbConjugationInfo)
 			verbConjugations.GET("/languages", verbConjugationHandler.GetAvailableLanguages)

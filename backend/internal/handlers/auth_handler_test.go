@@ -163,6 +163,11 @@ func (m *MockUserService) UpdateUserPassword(ctx context.Context, userID int, ne
 	return args.Error(0)
 }
 
+func (m *MockUserService) UpdateWordOfDayEmailEnabled(ctx context.Context, userID int, enabled bool) error {
+	args := m.Called(ctx, userID, enabled)
+	return args.Error(0)
+}
+
 func (m *MockUserService) ClearUserDataForUser(_ context.Context, _ int) error { return nil }
 
 // Role management methods

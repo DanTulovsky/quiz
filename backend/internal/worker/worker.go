@@ -550,9 +550,19 @@ func (w *Worker) checkForWordOfTheDayAssignments(ctx context.Context) error {
 		now := w.timeNow().In(loc)
 		today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, loc)
 
-		// Select and assign word of the day for today
-		_, err = w.wordOfTheDayService.SelectWordOfTheDay(ctx, user.ID, today)
+		// Idempotent: fetch existing or create if missing
+		_, err = w.wordOfTheDayService.GetWordOfTheDay(ctx, user.ID, today)
 		if err != nil {
+			// Treat no-available-word as a normal condition
+			if errors.Is(err, services.ErrNoSuitableWord) {
+				w.logger.Info(ctx, "No suitable word available for user today", map[string]interface{}{
+					"user_id":  user.ID,
+					"username": user.Username,
+					"timezone": timezone,
+					"date":     today.Format("2006-01-02"),
+				})
+				continue
+			}
 			failedAssignments++
 			w.logger.Error(ctx, "Failed to assign word of the day", err, map[string]interface{}{
 				"user_id":  user.ID,
@@ -594,6 +604,11 @@ func (w *Worker) getUsersEligibleForWordOfTheDay(ctx context.Context) ([]models.
 		}
 
 		if !user.CurrentLevel.Valid || user.CurrentLevel.String == "" {
+			continue
+		}
+
+		// Skip users with AI disabled
+		if !user.AIEnabled.Valid || !user.AIEnabled.Bool {
 			continue
 		}
 

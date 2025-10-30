@@ -138,6 +138,10 @@ func (m *mockUserService) GetUsersWithEmail(_ context.Context) (result0 []models
 	return users, nil
 }
 
+func (m *mockUserService) UpdateWordOfDayEmailEnabled(_ context.Context, _ int, _ bool) error {
+	return nil
+}
+
 func TestAuthenticateGoogleUser_MockedEndpoints(t *testing.T) {
 	tokenServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "application/json")

@@ -1801,6 +1801,12 @@ type UserUsageStatsHourly struct {
 	UsageType             *string `json:"usage_type,omitempty"`
 }
 
+// WordOfDayEmailPreferenceRequest defines model for WordOfDayEmailPreferenceRequest.
+type WordOfDayEmailPreferenceRequest struct {
+	// Enabled Whether to enable Word of the Day emails
+	Enabled bool `json:"enabled"`
+}
+
 // WordOfTheDayDisplay defines model for WordOfTheDayDisplay.
 type WordOfTheDayDisplay struct {
 	// Context Additional context for the word (primarily for snippets)
@@ -2341,12 +2347,6 @@ type GetV1WordOfDayHistoryParams struct {
 	EndDate openapi_types.Date `form:"end_date" json:"end_date"`
 }
 
-// GetV1WordOfDayDateEmbedParams defines parameters for GetV1WordOfDayDateEmbed.
-type GetV1WordOfDayDateEmbedParams struct {
-	// UserId User ID for which to retrieve the word
-	UserId int `form:"user_id" json:"user_id"`
-}
-
 // PatchV1AdminBackendFeedbackIdJSONRequestBody defines body for PatchV1AdminBackendFeedbackId for application/json ContentType.
 type PatchV1AdminBackendFeedbackIdJSONRequestBody = FeedbackUpdateRequest
 
@@ -2433,6 +2433,9 @@ type PutV1SettingsJSONRequestBody = UserSettings
 
 // PostV1SettingsTestAiJSONRequestBody defines body for PostV1SettingsTestAi for application/json ContentType.
 type PostV1SettingsTestAiJSONRequestBody = TestAIRequest
+
+// PutV1SettingsWordOfDayEmailJSONRequestBody defines body for PutV1SettingsWordOfDayEmail for application/json ContentType.
+type PutV1SettingsWordOfDayEmailJSONRequestBody = WordOfDayEmailPreferenceRequest
 
 // PostV1SnippetsJSONRequestBody defines body for PostV1Snippets for application/json ContentType.
 type PostV1SnippetsJSONRequestBody = CreateSnippetRequest

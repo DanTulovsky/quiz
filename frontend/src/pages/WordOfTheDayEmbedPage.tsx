@@ -1,24 +1,32 @@
 import React from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useGetV1WordOfDayDateEmbed } from '../api/api';
 import { Container, Stack, Text, Center, Card, Title } from '@mantine/core';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const WordOfTheDayEmbedPage: React.FC = () => {
-  const { date } = useParams<{ date: string }>();
-  const [searchParams] = useSearchParams();
-  const userId = searchParams.get('user_id');
+  const { date } = useParams<{ date?: string }>();
+
+  // If no date is provided, default to today's date (local time) in YYYY-MM-DD
+  const getToday = (): string => {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const da = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${da}`;
+  };
+  const resolvedDate = date || getToday();
 
   const {
     data: htmlContent,
     isLoading,
     error,
   } = useGetV1WordOfDayDateEmbed(
-    date || '',
-    { user_id: userId ? parseInt(userId) : undefined },
+    resolvedDate,
+    {},
     {
       query: {
-        enabled: !!date && !!userId,
+        enabled: !!resolvedDate,
         retry: false,
       },
     }
@@ -35,15 +43,7 @@ const WordOfTheDayEmbedPage: React.FC = () => {
     });
   };
 
-  if (!date || !userId) {
-    return (
-      <Container size='md' py='xl'>
-        <Center h='60vh'>
-          <Text c='dimmed'>Date and user_id are required.</Text>
-        </Center>
-      </Container>
-    );
-  }
+  // No need to gate on date; we resolve to today by default
 
   if (isLoading) {
     return (

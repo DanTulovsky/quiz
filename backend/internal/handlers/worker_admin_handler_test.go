@@ -741,6 +741,11 @@ func (m *MockUserServiceForHandler) ResetDatabase(ctx context.Context) error {
 	return args.Error(0)
 }
 
+func (m *MockUserServiceForHandler) UpdateWordOfDayEmailEnabled(ctx context.Context, userID int, enabled bool) error {
+	args := m.Called(ctx, userID, enabled)
+	return args.Error(0)
+}
+
 func (m *MockUserServiceForHandler) ClearUserData(ctx context.Context) error {
 	args := m.Called(ctx)
 	return args.Error(0)

@@ -56,6 +56,7 @@ import {
   resetAccount,
   clearAllAIChats,
   clearAllSnippets,
+  updateWordOfDayEmailPreference,
 } from '../api/settingsApi';
 import {
   IconUser,
@@ -130,6 +131,9 @@ const SettingsPage: React.FC = () => {
   const [apiKey, setApiKey] = useState(''); // API key is write-only
   const [aiEnabled, setAiEnabled] = useState(false); // AI enable/disable toggle
   const [isInitialized, setIsInitialized] = useState(false); // Track if we've finished initializing from user data
+  const [wordOfDayEmailEnabled, setWordOfDayEmailEnabled] = useState<boolean>(
+    Boolean(user?.word_of_day_email_enabled)
+  );
 
   const [learningPrefs, setLearningPrefs] =
     useState<UserLearningPreferences | null>(null);
@@ -288,6 +292,9 @@ const SettingsPage: React.FC = () => {
       setAiProvider(user.ai_provider || '');
       setAiModel(user.ai_model || '');
       setAiEnabled(user.ai_enabled || false);
+
+      // Initialize WOTD email preference
+      setWordOfDayEmailEnabled(Boolean(user.word_of_day_email_enabled));
 
       // Auto-detect timezone if not set
       if (!user.timezone) {
@@ -1246,6 +1253,51 @@ const SettingsPage: React.FC = () => {
                       </Button>
                     </Group>
                   )}
+                </Stack>
+              </Card>
+
+              <Card
+                withBorder
+                style={{ background: 'var(--mantine-color-body)' }}
+              >
+                <Stack gap='md'>
+                  <Group justify='space-between' align='flex-start'>
+                    <Box style={{ flex: 1 }}>
+                      <Text fw={500} size='lg' mb='xs'>
+                        Word of the Day Emails
+                      </Text>
+                      <Text size='sm' c='dimmed'>
+                        Receive a daily email with your Word of the Day.
+                      </Text>
+                    </Box>
+                    <Switch
+                      checked={wordOfDayEmailEnabled}
+                      onChange={async e => {
+                        const next = e.currentTarget.checked;
+                        setWordOfDayEmailEnabled(next);
+                        try {
+                          await updateWordOfDayEmailPreference(next);
+                          await refreshUser();
+                          showNotificationWithClean({
+                            title: 'Saved',
+                            message: 'Word of the Day email setting updated',
+                            color: 'green',
+                          });
+                        } catch {
+                          setWordOfDayEmailEnabled(!next);
+                          showNotificationWithClean({
+                            title: 'Error',
+                            message: 'Failed to update setting',
+                            color: 'red',
+                          });
+                        }
+                      }}
+                      size='lg'
+                      role='switch'
+                      aria-checked={wordOfDayEmailEnabled}
+                      data-testid='wotd-email-switch'
+                    />
+                  </Group>
                 </Stack>
               </Card>
             </Stack>

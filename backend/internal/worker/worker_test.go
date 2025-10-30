@@ -3054,3 +3054,8 @@ func createTestWorkerWithConfig(cfg *config.Config) *Worker {
 		logger,
 	)
 }
+
+func (m *mockUserService) UpdateWordOfDayEmailEnabled(ctx context.Context, userID int, enabled bool) error {
+	args := m.Called(ctx, userID, enabled)
+	return args.Error(0)
+}

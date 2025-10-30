@@ -28,5 +28,14 @@ export const clearAllSnippets = async () => {
   return res.data;
 };
 
+export const updateWordOfDayEmailPreference = async (enabled: boolean) => {
+  const res = await AXIOS_INSTANCE.put(
+    '/v1/settings/word-of-day-email',
+    { enabled },
+    { headers: { Accept: 'application/json', 'Content-Type': 'application/json' } }
+  );
+  return res.data as { success: boolean };
+};
+
 
 

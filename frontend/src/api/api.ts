@@ -35,6 +35,11 @@ import {
 } from 'msw';
 
 import { customInstance } from './axios';
+export interface WordOfDayEmailPreferenceRequest {
+  /** Whether to enable Word of the Day emails */
+  enabled: boolean;
+}
+
 export interface CreateConversationRequest {
   /**
    * Title for the conversation
@@ -3280,13 +3285,6 @@ export type GetV1DailyHistoryQuestionId200 = {
   history?: DailyQuestionHistory[];
 };
 
-export type GetV1WordOfDayDateEmbedParams = {
-/**
- * User ID for which to retrieve the word
- */
-user_id: number;
-};
-
 export type GetV1WordOfDayHistoryParams = {
 /**
  * Start date in YYYY-MM-DD format
@@ -5173,6 +5171,71 @@ export const usePostV1SettingsTestEmail = <TError = ErrorResponse | ErrorRespons
     }
     
 /**
+ * Enable or disable Word of the Day emails for the authenticated user
+ * @summary Update Word of the Day email preference
+ */
+export const putV1SettingsWordOfDayEmail = (
+    wordOfDayEmailPreferenceRequest: WordOfDayEmailPreferenceRequest,
+ options?: SecondParameter<typeof customInstance>,) => {
+      
+      
+      return customInstance<SuccessResponse>(
+      {url: `/v1/settings/word-of-day-email`, method: 'PUT',
+      headers: {'Content-Type': 'application/json', },
+      data: wordOfDayEmailPreferenceRequest
+    },
+      options);
+    }
+  
+
+
+export const getPutV1SettingsWordOfDayEmailMutationOptions = <TError = ErrorResponse | ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1SettingsWordOfDayEmail>>, TError,{data: WordOfDayEmailPreferenceRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof putV1SettingsWordOfDayEmail>>, TError,{data: WordOfDayEmailPreferenceRequest}, TContext> => {
+
+const mutationKey = ['putV1SettingsWordOfDayEmail'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putV1SettingsWordOfDayEmail>>, {data: WordOfDayEmailPreferenceRequest}> = (props) => {
+          const {data} = props ?? {};
+
+          return  putV1SettingsWordOfDayEmail(data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PutV1SettingsWordOfDayEmailMutationResult = NonNullable<Awaited<ReturnType<typeof putV1SettingsWordOfDayEmail>>>
+    export type PutV1SettingsWordOfDayEmailMutationBody = WordOfDayEmailPreferenceRequest
+    export type PutV1SettingsWordOfDayEmailMutationError = ErrorResponse | ErrorResponse
+
+    /**
+ * @summary Update Word of the Day email preference
+ */
+export const usePutV1SettingsWordOfDayEmail = <TError = ErrorResponse | ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1SettingsWordOfDayEmail>>, TError,{data: WordOfDayEmailPreferenceRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof putV1SettingsWordOfDayEmail>>,
+        TError,
+        {data: WordOfDayEmailPreferenceRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getPutV1SettingsWordOfDayEmailMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    
+/**
  * Retrieve the list of available language proficiency levels and their short descriptions
  * @summary Get available levels
  */
@@ -6748,7 +6811,7 @@ export const putV1SnippetsId = (
   
 
 
-export const getPutV1SnippetsIdMutationOptions = <TError = ErrorResponse | ErrorResponse | ErrorResponse,
+export const getPutV1SnippetsIdMutationOptions = <TError = ErrorResponse | ErrorResponse | ErrorResponse | ErrorResponse,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1SnippetsId>>, TError,{id: number;data: UpdateSnippetRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof putV1SnippetsId>>, TError,{id: number;data: UpdateSnippetRequest}, TContext> => {
 
@@ -6775,12 +6838,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type PutV1SnippetsIdMutationResult = NonNullable<Awaited<ReturnType<typeof putV1SnippetsId>>>
     export type PutV1SnippetsIdMutationBody = UpdateSnippetRequest
-    export type PutV1SnippetsIdMutationError = ErrorResponse | ErrorResponse | ErrorResponse
+    export type PutV1SnippetsIdMutationError = ErrorResponse | ErrorResponse | ErrorResponse | ErrorResponse
 
     /**
  * @summary Update a snippet
  */
-export const usePutV1SnippetsId = <TError = ErrorResponse | ErrorResponse | ErrorResponse,
+export const usePutV1SnippetsId = <TError = ErrorResponse | ErrorResponse | ErrorResponse | ErrorResponse,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1SnippetsId>>, TError,{id: number;data: UpdateSnippetRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof putV1SnippetsId>>,
@@ -11997,41 +12060,37 @@ export function useGetV1WordOfDay<TData = Awaited<ReturnType<typeof getV1WordOfD
 
 
 /**
- * Retrieve word of the day as HTML for embedding in an iframe. Public endpoint that accepts user_id as a query parameter.
+ * Retrieve word of the day as HTML for embedding in an iframe. Requires session authentication.
  * @summary Get embeddable word of the day HTML
  */
 export const getV1WordOfDayDateEmbed = (
     date: string,
-    params: GetV1WordOfDayDateEmbedParams,
  options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<string>(
-      {url: `/v1/word-of-day/${date}/embed`, method: 'GET',
-        params, signal
+      {url: `/v1/word-of-day/${date}/embed`, method: 'GET', signal
     },
       options);
     }
   
 
-export const getGetV1WordOfDayDateEmbedQueryKey = (date?: string,
-    params?: GetV1WordOfDayDateEmbedParams,) => {
-    return [`/v1/word-of-day/${date}/embed`, ...(params ? [params]: [])] as const;
+export const getGetV1WordOfDayDateEmbedQueryKey = (date?: string,) => {
+    return [`/v1/word-of-day/${date}/embed`] as const;
     }
 
     
-export const getGetV1WordOfDayDateEmbedQueryOptions = <TData = Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>, TError = string | string>(date: string,
-    params: GetV1WordOfDayDateEmbedParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getGetV1WordOfDayDateEmbedQueryOptions = <TData = Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>, TError = string | string | string>(date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetV1WordOfDayDateEmbedQueryKey(date,params);
+  const queryKey =  queryOptions?.queryKey ?? getGetV1WordOfDayDateEmbedQueryKey(date);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>> = ({ signal }) => getV1WordOfDayDateEmbed(date,params, requestOptions, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>> = ({ signal }) => getV1WordOfDayDateEmbed(date, requestOptions, signal);
 
       
 
@@ -12041,12 +12100,11 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type GetV1WordOfDayDateEmbedQueryResult = NonNullable<Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>>
-export type GetV1WordOfDayDateEmbedQueryError = string | string
+export type GetV1WordOfDayDateEmbedQueryError = string | string | string
 
 
-export function useGetV1WordOfDayDateEmbed<TData = Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>, TError = string | string>(
- date: string,
-    params: GetV1WordOfDayDateEmbedParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>, TError, TData>> & Pick<
+export function useGetV1WordOfDayDateEmbed<TData = Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>, TError = string | string | string>(
+ date: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>,
           TError,
@@ -12055,9 +12113,8 @@ export function useGetV1WordOfDayDateEmbed<TData = Awaited<ReturnType<typeof get
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetV1WordOfDayDateEmbed<TData = Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>, TError = string | string>(
- date: string,
-    params: GetV1WordOfDayDateEmbedParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>, TError, TData>> & Pick<
+export function useGetV1WordOfDayDateEmbed<TData = Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>, TError = string | string | string>(
+ date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>,
           TError,
@@ -12066,22 +12123,20 @@ export function useGetV1WordOfDayDateEmbed<TData = Awaited<ReturnType<typeof get
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetV1WordOfDayDateEmbed<TData = Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>, TError = string | string>(
- date: string,
-    params: GetV1WordOfDayDateEmbedParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useGetV1WordOfDayDateEmbed<TData = Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>, TError = string | string | string>(
+ date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get embeddable word of the day HTML
  */
 
-export function useGetV1WordOfDayDateEmbed<TData = Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>, TError = string | string>(
- date: string,
-    params: GetV1WordOfDayDateEmbedParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useGetV1WordOfDayDateEmbed<TData = Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>, TError = string | string | string>(
+ date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetV1WordOfDayDateEmbedQueryOptions(date,params,options)
+  const queryOptions = getGetV1WordOfDayDateEmbedQueryOptions(date,options)
 
   const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -14497,6 +14552,8 @@ export const getPostV1SettingsTestAiResponseMock = (overrideResponse: Partial< S
 
 export const getPostV1SettingsTestEmailResponseMock = (overrideResponse: Partial< SuccessResponse > = {}): SuccessResponse => ({success: faker.datatype.boolean(), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 500}}), undefined]), ...overrideResponse})
 
+export const getPutV1SettingsWordOfDayEmailResponseMock = (overrideResponse: Partial< SuccessResponse > = {}): SuccessResponse => ({success: faker.datatype.boolean(), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 500}}), undefined]), ...overrideResponse})
+
 export const getGetV1SettingsLevelsResponseMock = (overrideResponse: Partial< LevelsResponse > = {}): LevelsResponse => ({levels: Array.from({ length: faker.number.int({ min: 1, max: 20 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 10, max: 20}}))), level_descriptions: {
         [faker.string.alphanumeric(5)]: faker.string.alpha({length: {min: 10, max: 20}})
       }, ...overrideResponse})
@@ -15038,6 +15095,18 @@ export const getPostV1SettingsTestEmailMockHandler = (overrideResponse?: Success
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
     ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
     : getPostV1SettingsTestEmailResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  })
+}
+
+export const getPutV1SettingsWordOfDayEmailMockHandler = (overrideResponse?: SuccessResponse | ((info: Parameters<Parameters<typeof http.put>[1]>[0]) => Promise<SuccessResponse> | SuccessResponse)) => {
+  return http.put('*/v1/settings/word-of-day-email', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getPutV1SettingsWordOfDayEmailResponseMock()),
       { status: 200,
         headers: { 'Content-Type': 'application/json' }
       })
@@ -16478,6 +16547,7 @@ export const getQuizApplicationAPIMock = () => [
   getGetV1SettingsAiProvidersMockHandler(),
   getPostV1SettingsTestAiMockHandler(),
   getPostV1SettingsTestEmailMockHandler(),
+  getPutV1SettingsWordOfDayEmailMockHandler(),
   getGetV1SettingsLevelsMockHandler(),
   getGetV1SettingsLanguagesMockHandler(),
   getGetV1SettingsApiKeyProviderMockHandler(),

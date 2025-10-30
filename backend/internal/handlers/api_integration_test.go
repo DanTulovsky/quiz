@@ -1606,7 +1606,9 @@ func (suite *APIIntegrationTestSuite) TestGetProgress_ErrorHandling() {
 // Verb Conjugation Integration Tests
 
 func (suite *APIIntegrationTestSuite) TestGetVerbConjugationInfo() {
+	cookie := suite.login()
 	req, _ := http.NewRequest("GET", "/v1/verb-conjugations/info", nil)
+	req.Header.Set("Cookie", cookie)
 
 	w := httptest.NewRecorder()
 	suite.Router.ServeHTTP(w, req)
@@ -1625,7 +1627,10 @@ func (suite *APIIntegrationTestSuite) TestGetVerbConjugationInfo() {
 }
 
 func (suite *APIIntegrationTestSuite) TestGetAvailableLanguages() {
+	// Endpoint is protected; authenticate first
+	cookie := suite.login()
 	req, _ := http.NewRequest("GET", "/v1/verb-conjugations/languages", nil)
+	req.Header.Set("Cookie", cookie)
 
 	w := httptest.NewRecorder()
 	suite.Router.ServeHTTP(w, req)
@@ -1644,7 +1649,9 @@ func (suite *APIIntegrationTestSuite) TestGetAvailableLanguages() {
 }
 
 func (suite *APIIntegrationTestSuite) TestGetVerbConjugations_Italian() {
+	cookie := suite.login()
 	req, _ := http.NewRequest("GET", "/v1/verb-conjugations/it", nil)
+	req.Header.Set("Cookie", cookie)
 
 	w := httptest.NewRecorder()
 	suite.Router.ServeHTTP(w, req)
@@ -1691,7 +1698,9 @@ func (suite *APIIntegrationTestSuite) TestGetVerbConjugations_Italian() {
 }
 
 func (suite *APIIntegrationTestSuite) TestGetVerbConjugations_French() {
+	cookie := suite.login()
 	req, _ := http.NewRequest("GET", "/v1/verb-conjugations/fr", nil)
+	req.Header.Set("Cookie", cookie)
 
 	w := httptest.NewRecorder()
 	suite.Router.ServeHTTP(w, req)
@@ -1713,7 +1722,9 @@ func (suite *APIIntegrationTestSuite) TestGetVerbConjugations_French() {
 }
 
 func (suite *APIIntegrationTestSuite) TestGetVerbConjugations_NonExistentLanguage() {
+	cookie := suite.login()
 	req, _ := http.NewRequest("GET", "/v1/verb-conjugations/xx", nil)
+	req.Header.Set("Cookie", cookie)
 
 	w := httptest.NewRecorder()
 	suite.Router.ServeHTTP(w, req)
@@ -1722,7 +1733,9 @@ func (suite *APIIntegrationTestSuite) TestGetVerbConjugations_NonExistentLanguag
 }
 
 func (suite *APIIntegrationTestSuite) TestGetVerbConjugation_SpecificVerb() {
+	cookie := suite.login()
 	req, _ := http.NewRequest("GET", "/v1/verb-conjugations/it/essere", nil)
+	req.Header.Set("Cookie", cookie)
 
 	w := httptest.NewRecorder()
 	suite.Router.ServeHTTP(w, req)
@@ -1753,7 +1766,9 @@ func (suite *APIIntegrationTestSuite) TestGetVerbConjugation_SpecificVerb() {
 }
 
 func (suite *APIIntegrationTestSuite) TestGetVerbConjugation_NonExistentVerb() {
+	cookie := suite.login()
 	req, _ := http.NewRequest("GET", "/v1/verb-conjugations/it/nonexistent", nil)
+	req.Header.Set("Cookie", cookie)
 
 	w := httptest.NewRecorder()
 	suite.Router.ServeHTTP(w, req)
@@ -1762,7 +1777,9 @@ func (suite *APIIntegrationTestSuite) TestGetVerbConjugation_NonExistentVerb() {
 }
 
 func (suite *APIIntegrationTestSuite) TestGetVerbConjugation_NonExistentLanguageForVerb() {
+	cookie := suite.login()
 	req, _ := http.NewRequest("GET", "/v1/verb-conjugations/xx/essere", nil)
+	req.Header.Set("Cookie", cookie)
 
 	w := httptest.NewRecorder()
 	suite.Router.ServeHTTP(w, req)
@@ -1775,7 +1792,9 @@ func (suite *APIIntegrationTestSuite) TestVerbConjugationDataIntegrity() {
 	languages := []string{"it", "fr", "de", "ru", "ja", "zh"}
 
 	for _, lang := range languages {
+		cookie := suite.login()
 		req, _ := http.NewRequest("GET", fmt.Sprintf("/v1/verb-conjugations/%s", lang), nil)
+		req.Header.Set("Cookie", cookie)
 
 		w := httptest.NewRecorder()
 		suite.Router.ServeHTTP(w, req)

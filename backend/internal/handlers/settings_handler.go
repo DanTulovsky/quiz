@@ -46,6 +46,40 @@ func NewSettingsHandler(userService services.UserServiceInterface, storyService 
 	}
 }
 
+// UpdateWordOfDayEmailPreference updates the user's word-of-day email preference
+func (h *SettingsHandler) UpdateWordOfDayEmailPreference(c *gin.Context) {
+	ctx, span := observability.TraceHandlerFunction(c.Request.Context(), "update_word_of_day_email_preference")
+	defer observability.FinishSpan(span, nil)
+
+	session := sessions.Default(c)
+	userID, ok := session.Get(middleware.UserIDKey).(int)
+	if !ok {
+		HandleAppError(c, contextutils.ErrUnauthorized)
+		return
+	}
+
+	var body struct {
+		Enabled bool `json:"enabled"`
+	}
+	if err := c.ShouldBindJSON(&body); err != nil {
+		HandleAppError(c, contextutils.NewAppErrorWithCause(
+			contextutils.ErrorCodeInvalidInput,
+			contextutils.SeverityWarn,
+			"Invalid request body",
+			"",
+			err,
+		))
+		return
+	}
+
+	if err := h.userService.UpdateWordOfDayEmailEnabled(ctx, userID, body.Enabled); err != nil {
+		HandleAppError(c, contextutils.WrapError(err, "failed to update word of day email preference"))
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"success": true})
+}
+
 // UpdateUserSettings handles updating user settings
 func (h *SettingsHandler) UpdateUserSettings(c *gin.Context) {
 	_, span := observability.TraceHandlerFunction(c.Request.Context(), "update_user_settings")

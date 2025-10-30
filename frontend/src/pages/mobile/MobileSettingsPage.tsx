@@ -1119,6 +1119,44 @@ const MobileSettingsPage: React.FC = () => {
               </Accordion.Panel>
             </Accordion.Item>
 
+            {/* Word of the Day Emails */}
+            <Accordion.Item value='wotd-emails'>
+              <Accordion.Control icon={<IconBell size={20} />}>
+                <Text fw={500}>Word of the Day Emails</Text>
+              </Accordion.Control>
+              <Accordion.Panel>
+                <Stack gap='md'>
+                  <Group justify='space-between' align='flex-start'>
+                    <Box style={{ flex: 1 }}>
+                      <Text fw={500} mb='xs'>
+                        Word of the Day Emails
+                      </Text>
+                      <Text size='sm' c='dimmed'>
+                        Receive a daily email with your Word of the Day.
+                      </Text>
+                    </Box>
+                    <Switch
+                      checked={Boolean(user?.word_of_day_email_enabled)}
+                      onChange={async e => {
+                        try {
+                          const { updateWordOfDayEmailPreference } =
+                            await import('../../api/settingsApi');
+                          await updateWordOfDayEmailPreference(
+                            e.currentTarget.checked
+                          );
+                          await refreshUser();
+                        } catch {
+                          // noop: UI will refresh on next load
+                        }
+                      }}
+                      size='lg'
+                      data-testid='wotd-email-switch-mobile'
+                    />
+                  </Group>
+                </Stack>
+              </Accordion.Panel>
+            </Accordion.Item>
+
             {/* AI Settings */}
             <Accordion.Item value='ai'>
               <Accordion.Control icon={<IconBrain size={20} />}>

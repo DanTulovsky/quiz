@@ -20,6 +20,7 @@ import {
   Textarea,
   Code,
   ActionIcon,
+  PasswordInput,
 } from '@mantine/core';
 import {
   ChevronLeft,
@@ -39,6 +40,7 @@ const WordOfTheDayPage: React.FC = () => {
   const { user } = useAuth();
   const [showEmbedModal, setShowEmbedModal] = React.useState(false);
   const [showApiModal, setShowApiModal] = React.useState(false);
+  const [apiKey, setApiKey] = React.useState<string>('');
 
   const {
     selectedDate,
@@ -94,20 +96,22 @@ const WordOfTheDayPage: React.FC = () => {
   }
 
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
-  const embedUrl = `${origin}/word-of-day/embed/${selectedDate}?user_id=${user.id}`;
+  const embedUrl = `${origin}/word-of-day/embed`;
   const iframeSnippet = `<iframe src="${embedUrl}" width="100%" height="300" style="border:none"></iframe>`;
   const apiUrlToday = `${origin}/v1/word-of-day`;
   const apiUrlWithDate = `${origin}/v1/word-of-day/${selectedDate}`;
 
+  const authHeader = `-H 'Authorization: ${apiKey ? `Bearer ${apiKey}` : 'Bearer YOUR_API_KEY'}'`;
+
   const apiCurlApiKeyToday = `curl -i \
   '${apiUrlToday}' \
   -H 'Accept: application/json' \
-  -H 'Authorization: Bearer YOUR_API_KEY'`;
+  ${authHeader}`;
 
   const apiCurlApiKeyWithDate = `curl -i \
   '${apiUrlWithDate}' \
   -H 'Accept: application/json' \
-  -H 'Authorization: Bearer YOUR_API_KEY'`;
+  ${authHeader}`;
 
   return (
     <Container size='md' py='xl'>
@@ -343,6 +347,13 @@ const WordOfTheDayPage: React.FC = () => {
           centered
         >
           <Stack gap='sm'>
+            <PasswordInput
+              label='API Key'
+              placeholder='YOUR_API_KEY'
+              value={apiKey}
+              onChange={e => setApiKey(e.currentTarget.value)}
+              size='sm'
+            />
             <Group gap='xs' align='flex-start'>
               <Info size={16} color='var(--mantine-color-dimmed)' />
               <Text c='dimmed' size='sm'>

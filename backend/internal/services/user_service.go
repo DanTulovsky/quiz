@@ -55,6 +55,7 @@ type UserServiceInterface interface {
 	HasRole(ctx context.Context, userID int, roleName string) (bool, error)
 	IsAdmin(ctx context.Context, userID int) (bool, error)
 	GetDB() *sql.DB
+	UpdateWordOfDayEmailEnabled(ctx context.Context, userID int, enabled bool) error
 }
 
 // UserService provides methods for user management.
@@ -67,10 +68,10 @@ type UserService struct {
 // Shared query constants to eliminate duplication
 const (
 	// userSelectFields contains all user fields for SELECT queries
-	userSelectFields = `id, username, email, timezone, password_hash, last_active, preferred_language, current_level, ai_provider, ai_model, ai_enabled, ai_api_key, created_at, updated_at`
+	userSelectFields = `id, username, email, timezone, password_hash, last_active, preferred_language, current_level, ai_provider, ai_model, ai_enabled, ai_api_key, word_of_day_email_enabled, created_at, updated_at`
 
 	// userSelectFieldsNoPassword contains user fields excluding password_hash for GetAllUsers
-	userSelectFieldsNoPassword = `id, username, email, timezone, last_active, preferred_language, current_level, ai_provider, ai_model, ai_enabled, ai_api_key, created_at, updated_at`
+	userSelectFieldsNoPassword = `id, username, email, timezone, last_active, preferred_language, current_level, ai_provider, ai_model, ai_enabled, ai_api_key, word_of_day_email_enabled, created_at, updated_at`
 )
 
 // scanUserFromRow scans a database row into a models.User struct
@@ -79,7 +80,7 @@ func (s *UserService) scanUserFromRow(row *sql.Row) (result0 *models.User, err e
 	err = row.Scan(
 		&user.ID, &user.Username, &user.Email, &user.Timezone, &user.PasswordHash, &user.LastActive,
 		&user.PreferredLanguage, &user.CurrentLevel, &user.AIProvider,
-		&user.AIModel, &user.AIEnabled, &user.AIAPIKey, &user.CreatedAt, &user.UpdatedAt,
+		&user.AIModel, &user.AIEnabled, &user.AIAPIKey, &user.WordOfDayEmailEnabled, &user.CreatedAt, &user.UpdatedAt,
 	)
 	if err != nil {
 		return nil, err
@@ -93,7 +94,7 @@ func (s *UserService) scanUserFromRowsNoPassword(rows *sql.Rows) (result0 *model
 	err = rows.Scan(
 		&user.ID, &user.Username, &user.Email, &user.Timezone, &user.LastActive,
 		&user.PreferredLanguage, &user.CurrentLevel, &user.AIProvider,
-		&user.AIModel, &user.AIEnabled, &user.AIAPIKey, &user.CreatedAt, &user.UpdatedAt,
+		&user.AIModel, &user.AIEnabled, &user.AIAPIKey, &user.WordOfDayEmailEnabled, &user.CreatedAt, &user.UpdatedAt,
 	)
 	if err != nil {
 		return nil, err
@@ -384,6 +385,30 @@ func (s *UserService) UpdateUserSettings(ctx context.Context, userID int, settin
 	}
 
 	return tx.Commit()
+}
+
+// UpdateWordOfDayEmailEnabled updates the user's preference for word-of-day emails
+func (s *UserService) UpdateWordOfDayEmailEnabled(ctx context.Context, userID int, enabled bool) (err error) {
+	ctx, span := observability.TraceUserFunction(ctx, "update_word_of_day_email_enabled",
+		attribute.Int("user.id", userID),
+		attribute.Bool("word_of_day_email_enabled", enabled),
+	)
+	defer observability.FinishSpan(span, &err)
+
+	// Ensure user exists
+	user, err := s.GetUserByID(ctx, userID)
+	if err != nil {
+		return contextutils.WrapError(err, "failed to check if user exists")
+	}
+	if user == nil {
+		return contextutils.ErrRecordNotFound
+	}
+
+	_, err = s.db.ExecContext(ctx, `UPDATE users SET word_of_day_email_enabled = $1, updated_at = NOW() WHERE id = $2`, enabled, userID)
+	if err != nil {
+		return contextutils.WrapError(err, "failed to update word_of_day_email_enabled")
+	}
+	return nil
 }
 
 // GetUserAPIKey retrieves the API key for a specific provider for a user
