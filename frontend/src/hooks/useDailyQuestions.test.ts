@@ -445,6 +445,11 @@ describe('useDailyQuestions', () => {
   });
 
   describe('initial navigation', () => {
+    beforeEach(() => {
+      // Clear sessionStorage before each test to avoid pollution
+      window.sessionStorage.clear();
+    });
+
     it('should navigate to first unanswered question on load', () => {
       const { result } = renderHook(() => useDailyQuestions());
 
