@@ -1502,13 +1502,6 @@ tasks:
       - echo "Validating verb conjugation files..."
       - python3 scripts/validate-verb-conjugations.py
 
-  analyze-test-performance:
-    desc: "Analyze integration test performance and identify bottlenecks"
-    dir: backend
-    cmds:
-      - echo "🔍 Analyzing test performance..."
-      - ../scripts/analyze-test-performance.sh
-
   check-undocumented-apis:
     desc: "Check for undocumented APIs by comparing router endpoints with swagger.yaml"
     cmds:
@@ -1530,41 +1523,11 @@ tasks:
       - echo "Adding CSP nonces to built frontend HTML..."
       - ./scripts/add_nonces_to_built_html.py
 
-  csp-analyze-hashes:
-    desc: "Analyze CSP hash lengths in nginx.conf"
-    cmds:
-      - echo "Analyzing CSP hashes..."
-      - ./scripts/analyze_csp_hashes.py
-
-  csp-analyze-header-length:
-    desc: "Analyze CSP header length and identify potential issues"
-    cmds:
-      - echo "Analyzing CSP header length..."
-      - ./scripts/analyze_csp_header_length.py
-
-  csp-extract-hashes:
-    desc: "Extract CSP hashes from error messages and format them"
-    cmds:
-      - echo "Extracting CSP hashes..."
-      - ./scripts/extract_csp_hashes.py
-
-  csp-fix-hashes:
-    desc: "Fix CSP hash length warnings in nginx.conf"
-    cmds:
-      - echo "Fixing CSP hashes..."
-      - ./scripts/fix_csp_hashes.py
-
   csp-fix-hashes-conservative:
     desc: "Conservative fix for CSP hash length warnings (only removes clearly malformed hashes)"
     cmds:
       - echo "Fixing CSP hashes conservatively..."
       - ./scripts/fix_csp_hashes_conservative.py
-
-  csp-remove-duplicates:
-    desc: "Remove duplicate CSP hashes from nginx.conf"
-    cmds:
-      - echo "Removing duplicate CSP hashes..."
-      - ./scripts/remove_duplicate_csp_hashes.py
 
   csp-verify-hashes:
     desc: "Verify CSP hash lengths in nginx.conf"
@@ -1596,12 +1559,6 @@ tasks:
       - echo "Updating nginx.conf for CSP nonces..."
       - ./scripts/update_nginx_for_frontend_nonces.py
 
-  csp-simplify-dev:
-    desc: "Simplify CSP for development by using unsafe-inline"
-    cmds:
-      - echo "Simplifying CSP for development..."
-      - ./scripts/simplify_csp_for_dev.py
-
   # Font Management Scripts
   fonts-fix-google-integrity:
     desc: "Fix Google Fonts integrity issue in frontend/index.html"
@@ -1627,7 +1584,7 @@ tasks:
     desc: "Generate TypeScript types from OpenAPI specification"
     cmds:
       - echo "Generating TypeScript types..."
-      - ./scripts/generate-types.js
+      - ./frontend/scripts/generate-types.cjs
 
   # CLI Worker Scripts
   cli-worker-run:
@@ -1641,45 +1598,10 @@ tasks:
     desc: "Run all CSP management tasks (analyze, fix, verify)"
     cmds:
       - echo "Running all CSP management tasks..."
-      - task: csp-analyze-hashes
-      - task: csp-analyze-header-length
       - task: csp-verify-hashes
       - echo "✅ All CSP management tasks completed!"
 
   # All Scripts
-  scripts-help:
-    desc: "Show available script tasks"
-    cmds:
-      - echo "Available script tasks:"
-      - echo ""
-      - echo "CSP Management:"
-      - echo "  task csp-add-nonces          - Add CSP nonces to built HTML"
-      - echo "  task csp-analyze-hashes       - Analyze CSP hash lengths"
-      - echo "  task csp-analyze-header-length - Analyze CSP header length"
-      - echo "  task csp-extract-hashes       - Extract CSP hashes from errors"
-      - echo "  task csp-fix-hashes           - Fix CSP hash length warnings"
-      - echo "  task csp-fix-hashes-conservative - Conservative CSP hash fix"
-      - echo "  task csp-remove-duplicates    - Remove duplicate CSP hashes"
-      - echo "  task csp-verify-hashes        - Verify CSP hash lengths"
-      - echo "  task csp-generate-nonce       - Generate CSP nonces"
-      - echo "  task csp-inject-nonce         - Inject CSP nonce into nginx"
-      - echo "  task csp-update-hashes        - Update CSP hashes from build"
-      - echo "  task csp-update-nginx-nonces  - Update nginx for CSP nonces"
-      - echo "  task csp-simplify-dev         - Simplify CSP for development"
-      - echo "  task csp-all                  - Run all CSP management tasks"
-      - echo ""
-      - echo "Font Management:"
-      - echo "  task fonts-fix-google-integrity - Fix Google Fonts integrity"
-      - echo "  task fonts-self-host           - Self-host Google Fonts"
-      - echo ""
-      - echo "Testing:"
-      - echo "  task test-rate-limits         - Test rate limiting"
-      - echo "  task test-rate-limits-quick   - Quick rate limit test"
-      - echo ""
-      - echo "Utilities:"
-      - echo "  task generate-types            - Generate TypeScript types"
-      - echo "  task cli-worker-run           - Run CLI worker with Docker"
-
   release-build:
     desc: "Build Docker images for the next semantic tag"
     deps: [setup-cache-dirs, setup-buildx, merge-config]

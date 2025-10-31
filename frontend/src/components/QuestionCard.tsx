@@ -205,6 +205,10 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
     const {
       isLoading: isTTSLoading,
       isPlaying: isTTSPlaying,
+      isPaused: isTTSPaused,
+      playTTS,
+      pauseTTS,
+      resumeTTS,
       stopTTS,
     } = useTTS();
     const { isAuthenticated } = useAuth();
@@ -212,6 +216,9 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
 
     // Load snippets for this question (async, non-blocking)
     const { snippets } = useQuestionSnippets(question?.id);
+
+    // Ref to store user learning preferences for TTS voice
+    const userLearningPrefsRef = React.useRef<{ tts_voice?: string } | undefined>(undefined);
 
     // Copy to clipboard functionality for reading comprehension passages
     const handleCopyPassage = async () => {
@@ -241,14 +248,25 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
     React.useImperativeHandle(ref, () => ({
       openReport: () => setShowReportModal(true),
       openMarkKnown: () => setShowMarkKnownModal(true),
-      toggleTTS: () => {
+      toggleTTS: async () => {
         // Only apply to reading comprehension with a passage
         if (question.type !== 'reading_comprehension') return;
         const passage = question.content?.passage || '';
         if (!passage) return;
-        // TTS handled by TTSButton component - hotkey no longer needed
-        if (isTTSPlaying || isTTSLoading) {
-          stopTTS();
+
+        // Get voice preference (same logic as TTSButton)
+        const saved = (userLearningPrefsRef.current?.tts_voice || '').trim();
+        const voice = saved
+          ? saved
+          : defaultVoiceForLanguage(question.language) || undefined;
+
+        // Toggle play/pause/resume (same logic as TTSButton)
+        if (isTTSPlaying) {
+          pauseTTS();
+        } else if (isTTSPaused) {
+          resumeTTS();
+        } else {
+          await playTTS(passage, voice);
         }
       },
     }));
@@ -617,9 +635,12 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
       if (typeof maybeHook === 'function') {
         const result = (maybeHook as () => unknown)();
         userLearningPrefs = (result as { data?: { tts_voice?: string } })?.data;
+        // Also store in ref for use in toggleTTS
+        userLearningPrefsRef.current = (result as { data?: { tts_voice?: string } })?.data;
       }
     } catch {
       userLearningPrefs = undefined;
+      userLearningPrefsRef.current = undefined;
     }
 
     const currentFeedback = localFeedback || feedback;
