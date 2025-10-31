@@ -530,25 +530,28 @@ const MobileDailyPage: React.FC = () => {
                       {/* Standalone vocabulary word removed to avoid duplicate display */}
                       {baseSentence.trim().toLowerCase() !==
                         qWord.trim().toLowerCase() && (
-                        <Text
-                          size='sm'
-                          c='dimmed'
-                          mt={4}
-                          style={{ fontWeight: 500 }}
-                          data-allow-translate='true'
-                        >
-                          What does <strong>{qWord}</strong> mean in this
-                          context?
-                        </Text>
+                        <Box data-allow-translate='true'>
+                          <Text
+                            size='sm'
+                            c='dimmed'
+                            mt={4}
+                            style={{ fontWeight: 500 }}
+                          >
+                            What does <strong>{qWord}</strong> mean in this
+                            context?
+                          </Text>
+                        </Box>
                       )}
                     </>
                   );
                 }
                 // Fallback: render question only
                 return (
-                  <Text size='lg' fw={500} data-allow-translate='true'>
-                    {qWord || ''}
-                  </Text>
+                  <Box data-allow-translate='true'>
+                    <Text size='lg' fw={500}>
+                      {qWord || ''}
+                    </Text>
+                  </Box>
                 );
               })()}
 
@@ -556,9 +559,11 @@ const MobileDailyPage: React.FC = () => {
             {currentQuestion.question.content?.question &&
               currentQuestion.question.type !== 'vocabulary' &&
               currentQuestion.question.type !== 'reading_comprehension' && (
-                <Text size='lg' fw={500} style={{ whiteSpace: 'pre-line' }} data-allow-translate='true'>
-                  {currentQuestion.question.content.question}
-                </Text>
+                <Box data-allow-translate='true'>
+                  <Text size='lg' fw={500} style={{ whiteSpace: 'pre-line' }}>
+                    {currentQuestion.question.content.question}
+                  </Text>
+                </Box>
               )}
 
             {/* Answer Options */}
