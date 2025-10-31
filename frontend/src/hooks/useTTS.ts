@@ -582,8 +582,140 @@ export const useTTS = (): TTSHookReturn => {
           return;
         }
 
-        // MediaSource not available - throw error
-        throw new Error('TTS playback unavailable: MediaSource not supported');
+        // MediaSource not available - fallback to blob-based playback for mobile
+        try {
+          const controller = new AbortController();
+          abortControllerRef.current = controller;
+          sharedAbortController = controller;
+
+          // Fetch all audio chunks
+          const result = await fetchSSEAudioChunks(
+            text,
+            voice,
+            controller.signal,
+            undefined
+          );
+
+          if (!result.chunks || result.chunks.length === 0) {
+            throw new Error('No audio data received');
+          }
+
+          // Concatenate all chunks into a single buffer
+          const totalLength = result.chunks.reduce(
+            (sum, chunk) => sum + chunk.length,
+            0
+          );
+          const combined = new Uint8Array(totalLength);
+          let offset = 0;
+          for (const chunk of result.chunks) {
+            combined.set(chunk, offset);
+            offset += chunk.length;
+          }
+
+          // Create a blob from the combined audio data
+          const blob = new Blob([combined], { type: 'audio/mpeg' });
+          const blobUrl = URL.createObjectURL(blob);
+
+          // Clean up any existing audio
+          if (sharedCurrentAudio) {
+            try {
+              sharedCurrentAudio.pause();
+            } catch {}
+            if (sharedCurrentAudio.src) {
+              try {
+                URL.revokeObjectURL(sharedCurrentAudio.src);
+              } catch {}
+            }
+            sharedCurrentAudio = null;
+          }
+          if (currentAudioRef.current) {
+            try {
+              currentAudioRef.current.pause();
+            } catch {}
+            if (currentAudioRef.current.src) {
+              try {
+                URL.revokeObjectURL(currentAudioRef.current.src);
+              } catch {}
+            }
+            currentAudioRef.current = null;
+          }
+
+          // Create and play audio element
+          const audioEl = new Audio();
+          audioEl.preload = 'auto';
+          audioEl.src = blobUrl;
+          audioEl.crossOrigin = 'anonymous';
+          currentAudioRef.current = audioEl;
+          sharedCurrentAudio = audioEl;
+
+          // Set up event listeners
+          audioEl.addEventListener(
+            'ended',
+            () => {
+              setIsPlaying(false);
+              setIsPaused(false);
+              if (sharedCurrentAudio === audioEl) {
+                sharedCurrentAudio = null;
+              }
+              if (sharedAbortController === controller) {
+                sharedAbortController = null;
+              }
+              try {
+                URL.revokeObjectURL(blobUrl);
+              } catch {}
+            },
+            { once: true }
+          );
+
+          audioEl.addEventListener(
+            'error',
+            () => {
+              setIsPlaying(false);
+              setIsPaused(false);
+              setIsLoading(false);
+              if (sharedCurrentAudio === audioEl) {
+                sharedCurrentAudio = null;
+              }
+              try {
+                URL.revokeObjectURL(blobUrl);
+              } catch {}
+              showNotificationWithClean({
+                title: 'TTS Error',
+                message: 'Failed to play audio',
+                color: 'red',
+              });
+            },
+            { once: true }
+          );
+
+          // Start playback
+          await audioEl.play();
+          setIsPlaying(true);
+          setIsPaused(false);
+          setIsLoading(false);
+
+          // Cache the audio for future use
+          try {
+            const ctx =
+              audioContextRef.current ||
+              new (window.AudioContext ||
+                (
+                  window as unknown as {
+                    webkitAudioContext: typeof AudioContext;
+                  }
+                ).webkitAudioContext)();
+            if (!audioContextRef.current) audioContextRef.current = ctx;
+            const cached = await decodeAudioChunks(result.chunks, ctx);
+            sharedDecodedCache.set(key, cached);
+          } catch (cacheError) {
+            console.warn('Failed to cache audio:', cacheError);
+          }
+
+          return;
+        } catch (fallbackError) {
+          console.error('Fallback TTS playback failed:', fallbackError);
+          throw fallbackError;
+        }
       } catch (e) {
         const name = (e as { name?: string })?.name || '';
         const message = (e as { message?: string })?.message || '';
