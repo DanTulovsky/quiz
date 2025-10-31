@@ -1608,12 +1608,22 @@ tasks:
     env:
       DOCKER_BUILDKIT: 1
       DOCKER_BUILDKIT_NO_PROVENANCE: 1
+      RELEASE_TAG: "{{.RELEASE_TAG}}"
     cmds:
       - |
         set -e
-        # compute next semver tag and other meta via helper (prints shell assignments)
-        LATEST_TAG=$(./scripts/compute-current-tag.sh)
-        COMMIT_HASH=$(git rev-parse --short $LATEST_TAG)
+        # Use RELEASE_TAG from environment if set (from tag push trigger), otherwise compute it
+        if [ -n "${RELEASE_TAG:-}" ]; then
+          LATEST_TAG="$RELEASE_TAG"
+          # We're already on the tagged commit when triggered by tag push
+          COMMIT_HASH=$(git rev-parse --short HEAD)
+          echo "Using provided release tag: $LATEST_TAG"
+        else
+          # compute next semver tag and other meta via helper (prints shell assignments)
+          LATEST_TAG=$(./scripts/compute-current-tag.sh)
+          COMMIT_HASH=$(git rev-parse --short $LATEST_TAG)
+          echo "Computed release tag from git history: $LATEST_TAG"
+        fi
         BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
         APP_VERSION="prod"
         echo "Release version: $LATEST_TAG"

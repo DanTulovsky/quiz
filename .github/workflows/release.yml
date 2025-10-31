@@ -2,6 +2,11 @@ name: Release
 
 on:
   workflow_dispatch: # Allow manual trigger
+    inputs:
+      tag:
+        description: "Version tag to release (e.g., v1.2.3)"
+        required: true
+        type: string
   push:
     tags:
       - "v*.*.*" # Trigger on semantic version tags
@@ -18,21 +23,29 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Full history for version calculation
+          fetch-depth: 1 # Shallow clone is sufficient since we always have the tag
 
       - name: Extract and save version
+        id: extract-version
         run: |
-          REF="${{ github.ref }}"
-          if [[ "$REF" == refs/tags/* ]]; then
-            # Extract tag version (e.g., refs/tags/v1.2.3 -> v1.2.3)
-            VERSION="${REF#refs/tags/}"
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            # Manual dispatch: use provided tag input
+            VERSION="${{ inputs.tag }}"
           else
-            # Manual dispatch: use "latest"
-            VERSION="latest"
+            # Tag push trigger: extract from github.ref
+            REF="${{ github.ref }}"
+            if [[ "$REF" == refs/tags/* ]]; then
+              # Extract tag version (e.g., refs/tags/v1.2.3 -> v1.2.3)
+              VERSION="${REF#refs/tags/}"
+            else
+              echo "Error: Expected tag reference but got: $REF" >&2
+              exit 1
+            fi
           fi
           echo "Extracted version: $VERSION"
           echo "$VERSION" > release-version.txt
           cat release-version.txt
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Upload version artifact
         uses: actions/upload-artifact@v4
@@ -77,6 +90,8 @@ jobs:
           export SHELL=/bin/bash
           # Because I need to creeate one image with both amd64 and arm64
           export TTS_IMAGE=${{ vars.TTS_IMAGE }}
+          # Pass release tag if available (from tag push trigger)
+          export RELEASE_TAG="${{ steps.extract-version.outputs.version }}"
 
           # Run the complete release process
           task release
