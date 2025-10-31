@@ -646,7 +646,7 @@ const SnippetsPage: React.FC = () => {
               <Card key={snippet.id} withBorder>
                 <Stack gap='sm'>
                   <Group justify='space-between' align='flex-start'>
-                    <div style={{ flex: 1 }}>
+                    <div style={{ flex: 1 }} data-allow-translate='true'>
                       <Text size='lg' fw={500}>
                         {snippet.original_text}
                       </Text>
