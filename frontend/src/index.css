@@ -236,36 +236,19 @@ html {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
 }
 
-/* Additional iOS-specific fix: prevent native selection menu on all body text in mobile view */
+/* Additional iOS-specific fix: restrict native selection menu suppression to selectable regions */
 @media (max-width: 768px) {
+  /* Keep tap highlight minimal globally */
   body {
-    -webkit-touch-callout: none !important;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
   }
 
-  /* Allow text selection but suppress native menu */
-  p,
-  span,
-  div,
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  li,
-  td,
-  th {
-    -webkit-touch-callout: none !important;
-    -webkit-user-select: text !important;
-    user-select: text !important;
-  }
-}
-
-/* iOS-specific: Temporarily disable user-select when touch ends to prevent native menu */
-@media (max-width: 768px) {
+  /* Only suppress iOS callout in our explicitly selectable regions */
   .selectable-text,
-  [data-selectable-text] {
+  [data-selectable-text],
+  .selectable-text *,
+  [data-selectable-text] * {
+    -webkit-touch-callout: none !important;
     -webkit-user-select: text !important;
     user-select: text !important;
   }

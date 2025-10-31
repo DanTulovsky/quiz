@@ -3,14 +3,15 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"strconv"
 	"strings"
 )
 
 // MergeAISuggestion merges AI response into the original question map.
 // It ensures top-level metadata from original are preserved and AI-provided
-// content is merged into original["content"]. It moves top-level correct_answer
-// and explanation into content to avoid duplicates.
+// content is merged into original["content"].
+//
+// Canonical location for `correct_answer` and `explanation` is the TOP LEVEL of
+// the returned object. Any occurrences under `content` are removed.
 func MergeAISuggestion(original, aiResp map[string]interface{}) map[string]interface{} {
 	// copy original to avoid mutating caller's map
 	out := map[string]interface{}{}
@@ -25,7 +26,7 @@ func MergeAISuggestion(original, aiResp map[string]interface{}) map[string]inter
 		out["content"] = contentMap
 	}
 
-	// merge ai content
+	// merge ai content into content map
 	if aiContentRaw, ok := aiResp["content"]; ok {
 		if aiContentMap, ok2 := aiContentRaw.(map[string]interface{}); ok2 {
 			for k, v := range aiContentMap {
@@ -34,15 +35,18 @@ func MergeAISuggestion(original, aiResp map[string]interface{}) map[string]inter
 		}
 	}
 
-	// move top-level fields into content
+	// Ensure answer/explanation live at TOP LEVEL on the output, not inside content
+	// Prefer values from the AI response when present.
 	if ca, ok := aiResp["correct_answer"]; ok {
-		contentMap["correct_answer"] = ca
-		delete(aiResp, "correct_answer")
+		out["correct_answer"] = ca
 	}
 	if ex, ok := aiResp["explanation"]; ok {
-		contentMap["explanation"] = ex
-		delete(aiResp, "explanation")
+		out["explanation"] = ex
 	}
+
+	// Remove any duplicates that may exist inside content
+	delete(contentMap, "correct_answer")
+	delete(contentMap, "explanation")
 
 	if cr, ok := aiResp["change_reason"]; ok {
 		out["change_reason"] = cr
@@ -53,8 +57,9 @@ func MergeAISuggestion(original, aiResp map[string]interface{}) map[string]inter
 	return out
 }
 
-// NormalizeContent attempts to sanitize content fields: options->[]string,
-// correct_answer->int, trims duplicates and clamps indices.
+// NormalizeContent attempts to sanitize content fields: options->[]string and
+// simple string coercions for human-readable fields. Answer/explanation stay at
+// top level and are not touched here.
 func NormalizeContent(contentMap map[string]interface{}) {
 	// normalize options
 	if optsRaw, ok := contentMap["options"]; ok {
@@ -115,34 +120,8 @@ func NormalizeContent(contentMap map[string]interface{}) {
 		contentMap["options"] = out
 	}
 
-	// normalize correct_answer
-	if ca, ok := contentMap["correct_answer"]; ok {
-		switch v := ca.(type) {
-		case float64:
-			contentMap["correct_answer"] = int(v)
-		case int:
-			// ok
-		case string:
-			if n, err := strconv.Atoi(strings.TrimSpace(v)); err == nil {
-				contentMap["correct_answer"] = n
-			} else {
-				delete(contentMap, "correct_answer")
-			}
-		default:
-			delete(contentMap, "correct_answer")
-		}
-	}
-
-	// clamp correct_answer to options length
-	if ca, ok := contentMap["correct_answer"].(int); ok {
-		if opts, ok := contentMap["options"].([]string); ok {
-			if len(opts) == 0 {
-				contentMap["correct_answer"] = 0
-			} else if ca < 0 || ca >= len(opts) {
-				contentMap["correct_answer"] = 0
-			}
-		}
-	}
+	// Ensure no stray correct_answer under content
+	delete(contentMap, "correct_answer")
 
 	// ensure simple string fields
 	for _, k := range []string{"explanation", "question", "passage", "sentence"} {

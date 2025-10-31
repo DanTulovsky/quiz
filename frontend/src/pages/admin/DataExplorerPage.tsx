@@ -384,9 +384,11 @@ const DataExplorerPage: React.FC = () => {
         delete payloadContent['change_reason'];
       }
 
-      // Remove duplicate fields that could be included inside content
-      delete payloadContent['correct_answer'];
-      delete payloadContent['explanation'];
+      // Do not include answer/explanation inside content; canonical values are
+      // provided at the top level of the update request (see below).
+      if ('correct_answer' in payloadContent)
+        delete payloadContent['correct_answer'];
+      if ('explanation' in payloadContent) delete payloadContent['explanation'];
 
       // Ensure options is an array if missing/null
       if (!Array.isArray(payloadContent['options'])) {
@@ -401,7 +403,8 @@ const DataExplorerPage: React.FC = () => {
         content: payloadContent,
       };
 
-      // correct_answer/explanation should be taken from normalized suggestion
+      // correct_answer/explanation are expected at TOP LEVEL of the suggestion
+      // per backend normalization/prompt contract.
       if (typeof suggestionRaw['correct_answer'] === 'number') {
         updateData.correct_answer = suggestionRaw['correct_answer'] as number;
       }
@@ -409,7 +412,11 @@ const DataExplorerPage: React.FC = () => {
         updateData.explanation = suggestionRaw['explanation'] as string;
       }
 
-      await handleUpdateQuestion(selectedQuestion.id, updateData);
+      // Suppress the generic "Question updated" toast so we only show the
+      // consolidated success message for the AI-fix flow.
+      await handleUpdateQuestion(selectedQuestion.id, updateData, {
+        showNotification: false,
+      });
 
       // Mark as fixed via API (use mutation hook for consistency)
       await markQuestionAsFixedMutation.mutateAsync(selectedQuestion.id);

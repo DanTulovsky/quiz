@@ -300,52 +300,7 @@ export const useTextSelection = () => {
       }
     };
 
-    // For iOS: prevent native menu by temporarily disabling user-select
-    // Based on: https://github.com/react-native-webview/react-native-webview/issues/1117
-    // Solution: set userSelect to 'none' temporarily to prevent native menu
-    const preventNativeMenuOnTouch = (event: TouchEvent) => {
-      const target = event.target as Element;
-      if (
-        target.closest('[data-selectable-text]') ||
-        target.closest('.selectable-text')
-      ) {
-        const sel = window.getSelection();
-        if (sel && sel.rangeCount > 0) {
-          // Prevent default FIRST to stop iOS from showing menu
-          event.preventDefault();
-          event.stopPropagation();
-
-          // Clear touch active state
-          isTouchActiveRef.current = false;
-
-          // Temporarily set user-select to none to prevent native menu
-          // This is the key solution from the GitHub issue
-          const selectableElements = document.querySelectorAll(
-            '.selectable-text, [data-selectable-text]'
-          );
-          selectableElements.forEach((el: Element) => {
-            const htmlEl = el as HTMLElement;
-            htmlEl.style.userSelect = 'none';
-            htmlEl.style.webkitUserSelect = 'none';
-          });
-
-          // Clear selection immediately
-          sel.removeAllRanges();
-
-          // Re-enable user-select after a short delay
-          setTimeout(() => {
-            selectableElements.forEach((el: Element) => {
-              const htmlEl = el as HTMLElement;
-              htmlEl.style.userSelect = '';
-              htmlEl.style.webkitUserSelect = '';
-            });
-          }, 100);
-
-          // Trigger our handler to show the popup
-          debouncedHandler();
-        }
-      }
-    };
+    // Removed preventNativeMenuOnTouch: allow platform-native touch callout.
 
     // Track mouse and touch state changes
     document.addEventListener('mousedown', handleMouseDown);
@@ -354,9 +309,6 @@ export const useTextSelection = () => {
     // Listen to mouseup and touchend events so popup appears after
     // mouse button is released (desktop) or finger is lifted (mobile)
     document.addEventListener('mouseup', handleMouseUp);
-    document.addEventListener('touchend', preventNativeMenuOnTouch, {
-      passive: false,
-    });
     // Also listen to selectionchange for better iOS support (but only when not actively selecting)
     document.addEventListener('selectionchange', selectionChangeHandler);
 
@@ -365,7 +317,6 @@ export const useTextSelection = () => {
       document.removeEventListener('mousedown', handleMouseDown);
       document.removeEventListener('touchstart', handleTouchStart);
       document.removeEventListener('mouseup', handleMouseUp);
-      document.removeEventListener('touchend', preventNativeMenuOnTouch);
       document.removeEventListener('selectionchange', selectionChangeHandler);
     };
   }, [handleSelectionChange]);

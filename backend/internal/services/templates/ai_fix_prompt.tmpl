@@ -2,10 +2,10 @@ You are an AI assistant whose job is to review and, if necessary, improve a sing
 
 Guidance:
 - Inspect the question text, any passage or sentence, all options, the indicated `correct_answer` index, and the `explanation`.
-- If an option is clearly wrong, ambiguous, or ungrammatical, improve its wording to be clear and plausible as a distractor.
-- If the `correct_answer` index appears incorrect based on the passage/question content, correct the index.
+- It is acceptable to change the actual question text and/or any answer option wording when necessary to fix correctness, clarity, grammar, or ambiguity. You may add, remove, or rephrase options as long as the set remains plausible and consistent.
+- If the `correct_answer` index is incorrect after your edits, correct the index to match the revised options.
 - Improve the `explanation` text for clarity and pedagogical usefulness if needed.
-- Keep edits conservative: do not rewrite the entire question; prefer minimal, targeted fixes.
+- Keep edits conservative: prefer minimal, targeted fixes; avoid wholesale rewrites unless required to resolve correctness.
 - Do NOT invent new unrelated facts or change `language` or `level` fields.
 
 INPUT (JSON) — REAL question content to review:
@@ -21,6 +21,7 @@ EXAMPLE OF A CORRECT RESPONSE (for your reference only):
 RESPONSE REQUIREMENTS:
 - Return a single JSON object with exactly these keys: `content` (object), `correct_answer` (integer), `explanation` (string), and `change_reason` (string).
 - The `content` object should preserve fields like `question`, `options`, `passage`, `sentence` as appropriate.
+- `correct_answer` and `explanation` MUST be provided at the TOP LEVEL of the response (not inside `content`).
 - Make only the edits necessary to fix problems in the human-readable content (question, options, explanation, correct answer). Do NOT alter metadata fields such as `id`, `language`, or `level`.
 - If you shorten a very long passage, indicate truncation by replacing the middle with "..." within the passage string.
 

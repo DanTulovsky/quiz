@@ -602,12 +602,12 @@ func (h *AdminHandler) FixQuestionWithAI(c *gin.Context) {
 
 	// If query param apply=true present, apply suggestion directly and mark fixed
 	if strings.ToLower(c.Query("apply")) == "true" {
-		// Build update payload: use merged content
+		// Build update payload: use merged content and read answer/explanation from TOP LEVEL
 		updateContent := suggestion["content"].(map[string]interface{})
 
-		// Extract correct_answer as int (support float64 from JSON)
+		// Extract correct_answer from top level (support float64 from JSON)
 		correctAnswer := 0
-		if ca, ok := updateContent["correct_answer"]; ok {
+		if ca, ok := suggestion["correct_answer"]; ok {
 			switch v := ca.(type) {
 			case float64:
 				correctAnswer = int(v)
@@ -616,8 +616,9 @@ func (h *AdminHandler) FixQuestionWithAI(c *gin.Context) {
 			}
 		}
 
+		// Extract explanation from top level
 		explanation := ""
-		if ex, ok := updateContent["explanation"].(string); ok {
+		if ex, ok := suggestion["explanation"].(string); ok {
 			explanation = ex
 		}
 

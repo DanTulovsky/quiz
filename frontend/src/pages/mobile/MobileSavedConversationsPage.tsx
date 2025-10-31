@@ -242,7 +242,11 @@ const ConversationDetailModal: React.FC<ConversationDetailModalProps> = ({
                     </Button>
                   )}
                 </Group>
-                <Box size='sm' style={{ maxWidth: 'none' }} data-allow-translate='true'>
+                <Box
+                  size='sm'
+                  style={{ maxWidth: 'none' }}
+                  data-allow-translate='true'
+                >
                   <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
                     components={{

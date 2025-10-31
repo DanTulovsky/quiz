@@ -459,7 +459,10 @@ const MobileDailyPage: React.FC = () => {
                       per
                     );
                     return (
-                      <div className='selectable-text' data-allow-translate='true'>
+                      <div
+                        className='selectable-text'
+                        data-allow-translate='true'
+                      >
                         {paras.map((p, i) => (
                           <Text
                             key={i}

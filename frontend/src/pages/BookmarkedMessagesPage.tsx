@@ -308,7 +308,11 @@ const MessageDetailModal: React.FC<MessageDetailModalProps> = ({
               Remove Bookmark
             </Button>
           </Group>
-          <Box size='sm' style={{ maxWidth: 'none' }} data-allow-translate='true'>
+          <Box
+            size='sm'
+            style={{ maxWidth: 'none' }}
+            data-allow-translate='true'
+          >
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{
