@@ -362,6 +362,7 @@ export const SnippetHighlighter: React.FC<SnippetHighlighterProps> = ({
         <Component
           {...componentProps}
           className={`selectable-text ${componentProps.className || ''}`}
+          data-selectable-text='true'
         >
           {content}
         </Component>
@@ -391,10 +392,12 @@ export const SnippetHighlighter: React.FC<SnippetHighlighterProps> = ({
     );
   }
 
-  // Otherwise, return the content directly
+  // Otherwise, return the content directly with a wrapper to enable translation
   return (
     <>
-      {content}
+      <span className='selectable-text' data-selectable-text='true'>
+        {content}
+      </span>
       <Modal
         opened={deleteModalOpened}
         onClose={closeDeleteModal}
