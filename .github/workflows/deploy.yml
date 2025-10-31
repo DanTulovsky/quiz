@@ -2,6 +2,11 @@ name: Deploy
 
 on:
   workflow_dispatch: # Allow manual trigger
+    inputs:
+      version:
+        description: 'Optional: Version tag to deploy (e.g., v1.2.3). If not provided, defaults to "latest".'
+        required: false
+        type: string
   workflow_run:
     workflows: ["Release"]
     types:
@@ -14,13 +19,44 @@ concurrency:
 
 jobs:
   deploy:
-    # Ensure we only run when Release completed successfully
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    # Ensure we only run when Release completed successfully (for workflow_run) or allow manual dispatch
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
     runs-on: ubuntu-24.04-arm
-
     steps:
+      - name: Extract version tag
+        id: extract-version
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            # Manual dispatch: use input if provided, otherwise default to "latest"
+            VERSION="${{ inputs.version }}"
+            if [ -z "$VERSION" ]; then
+              VERSION="latest"
+            fi
+            echo "Using manual input version: $VERSION"
+          else
+            # workflow_run trigger: extract tag from head_ref
+            HEAD_REF="${{ github.event.workflow_run.head_ref }}"
+            if [[ "$HEAD_REF" == refs/tags/* ]]; then
+              # Strip "refs/tags/" prefix
+              VERSION="${HEAD_REF#refs/tags/}"
+            elif [[ "$HEAD_REF" == v*.*.* ]]; then
+              # Already in tag format (e.g., "v1.2.3")
+              VERSION="$HEAD_REF"
+            else
+              echo "Warning: Could not extract version from head_ref: $HEAD_REF, defaulting to 'latest'"
+              VERSION="latest"
+            fi
+            echo "Extracted version from Release workflow: $VERSION"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "IMAGE_TAG=$VERSION" >> $GITHUB_OUTPUT
+
       - name: Deploy to production via SSH and restart services
         uses: appleboy/ssh-action@v1.0.0
+        env:
+          IMAGE_TAG: ${{ steps.extract-version.outputs.IMAGE_TAG }}
         with:
           host: ${{ vars.PROD_SERVER_HOST }}
           username: ${{ vars.PROD_SERVER_USER }}
@@ -28,10 +64,13 @@ jobs:
           # Optional: specify a non-default SSH port via repository variable `PROD_SERVER_PORT`.
           # If the variable is unset, the appleboy/ssh-action will default to port 22.
           port: ${{ vars.PROD_SERVER_PORT }}
+          envs: IMAGE_TAG
           script: |
             # appleboy/ssh-action executes this in the login shell configured for the
             # remote user (fish on our prod host). The standard Bash `set -euo pipefail`
             # flags are not understood by fish, so we avoid them here.
             cd ~/src/quiz
+            # IMAGE_TAG is passed via envs and will be available in the remote shell
+            echo "Deploying with IMAGE_TAG=$IMAGE_TAG"
             echo "Running \`task restart-prod\` in $(pwd) on $HOSTNAME ..."
             task restart-prod
