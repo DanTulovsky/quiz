@@ -274,6 +274,8 @@ describe('useDailyQuestions', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    // Clear sessionStorage before each test to prevent state pollution
+    window.sessionStorage.clear();
 
     // Mock the auth hook
     mockUseAuth.mockReturnValue({
@@ -911,9 +913,9 @@ describe('useDailyQuestions', () => {
 
       // Verify that both types of questions are handled correctly
       expect(result.current.questions).toEqual(mixedQuestions);
-      // With current initialization logic, we can land on index 0 if restored;
-      // for a clean run we expect the first unanswered from start, which is 0
-      expect(result.current.currentQuestion).toEqual(mixedQuestions[0]);
+      // The hook should navigate to the first unanswered question (index 1)
+      // since the first question (index 0) is completed
+      expect(result.current.currentQuestion).toEqual(mixedQuestions[1]);
     });
   });
 });

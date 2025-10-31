@@ -316,7 +316,6 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
           color: 'red',
         });
         throw error;
-        throw error;
       }
     },
     [
