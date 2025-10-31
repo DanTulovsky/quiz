@@ -804,6 +804,7 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
         <ScrollArea style={{ height: '100%' }}>
           <div
             className='selectable-text'
+            data-allow-translate='true'
             style={{ padding: '1rem 56px 1rem 0' }}
           >
             {(() => {
@@ -1183,6 +1184,7 @@ const MobileStoryReadingView: React.FC<MobileStoryReadingViewProps> = ({
         <ScrollArea style={{ height: '100%' }}>
           <div
             className='selectable-text'
+            data-allow-translate='true'
             style={{ padding: '1rem 56px 1rem 20px' }}
           >
             <Stack gap='lg'>

@@ -162,6 +162,7 @@ const MobileWordOfTheDayPage: React.FC = () => {
                     borderLeft: '3px solid var(--mantine-primary-color-4)',
                     marginTop: '16px',
                   }}
+                  data-allow-translate='true'
                 >
                   <Text
                     size='md'
