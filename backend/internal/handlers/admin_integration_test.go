@@ -999,15 +999,16 @@ func (suite *AdminIntegrationTestSuite) TestAdmin_FixQuestionWithAI_ApplySuggest
 	suggestion, ok := suggestionRaw.(map[string]interface{})
 	suite.Require().True(ok)
 
-	// Build update payload from suggestion: merged content should be under suggestion["content"]
+	// Build update payload from suggestion: merged content under suggestion["content"],
+	// and top-level correct_answer/explanation per normalization rules.
 	contentRaw, ok := suggestion["content"]
 	suite.Require().True(ok)
 	contentMap, ok := contentRaw.(map[string]interface{})
 	suite.Require().True(ok)
 
-	// Extract correct_answer from content (may be float64)
+	// Extract correct_answer from TOP LEVEL (may be float64)
 	var correctIdx int
-	if ca, ok := contentMap["correct_answer"]; ok {
+	if ca, ok := suggestion["correct_answer"]; ok {
 		switch v := ca.(type) {
 		case float64:
 			correctIdx = int(v)
@@ -1017,7 +1018,7 @@ func (suite *AdminIntegrationTestSuite) TestAdmin_FixQuestionWithAI_ApplySuggest
 	}
 
 	explanation := ""
-	if ex, ok := contentMap["explanation"].(string); ok {
+	if ex, ok := suggestion["explanation"].(string); ok {
 		explanation = ex
 	}
 
