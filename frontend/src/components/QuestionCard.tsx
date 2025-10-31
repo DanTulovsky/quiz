@@ -10,8 +10,6 @@ import {
   Lightbulb,
   ChevronRight,
   BookOpen,
-  Volume2,
-  VolumeX,
   Copy,
 } from 'lucide-react';
 import { Question, AnswerResponse as Feedback } from '../api/api';
@@ -23,6 +21,7 @@ import { useTTS } from '../hooks/useTTS';
 import { useTheme } from '../contexts/ThemeContext';
 import { fontScaleMap } from '../theme/theme';
 import { useQuestionSnippets } from '../hooks/useQuestionSnippets';
+import TTSButton from './TTSButton';
 import {
   usePostV1QuizQuestionIdReport,
   usePostV1QuizQuestionIdMarkKnown,
@@ -48,7 +47,6 @@ import {
   Tooltip,
   Textarea,
   ActionIcon,
-  LoadingOverlay,
 } from '@mantine/core';
 import { useElementSize } from '@mantine/hooks';
 import { useHotkeys } from 'react-hotkeys-hook';
@@ -156,8 +154,6 @@ export interface QuestionCardProps {
   isLastQuestion?: boolean;
   isReadOnly?: boolean;
   onShuffledOptionsChange?: (len: number) => void;
-  prebuffering?: boolean;
-  prebufferingProgress?: number; // 0..1
 }
 
 export type QuestionCardHandle = {
@@ -209,12 +205,7 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
     const {
       isLoading: isTTSLoading,
       isPlaying: isTTSPlaying,
-      playTTS,
       stopTTS,
-      // prebufferTTS intentionally unused in this component — prebuffering is
-      // orchestrated at page-level to avoid duplicate calls.
-      isBuffering,
-      bufferingProgress,
     } = useTTS();
     const { isAuthenticated } = useAuth();
     const { isMobile } = useMobileDetection();
@@ -255,10 +246,9 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
         if (question.type !== 'reading_comprehension') return;
         const passage = question.content?.passage || '';
         if (!passage) return;
+        // TTS handled by TTSButton component - hotkey no longer needed
         if (isTTSPlaying || isTTSLoading) {
-          handleTTSStop();
-        } else {
-          handleTTSPlay(passage);
+          stopTTS();
         }
       },
     }));
@@ -382,10 +372,11 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
     useHotkeys(
       'escape',
       event => {
+        // TTS stop handled by TTSButton component - hotkey no longer needed
         if (isTTSPlaying || isTTSLoading) {
           event.preventDefault();
           event.stopPropagation();
-          handleTTSStop();
+          stopTTS();
           return false;
         }
         if (showMarkKnownModal) {
@@ -630,35 +621,6 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
     } catch {
       userLearningPrefs = undefined;
     }
-
-    const handleTTSPlay = async (text: string) => {
-      // Determine the best voice: user preference (if any) -> default for question.language -> fallback to 'echo'
-      let preferredVoice: string | undefined;
-      try {
-        const saved = (
-          userLearningPrefs as unknown as { tts_voice?: string } | undefined
-        )?.tts_voice;
-        if (saved && saved.trim()) {
-          preferredVoice = saved.trim();
-        }
-        preferredVoice =
-          preferredVoice || defaultVoiceForLanguage(question.language);
-      } catch {
-        preferredVoice = undefined;
-      }
-      // Ensure we always pass a sensible fallback voice to the TTS hook
-      const finalVoice =
-        preferredVoice ?? defaultVoiceForLanguage(question.language) ?? 'echo';
-      await playTTS(text, finalVoice);
-    };
-
-    const handleTTSStop = () => {
-      stopTTS();
-    };
-
-    // NOTE: prebuffering is handled at page level (QuestionPageBase) to avoid
-    // duplicate prebuffer requests from both page and card. Do not start
-    // prebuffer here.
 
     const currentFeedback = localFeedback || feedback;
     const allowResubmit =
@@ -973,11 +935,6 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                   withBorder
                   style={{ marginBottom: 8, position: 'relative' }}
                 >
-                  <LoadingOverlay
-                    visible={isTTSLoading}
-                    overlayProps={{ backgroundOpacity: 0.35, blur: 1 }}
-                    zIndex={5}
-                  />
                   <Box
                     style={{
                       position: 'absolute',
@@ -996,36 +953,22 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                       >
                         P
                       </Badge>
-                      <Tooltip
-                        label={
-                          isTTSPlaying ? 'Stop audio' : 'Listen to passage'
-                        }
-                      >
-                        <ActionIcon
-                          size='md'
-                          variant='subtle'
-                          color={isTTSPlaying ? 'red' : 'blue'}
-                          onClick={() => {
-                            if (isTTSPlaying || isTTSLoading) {
-                              handleTTSStop();
-                            } else {
-                              handleTTSPlay(question.content?.passage || '');
-                            }
-                          }}
-                          disabled={false}
-                          aria-label={
-                            isTTSPlaying || isTTSLoading
-                              ? 'Stop audio'
-                              : 'Listen to passage'
-                          }
-                        >
-                          {isTTSPlaying || isTTSLoading ? (
-                            <VolumeX size={18} />
-                          ) : (
-                            <Volume2 size={18} />
-                          )}
-                        </ActionIcon>
-                      </Tooltip>
+                      <TTSButton
+                        getText={() => question.content?.passage || ''}
+                        getVoice={() => {
+                          // Prefer user setting to match story behavior; fall back to default voice
+                          const saved = (
+                            userLearningPrefs?.tts_voice || ''
+                          ).trim();
+                          if (saved) return saved;
+                          const voice = defaultVoiceForLanguage(
+                            question.language
+                          );
+                          return voice || undefined;
+                        }}
+                        size='md'
+                        ariaLabel='Passage audio'
+                      />
                       {/* Copy button - only show on desktop */}
                       {!isMobile && (
                         <Tooltip label='Copy passage to clipboard'>
@@ -1040,47 +983,6 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
                           </ActionIcon>
                         </Tooltip>
                       )}
-                      {/* Small inline buffering indicator (progress bar) */}
-                      <Box
-                        ml={8}
-                        style={{ display: 'inline-flex', alignItems: 'center' }}
-                      >
-                        {isBuffering ? (
-                          <div
-                            style={{
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: 8,
-                            }}
-                          >
-                            <div style={{ width: 96 }}>
-                              <div
-                                style={{
-                                  height: 6,
-                                  background:
-                                    'var(--mantine-color-default-border)',
-                                  borderRadius: 6,
-                                  overflow: 'hidden',
-                                }}
-                              >
-                                <div
-                                  style={{
-                                    width: `${Math.round((bufferingProgress ?? 0) * 100)}%`,
-                                    height: '100%',
-                                    background:
-                                      'linear-gradient(90deg, #4dabf7, #1971c2)',
-                                    transition: 'width 160ms linear',
-                                  }}
-                                  data-testid='tts-buffer-progress'
-                                />
-                              </div>
-                            </div>
-                            <Text size='xs' c='dimmed'>
-                              Buffering
-                            </Text>
-                          </div>
-                        ) : null}
-                      </Box>
                     </Group>
                   </Box>
                   <div className='reading-passage-text'>

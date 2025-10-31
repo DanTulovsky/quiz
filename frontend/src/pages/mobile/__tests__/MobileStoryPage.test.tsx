@@ -44,10 +44,12 @@ vi.mock('../../../hooks/useStory', () => ({
 const mockTTS = {
   isLoading: false,
   isPlaying: false,
+  isPaused: false,
   playTTS: vi.fn(),
   stopTTS: vi.fn(),
-  isBuffering: false,
-  bufferingProgress: 0,
+  pauseTTS: vi.fn(),
+  resumeTTS: vi.fn(),
+  restartTTS: vi.fn(),
 };
 
 vi.mock('../../../hooks/useTTS', () => ({
@@ -161,7 +163,7 @@ describe('MobileStoryPage', () => {
     it('displays TTS button for mobile story sections', () => {
       renderComponent();
 
-      const ttsButton = screen.getByLabelText('Listen to section');
+      const ttsButton = screen.getByLabelText(/Section audio/i);
       expect(ttsButton).toBeInTheDocument();
     });
 
@@ -169,7 +171,7 @@ describe('MobileStoryPage', () => {
       mockTTS.isLoading = true;
       renderComponent();
 
-      const ttsButton = screen.getByLabelText('Loading audio');
+      const ttsButton = screen.getByLabelText(/Section audio/i);
       expect(ttsButton).toBeInTheDocument();
       expect(ttsButton).toBeDisabled();
     });
@@ -178,14 +180,14 @@ describe('MobileStoryPage', () => {
       mockTTS.isPlaying = true;
       renderComponent();
 
-      const ttsButton = screen.getByLabelText('Stop audio');
+      const ttsButton = screen.getByLabelText(/Section audio/i);
       expect(ttsButton).toBeInTheDocument();
     });
 
     it('calls playTTS when TTS button is clicked', () => {
       renderComponent();
 
-      const ttsButton = screen.getByLabelText('Listen to section');
+      const ttsButton = screen.getByLabelText(/Section audio/i);
       fireEvent.click(ttsButton);
 
       expect(mockTTS.playTTS).toHaveBeenCalledWith(
@@ -194,14 +196,14 @@ describe('MobileStoryPage', () => {
       );
     });
 
-    it('calls stopTTS when TTS button is clicked while playing', () => {
+    it('calls pauseTTS when TTS button is clicked while playing', () => {
       mockTTS.isPlaying = true;
       renderComponent();
 
-      const ttsButton = screen.getByLabelText('Stop audio');
+      const ttsButton = screen.getByLabelText(/Section audio/i);
       fireEvent.click(ttsButton);
 
-      expect(mockTTS.stopTTS).toHaveBeenCalled();
+      expect(mockTTS.pauseTTS).toHaveBeenCalled();
     });
   });
 
@@ -213,7 +215,7 @@ describe('MobileStoryPage', () => {
     it('displays TTS button in header for mobile story reading view', () => {
       renderComponent();
 
-      const ttsButton = screen.getByLabelText('Listen to story');
+      const ttsButton = screen.getByLabelText(/Story audio/i);
       expect(ttsButton).toBeInTheDocument();
     });
 
@@ -221,7 +223,7 @@ describe('MobileStoryPage', () => {
       mockTTS.isLoading = true;
       renderComponent();
 
-      const ttsButton = screen.getByLabelText('Loading audio');
+      const ttsButton = screen.getByLabelText(/Story audio/i);
       expect(ttsButton).toBeInTheDocument();
       expect(ttsButton).toBeDisabled();
     });
@@ -230,14 +232,14 @@ describe('MobileStoryPage', () => {
       mockTTS.isPlaying = true;
       renderComponent();
 
-      const ttsButton = screen.getByLabelText('Stop audio');
+      const ttsButton = screen.getByLabelText(/Story audio/i);
       expect(ttsButton).toBeInTheDocument();
     });
 
     it('calls playTTS with combined story content when TTS button is clicked', () => {
       renderComponent();
 
-      const ttsButton = screen.getByLabelText('Listen to story');
+      const ttsButton = screen.getByLabelText(/Story audio/i);
       fireEvent.click(ttsButton);
 
       expect(mockTTS.playTTS).toHaveBeenCalledWith(
@@ -246,14 +248,14 @@ describe('MobileStoryPage', () => {
       );
     });
 
-    it('calls stopTTS when TTS button is clicked while playing', () => {
+    it('calls pauseTTS when TTS button is clicked while playing', () => {
       mockTTS.isPlaying = true;
       renderComponent();
 
-      const ttsButton = screen.getByLabelText('Stop audio');
+      const ttsButton = screen.getByLabelText(/Story audio/i);
       fireEvent.click(ttsButton);
 
-      expect(mockTTS.stopTTS).toHaveBeenCalled();
+      expect(mockTTS.pauseTTS).toHaveBeenCalled();
     });
   });
 });

@@ -8,30 +8,27 @@ import {
   Button,
   Group,
   Badge,
-  ActionIcon,
   Alert,
   Loader,
   Center,
   Progress,
-  Tooltip,
-  LoadingOverlay,
   Box,
   Modal,
   Textarea,
 } from '@mantine/core';
 import { useAuth } from '../../hooks/useAuth';
 import { IconCheck, IconX } from '@tabler/icons-react';
-import { Volume2, VolumeX } from 'lucide-react';
 import { splitIntoParagraphs } from '../../utils/passage';
 import { useMediaQuery } from '@mantine/hooks';
 import { useDailyQuestions } from '../../hooks/useDailyQuestions';
 import DailyDatePicker from '../../components/DailyDatePicker';
 import { useMantineTheme } from '@mantine/core';
-import { useTTS } from '../../hooks/useTTS';
+import TTSButton from '../../components/TTSButton';
 import { defaultVoiceForLanguage } from '../../utils/tts';
 import {
   usePostV1QuizQuestionIdReport,
   usePostV1QuizQuestionIdMarkKnown,
+  useGetV1PreferencesLearning,
 } from '../../api/api';
 import { showNotificationWithClean } from '../../notifications';
 import { SnippetHighlighter } from '../../components/SnippetHighlighter';
@@ -84,19 +81,78 @@ const MobileDailyPage: React.FC = () => {
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const nextButtonRef = useRef<HTMLButtonElement>(null);
 
-  // TTS state for reading comprehension passages
-  const {
-    isLoading: isTTSLoading,
-    isPlaying: isTTSPlaying,
-    playTTS,
-    stopTTS,
-  } = useTTS();
-
   // Media query for responsive paragraph splitting
   const isSmall = useMediaQuery('(max-width: 768px)');
 
   // Auth state
   const { isAuthenticated, user } = useAuth();
+
+  // Fetch user learning preferences for TTS voice
+  const { data: userLearningPrefs } = useGetV1PreferencesLearning();
+
+  // Mutation hooks - must be called unconditionally at top level
+  const reportMutation = usePostV1QuizQuestionIdReport({
+    mutation: {
+      onSuccess: () => {
+        setIsReported(true);
+        setShowReportModal(false);
+        setReportReason('');
+        showNotificationWithClean({
+          title: 'Success',
+          message:
+            'Question reported successfully. Thank you for your feedback!',
+          color: 'green',
+        });
+      },
+      onError: (error: unknown) => {
+        const errorObj = error as { error?: string } | undefined;
+        showNotificationWithClean({
+          title: 'Error',
+          message: errorObj?.error || 'Failed to report question.',
+          color: 'red',
+        });
+      },
+    },
+  });
+
+  const markKnownMutation = usePostV1QuizQuestionIdMarkKnown({
+    mutation: {
+      onSuccess: () => {
+        setShowMarkKnownModal(false);
+        const confidence = confidenceLevel;
+        setConfidenceLevel(null);
+        let message = 'Preference saved.';
+        if (confidence === 1)
+          message =
+            'Saved with low confidence. You will see this question more often.';
+        if (confidence === 2)
+          message =
+            'Saved with some confidence. You will see this question a bit more often.';
+        if (confidence === 3)
+          message =
+            'Saved with neutral confidence. No change to how often you will see this question.';
+        if (confidence === 4)
+          message =
+            'Saved with high confidence. You will see this question less often.';
+        if (confidence === 5)
+          message =
+            'Saved with complete confidence. You will rarely see this question.';
+        showNotificationWithClean({
+          title: 'Success',
+          message,
+          color: 'green',
+        });
+      },
+      onError: (error: unknown) => {
+        const errorObj = error as { error?: string } | undefined;
+        showNotificationWithClean({
+          title: 'Error',
+          message: errorObj?.error || 'Failed to mark question as known.',
+          color: 'red',
+        });
+      },
+    },
+  });
 
   // Set date from URL param
   useEffect(() => {
@@ -157,22 +213,6 @@ const MobileDailyPage: React.FC = () => {
     }
   }, [currentQuestion?.id]);
 
-  // TTS handler functions
-  const handleTTSPlay = async (text: string) => {
-    if (!text) return;
-
-    // Determine the best voice: default for question.language -> fallback to 'echo'
-    const finalVoice =
-      defaultVoiceForLanguage(currentQuestion?.question.language || 'en') ||
-      'echo';
-
-    await playTTS(text, finalVoice);
-  };
-
-  const handleTTSStop = () => {
-    stopTTS();
-  };
-
   // Function to scroll to submit button (mobile only)
   const scrollToSubmitButton = useCallback(() => {
     if (submitButtonRef.current) {
@@ -198,67 +238,6 @@ const MobileDailyPage: React.FC = () => {
 
     setShowReportModal(true);
   };
-
-  const reportMutation = usePostV1QuizQuestionIdReport({
-    mutation: {
-      onSuccess: () => {
-        setIsReported(true);
-        setShowReportModal(false);
-        setReportReason('');
-        showNotificationWithClean({
-          title: 'Success',
-          message:
-            'Question reported successfully. Thank you for your feedback!',
-          color: 'green',
-        });
-      },
-      onError: error => {
-        showNotificationWithClean({
-          title: 'Error',
-          message: error?.error || 'Failed to report question.',
-          color: 'red',
-        });
-      },
-    },
-  });
-
-  const markKnownMutation = usePostV1QuizQuestionIdMarkKnown({
-    mutation: {
-      onSuccess: () => {
-        setShowMarkKnownModal(false);
-        const confidence = confidenceLevel;
-        setConfidenceLevel(null);
-        let message = 'Preference saved.';
-        if (confidence === 1)
-          message =
-            'Saved with low confidence. You will see this question more often.';
-        if (confidence === 2)
-          message =
-            'Saved with some confidence. You will see this question a bit more often.';
-        if (confidence === 3)
-          message =
-            'Saved with neutral confidence. No change to how often you will see this question.';
-        if (confidence === 4)
-          message =
-            'Saved with high confidence. You will see this question less often.';
-        if (confidence === 5)
-          message =
-            'Saved with complete confidence. You will rarely see this question.';
-        showNotificationWithClean({
-          title: 'Success',
-          message,
-          color: 'green',
-        });
-      },
-      onError: error => {
-        showNotificationWithClean({
-          title: 'Error',
-          message: error?.error || 'Failed to mark question as known.',
-          color: 'red',
-        });
-      },
-    },
-  });
 
   // Handle answer submission
   const handleAnswerSubmit = useCallback(async () => {
@@ -404,36 +383,21 @@ const MobileDailyPage: React.FC = () => {
               {/* TTS button for reading comprehension */}
               {currentQuestion.question.type === 'reading_comprehension' &&
                 currentQuestion.question.content?.passage && (
-                  <Tooltip
-                    label={isTTSPlaying ? 'Stop audio' : 'Listen to passage'}
-                  >
-                    <ActionIcon
-                      size='sm'
-                      variant='subtle'
-                      color={isTTSPlaying ? 'red' : 'blue'}
-                      onClick={() => {
-                        if (isTTSPlaying || isTTSLoading) {
-                          handleTTSStop();
-                        } else {
-                          handleTTSPlay(
-                            currentQuestion.question.content?.passage || ''
-                          );
-                        }
-                      }}
-                      disabled={false}
-                      aria-label={
-                        isTTSPlaying || isTTSLoading
-                          ? 'Stop audio'
-                          : 'Listen to passage'
-                      }
-                    >
-                      {isTTSPlaying || isTTSLoading ? (
-                        <VolumeX size={16} />
-                      ) : (
-                        <Volume2 size={16} />
-                      )}
-                    </ActionIcon>
-                  </Tooltip>
+                  <TTSButton
+                    getText={() =>
+                      currentQuestion.question.content?.passage || ''
+                    }
+                    getVoice={() => {
+                      const saved = (userLearningPrefs?.tts_voice || '').trim();
+                      if (saved) return saved;
+                      const voice = defaultVoiceForLanguage(
+                        currentQuestion.question.language
+                      );
+                      return voice || undefined;
+                    }}
+                    size='sm'
+                    ariaLabel='Passage audio'
+                  />
                 )}
             </Group>
 
@@ -447,11 +411,7 @@ const MobileDailyPage: React.FC = () => {
                   withBorder
                   style={{ marginBottom: 8, position: 'relative' }}
                 >
-                  <LoadingOverlay
-                    visible={isTTSLoading}
-                    overlayProps={{ backgroundOpacity: 0.35, blur: 1 }}
-                    zIndex={5}
-                  />
+                  {/* Loading state handled by TTSButton component */}
                   {(() => {
                     const per = isSmall ? 2 : 4;
                     const paras = splitIntoParagraphs(

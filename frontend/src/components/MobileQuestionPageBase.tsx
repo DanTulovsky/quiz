@@ -17,21 +17,18 @@ import {
   Loader,
   Center,
   Box,
-  Tooltip,
-  ActionIcon,
-  LoadingOverlay,
   Modal,
   Textarea,
 } from '@mantine/core';
 import { useAuth } from '../hooks/useAuth';
 import { IconCheck, IconX } from '@tabler/icons-react';
-import { Volume2, VolumeX } from 'lucide-react';
+import TTSButton from './TTSButton';
 import { useQuestionFlow } from '../hooks/useQuestionFlow';
-import { useTTS } from '../hooks/useTTS';
 import { defaultVoiceForLanguage } from '../utils/tts';
 import {
   usePostV1QuizQuestionIdReport,
   usePostV1QuizQuestionIdMarkKnown,
+  useGetV1PreferencesLearning,
 } from '../api/api';
 import { showNotificationWithClean } from '../notifications';
 import { SnippetHighlighter } from './SnippetHighlighter';
@@ -77,19 +74,14 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const nextButtonRef = useRef<HTMLButtonElement>(null);
 
-  // TTS state for reading comprehension passages
-  const {
-    isLoading: isTTSLoading,
-    isPlaying: isTTSPlaying,
-    playTTS,
-    stopTTS,
-  } = useTTS();
-
   const { question, isLoading, error, forceFetchNextQuestion } =
     useQuestionFlow({ mode, questionId });
 
   // Fetch snippets for the current question
   const { snippets } = useQuestionSnippets(question?.id);
+
+  // Fetch user learning preferences for TTS voice
+  const { data: userLearningPrefs } = useGetV1PreferencesLearning();
 
   // Update the global QuestionContext when local question changes (same as desktop)
   useEffect(() => {
@@ -191,19 +183,6 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
   }, [forceFetchNextQuestion, setFeedback]);
 
   // TTS handler functions
-  const handleTTSPlay = async (text: string) => {
-    if (!text) return;
-
-    // Determine the best voice: default for question.language -> fallback to 'echo'
-    const finalVoice =
-      defaultVoiceForLanguage(question?.language || 'en') || 'echo';
-
-    await playTTS(text, finalVoice);
-  };
-
-  const handleTTSStop = () => {
-    stopTTS();
-  };
 
   const { isAuthenticated } = useAuth();
 
@@ -388,11 +367,7 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
                   withBorder
                   style={{ position: 'relative' }}
                 >
-                  <LoadingOverlay
-                    visible={isTTSLoading}
-                    overlayProps={{ backgroundOpacity: 0.35, blur: 1 }}
-                    zIndex={5}
-                  />
+                  {/* Loading state handled by TTSButton component */}
                   <Box
                     style={{
                       position: 'absolute',
@@ -401,34 +376,21 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
                       zIndex: 10,
                     }}
                   >
-                    <Tooltip
-                      label={isTTSPlaying ? 'Stop audio' : 'Listen to passage'}
-                    >
-                      <ActionIcon
-                        size='sm'
-                        variant='subtle'
-                        color={isTTSPlaying ? 'red' : 'blue'}
-                        onClick={() => {
-                          if (isTTSPlaying || isTTSLoading) {
-                            handleTTSStop();
-                          } else {
-                            handleTTSPlay(question.content?.passage || '');
-                          }
-                        }}
-                        disabled={false}
-                        aria-label={
-                          isTTSPlaying || isTTSLoading
-                            ? 'Stop audio'
-                            : 'Listen to passage'
-                        }
-                      >
-                        {isTTSPlaying || isTTSLoading ? (
-                          <VolumeX size={16} />
-                        ) : (
-                          <Volume2 size={16} />
-                        )}
-                      </ActionIcon>
-                    </Tooltip>
+                    <TTSButton
+                      getText={() => question.content?.passage || ''}
+                      getVoice={() => {
+                        const saved = (
+                          userLearningPrefs?.tts_voice || ''
+                        ).trim();
+                        if (saved) return saved;
+                        const voice = defaultVoiceForLanguage(
+                          question.language
+                        );
+                        return voice || undefined;
+                      }}
+                      size='sm'
+                      ariaLabel='Passage audio'
+                    />
                   </Box>
                   {(() => {
                     const per = isSmallScreen ? 2 : 4;

@@ -6,13 +6,11 @@ import {
   Stack,
   Button,
   Group,
-  Loader,
   Center,
   Alert,
   TextInput,
   Select,
   Box,
-  ActionIcon,
   Divider,
   Paper,
   Badge,
@@ -26,12 +24,12 @@ import {
   IconSearch,
   IconX,
   IconCopy,
-  IconVolume,
 } from '@tabler/icons-react';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useGetV1PreferencesLearning } from '../../api/api';
 import { fontScaleMap } from '../../theme/theme';
 import { useAuth } from '../../hooks/useAuth';
-import { playTTSOnce } from '../../hooks/useTTS';
+import TTSButton from '../../components/TTSButton';
 import { defaultVoiceForLanguage } from '../../utils/tts';
 import { getTermForLanguage } from '../../utils/phrasebook';
 import { ensureLanguagesLoaded } from '../../utils/locale';
@@ -63,6 +61,7 @@ const MobilePhrasebookCategoryPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { fontSize } = useTheme();
+  const { data: userLearningPrefs } = useGetV1PreferencesLearning();
   const [data, setData] = useState<PhrasebookData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -132,36 +131,6 @@ const MobilePhrasebookCategoryPage = () => {
       await navigator.clipboard.writeText(text);
     } catch (err) {
       console.error('Failed to copy text: ', err);
-    }
-  };
-
-  const playWordTTS = async (text: string) => {
-    try {
-      // Determine the best voice: user preference -> default for user's language -> fallback to 'echo'
-      let preferredVoice: string | undefined;
-      try {
-        const saved = (
-          user?.learning_preferences as unknown as
-            | { tts_voice?: string }
-            | undefined
-        )?.tts_voice;
-        if (saved && saved.trim()) {
-          preferredVoice = saved.trim();
-        }
-        preferredVoice =
-          preferredVoice || defaultVoiceForLanguage(user?.preferred_language);
-      } catch {
-        preferredVoice = undefined;
-      }
-      // Ensure we always pass a sensible fallback voice to the TTS hook
-      const finalVoice =
-        preferredVoice ??
-        defaultVoiceForLanguage(user?.preferred_language) ??
-        'echo';
-
-      await playTTSOnce(text, finalVoice);
-    } catch {
-      // Error handling is already done in playTTSOnce
     }
   };
 
@@ -376,14 +345,21 @@ const MobilePhrasebookCategoryPage = () => {
 
                     {/* Action Buttons */}
                     <Group gap={4} wrap='nowrap' style={{ flexShrink: 0 }}>
-                      <ActionIcon
-                        variant='subtle'
-                        size='lg'
-                        onClick={() => playWordTTS(word.displayTerm)}
-                        aria-label='Pronounce word'
-                      >
-                        <IconVolume size={20} />
-                      </ActionIcon>
+                      <TTSButton
+                        getText={() => word.displayTerm}
+                        getVoice={() => {
+                          const saved = (
+                            userLearningPrefs?.tts_voice || ''
+                          ).trim();
+                          if (saved) return saved;
+                          return (
+                            defaultVoiceForLanguage(user?.preferred_language) ||
+                            undefined
+                          );
+                        }}
+                        size='sm'
+                        ariaLabel='Pronounce word'
+                      />
                       <ActionIcon
                         variant='subtle'
                         size='lg'

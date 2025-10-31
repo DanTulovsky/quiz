@@ -1,13 +1,12 @@
 import React from 'react';
-import { ActionIcon, Tooltip, Box } from '@mantine/core';
-import { Volume2, VolumeX } from 'lucide-react';
-import { useTTS } from '../hooks/useTTS';
+import { Tooltip, Box } from '@mantine/core';
 import { defaultVoiceForLanguage } from '../utils/tts';
 import { useGetV1PreferencesLearning } from '../api/api';
 import { useTheme } from '../contexts/ThemeContext';
 import { fontScaleMap } from '../theme/theme';
 import { SnippetHighlighter } from './SnippetHighlighter';
 import { useSectionSnippets } from '../hooks/useSectionSnippets';
+import TTSButton from './TTSButton';
 import {
   Paper,
   Title,
@@ -17,7 +16,6 @@ import {
   Badge,
   Stack,
   Alert,
-  Loader,
 } from '@mantine/core';
 import {
   IconChevronLeft,
@@ -63,13 +61,6 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
   onFirst,
   onLast,
 }) => {
-  const {
-    isLoading: isTTSLoading,
-    isPlaying: isTTSPlaying,
-    playTTS,
-    stopTTS,
-  } = useTTS();
-
   // Get user learning preferences for preferred voice
   const { data: userLearningPrefs } = useGetV1PreferencesLearning();
 
@@ -166,56 +157,18 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
       {/* Section Content */}
       <Paper p='lg' radius='md' style={{ position: 'relative' }}>
         <Box style={{ position: 'absolute', top: 12, right: 12, zIndex: 10 }}>
-          <Tooltip
-            label={
-              isTTSPlaying
-                ? 'Stop audio'
-                : isTTSLoading
-                  ? 'Loading audio...'
-                  : 'Listen to section'
-            }
-          >
-            <ActionIcon
-              size='md'
-              variant='subtle'
-              color={isTTSPlaying ? 'red' : isTTSLoading ? 'orange' : 'blue'}
-              onClick={() => {
-                if (isTTSPlaying || isTTSLoading) {
-                  stopTTS();
-                } else {
-                  // Determine preferred voice (user pref -> fallback -> 'echo')
-                  let preferredVoice: string | undefined;
-                  if (
-                    userLearningPrefs?.tts_voice &&
-                    userLearningPrefs.tts_voice.trim()
-                  ) {
-                    preferredVoice = userLearningPrefs.tts_voice.trim();
-                  }
-                  const finalVoice =
-                    preferredVoice ??
-                    defaultVoiceForLanguage(section.language_level) ??
-                    'echo';
-                  void playTTS(section.content || '', finalVoice);
-                }
-              }}
-              aria-label={
-                isTTSPlaying
-                  ? 'Stop audio'
-                  : isTTSLoading
-                    ? 'Loading audio'
-                    : 'Listen to section'
-              }
-              disabled={isTTSLoading}
-            >
-              {isTTSLoading ? (
-                <Loader size={16} color='orange' />
-              ) : isTTSPlaying ? (
-                <VolumeX size={18} />
-              ) : (
-                <Volume2 size={18} />
-              )}
-            </ActionIcon>
-          </Tooltip>
+          <TTSButton
+            getText={() => section.content || ''}
+            getVoice={() => {
+              const saved = (userLearningPrefs?.tts_voice || '').trim();
+              if (saved) return saved;
+              return (
+                defaultVoiceForLanguage(section.language_level) || undefined
+              );
+            }}
+            size='md'
+            ariaLabel='Section audio'
+          />
         </Box>
 
         <div data-allow-translate='true'>

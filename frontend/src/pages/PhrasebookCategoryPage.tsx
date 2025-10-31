@@ -33,10 +33,10 @@ import {
   IconChevronUp,
   IconChevronDown,
   IconSelector,
-  IconSpeakerphone,
 } from '@tabler/icons-react';
 import { useAuth } from '../hooks/useAuth';
-import { playTTSOnce } from '../hooks/useTTS';
+import TTSButton from '../components/TTSButton';
+import { useGetV1PreferencesLearning } from '../api/api';
 import { useTheme } from '../contexts/ThemeContext';
 import { fontScaleMap } from '../theme/theme';
 import { defaultVoiceForLanguage } from '../utils/tts';
@@ -58,6 +58,7 @@ const PhrasebookCategoryPage = () => {
   const { category } = useParams<{ category: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { data: userLearningPrefs } = useGetV1PreferencesLearning();
   const { fontSize } = useTheme();
 
   const [data, setData] = useState<PhrasebookData | null>(null);
@@ -151,41 +152,6 @@ const PhrasebookCategoryPage = () => {
       await navigator.clipboard.writeText(text);
     } catch (err) {
       console.error('Failed to copy text: ', err);
-    }
-  };
-
-  const playWordTTS = async (text: string) => {
-    try {
-      // Determine the best voice: user preference -> default for user's language -> fallback to 'echo'
-      let preferredVoice: string | undefined;
-      try {
-        const saved = (
-          user?.learning_preferences as unknown as
-            | { tts_voice?: string }
-            | undefined
-        )?.tts_voice;
-        if (saved && saved.trim()) {
-          preferredVoice = saved.trim();
-        }
-        preferredVoice =
-          preferredVoice || defaultVoiceForLanguage(user?.preferred_language);
-      } catch {
-        preferredVoice = undefined;
-      }
-      // Ensure we always pass a sensible fallback voice to the TTS hook
-      const finalVoice =
-        preferredVoice ??
-        defaultVoiceForLanguage(user?.preferred_language) ??
-        'echo';
-
-      console.log('Playing TTS:', {
-        text,
-        finalVoice,
-        userLanguage: user?.preferred_language,
-      });
-      await playTTSOnce(text, finalVoice);
-    } catch {
-      // Error handling is already done in playTTSOnce
     }
   };
 
@@ -552,17 +518,21 @@ const PhrasebookCategoryPage = () => {
                                         <IconCopy size='0.8rem' />
                                       </ActionIcon>
                                     </Tooltip>
-                                    <Tooltip label='Pronounce word'>
-                                      <ActionIcon
-                                        variant='subtle'
-                                        size='sm'
-                                        onClick={() =>
-                                          playWordTTS(word.displayTerm)
-                                        }
-                                      >
-                                        <IconSpeakerphone size='0.8rem' />
-                                      </ActionIcon>
-                                    </Tooltip>
+                                    <TTSButton
+                                      getText={() => word.displayTerm}
+                                      getVoice={() => {
+                                        const saved = (
+                                          userLearningPrefs?.tts_voice || ''
+                                        ).trim();
+                                        if (saved) return saved;
+                                        const voice = defaultVoiceForLanguage(
+                                          user?.preferred_language
+                                        );
+                                        return voice || undefined;
+                                      }}
+                                      size='sm'
+                                      ariaLabel='Pronounce word'
+                                    />
                                   </Group>
                                 </Center>
                               </Table.Td>

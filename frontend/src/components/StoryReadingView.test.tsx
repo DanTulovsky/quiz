@@ -15,10 +15,12 @@ vi.mock('../notifications', () => ({
 const mockTTS = {
   isLoading: false,
   isPlaying: false,
+  isPaused: false,
   playTTS: vi.fn(),
   stopTTS: vi.fn(),
-  isBuffering: false,
-  bufferingProgress: 0,
+  pauseTTS: vi.fn(),
+  resumeTTS: vi.fn(),
+  restartTTS: vi.fn(),
 };
 
 vi.mock('../hooks/useTTS', () => ({
@@ -284,7 +286,7 @@ describe('StoryReadingView', () => {
     it('displays TTS button for story reading view', () => {
       renderComponent();
 
-      const ttsButton = screen.getByLabelText('Listen to story');
+      const ttsButton = screen.getByLabelText(/Story audio/i);
       expect(ttsButton).toBeInTheDocument();
     });
 
@@ -292,7 +294,7 @@ describe('StoryReadingView', () => {
       mockTTS.isLoading = true;
       renderComponent();
 
-      const ttsButton = screen.getByLabelText('Loading audio');
+      const ttsButton = screen.getByLabelText(/Story audio/i);
       expect(ttsButton).toBeInTheDocument();
       expect(ttsButton).toBeDisabled();
     });
@@ -301,14 +303,14 @@ describe('StoryReadingView', () => {
       mockTTS.isPlaying = true;
       renderComponent();
 
-      const ttsButton = screen.getByLabelText('Stop audio');
+      const ttsButton = screen.getByLabelText(/Story audio/i);
       expect(ttsButton).toBeInTheDocument();
     });
 
     it('calls playTTS with combined story content when TTS button is clicked', () => {
       renderComponent();
 
-      const ttsButton = screen.getByLabelText('Listen to story');
+      const ttsButton = screen.getByLabelText(/Story audio/i);
       fireEvent.click(ttsButton);
 
       const expectedContent =
@@ -324,10 +326,10 @@ describe('StoryReadingView', () => {
       mockTTS.isPlaying = true;
       renderComponent();
 
-      const ttsButton = screen.getByLabelText('Stop audio');
+      const ttsButton = screen.getByLabelText(/Story audio/i);
       fireEvent.click(ttsButton);
 
-      expect(mockTTS.stopTTS).toHaveBeenCalled();
+      expect(mockTTS.pauseTTS).toHaveBeenCalled();
     });
 
     it('falls back to default voice when no user preference', () => {
@@ -335,7 +337,7 @@ describe('StoryReadingView', () => {
       // The voice selection logic is tested implicitly through other tests
       renderComponent();
 
-      const ttsButton = screen.getByLabelText('Listen to story');
+      const ttsButton = screen.getByLabelText(/Story audio/i);
       fireEvent.click(ttsButton);
 
       expect(mockTTS.playTTS).toHaveBeenCalledWith(
@@ -349,7 +351,7 @@ describe('StoryReadingView', () => {
       // The voice selection logic is tested implicitly through other tests
       renderComponent();
 
-      const ttsButton = screen.getByLabelText('Listen to story');
+      const ttsButton = screen.getByLabelText(/Story audio/i);
       fireEvent.click(ttsButton);
 
       expect(mockTTS.playTTS).toHaveBeenCalledWith(

@@ -13,9 +13,8 @@ import {
   Center,
   Divider,
   Table,
-  ActionIcon,
 } from '@mantine/core';
-import { IconBook, IconSpeakerphone } from '@tabler/icons-react';
+import { IconBook } from '@tabler/icons-react';
 import {
   loadVerbConjugations,
   loadVerbConjugation,
@@ -23,8 +22,12 @@ import {
 } from '../utils/verbConjugations';
 import { HoverTranslation } from '../components/HoverTranslation';
 import { useAuth } from '../hooks/useAuth';
-import { playTTSOnce } from '../hooks/useTTS';
-import { useGetV1SettingsLanguages } from '../api/api';
+import TTSButton from '../components/TTSButton';
+import {
+  useGetV1SettingsLanguages,
+  useGetV1PreferencesLearning,
+} from '../api/api';
+import { defaultVoiceForLanguage } from '../utils/tts';
 
 export function VerbConjugationPage() {
   const { user } = useAuth();
@@ -39,6 +42,7 @@ export function VerbConjugationPage() {
 
   // Use React Query to fetch languages (with proper caching)
   const { data: languages } = useGetV1SettingsLanguages();
+  const { data: userLearningPrefs } = useGetV1PreferencesLearning();
 
   // Convert user's preferred language to language code using server data
   const getLanguageCode = (languageName: string): string => {
@@ -169,30 +173,6 @@ export function VerbConjugationPage() {
     return code.toUpperCase();
   };
 
-  const handleTTSPlay = async (text: string) => {
-    try {
-      // Get the language info to find the correct TTS voice
-      const languageInfo = languages?.find(lang => lang.code === userLanguage);
-
-      if (!languageInfo) {
-        console.error('Language info not found for:', userLanguage);
-        return;
-      }
-
-      // Use the TTS voice from language settings
-      const voice = languageInfo.tts_voice || languageInfo.tts_locale;
-
-      if (!voice) {
-        console.error('No TTS voice configured for language:', userLanguage);
-        return;
-      }
-
-      await playTTSOnce(text, voice);
-    } catch (error) {
-      console.error('TTS playback failed:', error);
-    }
-  };
-
   const renderTense = (tense: {
     tenseId: string;
     tenseName: string;
@@ -249,14 +229,21 @@ export function VerbConjugationPage() {
                 </Table.Td>
                 <Table.Td>
                   <Group gap='xs' align='center'>
-                    <ActionIcon
-                      variant='subtle'
-                      color='blue'
+                    <TTSButton
+                      getText={() => conjugation.exampleSentence}
+                      getVoice={() => {
+                        const saved = (
+                          userLearningPrefs?.tts_voice || ''
+                        ).trim();
+                        if (saved) return saved;
+                        const voice = defaultVoiceForLanguage(
+                          user?.preferred_language
+                        );
+                        return voice || undefined;
+                      }}
                       size='sm'
-                      onClick={() => handleTTSPlay(conjugation.exampleSentence)}
-                    >
-                      <IconSpeakerphone size={16} />
-                    </ActionIcon>
+                      ariaLabel='Pronounce example'
+                    />
                     <HoverTranslation
                       text={conjugation.exampleSentence}
                       targetLanguage='en'

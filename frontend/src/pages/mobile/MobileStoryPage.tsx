@@ -13,10 +13,8 @@ import {
   Badge,
   Divider,
   ScrollArea,
-  ActionIcon,
   Tooltip,
   Box,
-  Loader,
 } from '@mantine/core';
 import {
   IconBook,
@@ -25,8 +23,7 @@ import {
   IconPlayerPlay,
   IconPlayerPause,
 } from '@tabler/icons-react';
-import { Volume2, VolumeX } from 'lucide-react';
-import { useTTS } from '../../hooks/useTTS';
+import TTSButton from '../../components/TTSButton';
 import { useGetV1PreferencesLearning } from '../../api/api';
 import { defaultVoiceForLanguage } from '../../utils/tts';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -520,13 +517,6 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
   onFirst,
   onLast,
 }) => {
-  const {
-    isLoading: isTTSLoading,
-    isPlaying: isTTSPlaying,
-    playTTS,
-    stopTTS,
-  } = useTTS();
-
   // Get user learning preferences for preferred voice
   const { data: userLearningPrefs } = useGetV1PreferencesLearning();
 
@@ -750,56 +740,18 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
         style={{ flex: 1, overflow: 'hidden', position: 'relative' }}
       >
         <Box style={{ position: 'absolute', top: 12, right: 12, zIndex: 10 }}>
-          <Tooltip
-            label={
-              isTTSPlaying
-                ? 'Stop audio'
-                : isTTSLoading
-                  ? 'Loading audio...'
-                  : 'Listen to section'
-            }
-          >
-            <ActionIcon
-              size='md'
-              variant='subtle'
-              color={isTTSPlaying ? 'red' : isTTSLoading ? 'orange' : 'blue'}
-              onClick={() => {
-                if (isTTSPlaying || isTTSLoading) {
-                  stopTTS();
-                } else {
-                  // Determine preferred voice (user pref -> fallback -> 'echo')
-                  let preferredVoice: string | undefined;
-                  if (
-                    userLearningPrefs?.tts_voice &&
-                    userLearningPrefs.tts_voice.trim()
-                  ) {
-                    preferredVoice = userLearningPrefs.tts_voice.trim();
-                  }
-                  const finalVoice =
-                    preferredVoice ??
-                    defaultVoiceForLanguage(section.language_level) ??
-                    'echo';
-                  void playTTS(section.content || '', finalVoice);
-                }
-              }}
-              aria-label={
-                isTTSPlaying
-                  ? 'Stop audio'
-                  : isTTSLoading
-                    ? 'Loading audio'
-                    : 'Listen to section'
-              }
-              disabled={isTTSLoading}
-            >
-              {isTTSLoading ? (
-                <Loader size={16} color='orange' />
-              ) : isTTSPlaying ? (
-                <VolumeX size={18} />
-              ) : (
-                <Volume2 size={18} />
-              )}
-            </ActionIcon>
-          </Tooltip>
+          <TTSButton
+            getText={() => section.content || ''}
+            getVoice={() => {
+              const saved = (userLearningPrefs?.tts_voice || '').trim();
+              if (saved) return saved;
+              return (
+                defaultVoiceForLanguage(section.language_level) || undefined
+              );
+            }}
+            size='md'
+            ariaLabel='Section audio'
+          />
         </Box>
         <ScrollArea style={{ height: '100%' }}>
           <div
@@ -1068,13 +1020,6 @@ const MobileStoryReadingView: React.FC<MobileStoryReadingViewProps> = ({
   story,
   isGenerating = false,
 }) => {
-  const {
-    isLoading: isTTSLoading,
-    isPlaying: isTTSPlaying,
-    playTTS,
-    stopTTS,
-  } = useTTS();
-
   // Get user learning preferences for preferred voice
   const { data: userLearningPrefs } = useGetV1PreferencesLearning();
 
@@ -1128,58 +1073,18 @@ const MobileStoryReadingView: React.FC<MobileStoryReadingViewProps> = ({
         style={{ flex: 1, overflow: 'hidden', position: 'relative' }}
       >
         <Box style={{ position: 'absolute', top: 12, right: 12, zIndex: 10 }}>
-          <Tooltip
-            label={
-              isTTSPlaying
-                ? 'Stop audio'
-                : isTTSLoading
-                  ? 'Loading audio...'
-                  : 'Listen to story'
+          <TTSButton
+            getText={() =>
+              story.sections?.map(s => s.content).join('\n\n') || ''
             }
-          >
-            <ActionIcon
-              size='md'
-              variant='subtle'
-              color={isTTSPlaying ? 'red' : isTTSLoading ? 'orange' : 'blue'}
-              onClick={() => {
-                if (isTTSPlaying || isTTSLoading) {
-                  stopTTS();
-                } else {
-                  // Combine the sections into one text blob
-                  const full =
-                    story.sections?.map(s => s.content).join('\n\n') || '';
-                  let preferredVoice: string | undefined;
-                  if (
-                    userLearningPrefs?.tts_voice &&
-                    userLearningPrefs.tts_voice.trim()
-                  ) {
-                    preferredVoice = userLearningPrefs.tts_voice.trim();
-                  }
-                  const finalVoice =
-                    preferredVoice ??
-                    defaultVoiceForLanguage(story.language) ??
-                    'echo';
-                  void playTTS(full, finalVoice);
-                }
-              }}
-              aria-label={
-                isTTSPlaying
-                  ? 'Stop audio'
-                  : isTTSLoading
-                    ? 'Loading audio'
-                    : 'Listen to story'
-              }
-              disabled={isTTSLoading}
-            >
-              {isTTSLoading ? (
-                <Loader size={16} color='orange' />
-              ) : isTTSPlaying ? (
-                <VolumeX size={18} />
-              ) : (
-                <Volume2 size={18} />
-              )}
-            </ActionIcon>
-          </Tooltip>
+            getVoice={() => {
+              const saved = (userLearningPrefs?.tts_voice || '').trim();
+              if (saved) return saved;
+              return defaultVoiceForLanguage(story.language) || undefined;
+            }}
+            size='md'
+            ariaLabel='Story audio'
+          />
         </Box>
         <ScrollArea style={{ height: '100%' }}>
           <div

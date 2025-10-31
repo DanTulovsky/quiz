@@ -63,10 +63,14 @@ vi.mock('../../hooks/useQuestionFlow', () => ({
 
 vi.mock('../../hooks/useTTS', () => ({
   useTTS: () => ({
-    prebufferTTS: vi.fn(),
-    cancelPrebuffer: vi.fn(),
-    isBuffering: false,
-    bufferingProgress: 0,
+    isLoading: false,
+    isPlaying: false,
+    isPaused: false,
+    playTTS: vi.fn(),
+    stopTTS: vi.fn(),
+    pauseTTS: vi.fn(),
+    resumeTTS: vi.fn(),
+    restartTTS: vi.fn(),
   }),
 }));
 
@@ -109,6 +113,9 @@ vi.mock('../../api/api', () => ({
     data: { snippets: [] },
     isLoading: false,
     error: null,
+  }),
+  useGetV1PreferencesLearning: () => ({
+    data: { tts_voice: 'it-IT-TestVoice' },
   }),
   // Mock auth status for AuthProvider
   useGetV1AuthStatus: () => ({

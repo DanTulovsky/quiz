@@ -9,15 +9,12 @@ import {
   ScrollArea,
   Loader,
   Center,
-  ActionIcon,
-  Tooltip,
   Box,
 } from '@mantine/core';
 import { IconBook, IconRefresh } from '@tabler/icons-react';
 import { StoryWithSections } from '../api/storyApi';
-import { useTTS } from '../hooks/useTTS';
-import { Volume2, VolumeX } from 'lucide-react';
 import { defaultVoiceForLanguage } from '../utils/tts';
+import TTSButton from './TTSButton';
 import { useTheme } from '../contexts/ThemeContext';
 import { fontScaleMap } from '../theme/theme';
 import { useGetV1PreferencesLearning } from '../api/api';
@@ -33,13 +30,6 @@ const StoryReadingView: React.FC<StoryReadingViewProps> = ({
   story,
   isGenerating = false,
 }) => {
-  const {
-    isLoading: isTTSLoading,
-    isPlaying: isTTSPlaying,
-    playTTS,
-    stopTTS,
-  } = useTTS();
-
   // Get user learning preferences for preferred voice
   const { data: userLearningPrefs } = useGetV1PreferencesLearning();
 
@@ -64,18 +54,18 @@ const StoryReadingView: React.FC<StoryReadingViewProps> = ({
       return (
         <Paper p='xl' radius='md' style={{ textAlign: 'center' }}>
           <Center>
-            <Stack spacing='md' align='center'>
+            <Stack gap='md' align='center'>
               <Loader size='lg' />
               <IconBook size={48} style={{ opacity: 0.5 }} />
               <Title order={4}>Generating Your Story</Title>
-              <Text color='dimmed' align='center'>
+              <Text c='dimmed' ta='center'>
                 We're creating the first section of your story.
                 <br />
                 This should only take a few moments...
               </Text>
-              <Group spacing='xs'>
+              <Group gap='xs'>
                 <IconRefresh size={16} />
-                <Text size='sm' color='dimmed'>
+                <Text size='sm' c='dimmed'>
                   Checking for updates...
                 </Text>
               </Group>
@@ -97,66 +87,25 @@ const StoryReadingView: React.FC<StoryReadingViewProps> = ({
   }
 
   return (
-    <Stack spacing='md'>
+    <Stack gap='md'>
       {/* Story Content */}
       <Paper p='lg' radius='md' style={{ position: 'relative' }}>
         <Box style={{ position: 'absolute', top: 12, right: 12, zIndex: 10 }}>
-          <Tooltip
-            label={
-              isTTSPlaying
-                ? 'Stop audio'
-                : isTTSLoading
-                  ? 'Loading audio...'
-                  : 'Listen to story'
-            }
-          >
-            <ActionIcon
-              size='md'
-              variant='subtle'
-              color={isTTSPlaying ? 'red' : isTTSLoading ? 'orange' : 'blue'}
-              onClick={() => {
-                if (isTTSPlaying || isTTSLoading) {
-                  stopTTS();
-                } else {
-                  // Combine the sections into one text blob
-                  const full = story.sections.map(s => s.content).join('\n\n');
-                  let preferredVoice: string | undefined;
-                  if (
-                    userLearningPrefs?.tts_voice &&
-                    userLearningPrefs.tts_voice.trim()
-                  ) {
-                    preferredVoice = userLearningPrefs.tts_voice.trim();
-                  }
-                  const finalVoice =
-                    preferredVoice ??
-                    defaultVoiceForLanguage(story.language) ??
-                    'echo';
-                  void playTTS(full, finalVoice);
-                }
-              }}
-              aria-label={
-                isTTSPlaying
-                  ? 'Stop audio'
-                  : isTTSLoading
-                    ? 'Loading audio'
-                    : 'Listen to story'
-              }
-              disabled={isTTSLoading}
-            >
-              {isTTSLoading ? (
-                <Loader size={16} color='orange' />
-              ) : isTTSPlaying ? (
-                <VolumeX size={18} />
-              ) : (
-                <Volume2 size={18} />
-              )}
-            </ActionIcon>
-          </Tooltip>
+          <TTSButton
+            getText={() => story.sections.map(s => s.content).join('\n\n')}
+            getVoice={() => {
+              const saved = (userLearningPrefs?.tts_voice || '').trim();
+              if (saved) return saved;
+              return defaultVoiceForLanguage(story.language) || undefined;
+            }}
+            size='md'
+            ariaLabel='Story audio'
+          />
         </Box>
 
         <ScrollArea style={{ height: '60vh' }}>
           <div style={{ paddingRight: '56px' }} data-allow-translate='true'>
-            <Stack spacing='lg'>
+            <Stack gap='lg'>
               {/* Story Metadata */}
               {(story.subject || story.author_style || story.genre) && (
                 <div>
@@ -216,7 +165,7 @@ const StoryReadingView: React.FC<StoryReadingViewProps> = ({
                   border: '1px solid #e0f2fe',
                 }}
               >
-                <Text size='sm' color='blue' align='center'>
+                <Text size='sm' c='blue' ta='center'>
                   {story.status === 'active'
                     ? 'This story is ongoing. New sections will be added daily!'
                     : story.status === 'completed'

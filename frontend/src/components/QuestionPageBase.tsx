@@ -21,9 +21,6 @@ import {
 } from '@mantine/core';
 import LoadingSpinner from './LoadingSpinner';
 import QuestionCard, { QuestionCardHandle } from './QuestionCard';
-import * as Api from '../api/api';
-import { useTTS } from '../hooks/useTTS';
-import { defaultVoiceForLanguage } from '../utils/tts';
 import { Chat } from './Chat';
 import KeyboardShortcuts from './KeyboardShortcuts';
 import QuestionPanel from './QuestionPanel';
@@ -92,12 +89,6 @@ export const QuestionPageBase: React.FC<Props> = ({ mode }) => {
     toggleMaximize: () => void;
   } | null>(null);
   const questionCardRef = useRef<QuestionCardHandle | null>(null);
-  const { prebufferTTS, cancelPrebuffer, isBuffering, bufferingProgress } =
-    useTTS();
-  const prevPrebufferRef = useRef<{ text: string; voice?: string } | null>(
-    null
-  );
-  const prebufferTimerRef = useRef<number | null>(null);
 
   // Fetching is handled inside `useQuestionFlow` to avoid duplicate network
   // requests. Do not call `fetchQuestion` here.
@@ -118,65 +109,6 @@ export const QuestionPageBase: React.FC<Props> = ({ mode }) => {
       }
     }
   }, [question, mode, setQuizQuestion, setReadingQuestion]);
-
-  // Start prebuffering as soon as question data is available
-  useEffect(() => {
-    if (
-      question &&
-      question.type === 'reading_comprehension' &&
-      question.content?.passage
-    ) {
-      const passage = question.content.passage;
-
-      // Determine preferred voice similar to playback logic: try user pref
-      // via optional hook, fall back to default for language, then 'echo'.
-      let preferredVoice: string | undefined;
-      try {
-        const maybeHook = (Api as unknown as Record<string, unknown>)[
-          'useGetV1PreferencesLearning'
-        ];
-        if (typeof maybeHook === 'function') {
-          const result = (maybeHook as () => unknown)();
-          preferredVoice = (result as { data?: { tts_voice?: string } })?.data
-            ?.tts_voice;
-        }
-      } catch {
-        preferredVoice = undefined;
-      }
-
-      const finalVoice =
-        (preferredVoice && preferredVoice.trim()) ||
-        defaultVoiceForLanguage(question.language) ||
-        'echo';
-
-      // cancel any previous prebuffer for a different passage/voice
-      const prev = prevPrebufferRef.current;
-      if (prev && (prev.text !== passage || prev.voice !== finalVoice)) {
-        try {
-          cancelPrebuffer(prev.text, prev.voice);
-        } catch {
-          // ignore
-        }
-      }
-
-      // debounce slightly to avoid prebuffering transient questions (e.g.,
-      // quick re-fetches during navigation or strict-mode double-mount).
-      if (prebufferTimerRef.current) {
-        window.clearTimeout(prebufferTimerRef.current);
-        prebufferTimerRef.current = null;
-      }
-      prebufferTimerRef.current = window.setTimeout(() => {
-        prebufferTTS(passage, finalVoice, 'page').catch(() => {});
-        prevPrebufferRef.current = { text: passage, voice: finalVoice };
-        prebufferTimerRef.current = null;
-      }, 200);
-    }
-  }, [
-    question?.id,
-    question?.content?.passage,
-    question?.language,
-    prebufferTTS,
-  ]);
 
   useEffect(() => {
     if (
@@ -469,8 +401,6 @@ export const QuestionPageBase: React.FC<Props> = ({ mode }) => {
               onReportModalChange={setIsReportModalOpen}
               onReportTextareaFocusChange={setIsReportTextareaFocused}
               onShuffledOptionsChange={setMaxOptions}
-              prebuffering={isBuffering}
-              prebufferingProgress={bufferingProgress}
             />
           </QuestionPanel>
         </Box>

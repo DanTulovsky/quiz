@@ -8,20 +8,13 @@ import {
   Stack,
   Badge,
   Alert,
-  Loader,
   Center,
-  ActionIcon,
   Accordion,
   Box,
   Paper,
   Button,
 } from '@mantine/core';
-import {
-  IconBook,
-  IconVolume,
-  IconChevronDown,
-  IconChevronUp,
-} from '@tabler/icons-react';
+import { IconBook, IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 import {
   loadVerbConjugations,
   loadVerbConjugation,
@@ -29,8 +22,12 @@ import {
 } from '../../utils/verbConjugations';
 import { HoverTranslation } from '../../components/HoverTranslation';
 import { useAuth } from '../../hooks/useAuth';
-import { playTTSOnce } from '../../hooks/useTTS';
-import { useGetV1SettingsLanguages } from '../../api/api';
+import TTSButton from '../../components/TTSButton';
+import {
+  useGetV1SettingsLanguages,
+  useGetV1PreferencesLearning,
+} from '../../api/api';
+import { defaultVoiceForLanguage } from '../../utils/tts';
 
 export default function MobileVerbConjugationPage() {
   const { user } = useAuth();
@@ -46,6 +43,7 @@ export default function MobileVerbConjugationPage() {
 
   // Use React Query to fetch languages (with proper caching)
   const { data: languages } = useGetV1SettingsLanguages();
+  const { data: userLearningPrefs } = useGetV1PreferencesLearning();
 
   // Convert user's preferred language to language code using server data
   const getLanguageCode = (languageName: string): string => {
@@ -141,30 +139,6 @@ export default function MobileVerbConjugationPage() {
     return code.toUpperCase();
   };
 
-  const handleTTSPlay = async (text: string) => {
-    try {
-      // Get the language info to find the correct TTS voice
-      const languageInfo = languages?.find(lang => lang.code === userLanguage);
-
-      if (!languageInfo) {
-        console.error('Language info not found for:', userLanguage);
-        return;
-      }
-
-      // Use the TTS voice from language settings
-      const voice = languageInfo.tts_voice || languageInfo.tts_locale;
-
-      if (!voice) {
-        console.error('No TTS voice configured for language:', userLanguage);
-        return;
-      }
-
-      await playTTSOnce(text, voice);
-    } catch (error) {
-      console.error('TTS playback failed:', error);
-    }
-  };
-
   const handleExpandAll = () => {
     if (verbData) {
       if (isAllExpanded) {
@@ -233,15 +207,19 @@ export default function MobileVerbConjugationPage() {
                 </Group>
 
                 <Group gap='xs' align='flex-start' wrap='nowrap'>
-                  <ActionIcon
-                    variant='subtle'
-                    color='blue'
+                  <TTSButton
+                    getText={() => conjugation.exampleSentence}
+                    getVoice={() => {
+                      const saved = (userLearningPrefs?.tts_voice || '').trim();
+                      if (saved) return saved;
+                      return (
+                        defaultVoiceForLanguage(user?.preferred_language) ||
+                        undefined
+                      );
+                    }}
                     size='sm'
-                    onClick={() => handleTTSPlay(conjugation.exampleSentence)}
-                    style={{ flexShrink: 0, marginTop: '2px' }}
-                  >
-                    <IconVolume size={16} />
-                  </ActionIcon>
+                    ariaLabel='Pronounce example'
+                  />
                   <Box style={{ flex: 1, minWidth: 0 }}>
                     <HoverTranslation
                       text={conjugation.exampleSentence}

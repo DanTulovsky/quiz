@@ -421,9 +421,9 @@ describe('QuestionCard', () => {
     );
 
     // Check that the TTS button is present
-    expect(screen.getByLabelText('Listen to passage')).toBeInTheDocument();
+    expect(screen.getByLabelText(/Passage audio/i)).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: /listen to passage/i })
+      screen.getByRole('button', { name: /passage audio/i })
     ).toBeInTheDocument();
 
     // Check that the copy button is present for desktop
@@ -622,7 +622,7 @@ describe('QuestionCard', () => {
 
     // Find and click the TTS button
     const ttsButton = screen.getByRole('button', {
-      name: /listen to passage/i,
+      name: /passage audio/i,
     });
     fireEvent.click(ttsButton);
 
@@ -702,7 +702,7 @@ describe('QuestionCard', () => {
     );
 
     // Start playback
-    fireEvent.click(screen.getByRole('button', { name: /listen to passage/i }));
+    fireEvent.click(screen.getByRole('button', { name: /passage audio/i }));
     // While loading, the button should switch to Stop and be clickable
     const stopBtn = await screen.findByRole('button', { name: /stop audio/i });
     fireEvent.click(stopBtn);
@@ -710,7 +710,7 @@ describe('QuestionCard', () => {
     // After stopping, we should return to the play button state
     await waitFor(() => {
       expect(
-        screen.getByRole('button', { name: /listen to passage/i })
+        screen.getByRole('button', { name: /passage audio/i })
       ).toBeInTheDocument();
     });
   });
@@ -777,13 +777,13 @@ describe('QuestionCard', () => {
     );
 
     // Start playback
-    fireEvent.click(screen.getByRole('button', { name: /listen to passage/i }));
+    fireEvent.click(screen.getByRole('button', { name: /passage audio/i }));
     await screen.findByRole('button', { name: /stop audio/i });
     // Press Escape to stop
     fireEvent.keyDown(document, { key: 'Escape' });
     await waitFor(() => {
       expect(
-        screen.getByRole('button', { name: /listen to passage/i })
+        screen.getByRole('button', { name: /passage audio/i })
       ).toBeInTheDocument();
     });
   });
@@ -822,11 +822,9 @@ describe('QuestionCard', () => {
     );
 
     // Check that the TTS button is NOT present for vocabulary questions
+    expect(screen.queryByLabelText(/Passage audio/i)).not.toBeInTheDocument();
     expect(
-      screen.queryByLabelText('Listen to passage')
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: /listen to passage/i })
+      screen.queryByRole('button', { name: /passage audio/i })
     ).not.toBeInTheDocument();
   });
 
@@ -912,7 +910,7 @@ describe('QuestionCard', () => {
 
     // Find and click the TTS button to start playing
     const ttsButton = screen.getByRole('button', {
-      name: /listen to passage/i,
+      name: /passage audio/i,
     });
     fireEvent.click(ttsButton);
 
@@ -930,7 +928,7 @@ describe('QuestionCard', () => {
     // Verify that the button changes back to play state
     await waitFor(() => {
       expect(
-        screen.getByRole('button', { name: /listen to passage/i })
+        screen.getByRole('button', { name: /passage audio/i })
       ).toBeInTheDocument();
     });
   });
@@ -991,7 +989,7 @@ describe('QuestionCard', () => {
 
     // Find and click the TTS button
     const ttsButton = screen.getByRole('button', {
-      name: /listen to passage/i,
+      name: /passage audio/i,
     });
     fireEvent.click(ttsButton);
 
@@ -999,7 +997,7 @@ describe('QuestionCard', () => {
     await waitFor(() => {
       expect(vi.mocked(showNotificationWithClean)).toHaveBeenCalledWith({
         title: 'TTS Error',
-        message: 'Failed to generate speech',
+        message: 'TTS playback unavailable: MediaSource not supported',
         color: 'red',
       });
     });

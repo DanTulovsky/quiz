@@ -31,6 +31,9 @@ vi.mock('../../../api/api', () => ({
     isLoading: false,
     error: null,
   }),
+  useGetV1PreferencesLearning: () => ({
+    data: { tts_voice: 'it-IT-TestVoice' },
+  }),
   // Mock auth status for AuthProvider
   useGetV1AuthStatus: () => ({
     data: mockAuthStatusData, // ✅ Stable reference
