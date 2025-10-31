@@ -156,11 +156,13 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
   }, [selectedDate]);
 
   // Persist current index per date to survive navigation/unmounts
+  // Only persist after initialization to avoid overwriting the stored value on mount
   useEffect(() => {
+    if (!hasInitialized) return;
     try {
       window.sessionStorage.setItem(storageKey, String(currentQuestionIndex));
     } catch {}
-  }, [currentQuestionIndex, storageKey]);
+  }, [currentQuestionIndex, storageKey, hasInitialized]);
 
   // Actions
   const completeQuestion = useCallback(
