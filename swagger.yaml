@@ -8720,3 +8720,8 @@ components:
       scheme: bearer
       bearerFormat: API Key
       description: API key authentication for programmatic access. Use format "Bearer qapp_..."
+    apiKeyQuery:
+      type: apiKey
+      in: query
+      name: api_key
+      description: API key authentication via URL query parameter for programmatic access. Use "?api_key=qapp_..."

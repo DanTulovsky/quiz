@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
-import {Button} from '@mantine/core';
-import {IconBrandGoogle} from '@tabler/icons-react';
+import React, { useState } from 'react';
+import { Button } from '@mantine/core';
+import { IconBrandGoogle } from '@tabler/icons-react';
 
 interface GoogleOAuthButtonProps {
   onSuccess?: () => void;
@@ -75,7 +75,7 @@ const GoogleOAuthButton: React.FC<GoogleOAuthButtonProps> = ({
       onTouchEnd={handleGoogleAuth}
       disabled={isLoading}
       leftSection={<IconBrandGoogle size={16} data-testid='google-icon' />}
-      style={{pointerEvents: 'auto'}}
+      style={{ pointerEvents: 'auto' }}
     >
       {isLoading
         ? 'Loading...'

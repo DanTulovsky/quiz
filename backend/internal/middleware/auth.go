@@ -109,10 +109,16 @@ func RequireAuth() gin.HandlerFunc {
 func RequireAuthWithAPIKey(apiKeyService AuthAPIKeyValidator, userService AuthUserServiceGetter) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Check for API key authentication first
+		var rawKey string
 		authHeader := c.GetHeader("Authorization")
 		if authHeader != "" && strings.HasPrefix(authHeader, "Bearer ") {
-			rawKey := strings.TrimPrefix(authHeader, "Bearer ")
+			rawKey = strings.TrimPrefix(authHeader, "Bearer ")
+		} else {
+			// Check for API key in query parameter
+			rawKey = c.Query("api_key")
+		}
 
+		if rawKey != "" {
 			// Validate API key
 			apiKey, err := apiKeyService.ValidateAPIKey(c.Request.Context(), rawKey)
 			if err == nil && apiKey != nil {
@@ -151,7 +157,7 @@ func RequireAuthWithAPIKey(apiKeyService AuthAPIKeyValidator, userService AuthUs
 				c.Next()
 				return
 			}
-			// If we got here with a Bearer token, it's invalid
+			// If we got here with a key (from header or query), it's invalid
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"error": "Invalid API key",
 				"code":  "UNAUTHORIZED",

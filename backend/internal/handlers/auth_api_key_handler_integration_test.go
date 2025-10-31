@@ -311,3 +311,78 @@ func (suite *HandlersTestSuite) TestAPIKeyTestEndpoints_ReadonlyAndFull() {
 	suite.Router.ServeHTTP(w, req)
 	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code)
 }
+
+func (suite *HandlersTestSuite) TestAPIKeyViaQueryParameter() {
+	// Create user and login to create keys
+	user, err := suite.UserService.CreateUserWithEmailAndTimezone(suite.Ctx, "querytester", "querytester@example.com", "UTC", "italian", "A1")
+	require.NoError(suite.T(), err)
+	require.NoError(suite.T(), suite.UserService.UpdateUserPassword(suite.Ctx, user.ID, "password123"))
+
+	// Login to obtain session for key creation
+	loginReq := map[string]string{"username": "querytester", "password": "password123"}
+	loginBody, _ := json.Marshal(loginReq)
+	req, _ := http.NewRequest("POST", "/v1/auth/login", bytes.NewBuffer(loginBody))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+	require.Equal(suite.T(), http.StatusOK, w.Code)
+	cookies := w.Result().Cookies()
+
+	// Helper to create key
+	createKey := func(name, level string) string {
+		body, _ := json.Marshal(map[string]string{"key_name": name, "permission_level": level})
+		r, _ := http.NewRequest("POST", "/v1/api-keys", bytes.NewBuffer(body))
+		r.Header.Set("Content-Type", "application/json")
+		for _, c := range cookies {
+			r.AddCookie(c)
+		}
+		rec := httptest.NewRecorder()
+		suite.Router.ServeHTTP(rec, r)
+		require.Equal(suite.T(), http.StatusCreated, rec.Code)
+		var resp map[string]interface{}
+		_ = json.NewDecoder(rec.Body).Decode(&resp)
+		return resp["key"].(string)
+	}
+
+	readonlyKey := createKey("ro-query", models.PermissionLevelReadonly)
+	fullKey := createKey("full-query", models.PermissionLevelFull)
+
+	// 1) readonly can GET test-read via query parameter
+	req, _ = http.NewRequest("GET", "/v1/api-keys/test-read?api_key="+readonlyKey, nil)
+	w = httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+	assert.Equal(suite.T(), http.StatusOK, w.Code)
+
+	// 2) readonly cannot POST test-write via query parameter
+	req, _ = http.NewRequest("POST", "/v1/api-keys/test-write?api_key="+readonlyKey, bytes.NewBuffer([]byte(`{}`)))
+	req.Header.Set("Content-Type", "application/json")
+	w = httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+	assert.Equal(suite.T(), http.StatusForbidden, w.Code)
+
+	// 3) full can GET test-read via query parameter
+	req, _ = http.NewRequest("GET", "/v1/api-keys/test-read?api_key="+fullKey, nil)
+	w = httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+	assert.Equal(suite.T(), http.StatusOK, w.Code)
+
+	// 4) full can POST test-write via query parameter
+	req, _ = http.NewRequest("POST", "/v1/api-keys/test-write?api_key="+fullKey, bytes.NewBuffer([]byte(`{}`)))
+	req.Header.Set("Content-Type", "application/json")
+	w = httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+	assert.Equal(suite.T(), http.StatusOK, w.Code)
+
+	// 5) invalid API key via query parameter returns 401
+	req, _ = http.NewRequest("GET", "/v1/api-keys/test-read?api_key=qapp_invalidkey1234567890", nil)
+	w = httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+	assert.Equal(suite.T(), http.StatusUnauthorized, w.Code)
+
+	// 6) Authorization header takes precedence over query parameter
+	req, _ = http.NewRequest("GET", "/v1/api-keys/test-read?api_key=qapp_invalidkey1234567890", nil)
+	req.Header.Set("Authorization", "Bearer "+readonlyKey)
+	w = httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+	assert.Equal(suite.T(), http.StatusOK, w.Code)
+}
