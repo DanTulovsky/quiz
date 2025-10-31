@@ -242,6 +242,7 @@ const WordOfTheDayPage: React.FC = () => {
                     background: 'var(--mantine-color-body)',
                     borderLeft: '3px solid var(--mantine-primary-color-4)',
                   }}
+                  data-allow-translate='true'
                 >
                   <Text
                     size='lg'
@@ -261,6 +262,7 @@ const WordOfTheDayPage: React.FC = () => {
                     background: 'var(--mantine-color-body)',
                     borderLeft: '3px solid var(--mantine-primary-color-4)',
                   }}
+                  data-allow-translate='true'
                 >
                   <Text size='sm'>{word.explanation}</Text>
                 </Paper>

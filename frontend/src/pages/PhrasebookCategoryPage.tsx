@@ -522,7 +522,7 @@ const PhrasebookCategoryPage = () => {
                           ) : null;
                           return (
                             <Table.Tr key={index}>
-                              <Table.Td>
+                              <Table.Td data-allow-translate='true'>
                                 <Group gap='sm' wrap='nowrap'>
                                   {icon && <Box>{icon}</Box>}
                                   <Box style={{ flex: 1 }}>
@@ -535,7 +535,7 @@ const PhrasebookCategoryPage = () => {
                                   </Box>
                                 </Group>
                               </Table.Td>
-                              <Table.Td>
+                              <Table.Td data-allow-translate='true'>
                                 <Text>{word.translation}</Text>
                               </Table.Td>
                               <Table.Td>

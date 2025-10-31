@@ -118,7 +118,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
             </Tooltip>
           </Group>
         </Group>
-        <Box size='sm'>
+        <Box size='sm' data-allow-translate='true'>
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             components={{
@@ -308,7 +308,7 @@ const MessageDetailModal: React.FC<MessageDetailModalProps> = ({
               Remove Bookmark
             </Button>
           </Group>
-          <Box size='sm' style={{ maxWidth: 'none' }}>
+          <Box size='sm' style={{ maxWidth: 'none' }} data-allow-translate='true'>
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{

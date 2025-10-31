@@ -643,7 +643,7 @@ const SnippetsPage: React.FC = () => {
         {snippets && snippets.length > 0 ? (
           <Stack gap='md'>
             {snippets.map(snippet => (
-              <Card key={snippet.id} withBorder>
+              <Card key={snippet.id} withBorder data-allow-translate='true'>
                 <Stack gap='sm'>
                   <Group justify='space-between' align='flex-start'>
                     <div style={{ flex: 1 }}>
