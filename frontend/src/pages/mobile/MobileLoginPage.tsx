@@ -132,6 +132,11 @@ const MobileLoginPage: React.FC = () => {
                 onChange={e => handleInputChange('username', e.target.value)}
                 autoFocus
                 size='md'
+                autoCapitalize='none'
+                autoCorrect='off'
+                spellCheck={false}
+                autoComplete='username'
+                inputMode='text'
               />
 
               <PasswordInput
@@ -141,6 +146,10 @@ const MobileLoginPage: React.FC = () => {
                 value={formData.password}
                 onChange={e => handleInputChange('password', e.target.value)}
                 size='md'
+                autoCapitalize='none'
+                autoCorrect='off'
+                spellCheck={false}
+                autoComplete='current-password'
               />
 
               <Button

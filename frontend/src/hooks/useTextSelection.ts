@@ -284,6 +284,12 @@ export const useTextSelection = () => {
       isTouchActiveRef.current = true;
     };
 
+    // End touch interaction and trigger selection handling
+    const handleTouchEnd = () => {
+      isTouchActiveRef.current = false;
+      debouncedHandler();
+    };
+
     // Also listen to selectionchange for more reliable selection detection
     // BUT: only trigger if mouse/touch is not currently active
     const selectionChangeHandler = () => {
@@ -304,11 +310,14 @@ export const useTextSelection = () => {
 
     // Track mouse and touch state changes
     document.addEventListener('mousedown', handleMouseDown);
-    document.addEventListener('touchstart', handleTouchStart);
+    document.addEventListener('touchstart', handleTouchStart, {
+      passive: true,
+    });
 
     // Listen to mouseup and touchend events so popup appears after
     // mouse button is released (desktop) or finger is lifted (mobile)
     document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener('touchend', handleTouchEnd, { passive: true });
     // Also listen to selectionchange for better iOS support (but only when not actively selecting)
     document.addEventListener('selectionchange', selectionChangeHandler);
 
@@ -317,6 +326,7 @@ export const useTextSelection = () => {
       document.removeEventListener('mousedown', handleMouseDown);
       document.removeEventListener('touchstart', handleTouchStart);
       document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('touchend', handleTouchEnd);
       document.removeEventListener('selectionchange', selectionChangeHandler);
     };
   }, [handleSelectionChange]);

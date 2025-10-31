@@ -125,6 +125,11 @@ const LoginPage: React.FC = () => {
                 value={formData.username}
                 onChange={e => handleInputChange('username', e.target.value)}
                 autoFocus
+                autoCapitalize='none'
+                autoCorrect='off'
+                spellCheck={false}
+                autoComplete='username'
+                inputMode='text'
               />
 
               <PasswordInput
@@ -133,6 +138,10 @@ const LoginPage: React.FC = () => {
                 required
                 value={formData.password}
                 onChange={e => handleInputChange('password', e.target.value)}
+                autoCapitalize='none'
+                autoCorrect='off'
+                spellCheck={false}
+                autoComplete='current-password'
               />
 
               <Button
