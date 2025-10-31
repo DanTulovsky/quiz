@@ -4,10 +4,10 @@ on:
   workflow_dispatch: # Allow manual trigger
   push:
     tags:
-      - 'v*.*.*' # Trigger on semantic version tags
+      - "v*.*.*" # Trigger on semantic version tags
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}
   cancel-in-progress: true
 
 jobs:
@@ -15,90 +15,90 @@ jobs:
     runs-on: ubuntu-24.04-arm
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0 # Full history for version calculation
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Full history for version calculation
 
-    - name: Create .env from secret
-      run: |
-        if [ -n "$DOT_ENV_FILE_FOR_RELEASE" ]; then
-          echo "Writing .env from DOT_ENV_FILE_FOR_RELEASE secret..."
-          printf '%s\n' "$DOT_ENV_FILE_FOR_RELEASE" > .env
-          ls -la .env
-        else
-          echo "DOT_ENV_FILE_FOR_RELEASE secret is empty or not set; skipping .env creation."
-        fi
-      env:
-        DOT_ENV_FILE_FOR_RELEASE: ${{ secrets.DOT_ENV_FILE_FOR_RELEASE }}
+      - name: Create .env from secret
+        run: |
+          if [ -n "$DOT_ENV_FILE_FOR_RELEASE" ]; then
+            echo "Writing .env from DOT_ENV_FILE_FOR_RELEASE secret..."
+            printf '%s\n' "$DOT_ENV_FILE_FOR_RELEASE" > .env
+            ls -la .env
+          else
+            echo "DOT_ENV_FILE_FOR_RELEASE secret is empty or not set; skipping .env creation."
+          fi
+        env:
+          DOT_ENV_FILE_FOR_RELEASE: ${{ secrets.DOT_ENV_FILE_FOR_RELEASE }}
 
-    - name: Setup Environment
-      uses: ./.github/actions/setup-environment
-      with:
-        enable-docker: 'true'
+      - name: Setup Environment
+        uses: ./.github/actions/setup-environment
+        with:
+          enable-docker: "true"
 
-    - name: Run Tests
-      uses: ./.github/actions/run-tests
-      with:
-        tts-image: ${{ vars.TTS_IMAGE }}
+      - name: Run Tests
+        uses: ./.github/actions/run-tests
+        with:
+          tts-image: ${{ vars.TTS_IMAGE }}
 
-    - name: Login to Docker Hub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ vars.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    - name: Run release
-      run: |
-        echo "Running release process with 'task release'..."
+      - name: Run release
+        run: |
+          echo "Running release process with 'task release'..."
 
-        # Set up environment variables
-        export SHELL=/bin/bash
-        # Because I need to creeate one image with both amd64 and arm64
-        export TTS_IMAGE=${{ vars.TTS_IMAGE }}
+          # Set up environment variables
+          export SHELL=/bin/bash
+          # Because I need to creeate one image with both amd64 and arm64
+          export TTS_IMAGE=${{ vars.TTS_IMAGE }}
 
-        # Run the complete release process
-        task release
+          # Run the complete release process
+          task release
 
-      env:
-        # Database configuration for tests (if needed during release)
-        DYNAMIC_TEST_DB_URL: "postgres://quiz_user:quiz_password@localhost:5433/quiz_test_db?sslmode=disable"
-        DYNAMIC_DB_URL: "postgres://quiz_user:quiz_password@localhost:5432/quiz_db?sslmode=disable"
-        DYNAMIC_TEST_BASE_URL: "http://localhost:3001"
+        env:
+          # Database configuration for tests (if needed during release)
+          DYNAMIC_TEST_DB_URL: "postgres://quiz_user:quiz_password@localhost:5433/quiz_test_db?sslmode=disable"
+          DYNAMIC_DB_URL: "postgres://quiz_user:quiz_password@localhost:5432/quiz_db?sslmode=disable"
+          DYNAMIC_TEST_BASE_URL: "http://localhost:3001"
 
-        # Docker configuration
-        DOCKER_BUILDKIT: 1
-        COMPOSE_DOCKER_CLI_BUILD: 1
-        DOCKER_BUILDKIT_NO_PROVENANCE: 1
-        COMPOSE_BAKE: true
+          # Docker configuration
+          DOCKER_BUILDKIT: 1
+          COMPOSE_DOCKER_CLI_BUILD: 1
+          DOCKER_BUILDKIT_NO_PROVENANCE: 1
+          COMPOSE_BAKE: true
 
-    - name: Upload release artifacts
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: release-artifacts
-        path: |
-          build/
-          backend/coverage*.out
-          frontend/coverage/
-          zap/reports/
-        retention-days: 7
+      - name: Upload release artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-artifacts
+          path: |
+            build/
+            backend/coverage*.out
+            frontend/coverage/
+            zap/reports/
+          retention-days: 7
 
-    - name: Clean up release environment
-      if: always()
-      run: |
-        echo "Cleaning up release environment..."
+      - name: Clean up release environment
+        if: always()
+        run: |
+          echo "Cleaning up release environment..."
 
-        # Stop any running services and clean up
-        task stop-test-servers || true
-        task clean-test || true
+          # Stop any running services and clean up
+          task stop-test-servers || true
+          task clean-test || true
 
-        # Clean up Docker
-        docker system prune -f || true
+          # Clean up Docker
+          docker system prune -f || true
 
-    # Provide an SSH debugging session if the workflow fails so a developer can connect.
-    # The session will automatically end after 5 minutes if nobody connects.
-    - name: Setup tmate session
-      if: ${{ failure() }}
-      uses: mxschmitt/action-tmate@v3
-      timeout-minutes: 5
+      # Provide an SSH debugging session if the workflow fails so a developer can connect.
+      # The session will automatically end after 5 minutes if nobody connects.
+      - name: Setup tmate session
+        if: ${{ failure() }}
+        uses: mxschmitt/action-tmate@v3
+        timeout-minutes: 5
