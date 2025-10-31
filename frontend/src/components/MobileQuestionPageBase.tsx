@@ -437,7 +437,7 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
                       per
                     );
                     return (
-                      <div>
+                      <div data-allow-translate='true'>
                         {paras.map((p, i) => (
                           <SnippetHighlighter
                             key={i}
