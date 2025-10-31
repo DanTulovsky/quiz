@@ -483,18 +483,20 @@ const MobileDailyPage: React.FC = () => {
 
             {/* For reading comprehension, place the question after the passage */}
             {currentQuestion.question.type === 'reading_comprehension' && (
-              <SnippetHighlighter
-                text={currentQuestion.question.content?.question || ''}
-                snippets={snippets}
-                component={Text}
-                componentProps={{
-                  size: 'xl',
-                  fw: 600,
-                  mb: 'sm',
-                  style: { lineHeight: 1.5 },
-                  'data-testid': 'reading-comprehension-question',
-                }}
-              />
+              <Box data-allow-translate='true'>
+                <SnippetHighlighter
+                  text={currentQuestion.question.content?.question || ''}
+                  snippets={snippets}
+                  component={Text}
+                  componentProps={{
+                    size: 'xl',
+                    fw: 600,
+                    mb: 'sm',
+                    style: { lineHeight: 1.5 },
+                    'data-testid': 'reading-comprehension-question',
+                  }}
+                />
+              </Box>
             )}
 
             {/* Vocabulary question: show sentence with highlighted target word */}
@@ -513,16 +515,18 @@ const MobileDailyPage: React.FC = () => {
                   return (
                     <>
                       {/* Make sentence/title sizing match desktop QuestionCard */}
-                      <SnippetHighlighter
-                        text={baseSentence}
-                        snippets={snippets}
-                        targetWord={qWord}
-                        component={Text}
-                        componentProps={{
-                          size: 'lg',
-                          fw: 500,
-                        }}
-                      />
+                      <Box data-allow-translate='true'>
+                        <SnippetHighlighter
+                          text={baseSentence}
+                          snippets={snippets}
+                          targetWord={qWord}
+                          component={Text}
+                          componentProps={{
+                            size: 'lg',
+                            fw: 500,
+                          }}
+                        />
+                      </Box>
                       {/* Standalone vocabulary word removed to avoid duplicate display */}
                       {baseSentence.trim().toLowerCase() !==
                         qWord.trim().toLowerCase() && (
@@ -531,6 +535,7 @@ const MobileDailyPage: React.FC = () => {
                           c='dimmed'
                           mt={4}
                           style={{ fontWeight: 500 }}
+                          data-allow-translate='true'
                         >
                           What does <strong>{qWord}</strong> mean in this
                           context?
@@ -541,7 +546,7 @@ const MobileDailyPage: React.FC = () => {
                 }
                 // Fallback: render question only
                 return (
-                  <Text size='lg' fw={500}>
+                  <Text size='lg' fw={500} data-allow-translate='true'>
                     {qWord || ''}
                   </Text>
                 );
@@ -551,7 +556,7 @@ const MobileDailyPage: React.FC = () => {
             {currentQuestion.question.content?.question &&
               currentQuestion.question.type !== 'vocabulary' &&
               currentQuestion.question.type !== 'reading_comprehension' && (
-                <Text size='lg' fw={500} style={{ whiteSpace: 'pre-line' }}>
+                <Text size='lg' fw={500} style={{ whiteSpace: 'pre-line' }} data-allow-translate='true'>
                   {currentQuestion.question.content.question}
                 </Text>
               )}
@@ -622,6 +627,7 @@ const MobileDailyPage: React.FC = () => {
                                 : undefined,
                           },
                         }}
+                        data-allow-translate='true'
                       >
                         <Text
                           style={{
@@ -653,6 +659,7 @@ const MobileDailyPage: React.FC = () => {
                     <IconX size={16} />
                   )
                 }
+                data-allow-translate='true'
               >
                 <Stack gap='xs'>
                   <Text size='sm' fw={500}>
