@@ -994,10 +994,12 @@ describe('QuestionCard', () => {
     fireEvent.click(ttsButton);
 
     // Verify that error notification was shown
+    // With the new fallback mechanism, when MediaSource is not supported,
+    // it tries the fallback which makes a fetch request that returns 500
     await waitFor(() => {
       expect(vi.mocked(showNotificationWithClean)).toHaveBeenCalledWith({
         title: 'TTS Error',
-        message: 'TTS playback unavailable: MediaSource not supported',
+        message: 'TTS request failed: 500',
         color: 'red',
       });
     });
