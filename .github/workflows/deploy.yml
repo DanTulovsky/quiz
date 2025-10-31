@@ -74,3 +74,21 @@ jobs:
             echo "Deploying with IMAGE_TAG=$IMAGE_TAG"
             echo "Running \`task restart-prod\` in $(pwd) on $HOSTNAME ..."
             task restart-prod
+
+      - name: Send Uptrace annotation for frontend
+        uses: ./.github/actions/uptrace-annotation
+        with:
+          service_name: "frontend"
+          service_version: ${{ steps.extract-version.outputs.version }}
+
+      - name: Send Uptrace annotation for worker
+        uses: ./.github/actions/uptrace-annotation
+        with:
+          service_name: "worker"
+          service_version: ${{ steps.extract-version.outputs.version }}
+
+      - name: Send Uptrace annotation for backend
+        uses: ./.github/actions/uptrace-annotation
+        with:
+          service_name: "backend"
+          service_version: ${{ steps.extract-version.outputs.version }}

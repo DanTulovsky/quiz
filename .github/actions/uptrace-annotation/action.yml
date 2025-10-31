@@ -1,0 +1,28 @@
+name: "Uptrace Annotation"
+description: "Send deployment annotations to Uptrace"
+
+inputs:
+  service_name:
+    description: "Name of the service"
+    required: true
+  service_version:
+    description: "Version of the service"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Send annotation to Uptrace
+      run: |
+        curl -X POST https://uptrace.wetsnow.com/api/v1/annotations \
+          -H "uptrace-dsn: ${{ secrets.UPTRACE_DSN }}" \
+          -H "Content-Type: application/json" \
+          -d '{
+            "name": "Deployed to production",
+            "attrs": {
+              "service.name": "${{ inputs.service_name }}",
+              "service.version": "${{ inputs.service_version }}",
+              "deployment.environment": "prod"
+            }
+          }'
+      shell: bash
