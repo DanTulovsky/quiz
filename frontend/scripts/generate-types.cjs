@@ -51,7 +51,7 @@ function convertType(schema) {
         return `Record<string, ${valueType}>`;
       }
       if (schema.properties) {
-        return generateInterface(schema);
+        return `{${generateInterface(schema)}}`;
       }
       return 'Record<string, any>';
     default:

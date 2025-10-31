@@ -1,6 +1,6 @@
-import React, {useState, useRef, useEffect} from 'react';
-import {useHotkeys} from 'react-hotkeys-hook';
-import {useMediaQuery, useLocalStorage} from '@mantine/hooks';
+import React, { useState, useRef, useEffect } from 'react';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { useMediaQuery, useLocalStorage } from '@mantine/hooks';
 import {
   Badge,
   Group,
@@ -314,7 +314,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
       if (isInputFocused) return;
       if (isMarkKnownModalOpen || isReportModalOpen) return;
       e.preventDefault();
-      window.scrollTo({top: 0, behavior: 'smooth'});
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     },
     {
       enableOnFormTags: true,
@@ -344,7 +344,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
         onNewQuestion();
       }
     },
-    {enableOnFormTags: false, preventDefault: true},
+    { enableOnFormTags: false, preventDefault: true },
     [isSubmitted, onNextQuestion, onNewQuestion]
   );
 
@@ -390,7 +390,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
         onToggleExplanation();
       }
     },
-    {enableOnFormTags: false, preventDefault: true},
+    { enableOnFormTags: false, preventDefault: true },
     [isSubmitted, explanationAvailable, onToggleExplanation]
   );
 
@@ -403,7 +403,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
         onReportIssue();
       }
     },
-    {enableOnFormTags: false, preventDefault: true},
+    { enableOnFormTags: false, preventDefault: true },
     [onReportIssue, isReportModalOpen, isMarkKnownModalOpen]
   );
 
@@ -416,7 +416,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
         onMarkKnown();
       }
     },
-    {enableOnFormTags: false, preventDefault: true},
+    { enableOnFormTags: false, preventDefault: true },
     [onMarkKnown, isMarkKnownModalOpen, isReportModalOpen]
   );
 
@@ -429,7 +429,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
         onClearChat();
       }
     },
-    {enableOnFormTags: false, preventDefault: true},
+    { enableOnFormTags: false, preventDefault: true },
     [onClearChat]
   );
 
@@ -442,7 +442,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
         onToggleMaximize();
       }
     },
-    {enableOnFormTags: false, preventDefault: true},
+    { enableOnFormTags: false, preventDefault: true },
     [onToggleMaximize]
   );
 
@@ -489,7 +489,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
       setPersistedExpanded(true);
       setUserManuallyExpanded(true);
     },
-    {enableOnFormTags: false, preventDefault: true},
+    { enableOnFormTags: false, preventDefault: true },
     []
   );
 
@@ -500,7 +500,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
       setIsExpanded(false);
       setPersistedExpanded(false);
     },
-    {enableOnFormTags: false, preventDefault: true},
+    { enableOnFormTags: false, preventDefault: true },
     []
   );
 
@@ -556,7 +556,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
         pointerEvents: 'none',
       }}
     >
-      <Group gap={0} align='stretch' style={{pointerEvents: 'auto'}}>
+      <Group gap={0} align='stretch' style={{ pointerEvents: 'auto' }}>
         {/* Collapse/Expand button */}
         <Button
           variant='subtle'
@@ -626,10 +626,10 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
 
                 {/* Expand/Collapse shortcuts info */}
                 <Group gap='xs' align='center'>
-                  <Badge size='sm' variant='light' style={{minWidth: '32px'}}>
+                  <Badge size='sm' variant='light' style={{ minWidth: '32px' }}>
                     {'<'}
                   </Badge>
-                  <Badge size='sm' variant='light' style={{minWidth: '32px'}}>
+                  <Badge size='sm' variant='light' style={{ minWidth: '32px' }}>
                     {'>'}
                   </Badge>
                   <Text size='xs' c='dimmed'>
@@ -645,7 +645,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                         <Badge
                           size='sm'
                           variant='light'
-                          style={{minWidth: '32px'}}
+                          style={{ minWidth: '32px' }}
                         >
                           1-5
                         </Badge>
@@ -657,7 +657,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                         <Badge
                           size='sm'
                           variant='light'
-                          style={{minWidth: '32px'}}
+                          style={{ minWidth: '32px' }}
                         >
                           Esc
                         </Badge>
@@ -669,7 +669,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                         <Badge
                           size='sm'
                           variant='light'
-                          style={{minWidth: '32px'}}
+                          style={{ minWidth: '32px' }}
                         >
                           ↵
                         </Badge>
@@ -687,7 +687,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                           <Badge
                             size='sm'
                             variant='light'
-                            style={{minWidth: '32px'}}
+                            style={{ minWidth: '32px' }}
                           >
                             Esc
                           </Badge>
@@ -703,7 +703,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                           <Badge
                             size='sm'
                             variant='light'
-                            style={{minWidth: '32px'}}
+                            style={{ minWidth: '32px' }}
                           >
                             I
                           </Badge>
@@ -715,7 +715,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                           <Badge
                             size='sm'
                             variant='light'
-                            style={{minWidth: '32px'}}
+                            style={{ minWidth: '32px' }}
                           >
                             Esc
                           </Badge>
@@ -727,7 +727,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                           <Badge
                             size='sm'
                             variant='light'
-                            style={{minWidth: '32px'}}
+                            style={{ minWidth: '32px' }}
                           >
                             ↵
                           </Badge>
@@ -743,7 +743,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                         <Badge
                           size='sm'
                           variant='light'
-                          style={{minWidth: '32px'}}
+                          style={{ minWidth: '32px' }}
                         >
                           Esc
                         </Badge>
@@ -755,7 +755,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                         <Badge
                           size='sm'
                           variant='light'
-                          style={{minWidth: '32px'}}
+                          style={{ minWidth: '32px' }}
                         >
                           ↑↓
                         </Badge>
@@ -771,7 +771,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                         <Badge
                           size='sm'
                           variant='light'
-                          style={{minWidth: '32px'}}
+                          style={{ minWidth: '32px' }}
                         >
                           ⇧1-3
                         </Badge>
@@ -787,7 +787,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                             <Badge
                               size='sm'
                               variant='light'
-                              style={{minWidth: '32px'}}
+                              style={{ minWidth: '32px' }}
                             >
                               ←
                             </Badge>
@@ -799,7 +799,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                             <Badge
                               size='sm'
                               variant='light'
-                              style={{minWidth: '32px'}}
+                              style={{ minWidth: '32px' }}
                             >
                               →
                             </Badge>
@@ -816,7 +816,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                           <Badge
                             size='sm'
                             variant='light'
-                            style={{minWidth: '32px'}}
+                            style={{ minWidth: '32px' }}
                           >
                             1-4
                           </Badge>
@@ -831,7 +831,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                         <Badge
                           size='sm'
                           variant='light'
-                          style={{minWidth: '32px'}}
+                          style={{ minWidth: '32px' }}
                         >
                           T
                         </Badge>
@@ -845,7 +845,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                         <Badge
                           size='sm'
                           variant='light'
-                          style={{minWidth: '32px'}}
+                          style={{ minWidth: '32px' }}
                         >
                           H
                         </Badge>
@@ -861,7 +861,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                             <Badge
                               size='sm'
                               variant='light'
-                              style={{minWidth: '32px'}}
+                              style={{ minWidth: '32px' }}
                             >
                               {quickSuggestionsCount > 9
                                 ? '0-9'
@@ -875,7 +875,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                             <Badge
                               size='sm'
                               variant='light'
-                              style={{minWidth: '32px'}}
+                              style={{ minWidth: '32px' }}
                             >
                               ↑↓
                             </Badge>
@@ -887,7 +887,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                             <Badge
                               size='sm'
                               variant='light'
-                              style={{minWidth: '32px'}}
+                              style={{ minWidth: '32px' }}
                             >
                               ↵
                             </Badge>
@@ -904,7 +904,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                           <Badge
                             size='sm'
                             variant='light'
-                            style={{minWidth: '32px'}}
+                            style={{ minWidth: '32px' }}
                           >
                             ↵
                           </Badge>
@@ -919,7 +919,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                           <Badge
                             size='sm'
                             variant='light'
-                            style={{minWidth: '32px'}}
+                            style={{ minWidth: '32px' }}
                           >
                             ↵
                           </Badge>
@@ -933,7 +933,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                         <Badge
                           size='sm'
                           variant='light'
-                          style={{minWidth: '32px'}}
+                          style={{ minWidth: '32px' }}
                         >
                           N
                         </Badge>
@@ -961,7 +961,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                         <Badge
                           size='sm'
                           variant='light'
-                          style={{minWidth: '32px'}}
+                          style={{ minWidth: '32px' }}
                         >
                           Q
                         </Badge>
@@ -975,7 +975,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                           <Badge
                             size='sm'
                             variant='light'
-                            style={{minWidth: '32px'}}
+                            style={{ minWidth: '32px' }}
                           >
                             E
                           </Badge>
@@ -990,7 +990,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                           <Badge
                             size='sm'
                             variant='light'
-                            style={{minWidth: '32px'}}
+                            style={{ minWidth: '32px' }}
                           >
                             P
                           </Badge>
@@ -1005,7 +1005,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                           <Badge
                             size='sm'
                             variant='light'
-                            style={{minWidth: '32px'}}
+                            style={{ minWidth: '32px' }}
                           >
                             R
                           </Badge>
@@ -1020,7 +1020,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                           <Badge
                             size='sm'
                             variant='light'
-                            style={{minWidth: '32px'}}
+                            style={{ minWidth: '32px' }}
                           >
                             K
                           </Badge>
@@ -1035,7 +1035,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                           <Badge
                             size='sm'
                             variant='light'
-                            style={{minWidth: '32px'}}
+                            style={{ minWidth: '32px' }}
                           >
                             D
                           </Badge>
@@ -1050,7 +1050,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                           <Badge
                             size='sm'
                             variant='light'
-                            style={{minWidth: '32px'}}
+                            style={{ minWidth: '32px' }}
                           >
                             M
                           </Badge>

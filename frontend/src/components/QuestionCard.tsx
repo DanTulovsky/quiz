@@ -218,7 +218,9 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
     const { snippets } = useQuestionSnippets(question?.id);
 
     // Ref to store user learning preferences for TTS voice
-    const userLearningPrefsRef = React.useRef<{ tts_voice?: string } | undefined>(undefined);
+    const userLearningPrefsRef = React.useRef<
+      { tts_voice?: string } | undefined
+    >(undefined);
 
     // Copy to clipboard functionality for reading comprehension passages
     const handleCopyPassage = async () => {
@@ -636,7 +638,9 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
         const result = (maybeHook as () => unknown)();
         userLearningPrefs = (result as { data?: { tts_voice?: string } })?.data;
         // Also store in ref for use in toggleTTS
-        userLearningPrefsRef.current = (result as { data?: { tts_voice?: string } })?.data;
+        userLearningPrefsRef.current = (
+          result as { data?: { tts_voice?: string } }
+        )?.data;
       }
     } catch {
       userLearningPrefs = undefined;
