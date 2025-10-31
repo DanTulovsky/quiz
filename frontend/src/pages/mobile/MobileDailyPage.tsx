@@ -562,7 +562,7 @@ const MobileDailyPage: React.FC = () => {
               )}
 
             {/* Answer Options */}
-            <Stack gap='sm'>
+            <Stack gap='sm' data-allow-translate='true'>
               {currentQuestion.question.content?.options ? (
                 currentQuestion.question.content.options.map(
                   (option: string, index: number) => {
@@ -627,7 +627,6 @@ const MobileDailyPage: React.FC = () => {
                                 : undefined,
                           },
                         }}
-                        data-allow-translate='true'
                       >
                         <Text
                           style={{
