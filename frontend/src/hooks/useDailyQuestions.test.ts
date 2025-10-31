@@ -472,11 +472,41 @@ describe('useDailyQuestions', () => {
   });
 
   describe('persistence across navigation', () => {
-    it.skip('restores persisted currentQuestionIndex on remount', () => {
+    beforeEach(() => {
+      // Clear sessionStorage before each test
+      window.sessionStorage.clear();
+    });
+
+    it('restores persisted currentQuestionIndex on remount', () => {
       // Pre-seed sessionStorage for mocked date 2025-08-04
       window.sessionStorage.setItem('/daily/index/2025-08-04', '2');
-      const { result: result2 } = renderHook(() => useDailyQuestions());
-      expect(result2.current.currentQuestionIndex).toBe(2);
+      const { result } = renderHook(() => useDailyQuestions());
+      
+      // Wait for initialization to complete
+      expect(result.current.currentQuestionIndex).toBe(2);
+    });
+
+    it('persists currentQuestionIndex when navigating away', () => {
+      const { result, unmount } = renderHook(() => useDailyQuestions());
+      
+      // Change to question index 2
+      act(() => {
+        result.current.setCurrentQuestionIndex(2);
+      });
+      
+      // Verify it was persisted to sessionStorage
+      const stored = window.sessionStorage.getItem('/daily/index/2025-08-04');
+      expect(stored).toBe('2');
+      
+      unmount();
+    });
+
+    it('navigates to first unanswered when no stored index exists', () => {
+      // Don't set any stored index
+      const { result } = renderHook(() => useDailyQuestions());
+      
+      // Should navigate to first unanswered (index 0)
+      expect(result.current.currentQuestionIndex).toBe(0);
     });
   });
 
