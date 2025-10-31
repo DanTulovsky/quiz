@@ -339,6 +339,7 @@ const MobilePhrasebookCategoryPage = () => {
                       alignItems: 'center',
                       gap: '8px',
                     }}
+                    data-allow-translate='true'
                   >
                     {/* Icon */}
                     {word.icon && (

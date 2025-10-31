@@ -661,6 +661,7 @@ const MobileSnippetsPage: React.FC = () => {
                 style={{
                   transition: 'all 0.2s',
                 }}
+                data-allow-translate='true'
               >
                 <Stack gap='xs'>
                   <Group
