@@ -20,6 +20,27 @@ jobs:
         with:
           fetch-depth: 0 # Full history for version calculation
 
+      - name: Extract and save version
+        run: |
+          REF="${{ github.ref }}"
+          if [[ "$REF" == refs/tags/* ]]; then
+            # Extract tag version (e.g., refs/tags/v1.2.3 -> v1.2.3)
+            VERSION="${REF#refs/tags/}"
+          else
+            # Manual dispatch: use "latest"
+            VERSION="latest"
+          fi
+          echo "Extracted version: $VERSION"
+          echo "$VERSION" > release-version.txt
+          cat release-version.txt
+
+      - name: Upload version artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-version
+          path: release-version.txt
+          retention-days: 7
+
       - name: Create .env from secret
         run: |
           if [ -n "$DOT_ENV_FILE_FOR_RELEASE" ]; then

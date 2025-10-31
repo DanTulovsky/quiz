@@ -25,6 +25,14 @@ jobs:
       (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
     runs-on: ubuntu-24.04-arm
     steps:
+      - name: Download version artifact from Release workflow
+        if: github.event_name == 'workflow_run'
+        uses: actions/download-artifact@v4
+        with:
+          name: release-version
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+
       - name: Extract version tag
         id: extract-version
         run: |
@@ -36,19 +44,19 @@ jobs:
             fi
             echo "Using manual input version: $VERSION"
           else
-            # workflow_run trigger: extract tag from head_ref
-            HEAD_REF="${{ github.event.workflow_run.head_ref }}"
-            if [[ "$HEAD_REF" == refs/tags/* ]]; then
-              # Strip "refs/tags/" prefix
-              VERSION="${HEAD_REF#refs/tags/}"
-            elif [[ "$HEAD_REF" == v*.*.* ]]; then
-              # Already in tag format (e.g., "v1.2.3")
-              VERSION="$HEAD_REF"
+            # workflow_run trigger: read version from Release workflow artifact
+            if [ -f release-version.txt ]; then
+              VERSION=$(cat release-version.txt | tr -d '\n\r ')
+              if [ -z "$VERSION" ]; then
+                echo "Warning: Version file is empty, defaulting to 'latest'"
+                VERSION="latest"
+              else
+                echo "Extracted version from Release workflow artifact: $VERSION"
+              fi
             else
-              echo "Warning: Could not extract version from head_ref: $HEAD_REF, defaulting to 'latest'"
+              echo "Warning: Version artifact not found, defaulting to 'latest'"
               VERSION="latest"
             fi
-            echo "Extracted version from Release workflow: $VERSION"
           fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "IMAGE_TAG=$VERSION" >> $GITHUB_OUTPUT
@@ -83,6 +91,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Download version artifact from Release workflow
+        if: github.event_name == 'workflow_run'
+        uses: actions/download-artifact@v4
+        with:
+          name: release-version
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+
       - name: Extract version tag
         id: extract-version
         run: |
@@ -94,19 +110,19 @@ jobs:
             fi
             echo "Using manual input version: $VERSION"
           else
-            # workflow_run trigger: extract tag from head_ref
-            HEAD_REF="${{ github.event.workflow_run.head_ref }}"
-            if [[ "$HEAD_REF" == refs/tags/* ]]; then
-              # Strip "refs/tags/" prefix
-              VERSION="${HEAD_REF#refs/tags/}"
-            elif [[ "$HEAD_REF" == v*.*.* ]]; then
-              # Already in tag format (e.g., "v1.2.3")
-              VERSION="$HEAD_REF"
+            # workflow_run trigger: read version from Release workflow artifact
+            if [ -f release-version.txt ]; then
+              VERSION=$(cat release-version.txt | tr -d '\n\r ')
+              if [ -z "$VERSION" ]; then
+                echo "Warning: Version file is empty, defaulting to 'latest'"
+                VERSION="latest"
+              else
+                echo "Extracted version from Release workflow artifact: $VERSION"
+              fi
             else
-              echo "Warning: Could not extract version from head_ref: $HEAD_REF, defaulting to 'latest'"
+              echo "Warning: Version artifact not found, defaulting to 'latest'"
               VERSION="latest"
             fi
-            echo "Extracted version from Release workflow: $VERSION"
           fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
