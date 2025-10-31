@@ -115,15 +115,18 @@ jobs:
         with:
           service_name: "frontend"
           service_version: ${{ steps.extract-version.outputs.version }}
+          uptrace_dsn: ${{ secrets.UPTRACE_DSN }}
 
       - name: Send Uptrace annotation for worker
         uses: ./.github/actions/uptrace-annotation
         with:
           service_name: "worker"
           service_version: ${{ steps.extract-version.outputs.version }}
+          uptrace_dsn: ${{ secrets.UPTRACE_DSN }}
 
       - name: Send Uptrace annotation for backend
         uses: ./.github/actions/uptrace-annotation
         with:
           service_name: "backend"
           service_version: ${{ steps.extract-version.outputs.version }}
+          uptrace_dsn: ${{ secrets.UPTRACE_DSN }}

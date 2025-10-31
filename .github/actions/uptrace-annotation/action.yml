@@ -8,6 +8,9 @@ inputs:
   service_version:
     description: "Version of the service"
     required: true
+  uptrace_dsn:
+    description: "Uptrace DSN for authentication"
+    required: true
 
 runs:
   using: "composite"
@@ -15,7 +18,7 @@ runs:
     - name: Send annotation to Uptrace
       run: |
         curl -X POST https://uptrace.wetsnow.com/api/v1/annotations \
-          -H "uptrace-dsn: ${{ secrets.UPTRACE_DSN }}" \
+          -H "uptrace-dsn: ${{ inputs.uptrace_dsn }}" \
           -H "Content-Type: application/json" \
           -d '{
             "name": "Deployed to production",
