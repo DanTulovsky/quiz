@@ -75,6 +75,41 @@ jobs:
             echo "Running \`task restart-prod\` in $(pwd) on $HOSTNAME ..."
             task restart-prod
 
+  annotate:
+    needs: deploy
+    if: success()
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Extract version tag
+        id: extract-version
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            # Manual dispatch: use input if provided, otherwise default to "latest"
+            VERSION="${{ inputs.version }}"
+            if [ -z "$VERSION" ]; then
+              VERSION="latest"
+            fi
+            echo "Using manual input version: $VERSION"
+          else
+            # workflow_run trigger: extract tag from head_ref
+            HEAD_REF="${{ github.event.workflow_run.head_ref }}"
+            if [[ "$HEAD_REF" == refs/tags/* ]]; then
+              # Strip "refs/tags/" prefix
+              VERSION="${HEAD_REF#refs/tags/}"
+            elif [[ "$HEAD_REF" == v*.*.* ]]; then
+              # Already in tag format (e.g., "v1.2.3")
+              VERSION="$HEAD_REF"
+            else
+              echo "Warning: Could not extract version from head_ref: $HEAD_REF, defaulting to 'latest'"
+              VERSION="latest"
+            fi
+            echo "Extracted version from Release workflow: $VERSION"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
       - name: Send Uptrace annotation for frontend
         uses: ./.github/actions/uptrace-annotation
         with:
