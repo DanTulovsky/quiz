@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActionIcon, Tooltip, Loader } from '@mantine/core';
+import { ActionIcon, Button, Tooltip, Loader } from '@mantine/core';
 import { Volume2, Pause, Play } from 'lucide-react';
 import { useTTS } from '../hooks/useTTS';
 
@@ -9,6 +9,7 @@ interface TTSButtonProps {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   color?: string;
   ariaLabel?: string;
+  textLabel?: string;
 }
 
 const TTSButton: React.FC<TTSButtonProps> = ({
@@ -17,6 +18,7 @@ const TTSButton: React.FC<TTSButtonProps> = ({
   size = 'md',
   color,
   ariaLabel,
+  textLabel,
 }) => {
   const {
     isLoading: isTTSLoading,
@@ -148,26 +150,44 @@ const TTSButton: React.FC<TTSButtonProps> = ({
   const computedColor =
     color || (showPlaying ? 'blue' : showLoading ? 'orange' : 'blue');
 
+  const IconComponent = showLoading ? (
+    <Loader size={16} color='orange' />
+  ) : showPlaying ? (
+    <Pause size={18} />
+  ) : showPaused ? (
+    <Play size={18} />
+  ) : (
+    <Volume2 size={18} />
+  );
+
   return (
-    <Tooltip label={label}>
-      <ActionIcon
-        size={size}
-        variant='subtle'
-        color={computedColor}
-        onClick={handleClick}
-        aria-label={ariaLabel || label}
-        disabled={showLoading}
-      >
-        {showLoading ? (
-          <Loader size={16} color='orange' />
-        ) : showPlaying ? (
-          <Pause size={18} />
-        ) : showPaused ? (
-          <Play size={18} />
-        ) : (
-          <Volume2 size={18} />
-        )}
-      </ActionIcon>
+    <Tooltip label={label} withinPortal={false}>
+      {textLabel ? (
+        <Button
+          size={size}
+          variant='light'
+          color={computedColor}
+          onClick={handleClick}
+          aria-label={ariaLabel || label}
+          disabled={showLoading}
+          leftSection={IconComponent}
+          px={textLabel.length <= 6 ? 6 : 8}
+          style={{ whiteSpace: 'nowrap', minWidth: 'auto' }}
+        >
+          {textLabel}
+        </Button>
+      ) : (
+        <ActionIcon
+          size={size}
+          variant='subtle'
+          color={computedColor}
+          onClick={handleClick}
+          aria-label={ariaLabel || label}
+          disabled={showLoading}
+        >
+          {IconComponent}
+        </ActionIcon>
+      )}
     </Tooltip>
   );
 };

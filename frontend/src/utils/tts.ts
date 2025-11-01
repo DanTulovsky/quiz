@@ -49,20 +49,28 @@ export function defaultVoiceForLanguage(
 
   // Otherwise, it's a language name string, return the corresponding voice
   switch ((languageName || '').toLowerCase()) {
-    case 'hindi':
-      return 'hi-IN-SwaraNeural';
-    case 'italian':
-      return 'it-IT-IsabellaNeural';
+    case 'english':
+      return 'en-US-JennyNeural';
+    case 'spanish':
+      return 'es-ES-ElviraNeural';
     case 'french':
       return 'fr-FR-DeniseNeural';
     case 'german':
       return 'de-DE-KatjaNeural';
+    case 'italian':
+      return 'it-IT-IsabellaNeural';
+    case 'portuguese':
+      return 'pt-PT-RaquelNeural';
     case 'russian':
       return 'ru-RU-DariyaNeural';
     case 'japanese':
       return 'ja-JP-NanamiNeural';
+    case 'korean':
+      return 'ko-KR-SunHiNeural';
     case 'chinese':
       return 'zh-CN-XiaoxiaoNeural';
+    case 'hindi':
+      return 'hi-IN-SwaraNeural';
     default:
       return undefined;
   }

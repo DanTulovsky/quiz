@@ -87,6 +87,19 @@ vi.mock('../../api/api', () => {
       data: { snippets: [], total: 0, limit: 20, offset: 0 },
       isLoading: false,
     }),
+    useGetV1PreferencesLearning: () => ({
+      data: {
+        tts_voice: '',
+        focus_on_weak_areas: false,
+        fresh_question_ratio: 0.5,
+        known_question_penalty: 0.5,
+        weak_area_boost: 2.0,
+        review_interval_days: 7,
+        daily_goal: 10,
+        daily_reminder_enabled: false,
+      },
+      isLoading: false,
+    }),
     postV1Snippets: mockPostV1SnippetsFunction,
   };
 });

@@ -336,9 +336,28 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
           </Group>
 
           {/* Original text */}
-          <Text size='md' style={{ fontStyle: 'italic' }}>
-            "{selection.text}"
-          </Text>
+          <Group gap='xs' wrap='nowrap' align='center'>
+            <TTSButton
+              getText={() => selection.text}
+              getVoice={() => {
+                const saved = (userLearningPrefs?.tts_voice || '').trim();
+                if (saved) return saved;
+                // Use detected source language if available
+                if (translation?.sourceLanguage) {
+                  const languageName = codeToLanguageName(
+                    translation.sourceLanguage
+                  );
+                  return defaultVoiceForLanguage(languageName) || undefined;
+                }
+                return undefined;
+              }}
+              size='sm'
+              ariaLabel='Listen to original text'
+            />
+            <Text size='md' style={{ fontStyle: 'italic' }}>
+              {selection.text}
+            </Text>
+          </Group>
 
           {/* Language selector */}
           <Select
@@ -390,32 +409,20 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
 
             {translation && !translationLoading && !translationError && (
               <Stack gap='xs'>
-                <Text size='md'>{translation.translatedText}</Text>
-                <Group gap='xs' wrap='nowrap'>
+                <Group gap='xs' wrap='nowrap' align='center'>
                   <TTSButton
                     getText={() => translation.translatedText}
                     getVoice={() => {
-                      const saved = (userLearningPrefs?.tts_voice || '').trim();
-                      if (saved) return saved;
+                      // For translations, always use the target language from dropdown
                       const languageName = codeToLanguageName(targetLanguage);
                       return defaultVoiceForLanguage(languageName) || undefined;
                     }}
                     size='sm'
                     ariaLabel='Listen to translation'
                   />
-                  <TTSButton
-                    getText={() => selection.text}
-                    getVoice={() => {
-                      const saved = (userLearningPrefs?.tts_voice || '').trim();
-                      if (saved) return saved;
-                      const languageName = codeToLanguageName(
-                        translation.sourceLanguage
-                      );
-                      return defaultVoiceForLanguage(languageName) || undefined;
-                    }}
-                    size='sm'
-                    ariaLabel='Listen to original text'
-                  />
+                  <Text size='md'>{translation.translatedText}</Text>
+                </Group>
+                <Group gap='xs' wrap='nowrap' justify='flex-end'>
                   <Tooltip
                     label={
                       requireQuestionId && !hasQuestionId
