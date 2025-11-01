@@ -254,40 +254,46 @@ export const useTTS = (): TTSHookReturn => {
 
     // Handle Web Audio API (mobile fallback and cached audio)
     if (sharedCachedAudio && sharedAudioContext && sharedIsPaused) {
-      try {
-        // Create new source from cached audio
-        const source = createAudioSource(sharedCachedAudio, sharedAudioContext);
-        
-        // Set up onended handler
-        source.onended = () => {
-          setIsPlaying(false);
-          setIsPaused(false);
-          sharedBufferSource = null;
-          sharedStartTime = 0;
-          sharedPauseTime = 0;
-        };
-        
-        // Start from the paused position
-        const offset = sharedPauseTime;
-        const duration = sharedCachedAudio.buffer.duration;
-        const remaining = Math.max(0, duration - offset);
-        
-        if (remaining > 0) {
-          source.start(0, offset, remaining);
-          sharedStartTime = sharedAudioContext.currentTime;
-          sharedBufferSource = source;
-          bufferSourceRef.current = source;
+      // Resume needs to be async to handle AudioContext resume
+      (async () => {
+        try {
+          // Resume the AudioContext (required on iOS after pause)
+          await sharedAudioContext!.resume();
           
-          setIsPaused(false);
-          setIsPlaying(true);
-        } else {
-          // Already at the end, reset to beginning
-          sharedPauseTime = 0;
-          sharedStartTime = 0;
+          // Create new source from cached audio
+          const source = createAudioSource(sharedCachedAudio!, sharedAudioContext!);
+          
+          // Set up onended handler
+          source.onended = () => {
+            setIsPlaying(false);
+            setIsPaused(false);
+            sharedBufferSource = null;
+            sharedStartTime = 0;
+            sharedPauseTime = 0;
+          };
+          
+          // Start from the paused position
+          const offset = sharedPauseTime;
+          const duration = sharedCachedAudio!.buffer.duration;
+          const remaining = Math.max(0, duration - offset);
+          
+          if (remaining > 0) {
+            source.start(0, offset, remaining);
+            sharedStartTime = sharedAudioContext!.currentTime;
+            sharedBufferSource = source;
+            bufferSourceRef.current = source;
+            
+            setIsPaused(false);
+            setIsPlaying(true);
+          } else {
+            // Already at the end, reset to beginning
+            sharedPauseTime = 0;
+            sharedStartTime = 0;
+          }
+        } catch (e) {
+          console.warn('Error resuming Web Audio API playback:', e);
         }
-      } catch (e) {
-        console.warn('Error resuming Web Audio API playback:', e);
-      }
+      })();
     }
   }, [setIsPlaying, setIsPaused]);
 
