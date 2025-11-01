@@ -253,18 +253,28 @@ export const useTTS = (): TTSHookReturn => {
     }
 
     // Handle Web Audio API (mobile fallback and cached audio)
-    if (sharedCachedAudio && sharedAudioContext && sharedIsPaused) {
+    if (sharedCachedAudio && sharedAudioContext) {
+      // Log for debugging
+      console.log('[TTS Resume] Starting resume, isPaused:', sharedIsPaused, 'pauseTime:', sharedPauseTime);
+      
       // Resume needs to be async to handle AudioContext resume
       (async () => {
         try {
+          // Check AudioContext state
+          console.log('[TTS Resume] AudioContext state:', sharedAudioContext!.state);
+          
           // Resume the AudioContext (required on iOS after pause)
-          await sharedAudioContext!.resume();
+          if (sharedAudioContext!.state === 'suspended') {
+            await sharedAudioContext!.resume();
+            console.log('[TTS Resume] AudioContext resumed, new state:', sharedAudioContext!.state);
+          }
           
           // Create new source from cached audio
           const source = createAudioSource(sharedCachedAudio!, sharedAudioContext!);
           
           // Set up onended handler
           source.onended = () => {
+            console.log('[TTS Resume] Playback ended');
             setIsPlaying(false);
             setIsPaused(false);
             sharedBufferSource = null;
@@ -277,23 +287,46 @@ export const useTTS = (): TTSHookReturn => {
           const duration = sharedCachedAudio!.buffer.duration;
           const remaining = Math.max(0, duration - offset);
           
+          console.log('[TTS Resume] Duration:', duration, 'Offset:', offset, 'Remaining:', remaining);
+          
           if (remaining > 0) {
+            // Update state BEFORE starting playback to ensure UI is in sync
+            setIsPaused(false);
+            setIsPlaying(true);
+            
             source.start(0, offset, remaining);
             sharedStartTime = sharedAudioContext!.currentTime;
             sharedBufferSource = source;
             bufferSourceRef.current = source;
             
-            setIsPaused(false);
-            setIsPlaying(true);
+            console.log('[TTS Resume] Playback started from offset', offset);
           } else {
-            // Already at the end, reset to beginning
+            // Already at the end, reset to beginning and restart
+            console.log('[TTS Resume] At end of audio, restarting from beginning');
             sharedPauseTime = 0;
             sharedStartTime = 0;
+            
+            setIsPaused(false);
+            setIsPlaying(true);
+            
+            source.start();
+            sharedStartTime = sharedAudioContext!.currentTime;
+            sharedBufferSource = source;
+            bufferSourceRef.current = source;
           }
         } catch (e) {
-          console.warn('Error resuming Web Audio API playback:', e);
+          console.error('[TTS Resume] Error resuming Web Audio API playback:', e);
+          // Reset state on error
+          setIsPlaying(false);
+          setIsPaused(false);
         }
       })();
+    } else {
+      console.warn('[TTS Resume] Cannot resume: missing cached audio or context', {
+        hasCachedAudio: !!sharedCachedAudio,
+        hasContext: !!sharedAudioContext,
+        isPaused: sharedIsPaused
+      });
     }
   }, [setIsPlaying, setIsPaused]);
 
