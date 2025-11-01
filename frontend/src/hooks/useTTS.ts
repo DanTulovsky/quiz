@@ -582,138 +582,138 @@ export const useTTS = (): TTSHookReturn => {
           return;
         }
 
-        // MediaSource not available - fallback to blob-based playback for mobile
+        // MediaSource not available - use Web Audio API with streaming for mobile
+        // This approach downloads all audio data via SSE (preventing timeouts by actively reading the stream),
+        // then decodes and plays using Web Audio API
         try {
           const controller = new AbortController();
           abortControllerRef.current = controller;
           sharedAbortController = controller;
 
-          // Fetch all audio chunks
-          const result = await fetchSSEAudioChunks(
-            text,
-            voice,
-            controller.signal,
-            undefined
-          );
+          // Initialize AudioContext for Web Audio API playback
+          if (!audioContextRef.current) {
+            audioContextRef.current = new (window.AudioContext ||
+              (
+                window as unknown as {
+                  webkitAudioContext: typeof AudioContext;
+                }
+              ).webkitAudioContext)();
+          }
+          const ctx = audioContextRef.current;
+          await ctx.resume();
 
-          if (!result.chunks || result.chunks.length === 0) {
+          // Fetch audio via SSE - by continuously reading the stream, we prevent timeout
+          const resp = await fetch('/v1/audio/speech', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              input: text,
+              voice: voice,
+              model: 'tts-1',
+              stream_format: 'sse',
+            } as TTSRequest),
+            signal: controller.signal,
+          });
+
+          if (!resp || !resp.ok || !resp.body) {
+            throw new Error(`TTS request failed: ${resp?.status || 'unknown'}`);
+          }
+
+          const reader = resp.body.getReader();
+          const decoder = new TextDecoder();
+          const chunks: Uint8Array[] = [];
+          let streamError: string | null = null;
+          let carry = '';
+
+          // Process SSE stream continuously to prevent timeout
+          try {
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+
+              const textChunk = decoder.decode(value, { stream: true });
+              const combined = carry + textChunk;
+              const lines = combined.split(/\r?\n/);
+              carry = lines.pop() ?? '';
+
+              for (const line of lines) {
+                if (!line.startsWith('data: ')) continue;
+                try {
+                  const obj = JSON.parse(line.slice(6));
+                  const type = typeof obj?.type === 'string' ? obj.type : undefined;
+                  
+                  if (type === 'error') {
+                    streamError = typeof obj?.error === 'string' ? obj.error : 'Unknown TTS error';
+                    try {
+                      reader.cancel();
+                    } catch {}
+                    break;
+                  }
+                  
+                  if (type === 'audio' || type === 'speech.audio.delta') {
+                    const b64 = typeof obj?.audio === 'string' ? obj.audio : undefined;
+                    if (b64) {
+                      const bin = atob(b64);
+                      const bytes = new Uint8Array(bin.length);
+                      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+                      chunks.push(bytes);
+                    }
+                  }
+                } catch {}
+              }
+              if (streamError) break;
+            }
+          } catch (readError) {
+            const name = (readError as { name?: string })?.name || '';
+            if (name !== 'AbortError') {
+              streamError = 'Stream read error';
+            }
+          }
+
+          if (streamError) {
+            throw new Error(streamError);
+          }
+
+          if (chunks.length === 0) {
             throw new Error('No audio data received');
           }
 
-          // Concatenate all chunks into a single buffer
-          const totalLength = result.chunks.reduce(
-            (sum, chunk) => sum + chunk.length,
-            0
-          );
-          const combined = new Uint8Array(totalLength);
-          let offset = 0;
-          for (const chunk of result.chunks) {
-            combined.set(chunk, offset);
-            offset += chunk.length;
-          }
+          // Decode all chunks into an AudioBuffer
+          const cached = await decodeAudioChunks(chunks, ctx);
+          sharedDecodedCache.set(key, cached);
 
-          // Create a blob from the combined audio data
-          const blob = new Blob([combined], { type: 'audio/mpeg' });
-          const blobUrl = URL.createObjectURL(blob);
-
-          // Clean up any existing audio
-          if (sharedCurrentAudio) {
+          // Play using Web Audio API
+          if (bufferSourceRef.current) {
             try {
-              sharedCurrentAudio.pause();
+              bufferSourceRef.current.onended = null;
+              bufferSourceRef.current.stop();
             } catch {}
-            if (sharedCurrentAudio.src) {
-              try {
-                URL.revokeObjectURL(sharedCurrentAudio.src);
-              } catch {}
-            }
-            sharedCurrentAudio = null;
-          }
-          if (currentAudioRef.current) {
             try {
-              currentAudioRef.current.pause();
+              bufferSourceRef.current.disconnect();
             } catch {}
-            if (currentAudioRef.current.src) {
-              try {
-                URL.revokeObjectURL(currentAudioRef.current.src);
-              } catch {}
-            }
-            currentAudioRef.current = null;
+            bufferSourceRef.current = null;
           }
 
-          // Create and play audio element
-          const audioEl = new Audio();
-          audioEl.preload = 'auto';
-          audioEl.src = blobUrl;
-          audioEl.crossOrigin = 'anonymous';
-          currentAudioRef.current = audioEl;
-          sharedCurrentAudio = audioEl;
-
-          // Set up event listeners
-          audioEl.addEventListener(
-            'ended',
-            () => {
-              setIsPlaying(false);
-              setIsPaused(false);
-              if (sharedCurrentAudio === audioEl) {
-                sharedCurrentAudio = null;
-              }
-              if (sharedAbortController === controller) {
-                sharedAbortController = null;
-              }
-              try {
-                URL.revokeObjectURL(blobUrl);
-              } catch {}
-            },
-            { once: true }
-          );
-
-          audioEl.addEventListener(
-            'error',
-            () => {
-              setIsPlaying(false);
-              setIsPaused(false);
-              setIsLoading(false);
-              if (sharedCurrentAudio === audioEl) {
-                sharedCurrentAudio = null;
-              }
-              try {
-                URL.revokeObjectURL(blobUrl);
-              } catch {}
-              showNotificationWithClean({
-                title: 'TTS Error',
-                message: 'Failed to play audio',
-                color: 'red',
-              });
-            },
-            { once: true }
-          );
-
-          // Start playback
-          await audioEl.play();
+          const source = createAudioSource(cached, ctx);
+          source.onended = () => {
+            setIsPlaying(false);
+            setIsPaused(false);
+            sharedBufferSource = null;
+            if (sharedAbortController === controller) {
+              sharedAbortController = null;
+            }
+          };
+          
+          source.start();
+          bufferSourceRef.current = source;
+          sharedBufferSource = source;
           setIsPlaying(true);
           setIsPaused(false);
           setIsLoading(false);
 
-          // Cache the audio for future use
-          try {
-            const ctx =
-              audioContextRef.current ||
-              new (window.AudioContext ||
-                (
-                  window as unknown as {
-                    webkitAudioContext: typeof AudioContext;
-                  }
-                ).webkitAudioContext)();
-            if (!audioContextRef.current) audioContextRef.current = ctx;
-            const cached = await decodeAudioChunks(result.chunks, ctx);
-            sharedDecodedCache.set(key, cached);
-          } catch (cacheError) {
-            console.warn('Failed to cache audio:', cacheError);
-          }
-
           return;
         } catch (fallbackError) {
-          console.error('Fallback TTS playback failed:', fallbackError);
+          console.error('Mobile TTS playback failed:', fallbackError);
           throw fallbackError;
         }
       } catch (e) {
