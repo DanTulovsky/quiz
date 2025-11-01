@@ -72,8 +72,14 @@ const TTSButton: React.FC<TTSButtonProps> = ({
     if (!isTTSPlaying && !isPaused && !isTTSLoading && !isStartingRef.current) {
       setOwnedText(null);
     }
-  }, [isTTSLoading, isTTSPlaying, isPaused, ownedText, getText, currentPlayingText]);
-
+  }, [
+    isTTSLoading,
+    isTTSPlaying,
+    isPaused,
+    ownedText,
+    getText,
+    currentPlayingText,
+  ]);
 
   const handleClick: React.MouseEventHandler<HTMLButtonElement> = async e => {
     const text = getText();

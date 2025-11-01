@@ -259,22 +259,36 @@ export const useTTS = (): TTSHookReturn => {
     // Handle Web Audio API (mobile fallback and cached audio)
     if (sharedCachedAudio && sharedAudioContext) {
       // Log for debugging
-      console.log('[TTS Resume] Starting resume, isPaused:', sharedIsPaused, 'pauseTime:', sharedPauseTime);
+      console.log(
+        '[TTS Resume] Starting resume, isPaused:',
+        sharedIsPaused,
+        'pauseTime:',
+        sharedPauseTime
+      );
 
       // Resume needs to be async to handle AudioContext resume
       (async () => {
         try {
           // Check AudioContext state
-          console.log('[TTS Resume] AudioContext state:', sharedAudioContext!.state);
+          console.log(
+            '[TTS Resume] AudioContext state:',
+            sharedAudioContext!.state
+          );
 
           // Resume the AudioContext (required on iOS after pause)
           if (sharedAudioContext!.state === 'suspended') {
             await sharedAudioContext!.resume();
-            console.log('[TTS Resume] AudioContext resumed, new state:', sharedAudioContext!.state);
+            console.log(
+              '[TTS Resume] AudioContext resumed, new state:',
+              sharedAudioContext!.state
+            );
           }
 
           // Create new source from cached audio
-          const source = createAudioSource(sharedCachedAudio!, sharedAudioContext!);
+          const source = createAudioSource(
+            sharedCachedAudio!,
+            sharedAudioContext!
+          );
 
           // Set up onended handler
           source.onended = () => {
@@ -291,7 +305,14 @@ export const useTTS = (): TTSHookReturn => {
           const duration = sharedCachedAudio!.buffer.duration;
           const remaining = Math.max(0, duration - offset);
 
-          console.log('[TTS Resume] Duration:', duration, 'Offset:', offset, 'Remaining:', remaining);
+          console.log(
+            '[TTS Resume] Duration:',
+            duration,
+            'Offset:',
+            offset,
+            'Remaining:',
+            remaining
+          );
 
           if (remaining > 0) {
             // Update state BEFORE starting playback to ensure UI is in sync
@@ -306,7 +327,9 @@ export const useTTS = (): TTSHookReturn => {
             console.log('[TTS Resume] Playback started from offset', offset);
           } else {
             // Already at the end, reset to beginning and restart
-            console.log('[TTS Resume] At end of audio, restarting from beginning');
+            console.log(
+              '[TTS Resume] At end of audio, restarting from beginning'
+            );
             sharedPauseTime = 0;
             sharedStartTime = 0;
 
@@ -319,18 +342,24 @@ export const useTTS = (): TTSHookReturn => {
             bufferSourceRef.current = source;
           }
         } catch (e) {
-          console.error('[TTS Resume] Error resuming Web Audio API playback:', e);
+          console.error(
+            '[TTS Resume] Error resuming Web Audio API playback:',
+            e
+          );
           // Reset state on error
           setIsPlaying(false);
           setIsPaused(false);
         }
       })();
     } else {
-      console.warn('[TTS Resume] Cannot resume: missing cached audio or context', {
-        hasCachedAudio: !!sharedCachedAudio,
-        hasContext: !!sharedAudioContext,
-        isPaused: sharedIsPaused
-      });
+      console.warn(
+        '[TTS Resume] Cannot resume: missing cached audio or context',
+        {
+          hasCachedAudio: !!sharedCachedAudio,
+          hasContext: !!sharedAudioContext,
+          isPaused: sharedIsPaused,
+        }
+      );
     }
   }, [setIsPlaying, setIsPaused]);
 
@@ -811,10 +840,14 @@ export const useTTS = (): TTSHookReturn => {
                 if (!line.startsWith('data: ')) continue;
                 try {
                   const obj = JSON.parse(line.slice(6));
-                  const type = typeof obj?.type === 'string' ? obj.type : undefined;
+                  const type =
+                    typeof obj?.type === 'string' ? obj.type : undefined;
 
                   if (type === 'error') {
-                    streamError = typeof obj?.error === 'string' ? obj.error : 'Unknown TTS error';
+                    streamError =
+                      typeof obj?.error === 'string'
+                        ? obj.error
+                        : 'Unknown TTS error';
                     try {
                       reader.cancel();
                     } catch {}
@@ -822,11 +855,13 @@ export const useTTS = (): TTSHookReturn => {
                   }
 
                   if (type === 'audio' || type === 'speech.audio.delta') {
-                    const b64 = typeof obj?.audio === 'string' ? obj.audio : undefined;
+                    const b64 =
+                      typeof obj?.audio === 'string' ? obj.audio : undefined;
                     if (b64) {
                       const bin = atob(b64);
                       const bytes = new Uint8Array(bin.length);
-                      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+                      for (let i = 0; i < bin.length; i++)
+                        bytes[i] = bin.charCodeAt(i);
                       chunks.push(bytes);
                     }
                   }

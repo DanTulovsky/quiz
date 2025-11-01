@@ -14,7 +14,11 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from '../contexts/TranslationContext';
 import { TextSelection } from '../hooks/useTextSelection';
 import { IconX, IconBookmark } from '@tabler/icons-react';
-import { postV1Snippets, Question, useGetV1PreferencesLearning } from '../api/api';
+import {
+  postV1Snippets,
+  Question,
+  useGetV1PreferencesLearning,
+} from '../api/api';
 import { useTheme } from '../contexts/ThemeContext';
 import { fontScaleMap } from '../theme/theme';
 import TTSButton from './TTSButton';
@@ -391,9 +395,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
                   <TTSButton
                     getText={() => translation.translatedText}
                     getVoice={() => {
-                      const saved = (
-                        userLearningPrefs?.tts_voice || ''
-                      ).trim();
+                      const saved = (userLearningPrefs?.tts_voice || '').trim();
                       if (saved) return saved;
                       const languageName = codeToLanguageName(targetLanguage);
                       return defaultVoiceForLanguage(languageName) || undefined;
@@ -404,9 +406,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
                   <TTSButton
                     getText={() => selection.text}
                     getVoice={() => {
-                      const saved = (
-                        userLearningPrefs?.tts_voice || ''
-                      ).trim();
+                      const saved = (userLearningPrefs?.tts_voice || '').trim();
                       if (saved) return saved;
                       const languageName = codeToLanguageName(
                         translation.sourceLanguage
