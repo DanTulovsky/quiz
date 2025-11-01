@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { MantineProvider } from '@mantine/core';
 import { BrowserRouter } from 'react-router-dom';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
@@ -167,13 +167,35 @@ describe('MobileStoryPage', () => {
       expect(ttsButton).toBeInTheDocument();
     });
 
-    it('shows loading state when TTS is loading', () => {
-      mockTTS.isLoading = true;
-      renderComponent();
+    it('shows loading state when TTS is loading', async () => {
+      const { rerender } = renderComponent();
 
       const ttsButton = screen.getByLabelText(/Section audio/i);
       expect(ttsButton).toBeInTheDocument();
-      expect(ttsButton).toBeDisabled();
+
+      // Click button to establish ownership and start loading
+      mockTTS.playTTS.mockImplementation(() => {
+        mockTTS.isLoading = true;
+        return Promise.resolve();
+      });
+
+      await act(async () => {
+        fireEvent.click(ttsButton);
+        // Force re-render to pick up the new isLoading state
+        rerender(
+          <BrowserRouter>
+            <ThemeProvider>
+              <MantineProvider>
+                <MobileStoryPage />
+              </MantineProvider>
+            </ThemeProvider>
+          </BrowserRouter>
+        );
+      });
+
+      // Button should be disabled during loading
+      const updatedButton = screen.getByLabelText(/Section audio/i);
+      expect(updatedButton).toBeDisabled();
     });
 
     it('shows playing state when TTS is playing', () => {
@@ -196,12 +218,34 @@ describe('MobileStoryPage', () => {
       );
     });
 
-    it('calls pauseTTS when TTS button is clicked while playing', () => {
-      mockTTS.isPlaying = true;
-      renderComponent();
+    it('calls pauseTTS when TTS button is clicked while playing', async () => {
+      const { rerender } = renderComponent();
 
       const ttsButton = screen.getByLabelText(/Section audio/i);
-      fireEvent.click(ttsButton);
+
+      // First click: start playback (establishes ownership)
+      mockTTS.playTTS.mockImplementation(() => {
+        mockTTS.isPlaying = true;
+        mockTTS.isLoading = false;
+        return Promise.resolve();
+      });
+      await act(async () => {
+        fireEvent.click(ttsButton);
+        // Force re-render to pick up the new isPlaying state
+        rerender(
+          <BrowserRouter>
+            <ThemeProvider>
+              <MantineProvider>
+                <MobileStoryPage />
+              </MantineProvider>
+            </ThemeProvider>
+          </BrowserRouter>
+        );
+      });
+
+      // Second click: should pause since we own the playback
+      const updatedButton = screen.getByLabelText(/Section audio/i);
+      fireEvent.click(updatedButton);
 
       expect(mockTTS.pauseTTS).toHaveBeenCalled();
     });
@@ -219,13 +263,35 @@ describe('MobileStoryPage', () => {
       expect(ttsButton).toBeInTheDocument();
     });
 
-    it('shows loading state when TTS is loading', () => {
-      mockTTS.isLoading = true;
-      renderComponent();
+    it('shows loading state when TTS is loading', async () => {
+      const { rerender } = renderComponent();
 
       const ttsButton = screen.getByLabelText(/Story audio/i);
       expect(ttsButton).toBeInTheDocument();
-      expect(ttsButton).toBeDisabled();
+
+      // Click button to establish ownership and start loading
+      mockTTS.playTTS.mockImplementation(() => {
+        mockTTS.isLoading = true;
+        return Promise.resolve();
+      });
+
+      await act(async () => {
+        fireEvent.click(ttsButton);
+        // Force re-render to pick up the new isLoading state
+        rerender(
+          <BrowserRouter>
+            <ThemeProvider>
+              <MantineProvider>
+                <MobileStoryPage />
+              </MantineProvider>
+            </ThemeProvider>
+          </BrowserRouter>
+        );
+      });
+
+      // Button should be disabled during loading
+      const updatedButton = screen.getByLabelText(/Story audio/i);
+      expect(updatedButton).toBeDisabled();
     });
 
     it('shows playing state when TTS is playing', () => {
@@ -248,12 +314,34 @@ describe('MobileStoryPage', () => {
       );
     });
 
-    it('calls pauseTTS when TTS button is clicked while playing', () => {
-      mockTTS.isPlaying = true;
-      renderComponent();
+    it('calls pauseTTS when TTS button is clicked while playing', async () => {
+      const { rerender } = renderComponent();
 
       const ttsButton = screen.getByLabelText(/Story audio/i);
-      fireEvent.click(ttsButton);
+
+      // First click: start playback (establishes ownership)
+      mockTTS.playTTS.mockImplementation(() => {
+        mockTTS.isPlaying = true;
+        mockTTS.isLoading = false;
+        return Promise.resolve();
+      });
+      await act(async () => {
+        fireEvent.click(ttsButton);
+        // Force re-render to pick up the new isPlaying state
+        rerender(
+          <BrowserRouter>
+            <ThemeProvider>
+              <MantineProvider>
+                <MobileStoryPage />
+              </MantineProvider>
+            </ThemeProvider>
+          </BrowserRouter>
+        );
+      });
+
+      // Second click: should pause since we own the playback
+      const updatedButton = screen.getByLabelText(/Story audio/i);
+      fireEvent.click(updatedButton);
 
       expect(mockTTS.pauseTTS).toHaveBeenCalled();
     });
