@@ -34,6 +34,8 @@ let sharedIsPlaying = false;
 let sharedIsPaused = false;
 // Track the currently playing text so buttons can match against it
 let sharedCurrentText: string | null = null;
+// Track MediaStream destination for Web Audio to <audio> routing (for iOS background support)
+let sharedMediaStreamDestination: MediaStreamAudioDestinationNode | null = null;
 
 // Notify all hook instances of state changes (simple listener pattern)
 const stateListeners = new Set<() => void>();
@@ -129,6 +131,7 @@ export const useTTS = (): TTSHookReturn => {
       try {
         sharedCurrentAudio.pause();
         sharedCurrentAudio.currentTime = 0;
+        sharedCurrentAudio.srcObject = null;
       } catch {}
       sharedCurrentAudio = null;
     }
@@ -136,6 +139,7 @@ export const useTTS = (): TTSHookReturn => {
       try {
         currentAudioRef.current.pause();
         currentAudioRef.current.currentTime = 0;
+        currentAudioRef.current.srcObject = null;
       } catch {}
       currentAudioRef.current = null;
     }
@@ -196,6 +200,7 @@ export const useTTS = (): TTSHookReturn => {
     sharedPauseTime = 0;
     sharedCachedAudio = null;
     sharedAudioContext = null;
+    sharedMediaStreamDestination = null;
 
     sharedIsPlaying = false;
     sharedIsPaused = false;
@@ -245,7 +250,7 @@ export const useTTS = (): TTSHookReturn => {
   }, [setIsPlaying, setIsPaused]);
 
   const resumeTTS = useCallback(() => {
-    // Handle HTMLAudioElement (MediaSource streaming path)
+    // Handle HTMLAudioElement (both MediaSource streaming and Web Audio via MediaStream)
     const el = sharedCurrentAudio || currentAudioRef.current;
     if (el) {
       try {
@@ -256,9 +261,8 @@ export const useTTS = (): TTSHookReturn => {
       } catch {}
     }
 
-    // Handle Web Audio API (mobile fallback and cached audio)
+    // Fallback: Handle Web Audio API without audio element (legacy path)
     if (sharedCachedAudio && sharedAudioContext) {
-      // Log for debugging
       console.log(
         '[TTS Resume] Starting resume, isPaused:',
         sharedIsPaused,
@@ -269,7 +273,6 @@ export const useTTS = (): TTSHookReturn => {
       // Resume needs to be async to handle AudioContext resume
       (async () => {
         try {
-          // Check AudioContext state
           console.log(
             '[TTS Resume] AudioContext state:',
             sharedAudioContext!.state
@@ -284,11 +287,38 @@ export const useTTS = (): TTSHookReturn => {
             );
           }
 
+          // Recreate MediaStream destination if needed
+          let destination = sharedMediaStreamDestination;
+          if (!destination) {
+            destination = sharedAudioContext!.createMediaStreamDestination();
+            sharedMediaStreamDestination = destination;
+          }
+
           // Create new source from cached audio
-          const source = createAudioSource(
-            sharedCachedAudio!,
-            sharedAudioContext!
+          const audioBuffer = sharedAudioContext!.createBuffer(
+            sharedCachedAudio!.channelData.length,
+            sharedCachedAudio!.channelData[0].length,
+            sharedCachedAudio!.sampleRate
           );
+          for (let ch = 0; ch < sharedCachedAudio!.channelData.length; ch++) {
+            const channel = sharedCachedAudio!.channelData[ch];
+            const floatChannel = new Float32Array(channel.buffer as ArrayBuffer);
+            audioBuffer.copyToChannel(floatChannel, ch, 0);
+          }
+
+          const source = sharedAudioContext!.createBufferSource();
+          source.buffer = audioBuffer;
+          source.connect(destination);
+
+          // Create or reuse audio element
+          let audioEl = sharedCurrentAudio || currentAudioRef.current;
+          if (!audioEl) {
+            audioEl = new Audio();
+            audioEl.autoplay = false;
+            currentAudioRef.current = audioEl;
+            sharedCurrentAudio = audioEl;
+          }
+          audioEl.srcObject = destination.stream;
 
           // Set up onended handler
           source.onended = () => {
@@ -300,9 +330,18 @@ export const useTTS = (): TTSHookReturn => {
             sharedPauseTime = 0;
           };
 
+          audioEl.onended = () => {
+            setIsPlaying(false);
+            setIsPaused(false);
+            if (sharedCurrentAudio === audioEl) {
+              sharedCurrentAudio = null;
+            }
+          };
+
           // Start from the paused position
           const offset = sharedPauseTime;
-          const duration = sharedCachedAudio!.buffer.duration;
+          const channelLength = sharedCachedAudio!.channelData[0].length;
+          const duration = channelLength / sharedCachedAudio!.sampleRate;
           const remaining = Math.max(0, duration - offset);
 
           console.log(
@@ -324,6 +363,8 @@ export const useTTS = (): TTSHookReturn => {
             sharedBufferSource = source;
             bufferSourceRef.current = source;
 
+            await audioEl.play();
+
             console.log('[TTS Resume] Playback started from offset', offset);
           } else {
             // Already at the end, reset to beginning and restart
@@ -340,6 +381,8 @@ export const useTTS = (): TTSHookReturn => {
             sharedStartTime = sharedAudioContext!.currentTime;
             sharedBufferSource = source;
             bufferSourceRef.current = source;
+
+            await audioEl.play();
           }
         } catch (e) {
           console.error(
@@ -364,7 +407,7 @@ export const useTTS = (): TTSHookReturn => {
   }, [setIsPlaying, setIsPaused]);
 
   const restartTTS = useCallback(() => {
-    // Handle HTMLAudioElement (MediaSource streaming path)
+    // Handle HTMLAudioElement (both MediaSource streaming and Web Audio via MediaStream)
     const el = sharedCurrentAudio || currentAudioRef.current;
     if (el) {
       try {
@@ -376,41 +419,90 @@ export const useTTS = (): TTSHookReturn => {
       } catch {}
     }
 
-    // Handle Web Audio API (mobile fallback and cached audio)
+    // Fallback: Handle Web Audio API without audio element (legacy path)
     if (sharedCachedAudio && sharedAudioContext) {
-      try {
-        // Stop current source if playing
-        if (sharedBufferSource) {
-          try {
-            sharedBufferSource.onended = null;
-            sharedBufferSource.stop();
-            sharedBufferSource.disconnect();
-          } catch {}
-          sharedBufferSource = null;
-        }
+      (async () => {
+        try {
+          // Stop current source if playing
+          if (sharedBufferSource) {
+            try {
+              sharedBufferSource.onended = null;
+              sharedBufferSource.stop();
+              sharedBufferSource.disconnect();
+            } catch {}
+            sharedBufferSource = null;
+          }
 
-        // Reset position and create new source
-        sharedPauseTime = 0;
-        const source = createAudioSource(sharedCachedAudio, sharedAudioContext);
-
-        source.onended = () => {
-          setIsPlaying(false);
-          setIsPaused(false);
-          sharedBufferSource = null;
-          sharedStartTime = 0;
+          // Reset position
           sharedPauseTime = 0;
-        };
 
-        source.start();
-        sharedStartTime = sharedAudioContext.currentTime;
-        sharedBufferSource = source;
-        bufferSourceRef.current = source;
+          // Resume AudioContext if suspended
+          if (sharedAudioContext.state === 'suspended') {
+            await sharedAudioContext.resume();
+          }
 
-        setIsPaused(false);
-        setIsPlaying(true);
-      } catch (e) {
-        console.warn('Error restarting Web Audio API playback:', e);
-      }
+          // Recreate MediaStream destination if needed
+          let destination = sharedMediaStreamDestination;
+          if (!destination) {
+            destination = sharedAudioContext.createMediaStreamDestination();
+            sharedMediaStreamDestination = destination;
+          }
+
+          // Create new source from cached audio
+          const audioBuffer = sharedAudioContext.createBuffer(
+            sharedCachedAudio.channelData.length,
+            sharedCachedAudio.channelData[0].length,
+            sharedCachedAudio.sampleRate
+          );
+          for (let ch = 0; ch < sharedCachedAudio.channelData.length; ch++) {
+            const channel = sharedCachedAudio.channelData[ch];
+            const floatChannel = new Float32Array(channel.buffer as ArrayBuffer);
+            audioBuffer.copyToChannel(floatChannel, ch, 0);
+          }
+
+          const source = sharedAudioContext.createBufferSource();
+          source.buffer = audioBuffer;
+          source.connect(destination);
+
+          // Create or reuse audio element
+          let audioEl = sharedCurrentAudio || currentAudioRef.current;
+          if (!audioEl) {
+            audioEl = new Audio();
+            audioEl.autoplay = false;
+            currentAudioRef.current = audioEl;
+            sharedCurrentAudio = audioEl;
+          }
+          audioEl.srcObject = destination.stream;
+
+          source.onended = () => {
+            setIsPlaying(false);
+            setIsPaused(false);
+            sharedBufferSource = null;
+            sharedStartTime = 0;
+            sharedPauseTime = 0;
+          };
+
+          audioEl.onended = () => {
+            setIsPlaying(false);
+            setIsPaused(false);
+            if (sharedCurrentAudio === audioEl) {
+              sharedCurrentAudio = null;
+            }
+          };
+
+          source.start();
+          sharedStartTime = sharedAudioContext.currentTime;
+          sharedBufferSource = source;
+          bufferSourceRef.current = source;
+
+          await audioEl.play();
+
+          setIsPaused(false);
+          setIsPlaying(true);
+        } catch (e) {
+          console.warn('Error restarting Web Audio API playback:', e);
+        }
+      })();
     }
   }, [setIsPlaying, setIsPaused]);
 
@@ -459,7 +551,7 @@ export const useTTS = (): TTSHookReturn => {
           }
         }
 
-        // If we have cached audio, play it now
+        // If we have cached audio, play it now (using MediaStream for iOS background support)
         if (cached) {
           try {
             if (!audioContextRef.current) {
@@ -471,34 +563,135 @@ export const useTTS = (): TTSHookReturn => {
                 ).webkitAudioContext)();
             }
             const ctx = audioContextRef.current;
-            if (bufferSourceRef.current) {
+            await ctx.resume();
+
+            // Create an <audio> element to ensure background playback on iOS
+            if (sharedCurrentAudio) {
               try {
-                bufferSourceRef.current.onended = null;
-                bufferSourceRef.current.stop();
+                sharedCurrentAudio.pause();
+                sharedCurrentAudio.srcObject = null;
               } catch {}
-              try {
-                bufferSourceRef.current.disconnect();
-              } catch {}
-              bufferSourceRef.current = null;
+              sharedCurrentAudio = null;
             }
+            if (currentAudioRef.current) {
+              try {
+                currentAudioRef.current.pause();
+                currentAudioRef.current.srcObject = null;
+              } catch {}
+              currentAudioRef.current = null;
+            }
+
+            const audioEl = new Audio();
+            audioEl.autoplay = false;
+            currentAudioRef.current = audioEl;
+            sharedCurrentAudio = audioEl;
+
+            // Create MediaStreamDestination to route Web Audio to <audio> element
+            const destination = ctx.createMediaStreamDestination();
+            sharedMediaStreamDestination = destination;
+
+            // Create audio source and connect to MediaStream
+            const audioBuffer = ctx.createBuffer(
+              cached.channelData.length,
+              cached.channelData[0].length,
+              cached.sampleRate
+            );
+            for (let ch = 0; ch < cached.channelData.length; ch++) {
+              const channel = cached.channelData[ch];
+              const floatChannel = new Float32Array(channel.buffer as ArrayBuffer);
+              audioBuffer.copyToChannel(floatChannel, ch, 0);
+            }
+
+            const source = ctx.createBufferSource();
+            source.buffer = audioBuffer;
+            source.connect(destination);
+
+            // Set the MediaStream as the audio element's source
+            audioEl.srcObject = destination.stream;
 
             // Store for pause/resume
             sharedCachedAudio = cached;
             sharedAudioContext = ctx;
             sharedPauseTime = 0;
+            bufferSourceRef.current = source;
+            sharedBufferSource = source;
 
-            const source = createAudioSource(cached, ctx);
+            // Set up Media Session API
+            if ('mediaSession' in navigator && navigator.mediaSession) {
+              navigator.mediaSession.metadata = new MediaMetadata({
+                title: 'Text-to-Speech',
+                artist: 'Language Learning Quiz',
+                album: 'TTS Audio',
+              });
+
+              navigator.mediaSession.setActionHandler('play', () => {
+                if (sharedCurrentAudio) {
+                  void sharedCurrentAudio.play();
+                }
+              });
+
+              navigator.mediaSession.setActionHandler('pause', () => {
+                if (sharedCurrentAudio) {
+                  sharedCurrentAudio.pause();
+                }
+              });
+
+              navigator.mediaSession.setActionHandler('stop', () => {
+                stopTTS();
+              });
+
+              const updatePositionState = () => {
+                if (
+                  navigator.mediaSession &&
+                  audioEl.duration &&
+                  isFinite(audioEl.duration)
+                ) {
+                  try {
+                    navigator.mediaSession.setPositionState({
+                      duration: audioEl.duration || 0,
+                      playbackRate: audioEl.playbackRate || 1,
+                      position: audioEl.currentTime || 0,
+                    });
+                  } catch {}
+                }
+              };
+
+              audioEl.addEventListener('loadedmetadata', updatePositionState);
+              audioEl.addEventListener('timeupdate', updatePositionState);
+            }
+
+            // Set up event handlers
             source.onended = () => {
               setIsPlaying(false);
               setIsPaused(false);
               sharedBufferSource = null;
               sharedStartTime = 0;
               sharedPauseTime = 0;
+              if (sharedCurrentAudio === audioEl) {
+                sharedCurrentAudio = null;
+              }
+              if (currentAudioRef.current === audioEl) {
+                currentAudioRef.current = null;
+              }
             };
+
+            audioEl.onended = () => {
+              setIsPlaying(false);
+              setIsPaused(false);
+              if (sharedCurrentAudio === audioEl) {
+                sharedCurrentAudio = null;
+              }
+              if (currentAudioRef.current === audioEl) {
+                currentAudioRef.current = null;
+              }
+            };
+
+            // Start playback from user gesture
             source.start();
             sharedStartTime = ctx.currentTime;
-            bufferSourceRef.current = source;
-            sharedBufferSource = source; // Share across instances
+            
+            await audioEl.play();
+            
             setIsPlaying(true);
             setIsPaused(false);
             setIsLoading(false);
@@ -782,9 +975,10 @@ export const useTTS = (): TTSHookReturn => {
           return;
         }
 
-        // MediaSource not available - use Web Audio API with streaming for mobile
+        // MediaSource not available - use Web Audio API routed to <audio> element for mobile
         // This approach downloads all audio data via SSE (preventing timeouts by actively reading the stream),
-        // then decodes and plays using Web Audio API
+        // then decodes and plays using Web Audio API routed to an <audio> element via MediaStream.
+        // This ensures background playback on iOS Safari, which may suspend pure Web Audio when backgrounded.
         try {
           const controller = new AbortController();
           abortControllerRef.current = controller;
@@ -888,24 +1082,106 @@ export const useTTS = (): TTSHookReturn => {
           const cached = await decodeAudioChunks(chunks, ctx);
           sharedDecodedCache.set(key, cached);
 
-          // Play using Web Audio API
-          if (bufferSourceRef.current) {
+          // Create an <audio> element to ensure background playback on iOS
+          // Route Web Audio through MediaStream to the audio element
+          if (sharedCurrentAudio) {
             try {
-              bufferSourceRef.current.onended = null;
-              bufferSourceRef.current.stop();
+              sharedCurrentAudio.pause();
+              sharedCurrentAudio.srcObject = null;
             } catch {}
-            try {
-              bufferSourceRef.current.disconnect();
-            } catch {}
-            bufferSourceRef.current = null;
+            sharedCurrentAudio = null;
           }
+          if (currentAudioRef.current) {
+            try {
+              currentAudioRef.current.pause();
+              currentAudioRef.current.srcObject = null;
+            } catch {}
+            currentAudioRef.current = null;
+          }
+
+          const audioEl = new Audio();
+          audioEl.autoplay = false; // We'll call play() from user gesture
+          currentAudioRef.current = audioEl;
+          sharedCurrentAudio = audioEl;
+
+          // Create MediaStreamDestination to route Web Audio to <audio> element
+          const destination = ctx.createMediaStreamDestination();
+          sharedMediaStreamDestination = destination;
+          
+          // Create audio source and connect to MediaStream
+          const audioBuffer = ctx.createBuffer(
+            cached.channelData.length,
+            cached.channelData[0].length,
+            cached.sampleRate
+          );
+          for (let ch = 0; ch < cached.channelData.length; ch++) {
+            const channel = cached.channelData[ch];
+            const floatChannel = new Float32Array(channel.buffer as ArrayBuffer);
+            audioBuffer.copyToChannel(floatChannel, ch, 0);
+          }
+
+          const source = ctx.createBufferSource();
+          source.buffer = audioBuffer;
+          source.connect(destination); // Connect to MediaStream instead of speakers
+          
+          // Set the MediaStream as the audio element's source
+          audioEl.srcObject = destination.stream;
 
           // Store for pause/resume
           sharedCachedAudio = cached;
           sharedAudioContext = ctx;
           sharedPauseTime = 0;
+          bufferSourceRef.current = source;
+          sharedBufferSource = source;
 
-          const source = createAudioSource(cached, ctx);
+          // Set up Media Session API for lock screen controls
+          if ('mediaSession' in navigator && navigator.mediaSession) {
+            navigator.mediaSession.metadata = new MediaMetadata({
+              title: 'Text-to-Speech',
+              artist: 'Language Learning Quiz',
+              album: 'TTS Audio',
+            });
+
+            navigator.mediaSession.setActionHandler('play', () => {
+              if (sharedCurrentAudio) {
+                void sharedCurrentAudio.play();
+              }
+            });
+
+            navigator.mediaSession.setActionHandler('pause', () => {
+              if (sharedCurrentAudio) {
+                sharedCurrentAudio.pause();
+              }
+            });
+
+            navigator.mediaSession.setActionHandler('stop', () => {
+              stopTTS();
+            });
+
+            // Update position state when duration is available
+            const updatePositionState = () => {
+              if (
+                navigator.mediaSession &&
+                audioEl.duration &&
+                isFinite(audioEl.duration)
+              ) {
+                try {
+                  navigator.mediaSession.setPositionState({
+                    duration: audioEl.duration || 0,
+                    playbackRate: audioEl.playbackRate || 1,
+                    position: audioEl.currentTime || 0,
+                  });
+                } catch {
+                  // Position state may fail on some browsers
+                }
+              }
+            };
+
+            audioEl.addEventListener('loadedmetadata', updatePositionState);
+            audioEl.addEventListener('timeupdate', updatePositionState);
+          }
+
+          // Set up event handlers
           source.onended = () => {
             setIsPlaying(false);
             setIsPaused(false);
@@ -915,12 +1191,32 @@ export const useTTS = (): TTSHookReturn => {
             if (sharedAbortController === controller) {
               sharedAbortController = null;
             }
+            if (sharedCurrentAudio === audioEl) {
+              sharedCurrentAudio = null;
+            }
+            if (currentAudioRef.current === audioEl) {
+              currentAudioRef.current = null;
+            }
           };
 
+          audioEl.onended = () => {
+            setIsPlaying(false);
+            setIsPaused(false);
+            if (sharedCurrentAudio === audioEl) {
+              sharedCurrentAudio = null;
+            }
+            if (currentAudioRef.current === audioEl) {
+              currentAudioRef.current = null;
+            }
+          };
+
+          // Start playback from user gesture (critical for iOS)
           source.start();
           sharedStartTime = ctx.currentTime;
-          bufferSourceRef.current = source;
-          sharedBufferSource = source;
+          
+          // Play the audio element (this must be from user gesture on iOS)
+          await audioEl.play();
+          
           setIsPlaying(true);
           setIsPaused(false);
           setIsLoading(false);
