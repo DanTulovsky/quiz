@@ -45,6 +45,8 @@ interface StorySectionViewProps {
   onNext: () => void;
   onFirst: () => void;
   onLast: () => void;
+  storyTitle?: string;
+  storyLanguage?: string;
 }
 
 const StorySectionView: React.FC<StorySectionViewProps> = ({
@@ -60,6 +62,8 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
   onNext,
   onFirst,
   onLast,
+  storyTitle,
+  storyLanguage,
 }) => {
   // Get user learning preferences for preferred voice
   const { data: userLearningPrefs } = useGetV1PreferencesLearning();
@@ -166,6 +170,11 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
                 defaultVoiceForLanguage(section.language_level) || undefined
               );
             }}
+            getMetadata={() => ({
+              title: storyTitle || 'Story',
+              language: storyLanguage,
+              level: section.language_level,
+            })}
             size='md'
             ariaLabel='Section audio'
           />
@@ -379,8 +388,8 @@ const StoryQuestionCard: React.FC<StoryQuestionCardProps> = ({ question }) => {
               }
             >
               {selectedAnswer === question.correct_answer_index
-                ? '✓ Correct!'
-                : '✗ Incorrect'}
+                ? '? Correct!'
+                : '? Incorrect'}
             </Text>
             <Button size='xs' variant='light' onClick={handleReset}>
               Try Again

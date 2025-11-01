@@ -36,6 +36,8 @@ let sharedIsPaused = false;
 let sharedCurrentText: string | null = null;
 // Track MediaStream destination for Web Audio to <audio> routing (for iOS background support)
 let sharedMediaStreamDestination: MediaStreamAudioDestinationNode | null = null;
+// Track metadata for current playback (for Media Session API)
+let sharedMetadata: TTSMetadata | null = null;
 
 // Notify all hook instances of state changes (simple listener pattern)
 const stateListeners = new Set<() => void>();
@@ -45,6 +47,23 @@ function notifyStateListeners() {
       listener();
     } catch {}
   });
+}
+
+// Helper function to set up Media Session API metadata
+function setupMediaSessionMetadata(metadata?: TTSMetadata | null) {
+  if ('mediaSession' in navigator && navigator.mediaSession) {
+    const title = metadata?.title || 'Text-to-Speech';
+    const artist = [metadata?.language, metadata?.level]
+      .filter(Boolean)
+      .join(' ? ') || 'Language Learning Quiz';
+    const album = 'TTS Audio';
+
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title,
+      artist,
+      album,
+    });
+  }
 }
 
 // Global current playback handle so non-hook callers can stop playback.
@@ -73,8 +92,14 @@ interface TTSState {
   isPaused: boolean;
 }
 
+export interface TTSMetadata {
+  title?: string;
+  language?: string;
+  level?: string;
+}
+
 interface TTSHookReturn extends TTSState {
-  playTTS: (text: string, voice?: string) => Promise<void>;
+  playTTS: (text: string, voice?: string, metadata?: TTSMetadata) => Promise<void>;
   stopTTS: () => void;
   pauseTTS: () => void;
   resumeTTS: () => void;
@@ -201,6 +226,7 @@ export const useTTS = (): TTSHookReturn => {
     sharedCachedAudio = null;
     sharedAudioContext = null;
     sharedMediaStreamDestination = null;
+    sharedMetadata = null;
 
     sharedIsPlaying = false;
     sharedIsPaused = false;
@@ -507,14 +533,15 @@ export const useTTS = (): TTSHookReturn => {
   }, [setIsPlaying, setIsPaused]);
 
   const playTTS = useCallback(
-    async (text: string, voice?: string) => {
+    async (text: string, voice?: string, metadata?: TTSMetadata) => {
       if (!text) return;
 
       // Always stop any existing playback before starting new one to prevent artifacts
       stopTTS();
 
-      // Store the text we're about to play
+      // Store the text we're about to play and metadata
       sharedCurrentText = text.trim();
+      sharedMetadata = metadata || null;
 
       try {
         setIsLoading(true);
@@ -617,13 +644,8 @@ export const useTTS = (): TTSHookReturn => {
             sharedBufferSource = source;
 
             // Set up Media Session API
+            setupMediaSessionMetadata(sharedMetadata);
             if ('mediaSession' in navigator && navigator.mediaSession) {
-              navigator.mediaSession.metadata = new MediaMetadata({
-                title: 'Text-to-Speech',
-                artist: 'Language Learning Quiz',
-                album: 'TTS Audio',
-              });
-
               navigator.mediaSession.setActionHandler('play', () => {
                 if (sharedCurrentAudio) {
                   void sharedCurrentAudio.play();
@@ -1135,13 +1157,8 @@ export const useTTS = (): TTSHookReturn => {
           sharedBufferSource = source;
 
           // Set up Media Session API for lock screen controls
+          setupMediaSessionMetadata(sharedMetadata);
           if ('mediaSession' in navigator && navigator.mediaSession) {
-            navigator.mediaSession.metadata = new MediaMetadata({
-              title: 'Text-to-Speech',
-              artist: 'Language Learning Quiz',
-              album: 'TTS Audio',
-            });
-
             navigator.mediaSession.setActionHandler('play', () => {
               if (sharedCurrentAudio) {
                 void sharedCurrentAudio.play();
