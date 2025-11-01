@@ -195,8 +195,7 @@ export const QuestionPageBase: React.FC<Props> = ({ mode }) => {
 
       // Use the force fetch function to get a new question
       forceFetchNextQuestion();
-
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Scroll will be handled by useEffect when question loads
     });
   }, [
     startTransition,
@@ -212,6 +211,7 @@ export const QuestionPageBase: React.FC<Props> = ({ mode }) => {
       navigateToQuestion(null);
       // Use the force fetch function to get a new question
       forceFetchNextQuestion();
+      // Scroll will be handled by useEffect when question loads
     });
   }, [
     startTransition,
@@ -219,6 +219,32 @@ export const QuestionPageBase: React.FC<Props> = ({ mode }) => {
     navigateToQuestion,
     forceFetchNextQuestion,
   ]);
+
+  // Scroll to top when a new question is loaded (desktop)
+  useEffect(() => {
+    // Only scroll when we have a question id and loading is complete
+    if (!question?.id || isLoading || isGenerating) return;
+
+    // Use multiple requestAnimationFrames to ensure DOM has fully updated
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        try {
+          // Scroll window/document
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          document.documentElement.scrollTo?.({ top: 0, behavior: 'smooth' });
+          document.body.scrollTo?.({ top: 0, behavior: 'smooth' });
+
+          // Fallback: scroll first question element into view
+          const firstQuestionElement = document.querySelector('[data-testid="quiz-page-container"], [data-testid="reading-comprehension-page-container"]');
+          if (firstQuestionElement) {
+            firstQuestionElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        } catch {
+          // ignore (e.g., server-side rendering or environments without scrollTo)
+        }
+      });
+    });
+  }, [question?.id, isLoading, isGenerating]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

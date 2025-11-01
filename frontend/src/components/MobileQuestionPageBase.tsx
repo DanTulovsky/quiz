@@ -73,6 +73,8 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
   // Refs for buttons to enable scrolling
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const nextButtonRef = useRef<HTMLButtonElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const questionPaperRef = useRef<HTMLDivElement>(null);
 
   const { question, isLoading, error, forceFetchNextQuestion } =
     useQuestionFlow({ mode, questionId });
@@ -301,14 +303,76 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
 
   // Scroll to top when a new question is loaded (mobile)
   useEffect(() => {
-    // Only scroll when we have a question id (i.e., a new question finished loading)
-    if (!question?.id) return;
-    try {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } catch {
-      // ignore (e.g., server-side rendering or environments without window.scrollTo)
-    }
-  }, [question?.id]);
+    // Only scroll when we have a question id and loading is complete
+    if (!question?.id || isLoading) return;
+
+    const scrollToTop = () => {
+      try {
+        // Find AppShell.Main - try multiple selectors
+        let appShellMain: HTMLElement | null = null;
+        const possibleSelectors = [
+          '[data-mantine-component="AppShell.Main"]',
+          'main[role="main"]',
+          '.mantine-AppShell-main',
+          'main',
+        ];
+
+        for (const selector of possibleSelectors) {
+          const element = document.querySelector(selector) as HTMLElement;
+          if (element && (containerRef.current ? element.contains(containerRef.current) : true)) {
+            appShellMain = element;
+            break;
+          }
+        }
+
+        // Get header height
+        const header = document.querySelector('header') as HTMLElement;
+        const headerHeight = header?.offsetHeight || 50;
+
+        if (appShellMain && questionPaperRef.current) {
+          // Get the question paper's position relative to AppShell.Main
+          const appShellRect = appShellMain.getBoundingClientRect();
+          const paperRect = questionPaperRef.current.getBoundingClientRect();
+
+          // Calculate scroll needed to put paper at top (accounting for header)
+          const currentScroll = appShellMain.scrollTop;
+          const paperTopRelativeToAppShell = paperRect.top - appShellRect.top + currentScroll;
+          const targetScroll = Math.max(0, paperTopRelativeToAppShell - headerHeight);
+
+          // Instant scroll first
+          appShellMain.scrollTop = targetScroll;
+
+          // Then smooth scroll
+          setTimeout(() => {
+            appShellMain?.scrollTo({ top: targetScroll, behavior: 'smooth' });
+          }, 100);
+        } else if (questionPaperRef.current) {
+          // Fallback: scroll window and use scrollIntoView with offset
+          const paperRect = questionPaperRef.current.getBoundingClientRect();
+          const currentScroll = window.scrollY || document.documentElement.scrollTop;
+          const targetScroll = Math.max(0, currentScroll + paperRect.top - headerHeight);
+
+          window.scrollTo({ top: targetScroll, behavior: 'auto' });
+          document.documentElement.scrollTop = targetScroll;
+          document.body.scrollTop = targetScroll;
+
+          setTimeout(() => {
+            window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+          }, 100);
+        }
+      } catch {
+        // ignore (e.g., server-side rendering or environments without scrollTo)
+      }
+    };
+
+    // Use multiple requestAnimationFrames with delay to ensure DOM has fully updated
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        // Add a small delay to ensure rendering is complete
+        setTimeout(scrollToTop, 50);
+      });
+    });
+  }, [question?.id, isLoading]);
 
   if (isLoading && !question) {
     return (
@@ -344,10 +408,10 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
     mode === 'quiz' ? 'Quiz' : mode === 'vocabulary' ? 'Vocabulary' : 'Reading';
 
   return (
-    <Container size='sm'>
+    <Container ref={containerRef} size='sm'>
       <Stack gap='md'>
         {/* Question Header */}
-        <Paper p='md' radius='md' withBorder>
+        <Paper ref={questionPaperRef} p='md' radius='md' withBorder>
           <Stack gap='xs'>
             <Group justify='space-between'>
               <Badge variant='light' color='blue'>
