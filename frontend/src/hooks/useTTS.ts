@@ -24,6 +24,10 @@ const sharedInflight = new Map<
 // Global current audio element so all hook instances can pause/resume the same playback
 let sharedCurrentAudio: HTMLAudioElement | null = null;
 let sharedBufferSource: AudioBufferSourceNode | null = null;
+let sharedAudioContext: AudioContext | null = null;
+let sharedCachedAudio: CachedAudio | null = null;
+let sharedStartTime: number = 0; // When playback started (AudioContext time)
+let sharedPauseTime: number = 0; // How much we've played before pause
 let sharedAbortController: AbortController | null = null;
 // Shared state so all instances know if audio is playing/paused
 let sharedIsPlaying = false;
@@ -184,6 +188,12 @@ export const useTTS = (): TTSHookReturn => {
     accumChunksRef.current = [];
     accumBytesRef.current = 0;
 
+    // Clear Web Audio API pause/resume tracking
+    sharedStartTime = 0;
+    sharedPauseTime = 0;
+    sharedCachedAudio = null;
+    sharedAudioContext = null;
+
     sharedIsPlaying = false;
     sharedIsPaused = false;
     setIsPlaying(false);
@@ -193,38 +203,144 @@ export const useTTS = (): TTSHookReturn => {
   }, [setIsPlaying, setIsPaused]);
 
   const pauseTTS = useCallback(() => {
-    // Check shared reference first, then instance reference
+    // Handle HTMLAudioElement (MediaSource streaming path)
     const el = sharedCurrentAudio || currentAudioRef.current;
-    if (!el) return;
-    try {
-      el.pause();
-      setIsPaused(true);
-      setIsPlaying(false);
-    } catch {}
-  }, []);
+    if (el) {
+      try {
+        el.pause();
+        setIsPaused(true);
+        setIsPlaying(false);
+        return;
+      } catch {}
+    }
+
+    // Handle Web Audio API (mobile fallback and cached audio)
+    const source = sharedBufferSource || bufferSourceRef.current;
+    if (source && sharedAudioContext) {
+      try {
+        // Calculate how much has played
+        const currentTime = sharedAudioContext.currentTime;
+        sharedPauseTime += currentTime - sharedStartTime;
+        
+        // Stop the current source
+        source.onended = null;
+        source.stop();
+        source.disconnect();
+        
+        sharedBufferSource = null;
+        if (bufferSourceRef.current === source) {
+          bufferSourceRef.current = null;
+        }
+        
+        setIsPaused(true);
+        setIsPlaying(false);
+      } catch (e) {
+        console.warn('Error pausing Web Audio API playback:', e);
+      }
+    }
+  }, [setIsPlaying, setIsPaused]);
 
   const resumeTTS = useCallback(() => {
-    // Check shared reference first, then instance reference
+    // Handle HTMLAudioElement (MediaSource streaming path)
     const el = sharedCurrentAudio || currentAudioRef.current;
-    if (!el) return;
-    try {
-      void el.play();
-      setIsPaused(false);
-      setIsPlaying(true);
-    } catch {}
-  }, []);
+    if (el) {
+      try {
+        void el.play();
+        setIsPaused(false);
+        setIsPlaying(true);
+        return;
+      } catch {}
+    }
+
+    // Handle Web Audio API (mobile fallback and cached audio)
+    if (sharedCachedAudio && sharedAudioContext && sharedIsPaused) {
+      try {
+        // Create new source from cached audio
+        const source = createAudioSource(sharedCachedAudio, sharedAudioContext);
+        
+        // Set up onended handler
+        source.onended = () => {
+          setIsPlaying(false);
+          setIsPaused(false);
+          sharedBufferSource = null;
+          sharedStartTime = 0;
+          sharedPauseTime = 0;
+        };
+        
+        // Start from the paused position
+        const offset = sharedPauseTime;
+        const duration = sharedCachedAudio.buffer.duration;
+        const remaining = Math.max(0, duration - offset);
+        
+        if (remaining > 0) {
+          source.start(0, offset, remaining);
+          sharedStartTime = sharedAudioContext.currentTime;
+          sharedBufferSource = source;
+          bufferSourceRef.current = source;
+          
+          setIsPaused(false);
+          setIsPlaying(true);
+        } else {
+          // Already at the end, reset to beginning
+          sharedPauseTime = 0;
+          sharedStartTime = 0;
+        }
+      } catch (e) {
+        console.warn('Error resuming Web Audio API playback:', e);
+      }
+    }
+  }, [setIsPlaying, setIsPaused]);
 
   const restartTTS = useCallback(() => {
-    // Check shared reference first, then instance reference
+    // Handle HTMLAudioElement (MediaSource streaming path)
     const el = sharedCurrentAudio || currentAudioRef.current;
-    if (!el) return;
-    try {
-      el.currentTime = 0;
-      void el.play();
-      setIsPaused(false);
-      setIsPlaying(true);
-    } catch {}
-  }, []);
+    if (el) {
+      try {
+        el.currentTime = 0;
+        void el.play();
+        setIsPaused(false);
+        setIsPlaying(true);
+        return;
+      } catch {}
+    }
+
+    // Handle Web Audio API (mobile fallback and cached audio)
+    if (sharedCachedAudio && sharedAudioContext) {
+      try {
+        // Stop current source if playing
+        if (sharedBufferSource) {
+          try {
+            sharedBufferSource.onended = null;
+            sharedBufferSource.stop();
+            sharedBufferSource.disconnect();
+          } catch {}
+          sharedBufferSource = null;
+        }
+        
+        // Reset position and create new source
+        sharedPauseTime = 0;
+        const source = createAudioSource(sharedCachedAudio, sharedAudioContext);
+        
+        source.onended = () => {
+          setIsPlaying(false);
+          setIsPaused(false);
+          sharedBufferSource = null;
+          sharedStartTime = 0;
+          sharedPauseTime = 0;
+        };
+        
+        source.start();
+        sharedStartTime = sharedAudioContext.currentTime;
+        sharedBufferSource = source;
+        bufferSourceRef.current = source;
+        
+        setIsPaused(false);
+        setIsPlaying(true);
+      } catch (e) {
+        console.warn('Error restarting Web Audio API playback:', e);
+      }
+    }
+  }, [setIsPlaying, setIsPaused]);
 
   const playTTS = useCallback(
     async (text: string, voice?: string) => {
@@ -290,13 +406,22 @@ export const useTTS = (): TTSHookReturn => {
               } catch {}
               bufferSourceRef.current = null;
             }
+            
+            // Store for pause/resume
+            sharedCachedAudio = cached;
+            sharedAudioContext = ctx;
+            sharedPauseTime = 0;
+            
             const source = createAudioSource(cached, ctx);
             source.onended = () => {
               setIsPlaying(false);
               setIsPaused(false);
               sharedBufferSource = null;
+              sharedStartTime = 0;
+              sharedPauseTime = 0;
             };
             source.start();
+            sharedStartTime = ctx.currentTime;
             bufferSourceRef.current = source;
             sharedBufferSource = source; // Share across instances
             setIsPlaying(true);
@@ -694,17 +819,25 @@ export const useTTS = (): TTSHookReturn => {
             bufferSourceRef.current = null;
           }
 
+          // Store for pause/resume
+          sharedCachedAudio = cached;
+          sharedAudioContext = ctx;
+          sharedPauseTime = 0;
+
           const source = createAudioSource(cached, ctx);
           source.onended = () => {
             setIsPlaying(false);
             setIsPaused(false);
             sharedBufferSource = null;
+            sharedStartTime = 0;
+            sharedPauseTime = 0;
             if (sharedAbortController === controller) {
               sharedAbortController = null;
             }
           };
           
           source.start();
+          sharedStartTime = ctx.currentTime;
           bufferSourceRef.current = source;
           sharedBufferSource = source;
           setIsPlaying(true);
