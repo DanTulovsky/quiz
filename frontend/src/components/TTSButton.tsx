@@ -28,6 +28,18 @@ const TTSButton: React.FC<TTSButtonProps> = ({
     restartTTS,
   } = useTTS();
 
+  // Track if this button was responsible for starting the current playback
+  const isOwnerRef = React.useRef(false);
+  const lastPlayedTextRef = React.useRef<string>('');
+
+  // Reset ownership when playback stops (but not during loading transitions)
+  React.useEffect(() => {
+    if (!isTTSPlaying && !isPaused && !isTTSLoading) {
+      isOwnerRef.current = false;
+      lastPlayedTextRef.current = '';
+    }
+  }, [isTTSLoading, isTTSPlaying, isPaused]);
+
   const handleClick: React.MouseEventHandler<HTMLButtonElement> = async e => {
     const text = getText();
     if (!text) return;
@@ -42,28 +54,43 @@ const TTSButton: React.FC<TTSButtonProps> = ({
 
     // Normal click toggles play/pause; if not started, play
     if (isTTSPlaying) {
-      pauseTTS();
+      // Only pause if this button owns the current playback
+      if (isOwnerRef.current && lastPlayedTextRef.current === text) {
+        pauseTTS();
+      }
       return;
     }
     if (isPaused) {
-      resumeTTS();
+      // Only resume if this button owns the current playback
+      if (isOwnerRef.current && lastPlayedTextRef.current === text) {
+        resumeTTS();
+      }
       return;
     }
     const voice = getVoice ? getVoice() : undefined;
+    isOwnerRef.current = true;
+    lastPlayedTextRef.current = text;
     await playTTS(text, voice);
   };
 
-  const baseLabel = isTTSLoading
+  // Check if this button should show playing/paused state
+  // Only show it if this button started the playback AND the text matches
+  const isOwned = isOwnerRef.current && lastPlayedTextRef.current === getText();
+  const showPlaying = isOwned && isTTSPlaying;
+  const showPaused = isOwned && isPaused;
+  const showLoading = isOwned && isTTSLoading;
+
+  const baseLabel = showLoading
     ? 'Loading audio'
-    : isTTSPlaying
+    : showPlaying
       ? 'Pause audio'
-      : isPaused
+      : showPaused
         ? 'Resume audio'
         : 'Play audio';
   const label = `${baseLabel} — Alt+Click to restart`;
 
   const computedColor =
-    color || (isTTSPlaying ? 'blue' : isTTSLoading ? 'orange' : 'blue');
+    color || (showPlaying ? 'blue' : showLoading ? 'orange' : 'blue');
 
   return (
     <Tooltip label={label}>
@@ -73,13 +100,13 @@ const TTSButton: React.FC<TTSButtonProps> = ({
         color={computedColor}
         onClick={handleClick}
         aria-label={ariaLabel || label}
-        disabled={isTTSLoading}
+        disabled={showLoading}
       >
-        {isTTSLoading ? (
+        {showLoading ? (
           <Loader size={16} color='orange' />
-        ) : isTTSPlaying ? (
+        ) : showPlaying ? (
           <Pause size={18} />
-        ) : isPaused ? (
+        ) : showPaused ? (
           <Play size={18} />
         ) : (
           <Volume2 size={18} />
