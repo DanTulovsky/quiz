@@ -32,6 +32,8 @@ let sharedAbortController: AbortController | null = null;
 // Shared state so all instances know if audio is playing/paused
 let sharedIsPlaying = false;
 let sharedIsPaused = false;
+// Track the currently playing text so buttons can match against it
+let sharedCurrentText: string | null = null;
 
 // Notify all hook instances of state changes (simple listener pattern)
 const stateListeners = new Set<() => void>();
@@ -75,6 +77,7 @@ interface TTSHookReturn extends TTSState {
   pauseTTS: () => void;
   resumeTTS: () => void;
   restartTTS: () => void;
+  currentText: string | null; // The text currently being played/paused
 }
 
 export const useTTS = (): TTSHookReturn => {
@@ -196,6 +199,7 @@ export const useTTS = (): TTSHookReturn => {
 
     sharedIsPlaying = false;
     sharedIsPaused = false;
+    sharedCurrentText = null; // Clear current text when stopping
     setIsPlaying(false);
     setIsPaused(false);
     setIsLoading(false);
@@ -221,17 +225,17 @@ export const useTTS = (): TTSHookReturn => {
         // Calculate how much has played
         const currentTime = sharedAudioContext.currentTime;
         sharedPauseTime += currentTime - sharedStartTime;
-        
+
         // Stop the current source
         source.onended = null;
         source.stop();
         source.disconnect();
-        
+
         sharedBufferSource = null;
         if (bufferSourceRef.current === source) {
           bufferSourceRef.current = null;
         }
-        
+
         setIsPaused(true);
         setIsPlaying(false);
       } catch (e) {
@@ -256,22 +260,22 @@ export const useTTS = (): TTSHookReturn => {
     if (sharedCachedAudio && sharedAudioContext) {
       // Log for debugging
       console.log('[TTS Resume] Starting resume, isPaused:', sharedIsPaused, 'pauseTime:', sharedPauseTime);
-      
+
       // Resume needs to be async to handle AudioContext resume
       (async () => {
         try {
           // Check AudioContext state
           console.log('[TTS Resume] AudioContext state:', sharedAudioContext!.state);
-          
+
           // Resume the AudioContext (required on iOS after pause)
           if (sharedAudioContext!.state === 'suspended') {
             await sharedAudioContext!.resume();
             console.log('[TTS Resume] AudioContext resumed, new state:', sharedAudioContext!.state);
           }
-          
+
           // Create new source from cached audio
           const source = createAudioSource(sharedCachedAudio!, sharedAudioContext!);
-          
+
           // Set up onended handler
           source.onended = () => {
             console.log('[TTS Resume] Playback ended');
@@ -281,34 +285,34 @@ export const useTTS = (): TTSHookReturn => {
             sharedStartTime = 0;
             sharedPauseTime = 0;
           };
-          
+
           // Start from the paused position
           const offset = sharedPauseTime;
           const duration = sharedCachedAudio!.buffer.duration;
           const remaining = Math.max(0, duration - offset);
-          
+
           console.log('[TTS Resume] Duration:', duration, 'Offset:', offset, 'Remaining:', remaining);
-          
+
           if (remaining > 0) {
             // Update state BEFORE starting playback to ensure UI is in sync
             setIsPaused(false);
             setIsPlaying(true);
-            
+
             source.start(0, offset, remaining);
             sharedStartTime = sharedAudioContext!.currentTime;
             sharedBufferSource = source;
             bufferSourceRef.current = source;
-            
+
             console.log('[TTS Resume] Playback started from offset', offset);
           } else {
             // Already at the end, reset to beginning and restart
             console.log('[TTS Resume] At end of audio, restarting from beginning');
             sharedPauseTime = 0;
             sharedStartTime = 0;
-            
+
             setIsPaused(false);
             setIsPlaying(true);
-            
+
             source.start();
             sharedStartTime = sharedAudioContext!.currentTime;
             sharedBufferSource = source;
@@ -355,11 +359,11 @@ export const useTTS = (): TTSHookReturn => {
           } catch {}
           sharedBufferSource = null;
         }
-        
+
         // Reset position and create new source
         sharedPauseTime = 0;
         const source = createAudioSource(sharedCachedAudio, sharedAudioContext);
-        
+
         source.onended = () => {
           setIsPlaying(false);
           setIsPaused(false);
@@ -367,12 +371,12 @@ export const useTTS = (): TTSHookReturn => {
           sharedStartTime = 0;
           sharedPauseTime = 0;
         };
-        
+
         source.start();
         sharedStartTime = sharedAudioContext.currentTime;
         sharedBufferSource = source;
         bufferSourceRef.current = source;
-        
+
         setIsPaused(false);
         setIsPlaying(true);
       } catch (e) {
@@ -387,6 +391,9 @@ export const useTTS = (): TTSHookReturn => {
 
       // Always stop any existing playback before starting new one to prevent artifacts
       stopTTS();
+
+      // Store the text we're about to play
+      sharedCurrentText = text.trim();
 
       try {
         setIsLoading(true);
@@ -445,12 +452,12 @@ export const useTTS = (): TTSHookReturn => {
               } catch {}
               bufferSourceRef.current = null;
             }
-            
+
             // Store for pause/resume
             sharedCachedAudio = cached;
             sharedAudioContext = ctx;
             sharedPauseTime = 0;
-            
+
             const source = createAudioSource(cached, ctx);
             source.onended = () => {
               setIsPlaying(false);
@@ -805,7 +812,7 @@ export const useTTS = (): TTSHookReturn => {
                 try {
                   const obj = JSON.parse(line.slice(6));
                   const type = typeof obj?.type === 'string' ? obj.type : undefined;
-                  
+
                   if (type === 'error') {
                     streamError = typeof obj?.error === 'string' ? obj.error : 'Unknown TTS error';
                     try {
@@ -813,7 +820,7 @@ export const useTTS = (): TTSHookReturn => {
                     } catch {}
                     break;
                   }
-                  
+
                   if (type === 'audio' || type === 'speech.audio.delta') {
                     const b64 = typeof obj?.audio === 'string' ? obj.audio : undefined;
                     if (b64) {
@@ -874,7 +881,7 @@ export const useTTS = (): TTSHookReturn => {
               sharedAbortController = null;
             }
           };
-          
+
           source.start();
           sharedStartTime = ctx.currentTime;
           bufferSourceRef.current = source;
@@ -933,6 +940,7 @@ export const useTTS = (): TTSHookReturn => {
     pauseTTS,
     resumeTTS,
     restartTTS,
+    currentText: sharedCurrentText,
   };
 };
 

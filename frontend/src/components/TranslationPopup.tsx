@@ -13,10 +13,12 @@ import {
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from '../contexts/TranslationContext';
 import { TextSelection } from '../hooks/useTextSelection';
-import { IconX, IconVolume, IconBookmark } from '@tabler/icons-react';
-import { postV1Snippets, Question } from '../api/api';
+import { IconX, IconBookmark } from '@tabler/icons-react';
+import { postV1Snippets, Question, useGetV1PreferencesLearning } from '../api/api';
 import { useTheme } from '../contexts/ThemeContext';
 import { fontScaleMap } from '../theme/theme';
+import TTSButton from './TTSButton';
+import { defaultVoiceForLanguage } from '../utils/tts';
 
 // Type for story context when no question is available
 interface StoryContext {
@@ -67,14 +69,31 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [isSaved, setIsSaved] = useState(false);
-  const [isAudioInteraction, setIsAudioInteraction] = useState(false);
   const {
     translateText,
     translation,
     isLoading: translationLoading,
     error: translationError,
   } = useTranslation();
+  const { data: userLearningPrefs } = useGetV1PreferencesLearning();
   const popupRef = useRef<HTMLDivElement>(null);
+
+  // Helper function to convert language code to language name for TTS
+  const codeToLanguageName = (code: string): string => {
+    const mapping: Record<string, string> = {
+      en: 'english',
+      es: 'spanish',
+      fr: 'french',
+      de: 'german',
+      it: 'italian',
+      pt: 'portuguese',
+      ru: 'russian',
+      ja: 'japanese',
+      ko: 'korean',
+      zh: 'chinese',
+    };
+    return mapping[code] || code;
+  };
 
   // Language options for the dropdown
   const languageOptions = [
@@ -136,8 +155,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       // Don't close if the Select is focused (user is interacting with it)
-      // or if user is interacting with audio buttons
-      if (isSelectFocused || isAudioInteraction) {
+      if (isSelectFocused) {
         return;
       }
 
@@ -175,7 +193,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
       clearTimeout(timeoutId);
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [onClose, isSelectFocused, isAudioInteraction, selection]);
+  }, [onClose, isSelectFocused, selection]);
 
   // Calculate popup position to stay within viewport
   const getPopupPosition = () => {
@@ -207,29 +225,6 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
   const hasQuestionId = Boolean(currentQuestion && 'id' in currentQuestion);
   const saveDisabled =
     isSaving || isSaved || (requireQuestionId && !hasQuestionId);
-
-  const speakText = (text: string, lang: string) => {
-    if ('speechSynthesis' in window) {
-      // Set audio interaction state to prevent popup from closing
-      setIsAudioInteraction(true);
-
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = lang;
-      utterance.rate = 0.8;
-
-      const handleSpeechEnd = () => {
-        // Keep audio interaction active for a bit longer to prevent accidental closes
-        setTimeout(() => {
-          setIsAudioInteraction(false);
-        }, 1000);
-      };
-
-      utterance.addEventListener('end', handleSpeechEnd);
-      utterance.addEventListener('error', handleSpeechEnd);
-
-      speechSynthesis.speak(utterance);
-    }
-  };
 
   const handleSaveSnippet = async () => {
     if (!translation || !selection.text) return;
@@ -305,7 +300,6 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
 
   // Enhanced close handler that clears all interaction states
   const handleClose = () => {
-    setIsAudioInteraction(false);
     setIsSelectFocused(false);
     onClose();
   };
@@ -394,28 +388,34 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
               <Stack gap='xs'>
                 <Text size='md'>{translation.translatedText}</Text>
                 <Group gap='xs' wrap='nowrap'>
-                  <Button
-                    variant='light'
-                    size='xs'
-                    px={10}
-                    leftSection={<IconVolume size={14} />}
-                    onClick={() =>
-                      speakText(translation.translatedText, targetLanguage)
-                    }
-                  >
-                    Listen
-                  </Button>
-                  <Button
-                    variant='light'
-                    size='xs'
-                    px={10}
-                    leftSection={<IconVolume size={14} />}
-                    onClick={() =>
-                      speakText(selection.text, translation.sourceLanguage)
-                    }
-                  >
-                    Original
-                  </Button>
+                  <TTSButton
+                    getText={() => translation.translatedText}
+                    getVoice={() => {
+                      const saved = (
+                        userLearningPrefs?.tts_voice || ''
+                      ).trim();
+                      if (saved) return saved;
+                      const languageName = codeToLanguageName(targetLanguage);
+                      return defaultVoiceForLanguage(languageName) || undefined;
+                    }}
+                    size='sm'
+                    ariaLabel='Listen to translation'
+                  />
+                  <TTSButton
+                    getText={() => selection.text}
+                    getVoice={() => {
+                      const saved = (
+                        userLearningPrefs?.tts_voice || ''
+                      ).trim();
+                      if (saved) return saved;
+                      const languageName = codeToLanguageName(
+                        translation.sourceLanguage
+                      );
+                      return defaultVoiceForLanguage(languageName) || undefined;
+                    }}
+                    size='sm'
+                    ariaLabel='Listen to original text'
+                  />
                   <Tooltip
                     label={
                       requireQuestionId && !hasQuestionId

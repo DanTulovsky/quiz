@@ -26,23 +26,60 @@ const TTSButton: React.FC<TTSButtonProps> = ({
     pauseTTS,
     resumeTTS,
     restartTTS,
+    currentText: currentPlayingText,
   } = useTTS();
 
-  // Track if this button was responsible for starting the current playback
-  const isOwnerRef = React.useRef(false);
-  const lastPlayedTextRef = React.useRef<string>('');
+  // Track what text this button is responsible for
+  const [ownedText, setOwnedText] = React.useState<string | null>(null);
+  const isStartingRef = React.useRef(false);
 
-  // Reset ownership when playback stops (but not during loading transitions)
+  // Reset ownership when playback truly ends (not during transitions)
   React.useEffect(() => {
-    if (!isTTSPlaying && !isPaused && !isTTSLoading) {
-      isOwnerRef.current = false;
-      lastPlayedTextRef.current = '';
+    // Clear starting flag only when playback actually starts (not just when loading)
+    // This prevents reset during the gap between loading ending and playing starting
+    if (isTTSPlaying) {
+      isStartingRef.current = false;
+
+      // Auto-claim ownership if audio is playing and we don't have ownership yet
+      // BUT only if the currently playing text matches our text
+      // This handles cases where audio was started via hotkey or other means
+      if (!ownedText && currentPlayingText) {
+        const ourText = getText()?.trim();
+        // Only claim ownership if the text matches (handles hotkey scenario)
+        if (ourText && ourText === currentPlayingText) {
+          setOwnedText(ourText);
+        }
+      }
     }
-  }, [isTTSLoading, isTTSPlaying, isPaused]);
+
+    // Auto-claim ownership if audio is paused and we don't have ownership yet
+    // BUT only if the currently playing/paused text matches our text
+    // This handles cases where audio was paused via hotkey
+    if (isPaused && !ownedText && currentPlayingText) {
+      const ourText = getText()?.trim();
+      // Only claim ownership if the text matches
+      if (ourText && ourText === currentPlayingText) {
+        setOwnedText(ourText);
+      }
+    }
+
+    // Don't reset ownership while loading (playback is starting)
+    if (isTTSLoading) {
+      return;
+    }
+
+    // Only reset ownership if playback truly ended AND we're not starting new playback
+    if (!isTTSPlaying && !isPaused && !isTTSLoading && !isStartingRef.current) {
+      setOwnedText(null);
+    }
+  }, [isTTSLoading, isTTSPlaying, isPaused, ownedText, getText, currentPlayingText]);
+
 
   const handleClick: React.MouseEventHandler<HTMLButtonElement> = async e => {
     const text = getText();
     if (!text) return;
+    const trimmedText = text.trim();
+    if (!trimmedText) return; // Don't play empty text
 
     // Alt+Click: restart from beginning
     if (e.altKey) {
@@ -54,28 +91,41 @@ const TTSButton: React.FC<TTSButtonProps> = ({
 
     // Normal click toggles play/pause; if not started, play
     if (isTTSPlaying) {
-      // Only pause if this button owns the current playback
-      if (isOwnerRef.current && lastPlayedTextRef.current === text) {
-        pauseTTS();
-      }
+      // Always allow pause if audio is playing - ownership check is just for UI state
+      pauseTTS();
       return;
     }
     if (isPaused) {
-      // Only resume if this button owns the current playback
-      if (isOwnerRef.current && lastPlayedTextRef.current === text) {
-        resumeTTS();
-      }
+      // Always allow resume if audio is paused - ownership check is just for UI state
+      resumeTTS();
       return;
     }
+    // Not playing and not paused - start playing
     const voice = getVoice ? getVoice() : undefined;
-    isOwnerRef.current = true;
-    lastPlayedTextRef.current = text;
-    await playTTS(text, voice);
+
+    // Set ownership and starting flag BEFORE calling playTTS
+    // This ensures ownership is set before any state changes from playTTS
+    isStartingRef.current = true;
+    setOwnedText(trimmedText);
+
+    // Play the text - this is async and calls stopTTS() first, but isStartingRef prevents reset
+    try {
+      await playTTS(text, voice);
+    } catch (error) {
+      // If playback fails, reset ownership
+      setOwnedText(null);
+      isStartingRef.current = false;
+      throw error;
+    }
   };
 
-  // Check if this button should show playing/paused state
-  // Only show it if this button started the playback AND the text matches
-  const isOwned = isOwnerRef.current && lastPlayedTextRef.current === getText();
+  // Show state based on ownership and actual audio state
+  // If we own any text (setOwnedText was called), show state when audio is in that state
+  const isOwned = ownedText !== null;
+
+  // Show playing state if we own it AND audio is playing
+  // Show paused state if we own it AND audio is paused
+  // Show loading state if we own it AND audio is loading
   const showPlaying = isOwned && isTTSPlaying;
   const showPaused = isOwned && isPaused;
   const showLoading = isOwned && isTTSLoading;
