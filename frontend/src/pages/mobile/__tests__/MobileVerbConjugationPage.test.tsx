@@ -60,11 +60,9 @@ vi.mock('../../../components/HoverTranslation', () => ({
 
 // Mock the TTSButton component
 vi.mock('../../../components/TTSButton', () => ({
-  default: ({
-    'aria-label': ariaLabel,
-  }: {
-    'aria-label'?: string;
-  }) => <button aria-label={ariaLabel}>TTS</button>,
+  default: ({ 'aria-label': ariaLabel }: { 'aria-label'?: string }) => (
+    <button aria-label={ariaLabel}>TTS</button>
+  ),
 }));
 
 const mockVerbConjugations = {
@@ -128,8 +126,12 @@ describe('MobileVerbConjugationPage', () => {
   });
 
   it('renders the page title', async () => {
-    vi.mocked(verbConjugationsUtils.loadVerbConjugations).mockResolvedValue(mockVerbConjugations);
-    vi.mocked(verbConjugationsUtils.loadVerbConjugation).mockResolvedValue(mockVerbData);
+    vi.mocked(verbConjugationsUtils.loadVerbConjugations).mockResolvedValue(
+      mockVerbConjugations
+    );
+    vi.mocked(verbConjugationsUtils.loadVerbConjugation).mockResolvedValue(
+      mockVerbData
+    );
 
     renderComponent();
 
@@ -139,13 +141,19 @@ describe('MobileVerbConjugationPage', () => {
   });
 
   it('loads and displays available verbs', async () => {
-    vi.mocked(verbConjugationsUtils.loadVerbConjugations).mockResolvedValue(mockVerbConjugations);
-    vi.mocked(verbConjugationsUtils.loadVerbConjugation).mockResolvedValue(mockVerbData);
+    vi.mocked(verbConjugationsUtils.loadVerbConjugations).mockResolvedValue(
+      mockVerbConjugations
+    );
+    vi.mocked(verbConjugationsUtils.loadVerbConjugation).mockResolvedValue(
+      mockVerbData
+    );
 
     renderComponent();
 
     await waitFor(() => {
-      expect(verbConjugationsUtils.loadVerbConjugations).toHaveBeenCalledWith('it');
+      expect(verbConjugationsUtils.loadVerbConjugations).toHaveBeenCalledWith(
+        'it'
+      );
     });
 
     await waitFor(() => {
@@ -153,4 +161,3 @@ describe('MobileVerbConjugationPage', () => {
     });
   });
 });
-

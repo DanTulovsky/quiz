@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import {
   Container,
   Title,
@@ -15,23 +15,23 @@ import {
   Button,
   Loader,
 } from '@mantine/core';
-import {IconBook, IconChevronDown, IconChevronUp} from '@tabler/icons-react';
+import { IconBook, IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 import {
   loadVerbConjugations,
   loadVerbConjugation,
   VerbConjugation,
 } from '../../utils/verbConjugations';
-import {HoverTranslation} from '../../components/HoverTranslation';
-import {useAuth} from '../../hooks/useAuth';
+import { HoverTranslation } from '../../components/HoverTranslation';
+import { useAuth } from '../../hooks/useAuth';
 import TTSButton from '../../components/TTSButton';
 import {
   useGetV1SettingsLanguages,
   useGetV1PreferencesLearning,
 } from '../../api/api';
-import {defaultVoiceForLanguage} from '../../utils/tts';
+import { defaultVoiceForLanguage } from '../../utils/tts';
 
 export default function MobileVerbConjugationPage() {
-  const {user} = useAuth();
+  const { user } = useAuth();
   const [availableVerbs, setAvailableVerbs] = useState<VerbConjugation[]>([]);
   const [selectedVerb, setSelectedVerb] = useState<string>('');
   const [verbData, setVerbData] = useState<VerbConjugation | null>(null);
@@ -43,8 +43,8 @@ export default function MobileVerbConjugationPage() {
   const [isAllExpanded, setIsAllExpanded] = useState(false);
 
   // Use React Query to fetch languages (with proper caching)
-  const {data: languages} = useGetV1SettingsLanguages();
-  const {data: userLearningPrefs} = useGetV1PreferencesLearning();
+  const { data: languages } = useGetV1SettingsLanguages();
+  const { data: userLearningPrefs } = useGetV1PreferencesLearning();
 
   // Convert user's preferred language to language code using server data
   const getLanguageCode = (languageName: string): string => {
@@ -221,7 +221,7 @@ export default function MobileVerbConjugationPage() {
                     size='sm'
                     ariaLabel='Pronounce example'
                   />
-                  <Box style={{flex: 1, minWidth: 0}}>
+                  <Box style={{ flex: 1, minWidth: 0 }}>
                     <HoverTranslation
                       text={conjugation.exampleSentence}
                       targetLanguage='en'

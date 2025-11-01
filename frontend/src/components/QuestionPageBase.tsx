@@ -235,9 +235,14 @@ export const QuestionPageBase: React.FC<Props> = ({ mode }) => {
           document.body.scrollTo?.({ top: 0, behavior: 'smooth' });
 
           // Fallback: scroll first question element into view
-          const firstQuestionElement = document.querySelector('[data-testid="quiz-page-container"], [data-testid="reading-comprehension-page-container"]');
+          const firstQuestionElement = document.querySelector(
+            '[data-testid="quiz-page-container"], [data-testid="reading-comprehension-page-container"]'
+          );
           if (firstQuestionElement) {
-            firstQuestionElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            firstQuestionElement.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start',
+            });
           }
         } catch {
           // ignore (e.g., server-side rendering or environments without scrollTo)

@@ -319,7 +319,12 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
 
         for (const selector of possibleSelectors) {
           const element = document.querySelector(selector) as HTMLElement;
-          if (element && (containerRef.current ? element.contains(containerRef.current) : true)) {
+          if (
+            element &&
+            (containerRef.current
+              ? element.contains(containerRef.current)
+              : true)
+          ) {
             appShellMain = element;
             break;
           }
@@ -336,8 +341,12 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
 
           // Calculate scroll needed to put paper at top (accounting for header)
           const currentScroll = appShellMain.scrollTop;
-          const paperTopRelativeToAppShell = paperRect.top - appShellRect.top + currentScroll;
-          const targetScroll = Math.max(0, paperTopRelativeToAppShell - headerHeight);
+          const paperTopRelativeToAppShell =
+            paperRect.top - appShellRect.top + currentScroll;
+          const targetScroll = Math.max(
+            0,
+            paperTopRelativeToAppShell - headerHeight
+          );
 
           // Instant scroll first
           appShellMain.scrollTop = targetScroll;
@@ -349,8 +358,12 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
         } else if (questionPaperRef.current) {
           // Fallback: scroll window and use scrollIntoView with offset
           const paperRect = questionPaperRef.current.getBoundingClientRect();
-          const currentScroll = window.scrollY || document.documentElement.scrollTop;
-          const targetScroll = Math.max(0, currentScroll + paperRect.top - headerHeight);
+          const currentScroll =
+            window.scrollY || document.documentElement.scrollTop;
+          const targetScroll = Math.max(
+            0,
+            currentScroll + paperRect.top - headerHeight
+          );
 
           window.scrollTo({ top: targetScroll, behavior: 'auto' });
           document.documentElement.scrollTop = targetScroll;

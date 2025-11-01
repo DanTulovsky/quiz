@@ -52,7 +52,9 @@ describe('MobilePhrasebookIndexPage', () => {
   });
 
   it('renders the page title', async () => {
-    vi.mocked(phrasebookUtils.getAllCategories).mockResolvedValue(mockCategories);
+    vi.mocked(phrasebookUtils.getAllCategories).mockResolvedValue(
+      mockCategories
+    );
 
     renderComponent();
 
@@ -62,7 +64,9 @@ describe('MobilePhrasebookIndexPage', () => {
   });
 
   it('loads and displays all categories', async () => {
-    vi.mocked(phrasebookUtils.getAllCategories).mockResolvedValue(mockCategories);
+    vi.mocked(phrasebookUtils.getAllCategories).mockResolvedValue(
+      mockCategories
+    );
 
     renderComponent();
 
@@ -72,10 +76,11 @@ describe('MobilePhrasebookIndexPage', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Greetings')).toBeInTheDocument();
-      expect(screen.getByText('Common greetings and salutations')).toBeInTheDocument();
+      expect(
+        screen.getByText('Common greetings and salutations')
+      ).toBeInTheDocument();
       expect(screen.getByText('Food & Dining')).toBeInTheDocument();
       expect(screen.getByText('Travel')).toBeInTheDocument();
     });
   });
 });
-
