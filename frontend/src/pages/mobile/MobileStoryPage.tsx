@@ -634,7 +634,7 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
                 },
               }}
             >
-              «
+              ?
             </Button>
 
             <Button
@@ -649,7 +649,7 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
                 },
               }}
             >
-              ‹
+              ?
             </Button>
 
             <Text
@@ -672,7 +672,7 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
                 },
               }}
             >
-              ›
+              ?
             </Button>
 
             <Button
@@ -688,7 +688,7 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
                 },
               }}
             >
-              »
+              ?
             </Button>
           </Group>
 
@@ -749,6 +749,11 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
                 defaultVoiceForLanguage(section.language_level) || undefined
               );
             }}
+            getMetadata={() => ({
+              title: story?.title || 'Story',
+              language: story?.language,
+              level: section.language_level,
+            })}
             size='md'
             ariaLabel='Section audio'
           />
@@ -836,7 +841,7 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
                 },
               }}
             >
-              «
+              ?
             </Button>
 
             <Button
@@ -851,7 +856,7 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
                 },
               }}
             >
-              ‹
+              ?
             </Button>
 
             <Text
@@ -874,7 +879,7 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
                 },
               }}
             >
-              ›
+              ?
             </Button>
 
             <Button
@@ -889,7 +894,7 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
                 },
               }}
             >
-              »
+              ?
             </Button>
           </Group>
         </div>
@@ -992,8 +997,8 @@ const MobileStoryQuestionCard: React.FC<MobileStoryQuestionCardProps> = ({
               }
             >
               {selectedAnswer === question.correct_answer_index
-                ? '✓ Correct!'
-                : '✗ Incorrect'}
+                ? '? Correct!'
+                : '? Incorrect'}
             </Text>
             <Button size='xs' variant='light' onClick={handleReset}>
               Try Again
@@ -1082,6 +1087,11 @@ const MobileStoryReadingView: React.FC<MobileStoryReadingViewProps> = ({
               if (saved) return saved;
               return defaultVoiceForLanguage(story.language) || undefined;
             }}
+            getMetadata={() => ({
+              title: story.title || 'Story',
+              language: story.language,
+              level: story.sections?.[0]?.language_level,
+            })}
             size='md'
             ariaLabel='Story audio'
           />

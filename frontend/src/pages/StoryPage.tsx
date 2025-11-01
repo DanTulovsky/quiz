@@ -487,6 +487,8 @@ const StoryPage: React.FC = () => {
             }
             onPrevious={handleGoToPreviousSection}
             onNext={handleGoToNextSection}
+            storyTitle={currentStory?.title}
+            storyLanguage={currentStory?.language}
             onFirst={handleGoToFirstSection}
             onLast={handleGoToLastSection}
           />

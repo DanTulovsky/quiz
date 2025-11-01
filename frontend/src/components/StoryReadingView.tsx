@@ -98,6 +98,11 @@ const StoryReadingView: React.FC<StoryReadingViewProps> = ({
               if (saved) return saved;
               return defaultVoiceForLanguage(story.language) || undefined;
             }}
+            getMetadata={() => ({
+              title: story.title || 'Story',
+              language: story.language,
+              level: story.sections[0]?.language_level,
+            })}
             size='md'
             ariaLabel='Story audio'
           />

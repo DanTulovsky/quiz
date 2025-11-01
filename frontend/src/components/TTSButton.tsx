@@ -1,11 +1,12 @@
 import React from 'react';
 import { ActionIcon, Button, Tooltip, Loader } from '@mantine/core';
 import { Volume2, Pause, Play } from 'lucide-react';
-import { useTTS } from '../hooks/useTTS';
+import { useTTS, TTSMetadata } from '../hooks/useTTS';
 
 interface TTSButtonProps {
   getText: () => string;
   getVoice?: () => string | undefined;
+  getMetadata?: () => TTSMetadata | undefined;
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   color?: string;
   ariaLabel?: string;
@@ -15,6 +16,7 @@ interface TTSButtonProps {
 const TTSButton: React.FC<TTSButtonProps> = ({
   getText,
   getVoice,
+  getMetadata,
   size = 'md',
   color,
   ariaLabel,
@@ -110,6 +112,7 @@ const TTSButton: React.FC<TTSButtonProps> = ({
     }
     // Not playing and not paused - start playing
     const voice = getVoice ? getVoice() : undefined;
+    const metadata = getMetadata ? getMetadata() : undefined;
 
     // Set ownership and starting flag BEFORE calling playTTS
     // This ensures ownership is set before any state changes from playTTS
@@ -118,7 +121,7 @@ const TTSButton: React.FC<TTSButtonProps> = ({
 
     // Play the text - this is async and calls stopTTS() first, but isStartingRef prevents reset
     try {
-      await playTTS(text, voice);
+      await playTTS(text, voice, metadata);
     } catch (error) {
       // If playback fails, reset ownership
       setOwnedText(null);
