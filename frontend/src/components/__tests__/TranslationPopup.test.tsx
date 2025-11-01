@@ -223,7 +223,7 @@ describe('TranslationPopup', () => {
     );
 
     expect(screen.getByText('Translation')).toBeInTheDocument();
-    expect(screen.getByText('"Hello world"')).toBeInTheDocument();
+    expect(screen.getByText('Hello world')).toBeInTheDocument();
   });
 
   it('should show language dropdown', () => {
