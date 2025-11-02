@@ -105,7 +105,7 @@ describe('KeyboardShortcuts dynamic hotkey display', () => {
     renderWithProviders(
       <KeyboardShortcuts {...baseProps} isQuickSuggestionsOpen={false} />
     );
-    expect(screen.getByText('⇧1-3')).toBeInTheDocument();
+    expect(screen.getByText('⇧1-9,a,b')).toBeInTheDocument();
     expect(screen.getByText('Main Navigation')).toBeInTheDocument();
   });
 
@@ -118,7 +118,7 @@ describe('KeyboardShortcuts dynamic hotkey display', () => {
 
     // Should show the shortcuts panel (expanded)
     expect(screen.getByText('Keyboard Shortcuts')).toBeInTheDocument();
-    expect(screen.getByText('⇧1-3')).toBeInTheDocument();
+    expect(screen.getByText('⇧1-9,a,b')).toBeInTheDocument();
   });
 
   it('starts collapsed on small screens', () => {
@@ -129,7 +129,7 @@ describe('KeyboardShortcuts dynamic hotkey display', () => {
 
     // Should not show the shortcuts panel (collapsed)
     expect(screen.queryByText('Keyboard Shortcuts')).not.toBeInTheDocument();
-    expect(screen.queryByText('⇧1-3')).not.toBeInTheDocument();
+    expect(screen.queryByText('⇧1-9,a,b')).not.toBeInTheDocument();
 
     // Should show the collapse/expand button
     expect(screen.getByTitle('Expand keyboard shortcuts')).toBeInTheDocument();

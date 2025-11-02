@@ -773,7 +773,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                           variant='light'
                           style={{ minWidth: '32px' }}
                         >
-                          ⇧1-3
+                          ⇧1-9,a,b
                         </Badge>
                         <Text size='xs' c='dimmed'>
                           Main Navigation
@@ -840,19 +840,21 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                         </Text>
                       </Group>
 
-                      {/* History shortcut */}
-                      <Group gap='xs' align='center'>
-                        <Badge
-                          size='sm'
-                          variant='light'
-                          style={{ minWidth: '32px' }}
-                        >
-                          H
-                        </Badge>
-                        <Text size='xs' c='dimmed'>
-                          Open question history
-                        </Text>
-                      </Group>
+                      {/* History shortcut - only show in Daily view */}
+                      {onShowHistory && (
+                        <Group gap='xs' align='center'>
+                          <Badge
+                            size='sm'
+                            variant='light'
+                            style={{ minWidth: '32px' }}
+                          >
+                            H
+                          </Badge>
+                          <Text size='xs' c='dimmed'>
+                            Open question history
+                          </Text>
+                        </Group>
+                      )}
 
                       {/* Show 0-9 for quick suggestions if open */}
                       {isQuickSuggestionsOpen && quickSuggestionsCount > 0 && (
