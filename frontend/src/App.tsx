@@ -52,6 +52,8 @@ import MobilePhrasebookIndexPage from './pages/mobile/MobilePhrasebookIndexPage'
 import MobilePhrasebookCategoryPage from './pages/mobile/MobilePhrasebookCategoryPage';
 import MobileVerbConjugationPage from './pages/mobile/MobileVerbConjugationPage';
 import MobileSettingsPage from './pages/mobile/MobileSettingsPage';
+import MobileTTSTestPage from './pages/mobile/MobileTTSTestPage';
+import TTSTestPage from './pages/TTSTestPage';
 import { Center, Loader } from '@mantine/core';
 
 function App() {
@@ -847,6 +849,30 @@ function App() {
             user ? (
               <MobileLayout>
                 <MobileWordOfTheDayPage />
+              </MobileLayout>
+            ) : (
+              <Navigate
+                to={`/m/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`}
+              />
+            )
+          }
+        />
+
+        <Route
+          path='/tts-test'
+          element={
+            <Layout>
+              <TTSTestPage />
+            </Layout>
+          }
+        />
+
+        <Route
+          path='/m/tts-test'
+          element={
+            user ? (
+              <MobileLayout>
+                <MobileTTSTestPage />
               </MobileLayout>
             ) : (
               <Navigate

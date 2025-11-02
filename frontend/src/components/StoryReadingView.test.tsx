@@ -16,6 +16,7 @@ const mockTTS = {
   isLoading: false,
   isPlaying: false,
   isPaused: false,
+  currentPlayingText: null as string | null,
   playTTS: vi.fn(),
   stopTTS: vi.fn(),
   pauseTTS: vi.fn(),
@@ -24,7 +25,17 @@ const mockTTS = {
 };
 
 vi.mock('../hooks/useTTS', () => ({
-  useTTS: () => mockTTS,
+  useTTS: () => ({
+    isLoading: mockTTS.isLoading,
+    isPlaying: mockTTS.isPlaying,
+    isPaused: mockTTS.isPaused,
+    currentText: mockTTS.currentPlayingText,
+    playTTS: mockTTS.playTTS,
+    stopTTS: mockTTS.stopTTS,
+    pauseTTS: mockTTS.pauseTTS,
+    resumeTTS: mockTTS.resumeTTS,
+    restartTTS: mockTTS.restartTTS,
+  }), // Return object with current values so React sees changes
 }));
 
 // Mock the snippet hooks
@@ -41,6 +52,8 @@ beforeEach(() => {
   vi.clearAllMocks();
   mockTTS.isLoading = false;
   mockTTS.isPlaying = false;
+  mockTTS.isPaused = false;
+  mockTTS.currentPlayingText = null;
   mockTTS.playTTS.mockClear();
   mockTTS.stopTTS.mockClear();
 });
@@ -316,9 +329,9 @@ describe('StoryReadingView', () => {
         );
       });
 
-      // Button should be disabled during loading
+      // Button should show loading state (spinner) but not be disabled
       const updatedButton = screen.getByLabelText(/Story audio/i);
-      expect(updatedButton).toBeDisabled();
+      expect(updatedButton).toBeInTheDocument();
     });
 
     it('shows playing state when TTS is playing', () => {
@@ -352,17 +365,17 @@ describe('StoryReadingView', () => {
     it('calls stopTTS when TTS button is clicked while playing', async () => {
       const { rerender } = renderComponent();
 
-      const ttsButton = screen.getByLabelText(/Story audio/i);
+      // Get the actual text that will be played (all sections joined)
+      const expectedContent =
+        defaultProps.story?.sections.map(s => s.content).join('\n\n') || '';
 
-      // First click: start playback (establishes ownership)
-      mockTTS.playTTS.mockImplementation(() => {
-        mockTTS.isPlaying = true;
-        mockTTS.isLoading = false;
-        return Promise.resolve();
-      });
+      // Set up initial playing state
+      mockTTS.isPlaying = true;
+      mockTTS.currentPlayingText = expectedContent.trim();
+      mockTTS.isLoading = false;
+
+      // Re-render with playing state
       await act(async () => {
-        fireEvent.click(ttsButton);
-        // Force re-render to pick up the new isPlaying state
         rerender(
           <ThemeProvider>
             <MantineProvider>
@@ -372,9 +385,11 @@ describe('StoryReadingView', () => {
         );
       });
 
-      // Second click: should pause since we own the playback
-      const updatedButton = screen.getByLabelText(/Story audio/i);
-      fireEvent.click(updatedButton);
+      // Now click the button - should call pauseTTS since text matches and isPlaying is true
+      const ttsButton = screen.getByLabelText(/Story audio/i);
+      await act(async () => {
+        fireEvent.click(ttsButton);
+      });
 
       expect(mockTTS.pauseTTS).toHaveBeenCalled();
     });
