@@ -235,7 +235,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   const { mainNav, adminNav } = navigation();
 
-  // Navigation keyboard shortcuts (Shift + number)
+  // Helper function to map navigation index to shortcut key
+  // Returns number string for indices 0-8 (1-9), letter string for indices 9+ (a, b, etc.)
+  const getShortcutKey = (index: number): string => {
+    if (index < 9) {
+      return String(index + 1);
+    }
+    // Map 9 -> 'a', 10 -> 'b', etc.
+    return String.fromCharCode(97 + (index - 9)); // 97 is 'a' in ASCII
+  };
+
+  // Navigation keyboard shortcuts (Shift + number/letter)
   // Register individual hotkeys for better compatibility
   useHotkeys(
     'shift+1',
@@ -309,6 +319,50 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       e.preventDefault();
       if (mainNav[6] && mainNav[6].href !== location.pathname) {
         navigate(mainNav[6].href);
+      }
+    },
+    { enableOnFormTags: false, preventDefault: true }
+  );
+
+  useHotkeys(
+    'shift+8',
+    e => {
+      e.preventDefault();
+      if (mainNav[7] && mainNav[7].href !== location.pathname) {
+        navigate(mainNav[7].href);
+      }
+    },
+    { enableOnFormTags: false, preventDefault: true }
+  );
+
+  useHotkeys(
+    'shift+9',
+    e => {
+      e.preventDefault();
+      if (mainNav[8] && mainNav[8].href !== location.pathname) {
+        navigate(mainNav[8].href);
+      }
+    },
+    { enableOnFormTags: false, preventDefault: true }
+  );
+
+  useHotkeys(
+    'shift+a',
+    e => {
+      e.preventDefault();
+      if (mainNav[9] && mainNav[9].href !== location.pathname) {
+        navigate(mainNav[9].href);
+      }
+    },
+    { enableOnFormTags: false, preventDefault: true }
+  );
+
+  useHotkeys(
+    'shift+b',
+    e => {
+      e.preventDefault();
+      if (mainNav[10] && mainNav[10].href !== location.pathname) {
+        navigate(mainNav[10].href);
       }
     },
     { enableOnFormTags: false, preventDefault: true }
@@ -599,14 +653,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                           },
                         }}
                       >
-                        ⇧{index + 1}
+                        ⇧{getShortcutKey(index)}
                       </Badge>
                     </Group>
                   }
                   leftSection={<item.icon size={20} />}
                   active={location.pathname.startsWith(item.href)}
                   data-testid={item.testId}
-                  title={`${item.name} (Shift+${index + 1})`}
+                  title={`${item.name} (Shift+${getShortcutKey(index)})`}
                 />
               </React.Fragment>
             ))}
