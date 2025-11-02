@@ -9,11 +9,12 @@ import {
   Stack,
   Tooltip,
   Portal,
+  ActionIcon,
 } from '@mantine/core';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from '../contexts/TranslationContext';
 import { TextSelection } from '../hooks/useTextSelection';
-import { IconX, IconBookmark } from '@tabler/icons-react';
+import { IconX, IconBookmark, IconCopy } from '@tabler/icons-react';
 import {
   postV1Snippets,
   Question,
@@ -73,6 +74,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [isSaved, setIsSaved] = useState(false);
+  const [copySuccess, setCopySuccess] = useState<string | null>(null);
   const {
     translateText,
     translation,
@@ -308,6 +310,17 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
     onClose();
   };
 
+  // Handle copy to clipboard
+  const handleCopy = async (text: string, type: 'original' | 'translated') => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopySuccess(type);
+      setTimeout(() => setCopySuccess(null), 2000);
+    } catch (err) {
+      console.error('Failed to copy text:', err);
+    }
+  };
+
   return (
     <Portal zIndex={2500}>
       <Paper
@@ -354,6 +367,21 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
               size='sm'
               ariaLabel='Listen to original text'
             />
+            <Tooltip
+              label={
+                copySuccess === 'original' ? 'Copied!' : 'Copy original text'
+              }
+              withinPortal={false}
+            >
+              <ActionIcon
+                size='sm'
+                variant='subtle'
+                color={copySuccess === 'original' ? 'green' : undefined}
+                onClick={() => handleCopy(selection.text, 'original')}
+              >
+                <IconCopy size={16} />
+              </ActionIcon>
+            </Tooltip>
             <Text size='md' style={{ fontStyle: 'italic' }}>
               {selection.text}
             </Text>
@@ -420,6 +448,25 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
                     size='sm'
                     ariaLabel='Listen to translation'
                   />
+                  <Tooltip
+                    label={
+                      copySuccess === 'translated'
+                        ? 'Copied!'
+                        : 'Copy translated text'
+                    }
+                    withinPortal={false}
+                  >
+                    <ActionIcon
+                      size='sm'
+                      variant='subtle'
+                      color={copySuccess === 'translated' ? 'green' : undefined}
+                      onClick={() =>
+                        handleCopy(translation.translatedText, 'translated')
+                      }
+                    >
+                      <IconCopy size={16} />
+                    </ActionIcon>
+                  </Tooltip>
                   <Text size='md'>{translation.translatedText}</Text>
                 </Group>
                 <Group gap='xs' wrap='nowrap' justify='flex-end'>

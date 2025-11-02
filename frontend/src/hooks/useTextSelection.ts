@@ -242,6 +242,9 @@ export const useTextSelection = () => {
       // Save selection in case iOS clears it
       savedSelectionRef.current = selectionData;
 
+      // Clear text selection to prevent native browser popup
+      window.getSelection()?.removeAllRanges();
+
       // Add a slight delay before showing the popup to make it feel less jarring
       visibilityTimeoutRef.current = setTimeout(() => {
         setIsVisible(true);
