@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Tooltip, Box } from '@mantine/core';
 import { defaultVoiceForLanguage } from '../utils/tts';
 import { useGetV1PreferencesLearning } from '../api/api';
@@ -6,6 +6,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { fontScaleMap } from '../theme/theme';
 import { SnippetHighlighter } from './SnippetHighlighter';
 import { useSectionSnippets } from '../hooks/useSectionSnippets';
+import { useTTS } from '../hooks/useTTS';
 import TTSButton from './TTSButton';
 import {
   Paper,
@@ -73,6 +74,14 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
 
   // Get snippets for this specific section
   const { snippets } = useSectionSnippets(section?.id);
+
+  // Stop TTS audio when switching sections
+  const { stopTTS } = useTTS();
+  useEffect(() => {
+    return () => {
+      stopTTS();
+    };
+  }, [section?.id, stopTTS]);
 
   if (!section) {
     return (

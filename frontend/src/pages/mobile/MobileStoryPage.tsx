@@ -34,6 +34,7 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { fontScaleMap } from '../../theme/theme';
 
 import { useStory } from '../../hooks/useStory';
+import { useTTS } from '../../hooks/useTTS';
 import { splitIntoParagraphs } from '../../utils/passage';
 import CreateStoryForm from '../../components/CreateStoryForm';
 import ArchivedStoriesView from '../../components/ArchivedStoriesView';
@@ -529,6 +530,14 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
 
   // Fetch snippets for the current section
   const { snippets } = useSectionSnippets(section?.id);
+
+  // Stop TTS audio when switching sections
+  const { stopTTS } = useTTS();
+  useEffect(() => {
+    return () => {
+      stopTTS();
+    };
+  }, [section?.id, stopTTS]);
 
   // State to track if we should hide double arrows due to overflow
   const [shouldHideDoubleArrows, setShouldHideDoubleArrows] =
