@@ -22,6 +22,10 @@ import {
   IconMessage,
   IconPlayerPlay,
   IconPlayerPause,
+  IconChevronLeft,
+  IconChevronRight,
+  IconChevronsLeft,
+  IconChevronsRight,
 } from '@tabler/icons-react';
 import TTSButton from '../../components/TTSButton';
 import { useGetV1PreferencesLearning } from '../../api/api';
@@ -634,7 +638,7 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
                 },
               }}
             >
-              ?
+              <IconChevronsLeft size={16} />
             </Button>
 
             <Button
@@ -649,7 +653,7 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
                 },
               }}
             >
-              ?
+              <IconChevronLeft size={16} />
             </Button>
 
             <Text
@@ -672,7 +676,7 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
                 },
               }}
             >
-              ?
+              <IconChevronRight size={16} />
             </Button>
 
             <Button
@@ -688,7 +692,7 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
                 },
               }}
             >
-              ?
+              <IconChevronsRight size={16} />
             </Button>
           </Group>
 
