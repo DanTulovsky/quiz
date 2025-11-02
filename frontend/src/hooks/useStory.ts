@@ -1,5 +1,5 @@
-import {useState, useEffect, useCallback, useRef} from 'react';
-import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 // Global state store for story section index to ensure all useStory instances share the same state
 let globalCurrentSectionIndex = 0;
@@ -21,7 +21,7 @@ const subscribeToGlobalState = (listener: () => void) => {
   return () => globalStateListeners.delete(listener);
 };
 
-import {useAuth} from './useAuth';
+import { useAuth } from './useAuth';
 import {
   createStory as apiCreateStory,
   getCurrentStory as apiGetCurrentStory,
@@ -40,7 +40,7 @@ import {
   CreateStoryRequest,
   Story,
 } from '../api/storyApi';
-import {showNotificationWithClean} from '../notifications';
+import { showNotificationWithClean } from '../notifications';
 
 // Error type interfaces
 interface ErrorWithResponse extends Error {
@@ -96,6 +96,7 @@ export interface UseStoryReturn {
   hasCurrentStory: boolean;
   currentSection: StorySection | null;
   currentSectionWithQuestions: StorySectionWithQuestions | null;
+  isGeneratingNextSection: boolean;
   generationDisabledReason: string;
 
   // Modal state
@@ -111,7 +112,7 @@ export const useStory = (options?: {
   skipLocalStorage?: boolean;
 }): UseStoryReturn => {
   const skipLocalStorage = options?.skipLocalStorage ?? false;
-  const {user} = useAuth();
+  const { user } = useAuth();
   const queryClient = useQueryClient();
 
   // Helper to get localStorage key for section index
@@ -174,7 +175,7 @@ export const useStory = (options?: {
     isOpen: boolean;
     errorMessage: string;
     errorDetails?: ErrorResponse;
-  }>({isOpen: false, errorMessage: ''});
+  }>({ isOpen: false, errorMessage: '' });
 
   // Polling
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -265,7 +266,7 @@ export const useStory = (options?: {
     return () => stopPolling();
   }, [stopPolling]);
 
-  const {data: archivedStories, isLoading: isLoadingArchivedStories} =
+  const { data: archivedStories, isLoading: isLoadingArchivedStories } =
     useQuery({
       queryKey: ['archivedStories', user?.id, user?.preferred_language],
       queryFn: () => apiGetUserStories(true), // includeArchived = true
@@ -279,7 +280,7 @@ export const useStory = (options?: {
       queryClient.invalidateQueries({
         queryKey: ['currentStory', user?.id, user?.preferred_language],
       });
-      queryClient.invalidateQueries({queryKey: ['userStories']});
+      queryClient.invalidateQueries({ queryKey: ['userStories'] });
       queryClient.invalidateQueries({
         queryKey: ['archivedStories', user?.id, user?.preferred_language],
       });
@@ -301,7 +302,7 @@ export const useStory = (options?: {
         const hasResponse = 'response' in error || 'message' in error;
         if (hasResponse) {
           const axiosError = error as {
-            response?: {data?: {error?: string}; status?: number};
+            response?: { data?: { error?: string }; status?: number };
             message?: string;
           };
 
@@ -313,7 +314,7 @@ export const useStory = (options?: {
             'error' in axiosError.response.data
           ) {
             // Handle case where response.data is the ErrorResponse structure
-            errorMessage = (axiosError.response.data as {error: string})
+            errorMessage = (axiosError.response.data as { error: string })
               .error;
           } else if (
             axiosError.response?.data &&
@@ -321,7 +322,7 @@ export const useStory = (options?: {
             'message' in axiosError.response.data
           ) {
             // Handle case where the error message is in the 'message' field
-            errorMessage = (axiosError.response.data as {message: string})
+            errorMessage = (axiosError.response.data as { message: string })
               .message;
           } else if (axiosError.message) {
             errorMessage = axiosError.message;
@@ -361,7 +362,7 @@ export const useStory = (options?: {
       queryClient.invalidateQueries({
         queryKey: ['archivedStories', user?.id, user?.preferred_language],
       });
-      queryClient.invalidateQueries({queryKey: ['userStories']});
+      queryClient.invalidateQueries({ queryKey: ['userStories'] });
 
       // Also refetch archived stories immediately
       queryClient.refetchQueries({
@@ -383,7 +384,7 @@ export const useStory = (options?: {
         const hasResponse = 'response' in error || 'message' in error;
         if (hasResponse) {
           const axiosError = error as {
-            response?: {data?: {error?: string}; status?: number};
+            response?: { data?: { error?: string }; status?: number };
             message?: string;
           };
 
@@ -395,7 +396,7 @@ export const useStory = (options?: {
             'error' in axiosError.response.data
           ) {
             // Handle case where response.data is the ErrorResponse structure
-            errorMessage = (axiosError.response.data as {error: string})
+            errorMessage = (axiosError.response.data as { error: string })
               .error;
           } else if (
             axiosError.response?.data &&
@@ -403,7 +404,7 @@ export const useStory = (options?: {
             'message' in axiosError.response.data
           ) {
             // Handle case where the error message is in the 'message' field
-            errorMessage = (axiosError.response.data as {message: string})
+            errorMessage = (axiosError.response.data as { message: string })
               .message;
           } else if (axiosError.message) {
             errorMessage = axiosError.message;
@@ -435,7 +436,7 @@ export const useStory = (options?: {
       queryClient.invalidateQueries({
         queryKey: ['currentStory', user?.id, user?.preferred_language],
       });
-      queryClient.invalidateQueries({queryKey: ['userStories']});
+      queryClient.invalidateQueries({ queryKey: ['userStories'] });
       queryClient.invalidateQueries({
         queryKey: ['archivedStories', user?.id, user?.preferred_language],
       });
@@ -453,7 +454,7 @@ export const useStory = (options?: {
         const hasResponse = 'response' in error || 'message' in error;
         if (hasResponse) {
           const axiosError = error as {
-            response?: {data?: {error?: string}; status?: number};
+            response?: { data?: { error?: string }; status?: number };
             message?: string;
           };
 
@@ -465,7 +466,7 @@ export const useStory = (options?: {
             'error' in axiosError.response.data
           ) {
             // Handle case where response.data is the ErrorResponse structure
-            errorMessage = (axiosError.response.data as {error: string})
+            errorMessage = (axiosError.response.data as { error: string })
               .error;
           } else if (
             axiosError.response?.data &&
@@ -473,7 +474,7 @@ export const useStory = (options?: {
             'message' in axiosError.response.data
           ) {
             // Handle case where the error message is in the 'message' field
-            errorMessage = (axiosError.response.data as {message: string})
+            errorMessage = (axiosError.response.data as { message: string })
               .message;
           } else if (axiosError.message) {
             errorMessage = axiosError.message;
@@ -505,7 +506,7 @@ export const useStory = (options?: {
       queryClient.invalidateQueries({
         queryKey: ['currentStory', user?.id],
       });
-      queryClient.invalidateQueries({queryKey: ['userStories']});
+      queryClient.invalidateQueries({ queryKey: ['userStories'] });
       queryClient.invalidateQueries({
         queryKey: ['archivedStories', user?.id, user?.preferred_language],
       });
@@ -529,7 +530,7 @@ export const useStory = (options?: {
         const hasResponse = 'response' in error || 'message' in error;
         if (hasResponse) {
           const axiosError = error as {
-            response?: {data?: {error?: string}; status?: number};
+            response?: { data?: { error?: string }; status?: number };
             message?: string;
           };
 
@@ -546,7 +547,7 @@ export const useStory = (options?: {
             'error' in axiosError.response.data
           ) {
             // Handle case where response.data is the ErrorResponse structure
-            errorMessage = (axiosError.response.data as {error: string})
+            errorMessage = (axiosError.response.data as { error: string })
               .error;
           } else if (
             axiosError.response?.data &&
@@ -554,7 +555,7 @@ export const useStory = (options?: {
             'message' in axiosError.response.data
           ) {
             // Handle case where the error message is in the 'message' field
-            errorMessage = (axiosError.response.data as {message: string})
+            errorMessage = (axiosError.response.data as { message: string })
               .message;
           } else if (axiosError.message) {
             errorMessage = axiosError.message;
@@ -598,7 +599,7 @@ export const useStory = (options?: {
           if ('error' in result && result.error) {
             // Preserve the full error response object for error details extraction
             const errorWithDetails: ErrorWithResponse = new Error(result.error);
-            errorWithDetails.response = {data: result};
+            errorWithDetails.response = { data: result };
             throw errorWithDetails;
           }
         }
@@ -734,7 +735,7 @@ export const useStory = (options?: {
               console.log('Successfully extracted error details from object');
             } else if ('error' in responseData) {
               // Handle case where response.data.error exists but it's not the full structure
-              errorMessage = (responseData as {error: string}).error;
+              errorMessage = (responseData as { error: string }).error;
             } else {
               // Fallback: try to extract any meaningful error message
               errorMessage = String(responseData);
@@ -846,7 +847,7 @@ export const useStory = (options?: {
       queryClient.invalidateQueries({
         queryKey: ['currentStory', user?.id, user?.preferred_language],
       });
-      queryClient.invalidateQueries({queryKey: ['userStories']});
+      queryClient.invalidateQueries({ queryKey: ['userStories'] });
       queryClient.invalidateQueries({
         queryKey: ['archivedStories', user?.id, user?.preferred_language],
       });
@@ -864,7 +865,7 @@ export const useStory = (options?: {
         const hasResponse = 'response' in error || 'message' in error;
         if (hasResponse) {
           const axiosError = error as {
-            response?: {data?: {error?: string}; status?: number};
+            response?: { data?: { error?: string }; status?: number };
             message?: string;
           };
 
@@ -876,7 +877,7 @@ export const useStory = (options?: {
             'error' in axiosError.response.data
           ) {
             // Handle case where response.data is the ErrorResponse structure
-            errorMessage = (axiosError.response.data as {error: string})
+            errorMessage = (axiosError.response.data as { error: string })
               .error;
           } else if (
             axiosError.response?.data &&
@@ -884,7 +885,7 @@ export const useStory = (options?: {
             'message' in axiosError.response.data
           ) {
             // Handle case where the error message is in the 'message' field
-            errorMessage = (axiosError.response.data as {message: string})
+            errorMessage = (axiosError.response.data as { message: string })
               .message;
           } else if (axiosError.message) {
             errorMessage = axiosError.message;
@@ -937,7 +938,7 @@ export const useStory = (options?: {
         const hasResponse = 'response' in error || 'message' in error;
         if (hasResponse) {
           const axiosError = error as {
-            response?: {data?: {error?: string}; status?: number};
+            response?: { data?: { error?: string }; status?: number };
             message?: string;
           };
 
@@ -949,7 +950,7 @@ export const useStory = (options?: {
             'error' in axiosError.response.data
           ) {
             // Handle case where response.data is the ErrorResponse structure
-            errorMessage = (axiosError.response.data as {error: string})
+            errorMessage = (axiosError.response.data as { error: string })
               .error;
           } else if (
             axiosError.response?.data &&
@@ -957,7 +958,7 @@ export const useStory = (options?: {
             'message' in axiosError.response.data
           ) {
             // Handle case where the error message is in the 'message' field
-            errorMessage = (axiosError.response.data as {message: string})
+            errorMessage = (axiosError.response.data as { message: string })
               .message;
           } else if (axiosError.message) {
             errorMessage = axiosError.message;
@@ -985,11 +986,11 @@ export const useStory = (options?: {
 
   // Toggle auto-generation mutation
   const toggleAutoGenerationMutation = useMutation({
-    mutationFn: ({storyId, paused}: {storyId: number; paused: boolean}) =>
+    mutationFn: ({ storyId, paused }: { storyId: number; paused: boolean }) =>
       apiToggleAutoGeneration(storyId, paused),
-    onMutate: async ({storyId, paused}) => {
+    onMutate: async ({ storyId, paused }) => {
       // Cancel any outgoing refetches
-      await queryClient.cancelQueries({queryKey: ['currentStory']});
+      await queryClient.cancelQueries({ queryKey: ['currentStory'] });
 
       // Snapshot the previous value
       const previousStory = queryClient.getQueryData(['currentStory']);
@@ -999,18 +1000,18 @@ export const useStory = (options?: {
         ['currentStory'],
         (old: StoryWithSections | undefined) => {
           if (old && old.id === storyId) {
-            return {...old, auto_generation_paused: paused};
+            return { ...old, auto_generation_paused: paused };
           }
           return old;
         }
       );
 
       // Return a context object with the snapshotted value
-      return {previousStory};
+      return { previousStory };
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({queryKey: ['currentStory']});
-      queryClient.invalidateQueries({queryKey: ['stories']});
+      queryClient.invalidateQueries({ queryKey: ['currentStory'] });
+      queryClient.invalidateQueries({ queryKey: ['stories'] });
 
       const message = variables.paused
         ? 'Auto-generation paused. Manual generation still works.'
@@ -1031,7 +1032,7 @@ export const useStory = (options?: {
       let errorMessage = 'Failed to update auto-generation settings.';
       const err = error as AxiosError;
       if (err.response?.data && typeof err.response.data === 'object') {
-        const data = err.response.data as {error?: string};
+        const data = err.response.data as { error?: string };
         if (data.error) {
           errorMessage = data.error;
         }
@@ -1076,7 +1077,7 @@ export const useStory = (options?: {
   };
 
   // Query for current section with questions
-  const {data: currentSectionWithQuestions} = useQuery({
+  const { data: currentSectionWithQuestions } = useQuery({
     queryKey: ['sectionWithQuestions', currentSection?.id],
     queryFn: () => {
       if (!currentSection?.id) return null;
@@ -1101,7 +1102,7 @@ export const useStory = (options?: {
           'response' in currentStoryError || 'message' in currentStoryError;
         if (hasResponse) {
           const axiosError = currentStoryError as {
-            response?: {data?: {error?: string}; status?: number};
+            response?: { data?: { error?: string }; status?: number };
             message?: string;
           };
 
@@ -1113,7 +1114,7 @@ export const useStory = (options?: {
             'error' in axiosError.response.data
           ) {
             // Handle case where response.data is the ErrorResponse structure
-            errorMessage = (axiosError.response.data as {error: string})
+            errorMessage = (axiosError.response.data as { error: string })
               .error;
           } else if (
             axiosError.response?.data &&
@@ -1121,7 +1122,7 @@ export const useStory = (options?: {
             'message' in axiosError.response.data
           ) {
             // Handle case where the error message is in the 'message' field
-            errorMessage = (axiosError.response.data as {message: string})
+            errorMessage = (axiosError.response.data as { message: string })
               .message;
           } else if (axiosError.message) {
             errorMessage = axiosError.message;
@@ -1251,7 +1252,7 @@ export const useStory = (options?: {
 
   const toggleAutoGenerationAction = useCallback(
     async (storyId: number, paused: boolean) => {
-      await toggleAutoGenerationMutation.mutateAsync({storyId, paused});
+      await toggleAutoGenerationMutation.mutateAsync({ storyId, paused });
     },
     [toggleAutoGenerationMutation]
   );

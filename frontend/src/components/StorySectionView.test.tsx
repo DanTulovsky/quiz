@@ -293,7 +293,7 @@ describe('StorySectionView', () => {
     });
 
     it('shows loading state when generating', () => {
-      renderComponent({ isGenerating: true });
+      renderComponent({ isGeneratingNextSection: true });
 
       expect(
         screen.getByRole('button', { name: /Generating.../ })

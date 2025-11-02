@@ -19,21 +19,30 @@ import {
   IconCalendar,
   IconLanguage,
   IconSearch,
+  IconLoader,
+  IconCheck,
+  IconEye,
 } from '@tabler/icons-react';
-import { Story } from '../api/storyApi';
+import { Story, StoryWithSections } from '../api/storyApi';
 
 interface ArchivedStoriesViewProps {
+  currentStory?: StoryWithSections | null;
+  isGenerating?: boolean;
   archivedStories: Story[];
   isLoading: boolean;
   onUnarchive: (storyId: number) => Promise<void>;
+  onViewCurrentStory?: () => void;
   onCreateNew: () => void;
   hideCreateButton?: boolean;
 }
 
 const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
+  currentStory,
+  isGenerating = false,
   archivedStories,
   isLoading,
   onUnarchive,
+  onViewCurrentStory,
   onCreateNew,
   hideCreateButton = false,
 }) => {
@@ -111,6 +120,76 @@ const ArchivedStoriesView: React.FC<ArchivedStoriesViewProps> = ({
               Create New Story
             </Button>
           </Group>
+        )}
+
+        {/* Current Story Section */}
+        {currentStory && (
+          <>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <IconBook size={24} />
+              <Title order={2}>Current Story</Title>
+            </div>
+
+            <Alert
+              color={isGenerating ? 'blue' : 'green'}
+              icon={
+                isGenerating ? (
+                  <IconLoader size={16} />
+                ) : (
+                  <IconCheck size={16} />
+                )
+              }
+            >
+              <Group position='apart' mb='xs'>
+                <Title order={4} style={{ margin: 0 }}>
+                  {currentStory.title}
+                </Title>
+                <Group gap='xs'>
+                  <Badge
+                    color={isGenerating ? 'blue' : 'green'}
+                    variant='light'
+                  >
+                    {isGenerating ? 'Generating Section...' : 'Ready'}
+                  </Badge>
+                  {onViewCurrentStory && (
+                    <Button
+                      size='xs'
+                      variant='light'
+                      color='blue'
+                      leftSection={<IconEye size={14} />}
+                      onClick={onViewCurrentStory}
+                    >
+                      View
+                    </Button>
+                  )}
+                </Group>
+              </Group>
+
+              <Group spacing='lg'>
+                <Group spacing='xs'>
+                  <IconLanguage size={14} />
+                  <Text size='sm'>{currentStory.language}</Text>
+                </Group>
+
+                <Group spacing='xs'>
+                  <IconBook size={14} />
+                  <Text size='sm'>
+                    {currentStory.sections?.length || 0} section
+                    {(currentStory.sections?.length || 0) !== 1 ? 's' : ''}
+                  </Text>
+                </Group>
+
+                <Group spacing='xs'>
+                  <IconCalendar size={14} />
+                  <Text size='sm'>
+                    {currentStory.created_at
+                      ? new Date(currentStory.created_at).toLocaleDateString()
+                      : 'N/A'}
+                  </Text>
+                </Group>
+              </Group>
+            </Alert>
+          </>
         )}
 
         {/* Archived Stories Section */}

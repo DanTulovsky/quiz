@@ -71,6 +71,7 @@ const MobileStoryPage: React.FC = () => {
     currentSectionWithQuestions,
     canGenerateToday,
     isGenerating,
+    isGeneratingNextSection,
     generationType,
     generationDisabledReason,
     createStory,
@@ -89,19 +90,25 @@ const MobileStoryPage: React.FC = () => {
   } = useStory({ skipLocalStorage: !!sectionIdParam });
 
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showAllStoriesView, setShowAllStoriesView] = useState(false);
 
   const navigate = useNavigate();
 
   // Handle URL parameters for story and section navigation
   useEffect(() => {
-    if (storyIdParam && !isLoading) {
+    if (storyIdParam && !isLoading && !showAllStoriesView) {
       const storyId = parseInt(storyIdParam, 10);
       if (!isNaN(storyId) && (!currentStory || currentStory.id !== storyId)) {
         setCurrentStory(storyId);
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [storyIdParam, isLoading, currentStory]);
+  }, [
+    storyIdParam,
+    isLoading,
+    currentStory,
+    showAllStoriesView,
+    setCurrentStory,
+  ]);
 
   // Handle section ID parameter - prioritize URL over localStorage
   // This must run AFTER sections are loaded but BEFORE localStorage restoration
@@ -131,6 +138,8 @@ const MobileStoryPage: React.FC = () => {
     try {
       await createStory(data);
       setShowCreateModal(false);
+      // Navigate to /m/story (no ID) to prevent the effect from restoring an old story
+      navigate('/m/story', { replace: true });
     } finally {
       setIsCreatingStory(false);
     }
@@ -145,7 +154,11 @@ const MobileStoryPage: React.FC = () => {
   };
 
   const handleUnarchiveStory = async (storyId: number) => {
-    await setCurrentStory(storyId);
+    // Navigate to the restored story
+    // The useEffect will handle calling setCurrentStory when storyIdParam changes
+    navigate(`/m/story/${storyId}`, { replace: true });
+    // Close the view immediately
+    setShowAllStoriesView(false);
   };
 
   // Wrapper functions that update URL when navigating sections
@@ -189,12 +202,30 @@ const MobileStoryPage: React.FC = () => {
 
   // Update URL when story loads or section changes without a section parameter in URL
   useEffect(() => {
-    if (currentStory && !sectionIdParam && currentSection?.id) {
-      navigate(`/m/story/${currentStory.id}/section/${currentSection.id}`, {
-        replace: true,
-      });
+    if (
+      currentStory &&
+      !sectionIdParam &&
+      currentSection?.id &&
+      !showAllStoriesView &&
+      !isGenerating
+    ) {
+      // Only navigate if currentStory matches the URL param to avoid overriding user navigation
+      const urlStoryId = storyIdParam ? parseInt(storyIdParam, 10) : null;
+      if (currentStory.id === urlStoryId) {
+        navigate(`/m/story/${currentStory.id}/section/${currentSection.id}`, {
+          replace: true,
+        });
+      }
     }
-  }, [currentStory?.id, currentSection?.id, navigate, sectionIdParam]);
+  }, [
+    currentStory?.id,
+    storyIdParam,
+    currentSection?.id,
+    navigate,
+    sectionIdParam,
+    showAllStoriesView,
+    isGenerating,
+  ]);
 
   // Show archived stories if no current story but archived stories exist
   if (
@@ -206,6 +237,8 @@ const MobileStoryPage: React.FC = () => {
     return (
       <>
         <ArchivedStoriesView
+          currentStory={currentStory}
+          isGenerating={isGenerating}
           archivedStories={archivedStories}
           isLoading={isLoadingArchivedStories}
           onUnarchive={handleUnarchiveStory}
@@ -320,6 +353,8 @@ const MobileStoryPage: React.FC = () => {
             </Alert>
           </Container>
           <ArchivedStoriesView
+            currentStory={currentStory}
+            isGenerating={isGenerating}
             archivedStories={archivedStories}
             isLoading={isLoadingArchivedStories}
             onUnarchive={handleUnarchiveStory}
@@ -409,60 +444,90 @@ const MobileStoryPage: React.FC = () => {
           </Group>
         </Paper>
 
-        {/* Story Content */}
-        {viewMode === 'section' ? (
-          <MobileStorySectionView
-            section={currentSection}
-            sectionWithQuestions={currentSectionWithQuestions}
-            sectionIndex={currentSectionIndex}
-            totalSections={sections.length}
-            canGenerateToday={canGenerateToday}
+        {/* All Stories View */}
+        {showAllStoriesView ? (
+          <ArchivedStoriesView
+            currentStory={currentStory}
             isGenerating={isGenerating}
-            generationDisabledReason={generationDisabledReason}
-            story={currentStory}
-            onGenerateNext={() =>
-              currentStory && generateNextSection(currentStory.id!)
-            }
-            onToggleAutoGeneration={() =>
-              currentStory &&
-              toggleAutoGeneration(
-                currentStory.id!,
-                !currentStory.auto_generation_paused
-              )
-            }
-            onPrevious={handleGoToPreviousSection}
-            onNext={handleGoToNextSection}
-            onFirst={handleGoToFirstSection}
-            onLast={handleGoToLastSection}
+            archivedStories={archivedStories}
+            isLoading={isLoadingArchivedStories}
+            onUnarchive={handleUnarchiveStory}
+            onViewCurrentStory={() => {
+              setShowAllStoriesView(false);
+              // Navigation is already on the story, just close view
+            }}
+            onCreateNew={() => {
+              setShowAllStoriesView(false);
+              setShowCreateModal(true);
+            }}
+            hideCreateButton={false}
           />
         ) : (
-          <MobileStoryReadingView
-            story={currentStory}
-            isGenerating={isGenerating}
-          />
-        )}
+          <>
+            {/* Story Content */}
+            {viewMode === 'section' ? (
+              <MobileStorySectionView
+                section={currentSection}
+                sectionWithQuestions={currentSectionWithQuestions}
+                sectionIndex={currentSectionIndex}
+                totalSections={sections.length}
+                canGenerateToday={canGenerateToday}
+                isGenerating={isGenerating}
+                isGeneratingNextSection={isGeneratingNextSection}
+                generationDisabledReason={generationDisabledReason}
+                story={currentStory}
+                onGenerateNext={() =>
+                  currentStory && generateNextSection(currentStory.id!)
+                }
+                onToggleAutoGeneration={() =>
+                  currentStory &&
+                  toggleAutoGeneration(
+                    currentStory.id!,
+                    !currentStory.auto_generation_paused
+                  )
+                }
+                onPrevious={handleGoToPreviousSection}
+                onNext={handleGoToNextSection}
+                onFirst={handleGoToFirstSection}
+                onLast={handleGoToLastSection}
+              />
+            ) : (
+              <MobileStoryReadingView
+                story={currentStory}
+                isGenerating={isGenerating}
+              />
+            )}
 
-        {/* Archive Button */}
-        {currentStory && (
-          <Paper p='md' radius='md'>
-            <Group justify='center'>
-              <Button
-                variant='outline'
-                color='orange'
-                onClick={handleArchiveStory}
-                size='md'
-              >
-                Archive Story
-              </Button>
-              <Button
-                variant='outline'
-                onClick={() => setShowCreateModal(true)}
-                size='md'
-              >
-                New Story
-              </Button>
-            </Group>
-          </Paper>
+            {/* Archive Button */}
+            {currentStory && (
+              <Paper p='md' radius='md'>
+                <Group justify='center'>
+                  <Button
+                    variant='outline'
+                    color='orange'
+                    onClick={handleArchiveStory}
+                    size='md'
+                  >
+                    Archive Story
+                  </Button>
+                  <Button
+                    variant='outline'
+                    onClick={() => setShowAllStoriesView(true)}
+                    size='md'
+                  >
+                    All Stories
+                  </Button>
+                  <Button
+                    variant='outline'
+                    onClick={() => setShowCreateModal(true)}
+                    size='md'
+                  >
+                    New Story
+                  </Button>
+                </Group>
+              </Paper>
+            )}
+          </>
         )}
       </Stack>
 
@@ -499,6 +564,7 @@ interface MobileStorySectionViewProps {
   totalSections: number;
   canGenerateToday: boolean;
   isGenerating: boolean;
+  isGeneratingNextSection?: boolean;
   generationDisabledReason?: string;
   story: StoryWithSections | null;
   onGenerateNext: () => void;
@@ -516,6 +582,7 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
   totalSections,
   canGenerateToday,
   isGenerating,
+  isGeneratingNextSection = false,
   generationDisabledReason,
   story,
   onGenerateNext,
@@ -624,6 +691,16 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
 
   return (
     <Stack gap='md'>
+      {/* Generating Alert */}
+      {isGenerating && (
+        <Alert color='blue' icon={<IconBook size={16} />}>
+          <Text fw={500}>Generating next section...</Text>
+          <Text size='sm' mt='xs'>
+            Your story is being continued. This may take a moment.
+          </Text>
+        </Alert>
+      )}
+
       {/* Section Header */}
       <Paper p='sm' radius='md'>
         {/* Section Navigation */}
@@ -928,12 +1005,14 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
           <Button
             size='sm'
             onClick={onGenerateNext}
-            loading={isGenerating}
-            disabled={!canGenerateToday || isGenerating}
+            loading={isGeneratingNextSection}
+            disabled={!canGenerateToday || isGeneratingNextSection}
             color='blue'
             leftSection={<IconBook size={14} />}
           >
-            {isGenerating ? 'Generating...' : 'Generate Next Section'}
+            {isGeneratingNextSection
+              ? 'Generating...'
+              : 'Generate Next Section'}
           </Button>
         </Group>
         {!canGenerateToday && generationDisabledReason && (

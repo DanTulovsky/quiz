@@ -13,6 +13,7 @@ import {
 } from '@mantine/core';
 import {
   IconBook,
+  IconBook2,
   IconArchive,
   IconEye,
   IconLayoutList,
@@ -51,6 +52,7 @@ const StoryPage: React.FC = () => {
     currentSectionWithQuestions,
     canGenerateToday,
     isGenerating,
+    isGeneratingNextSection,
     generationType,
     generationDisabledReason,
     createStory,
@@ -71,17 +73,23 @@ const StoryPage: React.FC = () => {
 
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [isCreatingStory, setIsCreatingStory] = useState(false);
+  const [showAllStoriesView, setShowAllStoriesView] = useState(false);
 
   // Handle URL parameters for story and section navigation
   useEffect(() => {
-    if (storyIdParam && !isLoading) {
+    if (storyIdParam && !isLoading && !showAllStoriesView) {
       const storyId = parseInt(storyIdParam, 10);
       if (!isNaN(storyId) && (!currentStory || currentStory.id !== storyId)) {
         setCurrentStory(storyId);
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [storyIdParam, isLoading, currentStory]);
+  }, [
+    storyIdParam,
+    isLoading,
+    currentStory,
+    showAllStoriesView,
+    setCurrentStory,
+  ]);
 
   // Handle section ID parameter - prioritize URL over localStorage
   // This must run AFTER sections are loaded but BEFORE localStorage restoration
@@ -148,18 +156,38 @@ const StoryPage: React.FC = () => {
 
   // Update URL when story loads or section changes without a section parameter in URL
   useEffect(() => {
-    if (currentStory && !sectionIdParam && currentSection?.id) {
-      navigate(`/story/${currentStory.id}/section/${currentSection.id}`, {
-        replace: true,
-      });
+    if (
+      currentStory &&
+      !sectionIdParam &&
+      currentSection?.id &&
+      !showAllStoriesView &&
+      !isGenerating
+    ) {
+      // Only navigate if currentStory matches the URL param to avoid overriding user navigation
+      const urlStoryId = storyIdParam ? parseInt(storyIdParam, 10) : null;
+      if (currentStory.id === urlStoryId) {
+        navigate(`/story/${currentStory.id}/section/${currentSection.id}`, {
+          replace: true,
+        });
+      }
     }
-  }, [currentStory?.id, currentSection?.id, navigate, sectionIdParam]);
+  }, [
+    currentStory?.id,
+    storyIdParam,
+    currentSection?.id,
+    navigate,
+    sectionIdParam,
+    showAllStoriesView,
+    isGenerating,
+  ]);
 
   const handleCreateStory = async (data: CreateStoryRequest) => {
     setIsCreatingStory(true);
     try {
       await createStory(data);
       setShowCreateModal(false);
+      // Navigate to /story (no ID) to prevent the effect from restoring an old story
+      navigate('/story', { replace: true });
     } finally {
       setIsCreatingStory(false);
     }
@@ -174,7 +202,11 @@ const StoryPage: React.FC = () => {
   };
 
   const handleUnarchiveStory = async (storyId: number) => {
-    await setCurrentStory(storyId);
+    // Navigate to the restored story
+    // The useEffect will handle calling setCurrentStory when storyIdParam changes
+    navigate(`/story/${storyId}`, { replace: true });
+    // Close the view immediately
+    setShowAllStoriesView(false);
   };
 
   const handleExportStory = async () => {
@@ -202,6 +234,8 @@ const StoryPage: React.FC = () => {
     return (
       <>
         <ArchivedStoriesView
+          currentStory={currentStory}
+          isGenerating={isGenerating}
           archivedStories={archivedStories}
           isLoading={isLoadingArchivedStories}
           onUnarchive={handleUnarchiveStory}
@@ -317,6 +351,8 @@ const StoryPage: React.FC = () => {
             </Alert>
           </Container>
           <ArchivedStoriesView
+            currentStory={currentStory}
+            isGenerating={isGenerating}
             archivedStories={archivedStories}
             isLoading={isLoadingArchivedStories}
             onUnarchive={handleUnarchiveStory}
@@ -460,6 +496,19 @@ const StoryPage: React.FC = () => {
               </Tooltip>
             )}
 
+            {/* All Stories Button */}
+            <Tooltip label='All Stories' position='bottom' withArrow>
+              <Button
+                variant='outline'
+                onClick={() => setShowAllStoriesView(true)}
+                size='sm'
+                px='xs'
+                aria-label='All Stories'
+              >
+                <IconBook2 size={18} />
+              </Button>
+            </Tooltip>
+
             {/* New Story Button */}
             <Tooltip label='New Story' position='bottom' withArrow>
               <Button
@@ -475,28 +524,54 @@ const StoryPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Story Content */}
-        {viewMode === 'section' ? (
-          <StorySectionView
-            section={currentSection}
-            sectionWithQuestions={currentSectionWithQuestions}
-            sectionIndex={currentSectionIndex}
-            totalSections={sections.length}
-            canGenerateToday={canGenerateToday}
+        {/* All Stories View */}
+        {showAllStoriesView ? (
+          <ArchivedStoriesView
+            currentStory={currentStory}
             isGenerating={isGenerating}
-            generationDisabledReason={generationDisabledReason}
-            onGenerateNext={() =>
-              currentStory && generateNextSection(currentStory.id!)
-            }
-            onPrevious={handleGoToPreviousSection}
-            onNext={handleGoToNextSection}
-            storyTitle={currentStory?.title}
-            storyLanguage={currentStory?.language}
-            onFirst={handleGoToFirstSection}
-            onLast={handleGoToLastSection}
+            archivedStories={archivedStories}
+            isLoading={isLoadingArchivedStories}
+            onUnarchive={handleUnarchiveStory}
+            onViewCurrentStory={() => {
+              setShowAllStoriesView(false);
+              // Navigation is already on the story, just close view
+            }}
+            onCreateNew={() => {
+              setShowAllStoriesView(false);
+              setShowCreateModal(true);
+            }}
+            hideCreateButton={false}
           />
         ) : (
-          <StoryReadingView story={currentStory} isGenerating={isGenerating} />
+          <>
+            {/* Story Content */}
+            {viewMode === 'section' ? (
+              <StorySectionView
+                section={currentSection}
+                sectionWithQuestions={currentSectionWithQuestions}
+                sectionIndex={currentSectionIndex}
+                totalSections={sections.length}
+                canGenerateToday={canGenerateToday}
+                isGenerating={isGenerating}
+                isGeneratingNextSection={isGeneratingNextSection}
+                generationDisabledReason={generationDisabledReason}
+                onGenerateNext={() =>
+                  currentStory && generateNextSection(currentStory.id!)
+                }
+                onPrevious={handleGoToPreviousSection}
+                onNext={handleGoToNextSection}
+                storyTitle={currentStory?.title}
+                storyLanguage={currentStory?.language}
+                onFirst={handleGoToFirstSection}
+                onLast={handleGoToLastSection}
+              />
+            ) : (
+              <StoryReadingView
+                story={currentStory}
+                isGenerating={isGenerating}
+              />
+            )}
+          </>
         )}
       </Stack>
 

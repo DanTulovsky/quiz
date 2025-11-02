@@ -40,6 +40,7 @@ interface StorySectionViewProps {
   totalSections: number;
   canGenerateToday: boolean;
   isGenerating: boolean;
+  isGeneratingNextSection?: boolean;
   generationDisabledReason?: string;
   onGenerateNext: () => void;
   onPrevious: () => void;
@@ -57,6 +58,7 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
   totalSections,
   canGenerateToday,
   isGenerating,
+  isGeneratingNextSection = false,
   generationDisabledReason,
   onGenerateNext,
   onPrevious,
@@ -97,6 +99,16 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
 
   return (
     <Stack spacing='md'>
+      {/* Generating Alert */}
+      {isGenerating && (
+        <Alert color='blue' icon={<IconBook size={16} />}>
+          <Text fw={500}>Generating next section...</Text>
+          <Text size='sm' mt='xs'>
+            Your story is being continued. This may take a moment.
+          </Text>
+        </Alert>
+      )}
+
       {/* Section Header */}
       <Paper p='md' radius='md'>
         {/* Section Navigation */}
@@ -308,7 +320,7 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
           </div>
           <Tooltip
             label={
-              !canGenerateToday && !isGenerating
+              !canGenerateToday && !isGeneratingNextSection
                 ? generationDisabledReason || 'Unable to generate section'
                 : 'Generate the next section of your story'
             }
@@ -318,12 +330,14 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
             <Button
               leftSection={<IconPlus size={16} />}
               onClick={onGenerateNext}
-              loading={isGenerating}
-              disabled={!canGenerateToday || isGenerating}
+              loading={isGeneratingNextSection}
+              disabled={!canGenerateToday || isGeneratingNextSection}
               color='blue'
               variant={canGenerateToday ? 'filled' : 'light'}
             >
-              {isGenerating ? 'Generating...' : 'Generate Next Section'}
+              {isGeneratingNextSection
+                ? 'Generating...'
+                : 'Generate Next Section'}
             </Button>
           </Tooltip>
         </div>
