@@ -80,7 +80,8 @@ const StoryPage: React.FC = () => {
         setCurrentStory(storyId);
       }
     }
-  }, [storyIdParam, isLoading, currentStory, setCurrentStory]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storyIdParam, isLoading, currentStory]);
 
   // Handle section ID parameter - prioritize URL over localStorage
   // This must run AFTER sections are loaded but BEFORE localStorage restoration
@@ -167,6 +168,8 @@ const StoryPage: React.FC = () => {
   const handleArchiveStory = async () => {
     if (currentStory) {
       await archiveStory(currentStory.id!);
+      // Navigate away from archived story
+      navigate('/story');
     }
   };
 
