@@ -1,8 +1,8 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
+import {useState, useRef, useCallback, useEffect} from 'react';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore - library ships without types
-import { TTSRequest } from '../api/api';
-import { showNotificationWithClean } from '../notifications';
+import {TTSRequest} from '../api/api';
+import {showNotificationWithClean} from '../notifications';
 import {
   fetchSSEAudioChunks,
   decodeAudioChunks,
@@ -18,7 +18,7 @@ const sharedDecodedCache = new Map<string, CachedAudio>();
 // key -> { promise, controller }
 const sharedInflight = new Map<
   string,
-  { promise: Promise<void>; controller: AbortController }
+  {promise: Promise<void>; controller: AbortController}
 >();
 
 // Global current audio element so all hook instances can pause/resume the same playback
@@ -45,7 +45,7 @@ function notifyStateListeners() {
   stateListeners.forEach(listener => {
     try {
       listener();
-    } catch {}
+    } catch { }
   });
 }
 
@@ -78,11 +78,11 @@ export function stopTTSOnce(): void {
     currentPlayback.source.onended = null;
     try {
       currentPlayback.source.stop();
-    } catch {}
-  } catch {}
+    } catch { }
+  } catch { }
   try {
     currentPlayback.ctx.close();
-  } catch {}
+  } catch { }
   currentPlayback = null;
 }
 
@@ -161,7 +161,7 @@ export const useTTS = (): TTSHookReturn => {
         sharedCurrentAudio.pause();
         sharedCurrentAudio.currentTime = 0;
         sharedCurrentAudio.srcObject = null;
-      } catch {}
+      } catch { }
       sharedCurrentAudio = null;
     }
     if (currentAudioRef.current) {
@@ -169,7 +169,7 @@ export const useTTS = (): TTSHookReturn => {
         currentAudioRef.current.pause();
         currentAudioRef.current.currentTime = 0;
         currentAudioRef.current.srcObject = null;
-      } catch {}
+      } catch { }
       currentAudioRef.current = null;
     }
 
@@ -250,7 +250,7 @@ export const useTTS = (): TTSHookReturn => {
         setIsPaused(true);
         setIsPlaying(false);
         return;
-      } catch {}
+      } catch { }
     }
 
     // Handle Web Audio API (mobile fallback and cached audio)
@@ -288,7 +288,7 @@ export const useTTS = (): TTSHookReturn => {
         setIsPaused(false);
         setIsPlaying(true);
         return;
-      } catch {}
+      } catch { }
     }
 
     // Fallback: Handle Web Audio API without audio element (legacy path)
@@ -448,7 +448,7 @@ export const useTTS = (): TTSHookReturn => {
         setIsPaused(false);
         setIsPlaying(true);
         return;
-      } catch {}
+      } catch { }
     }
 
     // Fallback: Handle Web Audio API without audio element (legacy path)
@@ -461,7 +461,7 @@ export const useTTS = (): TTSHookReturn => {
               sharedBufferSource.onended = null;
               sharedBufferSource.stop();
               sharedBufferSource.disconnect();
-            } catch {}
+            } catch { }
             sharedBufferSource = null;
           }
 
@@ -559,7 +559,7 @@ export const useTTS = (): TTSHookReturn => {
         // Initialize AudioContext to satisfy user-gesture policies; feeder will create its own as needed
         if (!audioContextRef.current) {
           const newAudioContext = new (window.AudioContext ||
-            (window as unknown as { webkitAudioContext: typeof AudioContext })
+            (window as unknown as {webkitAudioContext: typeof AudioContext})
               .webkitAudioContext)();
           audioContextRef.current = newAudioContext;
         }
@@ -605,14 +605,14 @@ export const useTTS = (): TTSHookReturn => {
               try {
                 sharedCurrentAudio.pause();
                 sharedCurrentAudio.srcObject = null;
-              } catch {}
+              } catch { }
               sharedCurrentAudio = null;
             }
             if (currentAudioRef.current) {
               try {
                 currentAudioRef.current.pause();
                 currentAudioRef.current.srcObject = null;
-              } catch {}
+              } catch { }
               currentAudioRef.current = null;
             }
 
@@ -684,7 +684,7 @@ export const useTTS = (): TTSHookReturn => {
                       playbackRate: audioEl.playbackRate || 1,
                       position: audioEl.currentTime || 0,
                     });
-                  } catch {}
+                  } catch { }
                 }
               };
 
@@ -718,11 +718,77 @@ export const useTTS = (): TTSHookReturn => {
               }
             };
 
+            // Wait for MediaStream to be ready before starting playback
+            // This ensures the audio element can play when called, preventing permission errors
+            await new Promise<void>((resolve, reject) => {
+              const checkReady = () => {
+                // Check if audio element has enough data to play (HAVE_FUTURE_DATA or higher)
+                if (audioEl.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
+                  resolve();
+                } else {
+                  // Wait for canplay event
+                  const onCanPlay = () => {
+                    audioEl.removeEventListener('canplay', onCanPlay);
+                    audioEl.removeEventListener('error', onError);
+                    resolve();
+                  };
+                  const onError = () => {
+                    audioEl.removeEventListener('canplay', onCanPlay);
+                    audioEl.removeEventListener('error', onError);
+                    reject(new Error('Audio element failed to load'));
+                  };
+                  audioEl.addEventListener('canplay', onCanPlay, {once: true});
+                  audioEl.addEventListener('error', onError, {once: true});
+                  // Fallback timeout to prevent hanging
+                  setTimeout(() => {
+                    audioEl.removeEventListener('canplay', onCanPlay);
+                    audioEl.removeEventListener('error', onError);
+                    // Resolve anyway - some browsers may not fire canplay for MediaStream
+                    if (audioEl.readyState >= HTMLMediaElement.HAVE_METADATA) {
+                      resolve();
+                    } else {
+                      reject(new Error('Audio element ready timeout'));
+                    }
+                  }, 2000);
+                }
+              };
+              // Give MediaStream a moment to initialize
+              setTimeout(checkReady, 50);
+            });
+
+            // Re-verify AudioContext is still running
+            if (ctx.state !== 'running') {
+              await ctx.resume();
+              // Wait a bit more after resume to ensure context is active
+              await new Promise(resolve => setTimeout(resolve, 50));
+            }
+
             // Start playback from user gesture
+            // Start source after audio element is ready
             source.start();
             sharedStartTime = ctx.currentTime;
 
-            await audioEl.play();
+            try {
+              await audioEl.play();
+            } catch (playError) {
+              // Retry once if permission error - AudioContext might need another resume
+              const error = playError as Error;
+              if (
+                error.name === 'NotAllowedError' ||
+                error.message.includes('not allowed') ||
+                error.message.includes('permission')
+              ) {
+                // Ensure AudioContext is running
+                if (ctx.state !== 'running') {
+                  await ctx.resume();
+                  await new Promise(resolve => setTimeout(resolve, 100));
+                }
+                // Retry play once
+                await audioEl.play();
+              } else {
+                throw playError;
+              }
+            }
 
             setIsPlaying(true);
             setIsPaused(false);
@@ -738,7 +804,7 @@ export const useTTS = (): TTSHookReturn => {
         }
 
         const MediaSourceCtor = (
-          window as unknown as { MediaSource?: typeof MediaSource }
+          window as unknown as {MediaSource?: typeof MediaSource}
         ).MediaSource;
         const useStreaming =
           MediaSourceCtor &&
@@ -762,14 +828,14 @@ export const useTTS = (): TTSHookReturn => {
           if (sharedCurrentAudio) {
             try {
               sharedCurrentAudio.pause();
-            } catch {}
+            } catch { }
             sharedCurrentAudio.src = '';
             sharedCurrentAudio = null;
           }
           if (currentAudioRef.current) {
             try {
               currentAudioRef.current.pause();
-            } catch {}
+            } catch { }
             currentAudioRef.current.src = '';
             currentAudioRef.current = null;
           }
@@ -790,7 +856,7 @@ export const useTTS = (): TTSHookReturn => {
           const controller = new AbortController();
           abortControllerRef.current = controller;
           sharedAbortController = controller; // Share across instances
-          sharedInflight.set(key, { promise: streamPromise, controller });
+          sharedInflight.set(key, {promise: streamPromise, controller});
 
           let sourceBuffer: SourceBuffer | null = null;
           const pending: Uint8Array[] = [];
@@ -804,7 +870,7 @@ export const useTTS = (): TTSHookReturn => {
               if (ended) {
                 try {
                   mediaSource.endOfStream();
-                } catch {}
+                } catch { }
               }
               return;
             }
@@ -813,12 +879,12 @@ export const useTTS = (): TTSHookReturn => {
               const buffer =
                 next.buffer instanceof ArrayBuffer
                   ? next.buffer.slice(
-                      next.byteOffset,
-                      next.byteOffset + next.byteLength
-                    )
+                    next.byteOffset,
+                    next.byteOffset + next.byteLength
+                  )
                   : new Uint8Array(next).buffer;
               sourceBuffer.appendBuffer(buffer);
-            } catch {}
+            } catch { }
           };
 
           const onOpen = async () => {
@@ -827,11 +893,11 @@ export const useTTS = (): TTSHookReturn => {
             } catch {
               try {
                 URL.revokeObjectURL(objectUrl);
-              } catch {}
+              } catch { }
               if (currentAudioRef.current) {
                 try {
                   currentAudioRef.current.pause();
-                } catch {}
+                } catch { }
                 currentAudioRef.current.src = '';
                 currentAudioRef.current = null;
               }
@@ -842,7 +908,7 @@ export const useTTS = (): TTSHookReturn => {
 
             const resp = await fetch('/v1/audio/speech', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: {'Content-Type': 'application/json'},
               body: JSON.stringify({
                 input: text,
                 voice: voice,
@@ -854,11 +920,11 @@ export const useTTS = (): TTSHookReturn => {
             if (!resp || !resp.ok || !resp.body) {
               try {
                 URL.revokeObjectURL(objectUrl);
-              } catch {}
+              } catch { }
               if (currentAudioRef.current) {
                 try {
                   currentAudioRef.current.pause();
-                } catch {}
+                } catch { }
                 currentAudioRef.current.src = '';
                 currentAudioRef.current = null;
               }
@@ -880,16 +946,16 @@ export const useTTS = (): TTSHookReturn => {
                   setIsPlaying(true);
                   setIsPaused(false);
                 })
-                .catch(() => {});
+                .catch(() => { });
             };
 
             let streamError: string | null = null;
             let carry = ''; // Buffer for partial SSE lines
             try {
               while (true) {
-                const { done, value } = await reader.read();
+                const {done, value} = await reader.read();
                 if (done) break;
-                const textChunk = decoder.decode(value, { stream: true });
+                const textChunk = decoder.decode(value, {stream: true});
                 const combined = carry + textChunk;
                 const lines = combined.split(/\r?\n/);
                 carry = lines.pop() ?? ''; // Keep the last (potentially partial) line
@@ -906,7 +972,7 @@ export const useTTS = (): TTSHookReturn => {
                           : 'Unknown TTS error';
                       try {
                         reader.cancel();
-                      } catch {}
+                      } catch { }
                       break;
                     }
                     if (type === 'audio' || type === 'speech.audio.delta') {
@@ -926,13 +992,13 @@ export const useTTS = (): TTSHookReturn => {
                       ended = true;
                       flush();
                     }
-                  } catch {}
+                  } catch { }
                 }
                 if (streamError) break;
               }
             } catch (readError) {
               // Handle abort errors gracefully during cleanup
-              const name = (readError as { name?: string })?.name || '';
+              const name = (readError as {name?: string})?.name || '';
               if (name !== 'AbortError') {
                 streamError = 'Stream read error';
               }
@@ -988,9 +1054,9 @@ export const useTTS = (): TTSHookReturn => {
                 }
                 try {
                   URL.revokeObjectURL(objectUrl);
-                } catch {}
+                } catch { }
               },
-              { once: true }
+              {once: true}
             );
             if (streamError) {
               showNotificationWithClean({
@@ -1001,7 +1067,7 @@ export const useTTS = (): TTSHookReturn => {
             }
           };
 
-          mediaSource.addEventListener('sourceopen', onOpen, { once: true });
+          mediaSource.addEventListener('sourceopen', onOpen, {once: true});
           audioEl.load();
           setIsLoading(false);
           return;
@@ -1031,7 +1097,7 @@ export const useTTS = (): TTSHookReturn => {
           // Fetch audio via SSE - by continuously reading the stream, we prevent timeout
           const resp = await fetch('/v1/audio/speech', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
               input: text,
               voice: voice,
@@ -1054,10 +1120,10 @@ export const useTTS = (): TTSHookReturn => {
           // Process SSE stream continuously to prevent timeout
           try {
             while (true) {
-              const { done, value } = await reader.read();
+              const {done, value} = await reader.read();
               if (done) break;
 
-              const textChunk = decoder.decode(value, { stream: true });
+              const textChunk = decoder.decode(value, {stream: true});
               const combined = carry + textChunk;
               const lines = combined.split(/\r?\n/);
               carry = lines.pop() ?? '';
@@ -1076,7 +1142,7 @@ export const useTTS = (): TTSHookReturn => {
                         : 'Unknown TTS error';
                     try {
                       reader.cancel();
-                    } catch {}
+                    } catch { }
                     break;
                   }
 
@@ -1091,12 +1157,12 @@ export const useTTS = (): TTSHookReturn => {
                       chunks.push(bytes);
                     }
                   }
-                } catch {}
+                } catch { }
               }
               if (streamError) break;
             }
           } catch (readError) {
-            const name = (readError as { name?: string })?.name || '';
+            const name = (readError as {name?: string})?.name || '';
             if (name !== 'AbortError') {
               streamError = 'Stream read error';
             }
@@ -1120,14 +1186,14 @@ export const useTTS = (): TTSHookReturn => {
             try {
               sharedCurrentAudio.pause();
               sharedCurrentAudio.srcObject = null;
-            } catch {}
+            } catch { }
             sharedCurrentAudio = null;
           }
           if (currentAudioRef.current) {
             try {
               currentAudioRef.current.pause();
               currentAudioRef.current.srcObject = null;
-            } catch {}
+            } catch { }
             currentAudioRef.current = null;
           }
 
@@ -1239,12 +1305,79 @@ export const useTTS = (): TTSHookReturn => {
             }
           };
 
+          // Wait for MediaStream to be ready before starting playback
+          // This ensures the audio element can play when called, preventing permission errors
+          await new Promise<void>((resolve, reject) => {
+            const checkReady = () => {
+              // Check if audio element has enough data to play (HAVE_FUTURE_DATA or higher)
+              if (audioEl.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
+                resolve();
+              } else {
+                // Wait for canplay event
+                const onCanPlay = () => {
+                  audioEl.removeEventListener('canplay', onCanPlay);
+                  audioEl.removeEventListener('error', onError);
+                  resolve();
+                };
+                const onError = () => {
+                  audioEl.removeEventListener('canplay', onCanPlay);
+                  audioEl.removeEventListener('error', onError);
+                  reject(new Error('Audio element failed to load'));
+                };
+                audioEl.addEventListener('canplay', onCanPlay, {once: true});
+                audioEl.addEventListener('error', onError, {once: true});
+                // Fallback timeout to prevent hanging
+                setTimeout(() => {
+                  audioEl.removeEventListener('canplay', onCanPlay);
+                  audioEl.removeEventListener('error', onError);
+                  // Resolve anyway - some browsers may not fire canplay for MediaStream
+                  if (audioEl.readyState >= HTMLMediaElement.HAVE_METADATA) {
+                    resolve();
+                  } else {
+                    reject(new Error('Audio element ready timeout'));
+                  }
+                }, 2000);
+              }
+            };
+            // Give MediaStream a moment to initialize
+            setTimeout(checkReady, 50);
+          });
+
+          // Re-verify AudioContext is still running after async operations
+          // Long delays can cause the context to suspend
+          if (ctx.state !== 'running') {
+            await ctx.resume();
+            // Wait a bit more after resume to ensure context is active
+            await new Promise(resolve => setTimeout(resolve, 50));
+          }
+
           // Start playback from user gesture (critical for iOS)
+          // Start source after audio element is ready
           source.start();
           sharedStartTime = ctx.currentTime;
 
           // Play the audio element (this must be from user gesture on iOS)
-          await audioEl.play();
+          try {
+            await audioEl.play();
+          } catch (playError) {
+            // Retry once if permission error - AudioContext might need another resume
+            const error = playError as Error;
+            if (
+              error.name === 'NotAllowedError' ||
+              error.message.includes('not allowed') ||
+              error.message.includes('permission')
+            ) {
+              // Ensure AudioContext is running
+              if (ctx.state !== 'running') {
+                await ctx.resume();
+                await new Promise(resolve => setTimeout(resolve, 100));
+              }
+              // Retry play once
+              await audioEl.play();
+            } else {
+              throw playError;
+            }
+          }
 
           setIsPlaying(true);
           setIsPaused(false);
@@ -1256,8 +1389,8 @@ export const useTTS = (): TTSHookReturn => {
           throw fallbackError;
         }
       } catch (e) {
-        const name = (e as { name?: string })?.name || '';
-        const message = (e as { message?: string })?.message || '';
+        const name = (e as {name?: string})?.name || '';
+        const message = (e as {message?: string})?.message || '';
         const isAbort =
           name === 'AbortError' || /aborted|abort(ed)?/i.test(message || '');
         // Suppress abort errors (user-initiated stops or component unmounts)
@@ -1326,13 +1459,13 @@ export async function playTTSOnce(
 
     // Ensure an AudioContext exists and is resumed within the user gesture
     const ctx = new (window.AudioContext ||
-      (window as unknown as { webkitAudioContext: typeof AudioContext })
+      (window as unknown as {webkitAudioContext: typeof AudioContext})
         .webkitAudioContext)();
     try {
       // Resume may return a promise; attempt to resume immediately so browsers
       // treat this as a user-initiated gesture where possible.
       void ctx.resume();
-    } catch {}
+    } catch { }
 
     if (!cached) {
       const chunks = await fetchSSEAudioChunks(
@@ -1357,26 +1490,26 @@ export async function playTTSOnce(
       // If another playback is active, stop it to avoid overlap
       try {
         if (currentPlayback) stopTTSOnce();
-      } catch {}
+      } catch { }
 
       // expose as current playback so callers can stop it
-      currentPlayback = { source, ctx };
+      currentPlayback = {source, ctx};
 
       try {
         if (callbacks?.onPlayStart) callbacks.onPlayStart();
-      } catch {}
+      } catch { }
 
       await new Promise<void>(resolve => {
         source.onended = () => {
           try {
             if (callbacks?.onPlayEnd) callbacks.onPlayEnd();
-          } catch {}
+          } catch { }
           // clear current playback handle
           try {
             if (currentPlayback && currentPlayback.source === source) {
               currentPlayback = null;
             }
-          } catch {}
+          } catch { }
           resolve();
         };
         source.start();
@@ -1386,7 +1519,7 @@ export async function playTTSOnce(
       try {
         if (currentPlayback && currentPlayback.source === source)
           currentPlayback = null;
-      } catch {}
+      } catch { }
 
       return;
     }
@@ -1394,7 +1527,7 @@ export async function playTTSOnce(
     throw new Error('TTS playback unavailable: audio not buffered');
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    showNotificationWithClean({ title: 'TTS Error', message, color: 'red' });
+    showNotificationWithClean({title: 'TTS Error', message, color: 'red'});
     throw error;
   }
 }
