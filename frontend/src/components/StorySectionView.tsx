@@ -388,8 +388,8 @@ const StoryQuestionCard: React.FC<StoryQuestionCardProps> = ({ question }) => {
               }
             >
               {selectedAnswer === question.correct_answer_index
-                ? '? Correct!'
-                : '? Incorrect'}
+                ? '✓ Correct!'
+                : '✗ Incorrect'}
             </Text>
             <Button size='xs' variant='light' onClick={handleReset}>
               Try Again

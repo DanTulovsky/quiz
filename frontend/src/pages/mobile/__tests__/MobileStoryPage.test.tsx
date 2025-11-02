@@ -214,7 +214,10 @@ describe('MobileStoryPage', () => {
 
       expect(mockTTS.playTTS).toHaveBeenCalledWith(
         mockSection.content,
-        expect.any(String)
+        expect.any(String),
+        expect.objectContaining({
+          title: expect.any(String),
+        })
       );
     });
 
@@ -310,7 +313,10 @@ describe('MobileStoryPage', () => {
 
       expect(mockTTS.playTTS).toHaveBeenCalledWith(
         mockSection.content,
-        expect.any(String)
+        expect.any(String),
+        expect.objectContaining({
+          title: expect.any(String),
+        })
       );
     });
 

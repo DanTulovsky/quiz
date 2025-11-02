@@ -340,7 +340,12 @@ describe('StoryReadingView', () => {
 
       expect(mockTTS.playTTS).toHaveBeenCalledWith(
         expectedContent,
-        expect.any(String)
+        expect.any(String),
+        expect.objectContaining({
+          title: expect.any(String),
+          language: expect.any(String),
+          level: expect.any(String),
+        })
       );
     });
 
@@ -384,7 +389,12 @@ describe('StoryReadingView', () => {
 
       expect(mockTTS.playTTS).toHaveBeenCalledWith(
         expect.any(String),
-        expect.any(String)
+        expect.any(String),
+        expect.objectContaining({
+          title: expect.any(String),
+          language: expect.any(String),
+          level: expect.any(String),
+        })
       );
     });
 
@@ -398,7 +408,12 @@ describe('StoryReadingView', () => {
 
       expect(mockTTS.playTTS).toHaveBeenCalledWith(
         expect.any(String),
-        expect.any(String)
+        expect.any(String),
+        expect.objectContaining({
+          title: expect.any(String),
+          language: expect.any(String),
+          level: expect.any(String),
+        })
       );
     });
   });

@@ -53,9 +53,9 @@ function notifyStateListeners() {
 function setupMediaSessionMetadata(metadata?: TTSMetadata | null) {
   if ('mediaSession' in navigator && navigator.mediaSession) {
     const title = metadata?.title || 'Text-to-Speech';
-    const artist = [metadata?.language, metadata?.level]
-      .filter(Boolean)
-      .join(' ? ') || 'Language Learning Quiz';
+    const artist =
+      [metadata?.language, metadata?.level].filter(Boolean).join(' ? ') ||
+      'Language Learning Quiz';
     const album = 'TTS Audio';
 
     navigator.mediaSession.metadata = new MediaMetadata({
@@ -99,7 +99,11 @@ export interface TTSMetadata {
 }
 
 interface TTSHookReturn extends TTSState {
-  playTTS: (text: string, voice?: string, metadata?: TTSMetadata) => Promise<void>;
+  playTTS: (
+    text: string,
+    voice?: string,
+    metadata?: TTSMetadata
+  ) => Promise<void>;
   stopTTS: () => void;
   pauseTTS: () => void;
   resumeTTS: () => void;
@@ -328,7 +332,9 @@ export const useTTS = (): TTSHookReturn => {
           );
           for (let ch = 0; ch < sharedCachedAudio!.channelData.length; ch++) {
             const channel = sharedCachedAudio!.channelData[ch];
-            const floatChannel = new Float32Array(channel.buffer as ArrayBuffer);
+            const floatChannel = new Float32Array(
+              channel.buffer as ArrayBuffer
+            );
             audioBuffer.copyToChannel(floatChannel, ch, 0);
           }
 
@@ -482,7 +488,9 @@ export const useTTS = (): TTSHookReturn => {
           );
           for (let ch = 0; ch < sharedCachedAudio.channelData.length; ch++) {
             const channel = sharedCachedAudio.channelData[ch];
-            const floatChannel = new Float32Array(channel.buffer as ArrayBuffer);
+            const floatChannel = new Float32Array(
+              channel.buffer as ArrayBuffer
+            );
             audioBuffer.copyToChannel(floatChannel, ch, 0);
           }
 
@@ -625,7 +633,9 @@ export const useTTS = (): TTSHookReturn => {
             );
             for (let ch = 0; ch < cached.channelData.length; ch++) {
               const channel = cached.channelData[ch];
-              const floatChannel = new Float32Array(channel.buffer as ArrayBuffer);
+              const floatChannel = new Float32Array(
+                channel.buffer as ArrayBuffer
+              );
               audioBuffer.copyToChannel(floatChannel, ch, 0);
             }
 
@@ -711,9 +721,9 @@ export const useTTS = (): TTSHookReturn => {
             // Start playback from user gesture
             source.start();
             sharedStartTime = ctx.currentTime;
-            
+
             await audioEl.play();
-            
+
             setIsPlaying(true);
             setIsPaused(false);
             setIsLoading(false);
@@ -1129,7 +1139,7 @@ export const useTTS = (): TTSHookReturn => {
           // Create MediaStreamDestination to route Web Audio to <audio> element
           const destination = ctx.createMediaStreamDestination();
           sharedMediaStreamDestination = destination;
-          
+
           // Create audio source and connect to MediaStream
           const audioBuffer = ctx.createBuffer(
             cached.channelData.length,
@@ -1138,14 +1148,16 @@ export const useTTS = (): TTSHookReturn => {
           );
           for (let ch = 0; ch < cached.channelData.length; ch++) {
             const channel = cached.channelData[ch];
-            const floatChannel = new Float32Array(channel.buffer as ArrayBuffer);
+            const floatChannel = new Float32Array(
+              channel.buffer as ArrayBuffer
+            );
             audioBuffer.copyToChannel(floatChannel, ch, 0);
           }
 
           const source = ctx.createBufferSource();
           source.buffer = audioBuffer;
           source.connect(destination); // Connect to MediaStream instead of speakers
-          
+
           // Set the MediaStream as the audio element's source
           audioEl.srcObject = destination.stream;
 
@@ -1230,10 +1242,10 @@ export const useTTS = (): TTSHookReturn => {
           // Start playback from user gesture (critical for iOS)
           source.start();
           sharedStartTime = ctx.currentTime;
-          
+
           // Play the audio element (this must be from user gesture on iOS)
           await audioEl.play();
-          
+
           setIsPlaying(true);
           setIsPaused(false);
           setIsLoading(false);
