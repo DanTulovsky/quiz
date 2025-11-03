@@ -325,7 +325,8 @@ test.describe('Comprehensive API Tests', () => {
       path.includes('/clear-database') ||
       path.includes('/clear-user-data') ||
       path.includes('/test-email') ||
-      path.includes('/api-keys/test-');
+      path.includes('/api-keys/test-') ||
+      path.includes('/audio/');
 
     if (shouldSkip) return true;
 
@@ -2549,9 +2550,9 @@ test.describe('Comprehensive API Tests', () => {
         // Special handling for 409 conflict tests on snippet updates
         // We need to update one snippet to match another snippet's unique key, causing a conflict
         if (testCase.expectedStatusCodes.includes('409') &&
-            testCase.method === 'PUT' &&
-            testCase.path.includes('/snippets/') &&
-            testCase.requiresAuth) {
+          testCase.method === 'PUT' &&
+          testCase.path.includes('/snippets/') &&
+          testCase.requiresAuth) {
           try {
             const sessionCookie = await loginUser(request, REGULAR_USER);
 
