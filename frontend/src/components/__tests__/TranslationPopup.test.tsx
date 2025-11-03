@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -64,7 +64,19 @@ vi.mock('../../api/api', () => {
       isLoading: false,
     }),
     useGetV1SettingsLanguages: () => ({
-      data: ['en', 'es', 'fr', 'de', 'it'],
+      data: [
+        { code: 'en', name: 'english' },
+        { code: 'es', name: 'spanish' },
+        { code: 'fr', name: 'french' },
+        { code: 'de', name: 'german' },
+        { code: 'it', name: 'italian' },
+        { code: 'pt', name: 'portuguese' },
+        { code: 'ru', name: 'russian' },
+        { code: 'ja', name: 'japanese' },
+        { code: 'ko', name: 'korean' },
+        { code: 'zh', name: 'chinese' },
+        { code: 'hi', name: 'hindi' },
+      ],
       isLoading: false,
     }),
     useGetV1SettingsApiKeyAvailability: () => ({
@@ -314,10 +326,14 @@ describe('TranslationPopup', () => {
     );
 
     // Wait for the click outside handler to be attached (100ms delay)
-    await new Promise(resolve => setTimeout(resolve, 150));
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 150));
+    });
 
     // Click outside the popup (on the document body)
-    await user.click(document.body);
+    await act(async () => {
+      await user.click(document.body);
+    });
 
     expect(mockOnClose).toHaveBeenCalled();
   });
@@ -347,7 +363,7 @@ describe('TranslationPopup', () => {
     // Set up the mock for this test
     apiModule.postV1Snippets.mockResolvedValue({});
 
-    render(
+    const { unmount } = render(
       <TestWrapper>
         <TranslationPopup
           selection={{
@@ -366,13 +382,24 @@ describe('TranslationPopup', () => {
     const saveButton = screen.getByText('Save');
     await user.click(saveButton);
 
-    expect(apiModule.postV1Snippets).toHaveBeenCalledWith({
-      original_text: 'Bonjour',
-      translated_text: 'Translated text',
-      source_language: 'en',
-      target_language: 'es',
-      context: 'Je dis Bonjour à tout le monde.',
+    // Wait for async operations to complete
+    await waitFor(() => {
+      expect(apiModule.postV1Snippets).toHaveBeenCalledWith({
+        original_text: 'Bonjour',
+        translated_text: 'Translated text',
+        source_language: 'en',
+        target_language: 'es',
+        context: 'Je dis Bonjour à tout le monde.',
+      });
     });
+
+    // Wait a bit more to ensure all async operations complete
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    });
+
+    // Clean up
+    unmount();
   });
 
   it('should show loading state while saving', async () => {
@@ -383,7 +410,7 @@ describe('TranslationPopup', () => {
       () => new Promise(resolve => setTimeout(resolve, 100))
     );
 
-    render(
+    const { unmount } = render(
       <TestWrapper>
         <TranslationPopup
           selection={{
@@ -403,6 +430,17 @@ describe('TranslationPopup', () => {
 
     expect(screen.getByText('Saving...')).toBeInTheDocument();
     expect(screen.getByTestId('loader')).toBeInTheDocument();
+
+    // Wait for async operations to complete before cleanup
+    await waitFor(
+      () => {
+        expect(screen.queryByText('Saving...')).not.toBeInTheDocument();
+      },
+      { timeout: 200 }
+    );
+
+    // Clean up
+    unmount();
   });
 
   it('should show saved state after successful save', async () => {
@@ -411,7 +449,7 @@ describe('TranslationPopup', () => {
     // Set up the mock for this test
     apiModule.postV1Snippets.mockResolvedValue({});
 
-    render(
+    const { unmount } = render(
       <TestWrapper>
         <TranslationPopup
           selection={{
@@ -435,6 +473,14 @@ describe('TranslationPopup', () => {
       expect(savedButton).toBeInTheDocument();
       expect(savedButton).toBeDisabled();
     });
+
+    // Wait a bit more to ensure all async operations complete
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    });
+
+    // Clean up
+    unmount();
   });
 
   it('should show error message when save fails', async () => {
@@ -443,7 +489,7 @@ describe('TranslationPopup', () => {
     // Set up the mock for this test
     apiModule.postV1Snippets.mockRejectedValue(new Error('Save failed'));
 
-    render(
+    const { unmount } = render(
       <TestWrapper>
         <TranslationPopup
           selection={{
@@ -468,6 +514,14 @@ describe('TranslationPopup', () => {
 
     // Save button should be enabled again after error
     expect(saveButton).not.toBeDisabled();
+
+    // Wait a bit more to ensure all async operations complete
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    });
+
+    // Clean up
+    unmount();
   });
 
   it('should show save button even when no translation', () => {

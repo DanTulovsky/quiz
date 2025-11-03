@@ -572,8 +572,43 @@ export const useTTS = (): TTSHookReturn => {
         }
         window.__ttsCleanup = cleanup;
       } catch (error) {
-        const message =
+        let message =
           error instanceof Error ? error.message : 'Failed to generate speech';
+
+        // Format HTTP error responses to match expected format
+        // Extract status code from error message if present (e.g., "API request failed with status 500")
+        // Also check for OpenAI SDK error format which may include status in the error object
+        const statusMatch = message.match(/status\s+(\d+)/i);
+        let statusCode: string | null = null;
+        if (statusMatch) {
+          statusCode = statusMatch[1];
+        } else if (error && typeof error === 'object' && 'status' in error) {
+          // OpenAI SDK errors may have status as a property
+          statusCode = String(error.status);
+        } else if (error && typeof error === 'object' && 'response' in error) {
+          // Some errors wrap the response
+          const response = (error as { response?: { status?: number } })
+            .response;
+          if (response?.status) {
+            statusCode = String(response.status);
+          }
+        }
+
+        if (statusCode) {
+          message = `TTS request failed: ${statusCode}`;
+        } else if (
+          message.includes('library not loaded') ||
+          message.includes('TTS library')
+        ) {
+          message = `TTS library not loaded`;
+        } else if (
+          message.includes('500') ||
+          message.includes('Internal Server Error')
+        ) {
+          // Fallback: if message mentions 500, format it
+          message = `TTS request failed: 500`;
+        }
+
         showNotificationWithClean({
           title: 'TTS Error',
           message,

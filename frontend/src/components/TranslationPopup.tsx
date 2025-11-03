@@ -19,6 +19,7 @@ import {
   postV1Snippets,
   Question,
   useGetV1PreferencesLearning,
+  useGetV1SettingsLanguages,
 } from '../api/api';
 import { useTheme } from '../contexts/ThemeContext';
 import { fontScaleMap } from '../theme/theme';
@@ -49,27 +50,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
   const { fontSize } = useTheme();
 
   // Load saved language from localStorage or use browser language or default to 'en'
-  const [targetLanguage, setTargetLanguage] = useState(() => {
-    const saved = localStorage.getItem('quiz-translation-target-lang');
-    if (
-      saved &&
-      ['en', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'ko', 'zh'].includes(
-        saved
-      )
-    ) {
-      return saved;
-    }
-    // Try to detect user's preferred language from browser
-    const browserLang = navigator.language.split('-')[0];
-    if (
-      ['en', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'ja', 'ko', 'zh'].includes(
-        browserLang
-      )
-    ) {
-      return browserLang;
-    }
-    return 'en';
-  });
+  const [targetLanguage, setTargetLanguage] = useState('en');
   const [isSelectFocused, setIsSelectFocused] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -82,7 +63,12 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
     error: translationError,
   } = useTranslation();
   const { data: userLearningPrefs } = useGetV1PreferencesLearning();
+  const { data: languagesData, isLoading: languagesLoading } =
+    useGetV1SettingsLanguages();
   const popupRef = useRef<HTMLDivElement>(null);
+  const mountedRef = useRef(true);
+  const savedTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const copySuccessTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Helper function to convert language code to language name for TTS
   const codeToLanguageName = (code: string): string => {
@@ -97,23 +83,63 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
       ja: 'japanese',
       ko: 'korean',
       zh: 'chinese',
+      hi: 'hindi',
     };
     return mapping[code] || code;
   };
 
-  // Language options for the dropdown
-  const languageOptions = [
-    { value: 'en', label: 'English' },
-    { value: 'es', label: 'Spanish' },
-    { value: 'fr', label: 'French' },
-    { value: 'de', label: 'German' },
-    { value: 'it', label: 'Italian' },
-    { value: 'pt', label: 'Portuguese' },
-    { value: 'ru', label: 'Russian' },
-    { value: 'ja', label: 'Japanese' },
-    { value: 'ko', label: 'Korean' },
-    { value: 'zh', label: 'Chinese' },
-  ];
+  // Language options for the dropdown - dynamically generated from API
+  const languageOptions = languagesData
+    ? languagesData.map(lang => ({
+        value: lang.code,
+        label: lang.name.charAt(0).toUpperCase() + lang.name.slice(1),
+      }))
+    : [];
+
+  // Track mounted state
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      // Clean up any pending timeouts
+      if (savedTimeoutRef.current) {
+        clearTimeout(savedTimeoutRef.current);
+        savedTimeoutRef.current = null;
+      }
+      if (copySuccessTimeoutRef.current) {
+        clearTimeout(copySuccessTimeoutRef.current);
+        copySuccessTimeoutRef.current = null;
+      }
+    };
+  }, []);
+
+  // Initialize targetLanguage from localStorage or browser language once languages are loaded
+  useEffect(() => {
+    if (!languagesLoading && languagesData && languagesData.length > 0) {
+      const availableCodes = languagesData.map(lang => lang.code);
+
+      // Try to load saved language from localStorage
+      const saved = localStorage.getItem('quiz-translation-target-lang');
+      if (saved && availableCodes.includes(saved)) {
+        setTargetLanguage(saved);
+        return;
+      }
+
+      // Try to detect user's preferred language from browser
+      const browserLang = navigator.language.split('-')[0];
+      if (availableCodes.includes(browserLang)) {
+        setTargetLanguage(browserLang);
+        return;
+      }
+
+      // Default to 'en' if available, otherwise first language
+      if (availableCodes.includes('en')) {
+        setTargetLanguage('en');
+      } else {
+        setTargetLanguage(availableCodes[0]);
+      }
+    }
+  }, [languagesLoading, languagesData]);
 
   // Translate text when selection or target language changes
   useEffect(() => {
@@ -292,15 +318,30 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
         queryKey: ['/v1/snippets'],
       });
 
-      setIsSaved(true);
-      // Reset saved state after 3 seconds
-      setTimeout(() => setIsSaved(false), 3000);
+      if (mountedRef.current) {
+        setIsSaved(true);
+        // Clear any existing timeout
+        if (savedTimeoutRef.current) {
+          clearTimeout(savedTimeoutRef.current);
+        }
+        // Reset saved state after 3 seconds
+        savedTimeoutRef.current = setTimeout(() => {
+          if (mountedRef.current) {
+            setIsSaved(false);
+          }
+          savedTimeoutRef.current = null;
+        }, 3000);
+      }
     } catch (error) {
-      setSaveError(
-        error instanceof Error ? error.message : 'Failed to save snippet'
-      );
+      if (mountedRef.current) {
+        setSaveError(
+          error instanceof Error ? error.message : 'Failed to save snippet'
+        );
+      }
     } finally {
-      setIsSaving(false);
+      if (mountedRef.current) {
+        setIsSaving(false);
+      }
     }
   };
 
@@ -314,8 +355,19 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
   const handleCopy = async (text: string, type: 'original' | 'translated') => {
     try {
       await navigator.clipboard.writeText(text);
-      setCopySuccess(type);
-      setTimeout(() => setCopySuccess(null), 2000);
+      if (mountedRef.current) {
+        setCopySuccess(type);
+        // Clear any existing timeout
+        if (copySuccessTimeoutRef.current) {
+          clearTimeout(copySuccessTimeoutRef.current);
+        }
+        copySuccessTimeoutRef.current = setTimeout(() => {
+          if (mountedRef.current) {
+            setCopySuccess(null);
+          }
+          copySuccessTimeoutRef.current = null;
+        }, 2000);
+      }
     } catch (err) {
       console.error('Failed to copy text:', err);
     }
@@ -399,7 +451,10 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
               }
             }}
             size='sm'
-            placeholder='Select language'
+            placeholder={
+              languagesLoading ? 'Loading languages...' : 'Select language'
+            }
+            disabled={languagesLoading || languageOptions.length === 0}
             style={{ width: '100%' }}
             onFocus={() => {
               setIsSelectFocused(true);
@@ -409,7 +464,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
             }}
             styles={{
               dropdown: {
-                zIndex: 1600,
+                zIndex: 100000,
               },
             }}
           />

@@ -1,11 +1,36 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { screen, fireEvent, waitFor } from '@testing-library/react';
+import {describe, it, expect, beforeEach, vi} from 'vitest';
+import {screen, fireEvent, waitFor} from '@testing-library/react';
 import MobileDailyPage from '../MobileDailyPage';
-import { renderWithProviders } from '../../../test-utils';
+import {renderWithProviders} from '../../../test-utils';
+
+// Mock react-router-dom to provide stable useParams
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual('react-router-dom');
+  return {
+    ...actual,
+    useParams: () => ({date: undefined}),
+  };
+});
+
+// Mock Mantine's DatePickerInput to avoid potential rendering issues
+vi.mock('@mantine/dates', async () => {
+  const actual = await vi.importActual('@mantine/dates');
+  return {
+    ...actual,
+    DatePickerInput: ({onChange, value}: any) => (
+      <input
+        data-testid="date-picker-input"
+        type="text"
+        value={value}
+        onChange={(e) => onChange && onChange(new Date(e.target.value))}
+      />
+    ),
+  };
+});
 
 const mockAuthStatusData = {
   authenticated: true,
-  user: { id: 1, role: 'user' },
+  user: {id: 1, role: 'user'},
 };
 
 const mockRefetch = vi.fn();
@@ -13,26 +38,26 @@ const mockRefetch = vi.fn();
 // Mock auth hook
 vi.mock('../../../hooks/useAuth', () => ({
   useAuth: () => ({
-    user: { id: 1, email: 'test@example.com' },
+    user: {id: 1, email: 'test@example.com'},
     isAuthenticated: true,
   }),
 }));
 
 // Mock tanstack-query mutation hooks used in component
 vi.mock('../../../api/api', () => ({
-  usePostV1QuizQuestionIdReport: () => ({ mutate: vi.fn(), isPending: false }),
+  usePostV1QuizQuestionIdReport: () => ({mutate: vi.fn(), isPending: false}),
   usePostV1QuizQuestionIdMarkKnown: () => ({
     mutate: vi.fn(),
     isPending: false,
   }),
   // Mock snippet hooks
   useGetV1SnippetsByQuestionQuestionId: () => ({
-    data: { snippets: [] },
+    data: {snippets: []},
     isLoading: false,
     error: null,
   }),
   useGetV1PreferencesLearning: () => ({
-    data: { tts_voice: 'it-IT-TestVoice' },
+    data: {tts_voice: 'it-IT-TestVoice'},
   }),
   // Mock auth status for AuthProvider
   useGetV1AuthStatus: () => ({
@@ -57,30 +82,34 @@ vi.mock('../../../api/api', () => ({
 const mockSubmitAnswer = vi.fn();
 const mockGoToNextQuestion = vi.fn();
 const mockGoToPreviousQuestion = vi.fn();
+const mockSetSelectedDate = vi.fn();
+
+// Create stable question object to prevent infinite loops in useEffect
+const stableCurrentQuestion = {
+  id: 1,
+  question_id: 101,
+  user_id: 1,
+  assignment_date: '2025-09-30',
+  is_completed: false,
+  question: {
+    id: 101,
+    language: 'Italian',
+    level: 'A1',
+    type: 'vocabulary',
+    content: {
+      question: 'Come stai?',
+      sentence: 'Ciao, come stai oggi?',
+      options: ['Bene', 'Male', 'Così così', 'Benissimo'],
+    },
+  },
+};
 
 // Mock useDailyQuestions hook
 vi.mock('../../../hooks/useDailyQuestions', () => ({
   useDailyQuestions: () => ({
     selectedDate: '2025-09-30',
-    setSelectedDate: vi.fn(),
-    currentQuestion: {
-      id: 1,
-      question_id: 101,
-      user_id: 1,
-      assignment_date: '2025-09-30',
-      is_completed: false,
-      question: {
-        id: 101,
-        language: 'Italian',
-        level: 'A1',
-        type: 'vocabulary',
-        content: {
-          question: 'Come stai?',
-          sentence: 'Ciao, come stai oggi?',
-          options: ['Bene', 'Male', 'Così così', 'Benissimo'],
-        },
-      },
-    },
+    setSelectedDate: mockSetSelectedDate,
+    currentQuestion: stableCurrentQuestion,
     submitAnswer: mockSubmitAnswer,
     goToNextQuestion: mockGoToNextQuestion,
     goToPreviousQuestion: mockGoToPreviousQuestion,
@@ -105,6 +134,8 @@ vi.mock('../../../hooks/useDailyQuestions', () => ({
         is_completed: false,
       },
     ],
+    availableDates: ['2025-09-30', '2025-09-29'],
+    isAllCompleted: false,
   }),
 }));
 
@@ -182,7 +213,7 @@ describe('MobileDailyPage', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByRole('button', { name: /Submit Answer/i })
+        screen.getByRole('button', {name: /Submit Answer/i})
       ).toBeInTheDocument();
     });
   });
@@ -192,7 +223,7 @@ describe('MobileDailyPage', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByRole('button', { name: /Submit Answer/i })
+        screen.getByRole('button', {name: /Submit Answer/i})
       ).toBeInTheDocument();
     });
   });
@@ -220,12 +251,12 @@ describe('MobileDailyPage', () => {
     }
 
     // Now submit the answer
-    const submitButton = screen.getByRole('button', { name: /Submit Answer/i });
+    const submitButton = screen.getByRole('button', {name: /Submit Answer/i});
     fireEvent.click(submitButton);
 
     await waitFor(() => {
       expect(
-        screen.getByRole('button', { name: /Next Question/i })
+        screen.getByRole('button', {name: /Next Question/i})
       ).toBeInTheDocument();
     });
   });

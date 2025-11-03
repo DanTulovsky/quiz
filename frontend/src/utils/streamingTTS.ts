@@ -64,9 +64,11 @@ function isIOSSafari(): boolean {
     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
   // Check for Safari (not Chrome/Firefox on iOS)
+  // MSStream is an old IE property that doesn't exist in TypeScript types
+  const hasMSStream = 'MSStream' in window;
   const isSafari =
     /^((?!chrome|android).)*safari/i.test(navigator.userAgent) ||
-    (isIOS && !window.MSStream);
+    (isIOS && !hasMSStream);
 
   return isIOS && isSafari;
 }
@@ -78,8 +80,6 @@ export async function streamAndPlayTTS(
   text: string,
   options: StreamingTTSOptions = {}
 ): Promise<void> {
-  console.log('[Streaming TTS] Starting playback request');
-
   // Clean up any existing playback
   if (currentAbortController) {
     console.log('[Streaming TTS] Aborting previous request');
@@ -108,9 +108,6 @@ export async function streamAndPlayTTS(
 
   // Check if we're on iOS Safari - use init/stream approach (no HLS)
   if (isIOSSafari()) {
-    console.log(
-      '[Streaming TTS] iOS Safari detected - using init/stream approach'
-    );
     try {
       const initUrl = `${endpoint.replace(/\/$/, '')}/init`;
       const initResponse = await fetch(initUrl, {
@@ -249,6 +246,10 @@ export async function streamAndPlayTTS(
     // Use the response directly for progressive playback and pause/resume control
     // OpenAI SDK returns APIPromise<Response>, which resolves to a standard Response object
     // According to the TypeScript definitions: create() returns APIPromise<Response>
+    if (!response.ok) {
+      // If response is not ok, throw an error with status code
+      throw new Error(`TTS request failed: ${response.status}`);
+    }
     if (!response.body) {
       throw new Error('Response has no body stream');
     }
@@ -282,6 +283,7 @@ export async function streamAndPlayTTS(
 
             if (mediaSource.readyState === 'open') {
               try {
+                // @ts-expect-error - MediaSource API accepts Uint8Array but TypeScript types are overly strict
                 sourceBuffer.appendBuffer(chunk);
 
                 // Process queued chunks after this one
@@ -325,6 +327,7 @@ export async function streamAndPlayTTS(
                 const chunk = queuedChunks.shift();
                 if (chunk) {
                   try {
+                    // @ts-expect-error - MediaSource API accepts Uint8Array but TypeScript types are overly strict
                     sourceBuffer.appendBuffer(chunk);
                     await new Promise(resolve => {
                       sourceBuffer.addEventListener('updateend', resolve, {

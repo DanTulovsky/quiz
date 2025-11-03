@@ -947,13 +947,46 @@ describe('QuestionCard', () => {
       created_at: '2023-01-01T00:00:00Z',
     };
 
-    // Mock fetch to return an error
+    // Mock fetch to return an error response
+    // The OpenAI SDK will throw an error when it gets a non-ok response
     const mockFetch = vi.fn();
     global.fetch = mockFetch;
-    mockFetch.mockResolvedValue({
+
+    // Create a mock response that the OpenAI SDK will recognize as an error
+    // The SDK checks response.ok and throws an APIError with status property
+    const mockResponse = {
       ok: false,
       status: 500,
-    });
+      statusText: 'Internal Server Error',
+      headers: new Headers(),
+      body: null,
+      bodyUsed: false,
+      redirected: false,
+      type: 'basic' as ResponseType,
+      url: '',
+      clone: vi.fn(),
+      arrayBuffer: vi.fn(),
+      blob: vi.fn(),
+      formData: vi.fn(),
+      json: vi.fn().mockResolvedValue({
+        error: {
+          message: 'Internal server error',
+          type: 'server_error',
+          code: 'internal_error',
+        },
+      }),
+      text: vi.fn().mockResolvedValue(
+        JSON.stringify({
+          error: {
+            message: 'Internal server error',
+            type: 'server_error',
+            code: 'internal_error',
+          },
+        })
+      ),
+    };
+
+    mockFetch.mockResolvedValue(mockResponse);
 
     function TTSWrapper(
       props: Omit<
@@ -995,18 +1028,22 @@ describe('QuestionCard', () => {
 
     // Verify that error notification was shown
     // Note: TTS streaming may fail in tests and show "TTS request failed: 500"
-    await waitFor(() => {
-      expect(vi.mocked(showNotificationWithClean)).toHaveBeenCalled();
-      const call = vi.mocked(showNotificationWithClean).mock.calls[0]?.[0];
-      expect(call).toMatchObject({
-        title: 'TTS Error',
-        color: 'red',
-      });
-      // Accept either error message
-      expect(call?.message).toMatch(
-        /TTS (library not loaded|request failed: 500)/
-      );
-    });
+    // The OpenAI SDK will throw an error when it detects response.ok === false
+    await waitFor(
+      () => {
+        expect(vi.mocked(showNotificationWithClean)).toHaveBeenCalled();
+        const call = vi.mocked(showNotificationWithClean).mock.calls[0]?.[0];
+        expect(call).toMatchObject({
+          title: 'TTS Error',
+          color: 'red',
+        });
+        // Accept either error message
+        expect(call?.message).toMatch(
+          /TTS (library not loaded|request failed: 500)/
+        );
+      },
+      { timeout: 3000 }
+    );
   });
 
   it('handles fill blank questions with hint', () => {

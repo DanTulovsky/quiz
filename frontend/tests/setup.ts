@@ -161,3 +161,11 @@ global.XMLHttpRequest = vi.fn().mockImplementation(() => ({
   removeEventListener: vi.fn(),
   dispatchEvent: vi.fn(),
 }));
+
+// Mock HTMLAudioElement methods for TTS tests (jsdom doesn't implement them)
+// @ts-expect-error - overriding jsdom implementation
+HTMLAudioElement.prototype.play = vi.fn().mockResolvedValue(undefined);
+// @ts-expect-error - overriding jsdom implementation
+HTMLAudioElement.prototype.pause = vi.fn();
+// @ts-expect-error - overriding jsdom implementation
+HTMLAudioElement.prototype.load = vi.fn();

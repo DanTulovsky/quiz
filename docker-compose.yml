@@ -222,7 +222,8 @@ services:
   tts:
     container_name: openai-edge-tts
     restart: unless-stopped
-    image: mrwetsnow/openai-edge-tts:20251103.02.18
+    image: mrwetsnow/openai-edge-tts:latest
+    pull_policy: always
     ports:
       - "${TTS_PORT:-5050}:5050"
     env_file:

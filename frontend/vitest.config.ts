@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config'
+import {defineConfig} from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 
@@ -13,9 +13,17 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     testTimeout: 10000,
+    hookTimeout: 10000,
+    teardownTimeout: 10000,
     setupFiles: ['./tests/setup.ts'],
     exclude: ['tests/**/*.spec.ts', 'tests/**/*.ts', 'node_modules/**'],
     include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    pool: 'forks',
+    poolOptions: {
+      forks: {
+        singleFork: true,
+      },
+    },
     environmentOptions: {
       jsdom: {
         url: 'http://localhost',
