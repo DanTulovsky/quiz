@@ -63,7 +63,13 @@ services:
       - OTEL_SEMCONV_STABILITY_OPT_IN=http/dup
       - SWAGGER_FILE_PATH=/app/swagger.yaml
     healthcheck:
-      test: ["CMD", "sh", "-c", "curl -f http://localhost:8080/health || wget --quiet --tries=1 --spider http://localhost:8080/health"]
+      test:
+        [
+          "CMD",
+          "sh",
+          "-c",
+          "curl -f http://localhost:8080/health || wget --quiet --tries=1 --spider http://localhost:8080/health",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -110,7 +116,7 @@ services:
       - OPEN_TELEMETRY_SAMPLING_RATE=${OPEN_TELEMETRY_SAMPLING_RATE:-1.0}
       - OTEL_SEMCONV_STABILITY_OPT_IN=http/dup
     healthcheck:
-      test: ["CMD", "sh", "-c", "curl -f http://localhost:8081/v1/health" ]
+      test: ["CMD", "sh", "-c", "curl -f http://localhost:8081/v1/health"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -163,11 +169,9 @@ services:
   tts-test:
     container_name: openai-edge-tts-test
     restart: unless-stopped
-    # Select image via TTS_IMAGE env var so platform-specific image can be used.
-    # Example in .env: TTS_IMAGE=travisvn/openai-edge-tts:latest
-    image: ${TTS_IMAGE:-mrwetsnow/openai-edge-tts:latest}
+    image: mrwetsnow/openai-edge-tts:latest
     ports:
-      - '5051:5050'
+      - "5051:5050"
     env_file:
       - .env
     networks:
@@ -185,6 +189,7 @@ services:
       REMOVE_FILTER: ${TTS_REMOVE_FILTER:-False}
       EXPAND_API: ${TTS_EXPAND_API:-True}
       DETAILED_ERROR_LOGGING: ${TTS_DETAILED_ERROR_LOGGING:-True}
+      DEBUG_STREAMING: ${DEBUG_STREAMING:-false}
 
 networks:
   default:

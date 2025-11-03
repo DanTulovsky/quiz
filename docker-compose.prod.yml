@@ -198,6 +198,7 @@ services:
       REMOVE_FILTER: ${TTS_REMOVE_FILTER:-False}
       EXPAND_API: ${TTS_EXPAND_API:-True}
       DETAILED_ERROR_LOGGING: ${TTS_DETAILED_ERROR_LOGGING:-True}
+      DEBUG_STREAMING: ${DEBUG_STREAMING:-false}
 
 volumes:
   postgres_prod_data:

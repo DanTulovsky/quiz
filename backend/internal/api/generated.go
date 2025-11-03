@@ -173,9 +173,9 @@ const (
 
 // Defines values for TTSRequestStreamFormat.
 const (
-	Mp3 TTSRequestStreamFormat = "mp3"
-	Sse TTSRequestStreamFormat = "sse"
-	Wav TTSRequestStreamFormat = "wav"
+	Audio       TTSRequestStreamFormat = "audio"
+	AudioStream TTSRequestStreamFormat = "audio_stream"
+	Sse         TTSRequestStreamFormat = "sse"
 )
 
 // Defines values for TTSResponseType.
@@ -2403,6 +2403,9 @@ type PostV1ApiKeysJSONRequestBody = CreateAPIKeyRequest
 
 // PostV1AudioSpeechJSONRequestBody defines body for PostV1AudioSpeech for application/json ContentType.
 type PostV1AudioSpeechJSONRequestBody = TTSRequest
+
+// PostV1AudioSpeechInitJSONRequestBody defines body for PostV1AudioSpeechInit for application/json ContentType.
+type PostV1AudioSpeechInitJSONRequestBody = TTSRequest
 
 // PostV1AuthLoginJSONRequestBody defines body for PostV1AuthLogin for application/json ContentType.
 type PostV1AuthLoginJSONRequestBody = LoginRequest

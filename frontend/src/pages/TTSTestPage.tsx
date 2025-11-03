@@ -283,14 +283,6 @@ const TTSTestPage: React.FC = () => {
             <Text size='sm' c='dimmed'>
               Debug: isLoading={String(isLoading)}, isPlaying=
               {String(isPlaying)}, isPaused={String(isPaused)}
-              {window.TTS?.audio && (
-                <>
-                  {' '}
-                  | audio.paused={String(window.TTS.audio.paused)}, currentTime=
-                  {window.TTS.audio.currentTime.toFixed(2)}, ended=
-                  {String(window.TTS.audio.ended)}
-                </>
-              )}
             </Text>
             {(isPlaying || isPaused) && (
               <Text size='sm' c='dimmed'>

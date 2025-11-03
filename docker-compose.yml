@@ -13,7 +13,11 @@ services:
     volumes:
       - postgres_prod_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-quiz_user} -d ${POSTGRES_DB:-quiz_db}"]
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-quiz_user} -d ${POSTGRES_DB:-quiz_db}",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -85,7 +89,13 @@ services:
       - EMAIL_DAILY_REMINDER_HOUR=${EMAIL_DAILY_REMINDER_HOUR:-9}
       - SERVER_APP_BASE_URL=${SERVER_APP_BASE_URL:-http://localhost:3000}
     healthcheck:
-      test: ["CMD", "sh", "-c", "curl -f http://localhost:8080/health || wget --quiet --tries=1 --spider http://localhost:8080/health"]
+      test:
+        [
+          "CMD",
+          "sh",
+          "-c",
+          "curl -f http://localhost:8080/health || wget --quiet --tries=1 --spider http://localhost:8080/health",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -147,7 +157,13 @@ services:
       - EMAIL_DAILY_REMINDER_ENABLED=${EMAIL_DAILY_REMINDER_ENABLED:-true}
       - EMAIL_DAILY_REMINDER_HOUR=${EMAIL_DAILY_REMINDER_HOUR:-9}
     healthcheck:
-      test: ["CMD", "sh", "-c", "curl -f http://localhost:${SERVER_WORKER_PORT:-8081}/v1/health" ]
+      test:
+        [
+          "CMD",
+          "sh",
+          "-c",
+          "curl -f http://localhost:${SERVER_WORKER_PORT:-8081}/v1/health",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -181,7 +197,7 @@ services:
       backend:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "sh", "-c", "curl -f http://localhost:/health" ]
+      test: ["CMD", "sh", "-c", "curl -f http://localhost:/health"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -206,12 +222,9 @@ services:
   tts:
     container_name: openai-edge-tts
     restart: unless-stopped
-    # Select image via TTS_IMAGE env var so platform-specific image can be used.
-    # amd64:    # image: travisvn/openai-edge-tts:latest
-    # arm64:    # image: mrwetsnow/openai-edge-tts:latest
-    image: ${TTS_IMAGE:-mrwetsnow/openai-edge-tts:latest}
+    image: mrwetsnow/openai-edge-tts:20251103.02.18
     ports:
-      - '${TTS_PORT:-5050}:5050'
+      - "${TTS_PORT:-5050}:5050"
     env_file:
       - .env
     environment: # optionally define in -e argument when running docker command
@@ -225,6 +238,7 @@ services:
       REMOVE_FILTER: ${TTS_REMOVE_FILTER:-False}
       EXPAND_API: ${TTS_EXPAND_API:-True}
       DETAILED_ERROR_LOGGING: ${TTS_DETAILED_ERROR_LOGGING:-True}
+      DEBUG_STREAMING: ${DEBUG_STREAMING:-False}
 
 volumes:
   postgres_prod_data:

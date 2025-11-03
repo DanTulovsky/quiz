@@ -5942,6 +5942,81 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /v1/audio/speech/init:
+    post:
+      tags:
+        - Text-to-Speech
+      summary: Initialize a TTS stream (for iOS playback)
+      description: Create and initialize a TTS stream. Returns a stream identifier and optional token to access the streaming audio endpoint.
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TTSRequest"
+      responses:
+        "200":
+          description: Stream initialized successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  stream_id:
+                    type: string
+                  token:
+                    type: string
+                    nullable: true
+        "401":
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "400":
+          description: Invalid request format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/audio/speech/stream/{stream_id}:
+    get:
+      tags:
+        - Text-to-Speech
+      summary: Stream audio for initialized TTS stream
+      description: Stream the generated audio for the previously initialized stream_id. Typically used by iOS Safari to play audio directly.
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: stream_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Audio stream
+          content:
+            audio/aac:
+              schema:
+                type: string
+                format: binary
+        "401":
+          description: Authentication required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Stream not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
 components:
   schemas:
     WordOfDayEmailPreferenceRequest:
@@ -8055,7 +8130,7 @@ components:
         stream_format:
           type: string
           default: "sse"
-          enum: ["sse", "mp3", "wav"]
+          enum: ["sse", "audio", "audio_stream"]
           description: The format for streaming audio data
 
     TTSResponse:

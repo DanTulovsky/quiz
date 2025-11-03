@@ -21,6 +21,7 @@ import { IconCheck, IconX } from '@tabler/icons-react';
 import { splitIntoParagraphs } from '../../utils/passage';
 import { useMediaQuery } from '@mantine/hooks';
 import { useDailyQuestions } from '../../hooks/useDailyQuestions';
+import { useQuestion } from '../../contexts/useQuestion';
 import DailyDatePicker from '../../components/DailyDatePicker';
 import { useMantineTheme } from '@mantine/core';
 import TTSButton from '../../components/TTSButton';
@@ -56,6 +57,10 @@ const MobileDailyPage: React.FC = () => {
 
   // Fetch snippets for the current question
   const { snippets } = useQuestionSnippets(currentQuestion?.question_id);
+
+  // Share the currently visible question with global QuestionContext so
+  // components like TranslationOverlay can read the exact on-screen question id.
+  const { setQuizQuestion } = useQuestion();
 
   // Local UI state
   const [selectedAnswerLocal, setSelectedAnswerLocal] = useState<number | null>(
@@ -212,6 +217,20 @@ const MobileDailyPage: React.FC = () => {
       // ignore in non-browser environments
     }
   }, [currentQuestion?.id]);
+
+  // Publish the visible daily question to QuestionContext with the correct id
+  useEffect(() => {
+    if (currentQuestion?.question && currentQuestion.question_id != null) {
+      setQuizQuestion({
+        ...currentQuestion.question,
+        id: currentQuestion.question_id,
+      });
+    }
+  }, [
+    currentQuestion?.question,
+    currentQuestion?.question_id,
+    setQuizQuestion,
+  ]);
 
   // Function to scroll to submit button (mobile only)
   const scrollToSubmitButton = useCallback(() => {

@@ -994,8 +994,7 @@ describe('QuestionCard', () => {
     fireEvent.click(ttsButton);
 
     // Verify that error notification was shown
-    // Note: Since window.TTS is not set up in tests, it will show "TTS library not loaded"
-    // or if TTS library is loaded, it may show "TTS request failed: 500"
+    // Note: TTS streaming may fail in tests and show "TTS request failed: 500"
     await waitFor(() => {
       expect(vi.mocked(showNotificationWithClean)).toHaveBeenCalled();
       const call = vi.mocked(showNotificationWithClean).mock.calls[0]?.[0];

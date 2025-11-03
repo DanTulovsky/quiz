@@ -967,6 +967,7 @@ tasks:
       QUIZ_CONFIG_FILE: "{{.TASKFILE_DIR}}/merged.config.yaml"
       SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"
       ENVIRONMENT: "dev"
+      DEBUG_STREAMING: ${DEBUG_STREAMING:-false}
     cmds:
       - echo "🚀 Starting dev servers with BuildKit optimizations..."
       - START_WORKER_PAUSED=false docker compose up -d --wait
@@ -1491,6 +1492,15 @@ tasks:
       - docker compose restart otel-collector
       - echo "✅ otel-collector container rebuilt and restarted (dev)."
 
+  restart-dev-tts:
+    desc: "Rebuild and restart only the tts Docker container (production)"
+    env:
+      DEBUG_STREAMING: ${DEBUG_STREAMING:-false}
+    cmds:
+      - echo "Restarting only the tts container (dev)..."
+      - docker compose restart tts
+      - echo "✅ tts container rebuilt and restarted (dev)."
+
   test-merge-config:
     desc: "Test merge-config.sh script logic"
     cmds:
@@ -1773,6 +1783,7 @@ tasks:
       ENVIRONMENT: "prod"
       QUIZ_CONFIG_FILE: "{{.TASKFILE_DIR}}/merged.config.yaml"
       SWAGGER_FILE_PATH: "{{.TASKFILE_DIR}}/swagger.yaml"
+      DEBUG_STREAMING: ${DEBUG_STREAMING:-false}
     cmds:
       - 'echo "🚀 Starting production services from images (tag: ${IMAGE_TAG:-latest})..."'
       - START_WORKER_PAUSED=false docker compose -f docker-compose.prod.yml up -d --wait
