@@ -163,11 +163,11 @@ export const useTextSelection = () => {
         return;
       }
 
-      // Don't hide popup if user is interacting with translation interface
-      const isInteractingWithTranslation =
-        document.querySelector('.translation-popup') &&
-        document.activeElement?.closest('.translation-popup');
-      if (!isInteractingWithTranslation) {
+      // Don't hide popup if translation popup is visible
+      // Once the popup is visible, only it should control when it closes
+      const isTranslationPopupVisible =
+        document.querySelector('.translation-popup');
+      if (!isTranslationPopupVisible) {
         setIsVisible(false);
       }
       return;
@@ -251,11 +251,11 @@ export const useTextSelection = () => {
         visibilityTimeoutRef.current = null;
       }, 50);
     } else {
-      // Don't hide popup if user is interacting with translation interface
-      const isInteractingWithTranslation =
-        document.querySelector('.translation-popup') &&
-        document.activeElement?.closest('.translation-popup');
-      if (!isInteractingWithTranslation) {
+      // Don't hide popup if translation popup is visible
+      // Once the popup is visible, only it should control when it closes
+      const isTranslationPopupVisible =
+        document.querySelector('.translation-popup');
+      if (!isTranslationPopupVisible) {
         setIsVisible(false);
       }
     }

@@ -51,7 +51,6 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
 
   // Load saved language from localStorage or use browser language or default to 'en'
   const [targetLanguage, setTargetLanguage] = useState('en');
-  const [isSelectFocused, setIsSelectFocused] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [isSaved, setIsSaved] = useState(false);
@@ -186,22 +185,26 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
   // Handle clicks outside to close popup
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      // Don't close if the Select is focused (user is interacting with it)
-      if (isSelectFocused) {
-        return;
-      }
-
       const target = event.target as Element;
 
-      // Don't close if clicking inside the popup or on Select elements
+      // Don't close if clicking inside the popup
       const isInsidePopup = popupRef.current?.contains(target);
+
+      // Don't close if clicking on Select dropdown elements (rendered in Portal)
+      // Check for various Mantine Select-related class names and attributes
       const isSelectElement =
         target.closest('.mantine-Select-dropdown') ||
         target.closest('.mantine-Popover-dropdown') ||
         target.closest('[role="option"]') ||
         target.closest('.mantine-Select-item') ||
         target.closest('.mantine-Select-input') ||
-        target.closest('.mantine-Select-root');
+        target.closest('.mantine-Select-root') ||
+        target.closest('[data-combobox-target]') ||
+        target.closest('[data-combobox-dropdown]') ||
+        target.closest('[role="listbox"]') ||
+        // Check if the target is within any Select component
+        target.getAttribute('data-translation-select') === 'true' ||
+        target.closest('[data-translation-select="true"]');
 
       // Don't close if clicking on the selected text itself
       const isSelectedText =
@@ -225,7 +228,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
       clearTimeout(timeoutId);
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [onClose, isSelectFocused, selection]);
+  }, [onClose, selection]);
 
   // Calculate popup position to stay within viewport
   const getPopupPosition = () => {
@@ -345,9 +348,8 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
     }
   };
 
-  // Enhanced close handler that clears all interaction states
+  // Enhanced close handler
   const handleClose = () => {
-    setIsSelectFocused(false);
     onClose();
   };
 
@@ -374,7 +376,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
   };
 
   return (
-    <Portal zIndex={2500}>
+    <Portal>
       <Paper
         ref={popupRef}
         className='translation-popup'
@@ -382,7 +384,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
         p='lg'
         style={{
           position: 'fixed',
-          zIndex: 99999,
+          zIndex: 2500,
           width: `${320 * fontScaleMap[fontSize]}px`,
           maxWidth: '90vw',
           ...position,
@@ -456,11 +458,10 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
             }
             disabled={languagesLoading || languageOptions.length === 0}
             style={{ width: '100%' }}
-            onFocus={() => {
-              setIsSelectFocused(true);
-            }}
-            onBlur={() => {
-              setIsSelectFocused(false);
+            data-translation-select='true'
+            comboboxProps={{
+              withinPortal: true,
+              zIndex: 100000,
             }}
             styles={{
               dropdown: {

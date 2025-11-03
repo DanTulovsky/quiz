@@ -17,12 +17,18 @@ vi.mock('@mantine/dates', async () => {
   const actual = await vi.importActual('@mantine/dates');
   return {
     ...actual,
-    DatePickerInput: ({onChange, value}: any) => (
+    DatePickerInput: ({
+      onChange,
+      value,
+    }: {
+      onChange?: (date: Date | null) => void;
+      value?: Date | null;
+    }) => (
       <input
-        data-testid="date-picker-input"
-        type="text"
-        value={value}
-        onChange={(e) => onChange && onChange(new Date(e.target.value))}
+        data-testid='date-picker-input'
+        type='text'
+        value={value ? value.toISOString() : ''}
+        onChange={e => onChange && onChange(new Date(e.target.value))}
       />
     ),
   };
