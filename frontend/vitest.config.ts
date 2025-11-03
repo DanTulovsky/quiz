@@ -18,12 +18,6 @@ export default defineConfig({
     setupFiles: ['./tests/setup.ts'],
     exclude: ['tests/**/*.spec.ts', 'tests/**/*.ts', 'node_modules/**'],
     include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-    pool: 'forks',
-    poolOptions: {
-      forks: {
-        singleFork: true,
-      },
-    },
     environmentOptions: {
       jsdom: {
         url: 'http://localhost',
