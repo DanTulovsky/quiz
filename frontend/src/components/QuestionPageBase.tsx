@@ -27,6 +27,7 @@ import QuestionPanel from './QuestionPanel';
 import QuestionHeader from './QuestionHeader';
 import { SUGGESTED_QUIZ_PROMPTS } from '../constants/prompts';
 import { useQuestionFlow } from '../hooks/useQuestionFlow';
+import { useTTS } from '../hooks/useTTS';
 
 export type QuestionMode = 'quiz' | 'reading' | 'vocabulary';
 
@@ -68,6 +69,9 @@ export const QuestionPageBase: React.FC<Props> = ({ mode }) => {
     fetchQuestion,
     forceFetchNextQuestion,
   } = useQuestionFlow({ mode, questionId });
+
+  // TTS hook for stopping audio on next question
+  const { stopTTS } = useTTS();
 
   // URL state management for question navigation
   const { navigateToQuestion } = useQuestionUrlState({
@@ -188,6 +192,9 @@ export const QuestionPageBase: React.FC<Props> = ({ mode }) => {
   }, [setFeedback]);
 
   const handleNextQuestion = useCallback(() => {
+    // Stop TTS if playing
+    stopTTS();
+
     startTransition(() => {
       clearQAState();
       // Clear question ID from URL to get next question
@@ -202,9 +209,13 @@ export const QuestionPageBase: React.FC<Props> = ({ mode }) => {
     clearQAState,
     navigateToQuestion,
     forceFetchNextQuestion,
+    stopTTS,
   ]);
 
   const handleNewQuestion = useCallback(() => {
+    // Stop TTS if playing
+    stopTTS();
+
     startTransition(() => {
       clearQAState();
       // Clear question ID from URL to get next question
@@ -218,6 +229,7 @@ export const QuestionPageBase: React.FC<Props> = ({ mode }) => {
     clearQAState,
     navigateToQuestion,
     forceFetchNextQuestion,
+    stopTTS,
   ]);
 
   // Scroll to top when a new question is loaded (desktop)

@@ -31,6 +31,7 @@ import StoryReadingView from '../components/StoryReadingView';
 import StoryGenerationErrorModal from '../components/StoryGenerationErrorModal';
 import { CreateStoryRequest } from '../api/storyApi';
 import { getGeneratingMessage } from '../utils/storyMessages';
+import { useTTS } from '../hooks/useTTS';
 
 const StoryPage: React.FC = () => {
   const { id: storyIdParam, sectionId: sectionIdParam } = useParams<{
@@ -70,6 +71,9 @@ const StoryPage: React.FC = () => {
     closeGenerationErrorModal,
     toggleAutoGeneration,
   } = useStory({ skipLocalStorage: !!sectionIdParam });
+
+  // TTS hook for stopping audio on section navigation
+  const { stopTTS } = useTTS();
 
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [isCreatingStory, setIsCreatingStory] = useState(false);
@@ -117,6 +121,9 @@ const StoryPage: React.FC = () => {
 
   // Wrapper functions that update URL when navigating sections
   const handleGoToPreviousSection = () => {
+    // Stop TTS if playing
+    stopTTS();
+
     const targetIndex = currentSectionIndex - 1;
     if (targetIndex >= 0) {
       const targetSection = sections[targetIndex];
@@ -128,6 +135,9 @@ const StoryPage: React.FC = () => {
   };
 
   const handleGoToNextSection = () => {
+    // Stop TTS if playing
+    stopTTS();
+
     const targetIndex = currentSectionIndex + 1;
     if (targetIndex < sections.length) {
       const targetSection = sections[targetIndex];
@@ -139,6 +149,9 @@ const StoryPage: React.FC = () => {
   };
 
   const handleGoToFirstSection = () => {
+    // Stop TTS if playing
+    stopTTS();
+
     const firstSection = sections[0];
     goToFirstSection();
     if (firstSection?.id !== undefined && currentStory?.id) {
@@ -147,6 +160,9 @@ const StoryPage: React.FC = () => {
   };
 
   const handleGoToLastSection = () => {
+    // Stop TTS if playing
+    stopTTS();
+
     const lastSection = sections[sections.length - 1];
     goToLastSection();
     if (lastSection?.id !== undefined && currentStory?.id) {

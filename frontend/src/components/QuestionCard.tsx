@@ -581,6 +581,9 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
     };
 
     const handleSubmit = async () => {
+      // Stop TTS if playing
+      stopTTS();
+
       // Use selectedAnswer state as the ONLY source of truth
       const selectedValue = selectedAnswer;
 
@@ -622,6 +625,8 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
     };
 
     const handleNextQuestion = () => {
+      // Stop TTS if playing
+      stopTTS();
       onNext();
     };
 

@@ -25,6 +25,7 @@ import { IconCheck, IconX } from '@tabler/icons-react';
 import TTSButton from './TTSButton';
 import { useQuestionFlow } from '../hooks/useQuestionFlow';
 import { defaultVoiceForLanguage } from '../utils/tts';
+import { useTTS } from '../hooks/useTTS';
 import {
   usePostV1QuizQuestionIdReport,
   usePostV1QuizQuestionIdMarkKnown,
@@ -85,6 +86,9 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
   // Fetch user learning preferences for TTS voice
   const { data: userLearningPrefs } = useGetV1PreferencesLearning();
 
+  // TTS hook for stopping audio on submit
+  const { stopTTS } = useTTS();
+
   // Update the global QuestionContext when local question changes (same as desktop)
   useEffect(() => {
     if (question) {
@@ -134,6 +138,9 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
   const handleAnswerSubmit = useCallback(async () => {
     if (!question || selectedAnswerLocal === null) return;
 
+    // Stop TTS if playing
+    stopTTS();
+
     // Prevent duplicate submissions and show loading state
     if (isSubmittingLocal) return;
     setIsSubmittingLocal(true);
@@ -168,10 +175,13 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
     } finally {
       setIsSubmittingLocal(false);
     }
-  }, [question, selectedAnswerLocal, setFeedback, isSubmittingLocal]);
+  }, [question, selectedAnswerLocal, setFeedback, isSubmittingLocal, stopTTS]);
 
   // Handle next question
   const handleNextQuestion = useCallback(async () => {
+    // Stop TTS if playing
+    stopTTS();
+
     setIsTransitioning(true);
     setSelectedAnswerLocal(null);
     setIsSubmittedLocal(false);
@@ -182,7 +192,7 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
     } finally {
       setIsTransitioning(false);
     }
-  }, [forceFetchNextQuestion, setFeedback]);
+  }, [forceFetchNextQuestion, setFeedback, stopTTS]);
 
   // TTS handler functions
 

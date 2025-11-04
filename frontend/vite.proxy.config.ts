@@ -20,6 +20,11 @@ export const proxyConfig = {
     target: 'http://localhost:8181',
     changeOrigin: true,
   },
+  // Proxy ^/v1/audio/speech/stream/ to http://localhost:5050
+  '^/v1/audio/speech/stream/': {
+    target: 'http://localhost:5050',
+    changeOrigin: true,
+  },
   // Proxy /v1/audio/ to http://localhost:5050
   '/v1/audio/': {
     target: 'http://localhost:5050',

@@ -89,6 +89,9 @@ const MobileStoryPage: React.FC = () => {
     toggleAutoGeneration,
   } = useStory({ skipLocalStorage: !!sectionIdParam });
 
+  // TTS hook for stopping audio on section navigation
+  const { stopTTS } = useTTS();
+
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showAllStoriesView, setShowAllStoriesView] = useState(false);
 
@@ -163,6 +166,9 @@ const MobileStoryPage: React.FC = () => {
 
   // Wrapper functions that update URL when navigating sections
   const handleGoToPreviousSection = () => {
+    // Stop TTS if playing
+    stopTTS();
+
     const targetIndex = currentSectionIndex - 1;
     if (targetIndex >= 0) {
       const targetSection = sections[targetIndex];
@@ -174,6 +180,9 @@ const MobileStoryPage: React.FC = () => {
   };
 
   const handleGoToNextSection = () => {
+    // Stop TTS if playing
+    stopTTS();
+
     const targetIndex = currentSectionIndex + 1;
     if (targetIndex < sections.length) {
       const targetSection = sections[targetIndex];
@@ -185,6 +194,9 @@ const MobileStoryPage: React.FC = () => {
   };
 
   const handleGoToFirstSection = () => {
+    // Stop TTS if playing
+    stopTTS();
+
     const firstSection = sections[0];
     goToFirstSection();
     if (firstSection?.id !== undefined && currentStory?.id) {
@@ -193,6 +205,9 @@ const MobileStoryPage: React.FC = () => {
   };
 
   const handleGoToLastSection = () => {
+    // Stop TTS if playing
+    stopTTS();
+
     const lastSection = sections[sections.length - 1];
     goToLastSection();
     if (lastSection?.id !== undefined && currentStory?.id) {

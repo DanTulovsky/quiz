@@ -21,13 +21,21 @@ function cleanup(): void {
   if (currentBlobURL) {
     try {
       URL.revokeObjectURL(currentBlobURL);
-    } catch {}
+    } catch { }
     currentBlobURL = null;
   }
   if (globalAudioElement) {
+    // Pause first, then wait a bit before clearing src to avoid triggering errors
+    // that might be caught by active error handlers
     globalAudioElement.pause();
-    globalAudioElement.src = '';
     globalAudioElement.currentTime = 0;
+    // Use a small timeout to allow any pending error handlers to complete
+    // before clearing src, which can trigger new error events
+    setTimeout(() => {
+      if (globalAudioElement) {
+        globalAudioElement.src = '';
+      }
+    }, 0);
   }
 }
 
@@ -175,7 +183,7 @@ export async function streamAndPlayTTS(
       });
 
       const initUrl = `${endpoint.replace(/\/$/, '')}/init`;
-      console.log('[Streaming TTS] Safari: Calling init endpoint', { initUrl });
+      console.log('[Streaming TTS] Safari: Calling init endpoint', {initUrl});
 
       const initResponse = await fetch(initUrl, {
         method: 'POST',
@@ -239,7 +247,7 @@ export async function streamAndPlayTTS(
       const absoluteStreamURL = new URL(streamPath, window.location.origin)
         .href;
 
-      console.log('[Streaming TTS] Safari: Stream URL', { absoluteStreamURL });
+      console.log('[Streaming TTS] Safari: Stream URL', {absoluteStreamURL});
 
       globalAudioElement = audio;
       currentBlobURL = null;
@@ -295,10 +303,10 @@ export async function streamAndPlayTTS(
             buffered: buffered.length > 0 ? buffered : 'none',
             error: audio.error
               ? {
-                  code: audio.error.code,
-                  message: audio.error.message,
-                  codeLabel: getMediaErrorLabel(audio.error.code),
-                }
+                code: audio.error.code,
+                message: audio.error.message,
+                codeLabel: getMediaErrorLabel(audio.error.code),
+              }
               : null,
           });
         };
@@ -359,10 +367,10 @@ export async function streamAndPlayTTS(
             eventType: event.type,
             error: audioError
               ? {
-                  code: audioError.code,
-                  message: audioError.message,
-                  codeLabel: getMediaErrorLabel(audioError.code),
-                }
+                code: audioError.code,
+                message: audioError.message,
+                codeLabel: getMediaErrorLabel(audioError.code),
+              }
               : null,
             event,
           });
@@ -713,13 +721,13 @@ export async function streamAndPlayTTS(
         errorMessage: error instanceof Error ? error.message : String(error),
         audioElement: globalAudioElement
           ? {
-              src: globalAudioElement.src,
-              readyState: globalAudioElement.readyState,
-              networkState: globalAudioElement.networkState,
-              paused: globalAudioElement.paused,
-              currentTime: globalAudioElement.currentTime,
-              error: globalAudioElement.error,
-            }
+            src: globalAudioElement.src,
+            readyState: globalAudioElement.readyState,
+            networkState: globalAudioElement.networkState,
+            paused: globalAudioElement.paused,
+            currentTime: globalAudioElement.currentTime,
+            error: globalAudioElement.error,
+          }
           : null,
       });
 
@@ -798,36 +806,59 @@ export async function streamAndPlayTTS(
           const queuedChunks: Uint8Array[] = [];
 
           // Function to append chunk when buffer is ready
-          const appendChunk = async (chunk: Uint8Array) => {
+          const appendChunk = async (chunk: Uint8Array): Promise<void> => {
+            // If buffer is updating, queue the chunk
             if (sourceBuffer.updating) {
               queuedChunks.push(chunk);
               return;
             }
 
-            if (mediaSource.readyState === 'open') {
-              try {
-                // @ts-expect-error - MediaSource API accepts Uint8Array but TypeScript types are overly strict
-                sourceBuffer.appendBuffer(chunk);
+            // Check if we should abort
+            if (abortController.signal.aborted || mediaSource.readyState !== 'open') {
+              return;
+            }
 
-                // Process queued chunks after this one
-                if (queuedChunks.length > 0) {
-                  sourceBuffer.addEventListener(
-                    'updateend',
-                    function processNext() {
-                      sourceBuffer.removeEventListener(
-                        'updateend',
-                        processNext
-                      );
-                      const nextChunk = queuedChunks.shift();
-                      if (nextChunk) {
-                        appendChunk(nextChunk);
-                      }
-                    },
-                    { once: true }
-                  );
+            try {
+              // @ts-expect-error - MediaSource API accepts Uint8Array but TypeScript types are overly strict
+              sourceBuffer.appendBuffer(chunk);
+
+              // Wait for the append to complete before processing next chunk
+              await new Promise<void>((resolve, reject) => {
+                const handleUpdateEnd = () => {
+                  sourceBuffer.removeEventListener('updateend', handleUpdateEnd);
+                  sourceBuffer.removeEventListener('error', handleError);
+                  resolve();
+                };
+
+                const handleError = () => {
+                  sourceBuffer.removeEventListener('updateend', handleUpdateEnd);
+                  sourceBuffer.removeEventListener('error', handleError);
+                  reject(new Error('SourceBuffer append failed'));
+                };
+
+                sourceBuffer.addEventListener('updateend', handleUpdateEnd, {
+                  once: true,
+                });
+                sourceBuffer.addEventListener('error', handleError, {
+                  once: true,
+                });
+              });
+
+              // Process queued chunks after this one completes
+              if (queuedChunks.length > 0 && !abortController.signal.aborted) {
+                const nextChunk = queuedChunks.shift();
+                if (nextChunk) {
+                  await appendChunk(nextChunk);
                 }
-              } catch (err) {
-                console.error('[Streaming TTS] Error appending buffer:', err);
+              }
+            } catch (err) {
+              console.error('[Streaming TTS] Error appending buffer:', err);
+              // If append failed, try to continue with next chunk
+              if (queuedChunks.length > 0 && !abortController.signal.aborted) {
+                const nextChunk = queuedChunks.shift();
+                if (nextChunk) {
+                  await appendChunk(nextChunk);
+                }
               }
             }
           };
@@ -839,34 +870,51 @@ export async function streamAndPlayTTS(
               break;
             }
 
-            const { done, value } = await reader.read();
+            const {done, value} = await reader.read();
             if (done) {
-              // Append any queued chunks before ending
+              // Wait for any in-progress append to complete
+              while (sourceBuffer.updating && mediaSource.readyState === 'open') {
+                await new Promise<void>(resolve => {
+                  sourceBuffer.addEventListener('updateend', () => resolve(), {
+                    once: true,
+                  });
+                  sourceBuffer.addEventListener('error', () => resolve(), {
+                    once: true,
+                  });
+                });
+              }
+
+              // Append any remaining queued chunks before ending
               while (
                 queuedChunks.length > 0 &&
                 !sourceBuffer.updating &&
-                mediaSource.readyState === 'open'
+                mediaSource.readyState === 'open' &&
+                !abortController.signal.aborted
               ) {
                 const chunk = queuedChunks.shift();
                 if (chunk) {
-                  try {
-                    // @ts-expect-error - MediaSource API accepts Uint8Array but TypeScript types are overly strict
-                    sourceBuffer.appendBuffer(chunk);
-                    await new Promise(resolve => {
-                      sourceBuffer.addEventListener('updateend', resolve, {
-                        once: true,
-                      });
-                    });
-                  } catch (err) {
-                    console.error(
-                      '[Streaming TTS] Error appending queued chunk:',
-                      err
-                    );
-                  }
+                  await appendChunk(chunk);
                 }
               }
+
+              // Final check - wait for any final append to complete
+              while (sourceBuffer.updating && mediaSource.readyState === 'open') {
+                await new Promise<void>(resolve => {
+                  sourceBuffer.addEventListener('updateend', () => resolve(), {
+                    once: true,
+                  });
+                  sourceBuffer.addEventListener('error', () => resolve(), {
+                    once: true,
+                  });
+                });
+              }
+
               if (mediaSource.readyState === 'open') {
-                mediaSource.endOfStream();
+                try {
+                  mediaSource.endOfStream();
+                } catch (err) {
+                  console.warn('[Streaming TTS] Error ending stream:', err);
+                }
               }
               break;
             }
@@ -883,7 +931,7 @@ export async function streamAndPlayTTS(
           if (mediaSource.readyState === 'open') {
             try {
               mediaSource.endOfStream();
-            } catch {}
+            } catch { }
           }
         }
       });
@@ -907,7 +955,7 @@ export async function streamAndPlayTTS(
           throw new DOMException('Request aborted', 'AbortError');
         }
 
-        const { done, value } = await reader.read();
+        const {done, value} = await reader.read();
         if (done) break;
 
         if (value) {
@@ -919,7 +967,7 @@ export async function streamAndPlayTTS(
         throw new Error('No audio data received');
       }
 
-      const blob = new Blob(chunks as BlobPart[], { type: 'audio/mpeg' });
+      const blob = new Blob(chunks as BlobPart[], {type: 'audio/mpeg'});
       const blobURL = URL.createObjectURL(blob);
       currentBlobURL = blobURL;
       globalAudioElement.src = blobURL;
@@ -942,9 +990,50 @@ export async function streamAndPlayTTS(
         resolve();
       };
 
-      const handleError = () => {
+      const handleError = (e: Event) => {
         globalAudioElement?.removeEventListener('ended', handleEnded);
         globalAudioElement?.removeEventListener('error', handleError);
+
+        // Check if this is a cleanup-related error (empty src)
+        const audioElement = e.target as HTMLAudioElement;
+        const errorCode = audioElement?.error?.code;
+        const errorMessage =
+          audioElement?.error?.message || 'Unknown error';
+        const src = audioElement?.src || '';
+
+        // IGNORE: Empty src errors are expected during cleanup when we clear the src
+        const isEmptySrcError =
+          errorMessage.includes('Empty src') ||
+          errorMessage.includes('empty src') ||
+          errorMessage.includes('Empty src attribute') ||
+          errorMessage.includes('empty src attribute') ||
+          errorMessage.includes('MEDIA_ELEMENT_ERROR');
+
+        const hasEmptySrc =
+          !src ||
+          src === '' ||
+          src === window.location.href ||
+          src === window.location.origin + '/';
+
+        // If this is a cleanup-related error, resolve silently (don't reject)
+        if (isEmptySrcError || ((errorCode === 4 || errorCode === undefined) && hasEmptySrc)) {
+          console.log('[Streaming TTS] Ignoring cleanup-related error:', {
+            errorCode,
+            errorMessage,
+            src: src.substring(0, 50),
+          });
+          resolve(); // Resolve instead of reject for cleanup errors
+          return;
+        }
+
+        // Also check if the request was aborted
+        if (abortController.signal.aborted) {
+          console.log('[Streaming TTS] Request aborted, ignoring error');
+          resolve(); // Resolve silently for aborted requests
+          return;
+        }
+
+        // Only reject for real errors
         reject(new Error('Audio playback error'));
       };
 

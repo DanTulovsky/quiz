@@ -32,6 +32,7 @@ import { QuestionHistoryModal } from '../components/QuestionHistoryModal';
 import { SUGGESTED_QUIZ_PROMPTS } from '../constants/prompts';
 import QuestionPanel from '../components/QuestionPanel';
 import QuestionHeader from '../components/QuestionHeader';
+import { useTTS } from '../hooks/useTTS';
 
 // Reuse shared prompts
 const suggestedPrompts = SUGGESTED_QUIZ_PROMPTS;
@@ -72,6 +73,9 @@ const DailyPage: React.FC = () => {
   // components like TranslationOverlay can read the exact on-screen question id.
   const { setQuizQuestion } = useQuestion();
   const [feedbackLocal, setFeedbackLocal] = useState<Feedback | null>(null);
+
+  // TTS hook for stopping audio on next question
+  const { stopTTS } = useTTS();
 
   // Local selection/UI state (isolated per-page)
   const [selectedAnswerLocal, setSelectedAnswerLocal] = useState<number | null>(
@@ -179,6 +183,9 @@ const DailyPage: React.FC = () => {
         throw new Error('Cannot submit answer: invalid state');
       }
 
+      // Stop TTS if playing
+      stopTTS();
+
       try {
         setIsAnswerSubmitting(true);
 
@@ -219,10 +226,14 @@ const DailyPage: React.FC = () => {
       setFeedbackLocal,
       setIsSubmittedLocal,
       setShowExplanationLocal,
+      stopTTS,
     ]
   );
 
   const handleNextQuestion = useCallback(() => {
+    // Stop TTS if playing
+    stopTTS();
+
     setIsTransitioning(true);
     setTimeout(() => {
       goToNextQuestion();
@@ -233,15 +244,18 @@ const DailyPage: React.FC = () => {
         behavior: 'smooth',
       });
     }, 150);
-  }, [goToNextQuestion]);
+  }, [goToNextQuestion, stopTTS]);
 
   const handlePreviousQuestion = useCallback(() => {
+    // Stop TTS if playing
+    stopTTS();
+
     setIsTransitioning(true);
     setTimeout(() => {
       goToPreviousQuestion();
       setIsTransitioning(false);
     }, 150);
-  }, [goToPreviousQuestion]);
+  }, [goToPreviousQuestion, stopTTS]);
 
   const handleDateSelect = useCallback(
     (newDate: string | null) => {

@@ -26,6 +26,7 @@ import DailyDatePicker from '../../components/DailyDatePicker';
 import { useMantineTheme } from '@mantine/core';
 import TTSButton from '../../components/TTSButton';
 import { defaultVoiceForLanguage } from '../../utils/tts';
+import { useTTS } from '../../hooks/useTTS';
 import {
   usePostV1QuizQuestionIdReport,
   usePostV1QuizQuestionIdMarkKnown,
@@ -61,6 +62,9 @@ const MobileDailyPage: React.FC = () => {
   // Share the currently visible question with global QuestionContext so
   // components like TranslationOverlay can read the exact on-screen question id.
   const { setQuizQuestion } = useQuestion();
+
+  // TTS hook for stopping audio on next question
+  const { stopTTS } = useTTS();
 
   // Local UI state
   const [selectedAnswerLocal, setSelectedAnswerLocal] = useState<number | null>(
@@ -262,6 +266,9 @@ const MobileDailyPage: React.FC = () => {
   const handleAnswerSubmit = useCallback(async () => {
     if (!currentQuestion || selectedAnswerLocal === null) return;
 
+    // Stop TTS if playing
+    stopTTS();
+
     setIsSubmittedLocal(true);
 
     try {
@@ -287,20 +294,26 @@ const MobileDailyPage: React.FC = () => {
     } catch {
       // console.error('Failed to submit answer:', _error);
     }
-  }, [currentQuestion, selectedAnswerLocal, submitAnswer]);
+  }, [currentQuestion, selectedAnswerLocal, submitAnswer, stopTTS]);
 
   // Handle next question
   const handleNextQuestion = useCallback(() => {
+    // Stop TTS if playing
+    stopTTS();
+
     setSelectedAnswerLocal(null);
     setIsSubmittedLocal(false);
     setFeedbackLocal(null);
     goToNextQuestion();
-  }, [goToNextQuestion]);
+  }, [goToNextQuestion, stopTTS]);
 
   // Handle previous question (only used after completion)
   const handlePreviousQuestion = useCallback(() => {
+    // Stop TTS if playing
+    stopTTS();
+
     goToPreviousQuestion();
-  }, [goToPreviousQuestion]);
+  }, [goToPreviousQuestion, stopTTS]);
 
   if (isLoading && !currentQuestion) {
     return (
