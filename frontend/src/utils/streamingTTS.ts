@@ -21,7 +21,7 @@ function cleanup(): void {
   if (currentBlobURL) {
     try {
       URL.revokeObjectURL(currentBlobURL);
-    } catch { }
+    } catch {}
     currentBlobURL = null;
   }
   if (globalAudioElement) {
@@ -53,9 +53,9 @@ function getOpenAIClient(endpoint: string): OpenAI {
 }
 
 /**
- * Detect if we're on iOS Safari
+ * Detect if we're on Safari (iOS or desktop) - use init/stream approach
  */
-function isIOSSafari(): boolean {
+function useSafariTTS(): boolean {
   if (typeof window === 'undefined') return false;
 
   // Check for iOS
@@ -63,14 +63,72 @@ function isIOSSafari(): boolean {
     /iPad|iPhone|iPod/.test(navigator.userAgent) ||
     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
-  // Check for Safari (not Chrome/Firefox on iOS)
+  // Check for Safari (not Chrome/Firefox on iOS, and not Chrome/Edge on desktop)
   // MSStream is an old IE property that doesn't exist in TypeScript types
   const hasMSStream = 'MSStream' in window;
   const isSafari =
     /^((?!chrome|android).)*safari/i.test(navigator.userAgent) ||
     (isIOS && !hasMSStream);
 
-  return isIOS && isSafari;
+  return isSafari;
+}
+
+/**
+ * Check if we're on desktop Safari (not iOS)
+ */
+function isDesktopSafari(): boolean {
+  if (typeof window === 'undefined') return false;
+
+  const isIOS =
+    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+  const hasMSStream = 'MSStream' in window;
+  const isSafari =
+    /^((?!chrome|android).)*safari/i.test(navigator.userAgent) ||
+    (isIOS && !hasMSStream);
+
+  return isSafari && !isIOS;
+}
+
+/**
+ * Get human-readable label for HTMLMediaElement readyState
+ */
+function getReadyStateLabel(readyState: number): string {
+  const states: Record<number, string> = {
+    0: 'HAVE_NOTHING',
+    1: 'HAVE_METADATA',
+    2: 'HAVE_CURRENT_DATA',
+    3: 'HAVE_FUTURE_DATA',
+    4: 'HAVE_ENOUGH_DATA',
+  };
+  return states[readyState] || `UNKNOWN(${readyState})`;
+}
+
+/**
+ * Get human-readable label for HTMLMediaElement networkState
+ */
+function getNetworkStateLabel(networkState: number): string {
+  const states: Record<number, string> = {
+    0: 'NETWORK_EMPTY',
+    1: 'NETWORK_IDLE',
+    2: 'NETWORK_LOADING',
+    3: 'NETWORK_NO_SOURCE',
+  };
+  return states[networkState] || `UNKNOWN(${networkState})`;
+}
+
+/**
+ * Get human-readable label for MediaError code
+ */
+function getMediaErrorLabel(code: number): string {
+  const errors: Record<number, string> = {
+    1: 'MEDIA_ERR_ABORTED',
+    2: 'MEDIA_ERR_NETWORK',
+    3: 'MEDIA_ERR_DECODE',
+    4: 'MEDIA_ERR_SRC_NOT_SUPPORTED',
+  };
+  return errors[code] || `UNKNOWN(${code})`;
 }
 
 /**
@@ -106,10 +164,10 @@ export async function streamAndPlayTTS(
     }
   }
 
-  // Check if we're on iOS Safari - use init/stream approach (no HLS)
-  if (isIOSSafari()) {
+  // Check if we're on Safari (iOS or desktop) - use init/stream approach (no HLS)
+  if (useSafariTTS()) {
     try {
-      console.log('[Streaming TTS] iOS: Starting TTS playback', {
+      console.log('[Streaming TTS] Safari: Starting TTS playback', {
         textLength: text.length,
         voice,
         model,
@@ -117,8 +175,8 @@ export async function streamAndPlayTTS(
       });
 
       const initUrl = `${endpoint.replace(/\/$/, '')}/init`;
-      console.log('[Streaming TTS] iOS: Calling init endpoint', { initUrl });
-      
+      console.log('[Streaming TTS] Safari: Calling init endpoint', { initUrl });
+
       const initResponse = await fetch(initUrl, {
         method: 'POST',
         headers: {
@@ -129,12 +187,13 @@ export async function streamAndPlayTTS(
           voice: voice,
           model: model,
           speed: speed,
-          response_format: 'aac',
+          // Desktop Safari may work better with mp3, iOS Safari prefers aac
+          response_format: isDesktopSafari() ? 'mp3' : 'aac',
         }),
         signal: abortController.signal,
       });
 
-      console.log('[Streaming TTS] iOS: Init response', {
+      console.log('[Streaming TTS] Safari: Init response', {
         status: initResponse.status,
         statusText: initResponse.statusText,
         ok: initResponse.ok,
@@ -149,8 +208,8 @@ export async function streamAndPlayTTS(
       }
 
       const initData = await initResponse.json();
-      console.log('[Streaming TTS] iOS: Init data received', initData);
-      
+      console.log('[Streaming TTS] Safari: Init data received', initData);
+
       const streamId =
         initData.stream_id ||
         initData.streamId ||
@@ -163,9 +222,12 @@ export async function streamAndPlayTTS(
         throw new Error('Server did not return stream_id for init');
       }
 
-      console.log('[Streaming TTS] iOS: Stream ID', { streamId, hasToken: !!token });
+      console.log('[Streaming TTS] Safari: Stream ID', {
+        streamId,
+        hasToken: !!token,
+      });
 
-      // Create a fresh audio element for iOS playback
+      // Create a fresh audio element for Safari playback
       const audio = document.createElement('audio');
       audio.crossOrigin = 'anonymous';
       audio.preload = 'auto';
@@ -177,13 +239,13 @@ export async function streamAndPlayTTS(
       const absoluteStreamURL = new URL(streamPath, window.location.origin)
         .href;
 
-      console.log('[Streaming TTS] iOS: Stream URL', { absoluteStreamURL });
+      console.log('[Streaming TTS] Safari: Stream URL', { absoluteStreamURL });
 
       globalAudioElement = audio;
       currentBlobURL = null;
       globalAudioElement.src = absoluteStreamURL;
 
-      console.log('[Streaming TTS] iOS: Audio element created', {
+      console.log('[Streaming TTS] Safari: Audio element created', {
         src: globalAudioElement.src,
         readyState: globalAudioElement.readyState,
         networkState: globalAudioElement.networkState,
@@ -194,7 +256,7 @@ export async function streamAndPlayTTS(
 
       // Explicitly call load() to trigger Safari to start loading the stream
       // This ensures Safari makes its probe requests (Range, Icy-Metadata) immediately
-      console.log('[Streaming TTS] iOS: Calling load() to start loading');
+      console.log('[Streaming TTS] Safari: Calling load() to start loading');
       globalAudioElement.load();
 
       // Set up event listeners before playing
@@ -207,12 +269,13 @@ export async function streamAndPlayTTS(
         let playbackStarted = false;
         let readinessTimeout: ReturnType<typeof setTimeout> | null = null;
         let stateCheckInterval: ReturnType<typeof setInterval> | null = null;
+        let playTimeout: ReturnType<typeof setTimeout> | null = null;
         const READINESS_TIMEOUT_MS = 10000; // 10 seconds timeout for audio to become ready
 
         const logAudioState = (event: string) => {
           const audio = globalAudioElement;
           if (!audio) return;
-          
+
           const buffered = [];
           for (let i = 0; i < audio.buffered.length; i++) {
             buffered.push({
@@ -220,8 +283,8 @@ export async function streamAndPlayTTS(
               end: audio.buffered.end(i),
             });
           }
-          
-          console.log(`[Streaming TTS] iOS: Audio state (${event})`, {
+
+          console.log(`[Streaming TTS] Safari: Audio state (${event})`, {
             readyState: audio.readyState,
             readyStateLabel: getReadyStateLabel(audio.readyState),
             networkState: audio.networkState,
@@ -244,18 +307,31 @@ export async function streamAndPlayTTS(
           globalAudioElement?.removeEventListener('ended', handleEnded);
           globalAudioElement?.removeEventListener('error', handleError);
           globalAudioElement?.removeEventListener('canplay', handleCanPlay);
-          globalAudioElement?.removeEventListener('canplaythrough', handleCanPlayThrough);
+          globalAudioElement?.removeEventListener(
+            'canplaythrough',
+            handleCanPlayThrough
+          );
           globalAudioElement?.removeEventListener('loadstart', handleLoadStart);
           globalAudioElement?.removeEventListener('stalled', handleStalled);
           globalAudioElement?.removeEventListener('progress', handleProgress);
-          globalAudioElement?.removeEventListener('loadedmetadata', handleLoadedMetadata);
-          globalAudioElement?.removeEventListener('loadeddata', handleLoadedData);
+          globalAudioElement?.removeEventListener(
+            'loadedmetadata',
+            handleLoadedMetadata
+          );
+          globalAudioElement?.removeEventListener(
+            'loadeddata',
+            handleLoadedData
+          );
           globalAudioElement?.removeEventListener('waiting', handleWaiting);
           globalAudioElement?.removeEventListener('playing', handlePlaying);
           globalAudioElement?.removeEventListener('pause', handlePause);
           if (readinessTimeout) {
             clearTimeout(readinessTimeout);
             readinessTimeout = null;
+          }
+          if (playTimeout) {
+            clearTimeout(playTimeout);
+            playTimeout = null;
           }
           if (stateCheckInterval) {
             clearInterval(stateCheckInterval);
@@ -270,6 +346,7 @@ export async function streamAndPlayTTS(
         };
 
         const handleError = (event: Event) => {
+          logAudioState('error');
           cleanupEventListeners();
           const audioError = globalAudioElement?.error;
           let msg =
@@ -277,6 +354,18 @@ export async function streamAndPlayTTS(
             (event instanceof ErrorEvent
               ? event.message
               : 'Audio playback error');
+
+          console.error('[Streaming TTS] Safari: Audio error occurred', {
+            eventType: event.type,
+            error: audioError
+              ? {
+                  code: audioError.code,
+                  message: audioError.message,
+                  codeLabel: getMediaErrorLabel(audioError.code),
+                }
+              : null,
+            event,
+          });
 
           // Provide more helpful error messages for iOS-specific issues
           if (audioError) {
@@ -291,7 +380,7 @@ export async function streamAndPlayTTS(
                 msg = 'Audio decoding error - stream may be corrupted';
                 break;
               case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
-                msg = 'Audio format not supported by iOS Safari';
+                msg = 'Audio format not supported by Safari';
                 break;
             }
           }
@@ -301,59 +390,231 @@ export async function streamAndPlayTTS(
 
         const handleLoadStart = () => {
           logAudioState('loadstart');
-          console.log('[Streaming TTS] iOS: Safari started loading audio stream');
+          console.log('[Streaming TTS] Safari: Started loading audio stream');
         };
 
         const handleStalled = () => {
           logAudioState('stalled');
-          console.warn('[Streaming TTS] iOS: Audio stream stalled');
+          console.warn('[Streaming TTS] Safari: Audio stream stalled');
         };
 
         const handleProgress = () => {
           logAudioState('progress');
-          console.log('[Streaming TTS] iOS: Progress - data is being loaded');
+          console.log(
+            '[Streaming TTS] Safari: Progress - data is being loaded'
+          );
         };
 
         const handleLoadedMetadata = () => {
           logAudioState('loadedmetadata');
-          console.log('[Streaming TTS] iOS: Metadata loaded (duration known)');
+          console.log(
+            '[Streaming TTS] Safari: Metadata loaded (duration known)'
+          );
+          // On desktop Safari, try playing immediately after metadata loads
+          // Desktop Safari may not fire loadeddata or canplay events reliably
+          if (
+            !playbackStarted &&
+            !abortController.signal.aborted &&
+            isDesktopSafari()
+          ) {
+            console.log(
+              '[Streaming TTS] Safari: Desktop Safari detected - attempting playback after metadata'
+            );
+            // Small delay to let Safari finish probe requests
+            setTimeout(() => {
+              if (!playbackStarted && !abortController.signal.aborted) {
+                attemptPlay();
+              }
+            }, 500);
+          }
         };
 
         const handleLoadedData = () => {
           logAudioState('loadeddata');
-          console.log('[Streaming TTS] iOS: First frame loaded');
+          console.log('[Streaming TTS] Safari: First frame loaded');
+          // On desktop Safari, loadeddata may fire before canplay - try playing early
+          if (!playbackStarted && !abortController.signal.aborted) {
+            console.log(
+              '[Streaming TTS] Safari: Attempting playback after loadeddata'
+            );
+            attemptPlay();
+          }
         };
 
         const handleWaiting = () => {
           logAudioState('waiting');
-          console.warn('[Streaming TTS] iOS: Waiting for data (buffering)');
+          console.warn('[Streaming TTS] Safari: Waiting for data (buffering)');
         };
 
         const handlePlaying = () => {
           logAudioState('playing');
-          console.log('[Streaming TTS] iOS: Audio is now playing');
+          console.log('[Streaming TTS] Safari: Audio is now playing');
+          // Playback has started successfully - clear any pending timeouts
+          if (readinessTimeout) {
+            clearTimeout(readinessTimeout);
+            readinessTimeout = null;
+          }
         };
 
         const handlePause = () => {
           logAudioState('pause');
-          console.log('[Streaming TTS] iOS: Audio paused');
+          console.log('[Streaming TTS] Safari: Audio paused');
         };
 
         const attemptPlay = async () => {
           if (playbackStarted || abortController.signal.aborted) {
+            console.log(
+              '[Streaming TTS] Safari: attemptPlay called but already started or aborted',
+              {
+                playbackStarted,
+                aborted: abortController.signal.aborted,
+              }
+            );
             return;
           }
+
+          logAudioState('attemptPlay');
+          console.log('[Streaming TTS] Safari: Attempting to play audio...');
 
           try {
             playbackStarted = true;
             cleanupEventListeners();
-            await globalAudioElement?.play();
-            console.log('[Streaming TTS] iOS: Audio playback started successfully');
+
+            const playPromise = globalAudioElement?.play();
+            if (!playPromise) {
+              throw new Error('play() returned undefined');
+            }
+
+            console.log(
+              '[Streaming TTS] Safari: play() called, waiting for promise...'
+            );
+
+            // Add a timeout for the play promise to prevent hanging
+            // For desktop Safari, we may need to wait longer due to probe requests
+            const playTimeoutMs = isDesktopSafari() ? 15000 : 5000;
+            let playPromiseResolved = false;
+
+            playTimeout = setTimeout(async () => {
+              if (playPromiseResolved) {
+                return; // Promise already resolved, just cleanup
+              }
+
+              console.error(
+                `[Streaming TTS] Safari: Play promise timed out after ${playTimeoutMs}ms`
+              );
+              logAudioState('play-timeout-check');
+
+              // Check if audio is actually playing despite promise not resolving
+              if (globalAudioElement) {
+                const isActuallyPlaying =
+                  !globalAudioElement.paused &&
+                  globalAudioElement.currentTime > 0 &&
+                  globalAudioElement.readyState >= 2; // HAVE_CURRENT_DATA or better
+
+                if (isActuallyPlaying) {
+                  console.log(
+                    '[Streaming TTS] Safari: Audio is actually playing despite promise timeout - continuing'
+                  );
+                  logAudioState('play-timeout-success');
+                  return; // Audio is playing, don't reject
+                } else {
+                  console.warn(
+                    '[Streaming TTS] Safari: Audio element still paused after timeout'
+                  );
+                  // Try to manually trigger play again
+                  try {
+                    await globalAudioElement.play();
+                    console.log(
+                      '[Streaming TTS] Safari: Manual play attempt succeeded'
+                    );
+                    logAudioState('play-timeout-retry-success');
+                  } catch (err) {
+                    console.error(
+                      '[Streaming TTS] Safari: Manual play attempt failed',
+                      err
+                    );
+                    logAudioState('play-timeout-retry-failed');
+                    reject(
+                      new Error(
+                        `Play promise timed out and manual play failed: ${err instanceof Error ? err.message : String(err)}`
+                      )
+                    );
+                  }
+                }
+              } else {
+                reject(
+                  new Error(
+                    'Play promise timed out and audio element is missing'
+                  )
+                );
+              }
+            }, playTimeoutMs);
+
+            try {
+              await playPromise;
+              playPromiseResolved = true;
+              if (playTimeout) {
+                clearTimeout(playTimeout);
+                playTimeout = null;
+              }
+            } catch (playErr) {
+              playPromiseResolved = true;
+              if (playTimeout) {
+                clearTimeout(playTimeout);
+                playTimeout = null;
+              }
+
+              // For desktop Safari, check if audio actually started playing despite the error
+              if (isDesktopSafari() && globalAudioElement) {
+                console.warn(
+                  '[Streaming TTS] Safari: Play promise rejected, checking if audio is actually playing',
+                  playErr
+                );
+                logAudioState('play-error-recovery');
+
+                // Wait a moment to see if playback actually started
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                if (
+                  globalAudioElement &&
+                  !globalAudioElement.paused &&
+                  globalAudioElement.currentTime > 0
+                ) {
+                  console.log(
+                    '[Streaming TTS] Safari: Audio recovered - actually playing despite error'
+                  );
+                  logAudioState('play-recovered');
+                  // Don't throw - audio is playing
+                } else {
+                  throw playErr;
+                }
+              } else {
+                throw playErr;
+              }
+            }
+
+            logAudioState('play-success');
+            console.log(
+              '[Streaming TTS] Safari: Audio playback started successfully'
+            );
+            // Resolve the outer promise when playback actually starts
+            // Note: We don't resolve here - we wait for the 'playing' event or 'ended' event
           } catch (err) {
+            logAudioState('play-error');
             const errorMsg =
               err instanceof Error
                 ? err.message
                 : 'Failed to start audio playback';
+            console.error('[Streaming TTS] Safari: Play failed', {
+              error: err,
+              errorMessage: errorMsg,
+              audioState: {
+                readyState: globalAudioElement?.readyState,
+                networkState: globalAudioElement?.networkState,
+                paused: globalAudioElement?.paused,
+                error: globalAudioElement?.error,
+              },
+            });
             reject(
               new Error(
                 `Failed to play audio: ${errorMsg}. This may occur if Safari is still processing probe requests.`
@@ -363,7 +624,10 @@ export async function streamAndPlayTTS(
         };
 
         const handleCanPlay = () => {
-          console.log('[Streaming TTS] iOS: Audio can play (enough data loaded)');
+          logAudioState('canplay');
+          console.log(
+            '[Streaming TTS] Safari: Audio can play (enough data loaded)'
+          );
           if (readinessTimeout) {
             clearTimeout(readinessTimeout);
             readinessTimeout = null;
@@ -372,8 +636,9 @@ export async function streamAndPlayTTS(
         };
 
         const handleCanPlayThrough = () => {
+          logAudioState('canplaythrough');
           console.log(
-            '[Streaming TTS] iOS: Audio can play through (entire stream loaded)'
+            '[Streaming TTS] Safari: Audio can play through (entire stream loaded)'
           );
           if (readinessTimeout) {
             clearTimeout(readinessTimeout);
@@ -383,6 +648,8 @@ export async function streamAndPlayTTS(
         };
 
         // Set up event listeners
+        console.log('[Streaming TTS] Safari: Setting up event listeners');
+
         globalAudioElement?.addEventListener('ended', handleEnded, {
           once: true,
         });
@@ -393,6 +660,15 @@ export async function streamAndPlayTTS(
           once: true,
         });
         globalAudioElement?.addEventListener('stalled', handleStalled);
+        globalAudioElement?.addEventListener('progress', handleProgress);
+        globalAudioElement?.addEventListener(
+          'loadedmetadata',
+          handleLoadedMetadata
+        );
+        globalAudioElement?.addEventListener('loadeddata', handleLoadedData);
+        globalAudioElement?.addEventListener('waiting', handleWaiting);
+        globalAudioElement?.addEventListener('playing', handlePlaying);
+        globalAudioElement?.addEventListener('pause', handlePause);
 
         // Wait for canplay or canplaythrough - Safari needs time to complete probe requests
         // canplay is fired when enough data is loaded to start playback
@@ -408,18 +684,45 @@ export async function streamAndPlayTTS(
           }
         );
 
+        // Periodic state checking for debugging
+        stateCheckInterval = setInterval(() => {
+          if (!playbackStarted && !abortController.signal.aborted) {
+            logAudioState('periodic-check');
+          }
+        }, 1000);
+
         // Timeout fallback: if Safari doesn't signal readiness within 10 seconds,
         // try playing anyway (some streams may work without explicit readiness events)
+        console.log(
+          `[Streaming TTS] Safari: Setting ${READINESS_TIMEOUT_MS}ms readiness timeout`
+        );
         readinessTimeout = setTimeout(() => {
           if (!playbackStarted && !abortController.signal.aborted) {
+            logAudioState('timeout');
             console.warn(
-              '[Streaming TTS] iOS: Readiness timeout - attempting playback anyway'
+              '[Streaming TTS] Safari: Readiness timeout - attempting playback anyway'
             );
             attemptPlay();
           }
         }, READINESS_TIMEOUT_MS);
       });
     } catch (error) {
+      console.error('[Streaming TTS] Safari: Error in streamAndPlayTTS', {
+        error,
+        errorName: error instanceof Error ? error.name : 'unknown',
+        errorMessage: error instanceof Error ? error.message : String(error),
+        audioElement: globalAudioElement
+          ? {
+              src: globalAudioElement.src,
+              readyState: globalAudioElement.readyState,
+              networkState: globalAudioElement.networkState,
+              paused: globalAudioElement.paused,
+              currentTime: globalAudioElement.currentTime,
+              error: globalAudioElement.error,
+            }
+          : null,
+      });
+
       // Cleanup if nothing is playing
       const isPlaying =
         globalAudioElement &&
@@ -520,7 +823,7 @@ export async function streamAndPlayTTS(
                         appendChunk(nextChunk);
                       }
                     },
-                    {once: true}
+                    { once: true }
                   );
                 }
               } catch (err) {
@@ -536,7 +839,7 @@ export async function streamAndPlayTTS(
               break;
             }
 
-            const {done, value} = await reader.read();
+            const { done, value } = await reader.read();
             if (done) {
               // Append any queued chunks before ending
               while (
@@ -580,7 +883,7 @@ export async function streamAndPlayTTS(
           if (mediaSource.readyState === 'open') {
             try {
               mediaSource.endOfStream();
-            } catch { }
+            } catch {}
           }
         }
       });
@@ -604,7 +907,7 @@ export async function streamAndPlayTTS(
           throw new DOMException('Request aborted', 'AbortError');
         }
 
-        const {done, value} = await reader.read();
+        const { done, value } = await reader.read();
         if (done) break;
 
         if (value) {
@@ -616,7 +919,7 @@ export async function streamAndPlayTTS(
         throw new Error('No audio data received');
       }
 
-      const blob = new Blob(chunks as BlobPart[], {type: 'audio/mpeg'});
+      const blob = new Blob(chunks as BlobPart[], { type: 'audio/mpeg' });
       const blobURL = URL.createObjectURL(blob);
       currentBlobURL = blobURL;
       globalAudioElement.src = blobURL;
