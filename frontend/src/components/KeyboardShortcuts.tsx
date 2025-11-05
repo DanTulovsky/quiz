@@ -317,7 +317,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
       window.scrollTo({ top: 0, behavior: 'smooth' });
     },
     {
-      enableOnFormTags: true,
+      enableOnFormTags: false,
       preventDefault: true,
       enabled:
         !isQuickSuggestionsOpen &&
@@ -524,7 +524,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
       onShowHistory();
     },
     {
-      enableOnFormTags: true,
+      enableOnFormTags: false,
       preventDefault: true,
       enabled:
         !isQuickSuggestionsOpen &&

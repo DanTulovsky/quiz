@@ -326,7 +326,8 @@ test.describe('Comprehensive API Tests', () => {
       path.includes('/clear-user-data') ||
       path.includes('/test-email') ||
       path.includes('/api-keys/test-') ||
-      path.includes('/audio/');
+      path.includes('/audio/') ||
+      path.includes('/linear-issue');
 
     if (shouldSkip) return true;
 

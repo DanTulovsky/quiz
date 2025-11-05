@@ -844,6 +844,15 @@ export interface FeedbackUpdateRequest {
   resolved_by_user_id?: number;
 }
 
+export interface CreateLinearIssueResponse {
+  /** The Linear issue ID */
+  issue_id: string;
+  /** URL to the created Linear issue */
+  issue_url: string;
+  /** The title of the created Linear issue */
+  title: string;
+}
+
 export interface GeneratingResponse {
   /** @maxLength 100 */
   status?: string;
@@ -14387,6 +14396,70 @@ export const useDeleteV1AdminBackendFeedbackId = <TError = ErrorResponse,
     }
     
 /**
+ * Create a Linear issue from a feedback report (admin only). Requires Linear integration to be enabled.
+ * @summary Create Linear issue from feedback
+ */
+export const postV1AdminBackendFeedbackIdLinearIssue = (
+    id: number,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<CreateLinearIssueResponse>(
+      {url: `/v1/admin/backend/feedback/${id}/linear-issue`, method: 'POST', signal
+    },
+      options);
+    }
+  
+
+
+export const getPostV1AdminBackendFeedbackIdLinearIssueMutationOptions = <TError = ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendFeedbackIdLinearIssue>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendFeedbackIdLinearIssue>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['postV1AdminBackendFeedbackIdLinearIssue'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AdminBackendFeedbackIdLinearIssue>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  postV1AdminBackendFeedbackIdLinearIssue(id,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostV1AdminBackendFeedbackIdLinearIssueMutationResult = NonNullable<Awaited<ReturnType<typeof postV1AdminBackendFeedbackIdLinearIssue>>>
+    
+    export type PostV1AdminBackendFeedbackIdLinearIssueMutationError = ErrorResponse
+
+    /**
+ * @summary Create Linear issue from feedback
+ */
+export const usePostV1AdminBackendFeedbackIdLinearIssue = <TError = ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendFeedbackIdLinearIssue>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postV1AdminBackendFeedbackIdLinearIssue>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+
+      const mutationOptions = getPostV1AdminBackendFeedbackIdLinearIssueMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    
+/**
  * Generate a new API key for programmatic access. The full key is only returned once during creation.
  * @summary Create API key
  */
@@ -15374,6 +15447,8 @@ export const getDeleteV1AdminBackendFeedbackResponseMock = (overrideResponse: Pa
 export const getGetV1AdminBackendFeedbackIdResponseMock = (overrideResponse: Partial< FeedbackReport > = {}): FeedbackReport => ({id: faker.number.int({min: undefined, max: undefined}), user_id: faker.number.int({min: undefined, max: undefined}), feedback_text: faker.string.alpha({length: {min: 10, max: 5000}}), feedback_type: faker.helpers.arrayElement(['bug','feature_request','general','improvement'] as const), context_data: faker.helpers.arrayElement([{}, undefined]), screenshot_data: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), screenshot_url: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), status: faker.helpers.arrayElement(['new','in_progress','resolved','dismissed'] as const), admin_notes: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), assigned_to_user_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), resolved_at: faker.helpers.arrayElement([faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, null]), undefined]), resolved_by_user_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, ...overrideResponse})
 
 export const getPatchV1AdminBackendFeedbackIdResponseMock = (overrideResponse: Partial< FeedbackReport > = {}): FeedbackReport => ({id: faker.number.int({min: undefined, max: undefined}), user_id: faker.number.int({min: undefined, max: undefined}), feedback_text: faker.string.alpha({length: {min: 10, max: 5000}}), feedback_type: faker.helpers.arrayElement(['bug','feature_request','general','improvement'] as const), context_data: faker.helpers.arrayElement([{}, undefined]), screenshot_data: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), screenshot_url: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), status: faker.helpers.arrayElement(['new','in_progress','resolved','dismissed'] as const), admin_notes: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), assigned_to_user_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), resolved_at: faker.helpers.arrayElement([faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, null]), undefined]), resolved_by_user_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, ...overrideResponse})
+
+export const getPostV1AdminBackendFeedbackIdLinearIssueResponseMock = (overrideResponse: Partial< CreateLinearIssueResponse > = {}): CreateLinearIssueResponse => ({issue_id: faker.string.alpha({length: {min: 10, max: 20}}), issue_url: faker.internet.url(), title: faker.string.alpha({length: {min: 10, max: 20}}), ...overrideResponse})
 
 export const getPostV1ApiKeysResponseMock = (overrideResponse: Partial< CreateAPIKeyResponse > = {}): CreateAPIKeyResponse => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), key_name: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), key: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), key_prefix: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), permission_level: faker.helpers.arrayElement([faker.helpers.arrayElement(['readonly','full'] as const), undefined]), created_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
 
@@ -16996,6 +17071,18 @@ export const getDeleteV1AdminBackendFeedbackIdMockHandler = (overrideResponse?: 
   }, options)
 }
 
+export const getPostV1AdminBackendFeedbackIdLinearIssueMockHandler = (overrideResponse?: CreateLinearIssueResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<CreateLinearIssueResponse> | CreateLinearIssueResponse), options?: RequestHandlerOptions) => {
+  return http.post('*/v1/admin/backend/feedback/:id/linear-issue', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getPostV1AdminBackendFeedbackIdLinearIssueResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  }, options)
+}
+
 export const getPostV1ApiKeysMockHandler = (overrideResponse?: CreateAPIKeyResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<CreateAPIKeyResponse> | CreateAPIKeyResponse), options?: RequestHandlerOptions) => {
   return http.post('*/v1/api-keys', async (info) => {await delay(1000);
   
@@ -17239,6 +17326,7 @@ export const getQuizApplicationAPIMock = () => [
   getGetV1AdminBackendFeedbackIdMockHandler(),
   getPatchV1AdminBackendFeedbackIdMockHandler(),
   getDeleteV1AdminBackendFeedbackIdMockHandler(),
+  getPostV1AdminBackendFeedbackIdLinearIssueMockHandler(),
   getPostV1ApiKeysMockHandler(),
   getGetV1ApiKeysMockHandler(),
   getDeleteV1ApiKeysIdMockHandler(),

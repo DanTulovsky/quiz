@@ -806,3 +806,21 @@ translation:
     google_monthly_quota: 500000
     # Default quota for new providers (in characters per month)
     default_monthly_quota: 100000
+
+# Linear Configuration
+#
+# Linear integration settings for creating issues from feedback reports
+# API key should be set via environment variable: LINEAR_API_KEY (required)
+# Team ID/name can be set via environment variable: LINEAR_TEAM_ID (required)
+# Project ID/name can be set via environment variable: LINEAR_PROJECT_ID (optional)
+# Enabled can be set via environment variable: LINEAR_ENABLED
+#
+# Note: Linear API requires teamId and title (required), projectId is optional.
+# Team and project can be specified as either UUIDs or names (names will be looked up automatically).
+# Labels and state require their IDs from Linear, not names, so they're not yet implemented.
+linear:
+  enabled: false
+  team_id: "" # Required: Set your Linear team ID (UUID) or team name here or via LINEAR_TEAM_ID env var
+  project_id: "" # Optional: Set your Linear project ID (UUID) or project name here or via LINEAR_PROJECT_ID env var
+  default_labels: [] # Not yet implemented - requires fetching label IDs from Linear API
+  default_state: "" # Not yet implemented - requires fetching state ID from Linear API

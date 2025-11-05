@@ -20,12 +20,19 @@ import {
   Divider,
   Box,
 } from '@mantine/core';
-import { IconRefresh, IconCheck, IconClock, IconX } from '@tabler/icons-react';
+import {
+  IconRefresh,
+  IconCheck,
+  IconClock,
+  IconX,
+  IconExternalLink,
+} from '@tabler/icons-react';
 import * as TablerIcons from '@tabler/icons-react';
 import {
   useGetV1AdminBackendFeedback,
   usePatchV1AdminBackendFeedbackId,
   useDeleteV1AdminBackendFeedbackId,
+  usePostV1AdminBackendFeedbackIdLinearIssue,
   FeedbackUpdateRequest,
   FeedbackUpdateRequestStatus,
   GetV1AdminBackendFeedbackStatus,
@@ -66,6 +73,12 @@ const FeedbackManagementPage: React.FC = () => {
   const [deleteAllDismissedModalOpened, setDeleteAllDismissedModalOpened] =
     useState(false);
   const [deleteAllModalOpened, setDeleteAllModalOpened] = useState(false);
+  const [errorModalOpened, setErrorModalOpened] = useState(false);
+  const [errorDetails, setErrorDetails] = useState<{
+    title: string;
+    message: string;
+    details?: string;
+  } | null>(null);
 
   // Fetch users for username display
   const { data: usersData } = useUsersPaginated({
@@ -108,6 +121,12 @@ const FeedbackManagementPage: React.FC = () => {
 
   const { mutate: deleteFeedback, isPending: isDeleting } =
     useDeleteV1AdminBackendFeedbackId();
+
+  const { mutate: createLinearIssue, isPending: isCreatingLinearIssue } =
+    usePostV1AdminBackendFeedbackIdLinearIssue();
+  const [creatingLinearIssueForId, setCreatingLinearIssueForId] = useState<
+    number | null
+  >(null);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -325,6 +344,201 @@ const FeedbackManagementPage: React.FC = () => {
             message: errorMessage || 'Failed to update feedback',
             color: 'red',
           });
+        },
+      }
+    );
+  };
+
+  const handleCreateLinearIssue = (feedbackId?: number) => {
+    const feedbackIdToUse = feedbackId || selectedFeedback?.id;
+    if (!feedbackIdToUse) return;
+
+    setCreatingLinearIssueForId(feedbackIdToUse);
+    createLinearIssue(
+      { id: feedbackIdToUse },
+      {
+        onSuccess: response => {
+          setCreatingLinearIssueForId(null);
+          notifications.show({
+            title: 'Linear Issue Created',
+            message: (
+              <div>
+                Successfully created Linear issue.{' '}
+                <a
+                  href={response.issue_url}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  style={{ textDecoration: 'underline' }}
+                >
+                  View Issue
+                </a>
+              </div>
+            ),
+            color: 'green',
+          });
+        },
+        onError: (error: unknown) => {
+          setCreatingLinearIssueForId(null);
+
+          // Extract error details
+          let errorTitle = 'Error';
+          let errorMessage = 'Failed to create Linear issue';
+          let errorDetails: string | undefined;
+
+          if (error && typeof error === 'object' && 'response' in error) {
+            const response = (
+              error as { response?: { data?: { message?: string } } }
+            ).response;
+            if (response?.data) {
+              const data = response.data;
+
+              // Try to parse the error message for Linear API errors
+              if (data.message) {
+                errorMessage = data.message;
+
+                // Check if it contains Linear validation errors
+                if (data.message.includes('Argument Validation Error')) {
+                  errorTitle = 'Linear Validation Error';
+
+                  // Try to extract user-presentable message from extensions
+                  try {
+                    // Look for userPresentableMessage in the error
+                    const extensionsMatch = data.message.match(
+                      /userPresentableMessage":"([^"]+)"/
+                    );
+                    if (extensionsMatch) {
+                      errorMessage = extensionsMatch[1];
+                    }
+
+                    // Extract validation errors - try to parse the full JSON
+                    try {
+                      // Find the extensions JSON object
+                      const extensionsStart =
+                        data.message.indexOf('Extensions: {');
+                      if (extensionsStart !== -1) {
+                        const extensionsStr = data.message.substring(
+                          extensionsStart + 12
+                        ); // Skip "Extensions: "
+                        // Try to find the end of the JSON object (matching braces)
+                        let braceCount = 0;
+                        let endIndex = -1;
+                        for (let i = 0; i < extensionsStr.length; i++) {
+                          if (extensionsStr[i] === '{') braceCount++;
+                          if (extensionsStr[i] === '}') braceCount--;
+                          if (braceCount === 0) {
+                            endIndex = i + 1;
+                            break;
+                          }
+                        }
+
+                        if (endIndex > 0) {
+                          try {
+                            const extensionsJson = JSON.parse(
+                              extensionsStr.substring(0, endIndex)
+                            ) as {
+                              validationErrors?: Array<{
+                                property?: string;
+                                constraints?: Record<string, string>;
+                                value?: string;
+                              }>;
+                            };
+                            if (
+                              extensionsJson.validationErrors &&
+                              Array.isArray(extensionsJson.validationErrors)
+                            ) {
+                              const validationMessages =
+                                extensionsJson.validationErrors
+                                  .map(ve => {
+                                    const property = ve.property || 'unknown';
+                                    const constraint = ve.constraints
+                                      ? (Object.values(
+                                          ve.constraints
+                                        )[0] as string)
+                                      : 'Invalid value';
+                                    const value = ve.value
+                                      ? ` (value: "${ve.value}")`
+                                      : '';
+                                    return `• ${property}: ${constraint}${value}`;
+                                  })
+                                  .join('\n');
+                              if (validationMessages) {
+                                errorDetails = validationMessages;
+                              }
+                            }
+                          } catch {
+                            // JSON parsing failed, fall through to regex parsing
+                          }
+                        }
+                      }
+
+                      // Fallback to regex parsing if JSON parsing failed
+                      if (!errorDetails) {
+                        const validationErrorsMatch = data.message.match(
+                          /"validationErrors":\[(.*?)\]/
+                        );
+                        if (validationErrorsMatch) {
+                          try {
+                            // Try to extract individual validation errors
+                            const validationStr = validationErrorsMatch[1];
+                            const propertyMatches = [
+                              ...validationStr.matchAll(
+                                /"property":"([^"]+)"/g
+                              ),
+                            ];
+                            const constraintMatches = [
+                              ...validationStr.matchAll(
+                                /"constraints":\{"isUuid":"([^"]+)"/g
+                              ),
+                            ];
+                            const valueMatches = [
+                              ...validationStr.matchAll(/"value":"([^"]+)"/g),
+                            ];
+
+                            const messages: string[] = [];
+                            for (let i = 0; i < propertyMatches.length; i++) {
+                              const property =
+                                propertyMatches[i]?.[1] || 'unknown';
+                              const constraint =
+                                constraintMatches[i]?.[1] || 'Invalid value';
+                              const value = valueMatches[i]?.[1] || '';
+                              messages.push(
+                                `• ${property}: ${constraint}${value ? ` (value: "${value}")` : ''}`
+                              );
+                            }
+
+                            if (messages.length > 0) {
+                              errorDetails = messages.join('\n');
+                            }
+                          } catch {
+                            // If parsing fails, just show the raw message
+                          }
+                        }
+                      }
+                    } catch {
+                      // If parsing fails, use the original message
+                    }
+                  } catch {
+                    // If parsing fails, use the original message
+                  }
+                }
+              }
+            }
+          }
+
+          // Show notification
+          notifications.show({
+            title: errorTitle,
+            message: errorMessage,
+            color: 'red',
+          });
+
+          // Show detailed error modal
+          setErrorDetails({
+            title: errorTitle,
+            message: errorMessage,
+            details: errorDetails,
+          });
+          setErrorModalOpened(true);
         },
       }
     );
@@ -605,6 +819,26 @@ const FeedbackManagementPage: React.FC = () => {
                           >
                             <IconEye style={{ width: 18, height: 18 }} />
                           </ActionIcon>
+                          <Tooltip label='Create Linear Issue'>
+                            <ActionIcon
+                              variant='subtle'
+                              color='blue'
+                              onClick={() => handleCreateLinearIssue(item.id)}
+                              title='Create Linear Issue'
+                              disabled={creatingLinearIssueForId === item.id}
+                            >
+                              <IconExternalLink
+                                style={{
+                                  width: 18,
+                                  height: 18,
+                                  opacity:
+                                    creatingLinearIssueForId === item.id
+                                      ? 0.5
+                                      : 1,
+                                }}
+                              />
+                            </ActionIcon>
+                          </Tooltip>
                           <ActionIcon
                             variant='subtle'
                             color='red'
@@ -644,6 +878,36 @@ const FeedbackManagementPage: React.FC = () => {
         >
           {selectedFeedback && (
             <Stack gap='md'>
+              {/* Action Buttons at Top */}
+              <Group justify='flex-end' mb='xs'>
+                <Button
+                  variant='subtle'
+                  onClick={() => setDetailModalOpened(false)}
+                  disabled={isUpdating || isCreatingLinearIssue}
+                >
+                  Close
+                </Button>
+                <Button
+                  onClick={() => handleCreateLinearIssue()}
+                  loading={isCreatingLinearIssue}
+                  disabled={isUpdating}
+                  leftSection={<IconExternalLink size={16} />}
+                  variant='outline'
+                >
+                  Create Linear Issue
+                </Button>
+                <Button
+                  onClick={handleSaveUpdate}
+                  loading={isUpdating}
+                  disabled={isCreatingLinearIssue}
+                  leftSection={<IconCheck />}
+                >
+                  Save Changes
+                </Button>
+              </Group>
+
+              <Divider />
+
               {/* Status and Type */}
               <Group justify='space-between' align='flex-start'>
                 <Stack gap='xs'>
@@ -778,13 +1042,23 @@ const FeedbackManagementPage: React.FC = () => {
                 <Button
                   variant='subtle'
                   onClick={() => setDetailModalOpened(false)}
-                  disabled={isUpdating}
+                  disabled={isUpdating || isCreatingLinearIssue}
                 >
                   Close
                 </Button>
                 <Button
+                  onClick={handleCreateLinearIssue}
+                  loading={isCreatingLinearIssue}
+                  disabled={isUpdating}
+                  leftSection={<IconExternalLink size={16} />}
+                  variant='outline'
+                >
+                  Create Linear Issue
+                </Button>
+                <Button
                   onClick={handleSaveUpdate}
                   loading={isUpdating}
+                  disabled={isCreatingLinearIssue}
                   leftSection={<IconCheck />}
                 >
                   Save Changes
@@ -931,6 +1205,65 @@ const FeedbackManagementPage: React.FC = () => {
               </Button>
             </Group>
           </Stack>
+        </Modal>
+
+        {/* Error Details Modal */}
+        <Modal
+          opened={errorModalOpened}
+          onClose={() => {
+            setErrorModalOpened(false);
+            setErrorDetails(null);
+          }}
+          title={errorDetails?.title || 'Error'}
+          size='lg'
+        >
+          {errorDetails && (
+            <Stack gap='md'>
+              <Alert color='red' icon={<IconAlertTriangle size={16} />}>
+                <Text fw={500} mb='xs'>
+                  {errorDetails.message}
+                </Text>
+                {errorDetails.details && (
+                  <Paper
+                    p='md'
+                    mt='md'
+                    withBorder
+                    style={{ backgroundColor: '#f8f9fa' }}
+                  >
+                    <Text
+                      size='sm'
+                      style={{
+                        whiteSpace: 'pre-wrap',
+                        fontFamily: 'monospace',
+                      }}
+                    >
+                      {errorDetails.details}
+                    </Text>
+                  </Paper>
+                )}
+              </Alert>
+
+              <Text size='sm' c='dimmed'>
+                Please check your Linear configuration:
+                <ul style={{ marginTop: '8px', paddingLeft: '20px' }}>
+                  <li>Team ID must be a valid UUID (not a team name)</li>
+                  <li>Project ID must be a valid UUID (not a project name)</li>
+                  <li>API key must be valid and have proper permissions</li>
+                </ul>
+              </Text>
+
+              <Group justify='flex-end' mt='md'>
+                <Button
+                  onClick={() => {
+                    setErrorModalOpened(false);
+                    setErrorDetails(null);
+                  }}
+                >
+                  Close
+                </Button>
+              </Group>
+            </Stack>
+          )}
         </Modal>
       </Stack>
     </Container>

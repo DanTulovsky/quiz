@@ -2,14 +2,19 @@ package handlers
 
 import (
 	"database/sql"
+	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 
+	"quizapp/internal/config"
 	"quizapp/internal/models"
 	"quizapp/internal/observability"
 	serviceinterfaces "quizapp/internal/serviceinterfaces"
+	"quizapp/internal/services"
 	contextutils "quizapp/internal/utils"
 )
 
@@ -78,12 +83,21 @@ func convertFeedbackToResponse(fr models.FeedbackReport) FeedbackResponse {
 // FeedbackHandler handles feedback report endpoints.
 type FeedbackHandler struct {
 	feedbackService serviceinterfaces.FeedbackServiceInterface
+	linearService   *services.LinearService
+	userService     services.UserServiceInterface
+	config          *config.Config
 	logger          *observability.Logger
 }
 
 // NewFeedbackHandler creates a FeedbackHandler.
-func NewFeedbackHandler(fs serviceinterfaces.FeedbackServiceInterface, logger *observability.Logger) *FeedbackHandler {
-	return &FeedbackHandler{feedbackService: fs, logger: logger}
+func NewFeedbackHandler(fs serviceinterfaces.FeedbackServiceInterface, linearService *services.LinearService, userService services.UserServiceInterface, cfg *config.Config, logger *observability.Logger) *FeedbackHandler {
+	return &FeedbackHandler{
+		feedbackService: fs,
+		linearService:   linearService,
+		userService:     userService,
+		config:          cfg,
+		logger:          logger,
+	}
 }
 
 // FeedbackSubmissionRequest represents a POST request.
@@ -290,4 +304,214 @@ func (h *FeedbackHandler) DeleteAllFeedback(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"deleted_count": count})
+}
+
+// CreateLinearIssueResponse represents the response for creating a Linear issue
+type CreateLinearIssueResponse struct {
+	IssueID  string `json:"issue_id"`
+	IssueURL string `json:"issue_url"`
+	Title    string `json:"title"`
+}
+
+// CreateLinearIssue handles POST /v1/admin/backend/feedback/:id/linear-issue.
+func (h *FeedbackHandler) CreateLinearIssue(c *gin.Context) {
+	ctx, span := observability.TraceHandlerFunction(c.Request.Context(), "create_linear_issue")
+	defer observability.FinishSpan(span, nil)
+
+	if h.linearService == nil {
+		HandleAppError(c, contextutils.NewAppError(
+			contextutils.ErrorCodeServiceUnavailable,
+			contextutils.SeverityError,
+			"Linear integration is not available",
+			"",
+		))
+		return
+	}
+
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		HandleAppError(c, contextutils.ErrInvalidFormat)
+		return
+	}
+
+	// Get feedback by ID
+	feedback, err := h.feedbackService.GetFeedbackByID(ctx, id)
+	if err != nil {
+		if contextutils.IsError(err, contextutils.ErrRecordNotFound) {
+			HandleAppError(c, contextutils.ErrRecordNotFound)
+			return
+		}
+		h.logger.Error(ctx, "get feedback failed", err, nil)
+		HandleAppError(c, err)
+		return
+	}
+
+	// Format title - only include feedback type and number
+	title := fmt.Sprintf("[Feedback #%d] %s", feedback.ID, getTypeLabel(feedback.FeedbackType))
+
+	// Get username and user for metadata
+	username := fmt.Sprintf("User %d", feedback.UserID)
+	var user *models.User
+	if h.userService != nil {
+		user, err = h.userService.GetUserByID(ctx, feedback.UserID)
+		if err == nil && user != nil {
+			username = user.Username
+		}
+	}
+
+	// Build description with feedback details
+	var descriptionBuilder strings.Builder
+	descriptionBuilder.WriteString(feedback.FeedbackText)
+	descriptionBuilder.WriteString("\n\n")
+
+	descriptionBuilder.WriteString("### Metadata\n\n")
+	descriptionBuilder.WriteString(fmt.Sprintf("- **Type**: %s\n", getTypeLabel(feedback.FeedbackType)))
+	descriptionBuilder.WriteString(fmt.Sprintf("- **Status**: %s\n", feedback.Status))
+	descriptionBuilder.WriteString(fmt.Sprintf("- **User ID**: %d\n", feedback.UserID))
+	descriptionBuilder.WriteString(fmt.Sprintf("- **Username**: %s\n", username))
+	descriptionBuilder.WriteString(fmt.Sprintf("- **Feedback ID**: %d\n", feedback.ID))
+	// Format created timestamp in user's timezone
+	createdFormatted := feedback.CreatedAt.Format("January 2, 2006 at 3:04 PM")
+	timezoneLabel := "UTC"
+	if h.userService != nil {
+		if formatted, tz, err := contextutils.FormatTimeInUserTimezone(ctx, feedback.UserID, feedback.CreatedAt, "January 2, 2006 at 3:04 PM", h.userService.GetUserByID); err == nil {
+			createdFormatted = formatted
+			timezoneLabel = tz
+		}
+	}
+	descriptionBuilder.WriteString(fmt.Sprintf("- **Created**: %s (%s)\n", createdFormatted, timezoneLabel))
+
+	if feedback.AdminNotes.Valid && feedback.AdminNotes.String != "" {
+		descriptionBuilder.WriteString(fmt.Sprintf("- **Admin Notes**: %s\n", feedback.AdminNotes.String))
+	}
+
+	// Add context data if available
+	if len(feedback.ContextData) > 0 {
+		descriptionBuilder.WriteString("\n### Context Data\n\n")
+		for key, value := range feedback.ContextData {
+			switch key {
+			case "page_url":
+				// Handle page_url specially - make it a full URL if it's a relative path
+				pageURL := fmt.Sprintf("%v", value)
+				if strings.HasPrefix(pageURL, "/") {
+					// It's a relative path, construct full URL
+					// Try to get base URL from config first
+					baseURL := ""
+					if h.config != nil && h.config.Server.AppBaseURL != "" {
+						baseURL = h.config.Server.AppBaseURL
+					}
+					// Fallback to request headers if config not available
+					if baseURL == "" {
+						baseURL = c.Request.Header.Get("Origin")
+					}
+					if baseURL == "" {
+						baseURL = c.Request.Header.Get("Referer")
+						if baseURL != "" {
+							// Extract base URL from referer (protocol + host)
+							// Find the first "/" after the protocol
+							if schemeIdx := strings.Index(baseURL, "://"); schemeIdx > 0 {
+								if pathIdx := strings.Index(baseURL[schemeIdx+3:], "/"); pathIdx > 0 {
+									baseURL = baseURL[:schemeIdx+3+pathIdx]
+								}
+							}
+						}
+					}
+					// Remove trailing slash if present
+					if baseURL != "" {
+						baseURL = strings.TrimSuffix(baseURL, "/")
+						descriptionBuilder.WriteString(fmt.Sprintf("- **%s**: %s%s\n", key, baseURL, pageURL))
+					} else {
+						// If we can't determine base URL, just use the relative path
+						descriptionBuilder.WriteString(fmt.Sprintf("- **%s**: %s\n", key, pageURL))
+					}
+				} else {
+					descriptionBuilder.WriteString(fmt.Sprintf("- **%s**: %s\n", key, pageURL))
+				}
+			case "timestamp":
+				// Format timestamp as human readable in user's timezone
+				if tsStr, ok := value.(string); ok {
+					if ts, err := time.Parse(time.RFC3339, tsStr); err == nil {
+						// Convert to user's timezone
+						formatted := ts.Format("January 2, 2006 at 3:04 PM")
+						timezoneLabel := "UTC"
+						if h.userService != nil {
+							if fmtTime, tz, err := contextutils.FormatTimeInUserTimezone(ctx, feedback.UserID, ts, "January 2, 2006 at 3:04 PM", h.userService.GetUserByID); err == nil {
+								formatted = fmtTime
+								timezoneLabel = tz
+							}
+						}
+						descriptionBuilder.WriteString(fmt.Sprintf("- **%s**: %s (%s)\n", key, formatted, timezoneLabel))
+					} else {
+						descriptionBuilder.WriteString(fmt.Sprintf("- **%s**: %v\n", key, value))
+					}
+				} else {
+					descriptionBuilder.WriteString(fmt.Sprintf("- **%s**: %v\n", key, value))
+				}
+			default:
+				descriptionBuilder.WriteString(fmt.Sprintf("- **%s**: %v\n", key, value))
+			}
+		}
+	}
+
+	// Add screenshot - embed as base64 data URI in markdown if available
+	if feedback.ScreenshotURL.Valid && feedback.ScreenshotURL.String != "" {
+		descriptionBuilder.WriteString("\n### Screenshot\n\n")
+		descriptionBuilder.WriteString(fmt.Sprintf("![Screenshot](%s)\n", feedback.ScreenshotURL.String))
+	} else if feedback.ScreenshotData.Valid && feedback.ScreenshotData.String != "" {
+		descriptionBuilder.WriteString("\n### Screenshot\n\n")
+		// Embed screenshot as base64 data URI
+		screenshotData := feedback.ScreenshotData.String
+		// Ensure it has the data URI prefix
+		if !strings.HasPrefix(screenshotData, "data:") {
+			screenshotData = "data:image/png;base64," + screenshotData
+		}
+		descriptionBuilder.WriteString(fmt.Sprintf("![Screenshot](%s)\n", screenshotData))
+	}
+
+	descriptionBuilder.WriteString("\n---\n*Created from Quiz Admin Feedback Reports*")
+
+	description := descriptionBuilder.String()
+
+	// Determine labels based on feedback type
+	var labels []string
+	switch feedback.FeedbackType {
+	case "bug":
+		labels = []string{"Bug"}
+	case "feature_request":
+		labels = []string{"Feature"}
+	case "improvement":
+		labels = []string{"Improvement"}
+	}
+
+	// Create Linear issue (use config defaults for team and project)
+	result, err := h.linearService.CreateIssue(ctx, title, description, "", "", labels, "")
+	if err != nil {
+		h.logger.Error(ctx, "create linear issue failed", err, nil)
+		HandleAppError(c, err)
+		return
+	}
+
+	response := CreateLinearIssueResponse{
+		IssueID:  result.IssueID,
+		IssueURL: result.IssueURL,
+		Title:    result.Title,
+	}
+
+	c.JSON(http.StatusOK, response)
+}
+
+// getTypeLabel converts feedback type to human-readable label
+func getTypeLabel(feedbackType string) string {
+	switch feedbackType {
+	case "bug":
+		return "Bug Report"
+	case "feature_request":
+		return "Feature Request"
+	case "general":
+		return "General Feedback"
+	case "improvement":
+		return "Improvement"
+	default:
+		return feedbackType
+	}
 }

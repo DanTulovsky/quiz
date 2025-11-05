@@ -105,6 +105,9 @@ type Config struct {
 	// Translation Configuration
 	Translation TranslationConfig `json:"translation" yaml:"translation"`
 
+	// Linear Configuration
+	Linear LinearConfig `json:"linear" yaml:"linear"`
+
 	// Internal fields
 	IsTest bool `json:"is_test" yaml:"is_test"`
 }
@@ -442,6 +445,16 @@ type TranslationQuotaConfig struct {
 	GoogleMonthlyQuota int64 `json:"google_monthly_quota" yaml:"google_monthly_quota"`
 	// Default monthly quota for new providers (in characters)
 	DefaultMonthlyQuota int64 `json:"default_monthly_quota" yaml:"default_monthly_quota"`
+}
+
+// LinearConfig represents Linear integration configuration
+type LinearConfig struct {
+	APIKey        string   `json:"api_key" yaml:"api_key"`               // API key from LINEAR_API_KEY env var
+	TeamID        string   `json:"team_id" yaml:"team_id"`               // Team ID, override via LINEAR_TEAM_ID
+	ProjectID     string   `json:"project_id" yaml:"project_id"`         // Project ID, override via LINEAR_PROJECT_ID
+	DefaultLabels []string `json:"default_labels" yaml:"default_labels"` // Optional default labels
+	DefaultState  string   `json:"default_state" yaml:"default_state"`   // Optional default state (e.g., "Todo")
+	Enabled       bool     `json:"enabled" yaml:"enabled"`               // Feature flag
 }
 
 // NewConfig loads configuration from YAML file first, then overrides with environment variables

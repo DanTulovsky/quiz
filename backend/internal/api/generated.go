@@ -507,6 +507,18 @@ type CreateConversationRequest struct {
 	Title string `json:"title"`
 }
 
+// CreateLinearIssueResponse defines model for CreateLinearIssueResponse.
+type CreateLinearIssueResponse struct {
+	// IssueId The Linear issue ID
+	IssueId string `json:"issue_id"`
+
+	// IssueUrl URL to the created Linear issue
+	IssueUrl string `json:"issue_url"`
+
+	// Title The title of the created Linear issue
+	Title string `json:"title"`
+}
+
 // CreateMessageRequest defines model for CreateMessageRequest.
 type CreateMessageRequest struct {
 	// Content Message content

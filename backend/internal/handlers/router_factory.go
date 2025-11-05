@@ -189,7 +189,14 @@ func NewRouter(
 	userAdminHandler := NewUserAdminHandler(userService, cfg, logger)
 	verbConjugationHandler := NewVerbConjugationHandler(logger)
 	feedbackService := services.NewFeedbackService(userService.GetDB(), logger)
-	feedbackHandler := NewFeedbackHandler(feedbackService, logger)
+
+	// Initialize Linear service if enabled
+	var linearService *services.LinearService
+	if cfg.Linear.Enabled {
+		linearService = services.NewLinearService(cfg, logger)
+	}
+
+	feedbackHandler := NewFeedbackHandler(feedbackService, linearService, userService, cfg, logger)
 
 	// V1 routes (matching swagger spec)
 	v1 := router.Group("/v1")
@@ -412,6 +419,7 @@ func NewRouter(
 						feedbackHandler.DeleteFeedbackByStatus(c)
 					}
 				})
+				backend.POST("/feedback/:id/linear-issue", feedbackHandler.CreateLinearIssue)
 				// User management (admin only)
 				backend.GET("/userz", userAdminHandler.GetAllUsers)
 				backend.GET("/userz/paginated", userAdminHandler.GetUsersPaginated)

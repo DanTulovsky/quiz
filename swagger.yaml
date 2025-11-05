@@ -5710,6 +5710,54 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /v1/admin/backend/feedback/{id}/linear-issue:
+    post:
+      tags:
+        - Admin
+        - Feedback
+      summary: Create Linear issue from feedback
+      description: Create a Linear issue from a feedback report (admin only). Requires Linear integration to be enabled.
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Feedback report ID
+      responses:
+        "200":
+          description: Linear issue created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateLinearIssueResponse"
+        "404":
+          description: Feedback report not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: Forbidden (admin only)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: Linear integration is not available or disabled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /v1/api-keys:
     post:
       tags:
@@ -6993,6 +7041,27 @@ components:
           type: integer
           format: int64
           description: User ID who resolved the feedback
+
+    CreateLinearIssueResponse:
+      type: object
+      required:
+        - issue_id
+        - issue_url
+        - title
+      properties:
+        issue_id:
+          type: string
+          description: The Linear issue ID
+          example: "abc123"
+        issue_url:
+          type: string
+          format: uri
+          description: URL to the created Linear issue
+          example: "https://linear.app/issue/abc123"
+        title:
+          type: string
+          description: The title of the created Linear issue
+          example: "[Feedback #42] Bug Report: Issue with login"
 
     GeneratingResponse:
       type: object

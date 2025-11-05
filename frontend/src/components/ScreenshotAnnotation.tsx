@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import {
   Modal,
   Stack,
@@ -63,10 +63,6 @@ const ScreenshotAnnotation: React.FC<ScreenshotAnnotationProps> = ({
   onSave,
   onCancel,
 }) => {
-  console.log(
-    'ScreenshotAnnotation component rendering, screenshotData length:',
-    screenshotData?.length
-  );
   const [canvasElement, setCanvasElement] = useState<HTMLCanvasElement | null>(
     null
   );
@@ -76,11 +72,83 @@ const ScreenshotAnnotation: React.FC<ScreenshotAnnotationProps> = ({
   const [color, setColor] = useState('#FF0000');
   const [history, setHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [windowHeight, setWindowHeight] = useState(window.innerHeight);
+  const [screenshotDimensions, setScreenshotDimensions] = useState<{
+    width: number;
+    height: number;
+  } | null>(null);
+
+  // Update window dimensions on resize
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+      setWindowHeight(window.innerHeight);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Load screenshot to get dimensions
+  useEffect(() => {
+    if (!screenshotData) return;
+
+    const img = document.createElement('img');
+    img.onload = () => {
+      const width = img.naturalWidth || img.width;
+      const height = img.naturalHeight || img.height;
+      setScreenshotDimensions({ width, height });
+    };
+    img.onerror = () => {
+      // Fallback to default dimensions if image fails to load
+      setScreenshotDimensions({ width: 1200, height: 800 });
+    };
+    img.src = screenshotData;
+  }, [screenshotData]);
+
+  // Calculate responsive canvas dimensions based on screenshot and viewport
+  // Memoize to avoid recalculating on every render
+  const canvasDimensions = useMemo(() => {
+    // Default dimensions if screenshot not loaded yet
+    if (!screenshotDimensions) {
+      return { width: 1200, height: 800 };
+    }
+
+    // Calculate available space
+    // Account for:
+    // - Modal padding (if any)
+    // - Container padding (16px on each side = 32px total)
+    // - Toolbar height (approximately 80px)
+    const toolbarHeight = 80;
+    const padding = 32; // 16px on each side
+    const availableWidth = windowWidth - padding;
+    const availableHeight = windowHeight - toolbarHeight - padding;
+
+    // Calculate scale to fit both width and height constraints
+    const widthScale = availableWidth / screenshotDimensions.width;
+    const heightScale = availableHeight / screenshotDimensions.height;
+    const scale = Math.min(widthScale, heightScale, 1); // Don't scale up beyond original size
+
+    // Calculate canvas dimensions maintaining screenshot aspect ratio
+    const canvasWidth = Math.floor(screenshotDimensions.width * scale);
+    const canvasHeight = Math.floor(screenshotDimensions.height * scale);
+
+    // Ensure minimum dimensions
+    const minWidth = 300;
+    const minHeight = 200;
+    const finalWidth = Math.max(canvasWidth, minWidth);
+    const finalHeight = Math.max(canvasHeight, minHeight);
+
+    return {
+      width: finalWidth,
+      height: finalHeight,
+    };
+  }, [screenshotDimensions, windowWidth, windowHeight]);
 
   // Callback ref to ensure we track when canvas mounts
   const canvasCallbackRef = (node: HTMLCanvasElement | null) => {
     if (node && !canvasElement) {
-      console.log('Canvas callback ref called with node:', node);
       setCanvasElement(node);
     }
   };
@@ -100,9 +168,7 @@ const ScreenshotAnnotation: React.FC<ScreenshotAnnotationProps> = ({
 
   // Initialize fabric canvas
   useEffect(() => {
-    console.log('useEffect triggered, canvasElement:', canvasElement);
-    if (!canvasElement) {
-      console.log('Canvas element not ready, exiting early');
+    if (!canvasElement || !screenshotDimensions) {
       return;
     }
 
@@ -115,10 +181,9 @@ const ScreenshotAnnotation: React.FC<ScreenshotAnnotationProps> = ({
       fabricCanvasRef.current = null;
     }
 
-    console.log('Initializing fabric canvas...');
     const canvas = new Canvas(canvasElement, {
-      width: 1200,
-      height: 800,
+      width: canvasDimensions.width,
+      height: canvasDimensions.height,
       renderOnAddRemove: true,
     });
 
@@ -128,9 +193,7 @@ const ScreenshotAnnotation: React.FC<ScreenshotAnnotationProps> = ({
       const wrapperDiv = canvasElement?.parentElement;
       if (wrapperDiv) {
         const canvases = wrapperDiv.querySelectorAll('canvas');
-        console.log('Found canvases:', canvases.length);
         canvases.forEach((c, idx) => {
-          console.log(`Canvas ${idx}:`, c.className, c.width, c.height);
           c.style.display = 'block';
           if (idx === 0) {
             // Lower canvas - has the content
@@ -151,22 +214,20 @@ const ScreenshotAnnotation: React.FC<ScreenshotAnnotationProps> = ({
     img.crossOrigin = 'anonymous';
 
     img.onload = () => {
-      console.log('Image loaded, dimensions:', img.width, img.height);
-
       // Create fabric image from the loaded HTML image
       try {
-        console.log('Creating FabricImage...');
         const fabricImg = new FabricImage(img);
-        console.log('FabricImage created successfully');
 
-        // Calculate proper scale - ensure we use natural dimensions
+        // Calculate proper scale to fill canvas
+        // Canvas is sized to match screenshot aspect ratio, so we scale to fill
         const imgWidth = img.naturalWidth || img.width;
         const imgHeight = img.naturalHeight || img.height;
-        const scale = Math.min(1200 / imgWidth, 800 / imgHeight);
+        const scale = Math.min(
+          canvasDimensions.width / imgWidth,
+          canvasDimensions.height / imgHeight
+        );
 
-        console.log('Natural size:', imgWidth, imgHeight, 'Scale:', scale);
-
-        // Set fabric image properties
+        // Set fabric image properties to fill the canvas
         fabricImg.set({
           scaleX: scale,
           scaleY: scale,
@@ -175,8 +236,6 @@ const ScreenshotAnnotation: React.FC<ScreenshotAnnotationProps> = ({
           selectable: false,
           evented: false,
         });
-
-        console.log('Fabric image created, adding to canvas...');
 
         // Add to canvas as background (first object added = bottom layer)
         canvas.add(fabricImg);
@@ -187,31 +246,6 @@ const ScreenshotAnnotation: React.FC<ScreenshotAnnotationProps> = ({
         // Force render multiple times to ensure both canvases update
         canvas.renderAll();
         canvas.requestRenderAll();
-
-        console.log('Canvas background color:', canvas.backgroundColor);
-        console.log('Canvas width/height:', canvas.width, canvas.height);
-
-        console.log(
-          'Canvas rendered, total objects:',
-          canvas.getObjects().length
-        );
-
-        // Verify object is on canvas
-        const objects = canvas.getObjects();
-        if (objects.length > 0) {
-          const firstObj = objects[0];
-          console.log('First object on canvas:', {
-            type: firstObj.type,
-            width: firstObj.width,
-            height: firstObj.height,
-            scaleX: firstObj.scaleX,
-            scaleY: firstObj.scaleY,
-            left: firstObj.left,
-            top: firstObj.top,
-            getScaledWidth: firstObj.getScaledWidth(),
-            getScaledHeight: firstObj.getScaledHeight(),
-          });
-        }
 
         // Save initial state
         setTimeout(() => {
@@ -225,31 +259,34 @@ const ScreenshotAnnotation: React.FC<ScreenshotAnnotationProps> = ({
             canvas.freeDrawingBrush.width = 3;
             canvas.freeDrawingBrush.color = color;
             canvas.isDrawingMode = true;
-            console.log('Initial pencil tool setup with drawing mode enabled');
           }
         }, 100);
-      } catch (error) {
-        console.error('Error creating FabricImage:', error);
+      } catch {
+        // Silently handle error - image may have failed to load
       }
     };
 
-    img.onerror = err => {
-      console.error('Image load error:', err);
+    img.onerror = () => {
+      // Silently handle error
     };
 
-    console.log('Setting image source...');
     img.src = screenshotData;
 
     return () => {
       isMounted = false;
-      console.log('Cleaning up canvas...');
       // Only cleanup if this effect is truly unmounting, not just React StrictMode remount
       if (fabricCanvasRef.current) {
         fabricCanvasRef.current.dispose();
         fabricCanvasRef.current = null;
       }
     };
-  }, [canvasElement, screenshotData]);
+  }, [
+    canvasElement,
+    screenshotData,
+    screenshotDimensions,
+    canvasDimensions.width,
+    canvasDimensions.height,
+  ]);
 
   // Update drawing mode and brush settings when tool or color changes
   useEffect(() => {
@@ -279,10 +316,8 @@ const ScreenshotAnnotation: React.FC<ScreenshotAnnotationProps> = ({
       canvas.freeDrawingBrush.color = color;
       // Enable drawing mode immediately so drawing works on first click
       canvas.isDrawingMode = true;
-      console.log('Drawing mode enabled for pencil tool');
     } else {
       canvas.isDrawingMode = false;
-      console.log('Drawing mode disabled');
     }
 
     canvas.renderAll();
@@ -513,13 +548,6 @@ const ScreenshotAnnotation: React.FC<ScreenshotAnnotationProps> = ({
           canvas.off('mouse:move', updateRect);
           canvas.off('mouse:up', finishRect);
 
-          console.log('finishRect called, rect:', {
-            width: rect.width,
-            height: rect.height,
-            selectable: rect.selectable,
-            evented: rect.evented,
-          });
-
           // Save state
           saveState();
         };
@@ -702,30 +730,25 @@ const ScreenshotAnnotation: React.FC<ScreenshotAnnotationProps> = ({
 
   // Save annotated image
   const handleSave = () => {
-    console.log('Save button clicked');
     if (!fabricCanvasRef.current) {
-      console.error('No canvas available');
       return;
     }
 
     try {
-      console.log('Exporting canvas...');
       fabricCanvasRef.current.renderAll(); // Ensure everything is rendered
       const dataUrl = fabricCanvasRef.current.toDataURL({
         format: 'jpeg',
         quality: 0.7,
         multiplier: 1,
       });
-      console.log('Canvas exported, calling onSave');
       onSave(dataUrl);
-    } catch (error) {
-      console.error('Failed to export canvas:', error);
+    } catch {
       // Fallback: try without options
       try {
         const dataUrl = fabricCanvasRef.current.toDataURL();
         onSave(dataUrl);
-      } catch (fallbackError) {
-        console.error('Fallback export also failed:', fallbackError);
+      } catch {
+        // Silently handle error
       }
     }
   };
@@ -922,12 +945,26 @@ const ScreenshotAnnotation: React.FC<ScreenshotAnnotationProps> = ({
           <div
             style={{
               position: 'relative',
-              width: 1200,
-              height: 800,
+              width: '100%',
+              maxWidth: `${canvasDimensions.width}px`,
+              height: 'auto',
+              display: 'flex',
+              justifyContent: 'center',
             }}
             className='fabric-canvas-wrapper'
           >
-            <canvas ref={canvasCallbackRef} width={1200} height={800} />
+            <canvas
+              ref={canvasCallbackRef}
+              width={canvasDimensions.width}
+              height={canvasDimensions.height}
+              style={{
+                width: '100%',
+                height: 'auto',
+                maxWidth: `${canvasDimensions.width}px`,
+                aspectRatio: `${canvasDimensions.width} / ${canvasDimensions.height}`,
+                display: 'block',
+              }}
+            />
           </div>
         </div>
       </Stack>
