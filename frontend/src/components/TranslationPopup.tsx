@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   Paper,
   Text,
@@ -11,20 +11,21 @@ import {
   Portal,
   ActionIcon,
 } from '@mantine/core';
-import { useQueryClient } from '@tanstack/react-query';
-import { useTranslation } from '../contexts/TranslationContext';
-import { TextSelection } from '../hooks/useTextSelection';
-import { IconX, IconBookmark, IconCopy } from '@tabler/icons-react';
+import {useQueryClient} from '@tanstack/react-query';
+import {useTranslation} from '../contexts/TranslationContext';
+import {TextSelection} from '../hooks/useTextSelection';
+import {useMobileDetection} from '../hooks/useMobileDetection';
+import {IconX, IconBookmark, IconCopy} from '@tabler/icons-react';
 import {
   postV1Snippets,
   Question,
   useGetV1PreferencesLearning,
   useGetV1SettingsLanguages,
 } from '../api/api';
-import { useTheme } from '../contexts/ThemeContext';
-import { fontScaleMap } from '../theme/theme';
+import {useTheme} from '../contexts/ThemeContext';
+import {fontScaleMap} from '../theme/theme';
 import TTSButton from './TTSButton';
-import { defaultVoiceForLanguage } from '../utils/tts';
+import {defaultVoiceForLanguage} from '../utils/tts';
 
 // Type for story context when no question is available
 interface StoryContext {
@@ -47,7 +48,8 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
   requireQuestionId = false,
 }) => {
   const queryClient = useQueryClient();
-  const { fontSize } = useTheme();
+  const {fontSize} = useTheme();
+  const {isMobile} = useMobileDetection();
 
   // Load saved language from localStorage or use browser language or default to 'en'
   const [targetLanguage, setTargetLanguage] = useState('en');
@@ -61,8 +63,8 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
     isLoading: translationLoading,
     error: translationError,
   } = useTranslation();
-  const { data: userLearningPrefs } = useGetV1PreferencesLearning();
-  const { data: languagesData, isLoading: languagesLoading } =
+  const {data: userLearningPrefs} = useGetV1PreferencesLearning();
+  const {data: languagesData, isLoading: languagesLoading} =
     useGetV1SettingsLanguages();
   const popupRef = useRef<HTMLDivElement>(null);
   const mountedRef = useRef(true);
@@ -90,9 +92,9 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
   // Language options for the dropdown - dynamically generated from API
   const languageOptions = languagesData
     ? languagesData.map(lang => ({
-        value: lang.code,
-        label: lang.name.charAt(0).toUpperCase() + lang.name.slice(1),
-      }))
+      value: lang.code,
+      label: lang.name.charAt(0).toUpperCase() + lang.name.slice(1),
+    }))
     : [];
 
   // Track mounted state
@@ -232,6 +234,16 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
 
   // Calculate popup position to stay within viewport
   const getPopupPosition = () => {
+    // On mobile, always center the popup on screen
+    if (isMobile) {
+      return {
+        left: '50%',
+        top: '50%',
+        transform: 'translate(-50%, -50%)',
+      };
+    }
+
+    // Desktop: position relative to selected text
     const popupWidth = 320;
     const popupHeight = 200;
     const margin = 10;
@@ -251,7 +263,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
       y = selection.y + selection.height + margin;
     }
 
-    return { left: x, top: y };
+    return {left: x, top: y};
   };
 
   const position = getPopupPosition();
@@ -276,16 +288,16 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
         context: selection.sentence, // Add the extracted sentence as context
         ...(currentQuestion &&
           'id' in currentQuestion && {
-            question_id: (currentQuestion as Question).id,
-          }),
+          question_id: (currentQuestion as Question).id,
+        }),
         ...(currentQuestion &&
           'section_id' in currentQuestion && {
-            section_id: (currentQuestion as StoryContext).section_id,
-          }),
+          section_id: (currentQuestion as StoryContext).section_id,
+        }),
         ...(currentQuestion &&
           'story_id' in currentQuestion && {
-            story_id: (currentQuestion as StoryContext).story_id,
-          }),
+          story_id: (currentQuestion as StoryContext).story_id,
+        }),
       };
 
       await postV1Snippets(payload);
@@ -436,7 +448,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
                 <IconCopy size={16} />
               </ActionIcon>
             </Tooltip>
-            <Text size='md' style={{ fontStyle: 'italic' }}>
+            <Text size='md' style={{fontStyle: 'italic'}}>
               {selection.text}
             </Text>
           </Group>
@@ -457,7 +469,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
               languagesLoading ? 'Loading languages...' : 'Select language'
             }
             disabled={languagesLoading || languageOptions.length === 0}
-            style={{ width: '100%' }}
+            style={{width: '100%'}}
             data-translation-select='true'
             comboboxProps={{
               withinPortal: true,
@@ -471,7 +483,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
           />
 
           {/* Translation result */}
-          <div style={{ minHeight: `${60 * fontScaleMap[fontSize]}px` }}>
+          <div style={{minHeight: `${60 * fontScaleMap[fontSize]}px`}}>
             {translationLoading && (
               <Group gap='xs'>
                 <Loader size='md' />

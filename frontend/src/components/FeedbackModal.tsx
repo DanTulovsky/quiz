@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Modal,
   Textarea,
@@ -12,9 +12,9 @@ import {
   Alert,
   LoadingOverlay,
 } from '@mantine/core';
-import { IconBug, IconCheck, IconAlertCircle } from '@tabler/icons-react';
-import { useAuth } from '../hooks/useAuth';
-import { usePostV1Feedback } from '../api/api';
+import {IconBug, IconCheck, IconAlertCircle} from '@tabler/icons-react';
+import {useAuth} from '../hooks/useAuth';
+import {usePostV1Feedback} from '../api/api';
 import html2canvas from 'html2canvas';
 import ScreenshotAnnotation from './ScreenshotAnnotation';
 
@@ -39,8 +39,8 @@ interface ContextData {
   [key: string]: unknown;
 }
 
-const FeedbackModal: React.FC<FeedbackModalProps> = ({ opened, onClose }) => {
-  const { user } = useAuth();
+const FeedbackModal: React.FC<FeedbackModalProps> = ({opened, onClose}) => {
+  const {user} = useAuth();
   const [feedbackText, setFeedbackText] = useState('');
   const [feedbackType, setFeedbackType] = useState<FeedbackType>('general');
   const [includeScreenshot, setIncludeScreenshot] = useState(false);
@@ -51,7 +51,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ opened, onClose }) => {
   const [success, setSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { mutate: submitFeedback, isPending, reset } = usePostV1Feedback();
+  const {mutate: submitFeedback, isPending, reset} = usePostV1Feedback();
 
   // Reset form when modal closes
   useEffect(() => {
@@ -113,7 +113,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ opened, onClose }) => {
     try {
       // Find all elements with role="dialog" (modals) and temporarily hide them
       const modals = document.querySelectorAll('[role="dialog"]');
-      const modalStyles: { element: HTMLElement; originalDisplay: string }[] =
+      const modalStyles: {element: HTMLElement; originalDisplay: string}[] =
         [];
 
       modals.forEach(modal => {
@@ -136,12 +136,16 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ opened, onClose }) => {
         allowTaint: true,
         scale: 0.5,
         backgroundColor: '#ffffff',
+        height: window.innerHeight,
+        width: window.innerWidth,
+        scrollX: window.scrollX,
+        scrollY: window.scrollY,
       });
       const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
       setScreenshotData(dataUrl);
 
       // Restore modal visibility
-      modalStyles.forEach(({ element, originalDisplay }) => {
+      modalStyles.forEach(({element, originalDisplay}) => {
         element.style.display = originalDisplay;
       });
     } catch (err) {
@@ -191,8 +195,8 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ opened, onClose }) => {
         onError: (err: unknown) => {
           const errorMessage =
             err && typeof err === 'object' && 'response' in err
-              ? (err as { response?: { data?: { message?: string } } }).response
-                  ?.data?.message
+              ? (err as {response?: {data?: {message?: string}}}).response
+                ?.data?.message
               : undefined;
           setError(
             errorMessage || 'Failed to submit feedback. Please try again.'
@@ -270,10 +274,10 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ opened, onClose }) => {
           label='Type'
           description='Select the type of feedback'
           data={[
-            { value: 'bug', label: 'Bug Report' },
-            { value: 'feature_request', label: 'Feature Request' },
-            { value: 'general', label: 'General Feedback' },
-            { value: 'improvement', label: 'Improvement Suggestion' },
+            {value: 'bug', label: 'Bug Report'},
+            {value: 'feature_request', label: 'Feature Request'},
+            {value: 'general', label: 'General Feedback'},
+            {value: 'improvement', label: 'Improvement Suggestion'},
           ]}
           value={feedbackType}
           onChange={value => setFeedbackType(value as FeedbackType)}

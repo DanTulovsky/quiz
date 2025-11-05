@@ -738,7 +738,7 @@ const MobileDailyPage: React.FC = () => {
               color='gray'
               size='xs'
               data-testid='report-question-btn'
-              style={{ flex: 1 }}
+              style={{ flex: 1, minWidth: 0, whiteSpace: 'normal' }}
             >
               {isReported ? 'Reported' : 'Report issue'}
             </Button>
@@ -749,7 +749,7 @@ const MobileDailyPage: React.FC = () => {
               color='gray'
               size='xs'
               data-testid='mark-known-btn'
-              style={{ flex: 1 }}
+              style={{ flex: 1, minWidth: 0, whiteSpace: 'normal' }}
             >
               Adjust frequency
             </Button>

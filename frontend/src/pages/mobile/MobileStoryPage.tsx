@@ -949,7 +949,7 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
                 },
               }}
             >
-              ?
+              <IconChevronsLeft size={16} />
             </Button>
 
             <Button
@@ -964,7 +964,7 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
                 },
               }}
             >
-              ?
+              <IconChevronLeft size={16} />
             </Button>
 
             <Text
@@ -987,7 +987,7 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
                 },
               }}
             >
-              ?
+              <IconChevronRight size={16} />
             </Button>
 
             <Button
@@ -1002,7 +1002,7 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
                 },
               }}
             >
-              ?
+              <IconChevronsRight size={16} />
             </Button>
           </Group>
         </div>
