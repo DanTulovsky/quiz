@@ -302,35 +302,61 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
 
       await postV1Snippets(payload);
 
-      // Invalidate relevant snippet queries to refresh highlights
+      // Invalidate and refetch relevant snippet queries to refresh highlights immediately
       if (currentQuestion && 'id' in currentQuestion) {
+        const questionId = (currentQuestion as Question).id;
         // Invalidate question snippets
         queryClient.invalidateQueries({
-          queryKey: [
-            `/v1/snippets/by-question/${(currentQuestion as Question).id}`,
-          ],
+          queryKey: [`/v1/snippets/by-question/${questionId}`],
+        });
+        // Force immediate refetch to show highlights right away
+        await queryClient.refetchQueries({
+          queryKey: [`/v1/snippets/by-question/${questionId}`],
         });
       }
       if (currentQuestion && 'section_id' in currentQuestion) {
+        const sectionId = (currentQuestion as StoryContext).section_id;
         // Invalidate section snippets
         queryClient.invalidateQueries({
-          queryKey: [
-            `/v1/snippets/by-section/${(currentQuestion as StoryContext).section_id}`,
-          ],
+          queryKey: [`/v1/snippets/by-section/${sectionId}`],
+        });
+        // Force immediate refetch to show highlights right away
+        await queryClient.refetchQueries({
+          queryKey: [`/v1/snippets/by-section/${sectionId}`],
         });
       }
       if (currentQuestion && 'story_id' in currentQuestion) {
+        const storyId = (currentQuestion as StoryContext).story_id;
         // Invalidate story snippets
         queryClient.invalidateQueries({
-          queryKey: [
-            `/v1/snippets/by-story/${(currentQuestion as StoryContext).story_id}`,
-          ],
+          queryKey: [`/v1/snippets/by-story/${storyId}`],
+        });
+        // Force immediate refetch to show highlights right away
+        await queryClient.refetchQueries({
+          queryKey: [`/v1/snippets/by-story/${storyId}`],
         });
       }
 
-      // Also invalidate general snippets list in case any components show all snippets
+      // Also invalidate and refetch general snippets list in case any components show all snippets
       queryClient.invalidateQueries({
         queryKey: ['/v1/snippets'],
+      });
+      await queryClient.refetchQueries({
+        queryKey: ['/v1/snippets'],
+      });
+
+      // Refetch all snippet-related queries using predicate to catch any active queries
+      // This ensures highlights appear immediately even if the query key format differs slightly
+      await queryClient.refetchQueries({
+        predicate: query => {
+          const key = query.queryKey[0]?.toString() || '';
+          return (
+            key.includes('/v1/snippets/by-question/') ||
+            key.includes('/v1/snippets/by-section/') ||
+            key.includes('/v1/snippets/by-story/') ||
+            key === '/v1/snippets'
+          );
+        },
       });
 
       if (mountedRef.current) {
@@ -339,13 +365,12 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
         if (savedTimeoutRef.current) {
           clearTimeout(savedTimeoutRef.current);
         }
-        // Reset saved state after 3 seconds
-        savedTimeoutRef.current = setTimeout(() => {
+        // Close popup after a brief delay to show "Saved!" feedback
+        setTimeout(() => {
           if (mountedRef.current) {
-            setIsSaved(false);
+            onClose();
           }
-          savedTimeoutRef.current = null;
-        }, 3000);
+        }, 300);
       }
     } catch (error) {
       if (mountedRef.current) {

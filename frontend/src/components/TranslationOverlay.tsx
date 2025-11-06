@@ -56,7 +56,27 @@ export const TranslationOverlay: React.FC = () => {
       };
     }
 
-    // Quiz/Reading routes: use question context
+    // Quiz/Reading/Vocabulary routes: use question context based on route
+    // Check route path to determine which question to use to avoid stale data
+    const isQuizRoute =
+      location.pathname.startsWith('/quiz') ||
+      location.pathname.startsWith('/m/quiz');
+    const isVocabularyRoute =
+      location.pathname.startsWith('/vocabulary') ||
+      location.pathname.startsWith('/m/vocabulary');
+    const isReadingRoute =
+      location.pathname.startsWith('/reading-comprehension') ||
+      location.pathname.startsWith('/m/reading-comprehension');
+
+    // Prioritize based on current route to avoid using stale question from another mode
+    if (isQuizRoute) {
+      return quizQuestion || null;
+    }
+    if (isVocabularyRoute || isReadingRoute) {
+      return readingQuestion || null;
+    }
+
+    // Fallback: use either question if route doesn't match (shouldn't happen in normal flow)
     return quizQuestion || readingQuestion || null;
   }, [
     isDailyPage,
@@ -67,6 +87,7 @@ export const TranslationOverlay: React.FC = () => {
     viewMode,
     quizQuestion,
     readingQuestion,
+    location.pathname,
   ]);
 
   if (!isVisible || !selection) {
