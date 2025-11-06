@@ -222,7 +222,7 @@ Run
 task release-tag
 ```
 
-This will create and push a new tag.  Github Actions will build and then ssh into `vm0` to deploy.
+This will create and push a new tag.  Github Actions will build and then ssh into `vm1` to deploy.
 
 #### Manual
 
