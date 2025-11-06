@@ -23,7 +23,7 @@ jobs:
     if: |
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-24.04
     steps:
       - name: Download version artifact from Release workflow
         if: github.event_name == 'workflow_run'
@@ -86,7 +86,7 @@ jobs:
   annotate:
     needs: deploy
     if: success()
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

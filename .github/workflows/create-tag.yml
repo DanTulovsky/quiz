@@ -4,7 +4,7 @@ on:
   workflow_dispatch: # Manual trigger only
     inputs:
       tag_override:
-        description: 'Optional: Override tag version (e.g., v1.2.3). If not provided, will auto-increment patch version.'
+        description: "Optional: Override tag version (e.g., v1.2.3). If not provided, will auto-increment patch version."
         required: false
         type: string
 
@@ -17,68 +17,68 @@ permissions:
 
 jobs:
   create-tag:
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-24.04
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0 # Full history for version calculation
-        token: ${{ secrets.GH_PAT }} # Use PAT to trigger release workflow
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Full history for version calculation
+          token: ${{ secrets.GH_PAT }} # Use PAT to trigger release workflow
 
-    - name: Configure Git
-      run: |
-        git config --global user.name "GitHub Actions"
-        git config --global user.email "github-actions@github.com"
+      - name: Configure Git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "github-actions@github.com"
 
-    - name: Compute and create tag
-      run: |
-        # Use override if provided, otherwise compute next tag
-        if [ -n "${{ inputs.tag_override }}" ]; then
-          export NEW_TAG="${{ inputs.tag_override }}"
-          echo "Using override tag: $NEW_TAG"
-        else
-          export NEW_TAG=$(./scripts/compute-next-release.sh)
-          echo "Computed next tag: $NEW_TAG"
-        fi
+      - name: Compute and create tag
+        run: |
+          # Use override if provided, otherwise compute next tag
+          if [ -n "${{ inputs.tag_override }}" ]; then
+            export NEW_TAG="${{ inputs.tag_override }}"
+            echo "Using override tag: $NEW_TAG"
+          else
+            export NEW_TAG=$(./scripts/compute-next-release.sh)
+            echo "Computed next tag: $NEW_TAG"
+          fi
 
-        # Verify tag format
-        if ! echo "$NEW_TAG" | grep -qE '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
-          echo "Error: Tag must be in format vX.Y.Z (e.g., v1.2.3)" >&2
-          exit 1
-        fi
+          # Verify tag format
+          if ! echo "$NEW_TAG" | grep -qE '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "Error: Tag must be in format vX.Y.Z (e.g., v1.2.3)" >&2
+            exit 1
+          fi
 
-        # Check if tag already exists
-        if git rev-parse "$NEW_TAG" >/dev/null 2>&1; then
-          echo "Error: Tag $NEW_TAG already exists" >&2
-          exit 1
-        fi
+          # Check if tag already exists
+          if git rev-parse "$NEW_TAG" >/dev/null 2>&1; then
+            echo "Error: Tag $NEW_TAG already exists" >&2
+            exit 1
+          fi
 
-        # Ensure working tree is clean
-        if ! git diff --quiet || [ -n "$(git ls-files -m)" ]; then
-          echo "Working tree is dirty. Commit or stash changes before tagging." >&2
-          exit 1
-        fi
+          # Ensure working tree is clean
+          if ! git diff --quiet || [ -n "$(git ls-files -m)" ]; then
+            echo "Working tree is dirty. Commit or stash changes before tagging." >&2
+            exit 1
+          fi
 
-        # Create and push the tag
-        echo "Creating and pushing tag: $NEW_TAG"
-        git tag "$NEW_TAG"
-        git push origin "$NEW_TAG"
+          # Create and push the tag
+          echo "Creating and pushing tag: $NEW_TAG"
+          git tag "$NEW_TAG"
+          git push origin "$NEW_TAG"
 
-        echo "✅ Tag $NEW_TAG created and pushed successfully"
-        echo "This will trigger the Release workflow to build and push Docker images"
+          echo "✅ Tag $NEW_TAG created and pushed successfully"
+          echo "This will trigger the Release workflow to build and push Docker images"
 
-    - name: Summary
-      run: |
-        if [ -n "${{ inputs.tag_override }}" ]; then
-          TAG="${{ inputs.tag_override }}"
-        else
-          TAG=$(./scripts/compute-next-release.sh)
-        fi
-        echo "### Tag Created Successfully! 🎉" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "- **Tag:** \`$TAG\`" >> $GITHUB_STEP_SUMMARY
-        echo "- **Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "The Release workflow should now be triggered automatically." >> $GITHUB_STEP_SUMMARY
-        echo "Check the [Actions tab](https://github.com/${{ github.repository }}/actions/workflows/release.yml) to monitor the release build." >> $GITHUB_STEP_SUMMARY
+      - name: Summary
+        run: |
+          if [ -n "${{ inputs.tag_override }}" ]; then
+            TAG="${{ inputs.tag_override }}"
+          else
+            TAG=$(./scripts/compute-next-release.sh)
+          fi
+          echo "### Tag Created Successfully! 🎉" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Tag:** \`$TAG\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The Release workflow should now be triggered automatically." >> $GITHUB_STEP_SUMMARY
+          echo "Check the [Actions tab](https://github.com/${{ github.repository }}/actions/workflows/release.yml) to monitor the release build." >> $GITHUB_STEP_SUMMARY
