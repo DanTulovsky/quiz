@@ -456,19 +456,22 @@ const MobileDailyPage: React.FC = () => {
                         data-allow-translate='true'
                       >
                         {paras.map((p, i) => (
-                          <Text
+                          <SnippetHighlighter
                             key={i}
-                            size='md'
-                            style={{
-                              whiteSpace: 'pre-line',
-                              lineHeight: 1.7,
-                              fontWeight: 400,
-                              letterSpacing: 0.2,
-                              marginBottom: i === paras.length - 1 ? 0 : 10,
+                            text={p}
+                            snippets={snippets}
+                            component={Text}
+                            componentProps={{
+                              size: 'md',
+                              style: {
+                                whiteSpace: 'pre-line',
+                                lineHeight: 1.7,
+                                fontWeight: 400,
+                                letterSpacing: 0.2,
+                                marginBottom: i === paras.length - 1 ? 0 : 10,
+                              },
                             }}
-                          >
-                            {p}
-                          </Text>
+                          />
                         ))}
                       </div>
                     );
@@ -543,9 +546,16 @@ const MobileDailyPage: React.FC = () => {
                 // Fallback: render question only
                 return (
                   <Box data-allow-translate='true'>
-                    <Text size='lg' fw={500}>
-                      {qWord || ''}
-                    </Text>
+                    <SnippetHighlighter
+                      text={qWord || ''}
+                      snippets={snippets}
+                      targetWord={qWord || undefined}
+                      component={Text}
+                      componentProps={{
+                        size: 'lg',
+                        fw: 500,
+                      }}
+                    />
                   </Box>
                 );
               })()}
@@ -555,9 +565,16 @@ const MobileDailyPage: React.FC = () => {
               currentQuestion.question.type !== 'vocabulary' &&
               currentQuestion.question.type !== 'reading_comprehension' && (
                 <Box data-allow-translate='true'>
-                  <Text size='lg' fw={500} style={{ whiteSpace: 'pre-line' }}>
-                    {currentQuestion.question.content.question}
-                  </Text>
+                  <SnippetHighlighter
+                    text={currentQuestion.question.content.question}
+                    snippets={snippets}
+                    component={Text}
+                    componentProps={{
+                      size: 'lg',
+                      fw: 500,
+                      style: { whiteSpace: 'pre-line' },
+                    }}
+                  />
                 </Box>
               )}
 

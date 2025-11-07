@@ -1,7 +1,29 @@
+import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
 import MobileDailyPage from '../MobileDailyPage';
 import { renderWithProviders } from '../../../test-utils';
+
+type MockSnippetProps = {
+  component?: React.ElementType;
+  componentProps?: Record<string, unknown>;
+  text: string;
+  [key: string]: unknown;
+};
+
+const snippetMock = vi.fn<[MockSnippetProps], void>();
+
+vi.mock('../../../components/SnippetHighlighter', () => ({
+  __esModule: true,
+  SnippetHighlighter: (props: MockSnippetProps) => {
+    snippetMock(props);
+    const { component: Component, componentProps = {}, text } = props;
+    if (Component) {
+      return React.createElement(Component, componentProps, text);
+    }
+    return React.createElement('span', componentProps, text);
+  },
+}));
 
 // Mock react-router-dom to provide stable useParams
 vi.mock('react-router-dom', async () => {
@@ -110,21 +132,53 @@ const stableCurrentQuestion = {
   },
 };
 
+const mockDailyQuestionsState = {
+  selectedDate: '2025-09-30',
+  setSelectedDate: mockSetSelectedDate,
+  currentQuestion: stableCurrentQuestion,
+  submitAnswer: mockSubmitAnswer,
+  goToNextQuestion: mockGoToNextQuestion,
+  goToPreviousQuestion: mockGoToPreviousQuestion,
+  hasNextQuestion: true,
+  hasPreviousQuestion: false,
+  isLoading: false,
+  isSubmittingAnswer: false,
+  currentQuestionIndex: 0,
+  questions: [
+    {
+      id: 1,
+      question_id: 101,
+      user_id: 1,
+      assignment_date: '2025-09-30',
+      is_completed: false,
+    },
+    {
+      id: 2,
+      question_id: 102,
+      user_id: 1,
+      assignment_date: '2025-09-30',
+      is_completed: false,
+    },
+  ],
+  availableDates: ['2025-09-30', '2025-09-29'],
+  isAllCompleted: false,
+};
+
 // Mock useDailyQuestions hook
 vi.mock('../../../hooks/useDailyQuestions', () => ({
-  useDailyQuestions: () => ({
-    selectedDate: '2025-09-30',
-    setSelectedDate: mockSetSelectedDate,
-    currentQuestion: stableCurrentQuestion,
-    submitAnswer: mockSubmitAnswer,
-    goToNextQuestion: mockGoToNextQuestion,
-    goToPreviousQuestion: mockGoToPreviousQuestion,
-    hasNextQuestion: true,
-    hasPreviousQuestion: false,
-    isLoading: false,
-    isSubmittingAnswer: false,
-    currentQuestionIndex: 0,
-    questions: [
+  useDailyQuestions: () => mockDailyQuestionsState,
+}));
+
+const renderComponent = () => {
+  return renderWithProviders(<MobileDailyPage />);
+};
+
+describe('MobileDailyPage', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    snippetMock.mockClear();
+    mockDailyQuestionsState.currentQuestion = stableCurrentQuestion;
+    mockDailyQuestionsState.questions = [
       {
         id: 1,
         question_id: 101,
@@ -139,19 +193,7 @@ vi.mock('../../../hooks/useDailyQuestions', () => ({
         assignment_date: '2025-09-30',
         is_completed: false,
       },
-    ],
-    availableDates: ['2025-09-30', '2025-09-29'],
-    isAllCompleted: false,
-  }),
-}));
-
-const renderComponent = () => {
-  return renderWithProviders(<MobileDailyPage />);
-};
-
-describe('MobileDailyPage', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
+    ];
     mockSubmitAnswer.mockResolvedValue({
       is_correct: true,
       correct_answer_index: 0,
@@ -265,5 +307,49 @@ describe('MobileDailyPage', () => {
         screen.getByRole('button', { name: /Next Question/i })
       ).toBeInTheDocument();
     });
+  });
+
+  it('highlights reading comprehension passages with SnippetHighlighter', async () => {
+    const readingQuestion = {
+      id: 3,
+      question_id: 303,
+      user_id: 1,
+      assignment_date: '2025-09-30',
+      is_completed: false,
+      question: {
+        id: 303,
+        language: 'Italian',
+        level: 'A2',
+        type: 'reading_comprehension',
+        content: {
+          question: 'Qual è il tema principale del testo?',
+          passage:
+            'Prima frase del brano. Seconda frase del brano. Terza frase del brano. Quarta frase del brano.',
+          options: ['La famiglia', 'Il lavoro', 'Le vacanze', 'Lo sport'],
+        },
+      },
+    };
+
+    mockDailyQuestionsState.currentQuestion = readingQuestion;
+    mockDailyQuestionsState.questions = [readingQuestion];
+
+    renderComponent();
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('Qual è il tema principale del testo?')
+      ).toBeInTheDocument();
+    });
+
+    const passageCall = snippetMock.mock.calls.find(call => {
+      const props = call[0];
+      const componentProps = props.componentProps as
+        | { style?: { lineHeight?: number } }
+        | undefined;
+      return componentProps?.style?.lineHeight === 1.7;
+    });
+
+    expect(passageCall).toBeDefined();
+    expect(passageCall?.[0].text).toContain('Prima frase del brano');
   });
 });
