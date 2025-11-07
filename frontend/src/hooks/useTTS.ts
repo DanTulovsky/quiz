@@ -36,6 +36,9 @@ export function clearSharedTTSState() {
   sharedCurrentKey = null;
   sharedMetadata = null;
   notifyStateListeners();
+  if (import.meta.env?.DEV) {
+    console.log('[useTTS] clearSharedTTSState invoked');
+  }
 }
 
 // Set up finished callback to clear shared state
@@ -158,6 +161,9 @@ export const useTTS = (): TTSHookReturn => {
   const mountedRef = useRef<boolean>(true);
 
   const stopTTS = useCallback(() => {
+    if (import.meta.env?.DEV) {
+      console.log('[useTTS] stopTTS invoked');
+    }
     // Clear state check interval if it exists
     if (window.__ttsStateCheckInterval) {
       clearInterval(window.__ttsStateCheckInterval);

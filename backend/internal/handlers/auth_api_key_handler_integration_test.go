@@ -1,5 +1,4 @@
 //go:build integration && apikeys
-// +build integration,apikeys
 
 package handlers
 

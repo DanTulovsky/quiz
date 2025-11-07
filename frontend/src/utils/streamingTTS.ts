@@ -13,6 +13,26 @@ let currentAbortController: AbortController | null = null;
 let globalAudioElement: HTMLAudioElement | null = null;
 let currentBlobURL: string | null = null;
 let finishedCallback: (() => void) | null = null;
+function ensureAudioElementAttached(audio: HTMLAudioElement): void {
+  if (!audio.hasAttribute('data-quiz-tts')) {
+    audio.setAttribute('data-quiz-tts', '');
+  }
+
+  audio.style.display = 'none';
+  audio.muted = false;
+  audio.defaultMuted = false;
+  audio.volume = 1;
+  audio.setAttribute('playsinline', 'true');
+  audio.setAttribute('webkit-playsinline', 'true');
+
+  if (typeof document !== 'undefined' && audio.parentNode !== document.body) {
+    // Remove from previous parent to avoid duplicates
+    if (audio.parentNode) {
+      audio.parentNode.removeChild(audio);
+    }
+    document.body.appendChild(audio);
+  }
+}
 
 /**
  * Clean up blob URL and audio element
@@ -167,9 +187,12 @@ export async function streamAndPlayTTS(
     globalAudioElement = document.createElement('audio');
     globalAudioElement.crossOrigin = 'anonymous';
     globalAudioElement.preload = 'auto';
+    ensureAudioElementAttached(globalAudioElement);
     if (finishedCallback) {
       globalAudioElement.onended = finishedCallback;
     }
+  } else {
+    ensureAudioElementAttached(globalAudioElement);
   }
 
   // Check if we're on Safari (iOS or desktop) - use init/stream approach (no HLS)
@@ -239,6 +262,7 @@ export async function streamAndPlayTTS(
       const audio = document.createElement('audio');
       audio.crossOrigin = 'anonymous';
       audio.preload = 'auto';
+      ensureAudioElementAttached(audio);
 
       // Build stream URL
       const streamPath = token
@@ -457,6 +481,13 @@ export async function streamAndPlayTTS(
         const handlePlaying = () => {
           logAudioState('playing');
           console.log('[Streaming TTS] Safari: Audio is now playing');
+          if (import.meta.env?.DEV) {
+            console.log('[Streaming TTS] Safari: playback properties', {
+              muted: globalAudioElement?.muted,
+              volume: globalAudioElement?.volume,
+              readyState: globalAudioElement?.readyState,
+            });
+          }
           // Playback has started successfully - clear any pending timeouts
           if (readinessTimeout) {
             clearTimeout(readinessTimeout);

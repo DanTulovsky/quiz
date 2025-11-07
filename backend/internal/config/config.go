@@ -462,7 +462,7 @@ func NewConfig() (result0 *Config, err error) {
 	// Load config from YAML file
 	config, err := loadConfigWithOverrides()
 	if err != nil {
-		return nil, contextutils.WrapErrorf(contextutils.ErrInternalError, "failed to load config: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrInternalError, "failed to load config: %v", err)
 	}
 
 	// Override with environment variables
@@ -688,7 +688,7 @@ func loadConfigWithOverrides() (result0 *Config, err error) {
 	if envPath := os.Getenv("QUIZ_CONFIG_FILE"); envPath != "" {
 		config, err := loadConfigFromFile(envPath)
 		if err != nil {
-			return nil, contextutils.WrapErrorf(contextutils.ErrInternalError, "failed to load config from %s: %w", envPath, err)
+			return nil, contextutils.WrapErrorf(contextutils.ErrInternalError, "failed to load config from %s: %v", envPath, err)
 		}
 		return config, nil
 	}

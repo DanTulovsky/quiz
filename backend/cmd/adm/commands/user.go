@@ -131,7 +131,7 @@ func runResetPassword(userService *services.UserService, logger *observability.L
 		} else {
 			fmt.Print("Enter username: ")
 			if _, err := fmt.Scanln(&username); err != nil {
-				return contextutils.WrapErrorf(contextutils.ErrInternalError, "failed to read username: %w", err)
+				return contextutils.WrapErrorf(contextutils.ErrInternalError, "failed to read username: %v", err)
 			}
 		}
 
@@ -143,7 +143,7 @@ func runResetPassword(userService *services.UserService, logger *observability.L
 		fmt.Print("Enter new password: ")
 		passwordBytes, err := term.ReadPassword(int(syscall.Stdin))
 		if err != nil {
-			return contextutils.WrapErrorf(contextutils.ErrInternalError, "failed to read password: %w", err)
+			return contextutils.WrapErrorf(contextutils.ErrInternalError, "failed to read password: %v", err)
 		}
 		newPassword = string(passwordBytes)
 		fmt.Println() // New line after password input
@@ -156,7 +156,7 @@ func runResetPassword(userService *services.UserService, logger *observability.L
 		fmt.Print("Confirm new password: ")
 		confirmBytes, err := term.ReadPassword(int(syscall.Stdin))
 		if err != nil {
-			return contextutils.WrapErrorf(contextutils.ErrInternalError, "failed to read password confirmation: %w", err)
+			return contextutils.WrapErrorf(contextutils.ErrInternalError, "failed to read password confirmation: %v", err)
 		}
 		confirmPassword := string(confirmBytes)
 		fmt.Println() // New line after password input
@@ -173,7 +173,7 @@ func runResetPassword(userService *services.UserService, logger *observability.L
 		user, err := userService.GetUserByUsername(ctx, username)
 		if err != nil {
 			logger.Error(ctx, "Failed to get user", err, map[string]interface{}{"username": username})
-			return contextutils.WrapErrorf(contextutils.ErrInternalError, "failed to get user '%s': %w", username, err)
+			return contextutils.WrapErrorf(contextutils.ErrInternalError, "failed to get user '%s': %v", username, err)
 		}
 
 		if user == nil {
@@ -188,7 +188,7 @@ func runResetPassword(userService *services.UserService, logger *observability.L
 				"username": username,
 				"user_id":  user.ID,
 			})
-			return contextutils.WrapErrorf(contextutils.ErrInternalError, "failed to update password for user '%s': %w", username, err)
+			return contextutils.WrapErrorf(contextutils.ErrInternalError, "failed to update password for user '%s': %v", username, err)
 		}
 
 		fmt.Printf("✅ Password successfully reset for user '%s' (ID: %d)\n", username, user.ID)

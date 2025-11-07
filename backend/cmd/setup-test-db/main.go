@@ -429,11 +429,11 @@ func applySchema(db *sql.DB, schemaPath, _ string, logger *observability.Logger)
 	logger.Info(ctx, "Applying schema")
 	schemaSQL, err := os.ReadFile(schemaPath)
 	if err != nil {
-		return contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to read schema file: %w", err)
+		return contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to read schema file: %v", err)
 	}
 
 	if _, err := db.Exec(string(schemaSQL)); err != nil {
-		return contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to execute schema: %w", err)
+		return contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to execute schema: %v", err)
 	}
 
 	// Priority system tables are already included in the main schema.sql
@@ -449,82 +449,82 @@ func setupTestData(ctx context.Context, rootDir string, userService *services.Us
 	// 1. Load and create users
 	users, err := loadAndCreateUsers(ctx, filepath.Join(dataDir, "test_users.yaml"), userService, logger)
 	if err != nil {
-		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup users: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup users: %v", err)
 	}
 
 	// 2. Load and create questions
 	questions, err := loadAndCreateQuestions(ctx, filepath.Join(dataDir, "test_questions.yaml"), questionService, users, logger)
 	if err != nil {
-		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup questions: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup questions: %v", err)
 	}
 
 	// 3. Load and create user responses
 	if err := loadAndCreateResponses(ctx, filepath.Join(dataDir, "test_responses.yaml"), users, questions, learningService, logger); err != nil {
-		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup responses: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup responses: %v", err)
 	}
 
 	// 4. Load and create question reports
 	if err := loadAndCreateQuestionReports(ctx, filepath.Join(dataDir, "test_responses.yaml"), users, questions, db, logger); err != nil {
-		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup question reports: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup question reports: %v", err)
 	}
 
 	// 5. Load and create analytics data
 	if err := loadAndCreateAnalytics(ctx, filepath.Join(dataDir, "test_analytics.yaml"), users, questions, learningService, db, logger); err != nil {
-		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup analytics: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup analytics: %v", err)
 	}
 
 	// 6. Load and create daily assignments
 	if err := loadAndCreateDailyAssignments(ctx, filepath.Join(dataDir, "test_daily_assignments.yaml"), users, questions, db, logger); err != nil {
-		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup daily assignments: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup daily assignments: %v", err)
 	}
 
 	// 7. Load and create stories
 	stories, err := loadAndCreateStories(ctx, filepath.Join(dataDir, "test_stories.yaml"), users, db, logger)
 	if err != nil {
-		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup stories: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup stories: %v", err)
 	}
 
 	// Output story data for E2E tests
 	if err := outputStoryDataForTests(stories, rootDir, logger); err != nil {
-		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to output story data: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to output story data: %v", err)
 	}
 
 	// 8. Load and create snippets
 	snippets, err := loadAndCreateSnippets(ctx, filepath.Join(dataDir, "test_snippets.yaml"), users, db, logger)
 	if err != nil {
-		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup snippets: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup snippets: %v", err)
 	}
 
 	// Output snippet data for E2E tests
 	if err := outputSnippetDataForTests(snippets, rootDir, logger); err != nil {
-		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to output snippet data: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to output snippet data: %v", err)
 	}
 
 	// 9. Load and create conversations
 	conversations, err := loadAndCreateConversations(ctx, filepath.Join(dataDir, "test_conversations.yaml"), users, db, logger)
 	if err != nil {
-		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup conversations: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup conversations: %v", err)
 	}
 
 	// Output conversation data for E2E tests
 	if err := outputConversationDataForTests(conversations, rootDir, logger); err != nil {
-		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to output conversation data: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to output conversation data: %v", err)
 	}
 
 	// 10. Load and create feedback reports
 	feedback, err := loadAndCreateFeedback(ctx, filepath.Join(dataDir, "test_feedback.yaml"), users, db, logger)
 	if err != nil {
-		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup feedback: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup feedback: %v", err)
 	}
 
 	// Output feedback data for E2E tests
 	if err := outputFeedbackDataForTests(feedback, rootDir, logger); err != nil {
-		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to output feedback data: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to output feedback data: %v", err)
 	}
 
 	// 11. Create API Keys for test users
 	if err := createAndOutputAPIKeysForTests(ctx, users, db, rootDir, logger); err != nil {
-		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup api keys: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup api keys: %v", err)
 	}
 
 	return users, nil
