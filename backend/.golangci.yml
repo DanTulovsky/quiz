@@ -13,3 +13,10 @@ linters:
     - unused
     - unparam
     - revive
+  settings:
+    govet:
+      settings:
+        printf:
+          funcs:
+            - quizapp/internal/utils.WrapErrorf
+            - contextutils.WrapErrorf
