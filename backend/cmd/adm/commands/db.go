@@ -79,7 +79,7 @@ func runStats(userService *services.UserService, logger *observability.Logger, d
 		users, err := userService.GetAllUsers(ctx)
 		if err != nil {
 			logger.Error(ctx, "Failed to get user statistics", err, map[string]interface{}{})
-			return contextutils.WrapErrorf(contextutils.ErrInternalError, "failed to get user statistics: %w", err)
+			return contextutils.WrapErrorf(contextutils.ErrInternalError, "failed to get user statistics: %v", err)
 		}
 
 		logger.Info(ctx, "Database statistics", map[string]interface{}{"total_users": len(users), "database": "PostgreSQL", "status": "Connected"})
@@ -111,7 +111,7 @@ func runCleanup(logger *observability.Logger, statsOnly *bool, db *sql.DB) func(
 			stats, err := cleanupService.GetCleanupStats(ctx)
 			if err != nil {
 				logger.Error(ctx, "Failed to get cleanup stats", err, map[string]interface{}{"stats_only": true})
-				return contextutils.WrapErrorf(contextutils.ErrInternalError, "failed to get cleanup stats: %w", err)
+				return contextutils.WrapErrorf(contextutils.ErrInternalError, "failed to get cleanup stats: %v", err)
 			}
 
 			logger.Info(ctx, "Database cleanup statistics", map[string]interface{}{"legacy_questions": stats["legacy_questions"], "orphaned_responses": stats["orphaned_responses"]})
@@ -130,7 +130,7 @@ func runCleanup(logger *observability.Logger, statsOnly *bool, db *sql.DB) func(
 
 		if err := cleanupService.RunFullCleanup(ctx); err != nil {
 			logger.Error(ctx, "Cleanup failed", err, map[string]interface{}{"service": "cleanup"})
-			return contextutils.WrapErrorf(contextutils.ErrInternalError, "cleanup failed: %w", err)
+			return contextutils.WrapErrorf(contextutils.ErrInternalError, "cleanup failed: %v", err)
 		}
 
 		logger.Info(ctx, "Database cleanup completed successfully", map[string]interface{}{"service": "cleanup"})
