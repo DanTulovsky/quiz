@@ -9,6 +9,7 @@ import { TranslationPopup } from '../TranslationPopup';
 import { AuthProvider } from '../../contexts/AuthProvider';
 import { TranslationProvider } from '../../contexts/TranslationContext';
 import { ThemeProvider } from '../../contexts/ThemeContext';
+import { defaultVoiceForLanguage } from '../../utils/tts';
 
 // Import the mocked API module to access the mock function
 import * as apiModule from '../../api/api';
@@ -145,6 +146,29 @@ const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   );
 };
 
+const mockPlayTTS = vi.fn();
+const mockPauseTTS = vi.fn();
+const mockResumeTTS = vi.fn();
+const mockRestartTTS = vi.fn();
+const mockStopTTS = vi.fn();
+
+mockPlayTTS.mockImplementation(() => Promise.resolve());
+
+vi.mock('../../hooks/useTTS', () => ({
+  useTTS: () => ({
+    isLoading: false,
+    isPlaying: false,
+    isPaused: false,
+    playTTS: mockPlayTTS,
+    pauseTTS: mockPauseTTS,
+    resumeTTS: mockResumeTTS,
+    restartTTS: mockRestartTTS,
+    stopTTS: mockStopTTS,
+    currentText: null,
+    currentKey: null,
+  }),
+}));
+
 // Mock the translation context
 vi.mock('../../contexts/TranslationContext', () => ({
   TranslationProvider: ({ children }: { children: React.ReactNode }) => (
@@ -216,6 +240,11 @@ describe('TranslationPopup', () => {
 
   beforeEach(() => {
     mockOnClose.mockClear();
+    mockPlayTTS.mockClear();
+    mockPauseTTS.mockClear();
+    mockResumeTTS.mockClear();
+    mockRestartTTS.mockClear();
+    mockStopTTS.mockClear();
   });
 
   it('should render without crashing', () => {
@@ -556,5 +585,94 @@ describe('TranslationPopup', () => {
 
     // Save button should be present even when there's no translation
     expect(screen.getByText('Save')).toBeInTheDocument();
+  });
+
+  it('invokes playTTS with preferred voice for the original text button', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <TestWrapper>
+        <TranslationPopup
+          selection={{
+            text: 'Hello world',
+            x: 100,
+            y: 100,
+            width: 50,
+            height: 20,
+          }}
+          onClose={mockOnClose}
+        />
+      </TestWrapper>
+    );
+
+    const originalButton = screen.getByLabelText(/Listen to original text/i);
+    await user.click(originalButton);
+
+    await waitFor(() => {
+      expect(mockPlayTTS).toHaveBeenCalled();
+    });
+
+    const [textArg, voiceArg, metadataArg, keyArg] = mockPlayTTS.mock.calls[0];
+    expect(textArg).toBe('Hello world');
+    expect(metadataArg).toEqual(
+      expect.objectContaining({
+        title: expect.stringContaining('Original text'),
+      })
+    );
+    if (metadataArg?.language) {
+      const expectedVoice = defaultVoiceForLanguage(metadataArg.language);
+      if (expectedVoice) {
+        expect(voiceArg).toBe(expectedVoice);
+      } else {
+        expect(typeof voiceArg).toBe('string');
+      }
+    }
+    expect(keyArg).toBe('translation-popup::original::Hello world');
+  });
+
+  it('invokes playTTS with preferred voice for the translated text button', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <TestWrapper>
+        <TranslationPopup
+          selection={{
+            text: 'Hello world',
+            x: 100,
+            y: 100,
+            width: 50,
+            height: 20,
+          }}
+          onClose={mockOnClose}
+        />
+      </TestWrapper>
+    );
+
+    mockPlayTTS.mockClear();
+
+    const translatedButton = screen.getByLabelText(/Listen to translation/i);
+    await user.click(translatedButton);
+
+    await waitFor(() => {
+      expect(mockPlayTTS).toHaveBeenCalled();
+    });
+
+    const [textArg, voiceArg, metadataArg, keyArg] = mockPlayTTS.mock.calls[0];
+    expect(textArg).toBe('Translated text');
+    expect(metadataArg).toEqual(
+      expect.objectContaining({
+        title: expect.stringContaining('Translation'),
+      })
+    );
+    expect(metadataArg?.language).toBeDefined();
+    if (metadataArg?.language) {
+      const expectedVoice = defaultVoiceForLanguage(metadataArg.language);
+      if (expectedVoice) {
+        expect(voiceArg).toBe(expectedVoice);
+      } else {
+        expect(typeof voiceArg).toBe('string');
+      }
+    }
+    expect(keyArg).toBe('translation-popup::translated::es::Hello world');
   });
 });

@@ -135,6 +135,7 @@ const MobileSettingsPage: React.FC = () => {
   // Local UI state for TTS sample button
   const [ttsBufferingLocal, setTtsBufferingLocal] = useState(false);
   const [ttsPlayingLocal, setTtsPlayingLocal] = useState(false);
+  const [savingDailyReminder, setSavingDailyReminder] = useState(false);
   const queryClient = useQueryClient();
   const {
     data: fetchedPrefs,
@@ -350,6 +351,53 @@ const MobileSettingsPage: React.FC = () => {
     value: string | number | boolean
   ) => {
     setLearningPrefs(prev => (prev ? { ...prev, [field]: value } : prev));
+  };
+
+  const updateDailyReminderPreference = async (nextEnabled: boolean) => {
+    if (savingDailyReminder || !learningPrefsRef.current) {
+      return;
+    }
+
+    const previousPrefs = learningPrefsRef.current;
+    const previousEnabled = previousPrefs.daily_reminder_enabled;
+    const updatedPrefs: UserLearningPreferences = {
+      ...previousPrefs,
+      daily_reminder_enabled: nextEnabled,
+    };
+
+    setLearningPrefs(updatedPrefs);
+    learningPrefsRef.current = updatedPrefs;
+    setSavingDailyReminder(true);
+
+    try {
+      await prefsMutation.mutateAsync({ data: updatedPrefs });
+      queryClient.setQueryData(
+        getGetV1PreferencesLearningQueryKey(),
+        updatedPrefs
+      );
+      queryClient.invalidateQueries({
+        queryKey: getGetV1PreferencesLearningQueryKey(),
+      });
+      showNotificationWithClean({
+        title: 'Saved',
+        message: 'Daily reminder setting updated',
+        color: 'green',
+      });
+    } catch (error) {
+      const revertedPrefs: UserLearningPreferences = {
+        ...previousPrefs,
+        daily_reminder_enabled: previousEnabled,
+      };
+      setLearningPrefs(revertedPrefs);
+      learningPrefsRef.current = revertedPrefs;
+      showNotificationWithClean({
+        title: 'Error',
+        message: 'Failed to update daily reminder setting',
+        color: 'red',
+      });
+    } finally {
+      setSavingDailyReminder(false);
+    }
   };
 
   // Function to update all user settings using the unified profile endpoint
@@ -1094,12 +1142,10 @@ const MobileSettingsPage: React.FC = () => {
                     <Switch
                       checked={learningPrefs?.daily_reminder_enabled || false}
                       onChange={e =>
-                        handlePrefsChange(
-                          'daily_reminder_enabled',
-                          e.currentTarget.checked
-                        )
+                        updateDailyReminderPreference(e.currentTarget.checked)
                       }
                       size='lg'
+                      disabled={savingDailyReminder}
                       data-testid='daily-reminder-switch'
                     />
                   </Group>

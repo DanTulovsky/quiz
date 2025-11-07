@@ -14,6 +14,7 @@ let sharedIsPlaying = false;
 let sharedIsPaused = false;
 let sharedIsLoading = false;
 let sharedCurrentText: string | null = null;
+let sharedCurrentKey: string | null = null;
 let sharedMetadata: TTSMetadata | null = null;
 
 // Notify all hook instances of state changes
@@ -32,6 +33,7 @@ export function clearSharedTTSState() {
   sharedIsPaused = false;
   sharedIsLoading = false;
   sharedCurrentText = null;
+  sharedCurrentKey = null;
   sharedMetadata = null;
   notifyStateListeners();
 }
@@ -98,13 +100,15 @@ interface TTSHookReturn extends TTSState {
   playTTS: (
     text: string,
     voice?: string,
-    metadata?: TTSMetadata
+    metadata?: TTSMetadata,
+    key?: string
   ) => Promise<void>;
   stopTTS: () => void;
   pauseTTS: () => void;
   resumeTTS: () => void;
   restartTTS: () => boolean;
   currentText: string | null;
+  currentKey: string | null;
 }
 
 export const useTTS = (): TTSHookReturn => {
@@ -112,6 +116,7 @@ export const useTTS = (): TTSHookReturn => {
   const [isPlayingLocal, setIsPlayingLocal] = useState(sharedIsPlaying);
   const [isPausedLocal, setIsPausedLocal] = useState(sharedIsPaused);
   const [currentTextLocal, setCurrentTextLocal] = useState(sharedCurrentText);
+  const [currentKeyLocal, setCurrentKeyLocal] = useState(sharedCurrentKey);
 
   // Sync local state with shared state
   useEffect(() => {
@@ -120,6 +125,7 @@ export const useTTS = (): TTSHookReturn => {
       setIsPausedLocal(sharedIsPaused);
       setIsLoading(sharedIsLoading);
       setCurrentTextLocal(sharedCurrentText);
+      setCurrentKeyLocal(sharedCurrentKey);
     };
     stateListeners.add(updateState);
     // Also update immediately to ensure we have latest state
@@ -163,6 +169,7 @@ export const useTTS = (): TTSHookReturn => {
     sharedIsPaused = false;
     sharedIsLoading = false;
     sharedCurrentText = null;
+    sharedCurrentKey = null;
     sharedMetadata = null;
     currentPlayback = null;
     setIsPlaying(false);
@@ -216,7 +223,12 @@ export const useTTS = (): TTSHookReturn => {
   }, [setIsPlaying, setIsPaused]);
 
   const playTTS = useCallback(
-    async (text: string, voice?: string, metadata?: TTSMetadata) => {
+    async (
+      text: string,
+      voice?: string,
+      metadata?: TTSMetadata,
+      key?: string
+    ) => {
       if (!text || !text.trim()) return;
 
       // Stop any existing playback
@@ -228,6 +240,7 @@ export const useTTS = (): TTSHookReturn => {
       // Store current text and metadata
       const trimmedText = text.trim();
       sharedCurrentText = trimmedText;
+      sharedCurrentKey = key ?? trimmedText;
       sharedMetadata = metadata || null;
 
       try {
@@ -245,6 +258,7 @@ export const useTTS = (): TTSHookReturn => {
             setIsPaused(false);
             setIsLoadingState(false);
             sharedCurrentText = null;
+            sharedCurrentKey = null;
             sharedMetadata = null;
             notifyStateListeners();
           }
@@ -619,6 +633,7 @@ export const useTTS = (): TTSHookReturn => {
         setIsPaused(false);
         if (sharedCurrentText === trimmedText) {
           sharedCurrentText = null;
+          sharedCurrentKey = null;
         }
       }
     },
@@ -642,6 +657,7 @@ export const useTTS = (): TTSHookReturn => {
     resumeTTS,
     restartTTS,
     currentText: currentTextLocal,
+    currentKey: currentKeyLocal,
   };
 };
 

@@ -359,6 +359,17 @@ func (suite *AuthIntegrationTestSuite) TestStatus_Authenticated() {
 	cookies := loginW.Result().Cookies()
 	require.NotEmpty(suite.T(), cookies, "Login should set a session cookie")
 
+	// Update the word-of-day email setting to ensure it persists and is returned in status
+	updateBody, _ := json.Marshal(map[string]bool{"enabled": true})
+	updateW := httptest.NewRecorder()
+	updateReq, _ := http.NewRequest("PUT", "/v1/settings/word-of-day-email", bytes.NewBuffer(updateBody))
+	updateReq.Header.Set("Content-Type", "application/json")
+	for _, cookie := range cookies {
+		updateReq.AddCookie(cookie)
+	}
+	suite.Router.ServeHTTP(updateW, updateReq)
+	assert.Equal(suite.T(), http.StatusOK, updateW.Code)
+
 	// Now make the status request with the session cookie
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/v1/auth/status", nil)
@@ -372,6 +383,52 @@ func (suite *AuthIntegrationTestSuite) TestStatus_Authenticated() {
 
 	// Should return authenticated status
 	assert.Equal(suite.T(), http.StatusOK, w.Code)
+
+	var response struct {
+		Authenticated bool `json:"authenticated"`
+		User          *struct {
+			WordOfDayEmailEnabled *bool `json:"word_of_day_email_enabled"`
+		} `json:"user"`
+	}
+	require.NoError(suite.T(), json.Unmarshal(w.Body.Bytes(), &response))
+	assert.True(suite.T(), response.Authenticated)
+	if assert.NotNil(suite.T(), response.User, "expected user object in status response") {
+		if assert.NotNil(suite.T(), response.User.WordOfDayEmailEnabled) {
+			assert.True(suite.T(), *response.User.WordOfDayEmailEnabled)
+		}
+	}
+
+	// Toggle the setting off to ensure updates propagate to the status response as well
+	updateOffBody, _ := json.Marshal(map[string]bool{"enabled": false})
+	updateOffW := httptest.NewRecorder()
+	updateOffReq, _ := http.NewRequest("PUT", "/v1/settings/word-of-day-email", bytes.NewBuffer(updateOffBody))
+	updateOffReq.Header.Set("Content-Type", "application/json")
+	for _, cookie := range cookies {
+		updateOffReq.AddCookie(cookie)
+	}
+	suite.Router.ServeHTTP(updateOffW, updateOffReq)
+	assert.Equal(suite.T(), http.StatusOK, updateOffW.Code)
+
+	statusAfterOff := httptest.NewRecorder()
+	statusAfterOffReq, _ := http.NewRequest("GET", "/v1/auth/status", nil)
+	for _, cookie := range cookies {
+		statusAfterOffReq.AddCookie(cookie)
+	}
+	suite.Router.ServeHTTP(statusAfterOff, statusAfterOffReq)
+
+	var responseAfterOff struct {
+		Authenticated bool `json:"authenticated"`
+		User          *struct {
+			WordOfDayEmailEnabled *bool `json:"word_of_day_email_enabled"`
+		} `json:"user"`
+	}
+	require.NoError(suite.T(), json.Unmarshal(statusAfterOff.Body.Bytes(), &responseAfterOff))
+	assert.True(suite.T(), responseAfterOff.Authenticated)
+	if assert.NotNil(suite.T(), responseAfterOff.User, "expected user object in status response after disabling") {
+		if assert.NotNil(suite.T(), responseAfterOff.User.WordOfDayEmailEnabled) {
+			assert.False(suite.T(), *responseAfterOff.User.WordOfDayEmailEnabled)
+		}
+	}
 }
 
 // TestGenerateRandomState tests the state generation functionality

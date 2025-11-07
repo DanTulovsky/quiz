@@ -1,4 +1,4 @@
-import { useAuth } from '../hooks/useAuth';
+import {useAuth} from '../hooks/useAuth';
 import {
   useGetV1SettingsAiProviders,
   usePostV1SettingsTestAi,
@@ -12,16 +12,16 @@ import {
   UserLearningPreferences,
   UserUpdateRequest,
 } from '../api/api';
-import { Save, Lightbulb } from 'lucide-react';
-import React, { useEffect, useState, useRef } from 'react';
-import { showNotificationWithClean } from '../notifications';
+import {Save, Lightbulb} from 'lucide-react';
+import React, {useEffect, useState, useRef} from 'react';
+import {showNotificationWithClean} from '../notifications';
 import ErrorModal from '../components/ErrorModal';
 import ConfirmationModal from '../components/ConfirmationModal';
-import { useQueryClient } from '@tanstack/react-query';
-import { getGetV1PreferencesLearningQueryKey } from '../api/api';
+import {useQueryClient} from '@tanstack/react-query';
+import {getGetV1PreferencesLearningQueryKey} from '../api/api';
 import TimezoneSelector from '../components/TimezoneSelector';
-import { useTheme } from '../contexts/ThemeContext';
-import { APIKeyManagement } from '../components/APIKeyManagement';
+import {useTheme} from '../contexts/ThemeContext';
+import {APIKeyManagement} from '../components/APIKeyManagement';
 import {
   defaultVoiceForLanguage,
   extractVoiceName,
@@ -82,7 +82,7 @@ interface ApiError {
 }
 
 const SettingsPage: React.FC = () => {
-  const { user, refreshUser } = useAuth();
+  const {user, refreshUser} = useAuth();
   const {
     currentTheme,
     setTheme,
@@ -108,9 +108,9 @@ const SettingsPage: React.FC = () => {
   const providers = providersData?.providers;
 
   const hasValidLanguage = Boolean(language && language.trim() !== '');
-  const { data: levelsData, refetch: refetchLevels } =
+  const {data: levelsData, refetch: refetchLevels} =
     useGetV1SettingsLevels<LevelsApiResponse>(
-      hasValidLanguage ? { language } : undefined,
+      hasValidLanguage ? {language} : undefined,
       {
         query: {
           enabled: hasValidLanguage,
@@ -120,7 +120,7 @@ const SettingsPage: React.FC = () => {
   const levels = levelsData?.levels;
   const levelDescriptions = levelsData?.level_descriptions || {};
 
-  const { data: languagesData } = useGetV1SettingsLanguages();
+  const {data: languagesData} = useGetV1SettingsLanguages();
   const languages = languagesData;
 
   // Find the current language object for TTS configuration
@@ -134,6 +134,7 @@ const SettingsPage: React.FC = () => {
   const [wordOfDayEmailEnabled, setWordOfDayEmailEnabled] = useState<boolean>(
     Boolean(user?.word_of_day_email_enabled)
   );
+  const [savingDailyReminder, setSavingDailyReminder] = useState(false);
 
   const [learningPrefs, setLearningPrefs] =
     useState<UserLearningPreferences | null>(null);
@@ -169,9 +170,9 @@ const SettingsPage: React.FC = () => {
   const testEmailMutation = usePostV1SettingsTestEmail();
 
   // Check API key availability for the currently selected provider (no special case for ollama)
-  const { data: apiKeyAvailable, refetch: refetchApiKeyAvailability } =
+  const {data: apiKeyAvailable, refetch: refetchApiKeyAvailability} =
     useGetV1SettingsApiKeyProvider(aiProvider, {
-      query: { enabled: !!aiProvider },
+      query: {enabled: !!aiProvider},
     });
 
   // Refetch API key availability when AI provider changes
@@ -216,7 +217,7 @@ const SettingsPage: React.FC = () => {
         const json: unknown = await res.json();
         const rawVoices: EdgeTTSVoiceInfo[] = Array.isArray(json)
           ? (json as EdgeTTSVoiceInfo[])
-          : ((json as { voices?: EdgeTTSVoiceInfo[] })?.voices ?? []);
+          : ((json as {voices?: EdgeTTSVoiceInfo[]})?.voices ?? []);
         const voices = (rawVoices || [])
           .map(extractVoiceName)
           .filter((v): v is string => !!v);
@@ -238,7 +239,7 @@ const SettingsPage: React.FC = () => {
   // Ensure TTS voice is properly selected when learning preferences or voices change
   useEffect(() => {
     if (learningPrefs && availableVoices.length > 0) {
-      const saved = (learningPrefs as unknown as { tts_voice?: string })
+      const saved = (learningPrefs as unknown as {tts_voice?: string})
         .tts_voice;
       const preferred = defaultVoiceForLanguage(currentLanguageObj);
       const chosen =
@@ -249,7 +250,7 @@ const SettingsPage: React.FC = () => {
       if (chosen && chosen !== saved) {
         setLearningPrefs(prev =>
           prev
-            ? ({ ...prev, tts_voice: chosen } as UserLearningPreferences)
+            ? ({...prev, tts_voice: chosen} as UserLearningPreferences)
             : prev
         );
       }
@@ -360,7 +361,54 @@ const SettingsPage: React.FC = () => {
     field: keyof UserLearningPreferences,
     value: string | number | boolean
   ) => {
-    setLearningPrefs(prev => (prev ? { ...prev, [field]: value } : prev));
+    setLearningPrefs(prev => (prev ? {...prev, [field]: value} : prev));
+  };
+
+  const updateDailyReminderPreference = async (nextEnabled: boolean) => {
+    if (savingDailyReminder || !learningPrefsRef.current) {
+      return;
+    }
+
+    const previousPrefs = learningPrefsRef.current;
+    const previousEnabled = previousPrefs.daily_reminder_enabled;
+    const updatedPrefs: UserLearningPreferences = {
+      ...previousPrefs,
+      daily_reminder_enabled: nextEnabled,
+    };
+
+    setLearningPrefs(updatedPrefs);
+    learningPrefsRef.current = updatedPrefs;
+    setSavingDailyReminder(true);
+
+    try {
+      await prefsMutation.mutateAsync({data: updatedPrefs});
+      queryClient.setQueryData(
+        getGetV1PreferencesLearningQueryKey(),
+        updatedPrefs
+      );
+      queryClient.invalidateQueries({
+        queryKey: getGetV1PreferencesLearningQueryKey(),
+      });
+      showNotificationWithClean({
+        title: 'Saved',
+        message: 'Daily reminder setting updated',
+        color: 'green',
+      });
+    } catch (error) {
+      const revertedPrefs: UserLearningPreferences = {
+        ...previousPrefs,
+        daily_reminder_enabled: previousEnabled,
+      };
+      setLearningPrefs(revertedPrefs);
+      learningPrefsRef.current = revertedPrefs;
+      showNotificationWithClean({
+        title: 'Error',
+        message: 'Failed to update daily reminder setting',
+        color: 'red',
+      });
+    } finally {
+      setSavingDailyReminder(false);
+    }
   };
 
   // Function to update all user settings using the unified profile endpoint
@@ -616,7 +664,7 @@ const SettingsPage: React.FC = () => {
       });
       // Save learning preferences if loaded
       if (learningPrefs) {
-        await prefsMutation.mutateAsync({ data: learningPrefs });
+        await prefsMutation.mutateAsync({data: learningPrefs});
         // Immediately update cache so other pages see the new voice without reload
         queryClient.setQueryData(
           getGetV1PreferencesLearningQueryKey(),
@@ -639,8 +687,8 @@ const SettingsPage: React.FC = () => {
       });
     } catch (error: unknown) {
       errorMsg =
-        (error as { error?: string; message?: string })?.error ||
-        (error as { error?: string; message?: string })?.message ||
+        (error as {error?: string; message?: string})?.error ||
+        (error as {error?: string; message?: string})?.message ||
         'Failed to save settings';
       showNotificationWithClean({
         title: 'Error',
@@ -722,7 +770,7 @@ const SettingsPage: React.FC = () => {
                   data={[
                     {
                       label: (
-                        <Text size='sm' style={{ fontSize: '0.875rem' }}>
+                        <Text size='sm' style={{fontSize: '0.875rem'}}>
                           Small
                         </Text>
                       ),
@@ -730,7 +778,7 @@ const SettingsPage: React.FC = () => {
                     },
                     {
                       label: (
-                        <Text size='sm' style={{ fontSize: '1rem' }}>
+                        <Text size='sm' style={{fontSize: '1rem'}}>
                           Medium
                         </Text>
                       ),
@@ -738,7 +786,7 @@ const SettingsPage: React.FC = () => {
                     },
                     {
                       label: (
-                        <Text size='sm' style={{ fontSize: '1.125rem' }}>
+                        <Text size='sm' style={{fontSize: '1.125rem'}}>
                           Large
                         </Text>
                       ),
@@ -746,7 +794,7 @@ const SettingsPage: React.FC = () => {
                     },
                     {
                       label: (
-                        <Text size='sm' style={{ fontSize: '1.25rem' }}>
+                        <Text size='sm' style={{fontSize: '1.25rem'}}>
                           Extra Large
                         </Text>
                       ),
@@ -817,7 +865,7 @@ const SettingsPage: React.FC = () => {
               </Group>
               <Grid gutter='md'>
                 {/* Username */}
-                <Grid.Col span={{ base: 12, md: 6 }}>
+                <Grid.Col span={{base: 12, md: 6}}>
                   <TextInput
                     label='Username'
                     value={username}
@@ -828,7 +876,7 @@ const SettingsPage: React.FC = () => {
                 </Grid.Col>
 
                 {/* Email */}
-                <Grid.Col span={{ base: 12, md: 6 }}>
+                <Grid.Col span={{base: 12, md: 6}}>
                   <TextInput
                     label='Email'
                     type='email'
@@ -867,7 +915,7 @@ const SettingsPage: React.FC = () => {
               </Group>
               <Grid gutter='md'>
                 {/* Language Selection */}
-                <Grid.Col span={{ base: 12, md: 6 }}>
+                <Grid.Col span={{base: 12, md: 6}}>
                   <Select
                     label='Learning Language'
                     value={language}
@@ -877,9 +925,9 @@ const SettingsPage: React.FC = () => {
                         value: lang.name || lang,
                         label: lang.name
                           ? lang.name.charAt(0).toUpperCase() +
-                            lang.name.slice(1)
+                          lang.name.slice(1)
                           : (lang.name || lang).charAt(0).toUpperCase() +
-                            (lang.name || lang).slice(1),
+                          (lang.name || lang).slice(1),
                       })) || []
                     }
                     placeholder='Select language'
@@ -887,7 +935,7 @@ const SettingsPage: React.FC = () => {
                   />
                 </Grid.Col>
                 {/* Level Selection */}
-                <Grid.Col span={{ base: 12, md: 6 }}>
+                <Grid.Col span={{base: 12, md: 6}}>
                   <Select
                     label='Current Level'
                     value={level}
@@ -915,7 +963,7 @@ const SettingsPage: React.FC = () => {
               ) : (
                 learningPrefs && (
                   <Grid gutter='md' mt='md'>
-                    <Grid.Col span={{ base: 12, md: 6 }}>
+                    <Grid.Col span={{base: 12, md: 6}}>
                       <Group align='center'>
                         <Select
                           label='TTS Voice'
@@ -929,7 +977,7 @@ const SettingsPage: React.FC = () => {
                             label: v,
                           }))}
                           value={
-                            (learningPrefs as unknown as { tts_voice?: string })
+                            (learningPrefs as unknown as {tts_voice?: string})
                               ?.tts_voice || ''
                           }
                           onChange={v =>
@@ -979,7 +1027,7 @@ const SettingsPage: React.FC = () => {
                                 setTtsBufferingLocal(true);
                                 setTtsBufferProgress(0);
 
-                                const { playTTSOnce, stopTTSOnce } =
+                                const {playTTSOnce, stopTTSOnce} =
                                   await import('../hooks/useTTS');
 
                                 // If already playing, stop instead of starting another
@@ -1027,13 +1075,13 @@ const SettingsPage: React.FC = () => {
                           </Button>
                         </Tooltip>
                         {ttsBufferingLocal && (
-                          <Text size='xs' c='dimmed' style={{ marginLeft: 8 }}>
+                          <Text size='xs' c='dimmed' style={{marginLeft: 8}}>
                             {Math.round(ttsBufferProgress * 100)}%
                           </Text>
                         )}
                       </Group>
                     </Grid.Col>
-                    <Grid.Col span={{ base: 12, md: 6 }}>
+                    <Grid.Col span={{base: 12, md: 6}}>
                       <Stack gap='md'>
                         <Group>
                           <Tooltip label="If enabled, you'll see more questions from topics you struggle with.">
@@ -1053,8 +1101,8 @@ const SettingsPage: React.FC = () => {
                         </Group>
                       </Stack>
                     </Grid.Col>
-                    <Grid.Col span={{ base: 12, md: 6 }}>
-                      <Stack gap='lg' style={{ marginBottom: 16 }}>
+                    <Grid.Col span={{base: 12, md: 6}}>
+                      <Stack gap='lg' style={{marginBottom: 16}}>
                         <Group gap={4} align='center'>
                           <Tooltip label='What percent of your questions should be brand new (never seen)?'>
                             <Lightbulb size={16} />
@@ -1072,11 +1120,11 @@ const SettingsPage: React.FC = () => {
                             handlePrefsChange('fresh_question_ratio', v)
                           }
                           marks={[
-                            { value: 0, label: '0%' },
-                            { value: 0.5, label: '50%' },
-                            { value: 1, label: '100%' },
+                            {value: 0, label: '0%'},
+                            {value: 0.5, label: '50%'},
+                            {value: 1, label: '100%'},
                           ]}
-                          style={{ flex: 1 }}
+                          style={{flex: 1}}
                           data-testid='fresh-question-ratio-slider'
                         />
                         <Group gap={4} align='center'>
@@ -1096,11 +1144,11 @@ const SettingsPage: React.FC = () => {
                             handlePrefsChange('known_question_penalty', v)
                           }
                           marks={[
-                            { value: 0, label: '0' },
-                            { value: 0.5, label: '0.5' },
-                            { value: 1, label: '1' },
+                            {value: 0, label: '0'},
+                            {value: 0.5, label: '0.5'},
+                            {value: 1, label: '1'},
                           ]}
-                          style={{ flex: 1 }}
+                          style={{flex: 1}}
                           data-testid='known-question-penalty-slider'
                         />
                         <Group gap={4} align='center'>
@@ -1120,17 +1168,17 @@ const SettingsPage: React.FC = () => {
                             handlePrefsChange('weak_area_boost', v)
                           }
                           marks={[
-                            { value: 1, label: '1x' },
-                            { value: 3, label: '3x' },
-                            { value: 5, label: '5x' },
+                            {value: 1, label: '1x'},
+                            {value: 3, label: '3x'},
+                            {value: 5, label: '5x'},
                           ]}
-                          style={{ flex: 1 }}
+                          style={{flex: 1}}
                           data-testid='weak-area-boost-slider'
                         />
                       </Stack>
                     </Grid.Col>
-                    <Grid.Col span={{ base: 12, md: 6 }}>
-                      <Stack gap='sm' style={{ width: '100%' }}>
+                    <Grid.Col span={{base: 12, md: 6}}>
+                      <Stack gap='sm' style={{width: '100%'}}>
                         <Box
                           style={{
                             display: 'flex',
@@ -1153,7 +1201,7 @@ const SettingsPage: React.FC = () => {
                             onChange={v =>
                               handlePrefsChange('review_interval_days', v)
                             }
-                            style={{ maxWidth: 120 }}
+                            style={{maxWidth: 120}}
                             data-testid='review-interval-days-input'
                           />
                         </Box>
@@ -1180,7 +1228,7 @@ const SettingsPage: React.FC = () => {
                             onChange={v =>
                               handlePrefsChange('daily_goal', v || 10)
                             }
-                            style={{ maxWidth: 140 }}
+                            style={{maxWidth: 140}}
                             data-testid='daily-goal-input'
                           />
                         </Box>
@@ -1202,11 +1250,11 @@ const SettingsPage: React.FC = () => {
 
               <Card
                 withBorder
-                style={{ background: 'var(--mantine-color-body)' }}
+                style={{background: 'var(--mantine-color-body)'}}
               >
                 <Stack gap='md'>
                   <Group justify='space-between' align='flex-start'>
-                    <Box style={{ flex: 1 }}>
+                    <Box style={{flex: 1}}>
                       <Text fw={500} size='lg' mb='xs'>
                         Daily Email Reminders
                       </Text>
@@ -1218,23 +1266,21 @@ const SettingsPage: React.FC = () => {
                     <Switch
                       checked={learningPrefs?.daily_reminder_enabled || false}
                       onChange={e =>
-                        handlePrefsChange(
-                          'daily_reminder_enabled',
-                          e.currentTarget.checked
-                        )
+                        updateDailyReminderPreference(e.currentTarget.checked)
                       }
                       size='lg'
                       role='switch'
                       aria-checked={
                         learningPrefs?.daily_reminder_enabled || false
                       }
+                      disabled={savingDailyReminder}
                       data-testid='daily-reminder-switch'
                     />
                   </Group>
 
                   {learningPrefs?.daily_reminder_enabled && (
                     <Group align='end' gap='xs'>
-                      <Box style={{ flex: 1 }}>
+                      <Box style={{flex: 1}}>
                         <Text size='sm' fw={500} mb='xs'>
                           Test Email Settings
                         </Text>
@@ -1258,11 +1304,11 @@ const SettingsPage: React.FC = () => {
 
               <Card
                 withBorder
-                style={{ background: 'var(--mantine-color-body)' }}
+                style={{background: 'var(--mantine-color-body)'}}
               >
                 <Stack gap='md'>
                   <Group justify='space-between' align='flex-start'>
-                    <Box style={{ flex: 1 }}>
+                    <Box style={{flex: 1}}>
                       <Text fw={500} size='lg' mb='xs'>
                         Word of the Day Emails
                       </Text>
@@ -1300,7 +1346,7 @@ const SettingsPage: React.FC = () => {
                   </Group>
                   {wordOfDayEmailEnabled && (
                     <Group align='end' gap='xs'>
-                      <Box style={{ flex: 1 }}>
+                      <Box style={{flex: 1}}>
                         <Text size='sm' fw={500} mb='xs'>
                           Test Email Settings
                         </Text>
@@ -1335,14 +1381,14 @@ const SettingsPage: React.FC = () => {
               {/* AI Enable/Disable Toggle */}
               <Card
                 withBorder
-                style={{ background: 'var(--mantine-color-body)' }}
+                style={{background: 'var(--mantine-color-body)'}}
               >
                 <Group
                   justify='space-between'
                   align='flex-start'
                   data-testid='ai-enabled-switch-root'
                 >
-                  <Box style={{ flex: 1 }}>
+                  <Box style={{flex: 1}}>
                     <Text fw={500} size='lg' mb='xs'>
                       Enable AI Features
                     </Text>
@@ -1368,7 +1414,7 @@ const SettingsPage: React.FC = () => {
               {aiEnabled && (
                 <Grid gutter='md'>
                   {/* AI Provider */}
-                  <Grid.Col span={{ base: 12, md: 6 }}>
+                  <Grid.Col span={{base: 12, md: 6}}>
                     <Select
                       label='AI Provider'
                       value={aiProvider}
@@ -1386,7 +1432,7 @@ const SettingsPage: React.FC = () => {
                       data={
                         providers
                           ?.filter(p => p.name && p.code)
-                          .map(p => ({ value: p.code!, label: p.name! })) || []
+                          .map(p => ({value: p.code!, label: p.name!})) || []
                       }
                       placeholder='Select a provider'
                       data-testid='ai-provider-select'
@@ -1394,7 +1440,7 @@ const SettingsPage: React.FC = () => {
                   </Grid.Col>
 
                   {/* AI Model */}
-                  <Grid.Col span={{ base: 12, md: 6 }}>
+                  <Grid.Col span={{base: 12, md: 6}}>
                     <Select
                       label='Model'
                       value={aiModel}
@@ -1403,7 +1449,7 @@ const SettingsPage: React.FC = () => {
                         providers
                           ?.find(p => p.code === aiProvider)
                           ?.models?.filter(m => m.name && m.code)
-                          .map(m => ({ value: m.code!, label: m.name! })) || []
+                          .map(m => ({value: m.code!, label: m.name!})) || []
                       }
                       placeholder='Select a model'
                       disabled={!aiProvider}
@@ -1450,7 +1496,7 @@ const SettingsPage: React.FC = () => {
                               ? 'Leave empty to use saved key or enter new key'
                               : 'Enter your API key (or "not_needed_by_default")'
                           }
-                          style={{ flex: 1 }}
+                          style={{flex: 1}}
                         />
                         <Button
                           variant='outline'
@@ -1524,7 +1570,7 @@ const SettingsPage: React.FC = () => {
       {/* Error Modal */}
       <ErrorModal
         isOpen={errorModal.isOpen}
-        onClose={() => setErrorModal({ ...errorModal, isOpen: false })}
+        onClose={() => setErrorModal({...errorModal, isOpen: false})}
         title={errorModal.title}
         message={errorModal.message}
       />

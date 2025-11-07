@@ -160,6 +160,11 @@ func convertUserToAPI(user *models.User) api.User {
 		apiUser.AiModel = &s
 	}
 
+	if user.WordOfDayEmailEnabled.Valid {
+		enabled := user.WordOfDayEmailEnabled.Bool
+		apiUser.WordOfDayEmailEnabled = &enabled
+	}
+
 	// Always set ai_enabled as a boolean (never null)
 	aiEnabled := user.AIEnabled.Valid && user.AIEnabled.Bool
 	apiUser.AiEnabled = &aiEnabled

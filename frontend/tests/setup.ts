@@ -2,6 +2,40 @@
 import '@testing-library/jest-dom/vitest';
 import { vi } from 'vitest';
 
+// Provide a persistent localStorage mock immediately so any eagerly-imported
+// modules (like MSW's cookie store) can use it safely.
+const localStorageMock = (() => {
+  let store: Record<string, string> = {};
+  return {
+    getItem: (key: string) => (key in store ? store[key] : null),
+    setItem: (key: string, value: string) => {
+      store[key] = value.toString();
+    },
+    removeItem: (key: string) => {
+      delete store[key];
+    },
+    clear: () => {
+      store = {};
+    },
+    key: (index: number) => Object.keys(store)[index] || null,
+    get length() {
+      return Object.keys(store).length;
+    },
+  };
+})();
+
+Object.defineProperty(global, 'localStorage', {
+  value: localStorageMock,
+  writable: true,
+  configurable: true,
+});
+
+Object.defineProperty(window, 'localStorage', {
+  value: localStorageMock,
+  writable: true,
+  configurable: true,
+});
+
 // Comprehensive DOM API mocks for Mantine compatibility
 beforeAll(() => {
   // Mock ResizeObserver for Mantine components
@@ -30,39 +64,6 @@ beforeAll(() => {
 
   // Mock scrollIntoView for Mantine components
   Element.prototype.scrollIntoView = vi.fn();
-
-  // Mock localStorage with a proper implementation
-  const localStorageMock = (() => {
-    let store: Record<string, string> = {};
-    return {
-      getItem: (key: string) => store[key] || null,
-      setItem: (key: string, value: string) => {
-        store[key] = value.toString();
-      },
-      removeItem: (key: string) => {
-        delete store[key];
-      },
-      clear: () => {
-        store = {};
-      },
-      key: (index: number) => Object.keys(store)[index] || null,
-      get length() {
-        return Object.keys(store).length;
-      },
-    };
-  })();
-
-  Object.defineProperty(window, 'localStorage', {
-    value: localStorageMock,
-    writable: true,
-    configurable: true,
-  });
-
-  Object.defineProperty(global, 'localStorage', {
-    value: localStorageMock,
-    writable: true,
-    configurable: true,
-  });
 
   // Mock document properties for ThemeProvider - only override specific properties
   if (global.document && global.document.documentElement) {

@@ -17,6 +17,7 @@ const mockTTS = {
   isPlaying: false,
   isPaused: false,
   currentPlayingText: null as string | null,
+  currentKey: null as string | null,
   playTTS: vi.fn(),
   stopTTS: vi.fn(),
   pauseTTS: vi.fn(),
@@ -30,6 +31,7 @@ vi.mock('../hooks/useTTS', () => ({
     isPlaying: mockTTS.isPlaying,
     isPaused: mockTTS.isPaused,
     currentText: mockTTS.currentPlayingText,
+    currentKey: mockTTS.currentKey,
     playTTS: mockTTS.playTTS,
     stopTTS: mockTTS.stopTTS,
     pauseTTS: mockTTS.pauseTTS,
@@ -54,6 +56,7 @@ beforeEach(() => {
   mockTTS.isPlaying = false;
   mockTTS.isPaused = false;
   mockTTS.currentPlayingText = null;
+  mockTTS.currentKey = null;
   mockTTS.playTTS.mockClear();
   mockTTS.stopTTS.mockClear();
 });
@@ -358,7 +361,8 @@ describe('StoryReadingView', () => {
           title: expect.any(String),
           language: expect.any(String),
           level: expect.any(String),
-        })
+        }),
+        expectedContent.trim()
       );
     });
 
@@ -372,6 +376,7 @@ describe('StoryReadingView', () => {
       // Set up initial playing state
       mockTTS.isPlaying = true;
       mockTTS.currentPlayingText = expectedContent.trim();
+      mockTTS.currentKey = expectedContent.trim();
       mockTTS.isLoading = false;
 
       // Re-render with playing state
@@ -409,7 +414,8 @@ describe('StoryReadingView', () => {
           title: expect.any(String),
           language: expect.any(String),
           level: expect.any(String),
-        })
+        }),
+        expect.any(String)
       );
     });
 
@@ -428,7 +434,8 @@ describe('StoryReadingView', () => {
           title: expect.any(String),
           language: expect.any(String),
           level: expect.any(String),
-        })
+        }),
+        expect.any(String)
       );
     });
   });

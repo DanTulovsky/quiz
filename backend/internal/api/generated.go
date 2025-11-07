@@ -1571,6 +1571,9 @@ type User struct {
 
 	// Username Username (1-100 characters, alphanumeric + underscore + email characters, cannot be empty or whitespace-only)
 	Username *string `json:"username,omitempty"`
+
+	// WordOfDayEmailEnabled Whether the user has enabled Word of the Day emails
+	WordOfDayEmailEnabled *bool `json:"word_of_day_email_enabled,omitempty"`
 }
 
 // UserCreateRequest defines model for UserCreateRequest.
@@ -1654,6 +1657,9 @@ type UserProfile struct {
 
 	// Username Username (1-100 characters, alphanumeric + underscore + email characters, cannot be empty or whitespace-only)
 	Username *string `json:"username,omitempty"`
+
+	// WordOfDayEmailEnabled Whether the user has enabled Word of the Day emails
+	WordOfDayEmailEnabled *bool `json:"word_of_day_email_enabled,omitempty"`
 }
 
 // UserProgress defines model for UserProgress.

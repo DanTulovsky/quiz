@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
   Paper,
   Text,
@@ -15,17 +15,31 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from '../contexts/TranslationContext';
 import { TextSelection } from '../hooks/useTextSelection';
 import { useMobileDetection } from '../hooks/useMobileDetection';
-import { IconX, IconBookmark, IconCopy } from '@tabler/icons-react';
+import * as TablerIcons from '@tabler/icons-react';
 import {
   postV1Snippets,
   Question,
   useGetV1PreferencesLearning,
   useGetV1SettingsLanguages,
 } from '../api/api';
+import type { LanguageInfo } from '../api/api';
 import { useTheme } from '../contexts/ThemeContext';
 import { fontScaleMap } from '../theme/theme';
 import TTSButton from './TTSButton';
 import { defaultVoiceForLanguage } from '../utils/tts';
+
+type TablerIconComponent = React.ComponentType<
+  React.SVGProps<SVGSVGElement> & {
+    size?: string | number;
+    stroke?: string | number;
+    title?: string;
+  }
+>;
+
+const tablerIcons = TablerIcons as Record<string, TablerIconComponent>;
+const IconX = tablerIcons.IconX;
+const IconBookmark = tablerIcons.IconBookmark;
+const IconCopy = tablerIcons.IconCopy;
 
 // Type for story context when no question is available
 interface StoryContext {
@@ -87,6 +101,61 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
       hi: 'hindi',
     };
     return mapping[code] || code;
+  };
+
+  const languagesByCode = useMemo(() => {
+    const map = new Map<string, LanguageInfo>();
+    if (!languagesData) {
+      return map;
+    }
+    languagesData.forEach(lang => {
+      map.set(lang.code, lang);
+    });
+    return map;
+  }, [languagesData]);
+
+  const savedVoice = useMemo(
+    () => (userLearningPrefs?.tts_voice || '').trim(),
+    [userLearningPrefs?.tts_voice]
+  );
+
+  const getLanguageLabel = (code?: string): string | undefined => {
+    if (!code) return undefined;
+    const entry = languagesByCode.get(code);
+    const rawName = entry?.name || codeToLanguageName(code);
+    if (!rawName) return undefined;
+    return rawName.charAt(0).toUpperCase() + rawName.slice(1);
+  };
+
+  const getPreferredVoice = (code?: string): string | undefined => {
+    if (savedVoice) {
+      return savedVoice;
+    }
+
+    if (!code) {
+      return undefined;
+    }
+
+    const entry = languagesByCode.get(code);
+    if (entry) {
+      const fromEntry = defaultVoiceForLanguage(entry);
+      if (fromEntry) {
+        return fromEntry;
+      }
+    }
+
+    const languageName = codeToLanguageName(code);
+    return defaultVoiceForLanguage(languageName) || undefined;
+  };
+
+  const getMetadata = (variant: 'original' | 'translated', code?: string) => {
+    const languageLabel = getLanguageLabel(code);
+    const baseTitle = variant === 'original' ? 'Original text' : 'Translation';
+
+    return {
+      title: languageLabel ? `${baseTitle} — ${languageLabel}` : baseTitle,
+      language: languageLabel,
+    };
   };
 
   // Language options for the dropdown - dynamically generated from API
@@ -443,18 +512,13 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
           <Group gap='xs' wrap='nowrap' align='center'>
             <TTSButton
               getText={() => selection.text}
-              getVoice={() => {
-                const saved = (userLearningPrefs?.tts_voice || '').trim();
-                if (saved) return saved;
-                // Use detected source language if available
-                if (translation?.sourceLanguage) {
-                  const languageName = codeToLanguageName(
-                    translation.sourceLanguage
-                  );
-                  return defaultVoiceForLanguage(languageName) || undefined;
-                }
-                return undefined;
-              }}
+              getVoice={() => getPreferredVoice(translation?.sourceLanguage)}
+              getMetadata={() =>
+                getMetadata('original', translation?.sourceLanguage)
+              }
+              getId={() =>
+                `translation-popup::original::${selection.text ?? ''}`
+              }
               size='sm'
               ariaLabel='Listen to original text'
             />
@@ -533,11 +597,13 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
                 <Group gap='xs' wrap='nowrap' align='center'>
                   <TTSButton
                     getText={() => translation.translatedText}
-                    getVoice={() => {
-                      // For translations, always use the target language from dropdown
-                      const languageName = codeToLanguageName(targetLanguage);
-                      return defaultVoiceForLanguage(languageName) || undefined;
-                    }}
+                    getVoice={() => getPreferredVoice(targetLanguage)}
+                    getMetadata={() =>
+                      getMetadata('translated', targetLanguage)
+                    }
+                    getId={() =>
+                      `translation-popup::translated::${targetLanguage}::${selection.text ?? ''}`
+                    }
                     size='sm'
                     ariaLabel='Listen to translation'
                   />

@@ -6286,6 +6286,9 @@ components:
         has_api_key:
           type: boolean
           description: Whether the user has a valid API key saved for their current AI provider
+        word_of_day_email_enabled:
+          type: boolean
+          description: Whether the user has enabled Word of the Day emails
         created_at:
           type: string
           format: date-time-time
@@ -7207,6 +7210,9 @@ components:
         is_paused:
           type: boolean
           description: Whether the user is paused (question generation disabled)
+        word_of_day_email_enabled:
+          type: boolean
+          description: Whether the user has enabled Word of the Day emails
         created_at:
           type: string
           format: date-time-time

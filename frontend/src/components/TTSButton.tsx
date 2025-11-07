@@ -7,6 +7,7 @@ interface TTSButtonProps {
   getText: () => string;
   getVoice?: () => string | undefined;
   getMetadata?: () => TTSMetadata | undefined;
+  getId?: () => string | undefined;
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   color?: string;
   ariaLabel?: string;
@@ -17,6 +18,7 @@ const TTSButton: React.FC<TTSButtonProps> = ({
   getText,
   getVoice,
   getMetadata,
+  getId,
   size = 'md',
   color,
   ariaLabel,
@@ -30,7 +32,7 @@ const TTSButton: React.FC<TTSButtonProps> = ({
     pauseTTS,
     resumeTTS,
     restartTTS,
-    currentText: currentPlayingText,
+    currentKey,
   } = useTTS();
 
   // Simple flag to track if we initiated the current loading state
@@ -38,19 +40,31 @@ const TTSButton: React.FC<TTSButtonProps> = ({
   const initiatedLoadingRef = React.useRef(false);
 
   // Clear the flag when playback starts or when our text becomes current
+  const trimmedText = React.useMemo(() => getText()?.trim() || '', [getText]);
+  const playbackKey = React.useMemo(() => {
+    if (!trimmedText) return null;
+    const custom = getId?.();
+    return custom ?? trimmedText;
+  }, [getId, trimmedText]);
+
   React.useEffect(() => {
-    const ourText = getText()?.trim();
-    if (isTTSPlaying && currentPlayingText === ourText) {
+    if (!playbackKey) {
+      if (!isTTSLoading) {
+        initiatedLoadingRef.current = false;
+      }
+      return;
+    }
+    if (isTTSPlaying && currentKey === playbackKey) {
       // Our audio started playing - clear the flag
       initiatedLoadingRef.current = false;
-    } else if (currentPlayingText === ourText) {
+    } else if (currentKey === playbackKey) {
       // Our text is now current (playing or paused) - clear the flag
       initiatedLoadingRef.current = false;
-    } else if (currentPlayingText === null && !isTTSLoading) {
+    } else if (currentKey === null && !isTTSLoading) {
       // Audio ended and not loading - clear the flag
       initiatedLoadingRef.current = false;
     }
-  }, [isTTSPlaying, currentPlayingText, isTTSLoading, getText]);
+  }, [isTTSPlaying, currentKey, isTTSLoading, playbackKey]);
 
   const handleClick: React.MouseEventHandler<HTMLButtonElement> = async e => {
     const text = getText();
@@ -58,13 +72,19 @@ const TTSButton: React.FC<TTSButtonProps> = ({
     const trimmedText = text.trim();
     if (!trimmedText) return; // Don't play empty text
 
+    const keyForPlayback = getId?.() ?? trimmedText;
+
     const voice = getVoice ? getVoice() : undefined;
     const metadata = getMetadata ? getMetadata() : undefined;
 
     // Alt+Click: restart from beginning
     if (e.altKey) {
       // Only restart if the currently playing/paused text matches this button's text
-      if ((isTTSPlaying || isPaused) && currentPlayingText === trimmedText) {
+      if (
+        playbackKey &&
+        (isTTSPlaying || isPaused) &&
+        currentKey === playbackKey
+      ) {
         const restartSuccess = restartTTS();
         if (restartSuccess) {
           return;
@@ -73,7 +93,7 @@ const TTSButton: React.FC<TTSButtonProps> = ({
       // Fall back to playing from beginning
       initiatedLoadingRef.current = true;
       try {
-        await playTTS(text, voice, metadata);
+        await playTTS(text, voice, metadata, keyForPlayback);
       } catch (error) {
         initiatedLoadingRef.current = false;
         throw error;
@@ -82,13 +102,13 @@ const TTSButton: React.FC<TTSButtonProps> = ({
     }
 
     // Normal click: toggle play/pause for our text, or start new playback
-    if (isTTSPlaying && currentPlayingText === trimmedText) {
+    if (playbackKey && isTTSPlaying && currentKey === playbackKey) {
       // Our text is playing - pause it
       pauseTTS();
       return;
     }
 
-    if (isPaused && currentPlayingText === trimmedText) {
+    if (playbackKey && isPaused && currentKey === playbackKey) {
       // Our text is paused - resume it
       resumeTTS();
       return;
@@ -98,7 +118,7 @@ const TTSButton: React.FC<TTSButtonProps> = ({
     // Mark that we initiated this loading state
     initiatedLoadingRef.current = true;
     try {
-      await playTTS(text, voice, metadata);
+      await playTTS(text, voice, metadata, keyForPlayback);
     } catch (error) {
       initiatedLoadingRef.current = false;
       throw error;
@@ -107,23 +127,22 @@ const TTSButton: React.FC<TTSButtonProps> = ({
 
   // SIMPLIFIED: Each button decides its icon independently based on shared TTS state
   // No ownership needed - just compare our text to what's currently playing
-  const ourText = React.useMemo(() => getText()?.trim() || null, [getText]);
-  const isOurTextPlaying =
-    currentPlayingText !== null && currentPlayingText === ourText;
+  const isOurPlaybackActive =
+    playbackKey !== null && currentKey !== null && currentKey === playbackKey;
 
   // Show loading spinner if:
   // 1. TTS is loading AND
   // 2. Either: our text is current, OR we initiated the load (currentPlayingText might be null during transition)
   const showLoading =
     isTTSLoading &&
-    (isOurTextPlaying ||
-      (initiatedLoadingRef.current && currentPlayingText === null));
+    (isOurPlaybackActive ||
+      (initiatedLoadingRef.current && currentKey === null));
 
   // Show pause icon if our text is playing
-  const showPlaying = isOurTextPlaying && isTTSPlaying && !isTTSLoading;
+  const showPlaying = isOurPlaybackActive && isTTSPlaying && !isTTSLoading;
 
   // Show play/resume icon if our text is paused
-  const showPaused = isOurTextPlaying && isPaused && !isTTSLoading;
+  const showPaused = isOurPlaybackActive && isPaused && !isTTSLoading;
 
   const baseLabel = showLoading
     ? 'Loading audio'
