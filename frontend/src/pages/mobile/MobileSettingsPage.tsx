@@ -54,6 +54,7 @@ import {
   clearAllAIChats,
   clearAllSnippets,
 } from '../../api/settingsApi';
+import logger from '../../utils/logger';
 import {
   IconUser,
   IconBrain,
@@ -217,7 +218,7 @@ const MobileSettingsPage: React.FC = () => {
           // Only keep voices for the selected language; do not merge previous-language voice
           setAvailableVoices(voices);
         }
-      } catch (error) {
+      } catch {
         console.warn('Failed to fetch TTS voices:', error);
         setAvailableVoices([]);
       }
@@ -384,6 +385,7 @@ const MobileSettingsPage: React.FC = () => {
         color: 'green',
       });
     } catch (error) {
+      logger.error('Failed to update daily reminder setting (mobile)', error);
       const revertedPrefs: UserLearningPreferences = {
         ...previousPrefs,
         daily_reminder_enabled: previousEnabled,
