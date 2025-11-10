@@ -4,6 +4,7 @@ package di
 
 import (
 	"context"
+	"errors"
 	"os"
 	"testing"
 	"time"
@@ -22,6 +23,84 @@ type ServiceContainerIntegrationTestSuite struct {
 	Config    *config.Config
 	Logger    *observability.Logger
 	Container ServiceContainerInterface
+}
+
+func (suite *ServiceContainerIntegrationTestSuite) TestGetAdditionalServices_Integration() {
+	storyService, err := suite.Container.GetStoryService()
+	assert.NoError(suite.T(), err)
+	assert.NotNil(suite.T(), storyService)
+
+	conversationService, err := suite.Container.GetConversationService()
+	assert.NoError(suite.T(), err)
+	assert.NotNil(suite.T(), conversationService)
+
+	translationService, err := suite.Container.GetTranslationService()
+	assert.NoError(suite.T(), err)
+	assert.NotNil(suite.T(), translationService)
+
+	snippetsService, err := suite.Container.GetSnippetsService()
+	assert.NoError(suite.T(), err)
+	assert.NotNil(suite.T(), snippetsService)
+
+	usageStatsService, err := suite.Container.GetUsageStatsService()
+	assert.NoError(suite.T(), err)
+	assert.NotNil(suite.T(), usageStatsService)
+
+	wordOfTheDayService, err := suite.Container.GetWordOfTheDayService()
+	assert.NoError(suite.T(), err)
+	assert.NotNil(suite.T(), wordOfTheDayService)
+
+	authAPIKeyService, err := suite.Container.GetAuthAPIKeyService()
+	assert.NoError(suite.T(), err)
+	assert.NotNil(suite.T(), authAPIKeyService)
+}
+
+func (suite *ServiceContainerIntegrationTestSuite) TestEnsureAdminUser_ErrorWhenServicesMissing() {
+	ctx := context.Background()
+	testContainer := NewServiceContainer(suite.Config, suite.Logger)
+
+	err := testContainer.EnsureAdminUser(ctx)
+	assert.Error(suite.T(), err)
+	assert.Contains(suite.T(), err.Error(), "failed to get user service")
+}
+
+type failingStartupService struct{}
+
+func (f *failingStartupService) Startup(context.Context) error {
+	return errors.New("startup failed")
+}
+
+type failingShutdownService struct{}
+
+func (f *failingShutdownService) Shutdown(context.Context) error {
+	return errors.New("shutdown failed")
+}
+
+func (suite *ServiceContainerIntegrationTestSuite) TestStartupServices_FailurePropagates() {
+	container := &ServiceContainer{
+		logger:   suite.Logger,
+		services: map[string]interface{}{"failing": &failingStartupService{}},
+	}
+
+	err := container.startupServices(context.Background())
+	assert.Error(suite.T(), err)
+	assert.Contains(suite.T(), err.Error(), "startup failed")
+}
+
+func (suite *ServiceContainerIntegrationTestSuite) TestCleanup_CollectsErrors() {
+	container := &ServiceContainer{
+		logger: suite.Logger,
+		services: map[string]interface{}{
+			"failing": &failingShutdownService{},
+		},
+		shutdownFuncs: []func(context.Context) error{
+			func(context.Context) error { return errors.New("close failed") },
+		},
+	}
+
+	err := container.cleanup(context.Background())
+	assert.Error(suite.T(), err)
+	assert.Contains(suite.T(), err.Error(), "shutdown errors")
 }
 
 func TestServiceContainerIntegrationTestSuite(t *testing.T) {
