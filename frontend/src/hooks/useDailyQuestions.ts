@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
+import {useState, useEffect, useCallback, useMemo} from 'react';
+import {useQueryClient} from '@tanstack/react-query';
 
-import { useAuth } from './useAuth';
+import {useAuth} from './useAuth';
 import {
   useGetV1DailyQuestionsDate,
   useGetV1DailyDates,
@@ -9,13 +9,50 @@ import {
   usePostV1DailyQuestionsDateCompleteQuestionId,
   useDeleteV1DailyQuestionsDateCompleteQuestionId,
   usePostV1DailyQuestionsDateAnswerQuestionId,
+  useGetV1DailyHistoryQuestionId,
+} from '../api/api';
+import type {
+  User,
   DailyQuestionWithDetails,
   DailyQuestionHistory,
   DailyProgress,
   AnswerResponse,
-  useGetV1DailyHistoryQuestionId,
 } from '../api/api';
-import { showNotificationWithClean } from '../notifications';
+import {showNotificationWithClean} from '../notifications';
+
+const getUserDailyScopeParts = (
+  user: User | null
+): [string, string, string] => [
+    user?.id != null ? String(user.id) : 'anonymous',
+    user?.preferred_language || 'unknown-language',
+    user?.current_level || 'unknown-level',
+  ];
+
+const getUserDailyScopeSignature = (user: User | null) =>
+  getUserDailyScopeParts(user).join('|');
+
+const getDailyQuestionsQueryKey = (date: string, user: User | null) => {
+  const [userId, language, level] = getUserDailyScopeParts(user);
+  return ['/v1/daily/questions', date, userId, language, level] as const;
+};
+
+const getDailyProgressQueryKey = (date: string, user: User | null) => {
+  const [userId, language, level] = getUserDailyScopeParts(user);
+  return ['/v1/daily/progress', date, userId, language, level] as const;
+};
+
+const getDailyDatesQueryKey = (user: User | null) => {
+  const [userId, language, level] = getUserDailyScopeParts(user);
+  return ['/v1/daily/dates', userId, language, level] as const;
+};
+
+const getDailyHistoryQueryKey = (
+  questionId: number | null,
+  user: User | null
+) => {
+  const [userId, language, level] = getUserDailyScopeParts(user);
+  return ['/v1/daily/history', questionId, userId, language, level] as const;
+};
 
 export interface UseDailyQuestionsReturn {
   // State
@@ -81,15 +118,27 @@ const getCurrentDateString = (): string => {
 };
 
 export const useDailyQuestions = (): UseDailyQuestionsReturn => {
-  const { user } = useAuth();
+  const {user} = useAuth();
   const queryClient = useQueryClient();
+  const scopedUser: User | null = user ?? null;
 
   const [selectedDate, setSelectedDate] = useState<string>(
     getCurrentDateString()
   );
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [hasInitialized, setHasInitialized] = useState<boolean>(false);
-  const storageKey = `/daily/index/${selectedDate}`;
+  const userScopeSignature = useMemo(
+    () => getUserDailyScopeSignature(scopedUser),
+    [
+      scopedUser?.id,
+      scopedUser?.preferred_language,
+      scopedUser?.current_level,
+    ]
+  );
+  const storageKey = useMemo(
+    () => `/daily/index/${selectedDate}/${userScopeSignature}`,
+    [selectedDate, userScopeSignature]
+  );
 
   // API hooks
   const {
@@ -100,25 +149,25 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
     query: {
       enabled: !!user,
       refetchOnWindowFocus: false,
-      queryKey: [`/v1/daily/questions/${selectedDate}`, user?.id],
+      queryKey: getDailyQuestionsQueryKey(selectedDate, scopedUser),
     },
   });
 
-  const { data: progress, isLoading: isProgressLoading } =
+  const {data: progress, isLoading: isProgressLoading} =
     useGetV1DailyProgressDate(selectedDate, {
       query: {
         enabled: !!user,
         refetchOnWindowFocus: false,
-        queryKey: [`/v1/daily/progress/${selectedDate}`, user?.id],
+        queryKey: getDailyProgressQueryKey(selectedDate, scopedUser),
       },
     });
 
-  const { data: availableDatesResponse, refetch: refetchDates } =
+  const {data: availableDatesResponse, refetch: refetchDates} =
     useGetV1DailyDates({
       query: {
         enabled: !!user,
         refetchOnWindowFocus: false,
-        queryKey: ['/v1/daily/dates', user?.id],
+        queryKey: getDailyDatesQueryKey(scopedUser),
       },
     });
 
@@ -127,33 +176,33 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
     isPending: isCompletingQuestion,
   } = usePostV1DailyQuestionsDateCompleteQuestionId();
 
-  const { mutateAsync: resetQuestionMutation, isPending: isResettingQuestion } =
+  const {mutateAsync: resetQuestionMutation, isPending: isResettingQuestion} =
     useDeleteV1DailyQuestionsDateCompleteQuestionId();
 
-  const { mutateAsync: submitAnswerMutation, isPending: isSubmittingAnswer } =
+  const {mutateAsync: submitAnswerMutation, isPending: isSubmittingAnswer} =
     usePostV1DailyQuestionsDateAnswerQuestionId();
 
   // Question history hook
   const [historyQuestionId, setHistoryQuestionId] = useState<number | null>(
     null
   );
-  const { data: questionHistoryResponse, isLoading: isHistoryLoading } =
+  const {data: questionHistoryResponse, isLoading: isHistoryLoading} =
     useGetV1DailyHistoryQuestionId(historyQuestionId || 0, {
       query: {
         enabled: !!historyQuestionId,
         refetchOnWindowFocus: false,
-        queryKey: [`/v1/daily/history/${historyQuestionId}`, user?.id],
+        queryKey: getDailyHistoryQueryKey(historyQuestionId, scopedUser),
       },
     });
 
   // expose only the history array to consumers
   const questionHistory = questionHistoryResponse?.history;
 
-  // Reset question index when date changes
+  // Reset question index when date or learning scope changes
   useEffect(() => {
     setCurrentQuestionIndex(0);
     setHasInitialized(false);
-  }, [selectedDate]);
+  }, [selectedDate, userScopeSignature]);
 
   // Persist current index per date to survive navigation/unmounts
   // Only persist after initialization to avoid overwriting the stored value on mount
@@ -161,7 +210,7 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
     if (!hasInitialized) return;
     try {
       window.sessionStorage.setItem(storageKey, String(currentQuestionIndex));
-    } catch {}
+    } catch { }
   }, [currentQuestionIndex, storageKey, hasInitialized]);
 
   // Actions
@@ -177,14 +226,14 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
         await Promise.all([
           refetchQuestions(),
           queryClient.invalidateQueries({
-            queryKey: [`/v1/daily/progress/${selectedDate}`, user?.id],
+            queryKey: getDailyProgressQueryKey(selectedDate, scopedUser),
           }),
           refetchDates(),
         ]);
 
         // Force refetch progress data
         await queryClient.refetchQueries({
-          queryKey: [`/v1/daily/progress/${selectedDate}`, user?.id],
+          queryKey: getDailyProgressQueryKey(selectedDate, scopedUser),
         });
 
         showNotificationWithClean({
@@ -207,7 +256,8 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
       refetchQuestions,
       queryClient,
       refetchDates,
-      user?.id,
+      userScopeSignature,
+      scopedUser,
     ]
   );
 
@@ -223,12 +273,12 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
         await Promise.all([
           refetchQuestions(),
           queryClient.invalidateQueries({
-            queryKey: [`/v1/daily/progress/${selectedDate}`, user?.id],
+            queryKey: getDailyProgressQueryKey(selectedDate, scopedUser),
           }),
           refetchDates(),
           // Invalidate history for this specific question since its state changed
           queryClient.invalidateQueries({
-            queryKey: [`/v1/daily/history/${questionId}`, user?.id],
+            queryKey: getDailyHistoryQueryKey(questionId, scopedUser),
           }),
         ]);
 
@@ -252,7 +302,8 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
       refetchQuestions,
       queryClient,
       refetchDates,
-      user?.id,
+      userScopeSignature,
+      scopedUser,
     ]
   );
 
@@ -262,7 +313,7 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
         // Ensure we re-query fresh data each time the history modal is opened
         // by invalidating any cached history for this question first.
         await queryClient.invalidateQueries({
-          queryKey: [`/v1/daily/history/${questionId}`, user?.id],
+          queryKey: getDailyHistoryQueryKey(questionId, scopedUser),
         });
 
         // Setting the historyQuestionId enables the generated query hook
@@ -276,7 +327,7 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
         });
       }
     },
-    [queryClient, user?.id]
+    [queryClient, userScopeSignature, scopedUser]
   );
 
   const submitAnswer = useCallback(
@@ -294,18 +345,18 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
         await Promise.all([
           refetchQuestions(),
           queryClient.invalidateQueries({
-            queryKey: [`/v1/daily/progress/${selectedDate}`, user?.id],
+            queryKey: getDailyProgressQueryKey(selectedDate, scopedUser),
           }),
           refetchDates(),
           // Invalidate history for this specific question so it updates with the new answer
           queryClient.invalidateQueries({
-            queryKey: [`/v1/daily/history/${questionId}`, user?.id],
+            queryKey: getDailyHistoryQueryKey(questionId, scopedUser),
           }),
         ]);
 
         // Force refetch progress data
         await queryClient.refetchQueries({
-          queryKey: [`/v1/daily/progress/${selectedDate}`, user?.id],
+          queryKey: getDailyProgressQueryKey(selectedDate, scopedUser),
         });
 
         return response;
@@ -325,7 +376,8 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
       refetchQuestions,
       queryClient,
       refetchDates,
-      user?.id,
+      userScopeSignature,
+      scopedUser,
     ]
   );
 
@@ -383,7 +435,7 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
       try {
         const raw = window.sessionStorage.getItem(storageKey);
         if (raw != null) restoredIndex = Number(raw);
-      } catch {}
+      } catch { }
 
       if (
         restoredIndex != null &&

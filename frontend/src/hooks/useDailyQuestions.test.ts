@@ -108,7 +108,10 @@ describe('useDailyQuestions', () => {
     id: 1,
     username: 'testuser',
     email: 'test@example.com',
+    preferred_language: 'spanish',
+    current_level: 'B1',
   };
+  const storageKey = `/daily/index/2025-08-04/${mockUser.id}|${mockUser.preferred_language}|${mockUser.current_level}`;
 
   const mockQuestions: DailyQuestionWithDetails[] = [
     {
@@ -484,7 +487,7 @@ describe('useDailyQuestions', () => {
 
     it('restores persisted currentQuestionIndex on remount', () => {
       // Pre-seed sessionStorage for mocked date 2025-08-04
-      window.sessionStorage.setItem('/daily/index/2025-08-04', '2');
+      window.sessionStorage.setItem(storageKey, '2');
       const { result } = renderHook(() => useDailyQuestions());
 
       // Wait for initialization to complete
@@ -500,7 +503,7 @@ describe('useDailyQuestions', () => {
       });
 
       // Verify it was persisted to sessionStorage
-      const stored = window.sessionStorage.getItem('/daily/index/2025-08-04');
+      const stored = window.sessionStorage.getItem(storageKey);
       expect(stored).toBe('2');
 
       unmount();
@@ -574,7 +577,13 @@ describe('useDailyQuestions', () => {
       expect(mockRefetchQuestions).toHaveBeenCalled();
       expect(mockRefetchDates).toHaveBeenCalled();
       expect(mockInvalidateQueries).toHaveBeenCalledWith({
-        queryKey: ['/v1/daily/progress/2025-08-04', 1],
+        queryKey: [
+          '/v1/daily/progress',
+          '2025-08-04',
+          String(mockUser.id),
+          mockUser.preferred_language,
+          mockUser.current_level,
+        ],
       });
     });
 
@@ -633,7 +642,13 @@ describe('useDailyQuestions', () => {
       expect(mockRefetchQuestions).toHaveBeenCalled();
       expect(mockRefetchDates).toHaveBeenCalled();
       expect(mockInvalidateQueries).toHaveBeenCalledWith({
-        queryKey: ['/v1/daily/progress/2025-08-04', 1],
+        queryKey: [
+          '/v1/daily/progress',
+          '2025-08-04',
+          String(mockUser.id),
+          mockUser.preferred_language,
+          mockUser.current_level,
+        ],
       });
     });
 
@@ -692,7 +707,13 @@ describe('useDailyQuestions', () => {
       expect(mockRefetchQuestions).toHaveBeenCalled();
       expect(mockRefetchDates).toHaveBeenCalled();
       expect(mockInvalidateQueries).toHaveBeenCalledWith({
-        queryKey: ['/v1/daily/progress/2025-08-04', 1],
+        queryKey: [
+          '/v1/daily/progress',
+          '2025-08-04',
+          String(mockUser.id),
+          mockUser.preferred_language,
+          mockUser.current_level,
+        ],
       });
     });
 
