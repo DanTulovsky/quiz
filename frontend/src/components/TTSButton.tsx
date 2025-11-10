@@ -178,7 +178,11 @@ const TTSButton: React.FC<TTSButtonProps> = ({
           disabled={showLoading}
           leftSection={IconComponent}
           px={textLabel.length <= 6 ? 6 : 8}
-          style={{ whiteSpace: 'nowrap', minWidth: 'auto' }}
+          style={{
+            whiteSpace: 'nowrap',
+            minWidth: 'auto',
+            flexShrink: 0,
+          }}
         >
           {textLabel}
         </Button>
@@ -190,6 +194,7 @@ const TTSButton: React.FC<TTSButtonProps> = ({
           onClick={handleClick}
           aria-label={ariaLabel || label}
           disabled={showLoading}
+          style={{ flexShrink: 0 }}
         >
           {IconComponent}
         </ActionIcon>

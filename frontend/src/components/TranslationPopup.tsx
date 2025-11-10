@@ -10,6 +10,7 @@ import {
   Tooltip,
   Portal,
   ActionIcon,
+  Box,
 } from '@mantine/core';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from '../contexts/TranslationContext';
@@ -84,6 +85,46 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
   const mountedRef = useRef(true);
   const savedTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const copySuccessTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const baseWidth = 320 * fontScaleMap[fontSize];
+  const [viewportSize, setViewportSize] = useState(() => ({
+    width: typeof window !== 'undefined' ? window.innerWidth : baseWidth,
+    height: typeof window !== 'undefined' ? window.innerHeight : 600,
+  }));
+
+  useEffect(() => {
+    const handleResize = () => {
+      setViewportSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    const { body, documentElement } = document;
+    const originalBodyOverflow = body.style.overflow;
+    const originalHtmlOverflow = documentElement.style.overflow;
+
+    body.style.overflow = 'hidden';
+    documentElement.style.overflow = 'hidden';
+
+    return () => {
+      body.style.overflow = originalBodyOverflow;
+      documentElement.style.overflow = originalHtmlOverflow;
+    };
+  }, []);
+
+  const viewportWidth = viewportSize.width;
+  const viewportHeight = viewportSize.height;
+  const popupMargin = 10;
+  const popupWidth = Math.min(baseWidth, viewportWidth - popupMargin * 2);
+  const popupMaxHeight = viewportHeight - popupMargin * 2;
 
   // Helper function to convert language code to language name for TTS
   const codeToLanguageName = (code: string): string => {
@@ -313,23 +354,21 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
     }
 
     // Desktop: position relative to selected text
-    const popupWidth = 320;
-    const popupHeight = 200;
-    const margin = 10;
+    const estimatedHeight = Math.min(420, popupMaxHeight);
 
     let x = selection.x - popupWidth / 2;
-    let y = selection.y - popupHeight - margin;
+    let y = selection.y - estimatedHeight - popupMargin;
 
     // Adjust if popup goes off screen horizontally
-    if (x < margin) {
-      x = margin;
-    } else if (x + popupWidth > window.innerWidth - margin) {
-      x = window.innerWidth - popupWidth - margin;
+    if (x < popupMargin) {
+      x = popupMargin;
+    } else if (x + popupWidth > viewportWidth - popupMargin) {
+      x = viewportWidth - popupWidth - popupMargin;
     }
 
     // Adjust if popup goes off screen vertically
-    if (y < margin) {
-      y = selection.y + selection.height + margin;
+    if (y < popupMargin) {
+      y = selection.y + selection.height + popupMargin;
     }
 
     return { left: x, top: y };
@@ -491,13 +530,17 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
         style={{
           position: 'fixed',
           zIndex: 2500,
-          width: `${320 * fontScaleMap[fontSize]}px`,
-          maxWidth: '90vw',
+          width: popupWidth,
+          maxWidth: `calc(100vw - ${popupMargin * 2}px)`,
+          maxHeight: `calc(100vh - ${popupMargin * 2}px)`,
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
           ...position,
         }}
         withBorder
       >
-        <Stack gap='xs'>
+        <Stack gap='xs' style={{ flex: 1, minHeight: 0 }}>
           {/* Header */}
           <Group justify='space-between' align='flex-start'>
             <Text size='md' fw={500} c='dimmed'>
@@ -508,168 +551,196 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
             </Button>
           </Group>
 
-          {/* Original text */}
-          <Group gap='xs' wrap='nowrap' align='center'>
-            <TTSButton
-              getText={() => selection.text}
-              getVoice={() => getPreferredVoice(translation?.sourceLanguage)}
-              getMetadata={() =>
-                getMetadata('original', translation?.sourceLanguage)
-              }
-              getId={() =>
-                `translation-popup::original::${selection.text ?? ''}`
-              }
-              size='sm'
-              ariaLabel='Listen to original text'
-            />
-            <Tooltip
-              label={
-                copySuccess === 'original' ? 'Copied!' : 'Copy original text'
-              }
-              withinPortal={false}
-            >
-              <ActionIcon
-                size='sm'
-                variant='subtle'
-                color={copySuccess === 'original' ? 'green' : undefined}
-                onClick={() => handleCopy(selection.text, 'original')}
-              >
-                <IconCopy size={16} />
-              </ActionIcon>
-            </Tooltip>
-            <Text size='md' style={{ fontStyle: 'italic' }}>
-              {selection.text}
-            </Text>
-          </Group>
-
-          {/* Language selector */}
-          <Select
-            data={languageOptions}
-            value={targetLanguage}
-            onChange={value => {
-              if (value) {
-                setTargetLanguage(value);
-                // Persist language selection to localStorage
-                localStorage.setItem('quiz-translation-target-lang', value);
-              }
+          <Box
+            style={{
+              flex: 1,
+              minHeight: 0,
+              overflowY: 'auto',
+              paddingRight: 12,
             }}
-            size='sm'
-            placeholder={
-              languagesLoading ? 'Loading languages...' : 'Select language'
-            }
-            disabled={languagesLoading || languageOptions.length === 0}
-            style={{ width: '100%' }}
-            data-translation-select='true'
-            comboboxProps={{
-              withinPortal: true,
-              zIndex: 100000,
-            }}
-            styles={{
-              dropdown: {
-                zIndex: 100000,
-              },
-            }}
-          />
-
-          {/* Translation result */}
-          <div style={{ minHeight: `${60 * fontScaleMap[fontSize]}px` }}>
-            {translationLoading && (
-              <Group gap='xs'>
-                <Loader size='md' />
-                <Text size='md' c='dimmed'>
-                  Translating...
+          >
+            <Stack gap='xs'>
+              {/* Original text */}
+              <Group gap='xs' wrap='wrap' align='center'>
+                <TTSButton
+                  getText={() => selection.text}
+                  getVoice={() =>
+                    getPreferredVoice(translation?.sourceLanguage)
+                  }
+                  getMetadata={() =>
+                    getMetadata('original', translation?.sourceLanguage)
+                  }
+                  getId={() =>
+                    `translation-popup::original::${selection.text ?? ''}`
+                  }
+                  size='sm'
+                  ariaLabel='Listen to original text'
+                />
+                <Tooltip
+                  label={
+                    copySuccess === 'original'
+                      ? 'Copied!'
+                      : 'Copy original text'
+                  }
+                  withinPortal={false}
+                >
+                  <ActionIcon
+                    size='sm'
+                    variant='subtle'
+                    color={copySuccess === 'original' ? 'green' : undefined}
+                    onClick={() => handleCopy(selection.text, 'original')}
+                  >
+                    <IconCopy size={16} />
+                  </ActionIcon>
+                </Tooltip>
+                <Text
+                  size='md'
+                  style={{ fontStyle: 'italic', wordBreak: 'break-word' }}
+                >
+                  {selection.text}
                 </Text>
               </Group>
-            )}
 
-            {translationError && (
-              <Text size='md' c='red'>
-                {translationError.includes('temporarily unavailable')
-                  ? '🔄 Translation service is temporarily unavailable. Please wait a moment and try again.'
-                  : translationError.includes('Rate limit exceeded')
-                    ? '⏱️ Too many translation requests. Please wait a moment and try again.'
-                    : `❌ ${translationError}`}
-              </Text>
-            )}
+              {/* Language selector */}
+              <Select
+                data={languageOptions}
+                value={targetLanguage}
+                onChange={value => {
+                  if (value) {
+                    setTargetLanguage(value);
+                    // Persist language selection to localStorage
+                    localStorage.setItem('quiz-translation-target-lang', value);
+                  }
+                }}
+                size='sm'
+                placeholder={
+                  languagesLoading ? 'Loading languages...' : 'Select language'
+                }
+                disabled={languagesLoading || languageOptions.length === 0}
+                style={{ width: '100%' }}
+                data-translation-select='true'
+                comboboxProps={{
+                  withinPortal: true,
+                  zIndex: 100000,
+                }}
+                styles={{
+                  dropdown: {
+                    zIndex: 100000,
+                  },
+                }}
+              />
 
-            {translation && !translationLoading && !translationError && (
-              <Stack gap='xs'>
-                <Group gap='xs' wrap='nowrap' align='center'>
-                  <TTSButton
-                    getText={() => translation.translatedText}
-                    getVoice={() => getPreferredVoice(targetLanguage)}
-                    getMetadata={() =>
-                      getMetadata('translated', targetLanguage)
-                    }
-                    getId={() =>
-                      `translation-popup::translated::${targetLanguage}::${selection.text ?? ''}`
-                    }
-                    size='sm'
-                    ariaLabel='Listen to translation'
-                  />
-                  <Tooltip
-                    label={
-                      copySuccess === 'translated'
-                        ? 'Copied!'
-                        : 'Copy translated text'
-                    }
-                    withinPortal={false}
-                  >
-                    <ActionIcon
-                      size='sm'
-                      variant='subtle'
-                      color={copySuccess === 'translated' ? 'green' : undefined}
-                      onClick={() =>
-                        handleCopy(translation.translatedText, 'translated')
-                      }
-                    >
-                      <IconCopy size={16} />
-                    </ActionIcon>
-                  </Tooltip>
-                  <Text size='md'>{translation.translatedText}</Text>
-                </Group>
-                <Group gap='xs' wrap='nowrap' justify='flex-end'>
-                  <Tooltip
-                    label={
-                      requireQuestionId && !hasQuestionId
-                        ? 'Waiting for question id…'
-                        : 'Save to snippets'
-                    }
-                    withArrow
-                    withinPortal={false}
-                  >
-                    <Button
-                      variant={isSaved ? 'filled' : 'light'}
-                      size='xs'
-                      px={10}
-                      leftSection={
-                        isSaving ? (
-                          <Loader size={14} data-testid='loader' />
-                        ) : (
-                          <IconBookmark size={14} />
-                        )
-                      }
-                      onClick={handleSaveSnippet}
-                      disabled={saveDisabled}
-                      color={isSaved ? 'green' : undefined}
-                    >
-                      {isSaving ? 'Saving...' : isSaved ? 'Saved!' : 'Save'}
-                    </Button>
-                  </Tooltip>
-                </Group>
-                {saveError && (
-                  <Text size='sm' c='red'>
-                    {saveError}
+              {/* Translation result */}
+              <div style={{ minHeight: `${60 * fontScaleMap[fontSize]}px` }}>
+                {translationLoading && (
+                  <Group gap='xs'>
+                    <Loader size='md' />
+                    <Text size='md' c='dimmed'>
+                      Translating...
+                    </Text>
+                  </Group>
+                )}
+
+                {translationError && (
+                  <Text size='md' c='red'>
+                    {translationError.includes('temporarily unavailable')
+                      ? '🔄 Translation service is temporarily unavailable. Please wait a moment and try again.'
+                      : translationError.includes('Rate limit exceeded')
+                        ? '⏱️ Too many translation requests. Please wait a moment and try again.'
+                        : `❌ ${translationError}`}
                   </Text>
                 )}
-              </Stack>
-            )}
-          </div>
 
-          {/* Footer */}
-          <Text size='sm' c='dimmed' ta='center'>
-            Powered by Google Translate
-          </Text>
+                {translation && !translationLoading && !translationError && (
+                  <Stack gap='xs'>
+                    <Group gap='xs' wrap='wrap' align='center'>
+                      <TTSButton
+                        getText={() => translation.translatedText}
+                        getVoice={() => getPreferredVoice(targetLanguage)}
+                        getMetadata={() =>
+                          getMetadata('translated', targetLanguage)
+                        }
+                        getId={() =>
+                          `translation-popup::translated::${targetLanguage}::${selection.text ?? ''}`
+                        }
+                        size='sm'
+                        ariaLabel='Listen to translation'
+                      />
+                      <Tooltip
+                        label={
+                          copySuccess === 'translated'
+                            ? 'Copied!'
+                            : 'Copy translated text'
+                        }
+                        withinPortal={false}
+                      >
+                        <ActionIcon
+                          size='sm'
+                          variant='subtle'
+                          color={
+                            copySuccess === 'translated' ? 'green' : undefined
+                          }
+                          onClick={() =>
+                            handleCopy(translation.translatedText, 'translated')
+                          }
+                        >
+                          <IconCopy size={16} />
+                        </ActionIcon>
+                      </Tooltip>
+                      <Text
+                        size='md'
+                        style={{
+                          wordBreak: 'break-word',
+                          whiteSpace: 'normal',
+                        }}
+                      >
+                        {translation.translatedText}
+                      </Text>
+                    </Group>
+                    <Group gap='xs' wrap='wrap' justify='flex-end'>
+                      <Tooltip
+                        label={
+                          requireQuestionId && !hasQuestionId
+                            ? 'Waiting for question id…'
+                            : 'Save to snippets'
+                        }
+                        withArrow
+                        withinPortal={false}
+                      >
+                        <Button
+                          variant={isSaved ? 'filled' : 'light'}
+                          size='xs'
+                          px={10}
+                          leftSection={
+                            isSaving ? (
+                              <Loader size={14} data-testid='loader' />
+                            ) : (
+                              <IconBookmark size={14} />
+                            )
+                          }
+                          onClick={handleSaveSnippet}
+                          disabled={saveDisabled}
+                          color={isSaved ? 'green' : undefined}
+                        >
+                          {isSaving ? 'Saving...' : isSaved ? 'Saved!' : 'Save'}
+                        </Button>
+                      </Tooltip>
+                    </Group>
+                    {saveError && (
+                      <Text size='sm' c='red'>
+                        {saveError}
+                      </Text>
+                    )}
+                  </Stack>
+                )}
+              </div>
+
+              {/* Footer */}
+              <Text size='sm' c='dimmed' ta='center'>
+                Powered by Google Translate
+              </Text>
+            </Stack>
+          </Box>
         </Stack>
       </Paper>
     </Portal>
