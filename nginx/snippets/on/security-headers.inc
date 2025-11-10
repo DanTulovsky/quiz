@@ -1,6 +1,6 @@
 # Add Content Security Policy header with secure configuration
 # Nonce will be injected by build script - placeholder: rQv5+fXKpPEe2rqY+4/HDw==
-add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'nonce-rQv5+fXKpPEe2rqY+4/HDw==' https://tts.rocks; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' http://localhost:8080 https://translation.googleapis.com; media-src 'self' blob: data:; frame-ancestors 'self'; form-action 'self';" always;
+add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'nonce-rQv5+fXKpPEe2rqY+4/HDw=='; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' http://localhost:8080 https://translation.googleapis.com; media-src 'self' blob: data:; frame-ancestors 'self'; form-action 'self';" always;
 
 # Add X-Frame-Options header for additional clickjacking protection
 add_header X-Frame-Options "SAMEORIGIN" always;
