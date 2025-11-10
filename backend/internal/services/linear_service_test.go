@@ -18,6 +18,7 @@ import (
 )
 
 func newLinearTestService(t *testing.T, handler http.HandlerFunc) (*LinearService, func()) {
+	t.Helper()
 	server := httptest.NewServer(handler)
 	cfg := &config.Config{}
 	cfg.Linear.Enabled = true
@@ -138,7 +139,7 @@ func TestLinearService_getTeamIDByName_ByName(t *testing.T) {
 }
 
 func TestLinearService_getTeamIDByName_NotFound(t *testing.T) {
-	handler := func(w http.ResponseWriter, r *http.Request) {
+	handler := func(w http.ResponseWriter, _ *http.Request) {
 		resp := map[string]any{
 			"data": map[string]any{
 				"teams": map[string]any{
@@ -296,7 +297,7 @@ type mockResponse struct {
 }
 
 func TestLinearService_getTeamIDByName_UUID(t *testing.T) {
-	service, cleanup := newLinearTestService(t, func(w http.ResponseWriter, r *http.Request) {
+	service, cleanup := newLinearTestService(t, func(_ http.ResponseWriter, _ *http.Request) {
 		t.Fatalf("unexpected HTTP request for UUID input")
 	})
 	defer cleanup()
@@ -307,7 +308,7 @@ func TestLinearService_getTeamIDByName_UUID(t *testing.T) {
 }
 
 func TestLinearService_getProjectIDByName_UUID(t *testing.T) {
-	service, cleanup := newLinearTestService(t, func(w http.ResponseWriter, r *http.Request) {
+	service, cleanup := newLinearTestService(t, func(_ http.ResponseWriter, _ *http.Request) {
 		t.Fatalf("unexpected HTTP request for UUID input")
 	})
 	defer cleanup()
@@ -318,7 +319,7 @@ func TestLinearService_getProjectIDByName_UUID(t *testing.T) {
 }
 
 func TestLinearService_getLabelIDByName_UUID(t *testing.T) {
-	service, cleanup := newLinearTestService(t, func(w http.ResponseWriter, r *http.Request) {
+	service, cleanup := newLinearTestService(t, func(_ http.ResponseWriter, _ *http.Request) {
 		t.Fatalf("unexpected HTTP request for UUID input")
 	})
 	defer cleanup()
@@ -474,9 +475,10 @@ func TestLinearService_CreateIssue_WithLookupsAndProjectLabelFallback(t *testing
 }
 
 func TestLinearService_CreateIssue_TeamLookupFailure(t *testing.T) {
-	handler := func(w http.ResponseWriter, r *http.Request) {
+	handler := func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprint(w, `{"errors":[{"message":"boom"}]}`)
+		_, err := fmt.Fprint(w, `{"errors":[{"message":"boom"}]}`)
+		require.NoError(t, err)
 	}
 
 	service, cleanup := newLinearTestService(t, handler)
@@ -520,9 +522,10 @@ func TestLinearService_getProjectLabelIDByName_Success(t *testing.T) {
 }
 
 func TestLinearService_getProjectLabelIDByName_HTTPError(t *testing.T) {
-	handler := func(w http.ResponseWriter, r *http.Request) {
+	handler := func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusBadGateway)
-		fmt.Fprint(w, `{"message":"failed"}`)
+		_, err := fmt.Fprint(w, `{"message":"failed"}`)
+		require.NoError(t, err)
 	}
 
 	service, cleanup := newLinearTestService(t, handler)
@@ -535,9 +538,10 @@ func TestLinearService_getProjectLabelIDByName_HTTPError(t *testing.T) {
 }
 
 func TestLinearService_getTeamIDByName_HTTPError(t *testing.T) {
-	handler := func(w http.ResponseWriter, r *http.Request) {
+	handler := func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusBadGateway)
-		fmt.Fprint(w, "bad gateway")
+		_, err := fmt.Fprint(w, "bad gateway")
+		require.NoError(t, err)
 	}
 
 	service, cleanup := newLinearTestService(t, handler)
@@ -550,7 +554,7 @@ func TestLinearService_getTeamIDByName_HTTPError(t *testing.T) {
 }
 
 func TestLinearService_getProjectIDByName_GraphQLError(t *testing.T) {
-	handler := func(w http.ResponseWriter, r *http.Request) {
+	handler := func(w http.ResponseWriter, _ *http.Request) {
 		resp := map[string]any{
 			"errors": []map[string]string{
 				{"message": "project error"},
@@ -570,7 +574,7 @@ func TestLinearService_getProjectIDByName_GraphQLError(t *testing.T) {
 }
 
 func TestLinearService_getLabelIDByName_GraphQLError(t *testing.T) {
-	handler := func(w http.ResponseWriter, r *http.Request) {
+	handler := func(w http.ResponseWriter, _ *http.Request) {
 		resp := map[string]any{
 			"errors": []map[string]string{
 				{"message": "label error"},
@@ -590,7 +594,7 @@ func TestLinearService_getLabelIDByName_GraphQLError(t *testing.T) {
 }
 
 func TestLinearService_getTeamLabelIDByName_NotFound(t *testing.T) {
-	handler := func(w http.ResponseWriter, r *http.Request) {
+	handler := func(w http.ResponseWriter, _ *http.Request) {
 		resp := map[string]any{
 			"data": map[string]any{
 				"team": map[string]any{
@@ -616,7 +620,7 @@ func TestLinearService_getTeamLabelIDByName_NotFound(t *testing.T) {
 }
 
 func TestLinearService_getProjectLabelIDByName_NotFound(t *testing.T) {
-	handler := func(w http.ResponseWriter, r *http.Request) {
+	handler := func(w http.ResponseWriter, _ *http.Request) {
 		resp := map[string]any{
 			"data": map[string]any{
 				"project": map[string]any{
@@ -655,7 +659,7 @@ func TestLinearService_CreateIssue_NoAPIKey(t *testing.T) {
 }
 
 func TestLinearService_CreateIssue_GraphQLError(t *testing.T) {
-	handler := func(w http.ResponseWriter, r *http.Request) {
+	handler := func(w http.ResponseWriter, _ *http.Request) {
 		resp := map[string]any{
 			"data": map[string]any{},
 			"errors": []map[string]string{
@@ -809,9 +813,10 @@ func TestLinearService_CreateIssue_LabelNotFound(t *testing.T) {
 }
 
 func TestLinearService_getLabelIDByName_HTTPError(t *testing.T) {
-	handler := func(w http.ResponseWriter, r *http.Request) {
+	handler := func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprint(w, "oops")
+		_, err := fmt.Fprint(w, "oops")
+		require.NoError(t, err)
 	}
 
 	service, cleanup := newLinearTestService(t, handler)
@@ -824,9 +829,10 @@ func TestLinearService_getLabelIDByName_HTTPError(t *testing.T) {
 }
 
 func TestLinearService_getTeamLabelIDByName_HTTPError(t *testing.T) {
-	handler := func(w http.ResponseWriter, r *http.Request) {
+	handler := func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusServiceUnavailable)
-		fmt.Fprint(w, "fail")
+		_, err := fmt.Fprint(w, "fail")
+		require.NoError(t, err)
 	}
 
 	service, cleanup := newLinearTestService(t, handler)
@@ -839,7 +845,7 @@ func TestLinearService_getTeamLabelIDByName_HTTPError(t *testing.T) {
 }
 
 func TestLinearService_getTeamLabelIDByName_GraphQLError(t *testing.T) {
-	handler := func(w http.ResponseWriter, r *http.Request) {
+	handler := func(w http.ResponseWriter, _ *http.Request) {
 		resp := map[string]any{
 			"errors": []map[string]string{
 				{"message": "team label error"},
@@ -859,7 +865,7 @@ func TestLinearService_getTeamLabelIDByName_GraphQLError(t *testing.T) {
 }
 
 func TestLinearService_getProjectLabelIDByName_GraphQLError(t *testing.T) {
-	handler := func(w http.ResponseWriter, r *http.Request) {
+	handler := func(w http.ResponseWriter, _ *http.Request) {
 		resp := map[string]any{
 			"errors": []map[string]string{
 				{"message": "project label error"},
@@ -952,9 +958,10 @@ func TestLinearService_CreateIssue_ProjectLookupFails(t *testing.T) {
 }
 
 func TestLinearService_CreateIssue_HTTPStatusError(t *testing.T) {
-	handler := func(w http.ResponseWriter, r *http.Request) {
+	handler := func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusBadGateway)
-		fmt.Fprint(w, "bad response")
+		_, err := fmt.Fprint(w, "bad response")
+		require.NoError(t, err)
 	}
 
 	service, cleanup := newLinearTestService(t, handler)
@@ -967,7 +974,7 @@ func TestLinearService_CreateIssue_HTTPStatusError(t *testing.T) {
 }
 
 func TestLinearService_CreateIssue_SuccessNoURL(t *testing.T) {
-	handler := func(w http.ResponseWriter, r *http.Request) {
+	handler := func(w http.ResponseWriter, _ *http.Request) {
 		resp := LinearIssueResponse{
 			Data: struct {
 				IssueCreate struct {
@@ -1014,7 +1021,7 @@ func TestLinearService_CreateIssue_SuccessNoURL(t *testing.T) {
 }
 
 func TestLinearService_CreateIssue_Unsuccessful(t *testing.T) {
-	handler := func(w http.ResponseWriter, r *http.Request) {
+	handler := func(w http.ResponseWriter, _ *http.Request) {
 		resp := LinearIssueResponse{
 			Data: struct {
 				IssueCreate struct {
@@ -1061,9 +1068,10 @@ func TestLinearService_CreateIssue_Unsuccessful(t *testing.T) {
 }
 
 func TestLinearService_getTeamIDByName_UnmarshalError(t *testing.T) {
-	handler := func(w http.ResponseWriter, r *http.Request) {
+	handler := func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprint(w, "{invalid")
+		_, err := fmt.Fprint(w, "{invalid")
+		require.NoError(t, err)
 	}
 
 	service, cleanup := newLinearTestService(t, handler)
@@ -1076,9 +1084,10 @@ func TestLinearService_getTeamIDByName_UnmarshalError(t *testing.T) {
 }
 
 func TestLinearService_getProjectIDByName_UnmarshalError(t *testing.T) {
-	handler := func(w http.ResponseWriter, r *http.Request) {
+	handler := func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprint(w, "{invalid")
+		_, err := fmt.Fprint(w, "{invalid")
+		require.NoError(t, err)
 	}
 
 	service, cleanup := newLinearTestService(t, handler)
@@ -1091,9 +1100,10 @@ func TestLinearService_getProjectIDByName_UnmarshalError(t *testing.T) {
 }
 
 func TestLinearService_getLabelIDByName_UnmarshalError(t *testing.T) {
-	handler := func(w http.ResponseWriter, r *http.Request) {
+	handler := func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprint(w, "{invalid")
+		_, err := fmt.Fprint(w, "{invalid")
+		require.NoError(t, err)
 	}
 
 	service, cleanup := newLinearTestService(t, handler)
@@ -1106,9 +1116,10 @@ func TestLinearService_getLabelIDByName_UnmarshalError(t *testing.T) {
 }
 
 func TestLinearService_getTeamLabelIDByName_UnmarshalError(t *testing.T) {
-	handler := func(w http.ResponseWriter, r *http.Request) {
+	handler := func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprint(w, "{invalid")
+		_, err := fmt.Fprint(w, "{invalid")
+		require.NoError(t, err)
 	}
 
 	service, cleanup := newLinearTestService(t, handler)
@@ -1121,9 +1132,10 @@ func TestLinearService_getTeamLabelIDByName_UnmarshalError(t *testing.T) {
 }
 
 func TestLinearService_getProjectLabelIDByName_UnmarshalError(t *testing.T) {
-	handler := func(w http.ResponseWriter, r *http.Request) {
+	handler := func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprint(w, "{invalid")
+		_, err := fmt.Fprint(w, "{invalid")
+		require.NoError(t, err)
 	}
 
 	service, cleanup := newLinearTestService(t, handler)
@@ -1136,7 +1148,7 @@ func TestLinearService_getProjectLabelIDByName_UnmarshalError(t *testing.T) {
 }
 
 func TestLinearService_CreateIssue_MissingTeam(t *testing.T) {
-	handler := func(w http.ResponseWriter, r *http.Request) {
+	handler := func(http.ResponseWriter, *http.Request) {
 		t.Fatalf("no requests expected")
 	}
 
@@ -1157,10 +1169,10 @@ func (f roundTripFunc) RoundTrip(req *http.Request) (*http.Response, error) {
 }
 
 func TestLinearService_CreateIssue_HTTPClientError(t *testing.T) {
-	service, cleanup := newLinearTestService(t, func(w http.ResponseWriter, r *http.Request) {})
+	service, cleanup := newLinearTestService(t, func(http.ResponseWriter, *http.Request) {})
 	defer cleanup()
 	service.httpClient = &http.Client{
-		Transport: roundTripFunc(func(req *http.Request) (*http.Response, error) {
+		Transport: roundTripFunc(func(_ *http.Request) (*http.Response, error) {
 			return nil, fmt.Errorf("network down")
 		}),
 	}
