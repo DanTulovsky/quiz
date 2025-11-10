@@ -856,9 +856,174 @@ export async function streamAndPlayTTS(
       globalAudioElement.src = mediaSourceURL;
 
       mediaSource.addEventListener('sourceopen', async () => {
+        const audioElement = globalAudioElement;
+        const MIN_BUFFERED_SECONDS = 0.35;
+        const PLAYBACK_READY_TIMEOUT_MS = 2500;
+
+        let playbackRequested = false;
+        let playbackReadyTimeout: ReturnType<typeof setTimeout> | null = null;
+
+        function clearPlaybackReadyTimeout(): void {
+          if (playbackReadyTimeout) {
+            clearTimeout(playbackReadyTimeout);
+            playbackReadyTimeout = null;
+          }
+        }
+
+        function detachPlaybackGuards(): void {
+          clearPlaybackReadyTimeout();
+          if (!audioElement) return;
+          audioElement.removeEventListener('canplay', handleCanPlay);
+          audioElement.removeEventListener('loadeddata', handleLoadedData);
+          audioElement.removeEventListener(
+            'loadedmetadata',
+            handleLoadedMetadata
+          );
+        }
+
+        function startPlayback(reason: string): boolean {
+          if (
+            !audioElement ||
+            playbackRequested ||
+            abortController.signal.aborted
+          ) {
+            if (abortController.signal.aborted) {
+              detachPlaybackGuards();
+            }
+            return playbackRequested;
+          }
+
+          playbackRequested = true;
+          detachPlaybackGuards();
+
+          try {
+            const buffered = audioElement.buffered;
+            if (buffered.length > 0) {
+              const firstRangeStart = buffered.start(0);
+              if (!Number.isNaN(firstRangeStart) && firstRangeStart >= 0) {
+                audioElement.currentTime = firstRangeStart;
+              }
+            }
+          } catch (err) {
+            if (import.meta.env?.DEV) {
+              console.debug(
+                '[Streaming TTS] Unable to align playback start',
+                err
+              );
+            }
+          }
+
+          audioElement.play().catch(err => {
+            console.debug('[Streaming TTS] MediaSource play() deferred', {
+              reason,
+              err,
+            });
+          });
+          return true;
+        }
+
+        function checkAndStartPlayback(reason: string): boolean {
+          if (!audioElement || playbackRequested) {
+            return playbackRequested;
+          }
+          if (abortController.signal.aborted) {
+            detachPlaybackGuards();
+            return playbackRequested;
+          }
+
+          if (audioElement.readyState >= 3) {
+            return startPlayback(
+              `${reason}-readyState-${audioElement.readyState}`
+            );
+          }
+
+          try {
+            const buffered = audioElement.buffered;
+            if (buffered.length === 0) {
+              return false;
+            }
+
+            const lastIndex = buffered.length - 1;
+            const start = buffered.start(0);
+            const end = buffered.end(lastIndex);
+            const current = audioElement.currentTime;
+
+            if (
+              !Number.isNaN(start) &&
+              start > current &&
+              start - current < 0.5
+            ) {
+              audioElement.currentTime = start;
+            }
+
+            const bufferedAhead = end - audioElement.currentTime;
+            if (bufferedAhead >= MIN_BUFFERED_SECONDS) {
+              return startPlayback(
+                `${reason}-buffered-${bufferedAhead.toFixed(3)}`
+              );
+            }
+          } catch (err) {
+            if (import.meta.env?.DEV) {
+              console.debug(
+                '[Streaming TTS] Error evaluating buffer for playback',
+                err
+              );
+            }
+          }
+
+          return false;
+        }
+
+        function scheduleBufferedCheck(reason: string): void {
+          if (
+            !audioElement ||
+            playbackRequested ||
+            abortController.signal.aborted
+          ) {
+            return;
+          }
+          if (typeof requestAnimationFrame === 'function') {
+            requestAnimationFrame(() => {
+              checkAndStartPlayback(reason);
+            });
+          } else {
+            setTimeout(() => {
+              checkAndStartPlayback(reason);
+            }, 0);
+          }
+        }
+
+        function handleCanPlay(): void {
+          checkAndStartPlayback('canplay');
+        }
+
+        function handleLoadedData(): void {
+          checkAndStartPlayback('loadeddata');
+        }
+
+        function handleLoadedMetadata(): void {
+          checkAndStartPlayback('loadedmetadata');
+        }
+
+        function attachPlaybackGuards(): void {
+          if (!audioElement || abortController.signal.aborted) return;
+          audioElement.addEventListener('canplay', handleCanPlay);
+          audioElement.addEventListener('loadeddata', handleLoadedData);
+          audioElement.addEventListener('loadedmetadata', handleLoadedMetadata);
+
+          clearPlaybackReadyTimeout();
+          playbackReadyTimeout = setTimeout(() => {
+            if (!checkAndStartPlayback('timeout')) {
+              startPlayback('timeout-fallback');
+            }
+          }, PLAYBACK_READY_TIMEOUT_MS);
+        }
+
         try {
           const sourceBuffer = mediaSource.addSourceBuffer('audio/mpeg');
           const queuedChunks: Uint8Array[] = [];
+
+          attachPlaybackGuards();
 
           // Function to append chunk when buffer is ready
           const appendChunk = async (chunk: Uint8Array): Promise<void> => {
@@ -873,6 +1038,7 @@ export async function streamAndPlayTTS(
               abortController.signal.aborted ||
               mediaSource.readyState !== 'open'
             ) {
+              detachPlaybackGuards();
               return;
             }
 
@@ -908,6 +1074,8 @@ export async function streamAndPlayTTS(
                 });
               });
 
+              scheduleBufferedCheck('append');
+
               // Process queued chunks after this one completes
               if (queuedChunks.length > 0 && !abortController.signal.aborted) {
                 const nextChunk = queuedChunks.shift();
@@ -917,6 +1085,7 @@ export async function streamAndPlayTTS(
               }
             } catch (err) {
               console.error('[Streaming TTS] Error appending buffer:', err);
+              scheduleBufferedCheck('append-error');
               // If append failed, try to continue with next chunk
               if (queuedChunks.length > 0 && !abortController.signal.aborted) {
                 const nextChunk = queuedChunks.shift();
@@ -930,6 +1099,7 @@ export async function streamAndPlayTTS(
           // Read and append chunks as they arrive
           while (true) {
             if (abortController.signal.aborted) {
+              detachPlaybackGuards();
               reader.cancel();
               break;
             }
@@ -986,6 +1156,8 @@ export async function streamAndPlayTTS(
                   console.warn('[Streaming TTS] Error ending stream:', err);
                 }
               }
+
+              scheduleBufferedCheck('end-of-stream');
               break;
             }
 
@@ -998,18 +1170,13 @@ export async function streamAndPlayTTS(
             '[Streaming TTS] Error in MediaSource stream:',
             streamError
           );
+          detachPlaybackGuards();
           if (mediaSource.readyState === 'open') {
             try {
               mediaSource.endOfStream();
             } catch {}
           }
         }
-      });
-
-      globalAudioElement.addEventListener('loadedmetadata', () => {
-        globalAudioElement?.play().catch(err => {
-          console.debug('[Streaming TTS] Auto-play prevented:', err);
-        });
       });
 
       globalAudioElement.load();
