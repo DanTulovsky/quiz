@@ -198,6 +198,73 @@ describe('KeyboardShortcuts dynamic hotkey display', () => {
     expect(screen.getByText('Q')).toBeInTheDocument();
   });
 
+  describe('answer selection hotkeys', () => {
+    const createOption = (index: number) => {
+      const container = document.createElement('div');
+      container.setAttribute('data-testid', `option-${index}`);
+      const input = document.createElement('input');
+      input.type = 'radio';
+      container.appendChild(input);
+      document.body.appendChild(container);
+      return { container, input };
+    };
+
+    beforeEach(() => {
+      mockUseLocalStorage.mockImplementation(() => [true, vi.fn()]);
+    });
+
+    afterEach(() => {
+      document.body.innerHTML = '';
+    });
+
+    it('selects answers when a radio input is focused', async () => {
+      const user = userEvent.setup();
+      const onAnswerSelect = vi.fn();
+
+      renderWithProviders(
+        <KeyboardShortcuts
+          {...baseProps}
+          onAnswerSelect={onAnswerSelect}
+          maxOptions={4}
+          isQuickSuggestionsOpen={false}
+        />
+      );
+
+      const first = createOption(0);
+      const second = createOption(1);
+
+      first.input.focus();
+      second.input.focus();
+      await user.keyboard('2');
+
+      expect(onAnswerSelect).toHaveBeenCalledTimes(1);
+      expect(onAnswerSelect).toHaveBeenCalledWith(1);
+    });
+
+    it('ignores number hotkeys while typing into text inputs', async () => {
+      const user = userEvent.setup();
+      const onAnswerSelect = vi.fn();
+
+      renderWithProviders(
+        <KeyboardShortcuts
+          {...baseProps}
+          onAnswerSelect={onAnswerSelect}
+          maxOptions={4}
+          isQuickSuggestionsOpen={false}
+        />
+      );
+
+      const textInput = document.createElement('input');
+      textInput.type = 'text';
+      document.body.appendChild(textInput);
+      textInput.focus();
+
+      await user.keyboard('1');
+
+      expect(onAnswerSelect).not.toHaveBeenCalled();
+    });
+  });
+
   it('shows N and Enter badges', () => {
     mockUseLocalStorage.mockImplementation(() => [true, vi.fn()]); // Force expanded
     renderWithProviders(

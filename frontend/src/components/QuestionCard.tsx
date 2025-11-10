@@ -600,12 +600,17 @@ const QuestionCard = React.forwardRef<QuestionCardHandle, QuestionCardProps>(
         return;
       }
 
-      // Convert shuffled index to original index; prefer lastSelectedOriginalRef to avoid race conditions
+      // Convert shuffled index to original index. Prefer the ref when it maps to
+      // the current selection (covers mouse interactions), otherwise fall back
+      // to the deterministic mapping so keyboard selections stay accurate.
       const mappedOriginal = shuffledToOriginalMap.get(selectedValue);
-      const originalIndex =
-        typeof lastSelectedOriginalRef.current === 'number'
-          ? lastSelectedOriginalRef.current
-          : mappedOriginal;
+      const lastOriginal = lastSelectedOriginalRef.current;
+      const lastOriginalMatchesSelection =
+        typeof lastOriginal === 'number' &&
+        originalToShuffledMap.get(lastOriginal) === selectedValue;
+      const originalIndex = lastOriginalMatchesSelection
+        ? lastOriginal
+        : mappedOriginal;
 
       if (typeof originalIndex !== 'number') return;
 

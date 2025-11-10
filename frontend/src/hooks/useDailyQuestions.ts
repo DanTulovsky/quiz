@@ -1,7 +1,7 @@
-import {useState, useEffect, useCallback, useMemo} from 'react';
-import {useQueryClient} from '@tanstack/react-query';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 
-import {useAuth} from './useAuth';
+import { useAuth } from './useAuth';
 import {
   useGetV1DailyQuestionsDate,
   useGetV1DailyDates,
@@ -18,15 +18,15 @@ import type {
   DailyProgress,
   AnswerResponse,
 } from '../api/api';
-import {showNotificationWithClean} from '../notifications';
+import { showNotificationWithClean } from '../notifications';
 
 const getUserDailyScopeParts = (
   user: User | null
 ): [string, string, string] => [
-    user?.id != null ? String(user.id) : 'anonymous',
-    user?.preferred_language || 'unknown-language',
-    user?.current_level || 'unknown-level',
-  ];
+  user?.id != null ? String(user.id) : 'anonymous',
+  user?.preferred_language || 'unknown-language',
+  user?.current_level || 'unknown-level',
+];
 
 const getUserDailyScopeSignature = (user: User | null) =>
   getUserDailyScopeParts(user).join('|');
@@ -118,7 +118,7 @@ const getCurrentDateString = (): string => {
 };
 
 export const useDailyQuestions = (): UseDailyQuestionsReturn => {
-  const {user} = useAuth();
+  const { user } = useAuth();
   const queryClient = useQueryClient();
   const scopedUser: User | null = user ?? null;
 
@@ -129,11 +129,7 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
   const [hasInitialized, setHasInitialized] = useState<boolean>(false);
   const userScopeSignature = useMemo(
     () => getUserDailyScopeSignature(scopedUser),
-    [
-      scopedUser?.id,
-      scopedUser?.preferred_language,
-      scopedUser?.current_level,
-    ]
+    [scopedUser?.id, scopedUser?.preferred_language, scopedUser?.current_level]
   );
   const storageKey = useMemo(
     () => `/daily/index/${selectedDate}/${userScopeSignature}`,
@@ -153,7 +149,7 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
     },
   });
 
-  const {data: progress, isLoading: isProgressLoading} =
+  const { data: progress, isLoading: isProgressLoading } =
     useGetV1DailyProgressDate(selectedDate, {
       query: {
         enabled: !!user,
@@ -162,7 +158,7 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
       },
     });
 
-  const {data: availableDatesResponse, refetch: refetchDates} =
+  const { data: availableDatesResponse, refetch: refetchDates } =
     useGetV1DailyDates({
       query: {
         enabled: !!user,
@@ -176,17 +172,17 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
     isPending: isCompletingQuestion,
   } = usePostV1DailyQuestionsDateCompleteQuestionId();
 
-  const {mutateAsync: resetQuestionMutation, isPending: isResettingQuestion} =
+  const { mutateAsync: resetQuestionMutation, isPending: isResettingQuestion } =
     useDeleteV1DailyQuestionsDateCompleteQuestionId();
 
-  const {mutateAsync: submitAnswerMutation, isPending: isSubmittingAnswer} =
+  const { mutateAsync: submitAnswerMutation, isPending: isSubmittingAnswer } =
     usePostV1DailyQuestionsDateAnswerQuestionId();
 
   // Question history hook
   const [historyQuestionId, setHistoryQuestionId] = useState<number | null>(
     null
   );
-  const {data: questionHistoryResponse, isLoading: isHistoryLoading} =
+  const { data: questionHistoryResponse, isLoading: isHistoryLoading } =
     useGetV1DailyHistoryQuestionId(historyQuestionId || 0, {
       query: {
         enabled: !!historyQuestionId,
@@ -210,7 +206,7 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
     if (!hasInitialized) return;
     try {
       window.sessionStorage.setItem(storageKey, String(currentQuestionIndex));
-    } catch { }
+    } catch {}
   }, [currentQuestionIndex, storageKey, hasInitialized]);
 
   // Actions
@@ -435,7 +431,7 @@ export const useDailyQuestions = (): UseDailyQuestionsReturn => {
       try {
         const raw = window.sessionStorage.getItem(storageKey);
         if (raw != null) restoredIndex = Number(raw);
-      } catch { }
+      } catch {}
 
       if (
         restoredIndex != null &&

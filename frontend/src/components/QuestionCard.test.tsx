@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
-import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { vi } from 'vitest';
 import QuestionCard, { type QuestionCardProps } from './QuestionCard';
 import { Question, AnswerResponse } from '../api/api';
@@ -2221,6 +2221,85 @@ describe('Keyboard and mouse answer selection edge cases', () => {
     const radios2b = screen.getAllByRole('radio');
     fireEvent.click(radios2b[1]); // Select 2nd option (should still be 2nd option checked)
     expect(radios2b[1]).toBeChecked(); // Should still be 2nd option checked
+  });
+
+  it('submits the updated answer index when parent state changes without radio interaction', async () => {
+    const question: Question = {
+      id: 42,
+      type: 'vocabulary',
+      content: {
+        question: 'Select the correct option',
+        options: ['Option A', 'Option B', 'Option C'],
+      },
+      level: 'A1',
+      created_at: '2023-01-01T00:00:00Z',
+    };
+
+    const feedback: AnswerResponse = {
+      is_correct: false,
+      correct_answer_index: 2,
+      user_answer: 'Option B',
+      user_answer_index: 1,
+      explanation: 'Just a test explanation',
+    };
+
+    const onAnswer = vi.fn().mockResolvedValue(feedback);
+    const onNext = vi.fn();
+    const selectionSetterRef: {
+      current: (index: number) => void;
+    } = { current: () => {} };
+
+    function Wrapper() {
+      const [selectedAnswer, setSelectedAnswer] = React.useState<number | null>(
+        null
+      );
+      const [selectedAnswerQuestionId, setSelectedAnswerQuestionId] =
+        React.useState<number | null>(null);
+      const [showExplanation, setShowExplanation] = React.useState(false);
+
+      React.useEffect(() => {
+        selectionSetterRef.current = (index: number) => {
+          setSelectedAnswer(index);
+          setSelectedAnswerQuestionId(question.id);
+        };
+      }, []);
+
+      return (
+        <QuestionCard
+          question={question}
+          onAnswer={onAnswer}
+          onNext={onNext}
+          feedback={null}
+          selectedAnswer={selectedAnswer}
+          selectedAnswerQuestionId={selectedAnswerQuestionId}
+          onAnswerSelect={index => {
+            setSelectedAnswer(index);
+            setSelectedAnswerQuestionId(question.id);
+          }}
+          showExplanation={showExplanation}
+          setShowExplanation={setShowExplanation}
+        />
+      );
+    }
+
+    renderWithProviders(<Wrapper />);
+
+    // Initial selection via mouse to populate the internal ref.
+    const radios = screen.getAllByRole('radio');
+    fireEvent.click(radios[0]);
+    await waitFor(() => expect(radios[0]).toBeChecked());
+
+    // Simulate keyboard shortcut updating parent state without another radio change.
+    await act(async () => {
+      selectionSetterRef.current(1);
+    });
+
+    const submitButton = screen.getByTestId('submit-button');
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(onAnswer).toHaveBeenCalledWith(question.id, '1');
+    });
   });
 
   it('submits the correct answer index after rapid navigation and selection', async () => {

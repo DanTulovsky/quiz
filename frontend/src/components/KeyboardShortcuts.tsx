@@ -54,6 +54,31 @@ interface KeyboardShortcutsProps {
   enablePrevNextArrows?: boolean;
 }
 
+const textInputTypes = new Set([
+  'text',
+  'search',
+  'email',
+  'number',
+  'password',
+  'tel',
+  'url',
+]);
+
+const isTypingTarget = (target: EventTarget | null): boolean => {
+  const element = target as HTMLElement | null;
+  if (!element) return false;
+  if (element.isContentEditable) return true;
+  const tagName = element.tagName;
+  if (tagName === 'TEXTAREA' || tagName === 'SELECT') {
+    return true;
+  }
+  if (tagName === 'INPUT') {
+    const input = element as HTMLInputElement;
+    return textInputTypes.has(input.type.toLowerCase());
+  }
+  return false;
+};
+
 const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
   onAnswerSelect,
   onSubmit,
@@ -219,6 +244,8 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
       if (isMarkKnownModalOpen) return; // Don't handle number keys when mark known modal is open
       if (isReportModalOpen) return; // Don't handle number keys when report modal is open
       if (maxOptions <= 0) return; // Don't handle if shuffling is not ready
+      if (isInputFocused) return;
+      if (isTypingTarget(e.target)) return;
       const index = parseInt(e.key) - 1;
       if (index >= 0 && index < maxOptions) {
         e.preventDefault();
@@ -242,7 +269,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
       }
     },
     {
-      enableOnFormTags: false,
+      enableOnFormTags: true,
       preventDefault: true,
       enabled: !isQuickSuggestionsOpen && maxOptions > 0,
     },
@@ -253,6 +280,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
       maxOptions,
       onAnswerSelect,
       isQuickSuggestionsOpen,
+      isInputFocused,
     ]
   );
 
