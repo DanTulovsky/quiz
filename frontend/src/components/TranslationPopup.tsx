@@ -350,13 +350,33 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
         target.getAttribute('data-translation-select') === 'true' ||
         target.closest('[data-translation-select="true"]');
 
-      // Don't close if clicking on the selected text itself
+      // Determine if click is within the original text selection bounds
+      const isWithinSelectionBounds =
+        selection?.boundingRect &&
+        event.clientX >= selection.boundingRect.left &&
+        event.clientX <= selection.boundingRect.right &&
+        event.clientY >= selection.boundingRect.top &&
+        event.clientY <= selection.boundingRect.bottom;
+
+      // Don't close if clicking directly on the selected text itself
       const isSelectedText =
+        selection &&
+        isWithinSelectionBounds &&
+        target.closest('[data-translation-enabled]');
+
+      // Fallback: if no bounding box data, preserve previous text-based detection
+      const isSelectedTextFallback =
+        !selection?.boundingRect &&
         selection &&
         target.textContent?.includes(selection.text) &&
         target.closest('[data-translation-enabled]');
 
-      if (isInsidePopup || isSelectElement || isSelectedText) {
+      if (
+        isInsidePopup ||
+        isSelectElement ||
+        isSelectedText ||
+        isSelectedTextFallback
+      ) {
         return;
       }
 

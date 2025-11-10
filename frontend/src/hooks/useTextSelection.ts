@@ -7,6 +7,12 @@ export interface TextSelection {
   y: number;
   width: number;
   height: number;
+  boundingRect?: {
+    left: number;
+    top: number;
+    right: number;
+    bottom: number;
+  };
   sentence?: string; // The full sentence containing the selected text
 }
 
@@ -234,6 +240,12 @@ export const useTextSelection = () => {
         y: y,
         width: rect.width,
         height: rect.height,
+        boundingRect: {
+          left: rect.left,
+          top: rect.top,
+          right: rect.right,
+          bottom: rect.bottom,
+        },
         sentence: sentence,
       };
 

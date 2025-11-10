@@ -1,5 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor, act } from '@testing-library/react';
+import {
+  render,
+  screen,
+  waitFor,
+  act,
+  fireEvent,
+} from '@testing-library/react';
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -199,6 +205,12 @@ vi.mock('../../hooks/useTextSelection', () => ({
       y: 100,
       width: 50,
       height: 20,
+      boundingRect: {
+        left: 90,
+        top: 80,
+        right: 140,
+        bottom: 100,
+      },
       sentence: 'This is a test sentence with Hello world in it.',
     },
     isVisible: true,
@@ -257,6 +269,12 @@ describe('TranslationPopup', () => {
             y: 100,
             width: 50,
             height: 20,
+            boundingRect: {
+              left: 90,
+              top: 80,
+              right: 140,
+              bottom: 100,
+            },
           }}
           onClose={mockOnClose}
         />
@@ -277,6 +295,12 @@ describe('TranslationPopup', () => {
             y: 100,
             width: 50,
             height: 20,
+            boundingRect: {
+              left: 90,
+              top: 80,
+              right: 140,
+              bottom: 100,
+            },
           }}
           onClose={mockOnClose}
         />
@@ -299,6 +323,12 @@ describe('TranslationPopup', () => {
             y: 100,
             width: 50,
             height: 20,
+            boundingRect: {
+              left: 90,
+              top: 80,
+              right: 140,
+              bottom: 100,
+            },
           }}
           onClose={mockOnClose}
         />
@@ -348,6 +378,12 @@ describe('TranslationPopup', () => {
             y: 100,
             width: 50,
             height: 20,
+            boundingRect: {
+              left: 90,
+              top: 80,
+              right: 140,
+              bottom: 100,
+            },
           }}
           onClose={mockOnClose}
         />
@@ -367,6 +403,88 @@ describe('TranslationPopup', () => {
     expect(mockOnClose).toHaveBeenCalled();
   });
 
+  it('should not close when clicking within the selection bounds', async () => {
+    render(
+      <TestWrapper>
+        <TranslationPopup
+          selection={{
+            text: 'Hello world',
+            x: 100,
+            y: 100,
+            width: 50,
+            height: 20,
+            boundingRect: {
+              left: 90,
+              top: 80,
+              right: 140,
+              bottom: 100,
+            },
+          }}
+          onClose={mockOnClose}
+        />
+      </TestWrapper>
+    );
+
+    const selectionElement = document.createElement('span');
+    selectionElement.setAttribute('data-translation-enabled', 'true');
+    selectionElement.textContent = 'Hello world';
+    document.body.appendChild(selectionElement);
+
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 150));
+    });
+
+    fireEvent.mouseDown(selectionElement, {
+      clientX: 100,
+      clientY: 90,
+    });
+
+    expect(mockOnClose).not.toHaveBeenCalled();
+
+    document.body.removeChild(selectionElement);
+  });
+
+  it('should close when clicking on translation element outside selection bounds', async () => {
+    render(
+      <TestWrapper>
+        <TranslationPopup
+          selection={{
+            text: 'Hello world',
+            x: 100,
+            y: 100,
+            width: 50,
+            height: 20,
+            boundingRect: {
+              left: 90,
+              top: 80,
+              right: 140,
+              bottom: 100,
+            },
+          }}
+          onClose={mockOnClose}
+        />
+      </TestWrapper>
+    );
+
+    const selectionElement = document.createElement('span');
+    selectionElement.setAttribute('data-translation-enabled', 'true');
+    selectionElement.textContent = 'Hello world';
+    document.body.appendChild(selectionElement);
+
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 150));
+    });
+
+    fireEvent.mouseDown(selectionElement, {
+      clientX: 100,
+      clientY: 60,
+    });
+
+    expect(mockOnClose).toHaveBeenCalled();
+
+    document.body.removeChild(selectionElement);
+  });
+
   it('should show save button when translation is available', () => {
     render(
       <TestWrapper>
@@ -377,6 +495,12 @@ describe('TranslationPopup', () => {
             y: 100,
             width: 50,
             height: 20,
+            boundingRect: {
+              left: 90,
+              top: 80,
+              right: 140,
+              bottom: 100,
+            },
           }}
           onClose={mockOnClose}
         />
@@ -577,6 +701,12 @@ describe('TranslationPopup', () => {
             y: 100,
             width: 50,
             height: 20,
+            boundingRect: {
+              left: 90,
+              top: 80,
+              right: 140,
+              bottom: 100,
+            },
           }}
           onClose={mockOnClose}
         />

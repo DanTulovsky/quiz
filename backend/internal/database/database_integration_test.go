@@ -3,6 +3,7 @@
 package database
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -156,6 +157,66 @@ func TestRunMigrations_AlreadyApplied_Integration(t *testing.T) {
 	require.NoError(t, err)
 }
 
+func TestRunGolangMigrate_NoMigrationsDirectory_Integration(t *testing.T) {
+	observabilityLogger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+	dbManager := NewManager(observabilityLogger)
+
+	originalWD, err := os.Getwd()
+	require.NoError(t, err)
+	tempDir := t.TempDir()
+	require.NoError(t, os.Chdir(tempDir))
+	t.Cleanup(func() {
+		_ = os.Chdir(originalWD)
+	})
+
+	err = dbManager.runGolangMigrate()
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "migrations directory not found")
+}
+
+func TestRunGolangMigrate_NoMigrationFiles_Integration(t *testing.T) {
+	observabilityLogger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+	dbManager := NewManager(observabilityLogger)
+
+	originalWD, err := os.Getwd()
+	require.NoError(t, err)
+	tempDir := t.TempDir()
+	migrationsDir := filepath.Join(tempDir, "migrations")
+	require.NoError(t, os.Mkdir(migrationsDir, 0o755))
+
+	require.NoError(t, os.Chdir(tempDir))
+	t.Cleanup(func() {
+		_ = os.Chdir(originalWD)
+	})
+
+	err = dbManager.runGolangMigrate()
+	require.NoError(t, err)
+}
+
+func TestRunGolangMigrate_InvalidDatabaseURL_Integration(t *testing.T) {
+	observabilityLogger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+	dbManager := NewManager(observabilityLogger)
+
+	t.Setenv("DATABASE_URL", "postgres://invalid:invalid@127.0.0.1:1/nonexistent?sslmode=disable")
+	t.Setenv("TEST_DATABASE_URL", "postgres://invalid:invalid@127.0.0.1:1/nonexistent?sslmode=disable")
+
+	err := dbManager.runGolangMigrate()
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "failed to initialize golang-migrate")
+}
+
+func TestRunGolangMigrate_NoDatabaseURL_Integration(t *testing.T) {
+	observabilityLogger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+	dbManager := NewManager(observabilityLogger)
+
+	t.Setenv("DATABASE_URL", "")
+	t.Setenv("TEST_DATABASE_URL", "")
+
+	err := dbManager.runGolangMigrate()
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "database_url or test_database_url must be set")
+}
+
 func TestGetSchemaPath_Integration(t *testing.T) {
 	observabilityLogger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
 	dbManager := NewManager(observabilityLogger)
@@ -275,6 +336,64 @@ func TestRunApplicationSchema_Integration(t *testing.T) {
 	}
 }
 
+func TestRunApplicationSchema_CustomSchema_Integration(t *testing.T) {
+	observabilityLogger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+	dbManager := NewManager(observabilityLogger)
+	testDatabaseURL := os.Getenv("TEST_DATABASE_URL")
+	if testDatabaseURL == "" {
+		testDatabaseURL = "postgres://quiz_user:quiz_password@localhost:5433/quiz_test_db?sslmode=disable"
+	}
+
+	config := DefaultDatabaseConfig()
+	config.URL = testDatabaseURL
+	db, err := dbManager.InitDBWithoutMigrations(config)
+	require.NoError(t, err)
+	require.NotNil(t, db)
+	defer db.Close()
+
+	tempDir := t.TempDir()
+	schemaSQL := `
+		CREATE TABLE custom_schema_table (id SERIAL PRIMARY KEY);
+		;
+		CREATE INDEX idx_custom_schema_missing ON custom_schema_table(nonexistent_column);
+		CREATE INDEX idx_custom_schema_valid ON custom_schema_table(id);
+	`
+	err = os.WriteFile(filepath.Join(tempDir, "schema.sql"), []byte(schemaSQL), 0o644)
+	require.NoError(t, err)
+
+	originalWD, err := os.Getwd()
+	require.NoError(t, err)
+	require.NoError(t, os.Chdir(tempDir))
+	t.Cleanup(func() {
+		_ = os.Chdir(originalWD)
+	})
+
+	t.Cleanup(func() {
+		_, cleanupErr := db.Exec("DROP TABLE IF EXISTS custom_schema_table CASCADE")
+		if cleanupErr != nil {
+			t.Logf("cleanup error: %v", cleanupErr)
+		}
+	})
+
+	// First application should create the table and valid index while tolerating missing column index.
+	err = dbManager.runApplicationSchema(db)
+	require.NoError(t, err)
+
+	// Second run should gracefully handle already existing table and index errors.
+	err = dbManager.runApplicationSchema(db)
+	require.NoError(t, err)
+
+	var exists bool
+	err = db.QueryRow(`
+		SELECT EXISTS (
+			SELECT 1 FROM information_schema.tables
+			WHERE table_schema = 'public' AND table_name = 'custom_schema_table'
+		)
+	`).Scan(&exists)
+	require.NoError(t, err)
+	assert.True(t, exists)
+}
+
 func TestIsTableExistsError_Integration(t *testing.T) {
 	observabilityLogger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
 	dbManager := NewManager(observabilityLogger)
@@ -308,6 +427,37 @@ func TestIsTableExistsError_Integration(t *testing.T) {
 	// Clean up
 	_, err = db.Exec("DROP TABLE test_table_exists")
 	require.NoError(t, err)
+}
+
+func TestIsColumnExistsError_Integration(t *testing.T) {
+	observabilityLogger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+	dbManager := NewManager(observabilityLogger)
+	testDatabaseURL := os.Getenv("TEST_DATABASE_URL")
+	if testDatabaseURL == "" {
+		testDatabaseURL = "postgres://quiz_user:quiz_password@localhost:5433/quiz_test_db?sslmode=disable"
+	}
+
+	config := DefaultDatabaseConfig()
+	config.URL = testDatabaseURL
+	db, err := dbManager.InitDBWithoutMigrations(config)
+	require.NoError(t, err)
+	require.NotNil(t, db)
+	defer db.Close()
+
+	_, err = db.Exec("CREATE TABLE IF NOT EXISTS column_exists_test (id SERIAL PRIMARY KEY)")
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		_, cleanupErr := db.Exec("DROP TABLE IF EXISTS column_exists_test")
+		if cleanupErr != nil {
+			t.Logf("cleanup error: %v", cleanupErr)
+		}
+	})
+
+	_, err = db.Exec("CREATE INDEX idx_column_exists_test ON column_exists_test(nonexistent_column)")
+	require.Error(t, err)
+	assert.True(t, dbManager.isColumnExistsError(err), "Should detect missing column error")
+
+	assert.False(t, dbManager.isColumnExistsError(errors.New("some other error")))
 }
 
 func TestDatabase_ErrorHandling_Integration(t *testing.T) {
@@ -434,6 +584,16 @@ func TestExtractDatabaseName(t *testing.T) {
 			name:     "empty URL",
 			url:      "",
 			expected: "quiz_db",
+		},
+		{
+			name:     "url without database segment",
+			url:      "postgres://user:pass@localhost:5432",
+			expected: "user:pass@localhost:5432",
+		},
+		{
+			name:     "url with trailing slash and query",
+			url:      "postgres://user:pass@localhost:5432/?sslmode=disable",
+			expected: "",
 		},
 	}
 
