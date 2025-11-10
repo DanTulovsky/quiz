@@ -22,7 +22,7 @@ func newTestAuthAPIKeyService(t *testing.T) (*AuthAPIKeyService, sqlmock.Sqlmock
 
 	cleanup := func() {
 		require.NoError(t, mock.ExpectationsWereMet())
-		db.Close()
+		require.NoError(t, db.Close())
 	}
 
 	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
@@ -100,7 +100,7 @@ func TestAuthAPIKeyService_ValidateAPIKeyRowsError(t *testing.T) {
 
 	_, err := service.ValidateAPIKey(context.Background(), KeyPrefix+"aaaaaaaaaaaaaaaa")
 	require.Error(t, err)
-	assert.Contains(t, err.Error(), "failed to iterate API keys")
+	assert.Contains(t, err.Error(), "failed to validate API key")
 }
 
 func TestAuthAPIKeyService_UpdateLastUsedError(t *testing.T) {

@@ -18,12 +18,23 @@ function ensureAudioElementAttached(audio: HTMLAudioElement): void {
     audio.setAttribute('data-quiz-tts', '');
   }
 
-  audio.style.display = 'none';
+  // Keep the element in the DOM (and not display:none) so iOS can continue playback in background.
+  const style = audio.style;
+  style.position = 'fixed';
+  style.bottom = '0';
+  style.left = '0';
+  style.width = '1px';
+  style.height = '1px';
+  style.opacity = '0';
+  style.pointerEvents = 'none';
+  style.zIndex = '-1';
   audio.muted = false;
   audio.defaultMuted = false;
   audio.volume = 1;
   audio.setAttribute('playsinline', 'true');
   audio.setAttribute('webkit-playsinline', 'true');
+  audio.setAttribute('aria-hidden', 'true');
+  audio.tabIndex = -1;
 
   if (typeof document !== 'undefined' && audio.parentNode !== document.body) {
     // Remove from previous parent to avoid duplicates

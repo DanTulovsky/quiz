@@ -9,6 +9,8 @@ import {
   setFinishedCallback,
 } from '../utils/streamingTTS';
 
+type MediaSessionPlayback = 'none' | 'paused' | 'playing';
+
 // Shared state so all hook instances can track the same playback
 let sharedIsPlaying = false;
 let sharedIsPaused = false;
@@ -36,9 +38,27 @@ export function clearSharedTTSState() {
   sharedCurrentKey = null;
   sharedMetadata = null;
   notifyStateListeners();
+  syncMediaSessionPlaybackState();
   if (import.meta.env?.DEV) {
     console.log('[useTTS] clearSharedTTSState invoked');
   }
+}
+
+function setMediaSessionPlaybackState(state: MediaSessionPlayback): void {
+  if ('mediaSession' in navigator && navigator.mediaSession) {
+    try {
+      navigator.mediaSession.playbackState = state;
+    } catch {}
+  }
+}
+
+function syncMediaSessionPlaybackState(): void {
+  const state: MediaSessionPlayback = sharedIsPlaying
+    ? 'playing'
+    : sharedIsPaused
+      ? 'paused'
+      : 'none';
+  setMediaSessionPlaybackState(state);
 }
 
 // Set up finished callback to clear shared state
@@ -76,6 +96,8 @@ function setupMediaSessionMetadata(metadata?: TTSMetadata | null) {
     navigator.mediaSession.setActionHandler('stop', () => {
       stopStreamingTTS();
     });
+
+    syncMediaSessionPlaybackState();
   }
 }
 
@@ -142,12 +164,14 @@ export const useTTS = (): TTSHookReturn => {
     sharedIsPlaying = value;
     setIsPlayingLocal(value);
     notifyStateListeners();
+    syncMediaSessionPlaybackState();
   }, []);
 
   const setIsPaused = useCallback((value: boolean) => {
     sharedIsPaused = value;
     setIsPausedLocal(value);
     notifyStateListeners();
+    syncMediaSessionPlaybackState();
   }, []);
 
   const setIsLoadingState = useCallback((value: boolean) => {
@@ -182,6 +206,7 @@ export const useTTS = (): TTSHookReturn => {
     setIsPaused(false);
     setIsLoadingState(false);
     notifyStateListeners();
+    syncMediaSessionPlaybackState();
   }, [setIsPlaying, setIsPaused, setIsLoadingState]);
 
   const pauseTTS = useCallback(() => {
@@ -267,6 +292,7 @@ export const useTTS = (): TTSHookReturn => {
             sharedCurrentKey = null;
             sharedMetadata = null;
             notifyStateListeners();
+            syncMediaSessionPlaybackState();
           }
         };
 
