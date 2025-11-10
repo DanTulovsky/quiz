@@ -110,7 +110,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
       return () => {};
     }
 
-    const { body, documentElement } = document;
+    const body = document.body;
 
     const scrollX =
       window.scrollX ||
@@ -123,39 +123,34 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
       document.documentElement.scrollTop ||
       0;
 
-    const originalBodyStyle = {
-      position: body.style.position,
-      top: body.style.top,
-      left: body.style.left,
-      width: body.style.width,
-      overflow: body.style.overflow,
-    };
-    const originalHtmlOverflow = documentElement.style.overflow;
+    const originalBodyOverflow = body.style.overflow;
+    const originalBodyPaddingRight = body.style.paddingRight;
 
-    body.style.position = 'fixed';
-    body.style.top = `-${scrollY}px`;
-    body.style.left = `-${scrollX}px`;
-    body.style.width = '100%';
+    const scrollbarWidth =
+      window.innerWidth - document.documentElement.clientWidth;
+
     body.style.overflow = 'hidden';
-    documentElement.style.overflow = 'hidden';
+
+    if (scrollbarWidth > 0) {
+      body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+
+    if (scrollX || scrollY) {
+      window.scrollTo(scrollX, scrollY);
+    }
 
     return () => {
-      body.style.position = originalBodyStyle.position;
-      body.style.top = originalBodyStyle.top;
-      body.style.left = originalBodyStyle.left;
-      body.style.width = originalBodyStyle.width;
-      body.style.overflow = originalBodyStyle.overflow;
-      documentElement.style.overflow = originalHtmlOverflow;
-      window.scrollTo(scrollX, scrollY);
+      body.style.overflow = originalBodyOverflow;
+      body.style.paddingRight = originalBodyPaddingRight;
+      if (scrollX || scrollY) {
+        window.scrollTo(scrollX, scrollY);
+      }
     };
   }, []);
 
   const viewportWidth = Number.isFinite(viewportSize.width)
     ? viewportSize.width
     : baseWidth;
-  const viewportHeight = Number.isFinite(viewportSize.height)
-    ? viewportSize.height
-    : 600;
   const popupMargin = 10;
   const popupWidth = Math.min(
     baseWidth,
@@ -163,8 +158,6 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
   );
   const resolvedPopupWidth =
     Number.isFinite(popupWidth) && popupWidth > 0 ? popupWidth : 320;
-  const popupMaxHeight = Math.max(viewportHeight - popupMargin * 2, 240);
-
   // Helper function to convert language code to language name for TTS
   const codeToLanguageName = (code: string): string => {
     const mapping: Record<string, string> = {
