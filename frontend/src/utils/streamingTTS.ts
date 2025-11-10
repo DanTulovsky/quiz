@@ -530,8 +530,9 @@ export async function streamAndPlayTTS(
           logAudioState('error');
 
           const audioError = globalAudioElement?.error;
-          const intentionalShutdownReason =
-            getIntentionalShutdownReason(globalAudioElement ?? null);
+          const intentionalShutdownReason = getIntentionalShutdownReason(
+            globalAudioElement ?? null
+          );
           let msg =
             audioError?.message ||
             (event instanceof ErrorEvent
