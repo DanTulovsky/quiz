@@ -123,14 +123,51 @@ func TestWrapError(t *testing.T) {
 }
 
 func TestWrapErrorf(t *testing.T) {
-	original := errors.New("database error")
-	wrapped := WrapErrorf(original, "failed to process %s", "user123")
+	t.Run("regular error without %w", func(t *testing.T) {
+		original := errors.New("database error")
+		wrapped := WrapErrorf(original, "failed to process %s", "user123")
 
-	appErr, ok := wrapped.(*AppError)
-	assert.True(t, ok)
-	assert.Equal(t, ErrorCodeInternalError, appErr.Code)
-	assert.Equal(t, "failed to process user123", appErr.Message)
-	assert.Equal(t, "database error", appErr.Details)
+		appErr, ok := wrapped.(*AppError)
+		assert.True(t, ok)
+		assert.Equal(t, ErrorCodeInternalError, appErr.Code)
+		assert.Equal(t, "failed to process user123", appErr.Message)
+		assert.Equal(t, "database error", appErr.Details)
+		assert.Equal(t, original, appErr.Cause)
+	})
+
+	t.Run("regular error with %w wraps cause", func(t *testing.T) {
+		original := errors.New("permission denied")
+		wrapped := WrapErrorf(original, "failed to authorize: %w", original)
+
+		appErr, ok := wrapped.(*AppError)
+		assert.True(t, ok)
+		assert.Equal(t, ErrorCodeInternalError, appErr.Code)
+		assert.Equal(t, "failed to authorize: permission denied", appErr.Message)
+		assert.Equal(t, "permission denied", appErr.Details)
+		assert.True(t, errors.Is(appErr, original))
+	})
+
+	t.Run("AppError with %w preserves original", func(t *testing.T) {
+		original := &AppError{
+			Code:     ErrorCodeUnauthorized,
+			Severity: SeverityWarn,
+			Message:  "session expired",
+		}
+
+		wrapped := WrapErrorf(original, "request rejected: %w", original)
+
+		appErr, ok := wrapped.(*AppError)
+		assert.True(t, ok)
+		assert.Equal(t, ErrorCodeUnauthorized, appErr.Code)
+		assert.Equal(t, SeverityWarn, appErr.Severity)
+		assert.Equal(t, "request rejected: UNAUTHORIZED: session expired", appErr.Message)
+		assert.Contains(t, appErr.Details, "session expired")
+		assert.True(t, errors.Is(appErr, original))
+
+		var extracted *AppError
+		assert.True(t, errors.As(appErr, &extracted))
+		assert.Equal(t, original.Code, extracted.Code)
+	})
 }
 
 func TestErrorWithContextf(t *testing.T) {

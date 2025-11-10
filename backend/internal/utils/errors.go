@@ -428,7 +428,7 @@ func WrapErrorf(err error, format string, args ...interface{}) error {
 				Severity: appErr.Severity,
 				Message:  wrappedErr.Error(),
 				Details:  appErr.Error(),
-				Cause:    appErr,
+				Cause:    wrappedErr,
 			}
 		}
 
@@ -438,7 +438,7 @@ func WrapErrorf(err error, format string, args ...interface{}) error {
 			Severity: SeverityError,
 			Message:  wrappedErr.Error(),
 			Details:  err.Error(),
-			Cause:    err,
+			Cause:    wrappedErr,
 		}
 	}
 
