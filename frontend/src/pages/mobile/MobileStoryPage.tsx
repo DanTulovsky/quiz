@@ -20,8 +20,8 @@ import {
   IconBook,
   IconBook2,
   IconMessage,
-  IconPlayerPlay,
-  IconPlayerPause,
+  IconRobot,
+  IconRobotOff,
   IconChevronLeft,
   IconChevronRight,
   IconChevronsLeft,
@@ -826,9 +826,9 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
                   }}
                 >
                   {story.auto_generation_paused ? (
-                    <IconPlayerPlay size={16} />
+                    <IconRobot size={16} />
                   ) : (
-                    <IconPlayerPause size={16} />
+                    <IconRobotOff size={16} />
                   )}
                 </Button>
               </Tooltip>

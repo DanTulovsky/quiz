@@ -19,8 +19,8 @@ import {
   IconLayoutList,
   IconDownload,
   IconPlus,
-  IconPlayerPause,
-  IconPlayerPlay,
+  IconRobot,
+  IconRobotOff,
 } from '@tabler/icons-react';
 
 import { useStory } from '../hooks/useStory';
@@ -485,9 +485,9 @@ const StoryPage: React.FC = () => {
                   color={currentStory.auto_generation_paused ? 'green' : 'blue'}
                 >
                   {currentStory.auto_generation_paused ? (
-                    <IconPlayerPlay size={18} />
+                    <IconRobot size={18} />
                   ) : (
-                    <IconPlayerPause size={18} />
+                    <IconRobotOff size={18} />
                   )}
                 </Button>
               </Tooltip>
