@@ -70,6 +70,7 @@ func cleanupDatabase(db *sql.DB, logger *observability.Logger) {
 		"TRUNCATE TABLE notification_errors CASCADE",
 		"TRUNCATE TABLE upcoming_notifications CASCADE",
 		"TRUNCATE TABLE sent_notifications CASCADE",
+		"TRUNCATE TABLE auth_api_keys CASCADE",
 		"TRUNCATE TABLE daily_question_assignments CASCADE",
 		"TRUNCATE TABLE story_sections CASCADE",
 		"TRUNCATE TABLE story_section_questions CASCADE",
@@ -97,6 +98,7 @@ func cleanupDatabase(db *sql.DB, logger *observability.Logger) {
 		"ALTER SEQUENCE user_responses_id_seq RESTART WITH 1",
 		"ALTER SEQUENCE performance_metrics_id_seq RESTART WITH 1",
 		"ALTER SEQUENCE snippets_id_seq RESTART WITH 1",
+		"ALTER SEQUENCE auth_api_keys_id_seq RESTART WITH 1",
 	}
 
 	for _, query := range sequenceQueries {
