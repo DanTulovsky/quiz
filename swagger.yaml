@@ -4721,13 +4721,61 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /v1/word-of-day/embed:
+    get:
+      tags:
+        - Word of the Day
+      summary: Get embeddable word of the day HTML (default date)
+      description: Retrieve word of the day as HTML for embedding in an iframe. When no date query parameter is provided, the authenticated user's timezone is used to resolve today's date.
+      security:
+        - bearerAuth: []
+        - apiKeyQuery: []
+        - cookieAuth: []
+      parameters:
+        - name: date
+          in: query
+          required: false
+          description: Optional date in YYYY-MM-DD format. Defaults to today's date in the user's timezone when omitted.
+          schema:
+            type: string
+            format: date
+            pattern: '^\d{4}-\d{2}-\d{2}$'
+      responses:
+        "200":
+          description: HTML page for embedding
+          content:
+            text/html:
+              schema:
+                type: string
+                description: HTML content for iframe embedding
+        "401":
+          description: Authentication required or invalid API key
+          content:
+            text/html:
+              schema:
+                type: string
+        "400":
+          description: Invalid date format
+          content:
+            text/html:
+              schema:
+                type: string
+        "500":
+          description: Failed to retrieve word of the day
+          content:
+            text/html:
+              schema:
+                type: string
+
   /v1/word-of-day/{date}/embed:
     get:
       tags:
         - Word of the Day
       summary: Get embeddable word of the day HTML
-      description: Retrieve word of the day as HTML for embedding in an iframe. Requires session authentication.
+      description: Retrieve word of the day as HTML for embedding in an iframe. Supports session authentication or API keys.
       security:
+        - bearerAuth: []
+        - apiKeyQuery: []
         - cookieAuth: []
       parameters:
         - name: date

@@ -319,8 +319,9 @@ func NewRouter(
 			// Protected endpoints requiring authentication (API key or session)
 			wordOfDay.GET("", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), wordOfTheDayHandler.GetWordOfTheDayToday)
 			wordOfDay.GET("/history", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), wordOfTheDayHandler.GetWordOfTheDayHistory)
-			// Embed endpoint (public - no authentication required) - must come before /:date to avoid route matching
-			wordOfDay.GET("/:date/embed", wordOfTheDayHandler.GetWordOfTheDayEmbed)
+			// Embed endpoint supports optional date query parameter and requires API key or session auth
+			wordOfDay.GET("/embed", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), wordOfTheDayHandler.GetWordOfTheDayEmbed)
+			wordOfDay.GET("/:date/embed", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), wordOfTheDayHandler.GetWordOfTheDayEmbed)
 			wordOfDay.GET("/:date", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), wordOfTheDayHandler.GetWordOfTheDay)
 		}
 

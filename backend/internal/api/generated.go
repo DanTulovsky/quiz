@@ -13,6 +13,7 @@ import (
 )
 
 const (
+	ApiKeyQueryScopes = "apiKeyQuery.Scopes"
 	BearerAuthScopes  = "bearerAuth.Scopes"
 	CookieAuthScopes  = "cookieAuth.Scopes"
 	SessionAuthScopes = "sessionAuth.Scopes"
@@ -2357,6 +2358,12 @@ type GetV1SnippetsSearchParams struct {
 type GetV1StoryParams struct {
 	// IncludeArchived Include archived stories in the response
 	IncludeArchived *bool `form:"include_archived,omitempty" json:"include_archived,omitempty"`
+}
+
+// GetV1WordOfDayEmbedParams defines parameters for GetV1WordOfDayEmbed.
+type GetV1WordOfDayEmbedParams struct {
+	// Date Optional date in YYYY-MM-DD format. Defaults to today's date in the user's timezone when omitted.
+	Date *openapi_types.Date `form:"date,omitempty" json:"date,omitempty"`
 }
 
 // GetV1WordOfDayHistoryParams defines parameters for GetV1WordOfDayHistory.

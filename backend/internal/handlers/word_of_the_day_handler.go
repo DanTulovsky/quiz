@@ -149,15 +149,17 @@ func (h *WordOfTheDayHandler) GetWordOfTheDayEmbed(c *gin.Context) {
 		return
 	}
 
-	// Parse date parameter
+	// Resolve date parameter from path, query, or default to today's date
 	dateStr := c.Param("date")
 	if dateStr == "" {
-		c.Data(http.StatusBadRequest, "text/html; charset=utf-8", []byte("Date required"))
-		return
+		dateStr = c.Query("date")
+	}
+	if dateStr == "" {
+		dateStr = time.Now().Format("2006-01-02")
 	}
 
 	// Parse date in user's timezone
-	date, _, err := h.ParseDateInUserTimezone(ctx, userID, dateStr)
+	date, timezone, err := h.ParseDateInUserTimezone(ctx, userID, dateStr)
 	if err != nil {
 		c.Data(http.StatusBadRequest, "text/html; charset=utf-8", []byte("Invalid date format"))
 		return
@@ -166,6 +168,7 @@ func (h *WordOfTheDayHandler) GetWordOfTheDayEmbed(c *gin.Context) {
 	span.SetAttributes(
 		observability.AttributeUserID(userID),
 		attribute.String("date", dateStr),
+		attribute.String("timezone", timezone),
 	)
 
 	// Get word of the day

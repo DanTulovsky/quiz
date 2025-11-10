@@ -15,7 +15,6 @@ import {
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from '../contexts/TranslationContext';
 import { TextSelection } from '../hooks/useTextSelection';
-import { useMobileDetection } from '../hooks/useMobileDetection';
 import * as TablerIcons from '@tabler/icons-react';
 import {
   postV1Snippets,
@@ -64,7 +63,6 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
 }) => {
   const queryClient = useQueryClient();
   const { fontSize } = useTheme();
-  const { isMobile } = useMobileDetection();
 
   // Load saved language from localStorage or use browser language or default to 'en'
   const [targetLanguage, setTargetLanguage] = useState('en');
@@ -86,7 +84,8 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
   const savedTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const copySuccessTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const baseWidth = 320 * fontScaleMap[fontSize];
+  const scale = fontScaleMap[fontSize] ?? 1;
+  const baseWidth = 320 * scale;
   const [viewportSize, setViewportSize] = useState(() => ({
     width: typeof window !== 'undefined' ? window.innerWidth : baseWidth,
     height: typeof window !== 'undefined' ? window.innerHeight : 600,
@@ -107,24 +106,64 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
   }, []);
 
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      return () => {};
+    }
+
     const { body, documentElement } = document;
-    const originalBodyOverflow = body.style.overflow;
+
+    const scrollX =
+      window.scrollX ||
+      window.pageXOffset ||
+      document.documentElement.scrollLeft ||
+      0;
+    const scrollY =
+      window.scrollY ||
+      window.pageYOffset ||
+      document.documentElement.scrollTop ||
+      0;
+
+    const originalBodyStyle = {
+      position: body.style.position,
+      top: body.style.top,
+      left: body.style.left,
+      width: body.style.width,
+      overflow: body.style.overflow,
+    };
     const originalHtmlOverflow = documentElement.style.overflow;
 
+    body.style.position = 'fixed';
+    body.style.top = `-${scrollY}px`;
+    body.style.left = `-${scrollX}px`;
+    body.style.width = '100%';
     body.style.overflow = 'hidden';
     documentElement.style.overflow = 'hidden';
 
     return () => {
-      body.style.overflow = originalBodyOverflow;
+      body.style.position = originalBodyStyle.position;
+      body.style.top = originalBodyStyle.top;
+      body.style.left = originalBodyStyle.left;
+      body.style.width = originalBodyStyle.width;
+      body.style.overflow = originalBodyStyle.overflow;
       documentElement.style.overflow = originalHtmlOverflow;
+      window.scrollTo(scrollX, scrollY);
     };
   }, []);
 
-  const viewportWidth = viewportSize.width;
-  const viewportHeight = viewportSize.height;
+  const viewportWidth = Number.isFinite(viewportSize.width)
+    ? viewportSize.width
+    : baseWidth;
+  const viewportHeight = Number.isFinite(viewportSize.height)
+    ? viewportSize.height
+    : 600;
   const popupMargin = 10;
-  const popupWidth = Math.min(baseWidth, viewportWidth - popupMargin * 2);
-  const popupMaxHeight = viewportHeight - popupMargin * 2;
+  const popupWidth = Math.min(
+    baseWidth,
+    Math.max(viewportWidth - popupMargin * 2, 200)
+  );
+  const resolvedPopupWidth =
+    Number.isFinite(popupWidth) && popupWidth > 0 ? popupWidth : 320;
+  const popupMaxHeight = Math.max(viewportHeight - popupMargin * 2, 240);
 
   // Helper function to convert language code to language name for TTS
   const codeToLanguageName = (code: string): string => {
@@ -343,38 +382,13 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
   }, [onClose, selection]);
 
   // Calculate popup position to stay within viewport
-  const getPopupPosition = () => {
-    // On mobile, always center the popup on screen
-    if (isMobile) {
-      return {
-        left: '50%',
-        top: '50%',
-        transform: 'translate(-50%, -50%)',
-      };
-    }
-
-    // Desktop: position relative to selected text
-    const estimatedHeight = Math.min(420, popupMaxHeight);
-
-    let x = selection.x - popupWidth / 2;
-    let y = selection.y - estimatedHeight - popupMargin;
-
-    // Adjust if popup goes off screen horizontally
-    if (x < popupMargin) {
-      x = popupMargin;
-    } else if (x + popupWidth > viewportWidth - popupMargin) {
-      x = viewportWidth - popupWidth - popupMargin;
-    }
-
-    // Adjust if popup goes off screen vertically
-    if (y < popupMargin) {
-      y = selection.y + selection.height + popupMargin;
-    }
-
-    return { left: x, top: y };
-  };
-
-  const position = getPopupPosition();
+  const position = useMemo(() => {
+    return {
+      left: '50%',
+      top: '50%',
+      transform: 'translate(-50%, -50%)',
+    };
+  }, []);
 
   // Determine whether a valid question id is available
   const hasQuestionId = Boolean(currentQuestion && 'id' in currentQuestion);
@@ -530,7 +544,7 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
         style={{
           position: 'fixed',
           zIndex: 2500,
-          width: popupWidth,
+          width: resolvedPopupWidth,
           maxWidth: `calc(100vw - ${popupMargin * 2}px)`,
           maxHeight: `calc(100vh - ${popupMargin * 2}px)`,
           overflow: 'hidden',

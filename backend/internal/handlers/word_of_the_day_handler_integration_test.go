@@ -298,6 +298,19 @@ func (suite *WordOfTheDayIntegrationTestSuite) TestGetWordOfTheDayEmbed_HTML_Wit
 	assert.True(suite.T(), w.Code == http.StatusOK || w.Code == http.StatusInternalServerError)
 }
 
+func (suite *WordOfTheDayIntegrationTestSuite) TestGetWordOfTheDayEmbed_DefaultDate_WithAPIKey() {
+	user := suite.createTestUser("worduser_embed_api", "italian", "B1")
+	rawKey := suite.createAPIKeyRaw(user.ID, "embed-key")
+
+	req, _ := http.NewRequest("GET", "/v1/word-of-day/embed", nil)
+	req.Header.Set("Authorization", "Bearer "+rawKey)
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Contains(suite.T(), w.Header().Get("Content-Type"), "text/html")
+	assert.True(suite.T(), w.Code == http.StatusOK || w.Code == http.StatusInternalServerError)
+}
+
 func (suite *WordOfTheDayIntegrationTestSuite) TestGetWordOfTheDayEmbed_Unauthorized() {
 	today := time.Now().Format("2006-01-02")
 	req, _ := http.NewRequest("GET", fmt.Sprintf("/v1/word-of-day/%s/embed", today), nil)
