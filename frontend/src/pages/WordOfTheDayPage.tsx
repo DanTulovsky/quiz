@@ -1,7 +1,7 @@
 import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
-import { useWordOfTheDay } from '../hooks/useWordOfTheDay';
+import {useParams, useNavigate} from 'react-router-dom';
+import {useAuth} from '../hooks/useAuth';
+import {useWordOfTheDay} from '../hooks/useWordOfTheDay';
 import {
   Container,
   Stack,
@@ -35,9 +35,9 @@ import {
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const WordOfTheDayPage: React.FC = () => {
-  const { date: dateParam } = useParams();
+  const {date: dateParam} = useParams();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const {user} = useAuth();
   const [showEmbedModal, setShowEmbedModal] = React.useState(false);
   const [showApiModal, setShowApiModal] = React.useState(false);
   const [apiKey, setApiKey] = React.useState<string>('');
@@ -57,7 +57,7 @@ const WordOfTheDayPage: React.FC = () => {
   // Update URL when date changes
   React.useEffect(() => {
     if (dateParam !== selectedDate) {
-      navigate(`/word-of-day/${selectedDate}`, { replace: true });
+      navigate(`/word-of-day/${selectedDate}`, {replace: true});
     }
   }, [selectedDate, dateParam, navigate]);
 
@@ -96,7 +96,8 @@ const WordOfTheDayPage: React.FC = () => {
   }
 
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
-  const embedUrl = `${origin}/word-of-day/embed`;
+  const embedApiKeyValue = apiKey ? encodeURIComponent(apiKey) : 'YOUR_API_KEY';
+  const embedUrl = `${origin}/word-of-day/embed?api_key=${embedApiKeyValue}`;
   const iframeSnippet = `<iframe src="${embedUrl}" width="100%" height="300" style="border:none"></iframe>`;
   const apiUrlToday = `${origin}/v1/word-of-day`;
   const apiUrlWithDate = `${origin}/v1/word-of-day/${selectedDate}`;
@@ -208,7 +209,7 @@ const WordOfTheDayPage: React.FC = () => {
                 size='sm'
                 fw={600}
                 c='dimmed'
-                style={{ textTransform: 'uppercase', letterSpacing: '1px' }}
+                style={{textTransform: 'uppercase', letterSpacing: '1px'}}
               >
                 {formatDisplayDate(word.date)}
               </Text>
@@ -229,7 +230,7 @@ const WordOfTheDayPage: React.FC = () => {
               </Title>
 
               {/* Translation */}
-              <Text size='xl' c='primary' style={{ fontStyle: 'italic' }}>
+              <Text size='xl' c='primary' style={{fontStyle: 'italic'}}>
                 {word.translation}
               </Text>
 
@@ -246,7 +247,7 @@ const WordOfTheDayPage: React.FC = () => {
                 >
                   <Text
                     size='lg'
-                    style={{ lineHeight: 1.8, fontStyle: 'italic' }}
+                    style={{lineHeight: 1.8, fontStyle: 'italic'}}
                   >
                     {word.sentence}
                   </Text>
@@ -315,18 +316,25 @@ const WordOfTheDayPage: React.FC = () => {
           centered
         >
           <Stack gap='sm'>
+            <PasswordInput
+              label='API Key'
+              placeholder='YOUR_API_KEY'
+              value={apiKey}
+              onChange={e => setApiKey(e.currentTarget.value)}
+              size='sm'
+            />
             <Text size='sm'>Copy and paste this iframe into your page:</Text>
             <Textarea
               value={iframeSnippet}
               readOnly
               minRows={3}
               autosize
-              styles={{ input: { fontFamily: 'monospace' } }}
+              styles={{input: {fontFamily: 'monospace'}}}
             />
             <Group justify='space-between' align='center'>
               <Code>{embedUrl}</Code>
               <CopyButton value={iframeSnippet} timeout={1500}>
-                {({ copied, copy }) => (
+                {({copied, copy}) => (
                   <Button
                     onClick={copy}
                     size='xs'
@@ -369,7 +377,7 @@ const WordOfTheDayPage: React.FC = () => {
                 <Text fw={600}>API URL (today)</Text>
               </Group>
               <CopyButton value={apiUrlToday} timeout={1500}>
-                {({ copied, copy }) => (
+                {({copied, copy}) => (
                   <ActionIcon
                     onClick={copy}
                     variant='light'
@@ -388,7 +396,7 @@ const WordOfTheDayPage: React.FC = () => {
               bg='var(--mantine-color-default-hover)'
             >
               <Text
-                style={{ fontFamily: 'monospace', wordBreak: 'break-all' }}
+                style={{fontFamily: 'monospace', wordBreak: 'break-all'}}
                 size='sm'
               >
                 {apiUrlToday}
@@ -401,7 +409,7 @@ const WordOfTheDayPage: React.FC = () => {
                 <Text fw={600}>API URL (specific date)</Text>
               </Group>
               <CopyButton value={apiUrlWithDate} timeout={1500}>
-                {({ copied, copy }) => (
+                {({copied, copy}) => (
                   <ActionIcon
                     onClick={copy}
                     variant='light'
@@ -420,7 +428,7 @@ const WordOfTheDayPage: React.FC = () => {
               bg='var(--mantine-color-default-hover)'
             >
               <Text
-                style={{ fontFamily: 'monospace', wordBreak: 'break-all' }}
+                style={{fontFamily: 'monospace', wordBreak: 'break-all'}}
                 size='sm'
               >
                 {apiUrlWithDate}
@@ -433,7 +441,7 @@ const WordOfTheDayPage: React.FC = () => {
                 <Text fw={600}>curl (today) — JSON with API Key</Text>
               </Group>
               <CopyButton value={apiCurlApiKeyToday} timeout={1500}>
-                {({ copied, copy }) => (
+                {({copied, copy}) => (
                   <ActionIcon
                     onClick={copy}
                     variant='light'
@@ -464,7 +472,7 @@ const WordOfTheDayPage: React.FC = () => {
                 <Text fw={600}>curl (specific date) — JSON with API Key</Text>
               </Group>
               <CopyButton value={apiCurlApiKeyWithDate} timeout={1500}>
-                {({ copied, copy }) => (
+                {({copied, copy}) => (
                   <ActionIcon
                     onClick={copy}
                     variant='light'
