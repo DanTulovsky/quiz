@@ -48,6 +48,27 @@ function ensureAudioElementAttached(audio: HTMLAudioElement): void {
 /**
  * Clean up blob URL and audio element
  */
+const INTENTIONAL_SHUTDOWN_ATTR = 'data-quiz-tts-intentional-shutdown';
+
+function markIntentionalShutdown(
+  audio: HTMLAudioElement | null,
+  reason: string
+): void {
+  if (!audio) return;
+  audio.setAttribute(INTENTIONAL_SHUTDOWN_ATTR, reason || 'true');
+}
+
+function clearIntentionalShutdown(audio: HTMLAudioElement | null): void {
+  audio?.removeAttribute(INTENTIONAL_SHUTDOWN_ATTR);
+}
+
+function getIntentionalShutdownReason(
+  audio: HTMLAudioElement | null
+): string | null {
+  if (!audio) return null;
+  return audio.getAttribute(INTENTIONAL_SHUTDOWN_ATTR);
+}
+
 function cleanup(): void {
   if (currentBlobURL) {
     try {
@@ -170,6 +191,104 @@ function getMediaErrorLabel(code: number): string {
   return errors[code] || `UNKNOWN(${code})`;
 }
 
+const MEDIA_ERR_SRC_NOT_SUPPORTED_CODE =
+  typeof MediaError !== 'undefined'
+    ? MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED
+    : 4;
+
+const HAVE_CURRENT_DATA =
+  typeof HTMLMediaElement !== 'undefined'
+    ? HTMLMediaElement.HAVE_CURRENT_DATA
+    : 2;
+
+const HAVE_FUTURE_DATA =
+  typeof HTMLMediaElement !== 'undefined'
+    ? HTMLMediaElement.HAVE_FUTURE_DATA
+    : 3;
+
+export interface SafariPlaybackErrorContext {
+  audio: HTMLAudioElement | null;
+  audioError: MediaError | null;
+  playbackStarted: boolean;
+  event: Event;
+  intentionalShutdown?: boolean;
+  intentionalShutdownReason?: string | null;
+}
+
+export interface SafariPlaybackErrorClassification {
+  recoverable: boolean;
+  reason: string;
+}
+
+export function classifySafariPlaybackError({
+  audio,
+  audioError,
+  playbackStarted,
+  event,
+  intentionalShutdown = false,
+  intentionalShutdownReason = null,
+}: SafariPlaybackErrorContext): SafariPlaybackErrorClassification {
+  if (intentionalShutdown) {
+    return {
+      recoverable: true,
+      reason: intentionalShutdownReason
+        ? `intentional-shutdown:${intentionalShutdownReason}`
+        : 'intentional-shutdown',
+    };
+  }
+
+  if (!playbackStarted) {
+    return { recoverable: false, reason: 'playback-not-started' };
+  }
+
+  if (!audio) {
+    return { recoverable: false, reason: 'no-audio-element' };
+  }
+
+  const currentTime = audio.currentTime ?? 0;
+  const hasProgress = currentTime > 0;
+  const ended = !!audio.ended;
+  const paused = !!audio.paused;
+  const readyState = audio.readyState ?? 0;
+  const hasBufferedData = readyState >= HAVE_CURRENT_DATA;
+  const hasFutureData = readyState >= HAVE_FUTURE_DATA;
+  const isActuallyPlaying = !paused && !ended && hasProgress && hasBufferedData;
+  const isBufferedWhilePaused =
+    paused && !ended && hasProgress && hasFutureData;
+
+  const errorMessage = event instanceof ErrorEvent ? event.message || '' : '';
+  const normalizedMessage = errorMessage.toLowerCase();
+
+  const indicatesUnsupportedFormat =
+    (audioError && audioError.code === MEDIA_ERR_SRC_NOT_SUPPORTED_CODE) ||
+    normalizedMessage.includes('not supported by safari') ||
+    normalizedMessage.includes('format not supported') ||
+    normalizedMessage.includes('audio format not supported');
+
+  if (!hasProgress) {
+    return { recoverable: false, reason: 'no-playback-progress' };
+  }
+
+  if (
+    indicatesUnsupportedFormat &&
+    (isActuallyPlaying || isBufferedWhilePaused)
+  ) {
+    return {
+      recoverable: true,
+      reason: 'safari-format-false-positive',
+    };
+  }
+
+  if (!audioError && (isActuallyPlaying || isBufferedWhilePaused)) {
+    return {
+      recoverable: true,
+      reason: 'playback-continues-without-error',
+    };
+  }
+
+  return { recoverable: false, reason: 'fatal-error' };
+}
+
 /**
  * Stream TTS audio and play it using OpenAI SDK or init/stream for iOS
  */
@@ -183,6 +302,7 @@ export async function streamAndPlayTTS(
     currentAbortController.abort();
     currentAbortController = null;
   }
+  markIntentionalShutdown(globalAudioElement, 'restart');
   cleanup();
 
   const endpoint = options.endpoint || '/v1/audio/speech';
@@ -205,6 +325,7 @@ export async function streamAndPlayTTS(
   } else {
     ensureAudioElementAttached(globalAudioElement);
   }
+  clearIntentionalShutdown(globalAudioElement);
 
   // Check if we're on Safari (iOS or desktop) - use init/stream approach (no HLS)
   if (useSafariTTS()) {
@@ -285,6 +406,7 @@ export async function streamAndPlayTTS(
       console.log('[Streaming TTS] Safari: Stream URL', { absoluteStreamURL });
 
       globalAudioElement = audio;
+      clearIntentionalShutdown(globalAudioElement);
       currentBlobURL = null;
       globalAudioElement.src = absoluteStreamURL;
 
@@ -406,13 +528,40 @@ export async function streamAndPlayTTS(
 
         const handleError = (event: Event) => {
           logAudioState('error');
-          cleanupAllListeners();
+
           const audioError = globalAudioElement?.error;
+          const intentionalShutdownReason =
+            getIntentionalShutdownReason(globalAudioElement ?? null);
           let msg =
             audioError?.message ||
             (event instanceof ErrorEvent
               ? event.message
               : 'Audio playback error');
+
+          const classification = classifySafariPlaybackError({
+            audio: globalAudioElement ?? null,
+            audioError: audioError ?? null,
+            playbackStarted,
+            event,
+            intentionalShutdown: !!intentionalShutdownReason,
+            intentionalShutdownReason,
+          });
+
+          if (classification.recoverable) {
+            cleanupAllListeners();
+            clearIntentionalShutdown(globalAudioElement ?? null);
+            console.warn(
+              '[Streaming TTS] Safari: Ignoring recoverable audio error',
+              {
+                classification,
+              }
+            );
+            logAudioState('error-recoverable');
+            return;
+          }
+
+          clearIntentionalShutdown(globalAudioElement ?? null);
+          cleanupAllListeners();
 
           console.error('[Streaming TTS] Safari: Audio error occurred', {
             eventType: event.type,
@@ -1338,6 +1487,7 @@ export async function streamAndPlayTTS(
  * Stop current TTS playback
  */
 export function stopStreamingTTS(): void {
+  markIntentionalShutdown(globalAudioElement, 'stop');
   if (currentAbortController) {
     currentAbortController.abort();
     currentAbortController = null;
