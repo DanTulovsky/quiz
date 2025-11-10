@@ -21,8 +21,9 @@ func newTestAuthAPIKeyService(t *testing.T) (*AuthAPIKeyService, sqlmock.Sqlmock
 	require.NoError(t, err)
 
 	cleanup := func() {
-		require.NoError(t, mock.ExpectationsWereMet())
+		mock.ExpectClose()
 		require.NoError(t, db.Close())
+		require.NoError(t, mock.ExpectationsWereMet())
 	}
 
 	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
