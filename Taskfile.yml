@@ -1235,6 +1235,7 @@ tasks:
     dir: frontend
     cmds:
       - echo "Installing frontend dependencies..."
+      - npm install --legacy-peer-deps
       - npm ci --legacy-peer-deps
     # silent: true
 

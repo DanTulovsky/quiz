@@ -218,8 +218,8 @@ export async function streamAndPlayTTS(
           voice: voice,
           model: model,
           speed: speed,
-          // Desktop Safari may work better with mp3, iOS Safari prefers aac
-          response_format: isDesktopSafari() ? 'mp3' : 'aac',
+          // Use mp3 for all Safari targets; modern iOS Safari can decode mp3 reliably
+          response_format: 'mp3',
         }),
         signal: abortController.signal,
       });
@@ -335,9 +335,25 @@ export async function streamAndPlayTTS(
           });
         };
 
-        const cleanupEventListeners = () => {
-          globalAudioElement?.removeEventListener('ended', handleEnded);
-          globalAudioElement?.removeEventListener('error', handleError);
+        const clearReadinessMonitors = () => {
+          if (readinessTimeout) {
+            clearTimeout(readinessTimeout);
+            readinessTimeout = null;
+          }
+          if (stateCheckInterval) {
+            clearInterval(stateCheckInterval);
+            stateCheckInterval = null;
+          }
+        };
+
+        const cleanupPlayTimeout = () => {
+          if (playTimeout) {
+            clearTimeout(playTimeout);
+            playTimeout = null;
+          }
+        };
+
+        const removeReadinessListeners = () => {
           globalAudioElement?.removeEventListener('canplay', handleCanPlay);
           globalAudioElement?.removeEventListener(
             'canplaythrough',
@@ -355,31 +371,31 @@ export async function streamAndPlayTTS(
             handleLoadedData
           );
           globalAudioElement?.removeEventListener('waiting', handleWaiting);
+          clearReadinessMonitors();
+        };
+
+        const cleanupPlaybackListeners = () => {
+          globalAudioElement?.removeEventListener('ended', handleEnded);
+          globalAudioElement?.removeEventListener('error', handleError);
           globalAudioElement?.removeEventListener('playing', handlePlaying);
           globalAudioElement?.removeEventListener('pause', handlePause);
-          if (readinessTimeout) {
-            clearTimeout(readinessTimeout);
-            readinessTimeout = null;
-          }
-          if (playTimeout) {
-            clearTimeout(playTimeout);
-            playTimeout = null;
-          }
-          if (stateCheckInterval) {
-            clearInterval(stateCheckInterval);
-            stateCheckInterval = null;
-          }
+        };
+
+        const cleanupAllListeners = () => {
+          removeReadinessListeners();
+          cleanupPlaybackListeners();
+          cleanupPlayTimeout();
         };
 
         const handleEnded = () => {
-          cleanupEventListeners();
+          cleanupAllListeners();
           if (finishedCallback) finishedCallback();
           resolve();
         };
 
         const handleError = (event: Event) => {
           logAudioState('error');
-          cleanupEventListeners();
+          cleanupAllListeners();
           const audioError = globalAudioElement?.error;
           let msg =
             audioError?.message ||
@@ -517,7 +533,7 @@ export async function streamAndPlayTTS(
 
           try {
             playbackStarted = true;
-            cleanupEventListeners();
+            removeReadinessListeners();
 
             const playPromise = globalAudioElement?.play();
             if (!playPromise) {
@@ -573,6 +589,7 @@ export async function streamAndPlayTTS(
                       err
                     );
                     logAudioState('play-timeout-retry-failed');
+                    cleanupAllListeners();
                     reject(
                       new Error(
                         `Play promise timed out and manual play failed: ${err instanceof Error ? err.message : String(err)}`
@@ -581,6 +598,7 @@ export async function streamAndPlayTTS(
                   }
                 }
               } else {
+                cleanupAllListeners();
                 reject(
                   new Error(
                     'Play promise timed out and audio element is missing'
@@ -592,16 +610,10 @@ export async function streamAndPlayTTS(
             try {
               await playPromise;
               playPromiseResolved = true;
-              if (playTimeout) {
-                clearTimeout(playTimeout);
-                playTimeout = null;
-              }
+              cleanupPlayTimeout();
             } catch (playErr) {
               playPromiseResolved = true;
-              if (playTimeout) {
-                clearTimeout(playTimeout);
-                playTimeout = null;
-              }
+              cleanupPlayTimeout();
 
               // For desktop Safari, check if audio actually started playing despite the error
               if (isDesktopSafari() && globalAudioElement) {
@@ -654,6 +666,7 @@ export async function streamAndPlayTTS(
                 error: globalAudioElement?.error,
               },
             });
+            cleanupAllListeners();
             reject(
               new Error(
                 `Failed to play audio: ${errorMsg}. This may occur if Safari is still processing probe requests.`
