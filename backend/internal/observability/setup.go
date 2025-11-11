@@ -1,6 +1,7 @@
 package observability
 
 import (
+	"context"
 	"os"
 	"quizapp/internal/config"
 
@@ -23,6 +24,13 @@ func SetupObservability(cfg *config.OpenTelemetryConfig, serviceName string) (re
 	os.Setenv("OTEL_SERVICE_NAME", cfg.ServiceName)
 	os.Setenv("OTEL_SERVICE_VERSION", cfg.ServiceVersion)
 
+	if cfg.EnableLogging {
+		logger = NewLogger(cfg)
+	} else {
+		// Return a no-op logger when logging is disabled
+		logger = NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+	}
+
 	if cfg.EnableTracing {
 		tp = autosdk.TracerProvider()
 		otel.SetTracerProvider(tp)
@@ -34,6 +42,7 @@ func SetupObservability(cfg *config.OpenTelemetryConfig, serviceName string) (re
 		// Initialize the global tracer
 		InitGlobalTracer()
 
+		logger.Info(context.Background(), "Tracing enabled", map[string]interface{}{"service_name": cfg.ServiceName})
 	}
 
 	if cfg.EnableMetrics {
@@ -41,13 +50,6 @@ func SetupObservability(cfg *config.OpenTelemetryConfig, serviceName string) (re
 		if err != nil {
 			panic(err)
 		}
-	}
-
-	if cfg.EnableLogging {
-		logger = NewLogger(cfg)
-	} else {
-		// Return a no-op logger when logging is disabled
-		logger = NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
 	}
 
 	return tp, mp, logger, nil
