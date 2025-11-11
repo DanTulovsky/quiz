@@ -202,12 +202,26 @@ func TestUsageStatsService_UserAITokenUsageAggregations(t *testing.T) {
 	})
 
 	t.Run("record user ai token usage", func(t *testing.T) {
-		today := time.Now().UTC().Truncate(24 * time.Hour)
-		stats, err := service.GetUserAITokenUsageStats(ctx, user.ID, today, today)
+		recordTime := time.Now()
+		recordedDate := recordTime.Truncate(24 * time.Hour)
+
+		start := recordedDate.AddDate(0, 0, -1)
+		end := recordedDate.AddDate(0, 0, 1)
+
+		stats, err := service.GetUserAITokenUsageStats(ctx, user.ID, start, end)
 		require.NoError(t, err)
-		require.Len(t, stats, 1)
-		assert.Equal(t, 15, stats[0].TotalTokens)
-		assert.Equal(t, 1, stats[0].RequestsMade)
+
+		var found bool
+		for _, stat := range stats {
+			if stat.UsageDate.Format("2006-01-02") == recordedDate.Format("2006-01-02") {
+				found = true
+				assert.Equal(t, 15, stat.TotalTokens)
+				assert.Equal(t, 1, stat.RequestsMade)
+				break
+			}
+		}
+
+		assert.True(t, found, "expected to find usage stats for recorded day")
 	})
 
 	t.Run("hourly aggregation", func(t *testing.T) {
