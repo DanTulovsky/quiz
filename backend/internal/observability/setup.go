@@ -29,18 +29,20 @@ func SetupObservability(cfg *config.OpenTelemetryConfig, serviceName string) (re
 
 		err = InitTracing(cfg)
 		if err != nil {
-			return tp, nil, nil, err
+			panic(err)
 		}
 		// Initialize the global tracer
 		InitGlobalTracer()
 
-		if cfg.EnableMetrics {
-			mp, err = InitMetrics(cfg)
-			if err != nil {
-				return tp, nil, nil, err
-			}
+	}
+
+	if cfg.EnableMetrics {
+		mp, err = InitMetrics(cfg)
+		if err != nil {
+			panic(err)
 		}
 	}
+
 	if cfg.EnableLogging {
 		logger = NewLogger(cfg)
 	} else {
