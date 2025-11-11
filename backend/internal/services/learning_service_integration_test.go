@@ -765,6 +765,131 @@ func TestLearningService_GetPriorityScoreDistribution_Integration(t *testing.T) 
 	assert.NotEmpty(t, distribution)
 }
 
+func TestLearningService_PriorityInsightsData_Integration(t *testing.T) {
+	db := SharedTestDBSetup(t)
+	defer db.Close()
+
+	cfg, err := config.NewConfig()
+	require.NoError(t, err)
+	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+
+	userService := NewUserServiceWithLogger(db, cfg, logger)
+	learningService := NewLearningServiceWithLogger(db, cfg, logger)
+	questionService := NewQuestionServiceWithLogger(db, learningService, cfg, logger)
+
+	ctx := context.Background()
+	user, err := userService.CreateUserWithPassword(ctx, "priority_insights_user", "password", "italian", "A1")
+	require.NoError(t, err)
+
+	intPtr := func(v int) *int { return &v }
+
+	type seed struct {
+		topic      string
+		score      float64
+		attempts   int
+		correct    int
+		confidence *int
+	}
+
+	seeds := []seed{
+		{topic: "grammar", score: 210.0, attempts: 10, correct: 3, confidence: intPtr(2)},
+		{topic: "vocabulary", score: 180.0, attempts: 6, correct: 5},
+		{topic: "listening", score: 120.0, attempts: 5, correct: 2},
+	}
+
+	var questionIDs []int
+	for i, s := range seeds {
+		question := &models.Question{
+			Type:            "vocabulary",
+			Language:        "italian",
+			Level:           "A1",
+			DifficultyScore: float64(i+1) * 0.5,
+			TopicCategory:   s.topic,
+			Content: map[string]interface{}{
+				"question": fmt.Sprintf("Seed question %d", i+1),
+				"options":  []string{"A", "B", "C", "D"},
+			},
+			CorrectAnswer: 0,
+			Explanation:   "Seed test explanation",
+			Status:        models.QuestionStatusActive,
+		}
+
+		err = questionService.SaveQuestion(ctx, question)
+		require.NoError(t, err)
+
+		err = questionService.AssignQuestionToUser(ctx, question.ID, user.ID)
+		require.NoError(t, err)
+
+		_, err = db.Exec(`
+			INSERT INTO question_priority_scores (user_id, question_id, priority_score, last_calculated_at, created_at, updated_at)
+			VALUES ($1, $2, $3, NOW(), NOW(), NOW())
+			ON CONFLICT (user_id, question_id) DO UPDATE
+			SET priority_score = EXCLUDED.priority_score,
+				last_calculated_at = NOW(),
+				updated_at = NOW()
+		`, user.ID, question.ID, s.score)
+		require.NoError(t, err)
+
+		_, err = db.Exec(`
+			INSERT INTO performance_metrics (user_id, topic, language, level, total_attempts, correct_attempts, average_response_time_ms, difficulty_adjustment, last_updated)
+			VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())
+			ON CONFLICT (user_id, topic, language, level) DO UPDATE
+			SET total_attempts = EXCLUDED.total_attempts,
+				correct_attempts = EXCLUDED.correct_attempts,
+				average_response_time_ms = EXCLUDED.average_response_time_ms,
+				difficulty_adjustment = EXCLUDED.difficulty_adjustment,
+				last_updated = NOW()
+		`, user.ID, s.topic, "italian", "A1", s.attempts, s.correct, 2500.0, 0.0)
+		require.NoError(t, err)
+
+		if s.confidence != nil {
+			_, err = db.Exec(`
+				INSERT INTO user_question_metadata (user_id, question_id, marked_as_known, marked_as_known_at, confidence_level, created_at, updated_at)
+				VALUES ($1, $2, TRUE, NOW(), $3, NOW(), NOW())
+				ON CONFLICT (user_id, question_id) DO UPDATE
+				SET marked_as_known = TRUE,
+					marked_as_known_at = NOW(),
+					confidence_level = EXCLUDED.confidence_level,
+					updated_at = NOW()
+			`, user.ID, question.ID, *s.confidence)
+			require.NoError(t, err)
+		}
+
+		questionIDs = append(questionIDs, question.ID)
+	}
+
+	topics, err := learningService.GetHighPriorityTopics(ctx, user.ID)
+	require.NoError(t, err)
+	require.NotNil(t, topics)
+	assert.ElementsMatch(t, []string{"grammar", "vocabulary"}, topics)
+
+	distribution, err := learningService.GetPriorityDistribution(ctx, user.ID)
+	require.NoError(t, err)
+	require.NotNil(t, distribution)
+	assert.Equal(t, 3, len(distribution))
+	assert.Equal(t, 1, distribution["grammar"])
+	assert.Equal(t, 1, distribution["vocabulary"])
+	assert.Equal(t, 1, distribution["listening"])
+
+	gaps, err := learningService.GetGapAnalysis(ctx, user.ID)
+	require.NoError(t, err)
+	require.NotNil(t, gaps)
+
+	require.Contains(t, gaps, "grammar")
+	require.Contains(t, gaps, "listening")
+	assert.NotContains(t, gaps, "vocabulary")
+
+	grammarGap, ok := gaps["grammar"].(map[string]interface{})
+	require.True(t, ok)
+	assert.Equal(t, "grammar", grammarGap["topic"])
+	assert.Equal(t, float64(30), grammarGap["accuracy_percentage"])
+
+	confidence, err := learningService.GetUserQuestionConfidenceLevel(ctx, user.ID, questionIDs[0])
+	require.NoError(t, err)
+	require.NotNil(t, confidence)
+	assert.Equal(t, 2, *confidence)
+}
+
 func TestLearningService_GetHighPriorityQuestions_Integration(t *testing.T) {
 	db := SharedTestDBSetup(t)
 	defer db.Close()
