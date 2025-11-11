@@ -30,7 +30,6 @@ RUN --mount=type=cache,id=quiz-cliworker-gomod,sharing=locked,target=/go/pkg/mod
     CGO_ENABLED=1 \
     CGO_CFLAGS="-D_LARGEFILE64_SOURCE" \
     go build \
-    -ldflags="-w -s" \
     -o cli-worker \
     ./cmd/cli-worker
 

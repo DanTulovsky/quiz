@@ -37,7 +37,7 @@ RUN --mount=type=cache,id=quiz-worker-gomod,sharing=locked,target=/go/pkg/mod \
     go build \
     -a \
     -installsuffix cgo \
-    -ldflags="-w -s -X 'quizapp/internal/version.Version=$APP_VERSION' -X 'quizapp/internal/version.Commit=$COMMIT_HASH' -X 'quizapp/internal/version.BuildTime=$BUILD_TIME'" \
+    -ldflags="-X 'quizapp/internal/version.Version=$APP_VERSION' -X 'quizapp/internal/version.Commit=$COMMIT_HASH' -X 'quizapp/internal/version.BuildTime=$BUILD_TIME'" \
     -o /app/quiz-worker \
     ./cmd/worker
 
