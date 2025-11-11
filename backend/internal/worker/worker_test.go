@@ -347,6 +347,26 @@ func (m *mockEmailService) SendEmail(ctx context.Context, to, subject, template 
 	return args.Error(0)
 }
 
+func (m *mockEmailService) SendWordOfTheDayEmail(ctx context.Context, userID int, date time.Time, wordOfTheDay *models.WordOfTheDayDisplay) error {
+	for _, call := range m.ExpectedCalls {
+		if call.Method == "SendWordOfTheDayEmail" {
+			args := m.Called(ctx, userID, date, wordOfTheDay)
+			return args.Error(0)
+		}
+	}
+	return nil
+}
+
+func (m *mockEmailService) HasSentWordOfTheDayEmail(ctx context.Context, userID int, date time.Time) (bool, error) {
+	for _, call := range m.ExpectedCalls {
+		if call.Method == "HasSentWordOfTheDayEmail" {
+			args := m.Called(ctx, userID, date)
+			return args.Bool(0), args.Error(1)
+		}
+	}
+	return false, nil
+}
+
 func (m *mockEmailService) IsEnabled() bool {
 	args := m.Called()
 	return args.Bool(0)
@@ -360,6 +380,82 @@ func (m *mockEmailService) CreateUpcomingNotification(ctx context.Context, userI
 func (m *mockEmailService) RecordSentNotification(ctx context.Context, userID int, notificationType, subject, templateName, status, errorMessage string) error {
 	args := m.Called(ctx, userID, notificationType, subject, templateName, status, errorMessage)
 	return args.Error(0)
+}
+
+func TestWorker_CheckForWordOfTheDayEmails_SkipsWhenAlreadySent(t *testing.T) {
+	cfg := testWorkerConfig()
+	fakeTime := time.Date(2025, time.November, 10, cfg.Email.DailyReminder.Hour, 0, 0, 0, time.UTC)
+	w := newWorkerWithFakeTime(t, fakeTime, cfg)
+
+	user := models.User{
+		ID:                    1,
+		Username:              "alice",
+		Email:                 sql.NullString{String: "alice@example.com", Valid: true},
+		WordOfDayEmailEnabled: sql.NullBool{Bool: true, Valid: true},
+	}
+
+	users := []models.User{user}
+	w.userService.(*mockUserService).On("GetAllUsers", mock.Anything).Return(users, nil)
+
+	word := &models.WordOfTheDayDisplay{
+		Word:        "hola",
+		Translation: "hello",
+		Language:    "Spanish",
+		Level:       "A1",
+	}
+
+	w.wordOfTheDayService.(*mockWordOfTheDayService).
+		On("GetWordOfTheDay", mock.Anything, user.ID, mock.AnythingOfType("time.Time")).
+		Return(word, nil)
+
+	w.emailService.(*mockEmailService).
+		On("HasSentWordOfTheDayEmail", mock.Anything, user.ID, mock.AnythingOfType("time.Time")).
+		Return(true, nil)
+
+	err := w.checkForWordOfTheDayEmails(context.Background())
+	assert.NoError(t, err)
+
+	w.emailService.(*mockEmailService).AssertNotCalled(t, "SendWordOfTheDayEmail")
+}
+
+func TestWorker_CheckForWordOfTheDayEmails_SendsWhenNotSent(t *testing.T) {
+	cfg := testWorkerConfig()
+	fakeTime := time.Date(2025, time.December, 3, cfg.Email.DailyReminder.Hour, 0, 0, 0, time.UTC)
+	w := newWorkerWithFakeTime(t, fakeTime, cfg)
+
+	user := models.User{
+		ID:                    2,
+		Username:              "bob",
+		Email:                 sql.NullString{String: "bob@example.com", Valid: true},
+		WordOfDayEmailEnabled: sql.NullBool{Bool: true, Valid: true},
+	}
+
+	users := []models.User{user}
+	w.userService.(*mockUserService).On("GetAllUsers", mock.Anything).Return(users, nil)
+
+	word := &models.WordOfTheDayDisplay{
+		Word:        "bonjour",
+		Translation: "hello",
+		Language:    "French",
+		Level:       "A2",
+	}
+
+	w.wordOfTheDayService.(*mockWordOfTheDayService).
+		On("GetWordOfTheDay", mock.Anything, user.ID, mock.AnythingOfType("time.Time")).
+		Return(word, nil)
+
+	w.emailService.(*mockEmailService).
+		On("HasSentWordOfTheDayEmail", mock.Anything, user.ID, mock.AnythingOfType("time.Time")).
+		Return(false, nil)
+
+	w.emailService.(*mockEmailService).
+		On("SendWordOfTheDayEmail", mock.Anything, user.ID, mock.AnythingOfType("time.Time"), mock.AnythingOfType("*models.WordOfTheDayDisplay")).
+		Return(nil)
+
+	err := w.checkForWordOfTheDayEmails(context.Background())
+	assert.NoError(t, err)
+
+	w.emailService.(*mockEmailService).AssertNumberOfCalls(t, "SendWordOfTheDayEmail", 1)
 }
 
 // Add at the top of the file (after imports):

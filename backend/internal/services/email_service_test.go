@@ -11,8 +11,10 @@ import (
 	"quizapp/internal/observability"
 	"quizapp/internal/services/mailer"
 
+	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/require"
 )
 
 // MockMailer is a mock implementation of the Mailer interface for testing
@@ -474,4 +476,84 @@ func TestEmailService_ContextHandling(t *testing.T) {
 	err := service.SendDailyReminder(ctx, user)
 	// TestEmailService should return nil (success) since it just logs
 	assert.NoError(t, err)
+}
+
+func TestEmailService_HasSentWordOfTheDayEmail(t *testing.T) {
+	db, mockDB, err := sqlmock.New()
+	require.NoError(t, err)
+	defer func() {
+		require.NoError(t, mockDB.ExpectationsWereMet())
+	}()
+	defer func() {
+		require.NoError(t, db.Close())
+	}()
+
+	cfg := &config.Config{
+		Email: config.EmailConfig{
+			Enabled: true,
+			SMTP: config.SMTPConfig{
+				Host:        "smtp.example.com",
+				Port:        587,
+				Username:    "user",
+				Password:    "pass",
+				FromName:    "Quiz App",
+				FromAddress: "noreply@quizapp.com",
+			},
+		},
+	}
+	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+	service := NewEmailServiceWithDB(cfg, logger, db)
+
+	loc := time.FixedZone("UTC-5", -5*60*60)
+	date := time.Date(2025, time.November, 10, 0, 0, 0, 0, loc)
+	start := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, loc)
+	end := start.Add(24 * time.Hour)
+
+	mockDB.ExpectQuery("SELECT EXISTS").
+		WithArgs(1, start.UTC(), end.UTC()).
+		WillReturnRows(sqlmock.NewRows([]string{"exists"}).AddRow(true))
+
+	sent, err := service.HasSentWordOfTheDayEmail(context.Background(), 1, date)
+	require.NoError(t, err)
+	assert.True(t, sent)
+}
+
+func TestEmailService_HasSentWordOfTheDayEmail_DBError(t *testing.T) {
+	db, mockDB, err := sqlmock.New()
+	require.NoError(t, err)
+	defer func() {
+		require.NoError(t, mockDB.ExpectationsWereMet())
+	}()
+	defer func() {
+		require.NoError(t, db.Close())
+	}()
+
+	cfg := &config.Config{
+		Email: config.EmailConfig{
+			Enabled: true,
+			SMTP: config.SMTPConfig{
+				Host:        "smtp.example.com",
+				Port:        587,
+				Username:    "user",
+				Password:    "pass",
+				FromName:    "Quiz App",
+				FromAddress: "noreply@quizapp.com",
+			},
+		},
+	}
+	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+	service := NewEmailServiceWithDB(cfg, logger, db)
+
+	loc := time.FixedZone("UTC+1", 1*60*60)
+	date := time.Date(2025, time.January, 5, 0, 0, 0, 0, loc)
+	start := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, loc)
+	end := start.Add(24 * time.Hour)
+
+	mockDB.ExpectQuery("SELECT EXISTS").
+		WithArgs(42, start.UTC(), end.UTC()).
+		WillReturnError(assert.AnError)
+
+	sent, err := service.HasSentWordOfTheDayEmail(context.Background(), 42, date)
+	assert.Error(t, err)
+	assert.False(t, sent)
 }

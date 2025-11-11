@@ -12,11 +12,12 @@ import (
 
 // MockEmailService implements EmailService for testing
 type MockEmailService struct {
-	SendDailyReminderCalled      bool
-	SendWordOfTheDayEmailCalled  bool
-	SendEmailCalled              bool
-	RecordSentNotificationCalled bool
-	IsEnabledResult              bool
+	SendDailyReminderCalled        bool
+	SendWordOfTheDayEmailCalled    bool
+	HasSentWordOfTheDayEmailCalled bool
+	SendEmailCalled                bool
+	RecordSentNotificationCalled   bool
+	IsEnabledResult                bool
 }
 
 func (m *MockEmailService) SendDailyReminder(_ context.Context, _ *models.User) error {
@@ -27,6 +28,11 @@ func (m *MockEmailService) SendDailyReminder(_ context.Context, _ *models.User) 
 func (m *MockEmailService) SendWordOfTheDayEmail(_ context.Context, _ int, _ time.Time, _ *models.WordOfTheDayDisplay) error {
 	m.SendWordOfTheDayEmailCalled = true
 	return nil
+}
+
+func (m *MockEmailService) HasSentWordOfTheDayEmail(_ context.Context, _ int, _ time.Time) (bool, error) {
+	m.HasSentWordOfTheDayEmailCalled = true
+	return false, nil
 }
 
 func (m *MockEmailService) SendEmail(_ context.Context, _, _, _ string, _ map[string]interface{}) error {

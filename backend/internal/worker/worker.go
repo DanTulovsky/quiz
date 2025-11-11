@@ -699,6 +699,20 @@ func (w *Worker) checkForWordOfTheDayEmails(ctx context.Context) error {
 			continue
 		}
 
+		alreadySent, err := emailSvc.HasSentWordOfTheDayEmail(ctx, user.ID, today)
+		if err != nil {
+			failedEmails++
+			w.logger.Error(ctx, "Failed to check word of the day email history", err, map[string]interface{}{
+				"user_id":  user.ID,
+				"username": user.Username,
+			})
+			continue
+		}
+
+		if alreadySent {
+			continue
+		}
+
 		if err := emailSvc.SendWordOfTheDayEmail(ctx, user.ID, today, word); err != nil {
 			failedEmails++
 			w.logger.Error(ctx, "Failed to send word of the day email", err, map[string]interface{}{

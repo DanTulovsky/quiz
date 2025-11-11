@@ -4,6 +4,7 @@ package services
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"time"
 
 	"quizapp/internal/config"
@@ -85,6 +86,42 @@ func (e *TestEmailService) SendDailyReminder(ctx context.Context, user *models.U
 	return nil
 }
 
+// SendWordOfTheDayEmail logs sending a word of the day email (test mode) and records it if a DB is available
+func (e *TestEmailService) SendWordOfTheDayEmail(ctx context.Context, userID int, date time.Time, wordOfTheDay *models.WordOfTheDayDisplay) error {
+	ctx, span := otel.Tracer("test-email-service").Start(ctx, "SendWordOfTheDayEmail",
+		trace.WithAttributes(
+			attribute.Int("user.id", userID),
+			attribute.String("date", date.Format("2006-01-02")),
+		),
+	)
+	defer span.End()
+
+	if wordOfTheDay == nil {
+		err := contextutils.ErrorWithContextf("word of the day data is nil")
+		span.RecordError(err)
+		return contextutils.ErrorWithContextf("word of the day data is nil")
+	}
+
+	span.SetAttributes(attribute.String("word", wordOfTheDay.Word))
+
+	e.logger.Info(ctx, "TEST MODE: Would send word of the day email", map[string]interface{}{
+		"user_id":   userID,
+		"word":      wordOfTheDay.Word,
+		"date":      date.Format("2006-01-02"),
+		"template":  "word_of_the_day",
+		"test_mode": true,
+	})
+
+	if e.db != nil {
+		subject := fmt.Sprintf("Word of the Day: %s - %s", wordOfTheDay.Word, date.Format("January 2, 2006"))
+		if err := e.RecordSentNotification(ctx, userID, "word_of_the_day", subject, "word_of_the_day", "sent", ""); err != nil {
+			return contextutils.WrapError(err, "failed to record word of the day notification in test mode")
+		}
+	}
+
+	return nil
+}
+
 // SendEmail sends a generic email with the given parameters (test mode - just logs)
 func (e *TestEmailService) SendEmail(ctx context.Context, to, subject, templateName string, data map[string]interface{}) error {
 	ctx, span := otel.Tracer("test-email-service").Start(ctx, "SendEmail",
@@ -118,6 +155,51 @@ func (e *TestEmailService) SendEmail(ctx context.Context, to, subject, templateN
 	}
 
 	return nil
+}
+
+// HasSentWordOfTheDayEmail determines if a word-of-the-day email has already been sent for the provided date (test mode)
+func (e *TestEmailService) HasSentWordOfTheDayEmail(ctx context.Context, userID int, date time.Time) (bool, error) {
+	ctx, span := otel.Tracer("test-email-service").Start(ctx, "HasSentWordOfTheDayEmail",
+		trace.WithAttributes(
+			attribute.Int("user.id", userID),
+			attribute.String("date", date.Format("2006-01-02")),
+		),
+	)
+	defer span.End()
+
+	if e.db == nil {
+		// Without a database we cannot track sent notifications; act as if none was sent
+		e.logger.Warn(ctx, "No database connection available for querying word-of-day history", map[string]interface{}{
+			"user_id": userID,
+			"date":    date.Format("2006-01-02"),
+		})
+		return false, nil
+	}
+
+	start := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, date.Location())
+	end := start.Add(24 * time.Hour)
+
+	const query = `
+		SELECT EXISTS(
+			SELECT 1
+			FROM sent_notifications
+			WHERE user_id = $1
+			  AND notification_type = 'word_of_the_day'
+			  AND status = 'sent'
+			  AND sent_at >= $2
+			  AND sent_at < $3
+		)
+	`
+
+	var exists bool
+	if err := e.db.QueryRowContext(ctx, query, userID, start.UTC(), end.UTC()).Scan(&exists); err != nil {
+		span.RecordError(err)
+		return false, contextutils.WrapError(err, "failed to check word of the day notification history")
+	}
+
+	span.SetAttributes(attribute.Bool("word_of_day.already_sent", exists))
+
+	return exists, nil
 }
 
 // RecordSentNotification records a sent notification in the database

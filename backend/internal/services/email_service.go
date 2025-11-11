@@ -356,6 +356,49 @@ func (e *EmailService) generateTestEmailTemplate(data map[string]interface{}) (s
 	return buf.String(), nil
 }
 
+// HasSentWordOfTheDayEmail returns whether a word of the day email has already been sent to the user for the given day
+func (e *EmailService) HasSentWordOfTheDayEmail(ctx context.Context, userID int, date time.Time) (result bool, err error) {
+	ctx, span := otel.Tracer("email-service").Start(ctx, "HasSentWordOfTheDayEmail",
+		trace.WithAttributes(
+			attribute.Int("user.id", userID),
+			attribute.String("date", date.Format("2006-01-02")),
+		),
+	)
+	defer observability.FinishSpan(span, &err)
+
+	if e.db == nil {
+		err = contextutils.ErrorWithContextf("EmailService database connection is nil")
+		span.RecordError(err, trace.WithStackTrace(true))
+		return false, err
+	}
+
+	// Normalize the provided date to the start/end of day in the user's timezone
+	start := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, date.Location())
+	end := start.Add(24 * time.Hour)
+
+	const query = `
+		SELECT EXISTS(
+			SELECT 1
+			FROM sent_notifications
+			WHERE user_id = $1
+			  AND notification_type = 'word_of_the_day'
+			  AND status = 'sent'
+			  AND sent_at >= $2
+			  AND sent_at < $3
+		)
+	`
+
+	err = e.db.QueryRowContext(ctx, query, userID, start.UTC(), end.UTC()).Scan(&result)
+	if err != nil {
+		span.RecordError(err, trace.WithStackTrace(true))
+		return false, contextutils.WrapError(err, "failed to check word of the day email history")
+	}
+
+	span.SetAttributes(attribute.Bool("word_of_day.already_sent", result))
+
+	return result, nil
+}
+
 // SendWordOfTheDayEmail sends a word of the day email to a user
 func (e *EmailService) SendWordOfTheDayEmail(ctx context.Context, userID int, date time.Time, wordOfTheDay *models.WordOfTheDayDisplay) (err error) {
 	ctx, span := otel.Tracer("email-service").Start(ctx, "SendWordOfTheDayEmail",
@@ -412,7 +455,15 @@ func (e *EmailService) SendWordOfTheDayEmail(ctx context.Context, userID int, da
 
 	subject := fmt.Sprintf("Word of the Day: %s - %s", wordOfTheDay.Word, date.Format("January 2, 2006"))
 
-	return e.SendEmail(ctx, user.Email.String, subject, "word_of_the_day", data)
+	if err := e.SendEmail(ctx, user.Email.String, subject, "word_of_the_day", data); err != nil {
+		return contextutils.WrapError(err, "failed to send word of the day email")
+	}
+
+	if err := e.RecordSentNotification(ctx, userID, "word_of_the_day", subject, "word_of_the_day", "sent", ""); err != nil {
+		return contextutils.WrapError(err, "failed to record word of the day notification")
+	}
+
+	return nil
 }
 
 // generateWordOfTheDayTemplate generates the word of the day email template

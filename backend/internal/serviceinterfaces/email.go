@@ -16,6 +16,9 @@ type EmailService interface {
 	// SendWordOfTheDayEmail sends a word of the day email to a user
 	SendWordOfTheDayEmail(ctx context.Context, userID int, date time.Time, wordOfTheDay *models.WordOfTheDayDisplay) error
 
+	// HasSentWordOfTheDayEmail returns whether a word of the day email has already been sent to the user for the given day
+	HasSentWordOfTheDayEmail(ctx context.Context, userID int, date time.Time) (bool, error)
+
 	// SendEmail sends a generic email with the given parameters
 	SendEmail(ctx context.Context, to, subject, templateName string, data map[string]interface{}) error
 
