@@ -884,6 +884,38 @@ func TestLearningService_PriorityInsightsData_Integration(t *testing.T) {
 	assert.Equal(t, "grammar", grammarGap["topic"])
 	assert.Equal(t, float64(30), grammarGap["accuracy_percentage"])
 
+	userDistribution, err := learningService.GetUserPriorityScoreDistribution(ctx, user.ID)
+	require.NoError(t, err)
+	require.NotNil(t, userDistribution)
+	assert.Equal(t, 1, userDistribution["high"])
+	assert.Equal(t, 2, userDistribution["medium"])
+	assert.Equal(t, 0, userDistribution["low"])
+	avgScore, ok := userDistribution["average"].(float64)
+	require.True(t, ok)
+	assert.InDelta(t, 170.0, avgScore, 0.01)
+
+	highPriorityQuestions, err := learningService.GetUserHighPriorityQuestions(ctx, user.ID, 5)
+	require.NoError(t, err)
+	require.Len(t, highPriorityQuestions, 1)
+	assert.Equal(t, "grammar", highPriorityQuestions[0]["topic"])
+	score, ok := highPriorityQuestions[0]["priority_score"].(float64)
+	require.True(t, ok)
+	assert.Greater(t, score, 200.0)
+
+	weakAreas, err := learningService.GetUserWeakAreas(ctx, user.ID, 5)
+	require.NoError(t, err)
+	require.Len(t, weakAreas, 3)
+
+	firstTopic, ok := weakAreas[0]["topic"].(string)
+	require.True(t, ok)
+	assert.Equal(t, "grammar", firstTopic)
+	assert.Equal(t, 10, weakAreas[0]["total_attempts"])
+	assert.Equal(t, 3, weakAreas[0]["correct_attempts"])
+
+	secondTopic, ok := weakAreas[1]["topic"].(string)
+	require.True(t, ok)
+	assert.Equal(t, "listening", secondTopic)
+
 	confidence, err := learningService.GetUserQuestionConfidenceLevel(ctx, user.ID, questionIDs[0])
 	require.NoError(t, err)
 	require.NotNil(t, confidence)
