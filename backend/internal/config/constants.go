@@ -21,7 +21,7 @@ const (
 	SessionMaxAge = 7 * 24 * time.Hour // 7 days
 
 	// Worker timeouts
-	WorkerHeartbeatInterval = 60 * time.Second
+	WorkerHeartbeatInterval = 300 * time.Second
 	WorkerSleepDuration     = 100 * time.Millisecond
 
 	// Quiz timeouts
