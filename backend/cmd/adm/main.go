@@ -62,7 +62,7 @@ func main() {
 	cfg.OpenTelemetry.EnableLogging = false
 
 	// Setup observability (tracing/metrics/logging)
-	tp, mp, loggerInstance, err := observability.SetupObservability(&cfg.OpenTelemetry, "quiz-admin")
+	_, _, loggerInstance, err := observability.SetupObservability(&cfg.OpenTelemetry, "quiz-admin")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to initialize observability: %v\n", err)
 		os.Exit(1)
@@ -70,20 +70,6 @@ func main() {
 
 	// Store logger globally
 	logger = loggerInstance
-
-	// Defer cleanup
-	defer func() {
-		if tp != nil {
-			if err := tp.Shutdown(context.TODO()); err != nil {
-				logger.Warn(ctx, "Error shutting down tracer provider", map[string]interface{}{"error": err.Error(), "provider": "tracer"})
-			}
-		}
-		if mp != nil {
-			if err := mp.Shutdown(context.TODO()); err != nil {
-				logger.Warn(ctx, "Error shutting down meter provider", map[string]interface{}{"error": err.Error(), "provider": "meter"})
-			}
-		}
-	}()
 
 	// Initialize database manager
 	dbManager := database.NewManager(logger)

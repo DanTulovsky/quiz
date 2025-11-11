@@ -308,7 +308,7 @@ func main() {
 	// Setup observability (tracing/metrics). Suppress logger creation here to avoid startup noise.
 	originalLogging := cfg.OpenTelemetry.EnableLogging
 	cfg.OpenTelemetry.EnableLogging = false
-	tp, mp, _, err := observability.SetupObservability(&cfg.OpenTelemetry, "setup-test-db")
+	_, _, _, err = observability.SetupObservability(&cfg.OpenTelemetry, "setup-test-db")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to initialize observability: %v\n", err)
 		os.Exit(1)
@@ -322,18 +322,6 @@ func main() {
 	// Restore config flag for logger construction (to allow OTLP exporter if enabled)
 	cfg.OpenTelemetry.EnableLogging = originalLogging
 	logger := observability.NewLoggerWithLevel(&cfg.OpenTelemetry, logLevel)
-	defer func() {
-		if tp != nil {
-			if err := tp.Shutdown(context.TODO()); err != nil {
-				logger.Warn(ctx, "Error shutting down tracer provider", map[string]interface{}{"error": err.Error()})
-			}
-		}
-		if mp != nil {
-			if err := mp.Shutdown(context.TODO()); err != nil {
-				logger.Warn(ctx, "Error shutting down meter provider", map[string]interface{}{"error": err.Error()})
-			}
-		}
-	}()
 
 	// Get DB connection info from env or use defaults
 	dbUser := "quiz_user"

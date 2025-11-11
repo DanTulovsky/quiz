@@ -365,6 +365,7 @@ type OpenTelemetryConfig struct {
 	EnableMetrics  bool              `json:"enable_metrics" yaml:"enable_metrics"`   // Default: true
 	EnableLogging  bool              `json:"enable_logging" yaml:"enable_logging"`   // Default: true (future)
 	SamplingRate   float64           `json:"sampling_rate" yaml:"sampling_rate"`     // Default: 1.0 (100%)
+	UseAutoSDK     bool              `json:"use_auto_sdk" yaml:"use_auto_sdk"`       // Default: false - when true, uses Auto SDK TracerProvider instead of manual setup
 }
 
 // DatabaseConfig represents database configuration

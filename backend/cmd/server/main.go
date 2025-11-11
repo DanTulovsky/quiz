@@ -170,26 +170,11 @@ func main() {
 	}
 
 	// Setup observability (tracing/metrics/logging)
-	tp, mp, logger, err := observability.SetupObservability(&cfg.OpenTelemetry, "quiz-backend")
+	_, _, logger, err := observability.SetupObservability(&cfg.OpenTelemetry, "quiz-backend")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to initialize observability: %v\n", err)
 		os.Exit(1)
 	}
-	defer func() {
-		shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 5*time.Second)
-		defer shutdownCancel()
-
-		if tp != nil {
-			if err := tp.Shutdown(shutdownCtx); err != nil {
-				logger.Warn(ctx, "Error shutting down tracer provider", map[string]interface{}{"error": err.Error(), "provider": "tracer"})
-			}
-		}
-		if mp != nil {
-			if err := mp.Shutdown(shutdownCtx); err != nil {
-				logger.Warn(ctx, "Error shutting down meter provider", map[string]interface{}{"error": err.Error(), "provider": "meter"})
-			}
-		}
-	}()
 
 	logger.Info(ctx, "Starting quiz backend service", map[string]interface{}{
 		"port":     cfg.Server.Port,

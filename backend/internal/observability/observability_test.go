@@ -42,6 +42,9 @@ func TestSetupObservability_NoneEnabled(t *testing.T) {
 	require.Nil(t, tp)
 	require.Nil(t, mp)
 	require.NotNil(t, logger) // Logger is always returned (no-op when disabled)
+	// // Check that the tracer provider is a noop (no-op) implementation
+	// _, isNoop := tp.(noop.TracerProvider)
+	// require.True(t, isNoop, "expected tp to be a noop.TracerProvider when tracing is disabled")
 }
 
 func TestLogger_TraceCorrelation(_ *testing.T) {

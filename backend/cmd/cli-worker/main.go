@@ -53,23 +53,11 @@ func main() {
 	}
 
 	// Setup observability (tracing/metrics/logging)
-	tp, mp, logger, err := observability.SetupObservability(&cfg.OpenTelemetry, "quiz-cli-worker")
+	_, _, logger, err := observability.SetupObservability(&cfg.OpenTelemetry, "quiz-cli-worker")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to initialize observability: %v\n", err)
 		os.Exit(1)
 	}
-	defer func() {
-		if tp != nil {
-			if err := tp.Shutdown(context.TODO()); err != nil {
-				logger.Warn(ctx, "Error shutting down tracer provider", map[string]interface{}{"error": err.Error()})
-			}
-		}
-		if mp != nil {
-			if err := mp.Shutdown(context.TODO()); err != nil {
-				logger.Warn(ctx, "Error shutting down meter provider", map[string]interface{}{"error": err.Error()})
-			}
-		}
-	}()
 
 	logger.Info(ctx, "Starting quiz CLI worker", map[string]interface{}{
 		"username":      *username,

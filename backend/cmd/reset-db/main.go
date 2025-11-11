@@ -33,23 +33,11 @@ func main() {
 	}
 
 	// Setup observability (tracing/metrics/logging)
-	tp, mp, logger, err := observability.SetupObservability(&cfg.OpenTelemetry, "reset-db")
+	_, _, logger, err := observability.SetupObservability(&cfg.OpenTelemetry, "reset-db")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to initialize observability: %v\n", err)
 		os.Exit(1)
 	}
-	defer func() {
-		if tp != nil {
-			if err := tp.Shutdown(context.TODO()); err != nil {
-				logger.Warn(ctx, "Error shutting down tracer provider", map[string]interface{}{"error": err.Error(), "provider": "tracer"})
-			}
-		}
-		if mp != nil {
-			if err := mp.Shutdown(context.TODO()); err != nil {
-				logger.Warn(ctx, "Error shutting down meter provider", map[string]interface{}{"error": err.Error(), "provider": "meter"})
-			}
-		}
-	}()
 
 	fmt.Println("⚠️  DATABASE RESET UTILITY ⚠️")
 	fmt.Println("=============================")
