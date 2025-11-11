@@ -40,6 +40,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
   onView,
   onRemoveBookmark,
 }) => {
+  const { fontSize } = useTheme();
   const messageText =
     typeof message.content === 'string'
       ? message.content

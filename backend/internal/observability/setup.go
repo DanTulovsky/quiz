@@ -3,6 +3,7 @@ package observability
 import (
 	"context"
 	"os"
+
 	"quizapp/internal/config"
 
 	autosdk "go.opentelemetry.io/auto/sdk"
@@ -21,8 +22,12 @@ func SetupObservability(cfg *config.OpenTelemetryConfig, serviceName string) (re
 	var mp *metric.MeterProvider
 	var logger *Logger
 
-	os.Setenv("OTEL_SERVICE_NAME", cfg.ServiceName)
-	os.Setenv("OTEL_SERVICE_VERSION", cfg.ServiceVersion)
+	if err := os.Setenv("OTEL_SERVICE_NAME", cfg.ServiceName); err != nil {
+		return nil, nil, nil, err
+	}
+	if err := os.Setenv("OTEL_SERVICE_VERSION", cfg.ServiceVersion); err != nil {
+		return nil, nil, nil, err
+	}
 
 	if cfg.EnableLogging {
 		logger = NewLogger(cfg)

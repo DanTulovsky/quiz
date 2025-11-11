@@ -312,4 +312,3 @@ func TestRequireAdmin_Unauthenticated(t *testing.T) {
 	assert.Equal(t, http.StatusUnauthorized, w.Code)
 	assert.Empty(t, mockAdmin.lastUserID)
 }
-

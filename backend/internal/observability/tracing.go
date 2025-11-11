@@ -8,7 +8,7 @@ import (
 )
 
 // InitTracing initializes OpenTelemetry tracing
-func InitTracing(cfg *config.OpenTelemetryConfig) (err error) {
+func InitTracing(_ *config.OpenTelemetryConfig) (err error) {
 	// ctx := context.Background()
 
 	// // Set up resource attributes
