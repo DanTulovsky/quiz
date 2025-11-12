@@ -8,6 +8,7 @@ services:
       - POSTGRES_USER=${POSTGRES_USER:-quiz_user}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-quiz_password}
       - POSTGRES_HOST_AUTH_METHOD=trust
+      - OTEL_SERVICE_NAME=quiz-postgres
     ports:
       - "5432:5432"
     restart: unless-stopped
