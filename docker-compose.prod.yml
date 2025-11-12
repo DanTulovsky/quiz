@@ -73,6 +73,7 @@ services:
       - EMAIL_DAILY_REMINDER_HOUR=${EMAIL_DAILY_REMINDER_HOUR:-9}
       - OTEL_SEMCONV_STABILITY_OPT_IN=http/dup
       - SERVER_APP_BASE_URL=${SERVER_APP_BASE_URL:-http://localhost:3000}
+      - OTEL_SERVICE_NAME=quiz-backend
     healthcheck:
       test:
         [
@@ -130,6 +131,7 @@ services:
       - EMAIL_DAILY_REMINDER_ENABLED=${EMAIL_DAILY_REMINDER_ENABLED:-true}
       - EMAIL_DAILY_REMINDER_HOUR=${EMAIL_DAILY_REMINDER_HOUR:-9}
       - OTEL_SEMCONV_STABILITY_OPT_IN=http/dup
+      - OTEL_SERVICE_NAME=quiz-worker
     healthcheck:
       test:
         [
@@ -154,6 +156,8 @@ services:
       backend:
         condition: service_healthy
     restart: unless-stopped
+    environment:
+      OTEL_SERVICE_NAME: "quiz-frontend"
     env_file:
       - .env
     healthcheck:
