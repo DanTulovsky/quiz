@@ -158,7 +158,7 @@ services:
         condition: service_healthy
     restart: unless-stopped
     environment:
-      OTEL_SERVICE_NAME: "quiz-frontend"
+      OTEL_SERVICE_NAME: "quiz-nginx"
     env_file:
       - .env
     healthcheck:
