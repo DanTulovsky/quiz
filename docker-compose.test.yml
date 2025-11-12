@@ -133,7 +133,7 @@ services:
         BUILDKIT_INLINE_CACHE: 1
         NODE_ENV: production
     ports:
-      - "${FRONTEND_PORT:-3001}:80"
+      - "${FRONTEND_PORT:-3001}:8066"
     volumes:
       - ./nginx/snippets/off:/etc/nginx/snippets:ro
     depends_on:

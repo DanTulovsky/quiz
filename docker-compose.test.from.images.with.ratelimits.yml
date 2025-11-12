@@ -124,7 +124,7 @@ services:
   frontend-test:
     image: mrwetsnow/quiz-frontend:${IMAGE_TAG:-latest}
     ports:
-      - "${FRONTEND_PORT:-3001}:80"
+      - "${FRONTEND_PORT:-3001}:8066"
     depends_on:
       backend-test:
         condition: service_healthy

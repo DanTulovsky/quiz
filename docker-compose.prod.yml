@@ -152,7 +152,7 @@ services:
   frontend:
     image: mrwetsnow/quiz-frontend:${IMAGE_TAG:-latest}
     ports:
-      - "${FRONTEND_PORT:-3000}:80"
+      - "${FRONTEND_PORT:-3000}:8066"
     depends_on:
       backend:
         condition: service_healthy
