@@ -199,6 +199,10 @@ services:
       EXPAND_API: ${TTS_EXPAND_API:-True}
       DETAILED_ERROR_LOGGING: ${TTS_DETAILED_ERROR_LOGGING:-True}
       DEBUG_STREAMING: ${DEBUG_STREAMING:-false}
+      OTEL_SERVICE_NAME: "quiz-tts"
+      OTEL_TRACES_EXPORTER: "otlp"
+      OTEL_METRICS_EXPORTER: "otlp"
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: ${OPEN_TELEMETRY_ENDPOINT:-otel-collector:4317}
 
 volumes:
   postgres_prod_data:
