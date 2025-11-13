@@ -469,95 +469,12 @@ func TestSwaggerResponsesUseComponentRefs(t *testing.T) {
 		}
 	}
 
-	expectedViolations := map[string]string{
-		"POST /v1/admin/worker/users/resume 200":                                     "inline object schema",
-		"GET /v1/admin/backend/userz/paginated 200":                                  "inline object schema",
-		"GET /v1/admin/worker/logs 200":                                              "inline object schema",
-		"POST /v1/admin/backend/userz/{id}/reset-password 200":                       "inline object schema",
-		"GET /v1/ai/search 200":                                                      "inline object schema",
-		"POST /v1/audio/speech/init 200":                                             "inline object schema",
-		"GET /v1/word-of-day/history 200":                                            "inline object schema",
-		"GET /v1/daily/dates 200":                                                    "inline object schema",
-		"POST /v1/daily/questions/{date}/answer/{questionId} 200":                    "schema missing $ref and type",
-		"POST /v1/admin/backend/questions/{id}/assign-users 200":                     "inline object schema",
-		"POST /v1/admin/backend/userz/{id}/clear 200":                                "inline object schema",
-		"GET /v1/ai/bookmarks 200":                                                   "inline object schema",
-		"POST /v1/admin/worker/daily/users/{userId}/questions/{date}/regenerate 200": "inline object schema",
-		"POST /v1/admin/worker/pause 200":                                            "inline object schema",
-		"GET /v1/admin/worker/notifications/sent 200":                                "inline object schema",
-		"GET /v1/admin/worker/analytics/priority-scores 200":                         "inline object schema",
-		"POST /v1/admin/backend/questions/{id}/fix 200":                              "inline object schema",
-		"GET /v1/snippets/search 200":                                                "inline object schema",
-		"GET /v1/admin/backend/questions 200":                                        "inline object schema",
-		"GET /v1/daily/history/{questionId} 200":                                     "inline object schema",
-		"POST /v1/admin/backend/questions/{id}/unassign-users 200":                   "inline object schema",
-		"POST /v1/admin/backend/questions/{id}/ai-fix 200":                           "inline object schema",
-		"DELETE /v1/admin/backend/feedback 200":                                      "inline object schema",
-		"POST /v1/admin/backend/clear-user-data 200":                                 "inline object schema",
-		"GET /v1/daily/questions/{date} 200":                                         "inline object schema",
-		"GET /v1/admin/backend/userz 200":                                            "inline object schema",
-		"POST /v1/admin/backend/userz 201":                                           "inline object schema",
-		"GET /v1/admin/backend/questions/{id}/users 200":                             "inline object schema",
-		"POST /v1/admin/worker/trigger 200":                                          "inline object schema",
-		"GET /v1/admin/backend/questions/paginated 200":                              "inline object schema",
-		"POST /v1/admin/worker/users/pause 200":                                      "inline object schema",
-		"GET /health 200":                                                            "inline object schema",
-		"GET /health 503":                                                            "inline object schema",
-		"PUT /v1/ai/conversations/bookmark 200":                                      "inline object schema",
-		"GET /v1/admin/worker/users 200":                                             "inline object schema",
-		"PUT /v1/userz/profile 200":                                                  "inline object schema",
-		"GET /v1/admin/worker/notifications/errors 200":                              "inline object schema",
-		"PUT /v1/admin/backend/questions/{id} 200":                                   "inline object schema",
-		"DELETE /v1/admin/backend/questions/{id} 200":                                "inline object schema",
-		"GET /v1/admin/backend/userz/{id}/roles 200":                                 "inline object schema",
-		"POST /v1/admin/backend/userz/{id}/roles 200":                                "inline object schema",
-		"DELETE /v1/admin/backend/userz/{id}/roles/{roleId} 200":                     "inline object schema",
-		"POST /v1/admin/worker/resume 200":                                           "inline object schema",
-		"POST /v1/admin/backend/clear-database 200":                                  "inline object schema",
-		"GET /v1/ai/conversations 200":                                               "inline object schema",
-		"GET /v1/admin/worker/ai-concurrency 200":                                    "inline object schema",
-		"GET /v1/admin/worker/daily/users/{userId}/questions/{date} 200":             "inline object schema",
-		"GET /v1/admin/backend/roles 200":                                            "inline object schema",
-		"PUT /v1/admin/backend/userz/{id} 200":                                       "inline object schema",
-		"DELETE /v1/admin/backend/userz/{id} 200":                                    "inline object schema",
-		"GET /v1/admin/worker/details 200":                                           "inline object schema",
-		"GET /v1/admin/backend/reported-questions 200":                               "inline object schema",
-		"GET /v1/admin/backend/stories 200":                                          "inline object schema",
-	}
-
-	if len(violations) == 0 && len(expectedViolations) == 0 {
-		return
-	}
-
-	var unexpected []string
-	for key, reason := range violations {
-		expectedReason, ok := expectedViolations[key]
-		if !ok {
-			unexpected = append(unexpected, fmt.Sprintf("%s (%s)", key, reason))
-			continue
+	if len(violations) > 0 {
+		var report []string
+		for key, reason := range violations {
+			report = append(report, fmt.Sprintf("%s (%s)", key, reason))
 		}
-		if expectedReason != reason {
-			unexpected = append(unexpected, fmt.Sprintf("%s (expected %s, got %s)", key, expectedReason, reason))
-		}
-	}
-
-	var missing []string
-	for key, reason := range expectedViolations {
-		if _, ok := violations[key]; !ok {
-			missing = append(missing, fmt.Sprintf("%s (%s)", key, reason))
-		}
-	}
-
-	if len(unexpected) > 0 || len(missing) > 0 {
-		sort.Strings(unexpected)
-		sort.Strings(missing)
-		message := "Swagger inline response schema check failed."
-		if len(unexpected) > 0 {
-			message += "\nUnexpected inline schemas:\n" + strings.Join(unexpected, "\n")
-		}
-		if len(missing) > 0 {
-			message += "\nExpected inline schemas no longer present:\n" + strings.Join(missing, "\n")
-		}
-		t.Fatalf("%s", message)
+		sort.Strings(report)
+		t.Fatalf("%s\n%s", "Swagger inline response schema check failed: add components for these responses", strings.Join(report, "\n"))
 	}
 }
