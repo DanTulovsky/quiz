@@ -1064,7 +1064,13 @@ const MobileStoryQuestionCard: React.FC<MobileStoryQuestionCardProps> = ({
 
   return (
     <Paper p='sm' radius='sm' style={{ backgroundColor: '#f8f9fa' }}>
-      <Text size='sm' fw={500} mb='xs'>
+      <Text
+        size='sm'
+        fw={500}
+        mb='xs'
+        data-allow-translate='true'
+        data-selectable-text='true'
+      >
         {question.question_text}
       </Text>
 
@@ -1080,7 +1086,12 @@ const MobileStoryQuestionCard: React.FC<MobileStoryQuestionCardProps> = ({
               onChange={() => setSelectedAnswer(index)}
               disabled={showResult}
             />
-            <label htmlFor={`option-${index}`} style={{ marginLeft: 8 }}>
+            <label
+              htmlFor={`option-${index}`}
+              style={{ marginLeft: 8 }}
+              data-allow-translate='true'
+              data-selectable-text='true'
+            >
               {option}
             </label>
           </div>
@@ -1119,7 +1130,13 @@ const MobileStoryQuestionCard: React.FC<MobileStoryQuestionCardProps> = ({
 
       {showResult && question.explanation && (
         <Alert color='blue' variant='light' mt='xs'>
-          <Text size='xs'>{question.explanation}</Text>
+          <Text
+            size='xs'
+            data-allow-translate='true'
+            data-selectable-text='true'
+          >
+            {question.explanation}
+          </Text>
         </Alert>
       )}
     </Paper>

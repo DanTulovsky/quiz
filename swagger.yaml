@@ -1417,12 +1417,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  snippets:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/Snippet"
+                $ref: "#/components/schemas/SnippetsResponse"
         "401":
           description: User not authenticated
           content:
@@ -1457,12 +1452,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  snippets:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/Snippet"
+                $ref: "#/components/schemas/SnippetsResponse"
         "401":
           description: User not authenticated
           content:
@@ -1497,12 +1487,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  snippets:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/Snippet"
+                $ref: "#/components/schemas/SnippetsResponse"
         "401":
           description: User not authenticated
           content:
@@ -8752,6 +8737,16 @@ components:
           type: string
           format: date-time
           example: "2025-01-15T10:30:00Z"
+
+    SnippetsResponse:
+      type: object
+      properties:
+        snippets:
+          type: array
+          items:
+            $ref: "#/components/schemas/Snippet"
+      required:
+        - snippets
 
     SnippetList:
       type: object

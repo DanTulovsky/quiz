@@ -747,7 +747,7 @@ const MobileDailyPage: React.FC = () => {
             marginTop: '16px',
           }}
         >
-          <Group justify='space-between' gap='xs'>
+          <Group justify='space-between' gap='xs' wrap='nowrap'>
             <Button
               onClick={() => handleReport()}
               disabled={isReported || reportMutation.isPending}
@@ -755,7 +755,12 @@ const MobileDailyPage: React.FC = () => {
               color='gray'
               size='xs'
               data-testid='report-question-btn'
-              style={{ flex: 1, minWidth: 0, whiteSpace: 'normal' }}
+              style={{
+                flex: 1,
+                minWidth: 'fit-content',
+                flexShrink: 0,
+                whiteSpace: 'nowrap',
+              }}
             >
               {isReported ? 'Reported' : 'Report issue'}
             </Button>
@@ -766,7 +771,12 @@ const MobileDailyPage: React.FC = () => {
               color='gray'
               size='xs'
               data-testid='mark-known-btn'
-              style={{ flex: 1, minWidth: 0, whiteSpace: 'normal' }}
+              style={{
+                flex: 1,
+                minWidth: 'fit-content',
+                flexShrink: 0,
+                whiteSpace: 'nowrap',
+              }}
             >
               Adjust frequency
             </Button>

@@ -2284,6 +2284,10 @@ export interface Snippet {
   updated_at?: string;
 }
 
+export interface SnippetsResponse {
+  snippets: Snippet[];
+}
+
 export interface SnippetList {
   snippets?: Snippet[];
   /** Total number of snippets matching the query */
@@ -2658,18 +2662,6 @@ export type GetV1SnippetsSearch200 = {
   limit?: number;
   /** Number of snippets skipped */
   offset?: number;
-};
-
-export type GetV1SnippetsByQuestionQuestionId200 = {
-  snippets?: Snippet[];
-};
-
-export type GetV1SnippetsBySectionSectionId200 = {
-  snippets?: Snippet[];
-};
-
-export type GetV1SnippetsByStoryStoryId200 = {
-  snippets?: Snippet[];
 };
 
 export type PutV1UserzProfile200 = {
@@ -6590,7 +6582,7 @@ export const getV1SnippetsByQuestionQuestionId = (
 ) => {
       
       
-      return customInstance<GetV1SnippetsByQuestionQuestionId200>(
+      return customInstance<SnippetsResponse>(
       {url: `/v1/snippets/by-question/${questionId}`, method: 'GET', signal
     },
       options);
@@ -6684,7 +6676,7 @@ export const getV1SnippetsBySectionSectionId = (
 ) => {
       
       
-      return customInstance<GetV1SnippetsBySectionSectionId200>(
+      return customInstance<SnippetsResponse>(
       {url: `/v1/snippets/by-section/${sectionId}`, method: 'GET', signal
     },
       options);
@@ -6778,7 +6770,7 @@ export const getV1SnippetsByStoryStoryId = (
 ) => {
       
       
-      return customInstance<GetV1SnippetsByStoryStoryId200>(
+      return customInstance<SnippetsResponse>(
       {url: `/v1/snippets/by-story/${storyId}`, method: 'GET', signal
     },
       options);
@@ -15315,11 +15307,11 @@ export const getGetV1SnippetsResponseMock = (overrideResponse: Partial< SnippetL
 
 export const getGetV1SnippetsSearchResponseMock = (overrideResponse: Partial< GetV1SnippetsSearch200 > = {}): GetV1SnippetsSearch200 => ({snippets: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), original_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), translated_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), source_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), target_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), question_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), section_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), story_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), context: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), difficulty_level: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), created_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), updated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined])})), undefined]), query: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), total: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), limit: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), offset: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), ...overrideResponse})
 
-export const getGetV1SnippetsByQuestionQuestionIdResponseMock = (overrideResponse: Partial< GetV1SnippetsByQuestionQuestionId200 > = {}): GetV1SnippetsByQuestionQuestionId200 => ({snippets: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), original_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), translated_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), source_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), target_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), question_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), section_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), story_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), context: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), difficulty_level: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), created_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), updated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined])})), undefined]), ...overrideResponse})
+export const getGetV1SnippetsByQuestionQuestionIdResponseMock = (overrideResponse: Partial< SnippetsResponse > = {}): SnippetsResponse => ({snippets: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), original_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), translated_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), source_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), target_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), question_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), section_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), story_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), context: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), difficulty_level: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), created_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), updated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined])})), ...overrideResponse})
 
-export const getGetV1SnippetsBySectionSectionIdResponseMock = (overrideResponse: Partial< GetV1SnippetsBySectionSectionId200 > = {}): GetV1SnippetsBySectionSectionId200 => ({snippets: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), original_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), translated_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), source_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), target_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), question_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), section_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), story_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), context: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), difficulty_level: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), created_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), updated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined])})), undefined]), ...overrideResponse})
+export const getGetV1SnippetsBySectionSectionIdResponseMock = (overrideResponse: Partial< SnippetsResponse > = {}): SnippetsResponse => ({snippets: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), original_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), translated_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), source_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), target_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), question_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), section_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), story_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), context: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), difficulty_level: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), created_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), updated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined])})), ...overrideResponse})
 
-export const getGetV1SnippetsByStoryStoryIdResponseMock = (overrideResponse: Partial< GetV1SnippetsByStoryStoryId200 > = {}): GetV1SnippetsByStoryStoryId200 => ({snippets: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), original_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), translated_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), source_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), target_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), question_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), section_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), story_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), context: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), difficulty_level: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), created_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), updated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined])})), undefined]), ...overrideResponse})
+export const getGetV1SnippetsByStoryStoryIdResponseMock = (overrideResponse: Partial< SnippetsResponse > = {}): SnippetsResponse => ({snippets: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), original_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), translated_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), source_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), target_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), question_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), section_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), story_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), context: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), difficulty_level: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), created_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), updated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined])})), ...overrideResponse})
 
 export const getGetV1SnippetsIdResponseMock = (overrideResponse: Partial< Snippet > = {}): Snippet => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), original_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), translated_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), source_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), target_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), question_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), section_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), story_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), context: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), difficulty_level: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), created_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), updated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), ...overrideResponse})
 
@@ -16030,7 +16022,7 @@ export const getGetV1SnippetsSearchMockHandler = (overrideResponse?: GetV1Snippe
   }, options)
 }
 
-export const getGetV1SnippetsByQuestionQuestionIdMockHandler = (overrideResponse?: GetV1SnippetsByQuestionQuestionId200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1SnippetsByQuestionQuestionId200> | GetV1SnippetsByQuestionQuestionId200), options?: RequestHandlerOptions) => {
+export const getGetV1SnippetsByQuestionQuestionIdMockHandler = (overrideResponse?: SnippetsResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<SnippetsResponse> | SnippetsResponse), options?: RequestHandlerOptions) => {
   return http.get('*/v1/snippets/by-question/:questionId', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16042,7 +16034,7 @@ export const getGetV1SnippetsByQuestionQuestionIdMockHandler = (overrideResponse
   }, options)
 }
 
-export const getGetV1SnippetsBySectionSectionIdMockHandler = (overrideResponse?: GetV1SnippetsBySectionSectionId200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1SnippetsBySectionSectionId200> | GetV1SnippetsBySectionSectionId200), options?: RequestHandlerOptions) => {
+export const getGetV1SnippetsBySectionSectionIdMockHandler = (overrideResponse?: SnippetsResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<SnippetsResponse> | SnippetsResponse), options?: RequestHandlerOptions) => {
   return http.get('*/v1/snippets/by-section/:sectionId', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16054,7 +16046,7 @@ export const getGetV1SnippetsBySectionSectionIdMockHandler = (overrideResponse?:
   }, options)
 }
 
-export const getGetV1SnippetsByStoryStoryIdMockHandler = (overrideResponse?: GetV1SnippetsByStoryStoryId200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1SnippetsByStoryStoryId200> | GetV1SnippetsByStoryStoryId200), options?: RequestHandlerOptions) => {
+export const getGetV1SnippetsByStoryStoryIdMockHandler = (overrideResponse?: SnippetsResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<SnippetsResponse> | SnippetsResponse), options?: RequestHandlerOptions) => {
   return http.get('*/v1/snippets/by-story/:storyId', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined

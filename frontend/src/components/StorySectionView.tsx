@@ -1,12 +1,12 @@
-import React, { useEffect } from 'react';
-import { Tooltip, Box } from '@mantine/core';
-import { defaultVoiceForLanguage } from '../utils/tts';
-import { useGetV1PreferencesLearning } from '../api/api';
-import { useTheme } from '../contexts/ThemeContext';
-import { fontScaleMap } from '../theme/theme';
-import { SnippetHighlighter } from './SnippetHighlighter';
-import { useSectionSnippets } from '../hooks/useSectionSnippets';
-import { useTTS } from '../hooks/useTTS';
+import React, {useEffect} from 'react';
+import {Tooltip, Box} from '@mantine/core';
+import {defaultVoiceForLanguage} from '../utils/tts';
+import {useGetV1PreferencesLearning} from '../api/api';
+import {useTheme} from '../contexts/ThemeContext';
+import {fontScaleMap} from '../theme/theme';
+import {SnippetHighlighter} from './SnippetHighlighter';
+import {useSectionSnippets} from '../hooks/useSectionSnippets';
+import {useTTS} from '../hooks/useTTS';
 import TTSButton from './TTSButton';
 import {
   Paper,
@@ -69,16 +69,16 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
   storyLanguage,
 }) => {
   // Get user learning preferences for preferred voice
-  const { data: userLearningPrefs } = useGetV1PreferencesLearning();
+  const {data: userLearningPrefs} = useGetV1PreferencesLearning();
 
   // Get font size from theme context
-  const { fontSize } = useTheme();
+  const {fontSize} = useTheme();
 
   // Get snippets for this specific section
-  const { snippets } = useSectionSnippets(section?.id);
+  const {snippets} = useSectionSnippets(section?.id);
 
   // Stop TTS audio when switching sections
-  const { stopTTS } = useTTS();
+  const {stopTTS} = useTTS();
   useEffect(() => {
     return () => {
       stopTTS();
@@ -87,8 +87,8 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
 
   if (!section) {
     return (
-      <Paper p='xl' radius='md' style={{ textAlign: 'center' }}>
-        <IconBook size={48} style={{ opacity: 0.5, marginBottom: 16 }} />
+      <Paper p='xl' radius='md' style={{textAlign: 'center'}}>
+        <IconBook size={48} style={{opacity: 0.5, marginBottom: 16}} />
         <Title order={4}>No section to display</Title>
         <Text color='dimmed'>
           Create a new story or select a section to view.
@@ -144,7 +144,7 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
             <Text
               size='sm'
               color='dimmed'
-              style={{ minWidth: '80px', textAlign: 'center' }}
+              style={{minWidth: '80px', textAlign: 'center'}}
             >
               {sectionIndex + 1} of {totalSections}
             </Text>
@@ -180,8 +180,8 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
       </Paper>
 
       {/* Section Content */}
-      <Paper p='lg' radius='md' style={{ position: 'relative' }}>
-        <Box style={{ position: 'absolute', top: 12, right: 12, zIndex: 10 }}>
+      <Paper p='lg' radius='md' style={{position: 'relative'}}>
+        <Box style={{position: 'absolute', top: 12, right: 12, zIndex: 10}}>
           <TTSButton
             getText={() => section.content || ''}
             getVoice={() => {
@@ -221,7 +221,7 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
 
       {/* Comprehension Questions */}
       {sectionWithQuestions?.questions &&
-      sectionWithQuestions.questions.length > 0 ? (
+        sectionWithQuestions.questions.length > 0 ? (
         <Paper p='md' radius='md'>
           <Title order={5} mb='sm'>
             Comprehension Questions
@@ -275,7 +275,7 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
             <Text
               size='sm'
               color='dimmed'
-              style={{ minWidth: '80px', textAlign: 'center' }}
+              style={{minWidth: '80px', textAlign: 'center'}}
             >
               {sectionIndex + 1} of {totalSections}
             </Text>
@@ -351,7 +351,7 @@ interface StoryQuestionCardProps {
   question: StorySectionQuestion;
 }
 
-const StoryQuestionCard: React.FC<StoryQuestionCardProps> = ({ question }) => {
+const StoryQuestionCard: React.FC<StoryQuestionCardProps> = ({question}) => {
   const [selectedAnswer, setSelectedAnswer] = React.useState<number | null>(
     null
   );
@@ -367,8 +367,14 @@ const StoryQuestionCard: React.FC<StoryQuestionCardProps> = ({ question }) => {
   };
 
   return (
-    <Paper p='sm' radius='sm' style={{ backgroundColor: '#f8f9fa' }}>
-      <Text size='sm' weight={500} mb='xs'>
+    <Paper p='sm' radius='sm' style={{backgroundColor: '#f8f9fa'}}>
+      <Text
+        size='sm'
+        weight={500}
+        mb='xs'
+        data-allow-translate='true'
+        data-selectable-text='true'
+      >
         {question.question_text}
       </Text>
 
@@ -384,7 +390,12 @@ const StoryQuestionCard: React.FC<StoryQuestionCardProps> = ({ question }) => {
               onChange={() => setSelectedAnswer(index)}
               disabled={showResult}
             />
-            <label htmlFor={`option-${index}`} style={{ marginLeft: 8 }}>
+            <label
+              htmlFor={`option-${index}`}
+              style={{marginLeft: 8}}
+              data-allow-translate='true'
+              data-selectable-text='true'
+            >
               {option}
             </label>
           </div>
@@ -423,7 +434,13 @@ const StoryQuestionCard: React.FC<StoryQuestionCardProps> = ({ question }) => {
 
       {showResult && question.explanation && (
         <Alert color='blue' variant='light' mt='xs'>
-          <Text size='xs'>{question.explanation}</Text>
+          <Text
+            size='xs'
+            data-allow-translate='true'
+            data-selectable-text='true'
+          >
+            {question.explanation}
+          </Text>
         </Alert>
       )}
     </Paper>

@@ -1284,6 +1284,11 @@ type SnippetList struct {
 	Total *int `json:"total,omitempty"`
 }
 
+// SnippetsResponse defines model for SnippetsResponse.
+type SnippetsResponse struct {
+	Snippets []Snippet `json:"snippets"`
+}
+
 // Story defines model for Story.
 type Story struct {
 	AuthorStyle *string `json:"author_style"`
