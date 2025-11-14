@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // This file intentionally uses `any` in a few places for flexible table/data handling.
 
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, {useState, useEffect, useMemo, useRef} from 'react';
 import {
   Container,
   Title,
@@ -53,11 +53,11 @@ const IconAlertCircle: React.ComponentType<any> =
   tablerIconMap.IconAlertCircle || (() => null);
 const IconInfoCircle: React.ComponentType<any> =
   tablerIconMap.IconInfoCircle || (() => null);
-import { useAuth } from '../../hooks/useAuth';
-import { Navigate } from 'react-router-dom';
-import { useTheme } from '../../contexts/ThemeContext';
-import { fontScaleMap } from '../../theme/theme';
-import { notifications } from '@mantine/notifications';
+import {useAuth} from '../../hooks/useAuth';
+import {Navigate} from 'react-router-dom';
+import {useTheme} from '../../contexts/ThemeContext';
+import {fontScaleMap} from '../../theme/theme';
+import {notifications} from '@mantine/notifications';
 import {
   useAllQuestions,
   useReportedQuestions,
@@ -74,7 +74,7 @@ import {
   useUsersForQuestion,
   QuestionWithStats,
 } from '../../api/admin';
-import { formatDateCreated } from '../../utils/time';
+import {formatDateCreated} from '../../utils/time';
 import AIFixModal from '../../components/AIFixModal';
 // AXIOS_INSTANCE no longer used; generated API client hooks are used instead
 import {
@@ -89,8 +89,8 @@ interface LevelsApiResponse {
 }
 
 const DataExplorerPage: React.FC = () => {
-  const { user, isAuthenticated } = useAuth();
-  const { fontSize } = useTheme();
+  const {user, isAuthenticated} = useAuth();
+  const {fontSize} = useTheme();
 
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedQuestion, setSelectedQuestion] =
@@ -130,8 +130,8 @@ const DataExplorerPage: React.FC = () => {
   const pageSize = 20;
 
   // API hooks for languages and levels
-  const { data: languagesData } = useGetV1SettingsLanguages();
-  const { data: levelsData } = useGetV1SettingsLevels<LevelsApiResponse>({
+  const {data: languagesData} = useGetV1SettingsLanguages();
+  const {data: levelsData} = useGetV1SettingsLevels<LevelsApiResponse>({
     language: questionFilters.language || undefined,
   });
 
@@ -249,7 +249,7 @@ const DataExplorerPage: React.FC = () => {
   if (isLoading) {
     return (
       <Container size='xl' py='md'>
-        <Center style={{ height: '50vh' }}>
+        <Center style={{height: '50vh'}}>
           <Loader size='lg' data-testid='loader' />
         </Center>
       </Container>
@@ -379,7 +379,7 @@ const DataExplorerPage: React.FC = () => {
           payloadContent = payloadContent['content'] as Record<string, unknown>;
         }
       } else {
-        payloadContent = { ...suggestionRaw };
+        payloadContent = {...suggestionRaw};
         // Remove top-level ai metadata if present
         delete payloadContent['change_reason'];
       }
@@ -431,7 +431,7 @@ const DataExplorerPage: React.FC = () => {
       setAISuggestion(null);
     } catch (errUnknown) {
       const message = extractErrorMessage(errUnknown);
-      notifications.show({ title: 'Error', message, color: 'red' });
+      notifications.show({title: 'Error', message, color: 'red'});
     } finally {
       setAILoading(false);
     }
@@ -444,10 +444,10 @@ const DataExplorerPage: React.FC = () => {
       correct_answer?: number;
       explanation?: string;
     },
-    opts: { showNotification?: boolean } = { showNotification: true }
+    opts: {showNotification?: boolean} = {showNotification: true}
   ) => {
     try {
-      await updateQuestionMutation.mutateAsync({ questionId, data });
+      await updateQuestionMutation.mutateAsync({questionId, data});
       if (opts.showNotification !== false) {
         notifications.show({
           title: 'Success',
@@ -476,7 +476,7 @@ const DataExplorerPage: React.FC = () => {
       </Text>
 
       {/* Summary Statistics */}
-      <SimpleGrid cols={{ base: 1, sm: 3 }} mb='xl'>
+      <SimpleGrid cols={{base: 1, sm: 3}} mb='xl'>
         <Paper p='md' withBorder>
           <Group>
             <ThemeIcon size='lg' color='blue'>
@@ -558,7 +558,7 @@ const DataExplorerPage: React.FC = () => {
         {/* Reported Questions Table */}
         {reportedQuestions && reportedQuestions.length > 0 ? (
           <>
-            <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+            <div style={{maxHeight: '400px', overflowY: 'auto'}}>
               <Table>
                 <Table.Thead>
                   <Table.Tr>
@@ -576,7 +576,7 @@ const DataExplorerPage: React.FC = () => {
                             })
                           }
                           leftSection={<IconSearch size={12} />}
-                          style={{ marginTop: '4px' }}
+                          style={{marginTop: '4px'}}
                         />
                       </div>
                     </Table.Th>
@@ -596,16 +596,16 @@ const DataExplorerPage: React.FC = () => {
                           searchable
                           clearable
                           data={[
-                            { value: '', label: 'All Types' },
-                            { value: 'vocabulary', label: 'Vocabulary' },
-                            { value: 'fill_blank', label: 'Fill in Blank' },
+                            {value: '', label: 'All Types'},
+                            {value: 'vocabulary', label: 'Vocabulary'},
+                            {value: 'fill_blank', label: 'Fill in Blank'},
                             {
                               value: 'reading_comprehension',
                               label: 'Reading Comprehension',
                             },
-                            { value: 'qa', label: 'Question Answer' },
+                            {value: 'qa', label: 'Question Answer'},
                           ]}
-                          style={{ marginTop: '4px' }}
+                          style={{marginTop: '4px'}}
                         />
                       </div>
                     </Table.Th>
@@ -625,17 +625,17 @@ const DataExplorerPage: React.FC = () => {
                           searchable
                           clearable
                           data={[
-                            { value: '', label: 'All Languages' },
+                            {value: '', label: 'All Languages'},
                             ...(languagesData?.map(lang => ({
                               value: lang.code || lang,
                               label: lang.name
                                 ? lang.name.charAt(0).toUpperCase() +
-                                  lang.name.slice(1)
+                                lang.name.slice(1)
                                 : (lang.code || lang).charAt(0).toUpperCase() +
-                                  (lang.code || lang).slice(1),
+                                (lang.code || lang).slice(1),
                             })) || []),
                           ]}
-                          style={{ marginTop: '4px' }}
+                          style={{marginTop: '4px'}}
                         />
                       </div>
                     </Table.Th>
@@ -655,14 +655,14 @@ const DataExplorerPage: React.FC = () => {
                           searchable
                           clearable
                           data={[
-                            { value: '', label: 'All Levels' },
+                            {value: '', label: 'All Levels'},
                             ...(levelsData?.levels?.map(level => ({
                               value: level,
                               label:
                                 `${level} - ${levelsData.level_descriptions?.[level] || ''}`.trim(),
                             })) || []),
                           ]}
-                          style={{ marginTop: '4px' }}
+                          style={{marginTop: '4px'}}
                         />
                       </div>
                     </Table.Th>
@@ -671,7 +671,7 @@ const DataExplorerPage: React.FC = () => {
                         <div>Report Info</div>
                       </div>
                     </Table.Th>
-                    <Table.Th style={{ textAlign: 'center' }}>
+                    <Table.Th style={{textAlign: 'center'}}>
                       <div>
                         <div>Actions</div>
                         <Button
@@ -685,7 +685,7 @@ const DataExplorerPage: React.FC = () => {
                               level: '',
                             })
                           }
-                          style={{ marginTop: '4px' }}
+                          style={{marginTop: '4px'}}
                         >
                           Clear All
                         </Button>
@@ -729,7 +729,7 @@ const DataExplorerPage: React.FC = () => {
                         <Table.Td>{question.level || 'N/A'}</Table.Td>
                         <Table.Td>
                           {question.report_reasons &&
-                          question.report_reasons !== 'No reason provided' ? (
+                            question.report_reasons !== 'No reason provided' ? (
                             <Tooltip
                               label={question.report_reasons}
                               multiline
@@ -759,7 +759,7 @@ const DataExplorerPage: React.FC = () => {
                           <Group
                             gap='xs'
                             justify='center'
-                            style={{ flexWrap: 'nowrap' }}
+                            style={{flexWrap: 'nowrap'}}
                           >
                             <Button
                               size='xs'
@@ -774,7 +774,7 @@ const DataExplorerPage: React.FC = () => {
                                 setSelectedQuestion(questionWithStats);
                                 setEditModalOpen(true);
                               }}
-                              style={{ flexShrink: 0 }}
+                              style={{flexShrink: 0}}
                             >
                               Details
                             </Button>
@@ -788,7 +788,7 @@ const DataExplorerPage: React.FC = () => {
                               loading={
                                 markQuestionAsFixedMutation?.isPending ?? false
                               }
-                              style={{ flexShrink: 0 }}
+                              style={{flexShrink: 0}}
                             >
                               Fixed
                             </Button>
@@ -807,7 +807,7 @@ const DataExplorerPage: React.FC = () => {
                               loading={
                                 fixQuestionWithAIMutation?.isPending ?? false
                               }
-                              style={{ flexShrink: 0 }}
+                              style={{flexShrink: 0}}
                             >
                               AI Fix
                             </Button>
@@ -888,7 +888,7 @@ const DataExplorerPage: React.FC = () => {
             </Button>
           </Group>
 
-          <Group gap='sm' align='center' style={{ flexWrap: 'wrap' }}>
+          <Group gap='sm' align='center' style={{flexWrap: 'wrap'}}>
             <TextInput
               placeholder='Search questions...'
               value={questionFilters.search}
@@ -900,28 +900,28 @@ const DataExplorerPage: React.FC = () => {
               }
               leftSection={<IconSearch size={14} />}
               size='xs'
-              style={{ minWidth: 160 }}
+              style={{minWidth: 160}}
             />
 
             <Select
               placeholder='Type'
               value={questionFilters.type}
               onChange={value =>
-                setQuestionFilters({ ...questionFilters, type: value || '' })
+                setQuestionFilters({...questionFilters, type: value || ''})
               }
               data={[
-                { value: '', label: 'All Types' },
-                { value: 'vocabulary', label: 'Vocabulary' },
-                { value: 'fill_blank', label: 'Fill in Blank' },
+                {value: '', label: 'All Types'},
+                {value: 'vocabulary', label: 'Vocabulary'},
+                {value: 'fill_blank', label: 'Fill in Blank'},
                 {
                   value: 'reading_comprehension',
                   label: 'Reading Comprehension',
                 },
-                { value: 'qa', label: 'Question Answer' },
+                {value: 'qa', label: 'Question Answer'},
               ]}
               clearable
               size='xs'
-              style={{ minWidth: 140 }}
+              style={{minWidth: 140}}
             />
 
             <Select
@@ -934,28 +934,28 @@ const DataExplorerPage: React.FC = () => {
                 })
               }
               data={[
-                { value: '', label: 'All Languages' },
+                {value: '', label: 'All Languages'},
                 ...(languagesData?.map(lang => ({
                   value: lang.code || lang,
                   label: lang.name
                     ? lang.name.charAt(0).toUpperCase() + lang.name.slice(1)
                     : (lang.code || lang).charAt(0).toUpperCase() +
-                      (lang.code || lang).slice(1),
+                    (lang.code || lang).slice(1),
                 })) || []),
               ]}
               clearable
               size='xs'
-              style={{ minWidth: 140 }}
+              style={{minWidth: 140}}
             />
 
             <Select
               placeholder='Level'
               value={questionFilters.level}
               onChange={value =>
-                setQuestionFilters({ ...questionFilters, level: value || '' })
+                setQuestionFilters({...questionFilters, level: value || ''})
               }
               data={[
-                { value: '', label: 'All Levels' },
+                {value: '', label: 'All Levels'},
                 ...(levelsData?.levels?.map(level => ({
                   value: level,
                   label:
@@ -964,14 +964,14 @@ const DataExplorerPage: React.FC = () => {
               ]}
               clearable
               size='xs'
-              style={{ minWidth: 160 }}
+              style={{minWidth: 160}}
             />
 
             <Select
               placeholder='User'
               value={questionFilters.user || null}
               onChange={value =>
-                setQuestionFilters({ ...questionFilters, user: value || '' })
+                setQuestionFilters({...questionFilters, user: value || ''})
               }
               data={
                 users
@@ -985,7 +985,7 @@ const DataExplorerPage: React.FC = () => {
               clearable
               disabled={isLoadingUsers}
               size='xs'
-              style={{ minWidth: 180 }}
+              style={{minWidth: 180}}
             />
           </Group>
         </Card>
@@ -1103,9 +1103,9 @@ const DataExplorerPage: React.FC = () => {
                             variant='light'
                             size='sm'
                             styles={{
-                              root: { padding: '4px 8px' },
-                              title: { fontSize: '12px', marginBottom: '2px' },
-                              message: { fontSize: '11px' },
+                              root: {padding: '4px 8px'},
+                              title: {fontSize: '12px', marginBottom: '2px'},
+                              message: {fontSize: '11px'},
                             }}
                           >
                             <Text size='xs' lineClamp={2}>
@@ -1114,7 +1114,7 @@ const DataExplorerPage: React.FC = () => {
                             </Text>
                           </Alert>
                         ) : (
-                          <Text size='sm' style={{ maxWidth: 200 }}>
+                          <Text size='sm' style={{maxWidth: 200}}>
                             {question.content?.question?.substring(0, 60) ||
                               question.content?.sentence?.substring(0, 60) ||
                               'No text available'}
@@ -1484,7 +1484,7 @@ const DataExplorerPage: React.FC = () => {
 
 // Question Edit Form Component
 
-const QuestionUserCount: React.FC<{ question: QuestionWithStats }> = ({
+const QuestionUserCount: React.FC<{question: QuestionWithStats}> = ({
   question,
 }) => {
   return (
@@ -1496,9 +1496,9 @@ const QuestionUserCount: React.FC<{ question: QuestionWithStats }> = ({
 
 const QuestionUsersSection: React.FC<{
   questionId: number;
-}> = ({ questionId }) => {
-  const { data, isLoading, error } = useUsersForQuestion(questionId);
-  const { data: allUsersData } = useUsersPaginated({ page: 1, pageSize: 1000 });
+}> = ({questionId}) => {
+  const {data, isLoading, error} = useUsersForQuestion(questionId);
+  const {data: allUsersData} = useUsersPaginated({page: 1, pageSize: 1000});
   const assignUsersMutation = useAssignUsersToQuestion();
   const unassignUsersMutation = useUnassignUsersFromQuestion();
 
@@ -1514,24 +1514,24 @@ const QuestionUsersSection: React.FC<{
     return <Text c='dimmed'>No user data available</Text>;
   }
 
-  const { users = [], total_count = 0 } = data;
+  const {users = [], total_count = 0} = data;
   const allUsers = allUsersData?.users || [];
 
   // Create options for the multi-select
   const userOptions = allUsers
     .filter(
-      (user: { id?: number; username?: string }) =>
+      (user: {id?: number; username?: string}) =>
         user && user.id && user.username
     )
-    .map((user: { id: number; username: string }) => ({
+    .map((user: {id: number; username: string}) => ({
       value: user.id.toString(),
       label: user.username,
     }));
 
   // Get currently assigned user IDs
   const assignedUserIds = users
-    .filter((user: { id: number; username: string }) => user && user.id)
-    .map((user: { id: number; username: string }) => user.id.toString());
+    .filter((user: {id: number; username: string}) => user && user.id)
+    .map((user: {id: number; username: string}) => user.id.toString());
 
   const handleUserAssignmentChange = (selectedUserIds: string[]) => {
     const currentUserIds = new Set(assignedUserIds);
@@ -1550,7 +1550,7 @@ const QuestionUsersSection: React.FC<{
     // Perform the mutations
     if (usersToAssign.length > 0) {
       assignUsersMutation.mutate(
-        { questionId, userIDs: usersToAssign },
+        {questionId, userIDs: usersToAssign},
         {
           onSuccess: () => {
             notifications.show({
@@ -1572,7 +1572,7 @@ const QuestionUsersSection: React.FC<{
 
     if (usersToUnassign.length > 0) {
       unassignUsersMutation.mutate(
-        { questionId, userIDs: usersToUnassign },
+        {questionId, userIDs: usersToUnassign},
         {
           onSuccess: () => {
             notifications.show({
@@ -1629,7 +1629,7 @@ const QuestionEditForm: React.FC<{
     explanation?: string;
   }) => void;
   onCancel: () => void;
-}> = ({ question, onSave, onCancel }) => {
+}> = ({question, onSave, onCancel}) => {
   // Use the correct_answer index directly since it's the index of the correct option
   const findCorrectOptionIndex = () => {
     if (typeof question.correct_answer === 'number') {
@@ -1657,7 +1657,11 @@ const QuestionEditForm: React.FC<{
 
   const [formData, setFormData] = useState({
     type: question.type,
-    question: question.content.question || '',
+    // For fill_blank, question.content.sentence is the main field, not question
+    question:
+      question.type === 'fill_blank'
+        ? question.content.sentence || ''
+        : question.content.question || '',
     sentence: question.content.sentence || '',
     passage: question.content.passage || '',
     options: question.content.options || ['', '', '', ''],
@@ -1669,17 +1673,100 @@ const QuestionEditForm: React.FC<{
     e.preventDefault();
     const content: Record<string, unknown> = {};
 
+    // Validate question text based on question type
+    let questionText = '';
     if (formData.type === 'vocabulary') {
       content.sentence = formData.sentence;
-      content.question = formData.question;
+      questionText = formData.question;
+      content.question = questionText;
+      if (!formData.sentence?.trim()) {
+        notifications.show({
+          title: 'Validation Error',
+          message: 'Sentence is required for vocabulary questions',
+          color: 'red',
+        });
+        return;
+      }
+      if (!questionText?.trim()) {
+        notifications.show({
+          title: 'Validation Error',
+          message: 'Question text is required for vocabulary questions',
+          color: 'red',
+        });
+        return;
+      }
+    } else if (formData.type === 'fill_blank') {
+      // Fill in blank questions use sentence instead of question
+      content.sentence = formData.question; // The "question" field is actually the sentence for fill_blank
+      questionText = formData.question;
+      if (!questionText?.trim()) {
+        notifications.show({
+          title: 'Validation Error',
+          message: 'Sentence is required for fill in blank questions',
+          color: 'red',
+        });
+        return;
+      }
     } else if (formData.type === 'reading_comprehension') {
       content.passage = formData.passage;
-      content.question = formData.question;
+      questionText = formData.question;
+      content.question = questionText;
+      if (!formData.passage?.trim()) {
+        notifications.show({
+          title: 'Validation Error',
+          message: 'Passage is required for reading comprehension questions',
+          color: 'red',
+        });
+        return;
+      }
+      if (!questionText?.trim()) {
+        notifications.show({
+          title: 'Validation Error',
+          message:
+            'Question text is required for reading comprehension questions',
+          color: 'red',
+        });
+        return;
+      }
     } else {
-      content.question = formData.question;
+      // Other question types (qa, etc.)
+      questionText = formData.question;
+      content.question = questionText;
+      if (!questionText?.trim()) {
+        notifications.show({
+          title: 'Validation Error',
+          message: 'Question text is required',
+          color: 'red',
+        });
+        return;
+      }
     }
 
-    content.options = formData.options.filter(opt => opt.trim() !== '');
+    // Filter out empty options and validate we have at least 4
+    const validOptions = formData.options.filter(opt => opt.trim() !== '');
+    if (validOptions.length < 4) {
+      notifications.show({
+        title: 'Validation Error',
+        message: 'At least 4 options are required',
+        color: 'red',
+      });
+      return;
+    }
+
+    content.options = validOptions;
+
+    // Validate correct_answer is within valid range
+    if (
+      formData.correct_option < 0 ||
+      formData.correct_option >= validOptions.length
+    ) {
+      notifications.show({
+        title: 'Validation Error',
+        message: 'Correct answer must be a valid option index',
+        color: 'red',
+      });
+      return;
+    }
 
     onSave({
       content,
@@ -1695,13 +1782,13 @@ const QuestionEditForm: React.FC<{
           label='Question Type'
           value={formData.type}
           onChange={value =>
-            setFormData({ ...formData, type: value || 'vocabulary' })
+            setFormData({...formData, type: value || 'vocabulary'})
           }
           data={[
-            { value: 'vocabulary', label: 'Vocabulary' },
-            { value: 'fill_blank', label: 'Fill in the Blank' },
-            { value: 'reading_comprehension', label: 'Reading Comprehension' },
-            { value: 'qa', label: 'Question & Answer' },
+            {value: 'vocabulary', label: 'Vocabulary'},
+            {value: 'fill_blank', label: 'Fill in the Blank'},
+            {value: 'reading_comprehension', label: 'Reading Comprehension'},
+            {value: 'qa', label: 'Question & Answer'},
           ]}
         />
 
@@ -1711,7 +1798,7 @@ const QuestionEditForm: React.FC<{
               label='Sentence (with target word)'
               value={formData.sentence}
               onChange={e =>
-                setFormData({ ...formData, sentence: e.target.value })
+                setFormData({...formData, sentence: e.target.value})
               }
               rows={4}
             />
@@ -1719,7 +1806,7 @@ const QuestionEditForm: React.FC<{
               label='Target Word'
               value={formData.question}
               onChange={e =>
-                setFormData({ ...formData, question: e.target.value })
+                setFormData({...formData, question: e.target.value})
               }
             />
           </>
@@ -1731,7 +1818,7 @@ const QuestionEditForm: React.FC<{
               label='Reading Passage'
               value={formData.passage}
               onChange={e =>
-                setFormData({ ...formData, passage: e.target.value })
+                setFormData({...formData, passage: e.target.value})
               }
               rows={4}
             />
@@ -1739,20 +1826,32 @@ const QuestionEditForm: React.FC<{
               label='Question about the passage'
               value={formData.question}
               onChange={e =>
-                setFormData({ ...formData, question: e.target.value })
+                setFormData({...formData, question: e.target.value})
               }
               rows={3}
             />
           </>
         )}
 
+        {formData.type === 'fill_blank' && (
+          <Textarea
+            label='Sentence (with blank)'
+            value={formData.question}
+            onChange={e =>
+              setFormData({...formData, question: e.target.value})
+            }
+            rows={3}
+          />
+        )}
+
         {formData.type !== 'vocabulary' &&
-          formData.type !== 'reading_comprehension' && (
+          formData.type !== 'reading_comprehension' &&
+          formData.type !== 'fill_blank' && (
             <Textarea
               label='Question'
               value={formData.question}
               onChange={e =>
-                setFormData({ ...formData, question: e.target.value })
+                setFormData({...formData, question: e.target.value})
               }
               rows={3}
             />
@@ -1767,7 +1866,7 @@ const QuestionEditForm: React.FC<{
               <Checkbox
                 checked={formData.correct_option === index}
                 onChange={() =>
-                  setFormData({ ...formData, correct_option: index })
+                  setFormData({...formData, correct_option: index})
                 }
               />
               <TextInput
@@ -1775,10 +1874,10 @@ const QuestionEditForm: React.FC<{
                 onChange={e => {
                   const newOptions = [...formData.options];
                   newOptions[index] = e.target.value;
-                  setFormData({ ...formData, options: newOptions });
+                  setFormData({...formData, options: newOptions});
                 }}
                 placeholder={`Option ${index + 1}`}
-                style={{ flex: 1 }}
+                style={{flex: 1}}
               />
             </Group>
           ))}
@@ -1788,7 +1887,7 @@ const QuestionEditForm: React.FC<{
           label='Explanation'
           value={formData.explanation}
           onChange={e =>
-            setFormData({ ...formData, explanation: e.target.value })
+            setFormData({...formData, explanation: e.target.value})
           }
           rows={3}
         />

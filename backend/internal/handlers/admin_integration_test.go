@@ -910,7 +910,7 @@ func (suite *AdminIntegrationTestSuite) TestAdmin_UpdateQuestion() {
 	sessionCookie := suite.authenticateAsAdmin()
 
 	questionID := suite.createTestQuestion()
-	updatePayload := `{"content": {"question": "Updated?", "options": ["A", "B"], "answer": 0}, "correct_answer_index": 0, "explanation": "Updated explanation"}`
+	updatePayload := `{"content": {"question": "Updated?", "options": ["A", "B", "C", "D"]}, "correct_answer": 0, "explanation": "Updated explanation"}`
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("PUT", "/v1/admin/backend/questions/"+strconv.Itoa(questionID), strings.NewReader(updatePayload))
 	req.Header.Set("Content-Type", "application/json")
@@ -929,7 +929,7 @@ func (suite *AdminIntegrationTestSuite) TestAdmin_UpdateQuestion_MarkFixed() {
 	_, err := suite.db.Exec(`INSERT INTO question_reports (question_id, reported_by_user_id, report_reason, created_at) VALUES ($1, $2, $3, NOW())`, questionID, suite.testUser.ID, "Typo in options")
 	suite.Require().NoError(err)
 
-	updatePayload := `{"content": {"question": "Updated?", "options": ["A", "B"], "answer": 0}, "correct_answer": 0, "explanation": "Updated explanation"}`
+	updatePayload := `{"content": {"question": "Updated?", "options": ["A", "B", "C", "D"]}, "correct_answer": 0, "explanation": "Updated explanation"}`
 	w := httptest.NewRecorder()
 	url := "/v1/admin/backend/questions/" + strconv.Itoa(questionID) + "?mark_fixed=true"
 	req, _ := http.NewRequest("PUT", url, strings.NewReader(updatePayload))

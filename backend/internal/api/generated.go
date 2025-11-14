@@ -102,6 +102,16 @@ const (
 	FeedbackUpdateRequestStatusResolved   FeedbackUpdateRequestStatus = "resolved"
 )
 
+// Defines values for HealthErrorResponseStatus.
+const (
+	Unhealthy HealthErrorResponseStatus = "unhealthy"
+)
+
+// Defines values for HealthStatusResponseStatus.
+const (
+	Ok HealthStatusResponseStatus = "ok"
+)
+
 // Defines values for NotificationErrorErrorType.
 const (
 	NotificationErrorErrorTypeEmailDisabled NotificationErrorErrorType = "email_disabled"
@@ -352,6 +362,47 @@ type APIKeysListResponse struct {
 	Count *int `json:"count,omitempty"`
 }
 
+// AdminDailyQuestionsResponse defines model for AdminDailyQuestionsResponse.
+type AdminDailyQuestionsResponse struct {
+	Questions []DailyQuestionWithDetails `json:"questions"`
+}
+
+// AdminQuestionsResponse defines model for AdminQuestionsResponse.
+type AdminQuestionsResponse struct {
+	Pagination PaginationInfo `json:"pagination"`
+	Questions  []Question     `json:"questions"`
+	Stats      QuestionStats  `json:"stats"`
+}
+
+// AdminReportedQuestionsResponse defines model for AdminReportedQuestionsResponse.
+type AdminReportedQuestionsResponse struct {
+	Pagination PaginationInfo         `json:"pagination"`
+	Questions  []Question             `json:"questions"`
+	Stats      ReportedQuestionsStats `json:"stats"`
+}
+
+// AdminRolesResponse defines model for AdminRolesResponse.
+type AdminRolesResponse struct {
+	Roles []Role `json:"roles"`
+}
+
+// AdminStoriesResponse defines model for AdminStoriesResponse.
+type AdminStoriesResponse struct {
+	Pagination PaginationInfo `json:"pagination"`
+	Stories    []Story        `json:"stories"`
+}
+
+// AdminUsersPaginatedResponse defines model for AdminUsersPaginatedResponse.
+type AdminUsersPaginatedResponse struct {
+	Pagination PaginationInfo  `json:"pagination"`
+	Users      []DashboardUser `json:"users"`
+}
+
+// AdminUsersResponse defines model for AdminUsersResponse.
+type AdminUsersResponse struct {
+	Users []UserProfile `json:"users"`
+}
+
 // AggregatedVersion defines model for AggregatedVersion.
 type AggregatedVersion struct {
 	Backend ServiceVersion           `json:"backend"`
@@ -401,6 +452,34 @@ type AuthStatusResponse struct {
 	// Authenticated Whether the user is currently authenticated
 	Authenticated bool `json:"authenticated"`
 	User          User `json:"user"`
+}
+
+// BookmarkStatusResponse defines model for BookmarkStatusResponse.
+type BookmarkStatusResponse struct {
+	// Bookmarked The new bookmark status of the message
+	Bookmarked bool `json:"bookmarked"`
+}
+
+// BulkDeleteResponse defines model for BulkDeleteResponse.
+type BulkDeleteResponse struct {
+	// DeletedCount Number of records deleted
+	DeletedCount int `json:"deleted_count"`
+}
+
+// ChatBookmarksResponse defines model for ChatBookmarksResponse.
+type ChatBookmarksResponse struct {
+	// Limit Number of messages returned
+	Limit    int           `json:"limit"`
+	Messages []ChatMessage `json:"messages"`
+
+	// Offset Number of messages skipped
+	Offset int `json:"offset"`
+
+	// Query The search query that was used (if any)
+	Query *string `json:"query,omitempty"`
+
+	// Total Total number of bookmarked messages
+	Total int `json:"total"`
 }
 
 // ChatMessage defines model for ChatMessage.
@@ -461,6 +540,37 @@ type Conversation struct {
 
 	// UserId ID of the user who owns this conversation
 	UserId int `json:"user_id"`
+}
+
+// ConversationSearchResponse defines model for ConversationSearchResponse.
+type ConversationSearchResponse struct {
+	Conversations []Conversation `json:"conversations"`
+
+	// Limit Number of conversations returned
+	Limit int `json:"limit"`
+
+	// Offset Number of conversations skipped
+	Offset int `json:"offset"`
+
+	// Query The search query that was used
+	Query *string `json:"query,omitempty"`
+
+	// Total Total number of conversations
+	Total int `json:"total"`
+}
+
+// ConversationsListResponse defines model for ConversationsListResponse.
+type ConversationsListResponse struct {
+	Conversations []Conversation `json:"conversations"`
+
+	// Limit Number of conversations returned
+	Limit int `json:"limit"`
+
+	// Offset Number of conversations skipped
+	Offset int `json:"offset"`
+
+	// Total Total number of conversations
+	Total int `json:"total"`
 }
 
 // CreateAPIKeyRequest defines model for CreateAPIKeyRequest.
@@ -581,6 +691,29 @@ type CreateStoryRequest struct {
 // CreateStoryRequestSectionLengthOverride defines model for CreateStoryRequest.SectionLengthOverride.
 type CreateStoryRequestSectionLengthOverride string
 
+// DailyAnswerResponse defines model for DailyAnswerResponse.
+type DailyAnswerResponse struct {
+	// CorrectAnswerIndex Index of the correct answer in the options array (0-based)
+	CorrectAnswerIndex *int    `json:"correct_answer_index,omitempty"`
+	Explanation        *string `json:"explanation,omitempty"`
+
+	// IsCompleted Whether the question is now completed
+	IsCompleted    *bool   `json:"is_completed,omitempty"`
+	IsCorrect      *bool   `json:"is_correct,omitempty"`
+	NextDifficulty *string `json:"next_difficulty,omitempty"`
+
+	// UserAnswer The answer selected by the user
+	UserAnswer *string `json:"user_answer,omitempty"`
+
+	// UserAnswerIndex Index of the user's selected answer in the original options array (0-based)
+	UserAnswerIndex *int `json:"user_answer_index,omitempty"`
+}
+
+// DailyDatesResponse defines model for DailyDatesResponse.
+type DailyDatesResponse struct {
+	Dates []openapi_types.Date `json:"dates"`
+}
+
 // DailyProgress defines model for DailyProgress.
 type DailyProgress struct {
 	// Completed Number of completed questions
@@ -606,6 +739,11 @@ type DailyQuestionHistory struct {
 
 	// SubmittedAt When the user submitted their answer
 	SubmittedAt *string `json:"submitted_at"`
+}
+
+// DailyQuestionHistoryResponse defines model for DailyQuestionHistoryResponse.
+type DailyQuestionHistoryResponse struct {
+	History []DailyQuestionHistory `json:"history"`
 }
 
 // DailyQuestionWithDetails defines model for DailyQuestionWithDetails.
@@ -649,6 +787,12 @@ type DailyQuestionWithDetails struct {
 
 	// UserTotalResponses Number of times this user answered this question
 	UserTotalResponses *int64 `json:"user_total_responses,omitempty"`
+}
+
+// DailyQuestionsResponse defines model for DailyQuestionsResponse.
+type DailyQuestionsResponse struct {
+	Date      openapi_types.Date         `json:"date"`
+	Questions []DailyQuestionWithDetails `json:"questions"`
 }
 
 // DashboardResponse defines model for DashboardResponse.
@@ -856,6 +1000,30 @@ type GoogleOAuthLoginResponse struct {
 	AuthUrl string `json:"auth_url"`
 }
 
+// HealthErrorResponse defines model for HealthErrorResponse.
+type HealthErrorResponse struct {
+	Error string `json:"error"`
+
+	// Status Health status of the service
+	Status    HealthErrorResponseStatus `json:"status"`
+	Timestamp time.Time                 `json:"timestamp"`
+}
+
+// HealthErrorResponseStatus Health status of the service
+type HealthErrorResponseStatus string
+
+// HealthStatusResponse defines model for HealthStatusResponse.
+type HealthStatusResponse struct {
+	// Service Service name
+	Service string `json:"service"`
+
+	// Status Health status of the service
+	Status HealthStatusResponseStatus `json:"status"`
+}
+
+// HealthStatusResponseStatus Health status of the service
+type HealthStatusResponseStatus string
+
 // Language Learning language (dynamic). Allowed values come from config.yaml language_levels keys.
 type Language = string
 
@@ -912,6 +1080,11 @@ type LoginResponse struct {
 type MarkQuestionKnownRequest struct {
 	// ConfidenceLevel User's confidence level (1-5, optional)
 	ConfidenceLevel *int `json:"confidence_level,omitempty"`
+}
+
+// MessageResponse defines model for MessageResponse.
+type MessageResponse struct {
+	Message string `json:"message"`
 }
 
 // NotificationError defines model for NotificationError.
@@ -1014,6 +1187,16 @@ type PerformanceMetrics struct {
 	TotalAttempts         *int     `json:"total_attempts,omitempty"`
 }
 
+// PriorityAnalytics defines model for PriorityAnalytics.
+type PriorityAnalytics struct {
+	Distribution *struct {
+		Average *float32 `json:"average,omitempty"`
+		High    *int     `json:"high,omitempty"`
+		Low     *int     `json:"low,omitempty"`
+		Medium  *int     `json:"medium,omitempty"`
+	} `json:"distribution,omitempty"`
+}
+
 // PriorityInsights defines model for PriorityInsights.
 type PriorityInsights struct {
 	// HighPriorityQuestions Number of high-priority questions
@@ -1089,6 +1272,13 @@ type Question struct {
 	VocabularyDomain *string `json:"vocabulary_domain,omitempty"`
 }
 
+// QuestionAssignedUsersResponse defines model for QuestionAssignedUsersResponse.
+type QuestionAssignedUsersResponse struct {
+	// TotalCount Total number of users assigned to this question
+	TotalCount int           `json:"total_count"`
+	Users      []UserProfile `json:"users"`
+}
+
 // QuestionContent All question types now use multiple choice format with 4 options
 type QuestionContent struct {
 	// Hint Optional hint for fill-in-blank questions
@@ -1143,6 +1333,14 @@ type QuizChatRequest struct {
 type ReportQuestionRequest struct {
 	// ReportReason Optional explanation for why the question is being reported
 	ReportReason *string `json:"report_reason,omitempty"`
+}
+
+// ReportedQuestionsStats defines model for ReportedQuestionsStats.
+type ReportedQuestionsStats struct {
+	ReportedByLanguage *map[string]int `json:"reported_by_language,omitempty"`
+	ReportedByLevel    *map[string]int `json:"reported_by_level,omitempty"`
+	ReportedByType     *map[string]int `json:"reported_by_type,omitempty"`
+	TotalReported      *int            `json:"total_reported,omitempty"`
 }
 
 // Role defines model for Role.
@@ -1443,6 +1641,12 @@ type TTSResponse struct {
 // TTSResponseType The type of SSE event
 type TTSResponseType string
 
+// TTSStreamInitResponse defines model for TTSStreamInitResponse.
+type TTSStreamInitResponse struct {
+	StreamId string  `json:"stream_id"`
+	Token    *string `json:"token"`
+}
+
 // TestAIRequest defines model for TestAIRequest.
 type TestAIRequest struct {
 	// ApiKey API key for the provider. If not provided, the server will try to use a saved key.
@@ -1668,6 +1872,12 @@ type UserProfile struct {
 	WordOfDayEmailEnabled *bool `json:"word_of_day_email_enabled,omitempty"`
 }
 
+// UserProfileMessageResponse defines model for UserProfileMessageResponse.
+type UserProfileMessageResponse struct {
+	Message string      `json:"message"`
+	User    UserProfile `json:"user"`
+}
+
 // UserProgress defines model for UserProgress.
 type UserProgress struct {
 	AccuracyRate   *float32 `json:"accuracy_rate,omitempty"`
@@ -1831,6 +2041,13 @@ type WordOfDayEmailPreferenceRequest struct {
 	Enabled bool `json:"enabled"`
 }
 
+// WordOfDayHistoryResponse defines model for WordOfDayHistoryResponse.
+type WordOfDayHistoryResponse struct {
+	// Count Number of words returned
+	Count int                   `json:"count"`
+	Words []WordOfTheDayDisplay `json:"words"`
+}
+
 // WordOfTheDayDisplay defines model for WordOfTheDayDisplay.
 type WordOfTheDayDisplay struct {
 	// Context Additional context for the word (primarily for snippets)
@@ -1870,6 +2087,17 @@ type WordOfTheDayDisplay struct {
 // WordOfTheDayDisplaySourceType Source type of the word (from vocabulary question or user snippet)
 type WordOfTheDayDisplaySourceType string
 
+// WorkerAIConcurrencyStats defines model for WorkerAIConcurrencyStats.
+type WorkerAIConcurrencyStats struct {
+	ActiveRequests *int `json:"active_requests,omitempty"`
+	MaxConcurrent  *int `json:"max_concurrent,omitempty"`
+	QueuedRequests *int `json:"queued_requests,omitempty"`
+	TotalRequests  *int `json:"total_requests,omitempty"`
+}
+
+// WorkerDetailsResponse defines model for WorkerDetailsResponse.
+type WorkerDetailsResponse map[string]interface{}
+
 // WorkerHealth defines model for WorkerHealth.
 type WorkerHealth struct {
 	GlobalPaused    *bool `json:"global_paused,omitempty"`
@@ -1887,6 +2115,25 @@ type WorkerHealth struct {
 		TotalRuns               *int    `json:"total_runs,omitempty"`
 		WorkerInstance          *string `json:"worker_instance,omitempty"`
 	} `json:"worker_instances,omitempty"`
+}
+
+// WorkerLogsResponse defines model for WorkerLogsResponse.
+type WorkerLogsResponse struct {
+	Logs []map[string]interface{} `json:"logs"`
+}
+
+// WorkerNotificationErrorsResponse defines model for WorkerNotificationErrorsResponse.
+type WorkerNotificationErrorsResponse struct {
+	Errors     []NotificationError    `json:"errors"`
+	Pagination PaginationInfo         `json:"pagination"`
+	Stats      NotificationErrorStats `json:"stats"`
+}
+
+// WorkerNotificationSentResponse defines model for WorkerNotificationSentResponse.
+type WorkerNotificationSentResponse struct {
+	Notifications []SentNotification `json:"notifications"`
+	Pagination    PaginationInfo     `json:"pagination"`
+	Stats         NotificationStats  `json:"stats"`
 }
 
 // WorkerStatus defines model for WorkerStatus.
@@ -1929,6 +2176,18 @@ type WorkerStatusResponse struct {
 
 	// WorkerRunning Whether the worker is currently running
 	WorkerRunning bool `json:"worker_running"`
+}
+
+// WorkerUserListResponse defines model for WorkerUserListResponse.
+type WorkerUserListResponse struct {
+	Users []WorkerUserStatus `json:"users"`
+}
+
+// WorkerUserStatus defines model for WorkerUserStatus.
+type WorkerUserStatus struct {
+	Id       int    `json:"id"`
+	IsPaused bool   `json:"is_paused"`
+	Username string `json:"username"`
 }
 
 // DeleteV1AdminBackendFeedbackParams defines parameters for DeleteV1AdminBackendFeedback.

@@ -1784,6 +1784,213 @@ export interface DeleteAPIKeyResponse {
   message?: string;
 }
 
+export interface MessageResponse {
+  message: string;
+}
+
+export interface BulkDeleteResponse {
+  /** Number of records deleted */
+  deleted_count: number;
+}
+
+export interface BookmarkStatusResponse {
+  /** The new bookmark status of the message */
+  bookmarked: boolean;
+}
+
+export interface UserProfileMessageResponse {
+  message: string;
+  user: UserProfile;
+}
+
+export interface QuestionAssignedUsersResponse {
+  /** @maxItems 5 */
+  users: UserProfile[];
+  /** Total number of users assigned to this question */
+  total_count: number;
+}
+
+export interface AdminQuestionsResponse {
+  questions: Question[];
+  pagination: PaginationInfo;
+  stats: QuestionStats;
+}
+
+export type ReportedQuestionsStatsReportedByType = {[key: string]: number};
+
+export type ReportedQuestionsStatsReportedByLevel = {[key: string]: number};
+
+export type ReportedQuestionsStatsReportedByLanguage = {[key: string]: number};
+
+export interface ReportedQuestionsStats {
+  total_reported?: number;
+  reported_by_type?: ReportedQuestionsStatsReportedByType;
+  reported_by_level?: ReportedQuestionsStatsReportedByLevel;
+  reported_by_language?: ReportedQuestionsStatsReportedByLanguage;
+}
+
+export interface AdminReportedQuestionsResponse {
+  questions: Question[];
+  pagination: PaginationInfo;
+  stats: ReportedQuestionsStats;
+}
+
+export interface AdminRolesResponse {
+  roles: Role[];
+}
+
+export interface AdminStoriesResponse {
+  stories: Story[];
+  pagination: PaginationInfo;
+}
+
+export interface AdminUsersResponse {
+  users: UserProfile[];
+}
+
+export interface AdminUsersPaginatedResponse {
+  users: DashboardUser[];
+  pagination: PaginationInfo;
+}
+
+export interface WorkerDetailsResponse { [key: string]: unknown }
+
+export type WorkerLogsResponseLogsItem = { [key: string]: unknown };
+
+export interface WorkerLogsResponse {
+  logs: WorkerLogsResponseLogsItem[];
+}
+
+export interface WorkerUserStatus {
+  id: number;
+  username: string;
+  is_paused: boolean;
+}
+
+export interface WorkerUserListResponse {
+  users: WorkerUserStatus[];
+}
+
+export interface WorkerAIConcurrencyStats {
+  active_requests?: number;
+  max_concurrent?: number;
+  queued_requests?: number;
+  total_requests?: number;
+}
+
+export interface WorkerNotificationErrorsResponse {
+  errors: NotificationError[];
+  pagination: PaginationInfo;
+  stats: NotificationErrorStats;
+}
+
+export interface WorkerNotificationSentResponse {
+  notifications: SentNotification[];
+  pagination: PaginationInfo;
+  stats: NotificationStats;
+}
+
+export interface ChatBookmarksResponse {
+  messages: ChatMessage[];
+  /** The search query that was used (if any) */
+  query?: string;
+  /** Total number of bookmarked messages */
+  total: number;
+  /** Number of messages returned */
+  limit: number;
+  /** Number of messages skipped */
+  offset: number;
+}
+
+export interface ConversationsListResponse {
+  conversations: Conversation[];
+  /** Total number of conversations */
+  total: number;
+  /** Number of conversations returned */
+  limit: number;
+  /** Number of conversations skipped */
+  offset: number;
+}
+
+export type ConversationSearchResponseAllOf = {
+  /** The search query that was used */
+  query?: string;
+};
+
+export type ConversationSearchResponse = ConversationsListResponse & ConversationSearchResponseAllOf;
+
+export interface DailyDatesResponse {
+  dates: string[];
+}
+
+export interface DailyQuestionsResponse {
+  date: string;
+  questions: DailyQuestionWithDetails[];
+}
+
+export interface AdminDailyQuestionsResponse {
+  questions: DailyQuestionWithDetails[];
+}
+
+export interface DailyQuestionHistoryResponse {
+  history: DailyQuestionHistory[];
+}
+
+export interface WordOfDayHistoryResponse {
+  words: WordOfTheDayDisplay[];
+  /** Number of words returned */
+  count: number;
+}
+
+export type DailyAnswerResponseAllOf = {
+  /** Whether the question is now completed */
+  is_completed?: boolean;
+};
+
+export type DailyAnswerResponse = AnswerResponse & DailyAnswerResponseAllOf;
+
+export interface TTSStreamInitResponse {
+  stream_id: string;
+  /** @nullable */
+  token?: string | null;
+}
+
+/**
+ * Health status of the service
+ */
+export type HealthStatusResponseStatus = typeof HealthStatusResponseStatus[keyof typeof HealthStatusResponseStatus];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const HealthStatusResponseStatus = {
+  ok: 'ok',
+} as const;
+
+export interface HealthStatusResponse {
+  /** Health status of the service */
+  status: HealthStatusResponseStatus;
+  /** Service name */
+  service: string;
+}
+
+/**
+ * Health status of the service
+ */
+export type HealthErrorResponseStatus = typeof HealthErrorResponseStatus[keyof typeof HealthErrorResponseStatus];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const HealthErrorResponseStatus = {
+  unhealthy: 'unhealthy',
+} as const;
+
+export interface HealthErrorResponse {
+  /** Health status of the service */
+  status: HealthErrorResponseStatus;
+  timestamp: string;
+  error: string;
+}
+
 export interface GoogleOAuthLoginResponse {
   /** The Google OAuth authorization URL to redirect the user to */
   auth_url: string;
@@ -2491,16 +2698,6 @@ limit?: number;
 offset?: number;
 };
 
-export type GetV1AiConversations200 = {
-  conversations?: Conversation[];
-  /** Total number of conversations */
-  total?: number;
-  /** Number of conversations returned */
-  limit?: number;
-  /** Number of conversations skipped */
-  offset?: number;
-};
-
 export type GetV1AiSearchParams = {
 /**
  * Search query string
@@ -2521,28 +2718,11 @@ limit?: number;
 offset?: number;
 };
 
-export type GetV1AiSearch200 = {
-  conversations?: Conversation[];
-  /** The search query that was used */
-  query?: string;
-  /** Total number of matching conversations */
-  total?: number;
-  /** Number of conversations returned */
-  limit?: number;
-  /** Number of conversations skipped */
-  offset?: number;
-};
-
 export type PutV1AiConversationsBookmarkBody = {
   /** ID of the conversation containing the message */
   conversation_id: string;
   /** ID of the message to bookmark/unbookmark */
   message_id: string;
-};
-
-export type PutV1AiConversationsBookmark200 = {
-  /** The new bookmark status of the message */
-  bookmarked?: boolean;
 };
 
 export type GetV1AiBookmarksParams = {
@@ -2562,18 +2742,6 @@ limit?: number;
  * @minimum 0
  */
 offset?: number;
-};
-
-export type GetV1AiBookmarks200 = {
-  messages?: ChatMessage[];
-  /** The search query that was used (if any) */
-  query?: string;
-  /** Total number of bookmarked messages */
-  total?: number;
-  /** Number of messages returned */
-  limit?: number;
-  /** Number of messages skipped */
-  offset?: number;
 };
 
 export type GetV1SnippetsParams = {
@@ -2652,28 +2820,6 @@ limit?: number;
 offset?: number;
 };
 
-export type GetV1SnippetsSearch200 = {
-  snippets?: Snippet[];
-  /** The search query that was used */
-  query?: string;
-  /** Total number of matching snippets */
-  total?: number;
-  /** Number of snippets returned */
-  limit?: number;
-  /** Number of snippets skipped */
-  offset?: number;
-};
-
-export type PutV1UserzProfile200 = {
-  message?: string;
-  user?: UserProfile;
-};
-
-export type GetV1AdminBackendUserz200 = {
-  /** @maxItems 1000 */
-  users?: UserProfile[];
-};
-
 export type PostV1AdminBackendUserzBody = {
   /**
    * Username (1-100 characters, alphanumeric + underscore + email characters, cannot be empty or whitespace-only)
@@ -2699,11 +2845,6 @@ export type PostV1AdminBackendUserzBody = {
   ai_model?: string;
   /** Whether AI is enabled for this user */
   ai_enabled?: boolean;
-};
-
-export type PostV1AdminBackendUserz201 = {
-  message?: string;
-  user?: UserProfile;
 };
 
 export type GetV1AdminBackendUserzPaginatedParams = {
@@ -2766,133 +2907,12 @@ export const GetV1AdminBackendUserzPaginatedActive = {
   false: 'false',
 } as const;
 
-export type GetV1AdminBackendUserzPaginated200UsersItemQuestionStatsAnsweredByType = { [key: string]: unknown };
-
-export type GetV1AdminBackendUserzPaginated200UsersItemQuestionStatsAnsweredByLevel = { [key: string]: unknown };
-
-export type GetV1AdminBackendUserzPaginated200UsersItemQuestionStatsAccuracyByType = { [key: string]: unknown };
-
-export type GetV1AdminBackendUserzPaginated200UsersItemQuestionStatsAccuracyByLevel = { [key: string]: unknown };
-
-export type GetV1AdminBackendUserzPaginated200UsersItemQuestionStatsAvailableByType = { [key: string]: unknown };
-
-export type GetV1AdminBackendUserzPaginated200UsersItemQuestionStatsAvailableByLevel = { [key: string]: unknown };
-
-export type GetV1AdminBackendUserzPaginated200UsersItemQuestionStats = {
-  user_id?: number;
-  total_answered?: number;
-  answered_by_type?: GetV1AdminBackendUserzPaginated200UsersItemQuestionStatsAnsweredByType;
-  answered_by_level?: GetV1AdminBackendUserzPaginated200UsersItemQuestionStatsAnsweredByLevel;
-  accuracy_by_type?: GetV1AdminBackendUserzPaginated200UsersItemQuestionStatsAccuracyByType;
-  accuracy_by_level?: GetV1AdminBackendUserzPaginated200UsersItemQuestionStatsAccuracyByLevel;
-  available_by_type?: GetV1AdminBackendUserzPaginated200UsersItemQuestionStatsAvailableByType;
-  available_by_level?: GetV1AdminBackendUserzPaginated200UsersItemQuestionStatsAvailableByLevel;
-};
-
-export type GetV1AdminBackendUserzPaginated200UsersItem = {
-  user?: UserProfile;
-  progress?: UserProgress;
-  question_stats?: GetV1AdminBackendUserzPaginated200UsersItemQuestionStats;
-};
-
-export type GetV1AdminBackendUserzPaginated200 = {
-  users?: GetV1AdminBackendUserzPaginated200UsersItem[];
-  pagination?: PaginationInfo;
-};
-
-export type PutV1AdminBackendUserzId200 = {
-  message?: string;
-  user?: UserProfile;
-};
-
-export type DeleteV1AdminBackendUserzId200 = {
-  message?: string;
-};
-
-export type PostV1AdminBackendUserzIdResetPassword200 = {
-  message?: string;
-};
-
-export type GetV1AdminBackendRoles200 = {
-  /** @maxItems 50 */
-  roles?: Role[];
-};
-
-export type GetV1AdminBackendUserzIdRoles200 = {
-  /** @maxItems 50 */
-  roles?: Role[];
-};
-
 export type PostV1AdminBackendUserzIdRolesBody = {
   /**
    * Role ID to assign
    * @minimum 1
    */
   role_id: number;
-};
-
-export type PostV1AdminBackendUserzIdRoles200 = {
-  message?: string;
-};
-
-export type DeleteV1AdminBackendUserzIdRolesRoleId200 = {
-  message?: string;
-};
-
-export type GetV1AdminWorkerDetails200 = { [key: string]: unknown };
-
-export type PostV1AdminWorkerPause200 = {
-  message?: string;
-};
-
-export type PostV1AdminWorkerResume200 = {
-  message?: string;
-};
-
-export type PostV1AdminWorkerTrigger200 = {
-  message?: string;
-};
-
-export type GetV1AdminWorkerLogs200LogsItem = { [key: string]: unknown };
-
-export type GetV1AdminWorkerLogs200 = {
-  logs?: GetV1AdminWorkerLogs200LogsItem[];
-};
-
-export type GetV1AdminWorkerAiConcurrency200 = {
-  active_requests?: number;
-  max_concurrent?: number;
-  queued_requests?: number;
-  total_requests?: number;
-};
-
-export type GetV1AdminWorkerUsers200UsersItem = {
-  id?: number;
-  username?: string;
-  is_paused?: boolean;
-};
-
-export type GetV1AdminWorkerUsers200 = {
-  users?: GetV1AdminWorkerUsers200UsersItem[];
-};
-
-export type PostV1AdminWorkerUsersPause200 = {
-  message?: string;
-};
-
-export type PostV1AdminWorkerUsersResume200 = {
-  message?: string;
-};
-
-export type GetV1AdminWorkerAnalyticsPriorityScores200Distribution = {
-  high?: number;
-  medium?: number;
-  low?: number;
-  average?: number;
-};
-
-export type GetV1AdminWorkerAnalyticsPriorityScores200 = {
-  distribution?: GetV1AdminWorkerAnalyticsPriorityScores200Distribution;
 };
 
 export type GetV1AdminWorkerNotificationsErrorsParams = {
@@ -2951,12 +2971,6 @@ export const GetV1AdminWorkerNotificationsErrorsResolved = {
   false: 'false',
 } as const;
 
-export type GetV1AdminWorkerNotificationsErrors200 = {
-  errors?: NotificationError[];
-  pagination?: PaginationInfo;
-  stats?: NotificationErrorStats;
-};
-
 export type GetV1AdminWorkerNotificationsSentParams = {
 /**
  * Page number (1-based)
@@ -3006,12 +3020,6 @@ export const GetV1AdminWorkerNotificationsSentStatus = {
   bounced: 'bounced',
 } as const;
 
-export type GetV1AdminWorkerNotificationsSent200 = {
-  notifications?: SentNotification[];
-  pagination?: PaginationInfo;
-  stats?: NotificationStats;
-};
-
 export type PostV1AdminWorkerNotificationsForceSendBody = {
   /** Username of the user to send notification to */
   username: string;
@@ -3056,12 +3064,6 @@ level?: Level;
 user_id?: number;
 };
 
-export type GetV1AdminBackendQuestions200 = {
-  questions?: Question[];
-  pagination?: PaginationInfo;
-  stats?: QuestionStats;
-};
-
 export type GetV1AdminBackendQuestionsPaginatedParams = {
 /**
  * Page number (1-based)
@@ -3101,12 +3103,6 @@ level?: Level;
 user_id?: number;
 };
 
-export type GetV1AdminBackendQuestionsPaginated200 = {
-  questions?: Question[];
-  pagination?: PaginationInfo;
-  stats?: QuestionStats;
-};
-
 /**
  * Updated question content
  */
@@ -3121,31 +3117,12 @@ export type PutV1AdminBackendQuestionsIdBody = {
   explanation: string;
 };
 
-export type PutV1AdminBackendQuestionsId200 = {
-  message?: string;
-};
-
-export type DeleteV1AdminBackendQuestionsId200 = {
-  message?: string;
-};
-
-export type GetV1AdminBackendQuestionsIdUsers200 = {
-  /** @maxItems 5 */
-  users?: UserProfile[];
-  /** Total number of users assigned to this question */
-  total_count?: number;
-};
-
 export type PostV1AdminBackendQuestionsIdAssignUsersBody = {
   /**
    * Array of user IDs to assign to the question
    * @minItems 1
    */
   user_ids: number[];
-};
-
-export type PostV1AdminBackendQuestionsIdAssignUsers200 = {
-  message?: string;
 };
 
 export type PostV1AdminBackendQuestionsIdUnassignUsersBody = {
@@ -3156,32 +3133,8 @@ export type PostV1AdminBackendQuestionsIdUnassignUsersBody = {
   user_ids: number[];
 };
 
-export type PostV1AdminBackendQuestionsIdUnassignUsers200 = {
-  message?: string;
-};
-
-export type PostV1AdminBackendQuestionsIdFix200 = {
-  message?: string;
-};
-
 export type PostV1AdminBackendQuestionsIdAiFixBody = {
   additional_context?: string;
-};
-
-export type PostV1AdminBackendQuestionsIdAiFix200 = {
-  message?: string;
-};
-
-export type PostV1AdminBackendClearUserData200 = {
-  message?: string;
-};
-
-export type PostV1AdminBackendClearDatabase200 = {
-  message?: string;
-};
-
-export type PostV1AdminBackendUserzIdClear200 = {
-  message?: string;
 };
 
 export type GetV1AdminBackendReportedQuestionsParams = {
@@ -3212,25 +3165,6 @@ language?: Language;
  * Filter by level
  */
 level?: Level;
-};
-
-export type GetV1AdminBackendReportedQuestions200StatsReportedByType = { [key: string]: unknown };
-
-export type GetV1AdminBackendReportedQuestions200StatsReportedByLevel = { [key: string]: unknown };
-
-export type GetV1AdminBackendReportedQuestions200StatsReportedByLanguage = { [key: string]: unknown };
-
-export type GetV1AdminBackendReportedQuestions200Stats = {
-  total_reported?: number;
-  reported_by_type?: GetV1AdminBackendReportedQuestions200StatsReportedByType;
-  reported_by_level?: GetV1AdminBackendReportedQuestions200StatsReportedByLevel;
-  reported_by_language?: GetV1AdminBackendReportedQuestions200StatsReportedByLanguage;
-};
-
-export type GetV1AdminBackendReportedQuestions200 = {
-  questions?: Question[];
-  pagination?: PaginationInfo;
-  stats?: GetV1AdminBackendReportedQuestions200Stats;
 };
 
 export type GetV1AdminBackendStoriesParams = {
@@ -3264,20 +3198,6 @@ status?: StoryStatus;
 user_id?: number;
 };
 
-export type GetV1AdminBackendStories200 = {
-  stories?: Story[];
-  pagination?: PaginationInfo;
-};
-
-export type GetV1DailyQuestionsDate200 = {
-  questions?: DailyQuestionWithDetails[];
-  date?: string;
-};
-
-export type GetV1DailyDates200 = {
-  dates?: string[];
-};
-
 export type PostV1DailyQuestionsDateAnswerQuestionIdBody = {
   /**
    * Index of the user's selected answer (0-based)
@@ -3285,17 +3205,6 @@ export type PostV1DailyQuestionsDateAnswerQuestionIdBody = {
    * @maximum 3
    */
   user_answer_index: number;
-};
-
-export type PostV1DailyQuestionsDateAnswerQuestionId200AllOf = {
-  /** Whether the question is now completed */
-  is_completed?: boolean;
-};
-
-export type PostV1DailyQuestionsDateAnswerQuestionId200 = AnswerResponse & PostV1DailyQuestionsDateAnswerQuestionId200AllOf;
-
-export type GetV1DailyHistoryQuestionId200 = {
-  history?: DailyQuestionHistory[];
 };
 
 export type GetV1WordOfDayEmbedParams = {
@@ -3319,59 +3228,11 @@ start_date: string;
 end_date: string;
 };
 
-export type GetV1WordOfDayHistory200 = {
-  words?: WordOfTheDayDisplay[];
-  /** Number of words returned */
-  count?: number;
-};
-
 export type GetV1StoryParams = {
 /**
  * Include archived stories in the response
  */
 include_archived?: boolean;
-};
-
-/**
- * Health status of the service
- */
-export type GetHealth200Status = typeof GetHealth200Status[keyof typeof GetHealth200Status];
-
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const GetHealth200Status = {
-  ok: 'ok',
-} as const;
-
-export type GetHealth200 = {
-  /** Health status of the service */
-  status?: GetHealth200Status;
-  /** Service name */
-  service?: string;
-};
-
-export type GetHealth503Status = typeof GetHealth503Status[keyof typeof GetHealth503Status];
-
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const GetHealth503Status = {
-  unhealthy: 'unhealthy',
-} as const;
-
-export type GetHealth503 = {
-  status?: GetHealth503Status;
-  timestamp?: string;
-  /** Error message describing the health issue */
-  error?: string;
-};
-
-export type GetV1AdminWorkerDailyUsersUserIdQuestionsDate200 = {
-  questions?: DailyQuestionWithDetails[];
-};
-
-export type PostV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerate200 = {
-  success?: boolean;
-  message?: string;
 };
 
 export type GetV1AdminBackendFeedbackParams = {
@@ -3428,17 +3289,6 @@ export const DeleteV1AdminBackendFeedbackStatus = {
   resolved: 'resolved',
   dismissed: 'dismissed',
 } as const;
-
-export type DeleteV1AdminBackendFeedback200 = {
-  /** Number of feedback reports deleted */
-  deleted_count?: number;
-};
-
-export type PostV1AudioSpeechInit200 = {
-  stream_id?: string;
-  /** @nullable */
-  token?: string | null;
-};
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
@@ -5686,7 +5536,7 @@ export const getV1AiConversations = (
 ) => {
       
       
-      return customInstance<GetV1AiConversations200>(
+      return customInstance<ConversationsListResponse>(
       {url: `/v1/ai/conversations`, method: 'GET',
         params, signal
     },
@@ -6071,7 +5921,7 @@ export const getV1AiSearch = (
 ) => {
       
       
-      return customInstance<GetV1AiSearch200>(
+      return customInstance<ConversationSearchResponse>(
       {url: `/v1/ai/search`, method: 'GET',
         params, signal
     },
@@ -6165,7 +6015,7 @@ export const putV1AiConversationsBookmark = (
  options?: SecondParameter<typeof customInstance>,) => {
       
       
-      return customInstance<PutV1AiConversationsBookmark200>(
+      return customInstance<BookmarkStatusResponse>(
       {url: `/v1/ai/conversations/bookmark`, method: 'PUT',
       headers: {'Content-Type': 'application/json', },
       data: putV1AiConversationsBookmarkBody
@@ -6231,7 +6081,7 @@ export const getV1AiBookmarks = (
 ) => {
       
       
-      return customInstance<GetV1AiBookmarks200>(
+      return customInstance<ChatBookmarksResponse>(
       {url: `/v1/ai/bookmarks`, method: 'GET',
         params, signal
     },
@@ -6487,7 +6337,7 @@ export const getV1SnippetsSearch = (
 ) => {
       
       
-      return customInstance<GetV1SnippetsSearch200>(
+      return customInstance<SnippetList>(
       {url: `/v1/snippets/search`, method: 'GET',
         params, signal
     },
@@ -7086,7 +6936,7 @@ export const putV1UserzProfile = (
  options?: SecondParameter<typeof customInstance>,) => {
       
       
-      return customInstance<PutV1UserzProfile200>(
+      return customInstance<UserProfileMessageResponse>(
       {url: `/v1/userz/profile`, method: 'PUT',
       headers: {'Content-Type': 'application/json', },
       data: userUpdateRequest
@@ -7312,7 +7162,7 @@ export const getV1AdminBackendUserz = (
 ) => {
       
       
-      return customInstance<GetV1AdminBackendUserz200>(
+      return customInstance<AdminUsersResponse>(
       {url: `/v1/admin/backend/userz`, method: 'GET', signal
     },
       options);
@@ -7406,7 +7256,7 @@ export const postV1AdminBackendUserz = (
 ) => {
       
       
-      return customInstance<PostV1AdminBackendUserz201>(
+      return customInstance<UserProfileMessageResponse>(
       {url: `/v1/admin/backend/userz`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: postV1AdminBackendUserzBody, signal
@@ -7664,7 +7514,7 @@ export const getV1AdminBackendUserzPaginated = (
 ) => {
       
       
-      return customInstance<GetV1AdminBackendUserzPaginated200>(
+      return customInstance<AdminUsersPaginatedResponse>(
       {url: `/v1/admin/backend/userz/paginated`, method: 'GET',
         params, signal
     },
@@ -7759,7 +7609,7 @@ export const putV1AdminBackendUserzId = (
  options?: SecondParameter<typeof customInstance>,) => {
       
       
-      return customInstance<PutV1AdminBackendUserzId200>(
+      return customInstance<UserProfileMessageResponse>(
       {url: `/v1/admin/backend/userz/${id}`, method: 'PUT',
       headers: {'Content-Type': 'application/json', },
       data: userUpdateRequest
@@ -7824,7 +7674,7 @@ export const deleteV1AdminBackendUserzId = (
  options?: SecondParameter<typeof customInstance>,) => {
       
       
-      return customInstance<DeleteV1AdminBackendUserzId200>(
+      return customInstance<MessageResponse>(
       {url: `/v1/admin/backend/userz/${id}`, method: 'DELETE'
     },
       options);
@@ -7889,7 +7739,7 @@ export const postV1AdminBackendUserzIdResetPassword = (
 ) => {
       
       
-      return customInstance<PostV1AdminBackendUserzIdResetPassword200>(
+      return customInstance<MessageResponse>(
       {url: `/v1/admin/backend/userz/${id}/reset-password`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: passwordResetRequest, signal
@@ -7955,7 +7805,7 @@ export const getV1AdminBackendRoles = (
 ) => {
       
       
-      return customInstance<GetV1AdminBackendRoles200>(
+      return customInstance<AdminRolesResponse>(
       {url: `/v1/admin/backend/roles`, method: 'GET', signal
     },
       options);
@@ -8049,7 +7899,7 @@ export const getV1AdminBackendUserzIdRoles = (
 ) => {
       
       
-      return customInstance<GetV1AdminBackendUserzIdRoles200>(
+      return customInstance<AdminRolesResponse>(
       {url: `/v1/admin/backend/userz/${id}/roles`, method: 'GET', signal
     },
       options);
@@ -8144,7 +7994,7 @@ export const postV1AdminBackendUserzIdRoles = (
 ) => {
       
       
-      return customInstance<PostV1AdminBackendUserzIdRoles200>(
+      return customInstance<MessageResponse>(
       {url: `/v1/admin/backend/userz/${id}/roles`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: postV1AdminBackendUserzIdRolesBody, signal
@@ -8210,7 +8060,7 @@ export const deleteV1AdminBackendUserzIdRolesRoleId = (
  options?: SecondParameter<typeof customInstance>,) => {
       
       
-      return customInstance<DeleteV1AdminBackendUserzIdRolesRoleId200>(
+      return customInstance<MessageResponse>(
       {url: `/v1/admin/backend/userz/${id}/roles/${roleId}`, method: 'DELETE'
     },
       options);
@@ -8556,7 +8406,7 @@ export const getV1AdminWorkerDetails = (
 ) => {
       
       
-      return customInstance<GetV1AdminWorkerDetails200>(
+      return customInstance<WorkerDetailsResponse>(
       {url: `/v1/admin/worker/details`, method: 'GET', signal
     },
       options);
@@ -8650,7 +8500,7 @@ export const postV1AdminWorkerPause = (
 ) => {
       
       
-      return customInstance<PostV1AdminWorkerPause200>(
+      return customInstance<MessageResponse>(
       {url: `/v1/admin/worker/pause`, method: 'POST', signal
     },
       options);
@@ -8714,7 +8564,7 @@ export const postV1AdminWorkerResume = (
 ) => {
       
       
-      return customInstance<PostV1AdminWorkerResume200>(
+      return customInstance<MessageResponse>(
       {url: `/v1/admin/worker/resume`, method: 'POST', signal
     },
       options);
@@ -8778,7 +8628,7 @@ export const postV1AdminWorkerTrigger = (
 ) => {
       
       
-      return customInstance<PostV1AdminWorkerTrigger200>(
+      return customInstance<MessageResponse>(
       {url: `/v1/admin/worker/trigger`, method: 'POST', signal
     },
       options);
@@ -8842,7 +8692,7 @@ export const getV1AdminWorkerLogs = (
 ) => {
       
       
-      return customInstance<GetV1AdminWorkerLogs200>(
+      return customInstance<WorkerLogsResponse>(
       {url: `/v1/admin/worker/logs`, method: 'GET', signal
     },
       options);
@@ -8936,7 +8786,7 @@ export const getV1AdminWorkerAiConcurrency = (
 ) => {
       
       
-      return customInstance<GetV1AdminWorkerAiConcurrency200>(
+      return customInstance<WorkerAIConcurrencyStats>(
       {url: `/v1/admin/worker/ai-concurrency`, method: 'GET', signal
     },
       options);
@@ -9030,7 +8880,7 @@ export const getV1AdminWorkerUsers = (
 ) => {
       
       
-      return customInstance<GetV1AdminWorkerUsers200>(
+      return customInstance<WorkerUserListResponse>(
       {url: `/v1/admin/worker/users`, method: 'GET', signal
     },
       options);
@@ -9124,7 +8974,7 @@ export const postV1AdminWorkerUsersPause = (
 ) => {
       
       
-      return customInstance<PostV1AdminWorkerUsersPause200>(
+      return customInstance<MessageResponse>(
       {url: `/v1/admin/worker/users/pause`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: userIdRequest, signal
@@ -9190,7 +9040,7 @@ export const postV1AdminWorkerUsersResume = (
 ) => {
       
       
-      return customInstance<PostV1AdminWorkerUsersResume200>(
+      return customInstance<MessageResponse>(
       {url: `/v1/admin/worker/users/resume`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: userIdRequest, signal
@@ -9256,7 +9106,7 @@ export const getV1AdminWorkerAnalyticsPriorityScores = (
 ) => {
       
       
-      return customInstance<GetV1AdminWorkerAnalyticsPriorityScores200>(
+      return customInstance<PriorityAnalytics>(
       {url: `/v1/admin/worker/analytics/priority-scores`, method: 'GET', signal
     },
       options);
@@ -9726,7 +9576,7 @@ export const getV1AdminWorkerNotificationsErrors = (
 ) => {
       
       
-      return customInstance<GetV1AdminWorkerNotificationsErrors200>(
+      return customInstance<WorkerNotificationErrorsResponse>(
       {url: `/v1/admin/worker/notifications/errors`, method: 'GET',
         params, signal
     },
@@ -9821,7 +9671,7 @@ export const getV1AdminWorkerNotificationsSent = (
 ) => {
       
       
-      return customInstance<GetV1AdminWorkerNotificationsSent200>(
+      return customInstance<WorkerNotificationSentResponse>(
       {url: `/v1/admin/worker/notifications/sent`, method: 'GET',
         params, signal
     },
@@ -9982,7 +9832,7 @@ export const getV1AdminBackendQuestions = (
 ) => {
       
       
-      return customInstance<GetV1AdminBackendQuestions200>(
+      return customInstance<AdminQuestionsResponse>(
       {url: `/v1/admin/backend/questions`, method: 'GET',
         params, signal
     },
@@ -10077,7 +9927,7 @@ export const getV1AdminBackendQuestionsPaginated = (
 ) => {
       
       
-      return customInstance<GetV1AdminBackendQuestionsPaginated200>(
+      return customInstance<AdminQuestionsResponse>(
       {url: `/v1/admin/backend/questions/paginated`, method: 'GET',
         params, signal
     },
@@ -10266,7 +10116,7 @@ export const putV1AdminBackendQuestionsId = (
  options?: SecondParameter<typeof customInstance>,) => {
       
       
-      return customInstance<PutV1AdminBackendQuestionsId200>(
+      return customInstance<MessageResponse>(
       {url: `/v1/admin/backend/questions/${id}`, method: 'PUT',
       headers: {'Content-Type': 'application/json', },
       data: putV1AdminBackendQuestionsIdBody
@@ -10331,7 +10181,7 @@ export const deleteV1AdminBackendQuestionsId = (
  options?: SecondParameter<typeof customInstance>,) => {
       
       
-      return customInstance<DeleteV1AdminBackendQuestionsId200>(
+      return customInstance<MessageResponse>(
       {url: `/v1/admin/backend/questions/${id}`, method: 'DELETE'
     },
       options);
@@ -10395,7 +10245,7 @@ export const getV1AdminBackendQuestionsIdUsers = (
 ) => {
       
       
-      return customInstance<GetV1AdminBackendQuestionsIdUsers200>(
+      return customInstance<QuestionAssignedUsersResponse>(
       {url: `/v1/admin/backend/questions/${id}/users`, method: 'GET', signal
     },
       options);
@@ -10490,7 +10340,7 @@ export const postV1AdminBackendQuestionsIdAssignUsers = (
 ) => {
       
       
-      return customInstance<PostV1AdminBackendQuestionsIdAssignUsers200>(
+      return customInstance<MessageResponse>(
       {url: `/v1/admin/backend/questions/${id}/assign-users`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: postV1AdminBackendQuestionsIdAssignUsersBody, signal
@@ -10557,7 +10407,7 @@ export const postV1AdminBackendQuestionsIdUnassignUsers = (
 ) => {
       
       
-      return customInstance<PostV1AdminBackendQuestionsIdUnassignUsers200>(
+      return customInstance<MessageResponse>(
       {url: `/v1/admin/backend/questions/${id}/unassign-users`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: postV1AdminBackendQuestionsIdUnassignUsersBody, signal
@@ -10623,7 +10473,7 @@ export const postV1AdminBackendQuestionsIdFix = (
 ) => {
       
       
-      return customInstance<PostV1AdminBackendQuestionsIdFix200>(
+      return customInstance<MessageResponse>(
       {url: `/v1/admin/backend/questions/${id}/fix`, method: 'POST', signal
     },
       options);
@@ -10688,7 +10538,7 @@ export const postV1AdminBackendQuestionsIdAiFix = (
 ) => {
       
       
-      return customInstance<PostV1AdminBackendQuestionsIdAiFix200>(
+      return customInstance<MessageResponse>(
       {url: `/v1/admin/backend/questions/${id}/ai-fix`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: postV1AdminBackendQuestionsIdAiFixBody, signal
@@ -10754,7 +10604,7 @@ export const postV1AdminBackendClearUserData = (
 ) => {
       
       
-      return customInstance<PostV1AdminBackendClearUserData200>(
+      return customInstance<MessageResponse>(
       {url: `/v1/admin/backend/clear-user-data`, method: 'POST', signal
     },
       options);
@@ -10818,7 +10668,7 @@ export const postV1AdminBackendClearDatabase = (
 ) => {
       
       
-      return customInstance<PostV1AdminBackendClearDatabase200>(
+      return customInstance<MessageResponse>(
       {url: `/v1/admin/backend/clear-database`, method: 'POST', signal
     },
       options);
@@ -10882,7 +10732,7 @@ export const postV1AdminBackendUserzIdClear = (
 ) => {
       
       
-      return customInstance<PostV1AdminBackendUserzIdClear200>(
+      return customInstance<MessageResponse>(
       {url: `/v1/admin/backend/userz/${id}/clear`, method: 'POST', signal
     },
       options);
@@ -11134,7 +10984,7 @@ export const getV1AdminBackendReportedQuestions = (
 ) => {
       
       
-      return customInstance<GetV1AdminBackendReportedQuestions200>(
+      return customInstance<AdminReportedQuestionsResponse>(
       {url: `/v1/admin/backend/reported-questions`, method: 'GET',
         params, signal
     },
@@ -11229,7 +11079,7 @@ export const getV1AdminBackendStories = (
 ) => {
       
       
-      return customInstance<GetV1AdminBackendStories200>(
+      return customInstance<AdminStoriesResponse>(
       {url: `/v1/admin/backend/stories`, method: 'GET',
         params, signal
     },
@@ -11640,7 +11490,7 @@ export const getV1DailyQuestionsDate = (
 ) => {
       
       
-      return customInstance<GetV1DailyQuestionsDate200>(
+      return customInstance<DailyQuestionsResponse>(
       {url: `/v1/daily/questions/${date}`, method: 'GET', signal
     },
       options);
@@ -11863,7 +11713,7 @@ export const getV1DailyDates = (
 ) => {
       
       
-      return customInstance<GetV1DailyDates200>(
+      return customInstance<DailyDatesResponse>(
       {url: `/v1/daily/dates`, method: 'GET', signal
     },
       options);
@@ -11959,7 +11809,7 @@ export const postV1DailyQuestionsDateAnswerQuestionId = (
 ) => {
       
       
-      return customInstance<PostV1DailyQuestionsDateAnswerQuestionId200>(
+      return customInstance<DailyAnswerResponse>(
       {url: `/v1/daily/questions/${date}/answer/${questionId}`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: postV1DailyQuestionsDateAnswerQuestionIdBody, signal
@@ -12119,7 +11969,7 @@ export const getV1DailyHistoryQuestionId = (
 ) => {
       
       
-      return customInstance<GetV1DailyHistoryQuestionId200>(
+      return customInstance<DailyQuestionHistoryResponse>(
       {url: `/v1/daily/history/${questionId}`, method: 'GET', signal
     },
       options);
@@ -12590,7 +12440,7 @@ export const getV1WordOfDayHistory = (
 ) => {
       
       
-      return customInstance<GetV1WordOfDayHistory200>(
+      return customInstance<WordOfDayHistoryResponse>(
       {url: `/v1/word-of-day/history`, method: 'GET',
         params, signal
     },
@@ -13865,7 +13715,7 @@ export const getHealth = (
 ) => {
       
       
-      return customInstance<GetHealth200>(
+      return customInstance<HealthStatusResponse>(
       {url: `/health`, method: 'GET', signal
     },
       options);
@@ -13881,7 +13731,7 @@ export const getGetHealthQueryKey = () => {
     }
 
     
-export const getGetHealthQueryOptions = <TData = Awaited<ReturnType<typeof getHealth>>, TError = GetHealth503>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getGetHealthQueryOptions = <TData = Awaited<ReturnType<typeof getHealth>>, TError = HealthErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -13900,10 +13750,10 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type GetHealthQueryResult = NonNullable<Awaited<ReturnType<typeof getHealth>>>
-export type GetHealthQueryError = GetHealth503
+export type GetHealthQueryError = HealthErrorResponse
 
 
-export function useGetHealth<TData = Awaited<ReturnType<typeof getHealth>>, TError = GetHealth503>(
+export function useGetHealth<TData = Awaited<ReturnType<typeof getHealth>>, TError = HealthErrorResponse>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getHealth>>,
@@ -13913,7 +13763,7 @@ export function useGetHealth<TData = Awaited<ReturnType<typeof getHealth>>, TErr
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetHealth<TData = Awaited<ReturnType<typeof getHealth>>, TError = GetHealth503>(
+export function useGetHealth<TData = Awaited<ReturnType<typeof getHealth>>, TError = HealthErrorResponse>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getHealth>>,
@@ -13923,7 +13773,7 @@ export function useGetHealth<TData = Awaited<ReturnType<typeof getHealth>>, TErr
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetHealth<TData = Awaited<ReturnType<typeof getHealth>>, TError = GetHealth503>(
+export function useGetHealth<TData = Awaited<ReturnType<typeof getHealth>>, TError = HealthErrorResponse>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
@@ -13931,7 +13781,7 @@ export function useGetHealth<TData = Awaited<ReturnType<typeof getHealth>>, TErr
  * @summary Health check
  */
 
-export function useGetHealth<TData = Awaited<ReturnType<typeof getHealth>>, TError = GetHealth503>(
+export function useGetHealth<TData = Awaited<ReturnType<typeof getHealth>>, TError = HealthErrorResponse>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -13960,7 +13810,7 @@ export const getV1AdminWorkerDailyUsersUserIdQuestionsDate = (
 ) => {
       
       
-      return customInstance<GetV1AdminWorkerDailyUsersUserIdQuestionsDate200>(
+      return customInstance<AdminDailyQuestionsResponse>(
       {url: `/v1/admin/worker/daily/users/${userId}/questions/${date}`, method: 'GET', signal
     },
       options);
@@ -14061,7 +13911,7 @@ export const postV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerate = (
 ) => {
       
       
-      return customInstance<PostV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerate200>(
+      return customInstance<SuccessResponse>(
       {url: `/v1/admin/worker/daily/users/${userId}/questions/${date}/regenerate`, method: 'POST', signal
     },
       options);
@@ -14219,7 +14069,7 @@ export const deleteV1AdminBackendFeedback = (
  options?: SecondParameter<typeof customInstance>,) => {
       
       
-      return customInstance<DeleteV1AdminBackendFeedback200>(
+      return customInstance<BulkDeleteResponse>(
       {url: `/v1/admin/backend/feedback`, method: 'DELETE',
         params
     },
@@ -15081,7 +14931,7 @@ export const postV1AudioSpeechInit = (
 ) => {
       
       
-      return customInstance<PostV1AudioSpeechInit200>(
+      return customInstance<TTSStreamInitResponse>(
       {url: `/v1/audio/speech/init`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: tTSRequest, signal
@@ -15287,7 +15137,7 @@ export const getGetV1SettingsApiKeyProviderResponseMock = (overrideResponse: Par
 
 export const getPostV1AiConversationsResponseMock = (overrideResponse: Partial< Conversation > = {}): Conversation => ({id: faker.string.uuid(), user_id: faker.number.int({min: undefined, max: undefined}), title: faker.string.alpha({length: {min: 10, max: 20}}), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, message_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), messages: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.string.uuid(), conversation_id: faker.string.uuid(), question_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), role: faker.helpers.arrayElement(['user','assistant'] as const), content: {text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, bookmarked: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, conversation_title: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined]), ...overrideResponse})
 
-export const getGetV1AiConversationsResponseMock = (overrideResponse: Partial< GetV1AiConversations200 > = {}): GetV1AiConversations200 => ({conversations: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.string.uuid(), user_id: faker.number.int({min: undefined, max: undefined}), title: faker.string.alpha({length: {min: 10, max: 20}}), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, message_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), messages: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.string.uuid(), conversation_id: faker.string.uuid(), question_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), role: faker.helpers.arrayElement(['user','assistant'] as const), content: {text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, bookmarked: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, conversation_title: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined])})), undefined]), total: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), limit: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), offset: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), ...overrideResponse})
+export const getGetV1AiConversationsResponseMock = (overrideResponse: Partial< ConversationsListResponse > = {}): ConversationsListResponse => ({conversations: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.string.uuid(), user_id: faker.number.int({min: undefined, max: undefined}), title: faker.string.alpha({length: {min: 10, max: 20}}), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, message_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), messages: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.string.uuid(), conversation_id: faker.string.uuid(), question_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), role: faker.helpers.arrayElement(['user','assistant'] as const), content: {text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, bookmarked: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, conversation_title: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined])})), total: faker.number.int({min: undefined, max: undefined}), limit: faker.number.int({min: undefined, max: undefined}), offset: faker.number.int({min: undefined, max: undefined}), ...overrideResponse})
 
 export const getGetV1AiConversationsIdResponseMock = (overrideResponse: Partial< Conversation > = {}): Conversation => ({id: faker.string.uuid(), user_id: faker.number.int({min: undefined, max: undefined}), title: faker.string.alpha({length: {min: 10, max: 20}}), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, message_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), messages: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.string.uuid(), conversation_id: faker.string.uuid(), question_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), role: faker.helpers.arrayElement(['user','assistant'] as const), content: {text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, bookmarked: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, conversation_title: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined]), ...overrideResponse})
 
@@ -15295,17 +15145,17 @@ export const getPutV1AiConversationsIdResponseMock = (overrideResponse: Partial<
 
 export const getPostV1AiConversationsConversationIdMessagesResponseMock = (overrideResponse: Partial< ChatMessage > = {}): ChatMessage => ({id: faker.string.uuid(), conversation_id: faker.string.uuid(), question_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), role: faker.helpers.arrayElement(['user','assistant'] as const), content: {text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, bookmarked: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, conversation_title: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
 
-export const getGetV1AiSearchResponseMock = (overrideResponse: Partial< GetV1AiSearch200 > = {}): GetV1AiSearch200 => ({conversations: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.string.uuid(), user_id: faker.number.int({min: undefined, max: undefined}), title: faker.string.alpha({length: {min: 10, max: 20}}), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, message_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), messages: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.string.uuid(), conversation_id: faker.string.uuid(), question_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), role: faker.helpers.arrayElement(['user','assistant'] as const), content: {text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, bookmarked: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, conversation_title: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined])})), undefined]), query: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), total: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), limit: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), offset: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), ...overrideResponse})
+export const getGetV1AiSearchResponseMock = (): ConversationSearchResponse => ({...{conversations: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.string.uuid(), user_id: faker.number.int({min: undefined, max: undefined}), title: faker.string.alpha({length: {min: 10, max: 20}}), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, message_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), messages: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.string.uuid(), conversation_id: faker.string.uuid(), question_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), role: faker.helpers.arrayElement(['user','assistant'] as const), content: {text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, bookmarked: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, conversation_title: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined])})), total: faker.number.int({min: undefined, max: undefined}), limit: faker.number.int({min: undefined, max: undefined}), offset: faker.number.int({min: undefined, max: undefined})},...{query: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])},})
 
-export const getPutV1AiConversationsBookmarkResponseMock = (overrideResponse: Partial< PutV1AiConversationsBookmark200 > = {}): PutV1AiConversationsBookmark200 => ({bookmarked: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), ...overrideResponse})
+export const getPutV1AiConversationsBookmarkResponseMock = (overrideResponse: Partial< BookmarkStatusResponse > = {}): BookmarkStatusResponse => ({bookmarked: faker.datatype.boolean(), ...overrideResponse})
 
-export const getGetV1AiBookmarksResponseMock = (overrideResponse: Partial< GetV1AiBookmarks200 > = {}): GetV1AiBookmarks200 => ({messages: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.string.uuid(), conversation_id: faker.string.uuid(), question_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), role: faker.helpers.arrayElement(['user','assistant'] as const), content: {text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, bookmarked: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, conversation_title: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined]), query: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), total: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), limit: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), offset: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), ...overrideResponse})
+export const getGetV1AiBookmarksResponseMock = (overrideResponse: Partial< ChatBookmarksResponse > = {}): ChatBookmarksResponse => ({messages: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.string.uuid(), conversation_id: faker.string.uuid(), question_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), role: faker.helpers.arrayElement(['user','assistant'] as const), content: {text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, bookmarked: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, conversation_title: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), query: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), total: faker.number.int({min: undefined, max: undefined}), limit: faker.number.int({min: undefined, max: undefined}), offset: faker.number.int({min: undefined, max: undefined}), ...overrideResponse})
 
 export const getPostV1SnippetsResponseMock = (overrideResponse: Partial< Snippet > = {}): Snippet => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), original_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), translated_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), source_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), target_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), question_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), section_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), story_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), context: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), difficulty_level: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), created_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), updated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), ...overrideResponse})
 
 export const getGetV1SnippetsResponseMock = (overrideResponse: Partial< SnippetList > = {}): SnippetList => ({snippets: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), original_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), translated_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), source_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), target_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), question_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), section_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), story_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), context: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), difficulty_level: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), created_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), updated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined])})), undefined]), total: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), limit: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), offset: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), query: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), ...overrideResponse})
 
-export const getGetV1SnippetsSearchResponseMock = (overrideResponse: Partial< GetV1SnippetsSearch200 > = {}): GetV1SnippetsSearch200 => ({snippets: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), original_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), translated_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), source_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), target_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), question_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), section_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), story_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), context: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), difficulty_level: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), created_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), updated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined])})), undefined]), query: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), total: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), limit: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), offset: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), ...overrideResponse})
+export const getGetV1SnippetsSearchResponseMock = (overrideResponse: Partial< SnippetList > = {}): SnippetList => ({snippets: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), original_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), translated_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), source_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), target_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), question_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), section_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), story_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), context: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), difficulty_level: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), created_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), updated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined])})), undefined]), total: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), limit: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), offset: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), query: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), ...overrideResponse})
 
 export const getGetV1SnippetsByQuestionQuestionIdResponseMock = (overrideResponse: Partial< SnippetsResponse > = {}): SnippetsResponse => ({snippets: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), original_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), translated_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), source_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), target_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), question_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), section_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), story_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), context: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), difficulty_level: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), created_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), updated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined])})), ...overrideResponse})
 
@@ -15317,15 +15167,15 @@ export const getGetV1SnippetsIdResponseMock = (overrideResponse: Partial< Snippe
 
 export const getPutV1SnippetsIdResponseMock = (overrideResponse: Partial< Snippet > = {}): Snippet => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), original_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), translated_text: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), source_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), target_language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), question_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), section_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), story_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), context: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), difficulty_level: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), created_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), updated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), ...overrideResponse})
 
-export const getPutV1UserzProfileResponseMock = (overrideResponse: Partial< PutV1UserzProfile200 > = {}): PutV1UserzProfile200 => ({message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), user: faker.helpers.arrayElement([{id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), username: faker.helpers.arrayElement([faker.helpers.fromRegExp('^[a-zA-Z0-9_@.+-]+$'), undefined]), email: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), timezone: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), last_active: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), preferred_language: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), current_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ai_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), is_paused: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), word_of_day_email_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), updated_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, undefined]), ...overrideResponse})
+export const getPutV1UserzProfileResponseMock = (overrideResponse: Partial< UserProfileMessageResponse > = {}): UserProfileMessageResponse => ({message: faker.string.alpha({length: {min: 10, max: 20}}), user: {id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), username: faker.helpers.arrayElement([faker.helpers.fromRegExp('^[a-zA-Z0-9_@.+-]+$'), undefined]), email: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), timezone: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), last_active: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), preferred_language: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), current_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ai_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), is_paused: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), word_of_day_email_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), updated_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, ...overrideResponse})
 
 export const getPostV1FeedbackResponseMock = (overrideResponse: Partial< FeedbackReport > = {}): FeedbackReport => ({id: faker.number.int({min: undefined, max: undefined}), user_id: faker.number.int({min: undefined, max: undefined}), feedback_text: faker.string.alpha({length: {min: 10, max: 5000}}), feedback_type: faker.helpers.arrayElement(['bug','feature_request','general','improvement'] as const), context_data: faker.helpers.arrayElement([{}, undefined]), screenshot_data: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), screenshot_url: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), status: faker.helpers.arrayElement(['new','in_progress','resolved','dismissed'] as const), admin_notes: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), assigned_to_user_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), resolved_at: faker.helpers.arrayElement([faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, null]), undefined]), resolved_by_user_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, ...overrideResponse})
 
 export const getGetV1AdminBackendResponseMock = (): string => (faker.word.sample())
 
-export const getGetV1AdminBackendUserzResponseMock = (overrideResponse: Partial< GetV1AdminBackendUserz200 > = {}): GetV1AdminBackendUserz200 => ({users: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 1000 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), username: faker.helpers.arrayElement([faker.helpers.fromRegExp('^[a-zA-Z0-9_@.+-]+$'), undefined]), email: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), timezone: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), last_active: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), preferred_language: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), current_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ai_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), is_paused: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), word_of_day_email_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), updated_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined]), ...overrideResponse})
+export const getGetV1AdminBackendUserzResponseMock = (overrideResponse: Partial< AdminUsersResponse > = {}): AdminUsersResponse => ({users: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), username: faker.helpers.arrayElement([faker.helpers.fromRegExp('^[a-zA-Z0-9_@.+-]+$'), undefined]), email: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), timezone: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), last_active: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), preferred_language: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), current_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ai_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), is_paused: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), word_of_day_email_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), updated_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), ...overrideResponse})
 
-export const getPostV1AdminBackendUserzResponseMock = (overrideResponse: Partial< PostV1AdminBackendUserz201 > = {}): PostV1AdminBackendUserz201 => ({message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), user: faker.helpers.arrayElement([{id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), username: faker.helpers.arrayElement([faker.helpers.fromRegExp('^[a-zA-Z0-9_@.+-]+$'), undefined]), email: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), timezone: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), last_active: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), preferred_language: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), current_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ai_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), is_paused: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), word_of_day_email_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), updated_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, undefined]), ...overrideResponse})
+export const getPostV1AdminBackendUserzResponseMock = (overrideResponse: Partial< UserProfileMessageResponse > = {}): UserProfileMessageResponse => ({message: faker.string.alpha({length: {min: 10, max: 20}}), user: {id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), username: faker.helpers.arrayElement([faker.helpers.fromRegExp('^[a-zA-Z0-9_@.+-]+$'), undefined]), email: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), timezone: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), last_active: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), preferred_language: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), current_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ai_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), is_paused: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), word_of_day_email_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), updated_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, ...overrideResponse})
 
 export const getPostV1SettingsClearStoriesResponseMock = (overrideResponse: Partial< SuccessResponse > = {}): SuccessResponse => ({success: faker.datatype.boolean(), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 500}}), undefined]), ...overrideResponse})
 
@@ -15333,25 +15183,37 @@ export const getPostV1SettingsResetAccountResponseMock = (overrideResponse: Part
 
 export const getPostV1SettingsClearAiChatsResponseMock = (overrideResponse: Partial< SuccessResponse > = {}): SuccessResponse => ({success: faker.datatype.boolean(), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 500}}), undefined]), ...overrideResponse})
 
-export const getGetV1AdminBackendUserzPaginatedResponseMock = (overrideResponse: Partial< GetV1AdminBackendUserzPaginated200 > = {}): GetV1AdminBackendUserzPaginated200 => ({users: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({user: faker.helpers.arrayElement([{id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), username: faker.helpers.arrayElement([faker.helpers.fromRegExp('^[a-zA-Z0-9_@.+-]+$'), undefined]), email: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), timezone: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), last_active: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), preferred_language: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), current_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ai_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), is_paused: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), word_of_day_email_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), updated_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, undefined]), progress: faker.helpers.arrayElement([{current_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), suggested_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), accuracy_rate: faker.helpers.arrayElement([faker.number.float({min: 0, max: 1, fractionDigits: 2}), undefined]), total_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), correct_answers: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), performance_by_topic: faker.helpers.arrayElement([{
+export const getGetV1AdminBackendUserzPaginatedResponseMock = (overrideResponse: Partial< AdminUsersPaginatedResponse > = {}): AdminUsersPaginatedResponse => ({users: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({user: faker.helpers.arrayElement([{id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), username: faker.helpers.arrayElement([faker.helpers.fromRegExp('^[a-zA-Z0-9_@.+-]+$'), undefined]), email: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), timezone: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), last_active: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), preferred_language: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), current_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ai_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), is_paused: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), word_of_day_email_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), updated_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, undefined]), progress: faker.helpers.arrayElement([{current_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), suggested_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), accuracy_rate: faker.helpers.arrayElement([faker.number.float({min: 0, max: 1, fractionDigits: 2}), undefined]), total_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), correct_answers: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), performance_by_topic: faker.helpers.arrayElement([{
         [faker.string.alphanumeric(5)]: {correct_attempts: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), total_attempts: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), average_response_time_ms: faker.helpers.arrayElement([faker.number.float({min: 0, max: undefined, fractionDigits: 2}), undefined]), last_updated: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}
       }, undefined]), weak_areas: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 50 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 10, max: 20}}))), undefined]), recent_activity: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 100 }) }, (_, i) => i + 1).map(() => ({question_id: faker.helpers.arrayElement([faker.number.int({min: 1, max: undefined}), undefined]), is_correct: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined]), worker_status: faker.helpers.arrayElement([{status: faker.helpers.arrayElement([faker.helpers.arrayElement(['idle','busy','error'] as const), undefined]), last_heartbeat: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), error_message: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined])}, undefined]), learning_preferences: faker.helpers.arrayElement([{focus_on_weak_areas: faker.datatype.boolean(), fresh_question_ratio: faker.number.float({min: 0, max: 1, fractionDigits: 2}), known_question_penalty: faker.number.float({min: 0, max: 1, fractionDigits: 2}), review_interval_days: faker.number.int({min: 1, max: 60}), weak_area_boost: faker.number.float({min: 1, max: 5, fractionDigits: 2}), daily_reminder_enabled: faker.datatype.boolean(), tts_voice: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), daily_goal: faker.helpers.arrayElement([faker.number.int({min: 1, max: undefined}), undefined])}, undefined]), priority_insights: faker.helpers.arrayElement([{total_questions_in_queue: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), high_priority_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), medium_priority_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), low_priority_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined])}, undefined]), generation_focus: faker.helpers.arrayElement([{current_generation_model: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), last_generation_time: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), generation_rate: faker.helpers.arrayElement([faker.number.float({min: 0, max: undefined, fractionDigits: 2}), undefined])}, undefined]), high_priority_topics: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 20 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 10, max: 20}}))), undefined]), gap_analysis: faker.helpers.arrayElement([{}, undefined]), priority_distribution: faker.helpers.arrayElement([{
         [faker.string.alphanumeric(5)]: faker.number.int({min: 0, max: undefined})
-      }, undefined])}, undefined]), question_stats: faker.helpers.arrayElement([{user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), total_answered: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), answered_by_type: faker.helpers.arrayElement([{}, undefined]), answered_by_level: faker.helpers.arrayElement([{}, undefined]), accuracy_by_type: faker.helpers.arrayElement([{}, undefined]), accuracy_by_level: faker.helpers.arrayElement([{}, undefined]), available_by_type: faker.helpers.arrayElement([{}, undefined]), available_by_level: faker.helpers.arrayElement([{}, undefined])}, undefined])})), undefined]), pagination: faker.helpers.arrayElement([{page: faker.number.int({min: 1, max: undefined}), page_size: faker.number.int({min: 1, max: 100}), total: faker.number.int({min: 0, max: undefined}), total_pages: faker.number.int({min: 0, max: undefined})}, undefined]), ...overrideResponse})
+      }, undefined])}, undefined]), question_stats: faker.helpers.arrayElement([{user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), total_answered: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), answered_by_type: faker.helpers.arrayElement([{
+        [faker.string.alphanumeric(5)]: faker.number.int({min: undefined, max: undefined})
+      }, undefined]), answered_by_level: faker.helpers.arrayElement([{
+        [faker.string.alphanumeric(5)]: faker.number.int({min: undefined, max: undefined})
+      }, undefined]), accuracy_by_type: faker.helpers.arrayElement([{
+        [faker.string.alphanumeric(5)]: faker.number.float({min: undefined, max: undefined, fractionDigits: 2})
+      }, undefined]), accuracy_by_level: faker.helpers.arrayElement([{
+        [faker.string.alphanumeric(5)]: faker.number.float({min: undefined, max: undefined, fractionDigits: 2})
+      }, undefined]), available_by_type: faker.helpers.arrayElement([{
+        [faker.string.alphanumeric(5)]: faker.number.int({min: undefined, max: undefined})
+      }, undefined]), available_by_level: faker.helpers.arrayElement([{
+        [faker.string.alphanumeric(5)]: faker.number.int({min: undefined, max: undefined})
+      }, undefined])}, undefined])})), pagination: {page: faker.number.int({min: 1, max: undefined}), page_size: faker.number.int({min: 1, max: 100}), total: faker.number.int({min: 0, max: undefined}), total_pages: faker.number.int({min: 0, max: undefined})}, ...overrideResponse})
 
-export const getPutV1AdminBackendUserzIdResponseMock = (overrideResponse: Partial< PutV1AdminBackendUserzId200 > = {}): PutV1AdminBackendUserzId200 => ({message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), user: faker.helpers.arrayElement([{id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), username: faker.helpers.arrayElement([faker.helpers.fromRegExp('^[a-zA-Z0-9_@.+-]+$'), undefined]), email: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), timezone: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), last_active: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), preferred_language: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), current_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ai_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), is_paused: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), word_of_day_email_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), updated_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, undefined]), ...overrideResponse})
+export const getPutV1AdminBackendUserzIdResponseMock = (overrideResponse: Partial< UserProfileMessageResponse > = {}): UserProfileMessageResponse => ({message: faker.string.alpha({length: {min: 10, max: 20}}), user: {id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), username: faker.helpers.arrayElement([faker.helpers.fromRegExp('^[a-zA-Z0-9_@.+-]+$'), undefined]), email: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), timezone: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), last_active: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), preferred_language: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), current_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ai_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), is_paused: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), word_of_day_email_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), updated_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, ...overrideResponse})
 
-export const getDeleteV1AdminBackendUserzIdResponseMock = (overrideResponse: Partial< DeleteV1AdminBackendUserzId200 > = {}): DeleteV1AdminBackendUserzId200 => ({message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
+export const getDeleteV1AdminBackendUserzIdResponseMock = (overrideResponse: Partial< MessageResponse > = {}): MessageResponse => ({message: faker.string.alpha({length: {min: 10, max: 20}}), ...overrideResponse})
 
-export const getPostV1AdminBackendUserzIdResetPasswordResponseMock = (overrideResponse: Partial< PostV1AdminBackendUserzIdResetPassword200 > = {}): PostV1AdminBackendUserzIdResetPassword200 => ({message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
+export const getPostV1AdminBackendUserzIdResetPasswordResponseMock = (overrideResponse: Partial< MessageResponse > = {}): MessageResponse => ({message: faker.string.alpha({length: {min: 10, max: 20}}), ...overrideResponse})
 
-export const getGetV1AdminBackendRolesResponseMock = (overrideResponse: Partial< GetV1AdminBackendRoles200 > = {}): GetV1AdminBackendRoles200 => ({roles: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 50 }) }, (_, i) => i + 1).map(() => ({id: faker.number.int({min: undefined, max: undefined}), name: faker.string.alpha({length: {min: 10, max: 50}}), description: faker.string.alpha({length: {min: 10, max: 500}}), created_at: faker.string.alpha({length: {min: 10, max: 20}}), updated_at: faker.string.alpha({length: {min: 10, max: 20}})})), undefined]), ...overrideResponse})
+export const getGetV1AdminBackendRolesResponseMock = (overrideResponse: Partial< AdminRolesResponse > = {}): AdminRolesResponse => ({roles: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.number.int({min: undefined, max: undefined}), name: faker.string.alpha({length: {min: 10, max: 50}}), description: faker.string.alpha({length: {min: 10, max: 500}}), created_at: faker.string.alpha({length: {min: 10, max: 20}}), updated_at: faker.string.alpha({length: {min: 10, max: 20}})})), ...overrideResponse})
 
-export const getGetV1AdminBackendUserzIdRolesResponseMock = (overrideResponse: Partial< GetV1AdminBackendUserzIdRoles200 > = {}): GetV1AdminBackendUserzIdRoles200 => ({roles: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 50 }) }, (_, i) => i + 1).map(() => ({id: faker.number.int({min: undefined, max: undefined}), name: faker.string.alpha({length: {min: 10, max: 50}}), description: faker.string.alpha({length: {min: 10, max: 500}}), created_at: faker.string.alpha({length: {min: 10, max: 20}}), updated_at: faker.string.alpha({length: {min: 10, max: 20}})})), undefined]), ...overrideResponse})
+export const getGetV1AdminBackendUserzIdRolesResponseMock = (overrideResponse: Partial< AdminRolesResponse > = {}): AdminRolesResponse => ({roles: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.number.int({min: undefined, max: undefined}), name: faker.string.alpha({length: {min: 10, max: 50}}), description: faker.string.alpha({length: {min: 10, max: 500}}), created_at: faker.string.alpha({length: {min: 10, max: 20}}), updated_at: faker.string.alpha({length: {min: 10, max: 20}})})), ...overrideResponse})
 
-export const getPostV1AdminBackendUserzIdRolesResponseMock = (overrideResponse: Partial< PostV1AdminBackendUserzIdRoles200 > = {}): PostV1AdminBackendUserzIdRoles200 => ({message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
+export const getPostV1AdminBackendUserzIdRolesResponseMock = (overrideResponse: Partial< MessageResponse > = {}): MessageResponse => ({message: faker.string.alpha({length: {min: 10, max: 20}}), ...overrideResponse})
 
-export const getDeleteV1AdminBackendUserzIdRolesRoleIdResponseMock = (overrideResponse: Partial< DeleteV1AdminBackendUserzIdRolesRoleId200 > = {}): DeleteV1AdminBackendUserzIdRolesRoleId200 => ({message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
+export const getDeleteV1AdminBackendUserzIdRolesRoleIdResponseMock = (overrideResponse: Partial< MessageResponse > = {}): MessageResponse => ({message: faker.string.alpha({length: {min: 10, max: 20}}), ...overrideResponse})
 
 export const getGetV1AdminBackendDashboardResponseMock = (overrideResponse: Partial< DashboardResponse > = {}): DashboardResponse => ({users: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({user: faker.helpers.arrayElement([{id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), username: faker.helpers.arrayElement([faker.helpers.fromRegExp('^[a-zA-Z0-9_@.+-]+$'), undefined]), email: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), timezone: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), last_active: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), preferred_language: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), current_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ai_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), is_paused: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), word_of_day_email_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), updated_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, undefined]), progress: faker.helpers.arrayElement([{current_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), suggested_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), accuracy_rate: faker.helpers.arrayElement([faker.number.float({min: 0, max: 1, fractionDigits: 2}), undefined]), total_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), correct_answers: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), performance_by_topic: faker.helpers.arrayElement([{
         [faker.string.alphanumeric(5)]: {correct_attempts: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), total_attempts: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), average_response_time_ms: faker.helpers.arrayElement([faker.number.float({min: 0, max: undefined, fractionDigits: 2}), undefined]), last_updated: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}
@@ -15385,25 +15247,25 @@ export const getGetV1AdminBackendAiConcurrencyResponseMock = (overrideResponse: 
 
 export const getGetV1AdminWorkerStatusResponseMock = (overrideResponse: Partial< WorkerStatus > = {}): WorkerStatus => ({status: faker.helpers.arrayElement([faker.helpers.arrayElement(['idle','busy','error'] as const), undefined]), last_heartbeat: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), error_message: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), ...overrideResponse})
 
-export const getGetV1AdminWorkerDetailsResponseMock = (): GetV1AdminWorkerDetails200 => ({})
+export const getGetV1AdminWorkerDetailsResponseMock = (): WorkerDetailsResponse => ({})
 
-export const getPostV1AdminWorkerPauseResponseMock = (overrideResponse: Partial< PostV1AdminWorkerPause200 > = {}): PostV1AdminWorkerPause200 => ({message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
+export const getPostV1AdminWorkerPauseResponseMock = (overrideResponse: Partial< MessageResponse > = {}): MessageResponse => ({message: faker.string.alpha({length: {min: 10, max: 20}}), ...overrideResponse})
 
-export const getPostV1AdminWorkerResumeResponseMock = (overrideResponse: Partial< PostV1AdminWorkerResume200 > = {}): PostV1AdminWorkerResume200 => ({message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
+export const getPostV1AdminWorkerResumeResponseMock = (overrideResponse: Partial< MessageResponse > = {}): MessageResponse => ({message: faker.string.alpha({length: {min: 10, max: 20}}), ...overrideResponse})
 
-export const getPostV1AdminWorkerTriggerResponseMock = (overrideResponse: Partial< PostV1AdminWorkerTrigger200 > = {}): PostV1AdminWorkerTrigger200 => ({message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
+export const getPostV1AdminWorkerTriggerResponseMock = (overrideResponse: Partial< MessageResponse > = {}): MessageResponse => ({message: faker.string.alpha({length: {min: 10, max: 20}}), ...overrideResponse})
 
-export const getGetV1AdminWorkerLogsResponseMock = (overrideResponse: Partial< GetV1AdminWorkerLogs200 > = {}): GetV1AdminWorkerLogs200 => ({logs: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({})), undefined]), ...overrideResponse})
+export const getGetV1AdminWorkerLogsResponseMock = (overrideResponse: Partial< WorkerLogsResponse > = {}): WorkerLogsResponse => ({logs: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({})), ...overrideResponse})
 
-export const getGetV1AdminWorkerAiConcurrencyResponseMock = (overrideResponse: Partial< GetV1AdminWorkerAiConcurrency200 > = {}): GetV1AdminWorkerAiConcurrency200 => ({active_requests: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), max_concurrent: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), queued_requests: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), total_requests: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), ...overrideResponse})
+export const getGetV1AdminWorkerAiConcurrencyResponseMock = (overrideResponse: Partial< WorkerAIConcurrencyStats > = {}): WorkerAIConcurrencyStats => ({active_requests: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), max_concurrent: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), queued_requests: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), total_requests: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), ...overrideResponse})
 
-export const getGetV1AdminWorkerUsersResponseMock = (overrideResponse: Partial< GetV1AdminWorkerUsers200 > = {}): GetV1AdminWorkerUsers200 => ({users: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), username: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), is_paused: faker.helpers.arrayElement([faker.datatype.boolean(), undefined])})), undefined]), ...overrideResponse})
+export const getGetV1AdminWorkerUsersResponseMock = (overrideResponse: Partial< WorkerUserListResponse > = {}): WorkerUserListResponse => ({users: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.number.int({min: undefined, max: undefined}), username: faker.string.alpha({length: {min: 10, max: 20}}), is_paused: faker.datatype.boolean()})), ...overrideResponse})
 
-export const getPostV1AdminWorkerUsersPauseResponseMock = (overrideResponse: Partial< PostV1AdminWorkerUsersPause200 > = {}): PostV1AdminWorkerUsersPause200 => ({message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
+export const getPostV1AdminWorkerUsersPauseResponseMock = (overrideResponse: Partial< MessageResponse > = {}): MessageResponse => ({message: faker.string.alpha({length: {min: 10, max: 20}}), ...overrideResponse})
 
-export const getPostV1AdminWorkerUsersResumeResponseMock = (overrideResponse: Partial< PostV1AdminWorkerUsersResume200 > = {}): PostV1AdminWorkerUsersResume200 => ({message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
+export const getPostV1AdminWorkerUsersResumeResponseMock = (overrideResponse: Partial< MessageResponse > = {}): MessageResponse => ({message: faker.string.alpha({length: {min: 10, max: 20}}), ...overrideResponse})
 
-export const getGetV1AdminWorkerAnalyticsPriorityScoresResponseMock = (overrideResponse: Partial< GetV1AdminWorkerAnalyticsPriorityScores200 > = {}): GetV1AdminWorkerAnalyticsPriorityScores200 => ({distribution: faker.helpers.arrayElement([{high: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), medium: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), low: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), average: faker.helpers.arrayElement([faker.number.float({min: undefined, max: undefined, fractionDigits: 2}), undefined])}, undefined]), ...overrideResponse})
+export const getGetV1AdminWorkerAnalyticsPriorityScoresResponseMock = (overrideResponse: Partial< PriorityAnalytics > = {}): PriorityAnalytics => ({distribution: faker.helpers.arrayElement([{high: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), medium: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), low: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), average: faker.helpers.arrayElement([faker.number.float({min: undefined, max: undefined, fractionDigits: 2}), undefined])}, undefined]), ...overrideResponse})
 
 export const getGetV1AdminWorkerAnalyticsUserPerformanceResponseMock = (overrideResponse: Partial< UserPerformanceAnalytics > = {}): UserPerformanceAnalytics => ({weakAreas: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({})), undefined]), learningPreferences: faker.helpers.arrayElement([{}, undefined]), ...overrideResponse})
 
@@ -15415,55 +15277,55 @@ export const getGetV1AdminWorkerNotificationsStatsResponseMock = (overrideRespon
         [faker.string.alphanumeric(5)]: faker.number.int({min: undefined, max: undefined})
       }, undefined]), ...overrideResponse})
 
-export const getGetV1AdminWorkerNotificationsErrorsResponseMock = (overrideResponse: Partial< GetV1AdminWorkerNotificationsErrors200 > = {}): GetV1AdminWorkerNotificationsErrors200 => ({errors: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), username: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), notification_type: faker.helpers.arrayElement([faker.helpers.arrayElement(['daily_reminder','test_email'] as const), undefined]), error_type: faker.helpers.arrayElement([faker.helpers.arrayElement(['smtp_error','template_error','user_not_found','email_disabled','other'] as const), undefined]), error_message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), email_address: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), occurred_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), resolved_at: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), resolution_notes: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined])})), undefined]), pagination: faker.helpers.arrayElement([{page: faker.number.int({min: 1, max: undefined}), page_size: faker.number.int({min: 1, max: 100}), total: faker.number.int({min: 0, max: undefined}), total_pages: faker.number.int({min: 0, max: undefined})}, undefined]), stats: faker.helpers.arrayElement([{total_errors: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), unresolved_errors: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), errors_by_type: faker.helpers.arrayElement([{
+export const getGetV1AdminWorkerNotificationsErrorsResponseMock = (overrideResponse: Partial< WorkerNotificationErrorsResponse > = {}): WorkerNotificationErrorsResponse => ({errors: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), username: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), notification_type: faker.helpers.arrayElement([faker.helpers.arrayElement(['daily_reminder','test_email'] as const), undefined]), error_type: faker.helpers.arrayElement([faker.helpers.arrayElement(['smtp_error','template_error','user_not_found','email_disabled','other'] as const), undefined]), error_message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), email_address: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), occurred_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), resolved_at: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), resolution_notes: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined])})), pagination: {page: faker.number.int({min: 1, max: undefined}), page_size: faker.number.int({min: 1, max: 100}), total: faker.number.int({min: 0, max: undefined}), total_pages: faker.number.int({min: 0, max: undefined})}, stats: {total_errors: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), unresolved_errors: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), errors_by_type: faker.helpers.arrayElement([{
         [faker.string.alphanumeric(5)]: faker.number.int({min: undefined, max: undefined})
       }, undefined]), errors_by_notification_type: faker.helpers.arrayElement([{
         [faker.string.alphanumeric(5)]: faker.number.int({min: undefined, max: undefined})
-      }, undefined])}, undefined]), ...overrideResponse})
+      }, undefined])}, ...overrideResponse})
 
-export const getGetV1AdminWorkerNotificationsSentResponseMock = (overrideResponse: Partial< GetV1AdminWorkerNotificationsSent200 > = {}): GetV1AdminWorkerNotificationsSent200 => ({notifications: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), username: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), email_address: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), notification_type: faker.helpers.arrayElement([faker.helpers.arrayElement(['daily_reminder','test_email'] as const), undefined]), subject: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), template_name: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), sent_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), status: faker.helpers.arrayElement([faker.helpers.arrayElement(['sent','failed','bounced'] as const), undefined]), error_message: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), retry_count: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined])})), undefined]), pagination: faker.helpers.arrayElement([{page: faker.number.int({min: 1, max: undefined}), page_size: faker.number.int({min: 1, max: 100}), total: faker.number.int({min: 0, max: undefined}), total_pages: faker.number.int({min: 0, max: undefined})}, undefined]), stats: faker.helpers.arrayElement([{total_sent: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), total_failed: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), success_rate: faker.helpers.arrayElement([faker.number.float({min: 0, max: 1, fractionDigits: 2}), undefined]), sent_today: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), sent_this_week: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), notifications_by_type: faker.helpers.arrayElement([{
+export const getGetV1AdminWorkerNotificationsSentResponseMock = (overrideResponse: Partial< WorkerNotificationSentResponse > = {}): WorkerNotificationSentResponse => ({notifications: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), username: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), email_address: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), notification_type: faker.helpers.arrayElement([faker.helpers.arrayElement(['daily_reminder','test_email'] as const), undefined]), subject: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), template_name: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), sent_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), status: faker.helpers.arrayElement([faker.helpers.arrayElement(['sent','failed','bounced'] as const), undefined]), error_message: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), retry_count: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined])})), pagination: {page: faker.number.int({min: 1, max: undefined}), page_size: faker.number.int({min: 1, max: 100}), total: faker.number.int({min: 0, max: undefined}), total_pages: faker.number.int({min: 0, max: undefined})}, stats: {total_sent: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), total_failed: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), success_rate: faker.helpers.arrayElement([faker.number.float({min: 0, max: 1, fractionDigits: 2}), undefined]), sent_today: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), sent_this_week: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), notifications_by_type: faker.helpers.arrayElement([{
         [faker.string.alphanumeric(5)]: faker.number.int({min: undefined, max: undefined})
-      }, undefined])}, undefined]), ...overrideResponse})
+      }, undefined])}, ...overrideResponse})
 
 export const getPostV1AdminWorkerNotificationsForceSendResponseMock = (overrideResponse: Partial< ForceSendNotificationResponse > = {}): ForceSendNotificationResponse => ({message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), user: faker.helpers.arrayElement([{id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), username: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), email: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, undefined]), notification: faker.helpers.arrayElement([{type: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), subject: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), status: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, undefined]), ...overrideResponse})
 
-export const getGetV1AdminBackendQuestionsResponseMock = (overrideResponse: Partial< GetV1AdminBackendQuestions200 > = {}): GetV1AdminBackendQuestions200 => ({questions: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), type: faker.helpers.arrayElement([faker.helpers.arrayElement(Object.values(QuestionType)), undefined]), status: faker.helpers.arrayElement([faker.helpers.arrayElement(Object.values(QuestionStatus)), undefined]), difficulty_score: faker.helpers.arrayElement([faker.number.float({min: undefined, max: undefined, fractionDigits: 2}), undefined]), explanation: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), content: faker.helpers.arrayElement([{question: faker.string.alpha({length: {min: 1, max: 1000}}), options: Array.from({ length: faker.number.int({ min: 4, max: 10 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 1, max: 500}}))), sentence: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 2000}}), undefined]), passage: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 5000}}), undefined]), hint: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 500}}), undefined])}, undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), correct_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), incorrect_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), total_responses: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), correct_answer: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), reporters: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), topic_category: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), grammar_focus: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), vocabulary_domain: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), scenario: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), style_modifier: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), difficulty_modifier: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), time_context: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), confidence_level: faker.helpers.arrayElement([faker.number.int({min: 1, max: 5}), undefined])})), undefined]), pagination: faker.helpers.arrayElement([{page: faker.number.int({min: 1, max: undefined}), page_size: faker.number.int({min: 1, max: 100}), total: faker.number.int({min: 0, max: undefined}), total_pages: faker.number.int({min: 0, max: undefined})}, undefined]), stats: faker.helpers.arrayElement([{total_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), total_responses: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), questions_by_type: faker.helpers.arrayElement([{
+export const getGetV1AdminBackendQuestionsResponseMock = (overrideResponse: Partial< AdminQuestionsResponse > = {}): AdminQuestionsResponse => ({questions: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), type: faker.helpers.arrayElement([faker.helpers.arrayElement(Object.values(QuestionType)), undefined]), status: faker.helpers.arrayElement([faker.helpers.arrayElement(Object.values(QuestionStatus)), undefined]), difficulty_score: faker.helpers.arrayElement([faker.number.float({min: undefined, max: undefined, fractionDigits: 2}), undefined]), explanation: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), content: faker.helpers.arrayElement([{question: faker.string.alpha({length: {min: 1, max: 1000}}), options: Array.from({ length: faker.number.int({ min: 4, max: 10 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 1, max: 500}}))), sentence: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 2000}}), undefined]), passage: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 5000}}), undefined]), hint: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 500}}), undefined])}, undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), correct_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), incorrect_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), total_responses: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), correct_answer: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), reporters: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), topic_category: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), grammar_focus: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), vocabulary_domain: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), scenario: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), style_modifier: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), difficulty_modifier: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), time_context: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), confidence_level: faker.helpers.arrayElement([faker.number.int({min: 1, max: 5}), undefined])})), pagination: {page: faker.number.int({min: 1, max: undefined}), page_size: faker.number.int({min: 1, max: 100}), total: faker.number.int({min: 0, max: undefined}), total_pages: faker.number.int({min: 0, max: undefined})}, stats: {total_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), total_responses: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), questions_by_type: faker.helpers.arrayElement([{
         [faker.string.alphanumeric(5)]: faker.number.int({min: undefined, max: undefined})
       }, undefined]), questions_by_level: faker.helpers.arrayElement([{
         [faker.string.alphanumeric(5)]: faker.number.int({min: undefined, max: undefined})
       }, undefined]), questions_by_language: faker.helpers.arrayElement([{
         [faker.string.alphanumeric(5)]: faker.number.int({min: undefined, max: undefined})
-      }, undefined])}, undefined]), ...overrideResponse})
+      }, undefined])}, ...overrideResponse})
 
-export const getGetV1AdminBackendQuestionsPaginatedResponseMock = (overrideResponse: Partial< GetV1AdminBackendQuestionsPaginated200 > = {}): GetV1AdminBackendQuestionsPaginated200 => ({questions: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), type: faker.helpers.arrayElement([faker.helpers.arrayElement(Object.values(QuestionType)), undefined]), status: faker.helpers.arrayElement([faker.helpers.arrayElement(Object.values(QuestionStatus)), undefined]), difficulty_score: faker.helpers.arrayElement([faker.number.float({min: undefined, max: undefined, fractionDigits: 2}), undefined]), explanation: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), content: faker.helpers.arrayElement([{question: faker.string.alpha({length: {min: 1, max: 1000}}), options: Array.from({ length: faker.number.int({ min: 4, max: 10 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 1, max: 500}}))), sentence: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 2000}}), undefined]), passage: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 5000}}), undefined]), hint: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 500}}), undefined])}, undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), correct_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), incorrect_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), total_responses: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), correct_answer: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), reporters: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), topic_category: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), grammar_focus: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), vocabulary_domain: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), scenario: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), style_modifier: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), difficulty_modifier: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), time_context: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), confidence_level: faker.helpers.arrayElement([faker.number.int({min: 1, max: 5}), undefined])})), undefined]), pagination: faker.helpers.arrayElement([{page: faker.number.int({min: 1, max: undefined}), page_size: faker.number.int({min: 1, max: 100}), total: faker.number.int({min: 0, max: undefined}), total_pages: faker.number.int({min: 0, max: undefined})}, undefined]), stats: faker.helpers.arrayElement([{total_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), total_responses: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), questions_by_type: faker.helpers.arrayElement([{
+export const getGetV1AdminBackendQuestionsPaginatedResponseMock = (overrideResponse: Partial< AdminQuestionsResponse > = {}): AdminQuestionsResponse => ({questions: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), type: faker.helpers.arrayElement([faker.helpers.arrayElement(Object.values(QuestionType)), undefined]), status: faker.helpers.arrayElement([faker.helpers.arrayElement(Object.values(QuestionStatus)), undefined]), difficulty_score: faker.helpers.arrayElement([faker.number.float({min: undefined, max: undefined, fractionDigits: 2}), undefined]), explanation: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), content: faker.helpers.arrayElement([{question: faker.string.alpha({length: {min: 1, max: 1000}}), options: Array.from({ length: faker.number.int({ min: 4, max: 10 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 1, max: 500}}))), sentence: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 2000}}), undefined]), passage: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 5000}}), undefined]), hint: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 500}}), undefined])}, undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), correct_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), incorrect_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), total_responses: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), correct_answer: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), reporters: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), topic_category: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), grammar_focus: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), vocabulary_domain: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), scenario: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), style_modifier: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), difficulty_modifier: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), time_context: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), confidence_level: faker.helpers.arrayElement([faker.number.int({min: 1, max: 5}), undefined])})), pagination: {page: faker.number.int({min: 1, max: undefined}), page_size: faker.number.int({min: 1, max: 100}), total: faker.number.int({min: 0, max: undefined}), total_pages: faker.number.int({min: 0, max: undefined})}, stats: {total_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), total_responses: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), questions_by_type: faker.helpers.arrayElement([{
         [faker.string.alphanumeric(5)]: faker.number.int({min: undefined, max: undefined})
       }, undefined]), questions_by_level: faker.helpers.arrayElement([{
         [faker.string.alphanumeric(5)]: faker.number.int({min: undefined, max: undefined})
       }, undefined]), questions_by_language: faker.helpers.arrayElement([{
         [faker.string.alphanumeric(5)]: faker.number.int({min: undefined, max: undefined})
-      }, undefined])}, undefined]), ...overrideResponse})
+      }, undefined])}, ...overrideResponse})
 
 export const getGetV1AdminBackendQuestionsIdResponseMock = (overrideResponse: Partial< Question > = {}): Question => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), type: faker.helpers.arrayElement([faker.helpers.arrayElement(Object.values(QuestionType)), undefined]), status: faker.helpers.arrayElement([faker.helpers.arrayElement(Object.values(QuestionStatus)), undefined]), difficulty_score: faker.helpers.arrayElement([faker.number.float({min: undefined, max: undefined, fractionDigits: 2}), undefined]), explanation: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), content: faker.helpers.arrayElement([{question: faker.string.alpha({length: {min: 1, max: 1000}}), options: Array.from({ length: faker.number.int({ min: 4, max: 10 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 1, max: 500}}))), sentence: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 2000}}), undefined]), passage: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 5000}}), undefined]), hint: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 500}}), undefined])}, undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), correct_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), incorrect_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), total_responses: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), correct_answer: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), reporters: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), topic_category: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), grammar_focus: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), vocabulary_domain: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), scenario: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), style_modifier: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), difficulty_modifier: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), time_context: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), confidence_level: faker.helpers.arrayElement([faker.number.int({min: 1, max: 5}), undefined]), ...overrideResponse})
 
-export const getPutV1AdminBackendQuestionsIdResponseMock = (overrideResponse: Partial< PutV1AdminBackendQuestionsId200 > = {}): PutV1AdminBackendQuestionsId200 => ({message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
+export const getPutV1AdminBackendQuestionsIdResponseMock = (overrideResponse: Partial< MessageResponse > = {}): MessageResponse => ({message: faker.string.alpha({length: {min: 10, max: 20}}), ...overrideResponse})
 
-export const getDeleteV1AdminBackendQuestionsIdResponseMock = (overrideResponse: Partial< DeleteV1AdminBackendQuestionsId200 > = {}): DeleteV1AdminBackendQuestionsId200 => ({message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
+export const getDeleteV1AdminBackendQuestionsIdResponseMock = (overrideResponse: Partial< MessageResponse > = {}): MessageResponse => ({message: faker.string.alpha({length: {min: 10, max: 20}}), ...overrideResponse})
 
-export const getGetV1AdminBackendQuestionsIdUsersResponseMock = (overrideResponse: Partial< GetV1AdminBackendQuestionsIdUsers200 > = {}): GetV1AdminBackendQuestionsIdUsers200 => ({users: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 5 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), username: faker.helpers.arrayElement([faker.helpers.fromRegExp('^[a-zA-Z0-9_@.+-]+$'), undefined]), email: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), timezone: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), last_active: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), preferred_language: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), current_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ai_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), is_paused: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), word_of_day_email_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), updated_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined]), total_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), ...overrideResponse})
+export const getGetV1AdminBackendQuestionsIdUsersResponseMock = (overrideResponse: Partial< QuestionAssignedUsersResponse > = {}): QuestionAssignedUsersResponse => ({users: Array.from({ length: faker.number.int({ min: 1, max: 5 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), username: faker.helpers.arrayElement([faker.helpers.fromRegExp('^[a-zA-Z0-9_@.+-]+$'), undefined]), email: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), timezone: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), last_active: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), preferred_language: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), current_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ai_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), is_paused: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), word_of_day_email_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), updated_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), total_count: faker.number.int({min: undefined, max: undefined}), ...overrideResponse})
 
-export const getPostV1AdminBackendQuestionsIdAssignUsersResponseMock = (overrideResponse: Partial< PostV1AdminBackendQuestionsIdAssignUsers200 > = {}): PostV1AdminBackendQuestionsIdAssignUsers200 => ({message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
+export const getPostV1AdminBackendQuestionsIdAssignUsersResponseMock = (overrideResponse: Partial< MessageResponse > = {}): MessageResponse => ({message: faker.string.alpha({length: {min: 10, max: 20}}), ...overrideResponse})
 
-export const getPostV1AdminBackendQuestionsIdUnassignUsersResponseMock = (overrideResponse: Partial< PostV1AdminBackendQuestionsIdUnassignUsers200 > = {}): PostV1AdminBackendQuestionsIdUnassignUsers200 => ({message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
+export const getPostV1AdminBackendQuestionsIdUnassignUsersResponseMock = (overrideResponse: Partial< MessageResponse > = {}): MessageResponse => ({message: faker.string.alpha({length: {min: 10, max: 20}}), ...overrideResponse})
 
-export const getPostV1AdminBackendQuestionsIdFixResponseMock = (overrideResponse: Partial< PostV1AdminBackendQuestionsIdFix200 > = {}): PostV1AdminBackendQuestionsIdFix200 => ({message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
+export const getPostV1AdminBackendQuestionsIdFixResponseMock = (overrideResponse: Partial< MessageResponse > = {}): MessageResponse => ({message: faker.string.alpha({length: {min: 10, max: 20}}), ...overrideResponse})
 
-export const getPostV1AdminBackendQuestionsIdAiFixResponseMock = (overrideResponse: Partial< PostV1AdminBackendQuestionsIdAiFix200 > = {}): PostV1AdminBackendQuestionsIdAiFix200 => ({message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
+export const getPostV1AdminBackendQuestionsIdAiFixResponseMock = (overrideResponse: Partial< MessageResponse > = {}): MessageResponse => ({message: faker.string.alpha({length: {min: 10, max: 20}}), ...overrideResponse})
 
-export const getPostV1AdminBackendClearUserDataResponseMock = (overrideResponse: Partial< PostV1AdminBackendClearUserData200 > = {}): PostV1AdminBackendClearUserData200 => ({message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
+export const getPostV1AdminBackendClearUserDataResponseMock = (overrideResponse: Partial< MessageResponse > = {}): MessageResponse => ({message: faker.string.alpha({length: {min: 10, max: 20}}), ...overrideResponse})
 
-export const getPostV1AdminBackendClearDatabaseResponseMock = (overrideResponse: Partial< PostV1AdminBackendClearDatabase200 > = {}): PostV1AdminBackendClearDatabase200 => ({message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
+export const getPostV1AdminBackendClearDatabaseResponseMock = (overrideResponse: Partial< MessageResponse > = {}): MessageResponse => ({message: faker.string.alpha({length: {min: 10, max: 20}}), ...overrideResponse})
 
-export const getPostV1AdminBackendUserzIdClearResponseMock = (overrideResponse: Partial< PostV1AdminBackendUserzIdClear200 > = {}): PostV1AdminBackendUserzIdClear200 => ({message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
+export const getPostV1AdminBackendUserzIdClearResponseMock = (overrideResponse: Partial< MessageResponse > = {}): MessageResponse => ({message: faker.string.alpha({length: {min: 10, max: 20}}), ...overrideResponse})
 
 export const getGetV1AdminBackendUsageStatsResponseMock = (overrideResponse: Partial< UsageStatsResponse > = {}): UsageStatsResponse => ({usage_stats: {
         [faker.string.alphanumeric(5)]: {
@@ -15477,9 +15339,15 @@ export const getGetV1AdminBackendUsageStatsResponseMock = (overrideResponse: Par
 
 export const getGetV1AdminBackendUsageStatsServiceResponseMock = (overrideResponse: Partial< ServiceUsageStatsResponse > = {}): ServiceUsageStatsResponse => ({service: faker.string.alpha({length: {min: 10, max: 20}}), data: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({month: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), usage_type: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), characters_used: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), requests_made: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), quota: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined])})), ...overrideResponse})
 
-export const getGetV1AdminBackendReportedQuestionsResponseMock = (overrideResponse: Partial< GetV1AdminBackendReportedQuestions200 > = {}): GetV1AdminBackendReportedQuestions200 => ({questions: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), type: faker.helpers.arrayElement([faker.helpers.arrayElement(Object.values(QuestionType)), undefined]), status: faker.helpers.arrayElement([faker.helpers.arrayElement(Object.values(QuestionStatus)), undefined]), difficulty_score: faker.helpers.arrayElement([faker.number.float({min: undefined, max: undefined, fractionDigits: 2}), undefined]), explanation: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), content: faker.helpers.arrayElement([{question: faker.string.alpha({length: {min: 1, max: 1000}}), options: Array.from({ length: faker.number.int({ min: 4, max: 10 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 1, max: 500}}))), sentence: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 2000}}), undefined]), passage: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 5000}}), undefined]), hint: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 500}}), undefined])}, undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), correct_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), incorrect_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), total_responses: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), correct_answer: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), reporters: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), topic_category: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), grammar_focus: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), vocabulary_domain: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), scenario: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), style_modifier: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), difficulty_modifier: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), time_context: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), confidence_level: faker.helpers.arrayElement([faker.number.int({min: 1, max: 5}), undefined])})), undefined]), pagination: faker.helpers.arrayElement([{page: faker.number.int({min: 1, max: undefined}), page_size: faker.number.int({min: 1, max: 100}), total: faker.number.int({min: 0, max: undefined}), total_pages: faker.number.int({min: 0, max: undefined})}, undefined]), stats: faker.helpers.arrayElement([{total_reported: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), reported_by_type: faker.helpers.arrayElement([{}, undefined]), reported_by_level: faker.helpers.arrayElement([{}, undefined]), reported_by_language: faker.helpers.arrayElement([{}, undefined])}, undefined]), ...overrideResponse})
+export const getGetV1AdminBackendReportedQuestionsResponseMock = (overrideResponse: Partial< AdminReportedQuestionsResponse > = {}): AdminReportedQuestionsResponse => ({questions: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), type: faker.helpers.arrayElement([faker.helpers.arrayElement(Object.values(QuestionType)), undefined]), status: faker.helpers.arrayElement([faker.helpers.arrayElement(Object.values(QuestionStatus)), undefined]), difficulty_score: faker.helpers.arrayElement([faker.number.float({min: undefined, max: undefined, fractionDigits: 2}), undefined]), explanation: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), content: faker.helpers.arrayElement([{question: faker.string.alpha({length: {min: 1, max: 1000}}), options: Array.from({ length: faker.number.int({ min: 4, max: 10 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 1, max: 500}}))), sentence: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 2000}}), undefined]), passage: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 5000}}), undefined]), hint: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 500}}), undefined])}, undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), correct_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), incorrect_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), total_responses: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), correct_answer: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), reporters: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), topic_category: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), grammar_focus: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), vocabulary_domain: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), scenario: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), style_modifier: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), difficulty_modifier: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), time_context: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), confidence_level: faker.helpers.arrayElement([faker.number.int({min: 1, max: 5}), undefined])})), pagination: {page: faker.number.int({min: 1, max: undefined}), page_size: faker.number.int({min: 1, max: 100}), total: faker.number.int({min: 0, max: undefined}), total_pages: faker.number.int({min: 0, max: undefined})}, stats: {total_reported: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), reported_by_type: faker.helpers.arrayElement([{
+        [faker.string.alphanumeric(5)]: faker.number.int({min: undefined, max: undefined})
+      }, undefined]), reported_by_level: faker.helpers.arrayElement([{
+        [faker.string.alphanumeric(5)]: faker.number.int({min: undefined, max: undefined})
+      }, undefined]), reported_by_language: faker.helpers.arrayElement([{
+        [faker.string.alphanumeric(5)]: faker.number.int({min: undefined, max: undefined})
+      }, undefined])}, ...overrideResponse})
 
-export const getGetV1AdminBackendStoriesResponseMock = (overrideResponse: Partial< GetV1AdminBackendStories200 > = {}): GetV1AdminBackendStories200 => ({stories: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), title: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), subject: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), author_style: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), time_period: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), genre: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), tone: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), character_names: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), custom_instructions: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), section_length_override: faker.helpers.arrayElement([faker.helpers.arrayElement(['short','medium','long'] as const), undefined]), status: faker.helpers.arrayElement([faker.helpers.arrayElement(['active','archived','completed'] as const), undefined]), auto_generation_paused: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), last_section_generated_at: faker.helpers.arrayElement([faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, null]), undefined]), created_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), updated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), extra_generations_today: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined])})), undefined]), pagination: faker.helpers.arrayElement([{page: faker.number.int({min: 1, max: undefined}), page_size: faker.number.int({min: 1, max: 100}), total: faker.number.int({min: 0, max: undefined}), total_pages: faker.number.int({min: 0, max: undefined})}, undefined]), ...overrideResponse})
+export const getGetV1AdminBackendStoriesResponseMock = (overrideResponse: Partial< AdminStoriesResponse > = {}): AdminStoriesResponse => ({stories: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), title: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), subject: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), author_style: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), time_period: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), genre: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), tone: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), character_names: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), custom_instructions: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), section_length_override: faker.helpers.arrayElement([faker.helpers.arrayElement(['short','medium','long'] as const), undefined]), status: faker.helpers.arrayElement([faker.helpers.arrayElement(['active','archived','completed'] as const), undefined]), auto_generation_paused: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), last_section_generated_at: faker.helpers.arrayElement([faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, null]), undefined]), created_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), updated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), extra_generations_today: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined])})), pagination: {page: faker.number.int({min: 1, max: undefined}), page_size: faker.number.int({min: 1, max: 100}), total: faker.number.int({min: 0, max: undefined}), total_pages: faker.number.int({min: 0, max: undefined})}, ...overrideResponse})
 
 export const getGetV1AdminBackendStoriesIdResponseMock = (): StoryWithSections => ({...{id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), title: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), subject: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), author_style: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), time_period: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), genre: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), tone: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), character_names: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), custom_instructions: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), section_length_override: faker.helpers.arrayElement([faker.helpers.arrayElement(['short','medium','long'] as const), undefined]), status: faker.helpers.arrayElement([faker.helpers.arrayElement(['active','archived','completed'] as const), undefined]), auto_generation_paused: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), last_section_generated_at: faker.helpers.arrayElement([faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, null]), undefined]), created_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), updated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), extra_generations_today: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined])},...{sections: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), story_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), section_number: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), content: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), language_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), word_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), generated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), generation_date: faker.helpers.arrayElement([faker.date.past().toISOString().split('T')[0], undefined])})), undefined])},})
 
@@ -15487,19 +15355,19 @@ export const getGetV1AdminBackendStorySectionsIdResponseMock = (): StorySectionW
 
 export const getPostV1QuizChatStreamResponseMock = (): string => (faker.word.sample())
 
-export const getGetV1DailyQuestionsDateResponseMock = (overrideResponse: Partial< GetV1DailyQuestionsDate200 > = {}): GetV1DailyQuestionsDate200 => ({questions: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.number.int({min: undefined, max: undefined}), user_id: faker.number.int({min: undefined, max: undefined}), question_id: faker.number.int({min: undefined, max: undefined}), assignment_date: faker.date.past().toISOString().split('T')[0], is_completed: faker.datatype.boolean(), completed_at: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), created_at: faker.string.alpha({length: {min: 10, max: 20}}), user_answer_index: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), submitted_at: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), user_shown_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_total_responses: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_correct_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_incorrect_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), question: {id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), type: faker.helpers.arrayElement([faker.helpers.arrayElement(Object.values(QuestionType)), undefined]), status: faker.helpers.arrayElement([faker.helpers.arrayElement(Object.values(QuestionStatus)), undefined]), difficulty_score: faker.helpers.arrayElement([faker.number.float({min: undefined, max: undefined, fractionDigits: 2}), undefined]), explanation: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), content: faker.helpers.arrayElement([{question: faker.string.alpha({length: {min: 1, max: 1000}}), options: Array.from({ length: faker.number.int({ min: 4, max: 10 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 1, max: 500}}))), sentence: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 2000}}), undefined]), passage: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 5000}}), undefined]), hint: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 500}}), undefined])}, undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), correct_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), incorrect_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), total_responses: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), correct_answer: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), reporters: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), topic_category: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), grammar_focus: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), vocabulary_domain: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), scenario: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), style_modifier: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), difficulty_modifier: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), time_context: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), confidence_level: faker.helpers.arrayElement([faker.number.int({min: 1, max: 5}), undefined])}})), undefined]), date: faker.helpers.arrayElement([faker.date.past().toISOString().split('T')[0], undefined]), ...overrideResponse})
+export const getGetV1DailyQuestionsDateResponseMock = (overrideResponse: Partial< DailyQuestionsResponse > = {}): DailyQuestionsResponse => ({date: faker.date.past().toISOString().split('T')[0], questions: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.number.int({min: undefined, max: undefined}), user_id: faker.number.int({min: undefined, max: undefined}), question_id: faker.number.int({min: undefined, max: undefined}), assignment_date: faker.date.past().toISOString().split('T')[0], is_completed: faker.datatype.boolean(), completed_at: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), created_at: faker.string.alpha({length: {min: 10, max: 20}}), user_answer_index: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), submitted_at: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), user_shown_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_total_responses: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_correct_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_incorrect_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), question: {id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), type: faker.helpers.arrayElement([faker.helpers.arrayElement(Object.values(QuestionType)), undefined]), status: faker.helpers.arrayElement([faker.helpers.arrayElement(Object.values(QuestionStatus)), undefined]), difficulty_score: faker.helpers.arrayElement([faker.number.float({min: undefined, max: undefined, fractionDigits: 2}), undefined]), explanation: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), content: faker.helpers.arrayElement([{question: faker.string.alpha({length: {min: 1, max: 1000}}), options: Array.from({ length: faker.number.int({ min: 4, max: 10 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 1, max: 500}}))), sentence: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 2000}}), undefined]), passage: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 5000}}), undefined]), hint: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 500}}), undefined])}, undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), correct_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), incorrect_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), total_responses: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), correct_answer: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), reporters: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), topic_category: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), grammar_focus: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), vocabulary_domain: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), scenario: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), style_modifier: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), difficulty_modifier: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), time_context: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), confidence_level: faker.helpers.arrayElement([faker.number.int({min: 1, max: 5}), undefined])}})), ...overrideResponse})
 
 export const getPostV1DailyQuestionsDateCompleteQuestionIdResponseMock = (overrideResponse: Partial< SuccessResponse > = {}): SuccessResponse => ({success: faker.datatype.boolean(), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 500}}), undefined]), ...overrideResponse})
 
 export const getDeleteV1DailyQuestionsDateCompleteQuestionIdResponseMock = (overrideResponse: Partial< SuccessResponse > = {}): SuccessResponse => ({success: faker.datatype.boolean(), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 500}}), undefined]), ...overrideResponse})
 
-export const getGetV1DailyDatesResponseMock = (overrideResponse: Partial< GetV1DailyDates200 > = {}): GetV1DailyDates200 => ({dates: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => (faker.date.past().toISOString().split('T')[0])), undefined]), ...overrideResponse})
+export const getGetV1DailyDatesResponseMock = (overrideResponse: Partial< DailyDatesResponse > = {}): DailyDatesResponse => ({dates: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => (faker.date.past().toISOString().split('T')[0])), ...overrideResponse})
 
-export const getPostV1DailyQuestionsDateAnswerQuestionIdResponseMock = (): PostV1DailyQuestionsDateAnswerQuestionId200 => ({...{is_correct: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), user_answer: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), user_answer_index: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), explanation: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), next_difficulty: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), correct_answer_index: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined])},...{is_completed: faker.helpers.arrayElement([faker.datatype.boolean(), undefined])},})
+export const getPostV1DailyQuestionsDateAnswerQuestionIdResponseMock = (): DailyAnswerResponse => ({...{is_correct: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), user_answer: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), user_answer_index: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), explanation: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), next_difficulty: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), correct_answer_index: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined])},...{is_completed: faker.helpers.arrayElement([faker.datatype.boolean(), undefined])},})
 
 export const getGetV1DailyProgressDateResponseMock = (overrideResponse: Partial< DailyProgress > = {}): DailyProgress => ({date: faker.date.past().toISOString().split('T')[0], completed: faker.number.int({min: undefined, max: undefined}), total: faker.number.int({min: undefined, max: undefined}), ...overrideResponse})
 
-export const getGetV1DailyHistoryQuestionIdResponseMock = (overrideResponse: Partial< GetV1DailyHistoryQuestionId200 > = {}): GetV1DailyHistoryQuestionId200 => ({history: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({assignment_date: faker.string.alpha({length: {min: 10, max: 20}}), is_completed: faker.datatype.boolean(), is_correct: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), submitted_at: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined])})), undefined]), ...overrideResponse})
+export const getGetV1DailyHistoryQuestionIdResponseMock = (overrideResponse: Partial< DailyQuestionHistoryResponse > = {}): DailyQuestionHistoryResponse => ({history: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({assignment_date: faker.string.alpha({length: {min: 10, max: 20}}), is_completed: faker.datatype.boolean(), is_correct: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), submitted_at: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined])})), ...overrideResponse})
 
 export const getGetV1WordOfDayDateResponseMock = (overrideResponse: Partial< WordOfTheDayDisplay > = {}): WordOfTheDayDisplay => ({date: faker.date.past().toISOString().split('T')[0], word: faker.string.alpha({length: {min: 10, max: 20}}), translation: faker.string.alpha({length: {min: 10, max: 20}}), sentence: faker.string.alpha({length: {min: 10, max: 20}}), source_type: faker.helpers.arrayElement(['vocabulary_question','snippet'] as const), source_id: faker.number.int({min: undefined, max: undefined}), language: faker.string.alpha({length: {min: 10, max: 20}}), level: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), context: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), explanation: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), topic_category: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), ...overrideResponse})
 
@@ -15509,7 +15377,7 @@ export const getGetV1WordOfDayEmbedResponseMock = (): string => (faker.word.samp
 
 export const getGetV1WordOfDayDateEmbedResponseMock = (): string => (faker.word.sample())
 
-export const getGetV1WordOfDayHistoryResponseMock = (overrideResponse: Partial< GetV1WordOfDayHistory200 > = {}): GetV1WordOfDayHistory200 => ({words: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({date: faker.date.past().toISOString().split('T')[0], word: faker.string.alpha({length: {min: 10, max: 20}}), translation: faker.string.alpha({length: {min: 10, max: 20}}), sentence: faker.string.alpha({length: {min: 10, max: 20}}), source_type: faker.helpers.arrayElement(['vocabulary_question','snippet'] as const), source_id: faker.number.int({min: undefined, max: undefined}), language: faker.string.alpha({length: {min: 10, max: 20}}), level: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), context: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), explanation: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), topic_category: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined])})), undefined]), count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), ...overrideResponse})
+export const getGetV1WordOfDayHistoryResponseMock = (overrideResponse: Partial< WordOfDayHistoryResponse > = {}): WordOfDayHistoryResponse => ({words: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({date: faker.date.past().toISOString().split('T')[0], word: faker.string.alpha({length: {min: 10, max: 20}}), translation: faker.string.alpha({length: {min: 10, max: 20}}), sentence: faker.string.alpha({length: {min: 10, max: 20}}), source_type: faker.helpers.arrayElement(['vocabulary_question','snippet'] as const), source_id: faker.number.int({min: undefined, max: undefined}), language: faker.string.alpha({length: {min: 10, max: 20}}), level: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), context: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), explanation: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), topic_category: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined])})), count: faker.number.int({min: undefined, max: undefined}), ...overrideResponse})
 
 export const getPostV1StoryResponseMock = (overrideResponse: Partial< Story > = {}): Story => ({id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), title: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), subject: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), author_style: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), time_period: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), genre: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), tone: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), character_names: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), custom_instructions: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), section_length_override: faker.helpers.arrayElement([faker.helpers.arrayElement(['short','medium','long'] as const), undefined]), status: faker.helpers.arrayElement([faker.helpers.arrayElement(['active','archived','completed'] as const), undefined]), auto_generation_paused: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), last_section_generated_at: faker.helpers.arrayElement([faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, null]), undefined]), created_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), updated_at: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), extra_generations_today: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), ...overrideResponse})
 
@@ -15535,15 +15403,15 @@ export const getGetV1VersionResponseServiceVersionMock = (overrideResponse: Part
 
 export const getGetV1VersionResponseMock = (overrideResponse: Partial< AggregatedVersion > = {}): AggregatedVersion => ({backend: {service: faker.string.alpha({length: {min: 10, max: 50}}), version: faker.string.alpha({length: {min: 10, max: 100}}), commit: faker.string.alpha({length: {min: 10, max: 50}}), buildTime: faker.string.alpha({length: {min: 10, max: 100}})}, worker: faker.helpers.arrayElement([{...getGetV1VersionResponseServiceVersionMock()},{error: faker.string.alpha({length: {min: 10, max: 20}})},]), ...overrideResponse})
 
-export const getGetHealthResponseMock = (overrideResponse: Partial< GetHealth200 > = {}): GetHealth200 => ({status: faker.helpers.arrayElement([faker.helpers.arrayElement(['ok'] as const), undefined]), service: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
+export const getGetHealthResponseMock = (overrideResponse: Partial< HealthStatusResponse > = {}): HealthStatusResponse => ({status: faker.helpers.arrayElement(['ok'] as const), service: faker.string.alpha({length: {min: 10, max: 20}}), ...overrideResponse})
 
-export const getGetV1AdminWorkerDailyUsersUserIdQuestionsDateResponseMock = (overrideResponse: Partial< GetV1AdminWorkerDailyUsersUserIdQuestionsDate200 > = {}): GetV1AdminWorkerDailyUsersUserIdQuestionsDate200 => ({questions: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.number.int({min: undefined, max: undefined}), user_id: faker.number.int({min: undefined, max: undefined}), question_id: faker.number.int({min: undefined, max: undefined}), assignment_date: faker.date.past().toISOString().split('T')[0], is_completed: faker.datatype.boolean(), completed_at: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), created_at: faker.string.alpha({length: {min: 10, max: 20}}), user_answer_index: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), submitted_at: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), user_shown_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_total_responses: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_correct_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_incorrect_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), question: {id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), type: faker.helpers.arrayElement([faker.helpers.arrayElement(Object.values(QuestionType)), undefined]), status: faker.helpers.arrayElement([faker.helpers.arrayElement(Object.values(QuestionStatus)), undefined]), difficulty_score: faker.helpers.arrayElement([faker.number.float({min: undefined, max: undefined, fractionDigits: 2}), undefined]), explanation: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), content: faker.helpers.arrayElement([{question: faker.string.alpha({length: {min: 1, max: 1000}}), options: Array.from({ length: faker.number.int({ min: 4, max: 10 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 1, max: 500}}))), sentence: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 2000}}), undefined]), passage: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 5000}}), undefined]), hint: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 500}}), undefined])}, undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), correct_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), incorrect_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), total_responses: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), correct_answer: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), reporters: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), topic_category: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), grammar_focus: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), vocabulary_domain: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), scenario: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), style_modifier: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), difficulty_modifier: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), time_context: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), confidence_level: faker.helpers.arrayElement([faker.number.int({min: 1, max: 5}), undefined])}})), undefined]), ...overrideResponse})
+export const getGetV1AdminWorkerDailyUsersUserIdQuestionsDateResponseMock = (overrideResponse: Partial< AdminDailyQuestionsResponse > = {}): AdminDailyQuestionsResponse => ({questions: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.number.int({min: undefined, max: undefined}), user_id: faker.number.int({min: undefined, max: undefined}), question_id: faker.number.int({min: undefined, max: undefined}), assignment_date: faker.date.past().toISOString().split('T')[0], is_completed: faker.datatype.boolean(), completed_at: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), created_at: faker.string.alpha({length: {min: 10, max: 20}}), user_answer_index: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), submitted_at: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), user_shown_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_total_responses: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_correct_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_incorrect_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), question: {id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), language: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), type: faker.helpers.arrayElement([faker.helpers.arrayElement(Object.values(QuestionType)), undefined]), status: faker.helpers.arrayElement([faker.helpers.arrayElement(Object.values(QuestionStatus)), undefined]), difficulty_score: faker.helpers.arrayElement([faker.number.float({min: undefined, max: undefined, fractionDigits: 2}), undefined]), explanation: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), content: faker.helpers.arrayElement([{question: faker.string.alpha({length: {min: 1, max: 1000}}), options: Array.from({ length: faker.number.int({ min: 4, max: 10 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 1, max: 500}}))), sentence: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 2000}}), undefined]), passage: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 5000}}), undefined]), hint: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 500}}), undefined])}, undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), correct_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), incorrect_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), total_responses: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), user_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), correct_answer: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), reporters: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), topic_category: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), grammar_focus: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), vocabulary_domain: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), scenario: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), style_modifier: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), difficulty_modifier: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), time_context: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), confidence_level: faker.helpers.arrayElement([faker.number.int({min: 1, max: 5}), undefined])}})), ...overrideResponse})
 
-export const getPostV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerateResponseMock = (overrideResponse: Partial< PostV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerate200 > = {}): PostV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerate200 => ({success: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
+export const getPostV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerateResponseMock = (overrideResponse: Partial< SuccessResponse > = {}): SuccessResponse => ({success: faker.datatype.boolean(), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 500}}), undefined]), ...overrideResponse})
 
 export const getGetV1AdminBackendFeedbackResponseMock = (overrideResponse: Partial< FeedbackListResponse > = {}): FeedbackListResponse => ({items: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.number.int({min: undefined, max: undefined}), user_id: faker.number.int({min: undefined, max: undefined}), feedback_text: faker.string.alpha({length: {min: 10, max: 5000}}), feedback_type: faker.helpers.arrayElement(['bug','feature_request','general','improvement'] as const), context_data: faker.helpers.arrayElement([{}, undefined]), screenshot_data: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), screenshot_url: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), status: faker.helpers.arrayElement(['new','in_progress','resolved','dismissed'] as const), admin_notes: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), assigned_to_user_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), resolved_at: faker.helpers.arrayElement([faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, null]), undefined]), resolved_by_user_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`})), total: faker.number.int({min: 0, max: undefined}), page: faker.number.int({min: 1, max: undefined}), page_size: faker.number.int({min: 1, max: undefined}), ...overrideResponse})
 
-export const getDeleteV1AdminBackendFeedbackResponseMock = (overrideResponse: Partial< DeleteV1AdminBackendFeedback200 > = {}): DeleteV1AdminBackendFeedback200 => ({deleted_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), ...overrideResponse})
+export const getDeleteV1AdminBackendFeedbackResponseMock = (overrideResponse: Partial< BulkDeleteResponse > = {}): BulkDeleteResponse => ({deleted_count: faker.number.int({min: undefined, max: undefined}), ...overrideResponse})
 
 export const getGetV1AdminBackendFeedbackIdResponseMock = (overrideResponse: Partial< FeedbackReport > = {}): FeedbackReport => ({id: faker.number.int({min: undefined, max: undefined}), user_id: faker.number.int({min: undefined, max: undefined}), feedback_text: faker.string.alpha({length: {min: 10, max: 5000}}), feedback_type: faker.helpers.arrayElement(['bug','feature_request','general','improvement'] as const), context_data: faker.helpers.arrayElement([{}, undefined]), screenshot_data: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), screenshot_url: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), status: faker.helpers.arrayElement(['new','in_progress','resolved','dismissed'] as const), admin_notes: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), assigned_to_user_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), resolved_at: faker.helpers.arrayElement([faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, null]), undefined]), resolved_by_user_id: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), null]), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, updated_at: `${faker.date.past().toISOString().split('.')[0]}Z`, ...overrideResponse})
 
@@ -15565,7 +15433,7 @@ export const getPostV1TranslateResponseMock = (overrideResponse: Partial< Transl
 
 export const getPostV1AudioSpeechResponseMock = (overrideResponse: Partial< TTSResponse > = {}): TTSResponse => ({type: faker.helpers.arrayElement([faker.helpers.arrayElement(['audio','usage','error'] as const), undefined]), audio: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), usage: faker.helpers.arrayElement([{input_tokens: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), output_tokens: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), total_tokens: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined])}, undefined]), error: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ...overrideResponse})
 
-export const getPostV1AudioSpeechInitResponseMock = (overrideResponse: Partial< PostV1AudioSpeechInit200 > = {}): PostV1AudioSpeechInit200 => ({stream_id: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), token: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), ...overrideResponse})
+export const getPostV1AudioSpeechInitResponseMock = (overrideResponse: Partial< TTSStreamInitResponse > = {}): TTSStreamInitResponse => ({stream_id: faker.string.alpha({length: {min: 10, max: 20}}), token: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), ...overrideResponse})
 
 export const getGetV1AudioSpeechStreamStreamIdResponseMock = (): Blob => (new Blob(faker.helpers.arrayElements(faker.word.words(10).split(' '))))
 
@@ -15892,7 +15760,7 @@ export const getPostV1AiConversationsMockHandler = (overrideResponse?: Conversat
   }, options)
 }
 
-export const getGetV1AiConversationsMockHandler = (overrideResponse?: GetV1AiConversations200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1AiConversations200> | GetV1AiConversations200), options?: RequestHandlerOptions) => {
+export const getGetV1AiConversationsMockHandler = (overrideResponse?: ConversationsListResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<ConversationsListResponse> | ConversationsListResponse), options?: RequestHandlerOptions) => {
   return http.get('*/v1/ai/conversations', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -15950,7 +15818,7 @@ export const getPostV1AiConversationsConversationIdMessagesMockHandler = (overri
   }, options)
 }
 
-export const getGetV1AiSearchMockHandler = (overrideResponse?: GetV1AiSearch200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1AiSearch200> | GetV1AiSearch200), options?: RequestHandlerOptions) => {
+export const getGetV1AiSearchMockHandler = (overrideResponse?: ConversationSearchResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<ConversationSearchResponse> | ConversationSearchResponse), options?: RequestHandlerOptions) => {
   return http.get('*/v1/ai/search', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -15962,7 +15830,7 @@ export const getGetV1AiSearchMockHandler = (overrideResponse?: GetV1AiSearch200 
   }, options)
 }
 
-export const getPutV1AiConversationsBookmarkMockHandler = (overrideResponse?: PutV1AiConversationsBookmark200 | ((info: Parameters<Parameters<typeof http.put>[1]>[0]) => Promise<PutV1AiConversationsBookmark200> | PutV1AiConversationsBookmark200), options?: RequestHandlerOptions) => {
+export const getPutV1AiConversationsBookmarkMockHandler = (overrideResponse?: BookmarkStatusResponse | ((info: Parameters<Parameters<typeof http.put>[1]>[0]) => Promise<BookmarkStatusResponse> | BookmarkStatusResponse), options?: RequestHandlerOptions) => {
   return http.put('*/v1/ai/conversations/bookmark', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -15974,7 +15842,7 @@ export const getPutV1AiConversationsBookmarkMockHandler = (overrideResponse?: Pu
   }, options)
 }
 
-export const getGetV1AiBookmarksMockHandler = (overrideResponse?: GetV1AiBookmarks200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1AiBookmarks200> | GetV1AiBookmarks200), options?: RequestHandlerOptions) => {
+export const getGetV1AiBookmarksMockHandler = (overrideResponse?: ChatBookmarksResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<ChatBookmarksResponse> | ChatBookmarksResponse), options?: RequestHandlerOptions) => {
   return http.get('*/v1/ai/bookmarks', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16010,7 +15878,7 @@ export const getGetV1SnippetsMockHandler = (overrideResponse?: SnippetList | ((i
   }, options)
 }
 
-export const getGetV1SnippetsSearchMockHandler = (overrideResponse?: GetV1SnippetsSearch200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1SnippetsSearch200> | GetV1SnippetsSearch200), options?: RequestHandlerOptions) => {
+export const getGetV1SnippetsSearchMockHandler = (overrideResponse?: SnippetList | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<SnippetList> | SnippetList), options?: RequestHandlerOptions) => {
   return http.get('*/v1/snippets/search', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16092,7 +15960,7 @@ export const getDeleteV1SnippetsIdMockHandler = (overrideResponse?: void | ((inf
   }, options)
 }
 
-export const getPutV1UserzProfileMockHandler = (overrideResponse?: PutV1UserzProfile200 | ((info: Parameters<Parameters<typeof http.put>[1]>[0]) => Promise<PutV1UserzProfile200> | PutV1UserzProfile200), options?: RequestHandlerOptions) => {
+export const getPutV1UserzProfileMockHandler = (overrideResponse?: UserProfileMessageResponse | ((info: Parameters<Parameters<typeof http.put>[1]>[0]) => Promise<UserProfileMessageResponse> | UserProfileMessageResponse), options?: RequestHandlerOptions) => {
   return http.put('*/v1/userz/profile', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16128,7 +15996,7 @@ export const getGetV1AdminBackendMockHandler = (overrideResponse?: string | ((in
   }, options)
 }
 
-export const getGetV1AdminBackendUserzMockHandler = (overrideResponse?: GetV1AdminBackendUserz200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1AdminBackendUserz200> | GetV1AdminBackendUserz200), options?: RequestHandlerOptions) => {
+export const getGetV1AdminBackendUserzMockHandler = (overrideResponse?: AdminUsersResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<AdminUsersResponse> | AdminUsersResponse), options?: RequestHandlerOptions) => {
   return http.get('*/v1/admin/backend/userz', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16140,7 +16008,7 @@ export const getGetV1AdminBackendUserzMockHandler = (overrideResponse?: GetV1Adm
   }, options)
 }
 
-export const getPostV1AdminBackendUserzMockHandler = (overrideResponse?: PostV1AdminBackendUserz201 | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<PostV1AdminBackendUserz201> | PostV1AdminBackendUserz201), options?: RequestHandlerOptions) => {
+export const getPostV1AdminBackendUserzMockHandler = (overrideResponse?: UserProfileMessageResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<UserProfileMessageResponse> | UserProfileMessageResponse), options?: RequestHandlerOptions) => {
   return http.post('*/v1/admin/backend/userz', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16188,7 +16056,7 @@ export const getPostV1SettingsClearAiChatsMockHandler = (overrideResponse?: Succ
   }, options)
 }
 
-export const getGetV1AdminBackendUserzPaginatedMockHandler = (overrideResponse?: GetV1AdminBackendUserzPaginated200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1AdminBackendUserzPaginated200> | GetV1AdminBackendUserzPaginated200), options?: RequestHandlerOptions) => {
+export const getGetV1AdminBackendUserzPaginatedMockHandler = (overrideResponse?: AdminUsersPaginatedResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<AdminUsersPaginatedResponse> | AdminUsersPaginatedResponse), options?: RequestHandlerOptions) => {
   return http.get('*/v1/admin/backend/userz/paginated', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16200,7 +16068,7 @@ export const getGetV1AdminBackendUserzPaginatedMockHandler = (overrideResponse?:
   }, options)
 }
 
-export const getPutV1AdminBackendUserzIdMockHandler = (overrideResponse?: PutV1AdminBackendUserzId200 | ((info: Parameters<Parameters<typeof http.put>[1]>[0]) => Promise<PutV1AdminBackendUserzId200> | PutV1AdminBackendUserzId200), options?: RequestHandlerOptions) => {
+export const getPutV1AdminBackendUserzIdMockHandler = (overrideResponse?: UserProfileMessageResponse | ((info: Parameters<Parameters<typeof http.put>[1]>[0]) => Promise<UserProfileMessageResponse> | UserProfileMessageResponse), options?: RequestHandlerOptions) => {
   return http.put('*/v1/admin/backend/userz/:id', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16212,7 +16080,7 @@ export const getPutV1AdminBackendUserzIdMockHandler = (overrideResponse?: PutV1A
   }, options)
 }
 
-export const getDeleteV1AdminBackendUserzIdMockHandler = (overrideResponse?: DeleteV1AdminBackendUserzId200 | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<DeleteV1AdminBackendUserzId200> | DeleteV1AdminBackendUserzId200), options?: RequestHandlerOptions) => {
+export const getDeleteV1AdminBackendUserzIdMockHandler = (overrideResponse?: MessageResponse | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<MessageResponse> | MessageResponse), options?: RequestHandlerOptions) => {
   return http.delete('*/v1/admin/backend/userz/:id', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16224,7 +16092,7 @@ export const getDeleteV1AdminBackendUserzIdMockHandler = (overrideResponse?: Del
   }, options)
 }
 
-export const getPostV1AdminBackendUserzIdResetPasswordMockHandler = (overrideResponse?: PostV1AdminBackendUserzIdResetPassword200 | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<PostV1AdminBackendUserzIdResetPassword200> | PostV1AdminBackendUserzIdResetPassword200), options?: RequestHandlerOptions) => {
+export const getPostV1AdminBackendUserzIdResetPasswordMockHandler = (overrideResponse?: MessageResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<MessageResponse> | MessageResponse), options?: RequestHandlerOptions) => {
   return http.post('*/v1/admin/backend/userz/:id/reset-password', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16236,7 +16104,7 @@ export const getPostV1AdminBackendUserzIdResetPasswordMockHandler = (overrideRes
   }, options)
 }
 
-export const getGetV1AdminBackendRolesMockHandler = (overrideResponse?: GetV1AdminBackendRoles200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1AdminBackendRoles200> | GetV1AdminBackendRoles200), options?: RequestHandlerOptions) => {
+export const getGetV1AdminBackendRolesMockHandler = (overrideResponse?: AdminRolesResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<AdminRolesResponse> | AdminRolesResponse), options?: RequestHandlerOptions) => {
   return http.get('*/v1/admin/backend/roles', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16248,7 +16116,7 @@ export const getGetV1AdminBackendRolesMockHandler = (overrideResponse?: GetV1Adm
   }, options)
 }
 
-export const getGetV1AdminBackendUserzIdRolesMockHandler = (overrideResponse?: GetV1AdminBackendUserzIdRoles200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1AdminBackendUserzIdRoles200> | GetV1AdminBackendUserzIdRoles200), options?: RequestHandlerOptions) => {
+export const getGetV1AdminBackendUserzIdRolesMockHandler = (overrideResponse?: AdminRolesResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<AdminRolesResponse> | AdminRolesResponse), options?: RequestHandlerOptions) => {
   return http.get('*/v1/admin/backend/userz/:id/roles', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16260,7 +16128,7 @@ export const getGetV1AdminBackendUserzIdRolesMockHandler = (overrideResponse?: G
   }, options)
 }
 
-export const getPostV1AdminBackendUserzIdRolesMockHandler = (overrideResponse?: PostV1AdminBackendUserzIdRoles200 | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<PostV1AdminBackendUserzIdRoles200> | PostV1AdminBackendUserzIdRoles200), options?: RequestHandlerOptions) => {
+export const getPostV1AdminBackendUserzIdRolesMockHandler = (overrideResponse?: MessageResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<MessageResponse> | MessageResponse), options?: RequestHandlerOptions) => {
   return http.post('*/v1/admin/backend/userz/:id/roles', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16272,7 +16140,7 @@ export const getPostV1AdminBackendUserzIdRolesMockHandler = (overrideResponse?: 
   }, options)
 }
 
-export const getDeleteV1AdminBackendUserzIdRolesRoleIdMockHandler = (overrideResponse?: DeleteV1AdminBackendUserzIdRolesRoleId200 | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<DeleteV1AdminBackendUserzIdRolesRoleId200> | DeleteV1AdminBackendUserzIdRolesRoleId200), options?: RequestHandlerOptions) => {
+export const getDeleteV1AdminBackendUserzIdRolesRoleIdMockHandler = (overrideResponse?: MessageResponse | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<MessageResponse> | MessageResponse), options?: RequestHandlerOptions) => {
   return http.delete('*/v1/admin/backend/userz/:id/roles/:roleId', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16320,7 +16188,7 @@ export const getGetV1AdminWorkerStatusMockHandler = (overrideResponse?: WorkerSt
   }, options)
 }
 
-export const getGetV1AdminWorkerDetailsMockHandler = (overrideResponse?: GetV1AdminWorkerDetails200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1AdminWorkerDetails200> | GetV1AdminWorkerDetails200), options?: RequestHandlerOptions) => {
+export const getGetV1AdminWorkerDetailsMockHandler = (overrideResponse?: WorkerDetailsResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<WorkerDetailsResponse> | WorkerDetailsResponse), options?: RequestHandlerOptions) => {
   return http.get('*/v1/admin/worker/details', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16332,7 +16200,7 @@ export const getGetV1AdminWorkerDetailsMockHandler = (overrideResponse?: GetV1Ad
   }, options)
 }
 
-export const getPostV1AdminWorkerPauseMockHandler = (overrideResponse?: PostV1AdminWorkerPause200 | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<PostV1AdminWorkerPause200> | PostV1AdminWorkerPause200), options?: RequestHandlerOptions) => {
+export const getPostV1AdminWorkerPauseMockHandler = (overrideResponse?: MessageResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<MessageResponse> | MessageResponse), options?: RequestHandlerOptions) => {
   return http.post('*/v1/admin/worker/pause', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16344,7 +16212,7 @@ export const getPostV1AdminWorkerPauseMockHandler = (overrideResponse?: PostV1Ad
   }, options)
 }
 
-export const getPostV1AdminWorkerResumeMockHandler = (overrideResponse?: PostV1AdminWorkerResume200 | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<PostV1AdminWorkerResume200> | PostV1AdminWorkerResume200), options?: RequestHandlerOptions) => {
+export const getPostV1AdminWorkerResumeMockHandler = (overrideResponse?: MessageResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<MessageResponse> | MessageResponse), options?: RequestHandlerOptions) => {
   return http.post('*/v1/admin/worker/resume', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16356,7 +16224,7 @@ export const getPostV1AdminWorkerResumeMockHandler = (overrideResponse?: PostV1A
   }, options)
 }
 
-export const getPostV1AdminWorkerTriggerMockHandler = (overrideResponse?: PostV1AdminWorkerTrigger200 | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<PostV1AdminWorkerTrigger200> | PostV1AdminWorkerTrigger200), options?: RequestHandlerOptions) => {
+export const getPostV1AdminWorkerTriggerMockHandler = (overrideResponse?: MessageResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<MessageResponse> | MessageResponse), options?: RequestHandlerOptions) => {
   return http.post('*/v1/admin/worker/trigger', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16368,7 +16236,7 @@ export const getPostV1AdminWorkerTriggerMockHandler = (overrideResponse?: PostV1
   }, options)
 }
 
-export const getGetV1AdminWorkerLogsMockHandler = (overrideResponse?: GetV1AdminWorkerLogs200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1AdminWorkerLogs200> | GetV1AdminWorkerLogs200), options?: RequestHandlerOptions) => {
+export const getGetV1AdminWorkerLogsMockHandler = (overrideResponse?: WorkerLogsResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<WorkerLogsResponse> | WorkerLogsResponse), options?: RequestHandlerOptions) => {
   return http.get('*/v1/admin/worker/logs', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16380,7 +16248,7 @@ export const getGetV1AdminWorkerLogsMockHandler = (overrideResponse?: GetV1Admin
   }, options)
 }
 
-export const getGetV1AdminWorkerAiConcurrencyMockHandler = (overrideResponse?: GetV1AdminWorkerAiConcurrency200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1AdminWorkerAiConcurrency200> | GetV1AdminWorkerAiConcurrency200), options?: RequestHandlerOptions) => {
+export const getGetV1AdminWorkerAiConcurrencyMockHandler = (overrideResponse?: WorkerAIConcurrencyStats | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<WorkerAIConcurrencyStats> | WorkerAIConcurrencyStats), options?: RequestHandlerOptions) => {
   return http.get('*/v1/admin/worker/ai-concurrency', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16392,7 +16260,7 @@ export const getGetV1AdminWorkerAiConcurrencyMockHandler = (overrideResponse?: G
   }, options)
 }
 
-export const getGetV1AdminWorkerUsersMockHandler = (overrideResponse?: GetV1AdminWorkerUsers200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1AdminWorkerUsers200> | GetV1AdminWorkerUsers200), options?: RequestHandlerOptions) => {
+export const getGetV1AdminWorkerUsersMockHandler = (overrideResponse?: WorkerUserListResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<WorkerUserListResponse> | WorkerUserListResponse), options?: RequestHandlerOptions) => {
   return http.get('*/v1/admin/worker/users', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16404,7 +16272,7 @@ export const getGetV1AdminWorkerUsersMockHandler = (overrideResponse?: GetV1Admi
   }, options)
 }
 
-export const getPostV1AdminWorkerUsersPauseMockHandler = (overrideResponse?: PostV1AdminWorkerUsersPause200 | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<PostV1AdminWorkerUsersPause200> | PostV1AdminWorkerUsersPause200), options?: RequestHandlerOptions) => {
+export const getPostV1AdminWorkerUsersPauseMockHandler = (overrideResponse?: MessageResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<MessageResponse> | MessageResponse), options?: RequestHandlerOptions) => {
   return http.post('*/v1/admin/worker/users/pause', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16416,7 +16284,7 @@ export const getPostV1AdminWorkerUsersPauseMockHandler = (overrideResponse?: Pos
   }, options)
 }
 
-export const getPostV1AdminWorkerUsersResumeMockHandler = (overrideResponse?: PostV1AdminWorkerUsersResume200 | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<PostV1AdminWorkerUsersResume200> | PostV1AdminWorkerUsersResume200), options?: RequestHandlerOptions) => {
+export const getPostV1AdminWorkerUsersResumeMockHandler = (overrideResponse?: MessageResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<MessageResponse> | MessageResponse), options?: RequestHandlerOptions) => {
   return http.post('*/v1/admin/worker/users/resume', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16428,7 +16296,7 @@ export const getPostV1AdminWorkerUsersResumeMockHandler = (overrideResponse?: Po
   }, options)
 }
 
-export const getGetV1AdminWorkerAnalyticsPriorityScoresMockHandler = (overrideResponse?: GetV1AdminWorkerAnalyticsPriorityScores200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1AdminWorkerAnalyticsPriorityScores200> | GetV1AdminWorkerAnalyticsPriorityScores200), options?: RequestHandlerOptions) => {
+export const getGetV1AdminWorkerAnalyticsPriorityScoresMockHandler = (overrideResponse?: PriorityAnalytics | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<PriorityAnalytics> | PriorityAnalytics), options?: RequestHandlerOptions) => {
   return http.get('*/v1/admin/worker/analytics/priority-scores', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16488,7 +16356,7 @@ export const getGetV1AdminWorkerNotificationsStatsMockHandler = (overrideRespons
   }, options)
 }
 
-export const getGetV1AdminWorkerNotificationsErrorsMockHandler = (overrideResponse?: GetV1AdminWorkerNotificationsErrors200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1AdminWorkerNotificationsErrors200> | GetV1AdminWorkerNotificationsErrors200), options?: RequestHandlerOptions) => {
+export const getGetV1AdminWorkerNotificationsErrorsMockHandler = (overrideResponse?: WorkerNotificationErrorsResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<WorkerNotificationErrorsResponse> | WorkerNotificationErrorsResponse), options?: RequestHandlerOptions) => {
   return http.get('*/v1/admin/worker/notifications/errors', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16500,7 +16368,7 @@ export const getGetV1AdminWorkerNotificationsErrorsMockHandler = (overrideRespon
   }, options)
 }
 
-export const getGetV1AdminWorkerNotificationsSentMockHandler = (overrideResponse?: GetV1AdminWorkerNotificationsSent200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1AdminWorkerNotificationsSent200> | GetV1AdminWorkerNotificationsSent200), options?: RequestHandlerOptions) => {
+export const getGetV1AdminWorkerNotificationsSentMockHandler = (overrideResponse?: WorkerNotificationSentResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<WorkerNotificationSentResponse> | WorkerNotificationSentResponse), options?: RequestHandlerOptions) => {
   return http.get('*/v1/admin/worker/notifications/sent', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16524,7 +16392,7 @@ export const getPostV1AdminWorkerNotificationsForceSendMockHandler = (overrideRe
   }, options)
 }
 
-export const getGetV1AdminBackendQuestionsMockHandler = (overrideResponse?: GetV1AdminBackendQuestions200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1AdminBackendQuestions200> | GetV1AdminBackendQuestions200), options?: RequestHandlerOptions) => {
+export const getGetV1AdminBackendQuestionsMockHandler = (overrideResponse?: AdminQuestionsResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<AdminQuestionsResponse> | AdminQuestionsResponse), options?: RequestHandlerOptions) => {
   return http.get('*/v1/admin/backend/questions', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16536,7 +16404,7 @@ export const getGetV1AdminBackendQuestionsMockHandler = (overrideResponse?: GetV
   }, options)
 }
 
-export const getGetV1AdminBackendQuestionsPaginatedMockHandler = (overrideResponse?: GetV1AdminBackendQuestionsPaginated200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1AdminBackendQuestionsPaginated200> | GetV1AdminBackendQuestionsPaginated200), options?: RequestHandlerOptions) => {
+export const getGetV1AdminBackendQuestionsPaginatedMockHandler = (overrideResponse?: AdminQuestionsResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<AdminQuestionsResponse> | AdminQuestionsResponse), options?: RequestHandlerOptions) => {
   return http.get('*/v1/admin/backend/questions/paginated', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16560,7 +16428,7 @@ export const getGetV1AdminBackendQuestionsIdMockHandler = (overrideResponse?: Qu
   }, options)
 }
 
-export const getPutV1AdminBackendQuestionsIdMockHandler = (overrideResponse?: PutV1AdminBackendQuestionsId200 | ((info: Parameters<Parameters<typeof http.put>[1]>[0]) => Promise<PutV1AdminBackendQuestionsId200> | PutV1AdminBackendQuestionsId200), options?: RequestHandlerOptions) => {
+export const getPutV1AdminBackendQuestionsIdMockHandler = (overrideResponse?: MessageResponse | ((info: Parameters<Parameters<typeof http.put>[1]>[0]) => Promise<MessageResponse> | MessageResponse), options?: RequestHandlerOptions) => {
   return http.put('*/v1/admin/backend/questions/:id', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16572,7 +16440,7 @@ export const getPutV1AdminBackendQuestionsIdMockHandler = (overrideResponse?: Pu
   }, options)
 }
 
-export const getDeleteV1AdminBackendQuestionsIdMockHandler = (overrideResponse?: DeleteV1AdminBackendQuestionsId200 | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<DeleteV1AdminBackendQuestionsId200> | DeleteV1AdminBackendQuestionsId200), options?: RequestHandlerOptions) => {
+export const getDeleteV1AdminBackendQuestionsIdMockHandler = (overrideResponse?: MessageResponse | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<MessageResponse> | MessageResponse), options?: RequestHandlerOptions) => {
   return http.delete('*/v1/admin/backend/questions/:id', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16584,7 +16452,7 @@ export const getDeleteV1AdminBackendQuestionsIdMockHandler = (overrideResponse?:
   }, options)
 }
 
-export const getGetV1AdminBackendQuestionsIdUsersMockHandler = (overrideResponse?: GetV1AdminBackendQuestionsIdUsers200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1AdminBackendQuestionsIdUsers200> | GetV1AdminBackendQuestionsIdUsers200), options?: RequestHandlerOptions) => {
+export const getGetV1AdminBackendQuestionsIdUsersMockHandler = (overrideResponse?: QuestionAssignedUsersResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<QuestionAssignedUsersResponse> | QuestionAssignedUsersResponse), options?: RequestHandlerOptions) => {
   return http.get('*/v1/admin/backend/questions/:id/users', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16596,7 +16464,7 @@ export const getGetV1AdminBackendQuestionsIdUsersMockHandler = (overrideResponse
   }, options)
 }
 
-export const getPostV1AdminBackendQuestionsIdAssignUsersMockHandler = (overrideResponse?: PostV1AdminBackendQuestionsIdAssignUsers200 | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<PostV1AdminBackendQuestionsIdAssignUsers200> | PostV1AdminBackendQuestionsIdAssignUsers200), options?: RequestHandlerOptions) => {
+export const getPostV1AdminBackendQuestionsIdAssignUsersMockHandler = (overrideResponse?: MessageResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<MessageResponse> | MessageResponse), options?: RequestHandlerOptions) => {
   return http.post('*/v1/admin/backend/questions/:id/assign-users', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16608,7 +16476,7 @@ export const getPostV1AdminBackendQuestionsIdAssignUsersMockHandler = (overrideR
   }, options)
 }
 
-export const getPostV1AdminBackendQuestionsIdUnassignUsersMockHandler = (overrideResponse?: PostV1AdminBackendQuestionsIdUnassignUsers200 | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<PostV1AdminBackendQuestionsIdUnassignUsers200> | PostV1AdminBackendQuestionsIdUnassignUsers200), options?: RequestHandlerOptions) => {
+export const getPostV1AdminBackendQuestionsIdUnassignUsersMockHandler = (overrideResponse?: MessageResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<MessageResponse> | MessageResponse), options?: RequestHandlerOptions) => {
   return http.post('*/v1/admin/backend/questions/:id/unassign-users', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16620,7 +16488,7 @@ export const getPostV1AdminBackendQuestionsIdUnassignUsersMockHandler = (overrid
   }, options)
 }
 
-export const getPostV1AdminBackendQuestionsIdFixMockHandler = (overrideResponse?: PostV1AdminBackendQuestionsIdFix200 | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<PostV1AdminBackendQuestionsIdFix200> | PostV1AdminBackendQuestionsIdFix200), options?: RequestHandlerOptions) => {
+export const getPostV1AdminBackendQuestionsIdFixMockHandler = (overrideResponse?: MessageResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<MessageResponse> | MessageResponse), options?: RequestHandlerOptions) => {
   return http.post('*/v1/admin/backend/questions/:id/fix', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16632,7 +16500,7 @@ export const getPostV1AdminBackendQuestionsIdFixMockHandler = (overrideResponse?
   }, options)
 }
 
-export const getPostV1AdminBackendQuestionsIdAiFixMockHandler = (overrideResponse?: PostV1AdminBackendQuestionsIdAiFix200 | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<PostV1AdminBackendQuestionsIdAiFix200> | PostV1AdminBackendQuestionsIdAiFix200), options?: RequestHandlerOptions) => {
+export const getPostV1AdminBackendQuestionsIdAiFixMockHandler = (overrideResponse?: MessageResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<MessageResponse> | MessageResponse), options?: RequestHandlerOptions) => {
   return http.post('*/v1/admin/backend/questions/:id/ai-fix', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16644,7 +16512,7 @@ export const getPostV1AdminBackendQuestionsIdAiFixMockHandler = (overrideRespons
   }, options)
 }
 
-export const getPostV1AdminBackendClearUserDataMockHandler = (overrideResponse?: PostV1AdminBackendClearUserData200 | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<PostV1AdminBackendClearUserData200> | PostV1AdminBackendClearUserData200), options?: RequestHandlerOptions) => {
+export const getPostV1AdminBackendClearUserDataMockHandler = (overrideResponse?: MessageResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<MessageResponse> | MessageResponse), options?: RequestHandlerOptions) => {
   return http.post('*/v1/admin/backend/clear-user-data', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16656,7 +16524,7 @@ export const getPostV1AdminBackendClearUserDataMockHandler = (overrideResponse?:
   }, options)
 }
 
-export const getPostV1AdminBackendClearDatabaseMockHandler = (overrideResponse?: PostV1AdminBackendClearDatabase200 | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<PostV1AdminBackendClearDatabase200> | PostV1AdminBackendClearDatabase200), options?: RequestHandlerOptions) => {
+export const getPostV1AdminBackendClearDatabaseMockHandler = (overrideResponse?: MessageResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<MessageResponse> | MessageResponse), options?: RequestHandlerOptions) => {
   return http.post('*/v1/admin/backend/clear-database', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16668,7 +16536,7 @@ export const getPostV1AdminBackendClearDatabaseMockHandler = (overrideResponse?:
   }, options)
 }
 
-export const getPostV1AdminBackendUserzIdClearMockHandler = (overrideResponse?: PostV1AdminBackendUserzIdClear200 | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<PostV1AdminBackendUserzIdClear200> | PostV1AdminBackendUserzIdClear200), options?: RequestHandlerOptions) => {
+export const getPostV1AdminBackendUserzIdClearMockHandler = (overrideResponse?: MessageResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<MessageResponse> | MessageResponse), options?: RequestHandlerOptions) => {
   return http.post('*/v1/admin/backend/userz/:id/clear', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16704,7 +16572,7 @@ export const getGetV1AdminBackendUsageStatsServiceMockHandler = (overrideRespons
   }, options)
 }
 
-export const getGetV1AdminBackendReportedQuestionsMockHandler = (overrideResponse?: GetV1AdminBackendReportedQuestions200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1AdminBackendReportedQuestions200> | GetV1AdminBackendReportedQuestions200), options?: RequestHandlerOptions) => {
+export const getGetV1AdminBackendReportedQuestionsMockHandler = (overrideResponse?: AdminReportedQuestionsResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<AdminReportedQuestionsResponse> | AdminReportedQuestionsResponse), options?: RequestHandlerOptions) => {
   return http.get('*/v1/admin/backend/reported-questions', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16716,7 +16584,7 @@ export const getGetV1AdminBackendReportedQuestionsMockHandler = (overrideRespons
   }, options)
 }
 
-export const getGetV1AdminBackendStoriesMockHandler = (overrideResponse?: GetV1AdminBackendStories200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1AdminBackendStories200> | GetV1AdminBackendStories200), options?: RequestHandlerOptions) => {
+export const getGetV1AdminBackendStoriesMockHandler = (overrideResponse?: AdminStoriesResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<AdminStoriesResponse> | AdminStoriesResponse), options?: RequestHandlerOptions) => {
   return http.get('*/v1/admin/backend/stories', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16774,7 +16642,7 @@ export const getPostV1QuizChatStreamMockHandler = (overrideResponse?: string | (
   }, options)
 }
 
-export const getGetV1DailyQuestionsDateMockHandler = (overrideResponse?: GetV1DailyQuestionsDate200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1DailyQuestionsDate200> | GetV1DailyQuestionsDate200), options?: RequestHandlerOptions) => {
+export const getGetV1DailyQuestionsDateMockHandler = (overrideResponse?: DailyQuestionsResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<DailyQuestionsResponse> | DailyQuestionsResponse), options?: RequestHandlerOptions) => {
   return http.get('*/v1/daily/questions/:date', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16810,7 +16678,7 @@ export const getDeleteV1DailyQuestionsDateCompleteQuestionIdMockHandler = (overr
   }, options)
 }
 
-export const getGetV1DailyDatesMockHandler = (overrideResponse?: GetV1DailyDates200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1DailyDates200> | GetV1DailyDates200), options?: RequestHandlerOptions) => {
+export const getGetV1DailyDatesMockHandler = (overrideResponse?: DailyDatesResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<DailyDatesResponse> | DailyDatesResponse), options?: RequestHandlerOptions) => {
   return http.get('*/v1/daily/dates', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16822,7 +16690,7 @@ export const getGetV1DailyDatesMockHandler = (overrideResponse?: GetV1DailyDates
   }, options)
 }
 
-export const getPostV1DailyQuestionsDateAnswerQuestionIdMockHandler = (overrideResponse?: PostV1DailyQuestionsDateAnswerQuestionId200 | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<PostV1DailyQuestionsDateAnswerQuestionId200> | PostV1DailyQuestionsDateAnswerQuestionId200), options?: RequestHandlerOptions) => {
+export const getPostV1DailyQuestionsDateAnswerQuestionIdMockHandler = (overrideResponse?: DailyAnswerResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<DailyAnswerResponse> | DailyAnswerResponse), options?: RequestHandlerOptions) => {
   return http.post('*/v1/daily/questions/:date/answer/:questionId', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16846,7 +16714,7 @@ export const getGetV1DailyProgressDateMockHandler = (overrideResponse?: DailyPro
   }, options)
 }
 
-export const getGetV1DailyHistoryQuestionIdMockHandler = (overrideResponse?: GetV1DailyHistoryQuestionId200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1DailyHistoryQuestionId200> | GetV1DailyHistoryQuestionId200), options?: RequestHandlerOptions) => {
+export const getGetV1DailyHistoryQuestionIdMockHandler = (overrideResponse?: DailyQuestionHistoryResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<DailyQuestionHistoryResponse> | DailyQuestionHistoryResponse), options?: RequestHandlerOptions) => {
   return http.get('*/v1/daily/history/:questionId', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -16906,7 +16774,7 @@ export const getGetV1WordOfDayDateEmbedMockHandler = (overrideResponse?: string 
   }, options)
 }
 
-export const getGetV1WordOfDayHistoryMockHandler = (overrideResponse?: GetV1WordOfDayHistory200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1WordOfDayHistory200> | GetV1WordOfDayHistory200), options?: RequestHandlerOptions) => {
+export const getGetV1WordOfDayHistoryMockHandler = (overrideResponse?: WordOfDayHistoryResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<WordOfDayHistoryResponse> | WordOfDayHistoryResponse), options?: RequestHandlerOptions) => {
   return http.get('*/v1/word-of-day/history', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -17090,7 +16958,7 @@ export const getGetV1VersionMockHandler = (overrideResponse?: AggregatedVersion 
   }, options)
 }
 
-export const getGetHealthMockHandler = (overrideResponse?: GetHealth200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetHealth200> | GetHealth200), options?: RequestHandlerOptions) => {
+export const getGetHealthMockHandler = (overrideResponse?: HealthStatusResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<HealthStatusResponse> | HealthStatusResponse), options?: RequestHandlerOptions) => {
   return http.get('*/health', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -17102,7 +16970,7 @@ export const getGetHealthMockHandler = (overrideResponse?: GetHealth200 | ((info
   }, options)
 }
 
-export const getGetV1AdminWorkerDailyUsersUserIdQuestionsDateMockHandler = (overrideResponse?: GetV1AdminWorkerDailyUsersUserIdQuestionsDate200 | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<GetV1AdminWorkerDailyUsersUserIdQuestionsDate200> | GetV1AdminWorkerDailyUsersUserIdQuestionsDate200), options?: RequestHandlerOptions) => {
+export const getGetV1AdminWorkerDailyUsersUserIdQuestionsDateMockHandler = (overrideResponse?: AdminDailyQuestionsResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<AdminDailyQuestionsResponse> | AdminDailyQuestionsResponse), options?: RequestHandlerOptions) => {
   return http.get('*/v1/admin/worker/daily/users/:userId/questions/:date', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -17114,7 +16982,7 @@ export const getGetV1AdminWorkerDailyUsersUserIdQuestionsDateMockHandler = (over
   }, options)
 }
 
-export const getPostV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerateMockHandler = (overrideResponse?: PostV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerate200 | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<PostV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerate200> | PostV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerate200), options?: RequestHandlerOptions) => {
+export const getPostV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerateMockHandler = (overrideResponse?: SuccessResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<SuccessResponse> | SuccessResponse), options?: RequestHandlerOptions) => {
   return http.post('*/v1/admin/worker/daily/users/:userId/questions/:date/regenerate', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -17138,7 +17006,7 @@ export const getGetV1AdminBackendFeedbackMockHandler = (overrideResponse?: Feedb
   }, options)
 }
 
-export const getDeleteV1AdminBackendFeedbackMockHandler = (overrideResponse?: DeleteV1AdminBackendFeedback200 | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<DeleteV1AdminBackendFeedback200> | DeleteV1AdminBackendFeedback200), options?: RequestHandlerOptions) => {
+export const getDeleteV1AdminBackendFeedbackMockHandler = (overrideResponse?: BulkDeleteResponse | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<BulkDeleteResponse> | BulkDeleteResponse), options?: RequestHandlerOptions) => {
   return http.delete('*/v1/admin/backend/feedback', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
@@ -17280,7 +17148,7 @@ export const getPostV1AudioSpeechMockHandler = (overrideResponse?: TTSResponse |
   }, options)
 }
 
-export const getPostV1AudioSpeechInitMockHandler = (overrideResponse?: PostV1AudioSpeechInit200 | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<PostV1AudioSpeechInit200> | PostV1AudioSpeechInit200), options?: RequestHandlerOptions) => {
+export const getPostV1AudioSpeechInitMockHandler = (overrideResponse?: TTSStreamInitResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<TTSStreamInitResponse> | TTSStreamInitResponse), options?: RequestHandlerOptions) => {
   return http.post('*/v1/audio/speech/init', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
