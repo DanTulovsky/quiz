@@ -852,21 +852,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  conversations:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/Conversation"
-                  total:
-                    type: integer
-                    description: Total number of conversations
-                  limit:
-                    type: integer
-                    description: Number of conversations returned
-                  offset:
-                    type: integer
-                    description: Number of conversations skipped
+                $ref: "#/components/schemas/ConversationsListResponse"
         "401":
           description: User not authenticated
           content:
@@ -1074,24 +1060,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  conversations:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/Conversation"
-                  query:
-                    type: string
-                    description: The search query that was used
-                  total:
-                    type: integer
-                    description: Total number of matching conversations
-                  limit:
-                    type: integer
-                    description: Number of conversations returned
-                  offset:
-                    type: integer
-                    description: Number of conversations skipped
+                $ref: "#/components/schemas/ConversationSearchResponse"
         "401":
           description: User not authenticated
           content:
@@ -1131,11 +1100,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  bookmarked:
-                    type: boolean
-                    description: The new bookmark status of the message
+                $ref: "#/components/schemas/BookmarkStatusResponse"
         "401":
           description: User not authenticated
           content:
@@ -1186,24 +1151,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  messages:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/ChatMessage"
-                  query:
-                    type: string
-                    description: The search query that was used (if any)
-                  total:
-                    type: integer
-                    description: Total number of bookmarked messages
-                  limit:
-                    type: integer
-                    description: Number of messages returned
-                  offset:
-                    type: integer
-                    description: Number of messages skipped
+                $ref: "#/components/schemas/ChatBookmarksResponse"
         "401":
           description: User not authenticated
           content:
@@ -1371,24 +1319,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  snippets:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/Snippet"
-                  query:
-                    type: string
-                    description: The search query that was used
-                  total:
-                    type: integer
-                    description: Total number of matching snippets
-                  limit:
-                    type: integer
-                    description: Number of snippets returned
-                  offset:
-                    type: integer
-                    description: Number of snippets skipped
+                $ref: "#/components/schemas/SnippetList"
         "401":
           description: User not authenticated
           content:
@@ -1638,12 +1569,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  user:
-                    $ref: "#/components/schemas/UserProfile"
+                $ref: "#/components/schemas/UserProfileMessageResponse"
         "400":
           description: Invalid request data
           content:
@@ -1733,13 +1659,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  users:
-                    type: array
-                    maxItems: 1000
-                    items:
-                      $ref: "#/components/schemas/UserProfile"
+                $ref: "#/components/schemas/AdminUsersResponse"
         "401":
           description: User not authenticated
           content:
@@ -1805,12 +1725,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  user:
-                    $ref: "#/components/schemas/UserProfile"
+                $ref: "#/components/schemas/UserProfileMessageResponse"
         "400":
           description: Invalid request data
           content:
@@ -1987,38 +1902,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  users:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        user:
-                          $ref: "#/components/schemas/UserProfile"
-                        progress:
-                          $ref: "#/components/schemas/UserProgress"
-                        question_stats:
-                          type: object
-                          properties:
-                            user_id:
-                              type: integer
-                            total_answered:
-                              type: integer
-                            answered_by_type:
-                              type: object
-                            answered_by_level:
-                              type: object
-                            accuracy_by_type:
-                              type: object
-                            accuracy_by_level:
-                              type: object
-                            available_by_type:
-                              type: object
-                            available_by_level:
-                              type: object
-                  pagination:
-                    $ref: "#/components/schemas/PaginationInfo"
+                $ref: "#/components/schemas/AdminUsersPaginatedResponse"
         "401":
           description: User not authenticated
           content:
@@ -2061,12 +1945,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  user:
-                    $ref: "#/components/schemas/UserProfile"
+                $ref: "#/components/schemas/UserProfileMessageResponse"
         "400":
           description: Invalid request data
           content:
@@ -2101,10 +1980,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+                $ref: "#/components/schemas/MessageResponse"
         "404":
           description: User not found
           content:
@@ -2141,10 +2017,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+                $ref: "#/components/schemas/MessageResponse"
         "400":
           description: Invalid request data
           content:
@@ -2172,13 +2045,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  roles:
-                    type: array
-                    maxItems: 50
-                    items:
-                      $ref: "#/components/schemas/Role"
+                $ref: "#/components/schemas/AdminRolesResponse"
         "401":
           description: User not authenticated
           content:
@@ -2215,13 +2082,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  roles:
-                    type: array
-                    maxItems: 50
-                    items:
-                      $ref: "#/components/schemas/Role"
+                $ref: "#/components/schemas/AdminRolesResponse"
         "400":
           description: Invalid user ID format
           content:
@@ -2282,10 +2143,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+                $ref: "#/components/schemas/MessageResponse"
         "400":
           description: Invalid request data
           content:
@@ -2342,10 +2200,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+                $ref: "#/components/schemas/MessageResponse"
         "400":
           description: Invalid request data
           content:
@@ -2469,8 +2324,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties: true
+                $ref: "#/components/schemas/WorkerDetailsResponse"
         "401":
           description: User not authenticated
           content:
@@ -2498,10 +2352,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+                $ref: "#/components/schemas/MessageResponse"
         "401":
           description: User not authenticated
           content:
@@ -2529,10 +2380,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+                $ref: "#/components/schemas/MessageResponse"
         "401":
           description: User not authenticated
           content:
@@ -2560,10 +2408,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+                $ref: "#/components/schemas/MessageResponse"
         "401":
           description: User not authenticated
           content:
@@ -2591,12 +2436,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  logs:
-                    type: array
-                    items:
-                      type: object
+                $ref: "#/components/schemas/WorkerLogsResponse"
         "401":
           description: User not authenticated
           content:
@@ -2624,16 +2464,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  active_requests:
-                    type: integer
-                  max_concurrent:
-                    type: integer
-                  queued_requests:
-                    type: integer
-                  total_requests:
-                    type: integer
+                $ref: "#/components/schemas/WorkerAIConcurrencyStats"
         "401":
           description: User not authenticated
           content:
@@ -2661,19 +2492,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  users:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                        username:
-                          type: string
-                        is_paused:
-                          type: boolean
+                $ref: "#/components/schemas/WorkerUserListResponse"
         "401":
           description: User not authenticated
           content:
@@ -2707,10 +2526,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+                $ref: "#/components/schemas/MessageResponse"
         "400":
           description: Invalid request data
           content:
@@ -2750,10 +2566,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+                $ref: "#/components/schemas/MessageResponse"
         "400":
           description: Invalid request data
           content:
@@ -2787,19 +2600,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  distribution:
-                    type: object
-                    properties:
-                      high:
-                        type: integer
-                      medium:
-                        type: integer
-                      low:
-                        type: integer
-                      average:
-                        type: number
+                $ref: "#/components/schemas/PriorityAnalytics"
         "401":
           description: User not authenticated
           content:
@@ -2980,16 +2781,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  errors:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/NotificationError"
-                  pagination:
-                    $ref: "#/components/schemas/PaginationInfo"
-                  stats:
-                    $ref: "#/components/schemas/NotificationErrorStats"
+                $ref: "#/components/schemas/WorkerNotificationErrorsResponse"
         "401":
           description: User not authenticated
           content:
@@ -3057,16 +2849,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  notifications:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/SentNotification"
-                  pagination:
-                    $ref: "#/components/schemas/PaginationInfo"
-                  stats:
-                    $ref: "#/components/schemas/NotificationStats"
+                $ref: "#/components/schemas/WorkerNotificationSentResponse"
         "401":
           description: User not authenticated
           content:
@@ -3201,16 +2984,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  questions:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/Question"
-                  pagination:
-                    $ref: "#/components/schemas/PaginationInfo"
-                  stats:
-                    $ref: "#/components/schemas/QuestionStats"
+                $ref: "#/components/schemas/AdminQuestionsResponse"
         "401":
           description: User not authenticated
           content:
@@ -3286,16 +3060,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  questions:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/Question"
-                  pagination:
-                    $ref: "#/components/schemas/PaginationInfo"
-                  stats:
-                    $ref: "#/components/schemas/QuestionStats"
+                $ref: "#/components/schemas/AdminQuestionsResponse"
         "401":
           description: User not authenticated
           content:
@@ -3398,10 +3163,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+                $ref: "#/components/schemas/MessageResponse"
         "400":
           description: Invalid request data
           content:
@@ -3448,10 +3210,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+                $ref: "#/components/schemas/MessageResponse"
         "400":
           description: Invalid question ID format
           content:
@@ -3500,16 +3259,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  users:
-                    type: array
-                    maxItems: 5
-                    items:
-                      $ref: "#/components/schemas/UserProfile"
-                  total_count:
-                    type: integer
-                    description: Total number of users assigned to this question
+                $ref: "#/components/schemas/QuestionAssignedUsersResponse"
         "400":
           description: Invalid question ID format
           content:
@@ -3569,10 +3319,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+                $ref: "#/components/schemas/MessageResponse"
         "400":
           description: Invalid request data
           content:
@@ -3632,10 +3379,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+                $ref: "#/components/schemas/MessageResponse"
         "400":
           description: Invalid request data
           content:
@@ -3678,10 +3422,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+                $ref: "#/components/schemas/MessageResponse"
         "400":
           description: Invalid request data
           content:
@@ -3740,10 +3481,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+                $ref: "#/components/schemas/MessageResponse"
         "400":
           description: Invalid request data
           content:
@@ -3789,10 +3527,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+                $ref: "#/components/schemas/MessageResponse"
         "401":
           description: User not authenticated
           content:
@@ -3820,10 +3555,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+                $ref: "#/components/schemas/MessageResponse"
         "401":
           description: User not authenticated
           content:
@@ -3860,10 +3592,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+                $ref: "#/components/schemas/MessageResponse"
         "400":
           description: Invalid user ID
           content:
@@ -4011,25 +3740,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  questions:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/Question"
-                  pagination:
-                    $ref: "#/components/schemas/PaginationInfo"
-                  stats:
-                    type: object
-                    properties:
-                      total_reported:
-                        type: integer
-                      reported_by_type:
-                        type: object
-                      reported_by_level:
-                        type: object
-                      reported_by_language:
-                        type: object
+                $ref: "#/components/schemas/AdminReportedQuestionsResponse"
         "401":
           description: User not authenticated
           content:
@@ -4089,14 +3800,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  stories:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/Story"
-                  pagination:
-                    $ref: "#/components/schemas/PaginationInfo"
+                $ref: "#/components/schemas/AdminStoriesResponse"
         "401":
           description: User not authenticated
           content:
@@ -4309,16 +4013,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  questions:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/DailyQuestionWithDetails"
-                  date:
-                    type: string
-                    format: date
-                    example: "2024-01-15"
+                $ref: "#/components/schemas/DailyQuestionsResponse"
         "400":
           description: Invalid date format
           content:
@@ -4446,14 +4141,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  dates:
-                    type: array
-                    items:
-                      type: string
-                      format: date
-                    example: ["2024-01-15", "2024-01-16", "2024-01-17"]
+                $ref: "#/components/schemas/DailyDatesResponse"
         "401":
           description: User not authenticated
           content:
@@ -4515,14 +4203,7 @@ paths:
           content:
             application/json:
               schema:
-                allOf:
-                  - $ref: "#/components/schemas/AnswerResponse"
-                  - type: object
-                    properties:
-                      is_completed:
-                        type: boolean
-                        description: Whether the question is now completed
-                        example: true
+                $ref: "#/components/schemas/DailyAnswerResponse"
         "400":
           description: Invalid request or question already answered
           content:
@@ -4615,12 +4296,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  history:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/DailyQuestionHistory"
+                $ref: "#/components/schemas/DailyQuestionHistoryResponse"
         "400":
           description: Bad request
           content:
@@ -4832,16 +4508,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  words:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/WordOfTheDayDisplay"
-                  count:
-                    type: integer
-                    description: Number of words returned
-                    example: 28
+                $ref: "#/components/schemas/WordOfDayHistoryResponse"
         "400":
           description: Invalid date format
           content:
@@ -5385,31 +5052,13 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    enum: ["ok"]
-                    description: Health status of the service
-                  service:
-                    type: string
-                    description: Service name
+                $ref: "#/components/schemas/HealthStatusResponse"
         "503":
           description: Service is unhealthy
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    enum: ["unhealthy"]
-                  timestamp:
-                    type: string
-                    format: date-time-time
-                  error:
-                    type: string
-                    description: Error message describing the health issue
+                $ref: "#/components/schemas/HealthErrorResponse"
 
   /v1/admin/worker/daily/users/{userId}/questions/{date}:
     get:
@@ -5440,12 +5089,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  questions:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/DailyQuestionWithDetails"
+                $ref: "#/components/schemas/AdminDailyQuestionsResponse"
         "400":
           description: Invalid user ID or date format
           content:
@@ -5494,12 +5138,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                  message:
-                    type: string
+                $ref: "#/components/schemas/SuccessResponse"
         "400":
           description: Invalid user ID or date format
           content:
@@ -5602,11 +5241,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  deleted_count:
-                    type: integer
-                    description: Number of feedback reports deleted
+                $ref: "#/components/schemas/BulkDeleteResponse"
         "400":
           description: Bad request (status parameter required)
           content:
@@ -6043,13 +5678,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  stream_id:
-                    type: string
-                  token:
-                    type: string
-                    nullable: true
+                $ref: "#/components/schemas/TTSStreamInitResponse"
         "401":
           description: Authentication required
           content:
@@ -8086,6 +7715,403 @@ components:
         message:
           type: string
           example: "API key deleted successfully"
+
+    MessageResponse:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+
+    BulkDeleteResponse:
+      type: object
+      required:
+        - deleted_count
+      properties:
+        deleted_count:
+          type: integer
+          description: Number of records deleted
+
+    BookmarkStatusResponse:
+      type: object
+      required:
+        - bookmarked
+      properties:
+        bookmarked:
+          type: boolean
+          description: The new bookmark status of the message
+
+    UserProfileMessageResponse:
+      type: object
+      required:
+        - message
+        - user
+      properties:
+        message:
+          type: string
+        user:
+          $ref: "#/components/schemas/UserProfile"
+
+    QuestionAssignedUsersResponse:
+      type: object
+      required:
+        - users
+        - total_count
+      properties:
+        users:
+          type: array
+          maxItems: 5
+          items:
+            $ref: "#/components/schemas/UserProfile"
+        total_count:
+          type: integer
+          description: Total number of users assigned to this question
+
+    AdminQuestionsResponse:
+      type: object
+      required:
+        - questions
+        - pagination
+        - stats
+      properties:
+        questions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Question"
+        pagination:
+          $ref: "#/components/schemas/PaginationInfo"
+        stats:
+          $ref: "#/components/schemas/QuestionStats"
+
+    ReportedQuestionsStats:
+      type: object
+      properties:
+        total_reported:
+          type: integer
+        reported_by_type:
+          type: object
+          additionalProperties:
+            type: integer
+        reported_by_level:
+          type: object
+          additionalProperties:
+            type: integer
+        reported_by_language:
+          type: object
+          additionalProperties:
+            type: integer
+
+    AdminReportedQuestionsResponse:
+      type: object
+      required:
+        - questions
+        - pagination
+        - stats
+      properties:
+        questions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Question"
+        pagination:
+          $ref: "#/components/schemas/PaginationInfo"
+        stats:
+          $ref: "#/components/schemas/ReportedQuestionsStats"
+
+    AdminRolesResponse:
+      type: object
+      required:
+        - roles
+      properties:
+        roles:
+          type: array
+          items:
+            $ref: "#/components/schemas/Role"
+
+    AdminStoriesResponse:
+      type: object
+      required:
+        - stories
+        - pagination
+      properties:
+        stories:
+          type: array
+          items:
+            $ref: "#/components/schemas/Story"
+        pagination:
+          $ref: "#/components/schemas/PaginationInfo"
+
+    AdminUsersResponse:
+      type: object
+      required:
+        - users
+      properties:
+        users:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserProfile"
+
+    AdminUsersPaginatedResponse:
+      type: object
+      required:
+        - users
+        - pagination
+      properties:
+        users:
+          type: array
+          items:
+            $ref: "#/components/schemas/DashboardUser"
+        pagination:
+          $ref: "#/components/schemas/PaginationInfo"
+
+    WorkerDetailsResponse:
+      type: object
+      additionalProperties: true
+
+    WorkerLogsResponse:
+      type: object
+      required:
+        - logs
+      properties:
+        logs:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+
+    WorkerUserStatus:
+      type: object
+      required:
+        - id
+        - username
+        - is_paused
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        is_paused:
+          type: boolean
+
+    WorkerUserListResponse:
+      type: object
+      required:
+        - users
+      properties:
+        users:
+          type: array
+          items:
+            $ref: "#/components/schemas/WorkerUserStatus"
+
+    WorkerAIConcurrencyStats:
+      type: object
+      properties:
+        active_requests:
+          type: integer
+        max_concurrent:
+          type: integer
+        queued_requests:
+          type: integer
+        total_requests:
+          type: integer
+
+    WorkerNotificationErrorsResponse:
+      type: object
+      required:
+        - errors
+        - pagination
+        - stats
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: "#/components/schemas/NotificationError"
+        pagination:
+          $ref: "#/components/schemas/PaginationInfo"
+        stats:
+          $ref: "#/components/schemas/NotificationErrorStats"
+
+    WorkerNotificationSentResponse:
+      type: object
+      required:
+        - notifications
+        - pagination
+        - stats
+      properties:
+        notifications:
+          type: array
+          items:
+            $ref: "#/components/schemas/SentNotification"
+        pagination:
+          $ref: "#/components/schemas/PaginationInfo"
+        stats:
+          $ref: "#/components/schemas/NotificationStats"
+
+    ChatBookmarksResponse:
+      type: object
+      required:
+        - messages
+        - total
+        - limit
+        - offset
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChatMessage"
+        query:
+          type: string
+          description: The search query that was used (if any)
+        total:
+          type: integer
+          description: Total number of bookmarked messages
+        limit:
+          type: integer
+          description: Number of messages returned
+        offset:
+          type: integer
+          description: Number of messages skipped
+
+    ConversationsListResponse:
+      type: object
+      required:
+        - conversations
+        - total
+        - limit
+        - offset
+      properties:
+        conversations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Conversation"
+        total:
+          type: integer
+          description: Total number of conversations
+        limit:
+          type: integer
+          description: Number of conversations returned
+        offset:
+          type: integer
+          description: Number of conversations skipped
+
+    ConversationSearchResponse:
+      allOf:
+        - $ref: "#/components/schemas/ConversationsListResponse"
+        - type: object
+          properties:
+            query:
+              type: string
+              description: The search query that was used
+
+    DailyDatesResponse:
+      type: object
+      required:
+        - dates
+      properties:
+        dates:
+          type: array
+          items:
+            type: string
+            format: date
+
+    DailyQuestionsResponse:
+      type: object
+      required:
+        - date
+        - questions
+      properties:
+        date:
+          type: string
+          format: date
+        questions:
+          type: array
+          items:
+            $ref: "#/components/schemas/DailyQuestionWithDetails"
+
+    AdminDailyQuestionsResponse:
+      type: object
+      required:
+        - questions
+      properties:
+        questions:
+          type: array
+          items:
+            $ref: "#/components/schemas/DailyQuestionWithDetails"
+
+    DailyQuestionHistoryResponse:
+      type: object
+      required:
+        - history
+      properties:
+        history:
+          type: array
+          items:
+            $ref: "#/components/schemas/DailyQuestionHistory"
+
+    WordOfDayHistoryResponse:
+      type: object
+      required:
+        - words
+        - count
+      properties:
+        words:
+          type: array
+          items:
+            $ref: "#/components/schemas/WordOfTheDayDisplay"
+        count:
+          type: integer
+          description: Number of words returned
+
+    DailyAnswerResponse:
+      allOf:
+        - $ref: "#/components/schemas/AnswerResponse"
+        - type: object
+          properties:
+            is_completed:
+              type: boolean
+              description: Whether the question is now completed
+
+    TTSStreamInitResponse:
+      type: object
+      required:
+        - stream_id
+      properties:
+        stream_id:
+          type: string
+        token:
+          type: string
+          nullable: true
+
+    HealthStatusResponse:
+      type: object
+      required:
+        - status
+        - service
+      properties:
+        status:
+          type: string
+          enum: ["ok"]
+          description: Health status of the service
+        service:
+          type: string
+          description: Service name
+
+    HealthErrorResponse:
+      type: object
+      required:
+        - status
+        - timestamp
+        - error
+      properties:
+        status:
+          type: string
+          enum: ["unhealthy"]
+          description: Health status of the service
+        timestamp:
+          type: string
+          format: date-time
+        error:
+          type: string
 
     GoogleOAuthLoginResponse:
       type: object

@@ -238,6 +238,10 @@ func (h *WordOfTheDayHandler) GetWordOfTheDayHistory(c *gin.Context) {
 		return
 	}
 
+	if words == nil {
+		words = make([]*models.WordOfTheDayDisplay, 0)
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"words": words,
 		"count": len(words),

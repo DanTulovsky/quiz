@@ -1029,6 +1029,12 @@ func (h *AdminHandler) GetQuestionsPaginated(c *gin.Context) {
 		return
 	}
 
+	stats, err := h.questionService.GetQuestionStats(c.Request.Context())
+	if err != nil {
+		h.logger.Warn(c.Request.Context(), "Failed to get question stats", map[string]interface{}{"error": err.Error()})
+		stats = map[string]interface{}{}
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"questions": func() []map[string]interface{} {
 			out := make([]map[string]interface{}, 0, len(questions))
@@ -1043,6 +1049,7 @@ func (h *AdminHandler) GetQuestionsPaginated(c *gin.Context) {
 			"total":       total,
 			"total_pages": int(math.Ceil(float64(total) / float64(pageSize))),
 		},
+		"stats": stats,
 	})
 }
 

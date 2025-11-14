@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"encoding/json"
+	"strings"
 	"time"
 
 	"quizapp/internal/api"
@@ -256,29 +257,49 @@ func convertQuestionToAPI(question *models.Question) api.Question {
 	if question.Content != nil {
 		content := &api.QuestionContent{}
 
-		if q, ok := question.Content["question"].(string); ok {
-			content.Question = q
-		}
-		if hint, ok := question.Content["hint"].(string); ok {
-			content.Hint = &hint
-		}
-		if passage, ok := question.Content["passage"].(string); ok {
-			content.Passage = &passage
-		}
-		if sentence, ok := question.Content["sentence"].(string); ok {
-			content.Sentence = &sentence
-		}
-		if opts, ok := question.Content["options"].([]interface{}); ok {
-			var options []string
-			for _, opt := range opts {
-				if o, ok := opt.(string); ok {
-					options = append(options, o)
+		nestedContent, _ := question.Content["content"].(map[string]interface{})
+
+		getString := func(key string) string {
+			if v, ok := question.Content[key].(string); ok && strings.TrimSpace(v) != "" {
+				return v
+			}
+			if nestedContent != nil {
+				if v, ok := nestedContent[key].(string); ok && strings.TrimSpace(v) != "" {
+					return v
 				}
 			}
-			if len(options) > 0 {
-				content.Options = options
-			}
+			return ""
 		}
+
+		if q := getString("question"); q != "" {
+			content.Question = q
+		}
+		if hint := getString("hint"); hint != "" {
+			content.Hint = &hint
+		}
+		if passage := getString("passage"); passage != "" {
+			content.Passage = &passage
+		}
+		if sentence := getString("sentence"); sentence != "" {
+			content.Sentence = &sentence
+		}
+
+		getOptions := func() []string {
+			if raw, ok := question.Content["options"]; ok {
+				return normalizeStringSlice(raw)
+			}
+			if nestedContent != nil {
+				if raw, ok := nestedContent["options"]; ok {
+					return normalizeStringSlice(raw)
+				}
+			}
+			return nil
+		}
+
+		if options := getOptions(); len(options) > 0 {
+			content.Options = options
+		}
+
 		apiQuestion.Content = content
 	}
 
@@ -344,6 +365,29 @@ func convertQuestionWithStatsToAPIMap(q *services.QuestionWithStats) map[string]
 	}
 
 	return m
+}
+
+func normalizeStringSlice(raw interface{}) []string {
+	switch v := raw.(type) {
+	case []string:
+		out := make([]string, 0, len(v))
+		for _, s := range v {
+			if strings.TrimSpace(s) != "" {
+				out = append(out, s)
+			}
+		}
+		return out
+	case []interface{}:
+		out := make([]string, 0, len(v))
+		for _, item := range v {
+			if s, ok := item.(string); ok && strings.TrimSpace(s) != "" {
+				out = append(out, s)
+			}
+		}
+		return out
+	default:
+		return nil
+	}
 }
 
 // Convert models.UserProgress to api.UserProgress

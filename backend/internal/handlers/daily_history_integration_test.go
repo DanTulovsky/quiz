@@ -82,7 +82,7 @@ func TestSubmitDailyAnswer_RecordsUserResponse(t *testing.T) {
 	req := httptest.NewRequest("POST", "/v1/auth/login", bytes.NewBuffer(body))
 	req.Header.Set("Content-Type", "application/json")
 	router.ServeHTTP(w, req)
-	require.Equal(t, http.StatusOK, w.Code)
+	require.Equalf(t, http.StatusOK, w.Code, "submit answer response body=%s", w.Body.String())
 	var sessionCookie *http.Cookie
 	for _, c := range w.Result().Cookies() {
 		if c.Name == config.SessionName {
@@ -115,7 +115,7 @@ func TestSubmitDailyAnswer_RecordsUserResponse(t *testing.T) {
 	req.AddCookie(sessionCookie)
 	req.Header.Set("Content-Type", "application/json")
 	router.ServeHTTP(w, req)
-	require.Equal(t, http.StatusOK, w.Code)
+	require.Equalf(t, http.StatusOK, w.Code, "submit daily answer failed body=%s", w.Body.String())
 
 	// Assert mapping row exists linking today's assignment to a user_responses row
 	var mapCount int

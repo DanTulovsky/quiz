@@ -587,12 +587,23 @@ func (h *DailyQuestionHandler) SubmitDailyQuestionAnswer(c *gin.Context) {
 
 	// Add completion status to response
 	responseWithCompletion := gin.H{
-		"user_answer_index":    response.UserAnswerIndex,
-		"user_answer":          response.UserAnswer,
-		"is_correct":           response.IsCorrect,
-		"correct_answer_index": response.CorrectAnswerIndex,
-		"explanation":          response.Explanation,
-		"is_completed":         true,
+		"is_completed": true,
+	}
+
+	if response.UserAnswerIndex != nil {
+		responseWithCompletion["user_answer_index"] = *response.UserAnswerIndex
+	}
+	if response.UserAnswer != nil {
+		responseWithCompletion["user_answer"] = *response.UserAnswer
+	}
+	if response.IsCorrect != nil {
+		responseWithCompletion["is_correct"] = *response.IsCorrect
+	}
+	if response.CorrectAnswerIndex != nil {
+		responseWithCompletion["correct_answer_index"] = *response.CorrectAnswerIndex
+	}
+	if response.Explanation != nil {
+		responseWithCompletion["explanation"] = *response.Explanation
 	}
 
 	c.JSON(http.StatusOK, responseWithCompletion)
