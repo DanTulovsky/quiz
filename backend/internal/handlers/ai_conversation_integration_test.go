@@ -839,8 +839,10 @@ func (suite *AIConversationIntegrationTestSuite) TestSearchConversations_NoResul
 	err = json.Unmarshal(w.Body.Bytes(), &response)
 	assert.NoError(suite.T(), err)
 
+	// Ensure conversations is an array, not null
+	assert.NotNil(suite.T(), response["conversations"], "conversations should not be null")
 	foundConversations, ok := response["conversations"].([]interface{})
-	assert.True(suite.T(), ok)
+	assert.True(suite.T(), ok, "conversations should be an array, not null")
 	assert.Len(suite.T(), foundConversations, 0)
 }
 
@@ -1059,6 +1061,30 @@ func (suite *AIConversationIntegrationTestSuite) TestGetBookmarkedMessages_Succe
 	// Verify the message content
 	firstMessage := messages[0].(map[string]interface{})
 	assert.NotEmpty(suite.T(), firstMessage["id"])
+}
+
+// TestGetBookmarkedMessages_NoResults tests retrieval when no bookmarks exist
+func (suite *AIConversationIntegrationTestSuite) TestGetBookmarkedMessages_NoResults() {
+	sessionCookie := suite.login()
+
+	// Get bookmarked messages when user has no bookmarks
+	req, _ := http.NewRequest("GET", "/v1/ai/bookmarks", nil)
+	req.Header.Set("Cookie", sessionCookie)
+
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, req)
+
+	assert.Equal(suite.T(), http.StatusOK, w.Code)
+
+	var response map[string]interface{}
+	err := json.Unmarshal(w.Body.Bytes(), &response)
+	assert.NoError(suite.T(), err)
+
+	// Ensure messages is an array, not null
+	assert.NotNil(suite.T(), response["messages"], "messages should not be null")
+	messages, ok := response["messages"].([]interface{})
+	assert.True(suite.T(), ok, "messages should be an array, not null")
+	assert.Len(suite.T(), messages, 0)
 }
 
 // TestGetBookmarkedMessages_Unauthorized tests accessing bookmarks without authentication

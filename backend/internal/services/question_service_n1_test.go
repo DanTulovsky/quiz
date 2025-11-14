@@ -225,10 +225,13 @@ func createTestQuestions(t *testing.T, service *QuestionService, userID, count i
 			Language:        "italian",
 			Level:           "A1",
 			DifficultyScore: 0.5,
-			Content:         map[string]interface{}{"question": fmt.Sprintf("Test question %d", i)},
-			CorrectAnswer:   0,
-			Explanation:     fmt.Sprintf("Explanation %d", i),
-			Status:          models.QuestionStatusActive,
+			Content: map[string]interface{}{
+				"question": fmt.Sprintf("Test question %d", i),
+				"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+			},
+			CorrectAnswer: 0,
+			Explanation:   fmt.Sprintf("Explanation %d", i),
+			Status:        models.QuestionStatusActive,
 		}
 
 		err := service.SaveQuestion(context.Background(), question)

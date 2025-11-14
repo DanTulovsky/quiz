@@ -257,6 +257,8 @@ export interface QuestionWithStats {
     correct: number;
     accuracy: number;
   };
+  is_invalid?: boolean;
+  conversion_error?: string;
 }
 
 export const useAllQuestions = (

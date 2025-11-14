@@ -3,15 +3,19 @@ package handlers
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"strings"
 	"time"
 
 	"quizapp/internal/api"
 	"quizapp/internal/models"
+	"quizapp/internal/observability"
 	"quizapp/internal/services"
 	contextutils "quizapp/internal/utils"
 
 	openapi_types "github.com/oapi-codegen/runtime/types"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 )
 
 // Helper functions for pointer conversion
@@ -216,7 +220,17 @@ func convertUserToAPIWithService(ctx context.Context, user *models.User, userSer
 }
 
 // Convert models.Question to api.Question
-func convertQuestionToAPI(question *models.Question) api.Question {
+func convertQuestionToAPI(ctx context.Context, question *models.Question) (api.Question, error) {
+	_, span := observability.TraceFunction(ctx, "handlers", "convert_question_to_api")
+	defer observability.FinishSpan(span, nil)
+
+	span.SetAttributes(
+		attribute.Int64("question.id", int64(question.ID)),
+		attribute.String("question.type", string(question.Type)),
+		attribute.String("question.language", question.Language),
+		attribute.String("question.level", question.Level),
+	)
+
 	apiQuestion := api.Question{
 		Id:              int64Ptr(question.ID),
 		DifficultyScore: float32Ptr(float32(question.DifficultyScore)),
@@ -257,8 +271,14 @@ func convertQuestionToAPI(question *models.Question) api.Question {
 	if question.Content != nil {
 		content := &api.QuestionContent{}
 
-		nestedContent, _ := question.Content["content"].(map[string]interface{})
+		questionText, options := contextutils.ExtractQuestionContent(question.Content)
 
+		if questionText != "" {
+			content.Question = questionText
+		}
+
+		// Extract other optional fields
+		nestedContent, _ := question.Content["content"].(map[string]interface{})
 		getString := func(key string) string {
 			if v, ok := question.Content[key].(string); ok && strings.TrimSpace(v) != "" {
 				return v
@@ -271,9 +291,6 @@ func convertQuestionToAPI(question *models.Question) api.Question {
 			return ""
 		}
 
-		if q := getString("question"); q != "" {
-			content.Question = q
-		}
 		if hint := getString("hint"); hint != "" {
 			content.Hint = &hint
 		}
@@ -284,23 +301,39 @@ func convertQuestionToAPI(question *models.Question) api.Question {
 			content.Sentence = &sentence
 		}
 
-		getOptions := func() []string {
-			if raw, ok := question.Content["options"]; ok {
-				return normalizeStringSlice(raw)
-			}
-			if nestedContent != nil {
-				if raw, ok := nestedContent["options"]; ok {
-					return normalizeStringSlice(raw)
-				}
-			}
-			return nil
-		}
-
-		if options := getOptions(); len(options) > 0 {
+		if len(options) > 0 {
 			content.Options = options
 		}
 
+		// Add tracing for content validation
+		span.SetAttributes(
+			attribute.Bool("content.present", true),
+			attribute.String("content.question", questionText),
+			attribute.Int("content.options.count", len(options)),
+			attribute.Bool("content.valid", questionText != "" && len(options) >= 4),
+		)
+
+		// Validate required fields using shared helper
+		if err := contextutils.ValidateQuestionContent(question.Content, question.ID); err != nil {
+			// Add event for invalid content
+			span.AddEvent("invalid_content_detected", trace.WithAttributes(
+				attribute.Bool("question_text_empty", questionText == ""),
+				attribute.Int("options_count", len(options)),
+				attribute.Bool("options_insufficient", len(options) < 4),
+			))
+
+			return apiQuestion, err
+		}
+
 		apiQuestion.Content = content
+	} else {
+		span.SetAttributes(
+			attribute.Bool("content.present", false),
+		)
+		return apiQuestion, contextutils.ErrorWithContextf(
+			"question %d has nil content",
+			question.ID,
+		)
 	}
 
 	// Add variety elements to the API response
@@ -326,16 +359,20 @@ func convertQuestionToAPI(question *models.Question) api.Question {
 		apiQuestion.TimeContext = &question.TimeContext
 	}
 
-	return apiQuestion
+	return apiQuestion, nil
 }
 
 // Convert services.QuestionWithStats to a JSON-compatible map using generated
 // api.Question for fields, and include any additional fields the frontend
 // expects (e.g., report_reasons) that are not present on the generated type.
-func convertQuestionWithStatsToAPIMap(q *services.QuestionWithStats) map[string]interface{} {
+func convertQuestionWithStatsToAPIMap(ctx context.Context, q *services.QuestionWithStats) (map[string]interface{}, error) {
 	apiQ := api.Question{}
 	if q != nil && q.Question != nil {
-		apiQ = convertQuestionToAPI(q.Question)
+		var err error
+		apiQ, err = convertQuestionToAPI(ctx, q.Question)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	// Attach stats
@@ -364,30 +401,7 @@ func convertQuestionWithStatsToAPIMap(q *services.QuestionWithStats) map[string]
 		m["report_reasons"] = q.ReportReasons
 	}
 
-	return m
-}
-
-func normalizeStringSlice(raw interface{}) []string {
-	switch v := raw.(type) {
-	case []string:
-		out := make([]string, 0, len(v))
-		for _, s := range v {
-			if strings.TrimSpace(s) != "" {
-				out = append(out, s)
-			}
-		}
-		return out
-	case []interface{}:
-		out := make([]string, 0, len(v))
-		for _, item := range v {
-			if s, ok := item.(string); ok && strings.TrimSpace(s) != "" {
-				out = append(out, s)
-			}
-		}
-		return out
-	default:
-		return nil
-	}
+	return m, nil
 }
 
 // Convert models.UserProgress to api.UserProgress
@@ -464,7 +478,7 @@ func convertUserProgressToAPI(ctx context.Context, progress *models.UserProgress
 }
 
 // Convert models.DailyQuestionAssignmentWithQuestion to api.DailyQuestionWithDetails
-func convertDailyAssignmentToAPI(ctx context.Context, assignment *models.DailyQuestionAssignmentWithQuestion, userID int, userLookup func(context.Context, int) (*models.User, error)) api.DailyQuestionWithDetails {
+func convertDailyAssignmentToAPI(ctx context.Context, assignment *models.DailyQuestionAssignmentWithQuestion, userID int, userLookup func(context.Context, int) (*models.User, error)) (api.DailyQuestionWithDetails, error) {
 	var completedAt *string
 	if assignment.CompletedAt.Valid {
 		if s, _, err := contextutils.FormatTimeInUserTimezone(ctx, userID, assignment.CompletedAt.Time, time.RFC3339, userLookup); err == nil && s != "" {
@@ -477,7 +491,11 @@ func convertDailyAssignmentToAPI(ctx context.Context, assignment *models.DailyQu
 
 	apiQuestion := api.Question{}
 	if assignment.Question != nil {
-		apiQuestion = convertQuestionToAPI(assignment.Question)
+		var err error
+		apiQuestion, err = convertQuestionToAPI(ctx, assignment.Question)
+		if err != nil {
+			return api.DailyQuestionWithDetails{}, err
+		}
 		// Override total_responses so UI 'Shown' reflects Daily-only impressions
 		if assignment.DailyShownCount > 0 {
 			apiQuestion.TotalResponses = &assignment.DailyShownCount
@@ -537,19 +555,67 @@ func convertDailyAssignmentToAPI(ctx context.Context, assignment *models.DailyQu
 		result.UserIncorrectCount = &ic
 	}
 
-	return result
+	return result, nil
 }
 
 // Convert slice of assignments
-func convertDailyAssignmentsToAPI(ctx context.Context, assignments []*models.DailyQuestionAssignmentWithQuestion, userID int, userLookup func(context.Context, int) (*models.User, error)) []api.DailyQuestionWithDetails {
+func convertDailyAssignmentsToAPI(ctx context.Context, assignments []*models.DailyQuestionAssignmentWithQuestion, userID int, userLookup func(context.Context, int) (*models.User, error)) ([]api.DailyQuestionWithDetails, error) {
+	_, span := observability.TraceFunction(ctx, "handlers", "convert_daily_assignments_to_api")
+	defer observability.FinishSpan(span, nil)
+
+	span.SetAttributes(
+		attribute.Int("assignments.count", len(assignments)),
+	)
+
 	if len(assignments) == 0 {
-		return []api.DailyQuestionWithDetails{}
+		return []api.DailyQuestionWithDetails{}, nil
 	}
 	apiAssignments := make([]api.DailyQuestionWithDetails, len(assignments))
+	invalidQuestions := []int64{}
+	invalidQuestionErrors := []string{}
+
 	for i, a := range assignments {
-		apiAssignments[i] = convertDailyAssignmentToAPI(ctx, a, userID, userLookup)
+		apiAssignment, err := convertDailyAssignmentToAPI(ctx, a, userID, userLookup)
+		if err != nil {
+			// Add detailed tracing for invalid questions
+			questionID := int64(0)
+			if a.Question != nil {
+				questionID = int64(a.Question.ID)
+			}
+			invalidQuestions = append(invalidQuestions, questionID)
+			invalidQuestionErrors = append(invalidQuestionErrors, fmt.Sprintf("question %d: %s", questionID, err.Error()))
+
+			span.AddEvent("invalid_question_detected", trace.WithAttributes(
+				attribute.Int64("question.id", questionID),
+				attribute.Int("assignment.index", i),
+				attribute.Int64("assignment.id", int64(a.ID)),
+				attribute.String("error", err.Error()),
+			))
+			continue
+		}
+
+		apiAssignments[i] = apiAssignment
 	}
-	return apiAssignments
+
+	// If any questions are invalid, return an error with detailed information
+	if len(invalidQuestions) > 0 {
+		span.SetAttributes(
+			attribute.Int("invalid_questions.count", len(invalidQuestions)),
+		)
+		errorDetails := strings.Join(invalidQuestionErrors, "; ")
+		return nil, contextutils.ErrorWithContextf(
+			"found %d question(s) with invalid content. Question IDs: %v. Details: %s",
+			len(invalidQuestions),
+			invalidQuestions,
+			errorDetails,
+		)
+	}
+
+	span.SetAttributes(
+		attribute.Int("valid_questions.count", len(apiAssignments)),
+	)
+
+	return apiAssignments, nil
 }
 
 // Convert models.DailyProgress to api.DailyProgress

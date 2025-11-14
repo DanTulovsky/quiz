@@ -584,7 +584,7 @@ func (s *ConversationService) SearchConversations(ctx context.Context, userID ui
 	}
 	defer func() { _ = rows.Close() }()
 
-	var conversations []api.Conversation
+	conversations := []api.Conversation{}
 	for rows.Next() {
 		var conv api.Conversation
 		var firstMessagePtr, lastMessagePtr *string
@@ -672,7 +672,7 @@ func (s *ConversationService) GetBookmarkedMessages(ctx context.Context, userID 
 	}
 	defer func() { _ = rows.Close() }()
 
-	var messages []api.ChatMessage
+	messages := []api.ChatMessage{}
 	for rows.Next() {
 		var msg api.ChatMessage
 		var questionIDPtr *int

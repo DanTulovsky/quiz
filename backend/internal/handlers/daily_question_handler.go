@@ -185,8 +185,23 @@ func (h *DailyQuestionHandler) GetDailyQuestions(c *gin.Context) {
 		}
 	}
 
-	// Convert to API types using shared converter
-	apiQuestions := convertDailyAssignmentsToAPI(ctx, questions, userID, h.userService.GetUserByID)
+	// Convert to API types using shared converter (validates content and returns error if invalid)
+	apiQuestions, err := convertDailyAssignmentsToAPI(ctx, questions, userID, h.userService.GetUserByID)
+	if err != nil {
+		h.logger.Error(ctx, "Failed to convert daily assignments to API due to invalid content", err, map[string]interface{}{
+			"user_id":  userID,
+			"date":     dateStr,
+			"timezone": timezone,
+		})
+		HandleAppError(c, contextutils.WrapError(err, "daily questions contain invalid content"))
+		return
+	}
+
+	// Add span attributes for successful response
+	span.SetAttributes(
+		attribute.Int("questions.count", len(apiQuestions)),
+		attribute.Int("valid_questions.count", len(apiQuestions)),
+	)
 
 	c.JSON(http.StatusOK, gin.H{
 		"questions": apiQuestions,

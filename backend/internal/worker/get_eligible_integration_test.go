@@ -4,6 +4,7 @@ package worker
 
 import (
 	"context"
+	"fmt"
 	"testing"
 	"time"
 
@@ -47,7 +48,18 @@ func TestGetEligibleQuestionCount_Integration(t *testing.T) {
 	// Create 3 questions and assign to user
 	qs := []*models.Question{}
 	for i := 0; i < 3; i++ {
-		q := &models.Question{Type: models.Vocabulary, Language: "italian", Level: "A1", DifficultyScore: 1.0, Content: map[string]interface{}{"q": i}, CorrectAnswer: 0, Status: models.QuestionStatusActive}
+		q := &models.Question{
+			Type:            models.Vocabulary,
+			Language:        "italian",
+			Level:           "A1",
+			DifficultyScore: 1.0,
+			Content: map[string]interface{}{
+				"question": fmt.Sprintf("Test question %d", i),
+				"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+			},
+			CorrectAnswer: 0,
+			Status:        models.QuestionStatusActive,
+		}
 		require.NoError(t, questionService.SaveQuestion(context.Background(), q))
 		qs = append(qs, q)
 		require.NoError(t, questionService.AssignQuestionToUser(context.Background(), q.ID, user.ID))

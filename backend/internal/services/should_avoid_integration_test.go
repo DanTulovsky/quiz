@@ -41,7 +41,7 @@ func TestShouldAvoidQuestion_WithRecentCorrectResponse(t *testing.T) {
 		Language:        "italian",
 		Level:           "A1",
 		DifficultyScore: 1.0,
-		Content:         map[string]interface{}{"question": "Test?", "options": []string{"A", "B"}},
+		Content:         map[string]interface{}{"question": "Test?", "options": []string{"A", "B", "C", "D"}},
 		CorrectAnswer:   0,
 		Status:          models.QuestionStatusActive,
 	}
@@ -84,7 +84,7 @@ func TestShouldAvoidQuestion_WithOldCorrectResponse(t *testing.T) {
 		Language:        "italian",
 		Level:           "A1",
 		DifficultyScore: 1.0,
-		Content:         map[string]interface{}{"question": "Test?", "options": []string{"A", "B"}},
+		Content:         map[string]interface{}{"question": "Test?", "options": []string{"A", "B", "C", "D"}},
 		CorrectAnswer:   0,
 		Status:          models.QuestionStatusActive,
 	}

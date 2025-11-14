@@ -1037,49 +1037,123 @@ const DataExplorerPage: React.FC = () => {
               {questions
                 .filter(question => question?.id)
                 .map((question: QuestionWithStats) => {
+                  const isInvalid = question.is_invalid === true;
                   return (
-                    <Table.Tr key={question.id}>
-                      <Table.Td>{question.id}</Table.Td>
+                    <Table.Tr
+                      key={question.id}
+                      style={{
+                        backgroundColor: isInvalid
+                          ? 'var(--mantine-color-red-0)'
+                          : undefined,
+                      }}
+                    >
                       <Table.Td>
-                        <Badge
-                          color={question.is_reported ? 'red' : 'green'}
-                          variant='light'
-                          size='sm'
-                        >
-                          {question.type}
-                        </Badge>
+                        <Group gap='xs' align='center'>
+                          {question.id}
+                          {isInvalid && (
+                            <Tooltip
+                              label={
+                                question.conversion_error || 'Invalid question'
+                              }
+                              withArrow
+                            >
+                              <ThemeIcon
+                                size='sm'
+                                color='red'
+                                variant='light'
+                                radius='xl'
+                              >
+                                <IconAlertTriangle size={14} />
+                              </ThemeIcon>
+                            </Tooltip>
+                          )}
+                        </Group>
+                      </Table.Td>
+                      <Table.Td>
+                        <Group gap='xs'>
+                          <Badge
+                            color={
+                              isInvalid
+                                ? 'red'
+                                : question.is_reported
+                                  ? 'red'
+                                  : 'green'
+                            }
+                            variant='light'
+                            size='sm'
+                          >
+                            {question.type || 'N/A'}
+                          </Badge>
+                          {isInvalid && (
+                            <Badge color='red' variant='filled' size='sm'>
+                              Invalid
+                            </Badge>
+                          )}
+                        </Group>
                       </Table.Td>
                       <Table.Td>
                         {formatDateCreated(question.created_at)}
                       </Table.Td>
                       <Table.Td>
-                        <Text size='sm' style={{ maxWidth: 200 }}>
-                          {question.content.question?.substring(0, 60) ||
-                            question.content.sentence?.substring(0, 60) ||
-                            'No text available'}
-                          {((question.content.question?.length || 0) > 60 ||
-                            (question.content.sentence?.length || 0) > 60) &&
-                            '...'}
-                        </Text>
+                        {isInvalid ? (
+                          <Alert
+                            icon={<IconAlertTriangle size={16} />}
+                            title='Invalid Content'
+                            color='red'
+                            variant='light'
+                            size='sm'
+                            styles={{
+                              root: { padding: '4px 8px' },
+                              title: { fontSize: '12px', marginBottom: '2px' },
+                              message: { fontSize: '11px' },
+                            }}
+                          >
+                            <Text size='xs' lineClamp={2}>
+                              {question.conversion_error ||
+                                'Question content is invalid'}
+                            </Text>
+                          </Alert>
+                        ) : (
+                          <Text size='sm' style={{ maxWidth: 200 }}>
+                            {question.content?.question?.substring(0, 60) ||
+                              question.content?.sentence?.substring(0, 60) ||
+                              'No text available'}
+                            {((question.content?.question?.length || 0) > 60 ||
+                              (question.content?.sentence?.length || 0) > 60) &&
+                              '...'}
+                          </Text>
+                        )}
                       </Table.Td>
                       <Table.Td>{question.language || 'N/A'}</Table.Td>
                       <Table.Td>{question.level || 'N/A'}</Table.Td>
                       <Table.Td>
                         <Badge
                           color={
-                            question.status === 'reported' ? 'red' : 'green'
+                            isInvalid
+                              ? 'red'
+                              : question.status === 'reported'
+                                ? 'red'
+                                : 'green'
                           }
                           variant='light'
                           size='sm'
                         >
-                          {question.status === 'reported'
-                            ? 'Reported'
-                            : 'Active'}
+                          {isInvalid
+                            ? 'Invalid'
+                            : question.status === 'reported'
+                              ? 'Reported'
+                              : 'Active'}
                         </Badge>
                       </Table.Td>
 
                       <Table.Td>
-                        <QuestionUserCount question={question} />
+                        {isInvalid ? (
+                          <Text size='xs' c='dimmed'>
+                            N/A
+                          </Text>
+                        ) : (
+                          <QuestionUserCount question={question} />
+                        )}
                       </Table.Td>
                       <Table.Td>
                         <Group gap='xs'>
@@ -1091,6 +1165,7 @@ const DataExplorerPage: React.FC = () => {
                               setSelectedQuestion(question);
                               setEditModalOpen(true);
                             }}
+                            disabled={isInvalid}
                           >
                             Details
                           </Button>
@@ -1308,11 +1383,35 @@ const DataExplorerPage: React.FC = () => {
         size='xl'
       >
         {selectedQuestion && (
-          <QuestionEditForm
-            question={selectedQuestion}
-            onSave={data => handleUpdateQuestion(selectedQuestion.id, data)}
-            onCancel={() => setEditModalOpen(false)}
-          />
+          <>
+            {selectedQuestion.is_invalid && (
+              <Alert
+                icon={<IconAlertTriangle size={16} />}
+                title='Invalid Question'
+                color='red'
+                mb='md'
+              >
+                <Text size='sm' mb='xs' fw={500}>
+                  This question has invalid content and cannot be edited.
+                </Text>
+                <Text size='xs' c='dimmed'>
+                  {selectedQuestion.conversion_error ||
+                    'Question content is invalid'}
+                </Text>
+              </Alert>
+            )}
+            {selectedQuestion.is_invalid ? (
+              <Group justify='flex-end'>
+                <Button onClick={() => setEditModalOpen(false)}>Close</Button>
+              </Group>
+            ) : (
+              <QuestionEditForm
+                question={selectedQuestion}
+                onSave={data => handleUpdateQuestion(selectedQuestion.id, data)}
+                onCancel={() => setEditModalOpen(false)}
+              />
+            )}
+          </>
         )}
       </Modal>
       {/* AI Fix Modal */}

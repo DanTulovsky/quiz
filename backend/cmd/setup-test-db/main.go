@@ -684,6 +684,11 @@ func loadAndCreateQuestions(ctx context.Context, filePath string, questionServic
 		// Set the created time since it's not in YAML
 		question.CreatedAt = time.Now()
 
+		// Validate question content before saving (SaveQuestion also validates, but this gives better error context)
+		if err := contextutils.ValidateQuestionContent(question.Content, i+1); err != nil {
+			return nil, contextutils.WrapErrorf(err, "question at index %d (will be ID %d) has invalid content", i, i+1)
+		}
+
 		// Get the users this question should be assigned to
 		questionUsers := question.Users
 		var assignedUserIDs []int
@@ -708,7 +713,7 @@ func loadAndCreateQuestions(ctx context.Context, filePath string, questionServic
 		}
 
 		if err := questionService.SaveQuestion(ctx, &question); err != nil {
-			return nil, contextutils.WrapErrorf(err, "failed to save question %d", i)
+			return nil, contextutils.WrapErrorf(err, "failed to save question at index %d (will be ID %d)", i, i+1)
 		}
 
 		for _, userID := range assignedUserIDs {

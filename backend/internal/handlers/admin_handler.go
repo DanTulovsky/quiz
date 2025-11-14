@@ -52,6 +52,66 @@ func NewAdminHandlerWithLogger(userService services.UserServiceInterface, questi
 	}
 }
 
+// buildInvalidQuestionMap creates a map representation of an invalid question for admin display
+func buildInvalidQuestionMap(q *services.QuestionWithStats, conversionErr error) map[string]interface{} {
+	invalidQuestion := map[string]interface{}{
+		"id": func() *int64 {
+			if q != nil && q.Question != nil {
+				id := int64(q.ID)
+				return &id
+			}
+			return nil
+		}(),
+		"language": func() *string {
+			if q != nil && q.Question != nil {
+				return &q.Language
+			}
+			return nil
+		}(),
+		"level": func() *string {
+			if q != nil && q.Question != nil {
+				return &q.Level
+			}
+			return nil
+		}(),
+		"type": func() *string {
+			if q != nil && q.Question != nil {
+				t := string(q.Type)
+				return &t
+			}
+			return nil
+		}(),
+		"status": func() *string {
+			if q != nil && q.Question != nil && q.Status != "" {
+				s := string(q.Status)
+				return &s
+			}
+			return nil
+		}(),
+		"conversion_error": conversionErr.Error(),
+		"is_invalid":       true,
+	}
+	// Add created_at if available
+	if q != nil && q.Question != nil && !q.CreatedAt.IsZero() {
+		createdAt := q.CreatedAt.Format(time.RFC3339)
+		invalidQuestion["created_at"] = &createdAt
+	}
+	// Add stats if available
+	if q != nil {
+		invalidQuestion["correct_count"] = q.CorrectCount
+		invalidQuestion["incorrect_count"] = q.IncorrectCount
+		invalidQuestion["total_responses"] = q.TotalResponses
+		invalidQuestion["user_count"] = q.UserCount
+		if q.Reporters != "" {
+			invalidQuestion["reporters"] = q.Reporters
+		}
+		if q.ReportReasons != "" {
+			invalidQuestion["report_reasons"] = q.ReportReasons
+		}
+	}
+	return invalidQuestion
+}
+
 // GetBackendAdminData returns the backend administration data as JSON
 func (h *AdminHandler) GetBackendAdminData(c *gin.Context) {
 	ctx, span := observability.TraceHandlerFunction(c.Request.Context(), "get_backend_admin_data")
@@ -331,6 +391,22 @@ func (h *AdminHandler) UpdateQuestion(c *gin.Context) {
 	// Ensure options is not nil (convert null -> empty slice)
 	if opts, exists := content["options"]; !exists || opts == nil {
 		content["options"] = []string{}
+	}
+
+	// Validate question content before updating (UpdateQuestion also validates, but this gives better error context)
+	if err := contextutils.ValidateQuestionContent(content, questionID); err != nil {
+		h.logger.Warn(c.Request.Context(), "Invalid question content in update request", map[string]interface{}{
+			"question_id": questionID,
+			"error":       err.Error(),
+		})
+		HandleAppError(c, contextutils.NewAppErrorWithCause(
+			contextutils.ErrorCodeInvalidInput,
+			contextutils.SeverityWarn,
+			"Invalid question content",
+			"",
+			err,
+		))
+		return
 	}
 
 	if err := h.questionService.UpdateQuestion(c.Request.Context(), questionID, content, req.CorrectAnswer, req.Explanation); err != nil {
@@ -1039,7 +1115,21 @@ func (h *AdminHandler) GetQuestionsPaginated(c *gin.Context) {
 		"questions": func() []map[string]interface{} {
 			out := make([]map[string]interface{}, 0, len(questions))
 			for _, q := range questions {
-				out = append(out, convertQuestionWithStatsToAPIMap(q))
+				m, err := convertQuestionWithStatsToAPIMap(c.Request.Context(), q)
+				if err != nil {
+					h.logger.Error(c.Request.Context(), "Failed to convert question to API", err, map[string]interface{}{
+						"question_id": func() int {
+							if q != nil && q.Question != nil {
+								return int(q.ID)
+							}
+							return 0
+						}(),
+					})
+					// Include invalid questions with error indicator for admin visibility
+					out = append(out, buildInvalidQuestionMap(q, err))
+					continue
+				}
+				out = append(out, m)
 			}
 			return out
 		}(),
@@ -1109,7 +1199,21 @@ func (h *AdminHandler) GetAllQuestions(c *gin.Context) {
 		"questions": func() []map[string]interface{} {
 			out := make([]map[string]interface{}, 0, len(questions))
 			for _, q := range questions {
-				out = append(out, convertQuestionWithStatsToAPIMap(q))
+				m, err := convertQuestionWithStatsToAPIMap(c.Request.Context(), q)
+				if err != nil {
+					h.logger.Error(c.Request.Context(), "Failed to convert question to API", err, map[string]interface{}{
+						"question_id": func() int {
+							if q != nil && q.Question != nil {
+								return int(q.ID)
+							}
+							return 0
+						}(),
+					})
+					// Include invalid questions with error indicator for admin visibility
+					out = append(out, buildInvalidQuestionMap(q, err))
+					continue
+				}
+				out = append(out, m)
 			}
 			return out
 		}(),
@@ -1164,7 +1268,21 @@ func (h *AdminHandler) GetReportedQuestionsPaginated(c *gin.Context) {
 		"questions": func() []map[string]interface{} {
 			out := make([]map[string]interface{}, 0, len(questions))
 			for _, q := range questions {
-				out = append(out, convertQuestionWithStatsToAPIMap(q))
+				m, err := convertQuestionWithStatsToAPIMap(c.Request.Context(), q)
+				if err != nil {
+					h.logger.Error(c.Request.Context(), "Failed to convert question to API", err, map[string]interface{}{
+						"question_id": func() int {
+							if q != nil && q.Question != nil {
+								return int(q.ID)
+							}
+							return 0
+						}(),
+					})
+					// Include invalid questions with error indicator for admin visibility
+					out = append(out, buildInvalidQuestionMap(q, err))
+					continue
+				}
+				out = append(out, m)
 			}
 			return out
 		}(),

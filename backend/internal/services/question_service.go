@@ -551,14 +551,46 @@ func (s *QuestionService) SaveQuestion(ctx context.Context, question *models.Que
 		}
 		span.End()
 	}()
-	var contentJSON []byte
-	contentJSONStr, err := question.MarshalContentToJSON()
-	if err != nil {
-		return contextutils.WrapError(err, "failed to marshal question content")
+
+	// Validate question content before saving using shared validation helper
+	if err := contextutils.ValidateQuestionContent(question.Content, question.ID); err != nil {
+		return err
 	}
-	contentJSON = []byte(contentJSONStr)
-	if err != nil {
-		return contextutils.WrapError(err, "failed to marshal question content")
+
+	// Make a deep copy of content before marshaling to avoid modifying the original
+	// MarshalContentToJSON modifies the content map in place (removes correct_answer, explanation)
+	var contentCopy map[string]interface{}
+	if question.Content != nil {
+		contentCopy = make(map[string]interface{})
+		for k, v := range question.Content {
+			// Deep copy slices to avoid sharing references
+			if slice, ok := v.([]interface{}); ok {
+				sliceCopy := make([]interface{}, len(slice))
+				copy(sliceCopy, slice)
+				contentCopy[k] = sliceCopy
+			} else if slice, ok := v.([]string); ok {
+				sliceCopy := make([]string, len(slice))
+				copy(sliceCopy, slice)
+				contentCopy[k] = sliceCopy
+			} else {
+				contentCopy[k] = v
+			}
+		}
+	}
+
+	var contentJSON []byte
+	if contentCopy != nil {
+		// Temporarily set Content to the copy for marshaling
+		originalContent := question.Content
+		question.Content = contentCopy
+		contentJSONStr, err := question.MarshalContentToJSON()
+		question.Content = originalContent // Restore original
+		if err != nil {
+			return contextutils.WrapError(err, "failed to marshal question content")
+		}
+		contentJSON = []byte(contentJSONStr)
+	} else {
+		contentJSON = []byte("{}")
 	}
 
 	if question.Status == "" {
@@ -866,17 +898,22 @@ func (s *QuestionService) UpdateQuestion(ctx context.Context, questionID int, co
 		}
 		span.End()
 	}()
+
+	// Validate question content before updating using shared validation helper
+	if err := contextutils.ValidateQuestionContent(content, questionID); err != nil {
+		return err
+	}
+
 	var contentJSON []byte
 	// Marshal provided content map via a temporary Question instance to reuse method
+	// Note: MarshalContentToJSON modifies the content map in place, but since this is a request
+	// payload that won't be reused, that's acceptable here
 	tempQ := &models.Question{Content: content}
 	contentJSONStr, err := tempQ.MarshalContentToJSON()
 	if err != nil {
 		return contextutils.WrapError(err, "failed to marshal content JSON")
 	}
 	contentJSON = []byte(contentJSONStr)
-	if err != nil {
-		return contextutils.WrapError(err, "failed to marshal content JSON")
-	}
 
 	query := `UPDATE questions SET content = $1, correct_answer = $2, explanation = $3 WHERE id = $4`
 	var result sql.Result

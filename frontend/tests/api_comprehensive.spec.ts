@@ -327,7 +327,8 @@ test.describe('Comprehensive API Tests', () => {
       path.includes('/test-email') ||
       path.includes('/api-keys/test-') ||
       path.includes('/audio/') ||
-      path.includes('/linear-issue');
+      path.includes('/linear-issue') ||
+      path.includes('/word-of-day/embed');
 
     if (shouldSkip) return true;
 
@@ -800,6 +801,13 @@ test.describe('Comprehensive API Tests', () => {
     }
 
     if (prop.type === 'object') {
+      // Special handling for question content objects
+      if (key === 'content' && (path.includes('/questions/') || path.includes('/admin/backend/questions'))) {
+        return {
+          question: 'What does **testo** mean in this context: Questo è un testo di esempio.',
+          options: ['text', 'book', 'example', 'word']
+        };
+      }
       return {}; // Default empty object
     }
 

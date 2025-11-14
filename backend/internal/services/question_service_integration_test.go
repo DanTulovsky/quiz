@@ -37,10 +37,13 @@ func TestQuestionService_SaveQuestion_Integration(t *testing.T) {
 		Language:        "italian",
 		Level:           "A1",
 		DifficultyScore: 0.5,
-		Content:         map[string]interface{}{"question": "Test question"},
-		CorrectAnswer:   0, // Index for first option
-		Explanation:     "Test explanation",
-		Status:          models.QuestionStatusActive,
+		Content: map[string]interface{}{
+			"question": "Test question",
+			"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+		},
+		CorrectAnswer: 0, // Index for first option
+		Explanation:   "Test explanation",
+		Status:        models.QuestionStatusActive,
 	}
 
 	err = service.SaveQuestion(context.Background(), question)
@@ -71,10 +74,13 @@ func TestQuestionService_SaveQuestionWithVarietyElements_Integration(t *testing.
 		Language:        "italian",
 		Level:           "A1",
 		DifficultyScore: 0.5,
-		Content:         map[string]interface{}{"question": "Test question with variety"},
-		CorrectAnswer:   0,
-		Explanation:     "Test explanation",
-		Status:          models.QuestionStatusActive,
+		Content: map[string]interface{}{
+			"question": "Test question with variety",
+			"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+		},
+		CorrectAnswer: 0,
+		Explanation:   "Test explanation",
+		Status:        models.QuestionStatusActive,
 		// Variety elements
 		TopicCategory:      "daily_life",
 		GrammarFocus:       "present_simple",
@@ -126,10 +132,13 @@ func TestQuestionService_SaveQuestionWithPartialVarietyElements_Integration(t *t
 		Language:        "italian",
 		Level:           "B1",
 		DifficultyScore: 0.7,
-		Content:         map[string]interface{}{"sentence": "Roma è la _____ d'Italia."},
-		CorrectAnswer:   0,
-		Explanation:     "Roma è la capitale d'Italia.",
-		Status:          models.QuestionStatusActive,
+		Content: map[string]interface{}{
+			"sentence": "Roma è la _____ d'Italia.",
+			"options":  []string{"capitale", "città", "paese", "regione"},
+		},
+		CorrectAnswer: 0,
+		Explanation:   "Roma è la capitale d'Italia.",
+		Status:        models.QuestionStatusActive,
 		// Only some variety elements - others should remain empty/null
 		TopicCategory: "geography",
 		GrammarFocus:  "verb_essere",
@@ -179,10 +188,13 @@ func TestQuestionService_GetQuestionByID_Integration(t *testing.T) {
 		Language:        "italian",
 		Level:           "B1",
 		DifficultyScore: 0.7,
-		Content:         map[string]interface{}{"sentence": "Roma è la _____ d'Italia."},
-		CorrectAnswer:   0, // Placeholder index for "capitale"
-		Explanation:     "Roma è la capitale d'Italia.",
-		Status:          models.QuestionStatusActive,
+		Content: map[string]interface{}{
+			"sentence": "Roma è la _____ d'Italia.",
+			"options":  []string{"capitale", "città", "paese", "regione"},
+		},
+		CorrectAnswer: 0, // Placeholder index for "capitale"
+		Explanation:   "Roma è la capitale d'Italia.",
+		Status:        models.QuestionStatusActive,
 	}
 
 	err = service.SaveQuestion(context.Background(), question)
@@ -220,11 +232,14 @@ func TestQuestionService_GetQuestionWithStats_Integration(t *testing.T) {
 
 	// Save a question with variety elements
 	question := &models.Question{
-		Type:             models.Vocabulary,
-		Language:         "italian",
-		Level:            "A2",
-		DifficultyScore:  0.6,
-		Content:          map[string]interface{}{"question": "Test question with stats"},
+		Type:            models.Vocabulary,
+		Language:        "italian",
+		Level:           "A2",
+		DifficultyScore: 0.6,
+		Content: map[string]interface{}{
+			"question": "Test question with stats",
+			"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+		},
 		CorrectAnswer:    1,
 		Explanation:      "Test explanation",
 		Status:           models.QuestionStatusActive,
@@ -286,27 +301,36 @@ func TestQuestionService_GetQuestionsByFilter_Integration(t *testing.T) {
 			Language:        "italian",
 			Level:           "A1",
 			DifficultyScore: 0.3,
-			Content:         map[string]interface{}{"question": "Question 1"},
-			CorrectAnswer:   0, // Index for first option
-			Status:          models.QuestionStatusActive,
+			Content: map[string]interface{}{
+				"question": "Question 1",
+				"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+			},
+			CorrectAnswer: 0, // Index for first option
+			Status:        models.QuestionStatusActive,
 		},
 		{
 			Type:            models.FillInBlank,
 			Language:        "italian",
 			Level:           "A1",
 			DifficultyScore: 0.4,
-			Content:         map[string]interface{}{"sentence": "Test sentence"},
-			CorrectAnswer:   0, // Placeholder index for "test"
-			Status:          models.QuestionStatusActive,
+			Content: map[string]interface{}{
+				"sentence": "Test sentence",
+				"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+			},
+			CorrectAnswer: 0, // Placeholder index for "test"
+			Status:        models.QuestionStatusActive,
 		},
 		{
 			Type:            models.Vocabulary,
 			Language:        "italian",
 			Level:           "A2",
 			DifficultyScore: 0.5,
-			Content:         map[string]interface{}{"question": "Question 3"},
-			CorrectAnswer:   1, // Index for second option
-			Status:          models.QuestionStatusActive,
+			Content: map[string]interface{}{
+				"question": "Question 3",
+				"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+			},
+			CorrectAnswer: 1, // Index for second option
+			Status:        models.QuestionStatusActive,
 		},
 	}
 
@@ -374,7 +398,10 @@ func TestQuestionService_GetNextQuestion_Integration(t *testing.T) {
 			Type:     models.Vocabulary,
 			Language: "italian",
 			Level:    "A1",
-			Content:  map[string]interface{}{"question": fmt.Sprintf("Q%d", i)},
+			Content: map[string]interface{}{
+				"question": fmt.Sprintf("Q%d", i),
+				"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+			},
 		}
 		err = service.SaveQuestion(context.Background(), q)
 		require.NoError(t, err)
@@ -427,10 +454,13 @@ func TestQuestionService_GetRecentQuestionContentsForUser_Integration(t *testing
 
 	// Create a question
 	question := &models.Question{
-		Type:          models.Vocabulary,
-		Language:      "italian",
-		Level:         "A1",
-		Content:       map[string]interface{}{"question": "Recent question text"},
+		Type:     models.Vocabulary,
+		Language: "italian",
+		Level:    "A1",
+		Content: map[string]interface{}{
+			"question": "Recent question text",
+			"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+		},
 		CorrectAnswer: 0, // Index for first option
 		Status:        models.QuestionStatusActive,
 	}
@@ -474,10 +504,13 @@ func TestQuestionService_ReportQuestion_Integration(t *testing.T) {
 		Language:        "italian",
 		Level:           "A1",
 		DifficultyScore: 0.5,
-		Content:         map[string]interface{}{"question": "Test question"},
-		CorrectAnswer:   0,
-		Explanation:     "Test explanation",
-		Status:          models.QuestionStatusActive,
+		Content: map[string]interface{}{
+			"question": "Test question",
+			"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+		},
+		CorrectAnswer: 0,
+		Explanation:   "Test explanation",
+		Status:        models.QuestionStatusActive,
 	}
 	err = service.SaveQuestion(context.Background(), question)
 	require.NoError(t, err)
@@ -523,10 +556,13 @@ func TestQuestionService_GetReportedQuestions_Integration(t *testing.T) {
 		Language:        "italian",
 		Level:           "A1",
 		DifficultyScore: 0.5,
-		Content:         map[string]interface{}{"question": "Question 1"},
-		CorrectAnswer:   0,
-		Explanation:     "Explanation 1",
-		Status:          models.QuestionStatusActive,
+		Content: map[string]interface{}{
+			"question": "Question 1",
+			"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+		},
+		CorrectAnswer: 0,
+		Explanation:   "Explanation 1",
+		Status:        models.QuestionStatusActive,
 	}
 	err = service.SaveQuestion(context.Background(), question1)
 	require.NoError(t, err)
@@ -538,10 +574,13 @@ func TestQuestionService_GetReportedQuestions_Integration(t *testing.T) {
 		Language:        "italian",
 		Level:           "B1",
 		DifficultyScore: 0.7,
-		Content:         map[string]interface{}{"sentence": "Test sentence with ____"},
-		CorrectAnswer:   0,
-		Explanation:     "Explanation 2",
-		Status:          models.QuestionStatusActive,
+		Content: map[string]interface{}{
+			"sentence": "Test sentence with ____",
+			"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+		},
+		CorrectAnswer: 0,
+		Explanation:   "Explanation 2",
+		Status:        models.QuestionStatusActive,
 	}
 	err = service.SaveQuestion(context.Background(), question2)
 	require.NoError(t, err)
@@ -597,10 +636,13 @@ func TestQuestionService_MarkQuestionAsFixed_Integration(t *testing.T) {
 		Language:        "italian",
 		Level:           "A1",
 		DifficultyScore: 0.5,
-		Content:         map[string]interface{}{"question": "Test question"},
-		CorrectAnswer:   0,
-		Explanation:     "Test explanation",
-		Status:          models.QuestionStatusActive,
+		Content: map[string]interface{}{
+			"question": "Test question",
+			"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+		},
+		CorrectAnswer: 0,
+		Explanation:   "Test explanation",
+		Status:        models.QuestionStatusActive,
 	}
 	err = service.SaveQuestion(context.Background(), question)
 	require.NoError(t, err)
@@ -647,10 +689,13 @@ func TestQuestionService_UpdateQuestion_Integration(t *testing.T) {
 		Language:        "italian",
 		Level:           "A1",
 		DifficultyScore: 0.5,
-		Content:         map[string]interface{}{"question": "Original question"},
-		CorrectAnswer:   0,
-		Explanation:     "Original explanation",
-		Status:          models.QuestionStatusActive,
+		Content: map[string]interface{}{
+			"question": "Original question",
+			"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+		},
+		CorrectAnswer: 0,
+		Explanation:   "Original explanation",
+		Status:        models.QuestionStatusActive,
 	}
 	err = service.SaveQuestion(context.Background(), question)
 	require.NoError(t, err)
@@ -695,10 +740,13 @@ func TestQuestionService_DeleteQuestion_Integration(t *testing.T) {
 		Language:        "italian",
 		Level:           "A1",
 		DifficultyScore: 0.5,
-		Content:         map[string]interface{}{"question": "Question to delete"},
-		CorrectAnswer:   0,
-		Explanation:     "Explanation",
-		Status:          models.QuestionStatusActive,
+		Content: map[string]interface{}{
+			"question": "Question to delete",
+			"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+		},
+		CorrectAnswer: 0,
+		Explanation:   "Explanation",
+		Status:        models.QuestionStatusActive,
 	}
 	err = service.SaveQuestion(context.Background(), question)
 	require.NoError(t, err)
@@ -745,10 +793,13 @@ func TestQuestionService_GetUserQuestions_Integration(t *testing.T) {
 			Language:        "italian",
 			Level:           "A1",
 			DifficultyScore: 0.5,
-			Content:         map[string]interface{}{"question": fmt.Sprintf("User1 Question %d", i+1)},
-			CorrectAnswer:   0,
-			Explanation:     fmt.Sprintf("Explanation %d", i+1),
-			Status:          models.QuestionStatusActive,
+			Content: map[string]interface{}{
+				"question": fmt.Sprintf("User1 Question %d", i+1),
+				"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+			},
+			CorrectAnswer: 0,
+			Explanation:   fmt.Sprintf("Explanation %d", i+1),
+			Status:        models.QuestionStatusActive,
 		}
 		err = service.SaveQuestion(context.Background(), question)
 		require.NoError(t, err)
@@ -763,10 +814,13 @@ func TestQuestionService_GetUserQuestions_Integration(t *testing.T) {
 			Language:        "italian",
 			Level:           "A1",
 			DifficultyScore: 0.5,
-			Content:         map[string]interface{}{"sentence": fmt.Sprintf("User2 Question %d", i+1)},
-			CorrectAnswer:   0,
-			Explanation:     fmt.Sprintf("Explanation %d", i+1),
-			Status:          models.QuestionStatusActive,
+			Content: map[string]interface{}{
+				"sentence": fmt.Sprintf("User2 Question %d", i+1),
+				"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+			},
+			CorrectAnswer: 0,
+			Explanation:   fmt.Sprintf("Explanation %d", i+1),
+			Status:        models.QuestionStatusActive,
 		}
 		err = service.SaveQuestion(context.Background(), question)
 		require.NoError(t, err)
@@ -816,10 +870,13 @@ func TestQuestionService_GetUserQuestionsWithStats_Integration(t *testing.T) {
 		Language:        "italian",
 		Level:           "A1",
 		DifficultyScore: 0.5,
-		Content:         map[string]interface{}{"question": "Test question"},
-		CorrectAnswer:   0,
-		Explanation:     "Test explanation",
-		Status:          models.QuestionStatusActive,
+		Content: map[string]interface{}{
+			"question": "Test question",
+			"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+		},
+		CorrectAnswer: 0,
+		Explanation:   "Test explanation",
+		Status:        models.QuestionStatusActive,
 	}
 	err = service.SaveQuestion(context.Background(), question)
 	require.NoError(t, err)
@@ -867,30 +924,39 @@ func TestQuestionService_GetQuestionsPaginated_Integration(t *testing.T) {
 			Language:        "italian",
 			Level:           "A1",
 			DifficultyScore: 0.5,
-			Content:         map[string]interface{}{"question": "Vocabulary question 1"},
-			CorrectAnswer:   0,
-			Explanation:     "Explanation 1",
-			Status:          models.QuestionStatusActive,
+			Content: map[string]interface{}{
+				"question": "Vocabulary question 1",
+				"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+			},
+			CorrectAnswer: 0,
+			Explanation:   "Explanation 1",
+			Status:        models.QuestionStatusActive,
 		},
 		{
 			Type:            models.Vocabulary,
 			Language:        "italian",
 			Level:           "A1",
 			DifficultyScore: 0.5,
-			Content:         map[string]interface{}{"question": "Vocabulary question 2"},
-			CorrectAnswer:   0,
-			Explanation:     "Explanation 2",
-			Status:          models.QuestionStatusActive,
+			Content: map[string]interface{}{
+				"question": "Vocabulary question 2",
+				"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+			},
+			CorrectAnswer: 0,
+			Explanation:   "Explanation 2",
+			Status:        models.QuestionStatusActive,
 		},
 		{
 			Type:            models.FillInBlank,
 			Language:        "italian",
 			Level:           "A1",
 			DifficultyScore: 0.5,
-			Content:         map[string]interface{}{"sentence": "Fill blank question"},
-			CorrectAnswer:   0,
-			Explanation:     "Explanation 3",
-			Status:          models.QuestionStatusReported,
+			Content: map[string]interface{}{
+				"sentence": "Fill blank question",
+				"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+			},
+			CorrectAnswer: 0,
+			Explanation:   "Explanation 3",
+			Status:        models.QuestionStatusReported,
 		},
 	}
 
@@ -956,10 +1022,13 @@ func TestQuestionService_GetQuestionStats_Integration(t *testing.T) {
 		Language:        "italian",
 		Level:           "A1",
 		DifficultyScore: 0.5,
-		Content:         map[string]interface{}{"question": "Active question"},
-		CorrectAnswer:   0,
-		Explanation:     "Explanation",
-		Status:          models.QuestionStatusActive,
+		Content: map[string]interface{}{
+			"question": "Active question",
+			"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+		},
+		CorrectAnswer: 0,
+		Explanation:   "Explanation",
+		Status:        models.QuestionStatusActive,
 	}
 	err = service.SaveQuestion(context.Background(), activeQuestion)
 	require.NoError(t, err)
@@ -971,10 +1040,13 @@ func TestQuestionService_GetQuestionStats_Integration(t *testing.T) {
 		Language:        "italian",
 		Level:           "A1",
 		DifficultyScore: 0.5,
-		Content:         map[string]interface{}{"sentence": "Reported question"},
-		CorrectAnswer:   0,
-		Explanation:     "Explanation",
-		Status:          models.QuestionStatusReported,
+		Content: map[string]interface{}{
+			"sentence": "Reported question",
+			"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+		},
+		CorrectAnswer: 0,
+		Explanation:   "Explanation",
+		Status:        models.QuestionStatusReported,
 	}
 	err = service.SaveQuestion(context.Background(), reportedQuestion)
 	require.NoError(t, err)
@@ -1017,10 +1089,13 @@ func TestQuestionService_GetDetailedQuestionStats_Integration(t *testing.T) {
 		Language:        "italian",
 		Level:           "A1",
 		DifficultyScore: 0.5,
-		Content:         map[string]interface{}{"question": "Test question"},
-		CorrectAnswer:   0,
-		Explanation:     "Test explanation",
-		Status:          models.QuestionStatusActive,
+		Content: map[string]interface{}{
+			"question": "Test question",
+			"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+		},
+		CorrectAnswer: 0,
+		Explanation:   "Test explanation",
+		Status:        models.QuestionStatusActive,
 	}
 	err = service.SaveQuestion(context.Background(), question)
 	require.NoError(t, err)
@@ -1202,10 +1277,13 @@ func TestQuestionService_GetRandomGlobalQuestionForUser_Integration(t *testing.T
 		Language:        "italian",
 		Level:           "A1",
 		DifficultyScore: 0.5,
-		Content:         map[string]interface{}{"question": "Question for user1"},
-		CorrectAnswer:   0,
-		Explanation:     "Explanation",
-		Status:          models.QuestionStatusActive,
+		Content: map[string]interface{}{
+			"question": "Question for user1",
+			"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+		},
+		CorrectAnswer: 0,
+		Explanation:   "Explanation",
+		Status:        models.QuestionStatusActive,
 	}
 	err = service.SaveQuestion(context.Background(), question1)
 	require.NoError(t, err)
@@ -1218,10 +1296,13 @@ func TestQuestionService_GetRandomGlobalQuestionForUser_Integration(t *testing.T
 		Language:        "italian",
 		Level:           "A1",
 		DifficultyScore: 0.6,
-		Content:         map[string]interface{}{"question": "Question for user2"},
-		CorrectAnswer:   1,
-		Explanation:     "Explanation",
-		Status:          models.QuestionStatusActive,
+		Content: map[string]interface{}{
+			"question": "Question for user2",
+			"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+		},
+		CorrectAnswer: 1,
+		Explanation:   "Explanation",
+		Status:        models.QuestionStatusActive,
 	}
 	err = service.SaveQuestion(context.Background(), question2)
 	require.NoError(t, err)
@@ -1285,10 +1366,13 @@ func TestQuestionService_GetNextQuestionWithGlobalFallback_Integration(t *testin
 		Language:        "italian",
 		Level:           "A1",
 		DifficultyScore: 0.5,
-		Content:         map[string]interface{}{"question": "Assigned question"},
-		CorrectAnswer:   0,
-		Explanation:     "Explanation",
-		Status:          models.QuestionStatusActive,
+		Content: map[string]interface{}{
+			"question": "Assigned question",
+			"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+		},
+		CorrectAnswer: 0,
+		Explanation:   "Explanation",
+		Status:        models.QuestionStatusActive,
 	}
 	err = service.SaveQuestion(context.Background(), assignedQuestion)
 	require.NoError(t, err)
@@ -1301,10 +1385,13 @@ func TestQuestionService_GetNextQuestionWithGlobalFallback_Integration(t *testin
 		Language:        "italian",
 		Level:           "A1",
 		DifficultyScore: 0.6,
-		Content:         map[string]interface{}{"question": "Global question"},
-		CorrectAnswer:   1,
-		Explanation:     "Global explanation",
-		Status:          models.QuestionStatusActive,
+		Content: map[string]interface{}{
+			"question": "Global question",
+			"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+		},
+		CorrectAnswer: 1,
+		Explanation:   "Global explanation",
+		Status:        models.QuestionStatusActive,
 	}
 	err = service.SaveQuestion(context.Background(), globalQuestion)
 	require.NoError(t, err)
@@ -1375,20 +1462,26 @@ func TestQuestionService_GetRandomGlobalQuestionForUserDifferentLevels_Integrati
 			Language:        "italian",
 			Level:           "A1",
 			DifficultyScore: 0.5,
-			Content:         map[string]interface{}{"question": "A1 question"},
-			CorrectAnswer:   0,
-			Explanation:     "A1 explanation",
-			Status:          models.QuestionStatusActive,
+			Content: map[string]interface{}{
+				"question": "A1 question",
+				"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+			},
+			CorrectAnswer: 0,
+			Explanation:   "A1 explanation",
+			Status:        models.QuestionStatusActive,
 		},
 		{
 			Type:            models.Vocabulary,
 			Language:        "italian",
 			Level:           "B1",
 			DifficultyScore: 0.7,
-			Content:         map[string]interface{}{"question": "B1 question"},
-			CorrectAnswer:   1,
-			Explanation:     "B1 explanation",
-			Status:          models.QuestionStatusActive,
+			Content: map[string]interface{}{
+				"question": "B1 question",
+				"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+			},
+			CorrectAnswer: 1,
+			Explanation:   "B1 explanation",
+			Status:        models.QuestionStatusActive,
 		},
 	}
 
@@ -1440,10 +1533,13 @@ func TestQuestionService_GetRandomGlobalQuestionForUserAlreadyAssigned_Integrati
 		Language:        "italian",
 		Level:           "A1",
 		DifficultyScore: 0.5,
-		Content:         map[string]interface{}{"question": "Global question"},
-		CorrectAnswer:   0,
-		Explanation:     "Explanation",
-		Status:          models.QuestionStatusActive,
+		Content: map[string]interface{}{
+			"question": "Global question",
+			"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+		},
+		CorrectAnswer: 0,
+		Explanation:   "Explanation",
+		Status:        models.QuestionStatusActive,
 	}
 	err = service.SaveQuestion(context.Background(), globalQuestion)
 	require.NoError(t, err)
@@ -1487,10 +1583,13 @@ func TestQuestionService_GetUserQuestionCount_Integration(t *testing.T) {
 		Language:        "italian",
 		Level:           "A1",
 		DifficultyScore: 0.5,
-		Content:         map[string]interface{}{"question": "Active question 1"},
-		CorrectAnswer:   0,
-		Explanation:     "Explanation 1",
-		Status:          models.QuestionStatusActive,
+		Content: map[string]interface{}{
+			"question": "Active question 1",
+			"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+		},
+		CorrectAnswer: 0,
+		Explanation:   "Explanation 1",
+		Status:        models.QuestionStatusActive,
 	}
 	err = service.SaveQuestion(context.Background(), activeQuestion1)
 	require.NoError(t, err)
@@ -1500,10 +1599,13 @@ func TestQuestionService_GetUserQuestionCount_Integration(t *testing.T) {
 		Language:        "italian",
 		Level:           "A1",
 		DifficultyScore: 0.6,
-		Content:         map[string]interface{}{"sentence": "Active question 2"},
-		CorrectAnswer:   1,
-		Explanation:     "Explanation 2",
-		Status:          models.QuestionStatusActive,
+		Content: map[string]interface{}{
+			"sentence": "Active question 2",
+			"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+		},
+		CorrectAnswer: 1,
+		Explanation:   "Explanation 2",
+		Status:        models.QuestionStatusActive,
 	}
 	err = service.SaveQuestion(context.Background(), activeQuestion2)
 	require.NoError(t, err)
@@ -1513,10 +1615,13 @@ func TestQuestionService_GetUserQuestionCount_Integration(t *testing.T) {
 		Language:        "italian",
 		Level:           "A1",
 		DifficultyScore: 0.7,
-		Content:         map[string]interface{}{"question": "Reported question"},
-		CorrectAnswer:   2,
-		Explanation:     "Reported explanation",
-		Status:          models.QuestionStatusReported,
+		Content: map[string]interface{}{
+			"question": "Reported question",
+			"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+		},
+		CorrectAnswer: 2,
+		Explanation:   "Reported explanation",
+		Status:        models.QuestionStatusReported,
 	}
 	err = service.SaveQuestion(context.Background(), reportedQuestion)
 	require.NoError(t, err)
@@ -1585,10 +1690,13 @@ func TestQuestionService_GetUserResponseCount_Integration(t *testing.T) {
 		Language:        "italian",
 		Level:           "A1",
 		DifficultyScore: 0.5,
-		Content:         map[string]interface{}{"question": "Test question 1"},
-		CorrectAnswer:   0,
-		Explanation:     "Explanation 1",
-		Status:          models.QuestionStatusActive,
+		Content: map[string]interface{}{
+			"question": "Test question 1",
+			"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+		},
+		CorrectAnswer: 0,
+		Explanation:   "Explanation 1",
+		Status:        models.QuestionStatusActive,
 	}
 	err = service.SaveQuestion(context.Background(), question1)
 	require.NoError(t, err)
@@ -1598,10 +1706,13 @@ func TestQuestionService_GetUserResponseCount_Integration(t *testing.T) {
 		Language:        "italian",
 		Level:           "A1",
 		DifficultyScore: 0.6,
-		Content:         map[string]interface{}{"sentence": "Test question 2"},
-		CorrectAnswer:   1,
-		Explanation:     "Explanation 2",
-		Status:          models.QuestionStatusActive,
+		Content: map[string]interface{}{
+			"sentence": "Test question 2",
+			"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+		},
+		CorrectAnswer: 1,
+		Explanation:   "Explanation 2",
+		Status:        models.QuestionStatusActive,
 	}
 	err = service.SaveQuestion(context.Background(), question2)
 	require.NoError(t, err)
@@ -1611,10 +1722,13 @@ func TestQuestionService_GetUserResponseCount_Integration(t *testing.T) {
 		Language:        "italian",
 		Level:           "A2",
 		DifficultyScore: 0.7,
-		Content:         map[string]interface{}{"question": "Test question 3"},
-		CorrectAnswer:   2,
-		Explanation:     "Explanation 3",
-		Status:          models.QuestionStatusActive,
+		Content: map[string]interface{}{
+			"question": "Test question 3",
+			"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+		},
+		CorrectAnswer: 2,
+		Explanation:   "Explanation 3",
+		Status:        models.QuestionStatusActive,
 	}
 	err = service.SaveQuestion(context.Background(), question3)
 	require.NoError(t, err)
@@ -1624,10 +1738,13 @@ func TestQuestionService_GetUserResponseCount_Integration(t *testing.T) {
 		Language:        "italian",
 		Level:           "B1",
 		DifficultyScore: 0.8,
-		Content:         map[string]interface{}{"sentence": "Test sentence with ____"},
-		CorrectAnswer:   3,
-		Explanation:     "Explanation 4",
-		Status:          models.QuestionStatusActive,
+		Content: map[string]interface{}{
+			"sentence": "Test sentence with ____",
+			"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+		},
+		CorrectAnswer: 3,
+		Explanation:   "Explanation 4",
+		Status:        models.QuestionStatusActive,
 	}
 	err = service.SaveQuestion(context.Background(), question4)
 	require.NoError(t, err)
@@ -1736,40 +1853,52 @@ func TestQuestionService_GetReportedQuestionsPaginated_Integration(t *testing.T)
 			Language:        "italian",
 			Level:           "A1",
 			DifficultyScore: 0.5,
-			Content:         map[string]interface{}{"question": "Question 1"},
-			CorrectAnswer:   0,
-			Explanation:     "Explanation 1",
-			Status:          models.QuestionStatusActive,
+			Content: map[string]interface{}{
+				"question": "Question 1",
+				"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+			},
+			CorrectAnswer: 0,
+			Explanation:   "Explanation 1",
+			Status:        models.QuestionStatusActive,
 		},
 		{
 			Type:            models.FillInBlank,
 			Language:        "italian",
 			Level:           "B1",
 			DifficultyScore: 0.7,
-			Content:         map[string]interface{}{"question": "Question 2"},
-			CorrectAnswer:   0,
-			Explanation:     "Explanation 2",
-			Status:          models.QuestionStatusActive,
+			Content: map[string]interface{}{
+				"sentence": "Question 2",
+				"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+			},
+			CorrectAnswer: 0,
+			Explanation:   "Explanation 2",
+			Status:        models.QuestionStatusActive,
 		},
 		{
 			Type:            models.Vocabulary,
 			Language:        "spanish",
 			Level:           "A2",
 			DifficultyScore: 0.6,
-			Content:         map[string]interface{}{"question": "Question 3"},
-			CorrectAnswer:   0,
-			Explanation:     "Explanation 3",
-			Status:          models.QuestionStatusActive,
+			Content: map[string]interface{}{
+				"question": "Question 3",
+				"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+			},
+			CorrectAnswer: 0,
+			Explanation:   "Explanation 3",
+			Status:        models.QuestionStatusActive,
 		},
 		{
 			Type:            models.FillInBlank,
 			Language:        "italian",
 			Level:           "A1",
 			DifficultyScore: 0.4,
-			Content:         map[string]interface{}{"question": "Question 4"},
-			CorrectAnswer:   0,
-			Explanation:     "Explanation 4",
-			Status:          models.QuestionStatusActive,
+			Content: map[string]interface{}{
+				"sentence": "Question 4",
+				"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+			},
+			CorrectAnswer: 0,
+			Explanation:   "Explanation 4",
+			Status:        models.QuestionStatusActive,
 		},
 	}
 
@@ -1892,10 +2021,13 @@ func TestQuestionService_GetReportedQuestionsPaginated_WithUserResponses_Integra
 		Language:        "italian",
 		Level:           "A1",
 		DifficultyScore: 0.5,
-		Content:         map[string]interface{}{"question": "Test question"},
-		CorrectAnswer:   0,
-		Explanation:     "Test explanation",
-		Status:          models.QuestionStatusActive,
+		Content: map[string]interface{}{
+			"question": "Test question",
+			"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+		},
+		CorrectAnswer: 0,
+		Explanation:   "Test explanation",
+		Status:        models.QuestionStatusActive,
 	}
 	err = service.SaveQuestion(context.Background(), question)
 	require.NoError(t, err)
@@ -1998,30 +2130,39 @@ func TestQuestionService_GetReportedQuestionsStats_Integration(t *testing.T) {
 			Language:        "italian",
 			Level:           "A1",
 			DifficultyScore: 0.5,
-			Content:         map[string]interface{}{"question": "Question 1"},
-			CorrectAnswer:   0,
-			Explanation:     "Explanation 1",
-			Status:          models.QuestionStatusActive,
+			Content: map[string]interface{}{
+				"question": "Question 1",
+				"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+			},
+			CorrectAnswer: 0,
+			Explanation:   "Explanation 1",
+			Status:        models.QuestionStatusActive,
 		},
 		{
 			Type:            models.FillInBlank,
 			Language:        "italian",
 			Level:           "B1",
 			DifficultyScore: 0.7,
-			Content:         map[string]interface{}{"question": "Question 2"},
-			CorrectAnswer:   0,
-			Explanation:     "Explanation 2",
-			Status:          models.QuestionStatusActive,
+			Content: map[string]interface{}{
+				"sentence": "Question 2",
+				"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+			},
+			CorrectAnswer: 0,
+			Explanation:   "Explanation 2",
+			Status:        models.QuestionStatusActive,
 		},
 		{
 			Type:            models.Vocabulary,
 			Language:        "spanish",
 			Level:           "A2",
 			DifficultyScore: 0.6,
-			Content:         map[string]interface{}{"question": "Question 3"},
-			CorrectAnswer:   0,
-			Explanation:     "Explanation 3",
-			Status:          models.QuestionStatusActive,
+			Content: map[string]interface{}{
+				"question": "Question 3",
+				"options":  []string{"Option A", "Option B", "Option C", "Option D"},
+			},
+			CorrectAnswer: 0,
+			Explanation:   "Explanation 3",
+			Status:        models.QuestionStatusActive,
 		},
 	}
 

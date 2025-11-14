@@ -122,7 +122,15 @@ func (h *QuizHandler) getSpecificQuestion(c *gin.Context, userID int, questionID
 	}
 
 	// Convert and hide sensitive information
-	apiQuestion := convertQuestionToAPI(questionWithStats.Question)
+	apiQuestion, err := convertQuestionToAPI(ctx, questionWithStats.Question)
+	if err != nil {
+		h.logger.Error(ctx, "Failed to convert question to API", err, map[string]interface{}{
+			"question_id": questionID,
+			"user_id":     userID,
+		})
+		HandleAppError(c, contextutils.WrapError(err, "failed to convert question"))
+		return
+	}
 	apiQuestion.Explanation = nil // Hide explanation
 
 	// Add response statistics to the API question
@@ -290,7 +298,17 @@ func (h *QuizHandler) getNextQuestion(c *gin.Context, userID int) {
 	}
 
 	// Convert to API format and hide sensitive information
-	apiQuestion := convertQuestionToAPI(questionWithStats.Question)
+	apiQuestion, err := convertQuestionToAPI(ctx, questionWithStats.Question)
+	if err != nil {
+		h.logger.Error(ctx, "Failed to convert question to API", err, map[string]interface{}{
+			"user_id":       userID,
+			"language":      language,
+			"level":         level,
+			"question_type": string(qType),
+		})
+		HandleAppError(c, contextutils.WrapError(err, "failed to convert question"))
+		return
+	}
 	apiQuestion.Explanation = nil // Hide explanation
 
 	// Add response statistics to the API question

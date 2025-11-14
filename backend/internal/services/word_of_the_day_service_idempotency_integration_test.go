@@ -39,7 +39,7 @@ func TestWordOfTheDay_GetWordOfTheDay_Idempotent_Integration(t *testing.T) {
 		DifficultyScore: 0.3,
 		Content: map[string]interface{}{
 			"question": "Ciao",
-			"options":  []string{"Hello", "Bye"},
+			"options":  []string{"Hello", "Bye", "Thanks", "Please"},
 			"sentence": "Lui dice: Ciao!",
 		},
 		CorrectAnswer: 0,
