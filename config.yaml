@@ -220,7 +220,7 @@ system:
 # - EMAIL_FROM_NAME: From name for emails
 # - EMAIL_DAILY_REMINDER_HOUR: Hour of day to send daily reminders (0-23)
 # - EMAIL_ENABLED: Whether email sending is enabled (true/false)
-# - APP_BASE_URL: Frontend application URL for email links (e.g. http://localhost:3000)
+# - SERVER_APP_BASE_URL: Frontend application URL for email links (e.g. http://localhost:3000 for dev, https://yourdomain.com for production)
 
 email:
   enabled: true
@@ -235,7 +235,7 @@ email:
     # password: "your-password"
     from_address: "ntfy@wetsnow.com"
     from_name: "Quiz App"
-  # Note: APP_BASE_URL should be set via environment variable for the frontend URL
+  # Note: SERVER_APP_BASE_URL should be set via environment variable for the frontend URL in production
 
 # Language-specific levels and descriptions
 language_levels:

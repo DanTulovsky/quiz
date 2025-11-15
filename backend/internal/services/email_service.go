@@ -110,6 +110,15 @@ func (e *EmailService) SendDailyReminder(ctx context.Context, user *models.User)
 		dailyGoal = int(dg.Int64)
 	}
 
+	// Warn if AppBaseURL contains localhost in production (email is enabled, indicating production)
+	if strings.Contains(e.cfg.Server.AppBaseURL, "localhost") {
+		e.logger.Warn(ctx, "AppBaseURL contains localhost in production environment - email links will point to localhost", map[string]interface{}{
+			"app_base_url": e.cfg.Server.AppBaseURL,
+			"user_id":      user.ID,
+			"suggestion":   "Set SERVER_APP_BASE_URL environment variable to production URL",
+		})
+	}
+
 	// Generate email data
 	data := map[string]interface{}{
 		"Username":       user.Username,
@@ -437,6 +446,15 @@ func (e *EmailService) SendWordOfTheDayEmail(ctx context.Context, userID int, da
 
 	if !user.Email.Valid || user.Email.String == "" {
 		return contextutils.ErrorWithContextf("user has no email address")
+	}
+
+	// Warn if AppBaseURL contains localhost in production (email is enabled, indicating production)
+	if strings.Contains(e.cfg.Server.AppBaseURL, "localhost") {
+		e.logger.Warn(ctx, "AppBaseURL contains localhost in production environment - email links will point to localhost", map[string]interface{}{
+			"app_base_url": e.cfg.Server.AppBaseURL,
+			"user_id":      userID,
+			"suggestion":   "Set SERVER_APP_BASE_URL environment variable to production URL",
+		})
 	}
 
 	// Prepare email data
