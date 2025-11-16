@@ -25,6 +25,11 @@ const ADMIN_USER = {
   password: 'password'
 };
 
+const TRANSLATION_TEST_USER = {
+  username: 'translationtestuser',
+  password: 'password'
+};
+
 interface SwaggerPath {
   [method: string]: {
     tags?: string[];
@@ -991,7 +996,8 @@ test.describe('Comprehensive API Tests', () => {
           queryParams[param.name] = 10;
         } else if (param.name === 'direction') {
           // Translation practice direction enum
-          queryParams[param.name] = 'en_to_learning';
+          // Use learning_to_en since existing content is in the learning language (Italian)
+          queryParams[param.name] = 'learning_to_en';
         } else if (param.name === 'language') {
           // Use the user's preferred language from test data instead of hardcoding
           queryParams[param.name] = testData.users[0]?.preferred_language || 'italian';
@@ -2242,7 +2248,8 @@ test.describe('Comprehensive API Tests', () => {
       for (const testCase of regularUserCases) {
         // Determine which user to use for this test case
         const isStoryEndpoint = testCase.path.includes('/story/') || testCase.path.includes('/stories/');
-        const currentUser = isStoryEndpoint ? STORY_TEST_USER : REGULAR_USER;
+        const isTranslationEndpoint = testCase.path.includes('/translation-practice/');
+        const currentUser = isTranslationEndpoint ? TRANSLATION_TEST_USER : (isStoryEndpoint ? STORY_TEST_USER : REGULAR_USER);
 
         // Check if this endpoint should be excluded
         const expandedPath = await replacePathParameters(testCase.path, testCase.pathParams, request, currentUser, testCase.method, false);
@@ -2516,8 +2523,13 @@ test.describe('Comprehensive API Tests', () => {
       const regularUserErrorCases = errorCases.filter(testCase => !testCase.requiresAdmin);
 
       for (const testCase of regularUserErrorCases) {
+        // Determine which user to use for this test case
+        const isStoryEndpoint = testCase.path.includes('/story/') || testCase.path.includes('/stories/');
+        const isTranslationEndpoint = testCase.path.includes('/translation-practice/');
+        const currentUser = isTranslationEndpoint ? TRANSLATION_TEST_USER : (isStoryEndpoint ? STORY_TEST_USER : REGULAR_USER);
+
         // Check if this endpoint should be excluded
-        const expandedPath = await replacePathParameters(testCase.path, testCase.pathParams, request, REGULAR_USER, testCase.method, true);
+        const expandedPath = await replacePathParameters(testCase.path, testCase.pathParams, request, currentUser, testCase.method, true);
         if (isExcludedPath(expandedPath)) continue;
 
         // Use the expanded path that already has the correct parameters replaced
@@ -2538,13 +2550,13 @@ test.describe('Comprehensive API Tests', () => {
         // For 400 error tests on unauthenticated endpoints, we don't provide auth
         if (testCase.expectedStatusCodes.includes('400') && testCase.requiresAuth) {
           // For 400 error tests on authenticated endpoints, login first
-          const sessionCookie = await loginUser(request, REGULAR_USER);
+          const sessionCookie = await loginUser(request, currentUser);
           requestOptions.headers = {
             'Cookie': sessionCookie
           };
         } else if (testCase.requiresAuth) {
           // For other authenticated endpoints, login first
-          const sessionCookie = await loginUser(request, REGULAR_USER);
+          const sessionCookie = await loginUser(request, currentUser);
           requestOptions.headers = {
             'Cookie': sessionCookie
           };
@@ -2556,7 +2568,7 @@ test.describe('Comprehensive API Tests', () => {
           if (testCase.expectedStatusCodes.includes('400')) {
             requestOptions.data = testCase.requestBody;
           } else {
-            requestOptions.data = generateRequestBodyForTest(testCase, REGULAR_USER);
+            requestOptions.data = generateRequestBodyForTest(testCase, currentUser);
           }
           requestOptions.headers = requestOptions.headers || {};
           requestOptions.headers['Content-Type'] = 'application/json';
@@ -2569,7 +2581,7 @@ test.describe('Comprehensive API Tests', () => {
           testCase.path.includes('/snippets/') &&
           testCase.requiresAuth) {
           try {
-            const sessionCookie = await loginUser(request, REGULAR_USER);
+            const sessionCookie = await loginUser(request, currentUser);
 
             // Get all snippets for this user
             const snippetsResponse = await request.get(`${baseURL}/v1/snippets`, {
@@ -2623,7 +2635,9 @@ test.describe('Comprehensive API Tests', () => {
 
         const response = await request[testCase.method.toLowerCase()](finalUrl.toString(), requestOptions);
 
-        await logResponse(testCase, response, 'Regular User', 'apitestuser', finalUrl.toString(), requestOptions.headers);
+        // Determine user display name for logging
+        const userDisplayName = isTranslationEndpoint ? 'Translation Test User' : (isStoryEndpoint ? 'Story Test User' : 'Regular User');
+        await logResponse(testCase, response, userDisplayName, currentUser.username, finalUrl.toString(), requestOptions.headers);
         await assertStatus(response, testCase.expectedStatusCodes.map(code => parseInt(code, 10)), {
           method: testCase.method,
           url: finalUrl.toString(),

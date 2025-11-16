@@ -7,14 +7,14 @@
     "sections": []
   },
   "apitestadmin_Admin Story 3": {
-    "id": 12,
+    "id": 13,
     "username": "apitestadmin",
     "title": "Admin Story 3",
     "status": "archived",
     "sections": [
       {
-        "id": 8,
-        "story_id": 12,
+        "id": 9,
+        "story_id": 13,
         "section_number": 1,
         "content": "The system administrator checked the server logs and noticed everything was running smoothly. CPU usage was normal, memory consumption was stable, and no errors were reported in the last 24 hours.",
         "language_level": "B2",
@@ -58,14 +58,14 @@
     ]
   },
   "apitestuser2_User 2 Story 2": {
-    "id": 11,
+    "id": 12,
     "username": "apitestuser2",
     "title": "User 2 Story 2",
     "status": "archived",
     "sections": [
       {
-        "id": 7,
-        "story_id": 11,
+        "id": 8,
+        "story_id": 12,
         "section_number": 1,
         "content": "The meeting started promptly at 9 AM. All participants were present and the agenda was distributed. The discussion focused on the quarterly budget and upcoming project deadlines.",
         "language_level": "B2",
@@ -130,14 +130,14 @@
     "sections": []
   },
   "apitestuserstory1_Story Test User Story 2": {
-    "id": 10,
+    "id": 11,
     "username": "apitestuserstory1",
     "title": "Story Test User Story 2",
     "status": "archived",
     "sections": [
       {
-        "id": 6,
-        "story_id": 10,
+        "id": 7,
+        "story_id": 11,
         "section_number": 1,
         "content": "Emma had always loved baking cookies. The smell of fresh baked goods filled her kitchen as she mixed the ingredients. She hummed a tune while waiting for the oven timer to go off.",
         "language_level": "B1",
@@ -159,6 +159,23 @@
         "content": "Once upon a time in a bustling city, Alex woke up with a sense of adventure in their heart. The sun was shining brightly through the window, and birds were singing cheerful songs outside. Today felt like the perfect day to explore something new.",
         "language_level": "B1",
         "word_count": 75,
+        "generated_by": "user"
+      }
+    ]
+  },
+  "translationtestuser_Translation Practice Story": {
+    "id": 10,
+    "username": "translationtestuser",
+    "title": "Translation Practice Story",
+    "status": "active",
+    "sections": [
+      {
+        "id": 6,
+        "story_id": 10,
+        "section_number": 1,
+        "content": "Maria ha deciso di esplorare il mercato locale nel suo quartiere. Era sempre stata curiosa della frutta fresca e degli oggetti artigianali che i venditori offrivano. Mentre camminava tra i corridoi affollati, ha iniziato conversazioni con diversi proprietari di negozi. Il mercato era pieno di colori vivaci e suoni interessanti. Ha trovato una bella sciarpa fatta a mano che ha attirato immediatamente la sua attenzione.",
+        "language_level": "B1",
+        "word_count": 80,
         "generated_by": "user"
       }
     ]

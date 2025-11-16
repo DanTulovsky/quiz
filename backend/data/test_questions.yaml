@@ -6,6 +6,7 @@ questions:
     difficulty_score: 0.5
     content:
       question: "What does **veloce** mean in this context: Il treno \xE8 molto veloce oggi."
+      sentence: "Il treno è molto veloce oggi."
       options:
         - fast
         - slow
@@ -20,6 +21,7 @@ questions:
       - adminuser
       - apitestuser
       - apitestadmin
+      - translationtestuser
   - type: vocabulary
     language: italian
     level: B1
@@ -29,6 +31,7 @@ questions:
       question:
         "What does **libro** mean in this context: Ho dimenticato il libro a
         casa."
+      sentence: "Ho dimenticato il libro a casa."
       options:
         - book
         - key
@@ -43,6 +46,7 @@ questions:
       - googleuser
       - apitestuser
       - apitestadmin
+      - translationtestuser
   - type: vocabulary
     language: italian
     level: B1
@@ -52,6 +56,7 @@ questions:
       question:
         "What does **cucinare** mean in this context: Mia nonna sa cucinare
         molto bene."
+      sentence: "Mia nonna sa cucinare molto bene."
       options:
         - to cook
         - to sing
@@ -68,6 +73,7 @@ questions:
       - googleuser
       - apitestuser
       - apitestadmin
+      - translationtestuser
   - type: vocabulary
     language: italian
     level: B1
@@ -181,6 +187,8 @@ questions:
     status: active
     users:
       - testuser
+      - apitestuser
+      - translationtestuser
   - type: reading_comprehension
     language: italian
     level: B1

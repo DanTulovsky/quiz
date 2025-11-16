@@ -135,6 +135,28 @@ stories:
             correct_answer_index: 2
             explanation: "The story says he felt 'a mix of excitement and nervousness'"
 
+  - username: "translationtestuser"
+    title: "Translation Practice Story"
+    language: "italian"
+    subject: "A story dedicated for translation practice tests"
+    author_style: "engaging and friendly"
+    status: "active"
+    sections:
+      - section_number: 1
+        content: "Maria ha deciso di esplorare il mercato locale nel suo quartiere. Era sempre stata curiosa della frutta fresca e degli oggetti artigianali che i venditori offrivano. Mentre camminava tra i corridoi affollati, ha iniziato conversazioni con diversi proprietari di negozi. Il mercato era pieno di colori vivaci e suoni interessanti. Ha trovato una bella sciarpa fatta a mano che ha attirato immediatamente la sua attenzione."
+        language_level: "B1"
+        word_count: 80
+        generated_by: "user"
+        questions:
+          - question_text: "What did Maria decide to explore?"
+            options: ["The park", "The local market", "The museum", "The library"]
+            correct_answer_index: 1
+            explanation: "The story says Maria decided to explore 'the local market in her neighborhood'"
+          - question_text: "What was Maria curious about?"
+            options: ["The prices", "The fresh produce and handmade crafts", "The location", "The hours"]
+            correct_answer_index: 1
+            explanation: "The story mentions she was curious about 'the fresh produce and handmade crafts'"
+
   - username: "apitestuserstory1"
     title: "Story Test User Story 2"
     language: "italian"

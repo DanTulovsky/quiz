@@ -735,25 +735,26 @@ func (s *TranslationPracticeService) getSentenceFromReadingComprehension(
 }
 
 // getPunktModelName maps language codes to Punkt model file names
+// Handles both language codes (e.g., "it") and full names (e.g., "italian")
 func (s *TranslationPracticeService) getPunktModelName(code string) string {
 	switch code {
-	case "en":
+	case "en", "english":
 		return "english"
-	case "it":
+	case "it", "italian":
 		return "italian"
-	case "fr":
+	case "fr", "french":
 		return "french"
-	case "de":
+	case "de", "german":
 		return "german"
-	case "es":
+	case "es", "spanish":
 		return "spanish"
-	case "ru":
+	case "ru", "russian":
 		return "russian"
-	case "hi":
+	case "hi", "hindi":
 		return "hindi"
-	case "ja":
+	case "ja", "japanese":
 		return "japanese"
-	case "zh":
+	case "zh", "chinese":
 		return "chinese"
 	default:
 		return ""

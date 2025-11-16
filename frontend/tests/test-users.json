@@ -535,7 +535,7 @@
     "email": "reminderuser@example.com"
   },
   "roletestuser": {
-    "id": 110,
+    "id": 111,
     "username": "roletestuser",
     "email": "roletestuser@example.com"
   },
@@ -543,5 +543,10 @@
     "id": 2,
     "username": "testuser",
     "email": "testuser@example.com"
+  },
+  "translationtestuser": {
+    "id": 110,
+    "username": "translationtestuser",
+    "email": "translationtestuser@example.com"
   }
 }
