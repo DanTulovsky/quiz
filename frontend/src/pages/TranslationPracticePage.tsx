@@ -727,24 +727,24 @@ const TranslationPracticePage: React.FC = () => {
                     aria-label='Translation direction'
                     w={280}
                   />
-              {!isMobileRoute && (
-                <Badge
-                  size='xs'
-                  color='gray'
-                  variant='filled'
-                  radius='sm'
-                  style={{
-                    position: 'absolute',
-                    right: 8,
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    zIndex: 1,
-                    pointerEvents: 'none',
-                  }}
-                >
-                  D
-                </Badge>
-              )}
+                  {!isMobileRoute && (
+                    <Badge
+                      size='xs'
+                      color='gray'
+                      variant='filled'
+                      radius='sm'
+                      style={{
+                        position: 'absolute',
+                        right: 8,
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        zIndex: 1,
+                        pointerEvents: 'none',
+                      }}
+                    >
+                      D
+                    </Badge>
+                  )}
                 </Box>
                 <Button
                   variant='light'
@@ -753,7 +753,13 @@ const TranslationPracticePage: React.FC = () => {
                 >
                   Generate AI
                   {!isMobileRoute && (
-                    <Badge ml={6} size='xs' color='gray' variant='filled' radius='sm'>
+                    <Badge
+                      ml={6}
+                      size='xs'
+                      color='gray'
+                      variant='filled'
+                      radius='sm'
+                    >
                       A
                     </Badge>
                   )}
@@ -792,285 +798,254 @@ const TranslationPracticePage: React.FC = () => {
           )}
 
           <Stack gap='md'>
-          <Card withBorder>
-            <Stack gap='sm'>
-              <Group justify='space-between' align='baseline'>
-                <Title order={4}>Prompt</Title>
-                <Group gap='xs'>
-                  {learningLanguage ? <Badge>{learningLanguage}</Badge> : null}
-                  {level ? <Badge variant='light'>Level {level}</Badge> : null}
-                </Group>
-              </Group>
-              <Textarea
-                ref={topicInputRef}
-                label='Optional topic'
-                placeholder='e.g., travel, ordering food, work'
-                value={topic}
-                onChange={e => setTopic(e.currentTarget.value)}
-                onFocus={() => {
-                  setIsInputFocused(true);
-                  setTabCycleIndex(0);
-                }}
-                onBlur={() => setIsInputFocused(false)}
-                autosize
-                minRows={1}
-                maxRows={3}
-              />
-              <Divider />
-              <Group justify='space-between' align='center'>
-                <Text fw={600}>Text to translate</Text>
-                {currentSentence && (
-                  <TTSButton
-                    getText={() => currentSentence?.sentence_text || ''}
-                    getVoice={() => {
-                      // Determine language based on translation direction
-                      // If translating from English to learning language, text is in English
-                      // If translating from learning language to English, text is in learning language
-                      const textLanguage =
-                        actualDirection === 'en_to_learning'
-                          ? 'english'
-                          : learningLanguage;
-
-                      // For English text, always use the default English voice
-                      // (don't use saved preference which might be for learning language)
-                      if (textLanguage === 'english') {
-                        return defaultVoiceForLanguage('english') || undefined;
-                      }
-
-                      // For learning language text, prefer user setting, fall back to default voice
-                      const saved = (learningPrefs?.tts_voice || '').trim();
-                      if (saved) return saved;
-
-                      const voice = defaultVoiceForLanguage(learningLanguage);
-                      return voice || undefined;
-                    }}
-                    size='sm'
-                    ariaLabel='Play text to translate'
-                  />
-                )}
-              </Group>
-              <Paper withBorder p='md' bg='gray.0'>
-                {currentSentence ? (
-                  <Stack gap={6}>
-                    <Text>{currentSentence.sentence_text}</Text>
-                    {(() => {
-                      const sourceType =
-                        currentSentence.source_type?.toLowerCase();
-                      if (sourceType === 'ai_generated') {
-                        return (
-                          <Group gap='xs' align='center'>
-                            <Badge size='xs' variant='light' color='blue'>
-                              AI Generated
-                            </Badge>
-                          </Group>
-                        );
-                      }
-                      const info = getSourceInfo(
-                        currentSentence.source_type as unknown as string,
-                        currentSentence.source_id as unknown as number
-                      );
-                      return info ? (
-                        <Text size='xs' c='dimmed'>
-                          From existing content:{' '}
-                          {info.href ? (
-                            <Anchor href={info.href}>{info.label}</Anchor>
-                          ) : (
-                            info.label
-                          )}
-                        </Text>
-                      ) : null;
-                    })()}
-                  </Stack>
-                ) : (
-                  <Text c='dimmed'>
-                    Click Generate or From existing content to load a sentence.
-                  </Text>
-                )}
-              </Paper>
-              <Textarea
-                ref={translationInputRef}
-                label='Your translation'
-                placeholder='Write your translation here'
-                value={answer}
-                onChange={e => setAnswer(e.currentTarget.value)}
-                onFocus={() => {
-                  setIsInputFocused(true);
-                  setTabCycleIndex(1);
-                }}
-                onBlur={() => setIsInputFocused(false)}
-                autosize
-                minRows={3}
-              />
-              <Group justify='flex-end'>
-                <Button
-                  onClick={handleSubmit}
-                  loading={isSubmitting}
-                  disabled={!currentSentence}
-                >
-                  Submit for feedback
-                  {!isMobileRoute && (
-                    <Badge
-                      ml={6}
-                      size='xs'
-                      color='gray'
-                      variant='filled'
-                      radius='sm'
-                    >
-                      ⌘↵
-                    </Badge>
-                  )}
-                </Button>
-              </Group>
-            </Stack>
-          </Card>
-
-          {/* AI Feedback section placed directly below translation card */}
-          {feedback && (
-            <Card withBorder ref={feedbackCardRef}>
-              <Stack>
-                <Group justify='space-between' align='center'>
-                  <Title order={4} m={0} ref={feedbackTitleRef} tabIndex={-1}>
-                    AI Feedback
-                  </Title>
-                  {typeof feedback.score === 'number' && (
-                    <Badge
-                      color={
-                        feedback.score >= 4
-                          ? 'green'
-                          : feedback.score >= 3
-                            ? 'yellow'
-                            : 'red'
-                      }
-                    >
-                      Score: {feedback.score.toFixed(1)} / 5
-                    </Badge>
-                  )}
-                </Group>
-                <Divider />
-                <Paper p='sm' withBorder>
-                  <ReactMarkdown
-                    remarkPlugins={[remarkGfm]}
-                    components={{
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      p: ({ children }: any) => (
-                        <Box mb='md' component='p'>
-                          {children}
-                        </Box>
-                      ),
-                    }}
-                  >
-                    {feedback.text}
-                  </ReactMarkdown>
-                </Paper>
-              </Stack>
-            </Card>
-          )}
-
-          <Stack>
-            <Card withBorder ref={historyCardRef}>
-              <Stack gap='xs'>
-                <Group justify='space-between' align='center'>
-                  <Title order={5}>History</Title>
+            <Card withBorder>
+              <Stack gap='sm'>
+                <Group justify='space-between' align='baseline'>
+                  <Title order={4}>Prompt</Title>
                   <Group gap='xs'>
-                    <Text size='xs' c='dimmed'>
-                      {history?.total !== undefined
-                        ? `Showing ${historyOffset + 1}-${Math.min(historyOffset + sessions.length, history.total)} of ${history.total}${historySearch.trim() ? ' (filtered)' : ''}`
-                        : 'Loading...'}
-                    </Text>
+                    {learningLanguage ? (
+                      <Badge>{learningLanguage}</Badge>
+                    ) : null}
+                    {level ? (
+                      <Badge variant='light'>Level {level}</Badge>
+                    ) : null}
                   </Group>
                 </Group>
-                <TextInput
-                  ref={historySearchInputRef}
-                  placeholder='Search history (original, your translation, feedback, direction)'
-                  value={historySearch}
-                  onChange={e => setHistorySearch(e.currentTarget.value)}
-                  onFocus={() => setIsInputFocused(true)}
+                <Textarea
+                  ref={topicInputRef}
+                  label='Optional topic'
+                  placeholder='e.g., travel, ordering food, work'
+                  value={topic}
+                  onChange={e => setTopic(e.currentTarget.value)}
+                  onFocus={() => {
+                    setIsInputFocused(true);
+                    setTabCycleIndex(0);
+                  }}
                   onBlur={() => setIsInputFocused(false)}
-                  rightSection={
-                    <Badge
-                      size='xs'
-                      color='gray'
-                      variant='filled'
-                      radius='sm'
-                      style={{ pointerEvents: 'none' }}
-                    >
-                      H
-                    </Badge>
-                  }
+                  autosize
+                  minRows={1}
+                  maxRows={3}
                 />
-                <ScrollArea
-                  style={{ height: '60vh' }}
-                  viewportRef={historyViewportRef}
-                >
-                  {(sessions.length ?? 0) > 0 ? (
-                    <Accordion variant='separated'>
-                      {sessions.map(s => (
-                        <Accordion.Item value={String(s.id)} key={s.id}>
-                          <Accordion.Control>
-                            <Group
-                              justify='space-between'
-                              align='flex-start'
-                              wrap='nowrap'
-                            >
-                              <Stack gap={2} style={{ flex: 1, minWidth: 0 }}>
-                                <Text size='sm' fw={600} lineClamp={1}>
-                                  {s.original_sentence}
-                                </Text>
-                                <Text size='xs' c='dimmed' lineClamp={1}>
-                                  You: {s.user_translation}
-                                </Text>
-                              </Stack>
-                              <Group gap='xs' wrap='nowrap'>
-                                <Badge variant='light'>
-                                  {s.translation_direction === 'en_to_learning'
-                                    ? `English → ${languageDisplay}`
-                                    : s.translation_direction ===
-                                        'learning_to_en'
-                                      ? `${languageDisplay} → English`
-                                      : s.translation_direction.replaceAll(
-                                          '_',
-                                          ' '
-                                        )}
-                                </Badge>
-                                {s.ai_score != null ? (
-                                  <Badge
-                                    color={
-                                      s.ai_score >= 4
-                                        ? 'green'
-                                        : s.ai_score >= 3
-                                          ? 'yellow'
-                                          : 'red'
-                                    }
-                                    variant='light'
-                                  >
-                                    {s.ai_score.toFixed(1)}/5
-                                  </Badge>
-                                ) : null}
-                              </Group>
+                <Divider />
+                <Group justify='space-between' align='center'>
+                  <Text fw={600}>Text to translate</Text>
+                  {currentSentence && (
+                    <TTSButton
+                      getText={() => currentSentence?.sentence_text || ''}
+                      getVoice={() => {
+                        // Determine language based on translation direction
+                        // If translating from English to learning language, text is in English
+                        // If translating from learning language to English, text is in learning language
+                        const textLanguage =
+                          actualDirection === 'en_to_learning'
+                            ? 'english'
+                            : learningLanguage;
+
+                        // For English text, always use the default English voice
+                        // (don't use saved preference which might be for learning language)
+                        if (textLanguage === 'english') {
+                          return (
+                            defaultVoiceForLanguage('english') || undefined
+                          );
+                        }
+
+                        // For learning language text, prefer user setting, fall back to default voice
+                        const saved = (learningPrefs?.tts_voice || '').trim();
+                        if (saved) return saved;
+
+                        const voice = defaultVoiceForLanguage(learningLanguage);
+                        return voice || undefined;
+                      }}
+                      size='sm'
+                      ariaLabel='Play text to translate'
+                    />
+                  )}
+                </Group>
+                <Paper withBorder p='md' bg='gray.0'>
+                  {currentSentence ? (
+                    <Stack gap={6}>
+                      <Text>{currentSentence.sentence_text}</Text>
+                      {(() => {
+                        const sourceType =
+                          currentSentence.source_type?.toLowerCase();
+                        if (sourceType === 'ai_generated') {
+                          return (
+                            <Group gap='xs' align='center'>
+                              <Badge size='xs' variant='light' color='blue'>
+                                AI Generated
+                              </Badge>
                             </Group>
-                          </Accordion.Control>
-                          <Accordion.Panel>
-                            <Stack gap='xs'>
-                              <Text size='xs' c='dimmed'>
-                                {new Date(s.created_at).toLocaleString()}
-                              </Text>
-                              <Paper withBorder p='sm'>
-                                <Text size='sm' fw={600}>
-                                  Original
-                                </Text>
-                                <Text size='sm'>{s.original_sentence}</Text>
-                              </Paper>
-                              <Paper withBorder p='sm'>
-                                <Text size='sm' fw={600}>
-                                  Your translation
-                                </Text>
-                                <Text size='sm'>{s.user_translation}</Text>
-                              </Paper>
-                              <Paper withBorder p='sm'>
-                                <Group justify='space-between' align='center'>
-                                  <Text size='sm' fw={600}>
-                                    AI Feedback
+                          );
+                        }
+                        const info = getSourceInfo(
+                          currentSentence.source_type as unknown as string,
+                          currentSentence.source_id as unknown as number
+                        );
+                        return info ? (
+                          <Text size='xs' c='dimmed'>
+                            From existing content:{' '}
+                            {info.href ? (
+                              <Anchor href={info.href}>{info.label}</Anchor>
+                            ) : (
+                              info.label
+                            )}
+                          </Text>
+                        ) : null;
+                      })()}
+                    </Stack>
+                  ) : (
+                    <Text c='dimmed'>
+                      Click Generate or From existing content to load a
+                      sentence.
+                    </Text>
+                  )}
+                </Paper>
+                <Textarea
+                  ref={translationInputRef}
+                  label='Your translation'
+                  placeholder='Write your translation here'
+                  value={answer}
+                  onChange={e => setAnswer(e.currentTarget.value)}
+                  onFocus={() => {
+                    setIsInputFocused(true);
+                    setTabCycleIndex(1);
+                  }}
+                  onBlur={() => setIsInputFocused(false)}
+                  autosize
+                  minRows={3}
+                />
+                <Group justify='flex-end'>
+                  <Button
+                    onClick={handleSubmit}
+                    loading={isSubmitting}
+                    disabled={!currentSentence}
+                  >
+                    Submit for feedback
+                    {!isMobileRoute && (
+                      <Badge
+                        ml={6}
+                        size='xs'
+                        color='gray'
+                        variant='filled'
+                        radius='sm'
+                      >
+                        ⌘↵
+                      </Badge>
+                    )}
+                  </Button>
+                </Group>
+              </Stack>
+            </Card>
+
+            {/* AI Feedback section placed directly below translation card */}
+            {feedback && (
+              <Card withBorder ref={feedbackCardRef}>
+                <Stack>
+                  <Group justify='space-between' align='center'>
+                    <Title order={4} m={0} ref={feedbackTitleRef} tabIndex={-1}>
+                      AI Feedback
+                    </Title>
+                    {typeof feedback.score === 'number' && (
+                      <Badge
+                        color={
+                          feedback.score >= 4
+                            ? 'green'
+                            : feedback.score >= 3
+                              ? 'yellow'
+                              : 'red'
+                        }
+                      >
+                        Score: {feedback.score.toFixed(1)} / 5
+                      </Badge>
+                    )}
+                  </Group>
+                  <Divider />
+                  <Paper p='sm' withBorder>
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      components={{
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        p: ({ children }: any) => (
+                          <Box mb='md' component='p'>
+                            {children}
+                          </Box>
+                        ),
+                      }}
+                    >
+                      {feedback.text}
+                    </ReactMarkdown>
+                  </Paper>
+                </Stack>
+              </Card>
+            )}
+
+            <Stack>
+              <Card withBorder ref={historyCardRef}>
+                <Stack gap='xs'>
+                  <Group justify='space-between' align='center'>
+                    <Title order={5}>History</Title>
+                    <Group gap='xs'>
+                      <Text size='xs' c='dimmed'>
+                        {history?.total !== undefined
+                          ? `Showing ${historyOffset + 1}-${Math.min(historyOffset + sessions.length, history.total)} of ${history.total}${historySearch.trim() ? ' (filtered)' : ''}`
+                          : 'Loading...'}
+                      </Text>
+                    </Group>
+                  </Group>
+                  <TextInput
+                    ref={historySearchInputRef}
+                    placeholder='Search history (original, your translation, feedback, direction)'
+                    value={historySearch}
+                    onChange={e => setHistorySearch(e.currentTarget.value)}
+                    onFocus={() => setIsInputFocused(true)}
+                    onBlur={() => setIsInputFocused(false)}
+                    rightSection={
+                      <Badge
+                        size='xs'
+                        color='gray'
+                        variant='filled'
+                        radius='sm'
+                        style={{ pointerEvents: 'none' }}
+                      >
+                        H
+                      </Badge>
+                    }
+                  />
+                  <ScrollArea
+                    style={{ height: '60vh' }}
+                    viewportRef={historyViewportRef}
+                  >
+                    {(sessions.length ?? 0) > 0 ? (
+                      <Accordion variant='separated'>
+                        {sessions.map(s => (
+                          <Accordion.Item value={String(s.id)} key={s.id}>
+                            <Accordion.Control>
+                              <Group
+                                justify='space-between'
+                                align='flex-start'
+                                wrap='nowrap'
+                              >
+                                <Stack gap={2} style={{ flex: 1, minWidth: 0 }}>
+                                  <Text size='sm' fw={600} lineClamp={1}>
+                                    {s.original_sentence}
                                   </Text>
+                                  <Text size='xs' c='dimmed' lineClamp={1}>
+                                    You: {s.user_translation}
+                                  </Text>
+                                </Stack>
+                                <Group gap='xs' wrap='nowrap'>
+                                  <Badge variant='light'>
+                                    {s.translation_direction ===
+                                    'en_to_learning'
+                                      ? `English → ${languageDisplay}`
+                                      : s.translation_direction ===
+                                          'learning_to_en'
+                                        ? `${languageDisplay} → English`
+                                        : s.translation_direction.replaceAll(
+                                            '_',
+                                            ' '
+                                          )}
+                                  </Badge>
                                   {s.ai_score != null ? (
                                     <Badge
                                       color={
@@ -1080,87 +1055,126 @@ const TranslationPracticePage: React.FC = () => {
                                             ? 'yellow'
                                             : 'red'
                                       }
+                                      variant='light'
                                     >
-                                      {s.ai_score.toFixed(1)} / 5
+                                      {s.ai_score.toFixed(1)}/5
                                     </Badge>
                                   ) : null}
                                 </Group>
-                                <Divider my='xs' />
-                                <ReactMarkdown
-                                  remarkPlugins={[remarkGfm]}
-                                  components={{
-                                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                    p: ({ children }: any) => (
-                                      <Box mb='md' component='p'>
-                                        {children}
-                                      </Box>
-                                    ),
-                                  }}
-                                >
-                                  {s.ai_feedback}
-                                </ReactMarkdown>
-                              </Paper>
-                            </Stack>
-                          </Accordion.Panel>
-                        </Accordion.Item>
-                      ))}
-                    </Accordion>
-                  ) : (
-                    <Text size='sm' c='dimmed'>
-                      {historySearch.trim()
-                        ? 'No results found.'
-                        : 'No practice yet. Submit a translation to see history here.'}
-                    </Text>
+                              </Group>
+                            </Accordion.Control>
+                            <Accordion.Panel>
+                              <Stack gap='xs'>
+                                <Text size='xs' c='dimmed'>
+                                  {new Date(s.created_at).toLocaleString()}
+                                </Text>
+                                <Paper withBorder p='sm'>
+                                  <Text size='sm' fw={600}>
+                                    Original
+                                  </Text>
+                                  <Text size='sm'>{s.original_sentence}</Text>
+                                </Paper>
+                                <Paper withBorder p='sm'>
+                                  <Text size='sm' fw={600}>
+                                    Your translation
+                                  </Text>
+                                  <Text size='sm'>{s.user_translation}</Text>
+                                </Paper>
+                                <Paper withBorder p='sm'>
+                                  <Group justify='space-between' align='center'>
+                                    <Text size='sm' fw={600}>
+                                      AI Feedback
+                                    </Text>
+                                    {s.ai_score != null ? (
+                                      <Badge
+                                        color={
+                                          s.ai_score >= 4
+                                            ? 'green'
+                                            : s.ai_score >= 3
+                                              ? 'yellow'
+                                              : 'red'
+                                        }
+                                      >
+                                        {s.ai_score.toFixed(1)} / 5
+                                      </Badge>
+                                    ) : null}
+                                  </Group>
+                                  <Divider my='xs' />
+                                  <ReactMarkdown
+                                    remarkPlugins={[remarkGfm]}
+                                    components={{
+                                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                      p: ({ children }: any) => (
+                                        <Box mb='md' component='p'>
+                                          {children}
+                                        </Box>
+                                      ),
+                                    }}
+                                  >
+                                    {s.ai_feedback}
+                                  </ReactMarkdown>
+                                </Paper>
+                              </Stack>
+                            </Accordion.Panel>
+                          </Accordion.Item>
+                        ))}
+                      </Accordion>
+                    ) : (
+                      <Text size='sm' c='dimmed'>
+                        {historySearch.trim()
+                          ? 'No results found.'
+                          : 'No practice yet. Submit a translation to see history here.'}
+                      </Text>
+                    )}
+                  </ScrollArea>
+                  {history && history.total > 0 && (
+                    <Group justify='space-between' align='center' mt='xs'>
+                      <Button
+                        variant='light'
+                        size='sm'
+                        onClick={handlePrevPage}
+                        disabled={!hasPrevPage}
+                      >
+                        ← Previous
+                      </Button>
+                      <Text size='sm' c='dimmed'>
+                        Page {currentPage} of {totalPages}
+                      </Text>
+                      <Button
+                        variant='light'
+                        size='sm'
+                        onClick={handleNextPage}
+                        disabled={!hasNextPage}
+                      >
+                        Next →
+                      </Button>
+                    </Group>
                   )}
-                </ScrollArea>
-                {history && history.total > 0 && (
-                  <Group justify='space-between' align='center' mt='xs'>
-                    <Button
-                      variant='light'
-                      size='sm'
-                      onClick={handlePrevPage}
-                      disabled={!hasPrevPage}
-                    >
-                      ← Previous
-                    </Button>
-                    <Text size='sm' c='dimmed'>
-                      Page {currentPage} of {totalPages}
-                    </Text>
-                    <Button
-                      variant='light'
-                      size='sm'
-                      onClick={handleNextPage}
-                      disabled={!hasNextPage}
-                    >
-                      Next →
-                    </Button>
+                </Stack>
+              </Card>
+              <Card withBorder>
+                <Stack gap='xs'>
+                  <Title order={5}>Stats</Title>
+                  <Text size='sm'>
+                    Total sessions: {stats?.total_sessions ?? 0}
+                    {stats?.average_score != null
+                      ? ` • Avg score: ${stats.average_score.toFixed(2)}`
+                      : ''}
+                  </Text>
+                  <Group gap='xs'>
+                    <Badge color='green' variant='light'>
+                      Excellent {stats?.excellent_count ?? 0}
+                    </Badge>
+                    <Badge color='blue' variant='light'>
+                      Good {stats?.good_count ?? 0}
+                    </Badge>
+                    <Badge color='yellow' variant='light'>
+                      Needs work {stats?.needs_improvement_count ?? 0}
+                    </Badge>
                   </Group>
-                )}
-              </Stack>
-            </Card>
-            <Card withBorder>
-              <Stack gap='xs'>
-                <Title order={5}>Stats</Title>
-                <Text size='sm'>
-                  Total sessions: {stats?.total_sessions ?? 0}
-                  {stats?.average_score != null
-                    ? ` • Avg score: ${stats.average_score.toFixed(2)}`
-                    : ''}
-                </Text>
-                <Group gap='xs'>
-                  <Badge color='green' variant='light'>
-                    Excellent {stats?.excellent_count ?? 0}
-                  </Badge>
-                  <Badge color='blue' variant='light'>
-                    Good {stats?.good_count ?? 0}
-                  </Badge>
-                  <Badge color='yellow' variant='light'>
-                    Needs work {stats?.needs_improvement_count ?? 0}
-                  </Badge>
-                </Group>
-              </Stack>
-            </Card>
-          </Stack>
+                </Stack>
+              </Card>
+            </Stack>
           </Stack>
         </Stack>
       </Container>
@@ -1195,99 +1209,183 @@ const TranslationPracticePage: React.FC = () => {
             pointerEvents: 'none',
           }}
         >
-        <Group gap={0} align='stretch' style={{ pointerEvents: 'auto' }}>
-          <Button
-            onClick={() => setShortcutsExpanded(!shortcutsExpanded)}
-            variant='subtle'
-            size='sm'
-            p={8}
-            style={{
-              borderRadius: '8px 0 0 8px',
-              border: '1px solid var(--mantine-color-default-border)',
-              borderRight: 'none',
-              background: 'var(--mantine-color-body)',
-              minWidth: 'auto',
-              height: 'auto',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-            title={
-              isExpanded
-                ? 'Collapse keyboard shortcuts'
-                : 'Expand keyboard shortcuts'
-            }
-          >
-            {isExpanded ? (
-              <IconChevronRight size={16} />
-            ) : (
-              <IconChevronLeft size={16} />
-            )}
-          </Button>
+          <Group gap={0} align='stretch' style={{ pointerEvents: 'auto' }}>
+            <Button
+              onClick={() => setShortcutsExpanded(!shortcutsExpanded)}
+              variant='subtle'
+              size='sm'
+              p={8}
+              style={{
+                borderRadius: '8px 0 0 8px',
+                border: '1px solid var(--mantine-color-default-border)',
+                borderRight: 'none',
+                background: 'var(--mantine-color-body)',
+                minWidth: 'auto',
+                height: 'auto',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              title={
+                isExpanded
+                  ? 'Collapse keyboard shortcuts'
+                  : 'Expand keyboard shortcuts'
+              }
+            >
+              {isExpanded ? (
+                <IconChevronRight size={16} />
+              ) : (
+                <IconChevronLeft size={16} />
+              )}
+            </Button>
 
-          <Transition
-            mounted={isExpanded}
-            transition='slide-left'
-            duration={200}
-            timingFunction='ease'
-          >
-            {styles => (
-              <Box
-                style={{
-                  ...styles,
-                  borderRadius: '0 8px 8px 0',
-                  border: '1px solid var(--mantine-color-default-border)',
-                  background: 'var(--mantine-color-body)',
-                  padding: 'var(--mantine-spacing-sm)',
-                  maxWidth: '280px',
-                  minWidth: '240px',
-                }}
-              >
-                <Stack gap='xs'>
-                  <Group gap='xs' align='center'>
-                    <IconKeyboard size={16} />
-                    <Text size='sm' fw={500}>
-                      Keyboard Shortcuts
-                    </Text>
-                  </Group>
-
-                  {/* Expand/Collapse shortcuts info */}
-                  <Group gap='xs' align='center'>
-                    <Badge
-                      size='sm'
-                      variant='light'
-                      style={{ minWidth: '32px' }}
-                    >
-                      {'<'}
-                    </Badge>
-                    <Badge
-                      size='sm'
-                      variant='light'
-                      style={{ minWidth: '32px' }}
-                    >
-                      {'>'}
-                    </Badge>
-                    <Text size='xs' c='dimmed'>
-                      Expand / Collapse panel
-                    </Text>
-                  </Group>
-
+            <Transition
+              mounted={isExpanded}
+              transition='slide-left'
+              duration={200}
+              timingFunction='ease'
+            >
+              {styles => (
+                <Box
+                  style={{
+                    ...styles,
+                    borderRadius: '0 8px 8px 0',
+                    border: '1px solid var(--mantine-color-default-border)',
+                    background: 'var(--mantine-color-body)',
+                    padding: 'var(--mantine-spacing-sm)',
+                    maxWidth: '280px',
+                    minWidth: '240px',
+                  }}
+                >
                   <Stack gap='xs'>
-                    {isInputFocused || isDirectionFocused ? (
-                      <>
-                        <Group gap='xs' align='center'>
-                          <Badge
-                            size='sm'
-                            variant='light'
-                            style={{ minWidth: '32px' }}
-                          >
-                            Esc
-                          </Badge>
-                          <Text size='xs' c='dimmed'>
-                            Reset focus / enable hotkeys
-                          </Text>
-                        </Group>
-                        {(isInputFocused || isDirectionFocused) && (
+                    <Group gap='xs' align='center'>
+                      <IconKeyboard size={16} />
+                      <Text size='sm' fw={500}>
+                        Keyboard Shortcuts
+                      </Text>
+                    </Group>
+
+                    {/* Expand/Collapse shortcuts info */}
+                    <Group gap='xs' align='center'>
+                      <Badge
+                        size='sm'
+                        variant='light'
+                        style={{ minWidth: '32px' }}
+                      >
+                        {'<'}
+                      </Badge>
+                      <Badge
+                        size='sm'
+                        variant='light'
+                        style={{ minWidth: '32px' }}
+                      >
+                        {'>'}
+                      </Badge>
+                      <Text size='xs' c='dimmed'>
+                        Expand / Collapse panel
+                      </Text>
+                    </Group>
+
+                    <Stack gap='xs'>
+                      {isInputFocused || isDirectionFocused ? (
+                        <>
+                          <Group gap='xs' align='center'>
+                            <Badge
+                              size='sm'
+                              variant='light'
+                              style={{ minWidth: '32px' }}
+                            >
+                              Esc
+                            </Badge>
+                            <Text size='xs' c='dimmed'>
+                              Reset focus / enable hotkeys
+                            </Text>
+                          </Group>
+                          {(isInputFocused || isDirectionFocused) && (
+                            <Group gap='xs' align='center'>
+                              <Badge
+                                size='sm'
+                                variant='light'
+                                style={{ minWidth: '32px' }}
+                              >
+                                ⌘↵
+                              </Badge>
+                              <Text size='xs' c='dimmed'>
+                                Submit for feedback
+                              </Text>
+                            </Group>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          <Group gap='xs' align='center'>
+                            <Badge
+                              size='sm'
+                              variant='light'
+                              style={{ minWidth: '32px' }}
+                            >
+                              A
+                            </Badge>
+                            <Text size='xs' c='dimmed'>
+                              Generate with AI
+                            </Text>
+                          </Group>
+                          <Group gap='xs' align='center'>
+                            <Badge
+                              size='sm'
+                              variant='light'
+                              style={{
+                                minWidth: '32px',
+                                opacity: isFromExistingDisabled ? 0.5 : 1,
+                              }}
+                            >
+                              E
+                            </Badge>
+                            <Text
+                              size='xs'
+                              c={isFromExistingDisabled ? 'dimmed' : 'dimmed'}
+                              style={{
+                                opacity: isFromExistingDisabled ? 0.5 : 1,
+                              }}
+                            >
+                              From existing content
+                              {isFromExistingDisabled &&
+                                ' (disabled when translating from English)'}
+                            </Text>
+                          </Group>
+                          <Group gap='xs' align='center'>
+                            <Badge
+                              size='sm'
+                              variant='light'
+                              style={{
+                                minWidth: '32px',
+                                opacity: lastGenerationType ? 1 : 0.5,
+                              }}
+                            >
+                              N
+                            </Badge>
+                            <Text
+                              size='xs'
+                              c='dimmed'
+                              style={{ opacity: lastGenerationType ? 1 : 0.5 }}
+                            >
+                              {lastGenerationType
+                                ? `Generate another (${lastGenerationType === 'ai' ? 'AI' : 'existing'})`
+                                : 'Generate another (available after generating a sentence)'}
+                            </Text>
+                          </Group>
+                          <Group gap='xs' align='center'>
+                            <Badge
+                              size='sm'
+                              variant='light'
+                              style={{ minWidth: '32px' }}
+                            >
+                              Tab
+                            </Badge>
+                            <Text size='xs' c='dimmed'>
+                              Cycle: topic ↔ translation
+                            </Text>
+                          </Group>
                           <Group gap='xs' align='center'>
                             <Badge
                               size='sm'
@@ -1300,175 +1398,91 @@ const TranslationPracticePage: React.FC = () => {
                               Submit for feedback
                             </Text>
                           </Group>
-                        )}
-                      </>
-                    ) : (
-                      <>
-                        <Group gap='xs' align='center'>
-                          <Badge
-                            size='sm'
-                            variant='light'
-                            style={{ minWidth: '32px' }}
-                          >
-                            A
-                          </Badge>
-                          <Text size='xs' c='dimmed'>
-                            Generate with AI
-                          </Text>
-                        </Group>
-                        <Group gap='xs' align='center'>
-                          <Badge
-                            size='sm'
-                            variant='light'
-                            style={{
-                              minWidth: '32px',
-                              opacity: isFromExistingDisabled ? 0.5 : 1,
-                            }}
-                          >
-                            E
-                          </Badge>
-                          <Text
-                            size='xs'
-                            c={isFromExistingDisabled ? 'dimmed' : 'dimmed'}
-                            style={{
-                              opacity: isFromExistingDisabled ? 0.5 : 1,
-                            }}
-                          >
-                            From existing content
-                            {isFromExistingDisabled &&
-                              ' (disabled when translating from English)'}
-                          </Text>
-                        </Group>
-                        <Group gap='xs' align='center'>
-                          <Badge
-                            size='sm'
-                            variant='light'
-                            style={{
-                              minWidth: '32px',
-                              opacity: lastGenerationType ? 1 : 0.5,
-                            }}
-                          >
-                            N
-                          </Badge>
-                          <Text
-                            size='xs'
-                            c='dimmed'
-                            style={{ opacity: lastGenerationType ? 1 : 0.5 }}
-                          >
-                            {lastGenerationType
-                              ? `Generate another (${lastGenerationType === 'ai' ? 'AI' : 'existing'})`
-                              : 'Generate another (available after generating a sentence)'}
-                          </Text>
-                        </Group>
-                        <Group gap='xs' align='center'>
-                          <Badge
-                            size='sm'
-                            variant='light'
-                            style={{ minWidth: '32px' }}
-                          >
-                            Tab
-                          </Badge>
-                          <Text size='xs' c='dimmed'>
-                            Cycle: topic ↔ translation
-                          </Text>
-                        </Group>
-                        <Group gap='xs' align='center'>
-                          <Badge
-                            size='sm'
-                            variant='light'
-                            style={{ minWidth: '32px' }}
-                          >
-                            ⌘↵
-                          </Badge>
-                          <Text size='xs' c='dimmed'>
-                            Submit for feedback
-                          </Text>
-                        </Group>
-                        <Group gap='xs' align='center'>
-                          <Badge
-                            size='sm'
-                            variant='light'
-                            style={{ minWidth: '32px' }}
-                          >
-                            Esc
-                          </Badge>
-                          <Text size='xs' c='dimmed'>
-                            Deselect / blur inputs
-                          </Text>
-                        </Group>
-                        <Group gap='xs' align='center'>
-                          <Badge
-                            size='sm'
-                            variant='light'
-                            style={{ minWidth: '32px' }}
-                          >
-                            T
-                          </Badge>
-                          <Text size='xs' c='dimmed'>
-                            Scroll to top
-                          </Text>
-                        </Group>
-                        <Group gap='xs' align='center'>
-                          <Badge
-                            size='sm'
-                            variant='light'
-                            style={{ minWidth: '32px' }}
-                          >
-                            H
-                          </Badge>
-                          <Text size='xs' c='dimmed'>
-                            Scroll to history
-                          </Text>
-                        </Group>
-                        <Group gap='xs' align='center'>
-                          <Badge
-                            size='sm'
-                            variant='light'
-                            style={{ minWidth: '32px' }}
-                          >
-                            D
-                          </Badge>
-                          <Text size='xs' c='dimmed'>
-                            Focus direction dropdown
-                          </Text>
-                        </Group>
-                        {isDirectionFocused && (
-                          <>
-                            <Group gap='xs' align='center'>
-                              <Badge
-                                size='sm'
-                                variant='light'
-                                style={{ minWidth: '32px' }}
-                              >
-                                ↑↓
-                              </Badge>
-                              <Text size='xs' c='dimmed'>
-                                Navigate options
-                              </Text>
-                            </Group>
-                            <Group gap='xs' align='center'>
-                              <Badge
-                                size='sm'
-                                variant='light'
-                                style={{ minWidth: '32px' }}
-                              >
-                                ↵
-                              </Badge>
-                              <Text size='xs' c='dimmed'>
-                                Select option
-                              </Text>
-                            </Group>
-                          </>
-                        )}
-                      </>
-                    )}
+                          <Group gap='xs' align='center'>
+                            <Badge
+                              size='sm'
+                              variant='light'
+                              style={{ minWidth: '32px' }}
+                            >
+                              Esc
+                            </Badge>
+                            <Text size='xs' c='dimmed'>
+                              Deselect / blur inputs
+                            </Text>
+                          </Group>
+                          <Group gap='xs' align='center'>
+                            <Badge
+                              size='sm'
+                              variant='light'
+                              style={{ minWidth: '32px' }}
+                            >
+                              T
+                            </Badge>
+                            <Text size='xs' c='dimmed'>
+                              Scroll to top
+                            </Text>
+                          </Group>
+                          <Group gap='xs' align='center'>
+                            <Badge
+                              size='sm'
+                              variant='light'
+                              style={{ minWidth: '32px' }}
+                            >
+                              H
+                            </Badge>
+                            <Text size='xs' c='dimmed'>
+                              Scroll to history
+                            </Text>
+                          </Group>
+                          <Group gap='xs' align='center'>
+                            <Badge
+                              size='sm'
+                              variant='light'
+                              style={{ minWidth: '32px' }}
+                            >
+                              D
+                            </Badge>
+                            <Text size='xs' c='dimmed'>
+                              Focus direction dropdown
+                            </Text>
+                          </Group>
+                          {isDirectionFocused && (
+                            <>
+                              <Group gap='xs' align='center'>
+                                <Badge
+                                  size='sm'
+                                  variant='light'
+                                  style={{ minWidth: '32px' }}
+                                >
+                                  ↑↓
+                                </Badge>
+                                <Text size='xs' c='dimmed'>
+                                  Navigate options
+                                </Text>
+                              </Group>
+                              <Group gap='xs' align='center'>
+                                <Badge
+                                  size='sm'
+                                  variant='light'
+                                  style={{ minWidth: '32px' }}
+                                >
+                                  ↵
+                                </Badge>
+                                <Text size='xs' c='dimmed'>
+                                  Select option
+                                </Text>
+                              </Group>
+                            </>
+                          )}
+                        </>
+                      )}
+                    </Stack>
                   </Stack>
-                </Stack>
-              </Box>
-            )}
-          </Transition>
-        </Group>
-      </Box>
+                </Box>
+              )}
+            </Transition>
+          </Group>
+        </Box>
       )}
     </Box>
   );

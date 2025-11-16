@@ -78,7 +78,7 @@ describe('TranslationPracticePage - inline AI feedback', () => {
 
     // Load sentence
     const generateBtn = await screen.findByRole('button', {
-      name: /generate with ai/i,
+      name: /generate ai/i,
     });
     fireEvent.click(generateBtn);
 
