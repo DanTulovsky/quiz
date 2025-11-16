@@ -15,6 +15,7 @@ import {
   Badge,
   Paper,
   ScrollArea,
+  Anchor,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import ReactMarkdown from 'react-markdown';
@@ -188,6 +189,27 @@ const TranslationPracticePage: React.FC = () => {
       );
     });
   }, [history?.sessions, historySearch]);
+  const getSourceInfo = (sourceType?: string | null, sourceId?: number | null) => {
+    if (!sourceType || !sourceId) return null;
+    const type = sourceType.toLowerCase();
+    if (type === 'vocabulary_question') {
+      return { label: 'Vocabulary question', href: `/vocabulary/${sourceId}` };
+    }
+    if (type === 'reading_comprehension') {
+      return { label: 'Reading comprehension', href: `/reading-comprehension/${sourceId}` };
+    }
+    if (type === 'story_section') {
+      // Best-effort jump: Story page, passing sectionId as query for now
+      return { label: 'Story section', href: `/story?sectionId=${sourceId}` };
+    }
+    if (type === 'snippet') {
+      return { label: 'Snippet', href: `/snippets` };
+    }
+    if (type === 'phrasebook') {
+      return { label: 'Phrasebook', href: `/phrasebook` };
+    }
+    return { label: type.replaceAll('_', ' '), href: undefined as unknown as string };
+  };
   const languageDisplay = toTitle(learningLanguage || 'learning language');
   const directionOptions = useMemo(
     () => [
@@ -241,7 +263,17 @@ const TranslationPracticePage: React.FC = () => {
             <Text fw={600}>Text to translate</Text>
             <Paper withBorder p="md" bg="gray.0">
               {currentSentence ? (
-                <Text>{currentSentence.sentence_text}</Text>
+                <Stack gap={6}>
+                  <Text>{currentSentence.sentence_text}</Text>
+                  {(() => {
+                    const info = getSourceInfo(currentSentence.source_type as unknown as string, currentSentence.source_id as unknown as number);
+                    return info ? (
+                      <Text size="xs" c="dimmed">
+                        From existing content: {info.href ? <Anchor href={info.href}>{info.label}</Anchor> : info.label}
+                      </Text>
+                    ) : null;
+                  })()}
+                </Stack>
               ) : (
                 <Text c="dimmed">Click Generate or From existing content to load a sentence.</Text>
               )}

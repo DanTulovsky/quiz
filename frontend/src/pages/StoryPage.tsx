@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import {
   Container,
   Title,
@@ -38,6 +38,7 @@ const StoryPage: React.FC = () => {
     id?: string;
     sectionId?: string;
   }>();
+  const location = useLocation();
 
   const {
     currentStory,
@@ -95,11 +96,14 @@ const StoryPage: React.FC = () => {
     setCurrentStory,
   ]);
 
-  // Handle section ID parameter - prioritize URL over localStorage
+  // Handle section ID parameter or query (?sectionId=) - prioritize URL over localStorage
   // This must run AFTER sections are loaded but BEFORE localStorage restoration
   useEffect(() => {
-    if (sectionIdParam && currentStory && currentStory.sections) {
-      const sectionId = parseInt(sectionIdParam, 10);
+    const qp = new URLSearchParams(location.search);
+    const sectionIdFromQuery = qp.get('sectionId') || undefined;
+    const selectedSectionId = sectionIdParam || sectionIdFromQuery;
+    if (selectedSectionId && currentStory && currentStory.sections) {
+      const sectionId = parseInt(selectedSectionId, 10);
       if (!isNaN(sectionId)) {
         const sectionIndex = currentStory.sections.findIndex(
           section => section.id === sectionId
@@ -112,6 +116,7 @@ const StoryPage: React.FC = () => {
     }
   }, [
     sectionIdParam,
+    location.search,
     currentStory?.sections,
     currentSectionIndex,
     goToSection,
