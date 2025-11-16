@@ -28,7 +28,7 @@ type TranslationPracticeServiceInterface interface {
 	GenerateSentence(ctx context.Context, userID uint, req *models.GenerateSentenceRequest, aiService AIServiceInterface, userAIConfig *models.UserAIConfig) (*models.TranslationPracticeSentence, error)
 	GetSentenceFromExistingContent(ctx context.Context, userID uint, language, level string, direction models.TranslationDirection) (*models.TranslationPracticeSentence, error)
 	SubmitTranslation(ctx context.Context, userID uint, req *models.SubmitTranslationRequest, aiService AIServiceInterface, userAIConfig *models.UserAIConfig) (*models.TranslationPracticeSession, error)
-	GetPracticeHistory(ctx context.Context, userID uint, limit int, offset int, search string) ([]models.TranslationPracticeSession, int, error)
+	GetPracticeHistory(ctx context.Context, userID uint, limit, offset int, search string) ([]models.TranslationPracticeSession, int, error)
 	GetPracticeStats(ctx context.Context, userID uint) (map[string]interface{}, error)
 }
 
@@ -378,7 +378,11 @@ func (s *TranslationPracticeService) GetPracticeHistory(
 	if err != nil {
 		return nil, 0, contextutils.WrapErrorf(err, "failed to query practice history")
 	}
-	defer rows.Close()
+	defer func() {
+		if closeErr := rows.Close(); closeErr != nil {
+			s.logger.Warn(ctx, "Failed to close rows", map[string]interface{}{"error": closeErr.Error()})
+		}
+	}()
 
 	var sessions []models.TranslationPracticeSession
 	for rows.Next() {
@@ -862,36 +866,9 @@ func (s *TranslationPracticeService) stripQuotes(sentence string) string {
 	return trimmed
 }
 
-// stripLeadingQuotes removes leading quote marks and brackets from a sentence
-func (s *TranslationPracticeService) stripLeadingQuotes(sentence string) string {
-	// Common opening quotes and brackets (ASCII and Unicode)
-	// Note: We strip common quote characters that appear at sentence start due to context extraction
-	leadingChars := []string{
-		`"`, `'`, `«`, `»`, `"`, `'`, `'`, `"`, `"`, // ASCII and Unicode quotes
-		`(`, `[`, `{`, `（`, `［`, `｛`, // ASCII and full-width brackets
-		`„`, `‚`, `‹`, // Other quote marks
-		`„`, `‚`, // German/Slavic quotes
-	}
-	trimmed := strings.TrimSpace(sentence)
-	// Keep stripping until no more leading quotes/brackets
-	changed := true
-	for changed {
-		changed = false
-		for _, char := range leadingChars {
-			if strings.HasPrefix(trimmed, char) {
-				trimmed = strings.TrimPrefix(trimmed, char)
-				trimmed = strings.TrimSpace(trimmed)
-				changed = true
-				break // Restart check after removal
-			}
-		}
-	}
-	return trimmed
-}
-
 // extractSentences uses Punkt tokenizer if available, otherwise falls back to regex.
 // Preserves terminal punctuation but strips leading quotes/brackets.
-func (s *TranslationPracticeService) extractSentences(text string, language string) []string {
+func (s *TranslationPracticeService) extractSentences(text, language string) []string {
 	// Try Punkt first if we have a model for this language
 	if punktModel := s.getPunktModel(language); punktModel != nil {
 		tokenized := punktModel.Tokenize(text)

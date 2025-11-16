@@ -76,6 +76,7 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
     if (path.startsWith('/m/reading-comprehension')) return 'reading';
     if (path.startsWith('/m/story')) return 'story';
     if (path.startsWith('/m/daily')) return 'daily';
+    if (path.startsWith('/m/translation-practice')) return 'translation-practice';
     if (path.startsWith('/m/conversations')) return 'conversations';
     if (path.startsWith('/m/bookmarks')) return 'bookmarks';
     if (path.startsWith('/m/snippets')) return 'snippets';
@@ -108,6 +109,12 @@ const MobileLayout: React.FC<MobileLayoutProps> = ({ children }) => {
       label: 'Word of the Day',
       icon: IconSparkles,
       path: '/m/word-of-day',
+    },
+    {
+      key: 'translation-practice',
+      label: 'Translation Practice',
+      icon: IconLanguage,
+      path: '/m/translation-practice',
     },
     {
       key: 'conversations',

@@ -5,7 +5,7 @@ import TranslationPracticePage from '../TranslationPracticePage';
 const MobileTranslationPracticePage: React.FC = () => {
   // For now, reuse the same page; Mantine is responsive.
   return (
-    <Stack p="xs">
+    <Stack p='xs'>
       <TranslationPracticePage />
     </Stack>
   );

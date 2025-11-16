@@ -18,11 +18,11 @@ var exampleFilesFS embed.FS
 
 // Template names as constants
 const (
-	BatchQuestionPromptTemplate      = "batch_question_prompt.tmpl"
-	ChatPromptTemplate               = "chat_prompt.tmpl"
-	JSONStructureGuidanceTemplate    = "json_structure_guidance.tmpl"
-	AIFixPromptTemplate              = "ai_fix_prompt.tmpl"
-	TranslationSentencePromptTemplate = "translation_sentence_prompt.tmpl"
+	BatchQuestionPromptTemplate         = "batch_question_prompt.tmpl"
+	ChatPromptTemplate                  = "chat_prompt.tmpl"
+	JSONStructureGuidanceTemplate       = "json_structure_guidance.tmpl"
+	AIFixPromptTemplate                 = "ai_fix_prompt.tmpl"
+	TranslationSentencePromptTemplate   = "translation_sentence_prompt.tmpl"
 	TranslationEvaluationPromptTemplate = "translation_evaluation_prompt.tmpl"
 )
 

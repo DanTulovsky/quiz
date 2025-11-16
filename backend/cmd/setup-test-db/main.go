@@ -1311,7 +1311,10 @@ func loadAndCreateSnippets(ctx context.Context, filePath string, users map[strin
 	return snippets, nil
 }
 
-// seedTranslationPracticeData seeds minimal sentences and sessions for translation practice endpoints
+// seedTranslationPracticeData seeds minimal sentences and sessions for translation practice endpoints.
+// Errors during seeding are logged but do not stop the process.
+//
+//nolint:unparam // Error return is always nil by design - errors are logged and processing continues
 func seedTranslationPracticeData(ctx context.Context, users map[string]*models.User, db *sql.DB, logger *observability.Logger) error {
 	type seedUser struct {
 		Username string

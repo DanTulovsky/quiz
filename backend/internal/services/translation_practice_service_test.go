@@ -555,4 +555,3 @@ func BenchmarkExtractSentences_Russian(b *testing.B) {
 		_ = service.extractSentences(text, "ru")
 	}
 }
-

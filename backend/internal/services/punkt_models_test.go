@@ -84,5 +84,3 @@ func TestPunktModelsExistForConfiguredLanguages(t *testing.T) {
 		t.Logf("✅ Punkt model available for language=%s code=%s", langName, entry.Code)
 	}
 }
-
-

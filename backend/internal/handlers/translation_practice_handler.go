@@ -28,7 +28,7 @@ type TranslationPracticeHandler struct {
 // convertToServicesAIConfig creates AI config for the user in services format,
 // reusing the same approach as other handlers (e.g., story/quiz) including
 // fetching the saved per-provider API key.
-func (h *TranslationPracticeHandler) convertToServicesAIConfig(ctx context.Context, user *models.User) (*models.UserAIConfig, *int) {
+func (h *TranslationPracticeHandler) convertToServicesAIConfig(ctx context.Context, user *models.User) *models.UserAIConfig {
 	aiProvider := ""
 	if user.AIProvider.Valid {
 		aiProvider = user.AIProvider.String
@@ -38,12 +38,10 @@ func (h *TranslationPracticeHandler) convertToServicesAIConfig(ctx context.Conte
 		aiModel = user.AIModel.String
 	}
 	apiKey := ""
-	var apiKeyID *int
 	if aiProvider != "" {
-		savedKey, keyID, err := h.userService.GetUserAPIKeyWithID(ctx, user.ID, aiProvider)
+		savedKey, _, err := h.userService.GetUserAPIKeyWithID(ctx, user.ID, aiProvider)
 		if err == nil && savedKey != "" {
 			apiKey = savedKey
-			apiKeyID = keyID
 		}
 	}
 	return &models.UserAIConfig{
@@ -51,7 +49,7 @@ func (h *TranslationPracticeHandler) convertToServicesAIConfig(ctx context.Conte
 		Model:    aiModel,
 		APIKey:   apiKey,
 		Username: user.Username,
-	}, apiKeyID
+	}
 }
 
 // NewTranslationPracticeHandler creates a new TranslationPracticeHandler instance
@@ -101,7 +99,7 @@ func (h *TranslationPracticeHandler) GenerateSentence(c *gin.Context) {
 		return
 	}
 
-	userAIConfig, _ := h.convertToServicesAIConfig(ctx, user)
+	userAIConfig := h.convertToServicesAIConfig(ctx, user)
 
 	// Convert API request to service request
 	serviceReq := &models.GenerateSentenceRequest{
@@ -212,7 +210,7 @@ func (h *TranslationPracticeHandler) SubmitTranslation(c *gin.Context) {
 		return
 	}
 
-	userAIConfig, _ := h.convertToServicesAIConfig(ctx, user)
+	userAIConfig := h.convertToServicesAIConfig(ctx, user)
 
 	// Convert API request to service request
 	serviceReq := &models.SubmitTranslationRequest{

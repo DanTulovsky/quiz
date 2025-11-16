@@ -1,12 +1,12 @@
-import React, {ReactNode, useCallback, useState, useEffect} from 'react';
-import {Link, useLocation, useNavigate} from 'react-router-dom';
-import {useAuth} from '../hooks/useAuth';
-import {useGetV1SettingsLevels} from '../api/api';
-import {useTheme} from '../contexts/ThemeContext';
-import {fontScaleMap} from '../theme/theme';
-import {useMobileDetection} from '../hooks/useMobileDetection';
-import {useQueryClient} from '@tanstack/react-query';
-import {useHotkeys} from 'react-hotkeys-hook';
+import React, { ReactNode, useCallback, useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+import { useGetV1SettingsLevels } from '../api/api';
+import { useTheme } from '../contexts/ThemeContext';
+import { fontScaleMap } from '../theme/theme';
+import { useMobileDetection } from '../hooks/useMobileDetection';
+import { useQueryClient } from '@tanstack/react-query';
+import { useHotkeys } from 'react-hotkeys-hook';
 import {
   AppShell,
   Text,
@@ -47,7 +47,7 @@ import WorkerStatus from './WorkerStatus';
 import VersionDisplay from './VersionDisplay';
 import HelpModal from './HelpModal';
 import FeedbackModal from './FeedbackModal';
-import {getGetV1AiConversationsQueryKey} from '../api/api';
+import { getGetV1AiConversationsQueryKey } from '../api/api';
 
 interface LayoutProps {
   children: ReactNode;
@@ -59,14 +59,14 @@ interface LevelsApiResponse {
   level_descriptions: Record<string, string>;
 }
 
-const Layout: React.FC<LayoutProps> = ({children}) => {
-  const {user, logout} = useAuth();
+const Layout: React.FC<LayoutProps> = ({ children }) => {
+  const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const theme = useMantineTheme();
-  const {colorScheme, setColorScheme, fontSize} = useTheme();
+  const { colorScheme, setColorScheme, fontSize } = useTheme();
   // Expose current override to determine if we should offer switch back to mobile
-  const {setMobileView, deviceView} = useMobileDetection();
+  const { setMobileView, deviceView } = useMobileDetection();
   const queryClient = useQueryClient();
 
   // Detect if we're on a mobile device (by viewport or user agent)
@@ -80,8 +80,8 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
   // Only call the hook when we have a valid language parameter
   const language = user?.preferred_language;
   const hasValidLanguage = Boolean(language && language.trim() !== '');
-  const {data: levelsData} = useGetV1SettingsLevels<LevelsApiResponse>(
-    hasValidLanguage ? {language: language!} : undefined,
+  const { data: levelsData } = useGetV1SettingsLevels<LevelsApiResponse>(
+    hasValidLanguage ? { language: language! } : undefined,
     {
       query: {
         enabled: hasValidLanguage,
@@ -117,15 +117,15 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
       limit: 50,
       offset: 0,
     });
-    queryClient.invalidateQueries({queryKey: conversationsListKey});
-    queryClient.refetchQueries({queryKey: conversationsListKey});
+    queryClient.invalidateQueries({ queryKey: conversationsListKey });
+    queryClient.refetchQueries({ queryKey: conversationsListKey });
   }, [queryClient]);
 
   // Refresh Bookmarked Messages when navigating to the page
   const refreshBookmarkedMessages = useCallback(() => {
     // Invalidate all bookmarked messages queries (including mobile with search params)
-    queryClient.invalidateQueries({queryKey: ['/v1/ai/bookmarks']});
-    queryClient.refetchQueries({queryKey: ['/v1/ai/bookmarks']});
+    queryClient.invalidateQueries({ queryKey: ['/v1/ai/bookmarks'] });
+    queryClient.refetchQueries({ queryKey: ['/v1/ai/bookmarks'] });
 
     // Also try with different query key patterns that might be used
     queryClient.invalidateQueries({
@@ -156,7 +156,7 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
   // Use useCallback to prevent recreation of navigation array
   const navigation = useCallback(() => {
     const mainNav = [
-      {name: 'Quiz', href: '/quiz', icon: IconBook2, testId: 'nav-quiz'},
+      { name: 'Quiz', href: '/quiz', icon: IconBook2, testId: 'nav-quiz' },
       {
         name: 'Vocabulary',
         href: '/vocabulary',
@@ -227,19 +227,19 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
 
     const adminNav = isAdmin
       ? [
-        {
-          name: 'Admin',
-          href: '/admin',
-          icon: IconShield,
-          testId: 'nav-admin',
-        },
-      ]
+          {
+            name: 'Admin',
+            href: '/admin',
+            icon: IconShield,
+            testId: 'nav-admin',
+          },
+        ]
       : [];
 
-    return {mainNav, adminNav};
+    return { mainNav, adminNav };
   }, [isAdmin]);
 
-  const {mainNav, adminNav} = navigation();
+  const { mainNav, adminNav } = navigation();
 
   // Helper function to map navigation index to shortcut key
   // Returns number string for indices 0-8 (1-9), letter string for indices 9+ (a, b, etc.)
@@ -261,7 +261,7 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
         navigate(mainNav[0].href);
       }
     },
-    {enableOnFormTags: false, preventDefault: true}
+    { enableOnFormTags: false, preventDefault: true }
   );
 
   useHotkeys(
@@ -272,7 +272,7 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
         navigate(mainNav[1].href);
       }
     },
-    {enableOnFormTags: false, preventDefault: true}
+    { enableOnFormTags: false, preventDefault: true }
   );
 
   useHotkeys(
@@ -283,7 +283,7 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
         navigate(mainNav[2].href);
       }
     },
-    {enableOnFormTags: false, preventDefault: true}
+    { enableOnFormTags: false, preventDefault: true }
   );
 
   useHotkeys(
@@ -294,7 +294,7 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
         navigate(mainNav[3].href);
       }
     },
-    {enableOnFormTags: false, preventDefault: true}
+    { enableOnFormTags: false, preventDefault: true }
   );
 
   useHotkeys(
@@ -305,7 +305,7 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
         navigate(mainNav[4].href);
       }
     },
-    {enableOnFormTags: false, preventDefault: true}
+    { enableOnFormTags: false, preventDefault: true }
   );
 
   useHotkeys(
@@ -316,7 +316,7 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
         navigate(mainNav[5].href);
       }
     },
-    {enableOnFormTags: false, preventDefault: true}
+    { enableOnFormTags: false, preventDefault: true }
   );
 
   useHotkeys(
@@ -327,7 +327,7 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
         navigate(mainNav[6].href);
       }
     },
-    {enableOnFormTags: false, preventDefault: true}
+    { enableOnFormTags: false, preventDefault: true }
   );
 
   useHotkeys(
@@ -338,7 +338,7 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
         navigate(mainNav[7].href);
       }
     },
-    {enableOnFormTags: false, preventDefault: true}
+    { enableOnFormTags: false, preventDefault: true }
   );
 
   useHotkeys(
@@ -349,7 +349,7 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
         navigate(mainNav[8].href);
       }
     },
-    {enableOnFormTags: false, preventDefault: true}
+    { enableOnFormTags: false, preventDefault: true }
   );
 
   useHotkeys(
@@ -360,7 +360,7 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
         navigate(mainNav[9].href);
       }
     },
-    {enableOnFormTags: false, preventDefault: true}
+    { enableOnFormTags: false, preventDefault: true }
   );
 
   useHotkeys(
@@ -371,7 +371,7 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
         navigate(mainNav[10].href);
       }
     },
-    {enableOnFormTags: false, preventDefault: true}
+    { enableOnFormTags: false, preventDefault: true }
   );
 
   useHotkeys(
@@ -382,7 +382,7 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
         navigate(adminNav[0].href);
       }
     },
-    {enableOnFormTags: false, preventDefault: true}
+    { enableOnFormTags: false, preventDefault: true }
   );
 
   const handleLogout = async () => {
@@ -402,8 +402,8 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
 
   return (
     <AppShell
-      header={{height: 70}}
-      navbar={{width: 280, breakpoint: 'sm'}}
+      header={{ height: 70 }}
+      navbar={{ width: 280, breakpoint: 'sm' }}
       padding='md'
     >
       <AppShell.Header>
@@ -598,7 +598,7 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
       </AppShell.Header>
 
       <AppShell.Navbar>
-        <AppShell.Section grow style={{overflow: 'auto'}}>
+        <AppShell.Section grow style={{ overflow: 'auto' }}>
           <Stack gap='xs' mt='md'>
             {/* Main Navigation */}
             {mainNav.map((item, index) => (
@@ -618,8 +618,8 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
                   onClick={
                     item.name === 'Saved AI Conversations'
                       ? () => {
-                        refreshAiConversations();
-                      }
+                          refreshAiConversations();
+                        }
                       : undefined
                   }
                   label={
@@ -629,7 +629,7 @@ const Layout: React.FC<LayoutProps> = ({children}) => {
                       align='center'
                       gap='xs'
                     >
-                      <Text size='sm' truncate style={{flex: 1, minWidth: 0}}>
+                      <Text size='sm' truncate style={{ flex: 1, minWidth: 0 }}>
                         {item.name}
                       </Text>
                       <Badge

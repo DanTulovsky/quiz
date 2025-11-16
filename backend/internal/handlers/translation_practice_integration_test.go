@@ -3,8 +3,8 @@
 package handlers
 
 import (
-	"context"
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -210,11 +210,11 @@ func (suite *TranslationPracticeIntegrationTestSuite) createTestSessions(userID 
 	`
 
 	sentences := []struct {
-		original  string
+		original    string
 		translation string
-		direction string
-		feedback  string
-		score     *float64
+		direction   string
+		feedback    string
+		score       *float64
 	}{
 		{"Hello world", "Ciao mondo", "en_to_learning", "Good translation of basic greeting", floatPtr(4.5)},
 		{"How are you?", "Come stai?", "en_to_learning", "Correct informal greeting", floatPtr(4.8)},
@@ -407,9 +407,16 @@ func (suite *TranslationPracticeIntegrationTestSuite) TestHistorySearch() {
 	var resp1 api.TranslationPracticeHistoryResponse
 	err = json.Unmarshal(w1.Body.Bytes(), &resp1)
 	suite.NoError(err)
-	suite.Greater(resp1.Total, 0, "Should find sessions with 'Hello' in original sentence")
+	suite.Greater(resp1.Total, 0, "Should find sessions with 'Hello' in any field")
 	for _, session := range resp1.Sessions {
-		suite.Contains(session.OriginalSentence, "Hello", "All results should contain 'Hello'")
+		found := false
+		if containsIgnoreCase(session.OriginalSentence, "Hello") ||
+			containsIgnoreCase(session.UserTranslation, "Hello") ||
+			containsIgnoreCase(session.AiFeedback, "Hello") ||
+			containsIgnoreCase(session.TranslationDirection, "Hello") {
+			found = true
+		}
+		suite.True(found, "All results should contain 'Hello' in at least one field")
 	}
 
 	// Test 2: Search by user translation
@@ -594,5 +601,3 @@ func (suite *TranslationPracticeIntegrationTestSuite) TestHistoryPaginationWithS
 func containsIgnoreCase(s, substr string) bool {
 	return strings.Contains(strings.ToLower(s), strings.ToLower(substr))
 }
-
-

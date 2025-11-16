@@ -1,6 +1,9 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { BrowserRouter } from 'react-router-dom';
+import { MantineProvider } from '@mantine/core';
 import TranslationPracticePage from './TranslationPracticePage';
 
 vi.mock('../hooks/useAuth', () => ({
@@ -52,12 +55,31 @@ vi.mock('../api/translationPracticeApi', () => {
   };
 });
 
+const createTestQueryClient = () =>
+  new QueryClient({
+    defaultOptions: {
+      queries: { retry: false },
+      mutations: { retry: false },
+    },
+  });
+
 describe('TranslationPracticePage - inline AI feedback', () => {
   it('renders AI feedback inline after submit', async () => {
-    render(<TranslationPracticePage />);
+    const queryClient = createTestQueryClient();
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MantineProvider>
+          <BrowserRouter>
+            <TranslationPracticePage />
+          </BrowserRouter>
+        </MantineProvider>
+      </QueryClientProvider>
+    );
 
     // Load sentence
-    const generateBtn = await screen.findByRole('button', { name: /generate with ai/i });
+    const generateBtn = await screen.findByRole('button', {
+      name: /generate with ai/i,
+    });
     fireEvent.click(generateBtn);
 
     // Should show the sentence text
@@ -65,10 +87,14 @@ describe('TranslationPracticePage - inline AI feedback', () => {
 
     // Type translation
     const textarea = screen.getByLabelText(/your translation/i);
-    fireEvent.change(textarea, { target: { value: 'These are not just words' } });
+    fireEvent.change(textarea, {
+      target: { value: 'These are not just words' },
+    });
 
     // Submit
-    const submitBtn = screen.getByRole('button', { name: /submit for feedback/i });
+    const submitBtn = screen.getByRole('button', {
+      name: /submit for feedback/i,
+    });
     fireEvent.click(submitBtn);
 
     // Expect inline feedback card
@@ -81,5 +107,3 @@ describe('TranslationPracticePage - inline AI feedback', () => {
     });
   });
 });
-
-

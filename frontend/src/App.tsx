@@ -1,9 +1,9 @@
-import {Routes, Route, Navigate, useLocation} from 'react-router-dom';
-import {useEffect} from 'react';
-import {useAuth} from './hooks/useAuth';
-import {useMobileDetection} from './hooks/useMobileDetection';
-import {TranslationProvider} from './contexts/TranslationContext';
-import {TranslationOverlay} from './components/TranslationOverlay';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useAuth } from './hooks/useAuth';
+import { useMobileDetection } from './hooks/useMobileDetection';
+import { TranslationProvider } from './contexts/TranslationContext';
+import { TranslationOverlay } from './components/TranslationOverlay';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import OAuthCallbackPage from './pages/OAuthCallbackPage';
@@ -13,7 +13,7 @@ import VocabularyPage from './pages/VocabularyPage';
 import SnippetsPage from './pages/SnippetsPage';
 import PhrasebookIndexPage from './pages/PhrasebookIndexPage';
 import PhrasebookCategoryPage from './pages/PhrasebookCategoryPage';
-import {VerbConjugationPage} from './pages/VerbConjugationPage';
+import { VerbConjugationPage } from './pages/VerbConjugationPage';
 import DailyPage from './pages/DailyPage';
 import WordOfTheDayPage from './pages/WordOfTheDayPage';
 import WordOfTheDayEmbedPage from './pages/WordOfTheDayEmbedPage';
@@ -54,13 +54,13 @@ import MobileVerbConjugationPage from './pages/mobile/MobileVerbConjugationPage'
 import MobileSettingsPage from './pages/mobile/MobileSettingsPage';
 import MobileTTSTestPage from './pages/mobile/MobileTTSTestPage';
 import TTSTestPage from './pages/TTSTestPage';
-import {Center, Loader} from '@mantine/core';
+import { Center, Loader } from '@mantine/core';
 import TranslationPracticePage from './pages/TranslationPracticePage';
 import MobileTranslationPracticePage from './pages/mobile/MobileTranslationPracticePage';
 
 function App() {
-  const {user, isLoading} = useAuth();
-  const {isMobile} = useMobileDetection();
+  const { user, isLoading } = useAuth();
+  const { isMobile } = useMobileDetection();
   const location = useLocation();
 
   // Mobile redirect logic
