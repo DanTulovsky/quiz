@@ -52,8 +52,6 @@ function toTitle(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-const DEFAULT_HISTORY_LIMIT = 20;
-
 const textInputTypes = new Set([
   'text',
   'search',
@@ -107,8 +105,8 @@ const TranslationPracticePage: React.FC = () => {
   const historySearchInputRef = useRef<HTMLInputElement | null>(null);
   const historyCardRef = useRef<HTMLDivElement | null>(null);
 
-  const [historyLimit, setHistoryLimit] = useState<number>(DEFAULT_HISTORY_LIMIT);
-  const SERVER_HISTORY_MAX = 100;
+  const HISTORY_PAGE_SIZE = 20;
+  const [historyOffset, setHistoryOffset] = useState<number>(0);
   const [historySearch, setHistorySearch] = useState<string>('');
 
   const learningLanguage = user?.preferred_language || '';
@@ -127,7 +125,12 @@ const TranslationPracticePage: React.FC = () => {
   const { mutateAsync: generateSentence, isPending: isGenerating } = useGeneratePracticeSentence();
   const { mutateAsync: submitTranslation, isPending: isSubmitting } = useSubmitTranslation();
   const { data: stats } = usePracticeStats();
-  const { data: history } = usePracticeHistory(historyLimit);
+  const { data: history } = usePracticeHistory(HISTORY_PAGE_SIZE, historyOffset, historySearch.trim() || undefined);
+
+  // Reset to first page when search changes
+  useEffect(() => {
+    setHistoryOffset(0);
+  }, [historySearch]);
   const { data: learningPrefs } = useGetV1PreferencesLearning();
 
   // fetch from existing content on demand (not mounted auto-query)
@@ -519,28 +522,25 @@ const TranslationPracticePage: React.FC = () => {
     { enableOnFormTags: false, preventDefault: true },
     []
   );
-  // Infinite scroll: grow historyLimit when scrolled near bottom (max 100 per API)
-  const onHistoryScroll = () => {
-    const el = historyViewportRef.current;
-    if (!el) return;
-    const nearBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 80;
-    if (nearBottom && historyLimit < 100) {
-      setHistoryLimit(prev => Math.min(prev + 25, 100));
+  // Pagination helpers
+  const totalPages = history?.total ? Math.ceil(history.total / HISTORY_PAGE_SIZE) : 0;
+  const currentPage = Math.floor(historyOffset / HISTORY_PAGE_SIZE) + 1;
+  const hasNextPage = history ? historyOffset + HISTORY_PAGE_SIZE < history.total : false;
+  const hasPrevPage = historyOffset > 0;
+
+  const handlePrevPage = () => {
+    setHistoryOffset(prev => Math.max(0, prev - HISTORY_PAGE_SIZE));
+    historyViewportRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleNextPage = () => {
+    if (hasNextPage) {
+      setHistoryOffset(prev => prev + HISTORY_PAGE_SIZE);
+      historyViewportRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
-  const filteredSessions = useMemo(() => {
-    const q = historySearch.trim().toLowerCase();
-    const list = history?.sessions || [];
-    if (!q) return list;
-    return list.filter(s => {
-      return (
-        s.original_sentence?.toLowerCase().includes(q) ||
-        s.user_translation?.toLowerCase().includes(q) ||
-        s.ai_feedback?.toLowerCase().includes(q) ||
-        s.translation_direction?.toLowerCase().includes(q)
-      );
-    });
-  }, [history?.sessions, historySearch]);
+  // Server-side search is now handled by the API, so we use the sessions directly
+  const sessions = history?.sessions || [];
   const getSourceInfo = (sourceType?: string | null, sourceId?: number | null) => {
     if (!sourceType || !sourceId) return null;
     const type = sourceType.toLowerCase();
@@ -816,35 +816,10 @@ const TranslationPracticePage: React.FC = () => {
               <Title order={5}>History</Title>
               <Group gap="xs">
                 <Text size="xs" c="dimmed">
-                  Showing {filteredSessions.length} of {history?.sessions?.length ?? 0} loaded • Server max {SERVER_HISTORY_MAX}
+                  {history?.total !== undefined
+                    ? `Showing ${historyOffset + 1}-${Math.min(historyOffset + sessions.length, history.total)} of ${history.total}${historySearch.trim() ? ' (filtered)' : ''}`
+                    : 'Loading...'}
                 </Text>
-                <Button
-                  size="xs"
-                  variant="subtle"
-                  onClick={() => historyViewportRef.current?.scrollTo({ top: 0, behavior: 'smooth' })}
-                >
-                  Top
-                </Button>
-                <Button
-                  size="xs"
-                  variant="subtle"
-                  onClick={() =>
-                    historyViewportRef.current?.scrollTo({
-                      top: historyViewportRef.current.scrollHeight,
-                      behavior: 'smooth',
-                    })
-                  }
-                >
-                  Bottom
-                </Button>
-                <Button
-                  size="xs"
-                  variant="light"
-                  onClick={() => setHistoryLimit(SERVER_HISTORY_MAX)}
-                  disabled={historyLimit >= SERVER_HISTORY_MAX}
-                >
-                  Load all ({SERVER_HISTORY_MAX})
-                </Button>
               </Group>
             </Group>
             <TextInput
@@ -863,11 +838,10 @@ const TranslationPracticePage: React.FC = () => {
             <ScrollArea
               style={{ height: '60vh' }}
               viewportRef={historyViewportRef}
-              viewportProps={{ onScroll: onHistoryScroll }}
             >
-              {(filteredSessions.length ?? 0) > 0 ? (
+              {(sessions.length ?? 0) > 0 ? (
                 <Accordion variant="separated">
-                  {filteredSessions.map(s => (
+                  {sessions.map(s => (
                     <Accordion.Item value={String(s.id)} key={s.id}>
                       <Accordion.Control>
                         <Group justify="space-between" align="flex-start" wrap="nowrap">
@@ -939,10 +913,33 @@ const TranslationPracticePage: React.FC = () => {
                 </Accordion>
               ) : (
                 <Text size="sm" c="dimmed">
-                  No practice yet. Submit a translation to see history here.
+                  {historySearch.trim() ? 'No results found.' : 'No practice yet. Submit a translation to see history here.'}
                 </Text>
               )}
             </ScrollArea>
+            {history && history.total > 0 && (
+              <Group justify="space-between" align="center" mt="xs">
+                <Button
+                  variant="light"
+                  size="sm"
+                  onClick={handlePrevPage}
+                  disabled={!hasPrevPage}
+                >
+                  ← Previous
+                </Button>
+                <Text size="sm" c="dimmed">
+                  Page {currentPage} of {totalPages}
+                </Text>
+                <Button
+                  variant="light"
+                  size="sm"
+                  onClick={handleNextPage}
+                  disabled={!hasNextPage}
+                >
+                  Next →
+                </Button>
+              </Group>
+            )}
           </Stack>
         </Card>
           <Card withBorder>

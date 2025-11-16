@@ -42,6 +42,9 @@ export type SessionResponse = {
 
 export type HistoryResponse = {
   sessions: SessionResponse[];
+  total: number;
+  limit: number;
+  offset: number;
 };
 
 export type StatsResponse = {
@@ -96,11 +99,18 @@ export const useSubmitTranslation = () =>
     },
   });
 
-export const usePracticeHistory = (limit: number = 20) =>
+export const usePracticeHistory = (limit: number = 20, offset: number = 0, search?: string) =>
   useQuery({
-    queryKey: ['tp-history', limit],
+    queryKey: ['tp-history', limit, offset, search],
     queryFn: async (): Promise<HistoryResponse> => {
-      const resp = await AXIOS_INSTANCE.get(`/v1/translation-practice/history?limit=${limit}`, {
+      const params = new URLSearchParams({
+        limit: limit.toString(),
+        offset: offset.toString(),
+      });
+      if (search && search.trim()) {
+        params.append('search', search.trim());
+      }
+      const resp = await AXIOS_INSTANCE.get(`/v1/translation-practice/history?${params.toString()}`, {
         headers: { Accept: 'application/json' },
       });
       return resp.data as HistoryResponse;

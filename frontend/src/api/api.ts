@@ -2281,6 +2281,21 @@ export interface TranslationPracticeSessionResponse {
 export interface TranslationPracticeHistoryResponse {
   /** List of practice sessions */
   sessions: TranslationPracticeSessionResponse[];
+  /**
+   * Total number of sessions matching the query (before pagination)
+   * @minimum 0
+   */
+  total: number;
+  /**
+   * Number of sessions returned (page size)
+   * @minimum 1
+   */
+  limit: number;
+  /**
+   * Number of sessions skipped
+   * @minimum 0
+   */
+  offset: number;
 }
 
 export interface TranslationPracticeStatsResponse {
@@ -3433,6 +3448,16 @@ export type GetV1TranslationPracticeHistoryParams = {
  * @maximum 100
  */
 limit?: number;
+/**
+ * Search query to filter sessions by original sentence, user translation, feedback, or direction
+ * @maxLength 500
+ */
+search?: string;
+/**
+ * Number of sessions to skip for pagination
+ * @minimum 0
+ */
+offset?: number;
 };
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
@@ -15998,7 +16023,7 @@ export const getGetV1TranslationPracticeSentenceResponseMock = (overrideResponse
 
 export const getPostV1TranslationPracticeSubmitResponseMock = (overrideResponse: Partial< TranslationPracticeSessionResponse > = {}): TranslationPracticeSessionResponse => ({id: faker.number.int({min: undefined, max: undefined}), sentence_id: faker.number.int({min: undefined, max: undefined}), original_sentence: faker.string.alpha({length: {min: 10, max: 20}}), user_translation: faker.string.alpha({length: {min: 10, max: 20}}), translation_direction: faker.string.alpha({length: {min: 10, max: 20}}), ai_feedback: faker.string.alpha({length: {min: 10, max: 20}}), ai_score: faker.helpers.arrayElement([faker.number.float({min: 0, max: 5, fractionDigits: 2}), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`, ...overrideResponse})
 
-export const getGetV1TranslationPracticeHistoryResponseMock = (overrideResponse: Partial< TranslationPracticeHistoryResponse > = {}): TranslationPracticeHistoryResponse => ({sessions: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.number.int({min: undefined, max: undefined}), sentence_id: faker.number.int({min: undefined, max: undefined}), original_sentence: faker.string.alpha({length: {min: 10, max: 20}}), user_translation: faker.string.alpha({length: {min: 10, max: 20}}), translation_direction: faker.string.alpha({length: {min: 10, max: 20}}), ai_feedback: faker.string.alpha({length: {min: 10, max: 20}}), ai_score: faker.helpers.arrayElement([faker.number.float({min: 0, max: 5, fractionDigits: 2}), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`})), ...overrideResponse})
+export const getGetV1TranslationPracticeHistoryResponseMock = (overrideResponse: Partial< TranslationPracticeHistoryResponse > = {}): TranslationPracticeHistoryResponse => ({sessions: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({id: faker.number.int({min: undefined, max: undefined}), sentence_id: faker.number.int({min: undefined, max: undefined}), original_sentence: faker.string.alpha({length: {min: 10, max: 20}}), user_translation: faker.string.alpha({length: {min: 10, max: 20}}), translation_direction: faker.string.alpha({length: {min: 10, max: 20}}), ai_feedback: faker.string.alpha({length: {min: 10, max: 20}}), ai_score: faker.helpers.arrayElement([faker.number.float({min: 0, max: 5, fractionDigits: 2}), undefined]), created_at: `${faker.date.past().toISOString().split('.')[0]}Z`})), total: faker.number.int({min: 0, max: undefined}), limit: faker.number.int({min: 1, max: undefined}), offset: faker.number.int({min: 0, max: undefined}), ...overrideResponse})
 
 export const getGetV1TranslationPracticeStatsResponseMock = (overrideResponse: Partial< TranslationPracticeStatsResponse > = {}): TranslationPracticeStatsResponse => ({total_sessions: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), average_score: faker.helpers.arrayElement([faker.number.float({min: undefined, max: undefined, fractionDigits: 2}), undefined]), min_score: faker.helpers.arrayElement([faker.number.float({min: undefined, max: undefined, fractionDigits: 2}), undefined]), max_score: faker.helpers.arrayElement([faker.number.float({min: undefined, max: undefined, fractionDigits: 2}), undefined]), excellent_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), good_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), needs_improvement_count: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), ...overrideResponse})
 

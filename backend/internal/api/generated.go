@@ -1736,8 +1736,17 @@ type TranslationPracticeGenerateRequestDirection string
 
 // TranslationPracticeHistoryResponse defines model for TranslationPracticeHistoryResponse.
 type TranslationPracticeHistoryResponse struct {
+	// Limit Number of sessions returned (page size)
+	Limit int `json:"limit"`
+
+	// Offset Number of sessions skipped
+	Offset int `json:"offset"`
+
 	// Sessions List of practice sessions
 	Sessions []TranslationPracticeSessionResponse `json:"sessions"`
+
+	// Total Total number of sessions matching the query (before pagination)
+	Total int `json:"total"`
 }
 
 // TranslationPracticeSentenceResponse defines model for TranslationPracticeSentenceResponse.
@@ -2769,6 +2778,12 @@ type GetV1StoryParams struct {
 type GetV1TranslationPracticeHistoryParams struct {
 	// Limit Maximum number of sessions to return
 	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Search Search query to filter sessions by original sentence, user translation, feedback, or direction
+	Search *string `form:"search,omitempty" json:"search,omitempty"`
+
+	// Offset Number of sessions to skip for pagination
+	Offset *int `form:"offset,omitempty" json:"offset,omitempty"`
 }
 
 // GetV1TranslationPracticeSentenceParams defines parameters for GetV1TranslationPracticeSentence.

@@ -260,7 +260,16 @@ func (h *TranslationPracticeHandler) GetHistory(c *gin.Context) {
 		}
 	}
 
-	sessions, err := h.translationPracticeService.GetPracticeHistory(ctx, userID, limit)
+	offset := 0 // Default offset
+	if offsetStr := c.Query("offset"); offsetStr != "" {
+		if parsedOffset, err := parseInt(offsetStr); err == nil && parsedOffset >= 0 {
+			offset = parsedOffset
+		}
+	}
+
+	search := c.Query("search")
+
+	sessions, total, err := h.translationPracticeService.GetPracticeHistory(ctx, userID, limit, offset, search)
 	if err != nil {
 		h.logger.Error(ctx, "Failed to get practice history", err)
 		HandleAppError(c, err)
@@ -283,6 +292,9 @@ func (h *TranslationPracticeHandler) GetHistory(c *gin.Context) {
 
 	c.JSON(http.StatusOK, api.TranslationPracticeHistoryResponse{
 		Sessions: response,
+		Total:    total,
+		Limit:    limit,
+		Offset:   offset,
 	})
 }
 

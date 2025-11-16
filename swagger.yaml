@@ -5758,6 +5758,21 @@ paths:
             maximum: 100
             default: 50
           description: Maximum number of sessions to return
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 500
+          description: Search query to filter sessions by original sentence, user translation, feedback, or direction
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+          description: Number of sessions to skip for pagination
       responses:
         "200":
           description: History retrieved successfully
@@ -8643,12 +8658,27 @@ components:
       type: object
       required:
         - sessions
+        - total
+        - limit
+        - offset
       properties:
         sessions:
           type: array
           items:
             $ref: "#/components/schemas/TranslationPracticeSessionResponse"
           description: List of practice sessions
+        total:
+          type: integer
+          minimum: 0
+          description: Total number of sessions matching the query (before pagination)
+        limit:
+          type: integer
+          minimum: 1
+          description: Number of sessions returned (page size)
+        offset:
+          type: integer
+          minimum: 0
+          description: Number of sessions skipped
 
     TranslationPracticeStatsResponse:
       type: object

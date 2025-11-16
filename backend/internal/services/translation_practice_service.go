@@ -28,7 +28,7 @@ type TranslationPracticeServiceInterface interface {
 	GenerateSentence(ctx context.Context, userID uint, req *models.GenerateSentenceRequest, aiService AIServiceInterface, userAIConfig *models.UserAIConfig) (*models.TranslationPracticeSentence, error)
 	GetSentenceFromExistingContent(ctx context.Context, userID uint, language, level string, direction models.TranslationDirection) (*models.TranslationPracticeSentence, error)
 	SubmitTranslation(ctx context.Context, userID uint, req *models.SubmitTranslationRequest, aiService AIServiceInterface, userAIConfig *models.UserAIConfig) (*models.TranslationPracticeSession, error)
-	GetPracticeHistory(ctx context.Context, userID uint, limit int) ([]models.TranslationPracticeSession, error)
+	GetPracticeHistory(ctx context.Context, userID uint, limit int, offset int, search string) ([]models.TranslationPracticeSession, int, error)
 	GetPracticeStats(ctx context.Context, userID uint) (map[string]interface{}, error)
 }
 
@@ -317,30 +317,66 @@ func (s *TranslationPracticeService) SubmitTranslation(
 	return session, nil
 }
 
-// GetPracticeHistory retrieves practice history for a user
+// GetPracticeHistory retrieves practice history for a user with pagination
 func (s *TranslationPracticeService) GetPracticeHistory(
 	ctx context.Context,
 	userID uint,
 	limit int,
-) (result0 []models.TranslationPracticeSession, err error) {
+	offset int,
+	search string,
+) (result0 []models.TranslationPracticeSession, total int, err error) {
 	ctx, span := observability.TraceFunction(ctx, "translation_practice", "get_practice_history",
 		attribute.Int("user_id", int(userID)),
 		attribute.Int("limit", limit),
+		attribute.Int("offset", offset),
+		attribute.String("search", search),
 	)
 	defer observability.FinishSpan(span, &err)
 
+	// Build base WHERE clause
+	whereClause := "WHERE user_id = $1"
+	args := []interface{}{userID}
+	argIndex := 2
+
+	// Add search filter if provided
+	if search != "" {
+		searchPattern := "%" + strings.ToLower(strings.TrimSpace(search)) + "%"
+		whereClause += fmt.Sprintf(`
+			AND (
+				LOWER(original_sentence) LIKE $%d OR
+				LOWER(user_translation) LIKE $%d OR
+				LOWER(ai_feedback) LIKE $%d OR
+				LOWER(translation_direction) LIKE $%d
+			)`, argIndex, argIndex, argIndex, argIndex)
+		args = append(args, searchPattern)
+		argIndex++
+	}
+
+	// Get total count
+	countQuery := `
+		SELECT COUNT(*)
+		FROM translation_practice_sessions
+		` + whereClause
+	err = s.db.QueryRowContext(ctx, countQuery, args...).Scan(&total)
+	if err != nil {
+		return nil, 0, contextutils.WrapErrorf(err, "failed to count practice history")
+	}
+
+	// Get paginated results
 	query := `
 		SELECT id, user_id, sentence_id, original_sentence, user_translation,
 		       translation_direction, ai_feedback, ai_score, created_at
 		FROM translation_practice_sessions
-		WHERE user_id = $1
+		` + whereClause + `
 		ORDER BY created_at DESC
-		LIMIT $2
+		LIMIT $` + fmt.Sprintf("%d", argIndex) + `
+		OFFSET $` + fmt.Sprintf("%d", argIndex+1) + `
 	`
+	args = append(args, limit, offset)
 
-	rows, err := s.db.QueryContext(ctx, query, userID, limit)
+	rows, err := s.db.QueryContext(ctx, query, args...)
 	if err != nil {
-		return nil, contextutils.WrapErrorf(err, "failed to query practice history")
+		return nil, 0, contextutils.WrapErrorf(err, "failed to query practice history")
 	}
 	defer rows.Close()
 
@@ -361,7 +397,7 @@ func (s *TranslationPracticeService) GetPracticeHistory(
 			&session.CreatedAt,
 		)
 		if err != nil {
-			return nil, contextutils.WrapErrorf(err, "failed to scan session")
+			return nil, 0, contextutils.WrapErrorf(err, "failed to scan session")
 		}
 
 		if aiScore.Valid {
@@ -372,7 +408,7 @@ func (s *TranslationPracticeService) GetPracticeHistory(
 		sessions = append(sessions, session)
 	}
 
-	return sessions, nil
+	return sessions, total, nil
 }
 
 // GetPracticeStats retrieves practice statistics for a user
@@ -794,14 +830,14 @@ func (s *TranslationPracticeService) stripQuotes(sentence string) string {
 	// Common quote and bracket characters (ASCII and Unicode) - both opening and closing
 	quoteChars := []string{
 		`"`, `'`, `«`, `»`, `"`, `'`, `'`, `"`, `"`, // ASCII and Unicode quotes
-		`(`, `)`, `[`, `]`, `{`, `}`,                // ASCII brackets
-		`（`, `）`, `［`, `］`, `｛`, `｝`,              // Full-width brackets
-		`„`, `‚`, `‹`, `›`,                           // Other quote marks
-		`"`, `"`, `'`, `'`,                          // Typographic quotes
-		`'`, `'`,                                    // Apostrophes/quotes
-		`"`, `"`,                                    // Double quotes
-		`«`, `»`,                                    // Guillemets
-		`'`, `'`,                                    // Single quotes
+		`(`, `)`, `[`, `]`, `{`, `}`, // ASCII brackets
+		`（`, `）`, `［`, `］`, `｛`, `｝`, // Full-width brackets
+		`„`, `‚`, `‹`, `›`, // Other quote marks
+		`"`, `"`, `'`, `'`, // Typographic quotes
+		`'`, `'`, // Apostrophes/quotes
+		`"`, `"`, // Double quotes
+		`«`, `»`, // Guillemets
+		`'`, `'`, // Single quotes
 	}
 	trimmed := strings.TrimSpace(sentence)
 	// Keep stripping until no more quotes/brackets at either end
@@ -832,9 +868,9 @@ func (s *TranslationPracticeService) stripLeadingQuotes(sentence string) string 
 	// Note: We strip common quote characters that appear at sentence start due to context extraction
 	leadingChars := []string{
 		`"`, `'`, `«`, `»`, `"`, `'`, `'`, `"`, `"`, // ASCII and Unicode quotes
-		`(`, `[`, `{`, `（`, `［`, `｛`,              // ASCII and full-width brackets
-		`„`, `‚`, `‹`,                               // Other quote marks
-		`„`, `‚`,                                    // German/Slavic quotes
+		`(`, `[`, `{`, `（`, `［`, `｛`, // ASCII and full-width brackets
+		`„`, `‚`, `‹`, // Other quote marks
+		`„`, `‚`, // German/Slavic quotes
 	}
 	trimmed := strings.TrimSpace(sentence)
 	// Keep stripping until no more leading quotes/brackets
