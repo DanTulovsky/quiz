@@ -1,9 +1,10 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Button,
   Card,
   Container,
   Group,
+  Accordion,
   Select,
   Stack,
   Text,
@@ -15,6 +16,8 @@ import {
   ScrollArea,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import {
   useGeneratePracticeSentence,
   useGetPracticeSentence,
@@ -26,10 +29,10 @@ import {
 } from '../api/translationPracticeApi';
 import { useAuth } from '../hooks/useAuth';
 
-const directionOptions = [
-  { label: 'English → Learning language', value: 'en_to_learning' },
-  { label: 'Learning language → English', value: 'learning_to_en' },
-] as const;
+function toTitle(s: string) {
+  if (!s) return '';
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
 
 const DEFAULT_HISTORY_LIMIT = 20;
 
@@ -40,6 +43,8 @@ const TranslationPracticePage: React.FC = () => {
   const [answer, setAnswer] = useState('');
   const [currentSentence, setCurrentSentence] = useState<SentenceResponse | null>(null);
   const [loadingExisting, setLoadingExisting] = useState(false);
+  const [feedback, setFeedback] = useState<{ text: string; score?: number | null } | null>(null);
+  const feedbackTitleRef = useRef<HTMLHeadingElement | null>(null);
 
   const learningLanguage = user?.preferred_language || '';
   const level = (user?.current_level as string) || '';
@@ -82,6 +87,7 @@ const TranslationPracticePage: React.FC = () => {
       });
       setCurrentSentence(sentence);
       setAnswer('');
+      setFeedback(null);
     } catch (e) {
       notifications.show({
         color: 'red',
@@ -107,6 +113,7 @@ const TranslationPracticePage: React.FC = () => {
       if (data) {
         setCurrentSentence(data);
         setAnswer('');
+        setFeedback(null);
       }
     } catch {
       notifications.show({
@@ -137,14 +144,8 @@ const TranslationPracticePage: React.FC = () => {
         user_translation: trimmed,
         translation_direction: direction,
       });
-      // Show feedback inline via notification and keep sentence visible
-      notifications.show({
-        color: 'teal',
-        title: resp.ai_score != null ? `Feedback (score ${resp.ai_score.toFixed(1)}/5)` : 'Feedback',
-        message: resp.ai_feedback,
-        withCloseButton: true,
-        autoClose: false,
-      });
+      // Show feedback inline (no notification)
+      setFeedback({ text: resp.ai_feedback, score: resp.ai_score ?? null });
     } catch {
       notifications.show({
         color: 'red',
@@ -153,6 +154,21 @@ const TranslationPracticePage: React.FC = () => {
       });
     }
   };
+
+  // Focus feedback header when feedback appears for accessibility
+  useEffect(() => {
+    if (feedback && feedbackTitleRef.current) {
+      feedbackTitleRef.current.focus();
+    }
+  }, [feedback]);
+  const languageDisplay = toTitle(learningLanguage || 'learning language');
+  const directionOptions = useMemo(
+    () => [
+      { label: `English → ${languageDisplay}`, value: 'en_to_learning' },
+      { label: `${languageDisplay} → English`, value: 'learning_to_en' },
+    ],
+    [languageDisplay]
+  );
 
   return (
     <Container size="lg" pt="md" pb="xl">
@@ -219,7 +235,108 @@ const TranslationPracticePage: React.FC = () => {
           </Stack>
         </Card>
 
-        <Group align="start" grow>
+        {/* AI Feedback section placed directly below translation card */}
+        {feedback && (
+          <Card withBorder>
+            <Stack>
+              <Group justify="space-between" align="center">
+                <Title order={4} m={0} ref={feedbackTitleRef} tabIndex={-1}>
+                  AI Feedback
+                </Title>
+                {typeof feedback.score === 'number' && (
+                  <Badge color={feedback.score >= 4 ? 'green' : feedback.score >= 3 ? 'yellow' : 'red'}>
+                    Score: {feedback.score.toFixed(1)} / 5
+                  </Badge>
+                )}
+              </Group>
+              <Divider />
+              <ScrollArea h={480} type="auto">
+                <Paper p="sm" withBorder>
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{feedback.text}</ReactMarkdown>
+                </Paper>
+              </ScrollArea>
+            </Stack>
+          </Card>
+        )}
+
+        <Stack>
+        <Card withBorder>
+          <Stack gap="xs">
+            <Group justify="space-between" align="center">
+              <Title order={5}>History</Title>
+              <Text size="xs" c="dimmed">
+                Showing up to {DEFAULT_HISTORY_LIMIT}
+              </Text>
+            </Group>
+            <ScrollArea style={{ height: '60vh' }}>
+              {(history?.sessions?.length ?? 0) > 0 ? (
+                <Accordion variant="separated">
+                  {(history?.sessions || []).map(s => (
+                    <Accordion.Item value={String(s.id)} key={s.id}>
+                      <Accordion.Control>
+                        <Group justify="space-between" align="flex-start" wrap="nowrap">
+                          <Stack gap={2} style={{ flex: 1, minWidth: 0 }}>
+                            <Text size="sm" fw={600} lineClamp={1}>
+                              {s.original_sentence}
+                            </Text>
+                            <Text size="xs" c="dimmed" lineClamp={1}>
+                              You: {s.user_translation}
+                            </Text>
+                          </Stack>
+                          <Group gap="xs" wrap="nowrap">
+                            <Badge variant="light">{s.translation_direction.replaceAll('_', ' ')}</Badge>
+                            {s.ai_score != null ? (
+                              <Badge color="teal" variant="light">
+                                {s.ai_score.toFixed(1)}/5
+                              </Badge>
+                            ) : null}
+                          </Group>
+                        </Group>
+                      </Accordion.Control>
+                      <Accordion.Panel>
+                        <Stack gap="xs">
+                          <Text size="xs" c="dimmed">
+                            {new Date(s.created_at).toLocaleString()}
+                          </Text>
+                          <Paper withBorder p="sm">
+                            <Text size="sm" fw={600}>
+                              Original
+                            </Text>
+                            <Text size="sm">{s.original_sentence}</Text>
+                          </Paper>
+                          <Paper withBorder p="sm">
+                            <Text size="sm" fw={600}>
+                              Your translation
+                            </Text>
+                            <Text size="sm">{s.user_translation}</Text>
+                          </Paper>
+                          <Paper withBorder p="sm">
+                            <Group justify="space-between" align="center">
+                              <Text size="sm" fw={600}>
+                                AI Feedback
+                              </Text>
+                              {s.ai_score != null ? (
+                                <Badge color={s.ai_score >= 4 ? 'green' : s.ai_score >= 3 ? 'yellow' : 'red'}>
+                                  {s.ai_score.toFixed(1)} / 5
+                                </Badge>
+                              ) : null}
+                            </Group>
+                            <Divider my="xs" />
+                            <ReactMarkdown remarkPlugins={[remarkGfm]}>{s.ai_feedback}</ReactMarkdown>
+                          </Paper>
+                        </Stack>
+                      </Accordion.Panel>
+                    </Accordion.Item>
+                  ))}
+                </Accordion>
+              ) : (
+                <Text size="sm" c="dimmed">
+                  No practice yet. Submit a translation to see history here.
+                </Text>
+              )}
+            </ScrollArea>
+          </Stack>
+        </Card>
           <Card withBorder>
             <Stack gap="xs">
               <Title order={5}>Stats</Title>
@@ -240,39 +357,7 @@ const TranslationPracticePage: React.FC = () => {
               </Group>
             </Stack>
           </Card>
-          <Card withBorder>
-            <Stack gap="xs">
-              <Title order={5}>History</Title>
-              <ScrollArea h={220}>
-                <Stack gap="sm">
-                  {(history?.sessions || []).map(s => (
-                    <Paper key={s.id} withBorder p="sm">
-                      <Text size="sm" fw={600}>
-                        {s.original_sentence}
-                      </Text>
-                      <Text size="sm" c="dimmed">
-                        You: {s.user_translation}
-                      </Text>
-                      <Group justify="space-between" mt="xs">
-                        <Badge variant="light">{s.translation_direction.replaceAll('_', ' ')}</Badge>
-                        {s.ai_score != null ? (
-                          <Badge color="teal" variant="light">
-                            {s.ai_score.toFixed(1)}/5
-                          </Badge>
-                        ) : null}
-                      </Group>
-                    </Paper>
-                  ))}
-                  {!history?.sessions?.length ? (
-                    <Text size="sm" c="dimmed">
-                      No practice yet. Submit a translation to see history here.
-                    </Text>
-                  ) : null}
-                </Stack>
-              </ScrollArea>
-            </Stack>
-          </Card>
-        </Group>
+        </Stack>
       </Stack>
     </Container>
   );
@@ -280,6 +365,7 @@ const TranslationPracticePage: React.FC = () => {
 
 export default TranslationPracticePage;
 
+/* Duplicate component block removed below
 import React, { useMemo, useState } from 'react';
 import { Button, Card, Group, SegmentedControl, Stack, Text, Textarea, Title, Select, Divider, Badge, Paper } from '@mantine/core';
 import { IconBolt, IconDatabase, IconSend } from '@tabler/icons-react';
@@ -484,7 +570,7 @@ const TranslationPracticePage: React.FC = () => {
             <Text size="sm">Avg score: {statsQuery.data?.average_score?.toFixed?.(1) ?? '—'}</Text>
             <Text size="sm">Excellent (≥4): {statsQuery.data?.excellent_count ?? 0}</Text>
             <Text size="sm">Good (3–3.9): {statsQuery.data?.good_count ?? 0}</Text>
-            <Text size="sm">Needs work (<3): {statsQuery.data?.needs_improvement_count ?? 0}</Text>
+            <Text size="sm">Needs work (&lt;3): {statsQuery.data?.needs_improvement_count ?? 0}</Text>
           </Stack>
         </Card>
       </Group>
@@ -493,3 +579,4 @@ const TranslationPracticePage: React.FC = () => {
 };
 
 export default TranslationPracticePage;
+*/

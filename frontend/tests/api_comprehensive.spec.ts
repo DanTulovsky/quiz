@@ -325,6 +325,9 @@ test.describe('Comprehensive API Tests', () => {
       path.includes('/clear-database') ||
       path.includes('/clear-user-data') ||
       path.includes('/test-email') ||
+      // Exclude AI-dependent translation practice endpoints
+      path.includes('/v1/translation-practice/generate') ||
+      path.includes('/v1/translation-practice/submit') ||
       path.includes('/api-keys/test-') ||
       path.includes('/audio/') ||
       path.includes('/linear-issue') ||
@@ -986,6 +989,9 @@ test.describe('Comprehensive API Tests', () => {
           queryParams[param.name] = 1;
         } else if (param.name === 'page_size') {
           queryParams[param.name] = 10;
+        } else if (param.name === 'direction') {
+          // Translation practice direction enum
+          queryParams[param.name] = 'en_to_learning';
         } else if (param.name === 'language') {
           // Use the user's preferred language from test data instead of hardcoding
           queryParams[param.name] = testData.users[0]?.preferred_language || 'italian';

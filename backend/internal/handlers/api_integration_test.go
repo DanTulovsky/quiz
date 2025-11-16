@@ -89,7 +89,8 @@ func (suite *APIIntegrationTestSuite) SetupSuite() {
 	translationCacheRepo := services.NewTranslationCacheRepository(suite.db, logger)
 	translationService := services.NewTranslationService(cfg, usageStatsService, translationCacheRepo, logger)
 	snippetsService := services.NewSnippetsService(suite.db, cfg, logger)
-	router := handlers.NewRouter(cfg, userService, questionService, learningService, suite.mockAIService, workerService, dailyQuestionService, storyService, services.NewConversationService(db), oauthService, generationHintService, translationService, snippetsService, usageStatsService, services.NewWordOfTheDayService(db, logger), services.NewAuthAPIKeyService(db, logger), logger)
+	translationPracticeService := services.NewTranslationPracticeService(db, storyService, questionService, cfg, logger)
+	router := handlers.NewRouter(cfg, userService, questionService, learningService, suite.mockAIService, workerService, dailyQuestionService, storyService, services.NewConversationService(db), oauthService, generationHintService, translationService, snippetsService, usageStatsService, services.NewWordOfTheDayService(db, logger), services.NewAuthAPIKeyService(db, logger), translationPracticeService, logger)
 	suite.Router = router
 }
 

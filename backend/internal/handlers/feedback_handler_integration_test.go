@@ -97,6 +97,7 @@ func (suite *FeedbackIntegrationTestSuite) SetupSuite() {
 		usageStatsService,
 		services.NewWordOfTheDayService(db, logger),
 		authAPIKeyService,
+		services.NewTranslationPracticeService(db, storyService, questionService, suite.cfg, logger),
 		logger,
 	)
 

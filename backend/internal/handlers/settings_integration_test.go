@@ -67,6 +67,7 @@ func (suite *SettingsIntegrationTestSuite) SetupSuite() {
 	translationService := services.NewTranslationService(cfg, usageStatsService, translationCacheRepo, logger)
 	snippetsService := services.NewSnippetsService(db, cfg, logger)
 	authAPIKeyService := services.NewAuthAPIKeyService(db, logger)
+	translationPracticeService := services.NewTranslationPracticeService(db, storyService, questionService, cfg, logger)
 	suite.Router = NewRouter(
 		suite.Config,
 		userService,
@@ -84,6 +85,7 @@ func (suite *SettingsIntegrationTestSuite) SetupSuite() {
 		usageStatsService,
 		services.NewWordOfTheDayService(suite.DB, logger),
 		authAPIKeyService,
+		translationPracticeService,
 		logger,
 	)
 

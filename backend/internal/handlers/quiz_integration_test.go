@@ -88,7 +88,8 @@ func (suite *QuizIntegrationTestSuite) SetupSuite() {
 	translationCacheRepo := services.NewTranslationCacheRepository(db, logger)
 	translationService := services.NewTranslationService(cfg, usageStatsService, translationCacheRepo, logger)
 	snippetsService := services.NewSnippetsService(db, cfg, logger)
-	router := handlers.NewRouter(cfg, userService, questionService, learningService, aiService, workerService, dailyQuestionService, storyService, services.NewConversationService(db), oauthService, generationHintService, translationService, snippetsService, usageStatsService, services.NewWordOfTheDayService(db, logger), services.NewAuthAPIKeyService(db, logger), logger)
+	translationPracticeService := services.NewTranslationPracticeService(db, storyService, questionService, cfg, logger)
+	router := handlers.NewRouter(cfg, userService, questionService, learningService, aiService, workerService, dailyQuestionService, storyService, services.NewConversationService(db), oauthService, generationHintService, translationService, snippetsService, usageStatsService, services.NewWordOfTheDayService(db, logger), services.NewAuthAPIKeyService(db, logger), translationPracticeService, logger)
 	suite.Router = router
 }
 

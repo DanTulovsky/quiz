@@ -3,7 +3,6 @@ package services
 import (
 	"context"
 	"database/sql"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"math/rand"
@@ -137,7 +136,7 @@ func (s *TranslationPracticeService) GetSentenceFromExistingContent(
 	language, level string,
 	direction models.TranslationDirection,
 ) (result0 *models.TranslationPracticeSentence, err error) {
-	ctx, span := observability.TraceFunction(ctx, "get_sentence_from_existing_content",
+	ctx, span := observability.TraceFunction(ctx, "translation_practice", "get_sentence_from_existing_content",
 		attribute.Int("user_id", int(userID)),
 		attribute.String("language", language),
 		attribute.String("level", level),
@@ -219,7 +218,7 @@ func (s *TranslationPracticeService) SubmitTranslation(
 	aiService AIServiceInterface,
 	userAIConfig *models.UserAIConfig,
 ) (result0 *models.TranslationPracticeSession, err error) {
-	ctx, span := observability.TraceFunction(ctx, "submit_translation",
+	ctx, span := observability.TraceFunction(ctx, "translation_practice", "submit_translation",
 		attribute.Int("user_id", int(userID)),
 		attribute.Int("sentence_id", int(req.SentenceID)),
 	)
@@ -238,9 +237,17 @@ func (s *TranslationPracticeService) SubmitTranslation(
 	}
 
 	// Build evaluation prompt
+	lang := ""
+	if user.PreferredLanguage.Valid {
+		lang = user.PreferredLanguage.String
+	}
+	lvl := ""
+	if user.CurrentLevel.Valid {
+		lvl = user.CurrentLevel.String
+	}
 	templateData := AITemplateData{
-		Language:            user.PreferredLanguage,
-		Level:               user.CurrentLevel,
+		Language:            lang,
+		Level:               lvl,
 		OriginalSentence:     req.OriginalSentence,
 		UserTranslation:     req.UserTranslation,
 		SourceLanguage:      sentence.SourceLanguage,
@@ -285,7 +292,7 @@ func (s *TranslationPracticeService) GetPracticeHistory(
 	userID uint,
 	limit int,
 ) (result0 []models.TranslationPracticeSession, err error) {
-	ctx, span := observability.TraceFunction(ctx, "get_practice_history",
+	ctx, span := observability.TraceFunction(ctx, "translation_practice", "get_practice_history",
 		attribute.Int("user_id", int(userID)),
 		attribute.Int("limit", limit),
 	)
@@ -342,7 +349,7 @@ func (s *TranslationPracticeService) GetPracticeStats(
 	ctx context.Context,
 	userID uint,
 ) (result0 map[string]interface{}, err error) {
-	ctx, span := observability.TraceFunction(ctx, "get_practice_stats",
+	ctx, span := observability.TraceFunction(ctx, "translation_practice", "get_practice_stats",
 		attribute.Int("user_id", int(userID)),
 	)
 	defer observability.FinishSpan(span, &err)

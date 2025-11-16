@@ -45,7 +45,8 @@ func TestSubmitDailyAnswer_RecordsUserResponse(t *testing.T) {
 	translationCacheRepo := services.NewTranslationCacheRepository(db, logger)
 	translationService := services.NewTranslationService(cfg, usageStatsService, translationCacheRepo, logger)
 	snippetsService := services.NewSnippetsService(db, cfg, logger)
-	router := handlers.NewRouter(cfg, userService, questionService, learningService, services.NewAIService(cfg, logger, services.NewNoopUsageStatsService()), services.NewWorkerServiceWithLogger(db, logger), dailyQuestionService, storyService, services.NewConversationService(db), services.NewOAuthServiceWithLogger(cfg, logger), generationHintService, translationService, snippetsService, usageStatsService, services.NewWordOfTheDayService(db, logger), services.NewAuthAPIKeyService(db, logger), logger)
+	translationPracticeService := services.NewTranslationPracticeService(db, storyService, questionService, cfg, logger)
+	router := handlers.NewRouter(cfg, userService, questionService, learningService, services.NewAIService(cfg, logger, services.NewNoopUsageStatsService()), services.NewWorkerServiceWithLogger(db, logger), dailyQuestionService, storyService, services.NewConversationService(db), services.NewOAuthServiceWithLogger(cfg, logger), generationHintService, translationService, snippetsService, usageStatsService, services.NewWordOfTheDayService(db, logger), services.NewAuthAPIKeyService(db, logger), translationPracticeService, logger)
 
 	// Create a user
 	user, err := userService.CreateUserWithPassword(context.Background(), fmt.Sprintf("daily_integ_%d", time.Now().UnixNano()), "password123", "italian", "A1")
@@ -181,7 +182,8 @@ func TestGetQuestionHistory_DateOnlyTimestamp_Returns500(t *testing.T) {
 	translationCacheRepo := services.NewTranslationCacheRepository(db, logger)
 	translationService := services.NewTranslationService(cfg, usageStatsService, translationCacheRepo, logger)
 	snippetsService := services.NewSnippetsService(db, cfg, logger)
-	router := handlers.NewRouter(cfg, userService, questionService, learningService, services.NewAIService(cfg, logger, services.NewNoopUsageStatsService()), services.NewWorkerServiceWithLogger(db, logger), dailyQuestionService, storyService, services.NewConversationService(db), services.NewOAuthServiceWithLogger(cfg, logger), generationHintService, translationService, snippetsService, usageStatsService, services.NewWordOfTheDayService(db, logger), services.NewAuthAPIKeyService(db, logger), logger)
+	translationPracticeService := services.NewTranslationPracticeService(db, storyService, questionService, cfg, logger)
+	router := handlers.NewRouter(cfg, userService, questionService, learningService, services.NewAIService(cfg, logger, services.NewNoopUsageStatsService()), services.NewWorkerServiceWithLogger(db, logger), dailyQuestionService, storyService, services.NewConversationService(db), services.NewOAuthServiceWithLogger(cfg, logger), generationHintService, translationService, snippetsService, usageStatsService, services.NewWordOfTheDayService(db, logger), services.NewAuthAPIKeyService(db, logger), translationPracticeService, logger)
 
 	// Create a user
 	user, err := userService.CreateUserWithPassword(context.Background(), fmt.Sprintf("daily_integ_%d", time.Now().UnixNano()), "password123", "italian", "A1")

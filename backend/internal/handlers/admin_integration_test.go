@@ -93,6 +93,7 @@ func (suite *AdminIntegrationTestSuite) SetupSuite() {
 	translationService := services.NewTranslationService(suite.cfg, usageStatsService, translationCacheRepo, logger)
 	snippetsService := services.NewSnippetsService(db, suite.cfg, logger)
 	authAPIKeyService := services.NewAuthAPIKeyService(db, logger)
+	translationPracticeService := services.NewTranslationPracticeService(db, storyService, questionService, suite.cfg, logger)
 
 	suite.BackendRouter = handlers.NewRouter(
 		suite.cfg,
@@ -111,6 +112,7 @@ func (suite *AdminIntegrationTestSuite) SetupSuite() {
 		usageStatsService,
 		services.NewWordOfTheDayService(db, logger),
 		authAPIKeyService,
+		translationPracticeService,
 		logger,
 	)
 

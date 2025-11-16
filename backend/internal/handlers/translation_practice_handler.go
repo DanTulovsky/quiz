@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -13,7 +14,6 @@ import (
 	contextutils "quizapp/internal/utils"
 
 	"github.com/gin-gonic/gin"
-	"go.opentelemetry.io/otel/attribute"
 )
 
 // TranslationPracticeHandler handles translation practice related HTTP requests
@@ -23,6 +23,35 @@ type TranslationPracticeHandler struct {
 	userService                services.UserServiceInterface
 	cfg                        *config.Config
 	logger                     *observability.Logger
+}
+
+// convertToServicesAIConfig creates AI config for the user in services format,
+// reusing the same approach as other handlers (e.g., story/quiz) including
+// fetching the saved per-provider API key.
+func (h *TranslationPracticeHandler) convertToServicesAIConfig(ctx context.Context, user *models.User) (*models.UserAIConfig, *int) {
+	aiProvider := ""
+	if user.AIProvider.Valid {
+		aiProvider = user.AIProvider.String
+	}
+	aiModel := ""
+	if user.AIModel.Valid {
+		aiModel = user.AIModel.String
+	}
+	apiKey := ""
+	var apiKeyID *int
+	if aiProvider != "" {
+		savedKey, keyID, err := h.userService.GetUserAPIKeyWithID(ctx, user.ID, aiProvider)
+		if err == nil && savedKey != "" {
+			apiKey = savedKey
+			apiKeyID = keyID
+		}
+	}
+	return &models.UserAIConfig{
+		Provider: aiProvider,
+		Model:    aiModel,
+		APIKey:   apiKey,
+		Username: user.Username,
+	}, apiKeyID
 }
 
 // NewTranslationPracticeHandler creates a new TranslationPracticeHandler instance
@@ -66,25 +95,20 @@ func (h *TranslationPracticeHandler) GenerateSentence(c *gin.Context) {
 	}
 
 	// Get user for AI config
-	user, err := h.userService.GetUserByID(ctx, userID)
+	user, err := h.userService.GetUserByID(ctx, int(userID))
 	if err != nil || user == nil {
 		HandleAppError(c, contextutils.ErrRecordNotFound)
 		return
 	}
 
-	userAIConfig := &models.UserAIConfig{
-		Provider: user.AIProvider.String,
-		Model:    user.AIModel.String,
-		APIKey:   user.AIAPIKey.String,
-		Username: user.Username,
-	}
+	userAIConfig, _ := h.convertToServicesAIConfig(ctx, user)
 
 	// Convert API request to service request
 	serviceReq := &models.GenerateSentenceRequest{
 		Language:  req.Language,
-		Level:      req.Level,
-		Direction:  models.TranslationDirection(req.Direction),
-		Topic:      req.Topic,
+		Level:     req.Level,
+		Direction: models.TranslationDirection(req.Direction),
+		Topic:     req.Topic,
 	}
 
 	sentence, err := h.translationPracticeService.GenerateSentence(ctx, userID, serviceReq, h.aiService, userAIConfig)
@@ -182,24 +206,19 @@ func (h *TranslationPracticeHandler) SubmitTranslation(c *gin.Context) {
 	}
 
 	// Get user for AI config
-	user, err := h.userService.GetUserByID(ctx, userID)
+	user, err := h.userService.GetUserByID(ctx, int(userID))
 	if err != nil || user == nil {
 		HandleAppError(c, contextutils.ErrRecordNotFound)
 		return
 	}
 
-	userAIConfig := &models.UserAIConfig{
-		Provider: user.AIProvider.String,
-		Model:    user.AIModel.String,
-		APIKey:   user.AIAPIKey.String,
-		Username: user.Username,
-	}
+	userAIConfig, _ := h.convertToServicesAIConfig(ctx, user)
 
 	// Convert API request to service request
 	serviceReq := &models.SubmitTranslationRequest{
-		SentenceID:          uint(req.SentenceId),
-		OriginalSentence:    req.OriginalSentence,
-		UserTranslation:     req.UserTranslation,
+		SentenceID:           uint(req.SentenceId),
+		OriginalSentence:     req.OriginalSentence,
+		UserTranslation:      req.UserTranslation,
 		TranslationDirection: models.TranslationDirection(req.TranslationDirection),
 	}
 
@@ -211,14 +230,14 @@ func (h *TranslationPracticeHandler) SubmitTranslation(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, api.TranslationPracticeSessionResponse{
-		Id:                 int(session.ID),
-		SentenceId:         int(session.SentenceID),
-		OriginalSentence:   session.OriginalSentence,
-		UserTranslation:    session.UserTranslation,
+		Id:                   int(session.ID),
+		SentenceId:           int(session.SentenceID),
+		OriginalSentence:     session.OriginalSentence,
+		UserTranslation:      session.UserTranslation,
 		TranslationDirection: string(session.TranslationDirection),
-		AiFeedback:         session.AIFeedback,
-		AiScore:            session.AIScore,
-		CreatedAt:          session.CreatedAt,
+		AiFeedback:           session.AIFeedback,
+		AiScore:              float64PtrTo32(session.AIScore),
+		CreatedAt:            session.CreatedAt,
 	})
 }
 
@@ -251,14 +270,14 @@ func (h *TranslationPracticeHandler) GetHistory(c *gin.Context) {
 	response := make([]api.TranslationPracticeSessionResponse, len(sessions))
 	for i, session := range sessions {
 		response[i] = api.TranslationPracticeSessionResponse{
-			Id:                 int(session.ID),
-			SentenceId:         int(session.SentenceID),
-			OriginalSentence:   session.OriginalSentence,
-			UserTranslation:    session.UserTranslation,
+			Id:                   int(session.ID),
+			SentenceId:           int(session.SentenceID),
+			OriginalSentence:     session.OriginalSentence,
+			UserTranslation:      session.UserTranslation,
 			TranslationDirection: string(session.TranslationDirection),
-			AiFeedback:         session.AIFeedback,
-			AiScore:            session.AIScore,
-			CreatedAt:          session.CreatedAt,
+			AiFeedback:           session.AIFeedback,
+			AiScore:              float64PtrTo32(session.AIScore),
+			CreatedAt:            session.CreatedAt,
 		}
 	}
 
@@ -286,7 +305,47 @@ func (h *TranslationPracticeHandler) GetStats(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, stats)
+	// Coerce nullable numeric fields to numbers to satisfy response schema
+	response := map[string]interface{}{}
+	// counts (always integers)
+	if v, ok := stats["total_sessions"]; ok {
+		response["total_sessions"] = v
+	} else {
+		response["total_sessions"] = 0
+	}
+	if v, ok := stats["excellent_count"]; ok {
+		response["excellent_count"] = v
+	} else {
+		response["excellent_count"] = 0
+	}
+	if v, ok := stats["good_count"]; ok {
+		response["good_count"] = v
+	} else {
+		response["good_count"] = 0
+	}
+	if v, ok := stats["needs_improvement_count"]; ok {
+		response["needs_improvement_count"] = v
+	} else {
+		response["needs_improvement_count"] = 0
+	}
+	// numeric (float) values; convert nil to 0.0
+	if v, ok := stats["average_score"]; ok && v != nil {
+		response["average_score"] = v
+	} else {
+		response["average_score"] = 0.0
+	}
+	if v, ok := stats["min_score"]; ok && v != nil {
+		response["min_score"] = v
+	} else {
+		response["min_score"] = 0.0
+	}
+	if v, ok := stats["max_score"]; ok && v != nil {
+		response["max_score"] = v
+	} else {
+		response["max_score"] = 0.0
+	}
+
+	c.JSON(http.StatusOK, response)
 }
 
 // RegisterRoutes registers the translation practice routes with the router
@@ -317,3 +376,10 @@ func parseInt(s string) (int, error) {
 	return i, err
 }
 
+func float64PtrTo32(p *float64) *float32 {
+	if p == nil {
+		return nil
+	}
+	v := float32(*p)
+	return &v
+}

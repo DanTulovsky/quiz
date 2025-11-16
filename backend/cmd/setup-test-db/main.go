@@ -515,6 +515,11 @@ func setupTestData(ctx context.Context, rootDir string, userService *services.Us
 		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to setup api keys: %v", err)
 	}
 
+	// 12. Seed translation practice sentences and sessions (non-AI, deterministic)
+	if err := seedTranslationPracticeData(ctx, users, db, logger); err != nil {
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to seed translation practice data: %v", err)
+	}
+
 	return users, nil
 }
 
@@ -1304,6 +1309,135 @@ func loadAndCreateSnippets(ctx context.Context, filePath string, users map[strin
 	}
 
 	return snippets, nil
+}
+
+// seedTranslationPracticeData seeds minimal sentences and sessions for translation practice endpoints
+func seedTranslationPracticeData(ctx context.Context, users map[string]*models.User, db *sql.DB, logger *observability.Logger) error {
+	type seedUser struct {
+		Username string
+	}
+	targets := []seedUser{
+		{Username: "apitestuser"},
+		{Username: "apitestuserstory1"},
+	}
+
+	insertSentence := `
+		INSERT INTO translation_practice_sentences
+		(user_id, sentence_text, source_language, target_language, language_level, source_type, topic, created_at, updated_at)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW())
+		RETURNING id
+	`
+	insertSession := `
+		INSERT INTO translation_practice_sessions
+		(user_id, sentence_id, original_sentence, user_translation, translation_direction, ai_feedback, ai_score, created_at)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+	`
+
+	for _, t := range targets {
+		u := users[t.Username]
+		if u == nil {
+			continue
+		}
+		langStr := "italian"
+		if u.PreferredLanguage.Valid && u.PreferredLanguage.String != "" {
+			langStr = u.PreferredLanguage.String
+		}
+		levelStr := "B1"
+		if u.CurrentLevel.Valid && u.CurrentLevel.String != "" {
+			levelStr = u.CurrentLevel.String
+		}
+
+		type sentenceSeed struct {
+			Text       string
+			SourceLang string
+			TargetLang string
+			Level      string
+			SourceType string
+			Topic      *string
+			Direction  string
+		}
+		topic := "seeded topic"
+		seeds := []sentenceSeed{
+			{
+				Text:       "Please translate this short seeded sentence for practice.",
+				SourceLang: "en",
+				TargetLang: langStr,
+				Level:      levelStr,
+				SourceType: "ai_generated",
+				Topic:      &topic,
+				Direction:  "en_to_learning",
+			},
+			{
+				Text:       "Questa è una semplice frase di esempio per la pratica.",
+				SourceLang: langStr,
+				TargetLang: "en",
+				Level:      levelStr,
+				SourceType: "story_section",
+				Topic:      &topic,
+				Direction:  "learning_to_en",
+			},
+		}
+
+		for i, s := range seeds {
+			var sentenceID int64
+			if err := db.QueryRowContext(
+				ctx,
+				insertSentence,
+				u.ID,
+				s.Text,
+				s.SourceLang,
+				s.TargetLang,
+				s.Level,
+				s.SourceType,
+				s.Topic,
+			).Scan(&sentenceID); err != nil {
+				logger.Warn(ctx, "Failed to insert translation practice sentence (likely exists)", map[string]interface{}{"user": t.Username, "err": err.Error(), "index": i})
+				continue
+			}
+
+			// Create one or two sessions per sentence with varying scores
+			type sessSeed struct {
+				UserText  string
+				Feedback  string
+				Score     *float64
+				Direction string
+			}
+			scoreA := 4.6
+			scoreB := 3.2
+			sessionSeeds := []sessSeed{
+				{
+					UserText:  "My attempt at translation.",
+					Feedback:  "Good job overall. Consider refining word choice in the second clause.",
+					Score:     &scoreA,
+					Direction: seeds[i].Direction,
+				},
+				{
+					UserText:  "Another attempt.",
+					Feedback:  "Acceptable translation. Work on grammar agreement.",
+					Score:     &scoreB,
+					Direction: seeds[i].Direction,
+				},
+			}
+			for _, ss := range sessionSeeds {
+				if _, err := db.ExecContext(
+					ctx,
+					insertSession,
+					u.ID,
+					sentenceID,
+					s.Text,
+					ss.UserText,
+					ss.Direction,
+					ss.Feedback,
+					ss.Score,
+				); err != nil {
+					logger.Warn(ctx, "Failed to insert translation practice session", map[string]interface{}{"user": t.Username, "err": err.Error()})
+				}
+			}
+		}
+	}
+
+	logger.Info(ctx, "Seeded translation practice data", map[string]interface{}{})
+	return nil
 }
 
 // outputUserDataForTests outputs the created user data to a JSON file for E2E tests to read
