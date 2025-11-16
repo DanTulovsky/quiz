@@ -101,7 +101,6 @@ const TranslationPracticePage: React.FC = () => {
 
   const feedbackTitleRef = useRef<HTMLHeadingElement | null>(null);
   const feedbackCardRef = useRef<HTMLDivElement | null>(null);
-  const feedbackScrollAreaRef = useRef<HTMLDivElement | null>(null);
   const historyViewportRef = useRef<HTMLDivElement | null>(null);
   const topicInputRef = useRef<HTMLTextAreaElement | null>(null);
   const translationInputRef = useRef<HTMLTextAreaElement | null>(null);
@@ -268,10 +267,14 @@ const TranslationPracticePage: React.FC = () => {
       });
       // Show feedback inline (no notification)
       setFeedback({ text: resp.ai_feedback, score: resp.ai_score ?? null });
-      // Scroll to feedback after it appears - position the "AI Feedback" title at the top
+      // Scroll to feedback after it appears - position with offset to keep header visible
       setTimeout(() => {
-        if (feedbackTitleRef.current) {
-          feedbackTitleRef.current.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
+        if (feedbackCardRef.current) {
+          const cardRect = feedbackCardRef.current.getBoundingClientRect();
+          const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+          const headerOffset = 100; // Offset to keep header visible
+          const targetPosition = currentScroll + cardRect.top - headerOffset;
+          window.scrollTo({ top: targetPosition, behavior: 'smooth' });
         }
       }, 200);
     } catch (error) {
@@ -405,29 +408,6 @@ const TranslationPracticePage: React.FC = () => {
     [isInputFocused, isDirectionFocused]
   );
 
-  // Arrow keys for feedback scrolling (only when feedback is shown and not in direction dropdown)
-  useHotkeys(
-    ['arrowup', 'arrowdown'],
-    e => {
-      if (isDirectionFocused) return; // Let direction navigation handle it
-      if (feedback && feedbackScrollAreaRef.current) {
-        const scrollArea = feedbackScrollAreaRef.current;
-        const scrollAmount = 50;
-        if (e.key === 'ArrowUp') {
-          e.preventDefault();
-          scrollArea.scrollTop = Math.max(0, scrollArea.scrollTop - scrollAmount);
-        } else if (e.key === 'ArrowDown') {
-          e.preventDefault();
-          scrollArea.scrollTop = Math.min(
-            scrollArea.scrollHeight - scrollArea.clientHeight,
-            scrollArea.scrollTop + scrollAmount
-          );
-        }
-      }
-    },
-    { enableOnFormTags: true, preventDefault: true },
-    [feedback, isDirectionFocused]
-  );
 
   useHotkeys(
     'h',
@@ -810,27 +790,21 @@ const TranslationPracticePage: React.FC = () => {
                 )}
               </Group>
               <Divider />
-              <ScrollArea
-                h={480}
-                type="auto"
-                viewportRef={feedbackScrollAreaRef}
-              >
-                <Paper p="sm" withBorder>
-                  <ReactMarkdown
-                    remarkPlugins={[remarkGfm]}
-                    components={{
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      p: ({ children }: any) => (
-                        <Box mb="md" component="p">
-                          {children}
-                        </Box>
-                      ),
-                    }}
-                  >
-                    {feedback.text}
-                  </ReactMarkdown>
-                </Paper>
-              </ScrollArea>
+              <Paper p="sm" withBorder>
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    p: ({ children }: any) => (
+                      <Box mb="md" component="p">
+                        {children}
+                      </Box>
+                    ),
+                  }}
+                >
+                  {feedback.text}
+                </ReactMarkdown>
+              </Paper>
             </Stack>
           </Card>
         )}
@@ -1163,16 +1137,6 @@ const TranslationPracticePage: React.FC = () => {
                           Scroll to top
                         </Text>
                       </Group>
-                      {feedback && (
-                        <Group gap="xs" align="center">
-                          <Badge size="sm" variant="light" style={{ minWidth: '32px' }}>
-                            ↑↓
-                          </Badge>
-                          <Text size="xs" c="dimmed">
-                            Scroll feedback
-                          </Text>
-                        </Group>
-                      )}
                       <Group gap="xs" align="center">
                         <Badge size="sm" variant="light" style={{ minWidth: '32px' }}>
                           H
