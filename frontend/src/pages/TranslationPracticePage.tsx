@@ -854,9 +854,18 @@ const TranslationPracticePage: React.FC = () => {
                             </Text>
                           </Stack>
                           <Group gap="xs" wrap="nowrap">
-                            <Badge variant="light">{s.translation_direction.replaceAll('_', ' ')}</Badge>
+                            <Badge variant="light">
+                              {s.translation_direction === 'en_to_learning'
+                                ? `English → ${languageDisplay}`
+                                : s.translation_direction === 'learning_to_en'
+                                  ? `${languageDisplay} → English`
+                                  : s.translation_direction.replaceAll('_', ' ')}
+                            </Badge>
                             {s.ai_score != null ? (
-                              <Badge color="teal" variant="light">
+                              <Badge
+                                color={s.ai_score >= 4 ? 'green' : s.ai_score >= 3 ? 'yellow' : 'red'}
+                                variant="light"
+                              >
                                 {s.ai_score.toFixed(1)}/5
                               </Badge>
                             ) : null}
