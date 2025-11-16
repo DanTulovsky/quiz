@@ -798,6 +798,7 @@ tasks:
       - echo "🎉 All API types generated from swagger.yaml!"
 
   build-backend:
+    deps: [update-punkt-models]
     desc: "Build backend"
     dir: backend
     cmds:
@@ -922,6 +923,16 @@ tasks:
     cmds:
       - echo "Generating phrasebook index..."
       - node scripts/generate-phrasebook-index.js
+
+  update-punkt-models:
+    desc: "Download/refresh Punkt sentence models for languages in merged.config.yaml"
+    deps: [merge-config]
+    env:
+      QUIZ_CONFIG_FILE: "{{.TASKFILE_DIR}}/merged.config.yaml"
+    cmds:
+      - echo "Updating Punkt models from neurosnap/sentences for configured languages..."
+      - bash scripts/update-punkt-models.sh
+      - echo "✅ Punkt models updated in backend/internal/resources/punkt"
 
   build-frontend:
     desc: "Build frontend"

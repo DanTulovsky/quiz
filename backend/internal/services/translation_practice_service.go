@@ -6,8 +6,11 @@ import (
 	"errors"
 	"fmt"
 	"math/rand"
+	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
+	"sync"
 	"time"
 
 	"quizapp/internal/config"
@@ -15,6 +18,8 @@ import (
 	"quizapp/internal/observability"
 	contextutils "quizapp/internal/utils"
 
+	"github.com/neurosnap/sentences"
+	sentencesdata "github.com/neurosnap/sentences/data"
 	"go.opentelemetry.io/otel/attribute"
 )
 
@@ -29,12 +34,15 @@ type TranslationPracticeServiceInterface interface {
 
 // TranslationPracticeService handles translation practice operations
 type TranslationPracticeService struct {
-	db             *sql.DB
-	storyService   StoryServiceInterface
+	db              *sql.DB
+	storyService    StoryServiceInterface
 	questionService QuestionServiceInterface
-	config         *config.Config
-	logger         *observability.Logger
+	config          *config.Config
+	logger          *observability.Logger
 	templateManager *AITemplateManager
+	punktModels     map[string]*sentences.DefaultSentenceTokenizer
+	punktModelsMu   sync.RWMutex
+	punktModelDir   string
 }
 
 // NewTranslationPracticeService creates a new TranslationPracticeService instance
@@ -52,6 +60,27 @@ func NewTranslationPracticeService(
 		panic(err) // Use panic for fatal errors in initialization
 	}
 
+	// Determine punkt model directory (relative to repo root)
+	pwd, err := os.Getwd()
+	if err != nil {
+		logger.Error(context.Background(), "Failed to get working directory for Punkt models", err, map[string]interface{}{})
+	}
+	// Find repo root by looking for go.mod
+	repoRoot := pwd
+	for {
+		if _, err := os.Stat(filepath.Join(repoRoot, "go.mod")); err == nil {
+			break
+		}
+		parent := filepath.Dir(repoRoot)
+		if parent == repoRoot {
+			// Reached filesystem root
+			repoRoot = pwd
+			break
+		}
+		repoRoot = parent
+	}
+	punktModelDir := filepath.Join(repoRoot, "backend", "internal", "resources", "punkt")
+
 	return &TranslationPracticeService{
 		db:              db,
 		storyService:    storyService,
@@ -59,6 +88,8 @@ func NewTranslationPracticeService(
 		config:          config,
 		logger:          logger,
 		templateManager: templateManager,
+		punktModels:     make(map[string]*sentences.DefaultSentenceTokenizer),
+		punktModelDir:   punktModelDir,
 	}
 }
 
@@ -90,9 +121,9 @@ func (s *TranslationPracticeService) GenerateSentence(
 
 	// Build prompt for sentence generation
 	templateData := AITemplateData{
-		Language: req.Language,
-		Level:    req.Level,
-		Topic:    stringPtrToString(req.Topic),
+		Language:  req.Language,
+		Level:     req.Level,
+		Topic:     stringPtrToString(req.Topic),
 		Direction: string(req.Direction),
 	}
 
@@ -187,7 +218,7 @@ func (s *TranslationPracticeService) GetSentenceFromExistingContent(
 			if sentence.ID == 0 {
 				if err := s.saveSentence(ctx, sentence); err != nil {
 					s.logger.Warn(ctx, "Failed to save sentence from existing content", map[string]interface{}{
-						"error": err.Error(),
+						"error":       err.Error(),
 						"source_type": string(source.sourceType),
 					})
 					// Continue to next source
@@ -198,7 +229,7 @@ func (s *TranslationPracticeService) GetSentenceFromExistingContent(
 		}
 		s.logger.Debug(ctx, "Failed to get sentence from source", map[string]interface{}{
 			"source_type": string(source.sourceType),
-			"error": err.Error(),
+			"error":       err.Error(),
 		})
 	}
 
@@ -246,12 +277,12 @@ func (s *TranslationPracticeService) SubmitTranslation(
 		lvl = user.CurrentLevel.String
 	}
 	templateData := AITemplateData{
-		Language:            lang,
-		Level:               lvl,
+		Language:             lang,
+		Level:                lvl,
 		OriginalSentence:     req.OriginalSentence,
-		UserTranslation:     req.UserTranslation,
-		SourceLanguage:      sentence.SourceLanguage,
-		TargetLanguage:      sentence.TargetLanguage,
+		UserTranslation:      req.UserTranslation,
+		SourceLanguage:       sentence.SourceLanguage,
+		TargetLanguage:       sentence.TargetLanguage,
 		TranslationDirection: string(req.TranslationDirection),
 	}
 
@@ -269,14 +300,14 @@ func (s *TranslationPracticeService) SubmitTranslation(
 
 	// Create session
 	session := &models.TranslationPracticeSession{
-		UserID:              userID,
-		SentenceID:          req.SentenceID,
-		OriginalSentence:    req.OriginalSentence,
-		UserTranslation:     req.UserTranslation,
+		UserID:               userID,
+		SentenceID:           req.SentenceID,
+		OriginalSentence:     req.OriginalSentence,
+		UserTranslation:      req.UserTranslation,
 		TranslationDirection: req.TranslationDirection,
-		AIFeedback:          cleanFeedback,
-		AIScore:             score,
-		CreatedAt:           time.Now(),
+		AIFeedback:           cleanFeedback,
+		AIScore:              score,
+		CreatedAt:            time.Now(),
 	}
 
 	if err := s.saveSession(ctx, session); err != nil {
@@ -368,13 +399,13 @@ func (s *TranslationPracticeService) GetPracticeStats(
 	`
 
 	var stats struct {
-		TotalSessions           int
-		AverageScore            sql.NullFloat64
-		MinScore                sql.NullFloat64
-		MaxScore                sql.NullFloat64
-		ExcellentCount          int
-		GoodCount               int
-		NeedsImprovementCount   int
+		TotalSessions         int
+		AverageScore          sql.NullFloat64
+		MinScore              sql.NullFloat64
+		MaxScore              sql.NullFloat64
+		ExcellentCount        int
+		GoodCount             int
+		NeedsImprovementCount int
 	}
 
 	err = s.db.QueryRowContext(ctx, query, userID).Scan(
@@ -389,7 +420,7 @@ func (s *TranslationPracticeService) GetPracticeStats(
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return map[string]interface{}{
-				"total_sessions":           0,
+				"total_sessions":          0,
 				"average_score":           nil,
 				"min_score":               nil,
 				"max_score":               nil,
@@ -402,10 +433,10 @@ func (s *TranslationPracticeService) GetPracticeStats(
 	}
 
 	result := map[string]interface{}{
-		"total_sessions":           stats.TotalSessions,
-		"excellent_count":          stats.ExcellentCount,
-		"good_count":               stats.GoodCount,
-		"needs_improvement_count":  stats.NeedsImprovementCount,
+		"total_sessions":          stats.TotalSessions,
+		"excellent_count":         stats.ExcellentCount,
+		"good_count":              stats.GoodCount,
+		"needs_improvement_count": stats.NeedsImprovementCount,
 	}
 
 	if stats.AverageScore.Valid {
@@ -538,7 +569,7 @@ func (s *TranslationPracticeService) getSentenceFromStory(
 	section := suitableSections[rand.Intn(len(suitableSections))]
 
 	// Extract a sentence from the section content
-	sentences := s.extractSentences(section.Content)
+	sentences := s.extractSentences(section.Content, language)
 	if len(sentences) == 0 {
 		return nil, errors.New("no sentences found in story section")
 	}
@@ -641,7 +672,7 @@ func (s *TranslationPracticeService) getSentenceFromReadingComprehension(
 		return nil, errors.New("no passage found in reading comprehension question")
 	}
 
-	sentences := s.extractSentences(passageText)
+	sentences := s.extractSentences(passageText, language)
 	if len(sentences) == 0 {
 		return nil, errors.New("no sentences found in passage")
 	}
@@ -663,20 +694,157 @@ func (s *TranslationPracticeService) getSentenceFromReadingComprehension(
 	}, nil
 }
 
-func (s *TranslationPracticeService) extractSentences(text string) []string {
-	// Simple sentence extraction - split by common sentence endings
-	// This is a basic implementation; could be improved with proper NLP
-	re := regexp.MustCompile(`[.!?]+`)
-	sentences := re.Split(text, -1)
+// getPunktModelName maps language codes to Punkt model file names
+func (s *TranslationPracticeService) getPunktModelName(code string) string {
+	switch code {
+	case "en":
+		return "english"
+	case "it":
+		return "italian"
+	case "fr":
+		return "french"
+	case "de":
+		return "german"
+	case "es":
+		return "spanish"
+	case "ru":
+		return "russian"
+	case "hi":
+		return "hindi"
+	case "ja":
+		return "japanese"
+	case "zh":
+		return "chinese"
+	default:
+		return ""
+	}
+}
 
-	var result []string
-	for _, sent := range sentences {
-		sent = strings.TrimSpace(sent)
-		if len(sent) > 10 { // Filter out very short fragments
-			result = append(result, sent)
+// getPunktModel loads and caches a Punkt model for the given language code.
+// Returns nil if no model is available (caller should use regex fallback).
+func (s *TranslationPracticeService) getPunktModel(languageCode string) *sentences.DefaultSentenceTokenizer {
+	modelName := s.getPunktModelName(languageCode)
+	if modelName == "" {
+		return nil
+	}
+
+	// Check cache first (read lock)
+	s.punktModelsMu.RLock()
+	if model, exists := s.punktModels[languageCode]; exists {
+		s.punktModelsMu.RUnlock()
+		return model
+	}
+	s.punktModelsMu.RUnlock()
+
+	// Try to load from file (write lock)
+	s.punktModelsMu.Lock()
+	defer s.punktModelsMu.Unlock()
+
+	// Double-check after acquiring write lock
+	if model, exists := s.punktModels[languageCode]; exists {
+		return model
+	}
+
+	// Try built-in English model first
+	var trainingData []byte
+	if languageCode == "en" {
+		// Use built-in embedded English model
+		var err error
+		trainingData, err = sentencesdata.Asset("english.json")
+		if err != nil {
+			// Fallback: try loading from file
+			modelPath := filepath.Join(s.punktModelDir, "english.json")
+			if data, err := os.ReadFile(modelPath); err == nil {
+				trainingData = data
+			}
+		}
+	} else {
+		// Try loading from JSON file for other languages
+		modelPath := filepath.Join(s.punktModelDir, modelName+".json")
+		if data, err := os.ReadFile(modelPath); err == nil {
+			trainingData = data
 		}
 	}
 
+	if len(trainingData) == 0 {
+		// No model available, don't cache nil (will try again next time)
+		return nil
+	}
+
+	// Load training data into Storage
+	storage, err := sentences.LoadTraining(trainingData)
+	if err != nil {
+		s.logger.Warn(context.Background(), "Failed to load Punkt model", map[string]interface{}{
+			"language": languageCode,
+			"error":    err.Error(),
+		})
+		return nil
+	}
+
+	// Create tokenizer with storage
+	tokenizer := sentences.NewSentenceTokenizer(storage)
+
+	// Cache it
+	s.punktModels[languageCode] = tokenizer
+	return tokenizer
+}
+
+// extractSentences uses Punkt tokenizer if available, otherwise falls back to regex.
+// Preserves terminal punctuation in all cases.
+func (s *TranslationPracticeService) extractSentences(text string, language string) []string {
+	// Try Punkt first if we have a model for this language
+	if punktModel := s.getPunktModel(language); punktModel != nil {
+		tokenized := punktModel.Tokenize(text)
+		var sentences []string
+		for _, sent := range tokenized {
+			sentText := strings.TrimSpace(sent.Text)
+			if sentText != "" {
+				sentences = append(sentences, sentText)
+			}
+		}
+		if len(sentences) > 0 {
+			return sentences
+		}
+		// If Punkt returned nothing, fall through to regex
+	}
+
+	// Regex fallback: Extract sentences while PRESERVING terminal punctuation.
+	// Handles common ASCII and Unicode punctuation and optional trailing quotes/brackets.
+	//
+	// Examples matched:
+	//  - "Hello world." / "Что это?" / "Да!.." / "— Правда?", '«Привет!»', "(Да?)."
+	//  - "你好。" / "こんにちは。" (full-width punctuation)
+	//
+	// Strategy: find all occurrences of:
+	//   any run of non-terminators (lazy), followed by one or more terminators, optionally followed by closing quote/bracket.
+	//   Terminators: . ! ? … (ellipsis) plus full-width variants 。！？ plus combinations like ".." or "?!"
+	// Use raw string with Unicode characters directly for ellipsis and guillemets
+	// Note: Build pattern carefully - terminators in negated class needs escaping
+	terminatorsCharClass := `\.\!\?…。！？` // characters for terminators (no brackets): ASCII + Unicode ellipsis + full-width
+	terminatorsGroup := `[\.\!\?…。！？]+`  // includes ellipsis … (Unicode U+2026) + full-width punctuation
+	closers := `["'\)\]»""'）］」』"]+?`     // quotes, brackets, guillemets (» Unicode U+00BB) + full-width brackets
+	pattern := fmt.Sprintf(`(?s)([^%s]+?%s(?:%s)?)`, terminatorsCharClass, terminatorsGroup, closers)
+	re := regexp.MustCompile(pattern)
+
+	matches := re.FindAllString(text, -1)
+
+	// Fallback: if nothing matched (no terminators), return the whole text trimmed once
+	if len(matches) == 0 {
+		trimmed := strings.TrimSpace(text)
+		if trimmed != "" {
+			return []string{trimmed}
+		}
+		return nil
+	}
+
+	var result []string
+	for _, m := range matches {
+		sent := strings.TrimSpace(m)
+		// Filter obvious fragments but keep meaningful short sentences (e.g., "Да.")
+		if len([]rune(sent)) >= 2 {
+			result = append(result, sent)
+		}
+	}
 	return result
 }
 
@@ -800,4 +968,3 @@ func (s *TranslationPracticeService) getUserByID(ctx context.Context, userID uin
 
 	return &user, nil
 }
-
