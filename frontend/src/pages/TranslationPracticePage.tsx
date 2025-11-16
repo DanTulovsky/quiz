@@ -8,6 +8,7 @@ import {
   Select,
   Stack,
   Text,
+  TextInput,
   Textarea,
   Title,
   Divider,
@@ -45,6 +46,10 @@ const TranslationPracticePage: React.FC = () => {
   const [loadingExisting, setLoadingExisting] = useState(false);
   const [feedback, setFeedback] = useState<{ text: string; score?: number | null } | null>(null);
   const feedbackTitleRef = useRef<HTMLHeadingElement | null>(null);
+  const historyViewportRef = useRef<HTMLDivElement | null>(null);
+  const [historyLimit, setHistoryLimit] = useState<number>(DEFAULT_HISTORY_LIMIT);
+  const SERVER_HISTORY_MAX = 100;
+  const [historySearch, setHistorySearch] = useState<string>('');
 
   const learningLanguage = user?.preferred_language || '';
   const level = (user?.current_level as string) || '';
@@ -52,7 +57,7 @@ const TranslationPracticePage: React.FC = () => {
   const { mutateAsync: generateSentence, isPending: isGenerating } = useGeneratePracticeSentence();
   const { mutateAsync: submitTranslation, isPending: isSubmitting } = useSubmitTranslation();
   const { data: stats } = usePracticeStats();
-  const { data: history } = usePracticeHistory(DEFAULT_HISTORY_LIMIT);
+  const { data: history } = usePracticeHistory(historyLimit);
 
   // fetch from existing content on demand (not mounted auto-query)
   const { refetch: refetchExisting } = useGetPracticeSentence(
@@ -161,6 +166,28 @@ const TranslationPracticePage: React.FC = () => {
       feedbackTitleRef.current.focus();
     }
   }, [feedback]);
+  // Infinite scroll: grow historyLimit when scrolled near bottom (max 100 per API)
+  const onHistoryScroll = () => {
+    const el = historyViewportRef.current;
+    if (!el) return;
+    const nearBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 80;
+    if (nearBottom && historyLimit < 100) {
+      setHistoryLimit(prev => Math.min(prev + 25, 100));
+    }
+  };
+  const filteredSessions = useMemo(() => {
+    const q = historySearch.trim().toLowerCase();
+    const list = history?.sessions || [];
+    if (!q) return list;
+    return list.filter(s => {
+      return (
+        s.original_sentence?.toLowerCase().includes(q) ||
+        s.user_translation?.toLowerCase().includes(q) ||
+        s.ai_feedback?.toLowerCase().includes(q) ||
+        s.translation_direction?.toLowerCase().includes(q)
+      );
+    });
+  }, [history?.sessions, historySearch]);
   const languageDisplay = toTitle(learningLanguage || 'learning language');
   const directionOptions = useMemo(
     () => [
@@ -264,14 +291,52 @@ const TranslationPracticePage: React.FC = () => {
           <Stack gap="xs">
             <Group justify="space-between" align="center">
               <Title order={5}>History</Title>
-              <Text size="xs" c="dimmed">
-                Showing up to {DEFAULT_HISTORY_LIMIT}
-              </Text>
+              <Group gap="xs">
+                <Text size="xs" c="dimmed">
+                  Showing {filteredSessions.length} of {history?.sessions?.length ?? 0} loaded • Server max {SERVER_HISTORY_MAX}
+                </Text>
+                <Button
+                  size="xs"
+                  variant="subtle"
+                  onClick={() => historyViewportRef.current?.scrollTo({ top: 0, behavior: 'smooth' })}
+                >
+                  Top
+                </Button>
+                <Button
+                  size="xs"
+                  variant="subtle"
+                  onClick={() =>
+                    historyViewportRef.current?.scrollTo({
+                      top: historyViewportRef.current.scrollHeight,
+                      behavior: 'smooth',
+                    })
+                  }
+                >
+                  Bottom
+                </Button>
+                <Button
+                  size="xs"
+                  variant="light"
+                  onClick={() => setHistoryLimit(SERVER_HISTORY_MAX)}
+                  disabled={historyLimit >= SERVER_HISTORY_MAX}
+                >
+                  Load all ({SERVER_HISTORY_MAX})
+                </Button>
+              </Group>
             </Group>
-            <ScrollArea style={{ height: '60vh' }}>
-              {(history?.sessions?.length ?? 0) > 0 ? (
+            <TextInput
+              placeholder="Search history (original, your translation, feedback, direction)"
+              value={historySearch}
+              onChange={e => setHistorySearch(e.currentTarget.value)}
+            />
+            <ScrollArea
+              style={{ height: '60vh' }}
+              viewportRef={historyViewportRef}
+              viewportProps={{ onScroll: onHistoryScroll }}
+            >
+              {(filteredSessions.length ?? 0) > 0 ? (
                 <Accordion variant="separated">
-                  {(history?.sessions || []).map(s => (
+                  {filteredSessions.map(s => (
                     <Accordion.Item value={String(s.id)} key={s.id}>
                       <Accordion.Control>
                         <Group justify="space-between" align="flex-start" wrap="nowrap">
