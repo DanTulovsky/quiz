@@ -32,6 +32,7 @@ type ServiceContainerInterface interface {
 	GetUsageStatsService() (services.UsageStatsServiceInterface, error)
 	GetWordOfTheDayService() (services.WordOfTheDayServiceInterface, error)
 	GetAuthAPIKeyService() (services.AuthAPIKeyServiceInterface, error)
+	GetTranslationPracticeService() (services.TranslationPracticeServiceInterface, error)
 	GetDatabase() *sql.DB
 	GetConfig() *config.Config
 	GetLogger() *observability.Logger
@@ -204,6 +205,11 @@ func (sc *ServiceContainer) GetAuthAPIKeyService() (services.AuthAPIKeyServiceIn
 	return GetServiceAs[services.AuthAPIKeyServiceInterface](sc, "auth_api_key")
 }
 
+// GetTranslationPracticeService returns the translation practice service
+func (sc *ServiceContainer) GetTranslationPracticeService() (services.TranslationPracticeServiceInterface, error) {
+	return GetServiceAs[services.TranslationPracticeServiceInterface](sc, "translation_practice")
+}
+
 // GetDatabase returns the database instance
 func (sc *ServiceContainer) GetDatabase() *sql.DB {
 	return sc.db
@@ -341,6 +347,16 @@ func (sc *ServiceContainer) initializeServices(_ context.Context) {
 	// Initialize auth API key service
 	authAPIKeyService := services.NewAuthAPIKeyService(sc.db, sc.logger)
 	sc.services["auth_api_key"] = authAPIKeyService
+
+	// Initialize translation practice service
+	translationPracticeService := services.NewTranslationPracticeService(
+		sc.db,
+		storyService,
+		questionService,
+		sc.cfg,
+		sc.logger,
+	)
+	sc.services["translation_practice"] = translationPracticeService
 
 	// Register shutdown functions
 	sc.shutdownFuncs = append(sc.shutdownFuncs,

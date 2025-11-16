@@ -103,6 +103,11 @@ func NewApplication(container di.ServiceContainerInterface) (*Application, error
 		return nil, contextutils.WrapError(err, "failed to get auth API key service")
 	}
 
+	translationPracticeService, err := container.GetTranslationPracticeService()
+	if err != nil {
+		return nil, contextutils.WrapError(err, "failed to get translation practice service")
+	}
+
 	// Use the router factory
 	router := handlers.NewRouter(
 		container.GetConfig(),
@@ -121,6 +126,7 @@ func NewApplication(container di.ServiceContainerInterface) (*Application, error
 		usageStatsService,
 		wordOfTheDayService,
 		authAPIKeyService,
+		translationPracticeService,
 		container.GetLogger(),
 	)
 

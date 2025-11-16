@@ -170,6 +170,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         testId: 'nav-reading',
       },
       {
+        name: 'Translation Practice',
+        href: '/translation-practice',
+        icon: IconLanguage,
+        testId: 'nav-translation-practice',
+      },
+      {
         name: 'Daily',
         href: '/daily',
         icon: IconCalendar,
@@ -216,6 +222,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         href: '/verb-conjugation',
         icon: IconBook2,
         testId: 'nav-verb-conjugations',
+      },
+      {
+        name: 'Translation Practice',
+        href: '/translation-practice',
+        icon: IconLanguage,
+        testId: 'nav-translation-practice',
       },
     ];
 

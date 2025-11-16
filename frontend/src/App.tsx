@@ -20,6 +20,7 @@ import WordOfTheDayEmbedPage from './pages/WordOfTheDayEmbedPage';
 import ProgressPage from './pages/ProgressPage';
 import SettingsPage from './pages/SettingsPage';
 import StoryPage from './pages/StoryPage';
+import TranslationPracticePage from './pages/TranslationPracticePage';
 import SavedConversationsPage from './pages/SavedConversationsPage';
 import BookmarkedMessagesPage from './pages/BookmarkedMessagesPage';
 import AdminPage from './pages/AdminPage';
@@ -55,6 +56,8 @@ import MobileSettingsPage from './pages/mobile/MobileSettingsPage';
 import MobileTTSTestPage from './pages/mobile/MobileTTSTestPage';
 import TTSTestPage from './pages/TTSTestPage';
 import { Center, Loader } from '@mantine/core';
+import TranslationPracticePage from './pages/TranslationPracticePage';
+import MobileTranslationPracticePage from './pages/mobile/MobileTranslationPracticePage';
 
 function App() {
   const { user, isLoading } = useAuth();
@@ -84,6 +87,20 @@ function App() {
         <Route
           path='/login'
           element={user ? <Navigate to='/quiz' /> : <LoginPage />}
+        />
+        <Route
+          path='/translation-practice'
+          element={
+            user ? (
+              <Layout>
+                <TranslationPracticePage />
+              </Layout>
+            ) : (
+              <Navigate
+                to={`/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`}
+              />
+            )
+          }
         />
         <Route
           path='/signup'
@@ -873,6 +890,36 @@ function App() {
             user ? (
               <MobileLayout>
                 <MobileTTSTestPage />
+              </MobileLayout>
+            ) : (
+              <Navigate
+                to={`/m/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`}
+              />
+            )
+          }
+        />
+
+        <Route
+          path='/translation-practice'
+          element={
+            user ? (
+              <Layout>
+                <TranslationPracticePage />
+              </Layout>
+            ) : (
+              <Navigate
+                to={`/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`}
+              />
+            )
+          }
+        />
+
+        <Route
+          path='/m/translation-practice'
+          element={
+            user ? (
+              <MobileLayout>
+                <MobileTranslationPracticePage />
               </MobileLayout>
             ) : (
               <Navigate

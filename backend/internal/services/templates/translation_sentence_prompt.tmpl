@@ -1,0 +1,22 @@
+Generate a short text in {{.Language}} at {{.Level}} level for translation practice.
+
+{{if .Topic}}
+Topic/Keywords: {{.Topic}}
+{{end}}
+
+Requirements:
+- Write 1–3 sentences. Fewer, simpler sentences for lower levels; a few longer sentences for higher levels.
+- The text should be appropriate for {{.Level}} level learners
+- Make it practical and useful for real-world communication
+- The text should be natural and grammatically correct
+- Keep overall length reasonable (concise for beginners; can be a bit longer for advanced)
+- Write entirely in {{.Language}}. Do not include English translations, glosses, or transliterations.
+
+{{if .Direction}}
+Translation Direction: The user will translate this text {{if eq .Direction "en_to_learning"}}from English to {{.Language}}{{else}}from {{.Language}} to English{{end}}.
+{{end}}
+
+Return ONLY the text, nothing else. No explanations, no JSON, just the text.
+
+
+

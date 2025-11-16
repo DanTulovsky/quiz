@@ -45,6 +45,7 @@ func NewRouter(
 	usageStatsService services.UsageStatsServiceInterface,
 	wordOfTheDayService services.WordOfTheDayServiceInterface,
 	authAPIKeyService services.AuthAPIKeyServiceInterface,
+	translationPracticeService services.TranslationPracticeServiceInterface,
 	logger *observability.Logger,
 ) *gin.Engine {
 	// Setup Gin router
@@ -181,6 +182,7 @@ func NewRouter(
 	storyHandler := NewStoryHandler(storyService, userService, aiService, cfg, logger)
 	aiConversationHandler := NewAIConversationHandler(conversationService, cfg, logger)
 	translationHandler := NewTranslationHandler(translationService, cfg, logger)
+	translationPracticeHandler := NewTranslationPracticeHandler(translationPracticeService, aiService, userService, cfg, logger)
 	snippetsHandler := NewSnippetsHandler(snippetsService, cfg, logger)
 	wordOfTheDayHandler := NewWordOfTheDayHandler(userService, wordOfTheDayService, cfg, logger)
 	adminHandler := NewAdminHandlerWithLogger(userService, questionService, aiService, cfg, learningService, workerService, logger, usageStatsService)
@@ -268,6 +270,9 @@ func NewRouter(
 
 		// Translation routes
 		v1.POST("/translate", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), translationHandler.TranslateText)
+
+		// Translation practice routes
+		translationPracticeHandler.RegisterRoutes(router)
 
 		// Feedback routes
 		v1.POST("/feedback", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), feedbackHandler.SubmitFeedback)

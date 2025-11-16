@@ -5618,6 +5618,182 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /v1/translation-practice/generate:
+    post:
+      tags:
+        - Translation Practice
+      summary: Generate a new sentence for translation practice
+      description: Generate a new sentence using AI for translation practice
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TranslationPracticeGenerateRequest"
+      responses:
+        "200":
+          description: Sentence generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TranslationPracticeSentenceResponse"
+        "400":
+          description: Invalid request format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/translation-practice/sentence:
+    get:
+      tags:
+        - Translation Practice
+      summary: Get a sentence from existing content
+      description: Retrieve a sentence from existing content (stories, vocabulary, reading comprehension) for translation practice
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: language
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Learning language code
+        - name: level
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Language level (e.g., A1, A2, B1, B2)
+        - name: direction
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [en_to_learning, learning_to_en]
+          description: Translation direction
+      responses:
+        "200":
+          description: Sentence retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TranslationPracticeSentenceResponse"
+        "400":
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: No suitable sentences found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/translation-practice/submit:
+    post:
+      tags:
+        - Translation Practice
+      summary: Submit a translation for evaluation
+      description: Submit a user's translation for AI evaluation and feedback
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TranslationPracticeSubmitRequest"
+      responses:
+        "200":
+          description: Translation evaluated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TranslationPracticeSessionResponse"
+        "400":
+          description: Invalid request format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/translation-practice/history:
+    get:
+      tags:
+        - Translation Practice
+      summary: Get translation practice history
+      description: Retrieve the user's translation practice history
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+          description: Maximum number of sessions to return
+      responses:
+        "200":
+          description: History retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TranslationPracticeHistoryResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /v1/translation-practice/stats:
+    get:
+      tags:
+        - Translation Practice
+      summary: Get translation practice statistics
+      description: Retrieve statistics about the user's translation practice performance
+      security:
+        - cookieAuth: []
+      responses:
+        "200":
+          description: Statistics retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TranslationPracticeStatsResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /v1/audio/speech:
     post:
       tags:
@@ -8339,6 +8515,168 @@ components:
           minimum: 0
           maximum: 1
           description: Translation confidence score (if available from provider)
+
+    TranslationPracticeGenerateRequest:
+      type: object
+      required:
+        - language
+        - level
+        - direction
+      properties:
+        language:
+          type: string
+          description: Learning language code
+        level:
+          type: string
+          description: Language level (e.g., A1, A2, B1, B2)
+        direction:
+          type: string
+          enum: [en_to_learning, learning_to_en]
+          description: Translation direction
+        topic:
+          type: string
+          description: Optional topic or keywords for sentence generation
+
+    TranslationPracticeSentenceResponse:
+      type: object
+      required:
+        - id
+        - sentence_text
+        - source_language
+        - target_language
+        - language_level
+        - source_type
+        - created_at
+      properties:
+        id:
+          type: integer
+          description: Sentence ID
+        sentence_text:
+          type: string
+          description: The sentence text to translate
+        source_language:
+          type: string
+          description: Source language code
+        target_language:
+          type: string
+          description: Target language code
+        language_level:
+          type: string
+          description: Language level
+        source_type:
+          type: string
+          description: Source type (ai_generated, story_section, vocabulary_question, etc.)
+        source_id:
+          type: integer
+          description: ID of the source (if applicable)
+        topic:
+          type: string
+          description: Topic or keywords (if applicable)
+        created_at:
+          type: string
+          format: date-time
+          description: When the sentence was created
+
+    TranslationPracticeSubmitRequest:
+      type: object
+      required:
+        - sentence_id
+        - original_sentence
+        - user_translation
+        - translation_direction
+      properties:
+        sentence_id:
+          type: integer
+          description: ID of the sentence being translated
+        original_sentence:
+          type: string
+          description: The original sentence to translate
+        user_translation:
+          type: string
+          description: The user's translation
+        translation_direction:
+          type: string
+          enum: [en_to_learning, learning_to_en]
+          description: Translation direction
+
+    TranslationPracticeSessionResponse:
+      type: object
+      required:
+        - id
+        - sentence_id
+        - original_sentence
+        - user_translation
+        - translation_direction
+        - ai_feedback
+        - created_at
+      properties:
+        id:
+          type: integer
+          description: Session ID
+        sentence_id:
+          type: integer
+          description: Sentence ID
+        original_sentence:
+          type: string
+          description: The original sentence
+        user_translation:
+          type: string
+          description: The user's translation
+        translation_direction:
+          type: string
+          description: Translation direction
+        ai_feedback:
+          type: string
+          description: AI feedback on the translation
+        ai_score:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 5
+          description: AI score from 0 to 5
+        created_at:
+          type: string
+          format: date-time
+          description: When the session was created
+
+    TranslationPracticeHistoryResponse:
+      type: object
+      required:
+        - sessions
+      properties:
+        sessions:
+          type: array
+          items:
+            $ref: "#/components/schemas/TranslationPracticeSessionResponse"
+          description: List of practice sessions
+
+    TranslationPracticeStatsResponse:
+      type: object
+      properties:
+        total_sessions:
+          type: integer
+          description: Total number of practice sessions
+        average_score:
+          type: number
+          format: float
+          description: Average AI score
+        min_score:
+          type: number
+          format: float
+          description: Minimum AI score
+        max_score:
+          type: number
+          format: float
+          description: Maximum AI score
+        excellent_count:
+          type: integer
+          description: Number of sessions with score >= 4.0
+        good_count:
+          type: integer
+          description: Number of sessions with score 3.0-3.9
+        needs_improvement_count:
+          type: integer
+          description: Number of sessions with score < 3.0
 
     DailyQuestionHistory:
       type: object

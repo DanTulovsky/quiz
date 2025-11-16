@@ -196,6 +196,18 @@ const (
 	TTSResponseTypeUsage TTSResponseType = "usage"
 )
 
+// Defines values for TranslationPracticeGenerateRequestDirection.
+const (
+	TranslationPracticeGenerateRequestDirectionEnToLearning TranslationPracticeGenerateRequestDirection = "en_to_learning"
+	TranslationPracticeGenerateRequestDirectionLearningToEn TranslationPracticeGenerateRequestDirection = "learning_to_en"
+)
+
+// Defines values for TranslationPracticeSubmitRequestTranslationDirection.
+const (
+	TranslationPracticeSubmitRequestTranslationDirectionEnToLearning TranslationPracticeSubmitRequestTranslationDirection = "en_to_learning"
+	TranslationPracticeSubmitRequestTranslationDirectionLearningToEn TranslationPracticeSubmitRequestTranslationDirection = "learning_to_en"
+)
+
 // Defines values for WordOfTheDayDisplaySourceType.
 const (
 	WordOfTheDayDisplaySourceTypeSnippet            WordOfTheDayDisplaySourceType = "snippet"
@@ -279,6 +291,12 @@ const (
 	B2 GetV1SnippetsParamsLevel = "B2"
 	C1 GetV1SnippetsParamsLevel = "C1"
 	C2 GetV1SnippetsParamsLevel = "C2"
+)
+
+// Defines values for GetV1TranslationPracticeSentenceParamsDirection.
+const (
+	EnToLearning GetV1TranslationPracticeSentenceParamsDirection = "en_to_learning"
+	LearningToEn GetV1TranslationPracticeSentenceParamsDirection = "learning_to_en"
 )
 
 // AIConcurrencyStats defines model for AIConcurrencyStats.
@@ -1698,6 +1716,129 @@ type TranslateResponse struct {
 	TranslatedText string `json:"translated_text"`
 }
 
+// TranslationPracticeGenerateRequest defines model for TranslationPracticeGenerateRequest.
+type TranslationPracticeGenerateRequest struct {
+	// Direction Translation direction
+	Direction TranslationPracticeGenerateRequestDirection `json:"direction"`
+
+	// Language Learning language code
+	Language string `json:"language"`
+
+	// Level Language level (e.g., A1, A2, B1, B2)
+	Level string `json:"level"`
+
+	// Topic Optional topic or keywords for sentence generation
+	Topic *string `json:"topic,omitempty"`
+}
+
+// TranslationPracticeGenerateRequestDirection Translation direction
+type TranslationPracticeGenerateRequestDirection string
+
+// TranslationPracticeHistoryResponse defines model for TranslationPracticeHistoryResponse.
+type TranslationPracticeHistoryResponse struct {
+	// Sessions List of practice sessions
+	Sessions []TranslationPracticeSessionResponse `json:"sessions"`
+}
+
+// TranslationPracticeSentenceResponse defines model for TranslationPracticeSentenceResponse.
+type TranslationPracticeSentenceResponse struct {
+	// CreatedAt When the sentence was created
+	CreatedAt time.Time `json:"created_at"`
+
+	// Id Sentence ID
+	Id int `json:"id"`
+
+	// LanguageLevel Language level
+	LanguageLevel string `json:"language_level"`
+
+	// SentenceText The sentence text to translate
+	SentenceText string `json:"sentence_text"`
+
+	// SourceId ID of the source (if applicable)
+	SourceId *int `json:"source_id,omitempty"`
+
+	// SourceLanguage Source language code
+	SourceLanguage string `json:"source_language"`
+
+	// SourceType Source type (ai_generated, story_section, vocabulary_question, etc.)
+	SourceType string `json:"source_type"`
+
+	// TargetLanguage Target language code
+	TargetLanguage string `json:"target_language"`
+
+	// Topic Topic or keywords (if applicable)
+	Topic *string `json:"topic,omitempty"`
+}
+
+// TranslationPracticeSessionResponse defines model for TranslationPracticeSessionResponse.
+type TranslationPracticeSessionResponse struct {
+	// AiFeedback AI feedback on the translation
+	AiFeedback string `json:"ai_feedback"`
+
+	// AiScore AI score from 0 to 5
+	AiScore *float32 `json:"ai_score,omitempty"`
+
+	// CreatedAt When the session was created
+	CreatedAt time.Time `json:"created_at"`
+
+	// Id Session ID
+	Id int `json:"id"`
+
+	// OriginalSentence The original sentence
+	OriginalSentence string `json:"original_sentence"`
+
+	// SentenceId Sentence ID
+	SentenceId int `json:"sentence_id"`
+
+	// TranslationDirection Translation direction
+	TranslationDirection string `json:"translation_direction"`
+
+	// UserTranslation The user's translation
+	UserTranslation string `json:"user_translation"`
+}
+
+// TranslationPracticeStatsResponse defines model for TranslationPracticeStatsResponse.
+type TranslationPracticeStatsResponse struct {
+	// AverageScore Average AI score
+	AverageScore *float32 `json:"average_score,omitempty"`
+
+	// ExcellentCount Number of sessions with score >= 4.0
+	ExcellentCount *int `json:"excellent_count,omitempty"`
+
+	// GoodCount Number of sessions with score 3.0-3.9
+	GoodCount *int `json:"good_count,omitempty"`
+
+	// MaxScore Maximum AI score
+	MaxScore *float32 `json:"max_score,omitempty"`
+
+	// MinScore Minimum AI score
+	MinScore *float32 `json:"min_score,omitempty"`
+
+	// NeedsImprovementCount Number of sessions with score < 3.0
+	NeedsImprovementCount *int `json:"needs_improvement_count,omitempty"`
+
+	// TotalSessions Total number of practice sessions
+	TotalSessions *int `json:"total_sessions,omitempty"`
+}
+
+// TranslationPracticeSubmitRequest defines model for TranslationPracticeSubmitRequest.
+type TranslationPracticeSubmitRequest struct {
+	// OriginalSentence The original sentence to translate
+	OriginalSentence string `json:"original_sentence"`
+
+	// SentenceId ID of the sentence being translated
+	SentenceId int `json:"sentence_id"`
+
+	// TranslationDirection Translation direction
+	TranslationDirection TranslationPracticeSubmitRequestTranslationDirection `json:"translation_direction"`
+
+	// UserTranslation The user's translation
+	UserTranslation string `json:"user_translation"`
+}
+
+// TranslationPracticeSubmitRequestTranslationDirection Translation direction
+type TranslationPracticeSubmitRequestTranslationDirection string
+
 // UpdateConversationRequest defines model for UpdateConversationRequest.
 type UpdateConversationRequest struct {
 	// Title New title for the conversation
@@ -2624,6 +2765,27 @@ type GetV1StoryParams struct {
 	IncludeArchived *bool `form:"include_archived,omitempty" json:"include_archived,omitempty"`
 }
 
+// GetV1TranslationPracticeHistoryParams defines parameters for GetV1TranslationPracticeHistory.
+type GetV1TranslationPracticeHistoryParams struct {
+	// Limit Maximum number of sessions to return
+	Limit *int `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// GetV1TranslationPracticeSentenceParams defines parameters for GetV1TranslationPracticeSentence.
+type GetV1TranslationPracticeSentenceParams struct {
+	// Language Learning language code
+	Language string `form:"language" json:"language"`
+
+	// Level Language level (e.g., A1, A2, B1, B2)
+	Level string `form:"level" json:"level"`
+
+	// Direction Translation direction
+	Direction GetV1TranslationPracticeSentenceParamsDirection `form:"direction" json:"direction"`
+}
+
+// GetV1TranslationPracticeSentenceParamsDirection defines parameters for GetV1TranslationPracticeSentence.
+type GetV1TranslationPracticeSentenceParamsDirection string
+
 // GetV1WordOfDayEmbedParams defines parameters for GetV1WordOfDayEmbed.
 type GetV1WordOfDayEmbedParams struct {
 	// Date Optional date in YYYY-MM-DD format. Defaults to today's date in the user's timezone when omitted.
@@ -2749,6 +2911,12 @@ type PostV1StoryIdToggleAutoGenerationJSONRequestBody = ToggleAutoGenerationRequ
 
 // PostV1TranslateJSONRequestBody defines body for PostV1Translate for application/json ContentType.
 type PostV1TranslateJSONRequestBody = TranslateRequest
+
+// PostV1TranslationPracticeGenerateJSONRequestBody defines body for PostV1TranslationPracticeGenerate for application/json ContentType.
+type PostV1TranslationPracticeGenerateJSONRequestBody = TranslationPracticeGenerateRequest
+
+// PostV1TranslationPracticeSubmitJSONRequestBody defines body for PostV1TranslationPracticeSubmit for application/json ContentType.
+type PostV1TranslationPracticeSubmitJSONRequestBody = TranslationPracticeSubmitRequest
 
 // PutV1UserzProfileJSONRequestBody defines body for PutV1UserzProfile for application/json ContentType.
 type PutV1UserzProfileJSONRequestBody = UserUpdateRequest

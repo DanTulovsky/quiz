@@ -18,10 +18,12 @@ var exampleFilesFS embed.FS
 
 // Template names as constants
 const (
-	BatchQuestionPromptTemplate   = "batch_question_prompt.tmpl"
-	ChatPromptTemplate            = "chat_prompt.tmpl"
-	JSONStructureGuidanceTemplate = "json_structure_guidance.tmpl"
-	AIFixPromptTemplate           = "ai_fix_prompt.tmpl"
+	BatchQuestionPromptTemplate      = "batch_question_prompt.tmpl"
+	ChatPromptTemplate               = "chat_prompt.tmpl"
+	JSONStructureGuidanceTemplate    = "json_structure_guidance.tmpl"
+	AIFixPromptTemplate              = "ai_fix_prompt.tmpl"
+	TranslationSentencePromptTemplate = "translation_sentence_prompt.tmpl"
+	TranslationEvaluationPromptTemplate = "translation_evaluation_prompt.tmpl"
 )
 
 // AITemplateData holds data for rendering AI prompt templates
@@ -84,6 +86,14 @@ type AITemplateData struct {
 	IsFirstSection     bool
 	PreviousSections   string
 	SectionText        string
+
+	// Translation practice fields
+	Direction            string // Translation direction
+	OriginalSentence     string
+	UserTranslation      string
+	SourceLanguage       string
+	TargetLanguage       string
+	TranslationDirection string
 }
 
 // ChatMessage represents a chat message for templates
