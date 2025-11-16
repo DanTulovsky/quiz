@@ -499,8 +499,8 @@ Evaluate the translation and provide detailed, educational feedback. Focus on ac
 func (s *TranslationPracticeService) cleanSentenceResponse(response string) string {
 	// Remove markdown code blocks
 	response = regexp.MustCompile("(?s)```[^`]*```").ReplaceAllString(response, "")
-	// Remove quotes
-	response = strings.Trim(response, "\"'`")
+	// Strip leading and trailing quotes/brackets consistently
+	response = s.stripQuotes(response)
 	// Trim whitespace
 	response = strings.TrimSpace(response)
 	return response
@@ -789,8 +789,72 @@ func (s *TranslationPracticeService) getPunktModel(languageCode string) *sentenc
 	return tokenizer
 }
 
+// stripQuotes removes leading and trailing quote marks and brackets from a sentence
+func (s *TranslationPracticeService) stripQuotes(sentence string) string {
+	// Common quote and bracket characters (ASCII and Unicode) - both opening and closing
+	quoteChars := []string{
+		`"`, `'`, `«`, `»`, `"`, `'`, `'`, `"`, `"`, // ASCII and Unicode quotes
+		`(`, `)`, `[`, `]`, `{`, `}`,                // ASCII brackets
+		`（`, `）`, `［`, `］`, `｛`, `｝`,              // Full-width brackets
+		`„`, `‚`, `‹`, `›`,                           // Other quote marks
+		`"`, `"`, `'`, `'`,                          // Typographic quotes
+		`'`, `'`,                                    // Apostrophes/quotes
+		`"`, `"`,                                    // Double quotes
+		`«`, `»`,                                    // Guillemets
+		`'`, `'`,                                    // Single quotes
+	}
+	trimmed := strings.TrimSpace(sentence)
+	// Keep stripping until no more quotes/brackets at either end
+	changed := true
+	for changed {
+		changed = false
+		for _, char := range quoteChars {
+			if strings.HasPrefix(trimmed, char) {
+				trimmed = strings.TrimPrefix(trimmed, char)
+				trimmed = strings.TrimSpace(trimmed)
+				changed = true
+				break // Restart check after removal
+			}
+			if strings.HasSuffix(trimmed, char) {
+				trimmed = strings.TrimSuffix(trimmed, char)
+				trimmed = strings.TrimSpace(trimmed)
+				changed = true
+				break // Restart check after removal
+			}
+		}
+	}
+	return trimmed
+}
+
+// stripLeadingQuotes removes leading quote marks and brackets from a sentence
+func (s *TranslationPracticeService) stripLeadingQuotes(sentence string) string {
+	// Common opening quotes and brackets (ASCII and Unicode)
+	// Note: We strip common quote characters that appear at sentence start due to context extraction
+	leadingChars := []string{
+		`"`, `'`, `«`, `»`, `"`, `'`, `'`, `"`, `"`, // ASCII and Unicode quotes
+		`(`, `[`, `{`, `（`, `［`, `｛`,              // ASCII and full-width brackets
+		`„`, `‚`, `‹`,                               // Other quote marks
+		`„`, `‚`,                                    // German/Slavic quotes
+	}
+	trimmed := strings.TrimSpace(sentence)
+	// Keep stripping until no more leading quotes/brackets
+	changed := true
+	for changed {
+		changed = false
+		for _, char := range leadingChars {
+			if strings.HasPrefix(trimmed, char) {
+				trimmed = strings.TrimPrefix(trimmed, char)
+				trimmed = strings.TrimSpace(trimmed)
+				changed = true
+				break // Restart check after removal
+			}
+		}
+	}
+	return trimmed
+}
+
 // extractSentences uses Punkt tokenizer if available, otherwise falls back to regex.
-// Preserves terminal punctuation in all cases.
+// Preserves terminal punctuation but strips leading quotes/brackets.
 func (s *TranslationPracticeService) extractSentences(text string, language string) []string {
 	// Try Punkt first if we have a model for this language
 	if punktModel := s.getPunktModel(language); punktModel != nil {
@@ -798,6 +862,8 @@ func (s *TranslationPracticeService) extractSentences(text string, language stri
 		var sentences []string
 		for _, sent := range tokenized {
 			sentText := strings.TrimSpace(sent.Text)
+			// Strip leading and trailing quotes/brackets that are part of context, not the sentence
+			sentText = s.stripQuotes(sentText)
 			if sentText != "" {
 				sentences = append(sentences, sentText)
 			}
@@ -831,6 +897,8 @@ func (s *TranslationPracticeService) extractSentences(text string, language stri
 	// Fallback: if nothing matched (no terminators), return the whole text trimmed once
 	if len(matches) == 0 {
 		trimmed := strings.TrimSpace(text)
+		// Strip leading and trailing quotes/brackets that are part of context, not the sentence
+		trimmed = s.stripQuotes(trimmed)
 		if trimmed != "" {
 			return []string{trimmed}
 		}
@@ -840,6 +908,8 @@ func (s *TranslationPracticeService) extractSentences(text string, language stri
 	var result []string
 	for _, m := range matches {
 		sent := strings.TrimSpace(m)
+		// Strip leading and trailing quotes/brackets that are part of context, not the sentence
+		sent = s.stripQuotes(sent)
 		// Filter obvious fragments but keep meaningful short sentences (e.g., "Да.")
 		if len([]rune(sent)) >= 2 {
 			result = append(result, sent)

@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { AXIOS_INSTANCE } from './axios';
 
-export type TranslationDirection = 'en_to_learning' | 'learning_to_en';
+export type TranslationDirection = 'en_to_learning' | 'learning_to_en' | 'random';
 
 export type GenerateRequest = {
   language: string;
