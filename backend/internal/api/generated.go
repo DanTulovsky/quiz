@@ -309,6 +309,75 @@ type AIConcurrencyStats struct {
 	UserActiveCount *map[string]int `json:"user_active_count,omitempty"`
 }
 
+// AIFixResponse defines model for AIFixResponse.
+type AIFixResponse struct {
+	Original   Question `json:"original"`
+	Suggestion struct {
+		// AdditionalContext Additional context provided by the admin when requesting the fix
+		AdditionalContext *string `json:"additional_context,omitempty"`
+
+		// ChangeReason Explanation of why the AI suggested these changes
+		ChangeReason *string `json:"change_reason,omitempty"`
+
+		// ConfidenceLevel Confidence level when question was marked as known (1-5)
+		ConfidenceLevel *int `json:"confidence_level,omitempty"`
+
+		// Content All question types now use multiple choice format with 4 options
+		Content *QuestionContent `json:"content,omitempty"`
+
+		// CorrectAnswer Index of the correct answer in the options array (0-based)
+		CorrectAnswer *int `json:"correct_answer,omitempty"`
+
+		// CorrectCount Number of times this question was answered correctly
+		CorrectCount *int    `json:"correct_count,omitempty"`
+		CreatedAt    *string `json:"created_at,omitempty"`
+
+		// DifficultyModifier Difficulty modifier for the question (e.g., basic, intermediate)
+		DifficultyModifier *string  `json:"difficulty_modifier,omitempty"`
+		DifficultyScore    *float32 `json:"difficulty_score,omitempty"`
+		Explanation        *string  `json:"explanation,omitempty"`
+
+		// GrammarFocus Grammar focus area for the question (e.g., present_perfect, conditionals)
+		GrammarFocus *string `json:"grammar_focus,omitempty"`
+		Id           *int64  `json:"id,omitempty"`
+
+		// IncorrectCount Number of times this question was answered incorrectly
+		IncorrectCount *int `json:"incorrect_count,omitempty"`
+
+		// Language Learning language (dynamic). Allowed values come from config.yaml language_levels keys.
+		Language *Language `json:"language,omitempty"`
+
+		// Level Proficiency level (dynamic). Allowed values depend on the selected language and are sourced from config.yaml (e.g., CEFR A1–C2, JLPT N5–N1, HSK1–HSK6).
+		Level *Level `json:"level,omitempty"`
+
+		// Reporters Comma-separated list of usernames who reported this question
+		Reporters *string `json:"reporters,omitempty"`
+
+		// Scenario Scenario context for the question (e.g., at_the_airport, in_a_restaurant)
+		Scenario *string         `json:"scenario,omitempty"`
+		Status   *QuestionStatus `json:"status,omitempty"`
+
+		// StyleModifier Style modifier for the question (e.g., conversational, formal)
+		StyleModifier *string `json:"style_modifier,omitempty"`
+
+		// TimeContext Time context for the question (e.g., morning_routine, workday)
+		TimeContext *string `json:"time_context,omitempty"`
+
+		// TopicCategory General topic category for question context (e.g., daily_life, travel, work)
+		TopicCategory *string `json:"topic_category,omitempty"`
+
+		// TotalResponses Total number of responses to this question (used for 'Shown' in the UI)
+		TotalResponses *int          `json:"total_responses,omitempty"`
+		Type           *QuestionType `json:"type,omitempty"`
+
+		// UserCount Number of users assigned to this question
+		UserCount *int `json:"user_count,omitempty"`
+
+		// VocabularyDomain Vocabulary domain for the question (e.g., food_and_dining, transportation)
+		VocabularyDomain *string `json:"vocabulary_domain,omitempty"`
+	} `json:"suggestion"`
+}
+
 // AIProviders defines model for AIProviders.
 type AIProviders struct {
 	Levels    *[]string `json:"levels,omitempty"`
@@ -1309,6 +1378,9 @@ type QuestionContent struct {
 
 	// Sentence Only present for vocabulary questions (context sentence)
 	Sentence *string `json:"sentence,omitempty"`
+
+	// Topic Specific topic for the question (e.g., "reading-comprehension-past-continuous", "clothing", "culture")
+	Topic *string `json:"topic,omitempty"`
 }
 
 // QuestionStats defines model for QuestionStats.

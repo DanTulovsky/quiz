@@ -3505,11 +3505,11 @@ paths:
                   type: string
       responses:
         "200":
-          description: Question fixed with AI successfully
+          description: AI fix suggestion returned successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MessageResponse"
+                $ref: "#/components/schemas/AIFixResponse"
         "400":
           description: Invalid request data
           content:
@@ -6286,6 +6286,10 @@ components:
           type: string
           description: Optional hint for fill-in-blank questions
           maxLength: 500
+        topic:
+          type: string
+          description: Specific topic for the question (e.g., "reading-comprehension-past-continuous", "clothing", "culture")
+          maxLength: 200
 
     AnswerRequest:
       type: object
@@ -7942,6 +7946,26 @@ components:
       properties:
         message:
           type: string
+
+    AIFixResponse:
+      type: object
+      required:
+        - original
+        - suggestion
+      properties:
+        original:
+          $ref: "#/components/schemas/Question"
+        suggestion:
+          allOf:
+            - $ref: "#/components/schemas/Question"
+            - type: object
+              properties:
+                change_reason:
+                  type: string
+                  description: Explanation of why the AI suggested these changes
+                additional_context:
+                  type: string
+                  description: Additional context provided by the admin when requesting the fix
 
     BulkDeleteResponse:
       type: object

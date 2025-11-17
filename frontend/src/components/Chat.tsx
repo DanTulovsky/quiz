@@ -729,6 +729,7 @@ export const Chat: React.FC<ChatProps> = ({
     setShowSuggestionsProp || setShowSuggestionsInternal;
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [chatContainerHeight, setChatContainerHeight] = useState<number>(0);
+  const [contentHeight, setContentHeight] = useState<number>(0);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] =
     useState<number>(-1);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -970,7 +971,9 @@ export const Chat: React.FC<ChatProps> = ({
         Math.min(maxHeight, availableHeight)
       );
 
-      setChatContainerHeight(calculatedHeight);
+      // Double the height as requested
+      const doubledHeight = calculatedHeight * 2;
+      setChatContainerHeight(doubledHeight);
     };
 
     // Calculate on mount and window resize
@@ -985,6 +988,37 @@ export const Chat: React.FC<ChatProps> = ({
       clearTimeout(timeoutId);
     };
   }, [isMaximized, messages]);
+
+  // Measure actual content height of messages container
+  useEffect(() => {
+    const measureContentHeight = () => {
+      if (isMaximized || !chatContainerRef.current) return;
+
+      const messagesContainer = document.querySelector(
+        '[data-testid="chat-messages-container"]'
+      ) as HTMLElement;
+      if (!messagesContainer) return;
+
+      // Measure the scrollHeight of the messages container (actual content)
+      const messagesScrollHeight = messagesContainer.scrollHeight;
+
+      // Estimate header and input area heights (these are relatively fixed)
+      // Header: ~80px, Input area: ~60px, Padding: ~32px (md padding * 2)
+      const headerAndInputHeight = 172;
+
+      // Total content height needed
+      const totalContentHeight = messagesScrollHeight + headerAndInputHeight;
+
+      setContentHeight(totalContentHeight);
+    };
+
+    // Measure after a short delay to ensure DOM is updated
+    const timeoutId = setTimeout(measureContentHeight, 100);
+    // Also measure immediately
+    measureContentHeight();
+
+    return () => clearTimeout(timeoutId);
+  }, [isMaximized, messages, isLoading, isThinking]);
 
   // Auto-scroll to top of new AI response when messages change or when chat is actively loading/thinking
   useEffect(() => {
@@ -1464,7 +1498,10 @@ export const Chat: React.FC<ChatProps> = ({
         w='100%'
         withBorder
         style={{
-          height: chatContainerHeight || 360,
+          height:
+            chatContainerHeight && contentHeight > 0
+              ? Math.min(chatContainerHeight, contentHeight)
+              : chatContainerHeight || 360,
           display: 'flex',
           flexDirection: 'column',
           minHeight: 0,
