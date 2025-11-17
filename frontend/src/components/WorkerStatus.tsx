@@ -163,7 +163,11 @@ const WorkerStatus: React.FC = () => {
                 <Text size='sm' c='dimmed' style={{ flexShrink: 0 }}>
                   Status:
                 </Text>
-                <Text size='sm' c={getIndicatorColor()} style={{ flex: 1, wordBreak: 'break-word' }}>
+                <Text
+                  size='sm'
+                  c={getIndicatorColor()}
+                  style={{ flex: 1, wordBreak: 'break-word' }}
+                >
                   {getStatusMessage()}
                 </Text>
               </Group>

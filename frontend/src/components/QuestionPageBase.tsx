@@ -116,7 +116,7 @@ export const QuestionPageBase: React.FC<Props> = ({ mode }) => {
               setWorkerError(null);
             }
           }
-        } catch (err) {
+        } catch {
           // Silently fail - worker status is not critical
         }
       };
@@ -337,7 +337,11 @@ export const QuestionPageBase: React.FC<Props> = ({ mode }) => {
   if (isGenerating) {
     return (
       <Center h='100vh' style={{ flexDirection: 'column' }}>
-        <Stack align='center' gap='xl' style={{ maxWidth: 600, width: '100%', padding: '2rem' }}>
+        <Stack
+          align='center'
+          gap='xl'
+          style={{ maxWidth: 600, width: '100%', padding: '2rem' }}
+        >
           <Stack align='center' gap='xs'>
             <LoadingSpinner />
             <Text>
