@@ -2,35 +2,47 @@
 # Stage 1: Build the worker application
 # Note: Not using --platform=$BUILDPLATFORM because CGO cross-compilation requires
 # complex toolchain setup. Building natively per platform (ARM64 via QEMU on AMD64 runners).
-FROM golang:1.25-alpine3.22 AS builder
+FROM --platform=$BUILDPLATFORM golang:1.25-alpine3.22 AS builder
 
 # Add build arguments for better caching
 ARG BUILDKIT_INLINE_CACHE=1
 ARG TARGETOS=linux
 ARG TARGETARCH
-ARG APP_VERSION=dev
-ARG COMMIT_HASH=dev
-ARG BUILD_TIME=unknown
 
-WORKDIR /app
+# Install certificates for HTTPS calls
+RUN apk --no-cache add ca-certificates tzdata
+
+# Create non-root user early
+RUN adduser -D -g '' appuser
+
+WORKDIR /build
 
 # Copy go.mod and go.sum files first for better dependency caching
 COPY backend/go.mod backend/go.sum ./
-RUN --mount=type=cache,id=quiz-worker-gomod,sharing=locked,target=/go/pkg/mod \
-    go mod download
+RUN go mod download
 
 # Install build dependencies for cgo (cached)
-RUN --mount=type=cache,id=quiz-worker-apk,sharing=locked,target=/var/cache/apk \
-    apk add --no-cache --no-progress gcc musl-dev binutils-gold
+RUN apk add --no-cache --no-progress gcc musl-dev binutils-gold curl
+
+# Download yq (used by merge-config.sh) and make scripts executable
+RUN set -eux; \
+    case "$TARGETARCH" in \
+    "amd64") yq_arch="yq_linux_amd64" ;; \
+    "arm64") yq_arch="yq_linux_arm64" ;; \
+    *) yq_arch="yq_linux_amd64" ;; \
+    esac; \
+    curl -L -o /usr/local/bin/yq "https://github.com/mikefarah/yq/releases/latest/download/${yq_arch}"; \
+    chmod +x /usr/local/bin/yq;
 
 # Copy source code (excluding build artifacts via .dockerignore)
 COPY backend/cmd ./cmd
 COPY backend/internal ./internal
 
-# Build the worker application with specific flags to reduce metadata resolution
-RUN --mount=type=cache,id=quiz-worker-gomod,sharing=locked,target=/go/pkg/mod \
-    --mount=type=cache,id=quiz-worker-gobuild,sharing=locked,target=/root/.cache/go-build \
-    CGO_ENABLED=1 \
+ARG APP_VERSION=dev
+ARG COMMIT_HASH=dev
+ARG BUILD_TIME=unknown
+
+RUN CGO_ENABLED=1 \
     CGO_CFLAGS="-D_LARGEFILE64_SOURCE" \
     GOOS=${TARGETOS} \
     GOARCH=${TARGETARCH} \
@@ -44,10 +56,21 @@ RUN --mount=type=cache,id=quiz-worker-gomod,sharing=locked,target=/go/pkg/mod \
 # Stage 2: Create a minimal production image
 FROM alpine:3.22
 
-RUN --mount=type=cache,id=quiz-worker-apk,sharing=locked,target=/var/cache/apk \
-    apk add --no-cache --no-progress ca-certificates curl tzdata
+ARG TARGETARCH
+
+# Copy certificates and timezone data
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
 
 WORKDIR /app
+
+# Copy user and group files
+COPY --from=builder /etc/passwd /etc/passwd
+
+COPY --from=builder /usr/local/bin/yq /usr/local/bin/yq
+COPY --from=builder /usr/bin/curl /usr/bin/curl
+COPY ./scripts/entrypoint.sh /app/entrypoint.sh
+COPY ./scripts/merge-config.sh /app/scripts/merge-config.sh
 
 # Copy the built binary from the builder stage
 COPY --from=builder /app/quiz-worker .
@@ -55,26 +78,22 @@ COPY --from=builder /app/quiz-worker .
 COPY schema.sql .
 
 # Copy the merged config file into the image
+COPY --from=builder /usr/local/bin/yq /usr/local/bin/yq
 COPY merged.config.yaml ./merged.config.yaml
-COPY scripts/merge-config.sh ./scripts/merge-config.sh
+COPY scripts/merge-config.sh /app/scripts/merge-config.sh
 COPY scripts/entrypoint.sh /app/entrypoint.sh
 
-ARG TARGETARCH
-RUN set -eux; \
-    case "$TARGETARCH" in \
-    "amd64") yq_arch="yq_linux_amd64" ;; \
-    "arm64") yq_arch="yq_linux_arm64" ;; \
-    *) yq_arch="yq_linux_amd64" ;; \
-    esac; \
-    curl -L -o /usr/local/bin/yq "https://github.com/mikefarah/yq/releases/latest/download/${yq_arch}"; \
-    chmod +x /usr/local/bin/yq; \
-    chmod +x /app/entrypoint.sh; \
-    chmod +x ./scripts/merge-config.sh
+RUN chmod +x /app/scripts/merge-config.sh; \
+    chmod +x /app/entrypoint.sh;
 
 # Set the environment variable for the config file
 ENV QUIZ_CONFIG_FILE=/app/merged.config.yaml
 
 RUN mkdir -p /app/data && chmod 777 /app/data
+RUN chown -R appuser /app
+
+# Use non-root user
+USER appuser
 
 EXPOSE 8081
 ENTRYPOINT ["/app/entrypoint.sh"]
