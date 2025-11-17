@@ -569,6 +569,53 @@ func (suite *SettingsIntegrationTestSuite) TestClearAllAIChatsEndpoint() {
 	suite.Require().Equal(0, messageCount)
 }
 
+func (suite *SettingsIntegrationTestSuite) TestClearAllTranslationPracticeHistoryEndpoint() {
+	sessionCookie := suite.login()
+
+	// Create translation practice sessions for the test user
+	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+	storyService := services.NewStoryService(suite.DB, suite.Config, logger)
+	questionService := services.NewQuestionServiceWithLogger(suite.DB, suite.LearningService, suite.Config, logger)
+	translationPracticeService := services.NewTranslationPracticeService(suite.DB, storyService, questionService, suite.Config, logger)
+
+	// Insert translation practice sessions directly into the database
+	_, err := suite.DB.Exec(`
+		INSERT INTO translation_practice_sessions
+		(user_id, sentence_id, original_sentence, user_translation, translation_direction, ai_feedback, ai_score, created_at)
+		VALUES
+		($1, 1, 'Hello world', 'Ciao mondo', 'en_to_learning', 'Good translation', 4.5, NOW()),
+		($1, 1, 'How are you?', 'Come stai?', 'en_to_learning', 'Excellent', 5.0, NOW()),
+		($1, 1, 'Thank you', 'Grazie', 'en_to_learning', 'Perfect', 5.0, NOW())
+	`, suite.TestUserID)
+	suite.Require().NoError(err)
+
+	// Verify sessions exist
+	var sessionCount int
+	err = suite.DB.QueryRow("SELECT COUNT(*) FROM translation_practice_sessions WHERE user_id = $1", suite.TestUserID).Scan(&sessionCount)
+	suite.Require().NoError(err)
+	suite.Require().Equal(3, sessionCount)
+
+	// Call clear-translation-practice-history endpoint
+	reqHTTP, _ := http.NewRequest("POST", "/v1/settings/clear-translation-practice-history", nil)
+	reqHTTP.Header.Set("Cookie", sessionCookie)
+	w := httptest.NewRecorder()
+	suite.Router.ServeHTTP(w, reqHTTP)
+
+	suite.Require().Equal(http.StatusOK, w.Code)
+
+	// Verify success response
+	var response api.SuccessResponse
+	err = json.Unmarshal(w.Body.Bytes(), &response)
+	suite.Require().NoError(err)
+	suite.Require().True(response.Success)
+	suite.Require().Contains(*response.Message, "deleted successfully")
+
+	// Verify sessions are deleted
+	err = suite.DB.QueryRow("SELECT COUNT(*) FROM translation_practice_sessions WHERE user_id = $1", suite.TestUserID).Scan(&sessionCount)
+	suite.Require().NoError(err)
+	suite.Require().Equal(0, sessionCount)
+}
+
 func (suite *SettingsIntegrationTestSuite) TestCheckAPIKeyAvailability_NoKey() {
 	sessionCookie := suite.login()
 

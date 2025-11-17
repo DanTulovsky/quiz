@@ -56,6 +56,7 @@ import {
   resetAccount,
   clearAllAIChats,
   clearAllSnippets,
+  clearAllTranslationPracticeHistory,
   updateWordOfDayEmailPreference,
 } from '../api/settingsApi';
 import logger from '../utils/logger';
@@ -164,6 +165,7 @@ const SettingsPage: React.FC = () => {
   const [deleteAllStoriesModal, setDeleteAllStoriesModal] = useState(false);
   const [deleteAllAiChatsModal, setDeleteAllAiChatsModal] = useState(false);
   const [deleteAllSnippetsModal, setDeleteAllSnippetsModal] = useState(false);
+  const [deleteAllTranslationPracticeModal, setDeleteAllTranslationPracticeModal] = useState(false);
   const [resetAccountModal, setResetAccountModal] = useState(false);
 
   const testConnectionMutation = usePostV1SettingsTestAi();
@@ -605,6 +607,33 @@ const SettingsPage: React.FC = () => {
       showNotificationWithClean({
         title: 'Success',
         message: 'All snippets deleted',
+        color: 'green',
+      });
+      await refreshUser();
+    } catch (e) {
+      showNotificationWithClean({
+        title: 'Error',
+        message: String(e),
+        color: 'red',
+      });
+    }
+  };
+
+  const handleDeleteAllTranslationPracticeHistory = async () => {
+    setDeleteAllTranslationPracticeModal(false);
+    try {
+      await clearAllTranslationPracticeHistory();
+
+      // Invalidate translation practice queries to ensure UI updates immediately
+      queryClient.invalidateQueries({
+        predicate: query => {
+          return query.queryKey[0]?.toString().includes('/v1/translation-practice');
+        },
+      });
+
+      showNotificationWithClean({
+        title: 'Success',
+        message: 'All translation practice history deleted',
         color: 'green',
       });
       await refreshUser();
@@ -1528,11 +1557,11 @@ const SettingsPage: React.FC = () => {
                 <Title order={2}>Data Management</Title>
               </Group>
               <Text size='sm' c='dimmed'>
-                Dangerous actions: deleting stories, AI chats, or resetting your
-                account will remove your generated stories, AI conversations,
-                questions, and progress. These actions cannot be undone.
+                Dangerous actions: deleting stories, AI chats, translation practice
+                history, or resetting your account will remove your generated stories,
+                AI conversations, questions, and progress. These actions cannot be undone.
               </Text>
-              <Group>
+              <Group gap='xs' grow wrap='nowrap'>
                 <Button
                   color='red'
                   variant='outline'
@@ -1554,10 +1583,22 @@ const SettingsPage: React.FC = () => {
                 >
                   Delete All Snippets
                 </Button>
-                <Button color='red' onClick={() => setResetAccountModal(true)}>
-                  Reset Account
+                <Button
+                  color='red'
+                  variant='outline'
+                  onClick={() => setDeleteAllTranslationPracticeModal(true)}
+                >
+                  Delete Translation History
                 </Button>
               </Group>
+              <Button
+                color='red'
+                variant='outline'
+                onClick={() => setResetAccountModal(true)}
+                fullWidth
+              >
+                Reset Account
+              </Button>
             </Stack>
           </Card>
 
@@ -1605,6 +1646,16 @@ const SettingsPage: React.FC = () => {
         title='Delete All Snippets'
         message='Are you sure you want to delete ALL your snippets? This cannot be undone.'
         confirmText='Delete All Snippets'
+        cancelText='Cancel'
+      />
+
+      <ConfirmationModal
+        isOpen={deleteAllTranslationPracticeModal}
+        onClose={() => setDeleteAllTranslationPracticeModal(false)}
+        onConfirm={handleDeleteAllTranslationPracticeHistory}
+        title='Delete All Translation Practice History'
+        message='Are you sure you want to delete ALL your translation practice history? This cannot be undone.'
+        confirmText='Delete All'
         cancelText='Cancel'
       />
 

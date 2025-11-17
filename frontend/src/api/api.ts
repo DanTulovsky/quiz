@@ -7675,6 +7675,70 @@ export const usePostV1SettingsClearAiChats = <TError = ErrorResponse,
     }
     
 /**
+ * Permanently deletes all translation practice sessions belonging to the authenticated user. This action is irreversible.
+ * @summary Delete all translation practice history for the authenticated user
+ */
+export const postV1SettingsClearTranslationPracticeHistory = (
+    
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<SuccessResponse>(
+      {url: `/v1/settings/clear-translation-practice-history`, method: 'POST', signal
+    },
+      options);
+    }
+  
+
+
+export const getPostV1SettingsClearTranslationPracticeHistoryMutationOptions = <TError = ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsClearTranslationPracticeHistory>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsClearTranslationPracticeHistory>>, TError,void, TContext> => {
+
+const mutationKey = ['postV1SettingsClearTranslationPracticeHistory'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1SettingsClearTranslationPracticeHistory>>, void> = () => {
+          
+
+          return  postV1SettingsClearTranslationPracticeHistory(requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostV1SettingsClearTranslationPracticeHistoryMutationResult = NonNullable<Awaited<ReturnType<typeof postV1SettingsClearTranslationPracticeHistory>>>
+    
+    export type PostV1SettingsClearTranslationPracticeHistoryMutationError = ErrorResponse
+
+    /**
+ * @summary Delete all translation practice history for the authenticated user
+ */
+export const usePostV1SettingsClearTranslationPracticeHistory = <TError = ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsClearTranslationPracticeHistory>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postV1SettingsClearTranslationPracticeHistory>>,
+        TError,
+        void,
+        TContext
+      > => {
+
+      const mutationOptions = getPostV1SettingsClearTranslationPracticeHistoryMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    
+/**
  * Get paginated users with search and filtering options (admin only)
  * @summary Get paginated users with filtering
  */
@@ -15769,6 +15833,8 @@ export const getPostV1SettingsResetAccountResponseMock = (overrideResponse: Part
 
 export const getPostV1SettingsClearAiChatsResponseMock = (overrideResponse: Partial< SuccessResponse > = {}): SuccessResponse => ({success: faker.datatype.boolean(), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 500}}), undefined]), ...overrideResponse})
 
+export const getPostV1SettingsClearTranslationPracticeHistoryResponseMock = (overrideResponse: Partial< SuccessResponse > = {}): SuccessResponse => ({success: faker.datatype.boolean(), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 500}}), undefined]), ...overrideResponse})
+
 export const getGetV1AdminBackendUserzPaginatedResponseMock = (overrideResponse: Partial< AdminUsersPaginatedResponse > = {}): AdminUsersPaginatedResponse => ({users: Array.from({ length: faker.number.int({ min: 1, max: 10 }) }, (_, i) => i + 1).map(() => ({user: faker.helpers.arrayElement([{id: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), username: faker.helpers.arrayElement([faker.helpers.fromRegExp('^[a-zA-Z0-9_@.+-]+$'), undefined]), email: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), timezone: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), last_active: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), preferred_language: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined]), current_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), ai_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), is_paused: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), word_of_day_email_enabled: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), updated_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}, undefined]), progress: faker.helpers.arrayElement([{current_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), suggested_level: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), accuracy_rate: faker.helpers.arrayElement([faker.number.float({min: 0, max: 1, fractionDigits: 2}), undefined]), total_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), correct_answers: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), performance_by_topic: faker.helpers.arrayElement([{
         [faker.string.alphanumeric(5)]: {correct_attempts: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), total_attempts: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), average_response_time_ms: faker.helpers.arrayElement([faker.number.float({min: 0, max: undefined, fractionDigits: 2}), undefined]), last_updated: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])}
       }, undefined]), weak_areas: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 50 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 10, max: 20}}))), undefined]), recent_activity: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 100 }) }, (_, i) => i + 1).map(() => ({question_id: faker.helpers.arrayElement([faker.number.int({min: 1, max: undefined}), undefined]), is_correct: faker.helpers.arrayElement([faker.datatype.boolean(), undefined]), created_at: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined])})), undefined]), worker_status: faker.helpers.arrayElement([{status: faker.helpers.arrayElement([faker.helpers.arrayElement(['idle','busy','error'] as const), undefined]), last_heartbeat: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), error_message: faker.helpers.arrayElement([faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), null]), undefined])}, undefined]), learning_preferences: faker.helpers.arrayElement([{focus_on_weak_areas: faker.datatype.boolean(), fresh_question_ratio: faker.number.float({min: 0, max: 1, fractionDigits: 2}), known_question_penalty: faker.number.float({min: 0, max: 1, fractionDigits: 2}), review_interval_days: faker.number.int({min: 1, max: 60}), weak_area_boost: faker.number.float({min: 1, max: 5, fractionDigits: 2}), daily_reminder_enabled: faker.datatype.boolean(), tts_voice: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), daily_goal: faker.helpers.arrayElement([faker.number.int({min: 1, max: undefined}), undefined])}, undefined]), priority_insights: faker.helpers.arrayElement([{total_questions_in_queue: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), high_priority_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), medium_priority_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined]), low_priority_questions: faker.helpers.arrayElement([faker.number.int({min: 0, max: undefined}), undefined])}, undefined]), generation_focus: faker.helpers.arrayElement([{current_generation_model: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), last_generation_time: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 20}}), undefined]), generation_rate: faker.helpers.arrayElement([faker.number.float({min: 0, max: undefined, fractionDigits: 2}), undefined])}, undefined]), high_priority_topics: faker.helpers.arrayElement([Array.from({ length: faker.number.int({ min: 1, max: 20 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 10, max: 20}}))), undefined]), gap_analysis: faker.helpers.arrayElement([{}, undefined]), priority_distribution: faker.helpers.arrayElement([{
@@ -16646,6 +16712,18 @@ export const getPostV1SettingsClearAiChatsMockHandler = (overrideResponse?: Succ
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
     ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
     : getPostV1SettingsClearAiChatsResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  }, options)
+}
+
+export const getPostV1SettingsClearTranslationPracticeHistoryMockHandler = (overrideResponse?: SuccessResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<SuccessResponse> | SuccessResponse), options?: RequestHandlerOptions) => {
+  return http.post('*/v1/settings/clear-translation-practice-history', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getPostV1SettingsClearTranslationPracticeHistoryResponseMock()),
       { status: 200,
         headers: { 'Content-Type': 'application/json' }
       })
@@ -17880,6 +17958,7 @@ export const getQuizApplicationAPIMock = () => [
   getPostV1SettingsClearStoriesMockHandler(),
   getPostV1SettingsResetAccountMockHandler(),
   getPostV1SettingsClearAiChatsMockHandler(),
+  getPostV1SettingsClearTranslationPracticeHistoryMockHandler(),
   getGetV1AdminBackendUserzPaginatedMockHandler(),
   getPutV1AdminBackendUserzIdMockHandler(),
   getDeleteV1AdminBackendUserzIdMockHandler(),

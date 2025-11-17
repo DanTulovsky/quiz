@@ -20,29 +20,31 @@ import (
 
 // SettingsHandler handles user settings related HTTP requests
 type SettingsHandler struct {
-	userService         services.UserServiceInterface
-	storyService        services.StoryServiceInterface
-	conversationService services.ConversationServiceInterface
-	aiService           services.AIServiceInterface
-	learningService     services.LearningServiceInterface
-	usageStatsSvc       services.UsageStatsServiceInterface
-	emailService        mailer.Mailer
-	cfg                 *config.Config
-	logger              *observability.Logger
+	userService              services.UserServiceInterface
+	storyService             services.StoryServiceInterface
+	conversationService      services.ConversationServiceInterface
+	translationPracticeService services.TranslationPracticeServiceInterface
+	aiService                services.AIServiceInterface
+	learningService          services.LearningServiceInterface
+	usageStatsSvc            services.UsageStatsServiceInterface
+	emailService             mailer.Mailer
+	cfg                      *config.Config
+	logger                   *observability.Logger
 }
 
 // NewSettingsHandler creates a new SettingsHandler instance
-func NewSettingsHandler(userService services.UserServiceInterface, storyService services.StoryServiceInterface, conversationService services.ConversationServiceInterface, aiService services.AIServiceInterface, learningService services.LearningServiceInterface, emailService mailer.Mailer, usageStatsSvc services.UsageStatsServiceInterface, cfg *config.Config, logger *observability.Logger) *SettingsHandler {
+func NewSettingsHandler(userService services.UserServiceInterface, storyService services.StoryServiceInterface, conversationService services.ConversationServiceInterface, translationPracticeService services.TranslationPracticeServiceInterface, aiService services.AIServiceInterface, learningService services.LearningServiceInterface, emailService mailer.Mailer, usageStatsSvc services.UsageStatsServiceInterface, cfg *config.Config, logger *observability.Logger) *SettingsHandler {
 	return &SettingsHandler{
-		userService:         userService,
-		storyService:        storyService,
-		conversationService: conversationService,
-		aiService:           aiService,
-		learningService:     learningService,
-		usageStatsSvc:       usageStatsSvc,
-		emailService:        emailService,
-		cfg:                 cfg,
-		logger:              logger,
+		userService:              userService,
+		storyService:              storyService,
+		conversationService:       conversationService,
+		translationPracticeService: translationPracticeService,
+		aiService:                 aiService,
+		learningService:           learningService,
+		usageStatsSvc:             usageStatsSvc,
+		emailService:              emailService,
+		cfg:                       cfg,
+		logger:                    logger,
 	}
 }
 
@@ -575,6 +577,42 @@ func (h *SettingsHandler) ClearAllAIChats(c *gin.Context) {
 
 	c.JSON(http.StatusOK, api.SuccessResponse{
 		Message: stringPtr(fmt.Sprintf("Deleted %d AI conversations successfully", deletedCount)),
+		Success: true,
+	})
+}
+
+// ClearAllTranslationPracticeHistory deletes all translation practice history for the current user
+func (h *SettingsHandler) ClearAllTranslationPracticeHistory(c *gin.Context) {
+	ctx, span := observability.TraceHandlerFunction(c.Request.Context(), "clear_all_translation_practice_history")
+	defer observability.FinishSpan(span, nil)
+	session := sessions.Default(c)
+	userID, ok := session.Get(middleware.UserIDKey).(int)
+	if !ok {
+		HandleAppError(c, contextutils.ErrUnauthorized)
+		return
+	}
+
+	// Use the translation practice service to delete all practice history for this user
+	if h.translationPracticeService == nil {
+		h.logger.Warn(ctx, "Translation practice service not available for ClearAllTranslationPracticeHistory")
+		HandleAppError(c, contextutils.NewAppErrorWithCause(
+			contextutils.ErrorCodeInvalidInput,
+			contextutils.SeverityWarn,
+			"Clear all translation practice history not available",
+			"",
+			nil,
+		))
+		return
+	}
+
+	if err := h.translationPracticeService.DeleteAllPracticeHistoryForUser(ctx, uint(userID)); err != nil {
+		h.logger.Error(ctx, "Failed to delete all translation practice history for user", err, map[string]interface{}{"user_id": userID})
+		HandleAppError(c, contextutils.WrapError(err, "failed to delete all translation practice history for user"))
+		return
+	}
+
+	c.JSON(http.StatusOK, api.SuccessResponse{
+		Message: stringPtr("All translation practice history deleted successfully"),
 		Success: true,
 	})
 }

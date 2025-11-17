@@ -53,6 +53,7 @@ import {
   resetAccount,
   clearAllAIChats,
   clearAllSnippets,
+  clearAllTranslationPracticeHistory,
 } from '../../api/settingsApi';
 import logger from '../../utils/logger';
 import {
@@ -156,6 +157,7 @@ const MobileSettingsPage: React.FC = () => {
   const [deleteAllStoriesModal, setDeleteAllStoriesModal] = useState(false);
   const [deleteAllAiChatsModal, setDeleteAllAiChatsModal] = useState(false);
   const [deleteAllSnippetsModal, setDeleteAllSnippetsModal] = useState(false);
+  const [deleteAllTranslationPracticeModal, setDeleteAllTranslationPracticeModal] = useState(false);
   const [resetAccountModal, setResetAccountModal] = useState(false);
 
   const testConnectionMutation = usePostV1SettingsTestAi();
@@ -594,6 +596,33 @@ const MobileSettingsPage: React.FC = () => {
       showNotificationWithClean({
         title: 'Success',
         message: 'All snippets deleted',
+        color: 'green',
+      });
+      await refreshUser();
+    } catch (e) {
+      showNotificationWithClean({
+        title: 'Error',
+        message: String(e),
+        color: 'red',
+      });
+    }
+  };
+
+  const handleDeleteAllTranslationPracticeHistory = async () => {
+    setDeleteAllTranslationPracticeModal(false);
+    try {
+      await clearAllTranslationPracticeHistory();
+
+      // Invalidate translation practice queries to ensure UI updates immediately
+      queryClient.invalidateQueries({
+        predicate: query => {
+          return query.queryKey[0]?.toString().includes('/v1/translation-practice');
+        },
+      });
+
+      showNotificationWithClean({
+        title: 'Success',
+        message: 'All translation practice history deleted',
         color: 'green',
       });
       await refreshUser();
@@ -1344,34 +1373,45 @@ const MobileSettingsPage: React.FC = () => {
                   <Text size='sm' c='dimmed'>
                     These actions cannot be undone.
                   </Text>
-                  <Button
-                    color='red'
-                    variant='outline'
-                    onClick={() => setDeleteAllStoriesModal(true)}
-                    fullWidth
-                  >
-                    Delete All Stories
-                  </Button>
-                  <Button
-                    color='red'
-                    variant='outline'
-                    onClick={() => setDeleteAllAiChatsModal(true)}
-                    fullWidth
-                  >
-                    Delete All AI Chats
-                  </Button>
-                  <Button
-                    color='red'
-                    variant='outline'
-                    onClick={() => setDeleteAllSnippetsModal(true)}
-                    fullWidth
-                  >
-                    Delete All Snippets
-                  </Button>
+                  <Stack gap='xs'>
+                    <Button
+                      color='red'
+                      variant='outline'
+                      onClick={() => setDeleteAllStoriesModal(true)}
+                      fullWidth
+                    >
+                      Delete All Stories
+                    </Button>
+                    <Button
+                      color='red'
+                      variant='outline'
+                      onClick={() => setDeleteAllAiChatsModal(true)}
+                      fullWidth
+                    >
+                      Delete All AI Chats
+                    </Button>
+                    <Button
+                      color='red'
+                      variant='outline'
+                      onClick={() => setDeleteAllSnippetsModal(true)}
+                      fullWidth
+                    >
+                      Delete All Snippets
+                    </Button>
+                    <Button
+                      color='red'
+                      variant='outline'
+                      onClick={() => setDeleteAllTranslationPracticeModal(true)}
+                      fullWidth
+                    >
+                      Delete All Translation Practice History
+                    </Button>
+                  </Stack>
                   <Button
                     color='red'
                     onClick={() => setResetAccountModal(true)}
                     fullWidth
+                    mt='md'
                   >
                     Reset Account
                   </Button>
@@ -1428,6 +1468,16 @@ const MobileSettingsPage: React.FC = () => {
         title='Delete All Snippets'
         message='Are you sure you want to delete ALL your snippets? This cannot be undone.'
         confirmText='Delete All Snippets'
+        cancelText='Cancel'
+      />
+
+      <ConfirmationModal
+        isOpen={deleteAllTranslationPracticeModal}
+        onClose={() => setDeleteAllTranslationPracticeModal(false)}
+        onConfirm={handleDeleteAllTranslationPracticeHistory}
+        title='Delete All Translation Practice History'
+        message='Are you sure you want to delete ALL your translation practice history? This cannot be undone.'
+        confirmText='Delete All'
         cancelText='Cancel'
       />
 

@@ -176,7 +176,7 @@ func NewRouter(
 	authHandler := NewAuthHandler(userService, oauthService, cfg, logger)
 	authAPIKeyHandler := NewAuthAPIKeyHandler(authAPIKeyService, logger)
 	emailService := services.CreateEmailService(cfg, logger)
-	settingsHandler := NewSettingsHandler(userService, storyService, conversationService, aiService, learningService, emailService, usageStatsService, cfg, logger)
+	settingsHandler := NewSettingsHandler(userService, storyService, conversationService, translationPracticeService, aiService, learningService, emailService, usageStatsService, cfg, logger)
 	quizHandler := NewQuizHandler(userService, questionService, aiService, learningService, workerService, generationHintService, usageStatsService, cfg, logger)
 	dailyQuestionHandler := NewDailyQuestionHandler(userService, dailyQuestionService, cfg, logger)
 	storyHandler := NewStoryHandler(storyService, userService, aiService, cfg, logger)
@@ -359,6 +359,7 @@ func NewRouter(
 			// User data management endpoints
 			settings.POST("/clear-stories", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), middleware.RequestValidationMiddleware(logger), settingsHandler.ClearAllStories)
 			settings.POST("/clear-ai-chats", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), middleware.RequestValidationMiddleware(logger), settingsHandler.ClearAllAIChats)
+			settings.POST("/clear-translation-practice-history", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), middleware.RequestValidationMiddleware(logger), settingsHandler.ClearAllTranslationPracticeHistory)
 			settings.POST("/reset-account", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), middleware.RequestValidationMiddleware(logger), settingsHandler.ResetAccount)
 			settings.GET("/api-key/:provider", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), settingsHandler.CheckAPIKeyAvailability)
 		}

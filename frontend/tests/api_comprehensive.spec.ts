@@ -3342,5 +3342,18 @@ test.describe('Comprehensive API Tests', () => {
       expect(clearDatabaseResponse.status()).toBe(200);
       console.log('✅ Clear database endpoint tested');
     });
+
+    test('should test clear translation practice history', async ({request}) => {
+      const regularUserSession = await loginUser(request, REGULAR_USER);
+
+      // Test clear translation practice history
+      const clearTranslationPracticeResponse = await request.post(`${baseURL}/v1/settings/clear-translation-practice-history`, {
+        headers: {
+          'Cookie': regularUserSession
+        }
+      });
+      expect(clearTranslationPracticeResponse.status()).toBe(200);
+      console.log('✅ Clear translation practice history endpoint tested');
+    });
   });
 });

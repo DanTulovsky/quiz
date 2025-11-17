@@ -30,6 +30,7 @@ type TranslationPracticeServiceInterface interface {
 	SubmitTranslation(ctx context.Context, userID uint, req *models.SubmitTranslationRequest, aiService AIServiceInterface, userAIConfig *models.UserAIConfig) (*models.TranslationPracticeSession, error)
 	GetPracticeHistory(ctx context.Context, userID uint, limit, offset int, search string) ([]models.TranslationPracticeSession, int, error)
 	GetPracticeStats(ctx context.Context, userID uint) (map[string]interface{}, error)
+	DeleteAllPracticeHistoryForUser(ctx context.Context, userID uint) error
 }
 
 // TranslationPracticeService handles translation practice operations
@@ -498,6 +499,43 @@ func (s *TranslationPracticeService) GetPracticeStats(
 	}
 
 	return result, nil
+}
+
+// DeleteAllPracticeHistoryForUser deletes all translation practice sessions for a given user
+func (s *TranslationPracticeService) DeleteAllPracticeHistoryForUser(ctx context.Context, userID uint) error {
+	ctx, span := observability.TraceFunction(ctx, "translation_practice", "delete_all_practice_history_for_user",
+		attribute.Int("user_id", int(userID)),
+	)
+	defer observability.FinishSpan(span, nil)
+
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return contextutils.WrapErrorf(err, "failed to begin transaction")
+	}
+	defer func() { _ = tx.Rollback() }()
+
+	// Delete all translation practice sessions for this user
+	query := `DELETE FROM translation_practice_sessions WHERE user_id = $1`
+	result, err := tx.ExecContext(ctx, query, userID)
+	if err != nil {
+		return contextutils.WrapErrorf(err, "failed to delete translation practice sessions for user %d", userID)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		s.logger.Warn(ctx, "Failed to get rows affected count", map[string]interface{}{"error": err.Error()})
+	} else {
+		s.logger.Info(ctx, "Deleted translation practice sessions for user", map[string]interface{}{
+			"user_id":       userID,
+			"rows_affected": rowsAffected,
+		})
+	}
+
+	if err := tx.Commit(); err != nil {
+		return contextutils.WrapErrorf(err, "failed to commit delete all translation practice history transaction for user %d", userID)
+	}
+
+	return nil
 }
 
 // Helper methods
