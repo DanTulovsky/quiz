@@ -863,14 +863,14 @@ func (w *Worker) Start(ctx context.Context) {
 			return
 
 		case <-ticker.C:
-			w.run()
+			w.run(ctx)
 
 		case <-w.manualTrigger:
 			w.logger.Info(ctx, "Worker triggered manually", map[string]any{
 				"instance": w.instance,
 			})
 			w.logActivity(ctx, "INFO", fmt.Sprintf("Worker %s triggered manually", w.instance), nil, nil)
-			w.run()
+			w.run(ctx)
 		}
 	}
 }
@@ -941,8 +941,8 @@ func (w *Worker) updateHeartbeat(ctx context.Context) {
 }
 
 // run executes a single worker cycle
-func (w *Worker) run() {
-	ctx, span := observability.TraceWorkerFunction(context.Background(), "run",
+func (w *Worker) run(ctx context.Context) {
+	ctx, span := observability.TraceWorkerFunction(ctx, "run",
 		attribute.String("worker.instance", w.instance),
 	)
 	defer observability.FinishSpan(span, nil)
