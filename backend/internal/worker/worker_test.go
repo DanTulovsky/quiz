@@ -2488,12 +2488,13 @@ func TestWorker_ProcessUserQuestionGenerationWithEligibleCount(t *testing.T) {
 	// Mock the eligible question count to be below threshold
 	// This would require more complex mocking, but we can test the structure
 	ctx := context.Background()
-	actions, attempted, failed := w.processUserQuestionGeneration(ctx, user)
+	actions, attempted, failed, errors := w.processUserQuestionGeneration(ctx, user)
 
 	// The method should complete without panicking
 	assert.IsType(t, "", actions)
 	assert.IsType(t, false, attempted)
 	assert.IsType(t, false, failed)
+	assert.IsType(t, []string{}, errors)
 }
 
 func TestWorker_DailyReminderIntegration(t *testing.T) {

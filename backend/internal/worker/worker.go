@@ -1412,6 +1412,7 @@ func (w *Worker) generateNeededQuestions(ctx context.Context) (result0 string, e
 	var actuallyProcessedUsers []string
 	var hadAttemptedOperations bool
 	var hadFailures bool
+	var allErrorMessages []string
 
 	for _, user := range aiUsers {
 		checkedUsers = append(checkedUsers, user.Username)
@@ -1427,12 +1428,15 @@ func (w *Worker) generateNeededQuestions(ctx context.Context) (result0 string, e
 			continue
 		}
 		actuallyProcessedUsers = append(actuallyProcessedUsers, user.Username)
-		userActions, attempted, failed := w.processUserQuestionGeneration(ctx, &user)
+		userActions, attempted, failed, userErrors := w.processUserQuestionGeneration(ctx, &user)
 		if attempted {
 			hadAttemptedOperations = true
 		}
 		if failed {
 			hadFailures = true
+		}
+		if len(userErrors) > 0 {
+			allErrorMessages = append(allErrorMessages, userErrors...)
 		}
 		if userActions != "" {
 			actions = append(actions, userActions)
@@ -1444,7 +1448,24 @@ func (w *Worker) generateNeededQuestions(ctx context.Context) (result0 string, e
 	}
 
 	w.updateActivity("")
-	return w.summarizeRunActions(actions, checkedUsers, actuallyProcessedUsers, hadAttemptedOperations, hadFailures), nil
+	summary := w.summarizeRunActions(actions, checkedUsers, actuallyProcessedUsers, hadAttemptedOperations, hadFailures)
+
+	// If there were failures, include error messages in the summary and return an error
+	if hadFailures && len(allErrorMessages) > 0 {
+		// Include first few error messages in summary (limit to avoid too long strings)
+		maxErrors := 3
+		if len(allErrorMessages) < maxErrors {
+			maxErrors = len(allErrorMessages)
+		}
+		errorSummary := strings.Join(allErrorMessages[:maxErrors], "; ")
+		if len(allErrorMessages) > maxErrors {
+			errorSummary += fmt.Sprintf(" (and %d more errors)", len(allErrorMessages)-maxErrors)
+		}
+		summaryWithErrors := fmt.Sprintf("%s\nErrors: %s", summary, errorSummary)
+		return summaryWithErrors, contextutils.WrapErrorf(contextutils.ErrAIRequestFailed, "Worker run completed with errors: %s", errorSummary)
+	}
+
+	return summary, nil
 }
 
 // getEligibleAIUsers returns users eligible for AI question generation
@@ -1572,7 +1593,7 @@ func (w *Worker) getEligibleQuestionCount(ctx context.Context, userID int, langu
 	return count, nil
 }
 
-func (w *Worker) processUserQuestionGeneration(ctx context.Context, user *models.User) (string, bool, bool) {
+func (w *Worker) processUserQuestionGeneration(ctx context.Context, user *models.User) (string, bool, bool, []string) {
 	ctx, span := observability.TraceWorkerFunction(ctx, "processUserQuestionGeneration",
 		observability.AttributeUserID(user.ID),
 		attribute.String("user.username", user.Username),
@@ -1621,6 +1642,7 @@ func (w *Worker) processUserQuestionGeneration(ctx context.Context, user *models
 	var actions []string
 	var hadAttemptedOperations bool
 	var hadFailures bool
+	var errorMessages []string
 	for _, language := range languages {
 		for _, level := range levels {
 			for _, qType := range questionTypes {
@@ -1631,6 +1653,7 @@ func (w *Worker) processUserQuestionGeneration(ctx context.Context, user *models
 				if err != nil {
 					span.RecordError(err)
 					hadFailures = true
+					errorMessages = append(errorMessages, fmt.Sprintf("Failed to get eligible question count for %s %s %s: %v", language, level, qType, err))
 					continue // Continue to next question type
 				}
 				// If hinted, be more aggressive about generating for that type
@@ -1709,6 +1732,7 @@ func (w *Worker) processUserQuestionGeneration(ctx context.Context, user *models
 					action, err := w.GenerateQuestionsForUser(ctx, user, language, level, qType, needed, "")
 					if err != nil {
 						hadFailures = true
+						errorMessages = append(errorMessages, fmt.Sprintf("Failed to generate questions for %s %s %s: %v", language, level, qType, err))
 						// Continue to next question type instead of breaking all loops
 						continue
 					}
@@ -1723,7 +1747,7 @@ func (w *Worker) processUserQuestionGeneration(ctx context.Context, user *models
 			}
 		}
 	}
-	return strings.Join(actions, "; "), hadAttemptedOperations, hadFailures
+	return strings.Join(actions, "; "), hadAttemptedOperations, hadFailures, errorMessages
 }
 
 // summarizeRunActions builds the summary string for actions taken

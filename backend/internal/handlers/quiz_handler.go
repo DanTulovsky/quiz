@@ -1151,26 +1151,29 @@ func (h *QuizHandler) getWorkerStatusForUser(ctx context.Context, userID int) (*
 		// Check for worker errors and actual activity
 		if workerInstances, ok := workerHealth["worker_instances"].([]map[string]interface{}); ok {
 			for _, instance := range workerInstances {
-				// Check for errors first
+				// Check for errors first - errors take priority
 				if lastError, hasError := instance["last_run_error"]; hasError && lastError != nil {
 					if errorStr, ok := lastError.(string); ok && errorStr != "" {
-						// For errors, we'll use idle status but set the error message
-						status = api.Idle
+						// Set status to error when there are errors
+						status = api.Error
 						errorMessage = &errorStr
 						break
 					}
 				}
 
-				// Check if worker is running AND has recent activity
-				if isRunning, ok := instance["is_running"].(bool); ok && isRunning {
-					// Only set to busy if the worker is actually active (not just running but idle)
-					// We'll check if there's recent activity or if the worker is actively generating
-					if lastHeartbeat, hasHeartbeat := instance["last_heartbeat"]; hasHeartbeat && lastHeartbeat != nil {
-						if heartbeatStr, ok := lastHeartbeat.(string); ok {
-							if heartbeat, err := time.Parse(time.RFC3339, heartbeatStr); err == nil {
-								// Consider busy if heartbeat is very recent (within last 30 seconds)
-								if time.Since(heartbeat) < 30*time.Second {
-									status = api.Busy
+				// Only check for busy status if we haven't found an error
+				if status != api.Error {
+					// Check if worker is running AND has recent activity
+					if isRunning, ok := instance["is_running"].(bool); ok && isRunning {
+						// Only set to busy if the worker is actually active (not just running but idle)
+						// We'll check if there's recent activity or if the worker is actively generating
+						if lastHeartbeat, hasHeartbeat := instance["last_heartbeat"]; hasHeartbeat && lastHeartbeat != nil {
+							if heartbeatStr, ok := lastHeartbeat.(string); ok {
+								if heartbeat, err := time.Parse(time.RFC3339, heartbeatStr); err == nil {
+									// Consider busy if heartbeat is very recent (within last 30 seconds)
+									if time.Since(heartbeat) < 30*time.Second {
+										status = api.Busy
+									}
 								}
 							}
 						}

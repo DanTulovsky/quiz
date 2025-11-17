@@ -9,6 +9,7 @@ import {
   Question,
 } from '../api/api';
 import {
+  Alert,
   Badge,
   Box,
   Button,
@@ -16,6 +17,7 @@ import {
   Container,
   Group,
   Paper,
+  ScrollArea,
   Stack,
   Text,
 } from '@mantine/core';
@@ -88,6 +90,7 @@ export const QuestionPageBase: React.FC<Props> = ({ mode }) => {
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isReportTextareaFocused, setIsReportTextareaFocused] = useState(false);
   const [maxOptions, setMaxOptions] = useState(0);
+  const [workerError, setWorkerError] = useState<string | null>(null);
   const chatActionsRef = useRef<{
     clear: () => void;
     toggleMaximize: () => void;
@@ -96,6 +99,36 @@ export const QuestionPageBase: React.FC<Props> = ({ mode }) => {
 
   // Fetching is handled inside `useQuestionFlow` to avoid duplicate network
   // requests. Do not call `fetchQuestion` here.
+
+  // Fetch worker status when generating to show any errors
+  useEffect(() => {
+    if (isGenerating) {
+      const fetchWorkerStatus = async () => {
+        try {
+          const response = await fetch('/v1/quiz/worker-status', {
+            credentials: 'include',
+          });
+          if (response.ok) {
+            const data = await response.json();
+            if (data.has_errors && data.last_error_details) {
+              setWorkerError(data.last_error_details);
+            } else {
+              setWorkerError(null);
+            }
+          }
+        } catch (err) {
+          // Silently fail - worker status is not critical
+        }
+      };
+
+      fetchWorkerStatus();
+      // Poll every 5 seconds while generating
+      const interval = setInterval(fetchWorkerStatus, 5000);
+      return () => clearInterval(interval);
+    } else {
+      setWorkerError(null);
+    }
+  }, [isGenerating]);
 
   // Update the global QuestionContext when local question changes
   useEffect(() => {
@@ -303,16 +336,43 @@ export const QuestionPageBase: React.FC<Props> = ({ mode }) => {
 
   if (isGenerating) {
     return (
-      <Center h={300}>
-        <Stack align='center' gap='xs'>
-          <LoadingSpinner />
-          <Text>
-            Generating your personalized{' '}
-            {mode === 'reading' ? 'reading comprehension ' : ''}question...
-          </Text>
-          <Text size='sm' c='dimmed'>
-            This may take a moment
-          </Text>
+      <Center h='100vh' style={{ flexDirection: 'column' }}>
+        <Stack align='center' gap='xl' style={{ maxWidth: 600, width: '100%', padding: '2rem' }}>
+          <Stack align='center' gap='xs'>
+            <LoadingSpinner />
+            <Text>
+              Generating your personalized{' '}
+              {mode === 'reading' ? 'reading comprehension ' : ''}question...
+            </Text>
+            <Text size='sm' c='dimmed'>
+              This may take a moment
+            </Text>
+          </Stack>
+          {workerError && (
+            <Alert
+              color='red'
+              title='Generation Error'
+              style={{ width: '100%', marginTop: '3rem' }}
+            >
+              <Stack gap='xs'>
+                <Text size='sm' fw={500}>
+                  Worker encountered errors during question generation
+                </Text>
+                <ScrollArea.Autosize mah={200}>
+                  <Text
+                    size='xs'
+                    style={{
+                      whiteSpace: 'pre-wrap',
+                      wordBreak: 'break-word',
+                      fontFamily: 'monospace',
+                    }}
+                  >
+                    {workerError}
+                  </Text>
+                </ScrollArea.Autosize>
+              </Stack>
+            </Alert>
+          )}
         </Stack>
       </Center>
     );

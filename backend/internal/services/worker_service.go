@@ -465,12 +465,19 @@ func (s *WorkerService) GetWorkerHealth(ctx context.Context) (result0 map[string
 			healthyCount++
 		}
 
+		// Convert sql.NullString to string for last_run_error
+		var lastRunError string
+		if status.LastRunError.Valid {
+			lastRunError = status.LastRunError.String
+		}
+
 		workerInstance := map[string]interface{}{
 			"worker_instance":           status.WorkerInstance,
 			"healthy":                   healthy,
 			"is_running":                status.IsRunning,
 			"is_paused":                 status.IsPaused,
 			"last_heartbeat":            status.LastHeartbeat,
+			"last_run_error":            lastRunError,
 			"total_questions_generated": status.TotalQuestionsGenerated,
 			"total_runs":                status.TotalRuns,
 		}

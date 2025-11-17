@@ -9,6 +9,7 @@ import {
   ActionIcon,
   Code,
   Paper,
+  ScrollArea,
 } from '@mantine/core';
 import {
   IconAlertTriangle,
@@ -121,7 +122,7 @@ const WorkerStatus: React.FC = () => {
 
   return (
     <Popover
-      width={400}
+      width={600}
       position='bottom-end'
       withArrow
       shadow='md'
@@ -158,11 +159,11 @@ const WorkerStatus: React.FC = () => {
             </Group>
 
             <Stack gap='xs'>
-              <Group justify='space-between'>
-                <Text size='sm' c='dimmed'>
+              <Group justify='space-between' align='flex-start'>
+                <Text size='sm' c='dimmed' style={{ flexShrink: 0 }}>
                   Status:
                 </Text>
-                <Text size='sm' c={getIndicatorColor()}>
+                <Text size='sm' c={getIndicatorColor()} style={{ flex: 1, wordBreak: 'break-word' }}>
                   {getStatusMessage()}
                 </Text>
               </Group>
@@ -178,12 +179,24 @@ const WorkerStatus: React.FC = () => {
 
               {status.last_error_details && (
                 <Stack gap='xs'>
-                  <Text size='sm' c='dimmed'>
+                  <Text size='sm' c='dimmed' fw={500}>
                     Latest Error:
                   </Text>
-                  <Code block p='xs' c='error'>
-                    {status.last_error_details}
-                  </Code>
+                  <ScrollArea.Autosize mah={200}>
+                    <Code
+                      block
+                      p='sm'
+                      style={{
+                        whiteSpace: 'pre-wrap',
+                        wordBreak: 'break-word',
+                        fontSize: '12px',
+                        lineHeight: 1.5,
+                        maxWidth: '100%',
+                      }}
+                    >
+                      {status.last_error_details}
+                    </Code>
+                  </ScrollArea.Autosize>
                 </Stack>
               )}
 
