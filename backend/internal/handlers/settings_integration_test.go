@@ -573,20 +573,25 @@ func (suite *SettingsIntegrationTestSuite) TestClearAllTranslationPracticeHistor
 	sessionCookie := suite.login()
 
 	// Create translation practice sessions for the test user
-	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
-	storyService := services.NewStoryService(suite.DB, suite.Config, logger)
-	questionService := services.NewQuestionServiceWithLogger(suite.DB, suite.LearningService, suite.Config, logger)
-	translationPracticeService := services.NewTranslationPracticeService(suite.DB, storyService, questionService, suite.Config, logger)
+	// First create a sentence in translation_practice_sentences
+	var sentenceID int
+	err := suite.DB.QueryRow(`
+		INSERT INTO translation_practice_sentences
+		(user_id, sentence_text, source_language, target_language, language_level, source_type, created_at, updated_at)
+		VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())
+		RETURNING id
+	`, suite.TestUserID, "Test sentence", "en", "italian", "A1", "ai_generated").Scan(&sentenceID)
+	suite.Require().NoError(err)
 
 	// Insert translation practice sessions directly into the database
-	_, err := suite.DB.Exec(`
+	_, err = suite.DB.Exec(`
 		INSERT INTO translation_practice_sessions
 		(user_id, sentence_id, original_sentence, user_translation, translation_direction, ai_feedback, ai_score, created_at)
 		VALUES
-		($1, 1, 'Hello world', 'Ciao mondo', 'en_to_learning', 'Good translation', 4.5, NOW()),
-		($1, 1, 'How are you?', 'Come stai?', 'en_to_learning', 'Excellent', 5.0, NOW()),
-		($1, 1, 'Thank you', 'Grazie', 'en_to_learning', 'Perfect', 5.0, NOW())
-	`, suite.TestUserID)
+		($1, $2, 'Hello world', 'Ciao mondo', 'en_to_learning', 'Good translation', 4.5, NOW()),
+		($1, $2, 'How are you?', 'Come stai?', 'en_to_learning', 'Excellent', 5.0, NOW()),
+		($1, $2, 'Thank you', 'Grazie', 'en_to_learning', 'Perfect', 5.0, NOW())
+	`, suite.TestUserID, sentenceID)
 	suite.Require().NoError(err)
 
 	// Verify sessions exist
