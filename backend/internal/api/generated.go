@@ -322,7 +322,7 @@ type AIFixResponse struct {
 		// ConfidenceLevel Confidence level when question was marked as known (1-5)
 		ConfidenceLevel *int `json:"confidence_level,omitempty"`
 
-		// Content All question types now use multiple choice format with 4 options
+		// Content All question types now use multiple choice format with 4 options. Either 'question' or 'sentence' must be present depending on question type.
 		Content *QuestionContent `json:"content,omitempty"`
 
 		// CorrectAnswer Index of the correct answer in the options array (0-based)
@@ -1304,7 +1304,7 @@ type Question struct {
 	// ConfidenceLevel Confidence level when question was marked as known (1-5)
 	ConfidenceLevel *int `json:"confidence_level,omitempty"`
 
-	// Content All question types now use multiple choice format with 4 options
+	// Content All question types now use multiple choice format with 4 options. Either 'question' or 'sentence' must be present depending on question type.
 	Content *QuestionContent `json:"content,omitempty"`
 
 	// CorrectAnswer Index of the correct answer in the options array (0-based)
@@ -1366,17 +1366,19 @@ type QuestionAssignedUsersResponse struct {
 	Users      []UserProfile `json:"users"`
 }
 
-// QuestionContent All question types now use multiple choice format with 4 options
+// QuestionContent All question types now use multiple choice format with 4 options. Either 'question' or 'sentence' must be present depending on question type.
 type QuestionContent struct {
 	// Hint Optional hint for fill-in-blank questions
 	Hint    *string  `json:"hint,omitempty"`
 	Options []string `json:"options"`
 
 	// Passage Only present for reading comprehension questions
-	Passage  *string `json:"passage,omitempty"`
-	Question string  `json:"question"`
+	Passage *string `json:"passage,omitempty"`
 
-	// Sentence Only present for vocabulary questions (context sentence)
+	// Question Question text (required for most question types, optional for fill_blank and vocabulary)
+	Question *string `json:"question,omitempty"`
+
+	// Sentence Sentence text used for vocabulary questions (context sentence) and fill_blank questions (sentence with blank)
 	Sentence *string `json:"sentence,omitempty"`
 
 	// Topic Specific topic for the question (e.g., "reading-comprehension-past-continuous", "clothing", "culture")

@@ -197,7 +197,8 @@ func (suite *QuizIntegrationTestSuite) TestGetQuestion_Success() {
 		err := json.Unmarshal(w.Body.Bytes(), &questionResp)
 		assert.NoError(suite.T(), err)
 		assert.Equal(suite.T(), int64(questionID), *questionResp.Id)
-		assert.Equal(suite.T(), "What is hello?", questionResp.Content.Question)
+		assert.NotNil(suite.T(), questionResp.Content.Question)
+		assert.Equal(suite.T(), "What is hello?", *questionResp.Content.Question)
 	} else if w.Code == http.StatusAccepted {
 		var generatingResp api.GeneratingResponse
 		err := json.Unmarshal(w.Body.Bytes(), &generatingResp)
@@ -625,7 +626,7 @@ func (suite *QuizIntegrationTestSuite) TestChatStream_VocabularyQuestionWithSent
 			Level:    levelPtr(api.Level("B1")),
 			Type:     questionTypePtr(api.Vocabulary),
 			Content: &api.QuestionContent{
-				Question: "What does stazione mean in this context?",
+				Question: stringPtr("What does stazione mean in this context?"),
 				Options:  []string{"bank", "park", "shop", "station"},
 				Sentence: stringPtr("Ci troviamo alla stazione alle sette per andare a cena nel nuovo ristorante."),
 			},
@@ -681,7 +682,7 @@ func (suite *QuizIntegrationTestSuite) TestChatStream_ReadingComprehensionWithPa
 			Level:    levelPtr(api.Level("B1")),
 			Type:     questionTypePtr(api.ReadingComprehension),
 			Content: &api.QuestionContent{
-				Question: "What is the main topic of this passage?",
+				Question: stringPtr("What is the main topic of this passage?"),
 				Options:  []string{"Travel", "Food", "Work", "Education"},
 				Passage:  stringPtr("Il viaggio in Italia è sempre un'esperienza meravigliosa. La cultura, il cibo e la gente rendono ogni visita speciale."),
 			},
@@ -736,7 +737,7 @@ func (suite *QuizIntegrationTestSuite) TestChatStream_QuestionWithoutPassage() {
 			Level:    levelPtr(api.Level("B1")),
 			Type:     questionTypePtr(api.FillBlank),
 			Content: &api.QuestionContent{
-				Question: "Complete the sentence: Io ___ studente.",
+				Question: stringPtr("Complete the sentence: Io ___ studente."),
 				Options:  []string{"sono", "sei", "è", "siamo"},
 			},
 		},

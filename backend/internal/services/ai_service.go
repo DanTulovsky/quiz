@@ -73,6 +73,19 @@ const (
 		},
 		"required": ["sentence", "question", "options", "correct_answer", "explanation"]
 	}`
+
+	SingleFillBlankSchema = `{
+		"type": "object",
+		"properties": {
+			"sentence": {"type": "string"},
+			"options": {"type": "array", "items": {"type": "string"}, "minItems": 4, "maxItems": 4},
+			"correct_answer": {"type": "integer"},
+			"explanation": {"type": "string"},
+			"topic": {"type": "string"},
+			"hint": {"type": "string"}
+		},
+		"required": ["sentence", "options", "correct_answer", "explanation"]
+	}`
 )
 
 var (
@@ -462,7 +475,9 @@ func GetFixSchema(questionType models.QuestionType) (string, error) {
 		return SingleReadingComprehensionSchema, nil
 	case models.Vocabulary:
 		return SingleVocabularyQuestionSchema, nil
-	case models.FillInBlank, models.QuestionAnswer:
+	case models.FillInBlank:
+		return SingleFillBlankSchema, nil
+	case models.QuestionAnswer:
 		return SingleQuestionSchema, nil
 	default:
 		return "", contextutils.WrapErrorf(contextutils.ErrAIConfigInvalid, "no schema for question type: %v", questionType)

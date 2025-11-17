@@ -6256,9 +6256,8 @@ components:
 
     QuestionContent:
       type: object
-      description: All question types now use multiple choice format with 4 options
+      description: All question types now use multiple choice format with 4 options. Either 'question' or 'sentence' must be present depending on question type.
       required:
-        - question
         - options
       additionalProperties: false
       properties:
@@ -6266,6 +6265,7 @@ components:
           type: string
           minLength: 1
           maxLength: 1000
+          description: Question text (required for most question types, optional for fill_blank and vocabulary)
         options:
           type: array
           minItems: 4
@@ -6276,7 +6276,7 @@ components:
             maxLength: 500
         sentence:
           type: string
-          description: Only present for vocabulary questions (context sentence)
+          description: Sentence text used for vocabulary questions (context sentence) and fill_blank questions (sentence with blank)
           maxLength: 2000
         passage:
           type: string

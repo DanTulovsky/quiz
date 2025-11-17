@@ -1657,10 +1657,10 @@ const QuestionEditForm: React.FC<{
 
   const [formData, setFormData] = useState({
     type: question.type,
-    // For fill_blank, question.content.sentence is the main field, not question
+    // For fill_blank, check content.question first, then content.sentence as fallback
     question:
       question.type === 'fill_blank'
-        ? question.content.sentence || ''
+        ? question.content.question || question.content.sentence || ''
         : question.content.question || '',
     sentence: question.content.sentence || '',
     passage: question.content.passage || '',

@@ -274,7 +274,7 @@ func convertQuestionToAPI(ctx context.Context, question *models.Question) (api.Q
 		questionText, options := contextutils.ExtractQuestionContent(question.Content)
 
 		if questionText != "" {
-			content.Question = questionText
+			content.Question = &questionText
 		}
 
 		// Extract other optional fields

@@ -840,7 +840,12 @@ func (h *QuizHandler) ChatStream(c *gin.Context) {
 	}
 
 	if req.Question.Content != nil {
-		aiReq.Question = req.Question.Content.Question
+		// For fill_blank questions, use sentence if question is not available
+		if req.Question.Content.Question != nil {
+			aiReq.Question = *req.Question.Content.Question
+		} else if req.Question.Content.Sentence != nil {
+			aiReq.Question = *req.Question.Content.Sentence
+		}
 		aiReq.Options = req.Question.Content.Options
 		if req.Question.Content.Passage != nil {
 			aiReq.Passage = *req.Question.Content.Passage
