@@ -1095,11 +1095,11 @@ const TranslationPracticePage: React.FC = () => {
                       </Badge>
                     }
                   />
-                  <ScrollArea
-                    style={{ height: '60vh' }}
-                    viewportRef={historyViewportRef}
-                  >
-                    {(sessions.length ?? 0) > 0 ? (
+                  {(sessions.length ?? 0) > 0 ? (
+                    <ScrollArea
+                      style={{ height: '60vh' }}
+                      viewportRef={historyViewportRef}
+                    >
                       <Accordion variant='separated'>
                         {sessions.map(s => (
                           <Accordion.Item value={String(s.id)} key={s.id}>
@@ -1203,14 +1203,14 @@ const TranslationPracticePage: React.FC = () => {
                           </Accordion.Item>
                         ))}
                       </Accordion>
-                    ) : (
-                      <Text size='sm' c='dimmed'>
-                        {historySearch.trim()
-                          ? 'No results found.'
-                          : 'No practice yet. Submit a translation to see history here.'}
-                      </Text>
-                    )}
-                  </ScrollArea>
+                    </ScrollArea>
+                  ) : (
+                    <Text size='sm' c='dimmed' py='md' ta='center'>
+                      {historySearch.trim()
+                        ? 'No results found.'
+                        : 'No practice yet. Submit a translation to see history here.'}
+                    </Text>
+                  )}
                   {history && history.total > 0 && (
                     <Group justify='space-between' align='center' mt='xs'>
                       <Button
@@ -1468,6 +1468,30 @@ const TranslationPracticePage: React.FC = () => {
                             </Badge>
                             <Text size='xs' c='dimmed'>
                               Cycle: topic ↔ translation
+                            </Text>
+                          </Group>
+                          <Group gap='xs' align='center'>
+                            <Badge
+                              size='sm'
+                              variant='light'
+                              style={{ minWidth: '32px' }}
+                            >
+                              O
+                            </Badge>
+                            <Text size='xs' c='dimmed'>
+                              Focus topic field
+                            </Text>
+                          </Group>
+                          <Group gap='xs' align='center'>
+                            <Badge
+                              size='sm'
+                              variant='light'
+                              style={{ minWidth: '32px' }}
+                            >
+                              Y
+                            </Badge>
+                            <Text size='xs' c='dimmed'>
+                              Focus translation field
                             </Text>
                           </Group>
                           <Group gap='xs' align='center'>

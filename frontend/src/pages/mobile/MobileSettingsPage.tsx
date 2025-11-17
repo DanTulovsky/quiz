@@ -157,7 +157,10 @@ const MobileSettingsPage: React.FC = () => {
   const [deleteAllStoriesModal, setDeleteAllStoriesModal] = useState(false);
   const [deleteAllAiChatsModal, setDeleteAllAiChatsModal] = useState(false);
   const [deleteAllSnippetsModal, setDeleteAllSnippetsModal] = useState(false);
-  const [deleteAllTranslationPracticeModal, setDeleteAllTranslationPracticeModal] = useState(false);
+  const [
+    deleteAllTranslationPracticeModal,
+    setDeleteAllTranslationPracticeModal,
+  ] = useState(false);
   const [resetAccountModal, setResetAccountModal] = useState(false);
 
   const testConnectionMutation = usePostV1SettingsTestAi();
@@ -616,7 +619,9 @@ const MobileSettingsPage: React.FC = () => {
       // Invalidate translation practice queries to ensure UI updates immediately
       queryClient.invalidateQueries({
         predicate: query => {
-          return query.queryKey[0]?.toString().includes('/v1/translation-practice');
+          return query.queryKey[0]
+            ?.toString()
+            .includes('/v1/translation-practice');
         },
       });
 

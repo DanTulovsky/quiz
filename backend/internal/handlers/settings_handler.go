@@ -20,31 +20,31 @@ import (
 
 // SettingsHandler handles user settings related HTTP requests
 type SettingsHandler struct {
-	userService              services.UserServiceInterface
-	storyService             services.StoryServiceInterface
-	conversationService      services.ConversationServiceInterface
+	userService                services.UserServiceInterface
+	storyService               services.StoryServiceInterface
+	conversationService        services.ConversationServiceInterface
 	translationPracticeService services.TranslationPracticeServiceInterface
-	aiService                services.AIServiceInterface
-	learningService          services.LearningServiceInterface
-	usageStatsSvc            services.UsageStatsServiceInterface
-	emailService             mailer.Mailer
-	cfg                      *config.Config
-	logger                   *observability.Logger
+	aiService                  services.AIServiceInterface
+	learningService            services.LearningServiceInterface
+	usageStatsSvc              services.UsageStatsServiceInterface
+	emailService               mailer.Mailer
+	cfg                        *config.Config
+	logger                     *observability.Logger
 }
 
 // NewSettingsHandler creates a new SettingsHandler instance
 func NewSettingsHandler(userService services.UserServiceInterface, storyService services.StoryServiceInterface, conversationService services.ConversationServiceInterface, translationPracticeService services.TranslationPracticeServiceInterface, aiService services.AIServiceInterface, learningService services.LearningServiceInterface, emailService mailer.Mailer, usageStatsSvc services.UsageStatsServiceInterface, cfg *config.Config, logger *observability.Logger) *SettingsHandler {
 	return &SettingsHandler{
-		userService:              userService,
-		storyService:              storyService,
-		conversationService:       conversationService,
+		userService:                userService,
+		storyService:               storyService,
+		conversationService:        conversationService,
 		translationPracticeService: translationPracticeService,
-		aiService:                 aiService,
-		learningService:           learningService,
-		usageStatsSvc:             usageStatsSvc,
-		emailService:              emailService,
-		cfg:                       cfg,
-		logger:                    logger,
+		aiService:                  aiService,
+		learningService:            learningService,
+		usageStatsSvc:              usageStatsSvc,
+		emailService:               emailService,
+		cfg:                        cfg,
+		logger:                     logger,
 	}
 }
 

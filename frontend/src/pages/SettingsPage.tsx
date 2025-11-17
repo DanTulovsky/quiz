@@ -165,7 +165,10 @@ const SettingsPage: React.FC = () => {
   const [deleteAllStoriesModal, setDeleteAllStoriesModal] = useState(false);
   const [deleteAllAiChatsModal, setDeleteAllAiChatsModal] = useState(false);
   const [deleteAllSnippetsModal, setDeleteAllSnippetsModal] = useState(false);
-  const [deleteAllTranslationPracticeModal, setDeleteAllTranslationPracticeModal] = useState(false);
+  const [
+    deleteAllTranslationPracticeModal,
+    setDeleteAllTranslationPracticeModal,
+  ] = useState(false);
   const [resetAccountModal, setResetAccountModal] = useState(false);
 
   const testConnectionMutation = usePostV1SettingsTestAi();
@@ -627,7 +630,9 @@ const SettingsPage: React.FC = () => {
       // Invalidate translation practice queries to ensure UI updates immediately
       queryClient.invalidateQueries({
         predicate: query => {
-          return query.queryKey[0]?.toString().includes('/v1/translation-practice');
+          return query.queryKey[0]
+            ?.toString()
+            .includes('/v1/translation-practice');
         },
       });
 
@@ -1557,9 +1562,10 @@ const SettingsPage: React.FC = () => {
                 <Title order={2}>Data Management</Title>
               </Group>
               <Text size='sm' c='dimmed'>
-                Dangerous actions: deleting stories, AI chats, translation practice
-                history, or resetting your account will remove your generated stories,
-                AI conversations, questions, and progress. These actions cannot be undone.
+                Dangerous actions: deleting stories, AI chats, translation
+                practice history, or resetting your account will remove your
+                generated stories, AI conversations, questions, and progress.
+                These actions cannot be undone.
               </Text>
               <Group gap='xs' grow wrap='nowrap'>
                 <Button
