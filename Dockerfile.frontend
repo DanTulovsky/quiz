@@ -4,7 +4,6 @@ FROM --platform=$BUILDPLATFORM node:22-alpine AS font-generator
 
 WORKDIR /build
 
-
 # Install python3 for font script with retry logic
 RUN apk update && apk add --no-progress python3 ca-certificates tzdata
 
@@ -39,7 +38,6 @@ RUN npm ci --no-audit --no-fund --prefer-offline --legacy-peer-deps
 # Stage 3: Build the React app
 FROM --platform=$BUILDPLATFORM node:22-alpine AS builder
 
-RUN adduser -D -g '' appuser
 # Add build arguments for better caching
 ARG BUILDKIT_INLINE_CACHE=1
 
@@ -101,8 +99,6 @@ RUN python3 inject_csp_nonce.py
 
 # Stage 4: Serve the app with official NGINX (with OpenTelemetry support)
 FROM nginx:stable-otel AS nginx-base
-
-COPY --from=builder /etc/passwd /etc/passwd
 
 # Copy the built app from the nonce stage (after CSP nonce processing)
 COPY --from=nonce /build/dist /usr/share/nginx/html
