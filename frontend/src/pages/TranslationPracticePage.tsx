@@ -461,6 +461,49 @@ const TranslationPracticePage: React.FC = () => {
     [isInputFocused, isDirectionFocused]
   );
 
+  // "p" key - play/pause/resume audio
+  useHotkeys(
+    'p',
+    e => {
+      if (isInputFocused || isDirectionFocused) return;
+      if (!currentSentence) return;
+      e.preventDefault();
+      // Find the TTSButton by its aria-label and click it
+      const ttsButton = document.querySelector(
+        '[aria-label="Play text to translate"]'
+      ) as HTMLElement;
+      if (ttsButton) {
+        ttsButton.click();
+      }
+    },
+    { enableOnFormTags: false, preventDefault: true },
+    [isInputFocused, isDirectionFocused, currentSentence]
+  );
+
+  // "o" key - focus optional topic field
+  useHotkeys(
+    'o',
+    e => {
+      if (isInputFocused || isDirectionFocused) return;
+      e.preventDefault();
+      topicInputRef.current?.focus();
+    },
+    { enableOnFormTags: false, preventDefault: true },
+    [isInputFocused, isDirectionFocused]
+  );
+
+  // "y" key - focus your translation field
+  useHotkeys(
+    'y',
+    e => {
+      if (isInputFocused || isDirectionFocused) return;
+      e.preventDefault();
+      translationInputRef.current?.focus();
+    },
+    { enableOnFormTags: false, preventDefault: true },
+    [isInputFocused, isDirectionFocused]
+  );
+
   useHotkeys(
     'd',
     e => {
@@ -813,7 +856,21 @@ const TranslationPracticePage: React.FC = () => {
                 </Group>
                 <Textarea
                   ref={topicInputRef}
-                  label='Optional topic'
+                  label={
+                    <Group gap='xs' align='center'>
+                      <Text>Optional topic</Text>
+                      {!isMobileRoute && (
+                        <Badge
+                          size='xs'
+                          color='gray'
+                          variant='filled'
+                          radius='sm'
+                        >
+                          O
+                        </Badge>
+                      )}
+                    </Group>
+                  }
                   placeholder='e.g., travel, ordering food, work'
                   value={topic}
                   onChange={e => setTopic(e.currentTarget.value)}
@@ -830,35 +887,48 @@ const TranslationPracticePage: React.FC = () => {
                 <Group justify='space-between' align='center'>
                   <Text fw={600}>Text to translate</Text>
                   {currentSentence && (
-                    <TTSButton
-                      getText={() => currentSentence?.sentence_text || ''}
-                      getVoice={() => {
-                        // Determine language based on translation direction
-                        // If translating from English to learning language, text is in English
-                        // If translating from learning language to English, text is in learning language
-                        const textLanguage =
-                          actualDirection === 'en_to_learning'
-                            ? 'english'
-                            : learningLanguage;
+                    <Group gap='xs' align='center'>
+                      {!isMobileRoute && (
+                        <Badge
+                          size='xs'
+                          color='gray'
+                          variant='filled'
+                          radius='sm'
+                        >
+                          P
+                        </Badge>
+                      )}
+                      <TTSButton
+                        getText={() => currentSentence?.sentence_text || ''}
+                        getVoice={() => {
+                          // Determine language based on translation direction
+                          // If translating from English to learning language, text is in English
+                          // If translating from learning language to English, text is in learning language
+                          const textLanguage =
+                            actualDirection === 'en_to_learning'
+                              ? 'english'
+                              : learningLanguage;
 
-                        // For English text, always use the default English voice
-                        // (don't use saved preference which might be for learning language)
-                        if (textLanguage === 'english') {
-                          return (
-                            defaultVoiceForLanguage('english') || undefined
-                          );
-                        }
+                          // For English text, always use the default English voice
+                          // (don't use saved preference which might be for learning language)
+                          if (textLanguage === 'english') {
+                            return (
+                              defaultVoiceForLanguage('english') || undefined
+                            );
+                          }
 
-                        // For learning language text, prefer user setting, fall back to default voice
-                        const saved = (learningPrefs?.tts_voice || '').trim();
-                        if (saved) return saved;
+                          // For learning language text, prefer user setting, fall back to default voice
+                          const saved = (learningPrefs?.tts_voice || '').trim();
+                          if (saved) return saved;
 
-                        const voice = defaultVoiceForLanguage(learningLanguage);
-                        return voice || undefined;
-                      }}
-                      size='sm'
-                      ariaLabel='Play text to translate'
-                    />
+                          const voice =
+                            defaultVoiceForLanguage(learningLanguage);
+                          return voice || undefined;
+                        }}
+                        size='sm'
+                        ariaLabel='Play text to translate'
+                      />
+                    </Group>
                   )}
                 </Group>
                 <Paper withBorder p='md' bg='gray.0'>
@@ -902,7 +972,21 @@ const TranslationPracticePage: React.FC = () => {
                 </Paper>
                 <Textarea
                   ref={translationInputRef}
-                  label='Your translation'
+                  label={
+                    <Group gap='xs' align='center'>
+                      <Text>Your translation</Text>
+                      {!isMobileRoute && (
+                        <Badge
+                          size='xs'
+                          color='gray'
+                          variant='filled'
+                          radius='sm'
+                        >
+                          Y
+                        </Badge>
+                      )}
+                    </Group>
+                  }
                   placeholder='Write your translation here'
                   value={answer}
                   onChange={e => setAnswer(e.currentTarget.value)}
