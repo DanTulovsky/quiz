@@ -6753,6 +6753,9 @@ components:
           type: string
           maxLength: 1000
           description: Additional error details
+        cause:
+          type: string
+          description: Underlying error cause (included for error and fatal severity levels)
         retryable:
           type: boolean
           description: Whether the operation can be retried

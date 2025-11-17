@@ -46,7 +46,9 @@ import { useAuth } from '../hooks/useAuth';
 import * as TablerIcons from '@tabler/icons-react';
 import TTSButton from '../components/TTSButton';
 import { defaultVoiceForLanguage } from '../utils/tts';
-import { useGetV1PreferencesLearning } from '../api/api';
+import { useGetV1PreferencesLearning, ErrorResponse } from '../api/api';
+import AIGenerationErrorModal from '../components/AIGenerationErrorModal';
+import { AxiosError } from 'axios';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const IconChevronRight = TablerIcons.IconChevronRight as unknown as any;
@@ -127,6 +129,15 @@ const TranslationPracticePage: React.FC = () => {
   const HISTORY_PAGE_SIZE = 20;
   const [historyOffset, setHistoryOffset] = useState<number>(0);
   const [historySearch, setHistorySearch] = useState<string>('');
+  const [errorModal, setErrorModal] = useState<{
+    isOpen: boolean;
+    errorMessage: string;
+    errorCause?: string;
+    errorDetails?: ErrorResponse;
+  }>({
+    isOpen: false,
+    errorMessage: '',
+  });
 
   const learningLanguage = user?.preferred_language || '';
   const level = (user?.current_level as string) || '';
@@ -213,11 +224,42 @@ const TranslationPracticePage: React.FC = () => {
       setTimeout(() => {
         translationInputRef.current?.focus();
       }, 100);
-    } catch {
-      notifications.show({
-        color: 'red',
-        title: 'Failed to generate',
-        message: 'Could not generate a sentence. Please try again.',
+    } catch (error: unknown) {
+      let errorMessage = 'Failed to generate sentence. Please try again.';
+      let errorCause: string | undefined;
+      let errorDetails: ErrorResponse | undefined;
+
+      // Handle axios error structure
+      if (error && typeof error === 'object' && 'response' in error) {
+        const axiosError = error as AxiosError<ErrorResponse>;
+
+        if (axiosError.response?.data) {
+          const responseData = axiosError.response.data;
+
+          // Extract error details
+          if (typeof responseData === 'object' && responseData !== null) {
+            errorDetails = responseData as ErrorResponse;
+            errorMessage =
+              responseData.message || responseData.error || errorMessage;
+
+            // Extract cause field (now properly typed in ErrorResponse)
+            errorCause = responseData.cause || responseData.details;
+          } else if (typeof responseData === 'string') {
+            errorMessage = responseData;
+          }
+        } else if (axiosError.message) {
+          errorMessage = axiosError.message;
+        }
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+
+      // Show modal with error details
+      setErrorModal({
+        isOpen: true,
+        errorMessage,
+        errorCause,
+        errorDetails,
       });
     }
   }, [canRequest, direction, learningLanguage, level, topic, generateSentence]);
@@ -1592,6 +1634,20 @@ const TranslationPracticePage: React.FC = () => {
           </Group>
         </Box>
       )}
+
+      {/* AI Generation Error Modal */}
+      <AIGenerationErrorModal
+        isOpen={errorModal.isOpen}
+        onClose={() =>
+          setErrorModal({
+            isOpen: false,
+            errorMessage: '',
+          })
+        }
+        errorMessage={errorModal.errorMessage}
+        errorCause={errorModal.errorCause}
+        errorDetails={errorModal.errorDetails}
+      />
     </Box>
   );
 };

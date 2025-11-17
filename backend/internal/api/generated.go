@@ -910,6 +910,9 @@ type EmptyRequest = map[string]interface{}
 
 // ErrorResponse defines model for ErrorResponse.
 type ErrorResponse struct {
+	// Cause Underlying error cause (included for error and fatal severity levels)
+	Cause *string `json:"cause,omitempty"`
+
 	// Code Error code identifying the type of error
 	Code *string `json:"code,omitempty"`
 
