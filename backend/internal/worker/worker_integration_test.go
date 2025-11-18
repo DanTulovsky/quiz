@@ -196,7 +196,7 @@ func TestWorkerIntegration_RunWithNoUsers(t *testing.T) {
 	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
 
 	// Test run with no users
-	worker.run()
+	worker.run(context.Background())
 
 	// Check that run was recorded (may be paused due to worker status not found)
 	history := worker.GetHistory()
@@ -250,7 +250,7 @@ func TestWorkerIntegration_RunWithUsers(t *testing.T) {
 	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
 
 	// Test run with user
-	worker.run()
+	worker.run(context.Background())
 
 	// Check that run was recorded (may be paused due to worker status not found)
 	history := worker.GetHistory()
@@ -465,7 +465,7 @@ func TestWorkerIntegration_ErrorHandling(t *testing.T) {
 
 	// Run worker with cancelled context
 	_ = ctx
-	worker.run()
+	worker.run(context.Background())
 
 	// Check that error was handled gracefully
 	history := worker.GetHistory()
@@ -559,7 +559,7 @@ func TestWorkerIntegration_StartupPause(t *testing.T) {
 	worker := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, wordOfTheDayService, storyService, emailService, generationHintService, services.NewTranslationCacheRepository(db, logger), "test-instance", cfg, logger)
 
 	// Run worker (should respect global pause)
-	worker.run()
+	worker.run(context.Background())
 
 	// Check that worker handled pause correctly
 	history := worker.GetHistory()
