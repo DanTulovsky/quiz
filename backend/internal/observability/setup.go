@@ -37,30 +37,17 @@ func SetupObservability(cfg *config.OpenTelemetryConfig, serviceName string) (re
 	}
 
 	if cfg.EnableTracing {
-		if cfg.UseAutoSDK {
-			// Use Auto SDK (default behavior, compatible with OBI)
-			tp = autosdk.TracerProvider()
-			otel.SetTracerProvider(tp)
+		tp = autosdk.TracerProvider()
+		otel.SetTracerProvider(tp)
 
-			logger.Info(context.Background(), "Tracing enabled with Auto SDK", map[string]interface{}{"service_name": cfg.ServiceName})
-		} else {
-			// Use standard OpenTelemetry SDK with OTLP exporter
-			tp, err = InitStandardTracing(cfg)
-			if err != nil {
-				panic(err)
-			}
-			otel.SetTracerProvider(tp)
-
-			logger.Info(context.Background(), "Tracing enabled with standard SDK", map[string]interface{}{"service_name": cfg.ServiceName})
-		}
-
-		err := InitTracing(cfg)
+		err = InitTracing(cfg)
 		if err != nil {
 			panic(err)
 		}
-
 		// Initialize the global tracer
 		InitGlobalTracer()
+
+		logger.Info(context.Background(), "Tracing enabled", map[string]interface{}{"service_name": cfg.ServiceName})
 	}
 
 	if cfg.EnableMetrics {
