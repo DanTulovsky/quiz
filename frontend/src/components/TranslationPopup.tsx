@@ -201,6 +201,14 @@ export const TranslationPopup: React.FC<TranslationPopupProps> = ({
   };
 
   const getPreferredVoice = (code?: string): string | undefined => {
+    // If the requested language matches the target language (translation),
+    // ignore the saved voice preference (which is for the learning language)
+    // and use the default voice for the target language.
+    if (code && targetLanguage && code === targetLanguage) {
+      const languageName = codeToLanguageName(code);
+      return defaultVoiceForLanguage(languageName) || undefined;
+    }
+
     if (savedVoice) {
       return savedVoice;
     }
