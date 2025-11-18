@@ -424,6 +424,7 @@ func (s *UserService) GetUserAPIKey(ctx context.Context, userID int, provider st
 	if user == nil {
 		return "", contextutils.WrapError(contextutils.ErrRecordNotFound, "user not found")
 	}
+	span.SetAttributes(attribute.String("user.username", user.Username))
 
 	query := `SELECT api_key FROM user_api_keys WHERE user_id = $1 AND provider = $2`
 	var apiKey string
@@ -450,6 +451,7 @@ func (s *UserService) GetUserAPIKeyWithID(ctx context.Context, userID int, provi
 	if user == nil {
 		return "", nil, contextutils.WrapError(contextutils.ErrRecordNotFound, "user not found")
 	}
+	span.SetAttributes(attribute.String("user.username", user.Username))
 
 	query := `SELECT id, api_key FROM user_api_keys WHERE user_id = $1 AND provider = $2`
 	var id int
@@ -477,6 +479,7 @@ func (s *UserService) SetUserAPIKey(ctx context.Context, userID int, provider, a
 	if user == nil {
 		return contextutils.WrapError(contextutils.ErrRecordNotFound, "user not found")
 	}
+	span.SetAttributes(attribute.String("user.username", user.Username))
 
 	var tx *sql.Tx
 	tx, err = s.db.Begin()
@@ -521,6 +524,14 @@ func (s *UserService) HasUserAPIKey(ctx context.Context, userID int, provider st
 	ctx, span := observability.TraceUserFunction(ctx, "has_user_api_key", attribute.Int("user.id", userID), attribute.String("user.provider", provider))
 	defer observability.FinishSpan(span, &err)
 	var apiKey string
+	user, err := s.GetUserByID(ctx, userID)
+	if err != nil {
+		return false, contextutils.WrapError(err, "failed to check if user exists")
+	}
+	if user == nil {
+		return false, contextutils.WrapError(contextutils.ErrRecordNotFound, "user not found")
+	}
+	span.SetAttributes(attribute.String("user.username", user.Username))
 	apiKey, err = s.GetUserAPIKey(ctx, userID, provider)
 	if err != nil {
 		// If the error is "not found" and it's specifically about the API key not existing (not the user),
@@ -542,6 +553,17 @@ func (s *UserService) HasUserAPIKey(ctx context.Context, userID int, provider st
 func (s *UserService) UpdateLastActive(ctx context.Context, userID int) (err error) {
 	ctx, span := observability.TraceUserFunction(ctx, "update_last_active", attribute.Int("user.id", userID))
 	defer observability.FinishSpan(span, &err)
+
+	user, err := s.GetUserByID(ctx, userID)
+	if err != nil {
+		return contextutils.WrapError(err, "failed to check if user exists")
+	}
+	if user == nil {
+		return contextutils.WrapError(contextutils.ErrRecordNotFound, "user not found")
+	}
+	span.SetAttributes(attribute.String("user.username", user.Username))
+
+	span.SetAttributes(attribute.String("user.username", user.Username))
 	query := `UPDATE users SET last_active = $1 WHERE id = $2`
 	var result sql.Result
 	result, err = s.db.ExecContext(ctx, query, time.Now(), userID)

@@ -13,6 +13,7 @@ import (
 	"go.opentelemetry.io/otel/sdk/log"
 	"go.opentelemetry.io/otel/sdk/resource"
 	semconv "go.opentelemetry.io/otel/semconv/v1.21.0"
+	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -140,9 +141,18 @@ func (l *Logger) Error(ctx context.Context, msg string, err error, fields ...map
 }
 
 // logWithContext logs a message with OpenTelemetry context correlation
-func (l *Logger) logWithContext(_ context.Context, level zapcore.Level, msg string, fields ...map[string]interface{}) {
+func (l *Logger) logWithContext(ctx context.Context, level zapcore.Level, msg string, fields ...map[string]interface{}) {
 	// Merge all fields into a single map
 	allFields := l.mergeFields(fields...)
+
+	// Add trace context if available
+	if span := trace.SpanFromContext(ctx); span != nil {
+		spanContext := span.SpanContext()
+		if spanContext.IsValid() {
+			allFields["trace_id"] = spanContext.TraceID().String()
+			allFields["span_id"] = spanContext.SpanID().String()
+		}
+	}
 
 	// Convert fields to zap fields
 	zapFields := make([]zap.Field, 0, len(allFields))
