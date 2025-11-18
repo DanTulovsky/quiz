@@ -1,0 +1,14 @@
+{
+	"servers": {
+		"linear-mcp": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"-y",
+				"mcp-remote",
+				"https://mcp.linear.app/mcp"
+			]
+		}
+	},
+	"inputs": []
+}
