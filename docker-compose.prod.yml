@@ -75,6 +75,7 @@ services:
       - OTEL_SEMCONV_STABILITY_OPT_IN=http/dup
       - SERVER_APP_BASE_URL=${SERVER_APP_BASE_URL:-http://localhost:3000}
       - OTEL_SERVICE_NAME=quiz-backend
+      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=${OPEN_TELEMETRY_ENDPOINT:-otel-collector:4317}
     healthcheck:
       test:
         [
@@ -133,6 +134,7 @@ services:
       - EMAIL_DAILY_REMINDER_HOUR=${EMAIL_DAILY_REMINDER_HOUR:-9}
       - OTEL_SEMCONV_STABILITY_OPT_IN=http/dup
       - OTEL_SERVICE_NAME=quiz-worker
+      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=${OPEN_TELEMETRY_ENDPOINT:-otel-collector:4317}
     healthcheck:
       test:
         [
