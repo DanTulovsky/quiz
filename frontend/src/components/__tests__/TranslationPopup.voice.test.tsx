@@ -58,6 +58,9 @@ vi.mock('../../api/api', () => ({
   useGetV1SettingsAiProviders: () => ({ data: { providers: [] } }),
   useGetV1SettingsLevels: () => ({ data: { levels: [] } }),
   useGetV1SettingsApiKeyAvailability: () => ({ data: { has_api_key: true } }),
+  usePostV1AuthLogin: () => ({ mutateAsync: vi.fn() }),
+  usePostV1AuthLogout: () => ({ mutateAsync: vi.fn() }),
+  usePutV1Settings: () => ({ mutateAsync: vi.fn() }),
 }));
 
 // Mock Translation Context
