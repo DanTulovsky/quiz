@@ -165,8 +165,7 @@ services:
     restart: unless-stopped
     environment:
       OTEL_SERVICE_NAME: "quiz-nginx"
-      OTEL_SERVICE_VERSION: ${OPEN_TELEMETRY_SERVICE_VERSION:-${APP_VERSION:-prod}}
-      OTEL_RESOURCE_ATTRIBUTES=service.version=${OPEN_TELEMETRY_SERVICE_VERSION:-${APP_VERSION:-prod}}
+      OTEL_RESOURCE_ATTRIBUTES: service.version=${OPEN_TELEMETRY_SERVICE_VERSION:-${APP_VERSION:-prod}}
     env_file:
       - .env
     healthcheck:
