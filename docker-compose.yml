@@ -9,7 +9,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-quiz_password}
       - POSTGRES_HOST_AUTH_METHOD=trust
       - OTEL_SERVICE_NAME=quiz-postgres
-      - OTEL_SERVICE_VERSION=${OPEN_TELEMETRY_SERVICE_VERSION:-${APP_VERSION:-dev}}
+      - OTEL_RESOURCE_ATTRIBUTES=service.version=${OPEN_TELEMETRY_SERVICE_VERSION:-${APP_VERSION:-dev}}
     ports:
       - "5432:5432"
     volumes:
@@ -87,7 +87,7 @@ services:
       - EMAIL_DAILY_REMINDER_HOUR=${EMAIL_DAILY_REMINDER_HOUR:-9}
       - SERVER_APP_BASE_URL=${SERVER_APP_BASE_URL:-http://localhost:3000}
       - OTEL_SERVICE_NAME=quiz-worker
-      - OTEL_SERVICE_VERSION=${OPEN_TELEMETRY_SERVICE_VERSION:-${APP_VERSION:-prod}}
+      - OTEL_RESOURCE_ATTRIBUTES=service.version=${OPEN_TELEMETRY_SERVICE_VERSION:-${APP_VERSION:-dev}}
     healthcheck:
       test:
         [
@@ -187,7 +187,7 @@ services:
         provenance: false
     environment:
       - OTEL_SERVICE_NAME=quiz-frontend
-      - OTEL_SERVICE_VERSION=${OPEN_TELEMETRY_SERVICE_VERSION:-${APP_VERSION:-dev}}
+      - OTEL_RESOURCE_ATTRIBUTES=service.version=${OPEN_TELEMETRY_SERVICE_VERSION:-${APP_VERSION:-dev}}
     env_file:
       - .env
     ports:
@@ -240,7 +240,7 @@ services:
       DETAILED_ERROR_LOGGING: ${TTS_DETAILED_ERROR_LOGGING:-True}
       DEBUG_STREAMING: ${DEBUG_STREAMING:-False}
       OTEL_SERVICE_NAME: quiz-tts
-      OTEL_SERVICE_VERSION: ${OPEN_TELEMETRY_SERVICE_VERSION:-${APP_VERSION:-dev}}
+      OTEL_RESOURCE_ATTRIBUTES: service.version=${OPEN_TELEMETRY_SERVICE_VERSION:-${APP_VERSION:-dev}}
 volumes:
   postgres_prod_data:
 
