@@ -76,6 +76,7 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
   const nextButtonRef = useRef<HTMLButtonElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const questionPaperRef = useRef<HTMLDivElement>(null);
+  const prevQuestionIdRef = useRef<number | null>(null);
 
   const { question, isLoading, error, forceFetchNextQuestion } =
     useQuestionFlow({ mode, questionId });
@@ -304,12 +305,25 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
   });
 
   // Reset state when question changes
+  const normalizedQuestionId = question?.id ?? null;
+
   useEffect(() => {
+    if (prevQuestionIdRef.current === normalizedQuestionId) {
+      return;
+    }
+
+    prevQuestionIdRef.current = normalizedQuestionId;
     setSelectedAnswerLocal(null);
     setIsSubmittedLocal(false);
     setFeedback(null);
     setIsReported(false);
-  }, [question?.id, setFeedback]);
+    setConfidenceLevel(null);
+    setShowMarkKnownModal(false);
+    setIsMarkingKnown(false);
+    setShowReportModal(false);
+    setReportReason('');
+    setIsReporting(false);
+  }, [normalizedQuestionId, setFeedback]);
 
   // Scroll to top when a new question is loaded (mobile)
   useEffect(() => {
@@ -742,7 +756,10 @@ const MobileQuestionPageBase: React.FC<Props> = ({ mode }) => {
         {/* Mark Known Modal */}
         <Modal
           opened={showMarkKnownModal}
-          onClose={() => setShowMarkKnownModal(false)}
+          onClose={() => {
+            setShowMarkKnownModal(false);
+            setConfidenceLevel(null);
+          }}
           title='Adjust Question Frequency'
           size='sm'
           closeOnClickOutside={false}

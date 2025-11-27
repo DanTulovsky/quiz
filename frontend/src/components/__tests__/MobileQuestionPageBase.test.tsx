@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import MobileQuestionPageBase from '../MobileQuestionPageBase';
 import { renderWithProviders } from '../../test-utils';
 
@@ -178,5 +179,23 @@ describe('MobileQuestionPageBase', () => {
     renderComponent('quiz');
     const submitButton = screen.getByRole('button', { name: /Submit Answer/i });
     expect(submitButton).toBeDisabled();
+  });
+
+  it('resets adjust frequency selection when modal is reopened', async () => {
+    const user = userEvent.setup();
+    renderComponent('quiz');
+
+    await user.click(screen.getByRole('button', { name: /adjust frequency/i }));
+    await user.click(await screen.findByTestId('confidence-level-3'));
+    const saveButton = await screen.findByRole('button', { name: /save/i });
+    await waitFor(() => expect(saveButton).not.toBeDisabled());
+
+    const closeButton = await screen.findByRole('button', { name: '' });
+    await user.click(closeButton);
+
+    await user.click(screen.getByRole('button', { name: /adjust frequency/i }));
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: /save/i })).toBeDisabled()
+    );
   });
 });
