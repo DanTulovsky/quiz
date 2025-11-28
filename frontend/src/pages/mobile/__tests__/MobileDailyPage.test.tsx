@@ -12,6 +12,7 @@ type MockSnippetProps = {
 };
 
 const snippetMock = vi.fn<[MockSnippetProps], void>();
+const mockMarkKnownMutate = vi.fn();
 
 vi.mock('../../../components/SnippetHighlighter', () => ({
   __esModule: true,
@@ -75,7 +76,7 @@ vi.mock('../../../hooks/useAuth', () => ({
 vi.mock('../../../api/api', () => ({
   usePostV1QuizQuestionIdReport: () => ({ mutate: vi.fn(), isPending: false }),
   usePostV1QuizQuestionIdMarkKnown: () => ({
-    mutate: vi.fn(),
+    mutate: mockMarkKnownMutate,
     isPending: false,
   }),
   // Mock snippet hooks
@@ -177,6 +178,7 @@ describe('MobileDailyPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     snippetMock.mockClear();
+    mockMarkKnownMutate.mockReset();
     mockDailyQuestionsState.currentQuestion = stableCurrentQuestion;
     mockDailyQuestionsState.questions = [
       {
@@ -199,6 +201,47 @@ describe('MobileDailyPage', () => {
       correct_answer_index: 0,
       explanation: 'Great job!',
     });
+  });
+
+  it('resets adjust frequency modal state when a new question loads', async () => {
+    mockMarkKnownMutate.mockImplementation(() => {
+      // Do not resolve to simulate a stuck request
+    });
+
+    const { rerender } = renderComponent();
+
+    await waitFor(() => {
+      expect(screen.getByText('Daily Challenge')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('mark-known-btn'));
+    await waitFor(() => {
+      expect(screen.getByTestId('confidence-level-3')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('confidence-level-3'));
+
+    const saveButton = screen.getByTestId('submit-mark-known');
+    fireEvent.click(saveButton);
+    expect(saveButton).toBeDisabled();
+
+    mockDailyQuestionsState.currentQuestion = {
+      ...stableCurrentQuestion,
+      id: 2,
+      question_id: 202,
+    };
+
+    rerender(<MobileDailyPage />);
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('submit-mark-known')).not.toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('mark-known-btn'));
+    await waitFor(() => {
+      expect(screen.getByTestId('submit-mark-known')).toBeInTheDocument();
+    });
+    const reopenedSaveButton = screen.getByTestId('submit-mark-known');
+    expect(reopenedSaveButton).toBeDisabled();
   });
 
   it('renders without crashing', async () => {
