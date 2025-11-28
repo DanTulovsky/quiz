@@ -175,6 +175,13 @@ const MobileDailyPage: React.FC = () => {
   // the local state so the mobile UI reflects the completed status instead of
   // showing an empty unanswered question.
   useEffect(() => {
+    setShowMarkKnownModal(false);
+    setConfidenceLevel(null);
+    setIsMarkingKnown(false);
+    setShowReportModal(false);
+    setReportReason('');
+    setIsReporting(false);
+
     if (!currentQuestion) {
       setSelectedAnswerLocal(null);
       setIsSubmittedLocal(false);
@@ -786,7 +793,11 @@ const MobileDailyPage: React.FC = () => {
         {/* Mark Known Modal */}
         <Modal
           opened={showMarkKnownModal}
-          onClose={() => setShowMarkKnownModal(false)}
+          onClose={() => {
+            setShowMarkKnownModal(false);
+            setConfidenceLevel(null);
+            setIsMarkingKnown(false);
+          }}
           title='Adjust Question Frequency'
           size='sm'
           closeOnClickOutside={false}
@@ -820,6 +831,7 @@ const MobileDailyPage: React.FC = () => {
                 onClick={() => {
                   setShowMarkKnownModal(false);
                   setConfidenceLevel(null);
+                  setIsMarkingKnown(false);
                 }}
                 data-testid='cancel-mark-known'
               >
@@ -829,10 +841,17 @@ const MobileDailyPage: React.FC = () => {
                 onClick={() => {
                   if (!currentQuestion?.question_id || !confidenceLevel) return;
                   setIsMarkingKnown(true);
-                  markKnownMutation.mutate({
-                    id: currentQuestion.question_id,
-                    data: { confidence_level: confidenceLevel },
-                  });
+                  markKnownMutation.mutate(
+                    {
+                      id: currentQuestion.question_id,
+                      data: { confidence_level: confidenceLevel },
+                    },
+                    {
+                      onSettled: () => {
+                        setIsMarkingKnown(false);
+                      },
+                    }
+                  );
                 }}
                 disabled={!confidenceLevel}
                 loading={isMarkingKnown}
