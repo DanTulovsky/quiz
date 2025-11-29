@@ -434,6 +434,29 @@ describe('DailyPage', () => {
   });
 
   describe('Navigation Behavior', () => {
+    it('renders the completed navigation block beneath the header when finished', () => {
+      act(() => {
+        renderWithProviders(<DailyPage />);
+      });
+
+      expect(screen.getByTestId('daily-top-navigation')).toBeInTheDocument();
+    });
+
+    it('hides the completed navigation block when there are unfinished questions', () => {
+      mockUseDailyQuestions.mockReturnValue({
+        ...mockUseDailyQuestions(),
+        isAllCompleted: false,
+      });
+
+      act(() => {
+        renderWithProviders(<DailyPage />);
+      });
+
+      expect(
+        screen.queryByTestId('daily-top-navigation')
+      ).not.toBeInTheDocument();
+    });
+
     it('should call goToNextQuestion when Next button is clicked', async () => {
       const mockGoToNextQuestion = vi.fn();
 

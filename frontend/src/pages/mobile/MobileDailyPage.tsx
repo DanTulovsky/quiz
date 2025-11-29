@@ -17,7 +17,12 @@ import {
   Textarea,
 } from '@mantine/core';
 import { useAuth } from '../../hooks/useAuth';
-import { IconCheck, IconX } from '@tabler/icons-react';
+import {
+  IconCheck,
+  IconX,
+  IconArrowLeft,
+  IconArrowRight,
+} from '@tabler/icons-react';
 import { splitIntoParagraphs } from '../../utils/passage';
 import { useMediaQuery } from '@mantine/hooks';
 import { useDailyQuestions } from '../../hooks/useDailyQuestions';
@@ -400,6 +405,37 @@ const MobileDailyPage: React.FC = () => {
             <Progress value={progressValue} color='orange' />
           </Stack>
         </Paper>
+
+        {isAllCompleted && (
+          <Paper
+            p='md'
+            radius='md'
+            withBorder
+            data-testid='mobile-daily-top-navigation'
+            aria-label='Completed question navigation'
+          >
+            <Group justify='space-between' gap='sm' wrap='wrap'>
+              <Button
+                variant='light'
+                onClick={handlePreviousQuestion}
+                disabled={!hasPreviousQuestion}
+                leftSection={<IconArrowLeft size={16} />}
+                size='sm'
+              >
+                Previous
+              </Button>
+              <Button
+                variant='light'
+                onClick={handleNextQuestion}
+                disabled={!hasNextQuestion}
+                rightSection={<IconArrowRight size={16} />}
+                size='sm'
+              >
+                Next
+              </Button>
+            </Group>
+          </Paper>
+        )}
 
         {/* Current Question */}
         <Paper p='md' radius='md' withBorder>
