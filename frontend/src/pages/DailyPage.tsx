@@ -435,52 +435,6 @@ const DailyPage: React.FC = () => {
                   </Button>
                 )}
               </Group>
-              {isAllCompleted && (
-                <Group
-                  justify='flex-end'
-                  align='center'
-                  h='100%'
-                  mb='lg'
-                  style={{ position: 'relative', zIndex: 2, marginBottom: 24 }}
-                >
-                  <Button
-                    leftSection={<ChevronLeft size={16} />}
-                    variant='light'
-                    onClick={handlePreviousQuestion}
-                    disabled={!hasPreviousQuestion || isTransitioning}
-                    size='sm'
-                  >
-                    Previous{' '}
-                    <Badge
-                      ml={6}
-                      size='xs'
-                      color='gray'
-                      variant='filled'
-                      radius='sm'
-                    >
-                      ←
-                    </Badge>
-                  </Button>
-                  <Button
-                    rightSection={<ChevronRight size={16} />}
-                    variant='light'
-                    onClick={handleNextQuestion}
-                    disabled={!hasNextQuestion || isTransitioning}
-                    size='sm'
-                  >
-                    Next{' '}
-                    <Badge
-                      ml={6}
-                      size='xs'
-                      color='gray'
-                      variant='filled'
-                      radius='sm'
-                    >
-                      →
-                    </Badge>
-                  </Button>
-                </Group>
-              )}
             </Grid.Col>
           </Grid>
 
@@ -496,6 +450,55 @@ const DailyPage: React.FC = () => {
             </Box>
           )}
         </Paper>
+
+        {isAllCompleted && (
+          <Paper
+            p='md'
+            radius='md'
+            withBorder
+            data-testid='daily-top-navigation'
+            aria-label='Completed question navigation'
+          >
+            <Group justify='space-between' gap='md' wrap='wrap'>
+              <Button
+                leftSection={<ChevronLeft size={16} />}
+                variant='light'
+                onClick={handlePreviousQuestion}
+                disabled={!hasPreviousQuestion || isTransitioning}
+                size='sm'
+              >
+                Previous{' '}
+                <Badge
+                  ml={6}
+                  size='xs'
+                  color='gray'
+                  variant='filled'
+                  radius='sm'
+                >
+                  ←
+                </Badge>
+              </Button>
+              <Button
+                rightSection={<ChevronRight size={16} />}
+                variant='light'
+                onClick={handleNextQuestion}
+                disabled={!hasNextQuestion || isTransitioning}
+                size='sm'
+              >
+                Next{' '}
+                <Badge
+                  ml={6}
+                  size='xs'
+                  color='gray'
+                  variant='filled'
+                  radius='sm'
+                >
+                  →
+                </Badge>
+              </Button>
+            </Group>
+          </Paper>
+        )}
 
         {/* Question content */}
         <Box style={{ marginBottom: 0 }}>
