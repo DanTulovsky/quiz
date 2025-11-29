@@ -201,6 +201,9 @@ describe('MobileDailyPage', () => {
       correct_answer_index: 0,
       explanation: 'Great job!',
     });
+    mockDailyQuestionsState.isAllCompleted = false;
+    mockDailyQuestionsState.hasPreviousQuestion = false;
+    mockDailyQuestionsState.hasNextQuestion = true;
   });
 
   it('resets adjust frequency modal state when a new question loads', async () => {
@@ -349,6 +352,32 @@ describe('MobileDailyPage', () => {
       expect(
         screen.getByRole('button', { name: /Next Question/i })
       ).toBeInTheDocument();
+    });
+  });
+
+  it('renders top navigation when all questions are completed', async () => {
+    mockDailyQuestionsState.isAllCompleted = true;
+    mockDailyQuestionsState.hasPreviousQuestion = true;
+    mockDailyQuestionsState.hasNextQuestion = true;
+
+    renderComponent();
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('mobile-daily-top-navigation')
+      ).toBeInTheDocument();
+    });
+  });
+
+  it('hides top navigation while questions remain incomplete', async () => {
+    mockDailyQuestionsState.isAllCompleted = false;
+
+    renderComponent();
+
+    await waitFor(() => {
+      expect(
+        screen.queryByTestId('mobile-daily-top-navigation')
+      ).not.toBeInTheDocument();
     });
   });
 
