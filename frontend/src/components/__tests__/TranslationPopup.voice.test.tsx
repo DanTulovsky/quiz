@@ -41,7 +41,10 @@ const mockPreferences = {
 };
 
 vi.mock('../../api/api', () => ({
-  useGetV1AuthStatus: () => ({ data: { authenticated: true }, isLoading: false }),
+  useGetV1AuthStatus: () => ({
+    data: { authenticated: true },
+    isLoading: false,
+  }),
   useGetV1SettingsLanguages: () => ({
     data: [
       { code: 'en', name: 'english' },
@@ -65,7 +68,9 @@ vi.mock('../../api/api', () => ({
 
 // Mock Translation Context
 vi.mock('../../contexts/TranslationContext', () => ({
-  TranslationProvider: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  TranslationProvider: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
   useTranslation: () => ({
     translateText: vi.fn().mockResolvedValue({
       translatedText: 'Hello world',
@@ -92,11 +97,15 @@ vi.mock('../../hooks/useTextSelection', () => ({
 
 vi.mock('../../contexts/ThemeContext', () => ({
   useTheme: () => ({ fontSize: 'md' }),
-  ThemeProvider: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  ThemeProvider: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
 }));
 
 const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
   return (
     <MantineProvider>
       <Notifications />
@@ -131,7 +140,9 @@ describe('TranslationPopup Voice Selection', () => {
     );
 
     // Wait for translation to appear
-    await waitFor(() => expect(screen.getByText('Hello world')).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByText('Hello world')).toBeInTheDocument()
+    );
 
     // Find the TTS button for the translation (English)
     // The label is "Listen to translation"
