@@ -9,8 +9,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 	autosdk "go.opentelemetry.io/auto/sdk"
-	"go.opentelemetry.io/otel/trace/noop"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
+	"go.opentelemetry.io/otel/trace/noop"
 )
 
 func TestSetupObservability_AllEnabled(t *testing.T) {
@@ -65,13 +65,13 @@ func TestLogger_TraceCorrelation(_ *testing.T) {
 
 func TestSetupObservability_UseAutoSDK_True(t *testing.T) {
 	cfg := &config.OpenTelemetryConfig{
-		EnableTracing: true,
-		UseAutoSDK:    true,
-		ServiceName:   "test-service",
+		EnableTracing:  true,
+		UseAutoSDK:     true,
+		ServiceName:    "test-service",
 		ServiceVersion: "1.0.0",
-		Protocol:      "grpc",
-		Endpoint:      "localhost:4317",
-		Insecure:      true,
+		Protocol:       "grpc",
+		Endpoint:       "localhost:4317",
+		Insecure:       true,
 	}
 	tp, _, logger, err := SetupObservability(cfg, "test-service")
 	require.NoError(t, err)
@@ -86,14 +86,14 @@ func TestSetupObservability_UseAutoSDK_True(t *testing.T) {
 
 func TestSetupObservability_UseAutoSDK_False(t *testing.T) {
 	cfg := &config.OpenTelemetryConfig{
-		EnableTracing: true,
-		UseAutoSDK:    false,
-		ServiceName:   "test-service",
+		EnableTracing:  true,
+		UseAutoSDK:     false,
+		ServiceName:    "test-service",
 		ServiceVersion: "1.0.0",
-		Protocol:      "grpc",
-		Endpoint:      "localhost:4317",
-		Insecure:      true,
-		SamplingRate:  1.0,
+		Protocol:       "grpc",
+		Endpoint:       "localhost:4317",
+		Insecure:       true,
+		SamplingRate:   1.0,
 	}
 	tp, _, logger, err := SetupObservability(cfg, "test-service")
 	require.NoError(t, err)
@@ -111,12 +111,12 @@ func TestSetupObservability_UseAutoSDK_Default(t *testing.T) {
 	cfg := &config.OpenTelemetryConfig{
 		EnableTracing: true,
 		// UseAutoSDK not set, defaults to false in Go
-		ServiceName:   "test-service",
+		ServiceName:    "test-service",
 		ServiceVersion: "1.0.0",
-		Protocol:      "grpc",
-		Endpoint:      "localhost:4317",
-		Insecure:      true,
-		SamplingRate:  1.0,
+		Protocol:       "grpc",
+		Endpoint:       "localhost:4317",
+		Insecure:       true,
+		SamplingRate:   1.0,
 	}
 	tp, _, logger, err := SetupObservability(cfg, "test-service")
 	require.NoError(t, err)
@@ -130,12 +130,12 @@ func TestSetupObservability_UseAutoSDK_Default(t *testing.T) {
 
 func TestInitStandardTracing_GRPC(t *testing.T) {
 	cfg := &config.OpenTelemetryConfig{
-		ServiceName:   "test-service",
+		ServiceName:    "test-service",
 		ServiceVersion: "1.0.0",
-		Protocol:      "grpc",
-		Endpoint:      "localhost:4317",
-		Insecure:      true,
-		SamplingRate:  1.0,
+		Protocol:       "grpc",
+		Endpoint:       "localhost:4317",
+		Insecure:       true,
+		SamplingRate:   1.0,
 	}
 	tp, err := InitStandardTracing(cfg)
 	require.NoError(t, err)
@@ -148,12 +148,12 @@ func TestInitStandardTracing_GRPC(t *testing.T) {
 
 func TestInitStandardTracing_HTTP(t *testing.T) {
 	cfg := &config.OpenTelemetryConfig{
-		ServiceName:   "test-service",
+		ServiceName:    "test-service",
 		ServiceVersion: "1.0.0",
-		Protocol:      "http",
-		Endpoint:      "localhost:4318",
-		Insecure:      true,
-		SamplingRate:  0.5,
+		Protocol:       "http",
+		Endpoint:       "localhost:4318",
+		Insecure:       true,
+		SamplingRate:   0.5,
 	}
 	tp, err := InitStandardTracing(cfg)
 	require.NoError(t, err)
@@ -166,12 +166,12 @@ func TestInitStandardTracing_HTTP(t *testing.T) {
 
 func TestInitStandardTracing_InvalidProtocol(t *testing.T) {
 	cfg := &config.OpenTelemetryConfig{
-		ServiceName:   "test-service",
+		ServiceName:    "test-service",
 		ServiceVersion: "1.0.0",
-		Protocol:      "invalid",
-		Endpoint:      "localhost:4317",
-		Insecure:      true,
-		SamplingRate:  1.0,
+		Protocol:       "invalid",
+		Endpoint:       "localhost:4317",
+		Insecure:       true,
+		SamplingRate:   1.0,
 	}
 	tp, err := InitStandardTracing(cfg)
 	require.Error(t, err)
@@ -183,14 +183,14 @@ func TestConfig_UseAutoSDK_EnvironmentVariable(t *testing.T) {
 	// Test that when UseAutoSDK is set to false, standard SDK is used
 	// This simulates what happens when OPEN_TELEMETRY_USE_AUTO_SDK=false is set
 	cfg := &config.OpenTelemetryConfig{
-		EnableTracing: true,
-		UseAutoSDK:    false, // Simulates env var override
-		ServiceName:   "test-service",
+		EnableTracing:  true,
+		UseAutoSDK:     false, // Simulates env var override
+		ServiceName:    "test-service",
 		ServiceVersion: "1.0.0",
-		Protocol:      "grpc",
-		Endpoint:      "localhost:4317",
-		Insecure:      true,
-		SamplingRate:  1.0,
+		Protocol:       "grpc",
+		Endpoint:       "localhost:4317",
+		Insecure:       true,
+		SamplingRate:   1.0,
 	}
 
 	tp, _, _, err := SetupObservability(cfg, "test-service")
@@ -204,9 +204,9 @@ func TestConfig_UseAutoSDK_EnvironmentVariable(t *testing.T) {
 
 func TestSetupObservability_AutoSDK_TypeCheck(t *testing.T) {
 	cfg := &config.OpenTelemetryConfig{
-		EnableTracing: true,
-		UseAutoSDK:    true,
-		ServiceName:   "test-service",
+		EnableTracing:  true,
+		UseAutoSDK:     true,
+		ServiceName:    "test-service",
 		ServiceVersion: "1.0.0",
 	}
 

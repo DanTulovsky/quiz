@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Tooltip, Box } from '@mantine/core';
 import { defaultVoiceForLanguage } from '../utils/tts';
 import { useGetV1PreferencesLearning } from '../api/api';
@@ -79,11 +79,27 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
 
   // Stop TTS audio when switching sections
   const { stopTTS } = useTTS();
+  const sectionTopRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
     return () => {
       stopTTS();
     };
   }, [section?.id, stopTTS]);
+
+  useEffect(() => {
+    if (!sectionTopRef.current) {
+      return;
+    }
+
+    // Wait a frame so the new section renders before scrolling
+    requestAnimationFrame(() => {
+      sectionTopRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    });
+  }, [section?.id]);
 
   if (!section) {
     return (
@@ -98,7 +114,7 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
   }
 
   return (
-    <Stack spacing='md'>
+    <Stack spacing='md' ref={sectionTopRef}>
       {/* Generating Alert */}
       {isGenerating && (
         <Alert color='blue' icon={<IconBook size={16} />}>
