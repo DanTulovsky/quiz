@@ -137,8 +137,10 @@ describe('StorySectionView', () => {
     onGenerateNext: vi.fn(),
     onPrevious: vi.fn(),
     onNext: vi.fn(),
-    onViewModeChange: vi.fn(),
-    viewMode: 'section' as const,
+    onFirst: vi.fn(),
+    onLast: vi.fn(),
+    storyTitle: 'Test Story',
+    storyLanguage: 'English',
   };
 
   const renderComponent = (props = {}) => {
@@ -252,6 +254,98 @@ describe('StorySectionView', () => {
       fireEvent.click(navigationNextButtons[0]!); // Click the first one (top navigation)
 
       expect(mockOnNext).toHaveBeenCalled();
+    });
+  });
+
+  describe('Scroll behavior', () => {
+    const scrollIntoViewMock = vi.fn();
+    const rafMock = vi.fn<(cb: FrameRequestCallback) => number>(cb => {
+      cb(0);
+      return 0;
+    });
+    const cancelRafMock = vi.fn();
+    let originalScrollIntoView:
+      | typeof HTMLElement.prototype.scrollIntoView
+      | undefined;
+    let originalRAF: typeof window.requestAnimationFrame;
+    let originalCancelRAF: typeof window.cancelAnimationFrame;
+
+    beforeEach(() => {
+      scrollIntoViewMock.mockClear();
+      rafMock.mockClear();
+      cancelRafMock.mockClear();
+
+      originalScrollIntoView = HTMLElement.prototype.scrollIntoView;
+      Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
+        configurable: true,
+        value: scrollIntoViewMock,
+      });
+
+      originalRAF = window.requestAnimationFrame;
+      originalCancelRAF = window.cancelAnimationFrame;
+      window.requestAnimationFrame =
+        rafMock as unknown as typeof window.requestAnimationFrame;
+      window.cancelAnimationFrame =
+        cancelRafMock as unknown as typeof window.cancelAnimationFrame;
+    });
+
+    afterEach(() => {
+      if (originalScrollIntoView) {
+        Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
+          configurable: true,
+          value: originalScrollIntoView,
+        });
+      } else {
+        delete (
+          HTMLElement.prototype as unknown as {
+            scrollIntoView?: typeof scrollIntoViewMock;
+          }
+        ).scrollIntoView;
+      }
+      window.requestAnimationFrame = originalRAF;
+      window.cancelAnimationFrame = originalCancelRAF;
+    });
+
+    it('scrolls to top even when section ids are missing', async () => {
+      const sectionWithoutId = {
+        ...mockSection,
+        id: undefined,
+        section_number: 5,
+      };
+
+      const firstProps = {
+        ...defaultProps,
+        section: sectionWithoutId,
+        sectionIndex: 0,
+      };
+
+      const { rerender } = render(
+        <ThemeProvider>
+          <MantineProvider>
+            <StorySectionView {...firstProps} />
+          </MantineProvider>
+        </ThemeProvider>
+      );
+
+      expect(scrollIntoViewMock).toHaveBeenCalledTimes(1);
+
+      const nextSection = { ...sectionWithoutId, section_number: 6 };
+
+      await act(async () => {
+        rerender(
+          <ThemeProvider>
+            <MantineProvider>
+              <StorySectionView
+                {...firstProps}
+                sectionIndex={1}
+                section={nextSection}
+              />
+            </MantineProvider>
+          </ThemeProvider>
+        );
+      });
+
+      expect(scrollIntoViewMock).toHaveBeenCalledTimes(2);
     });
   });
 

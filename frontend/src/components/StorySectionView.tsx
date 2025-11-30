@@ -88,18 +88,21 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
   }, [section?.id, stopTTS]);
 
   useEffect(() => {
-    if (!sectionTopRef.current) {
+    if (!section || !sectionTopRef.current) {
       return;
     }
 
     // Wait a frame so the new section renders before scrolling
-    requestAnimationFrame(() => {
+    const frameId = requestAnimationFrame(() => {
       sectionTopRef.current?.scrollIntoView({
         behavior: 'smooth',
         block: 'start',
+        inline: 'nearest',
       });
     });
-  }, [section?.id]);
+
+    return () => cancelAnimationFrame(frameId);
+  }, [section?.id, section?.section_number, section?.content, sectionIndex]);
 
   if (!section) {
     return (
