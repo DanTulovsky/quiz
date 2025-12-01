@@ -334,16 +334,27 @@ export const SnippetHighlighter: React.FC<SnippetHighlighterProps> = ({
           <Popover.Target>
             <span
               style={{
-                borderBottom: '1px dashed var(--mantine-color-blue-6)',
                 cursor: 'pointer',
                 textDecoration: 'none',
-                display: 'inline-block',
                 position: 'relative',
-                padding: '2px 4px',
-                margin: '0 1px',
               }}
             >
-              {segment.text}
+              {segment.text.split(/(\s+)/).map((part, i) => {
+                if (/\s+/.test(part)) {
+                  return <React.Fragment key={i}>{part}</React.Fragment>;
+                }
+                return (
+                  <span
+                    key={i}
+                    style={{
+                      borderBottom: '1px dashed var(--mantine-color-blue-6)',
+                      paddingBottom: '2px',
+                    }}
+                  >
+                    {part}
+                  </span>
+                );
+              })}
             </span>
           </Popover.Target>
           <Popover.Dropdown>{tooltipContent}</Popover.Dropdown>
