@@ -270,6 +270,122 @@ describe('MobileStoryPage', () => {
     });
   });
 
+  describe('MobileStorySectionView scroll behavior', () => {
+    const scrollIntoViewMock = vi.fn();
+    const scrollToMock = vi.fn();
+    const rafMock = vi.fn<(cb: FrameRequestCallback) => number>(cb => {
+      cb(0);
+      return 0;
+    });
+    const cancelRafMock = vi.fn();
+    let originalScrollIntoView:
+      | typeof HTMLElement.prototype.scrollIntoView
+      | undefined;
+    let originalScrollTo: typeof HTMLElement.prototype.scrollTo | undefined;
+    let originalRAF: typeof window.requestAnimationFrame;
+    let originalCancelRAF: typeof window.cancelAnimationFrame;
+
+    beforeEach(() => {
+      mockUseStory.viewMode = 'section';
+      mockUseStory.sections = [
+        {
+          ...mockSection,
+          id: 1,
+          section_number: 1,
+          content: 'First section content',
+        },
+        {
+          ...mockSection,
+          id: 2,
+          section_number: 2,
+          content: 'Second section content',
+        },
+      ];
+      mockUseStory.currentSection = mockUseStory.sections[0];
+      mockUseStory.currentSectionIndex = 0;
+
+      scrollIntoViewMock.mockClear();
+      scrollToMock.mockClear();
+      rafMock.mockClear();
+      cancelRafMock.mockClear();
+
+      originalScrollIntoView = HTMLElement.prototype.scrollIntoView;
+      Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
+        configurable: true,
+        value: scrollIntoViewMock,
+      });
+
+      originalScrollTo = HTMLElement.prototype.scrollTo;
+      Object.defineProperty(HTMLElement.prototype, 'scrollTo', {
+        configurable: true,
+        value: scrollToMock,
+      });
+
+      originalRAF = window.requestAnimationFrame;
+      originalCancelRAF = window.cancelAnimationFrame;
+      window.requestAnimationFrame =
+        rafMock as unknown as typeof window.requestAnimationFrame;
+      window.cancelAnimationFrame =
+        cancelRafMock as unknown as typeof window.cancelAnimationFrame;
+    });
+
+    afterEach(() => {
+      if (originalScrollIntoView) {
+        Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
+          configurable: true,
+          value: originalScrollIntoView,
+        });
+      } else {
+        delete (
+          HTMLElement.prototype as unknown as {
+            scrollIntoView?: typeof scrollIntoViewMock;
+          }
+        ).scrollIntoView;
+      }
+
+      if (originalScrollTo) {
+        Object.defineProperty(HTMLElement.prototype, 'scrollTo', {
+          configurable: true,
+          value: originalScrollTo,
+        });
+      } else {
+        delete (
+          HTMLElement.prototype as unknown as {
+            scrollTo?: typeof scrollToMock;
+          }
+        ).scrollTo;
+      }
+
+      window.requestAnimationFrame = originalRAF;
+      window.cancelAnimationFrame = originalCancelRAF;
+    });
+
+    it('scrolls to the top anchor and resets story content on section change', async () => {
+      const { rerender } = renderComponent();
+
+      expect(scrollIntoViewMock).toHaveBeenCalledTimes(1);
+      expect(scrollToMock).toHaveBeenCalledTimes(1);
+
+      mockUseStory.currentSection = mockUseStory.sections[1];
+      mockUseStory.currentSectionIndex = 1;
+
+      await act(async () => {
+        rerender(
+          <BrowserRouter>
+            <ThemeProvider>
+              <MantineProvider>
+                <MobileStoryPage />
+              </MantineProvider>
+            </ThemeProvider>
+          </BrowserRouter>
+        );
+      });
+
+      expect(scrollIntoViewMock).toHaveBeenCalledTimes(2);
+      expect(scrollToMock).toHaveBeenCalledTimes(2);
+    });
+  });
+
   describe('MobileStoryReadingView TTS Functionality', () => {
     beforeEach(() => {
       mockUseStory.viewMode = 'reading';
