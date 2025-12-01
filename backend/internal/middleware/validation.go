@@ -216,11 +216,7 @@ func isStaticFile(path string) bool {
 	}
 
 	// Also allow paths that start with /backend/ (static assets)
-	if strings.HasPrefix(path, "/backend/") {
-		return true
-	}
-
-	return false
+	return strings.HasPrefix(path, "/backend/")
 }
 
 // RequestValidationMiddleware creates middleware that prevents undocumented API calls

@@ -624,6 +624,35 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
     };
   }, [section?.id, stopTTS]);
 
+  // Refs to control scroll positioning when navigating between sections
+  const sectionTopRef = React.useRef<HTMLDivElement | null>(null);
+  const scrollAreaViewportRef = React.useRef<HTMLDivElement | null>(null);
+
+  React.useEffect(() => {
+    if (!section) {
+      return;
+    }
+
+    const frameId = requestAnimationFrame(() => {
+      sectionTopRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+        inline: 'nearest',
+      });
+
+      const viewport = scrollAreaViewportRef.current;
+      if (viewport) {
+        if (typeof viewport.scrollTo === 'function') {
+          viewport.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          viewport.scrollTop = 0;
+        }
+      }
+    });
+
+    return () => cancelAnimationFrame(frameId);
+  }, [section?.id, section?.section_number, section?.content, sectionIndex]);
+
   // State to track if we should hide double arrows due to overflow
   const [shouldHideDoubleArrows, setShouldHideDoubleArrows] =
     React.useState(false);
@@ -705,338 +734,348 @@ const MobileStorySectionView: React.FC<MobileStorySectionViewProps> = ({
   }
 
   return (
-    <Stack gap='md'>
-      {/* Generating Alert */}
-      {isGenerating && (
-        <Alert color='blue' icon={<IconBook size={16} />}>
-          <Text fw={500}>Generating next section...</Text>
-          <Text size='sm' mt='xs'>
-            Your story is being continued. This may take a moment.
-          </Text>
-        </Alert>
-      )}
-
-      {/* Section Header */}
-      <Paper p='sm' radius='md'>
-        {/* Section Navigation */}
-        <div
-          ref={navContainerRef}
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            width: '100%',
-          }}
-        >
-          <Group gap={4} data-nav-left-group>
-            <Button
-              variant='light'
-              size='xs'
-              onClick={onFirst}
-              disabled={sectionIndex === 0}
-              styles={{
-                root: {
-                  padding: '2px 6px',
-                  minHeight: '28px',
-                  display: shouldHideDoubleArrows ? 'none' : undefined,
-                },
-              }}
-            >
-              <IconChevronsLeft size={16} />
-            </Button>
-
-            <Button
-              variant='light'
-              size='xs'
-              onClick={onPrevious}
-              disabled={sectionIndex === 0}
-              styles={{
-                root: {
-                  padding: '2px 6px',
-                  minHeight: '28px',
-                },
-              }}
-            >
-              <IconChevronLeft size={16} />
-            </Button>
-
-            <Text
-              size='xs'
-              color='dimmed'
-              style={{ minWidth: '50px', textAlign: 'center' }}
-            >
-              {sectionIndex + 1} / {totalSections}
+    <>
+      <div
+        ref={sectionTopRef}
+        aria-hidden='true'
+        style={{ height: 0, margin: 0, padding: 0 }}
+      />
+      <Stack gap='md'>
+        {/* Generating Alert */}
+        {isGenerating && (
+          <Alert color='blue' icon={<IconBook size={16} />}>
+            <Text fw={500}>Generating next section...</Text>
+            <Text size='sm' mt='xs'>
+              Your story is being continued. This may take a moment.
             </Text>
-
-            <Button
-              variant='light'
-              size='xs'
-              onClick={onNext}
-              disabled={sectionIndex >= totalSections - 1}
-              styles={{
-                root: {
-                  padding: '2px 6px',
-                  minHeight: '28px',
-                },
-              }}
-            >
-              <IconChevronRight size={16} />
-            </Button>
-
-            <Button
-              variant='light'
-              size='xs'
-              onClick={onLast}
-              disabled={sectionIndex >= totalSections - 1}
-              styles={{
-                root: {
-                  padding: '2px 6px',
-                  minHeight: '28px',
-                  display: shouldHideDoubleArrows ? 'none' : undefined,
-                },
-              }}
-            >
-              <IconChevronsRight size={16} />
-            </Button>
-          </Group>
-
-          <Group gap={4} data-nav-right-group>
-            {/* Pause/Resume Auto-Generation Button */}
-            {story && (
-              <Tooltip
-                label={
-                  story.auto_generation_paused
-                    ? 'Resume automatic story generation'
-                    : 'Pause automatic story generation'
-                }
-                position='bottom'
-                withArrow
-              >
-                <Button
-                  variant='light'
-                  onClick={onToggleAutoGeneration}
-                  size='xs'
-                  px='xs'
-                  color={story.auto_generation_paused ? 'green' : 'blue'}
-                  styles={{
-                    root: {
-                      padding: '2px 6px',
-                      minHeight: '28px',
-                    },
-                  }}
-                >
-                  {story.auto_generation_paused ? (
-                    <IconRobot size={16} />
-                  ) : (
-                    <IconRobotOff size={16} />
-                  )}
-                </Button>
-              </Tooltip>
-            )}
-
-            <Badge variant='outline' size='sm'>
-              {section.language_level}
-            </Badge>
-          </Group>
-        </div>
-      </Paper>
-
-      {/* Section Content */}
-      <Paper
-        p='lg'
-        radius='md'
-        style={{ flex: 1, overflow: 'hidden', position: 'relative' }}
-      >
-        <Box style={{ position: 'absolute', top: 12, right: 12, zIndex: 10 }}>
-          <TTSButton
-            getText={() => section.content || ''}
-            getVoice={() => {
-              const saved = (userLearningPrefs?.tts_voice || '').trim();
-              if (saved) return saved;
-              return (
-                defaultVoiceForLanguage(section.language_level) || undefined
-              );
-            }}
-            getMetadata={() => ({
-              title: story?.title || 'Story',
-              language: story?.language,
-              level: section.language_level,
-            })}
-            size='md'
-            ariaLabel='Section audio'
-          />
-        </Box>
-        <ScrollArea style={{ height: '100%' }}>
-          <div
-            className='selectable-text'
-            data-allow-translate='true'
-            style={{ padding: '1rem 56px 1rem 0' }}
-          >
-            {(() => {
-              const paragraphs = splitIntoParagraphs(section.content, 2);
-              return (
-                <div>
-                  {paragraphs.map((paragraph, index) => (
-                    <div key={index}>
-                      <SnippetHighlighter
-                        text={paragraph}
-                        snippets={snippets}
-                        component={Text}
-                        componentProps={{
-                          style: {
-                            lineHeight: 1.6,
-                            fontSize: `${16 * fontScaleMap[fontSize]}px`,
-                            whiteSpace: 'pre-wrap',
-                            paddingRight: '4px',
-                            marginBottom:
-                              index < paragraphs.length - 1 ? '1rem' : 0,
-                          },
-                        }}
-                      />
-                    </div>
-                  ))}
-                </div>
-              );
-            })()}
-          </div>
-        </ScrollArea>
-      </Paper>
-
-      {/* Comprehension Questions */}
-      {sectionWithQuestions?.questions &&
-      sectionWithQuestions.questions.length > 0 ? (
-        <Paper p='md' radius='md'>
-          <Title order={5} mb='sm'>
-            Comprehension Questions
-          </Title>
-          <Stack gap='sm'>
-            {sectionWithQuestions.questions.map(
-              (question: StorySectionQuestion, index: number) => (
-                <MobileStoryQuestionCard
-                  key={question.id || index}
-                  question={question}
-                />
-              )
-            )}
-          </Stack>
-        </Paper>
-      ) : (
-        <Alert color='gray' variant='light'>
-          No questions available for this section yet.
-        </Alert>
-      )}
-
-      {/* Bottom Section Navigation */}
-      <Paper p='sm' radius='md'>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'flex-start',
-            alignItems: 'center',
-            width: '100%',
-          }}
-        >
-          <Group gap={4}>
-            <Button
-              variant='light'
-              size='xs'
-              onClick={onFirst}
-              disabled={sectionIndex === 0}
-              styles={{
-                root: {
-                  padding: '2px 6px',
-                  minHeight: '28px',
-                },
-              }}
-            >
-              <IconChevronsLeft size={16} />
-            </Button>
-
-            <Button
-              variant='light'
-              size='xs'
-              onClick={onPrevious}
-              disabled={sectionIndex === 0}
-              styles={{
-                root: {
-                  padding: '2px 6px',
-                  minHeight: '28px',
-                },
-              }}
-            >
-              <IconChevronLeft size={16} />
-            </Button>
-
-            <Text
-              size='xs'
-              color='dimmed'
-              style={{ minWidth: '50px', textAlign: 'center' }}
-            >
-              {sectionIndex + 1} / {totalSections}
-            </Text>
-
-            <Button
-              variant='light'
-              size='xs'
-              onClick={onNext}
-              disabled={sectionIndex >= totalSections - 1}
-              styles={{
-                root: {
-                  padding: '2px 6px',
-                  minHeight: '28px',
-                },
-              }}
-            >
-              <IconChevronRight size={16} />
-            </Button>
-
-            <Button
-              variant='light'
-              size='xs'
-              onClick={onLast}
-              disabled={sectionIndex >= totalSections - 1}
-              styles={{
-                root: {
-                  padding: '2px 6px',
-                  minHeight: '28px',
-                },
-              }}
-            >
-              <IconChevronsRight size={16} />
-            </Button>
-          </Group>
-        </div>
-      </Paper>
-
-      {/* Generate Next Section */}
-      <Paper p='md' radius='md'>
-        <Group justify='space-between' align='center'>
-          <div>
-            <Title order={5}>Continue the Story</Title>
-            <Text size='sm' color='dimmed'>
-              Generate the next section of your story
-            </Text>
-          </div>
-          <Button
-            size='sm'
-            onClick={onGenerateNext}
-            loading={isGeneratingNextSection}
-            disabled={!canGenerateToday || isGeneratingNextSection}
-            color='blue'
-            leftSection={<IconBook size={14} />}
-          >
-            {isGeneratingNextSection
-              ? 'Generating...'
-              : 'Generate Next Section'}
-          </Button>
-        </Group>
-        {!canGenerateToday && generationDisabledReason && (
-          <Text size='xs' color='dimmed' mt='xs'>
-            {generationDisabledReason}
-          </Text>
+          </Alert>
         )}
-      </Paper>
-    </Stack>
+
+        {/* Section Header */}
+        <Paper p='sm' radius='md'>
+          {/* Section Navigation */}
+          <div
+            ref={navContainerRef}
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              width: '100%',
+            }}
+          >
+            <Group gap={4} data-nav-left-group>
+              <Button
+                variant='light'
+                size='xs'
+                onClick={onFirst}
+                disabled={sectionIndex === 0}
+                styles={{
+                  root: {
+                    padding: '2px 6px',
+                    minHeight: '28px',
+                    display: shouldHideDoubleArrows ? 'none' : undefined,
+                  },
+                }}
+              >
+                <IconChevronsLeft size={16} />
+              </Button>
+
+              <Button
+                variant='light'
+                size='xs'
+                onClick={onPrevious}
+                disabled={sectionIndex === 0}
+                styles={{
+                  root: {
+                    padding: '2px 6px',
+                    minHeight: '28px',
+                  },
+                }}
+              >
+                <IconChevronLeft size={16} />
+              </Button>
+
+              <Text
+                size='xs'
+                color='dimmed'
+                style={{ minWidth: '50px', textAlign: 'center' }}
+              >
+                {sectionIndex + 1} / {totalSections}
+              </Text>
+
+              <Button
+                variant='light'
+                size='xs'
+                onClick={onNext}
+                disabled={sectionIndex >= totalSections - 1}
+                styles={{
+                  root: {
+                    padding: '2px 6px',
+                    minHeight: '28px',
+                  },
+                }}
+              >
+                <IconChevronRight size={16} />
+              </Button>
+
+              <Button
+                variant='light'
+                size='xs'
+                onClick={onLast}
+                disabled={sectionIndex >= totalSections - 1}
+                styles={{
+                  root: {
+                    padding: '2px 6px',
+                    minHeight: '28px',
+                    display: shouldHideDoubleArrows ? 'none' : undefined,
+                  },
+                }}
+              >
+                <IconChevronsRight size={16} />
+              </Button>
+            </Group>
+
+            <Group gap={4} data-nav-right-group>
+              {/* Pause/Resume Auto-Generation Button */}
+              {story && (
+                <Tooltip
+                  label={
+                    story.auto_generation_paused
+                      ? 'Resume automatic story generation'
+                      : 'Pause automatic story generation'
+                  }
+                  position='bottom'
+                  withArrow
+                >
+                  <Button
+                    variant='light'
+                    onClick={onToggleAutoGeneration}
+                    size='xs'
+                    px='xs'
+                    color={story.auto_generation_paused ? 'green' : 'blue'}
+                    styles={{
+                      root: {
+                        padding: '2px 6px',
+                        minHeight: '28px',
+                      },
+                    }}
+                  >
+                    {story.auto_generation_paused ? (
+                      <IconRobot size={16} />
+                    ) : (
+                      <IconRobotOff size={16} />
+                    )}
+                  </Button>
+                </Tooltip>
+              )}
+
+              <Badge variant='outline' size='sm'>
+                {section.language_level}
+              </Badge>
+            </Group>
+          </div>
+        </Paper>
+
+        {/* Section Content */}
+        <Paper
+          p='lg'
+          radius='md'
+          style={{ flex: 1, overflow: 'hidden', position: 'relative' }}
+        >
+          <Box style={{ position: 'absolute', top: 12, right: 12, zIndex: 10 }}>
+            <TTSButton
+              getText={() => section.content || ''}
+              getVoice={() => {
+                const saved = (userLearningPrefs?.tts_voice || '').trim();
+                if (saved) return saved;
+                return (
+                  defaultVoiceForLanguage(section.language_level) || undefined
+                );
+              }}
+              getMetadata={() => ({
+                title: story?.title || 'Story',
+                language: story?.language,
+                level: section.language_level,
+              })}
+              size='md'
+              ariaLabel='Section audio'
+            />
+          </Box>
+          <ScrollArea
+            style={{ height: '100%' }}
+            viewportRef={scrollAreaViewportRef}
+          >
+            <div
+              className='selectable-text'
+              data-allow-translate='true'
+              style={{ padding: '1rem 56px 1rem 0' }}
+            >
+              {(() => {
+                const paragraphs = splitIntoParagraphs(section.content, 2);
+                return (
+                  <div>
+                    {paragraphs.map((paragraph, index) => (
+                      <div key={index}>
+                        <SnippetHighlighter
+                          text={paragraph}
+                          snippets={snippets}
+                          component={Text}
+                          componentProps={{
+                            style: {
+                              lineHeight: 1.6,
+                              fontSize: `${16 * fontScaleMap[fontSize]}px`,
+                              whiteSpace: 'pre-wrap',
+                              paddingRight: '4px',
+                              marginBottom:
+                                index < paragraphs.length - 1 ? '1rem' : 0,
+                            },
+                          }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()}
+            </div>
+          </ScrollArea>
+        </Paper>
+
+        {/* Comprehension Questions */}
+        {sectionWithQuestions?.questions &&
+        sectionWithQuestions.questions.length > 0 ? (
+          <Paper p='md' radius='md'>
+            <Title order={5} mb='sm'>
+              Comprehension Questions
+            </Title>
+            <Stack gap='sm'>
+              {sectionWithQuestions.questions.map(
+                (question: StorySectionQuestion, index: number) => (
+                  <MobileStoryQuestionCard
+                    key={question.id || index}
+                    question={question}
+                  />
+                )
+              )}
+            </Stack>
+          </Paper>
+        ) : (
+          <Alert color='gray' variant='light'>
+            No questions available for this section yet.
+          </Alert>
+        )}
+
+        {/* Bottom Section Navigation */}
+        <Paper p='sm' radius='md'>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'flex-start',
+              alignItems: 'center',
+              width: '100%',
+            }}
+          >
+            <Group gap={4}>
+              <Button
+                variant='light'
+                size='xs'
+                onClick={onFirst}
+                disabled={sectionIndex === 0}
+                styles={{
+                  root: {
+                    padding: '2px 6px',
+                    minHeight: '28px',
+                  },
+                }}
+              >
+                <IconChevronsLeft size={16} />
+              </Button>
+
+              <Button
+                variant='light'
+                size='xs'
+                onClick={onPrevious}
+                disabled={sectionIndex === 0}
+                styles={{
+                  root: {
+                    padding: '2px 6px',
+                    minHeight: '28px',
+                  },
+                }}
+              >
+                <IconChevronLeft size={16} />
+              </Button>
+
+              <Text
+                size='xs'
+                color='dimmed'
+                style={{ minWidth: '50px', textAlign: 'center' }}
+              >
+                {sectionIndex + 1} / {totalSections}
+              </Text>
+
+              <Button
+                variant='light'
+                size='xs'
+                onClick={onNext}
+                disabled={sectionIndex >= totalSections - 1}
+                styles={{
+                  root: {
+                    padding: '2px 6px',
+                    minHeight: '28px',
+                  },
+                }}
+              >
+                <IconChevronRight size={16} />
+              </Button>
+
+              <Button
+                variant='light'
+                size='xs'
+                onClick={onLast}
+                disabled={sectionIndex >= totalSections - 1}
+                styles={{
+                  root: {
+                    padding: '2px 6px',
+                    minHeight: '28px',
+                  },
+                }}
+              >
+                <IconChevronsRight size={16} />
+              </Button>
+            </Group>
+          </div>
+        </Paper>
+
+        {/* Generate Next Section */}
+        <Paper p='md' radius='md'>
+          <Group justify='space-between' align='center'>
+            <div>
+              <Title order={5}>Continue the Story</Title>
+              <Text size='sm' color='dimmed'>
+                Generate the next section of your story
+              </Text>
+            </div>
+            <Button
+              size='sm'
+              onClick={onGenerateNext}
+              loading={isGeneratingNextSection}
+              disabled={!canGenerateToday || isGeneratingNextSection}
+              color='blue'
+              leftSection={<IconBook size={14} />}
+            >
+              {isGeneratingNextSection
+                ? 'Generating...'
+                : 'Generate Next Section'}
+            </Button>
+          </Group>
+          {!canGenerateToday && generationDisabledReason && (
+            <Text size='xs' color='dimmed' mt='xs'>
+              {generationDisabledReason}
+            </Text>
+          )}
+        </Paper>
+      </Stack>
+    </>
   );
 };
 
