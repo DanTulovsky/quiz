@@ -117,251 +117,258 @@ const StorySectionView: React.FC<StorySectionViewProps> = ({
   }
 
   return (
-    <Stack spacing='md' ref={sectionTopRef}>
-      {/* Generating Alert */}
-      {isGenerating && (
-        <Alert color='blue' icon={<IconBook size={16} />}>
-          <Text fw={500}>Generating next section...</Text>
-          <Text size='sm' mt='xs'>
-            Your story is being continued. This may take a moment.
-          </Text>
-        </Alert>
-      )}
-
-      {/* Section Header */}
-      <Paper p='md' radius='md'>
-        {/* Section Navigation */}
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            width: '100%',
-          }}
-        >
-          <Group spacing='xs'>
-            <Button
-              variant='light'
-              leftSection={<IconChevronsLeft size={16} />}
-              onClick={onFirst}
-              disabled={sectionIndex === 0}
-              size='sm'
-            >
-              First
-            </Button>
-
-            <Button
-              variant='light'
-              leftSection={<IconChevronLeft size={16} />}
-              onClick={onPrevious}
-              disabled={sectionIndex === 0}
-              size='sm'
-            >
-              Previous
-            </Button>
-
-            <Text
-              size='sm'
-              color='dimmed'
-              style={{ minWidth: '80px', textAlign: 'center' }}
-            >
-              {sectionIndex + 1} of {totalSections}
+    <>
+      <div
+        ref={sectionTopRef}
+        aria-hidden='true'
+        style={{ height: 0, margin: 0, padding: 0 }}
+      />
+      <Stack spacing='md'>
+        {/* Generating Alert */}
+        {isGenerating && (
+          <Alert color='blue' icon={<IconBook size={16} />}>
+            <Text fw={500}>Generating next section...</Text>
+            <Text size='sm' mt='xs'>
+              Your story is being continued. This may take a moment.
             </Text>
+          </Alert>
+        )}
 
-            <Button
-              variant='light'
-              rightSection={<IconChevronRight size={16} />}
-              onClick={onNext}
-              disabled={sectionIndex >= totalSections - 1}
-              size='sm'
-            >
-              Next
-            </Button>
-
-            <Button
-              variant='light'
-              rightSection={<IconChevronsRight size={16} />}
-              onClick={onLast}
-              disabled={sectionIndex >= totalSections - 1}
-              size='sm'
-            >
-              Last
-            </Button>
-          </Group>
-
-          <Badge variant='outline'>
-            <Group spacing={4}>
-              <IconLanguage size={12} />
-              {section.language_level}
-            </Group>
-          </Badge>
-        </div>
-      </Paper>
-
-      {/* Section Content */}
-      <Paper p='lg' radius='md' style={{ position: 'relative' }}>
-        <Box style={{ position: 'absolute', top: 12, right: 12, zIndex: 10 }}>
-          <TTSButton
-            getText={() => section.content || ''}
-            getVoice={() => {
-              const saved = (userLearningPrefs?.tts_voice || '').trim();
-              if (saved) return saved;
-              return (
-                defaultVoiceForLanguage(section.language_level) || undefined
-              );
-            }}
-            getMetadata={() => ({
-              title: storyTitle || 'Story',
-              language: storyLanguage,
-              level: section.language_level,
-            })}
-            size='md'
-            ariaLabel='Section audio'
-          />
-        </Box>
-
-        <div data-allow-translate='true'>
-          <SnippetHighlighter
-            text={section.content || ''}
-            snippets={snippets}
-            component={Text}
-            componentProps={{
-              style: {
-                lineHeight: 1.6,
-                fontSize: `${16 * fontScaleMap[fontSize]}px`,
-                whiteSpace: 'pre-wrap',
-                // Ensure text never overlaps the TTS icon in the top-right
-                paddingRight: '56px',
-              },
-            }}
-          />
-        </div>
-      </Paper>
-
-      {/* Comprehension Questions */}
-      {sectionWithQuestions?.questions &&
-      sectionWithQuestions.questions.length > 0 ? (
+        {/* Section Header */}
         <Paper p='md' radius='md'>
-          <Title order={5} mb='sm'>
-            Comprehension Questions
-          </Title>
-          <Stack spacing='sm'>
-            {sectionWithQuestions.questions.map((question, index) => (
-              <StoryQuestionCard
-                key={question.id || index}
-                question={question}
-              />
-            ))}
-          </Stack>
-        </Paper>
-      ) : (
-        <Alert color='gray' variant='light'>
-          No questions available for this section yet.
-        </Alert>
-      )}
-
-      {/* Bottom Section Navigation */}
-      <Paper p='md' radius='md'>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'flex-start',
-            alignItems: 'center',
-            width: '100%',
-          }}
-        >
-          <Group spacing='xs'>
-            <Button
-              variant='light'
-              leftSection={<IconChevronsLeft size={16} />}
-              onClick={onFirst}
-              disabled={sectionIndex === 0}
-              size='sm'
-            >
-              First
-            </Button>
-
-            <Button
-              variant='light'
-              leftSection={<IconChevronLeft size={16} />}
-              onClick={onPrevious}
-              disabled={sectionIndex === 0}
-              size='sm'
-            >
-              Previous
-            </Button>
-
-            <Text
-              size='sm'
-              color='dimmed'
-              style={{ minWidth: '80px', textAlign: 'center' }}
-            >
-              {sectionIndex + 1} of {totalSections}
-            </Text>
-
-            <Button
-              variant='light'
-              rightSection={<IconChevronRight size={16} />}
-              onClick={onNext}
-              disabled={sectionIndex >= totalSections - 1}
-              size='sm'
-            >
-              Next
-            </Button>
-
-            <Button
-              variant='light'
-              rightSection={<IconChevronsRight size={16} />}
-              onClick={onLast}
-              disabled={sectionIndex >= totalSections - 1}
-              size='sm'
-            >
-              Last
-            </Button>
-          </Group>
-        </div>
-      </Paper>
-
-      {/* Generate Next Section */}
-      <Paper p='md' radius='md'>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <div>
-            <Title order={5}>Continue the Story</Title>
-            <Text size='sm' color='dimmed'>
-              Generate the next section of your story
-            </Text>
-          </div>
-          <Tooltip
-            label={
-              !canGenerateToday && !isGeneratingNextSection
-                ? generationDisabledReason || 'Unable to generate section'
-                : 'Generate the next section of your story'
-            }
-            position='top'
-            withArrow
+          {/* Section Navigation */}
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              width: '100%',
+            }}
           >
-            <Button
-              leftSection={<IconPlus size={16} />}
-              onClick={onGenerateNext}
-              loading={isGeneratingNextSection}
-              disabled={!canGenerateToday || isGeneratingNextSection}
-              color='blue'
-              variant={canGenerateToday ? 'filled' : 'light'}
+            <Group spacing='xs'>
+              <Button
+                variant='light'
+                leftSection={<IconChevronsLeft size={16} />}
+                onClick={onFirst}
+                disabled={sectionIndex === 0}
+                size='sm'
+              >
+                First
+              </Button>
+
+              <Button
+                variant='light'
+                leftSection={<IconChevronLeft size={16} />}
+                onClick={onPrevious}
+                disabled={sectionIndex === 0}
+                size='sm'
+              >
+                Previous
+              </Button>
+
+              <Text
+                size='sm'
+                color='dimmed'
+                style={{ minWidth: '80px', textAlign: 'center' }}
+              >
+                {sectionIndex + 1} of {totalSections}
+              </Text>
+
+              <Button
+                variant='light'
+                rightSection={<IconChevronRight size={16} />}
+                onClick={onNext}
+                disabled={sectionIndex >= totalSections - 1}
+                size='sm'
+              >
+                Next
+              </Button>
+
+              <Button
+                variant='light'
+                rightSection={<IconChevronsRight size={16} />}
+                onClick={onLast}
+                disabled={sectionIndex >= totalSections - 1}
+                size='sm'
+              >
+                Last
+              </Button>
+            </Group>
+
+            <Badge variant='outline'>
+              <Group spacing={4}>
+                <IconLanguage size={12} />
+                {section.language_level}
+              </Group>
+            </Badge>
+          </div>
+        </Paper>
+
+        {/* Section Content */}
+        <Paper p='lg' radius='md' style={{ position: 'relative' }}>
+          <Box style={{ position: 'absolute', top: 12, right: 12, zIndex: 10 }}>
+            <TTSButton
+              getText={() => section.content || ''}
+              getVoice={() => {
+                const saved = (userLearningPrefs?.tts_voice || '').trim();
+                if (saved) return saved;
+                return (
+                  defaultVoiceForLanguage(section.language_level) || undefined
+                );
+              }}
+              getMetadata={() => ({
+                title: storyTitle || 'Story',
+                language: storyLanguage,
+                level: section.language_level,
+              })}
+              size='md'
+              ariaLabel='Section audio'
+            />
+          </Box>
+
+          <div data-allow-translate='true'>
+            <SnippetHighlighter
+              text={section.content || ''}
+              snippets={snippets}
+              component={Text}
+              componentProps={{
+                style: {
+                  lineHeight: 1.6,
+                  fontSize: `${16 * fontScaleMap[fontSize]}px`,
+                  whiteSpace: 'pre-wrap',
+                  // Ensure text never overlaps the TTS icon in the top-right
+                  paddingRight: '56px',
+                },
+              }}
+            />
+          </div>
+        </Paper>
+
+        {/* Comprehension Questions */}
+        {sectionWithQuestions?.questions &&
+        sectionWithQuestions.questions.length > 0 ? (
+          <Paper p='md' radius='md'>
+            <Title order={5} mb='sm'>
+              Comprehension Questions
+            </Title>
+            <Stack spacing='sm'>
+              {sectionWithQuestions.questions.map((question, index) => (
+                <StoryQuestionCard
+                  key={question.id || index}
+                  question={question}
+                />
+              ))}
+            </Stack>
+          </Paper>
+        ) : (
+          <Alert color='gray' variant='light'>
+            No questions available for this section yet.
+          </Alert>
+        )}
+
+        {/* Bottom Section Navigation */}
+        <Paper p='md' radius='md'>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'flex-start',
+              alignItems: 'center',
+              width: '100%',
+            }}
+          >
+            <Group spacing='xs'>
+              <Button
+                variant='light'
+                leftSection={<IconChevronsLeft size={16} />}
+                onClick={onFirst}
+                disabled={sectionIndex === 0}
+                size='sm'
+              >
+                First
+              </Button>
+
+              <Button
+                variant='light'
+                leftSection={<IconChevronLeft size={16} />}
+                onClick={onPrevious}
+                disabled={sectionIndex === 0}
+                size='sm'
+              >
+                Previous
+              </Button>
+
+              <Text
+                size='sm'
+                color='dimmed'
+                style={{ minWidth: '80px', textAlign: 'center' }}
+              >
+                {sectionIndex + 1} of {totalSections}
+              </Text>
+
+              <Button
+                variant='light'
+                rightSection={<IconChevronRight size={16} />}
+                onClick={onNext}
+                disabled={sectionIndex >= totalSections - 1}
+                size='sm'
+              >
+                Next
+              </Button>
+
+              <Button
+                variant='light'
+                rightSection={<IconChevronsRight size={16} />}
+                onClick={onLast}
+                disabled={sectionIndex >= totalSections - 1}
+                size='sm'
+              >
+                Last
+              </Button>
+            </Group>
+          </div>
+        </Paper>
+
+        {/* Generate Next Section */}
+        <Paper p='md' radius='md'>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            <div>
+              <Title order={5}>Continue the Story</Title>
+              <Text size='sm' color='dimmed'>
+                Generate the next section of your story
+              </Text>
+            </div>
+            <Tooltip
+              label={
+                !canGenerateToday && !isGeneratingNextSection
+                  ? generationDisabledReason || 'Unable to generate section'
+                  : 'Generate the next section of your story'
+              }
+              position='top'
+              withArrow
             >
-              {isGeneratingNextSection
-                ? 'Generating...'
-                : 'Generate Next Section'}
-            </Button>
-          </Tooltip>
-        </div>
-      </Paper>
-    </Stack>
+              <Button
+                leftSection={<IconPlus size={16} />}
+                onClick={onGenerateNext}
+                loading={isGeneratingNextSection}
+                disabled={!canGenerateToday || isGeneratingNextSection}
+                color='blue'
+                variant={canGenerateToday ? 'filled' : 'light'}
+              >
+                {isGeneratingNextSection
+                  ? 'Generating...'
+                  : 'Generate Next Section'}
+              </Button>
+            </Tooltip>
+          </div>
+        </Paper>
+      </Stack>
+    </>
   );
 };
 
