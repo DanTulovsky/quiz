@@ -8,6 +8,8 @@ export interface PaginationOptions {
   initialLimit?: number;
   maxLimit?: number;
   enableInfiniteScroll?: boolean;
+  refetchOnMount?: boolean | 'always';
+  refetchOnWindowFocus?: boolean | 'always';
 }
 
 export interface PaginationState {
@@ -93,6 +95,8 @@ export function usePagination<TData = unknown>(
       }
       return pages.length > 1 ? pages.length - 2 : undefined;
     },
+    refetchOnMount: options.refetchOnMount,
+    refetchOnWindowFocus: options.refetchOnWindowFocus,
   };
 
   const {

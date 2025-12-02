@@ -220,7 +220,6 @@ interface ChatPanelProps {
   setSelectedSuggestionIndex: (index: number) => void;
   onSaveMessage?: (messageText: string, messageIndex: number) => void;
   onSaveConversation?: () => void;
-  onBookmarkLastMessage?: () => void;
   currentConversationId?: string | null;
   // When true, disable/hide save actions to avoid duplicates (auto-save active)
   disableSaveConversation?: boolean;
@@ -263,12 +262,8 @@ const ChatPanel: React.FC<
   selectedSuggestionIndex,
   setSelectedSuggestionIndex,
   onSaveMessage,
-  onSaveConversation,
-  onBookmarkLastMessage,
-  currentConversationId,
   onInputFocus,
   onInputBlur,
-  disableSaveConversation,
 }) => {
   const { fontSize } = useTheme();
   // For blinking fix: always render the last AI message bubble, with spinner if needed
@@ -449,22 +444,6 @@ const ChatPanel: React.FC<
           </Box>
         </Group>
         <Group gap={2}>
-          <Button
-            variant='subtle'
-            c='gray'
-            size='xs'
-            onClick={onBookmarkLastMessage}
-            title='Bookmark Message'
-            disabled={
-              !currentConversationId ||
-              getLastAIMessageIndex(messages) === null
-            }
-          >
-            <Bookmark size={16} />
-            <Badge ml={4} size='xs' color='gray' variant='filled' radius='sm'>
-              B
-            </Badge>
-          </Button>
           <Button
             variant='subtle'
             c='gray'
@@ -1082,36 +1061,6 @@ export const Chat: React.FC<ChatProps> = ({
 
   // Removed automatic focus on loading - only focus when user interacts with chat
 
-  const handleBookmarkLastMessage = async () => {
-    const lastAIIndex = getLastAIMessageIndex(messages);
-    if (lastAIIndex === null) return;
-    const msg = messages[lastAIIndex];
-    if (msg && msg.id) {
-      handleBookmarkMessage(msg.text, lastAIIndex, msg.id);
-    }
-  };
-
-  // Handle 'b' key for bookmarking the last AI message
-  useHotkeys(
-    'b',
-    e => {
-      // Only act when not typing in chat
-      const activeElement = document.activeElement as HTMLElement | null;
-      if (
-        activeElement &&
-        (activeElement.tagName === 'INPUT' ||
-          activeElement.tagName === 'TEXTAREA' ||
-          activeElement.isContentEditable)
-      ) {
-        return;
-      }
-
-      e.preventDefault();
-      handleBookmarkLastMessage();
-    },
-    { enableOnFormTags: true, preventDefault: true }
-  );
-
   const handleSend = async (messageText?: string) => {
     const textToSend = messageText || input;
     if (!textToSend.trim()) return;
@@ -1509,7 +1458,6 @@ export const Chat: React.FC<ChatProps> = ({
           setSelectedSuggestionIndex={setSelectedSuggestionIndex}
           onSaveMessage={handleBookmarkMessage}
           onSaveConversation={handleSaveConversation}
-          onBookmarkLastMessage={handleBookmarkLastMessage}
           currentConversationId={currentConversationId}
           onInputFocus={onInputFocus}
           onInputBlur={onInputBlur}

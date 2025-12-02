@@ -389,6 +389,7 @@ export const SavedConversationsPage: React.FC = () => {
     {
       initialLimit: 20,
       enableInfiniteScroll: false,
+      refetchOnMount: 'always',
     }
   );
 
