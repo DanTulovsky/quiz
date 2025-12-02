@@ -220,6 +220,7 @@ interface ChatPanelProps {
   setSelectedSuggestionIndex: (index: number) => void;
   onSaveMessage?: (messageText: string, messageIndex: number) => void;
   onSaveConversation?: () => void;
+  onBookmarkLastMessage?: () => void;
   currentConversationId?: string | null;
   // When true, disable/hide save actions to avoid duplicates (auto-save active)
   disableSaveConversation?: boolean;
@@ -263,6 +264,7 @@ const ChatPanel: React.FC<
   setSelectedSuggestionIndex,
   onSaveMessage,
   onSaveConversation,
+  onBookmarkLastMessage,
   currentConversationId,
   onInputFocus,
   onInputBlur,
@@ -451,12 +453,11 @@ const ChatPanel: React.FC<
             variant='subtle'
             c='gray'
             size='xs'
-            onClick={onSaveConversation}
+            onClick={onBookmarkLastMessage}
             title='Bookmark Message'
             disabled={
-              !!disableSaveConversation ||
               !currentConversationId ||
-              messages.length === 0
+              getLastAIMessageIndex(messages) === null
             }
           >
             <Bookmark size={16} />
@@ -1081,6 +1082,36 @@ export const Chat: React.FC<ChatProps> = ({
 
   // Removed automatic focus on loading - only focus when user interacts with chat
 
+  const handleBookmarkLastMessage = async () => {
+    const lastAIIndex = getLastAIMessageIndex(messages);
+    if (lastAIIndex === null) return;
+    const msg = messages[lastAIIndex];
+    if (msg && msg.id) {
+      handleBookmarkMessage(msg.text, lastAIIndex, msg.id);
+    }
+  };
+
+  // Handle 'b' key for bookmarking the last AI message
+  useHotkeys(
+    'b',
+    e => {
+      // Only act when not typing in chat
+      const activeElement = document.activeElement as HTMLElement | null;
+      if (
+        activeElement &&
+        (activeElement.tagName === 'INPUT' ||
+          activeElement.tagName === 'TEXTAREA' ||
+          activeElement.isContentEditable)
+      ) {
+        return;
+      }
+
+      e.preventDefault();
+      handleBookmarkLastMessage();
+    },
+    { enableOnFormTags: true, preventDefault: true }
+  );
+
   const handleSend = async (messageText?: string) => {
     const textToSend = messageText || input;
     if (!textToSend.trim()) return;
@@ -1478,6 +1509,7 @@ export const Chat: React.FC<ChatProps> = ({
           setSelectedSuggestionIndex={setSelectedSuggestionIndex}
           onSaveMessage={handleBookmarkMessage}
           onSaveConversation={handleSaveConversation}
+          onBookmarkLastMessage={handleBookmarkLastMessage}
           currentConversationId={currentConversationId}
           onInputFocus={onInputFocus}
           onInputBlur={onInputBlur}
