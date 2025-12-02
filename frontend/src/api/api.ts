@@ -3482,13 +3482,17 @@ search?: string;
 offset?: number;
 };
 
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
+
+
+
 /**
  * Authenticate a user with username and password. Creates new user if doesn't exist.
  * @summary User login
  */
 export const postV1AuthLogin = (
     loginRequest: LoginRequest,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -3497,21 +3501,21 @@ export const postV1AuthLogin = (
       headers: {'Content-Type': 'application/json', },
       data: loginRequest, signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1AuthLoginMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AuthLogin>>, TError,{data: LoginRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AuthLogin>>, TError,{data: LoginRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1AuthLogin>>, TError,{data: LoginRequest}, TContext> => {
 
 const mutationKey = ['postV1AuthLogin'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -3519,7 +3523,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AuthLogin>>, {data: LoginRequest}> = (props) => {
           const {data} = props ?? {};
 
-          return  postV1AuthLogin(data,)
+          return  postV1AuthLogin(data,requestOptions)
         }
 
         
@@ -3535,7 +3539,7 @@ const {mutation: mutationOptions} = options ?
  * @summary User login
  */
 export const usePostV1AuthLogin = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AuthLogin>>, TError,{data: LoginRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AuthLogin>>, TError,{data: LoginRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1AuthLogin>>,
         TError,
@@ -3554,28 +3558,28 @@ export const usePostV1AuthLogin = <TError = ErrorResponse,
  */
 export const postV1AuthLogout = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<SuccessResponse>(
       {url: `/v1/auth/logout`, method: 'POST', signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1AuthLogoutMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AuthLogout>>, TError,void, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AuthLogout>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1AuthLogout>>, TError,void, TContext> => {
 
 const mutationKey = ['postV1AuthLogout'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -3583,7 +3587,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AuthLogout>>, void> = () => {
           
 
-          return  postV1AuthLogout()
+          return  postV1AuthLogout(requestOptions)
         }
 
         
@@ -3599,7 +3603,7 @@ const {mutation: mutationOptions} = options ?
  * @summary User logout
  */
 export const usePostV1AuthLogout = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AuthLogout>>, TError,void, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AuthLogout>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1AuthLogout>>,
         TError,
@@ -3618,14 +3622,14 @@ export const usePostV1AuthLogout = <TError = unknown,
  */
 export const getV1AuthStatus = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<AuthStatusResponse>(
       {url: `/v1/auth/status`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -3638,16 +3642,16 @@ export const getGetV1AuthStatusQueryKey = () => {
     }
 
     
-export const getGetV1AuthStatusQueryOptions = <TData = Awaited<ReturnType<typeof getV1AuthStatus>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuthStatus>>, TError, TData>>, }
+export const getGetV1AuthStatusQueryOptions = <TData = Awaited<ReturnType<typeof getV1AuthStatus>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuthStatus>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AuthStatusQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AuthStatus>>> = ({ signal }) => getV1AuthStatus(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AuthStatus>>> = ({ signal }) => getV1AuthStatus(requestOptions, signal);
 
       
 
@@ -3667,7 +3671,7 @@ export function useGetV1AuthStatus<TData = Awaited<ReturnType<typeof getV1AuthSt
           TError,
           Awaited<ReturnType<typeof getV1AuthStatus>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AuthStatus<TData = Awaited<ReturnType<typeof getV1AuthStatus>>, TError = unknown>(
@@ -3677,11 +3681,11 @@ export function useGetV1AuthStatus<TData = Awaited<ReturnType<typeof getV1AuthSt
           TError,
           Awaited<ReturnType<typeof getV1AuthStatus>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AuthStatus<TData = Awaited<ReturnType<typeof getV1AuthStatus>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuthStatus>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuthStatus>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -3689,7 +3693,7 @@ export function useGetV1AuthStatus<TData = Awaited<ReturnType<typeof getV1AuthSt
  */
 
 export function useGetV1AuthStatus<TData = Awaited<ReturnType<typeof getV1AuthStatus>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuthStatus>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuthStatus>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -3712,14 +3716,14 @@ export function useGetV1AuthStatus<TData = Awaited<ReturnType<typeof getV1AuthSt
  */
 export const getV1AuthCheck = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<void>(
       {url: `/v1/auth/check`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -3732,16 +3736,16 @@ export const getGetV1AuthCheckQueryKey = () => {
     }
 
     
-export const getGetV1AuthCheckQueryOptions = <TData = Awaited<ReturnType<typeof getV1AuthCheck>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuthCheck>>, TError, TData>>, }
+export const getGetV1AuthCheckQueryOptions = <TData = Awaited<ReturnType<typeof getV1AuthCheck>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuthCheck>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AuthCheckQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AuthCheck>>> = ({ signal }) => getV1AuthCheck(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AuthCheck>>> = ({ signal }) => getV1AuthCheck(requestOptions, signal);
 
       
 
@@ -3761,7 +3765,7 @@ export function useGetV1AuthCheck<TData = Awaited<ReturnType<typeof getV1AuthChe
           TError,
           Awaited<ReturnType<typeof getV1AuthCheck>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AuthCheck<TData = Awaited<ReturnType<typeof getV1AuthCheck>>, TError = ErrorResponse>(
@@ -3771,11 +3775,11 @@ export function useGetV1AuthCheck<TData = Awaited<ReturnType<typeof getV1AuthChe
           TError,
           Awaited<ReturnType<typeof getV1AuthCheck>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AuthCheck<TData = Awaited<ReturnType<typeof getV1AuthCheck>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuthCheck>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuthCheck>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -3783,7 +3787,7 @@ export function useGetV1AuthCheck<TData = Awaited<ReturnType<typeof getV1AuthChe
  */
 
 export function useGetV1AuthCheck<TData = Awaited<ReturnType<typeof getV1AuthCheck>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuthCheck>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuthCheck>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -3806,7 +3810,7 @@ export function useGetV1AuthCheck<TData = Awaited<ReturnType<typeof getV1AuthChe
  */
 export const postV1AuthSignup = (
     userCreateRequest: UserCreateRequest,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -3815,21 +3819,21 @@ export const postV1AuthSignup = (
       headers: {'Content-Type': 'application/json', },
       data: userCreateRequest, signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1AuthSignupMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AuthSignup>>, TError,{data: UserCreateRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AuthSignup>>, TError,{data: UserCreateRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1AuthSignup>>, TError,{data: UserCreateRequest}, TContext> => {
 
 const mutationKey = ['postV1AuthSignup'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -3837,7 +3841,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AuthSignup>>, {data: UserCreateRequest}> = (props) => {
           const {data} = props ?? {};
 
-          return  postV1AuthSignup(data,)
+          return  postV1AuthSignup(data,requestOptions)
         }
 
         
@@ -3853,7 +3857,7 @@ const {mutation: mutationOptions} = options ?
  * @summary User signup
  */
 export const usePostV1AuthSignup = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AuthSignup>>, TError,{data: UserCreateRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AuthSignup>>, TError,{data: UserCreateRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1AuthSignup>>,
         TError,
@@ -3872,14 +3876,14 @@ export const usePostV1AuthSignup = <TError = ErrorResponse,
  */
 export const getV1AuthSignupStatus = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<SignupStatusResponse>(
       {url: `/v1/auth/signup/status`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -3892,16 +3896,16 @@ export const getGetV1AuthSignupStatusQueryKey = () => {
     }
 
     
-export const getGetV1AuthSignupStatusQueryOptions = <TData = Awaited<ReturnType<typeof getV1AuthSignupStatus>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuthSignupStatus>>, TError, TData>>, }
+export const getGetV1AuthSignupStatusQueryOptions = <TData = Awaited<ReturnType<typeof getV1AuthSignupStatus>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuthSignupStatus>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AuthSignupStatusQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AuthSignupStatus>>> = ({ signal }) => getV1AuthSignupStatus(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AuthSignupStatus>>> = ({ signal }) => getV1AuthSignupStatus(requestOptions, signal);
 
       
 
@@ -3921,7 +3925,7 @@ export function useGetV1AuthSignupStatus<TData = Awaited<ReturnType<typeof getV1
           TError,
           Awaited<ReturnType<typeof getV1AuthSignupStatus>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AuthSignupStatus<TData = Awaited<ReturnType<typeof getV1AuthSignupStatus>>, TError = unknown>(
@@ -3931,11 +3935,11 @@ export function useGetV1AuthSignupStatus<TData = Awaited<ReturnType<typeof getV1
           TError,
           Awaited<ReturnType<typeof getV1AuthSignupStatus>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AuthSignupStatus<TData = Awaited<ReturnType<typeof getV1AuthSignupStatus>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuthSignupStatus>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuthSignupStatus>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -3943,7 +3947,7 @@ export function useGetV1AuthSignupStatus<TData = Awaited<ReturnType<typeof getV1
  */
 
 export function useGetV1AuthSignupStatus<TData = Awaited<ReturnType<typeof getV1AuthSignupStatus>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuthSignupStatus>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuthSignupStatus>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -3966,14 +3970,14 @@ export function useGetV1AuthSignupStatus<TData = Awaited<ReturnType<typeof getV1
  */
 export const getV1AuthGoogleLogin = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<GoogleOAuthLoginResponse>(
       {url: `/v1/auth/google/login`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -3986,16 +3990,16 @@ export const getGetV1AuthGoogleLoginQueryKey = () => {
     }
 
     
-export const getGetV1AuthGoogleLoginQueryOptions = <TData = Awaited<ReturnType<typeof getV1AuthGoogleLogin>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuthGoogleLogin>>, TError, TData>>, }
+export const getGetV1AuthGoogleLoginQueryOptions = <TData = Awaited<ReturnType<typeof getV1AuthGoogleLogin>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuthGoogleLogin>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AuthGoogleLoginQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AuthGoogleLogin>>> = ({ signal }) => getV1AuthGoogleLogin(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AuthGoogleLogin>>> = ({ signal }) => getV1AuthGoogleLogin(requestOptions, signal);
 
       
 
@@ -4015,7 +4019,7 @@ export function useGetV1AuthGoogleLogin<TData = Awaited<ReturnType<typeof getV1A
           TError,
           Awaited<ReturnType<typeof getV1AuthGoogleLogin>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AuthGoogleLogin<TData = Awaited<ReturnType<typeof getV1AuthGoogleLogin>>, TError = unknown>(
@@ -4025,11 +4029,11 @@ export function useGetV1AuthGoogleLogin<TData = Awaited<ReturnType<typeof getV1A
           TError,
           Awaited<ReturnType<typeof getV1AuthGoogleLogin>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AuthGoogleLogin<TData = Awaited<ReturnType<typeof getV1AuthGoogleLogin>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuthGoogleLogin>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuthGoogleLogin>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -4037,7 +4041,7 @@ export function useGetV1AuthGoogleLogin<TData = Awaited<ReturnType<typeof getV1A
  */
 
 export function useGetV1AuthGoogleLogin<TData = Awaited<ReturnType<typeof getV1AuthGoogleLogin>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuthGoogleLogin>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuthGoogleLogin>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -4060,7 +4064,7 @@ export function useGetV1AuthGoogleLogin<TData = Awaited<ReturnType<typeof getV1A
  */
 export const getV1AuthGoogleCallback = (
     params: GetV1AuthGoogleCallbackParams,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -4068,7 +4072,7 @@ export const getV1AuthGoogleCallback = (
       {url: `/v1/auth/google/callback`, method: 'GET',
         params, signal
     },
-      );
+      options);
     }
   
 
@@ -4081,16 +4085,16 @@ export const getGetV1AuthGoogleCallbackQueryKey = (params?: GetV1AuthGoogleCallb
     }
 
     
-export const getGetV1AuthGoogleCallbackQueryOptions = <TData = Awaited<ReturnType<typeof getV1AuthGoogleCallback>>, TError = ErrorResponse>(params: GetV1AuthGoogleCallbackParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuthGoogleCallback>>, TError, TData>>, }
+export const getGetV1AuthGoogleCallbackQueryOptions = <TData = Awaited<ReturnType<typeof getV1AuthGoogleCallback>>, TError = ErrorResponse>(params: GetV1AuthGoogleCallbackParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuthGoogleCallback>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AuthGoogleCallbackQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AuthGoogleCallback>>> = ({ signal }) => getV1AuthGoogleCallback(params, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AuthGoogleCallback>>> = ({ signal }) => getV1AuthGoogleCallback(params, requestOptions, signal);
 
       
 
@@ -4110,7 +4114,7 @@ export function useGetV1AuthGoogleCallback<TData = Awaited<ReturnType<typeof get
           TError,
           Awaited<ReturnType<typeof getV1AuthGoogleCallback>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AuthGoogleCallback<TData = Awaited<ReturnType<typeof getV1AuthGoogleCallback>>, TError = ErrorResponse>(
@@ -4120,11 +4124,11 @@ export function useGetV1AuthGoogleCallback<TData = Awaited<ReturnType<typeof get
           TError,
           Awaited<ReturnType<typeof getV1AuthGoogleCallback>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AuthGoogleCallback<TData = Awaited<ReturnType<typeof getV1AuthGoogleCallback>>, TError = ErrorResponse>(
- params: GetV1AuthGoogleCallbackParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuthGoogleCallback>>, TError, TData>>, }
+ params: GetV1AuthGoogleCallbackParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuthGoogleCallback>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -4132,7 +4136,7 @@ export function useGetV1AuthGoogleCallback<TData = Awaited<ReturnType<typeof get
  */
 
 export function useGetV1AuthGoogleCallback<TData = Awaited<ReturnType<typeof getV1AuthGoogleCallback>>, TError = ErrorResponse>(
- params: GetV1AuthGoogleCallbackParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuthGoogleCallback>>, TError, TData>>, }
+ params: GetV1AuthGoogleCallbackParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AuthGoogleCallback>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -4155,7 +4159,7 @@ export function useGetV1AuthGoogleCallback<TData = Awaited<ReturnType<typeof get
  */
 export const getV1QuizQuestion = (
     params?: GetV1QuizQuestionParams,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -4163,7 +4167,7 @@ export const getV1QuizQuestion = (
       {url: `/v1/quiz/question`, method: 'GET',
         params, signal
     },
-      );
+      options);
     }
   
 
@@ -4176,16 +4180,16 @@ export const getGetV1QuizQuestionQueryKey = (params?: GetV1QuizQuestionParams,) 
     }
 
     
-export const getGetV1QuizQuestionQueryOptions = <TData = Awaited<ReturnType<typeof getV1QuizQuestion>>, TError = ErrorResponse>(params?: GetV1QuizQuestionParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizQuestion>>, TError, TData>>, }
+export const getGetV1QuizQuestionQueryOptions = <TData = Awaited<ReturnType<typeof getV1QuizQuestion>>, TError = ErrorResponse>(params?: GetV1QuizQuestionParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizQuestion>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1QuizQuestionQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1QuizQuestion>>> = ({ signal }) => getV1QuizQuestion(params, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1QuizQuestion>>> = ({ signal }) => getV1QuizQuestion(params, requestOptions, signal);
 
       
 
@@ -4205,7 +4209,7 @@ export function useGetV1QuizQuestion<TData = Awaited<ReturnType<typeof getV1Quiz
           TError,
           Awaited<ReturnType<typeof getV1QuizQuestion>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1QuizQuestion<TData = Awaited<ReturnType<typeof getV1QuizQuestion>>, TError = ErrorResponse>(
@@ -4215,11 +4219,11 @@ export function useGetV1QuizQuestion<TData = Awaited<ReturnType<typeof getV1Quiz
           TError,
           Awaited<ReturnType<typeof getV1QuizQuestion>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1QuizQuestion<TData = Awaited<ReturnType<typeof getV1QuizQuestion>>, TError = ErrorResponse>(
- params?: GetV1QuizQuestionParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizQuestion>>, TError, TData>>, }
+ params?: GetV1QuizQuestionParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizQuestion>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -4227,7 +4231,7 @@ export function useGetV1QuizQuestion<TData = Awaited<ReturnType<typeof getV1Quiz
  */
 
 export function useGetV1QuizQuestion<TData = Awaited<ReturnType<typeof getV1QuizQuestion>>, TError = ErrorResponse>(
- params?: GetV1QuizQuestionParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizQuestion>>, TError, TData>>, }
+ params?: GetV1QuizQuestionParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizQuestion>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -4250,14 +4254,14 @@ export function useGetV1QuizQuestion<TData = Awaited<ReturnType<typeof getV1Quiz
  */
 export const getV1QuizQuestionId = (
     id: number,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<Question>(
       {url: `/v1/quiz/question/${id}`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -4270,16 +4274,16 @@ export const getGetV1QuizQuestionIdQueryKey = (id?: number,) => {
     }
 
     
-export const getGetV1QuizQuestionIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1QuizQuestionId>>, TError = ErrorResponse>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizQuestionId>>, TError, TData>>, }
+export const getGetV1QuizQuestionIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1QuizQuestionId>>, TError = ErrorResponse>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizQuestionId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1QuizQuestionIdQueryKey(id);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1QuizQuestionId>>> = ({ signal }) => getV1QuizQuestionId(id, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1QuizQuestionId>>> = ({ signal }) => getV1QuizQuestionId(id, requestOptions, signal);
 
       
 
@@ -4299,7 +4303,7 @@ export function useGetV1QuizQuestionId<TData = Awaited<ReturnType<typeof getV1Qu
           TError,
           Awaited<ReturnType<typeof getV1QuizQuestionId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1QuizQuestionId<TData = Awaited<ReturnType<typeof getV1QuizQuestionId>>, TError = ErrorResponse>(
@@ -4309,11 +4313,11 @@ export function useGetV1QuizQuestionId<TData = Awaited<ReturnType<typeof getV1Qu
           TError,
           Awaited<ReturnType<typeof getV1QuizQuestionId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1QuizQuestionId<TData = Awaited<ReturnType<typeof getV1QuizQuestionId>>, TError = ErrorResponse>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizQuestionId>>, TError, TData>>, }
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizQuestionId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -4321,7 +4325,7 @@ export function useGetV1QuizQuestionId<TData = Awaited<ReturnType<typeof getV1Qu
  */
 
 export function useGetV1QuizQuestionId<TData = Awaited<ReturnType<typeof getV1QuizQuestionId>>, TError = ErrorResponse>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizQuestionId>>, TError, TData>>, }
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizQuestionId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -4344,7 +4348,7 @@ export function useGetV1QuizQuestionId<TData = Awaited<ReturnType<typeof getV1Qu
  */
 export const postV1QuizAnswer = (
     answerRequest: AnswerRequest,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -4353,21 +4357,21 @@ export const postV1QuizAnswer = (
       headers: {'Content-Type': 'application/json', },
       data: answerRequest, signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1QuizAnswerMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1QuizAnswer>>, TError,{data: AnswerRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1QuizAnswer>>, TError,{data: AnswerRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1QuizAnswer>>, TError,{data: AnswerRequest}, TContext> => {
 
 const mutationKey = ['postV1QuizAnswer'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -4375,7 +4379,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1QuizAnswer>>, {data: AnswerRequest}> = (props) => {
           const {data} = props ?? {};
 
-          return  postV1QuizAnswer(data,)
+          return  postV1QuizAnswer(data,requestOptions)
         }
 
         
@@ -4391,7 +4395,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Submit answer
  */
 export const usePostV1QuizAnswer = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1QuizAnswer>>, TError,{data: AnswerRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1QuizAnswer>>, TError,{data: AnswerRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1QuizAnswer>>,
         TError,
@@ -4410,14 +4414,14 @@ export const usePostV1QuizAnswer = <TError = ErrorResponse,
  */
 export const getV1QuizProgress = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<UserProgress>(
       {url: `/v1/quiz/progress`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -4430,16 +4434,16 @@ export const getGetV1QuizProgressQueryKey = () => {
     }
 
     
-export const getGetV1QuizProgressQueryOptions = <TData = Awaited<ReturnType<typeof getV1QuizProgress>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizProgress>>, TError, TData>>, }
+export const getGetV1QuizProgressQueryOptions = <TData = Awaited<ReturnType<typeof getV1QuizProgress>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizProgress>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1QuizProgressQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1QuizProgress>>> = ({ signal }) => getV1QuizProgress(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1QuizProgress>>> = ({ signal }) => getV1QuizProgress(requestOptions, signal);
 
       
 
@@ -4459,7 +4463,7 @@ export function useGetV1QuizProgress<TData = Awaited<ReturnType<typeof getV1Quiz
           TError,
           Awaited<ReturnType<typeof getV1QuizProgress>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1QuizProgress<TData = Awaited<ReturnType<typeof getV1QuizProgress>>, TError = ErrorResponse>(
@@ -4469,11 +4473,11 @@ export function useGetV1QuizProgress<TData = Awaited<ReturnType<typeof getV1Quiz
           TError,
           Awaited<ReturnType<typeof getV1QuizProgress>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1QuizProgress<TData = Awaited<ReturnType<typeof getV1QuizProgress>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizProgress>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizProgress>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -4481,7 +4485,7 @@ export function useGetV1QuizProgress<TData = Awaited<ReturnType<typeof getV1Quiz
  */
 
 export function useGetV1QuizProgress<TData = Awaited<ReturnType<typeof getV1QuizProgress>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizProgress>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizProgress>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -4504,7 +4508,7 @@ export function useGetV1QuizProgress<TData = Awaited<ReturnType<typeof getV1Quiz
  */
 export const getV1QuizAiTokenUsage = (
     params: GetV1QuizAiTokenUsageParams,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -4512,7 +4516,7 @@ export const getV1QuizAiTokenUsage = (
       {url: `/v1/quiz/ai-token-usage`, method: 'GET',
         params, signal
     },
-      );
+      options);
     }
   
 
@@ -4525,16 +4529,16 @@ export const getGetV1QuizAiTokenUsageQueryKey = (params?: GetV1QuizAiTokenUsageP
     }
 
     
-export const getGetV1QuizAiTokenUsageQueryOptions = <TData = Awaited<ReturnType<typeof getV1QuizAiTokenUsage>>, TError = ErrorResponse>(params: GetV1QuizAiTokenUsageParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsage>>, TError, TData>>, }
+export const getGetV1QuizAiTokenUsageQueryOptions = <TData = Awaited<ReturnType<typeof getV1QuizAiTokenUsage>>, TError = ErrorResponse>(params: GetV1QuizAiTokenUsageParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsage>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1QuizAiTokenUsageQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1QuizAiTokenUsage>>> = ({ signal }) => getV1QuizAiTokenUsage(params, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1QuizAiTokenUsage>>> = ({ signal }) => getV1QuizAiTokenUsage(params, requestOptions, signal);
 
       
 
@@ -4554,7 +4558,7 @@ export function useGetV1QuizAiTokenUsage<TData = Awaited<ReturnType<typeof getV1
           TError,
           Awaited<ReturnType<typeof getV1QuizAiTokenUsage>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1QuizAiTokenUsage<TData = Awaited<ReturnType<typeof getV1QuizAiTokenUsage>>, TError = ErrorResponse>(
@@ -4564,11 +4568,11 @@ export function useGetV1QuizAiTokenUsage<TData = Awaited<ReturnType<typeof getV1
           TError,
           Awaited<ReturnType<typeof getV1QuizAiTokenUsage>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1QuizAiTokenUsage<TData = Awaited<ReturnType<typeof getV1QuizAiTokenUsage>>, TError = ErrorResponse>(
- params: GetV1QuizAiTokenUsageParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsage>>, TError, TData>>, }
+ params: GetV1QuizAiTokenUsageParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsage>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -4576,7 +4580,7 @@ export function useGetV1QuizAiTokenUsage<TData = Awaited<ReturnType<typeof getV1
  */
 
 export function useGetV1QuizAiTokenUsage<TData = Awaited<ReturnType<typeof getV1QuizAiTokenUsage>>, TError = ErrorResponse>(
- params: GetV1QuizAiTokenUsageParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsage>>, TError, TData>>, }
+ params: GetV1QuizAiTokenUsageParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsage>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -4599,7 +4603,7 @@ export function useGetV1QuizAiTokenUsage<TData = Awaited<ReturnType<typeof getV1
  */
 export const getV1QuizAiTokenUsageDaily = (
     params: GetV1QuizAiTokenUsageDailyParams,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -4607,7 +4611,7 @@ export const getV1QuizAiTokenUsageDaily = (
       {url: `/v1/quiz/ai-token-usage/daily`, method: 'GET',
         params, signal
     },
-      );
+      options);
     }
   
 
@@ -4620,16 +4624,16 @@ export const getGetV1QuizAiTokenUsageDailyQueryKey = (params?: GetV1QuizAiTokenU
     }
 
     
-export const getGetV1QuizAiTokenUsageDailyQueryOptions = <TData = Awaited<ReturnType<typeof getV1QuizAiTokenUsageDaily>>, TError = ErrorResponse>(params: GetV1QuizAiTokenUsageDailyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsageDaily>>, TError, TData>>, }
+export const getGetV1QuizAiTokenUsageDailyQueryOptions = <TData = Awaited<ReturnType<typeof getV1QuizAiTokenUsageDaily>>, TError = ErrorResponse>(params: GetV1QuizAiTokenUsageDailyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsageDaily>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1QuizAiTokenUsageDailyQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1QuizAiTokenUsageDaily>>> = ({ signal }) => getV1QuizAiTokenUsageDaily(params, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1QuizAiTokenUsageDaily>>> = ({ signal }) => getV1QuizAiTokenUsageDaily(params, requestOptions, signal);
 
       
 
@@ -4649,7 +4653,7 @@ export function useGetV1QuizAiTokenUsageDaily<TData = Awaited<ReturnType<typeof 
           TError,
           Awaited<ReturnType<typeof getV1QuizAiTokenUsageDaily>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1QuizAiTokenUsageDaily<TData = Awaited<ReturnType<typeof getV1QuizAiTokenUsageDaily>>, TError = ErrorResponse>(
@@ -4659,11 +4663,11 @@ export function useGetV1QuizAiTokenUsageDaily<TData = Awaited<ReturnType<typeof 
           TError,
           Awaited<ReturnType<typeof getV1QuizAiTokenUsageDaily>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1QuizAiTokenUsageDaily<TData = Awaited<ReturnType<typeof getV1QuizAiTokenUsageDaily>>, TError = ErrorResponse>(
- params: GetV1QuizAiTokenUsageDailyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsageDaily>>, TError, TData>>, }
+ params: GetV1QuizAiTokenUsageDailyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsageDaily>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -4671,7 +4675,7 @@ export function useGetV1QuizAiTokenUsageDaily<TData = Awaited<ReturnType<typeof 
  */
 
 export function useGetV1QuizAiTokenUsageDaily<TData = Awaited<ReturnType<typeof getV1QuizAiTokenUsageDaily>>, TError = ErrorResponse>(
- params: GetV1QuizAiTokenUsageDailyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsageDaily>>, TError, TData>>, }
+ params: GetV1QuizAiTokenUsageDailyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsageDaily>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -4694,7 +4698,7 @@ export function useGetV1QuizAiTokenUsageDaily<TData = Awaited<ReturnType<typeof 
  */
 export const getV1QuizAiTokenUsageHourly = (
     params: GetV1QuizAiTokenUsageHourlyParams,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -4702,7 +4706,7 @@ export const getV1QuizAiTokenUsageHourly = (
       {url: `/v1/quiz/ai-token-usage/hourly`, method: 'GET',
         params, signal
     },
-      );
+      options);
     }
   
 
@@ -4715,16 +4719,16 @@ export const getGetV1QuizAiTokenUsageHourlyQueryKey = (params?: GetV1QuizAiToken
     }
 
     
-export const getGetV1QuizAiTokenUsageHourlyQueryOptions = <TData = Awaited<ReturnType<typeof getV1QuizAiTokenUsageHourly>>, TError = ErrorResponse>(params: GetV1QuizAiTokenUsageHourlyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsageHourly>>, TError, TData>>, }
+export const getGetV1QuizAiTokenUsageHourlyQueryOptions = <TData = Awaited<ReturnType<typeof getV1QuizAiTokenUsageHourly>>, TError = ErrorResponse>(params: GetV1QuizAiTokenUsageHourlyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsageHourly>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1QuizAiTokenUsageHourlyQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1QuizAiTokenUsageHourly>>> = ({ signal }) => getV1QuizAiTokenUsageHourly(params, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1QuizAiTokenUsageHourly>>> = ({ signal }) => getV1QuizAiTokenUsageHourly(params, requestOptions, signal);
 
       
 
@@ -4744,7 +4748,7 @@ export function useGetV1QuizAiTokenUsageHourly<TData = Awaited<ReturnType<typeof
           TError,
           Awaited<ReturnType<typeof getV1QuizAiTokenUsageHourly>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1QuizAiTokenUsageHourly<TData = Awaited<ReturnType<typeof getV1QuizAiTokenUsageHourly>>, TError = ErrorResponse>(
@@ -4754,11 +4758,11 @@ export function useGetV1QuizAiTokenUsageHourly<TData = Awaited<ReturnType<typeof
           TError,
           Awaited<ReturnType<typeof getV1QuizAiTokenUsageHourly>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1QuizAiTokenUsageHourly<TData = Awaited<ReturnType<typeof getV1QuizAiTokenUsageHourly>>, TError = ErrorResponse>(
- params: GetV1QuizAiTokenUsageHourlyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsageHourly>>, TError, TData>>, }
+ params: GetV1QuizAiTokenUsageHourlyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsageHourly>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -4766,7 +4770,7 @@ export function useGetV1QuizAiTokenUsageHourly<TData = Awaited<ReturnType<typeof
  */
 
 export function useGetV1QuizAiTokenUsageHourly<TData = Awaited<ReturnType<typeof getV1QuizAiTokenUsageHourly>>, TError = ErrorResponse>(
- params: GetV1QuizAiTokenUsageHourlyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsageHourly>>, TError, TData>>, }
+ params: GetV1QuizAiTokenUsageHourlyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizAiTokenUsageHourly>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -4790,7 +4794,7 @@ export function useGetV1QuizAiTokenUsageHourly<TData = Awaited<ReturnType<typeof
 export const postV1QuizQuestionIdReport = (
     id: number,
     reportQuestionRequest?: ReportQuestionRequest,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -4799,21 +4803,21 @@ export const postV1QuizQuestionIdReport = (
       headers: {'Content-Type': 'application/json', },
       data: reportQuestionRequest, signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1QuizQuestionIdReportMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1QuizQuestionIdReport>>, TError,{id: number;data: ReportQuestionRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1QuizQuestionIdReport>>, TError,{id: number;data: ReportQuestionRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1QuizQuestionIdReport>>, TError,{id: number;data: ReportQuestionRequest}, TContext> => {
 
 const mutationKey = ['postV1QuizQuestionIdReport'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -4821,7 +4825,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1QuizQuestionIdReport>>, {id: number;data: ReportQuestionRequest}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  postV1QuizQuestionIdReport(id,data,)
+          return  postV1QuizQuestionIdReport(id,data,requestOptions)
         }
 
         
@@ -4837,7 +4841,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Report question
  */
 export const usePostV1QuizQuestionIdReport = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1QuizQuestionIdReport>>, TError,{id: number;data: ReportQuestionRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1QuizQuestionIdReport>>, TError,{id: number;data: ReportQuestionRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1QuizQuestionIdReport>>,
         TError,
@@ -4857,7 +4861,7 @@ export const usePostV1QuizQuestionIdReport = <TError = ErrorResponse,
 export const postV1QuizQuestionIdMarkKnown = (
     id: number,
     markQuestionKnownRequest?: MarkQuestionKnownRequest,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -4866,21 +4870,21 @@ export const postV1QuizQuestionIdMarkKnown = (
       headers: {'Content-Type': 'application/json', },
       data: markQuestionKnownRequest, signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1QuizQuestionIdMarkKnownMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1QuizQuestionIdMarkKnown>>, TError,{id: number;data: MarkQuestionKnownRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1QuizQuestionIdMarkKnown>>, TError,{id: number;data: MarkQuestionKnownRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1QuizQuestionIdMarkKnown>>, TError,{id: number;data: MarkQuestionKnownRequest}, TContext> => {
 
 const mutationKey = ['postV1QuizQuestionIdMarkKnown'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -4888,7 +4892,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1QuizQuestionIdMarkKnown>>, {id: number;data: MarkQuestionKnownRequest}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  postV1QuizQuestionIdMarkKnown(id,data,)
+          return  postV1QuizQuestionIdMarkKnown(id,data,requestOptions)
         }
 
         
@@ -4904,7 +4908,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Mark question as known
  */
 export const usePostV1QuizQuestionIdMarkKnown = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1QuizQuestionIdMarkKnown>>, TError,{id: number;data: MarkQuestionKnownRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1QuizQuestionIdMarkKnown>>, TError,{id: number;data: MarkQuestionKnownRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1QuizQuestionIdMarkKnown>>,
         TError,
@@ -4923,14 +4927,14 @@ export const usePostV1QuizQuestionIdMarkKnown = <TError = ErrorResponse,
  */
 export const getV1QuizWorkerStatus = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<WorkerStatusResponse>(
       {url: `/v1/quiz/worker-status`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -4943,16 +4947,16 @@ export const getGetV1QuizWorkerStatusQueryKey = () => {
     }
 
     
-export const getGetV1QuizWorkerStatusQueryOptions = <TData = Awaited<ReturnType<typeof getV1QuizWorkerStatus>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizWorkerStatus>>, TError, TData>>, }
+export const getGetV1QuizWorkerStatusQueryOptions = <TData = Awaited<ReturnType<typeof getV1QuizWorkerStatus>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizWorkerStatus>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1QuizWorkerStatusQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1QuizWorkerStatus>>> = ({ signal }) => getV1QuizWorkerStatus(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1QuizWorkerStatus>>> = ({ signal }) => getV1QuizWorkerStatus(requestOptions, signal);
 
       
 
@@ -4972,7 +4976,7 @@ export function useGetV1QuizWorkerStatus<TData = Awaited<ReturnType<typeof getV1
           TError,
           Awaited<ReturnType<typeof getV1QuizWorkerStatus>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1QuizWorkerStatus<TData = Awaited<ReturnType<typeof getV1QuizWorkerStatus>>, TError = ErrorResponse>(
@@ -4982,11 +4986,11 @@ export function useGetV1QuizWorkerStatus<TData = Awaited<ReturnType<typeof getV1
           TError,
           Awaited<ReturnType<typeof getV1QuizWorkerStatus>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1QuizWorkerStatus<TData = Awaited<ReturnType<typeof getV1QuizWorkerStatus>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizWorkerStatus>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizWorkerStatus>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -4994,7 +4998,7 @@ export function useGetV1QuizWorkerStatus<TData = Awaited<ReturnType<typeof getV1
  */
 
 export function useGetV1QuizWorkerStatus<TData = Awaited<ReturnType<typeof getV1QuizWorkerStatus>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizWorkerStatus>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1QuizWorkerStatus>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -5017,7 +5021,7 @@ export function useGetV1QuizWorkerStatus<TData = Awaited<ReturnType<typeof getV1
  */
 export const putV1Settings = (
     userSettings: UserSettings,
- ) => {
+ options?: SecondParameter<typeof customInstance>,) => {
       
       
       return customInstance<SuccessResponse>(
@@ -5025,21 +5029,21 @@ export const putV1Settings = (
       headers: {'Content-Type': 'application/json', },
       data: userSettings
     },
-      );
+      options);
     }
   
 
 
 export const getPutV1SettingsMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1Settings>>, TError,{data: UserSettings}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1Settings>>, TError,{data: UserSettings}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof putV1Settings>>, TError,{data: UserSettings}, TContext> => {
 
 const mutationKey = ['putV1Settings'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -5047,7 +5051,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof putV1Settings>>, {data: UserSettings}> = (props) => {
           const {data} = props ?? {};
 
-          return  putV1Settings(data,)
+          return  putV1Settings(data,requestOptions)
         }
 
         
@@ -5063,7 +5067,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Update user settings
  */
 export const usePutV1Settings = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1Settings>>, TError,{data: UserSettings}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1Settings>>, TError,{data: UserSettings}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof putV1Settings>>,
         TError,
@@ -5082,14 +5086,14 @@ export const usePutV1Settings = <TError = ErrorResponse,
  */
 export const getV1SettingsAiProviders = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<AIProviders>(
       {url: `/v1/settings/ai-providers`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -5102,16 +5106,16 @@ export const getGetV1SettingsAiProvidersQueryKey = () => {
     }
 
     
-export const getGetV1SettingsAiProvidersQueryOptions = <TData = Awaited<ReturnType<typeof getV1SettingsAiProviders>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SettingsAiProviders>>, TError, TData>>, }
+export const getGetV1SettingsAiProvidersQueryOptions = <TData = Awaited<ReturnType<typeof getV1SettingsAiProviders>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SettingsAiProviders>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1SettingsAiProvidersQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1SettingsAiProviders>>> = ({ signal }) => getV1SettingsAiProviders(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1SettingsAiProviders>>> = ({ signal }) => getV1SettingsAiProviders(requestOptions, signal);
 
       
 
@@ -5131,7 +5135,7 @@ export function useGetV1SettingsAiProviders<TData = Awaited<ReturnType<typeof ge
           TError,
           Awaited<ReturnType<typeof getV1SettingsAiProviders>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1SettingsAiProviders<TData = Awaited<ReturnType<typeof getV1SettingsAiProviders>>, TError = unknown>(
@@ -5141,11 +5145,11 @@ export function useGetV1SettingsAiProviders<TData = Awaited<ReturnType<typeof ge
           TError,
           Awaited<ReturnType<typeof getV1SettingsAiProviders>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1SettingsAiProviders<TData = Awaited<ReturnType<typeof getV1SettingsAiProviders>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SettingsAiProviders>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SettingsAiProviders>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -5153,7 +5157,7 @@ export function useGetV1SettingsAiProviders<TData = Awaited<ReturnType<typeof ge
  */
 
 export function useGetV1SettingsAiProviders<TData = Awaited<ReturnType<typeof getV1SettingsAiProviders>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SettingsAiProviders>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SettingsAiProviders>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -5176,7 +5180,7 @@ export function useGetV1SettingsAiProviders<TData = Awaited<ReturnType<typeof ge
  */
 export const postV1SettingsTestAi = (
     testAIRequest: TestAIRequest,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -5185,21 +5189,21 @@ export const postV1SettingsTestAi = (
       headers: {'Content-Type': 'application/json', },
       data: testAIRequest, signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1SettingsTestAiMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsTestAi>>, TError,{data: TestAIRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsTestAi>>, TError,{data: TestAIRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsTestAi>>, TError,{data: TestAIRequest}, TContext> => {
 
 const mutationKey = ['postV1SettingsTestAi'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -5207,7 +5211,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1SettingsTestAi>>, {data: TestAIRequest}> = (props) => {
           const {data} = props ?? {};
 
-          return  postV1SettingsTestAi(data,)
+          return  postV1SettingsTestAi(data,requestOptions)
         }
 
         
@@ -5223,7 +5227,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Test AI connection
  */
 export const usePostV1SettingsTestAi = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsTestAi>>, TError,{data: TestAIRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsTestAi>>, TError,{data: TestAIRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1SettingsTestAi>>,
         TError,
@@ -5242,28 +5246,28 @@ export const usePostV1SettingsTestAi = <TError = ErrorResponse,
  */
 export const postV1SettingsTestEmail = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<SuccessResponse>(
       {url: `/v1/settings/test-email`, method: 'POST', signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1SettingsTestEmailMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsTestEmail>>, TError,void, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsTestEmail>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsTestEmail>>, TError,void, TContext> => {
 
 const mutationKey = ['postV1SettingsTestEmail'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -5271,7 +5275,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1SettingsTestEmail>>, void> = () => {
           
 
-          return  postV1SettingsTestEmail()
+          return  postV1SettingsTestEmail(requestOptions)
         }
 
         
@@ -5287,7 +5291,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Send test email
  */
 export const usePostV1SettingsTestEmail = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsTestEmail>>, TError,void, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsTestEmail>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1SettingsTestEmail>>,
         TError,
@@ -5306,7 +5310,7 @@ export const usePostV1SettingsTestEmail = <TError = ErrorResponse,
  */
 export const putV1SettingsWordOfDayEmail = (
     wordOfDayEmailPreferenceRequest: WordOfDayEmailPreferenceRequest,
- ) => {
+ options?: SecondParameter<typeof customInstance>,) => {
       
       
       return customInstance<SuccessResponse>(
@@ -5314,21 +5318,21 @@ export const putV1SettingsWordOfDayEmail = (
       headers: {'Content-Type': 'application/json', },
       data: wordOfDayEmailPreferenceRequest
     },
-      );
+      options);
     }
   
 
 
 export const getPutV1SettingsWordOfDayEmailMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1SettingsWordOfDayEmail>>, TError,{data: WordOfDayEmailPreferenceRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1SettingsWordOfDayEmail>>, TError,{data: WordOfDayEmailPreferenceRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof putV1SettingsWordOfDayEmail>>, TError,{data: WordOfDayEmailPreferenceRequest}, TContext> => {
 
 const mutationKey = ['putV1SettingsWordOfDayEmail'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -5336,7 +5340,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof putV1SettingsWordOfDayEmail>>, {data: WordOfDayEmailPreferenceRequest}> = (props) => {
           const {data} = props ?? {};
 
-          return  putV1SettingsWordOfDayEmail(data,)
+          return  putV1SettingsWordOfDayEmail(data,requestOptions)
         }
 
         
@@ -5352,7 +5356,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Update Word of the Day email preference
  */
 export const usePutV1SettingsWordOfDayEmail = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1SettingsWordOfDayEmail>>, TError,{data: WordOfDayEmailPreferenceRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1SettingsWordOfDayEmail>>, TError,{data: WordOfDayEmailPreferenceRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof putV1SettingsWordOfDayEmail>>,
         TError,
@@ -5371,7 +5375,7 @@ export const usePutV1SettingsWordOfDayEmail = <TError = ErrorResponse,
  */
 export const getV1SettingsLevels = (
     params?: GetV1SettingsLevelsParams,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -5379,7 +5383,7 @@ export const getV1SettingsLevels = (
       {url: `/v1/settings/levels`, method: 'GET',
         params, signal
     },
-      );
+      options);
     }
   
 
@@ -5392,16 +5396,16 @@ export const getGetV1SettingsLevelsQueryKey = (params?: GetV1SettingsLevelsParam
     }
 
     
-export const getGetV1SettingsLevelsQueryOptions = <TData = Awaited<ReturnType<typeof getV1SettingsLevels>>, TError = unknown>(params?: GetV1SettingsLevelsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SettingsLevels>>, TError, TData>>, }
+export const getGetV1SettingsLevelsQueryOptions = <TData = Awaited<ReturnType<typeof getV1SettingsLevels>>, TError = unknown>(params?: GetV1SettingsLevelsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SettingsLevels>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1SettingsLevelsQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1SettingsLevels>>> = ({ signal }) => getV1SettingsLevels(params, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1SettingsLevels>>> = ({ signal }) => getV1SettingsLevels(params, requestOptions, signal);
 
       
 
@@ -5421,7 +5425,7 @@ export function useGetV1SettingsLevels<TData = Awaited<ReturnType<typeof getV1Se
           TError,
           Awaited<ReturnType<typeof getV1SettingsLevels>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1SettingsLevels<TData = Awaited<ReturnType<typeof getV1SettingsLevels>>, TError = unknown>(
@@ -5431,11 +5435,11 @@ export function useGetV1SettingsLevels<TData = Awaited<ReturnType<typeof getV1Se
           TError,
           Awaited<ReturnType<typeof getV1SettingsLevels>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1SettingsLevels<TData = Awaited<ReturnType<typeof getV1SettingsLevels>>, TError = unknown>(
- params?: GetV1SettingsLevelsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SettingsLevels>>, TError, TData>>, }
+ params?: GetV1SettingsLevelsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SettingsLevels>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -5443,7 +5447,7 @@ export function useGetV1SettingsLevels<TData = Awaited<ReturnType<typeof getV1Se
  */
 
 export function useGetV1SettingsLevels<TData = Awaited<ReturnType<typeof getV1SettingsLevels>>, TError = unknown>(
- params?: GetV1SettingsLevelsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SettingsLevels>>, TError, TData>>, }
+ params?: GetV1SettingsLevelsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SettingsLevels>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -5466,14 +5470,14 @@ export function useGetV1SettingsLevels<TData = Awaited<ReturnType<typeof getV1Se
  */
 export const getV1SettingsLanguages = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<LanguagesResponse>(
       {url: `/v1/settings/languages`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -5486,16 +5490,16 @@ export const getGetV1SettingsLanguagesQueryKey = () => {
     }
 
     
-export const getGetV1SettingsLanguagesQueryOptions = <TData = Awaited<ReturnType<typeof getV1SettingsLanguages>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SettingsLanguages>>, TError, TData>>, }
+export const getGetV1SettingsLanguagesQueryOptions = <TData = Awaited<ReturnType<typeof getV1SettingsLanguages>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SettingsLanguages>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1SettingsLanguagesQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1SettingsLanguages>>> = ({ signal }) => getV1SettingsLanguages(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1SettingsLanguages>>> = ({ signal }) => getV1SettingsLanguages(requestOptions, signal);
 
       
 
@@ -5515,7 +5519,7 @@ export function useGetV1SettingsLanguages<TData = Awaited<ReturnType<typeof getV
           TError,
           Awaited<ReturnType<typeof getV1SettingsLanguages>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1SettingsLanguages<TData = Awaited<ReturnType<typeof getV1SettingsLanguages>>, TError = unknown>(
@@ -5525,11 +5529,11 @@ export function useGetV1SettingsLanguages<TData = Awaited<ReturnType<typeof getV
           TError,
           Awaited<ReturnType<typeof getV1SettingsLanguages>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1SettingsLanguages<TData = Awaited<ReturnType<typeof getV1SettingsLanguages>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SettingsLanguages>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SettingsLanguages>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -5537,7 +5541,7 @@ export function useGetV1SettingsLanguages<TData = Awaited<ReturnType<typeof getV
  */
 
 export function useGetV1SettingsLanguages<TData = Awaited<ReturnType<typeof getV1SettingsLanguages>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SettingsLanguages>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SettingsLanguages>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -5560,14 +5564,14 @@ export function useGetV1SettingsLanguages<TData = Awaited<ReturnType<typeof getV
  */
 export const getV1SettingsApiKeyProvider = (
     provider: string,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<APIKeyAvailabilityResponse>(
       {url: `/v1/settings/api-key/${provider}`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -5580,16 +5584,16 @@ export const getGetV1SettingsApiKeyProviderQueryKey = (provider?: string,) => {
     }
 
     
-export const getGetV1SettingsApiKeyProviderQueryOptions = <TData = Awaited<ReturnType<typeof getV1SettingsApiKeyProvider>>, TError = ErrorResponse>(provider: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SettingsApiKeyProvider>>, TError, TData>>, }
+export const getGetV1SettingsApiKeyProviderQueryOptions = <TData = Awaited<ReturnType<typeof getV1SettingsApiKeyProvider>>, TError = ErrorResponse>(provider: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SettingsApiKeyProvider>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1SettingsApiKeyProviderQueryKey(provider);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1SettingsApiKeyProvider>>> = ({ signal }) => getV1SettingsApiKeyProvider(provider, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1SettingsApiKeyProvider>>> = ({ signal }) => getV1SettingsApiKeyProvider(provider, requestOptions, signal);
 
       
 
@@ -5609,7 +5613,7 @@ export function useGetV1SettingsApiKeyProvider<TData = Awaited<ReturnType<typeof
           TError,
           Awaited<ReturnType<typeof getV1SettingsApiKeyProvider>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1SettingsApiKeyProvider<TData = Awaited<ReturnType<typeof getV1SettingsApiKeyProvider>>, TError = ErrorResponse>(
@@ -5619,11 +5623,11 @@ export function useGetV1SettingsApiKeyProvider<TData = Awaited<ReturnType<typeof
           TError,
           Awaited<ReturnType<typeof getV1SettingsApiKeyProvider>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1SettingsApiKeyProvider<TData = Awaited<ReturnType<typeof getV1SettingsApiKeyProvider>>, TError = ErrorResponse>(
- provider: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SettingsApiKeyProvider>>, TError, TData>>, }
+ provider: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SettingsApiKeyProvider>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -5631,7 +5635,7 @@ export function useGetV1SettingsApiKeyProvider<TData = Awaited<ReturnType<typeof
  */
 
 export function useGetV1SettingsApiKeyProvider<TData = Awaited<ReturnType<typeof getV1SettingsApiKeyProvider>>, TError = ErrorResponse>(
- provider: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SettingsApiKeyProvider>>, TError, TData>>, }
+ provider: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SettingsApiKeyProvider>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -5654,7 +5658,7 @@ export function useGetV1SettingsApiKeyProvider<TData = Awaited<ReturnType<typeof
  */
 export const postV1AiConversations = (
     createConversationRequest: CreateConversationRequest,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -5663,21 +5667,21 @@ export const postV1AiConversations = (
       headers: {'Content-Type': 'application/json', },
       data: createConversationRequest, signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1AiConversationsMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AiConversations>>, TError,{data: CreateConversationRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AiConversations>>, TError,{data: CreateConversationRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1AiConversations>>, TError,{data: CreateConversationRequest}, TContext> => {
 
 const mutationKey = ['postV1AiConversations'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -5685,7 +5689,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AiConversations>>, {data: CreateConversationRequest}> = (props) => {
           const {data} = props ?? {};
 
-          return  postV1AiConversations(data,)
+          return  postV1AiConversations(data,requestOptions)
         }
 
         
@@ -5701,7 +5705,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Create a new AI conversation
  */
 export const usePostV1AiConversations = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AiConversations>>, TError,{data: CreateConversationRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AiConversations>>, TError,{data: CreateConversationRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1AiConversations>>,
         TError,
@@ -5720,7 +5724,7 @@ export const usePostV1AiConversations = <TError = ErrorResponse,
  */
 export const getV1AiConversations = (
     params?: GetV1AiConversationsParams,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -5728,7 +5732,7 @@ export const getV1AiConversations = (
       {url: `/v1/ai/conversations`, method: 'GET',
         params, signal
     },
-      );
+      options);
     }
   
 
@@ -5741,16 +5745,16 @@ export const getGetV1AiConversationsQueryKey = (params?: GetV1AiConversationsPar
     }
 
     
-export const getGetV1AiConversationsQueryOptions = <TData = Awaited<ReturnType<typeof getV1AiConversations>>, TError = ErrorResponse>(params?: GetV1AiConversationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiConversations>>, TError, TData>>, }
+export const getGetV1AiConversationsQueryOptions = <TData = Awaited<ReturnType<typeof getV1AiConversations>>, TError = ErrorResponse>(params?: GetV1AiConversationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiConversations>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AiConversationsQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AiConversations>>> = ({ signal }) => getV1AiConversations(params, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AiConversations>>> = ({ signal }) => getV1AiConversations(params, requestOptions, signal);
 
       
 
@@ -5770,7 +5774,7 @@ export function useGetV1AiConversations<TData = Awaited<ReturnType<typeof getV1A
           TError,
           Awaited<ReturnType<typeof getV1AiConversations>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AiConversations<TData = Awaited<ReturnType<typeof getV1AiConversations>>, TError = ErrorResponse>(
@@ -5780,11 +5784,11 @@ export function useGetV1AiConversations<TData = Awaited<ReturnType<typeof getV1A
           TError,
           Awaited<ReturnType<typeof getV1AiConversations>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AiConversations<TData = Awaited<ReturnType<typeof getV1AiConversations>>, TError = ErrorResponse>(
- params?: GetV1AiConversationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiConversations>>, TError, TData>>, }
+ params?: GetV1AiConversationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiConversations>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -5792,7 +5796,7 @@ export function useGetV1AiConversations<TData = Awaited<ReturnType<typeof getV1A
  */
 
 export function useGetV1AiConversations<TData = Awaited<ReturnType<typeof getV1AiConversations>>, TError = ErrorResponse>(
- params?: GetV1AiConversationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiConversations>>, TError, TData>>, }
+ params?: GetV1AiConversationsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiConversations>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -5815,14 +5819,14 @@ export function useGetV1AiConversations<TData = Awaited<ReturnType<typeof getV1A
  */
 export const getV1AiConversationsId = (
     id: string,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<Conversation>(
       {url: `/v1/ai/conversations/${id}`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -5835,16 +5839,16 @@ export const getGetV1AiConversationsIdQueryKey = (id?: string,) => {
     }
 
     
-export const getGetV1AiConversationsIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1AiConversationsId>>, TError = ErrorResponse>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiConversationsId>>, TError, TData>>, }
+export const getGetV1AiConversationsIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1AiConversationsId>>, TError = ErrorResponse>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiConversationsId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AiConversationsIdQueryKey(id);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AiConversationsId>>> = ({ signal }) => getV1AiConversationsId(id, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AiConversationsId>>> = ({ signal }) => getV1AiConversationsId(id, requestOptions, signal);
 
       
 
@@ -5864,7 +5868,7 @@ export function useGetV1AiConversationsId<TData = Awaited<ReturnType<typeof getV
           TError,
           Awaited<ReturnType<typeof getV1AiConversationsId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AiConversationsId<TData = Awaited<ReturnType<typeof getV1AiConversationsId>>, TError = ErrorResponse>(
@@ -5874,11 +5878,11 @@ export function useGetV1AiConversationsId<TData = Awaited<ReturnType<typeof getV
           TError,
           Awaited<ReturnType<typeof getV1AiConversationsId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AiConversationsId<TData = Awaited<ReturnType<typeof getV1AiConversationsId>>, TError = ErrorResponse>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiConversationsId>>, TError, TData>>, }
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiConversationsId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -5886,7 +5890,7 @@ export function useGetV1AiConversationsId<TData = Awaited<ReturnType<typeof getV
  */
 
 export function useGetV1AiConversationsId<TData = Awaited<ReturnType<typeof getV1AiConversationsId>>, TError = ErrorResponse>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiConversationsId>>, TError, TData>>, }
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiConversationsId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -5910,7 +5914,7 @@ export function useGetV1AiConversationsId<TData = Awaited<ReturnType<typeof getV
 export const putV1AiConversationsId = (
     id: string,
     updateConversationRequest: UpdateConversationRequest,
- ) => {
+ options?: SecondParameter<typeof customInstance>,) => {
       
       
       return customInstance<Conversation>(
@@ -5918,21 +5922,21 @@ export const putV1AiConversationsId = (
       headers: {'Content-Type': 'application/json', },
       data: updateConversationRequest
     },
-      );
+      options);
     }
   
 
 
 export const getPutV1AiConversationsIdMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1AiConversationsId>>, TError,{id: string;data: UpdateConversationRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1AiConversationsId>>, TError,{id: string;data: UpdateConversationRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof putV1AiConversationsId>>, TError,{id: string;data: UpdateConversationRequest}, TContext> => {
 
 const mutationKey = ['putV1AiConversationsId'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -5940,7 +5944,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof putV1AiConversationsId>>, {id: string;data: UpdateConversationRequest}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  putV1AiConversationsId(id,data,)
+          return  putV1AiConversationsId(id,data,requestOptions)
         }
 
         
@@ -5956,7 +5960,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Update AI conversation
  */
 export const usePutV1AiConversationsId = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1AiConversationsId>>, TError,{id: string;data: UpdateConversationRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1AiConversationsId>>, TError,{id: string;data: UpdateConversationRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof putV1AiConversationsId>>,
         TError,
@@ -5975,27 +5979,27 @@ export const usePutV1AiConversationsId = <TError = ErrorResponse,
  */
 export const deleteV1AiConversationsId = (
     id: string,
- ) => {
+ options?: SecondParameter<typeof customInstance>,) => {
       
       
       return customInstance<void>(
       {url: `/v1/ai/conversations/${id}`, method: 'DELETE'
     },
-      );
+      options);
     }
   
 
 
 export const getDeleteV1AiConversationsIdMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AiConversationsId>>, TError,{id: string}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AiConversationsId>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof deleteV1AiConversationsId>>, TError,{id: string}, TContext> => {
 
 const mutationKey = ['deleteV1AiConversationsId'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -6003,7 +6007,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteV1AiConversationsId>>, {id: string}> = (props) => {
           const {id} = props ?? {};
 
-          return  deleteV1AiConversationsId(id,)
+          return  deleteV1AiConversationsId(id,requestOptions)
         }
 
         
@@ -6019,7 +6023,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Delete AI conversation
  */
 export const useDeleteV1AiConversationsId = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AiConversationsId>>, TError,{id: string}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AiConversationsId>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteV1AiConversationsId>>,
         TError,
@@ -6039,7 +6043,7 @@ export const useDeleteV1AiConversationsId = <TError = ErrorResponse,
 export const postV1AiConversationsConversationIdMessages = (
     conversationId: string,
     createMessageRequest: CreateMessageRequest,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -6048,21 +6052,21 @@ export const postV1AiConversationsConversationIdMessages = (
       headers: {'Content-Type': 'application/json', },
       data: createMessageRequest, signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1AiConversationsConversationIdMessagesMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AiConversationsConversationIdMessages>>, TError,{conversationId: string;data: CreateMessageRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AiConversationsConversationIdMessages>>, TError,{conversationId: string;data: CreateMessageRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1AiConversationsConversationIdMessages>>, TError,{conversationId: string;data: CreateMessageRequest}, TContext> => {
 
 const mutationKey = ['postV1AiConversationsConversationIdMessages'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -6070,7 +6074,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AiConversationsConversationIdMessages>>, {conversationId: string;data: CreateMessageRequest}> = (props) => {
           const {conversationId,data} = props ?? {};
 
-          return  postV1AiConversationsConversationIdMessages(conversationId,data,)
+          return  postV1AiConversationsConversationIdMessages(conversationId,data,requestOptions)
         }
 
         
@@ -6086,7 +6090,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Add message to conversation
  */
 export const usePostV1AiConversationsConversationIdMessages = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AiConversationsConversationIdMessages>>, TError,{conversationId: string;data: CreateMessageRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AiConversationsConversationIdMessages>>, TError,{conversationId: string;data: CreateMessageRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1AiConversationsConversationIdMessages>>,
         TError,
@@ -6105,7 +6109,7 @@ export const usePostV1AiConversationsConversationIdMessages = <TError = ErrorRes
  */
 export const getV1AiSearch = (
     params: GetV1AiSearchParams,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -6113,7 +6117,7 @@ export const getV1AiSearch = (
       {url: `/v1/ai/search`, method: 'GET',
         params, signal
     },
-      );
+      options);
     }
   
 
@@ -6126,16 +6130,16 @@ export const getGetV1AiSearchQueryKey = (params?: GetV1AiSearchParams,) => {
     }
 
     
-export const getGetV1AiSearchQueryOptions = <TData = Awaited<ReturnType<typeof getV1AiSearch>>, TError = ErrorResponse>(params: GetV1AiSearchParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiSearch>>, TError, TData>>, }
+export const getGetV1AiSearchQueryOptions = <TData = Awaited<ReturnType<typeof getV1AiSearch>>, TError = ErrorResponse>(params: GetV1AiSearchParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiSearch>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AiSearchQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AiSearch>>> = ({ signal }) => getV1AiSearch(params, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AiSearch>>> = ({ signal }) => getV1AiSearch(params, requestOptions, signal);
 
       
 
@@ -6155,7 +6159,7 @@ export function useGetV1AiSearch<TData = Awaited<ReturnType<typeof getV1AiSearch
           TError,
           Awaited<ReturnType<typeof getV1AiSearch>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AiSearch<TData = Awaited<ReturnType<typeof getV1AiSearch>>, TError = ErrorResponse>(
@@ -6165,11 +6169,11 @@ export function useGetV1AiSearch<TData = Awaited<ReturnType<typeof getV1AiSearch
           TError,
           Awaited<ReturnType<typeof getV1AiSearch>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AiSearch<TData = Awaited<ReturnType<typeof getV1AiSearch>>, TError = ErrorResponse>(
- params: GetV1AiSearchParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiSearch>>, TError, TData>>, }
+ params: GetV1AiSearchParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiSearch>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -6177,7 +6181,7 @@ export function useGetV1AiSearch<TData = Awaited<ReturnType<typeof getV1AiSearch
  */
 
 export function useGetV1AiSearch<TData = Awaited<ReturnType<typeof getV1AiSearch>>, TError = ErrorResponse>(
- params: GetV1AiSearchParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiSearch>>, TError, TData>>, }
+ params: GetV1AiSearchParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiSearch>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -6200,7 +6204,7 @@ export function useGetV1AiSearch<TData = Awaited<ReturnType<typeof getV1AiSearch
  */
 export const putV1AiConversationsBookmark = (
     putV1AiConversationsBookmarkBody: PutV1AiConversationsBookmarkBody,
- ) => {
+ options?: SecondParameter<typeof customInstance>,) => {
       
       
       return customInstance<BookmarkStatusResponse>(
@@ -6208,21 +6212,21 @@ export const putV1AiConversationsBookmark = (
       headers: {'Content-Type': 'application/json', },
       data: putV1AiConversationsBookmarkBody
     },
-      );
+      options);
     }
   
 
 
 export const getPutV1AiConversationsBookmarkMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1AiConversationsBookmark>>, TError,{data: PutV1AiConversationsBookmarkBody}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1AiConversationsBookmark>>, TError,{data: PutV1AiConversationsBookmarkBody}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof putV1AiConversationsBookmark>>, TError,{data: PutV1AiConversationsBookmarkBody}, TContext> => {
 
 const mutationKey = ['putV1AiConversationsBookmark'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -6230,7 +6234,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof putV1AiConversationsBookmark>>, {data: PutV1AiConversationsBookmarkBody}> = (props) => {
           const {data} = props ?? {};
 
-          return  putV1AiConversationsBookmark(data,)
+          return  putV1AiConversationsBookmark(data,requestOptions)
         }
 
         
@@ -6246,7 +6250,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Toggle message bookmark
  */
 export const usePutV1AiConversationsBookmark = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1AiConversationsBookmark>>, TError,{data: PutV1AiConversationsBookmarkBody}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1AiConversationsBookmark>>, TError,{data: PutV1AiConversationsBookmarkBody}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof putV1AiConversationsBookmark>>,
         TError,
@@ -6265,7 +6269,7 @@ export const usePutV1AiConversationsBookmark = <TError = ErrorResponse,
  */
 export const getV1AiBookmarks = (
     params?: GetV1AiBookmarksParams,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -6273,7 +6277,7 @@ export const getV1AiBookmarks = (
       {url: `/v1/ai/bookmarks`, method: 'GET',
         params, signal
     },
-      );
+      options);
     }
   
 
@@ -6286,16 +6290,16 @@ export const getGetV1AiBookmarksQueryKey = (params?: GetV1AiBookmarksParams,) =>
     }
 
     
-export const getGetV1AiBookmarksQueryOptions = <TData = Awaited<ReturnType<typeof getV1AiBookmarks>>, TError = ErrorResponse>(params?: GetV1AiBookmarksParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiBookmarks>>, TError, TData>>, }
+export const getGetV1AiBookmarksQueryOptions = <TData = Awaited<ReturnType<typeof getV1AiBookmarks>>, TError = ErrorResponse>(params?: GetV1AiBookmarksParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiBookmarks>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AiBookmarksQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AiBookmarks>>> = ({ signal }) => getV1AiBookmarks(params, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AiBookmarks>>> = ({ signal }) => getV1AiBookmarks(params, requestOptions, signal);
 
       
 
@@ -6315,7 +6319,7 @@ export function useGetV1AiBookmarks<TData = Awaited<ReturnType<typeof getV1AiBoo
           TError,
           Awaited<ReturnType<typeof getV1AiBookmarks>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AiBookmarks<TData = Awaited<ReturnType<typeof getV1AiBookmarks>>, TError = ErrorResponse>(
@@ -6325,11 +6329,11 @@ export function useGetV1AiBookmarks<TData = Awaited<ReturnType<typeof getV1AiBoo
           TError,
           Awaited<ReturnType<typeof getV1AiBookmarks>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AiBookmarks<TData = Awaited<ReturnType<typeof getV1AiBookmarks>>, TError = ErrorResponse>(
- params?: GetV1AiBookmarksParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiBookmarks>>, TError, TData>>, }
+ params?: GetV1AiBookmarksParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiBookmarks>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -6337,7 +6341,7 @@ export function useGetV1AiBookmarks<TData = Awaited<ReturnType<typeof getV1AiBoo
  */
 
 export function useGetV1AiBookmarks<TData = Awaited<ReturnType<typeof getV1AiBookmarks>>, TError = ErrorResponse>(
- params?: GetV1AiBookmarksParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiBookmarks>>, TError, TData>>, }
+ params?: GetV1AiBookmarksParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AiBookmarks>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -6360,7 +6364,7 @@ export function useGetV1AiBookmarks<TData = Awaited<ReturnType<typeof getV1AiBoo
  */
 export const postV1Snippets = (
     createSnippetRequest: CreateSnippetRequest,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -6369,21 +6373,21 @@ export const postV1Snippets = (
       headers: {'Content-Type': 'application/json', },
       data: createSnippetRequest, signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1SnippetsMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1Snippets>>, TError,{data: CreateSnippetRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1Snippets>>, TError,{data: CreateSnippetRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1Snippets>>, TError,{data: CreateSnippetRequest}, TContext> => {
 
 const mutationKey = ['postV1Snippets'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -6391,7 +6395,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1Snippets>>, {data: CreateSnippetRequest}> = (props) => {
           const {data} = props ?? {};
 
-          return  postV1Snippets(data,)
+          return  postV1Snippets(data,requestOptions)
         }
 
         
@@ -6407,7 +6411,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Save a new vocabulary snippet
  */
 export const usePostV1Snippets = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1Snippets>>, TError,{data: CreateSnippetRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1Snippets>>, TError,{data: CreateSnippetRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1Snippets>>,
         TError,
@@ -6426,7 +6430,7 @@ export const usePostV1Snippets = <TError = ErrorResponse,
  */
 export const getV1Snippets = (
     params?: GetV1SnippetsParams,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -6434,7 +6438,7 @@ export const getV1Snippets = (
       {url: `/v1/snippets`, method: 'GET',
         params, signal
     },
-      );
+      options);
     }
   
 
@@ -6447,16 +6451,16 @@ export const getGetV1SnippetsQueryKey = (params?: GetV1SnippetsParams,) => {
     }
 
     
-export const getGetV1SnippetsQueryOptions = <TData = Awaited<ReturnType<typeof getV1Snippets>>, TError = ErrorResponse>(params?: GetV1SnippetsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Snippets>>, TError, TData>>, }
+export const getGetV1SnippetsQueryOptions = <TData = Awaited<ReturnType<typeof getV1Snippets>>, TError = ErrorResponse>(params?: GetV1SnippetsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Snippets>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1SnippetsQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1Snippets>>> = ({ signal }) => getV1Snippets(params, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1Snippets>>> = ({ signal }) => getV1Snippets(params, requestOptions, signal);
 
       
 
@@ -6476,7 +6480,7 @@ export function useGetV1Snippets<TData = Awaited<ReturnType<typeof getV1Snippets
           TError,
           Awaited<ReturnType<typeof getV1Snippets>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1Snippets<TData = Awaited<ReturnType<typeof getV1Snippets>>, TError = ErrorResponse>(
@@ -6486,11 +6490,11 @@ export function useGetV1Snippets<TData = Awaited<ReturnType<typeof getV1Snippets
           TError,
           Awaited<ReturnType<typeof getV1Snippets>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1Snippets<TData = Awaited<ReturnType<typeof getV1Snippets>>, TError = ErrorResponse>(
- params?: GetV1SnippetsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Snippets>>, TError, TData>>, }
+ params?: GetV1SnippetsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Snippets>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -6498,7 +6502,7 @@ export function useGetV1Snippets<TData = Awaited<ReturnType<typeof getV1Snippets
  */
 
 export function useGetV1Snippets<TData = Awaited<ReturnType<typeof getV1Snippets>>, TError = ErrorResponse>(
- params?: GetV1SnippetsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Snippets>>, TError, TData>>, }
+ params?: GetV1SnippetsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Snippets>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -6521,7 +6525,7 @@ export function useGetV1Snippets<TData = Awaited<ReturnType<typeof getV1Snippets
  */
 export const getV1SnippetsSearch = (
     params: GetV1SnippetsSearchParams,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -6529,7 +6533,7 @@ export const getV1SnippetsSearch = (
       {url: `/v1/snippets/search`, method: 'GET',
         params, signal
     },
-      );
+      options);
     }
   
 
@@ -6542,16 +6546,16 @@ export const getGetV1SnippetsSearchQueryKey = (params?: GetV1SnippetsSearchParam
     }
 
     
-export const getGetV1SnippetsSearchQueryOptions = <TData = Awaited<ReturnType<typeof getV1SnippetsSearch>>, TError = ErrorResponse>(params: GetV1SnippetsSearchParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsSearch>>, TError, TData>>, }
+export const getGetV1SnippetsSearchQueryOptions = <TData = Awaited<ReturnType<typeof getV1SnippetsSearch>>, TError = ErrorResponse>(params: GetV1SnippetsSearchParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsSearch>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1SnippetsSearchQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1SnippetsSearch>>> = ({ signal }) => getV1SnippetsSearch(params, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1SnippetsSearch>>> = ({ signal }) => getV1SnippetsSearch(params, requestOptions, signal);
 
       
 
@@ -6571,7 +6575,7 @@ export function useGetV1SnippetsSearch<TData = Awaited<ReturnType<typeof getV1Sn
           TError,
           Awaited<ReturnType<typeof getV1SnippetsSearch>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1SnippetsSearch<TData = Awaited<ReturnType<typeof getV1SnippetsSearch>>, TError = ErrorResponse>(
@@ -6581,11 +6585,11 @@ export function useGetV1SnippetsSearch<TData = Awaited<ReturnType<typeof getV1Sn
           TError,
           Awaited<ReturnType<typeof getV1SnippetsSearch>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1SnippetsSearch<TData = Awaited<ReturnType<typeof getV1SnippetsSearch>>, TError = ErrorResponse>(
- params: GetV1SnippetsSearchParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsSearch>>, TError, TData>>, }
+ params: GetV1SnippetsSearchParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsSearch>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -6593,7 +6597,7 @@ export function useGetV1SnippetsSearch<TData = Awaited<ReturnType<typeof getV1Sn
  */
 
 export function useGetV1SnippetsSearch<TData = Awaited<ReturnType<typeof getV1SnippetsSearch>>, TError = ErrorResponse>(
- params: GetV1SnippetsSearchParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsSearch>>, TError, TData>>, }
+ params: GetV1SnippetsSearchParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsSearch>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -6616,14 +6620,14 @@ export function useGetV1SnippetsSearch<TData = Awaited<ReturnType<typeof getV1Sn
  */
 export const getV1SnippetsByQuestionQuestionId = (
     questionId: number,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<SnippetsResponse>(
       {url: `/v1/snippets/by-question/${questionId}`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -6636,16 +6640,16 @@ export const getGetV1SnippetsByQuestionQuestionIdQueryKey = (questionId?: number
     }
 
     
-export const getGetV1SnippetsByQuestionQuestionIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1SnippetsByQuestionQuestionId>>, TError = ErrorResponse>(questionId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsByQuestionQuestionId>>, TError, TData>>, }
+export const getGetV1SnippetsByQuestionQuestionIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1SnippetsByQuestionQuestionId>>, TError = ErrorResponse>(questionId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsByQuestionQuestionId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1SnippetsByQuestionQuestionIdQueryKey(questionId);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1SnippetsByQuestionQuestionId>>> = ({ signal }) => getV1SnippetsByQuestionQuestionId(questionId, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1SnippetsByQuestionQuestionId>>> = ({ signal }) => getV1SnippetsByQuestionQuestionId(questionId, requestOptions, signal);
 
       
 
@@ -6665,7 +6669,7 @@ export function useGetV1SnippetsByQuestionQuestionId<TData = Awaited<ReturnType<
           TError,
           Awaited<ReturnType<typeof getV1SnippetsByQuestionQuestionId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1SnippetsByQuestionQuestionId<TData = Awaited<ReturnType<typeof getV1SnippetsByQuestionQuestionId>>, TError = ErrorResponse>(
@@ -6675,11 +6679,11 @@ export function useGetV1SnippetsByQuestionQuestionId<TData = Awaited<ReturnType<
           TError,
           Awaited<ReturnType<typeof getV1SnippetsByQuestionQuestionId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1SnippetsByQuestionQuestionId<TData = Awaited<ReturnType<typeof getV1SnippetsByQuestionQuestionId>>, TError = ErrorResponse>(
- questionId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsByQuestionQuestionId>>, TError, TData>>, }
+ questionId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsByQuestionQuestionId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -6687,7 +6691,7 @@ export function useGetV1SnippetsByQuestionQuestionId<TData = Awaited<ReturnType<
  */
 
 export function useGetV1SnippetsByQuestionQuestionId<TData = Awaited<ReturnType<typeof getV1SnippetsByQuestionQuestionId>>, TError = ErrorResponse>(
- questionId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsByQuestionQuestionId>>, TError, TData>>, }
+ questionId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsByQuestionQuestionId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -6710,14 +6714,14 @@ export function useGetV1SnippetsByQuestionQuestionId<TData = Awaited<ReturnType<
  */
 export const getV1SnippetsBySectionSectionId = (
     sectionId: number,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<SnippetsResponse>(
       {url: `/v1/snippets/by-section/${sectionId}`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -6730,16 +6734,16 @@ export const getGetV1SnippetsBySectionSectionIdQueryKey = (sectionId?: number,) 
     }
 
     
-export const getGetV1SnippetsBySectionSectionIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1SnippetsBySectionSectionId>>, TError = ErrorResponse>(sectionId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsBySectionSectionId>>, TError, TData>>, }
+export const getGetV1SnippetsBySectionSectionIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1SnippetsBySectionSectionId>>, TError = ErrorResponse>(sectionId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsBySectionSectionId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1SnippetsBySectionSectionIdQueryKey(sectionId);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1SnippetsBySectionSectionId>>> = ({ signal }) => getV1SnippetsBySectionSectionId(sectionId, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1SnippetsBySectionSectionId>>> = ({ signal }) => getV1SnippetsBySectionSectionId(sectionId, requestOptions, signal);
 
       
 
@@ -6759,7 +6763,7 @@ export function useGetV1SnippetsBySectionSectionId<TData = Awaited<ReturnType<ty
           TError,
           Awaited<ReturnType<typeof getV1SnippetsBySectionSectionId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1SnippetsBySectionSectionId<TData = Awaited<ReturnType<typeof getV1SnippetsBySectionSectionId>>, TError = ErrorResponse>(
@@ -6769,11 +6773,11 @@ export function useGetV1SnippetsBySectionSectionId<TData = Awaited<ReturnType<ty
           TError,
           Awaited<ReturnType<typeof getV1SnippetsBySectionSectionId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1SnippetsBySectionSectionId<TData = Awaited<ReturnType<typeof getV1SnippetsBySectionSectionId>>, TError = ErrorResponse>(
- sectionId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsBySectionSectionId>>, TError, TData>>, }
+ sectionId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsBySectionSectionId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -6781,7 +6785,7 @@ export function useGetV1SnippetsBySectionSectionId<TData = Awaited<ReturnType<ty
  */
 
 export function useGetV1SnippetsBySectionSectionId<TData = Awaited<ReturnType<typeof getV1SnippetsBySectionSectionId>>, TError = ErrorResponse>(
- sectionId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsBySectionSectionId>>, TError, TData>>, }
+ sectionId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsBySectionSectionId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -6804,14 +6808,14 @@ export function useGetV1SnippetsBySectionSectionId<TData = Awaited<ReturnType<ty
  */
 export const getV1SnippetsByStoryStoryId = (
     storyId: number,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<SnippetsResponse>(
       {url: `/v1/snippets/by-story/${storyId}`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -6824,16 +6828,16 @@ export const getGetV1SnippetsByStoryStoryIdQueryKey = (storyId?: number,) => {
     }
 
     
-export const getGetV1SnippetsByStoryStoryIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1SnippetsByStoryStoryId>>, TError = ErrorResponse>(storyId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsByStoryStoryId>>, TError, TData>>, }
+export const getGetV1SnippetsByStoryStoryIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1SnippetsByStoryStoryId>>, TError = ErrorResponse>(storyId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsByStoryStoryId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1SnippetsByStoryStoryIdQueryKey(storyId);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1SnippetsByStoryStoryId>>> = ({ signal }) => getV1SnippetsByStoryStoryId(storyId, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1SnippetsByStoryStoryId>>> = ({ signal }) => getV1SnippetsByStoryStoryId(storyId, requestOptions, signal);
 
       
 
@@ -6853,7 +6857,7 @@ export function useGetV1SnippetsByStoryStoryId<TData = Awaited<ReturnType<typeof
           TError,
           Awaited<ReturnType<typeof getV1SnippetsByStoryStoryId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1SnippetsByStoryStoryId<TData = Awaited<ReturnType<typeof getV1SnippetsByStoryStoryId>>, TError = ErrorResponse>(
@@ -6863,11 +6867,11 @@ export function useGetV1SnippetsByStoryStoryId<TData = Awaited<ReturnType<typeof
           TError,
           Awaited<ReturnType<typeof getV1SnippetsByStoryStoryId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1SnippetsByStoryStoryId<TData = Awaited<ReturnType<typeof getV1SnippetsByStoryStoryId>>, TError = ErrorResponse>(
- storyId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsByStoryStoryId>>, TError, TData>>, }
+ storyId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsByStoryStoryId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -6875,7 +6879,7 @@ export function useGetV1SnippetsByStoryStoryId<TData = Awaited<ReturnType<typeof
  */
 
 export function useGetV1SnippetsByStoryStoryId<TData = Awaited<ReturnType<typeof getV1SnippetsByStoryStoryId>>, TError = ErrorResponse>(
- storyId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsByStoryStoryId>>, TError, TData>>, }
+ storyId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsByStoryStoryId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -6898,14 +6902,14 @@ export function useGetV1SnippetsByStoryStoryId<TData = Awaited<ReturnType<typeof
  */
 export const getV1SnippetsId = (
     id: number,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<Snippet>(
       {url: `/v1/snippets/${id}`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -6918,16 +6922,16 @@ export const getGetV1SnippetsIdQueryKey = (id?: number,) => {
     }
 
     
-export const getGetV1SnippetsIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1SnippetsId>>, TError = ErrorResponse>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsId>>, TError, TData>>, }
+export const getGetV1SnippetsIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1SnippetsId>>, TError = ErrorResponse>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1SnippetsIdQueryKey(id);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1SnippetsId>>> = ({ signal }) => getV1SnippetsId(id, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1SnippetsId>>> = ({ signal }) => getV1SnippetsId(id, requestOptions, signal);
 
       
 
@@ -6947,7 +6951,7 @@ export function useGetV1SnippetsId<TData = Awaited<ReturnType<typeof getV1Snippe
           TError,
           Awaited<ReturnType<typeof getV1SnippetsId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1SnippetsId<TData = Awaited<ReturnType<typeof getV1SnippetsId>>, TError = ErrorResponse>(
@@ -6957,11 +6961,11 @@ export function useGetV1SnippetsId<TData = Awaited<ReturnType<typeof getV1Snippe
           TError,
           Awaited<ReturnType<typeof getV1SnippetsId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1SnippetsId<TData = Awaited<ReturnType<typeof getV1SnippetsId>>, TError = ErrorResponse>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsId>>, TError, TData>>, }
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -6969,7 +6973,7 @@ export function useGetV1SnippetsId<TData = Awaited<ReturnType<typeof getV1Snippe
  */
 
 export function useGetV1SnippetsId<TData = Awaited<ReturnType<typeof getV1SnippetsId>>, TError = ErrorResponse>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsId>>, TError, TData>>, }
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1SnippetsId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -6993,7 +6997,7 @@ export function useGetV1SnippetsId<TData = Awaited<ReturnType<typeof getV1Snippe
 export const putV1SnippetsId = (
     id: number,
     updateSnippetRequest: UpdateSnippetRequest,
- ) => {
+ options?: SecondParameter<typeof customInstance>,) => {
       
       
       return customInstance<Snippet>(
@@ -7001,21 +7005,21 @@ export const putV1SnippetsId = (
       headers: {'Content-Type': 'application/json', },
       data: updateSnippetRequest
     },
-      );
+      options);
     }
   
 
 
 export const getPutV1SnippetsIdMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1SnippetsId>>, TError,{id: number;data: UpdateSnippetRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1SnippetsId>>, TError,{id: number;data: UpdateSnippetRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof putV1SnippetsId>>, TError,{id: number;data: UpdateSnippetRequest}, TContext> => {
 
 const mutationKey = ['putV1SnippetsId'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -7023,7 +7027,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof putV1SnippetsId>>, {id: number;data: UpdateSnippetRequest}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  putV1SnippetsId(id,data,)
+          return  putV1SnippetsId(id,data,requestOptions)
         }
 
         
@@ -7039,7 +7043,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Update a snippet
  */
 export const usePutV1SnippetsId = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1SnippetsId>>, TError,{id: number;data: UpdateSnippetRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1SnippetsId>>, TError,{id: number;data: UpdateSnippetRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof putV1SnippetsId>>,
         TError,
@@ -7058,27 +7062,27 @@ export const usePutV1SnippetsId = <TError = ErrorResponse,
  */
 export const deleteV1SnippetsId = (
     id: number,
- ) => {
+ options?: SecondParameter<typeof customInstance>,) => {
       
       
       return customInstance<void>(
       {url: `/v1/snippets/${id}`, method: 'DELETE'
     },
-      );
+      options);
     }
   
 
 
 export const getDeleteV1SnippetsIdMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1SnippetsId>>, TError,{id: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1SnippetsId>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof deleteV1SnippetsId>>, TError,{id: number}, TContext> => {
 
 const mutationKey = ['deleteV1SnippetsId'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -7086,7 +7090,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteV1SnippetsId>>, {id: number}> = (props) => {
           const {id} = props ?? {};
 
-          return  deleteV1SnippetsId(id,)
+          return  deleteV1SnippetsId(id,requestOptions)
         }
 
         
@@ -7102,7 +7106,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Delete a snippet
  */
 export const useDeleteV1SnippetsId = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1SnippetsId>>, TError,{id: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1SnippetsId>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteV1SnippetsId>>,
         TError,
@@ -7121,7 +7125,7 @@ export const useDeleteV1SnippetsId = <TError = ErrorResponse,
  */
 export const putV1UserzProfile = (
     userUpdateRequest: UserUpdateRequest,
- ) => {
+ options?: SecondParameter<typeof customInstance>,) => {
       
       
       return customInstance<UserProfileMessageResponse>(
@@ -7129,21 +7133,21 @@ export const putV1UserzProfile = (
       headers: {'Content-Type': 'application/json', },
       data: userUpdateRequest
     },
-      );
+      options);
     }
   
 
 
 export const getPutV1UserzProfileMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1UserzProfile>>, TError,{data: UserUpdateRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1UserzProfile>>, TError,{data: UserUpdateRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof putV1UserzProfile>>, TError,{data: UserUpdateRequest}, TContext> => {
 
 const mutationKey = ['putV1UserzProfile'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -7151,7 +7155,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof putV1UserzProfile>>, {data: UserUpdateRequest}> = (props) => {
           const {data} = props ?? {};
 
-          return  putV1UserzProfile(data,)
+          return  putV1UserzProfile(data,requestOptions)
         }
 
         
@@ -7167,7 +7171,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Update current user profile
  */
 export const usePutV1UserzProfile = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1UserzProfile>>, TError,{data: UserUpdateRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1UserzProfile>>, TError,{data: UserUpdateRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof putV1UserzProfile>>,
         TError,
@@ -7186,7 +7190,7 @@ export const usePutV1UserzProfile = <TError = ErrorResponse,
  */
 export const postV1Feedback = (
     feedbackSubmissionRequest: FeedbackSubmissionRequest,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -7195,21 +7199,21 @@ export const postV1Feedback = (
       headers: {'Content-Type': 'application/json', },
       data: feedbackSubmissionRequest, signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1FeedbackMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1Feedback>>, TError,{data: FeedbackSubmissionRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1Feedback>>, TError,{data: FeedbackSubmissionRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1Feedback>>, TError,{data: FeedbackSubmissionRequest}, TContext> => {
 
 const mutationKey = ['postV1Feedback'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -7217,7 +7221,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1Feedback>>, {data: FeedbackSubmissionRequest}> = (props) => {
           const {data} = props ?? {};
 
-          return  postV1Feedback(data,)
+          return  postV1Feedback(data,requestOptions)
         }
 
         
@@ -7233,7 +7237,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Submit feedback or report an issue
  */
 export const usePostV1Feedback = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1Feedback>>, TError,{data: FeedbackSubmissionRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1Feedback>>, TError,{data: FeedbackSubmissionRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1Feedback>>,
         TError,
@@ -7252,14 +7256,14 @@ export const usePostV1Feedback = <TError = ErrorResponse,
  */
 export const getV1AdminBackend = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<string>(
       {url: `/v1/admin/backend`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -7272,16 +7276,16 @@ export const getGetV1AdminBackendQueryKey = () => {
     }
 
     
-export const getGetV1AdminBackendQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackend>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackend>>, TError, TData>>, }
+export const getGetV1AdminBackendQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackend>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackend>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AdminBackendQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackend>>> = ({ signal }) => getV1AdminBackend(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackend>>> = ({ signal }) => getV1AdminBackend(requestOptions, signal);
 
       
 
@@ -7301,7 +7305,7 @@ export function useGetV1AdminBackend<TData = Awaited<ReturnType<typeof getV1Admi
           TError,
           Awaited<ReturnType<typeof getV1AdminBackend>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackend<TData = Awaited<ReturnType<typeof getV1AdminBackend>>, TError = ErrorResponse>(
@@ -7311,11 +7315,11 @@ export function useGetV1AdminBackend<TData = Awaited<ReturnType<typeof getV1Admi
           TError,
           Awaited<ReturnType<typeof getV1AdminBackend>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackend<TData = Awaited<ReturnType<typeof getV1AdminBackend>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackend>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackend>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -7323,7 +7327,7 @@ export function useGetV1AdminBackend<TData = Awaited<ReturnType<typeof getV1Admi
  */
 
 export function useGetV1AdminBackend<TData = Awaited<ReturnType<typeof getV1AdminBackend>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackend>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackend>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -7346,14 +7350,14 @@ export function useGetV1AdminBackend<TData = Awaited<ReturnType<typeof getV1Admi
  */
 export const getV1AdminBackendUserz = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<AdminUsersResponse>(
       {url: `/v1/admin/backend/userz`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -7366,16 +7370,16 @@ export const getGetV1AdminBackendUserzQueryKey = () => {
     }
 
     
-export const getGetV1AdminBackendUserzQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendUserz>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendUserz>>, TError, TData>>, }
+export const getGetV1AdminBackendUserzQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendUserz>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendUserz>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AdminBackendUserzQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendUserz>>> = ({ signal }) => getV1AdminBackendUserz(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendUserz>>> = ({ signal }) => getV1AdminBackendUserz(requestOptions, signal);
 
       
 
@@ -7395,7 +7399,7 @@ export function useGetV1AdminBackendUserz<TData = Awaited<ReturnType<typeof getV
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendUserz>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendUserz<TData = Awaited<ReturnType<typeof getV1AdminBackendUserz>>, TError = ErrorResponse>(
@@ -7405,11 +7409,11 @@ export function useGetV1AdminBackendUserz<TData = Awaited<ReturnType<typeof getV
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendUserz>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendUserz<TData = Awaited<ReturnType<typeof getV1AdminBackendUserz>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendUserz>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendUserz>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -7417,7 +7421,7 @@ export function useGetV1AdminBackendUserz<TData = Awaited<ReturnType<typeof getV
  */
 
 export function useGetV1AdminBackendUserz<TData = Awaited<ReturnType<typeof getV1AdminBackendUserz>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendUserz>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendUserz>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -7440,7 +7444,7 @@ export function useGetV1AdminBackendUserz<TData = Awaited<ReturnType<typeof getV
  */
 export const postV1AdminBackendUserz = (
     postV1AdminBackendUserzBody: PostV1AdminBackendUserzBody,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -7449,21 +7453,21 @@ export const postV1AdminBackendUserz = (
       headers: {'Content-Type': 'application/json', },
       data: postV1AdminBackendUserzBody, signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1AdminBackendUserzMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendUserz>>, TError,{data: PostV1AdminBackendUserzBody}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendUserz>>, TError,{data: PostV1AdminBackendUserzBody}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendUserz>>, TError,{data: PostV1AdminBackendUserzBody}, TContext> => {
 
 const mutationKey = ['postV1AdminBackendUserz'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -7471,7 +7475,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AdminBackendUserz>>, {data: PostV1AdminBackendUserzBody}> = (props) => {
           const {data} = props ?? {};
 
-          return  postV1AdminBackendUserz(data,)
+          return  postV1AdminBackendUserz(data,requestOptions)
         }
 
         
@@ -7487,7 +7491,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Create a new user
  */
 export const usePostV1AdminBackendUserz = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendUserz>>, TError,{data: PostV1AdminBackendUserzBody}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendUserz>>, TError,{data: PostV1AdminBackendUserzBody}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1AdminBackendUserz>>,
         TError,
@@ -7506,28 +7510,28 @@ export const usePostV1AdminBackendUserz = <TError = ErrorResponse,
  */
 export const postV1SettingsClearStories = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<SuccessResponse>(
       {url: `/v1/settings/clear-stories`, method: 'POST', signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1SettingsClearStoriesMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsClearStories>>, TError,void, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsClearStories>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsClearStories>>, TError,void, TContext> => {
 
 const mutationKey = ['postV1SettingsClearStories'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -7535,7 +7539,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1SettingsClearStories>>, void> = () => {
           
 
-          return  postV1SettingsClearStories()
+          return  postV1SettingsClearStories(requestOptions)
         }
 
         
@@ -7551,7 +7555,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Delete all stories for the authenticated user
  */
 export const usePostV1SettingsClearStories = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsClearStories>>, TError,void, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsClearStories>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1SettingsClearStories>>,
         TError,
@@ -7570,28 +7574,28 @@ export const usePostV1SettingsClearStories = <TError = ErrorResponse,
  */
 export const postV1SettingsResetAccount = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<SuccessResponse>(
       {url: `/v1/settings/reset-account`, method: 'POST', signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1SettingsResetAccountMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsResetAccount>>, TError,void, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsResetAccount>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsResetAccount>>, TError,void, TContext> => {
 
 const mutationKey = ['postV1SettingsResetAccount'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -7599,7 +7603,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1SettingsResetAccount>>, void> = () => {
           
 
-          return  postV1SettingsResetAccount()
+          return  postV1SettingsResetAccount(requestOptions)
         }
 
         
@@ -7615,7 +7619,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Reset the authenticated user's account
  */
 export const usePostV1SettingsResetAccount = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsResetAccount>>, TError,void, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsResetAccount>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1SettingsResetAccount>>,
         TError,
@@ -7634,28 +7638,28 @@ export const usePostV1SettingsResetAccount = <TError = ErrorResponse,
  */
 export const postV1SettingsClearAiChats = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<SuccessResponse>(
       {url: `/v1/settings/clear-ai-chats`, method: 'POST', signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1SettingsClearAiChatsMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsClearAiChats>>, TError,void, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsClearAiChats>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsClearAiChats>>, TError,void, TContext> => {
 
 const mutationKey = ['postV1SettingsClearAiChats'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -7663,7 +7667,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1SettingsClearAiChats>>, void> = () => {
           
 
-          return  postV1SettingsClearAiChats()
+          return  postV1SettingsClearAiChats(requestOptions)
         }
 
         
@@ -7679,7 +7683,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Delete all AI chats for the authenticated user
  */
 export const usePostV1SettingsClearAiChats = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsClearAiChats>>, TError,void, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsClearAiChats>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1SettingsClearAiChats>>,
         TError,
@@ -7698,28 +7702,28 @@ export const usePostV1SettingsClearAiChats = <TError = ErrorResponse,
  */
 export const postV1SettingsClearTranslationPracticeHistory = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<SuccessResponse>(
       {url: `/v1/settings/clear-translation-practice-history`, method: 'POST', signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1SettingsClearTranslationPracticeHistoryMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsClearTranslationPracticeHistory>>, TError,void, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsClearTranslationPracticeHistory>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsClearTranslationPracticeHistory>>, TError,void, TContext> => {
 
 const mutationKey = ['postV1SettingsClearTranslationPracticeHistory'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -7727,7 +7731,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1SettingsClearTranslationPracticeHistory>>, void> = () => {
           
 
-          return  postV1SettingsClearTranslationPracticeHistory()
+          return  postV1SettingsClearTranslationPracticeHistory(requestOptions)
         }
 
         
@@ -7743,7 +7747,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Delete all translation practice history for the authenticated user
  */
 export const usePostV1SettingsClearTranslationPracticeHistory = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsClearTranslationPracticeHistory>>, TError,void, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsClearTranslationPracticeHistory>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1SettingsClearTranslationPracticeHistory>>,
         TError,
@@ -7762,7 +7766,7 @@ export const usePostV1SettingsClearTranslationPracticeHistory = <TError = ErrorR
  */
 export const getV1AdminBackendUserzPaginated = (
     params?: GetV1AdminBackendUserzPaginatedParams,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -7770,7 +7774,7 @@ export const getV1AdminBackendUserzPaginated = (
       {url: `/v1/admin/backend/userz/paginated`, method: 'GET',
         params, signal
     },
-      );
+      options);
     }
   
 
@@ -7783,16 +7787,16 @@ export const getGetV1AdminBackendUserzPaginatedQueryKey = (params?: GetV1AdminBa
     }
 
     
-export const getGetV1AdminBackendUserzPaginatedQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendUserzPaginated>>, TError = ErrorResponse>(params?: GetV1AdminBackendUserzPaginatedParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendUserzPaginated>>, TError, TData>>, }
+export const getGetV1AdminBackendUserzPaginatedQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendUserzPaginated>>, TError = ErrorResponse>(params?: GetV1AdminBackendUserzPaginatedParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendUserzPaginated>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AdminBackendUserzPaginatedQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendUserzPaginated>>> = ({ signal }) => getV1AdminBackendUserzPaginated(params, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendUserzPaginated>>> = ({ signal }) => getV1AdminBackendUserzPaginated(params, requestOptions, signal);
 
       
 
@@ -7812,7 +7816,7 @@ export function useGetV1AdminBackendUserzPaginated<TData = Awaited<ReturnType<ty
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendUserzPaginated>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendUserzPaginated<TData = Awaited<ReturnType<typeof getV1AdminBackendUserzPaginated>>, TError = ErrorResponse>(
@@ -7822,11 +7826,11 @@ export function useGetV1AdminBackendUserzPaginated<TData = Awaited<ReturnType<ty
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendUserzPaginated>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendUserzPaginated<TData = Awaited<ReturnType<typeof getV1AdminBackendUserzPaginated>>, TError = ErrorResponse>(
- params?: GetV1AdminBackendUserzPaginatedParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendUserzPaginated>>, TError, TData>>, }
+ params?: GetV1AdminBackendUserzPaginatedParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendUserzPaginated>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -7834,7 +7838,7 @@ export function useGetV1AdminBackendUserzPaginated<TData = Awaited<ReturnType<ty
  */
 
 export function useGetV1AdminBackendUserzPaginated<TData = Awaited<ReturnType<typeof getV1AdminBackendUserzPaginated>>, TError = ErrorResponse>(
- params?: GetV1AdminBackendUserzPaginatedParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendUserzPaginated>>, TError, TData>>, }
+ params?: GetV1AdminBackendUserzPaginatedParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendUserzPaginated>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -7858,7 +7862,7 @@ export function useGetV1AdminBackendUserzPaginated<TData = Awaited<ReturnType<ty
 export const putV1AdminBackendUserzId = (
     id: number,
     userUpdateRequest: UserUpdateRequest,
- ) => {
+ options?: SecondParameter<typeof customInstance>,) => {
       
       
       return customInstance<UserProfileMessageResponse>(
@@ -7866,21 +7870,21 @@ export const putV1AdminBackendUserzId = (
       headers: {'Content-Type': 'application/json', },
       data: userUpdateRequest
     },
-      );
+      options);
     }
   
 
 
 export const getPutV1AdminBackendUserzIdMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1AdminBackendUserzId>>, TError,{id: number;data: UserUpdateRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1AdminBackendUserzId>>, TError,{id: number;data: UserUpdateRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof putV1AdminBackendUserzId>>, TError,{id: number;data: UserUpdateRequest}, TContext> => {
 
 const mutationKey = ['putV1AdminBackendUserzId'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -7888,7 +7892,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof putV1AdminBackendUserzId>>, {id: number;data: UserUpdateRequest}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  putV1AdminBackendUserzId(id,data,)
+          return  putV1AdminBackendUserzId(id,data,requestOptions)
         }
 
         
@@ -7904,7 +7908,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Update user details
  */
 export const usePutV1AdminBackendUserzId = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1AdminBackendUserzId>>, TError,{id: number;data: UserUpdateRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1AdminBackendUserzId>>, TError,{id: number;data: UserUpdateRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof putV1AdminBackendUserzId>>,
         TError,
@@ -7923,27 +7927,27 @@ export const usePutV1AdminBackendUserzId = <TError = ErrorResponse,
  */
 export const deleteV1AdminBackendUserzId = (
     id: number,
- ) => {
+ options?: SecondParameter<typeof customInstance>,) => {
       
       
       return customInstance<MessageResponse>(
       {url: `/v1/admin/backend/userz/${id}`, method: 'DELETE'
     },
-      );
+      options);
     }
   
 
 
 export const getDeleteV1AdminBackendUserzIdMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendUserzId>>, TError,{id: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendUserzId>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendUserzId>>, TError,{id: number}, TContext> => {
 
 const mutationKey = ['deleteV1AdminBackendUserzId'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -7951,7 +7955,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteV1AdminBackendUserzId>>, {id: number}> = (props) => {
           const {id} = props ?? {};
 
-          return  deleteV1AdminBackendUserzId(id,)
+          return  deleteV1AdminBackendUserzId(id,requestOptions)
         }
 
         
@@ -7967,7 +7971,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Delete user
  */
 export const useDeleteV1AdminBackendUserzId = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendUserzId>>, TError,{id: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendUserzId>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteV1AdminBackendUserzId>>,
         TError,
@@ -7987,7 +7991,7 @@ export const useDeleteV1AdminBackendUserzId = <TError = ErrorResponse,
 export const postV1AdminBackendUserzIdResetPassword = (
     id: number,
     passwordResetRequest: PasswordResetRequest,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -7996,21 +8000,21 @@ export const postV1AdminBackendUserzIdResetPassword = (
       headers: {'Content-Type': 'application/json', },
       data: passwordResetRequest, signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1AdminBackendUserzIdResetPasswordMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendUserzIdResetPassword>>, TError,{id: number;data: PasswordResetRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendUserzIdResetPassword>>, TError,{id: number;data: PasswordResetRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendUserzIdResetPassword>>, TError,{id: number;data: PasswordResetRequest}, TContext> => {
 
 const mutationKey = ['postV1AdminBackendUserzIdResetPassword'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -8018,7 +8022,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AdminBackendUserzIdResetPassword>>, {id: number;data: PasswordResetRequest}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  postV1AdminBackendUserzIdResetPassword(id,data,)
+          return  postV1AdminBackendUserzIdResetPassword(id,data,requestOptions)
         }
 
         
@@ -8034,7 +8038,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Reset user password
  */
 export const usePostV1AdminBackendUserzIdResetPassword = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendUserzIdResetPassword>>, TError,{id: number;data: PasswordResetRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendUserzIdResetPassword>>, TError,{id: number;data: PasswordResetRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1AdminBackendUserzIdResetPassword>>,
         TError,
@@ -8053,14 +8057,14 @@ export const usePostV1AdminBackendUserzIdResetPassword = <TError = ErrorResponse
  */
 export const getV1AdminBackendRoles = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<AdminRolesResponse>(
       {url: `/v1/admin/backend/roles`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -8073,16 +8077,16 @@ export const getGetV1AdminBackendRolesQueryKey = () => {
     }
 
     
-export const getGetV1AdminBackendRolesQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendRoles>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendRoles>>, TError, TData>>, }
+export const getGetV1AdminBackendRolesQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendRoles>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendRoles>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AdminBackendRolesQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendRoles>>> = ({ signal }) => getV1AdminBackendRoles(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendRoles>>> = ({ signal }) => getV1AdminBackendRoles(requestOptions, signal);
 
       
 
@@ -8102,7 +8106,7 @@ export function useGetV1AdminBackendRoles<TData = Awaited<ReturnType<typeof getV
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendRoles>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendRoles<TData = Awaited<ReturnType<typeof getV1AdminBackendRoles>>, TError = ErrorResponse>(
@@ -8112,11 +8116,11 @@ export function useGetV1AdminBackendRoles<TData = Awaited<ReturnType<typeof getV
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendRoles>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendRoles<TData = Awaited<ReturnType<typeof getV1AdminBackendRoles>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendRoles>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendRoles>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -8124,7 +8128,7 @@ export function useGetV1AdminBackendRoles<TData = Awaited<ReturnType<typeof getV
  */
 
 export function useGetV1AdminBackendRoles<TData = Awaited<ReturnType<typeof getV1AdminBackendRoles>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendRoles>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendRoles>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -8147,14 +8151,14 @@ export function useGetV1AdminBackendRoles<TData = Awaited<ReturnType<typeof getV
  */
 export const getV1AdminBackendUserzIdRoles = (
     id: number,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<AdminRolesResponse>(
       {url: `/v1/admin/backend/userz/${id}/roles`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -8167,16 +8171,16 @@ export const getGetV1AdminBackendUserzIdRolesQueryKey = (id?: number,) => {
     }
 
     
-export const getGetV1AdminBackendUserzIdRolesQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendUserzIdRoles>>, TError = ErrorResponse>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendUserzIdRoles>>, TError, TData>>, }
+export const getGetV1AdminBackendUserzIdRolesQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendUserzIdRoles>>, TError = ErrorResponse>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendUserzIdRoles>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AdminBackendUserzIdRolesQueryKey(id);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendUserzIdRoles>>> = ({ signal }) => getV1AdminBackendUserzIdRoles(id, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendUserzIdRoles>>> = ({ signal }) => getV1AdminBackendUserzIdRoles(id, requestOptions, signal);
 
       
 
@@ -8196,7 +8200,7 @@ export function useGetV1AdminBackendUserzIdRoles<TData = Awaited<ReturnType<type
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendUserzIdRoles>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendUserzIdRoles<TData = Awaited<ReturnType<typeof getV1AdminBackendUserzIdRoles>>, TError = ErrorResponse>(
@@ -8206,11 +8210,11 @@ export function useGetV1AdminBackendUserzIdRoles<TData = Awaited<ReturnType<type
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendUserzIdRoles>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendUserzIdRoles<TData = Awaited<ReturnType<typeof getV1AdminBackendUserzIdRoles>>, TError = ErrorResponse>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendUserzIdRoles>>, TError, TData>>, }
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendUserzIdRoles>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -8218,7 +8222,7 @@ export function useGetV1AdminBackendUserzIdRoles<TData = Awaited<ReturnType<type
  */
 
 export function useGetV1AdminBackendUserzIdRoles<TData = Awaited<ReturnType<typeof getV1AdminBackendUserzIdRoles>>, TError = ErrorResponse>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendUserzIdRoles>>, TError, TData>>, }
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendUserzIdRoles>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -8242,7 +8246,7 @@ export function useGetV1AdminBackendUserzIdRoles<TData = Awaited<ReturnType<type
 export const postV1AdminBackendUserzIdRoles = (
     id: number,
     postV1AdminBackendUserzIdRolesBody: PostV1AdminBackendUserzIdRolesBody,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -8251,21 +8255,21 @@ export const postV1AdminBackendUserzIdRoles = (
       headers: {'Content-Type': 'application/json', },
       data: postV1AdminBackendUserzIdRolesBody, signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1AdminBackendUserzIdRolesMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendUserzIdRoles>>, TError,{id: number;data: PostV1AdminBackendUserzIdRolesBody}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendUserzIdRoles>>, TError,{id: number;data: PostV1AdminBackendUserzIdRolesBody}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendUserzIdRoles>>, TError,{id: number;data: PostV1AdminBackendUserzIdRolesBody}, TContext> => {
 
 const mutationKey = ['postV1AdminBackendUserzIdRoles'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -8273,7 +8277,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AdminBackendUserzIdRoles>>, {id: number;data: PostV1AdminBackendUserzIdRolesBody}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  postV1AdminBackendUserzIdRoles(id,data,)
+          return  postV1AdminBackendUserzIdRoles(id,data,requestOptions)
         }
 
         
@@ -8289,7 +8293,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Assign role to user
  */
 export const usePostV1AdminBackendUserzIdRoles = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendUserzIdRoles>>, TError,{id: number;data: PostV1AdminBackendUserzIdRolesBody}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendUserzIdRoles>>, TError,{id: number;data: PostV1AdminBackendUserzIdRolesBody}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1AdminBackendUserzIdRoles>>,
         TError,
@@ -8309,27 +8313,27 @@ export const usePostV1AdminBackendUserzIdRoles = <TError = ErrorResponse,
 export const deleteV1AdminBackendUserzIdRolesRoleId = (
     id: number,
     roleId: number,
- ) => {
+ options?: SecondParameter<typeof customInstance>,) => {
       
       
       return customInstance<MessageResponse>(
       {url: `/v1/admin/backend/userz/${id}/roles/${roleId}`, method: 'DELETE'
     },
-      );
+      options);
     }
   
 
 
 export const getDeleteV1AdminBackendUserzIdRolesRoleIdMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendUserzIdRolesRoleId>>, TError,{id: number;roleId: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendUserzIdRolesRoleId>>, TError,{id: number;roleId: number}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendUserzIdRolesRoleId>>, TError,{id: number;roleId: number}, TContext> => {
 
 const mutationKey = ['deleteV1AdminBackendUserzIdRolesRoleId'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -8337,7 +8341,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteV1AdminBackendUserzIdRolesRoleId>>, {id: number;roleId: number}> = (props) => {
           const {id,roleId} = props ?? {};
 
-          return  deleteV1AdminBackendUserzIdRolesRoleId(id,roleId,)
+          return  deleteV1AdminBackendUserzIdRolesRoleId(id,roleId,requestOptions)
         }
 
         
@@ -8353,7 +8357,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Remove role from user
  */
 export const useDeleteV1AdminBackendUserzIdRolesRoleId = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendUserzIdRolesRoleId>>, TError,{id: number;roleId: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendUserzIdRolesRoleId>>, TError,{id: number;roleId: number}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteV1AdminBackendUserzIdRolesRoleId>>,
         TError,
@@ -8372,14 +8376,14 @@ export const useDeleteV1AdminBackendUserzIdRolesRoleId = <TError = ErrorResponse
  */
 export const getV1AdminBackendDashboard = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<DashboardResponse>(
       {url: `/v1/admin/backend/dashboard`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -8392,16 +8396,16 @@ export const getGetV1AdminBackendDashboardQueryKey = () => {
     }
 
     
-export const getGetV1AdminBackendDashboardQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendDashboard>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendDashboard>>, TError, TData>>, }
+export const getGetV1AdminBackendDashboardQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendDashboard>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendDashboard>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AdminBackendDashboardQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendDashboard>>> = ({ signal }) => getV1AdminBackendDashboard(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendDashboard>>> = ({ signal }) => getV1AdminBackendDashboard(requestOptions, signal);
 
       
 
@@ -8421,7 +8425,7 @@ export function useGetV1AdminBackendDashboard<TData = Awaited<ReturnType<typeof 
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendDashboard>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendDashboard<TData = Awaited<ReturnType<typeof getV1AdminBackendDashboard>>, TError = ErrorResponse>(
@@ -8431,11 +8435,11 @@ export function useGetV1AdminBackendDashboard<TData = Awaited<ReturnType<typeof 
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendDashboard>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendDashboard<TData = Awaited<ReturnType<typeof getV1AdminBackendDashboard>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendDashboard>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendDashboard>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -8443,7 +8447,7 @@ export function useGetV1AdminBackendDashboard<TData = Awaited<ReturnType<typeof 
  */
 
 export function useGetV1AdminBackendDashboard<TData = Awaited<ReturnType<typeof getV1AdminBackendDashboard>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendDashboard>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendDashboard>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -8466,14 +8470,14 @@ export function useGetV1AdminBackendDashboard<TData = Awaited<ReturnType<typeof 
  */
 export const getV1AdminBackendAiConcurrency = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<AIConcurrencyStats>(
       {url: `/v1/admin/backend/ai-concurrency`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -8486,16 +8490,16 @@ export const getGetV1AdminBackendAiConcurrencyQueryKey = () => {
     }
 
     
-export const getGetV1AdminBackendAiConcurrencyQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendAiConcurrency>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendAiConcurrency>>, TError, TData>>, }
+export const getGetV1AdminBackendAiConcurrencyQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendAiConcurrency>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendAiConcurrency>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AdminBackendAiConcurrencyQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendAiConcurrency>>> = ({ signal }) => getV1AdminBackendAiConcurrency(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendAiConcurrency>>> = ({ signal }) => getV1AdminBackendAiConcurrency(requestOptions, signal);
 
       
 
@@ -8515,7 +8519,7 @@ export function useGetV1AdminBackendAiConcurrency<TData = Awaited<ReturnType<typ
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendAiConcurrency>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendAiConcurrency<TData = Awaited<ReturnType<typeof getV1AdminBackendAiConcurrency>>, TError = ErrorResponse>(
@@ -8525,11 +8529,11 @@ export function useGetV1AdminBackendAiConcurrency<TData = Awaited<ReturnType<typ
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendAiConcurrency>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendAiConcurrency<TData = Awaited<ReturnType<typeof getV1AdminBackendAiConcurrency>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendAiConcurrency>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendAiConcurrency>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -8537,7 +8541,7 @@ export function useGetV1AdminBackendAiConcurrency<TData = Awaited<ReturnType<typ
  */
 
 export function useGetV1AdminBackendAiConcurrency<TData = Awaited<ReturnType<typeof getV1AdminBackendAiConcurrency>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendAiConcurrency>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendAiConcurrency>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -8560,14 +8564,14 @@ export function useGetV1AdminBackendAiConcurrency<TData = Awaited<ReturnType<typ
  */
 export const getV1AdminWorkerStatus = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<WorkerStatus>(
       {url: `/v1/admin/worker/status`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -8580,16 +8584,16 @@ export const getGetV1AdminWorkerStatusQueryKey = () => {
     }
 
     
-export const getGetV1AdminWorkerStatusQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminWorkerStatus>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerStatus>>, TError, TData>>, }
+export const getGetV1AdminWorkerStatusQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminWorkerStatus>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerStatus>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AdminWorkerStatusQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminWorkerStatus>>> = ({ signal }) => getV1AdminWorkerStatus(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminWorkerStatus>>> = ({ signal }) => getV1AdminWorkerStatus(requestOptions, signal);
 
       
 
@@ -8609,7 +8613,7 @@ export function useGetV1AdminWorkerStatus<TData = Awaited<ReturnType<typeof getV
           TError,
           Awaited<ReturnType<typeof getV1AdminWorkerStatus>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminWorkerStatus<TData = Awaited<ReturnType<typeof getV1AdminWorkerStatus>>, TError = ErrorResponse>(
@@ -8619,11 +8623,11 @@ export function useGetV1AdminWorkerStatus<TData = Awaited<ReturnType<typeof getV
           TError,
           Awaited<ReturnType<typeof getV1AdminWorkerStatus>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminWorkerStatus<TData = Awaited<ReturnType<typeof getV1AdminWorkerStatus>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerStatus>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerStatus>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -8631,7 +8635,7 @@ export function useGetV1AdminWorkerStatus<TData = Awaited<ReturnType<typeof getV
  */
 
 export function useGetV1AdminWorkerStatus<TData = Awaited<ReturnType<typeof getV1AdminWorkerStatus>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerStatus>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerStatus>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -8654,14 +8658,14 @@ export function useGetV1AdminWorkerStatus<TData = Awaited<ReturnType<typeof getV
  */
 export const getV1AdminWorkerDetails = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<WorkerDetailsResponse>(
       {url: `/v1/admin/worker/details`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -8674,16 +8678,16 @@ export const getGetV1AdminWorkerDetailsQueryKey = () => {
     }
 
     
-export const getGetV1AdminWorkerDetailsQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminWorkerDetails>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerDetails>>, TError, TData>>, }
+export const getGetV1AdminWorkerDetailsQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminWorkerDetails>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerDetails>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AdminWorkerDetailsQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminWorkerDetails>>> = ({ signal }) => getV1AdminWorkerDetails(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminWorkerDetails>>> = ({ signal }) => getV1AdminWorkerDetails(requestOptions, signal);
 
       
 
@@ -8703,7 +8707,7 @@ export function useGetV1AdminWorkerDetails<TData = Awaited<ReturnType<typeof get
           TError,
           Awaited<ReturnType<typeof getV1AdminWorkerDetails>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminWorkerDetails<TData = Awaited<ReturnType<typeof getV1AdminWorkerDetails>>, TError = ErrorResponse>(
@@ -8713,11 +8717,11 @@ export function useGetV1AdminWorkerDetails<TData = Awaited<ReturnType<typeof get
           TError,
           Awaited<ReturnType<typeof getV1AdminWorkerDetails>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminWorkerDetails<TData = Awaited<ReturnType<typeof getV1AdminWorkerDetails>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerDetails>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerDetails>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -8725,7 +8729,7 @@ export function useGetV1AdminWorkerDetails<TData = Awaited<ReturnType<typeof get
  */
 
 export function useGetV1AdminWorkerDetails<TData = Awaited<ReturnType<typeof getV1AdminWorkerDetails>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerDetails>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerDetails>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -8748,28 +8752,28 @@ export function useGetV1AdminWorkerDetails<TData = Awaited<ReturnType<typeof get
  */
 export const postV1AdminWorkerPause = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<MessageResponse>(
       {url: `/v1/admin/worker/pause`, method: 'POST', signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1AdminWorkerPauseMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerPause>>, TError,void, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerPause>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerPause>>, TError,void, TContext> => {
 
 const mutationKey = ['postV1AdminWorkerPause'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -8777,7 +8781,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AdminWorkerPause>>, void> = () => {
           
 
-          return  postV1AdminWorkerPause()
+          return  postV1AdminWorkerPause(requestOptions)
         }
 
         
@@ -8793,7 +8797,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Pause worker
  */
 export const usePostV1AdminWorkerPause = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerPause>>, TError,void, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerPause>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1AdminWorkerPause>>,
         TError,
@@ -8812,28 +8816,28 @@ export const usePostV1AdminWorkerPause = <TError = ErrorResponse,
  */
 export const postV1AdminWorkerResume = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<MessageResponse>(
       {url: `/v1/admin/worker/resume`, method: 'POST', signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1AdminWorkerResumeMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerResume>>, TError,void, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerResume>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerResume>>, TError,void, TContext> => {
 
 const mutationKey = ['postV1AdminWorkerResume'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -8841,7 +8845,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AdminWorkerResume>>, void> = () => {
           
 
-          return  postV1AdminWorkerResume()
+          return  postV1AdminWorkerResume(requestOptions)
         }
 
         
@@ -8857,7 +8861,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Resume worker
  */
 export const usePostV1AdminWorkerResume = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerResume>>, TError,void, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerResume>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1AdminWorkerResume>>,
         TError,
@@ -8876,28 +8880,28 @@ export const usePostV1AdminWorkerResume = <TError = ErrorResponse,
  */
 export const postV1AdminWorkerTrigger = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<MessageResponse>(
       {url: `/v1/admin/worker/trigger`, method: 'POST', signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1AdminWorkerTriggerMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerTrigger>>, TError,void, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerTrigger>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerTrigger>>, TError,void, TContext> => {
 
 const mutationKey = ['postV1AdminWorkerTrigger'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -8905,7 +8909,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AdminWorkerTrigger>>, void> = () => {
           
 
-          return  postV1AdminWorkerTrigger()
+          return  postV1AdminWorkerTrigger(requestOptions)
         }
 
         
@@ -8921,7 +8925,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Trigger worker run
  */
 export const usePostV1AdminWorkerTrigger = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerTrigger>>, TError,void, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerTrigger>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1AdminWorkerTrigger>>,
         TError,
@@ -8940,14 +8944,14 @@ export const usePostV1AdminWorkerTrigger = <TError = ErrorResponse,
  */
 export const getV1AdminWorkerLogs = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<WorkerLogsResponse>(
       {url: `/v1/admin/worker/logs`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -8960,16 +8964,16 @@ export const getGetV1AdminWorkerLogsQueryKey = () => {
     }
 
     
-export const getGetV1AdminWorkerLogsQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminWorkerLogs>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerLogs>>, TError, TData>>, }
+export const getGetV1AdminWorkerLogsQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminWorkerLogs>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerLogs>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AdminWorkerLogsQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminWorkerLogs>>> = ({ signal }) => getV1AdminWorkerLogs(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminWorkerLogs>>> = ({ signal }) => getV1AdminWorkerLogs(requestOptions, signal);
 
       
 
@@ -8989,7 +8993,7 @@ export function useGetV1AdminWorkerLogs<TData = Awaited<ReturnType<typeof getV1A
           TError,
           Awaited<ReturnType<typeof getV1AdminWorkerLogs>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminWorkerLogs<TData = Awaited<ReturnType<typeof getV1AdminWorkerLogs>>, TError = ErrorResponse>(
@@ -8999,11 +9003,11 @@ export function useGetV1AdminWorkerLogs<TData = Awaited<ReturnType<typeof getV1A
           TError,
           Awaited<ReturnType<typeof getV1AdminWorkerLogs>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminWorkerLogs<TData = Awaited<ReturnType<typeof getV1AdminWorkerLogs>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerLogs>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerLogs>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -9011,7 +9015,7 @@ export function useGetV1AdminWorkerLogs<TData = Awaited<ReturnType<typeof getV1A
  */
 
 export function useGetV1AdminWorkerLogs<TData = Awaited<ReturnType<typeof getV1AdminWorkerLogs>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerLogs>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerLogs>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -9034,14 +9038,14 @@ export function useGetV1AdminWorkerLogs<TData = Awaited<ReturnType<typeof getV1A
  */
 export const getV1AdminWorkerAiConcurrency = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<WorkerAIConcurrencyStats>(
       {url: `/v1/admin/worker/ai-concurrency`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -9054,16 +9058,16 @@ export const getGetV1AdminWorkerAiConcurrencyQueryKey = () => {
     }
 
     
-export const getGetV1AdminWorkerAiConcurrencyQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminWorkerAiConcurrency>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerAiConcurrency>>, TError, TData>>, }
+export const getGetV1AdminWorkerAiConcurrencyQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminWorkerAiConcurrency>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerAiConcurrency>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AdminWorkerAiConcurrencyQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminWorkerAiConcurrency>>> = ({ signal }) => getV1AdminWorkerAiConcurrency(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminWorkerAiConcurrency>>> = ({ signal }) => getV1AdminWorkerAiConcurrency(requestOptions, signal);
 
       
 
@@ -9083,7 +9087,7 @@ export function useGetV1AdminWorkerAiConcurrency<TData = Awaited<ReturnType<type
           TError,
           Awaited<ReturnType<typeof getV1AdminWorkerAiConcurrency>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminWorkerAiConcurrency<TData = Awaited<ReturnType<typeof getV1AdminWorkerAiConcurrency>>, TError = ErrorResponse>(
@@ -9093,11 +9097,11 @@ export function useGetV1AdminWorkerAiConcurrency<TData = Awaited<ReturnType<type
           TError,
           Awaited<ReturnType<typeof getV1AdminWorkerAiConcurrency>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminWorkerAiConcurrency<TData = Awaited<ReturnType<typeof getV1AdminWorkerAiConcurrency>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerAiConcurrency>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerAiConcurrency>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -9105,7 +9109,7 @@ export function useGetV1AdminWorkerAiConcurrency<TData = Awaited<ReturnType<type
  */
 
 export function useGetV1AdminWorkerAiConcurrency<TData = Awaited<ReturnType<typeof getV1AdminWorkerAiConcurrency>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerAiConcurrency>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerAiConcurrency>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -9128,14 +9132,14 @@ export function useGetV1AdminWorkerAiConcurrency<TData = Awaited<ReturnType<type
  */
 export const getV1AdminWorkerUsers = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<WorkerUserListResponse>(
       {url: `/v1/admin/worker/users`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -9148,16 +9152,16 @@ export const getGetV1AdminWorkerUsersQueryKey = () => {
     }
 
     
-export const getGetV1AdminWorkerUsersQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminWorkerUsers>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerUsers>>, TError, TData>>, }
+export const getGetV1AdminWorkerUsersQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminWorkerUsers>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerUsers>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AdminWorkerUsersQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminWorkerUsers>>> = ({ signal }) => getV1AdminWorkerUsers(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminWorkerUsers>>> = ({ signal }) => getV1AdminWorkerUsers(requestOptions, signal);
 
       
 
@@ -9177,7 +9181,7 @@ export function useGetV1AdminWorkerUsers<TData = Awaited<ReturnType<typeof getV1
           TError,
           Awaited<ReturnType<typeof getV1AdminWorkerUsers>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminWorkerUsers<TData = Awaited<ReturnType<typeof getV1AdminWorkerUsers>>, TError = ErrorResponse>(
@@ -9187,11 +9191,11 @@ export function useGetV1AdminWorkerUsers<TData = Awaited<ReturnType<typeof getV1
           TError,
           Awaited<ReturnType<typeof getV1AdminWorkerUsers>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminWorkerUsers<TData = Awaited<ReturnType<typeof getV1AdminWorkerUsers>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerUsers>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerUsers>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -9199,7 +9203,7 @@ export function useGetV1AdminWorkerUsers<TData = Awaited<ReturnType<typeof getV1
  */
 
 export function useGetV1AdminWorkerUsers<TData = Awaited<ReturnType<typeof getV1AdminWorkerUsers>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerUsers>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerUsers>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -9222,7 +9226,7 @@ export function useGetV1AdminWorkerUsers<TData = Awaited<ReturnType<typeof getV1
  */
 export const postV1AdminWorkerUsersPause = (
     userIdRequest: UserIdRequest,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -9231,21 +9235,21 @@ export const postV1AdminWorkerUsersPause = (
       headers: {'Content-Type': 'application/json', },
       data: userIdRequest, signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1AdminWorkerUsersPauseMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerUsersPause>>, TError,{data: UserIdRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerUsersPause>>, TError,{data: UserIdRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerUsersPause>>, TError,{data: UserIdRequest}, TContext> => {
 
 const mutationKey = ['postV1AdminWorkerUsersPause'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -9253,7 +9257,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AdminWorkerUsersPause>>, {data: UserIdRequest}> = (props) => {
           const {data} = props ?? {};
 
-          return  postV1AdminWorkerUsersPause(data,)
+          return  postV1AdminWorkerUsersPause(data,requestOptions)
         }
 
         
@@ -9269,7 +9273,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Pause worker for a specific user
  */
 export const usePostV1AdminWorkerUsersPause = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerUsersPause>>, TError,{data: UserIdRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerUsersPause>>, TError,{data: UserIdRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1AdminWorkerUsersPause>>,
         TError,
@@ -9288,7 +9292,7 @@ export const usePostV1AdminWorkerUsersPause = <TError = ErrorResponse,
  */
 export const postV1AdminWorkerUsersResume = (
     userIdRequest: UserIdRequest,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -9297,21 +9301,21 @@ export const postV1AdminWorkerUsersResume = (
       headers: {'Content-Type': 'application/json', },
       data: userIdRequest, signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1AdminWorkerUsersResumeMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerUsersResume>>, TError,{data: UserIdRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerUsersResume>>, TError,{data: UserIdRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerUsersResume>>, TError,{data: UserIdRequest}, TContext> => {
 
 const mutationKey = ['postV1AdminWorkerUsersResume'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -9319,7 +9323,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AdminWorkerUsersResume>>, {data: UserIdRequest}> = (props) => {
           const {data} = props ?? {};
 
-          return  postV1AdminWorkerUsersResume(data,)
+          return  postV1AdminWorkerUsersResume(data,requestOptions)
         }
 
         
@@ -9335,7 +9339,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Resume worker for a specific user
  */
 export const usePostV1AdminWorkerUsersResume = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerUsersResume>>, TError,{data: UserIdRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerUsersResume>>, TError,{data: UserIdRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1AdminWorkerUsersResume>>,
         TError,
@@ -9354,14 +9358,14 @@ export const usePostV1AdminWorkerUsersResume = <TError = ErrorResponse,
  */
 export const getV1AdminWorkerAnalyticsPriorityScores = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<PriorityAnalytics>(
       {url: `/v1/admin/worker/analytics/priority-scores`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -9374,16 +9378,16 @@ export const getGetV1AdminWorkerAnalyticsPriorityScoresQueryKey = () => {
     }
 
     
-export const getGetV1AdminWorkerAnalyticsPriorityScoresQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsPriorityScores>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsPriorityScores>>, TError, TData>>, }
+export const getGetV1AdminWorkerAnalyticsPriorityScoresQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsPriorityScores>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsPriorityScores>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AdminWorkerAnalyticsPriorityScoresQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsPriorityScores>>> = ({ signal }) => getV1AdminWorkerAnalyticsPriorityScores(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsPriorityScores>>> = ({ signal }) => getV1AdminWorkerAnalyticsPriorityScores(requestOptions, signal);
 
       
 
@@ -9403,7 +9407,7 @@ export function useGetV1AdminWorkerAnalyticsPriorityScores<TData = Awaited<Retur
           TError,
           Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsPriorityScores>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminWorkerAnalyticsPriorityScores<TData = Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsPriorityScores>>, TError = ErrorResponse>(
@@ -9413,11 +9417,11 @@ export function useGetV1AdminWorkerAnalyticsPriorityScores<TData = Awaited<Retur
           TError,
           Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsPriorityScores>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminWorkerAnalyticsPriorityScores<TData = Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsPriorityScores>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsPriorityScores>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsPriorityScores>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -9425,7 +9429,7 @@ export function useGetV1AdminWorkerAnalyticsPriorityScores<TData = Awaited<Retur
  */
 
 export function useGetV1AdminWorkerAnalyticsPriorityScores<TData = Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsPriorityScores>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsPriorityScores>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsPriorityScores>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -9448,14 +9452,14 @@ export function useGetV1AdminWorkerAnalyticsPriorityScores<TData = Awaited<Retur
  */
 export const getV1AdminWorkerAnalyticsUserPerformance = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<UserPerformanceAnalytics>(
       {url: `/v1/admin/worker/analytics/user-performance`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -9468,16 +9472,16 @@ export const getGetV1AdminWorkerAnalyticsUserPerformanceQueryKey = () => {
     }
 
     
-export const getGetV1AdminWorkerAnalyticsUserPerformanceQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsUserPerformance>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsUserPerformance>>, TError, TData>>, }
+export const getGetV1AdminWorkerAnalyticsUserPerformanceQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsUserPerformance>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsUserPerformance>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AdminWorkerAnalyticsUserPerformanceQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsUserPerformance>>> = ({ signal }) => getV1AdminWorkerAnalyticsUserPerformance(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsUserPerformance>>> = ({ signal }) => getV1AdminWorkerAnalyticsUserPerformance(requestOptions, signal);
 
       
 
@@ -9497,7 +9501,7 @@ export function useGetV1AdminWorkerAnalyticsUserPerformance<TData = Awaited<Retu
           TError,
           Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsUserPerformance>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminWorkerAnalyticsUserPerformance<TData = Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsUserPerformance>>, TError = ErrorResponse>(
@@ -9507,11 +9511,11 @@ export function useGetV1AdminWorkerAnalyticsUserPerformance<TData = Awaited<Retu
           TError,
           Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsUserPerformance>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminWorkerAnalyticsUserPerformance<TData = Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsUserPerformance>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsUserPerformance>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsUserPerformance>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -9519,7 +9523,7 @@ export function useGetV1AdminWorkerAnalyticsUserPerformance<TData = Awaited<Retu
  */
 
 export function useGetV1AdminWorkerAnalyticsUserPerformance<TData = Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsUserPerformance>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsUserPerformance>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsUserPerformance>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -9542,14 +9546,14 @@ export function useGetV1AdminWorkerAnalyticsUserPerformance<TData = Awaited<Retu
  */
 export const getV1AdminWorkerAnalyticsGenerationIntelligence = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<GenerationIntelligence>(
       {url: `/v1/admin/worker/analytics/generation-intelligence`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -9562,16 +9566,16 @@ export const getGetV1AdminWorkerAnalyticsGenerationIntelligenceQueryKey = () => 
     }
 
     
-export const getGetV1AdminWorkerAnalyticsGenerationIntelligenceQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsGenerationIntelligence>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsGenerationIntelligence>>, TError, TData>>, }
+export const getGetV1AdminWorkerAnalyticsGenerationIntelligenceQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsGenerationIntelligence>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsGenerationIntelligence>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AdminWorkerAnalyticsGenerationIntelligenceQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsGenerationIntelligence>>> = ({ signal }) => getV1AdminWorkerAnalyticsGenerationIntelligence(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsGenerationIntelligence>>> = ({ signal }) => getV1AdminWorkerAnalyticsGenerationIntelligence(requestOptions, signal);
 
       
 
@@ -9591,7 +9595,7 @@ export function useGetV1AdminWorkerAnalyticsGenerationIntelligence<TData = Await
           TError,
           Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsGenerationIntelligence>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminWorkerAnalyticsGenerationIntelligence<TData = Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsGenerationIntelligence>>, TError = ErrorResponse>(
@@ -9601,11 +9605,11 @@ export function useGetV1AdminWorkerAnalyticsGenerationIntelligence<TData = Await
           TError,
           Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsGenerationIntelligence>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminWorkerAnalyticsGenerationIntelligence<TData = Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsGenerationIntelligence>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsGenerationIntelligence>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsGenerationIntelligence>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -9613,7 +9617,7 @@ export function useGetV1AdminWorkerAnalyticsGenerationIntelligence<TData = Await
  */
 
 export function useGetV1AdminWorkerAnalyticsGenerationIntelligence<TData = Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsGenerationIntelligence>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsGenerationIntelligence>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsGenerationIntelligence>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -9636,14 +9640,14 @@ export function useGetV1AdminWorkerAnalyticsGenerationIntelligence<TData = Await
  */
 export const getV1AdminWorkerAnalyticsSystemHealth = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<SystemHealthAnalytics>(
       {url: `/v1/admin/worker/analytics/system-health`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -9656,16 +9660,16 @@ export const getGetV1AdminWorkerAnalyticsSystemHealthQueryKey = () => {
     }
 
     
-export const getGetV1AdminWorkerAnalyticsSystemHealthQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsSystemHealth>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsSystemHealth>>, TError, TData>>, }
+export const getGetV1AdminWorkerAnalyticsSystemHealthQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsSystemHealth>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsSystemHealth>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AdminWorkerAnalyticsSystemHealthQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsSystemHealth>>> = ({ signal }) => getV1AdminWorkerAnalyticsSystemHealth(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsSystemHealth>>> = ({ signal }) => getV1AdminWorkerAnalyticsSystemHealth(requestOptions, signal);
 
       
 
@@ -9685,7 +9689,7 @@ export function useGetV1AdminWorkerAnalyticsSystemHealth<TData = Awaited<ReturnT
           TError,
           Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsSystemHealth>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminWorkerAnalyticsSystemHealth<TData = Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsSystemHealth>>, TError = ErrorResponse>(
@@ -9695,11 +9699,11 @@ export function useGetV1AdminWorkerAnalyticsSystemHealth<TData = Awaited<ReturnT
           TError,
           Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsSystemHealth>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminWorkerAnalyticsSystemHealth<TData = Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsSystemHealth>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsSystemHealth>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsSystemHealth>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -9707,7 +9711,7 @@ export function useGetV1AdminWorkerAnalyticsSystemHealth<TData = Awaited<ReturnT
  */
 
 export function useGetV1AdminWorkerAnalyticsSystemHealth<TData = Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsSystemHealth>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsSystemHealth>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerAnalyticsSystemHealth>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -9730,14 +9734,14 @@ export function useGetV1AdminWorkerAnalyticsSystemHealth<TData = Awaited<ReturnT
  */
 export const getV1AdminWorkerNotificationsStats = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<NotificationStats>(
       {url: `/v1/admin/worker/notifications/stats`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -9750,16 +9754,16 @@ export const getGetV1AdminWorkerNotificationsStatsQueryKey = () => {
     }
 
     
-export const getGetV1AdminWorkerNotificationsStatsQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminWorkerNotificationsStats>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerNotificationsStats>>, TError, TData>>, }
+export const getGetV1AdminWorkerNotificationsStatsQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminWorkerNotificationsStats>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerNotificationsStats>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AdminWorkerNotificationsStatsQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminWorkerNotificationsStats>>> = ({ signal }) => getV1AdminWorkerNotificationsStats(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminWorkerNotificationsStats>>> = ({ signal }) => getV1AdminWorkerNotificationsStats(requestOptions, signal);
 
       
 
@@ -9779,7 +9783,7 @@ export function useGetV1AdminWorkerNotificationsStats<TData = Awaited<ReturnType
           TError,
           Awaited<ReturnType<typeof getV1AdminWorkerNotificationsStats>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminWorkerNotificationsStats<TData = Awaited<ReturnType<typeof getV1AdminWorkerNotificationsStats>>, TError = ErrorResponse>(
@@ -9789,11 +9793,11 @@ export function useGetV1AdminWorkerNotificationsStats<TData = Awaited<ReturnType
           TError,
           Awaited<ReturnType<typeof getV1AdminWorkerNotificationsStats>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminWorkerNotificationsStats<TData = Awaited<ReturnType<typeof getV1AdminWorkerNotificationsStats>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerNotificationsStats>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerNotificationsStats>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -9801,7 +9805,7 @@ export function useGetV1AdminWorkerNotificationsStats<TData = Awaited<ReturnType
  */
 
 export function useGetV1AdminWorkerNotificationsStats<TData = Awaited<ReturnType<typeof getV1AdminWorkerNotificationsStats>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerNotificationsStats>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerNotificationsStats>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -9824,7 +9828,7 @@ export function useGetV1AdminWorkerNotificationsStats<TData = Awaited<ReturnType
  */
 export const getV1AdminWorkerNotificationsErrors = (
     params?: GetV1AdminWorkerNotificationsErrorsParams,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -9832,7 +9836,7 @@ export const getV1AdminWorkerNotificationsErrors = (
       {url: `/v1/admin/worker/notifications/errors`, method: 'GET',
         params, signal
     },
-      );
+      options);
     }
   
 
@@ -9845,16 +9849,16 @@ export const getGetV1AdminWorkerNotificationsErrorsQueryKey = (params?: GetV1Adm
     }
 
     
-export const getGetV1AdminWorkerNotificationsErrorsQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminWorkerNotificationsErrors>>, TError = ErrorResponse>(params?: GetV1AdminWorkerNotificationsErrorsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerNotificationsErrors>>, TError, TData>>, }
+export const getGetV1AdminWorkerNotificationsErrorsQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminWorkerNotificationsErrors>>, TError = ErrorResponse>(params?: GetV1AdminWorkerNotificationsErrorsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerNotificationsErrors>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AdminWorkerNotificationsErrorsQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminWorkerNotificationsErrors>>> = ({ signal }) => getV1AdminWorkerNotificationsErrors(params, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminWorkerNotificationsErrors>>> = ({ signal }) => getV1AdminWorkerNotificationsErrors(params, requestOptions, signal);
 
       
 
@@ -9874,7 +9878,7 @@ export function useGetV1AdminWorkerNotificationsErrors<TData = Awaited<ReturnTyp
           TError,
           Awaited<ReturnType<typeof getV1AdminWorkerNotificationsErrors>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminWorkerNotificationsErrors<TData = Awaited<ReturnType<typeof getV1AdminWorkerNotificationsErrors>>, TError = ErrorResponse>(
@@ -9884,11 +9888,11 @@ export function useGetV1AdminWorkerNotificationsErrors<TData = Awaited<ReturnTyp
           TError,
           Awaited<ReturnType<typeof getV1AdminWorkerNotificationsErrors>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminWorkerNotificationsErrors<TData = Awaited<ReturnType<typeof getV1AdminWorkerNotificationsErrors>>, TError = ErrorResponse>(
- params?: GetV1AdminWorkerNotificationsErrorsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerNotificationsErrors>>, TError, TData>>, }
+ params?: GetV1AdminWorkerNotificationsErrorsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerNotificationsErrors>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -9896,7 +9900,7 @@ export function useGetV1AdminWorkerNotificationsErrors<TData = Awaited<ReturnTyp
  */
 
 export function useGetV1AdminWorkerNotificationsErrors<TData = Awaited<ReturnType<typeof getV1AdminWorkerNotificationsErrors>>, TError = ErrorResponse>(
- params?: GetV1AdminWorkerNotificationsErrorsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerNotificationsErrors>>, TError, TData>>, }
+ params?: GetV1AdminWorkerNotificationsErrorsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerNotificationsErrors>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -9919,7 +9923,7 @@ export function useGetV1AdminWorkerNotificationsErrors<TData = Awaited<ReturnTyp
  */
 export const getV1AdminWorkerNotificationsSent = (
     params?: GetV1AdminWorkerNotificationsSentParams,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -9927,7 +9931,7 @@ export const getV1AdminWorkerNotificationsSent = (
       {url: `/v1/admin/worker/notifications/sent`, method: 'GET',
         params, signal
     },
-      );
+      options);
     }
   
 
@@ -9940,16 +9944,16 @@ export const getGetV1AdminWorkerNotificationsSentQueryKey = (params?: GetV1Admin
     }
 
     
-export const getGetV1AdminWorkerNotificationsSentQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminWorkerNotificationsSent>>, TError = ErrorResponse>(params?: GetV1AdminWorkerNotificationsSentParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerNotificationsSent>>, TError, TData>>, }
+export const getGetV1AdminWorkerNotificationsSentQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminWorkerNotificationsSent>>, TError = ErrorResponse>(params?: GetV1AdminWorkerNotificationsSentParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerNotificationsSent>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AdminWorkerNotificationsSentQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminWorkerNotificationsSent>>> = ({ signal }) => getV1AdminWorkerNotificationsSent(params, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminWorkerNotificationsSent>>> = ({ signal }) => getV1AdminWorkerNotificationsSent(params, requestOptions, signal);
 
       
 
@@ -9969,7 +9973,7 @@ export function useGetV1AdminWorkerNotificationsSent<TData = Awaited<ReturnType<
           TError,
           Awaited<ReturnType<typeof getV1AdminWorkerNotificationsSent>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminWorkerNotificationsSent<TData = Awaited<ReturnType<typeof getV1AdminWorkerNotificationsSent>>, TError = ErrorResponse>(
@@ -9979,11 +9983,11 @@ export function useGetV1AdminWorkerNotificationsSent<TData = Awaited<ReturnType<
           TError,
           Awaited<ReturnType<typeof getV1AdminWorkerNotificationsSent>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminWorkerNotificationsSent<TData = Awaited<ReturnType<typeof getV1AdminWorkerNotificationsSent>>, TError = ErrorResponse>(
- params?: GetV1AdminWorkerNotificationsSentParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerNotificationsSent>>, TError, TData>>, }
+ params?: GetV1AdminWorkerNotificationsSentParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerNotificationsSent>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -9991,7 +9995,7 @@ export function useGetV1AdminWorkerNotificationsSent<TData = Awaited<ReturnType<
  */
 
 export function useGetV1AdminWorkerNotificationsSent<TData = Awaited<ReturnType<typeof getV1AdminWorkerNotificationsSent>>, TError = ErrorResponse>(
- params?: GetV1AdminWorkerNotificationsSentParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerNotificationsSent>>, TError, TData>>, }
+ params?: GetV1AdminWorkerNotificationsSentParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerNotificationsSent>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -10014,7 +10018,7 @@ export function useGetV1AdminWorkerNotificationsSent<TData = Awaited<ReturnType<
  */
 export const postV1AdminWorkerNotificationsForceSend = (
     postV1AdminWorkerNotificationsForceSendBody: PostV1AdminWorkerNotificationsForceSendBody,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -10023,21 +10027,21 @@ export const postV1AdminWorkerNotificationsForceSend = (
       headers: {'Content-Type': 'application/json', },
       data: postV1AdminWorkerNotificationsForceSendBody, signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1AdminWorkerNotificationsForceSendMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerNotificationsForceSend>>, TError,{data: PostV1AdminWorkerNotificationsForceSendBody}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerNotificationsForceSend>>, TError,{data: PostV1AdminWorkerNotificationsForceSendBody}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerNotificationsForceSend>>, TError,{data: PostV1AdminWorkerNotificationsForceSendBody}, TContext> => {
 
 const mutationKey = ['postV1AdminWorkerNotificationsForceSend'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -10045,7 +10049,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AdminWorkerNotificationsForceSend>>, {data: PostV1AdminWorkerNotificationsForceSendBody}> = (props) => {
           const {data} = props ?? {};
 
-          return  postV1AdminWorkerNotificationsForceSend(data,)
+          return  postV1AdminWorkerNotificationsForceSend(data,requestOptions)
         }
 
         
@@ -10061,7 +10065,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Force send notification to user
  */
 export const usePostV1AdminWorkerNotificationsForceSend = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerNotificationsForceSend>>, TError,{data: PostV1AdminWorkerNotificationsForceSendBody}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerNotificationsForceSend>>, TError,{data: PostV1AdminWorkerNotificationsForceSendBody}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1AdminWorkerNotificationsForceSend>>,
         TError,
@@ -10080,7 +10084,7 @@ export const usePostV1AdminWorkerNotificationsForceSend = <TError = ErrorRespons
  */
 export const getV1AdminBackendQuestions = (
     params?: GetV1AdminBackendQuestionsParams,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -10088,7 +10092,7 @@ export const getV1AdminBackendQuestions = (
       {url: `/v1/admin/backend/questions`, method: 'GET',
         params, signal
     },
-      );
+      options);
     }
   
 
@@ -10101,16 +10105,16 @@ export const getGetV1AdminBackendQuestionsQueryKey = (params?: GetV1AdminBackend
     }
 
     
-export const getGetV1AdminBackendQuestionsQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendQuestions>>, TError = ErrorResponse>(params?: GetV1AdminBackendQuestionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendQuestions>>, TError, TData>>, }
+export const getGetV1AdminBackendQuestionsQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendQuestions>>, TError = ErrorResponse>(params?: GetV1AdminBackendQuestionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendQuestions>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AdminBackendQuestionsQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendQuestions>>> = ({ signal }) => getV1AdminBackendQuestions(params, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendQuestions>>> = ({ signal }) => getV1AdminBackendQuestions(params, requestOptions, signal);
 
       
 
@@ -10130,7 +10134,7 @@ export function useGetV1AdminBackendQuestions<TData = Awaited<ReturnType<typeof 
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendQuestions>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendQuestions<TData = Awaited<ReturnType<typeof getV1AdminBackendQuestions>>, TError = ErrorResponse>(
@@ -10140,11 +10144,11 @@ export function useGetV1AdminBackendQuestions<TData = Awaited<ReturnType<typeof 
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendQuestions>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendQuestions<TData = Awaited<ReturnType<typeof getV1AdminBackendQuestions>>, TError = ErrorResponse>(
- params?: GetV1AdminBackendQuestionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendQuestions>>, TError, TData>>, }
+ params?: GetV1AdminBackendQuestionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendQuestions>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -10152,7 +10156,7 @@ export function useGetV1AdminBackendQuestions<TData = Awaited<ReturnType<typeof 
  */
 
 export function useGetV1AdminBackendQuestions<TData = Awaited<ReturnType<typeof getV1AdminBackendQuestions>>, TError = ErrorResponse>(
- params?: GetV1AdminBackendQuestionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendQuestions>>, TError, TData>>, }
+ params?: GetV1AdminBackendQuestionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendQuestions>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -10175,7 +10179,7 @@ export function useGetV1AdminBackendQuestions<TData = Awaited<ReturnType<typeof 
  */
 export const getV1AdminBackendQuestionsPaginated = (
     params?: GetV1AdminBackendQuestionsPaginatedParams,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -10183,7 +10187,7 @@ export const getV1AdminBackendQuestionsPaginated = (
       {url: `/v1/admin/backend/questions/paginated`, method: 'GET',
         params, signal
     },
-      );
+      options);
     }
   
 
@@ -10196,16 +10200,16 @@ export const getGetV1AdminBackendQuestionsPaginatedQueryKey = (params?: GetV1Adm
     }
 
     
-export const getGetV1AdminBackendQuestionsPaginatedQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendQuestionsPaginated>>, TError = ErrorResponse>(params?: GetV1AdminBackendQuestionsPaginatedParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendQuestionsPaginated>>, TError, TData>>, }
+export const getGetV1AdminBackendQuestionsPaginatedQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendQuestionsPaginated>>, TError = ErrorResponse>(params?: GetV1AdminBackendQuestionsPaginatedParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendQuestionsPaginated>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AdminBackendQuestionsPaginatedQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendQuestionsPaginated>>> = ({ signal }) => getV1AdminBackendQuestionsPaginated(params, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendQuestionsPaginated>>> = ({ signal }) => getV1AdminBackendQuestionsPaginated(params, requestOptions, signal);
 
       
 
@@ -10225,7 +10229,7 @@ export function useGetV1AdminBackendQuestionsPaginated<TData = Awaited<ReturnTyp
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendQuestionsPaginated>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendQuestionsPaginated<TData = Awaited<ReturnType<typeof getV1AdminBackendQuestionsPaginated>>, TError = ErrorResponse>(
@@ -10235,11 +10239,11 @@ export function useGetV1AdminBackendQuestionsPaginated<TData = Awaited<ReturnTyp
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendQuestionsPaginated>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendQuestionsPaginated<TData = Awaited<ReturnType<typeof getV1AdminBackendQuestionsPaginated>>, TError = ErrorResponse>(
- params?: GetV1AdminBackendQuestionsPaginatedParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendQuestionsPaginated>>, TError, TData>>, }
+ params?: GetV1AdminBackendQuestionsPaginatedParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendQuestionsPaginated>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -10247,7 +10251,7 @@ export function useGetV1AdminBackendQuestionsPaginated<TData = Awaited<ReturnTyp
  */
 
 export function useGetV1AdminBackendQuestionsPaginated<TData = Awaited<ReturnType<typeof getV1AdminBackendQuestionsPaginated>>, TError = ErrorResponse>(
- params?: GetV1AdminBackendQuestionsPaginatedParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendQuestionsPaginated>>, TError, TData>>, }
+ params?: GetV1AdminBackendQuestionsPaginatedParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendQuestionsPaginated>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -10270,14 +10274,14 @@ export function useGetV1AdminBackendQuestionsPaginated<TData = Awaited<ReturnTyp
  */
 export const getV1AdminBackendQuestionsId = (
     id: number,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<Question>(
       {url: `/v1/admin/backend/questions/${id}`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -10290,16 +10294,16 @@ export const getGetV1AdminBackendQuestionsIdQueryKey = (id?: number,) => {
     }
 
     
-export const getGetV1AdminBackendQuestionsIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendQuestionsId>>, TError = ErrorResponse>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendQuestionsId>>, TError, TData>>, }
+export const getGetV1AdminBackendQuestionsIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendQuestionsId>>, TError = ErrorResponse>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendQuestionsId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AdminBackendQuestionsIdQueryKey(id);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendQuestionsId>>> = ({ signal }) => getV1AdminBackendQuestionsId(id, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendQuestionsId>>> = ({ signal }) => getV1AdminBackendQuestionsId(id, requestOptions, signal);
 
       
 
@@ -10319,7 +10323,7 @@ export function useGetV1AdminBackendQuestionsId<TData = Awaited<ReturnType<typeo
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendQuestionsId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendQuestionsId<TData = Awaited<ReturnType<typeof getV1AdminBackendQuestionsId>>, TError = ErrorResponse>(
@@ -10329,11 +10333,11 @@ export function useGetV1AdminBackendQuestionsId<TData = Awaited<ReturnType<typeo
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendQuestionsId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendQuestionsId<TData = Awaited<ReturnType<typeof getV1AdminBackendQuestionsId>>, TError = ErrorResponse>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendQuestionsId>>, TError, TData>>, }
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendQuestionsId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -10341,7 +10345,7 @@ export function useGetV1AdminBackendQuestionsId<TData = Awaited<ReturnType<typeo
  */
 
 export function useGetV1AdminBackendQuestionsId<TData = Awaited<ReturnType<typeof getV1AdminBackendQuestionsId>>, TError = ErrorResponse>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendQuestionsId>>, TError, TData>>, }
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendQuestionsId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -10365,7 +10369,7 @@ export function useGetV1AdminBackendQuestionsId<TData = Awaited<ReturnType<typeo
 export const putV1AdminBackendQuestionsId = (
     id: number,
     putV1AdminBackendQuestionsIdBody: PutV1AdminBackendQuestionsIdBody,
- ) => {
+ options?: SecondParameter<typeof customInstance>,) => {
       
       
       return customInstance<MessageResponse>(
@@ -10373,21 +10377,21 @@ export const putV1AdminBackendQuestionsId = (
       headers: {'Content-Type': 'application/json', },
       data: putV1AdminBackendQuestionsIdBody
     },
-      );
+      options);
     }
   
 
 
 export const getPutV1AdminBackendQuestionsIdMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1AdminBackendQuestionsId>>, TError,{id: number;data: PutV1AdminBackendQuestionsIdBody}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1AdminBackendQuestionsId>>, TError,{id: number;data: PutV1AdminBackendQuestionsIdBody}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof putV1AdminBackendQuestionsId>>, TError,{id: number;data: PutV1AdminBackendQuestionsIdBody}, TContext> => {
 
 const mutationKey = ['putV1AdminBackendQuestionsId'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -10395,7 +10399,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof putV1AdminBackendQuestionsId>>, {id: number;data: PutV1AdminBackendQuestionsIdBody}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  putV1AdminBackendQuestionsId(id,data,)
+          return  putV1AdminBackendQuestionsId(id,data,requestOptions)
         }
 
         
@@ -10411,7 +10415,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Update a question
  */
 export const usePutV1AdminBackendQuestionsId = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1AdminBackendQuestionsId>>, TError,{id: number;data: PutV1AdminBackendQuestionsIdBody}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1AdminBackendQuestionsId>>, TError,{id: number;data: PutV1AdminBackendQuestionsIdBody}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof putV1AdminBackendQuestionsId>>,
         TError,
@@ -10430,27 +10434,27 @@ export const usePutV1AdminBackendQuestionsId = <TError = ErrorResponse,
  */
 export const deleteV1AdminBackendQuestionsId = (
     id: number,
- ) => {
+ options?: SecondParameter<typeof customInstance>,) => {
       
       
       return customInstance<MessageResponse>(
       {url: `/v1/admin/backend/questions/${id}`, method: 'DELETE'
     },
-      );
+      options);
     }
   
 
 
 export const getDeleteV1AdminBackendQuestionsIdMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendQuestionsId>>, TError,{id: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendQuestionsId>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendQuestionsId>>, TError,{id: number}, TContext> => {
 
 const mutationKey = ['deleteV1AdminBackendQuestionsId'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -10458,7 +10462,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteV1AdminBackendQuestionsId>>, {id: number}> = (props) => {
           const {id} = props ?? {};
 
-          return  deleteV1AdminBackendQuestionsId(id,)
+          return  deleteV1AdminBackendQuestionsId(id,requestOptions)
         }
 
         
@@ -10474,7 +10478,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Delete a question
  */
 export const useDeleteV1AdminBackendQuestionsId = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendQuestionsId>>, TError,{id: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendQuestionsId>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteV1AdminBackendQuestionsId>>,
         TError,
@@ -10493,14 +10497,14 @@ export const useDeleteV1AdminBackendQuestionsId = <TError = ErrorResponse,
  */
 export const getV1AdminBackendQuestionsIdUsers = (
     id: number,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<QuestionAssignedUsersResponse>(
       {url: `/v1/admin/backend/questions/${id}/users`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -10513,16 +10517,16 @@ export const getGetV1AdminBackendQuestionsIdUsersQueryKey = (id?: number,) => {
     }
 
     
-export const getGetV1AdminBackendQuestionsIdUsersQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendQuestionsIdUsers>>, TError = ErrorResponse>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendQuestionsIdUsers>>, TError, TData>>, }
+export const getGetV1AdminBackendQuestionsIdUsersQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendQuestionsIdUsers>>, TError = ErrorResponse>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendQuestionsIdUsers>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AdminBackendQuestionsIdUsersQueryKey(id);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendQuestionsIdUsers>>> = ({ signal }) => getV1AdminBackendQuestionsIdUsers(id, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendQuestionsIdUsers>>> = ({ signal }) => getV1AdminBackendQuestionsIdUsers(id, requestOptions, signal);
 
       
 
@@ -10542,7 +10546,7 @@ export function useGetV1AdminBackendQuestionsIdUsers<TData = Awaited<ReturnType<
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendQuestionsIdUsers>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendQuestionsIdUsers<TData = Awaited<ReturnType<typeof getV1AdminBackendQuestionsIdUsers>>, TError = ErrorResponse>(
@@ -10552,11 +10556,11 @@ export function useGetV1AdminBackendQuestionsIdUsers<TData = Awaited<ReturnType<
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendQuestionsIdUsers>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendQuestionsIdUsers<TData = Awaited<ReturnType<typeof getV1AdminBackendQuestionsIdUsers>>, TError = ErrorResponse>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendQuestionsIdUsers>>, TError, TData>>, }
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendQuestionsIdUsers>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -10564,7 +10568,7 @@ export function useGetV1AdminBackendQuestionsIdUsers<TData = Awaited<ReturnType<
  */
 
 export function useGetV1AdminBackendQuestionsIdUsers<TData = Awaited<ReturnType<typeof getV1AdminBackendQuestionsIdUsers>>, TError = ErrorResponse>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendQuestionsIdUsers>>, TError, TData>>, }
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendQuestionsIdUsers>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -10588,7 +10592,7 @@ export function useGetV1AdminBackendQuestionsIdUsers<TData = Awaited<ReturnType<
 export const postV1AdminBackendQuestionsIdAssignUsers = (
     id: number,
     postV1AdminBackendQuestionsIdAssignUsersBody: PostV1AdminBackendQuestionsIdAssignUsersBody,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -10597,21 +10601,21 @@ export const postV1AdminBackendQuestionsIdAssignUsers = (
       headers: {'Content-Type': 'application/json', },
       data: postV1AdminBackendQuestionsIdAssignUsersBody, signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1AdminBackendQuestionsIdAssignUsersMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdAssignUsers>>, TError,{id: number;data: PostV1AdminBackendQuestionsIdAssignUsersBody}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdAssignUsers>>, TError,{id: number;data: PostV1AdminBackendQuestionsIdAssignUsersBody}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdAssignUsers>>, TError,{id: number;data: PostV1AdminBackendQuestionsIdAssignUsersBody}, TContext> => {
 
 const mutationKey = ['postV1AdminBackendQuestionsIdAssignUsers'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -10619,7 +10623,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdAssignUsers>>, {id: number;data: PostV1AdminBackendQuestionsIdAssignUsersBody}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  postV1AdminBackendQuestionsIdAssignUsers(id,data,)
+          return  postV1AdminBackendQuestionsIdAssignUsers(id,data,requestOptions)
         }
 
         
@@ -10635,7 +10639,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Assign users to a question
  */
 export const usePostV1AdminBackendQuestionsIdAssignUsers = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdAssignUsers>>, TError,{id: number;data: PostV1AdminBackendQuestionsIdAssignUsersBody}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdAssignUsers>>, TError,{id: number;data: PostV1AdminBackendQuestionsIdAssignUsersBody}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdAssignUsers>>,
         TError,
@@ -10655,7 +10659,7 @@ export const usePostV1AdminBackendQuestionsIdAssignUsers = <TError = ErrorRespon
 export const postV1AdminBackendQuestionsIdUnassignUsers = (
     id: number,
     postV1AdminBackendQuestionsIdUnassignUsersBody: PostV1AdminBackendQuestionsIdUnassignUsersBody,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -10664,21 +10668,21 @@ export const postV1AdminBackendQuestionsIdUnassignUsers = (
       headers: {'Content-Type': 'application/json', },
       data: postV1AdminBackendQuestionsIdUnassignUsersBody, signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1AdminBackendQuestionsIdUnassignUsersMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdUnassignUsers>>, TError,{id: number;data: PostV1AdminBackendQuestionsIdUnassignUsersBody}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdUnassignUsers>>, TError,{id: number;data: PostV1AdminBackendQuestionsIdUnassignUsersBody}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdUnassignUsers>>, TError,{id: number;data: PostV1AdminBackendQuestionsIdUnassignUsersBody}, TContext> => {
 
 const mutationKey = ['postV1AdminBackendQuestionsIdUnassignUsers'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -10686,7 +10690,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdUnassignUsers>>, {id: number;data: PostV1AdminBackendQuestionsIdUnassignUsersBody}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  postV1AdminBackendQuestionsIdUnassignUsers(id,data,)
+          return  postV1AdminBackendQuestionsIdUnassignUsers(id,data,requestOptions)
         }
 
         
@@ -10702,7 +10706,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Unassign users from a question
  */
 export const usePostV1AdminBackendQuestionsIdUnassignUsers = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdUnassignUsers>>, TError,{id: number;data: PostV1AdminBackendQuestionsIdUnassignUsersBody}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdUnassignUsers>>, TError,{id: number;data: PostV1AdminBackendQuestionsIdUnassignUsersBody}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdUnassignUsers>>,
         TError,
@@ -10721,28 +10725,28 @@ export const usePostV1AdminBackendQuestionsIdUnassignUsers = <TError = ErrorResp
  */
 export const postV1AdminBackendQuestionsIdFix = (
     id: number,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<MessageResponse>(
       {url: `/v1/admin/backend/questions/${id}/fix`, method: 'POST', signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1AdminBackendQuestionsIdFixMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdFix>>, TError,{id: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdFix>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdFix>>, TError,{id: number}, TContext> => {
 
 const mutationKey = ['postV1AdminBackendQuestionsIdFix'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -10750,7 +10754,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdFix>>, {id: number}> = (props) => {
           const {id} = props ?? {};
 
-          return  postV1AdminBackendQuestionsIdFix(id,)
+          return  postV1AdminBackendQuestionsIdFix(id,requestOptions)
         }
 
         
@@ -10766,7 +10770,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Mark question as fixed
  */
 export const usePostV1AdminBackendQuestionsIdFix = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdFix>>, TError,{id: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdFix>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdFix>>,
         TError,
@@ -10786,7 +10790,7 @@ export const usePostV1AdminBackendQuestionsIdFix = <TError = ErrorResponse,
 export const postV1AdminBackendQuestionsIdAiFix = (
     id: number,
     postV1AdminBackendQuestionsIdAiFixBody?: PostV1AdminBackendQuestionsIdAiFixBody,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -10795,21 +10799,21 @@ export const postV1AdminBackendQuestionsIdAiFix = (
       headers: {'Content-Type': 'application/json', },
       data: postV1AdminBackendQuestionsIdAiFixBody, signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1AdminBackendQuestionsIdAiFixMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdAiFix>>, TError,{id: number;data: PostV1AdminBackendQuestionsIdAiFixBody}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdAiFix>>, TError,{id: number;data: PostV1AdminBackendQuestionsIdAiFixBody}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdAiFix>>, TError,{id: number;data: PostV1AdminBackendQuestionsIdAiFixBody}, TContext> => {
 
 const mutationKey = ['postV1AdminBackendQuestionsIdAiFix'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -10817,7 +10821,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdAiFix>>, {id: number;data: PostV1AdminBackendQuestionsIdAiFixBody}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  postV1AdminBackendQuestionsIdAiFix(id,data,)
+          return  postV1AdminBackendQuestionsIdAiFix(id,data,requestOptions)
         }
 
         
@@ -10833,7 +10837,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Fix question with AI
  */
 export const usePostV1AdminBackendQuestionsIdAiFix = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdAiFix>>, TError,{id: number;data: PostV1AdminBackendQuestionsIdAiFixBody}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdAiFix>>, TError,{id: number;data: PostV1AdminBackendQuestionsIdAiFixBody}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1AdminBackendQuestionsIdAiFix>>,
         TError,
@@ -10852,28 +10856,28 @@ export const usePostV1AdminBackendQuestionsIdAiFix = <TError = ErrorResponse,
  */
 export const postV1AdminBackendClearUserData = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<MessageResponse>(
       {url: `/v1/admin/backend/clear-user-data`, method: 'POST', signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1AdminBackendClearUserDataMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendClearUserData>>, TError,void, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendClearUserData>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendClearUserData>>, TError,void, TContext> => {
 
 const mutationKey = ['postV1AdminBackendClearUserData'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -10881,7 +10885,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AdminBackendClearUserData>>, void> = () => {
           
 
-          return  postV1AdminBackendClearUserData()
+          return  postV1AdminBackendClearUserData(requestOptions)
         }
 
         
@@ -10897,7 +10901,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Clear all user data
  */
 export const usePostV1AdminBackendClearUserData = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendClearUserData>>, TError,void, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendClearUserData>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1AdminBackendClearUserData>>,
         TError,
@@ -10916,28 +10920,28 @@ export const usePostV1AdminBackendClearUserData = <TError = ErrorResponse,
  */
 export const postV1AdminBackendClearDatabase = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<MessageResponse>(
       {url: `/v1/admin/backend/clear-database`, method: 'POST', signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1AdminBackendClearDatabaseMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendClearDatabase>>, TError,void, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendClearDatabase>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendClearDatabase>>, TError,void, TContext> => {
 
 const mutationKey = ['postV1AdminBackendClearDatabase'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -10945,7 +10949,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AdminBackendClearDatabase>>, void> = () => {
           
 
-          return  postV1AdminBackendClearDatabase()
+          return  postV1AdminBackendClearDatabase(requestOptions)
         }
 
         
@@ -10961,7 +10965,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Clear entire database
  */
 export const usePostV1AdminBackendClearDatabase = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendClearDatabase>>, TError,void, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendClearDatabase>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1AdminBackendClearDatabase>>,
         TError,
@@ -10980,28 +10984,28 @@ export const usePostV1AdminBackendClearDatabase = <TError = ErrorResponse,
  */
 export const postV1AdminBackendUserzIdClear = (
     id: number,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<MessageResponse>(
       {url: `/v1/admin/backend/userz/${id}/clear`, method: 'POST', signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1AdminBackendUserzIdClearMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendUserzIdClear>>, TError,{id: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendUserzIdClear>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendUserzIdClear>>, TError,{id: number}, TContext> => {
 
 const mutationKey = ['postV1AdminBackendUserzIdClear'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -11009,7 +11013,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AdminBackendUserzIdClear>>, {id: number}> = (props) => {
           const {id} = props ?? {};
 
-          return  postV1AdminBackendUserzIdClear(id,)
+          return  postV1AdminBackendUserzIdClear(id,requestOptions)
         }
 
         
@@ -11025,7 +11029,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Clear user data for specific user
  */
 export const usePostV1AdminBackendUserzIdClear = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendUserzIdClear>>, TError,{id: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendUserzIdClear>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1AdminBackendUserzIdClear>>,
         TError,
@@ -11044,14 +11048,14 @@ export const usePostV1AdminBackendUserzIdClear = <TError = ErrorResponse,
  */
 export const getV1AdminBackendUsageStats = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<UsageStatsResponse>(
       {url: `/v1/admin/backend/usage-stats`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -11064,16 +11068,16 @@ export const getGetV1AdminBackendUsageStatsQueryKey = () => {
     }
 
     
-export const getGetV1AdminBackendUsageStatsQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendUsageStats>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendUsageStats>>, TError, TData>>, }
+export const getGetV1AdminBackendUsageStatsQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendUsageStats>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendUsageStats>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AdminBackendUsageStatsQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendUsageStats>>> = ({ signal }) => getV1AdminBackendUsageStats(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendUsageStats>>> = ({ signal }) => getV1AdminBackendUsageStats(requestOptions, signal);
 
       
 
@@ -11093,7 +11097,7 @@ export function useGetV1AdminBackendUsageStats<TData = Awaited<ReturnType<typeof
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendUsageStats>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendUsageStats<TData = Awaited<ReturnType<typeof getV1AdminBackendUsageStats>>, TError = ErrorResponse>(
@@ -11103,11 +11107,11 @@ export function useGetV1AdminBackendUsageStats<TData = Awaited<ReturnType<typeof
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendUsageStats>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendUsageStats<TData = Awaited<ReturnType<typeof getV1AdminBackendUsageStats>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendUsageStats>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendUsageStats>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -11115,7 +11119,7 @@ export function useGetV1AdminBackendUsageStats<TData = Awaited<ReturnType<typeof
  */
 
 export function useGetV1AdminBackendUsageStats<TData = Awaited<ReturnType<typeof getV1AdminBackendUsageStats>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendUsageStats>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendUsageStats>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -11138,14 +11142,14 @@ export function useGetV1AdminBackendUsageStats<TData = Awaited<ReturnType<typeof
  */
 export const getV1AdminBackendUsageStatsService = (
     service: string,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<ServiceUsageStatsResponse>(
       {url: `/v1/admin/backend/usage-stats/${service}`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -11158,16 +11162,16 @@ export const getGetV1AdminBackendUsageStatsServiceQueryKey = (service?: string,)
     }
 
     
-export const getGetV1AdminBackendUsageStatsServiceQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendUsageStatsService>>, TError = ErrorResponse>(service: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendUsageStatsService>>, TError, TData>>, }
+export const getGetV1AdminBackendUsageStatsServiceQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendUsageStatsService>>, TError = ErrorResponse>(service: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendUsageStatsService>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AdminBackendUsageStatsServiceQueryKey(service);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendUsageStatsService>>> = ({ signal }) => getV1AdminBackendUsageStatsService(service, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendUsageStatsService>>> = ({ signal }) => getV1AdminBackendUsageStatsService(service, requestOptions, signal);
 
       
 
@@ -11187,7 +11191,7 @@ export function useGetV1AdminBackendUsageStatsService<TData = Awaited<ReturnType
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendUsageStatsService>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendUsageStatsService<TData = Awaited<ReturnType<typeof getV1AdminBackendUsageStatsService>>, TError = ErrorResponse>(
@@ -11197,11 +11201,11 @@ export function useGetV1AdminBackendUsageStatsService<TData = Awaited<ReturnType
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendUsageStatsService>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendUsageStatsService<TData = Awaited<ReturnType<typeof getV1AdminBackendUsageStatsService>>, TError = ErrorResponse>(
- service: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendUsageStatsService>>, TError, TData>>, }
+ service: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendUsageStatsService>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -11209,7 +11213,7 @@ export function useGetV1AdminBackendUsageStatsService<TData = Awaited<ReturnType
  */
 
 export function useGetV1AdminBackendUsageStatsService<TData = Awaited<ReturnType<typeof getV1AdminBackendUsageStatsService>>, TError = ErrorResponse>(
- service: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendUsageStatsService>>, TError, TData>>, }
+ service: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendUsageStatsService>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -11232,7 +11236,7 @@ export function useGetV1AdminBackendUsageStatsService<TData = Awaited<ReturnType
  */
 export const getV1AdminBackendReportedQuestions = (
     params?: GetV1AdminBackendReportedQuestionsParams,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -11240,7 +11244,7 @@ export const getV1AdminBackendReportedQuestions = (
       {url: `/v1/admin/backend/reported-questions`, method: 'GET',
         params, signal
     },
-      );
+      options);
     }
   
 
@@ -11253,16 +11257,16 @@ export const getGetV1AdminBackendReportedQuestionsQueryKey = (params?: GetV1Admi
     }
 
     
-export const getGetV1AdminBackendReportedQuestionsQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendReportedQuestions>>, TError = ErrorResponse>(params?: GetV1AdminBackendReportedQuestionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendReportedQuestions>>, TError, TData>>, }
+export const getGetV1AdminBackendReportedQuestionsQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendReportedQuestions>>, TError = ErrorResponse>(params?: GetV1AdminBackendReportedQuestionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendReportedQuestions>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AdminBackendReportedQuestionsQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendReportedQuestions>>> = ({ signal }) => getV1AdminBackendReportedQuestions(params, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendReportedQuestions>>> = ({ signal }) => getV1AdminBackendReportedQuestions(params, requestOptions, signal);
 
       
 
@@ -11282,7 +11286,7 @@ export function useGetV1AdminBackendReportedQuestions<TData = Awaited<ReturnType
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendReportedQuestions>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendReportedQuestions<TData = Awaited<ReturnType<typeof getV1AdminBackendReportedQuestions>>, TError = ErrorResponse>(
@@ -11292,11 +11296,11 @@ export function useGetV1AdminBackendReportedQuestions<TData = Awaited<ReturnType
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendReportedQuestions>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendReportedQuestions<TData = Awaited<ReturnType<typeof getV1AdminBackendReportedQuestions>>, TError = ErrorResponse>(
- params?: GetV1AdminBackendReportedQuestionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendReportedQuestions>>, TError, TData>>, }
+ params?: GetV1AdminBackendReportedQuestionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendReportedQuestions>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -11304,7 +11308,7 @@ export function useGetV1AdminBackendReportedQuestions<TData = Awaited<ReturnType
  */
 
 export function useGetV1AdminBackendReportedQuestions<TData = Awaited<ReturnType<typeof getV1AdminBackendReportedQuestions>>, TError = ErrorResponse>(
- params?: GetV1AdminBackendReportedQuestionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendReportedQuestions>>, TError, TData>>, }
+ params?: GetV1AdminBackendReportedQuestionsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendReportedQuestions>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -11327,7 +11331,7 @@ export function useGetV1AdminBackendReportedQuestions<TData = Awaited<ReturnType
  */
 export const getV1AdminBackendStories = (
     params?: GetV1AdminBackendStoriesParams,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -11335,7 +11339,7 @@ export const getV1AdminBackendStories = (
       {url: `/v1/admin/backend/stories`, method: 'GET',
         params, signal
     },
-      );
+      options);
     }
   
 
@@ -11348,16 +11352,16 @@ export const getGetV1AdminBackendStoriesQueryKey = (params?: GetV1AdminBackendSt
     }
 
     
-export const getGetV1AdminBackendStoriesQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendStories>>, TError = ErrorResponse>(params?: GetV1AdminBackendStoriesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendStories>>, TError, TData>>, }
+export const getGetV1AdminBackendStoriesQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendStories>>, TError = ErrorResponse>(params?: GetV1AdminBackendStoriesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendStories>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AdminBackendStoriesQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendStories>>> = ({ signal }) => getV1AdminBackendStories(params, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendStories>>> = ({ signal }) => getV1AdminBackendStories(params, requestOptions, signal);
 
       
 
@@ -11377,7 +11381,7 @@ export function useGetV1AdminBackendStories<TData = Awaited<ReturnType<typeof ge
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendStories>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendStories<TData = Awaited<ReturnType<typeof getV1AdminBackendStories>>, TError = ErrorResponse>(
@@ -11387,11 +11391,11 @@ export function useGetV1AdminBackendStories<TData = Awaited<ReturnType<typeof ge
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendStories>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendStories<TData = Awaited<ReturnType<typeof getV1AdminBackendStories>>, TError = ErrorResponse>(
- params?: GetV1AdminBackendStoriesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendStories>>, TError, TData>>, }
+ params?: GetV1AdminBackendStoriesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendStories>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -11399,7 +11403,7 @@ export function useGetV1AdminBackendStories<TData = Awaited<ReturnType<typeof ge
  */
 
 export function useGetV1AdminBackendStories<TData = Awaited<ReturnType<typeof getV1AdminBackendStories>>, TError = ErrorResponse>(
- params?: GetV1AdminBackendStoriesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendStories>>, TError, TData>>, }
+ params?: GetV1AdminBackendStoriesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendStories>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -11422,14 +11426,14 @@ export function useGetV1AdminBackendStories<TData = Awaited<ReturnType<typeof ge
  */
 export const getV1AdminBackendStoriesId = (
     id: number,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<StoryWithSections>(
       {url: `/v1/admin/backend/stories/${id}`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -11442,16 +11446,16 @@ export const getGetV1AdminBackendStoriesIdQueryKey = (id?: number,) => {
     }
 
     
-export const getGetV1AdminBackendStoriesIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendStoriesId>>, TError = ErrorResponse>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendStoriesId>>, TError, TData>>, }
+export const getGetV1AdminBackendStoriesIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendStoriesId>>, TError = ErrorResponse>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendStoriesId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AdminBackendStoriesIdQueryKey(id);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendStoriesId>>> = ({ signal }) => getV1AdminBackendStoriesId(id, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendStoriesId>>> = ({ signal }) => getV1AdminBackendStoriesId(id, requestOptions, signal);
 
       
 
@@ -11471,7 +11475,7 @@ export function useGetV1AdminBackendStoriesId<TData = Awaited<ReturnType<typeof 
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendStoriesId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendStoriesId<TData = Awaited<ReturnType<typeof getV1AdminBackendStoriesId>>, TError = ErrorResponse>(
@@ -11481,11 +11485,11 @@ export function useGetV1AdminBackendStoriesId<TData = Awaited<ReturnType<typeof 
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendStoriesId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendStoriesId<TData = Awaited<ReturnType<typeof getV1AdminBackendStoriesId>>, TError = ErrorResponse>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendStoriesId>>, TError, TData>>, }
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendStoriesId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -11493,7 +11497,7 @@ export function useGetV1AdminBackendStoriesId<TData = Awaited<ReturnType<typeof 
  */
 
 export function useGetV1AdminBackendStoriesId<TData = Awaited<ReturnType<typeof getV1AdminBackendStoriesId>>, TError = ErrorResponse>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendStoriesId>>, TError, TData>>, }
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendStoriesId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -11516,27 +11520,27 @@ export function useGetV1AdminBackendStoriesId<TData = Awaited<ReturnType<typeof 
  */
 export const deleteV1AdminBackendStoriesId = (
     id: number,
- ) => {
+ options?: SecondParameter<typeof customInstance>,) => {
       
       
       return customInstance<void>(
       {url: `/v1/admin/backend/stories/${id}`, method: 'DELETE'
     },
-      );
+      options);
     }
   
 
 
 export const getDeleteV1AdminBackendStoriesIdMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendStoriesId>>, TError,{id: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendStoriesId>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendStoriesId>>, TError,{id: number}, TContext> => {
 
 const mutationKey = ['deleteV1AdminBackendStoriesId'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -11544,7 +11548,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteV1AdminBackendStoriesId>>, {id: number}> = (props) => {
           const {id} = props ?? {};
 
-          return  deleteV1AdminBackendStoriesId(id,)
+          return  deleteV1AdminBackendStoriesId(id,requestOptions)
         }
 
         
@@ -11560,7 +11564,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Delete a story (admin)
  */
 export const useDeleteV1AdminBackendStoriesId = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendStoriesId>>, TError,{id: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendStoriesId>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteV1AdminBackendStoriesId>>,
         TError,
@@ -11579,14 +11583,14 @@ export const useDeleteV1AdminBackendStoriesId = <TError = ErrorResponse,
  */
 export const getV1AdminBackendStorySectionsId = (
     id: number,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<StorySectionWithQuestions>(
       {url: `/v1/admin/backend/story-sections/${id}`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -11599,16 +11603,16 @@ export const getGetV1AdminBackendStorySectionsIdQueryKey = (id?: number,) => {
     }
 
     
-export const getGetV1AdminBackendStorySectionsIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendStorySectionsId>>, TError = ErrorResponse>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendStorySectionsId>>, TError, TData>>, }
+export const getGetV1AdminBackendStorySectionsIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendStorySectionsId>>, TError = ErrorResponse>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendStorySectionsId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AdminBackendStorySectionsIdQueryKey(id);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendStorySectionsId>>> = ({ signal }) => getV1AdminBackendStorySectionsId(id, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendStorySectionsId>>> = ({ signal }) => getV1AdminBackendStorySectionsId(id, requestOptions, signal);
 
       
 
@@ -11628,7 +11632,7 @@ export function useGetV1AdminBackendStorySectionsId<TData = Awaited<ReturnType<t
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendStorySectionsId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendStorySectionsId<TData = Awaited<ReturnType<typeof getV1AdminBackendStorySectionsId>>, TError = ErrorResponse>(
@@ -11638,11 +11642,11 @@ export function useGetV1AdminBackendStorySectionsId<TData = Awaited<ReturnType<t
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendStorySectionsId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendStorySectionsId<TData = Awaited<ReturnType<typeof getV1AdminBackendStorySectionsId>>, TError = ErrorResponse>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendStorySectionsId>>, TError, TData>>, }
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendStorySectionsId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -11650,7 +11654,7 @@ export function useGetV1AdminBackendStorySectionsId<TData = Awaited<ReturnType<t
  */
 
 export function useGetV1AdminBackendStorySectionsId<TData = Awaited<ReturnType<typeof getV1AdminBackendStorySectionsId>>, TError = ErrorResponse>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendStorySectionsId>>, TError, TData>>, }
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendStorySectionsId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -11672,7 +11676,7 @@ export function useGetV1AdminBackendStorySectionsId<TData = Awaited<ReturnType<t
  */
 export const postV1QuizChatStream = (
     quizChatRequest: QuizChatRequest,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -11681,21 +11685,21 @@ export const postV1QuizChatStream = (
       headers: {'Content-Type': 'application/json', },
       data: quizChatRequest, signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1QuizChatStreamMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1QuizChatStream>>, TError,{data: QuizChatRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1QuizChatStream>>, TError,{data: QuizChatRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1QuizChatStream>>, TError,{data: QuizChatRequest}, TContext> => {
 
 const mutationKey = ['postV1QuizChatStream'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -11703,7 +11707,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1QuizChatStream>>, {data: QuizChatRequest}> = (props) => {
           const {data} = props ?? {};
 
-          return  postV1QuizChatStream(data,)
+          return  postV1QuizChatStream(data,requestOptions)
         }
 
         
@@ -11719,7 +11723,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Get a streaming AI-powered explanation or chat about a question.
  */
 export const usePostV1QuizChatStream = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1QuizChatStream>>, TError,{data: QuizChatRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1QuizChatStream>>, TError,{data: QuizChatRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1QuizChatStream>>,
         TError,
@@ -11738,14 +11742,14 @@ export const usePostV1QuizChatStream = <TError = ErrorResponse,
  */
 export const getV1DailyQuestionsDate = (
     date: string,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<DailyQuestionsResponse>(
       {url: `/v1/daily/questions/${date}`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -11758,16 +11762,16 @@ export const getGetV1DailyQuestionsDateQueryKey = (date?: string,) => {
     }
 
     
-export const getGetV1DailyQuestionsDateQueryOptions = <TData = Awaited<ReturnType<typeof getV1DailyQuestionsDate>>, TError = ErrorResponse>(date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1DailyQuestionsDate>>, TError, TData>>, }
+export const getGetV1DailyQuestionsDateQueryOptions = <TData = Awaited<ReturnType<typeof getV1DailyQuestionsDate>>, TError = ErrorResponse>(date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1DailyQuestionsDate>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1DailyQuestionsDateQueryKey(date);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1DailyQuestionsDate>>> = ({ signal }) => getV1DailyQuestionsDate(date, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1DailyQuestionsDate>>> = ({ signal }) => getV1DailyQuestionsDate(date, requestOptions, signal);
 
       
 
@@ -11787,7 +11791,7 @@ export function useGetV1DailyQuestionsDate<TData = Awaited<ReturnType<typeof get
           TError,
           Awaited<ReturnType<typeof getV1DailyQuestionsDate>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1DailyQuestionsDate<TData = Awaited<ReturnType<typeof getV1DailyQuestionsDate>>, TError = ErrorResponse>(
@@ -11797,11 +11801,11 @@ export function useGetV1DailyQuestionsDate<TData = Awaited<ReturnType<typeof get
           TError,
           Awaited<ReturnType<typeof getV1DailyQuestionsDate>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1DailyQuestionsDate<TData = Awaited<ReturnType<typeof getV1DailyQuestionsDate>>, TError = ErrorResponse>(
- date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1DailyQuestionsDate>>, TError, TData>>, }
+ date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1DailyQuestionsDate>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -11809,7 +11813,7 @@ export function useGetV1DailyQuestionsDate<TData = Awaited<ReturnType<typeof get
  */
 
 export function useGetV1DailyQuestionsDate<TData = Awaited<ReturnType<typeof getV1DailyQuestionsDate>>, TError = ErrorResponse>(
- date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1DailyQuestionsDate>>, TError, TData>>, }
+ date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1DailyQuestionsDate>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -11833,28 +11837,28 @@ export function useGetV1DailyQuestionsDate<TData = Awaited<ReturnType<typeof get
 export const postV1DailyQuestionsDateCompleteQuestionId = (
     date: string,
     questionId: number,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<SuccessResponse>(
       {url: `/v1/daily/questions/${date}/complete/${questionId}`, method: 'POST', signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1DailyQuestionsDateCompleteQuestionIdMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1DailyQuestionsDateCompleteQuestionId>>, TError,{date: string;questionId: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1DailyQuestionsDateCompleteQuestionId>>, TError,{date: string;questionId: number}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1DailyQuestionsDateCompleteQuestionId>>, TError,{date: string;questionId: number}, TContext> => {
 
 const mutationKey = ['postV1DailyQuestionsDateCompleteQuestionId'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -11862,7 +11866,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1DailyQuestionsDateCompleteQuestionId>>, {date: string;questionId: number}> = (props) => {
           const {date,questionId} = props ?? {};
 
-          return  postV1DailyQuestionsDateCompleteQuestionId(date,questionId,)
+          return  postV1DailyQuestionsDateCompleteQuestionId(date,questionId,requestOptions)
         }
 
         
@@ -11878,7 +11882,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Mark daily question as completed
  */
 export const usePostV1DailyQuestionsDateCompleteQuestionId = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1DailyQuestionsDateCompleteQuestionId>>, TError,{date: string;questionId: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1DailyQuestionsDateCompleteQuestionId>>, TError,{date: string;questionId: number}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1DailyQuestionsDateCompleteQuestionId>>,
         TError,
@@ -11898,27 +11902,27 @@ export const usePostV1DailyQuestionsDateCompleteQuestionId = <TError = ErrorResp
 export const deleteV1DailyQuestionsDateCompleteQuestionId = (
     date: string,
     questionId: number,
- ) => {
+ options?: SecondParameter<typeof customInstance>,) => {
       
       
       return customInstance<SuccessResponse>(
       {url: `/v1/daily/questions/${date}/complete/${questionId}`, method: 'DELETE'
     },
-      );
+      options);
     }
   
 
 
 export const getDeleteV1DailyQuestionsDateCompleteQuestionIdMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1DailyQuestionsDateCompleteQuestionId>>, TError,{date: string;questionId: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1DailyQuestionsDateCompleteQuestionId>>, TError,{date: string;questionId: number}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof deleteV1DailyQuestionsDateCompleteQuestionId>>, TError,{date: string;questionId: number}, TContext> => {
 
 const mutationKey = ['deleteV1DailyQuestionsDateCompleteQuestionId'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -11926,7 +11930,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteV1DailyQuestionsDateCompleteQuestionId>>, {date: string;questionId: number}> = (props) => {
           const {date,questionId} = props ?? {};
 
-          return  deleteV1DailyQuestionsDateCompleteQuestionId(date,questionId,)
+          return  deleteV1DailyQuestionsDateCompleteQuestionId(date,questionId,requestOptions)
         }
 
         
@@ -11942,7 +11946,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Reset daily question completion
  */
 export const useDeleteV1DailyQuestionsDateCompleteQuestionId = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1DailyQuestionsDateCompleteQuestionId>>, TError,{date: string;questionId: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1DailyQuestionsDateCompleteQuestionId>>, TError,{date: string;questionId: number}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteV1DailyQuestionsDateCompleteQuestionId>>,
         TError,
@@ -11961,14 +11965,14 @@ export const useDeleteV1DailyQuestionsDateCompleteQuestionId = <TError = ErrorRe
  */
 export const getV1DailyDates = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<DailyDatesResponse>(
       {url: `/v1/daily/dates`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -11981,16 +11985,16 @@ export const getGetV1DailyDatesQueryKey = () => {
     }
 
     
-export const getGetV1DailyDatesQueryOptions = <TData = Awaited<ReturnType<typeof getV1DailyDates>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1DailyDates>>, TError, TData>>, }
+export const getGetV1DailyDatesQueryOptions = <TData = Awaited<ReturnType<typeof getV1DailyDates>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1DailyDates>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1DailyDatesQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1DailyDates>>> = ({ signal }) => getV1DailyDates(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1DailyDates>>> = ({ signal }) => getV1DailyDates(requestOptions, signal);
 
       
 
@@ -12010,7 +12014,7 @@ export function useGetV1DailyDates<TData = Awaited<ReturnType<typeof getV1DailyD
           TError,
           Awaited<ReturnType<typeof getV1DailyDates>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1DailyDates<TData = Awaited<ReturnType<typeof getV1DailyDates>>, TError = ErrorResponse>(
@@ -12020,11 +12024,11 @@ export function useGetV1DailyDates<TData = Awaited<ReturnType<typeof getV1DailyD
           TError,
           Awaited<ReturnType<typeof getV1DailyDates>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1DailyDates<TData = Awaited<ReturnType<typeof getV1DailyDates>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1DailyDates>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1DailyDates>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -12032,7 +12036,7 @@ export function useGetV1DailyDates<TData = Awaited<ReturnType<typeof getV1DailyD
  */
 
 export function useGetV1DailyDates<TData = Awaited<ReturnType<typeof getV1DailyDates>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1DailyDates>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1DailyDates>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -12057,7 +12061,7 @@ export const postV1DailyQuestionsDateAnswerQuestionId = (
     date: string,
     questionId: number,
     postV1DailyQuestionsDateAnswerQuestionIdBody: PostV1DailyQuestionsDateAnswerQuestionIdBody,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -12066,21 +12070,21 @@ export const postV1DailyQuestionsDateAnswerQuestionId = (
       headers: {'Content-Type': 'application/json', },
       data: postV1DailyQuestionsDateAnswerQuestionIdBody, signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1DailyQuestionsDateAnswerQuestionIdMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1DailyQuestionsDateAnswerQuestionId>>, TError,{date: string;questionId: number;data: PostV1DailyQuestionsDateAnswerQuestionIdBody}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1DailyQuestionsDateAnswerQuestionId>>, TError,{date: string;questionId: number;data: PostV1DailyQuestionsDateAnswerQuestionIdBody}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1DailyQuestionsDateAnswerQuestionId>>, TError,{date: string;questionId: number;data: PostV1DailyQuestionsDateAnswerQuestionIdBody}, TContext> => {
 
 const mutationKey = ['postV1DailyQuestionsDateAnswerQuestionId'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -12088,7 +12092,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1DailyQuestionsDateAnswerQuestionId>>, {date: string;questionId: number;data: PostV1DailyQuestionsDateAnswerQuestionIdBody}> = (props) => {
           const {date,questionId,data} = props ?? {};
 
-          return  postV1DailyQuestionsDateAnswerQuestionId(date,questionId,data,)
+          return  postV1DailyQuestionsDateAnswerQuestionId(date,questionId,data,requestOptions)
         }
 
         
@@ -12104,7 +12108,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Submit answer for daily question
  */
 export const usePostV1DailyQuestionsDateAnswerQuestionId = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1DailyQuestionsDateAnswerQuestionId>>, TError,{date: string;questionId: number;data: PostV1DailyQuestionsDateAnswerQuestionIdBody}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1DailyQuestionsDateAnswerQuestionId>>, TError,{date: string;questionId: number;data: PostV1DailyQuestionsDateAnswerQuestionIdBody}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1DailyQuestionsDateAnswerQuestionId>>,
         TError,
@@ -12123,14 +12127,14 @@ export const usePostV1DailyQuestionsDateAnswerQuestionId = <TError = ErrorRespon
  */
 export const getV1DailyProgressDate = (
     date: string,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<DailyProgress>(
       {url: `/v1/daily/progress/${date}`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -12143,16 +12147,16 @@ export const getGetV1DailyProgressDateQueryKey = (date?: string,) => {
     }
 
     
-export const getGetV1DailyProgressDateQueryOptions = <TData = Awaited<ReturnType<typeof getV1DailyProgressDate>>, TError = ErrorResponse>(date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1DailyProgressDate>>, TError, TData>>, }
+export const getGetV1DailyProgressDateQueryOptions = <TData = Awaited<ReturnType<typeof getV1DailyProgressDate>>, TError = ErrorResponse>(date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1DailyProgressDate>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1DailyProgressDateQueryKey(date);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1DailyProgressDate>>> = ({ signal }) => getV1DailyProgressDate(date, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1DailyProgressDate>>> = ({ signal }) => getV1DailyProgressDate(date, requestOptions, signal);
 
       
 
@@ -12172,7 +12176,7 @@ export function useGetV1DailyProgressDate<TData = Awaited<ReturnType<typeof getV
           TError,
           Awaited<ReturnType<typeof getV1DailyProgressDate>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1DailyProgressDate<TData = Awaited<ReturnType<typeof getV1DailyProgressDate>>, TError = ErrorResponse>(
@@ -12182,11 +12186,11 @@ export function useGetV1DailyProgressDate<TData = Awaited<ReturnType<typeof getV
           TError,
           Awaited<ReturnType<typeof getV1DailyProgressDate>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1DailyProgressDate<TData = Awaited<ReturnType<typeof getV1DailyProgressDate>>, TError = ErrorResponse>(
- date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1DailyProgressDate>>, TError, TData>>, }
+ date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1DailyProgressDate>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -12194,7 +12198,7 @@ export function useGetV1DailyProgressDate<TData = Awaited<ReturnType<typeof getV
  */
 
 export function useGetV1DailyProgressDate<TData = Awaited<ReturnType<typeof getV1DailyProgressDate>>, TError = ErrorResponse>(
- date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1DailyProgressDate>>, TError, TData>>, }
+ date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1DailyProgressDate>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -12217,14 +12221,14 @@ export function useGetV1DailyProgressDate<TData = Awaited<ReturnType<typeof getV
  */
 export const getV1DailyHistoryQuestionId = (
     questionId: number,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<DailyQuestionHistoryResponse>(
       {url: `/v1/daily/history/${questionId}`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -12237,16 +12241,16 @@ export const getGetV1DailyHistoryQuestionIdQueryKey = (questionId?: number,) => 
     }
 
     
-export const getGetV1DailyHistoryQuestionIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1DailyHistoryQuestionId>>, TError = ErrorResponse>(questionId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1DailyHistoryQuestionId>>, TError, TData>>, }
+export const getGetV1DailyHistoryQuestionIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1DailyHistoryQuestionId>>, TError = ErrorResponse>(questionId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1DailyHistoryQuestionId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1DailyHistoryQuestionIdQueryKey(questionId);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1DailyHistoryQuestionId>>> = ({ signal }) => getV1DailyHistoryQuestionId(questionId, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1DailyHistoryQuestionId>>> = ({ signal }) => getV1DailyHistoryQuestionId(questionId, requestOptions, signal);
 
       
 
@@ -12266,7 +12270,7 @@ export function useGetV1DailyHistoryQuestionId<TData = Awaited<ReturnType<typeof
           TError,
           Awaited<ReturnType<typeof getV1DailyHistoryQuestionId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1DailyHistoryQuestionId<TData = Awaited<ReturnType<typeof getV1DailyHistoryQuestionId>>, TError = ErrorResponse>(
@@ -12276,11 +12280,11 @@ export function useGetV1DailyHistoryQuestionId<TData = Awaited<ReturnType<typeof
           TError,
           Awaited<ReturnType<typeof getV1DailyHistoryQuestionId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1DailyHistoryQuestionId<TData = Awaited<ReturnType<typeof getV1DailyHistoryQuestionId>>, TError = ErrorResponse>(
- questionId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1DailyHistoryQuestionId>>, TError, TData>>, }
+ questionId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1DailyHistoryQuestionId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -12288,7 +12292,7 @@ export function useGetV1DailyHistoryQuestionId<TData = Awaited<ReturnType<typeof
  */
 
 export function useGetV1DailyHistoryQuestionId<TData = Awaited<ReturnType<typeof getV1DailyHistoryQuestionId>>, TError = ErrorResponse>(
- questionId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1DailyHistoryQuestionId>>, TError, TData>>, }
+ questionId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1DailyHistoryQuestionId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -12311,14 +12315,14 @@ export function useGetV1DailyHistoryQuestionId<TData = Awaited<ReturnType<typeof
  */
 export const getV1WordOfDayDate = (
     date: string,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<WordOfTheDayDisplay>(
       {url: `/v1/word-of-day/${date}`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -12331,16 +12335,16 @@ export const getGetV1WordOfDayDateQueryKey = (date?: string,) => {
     }
 
     
-export const getGetV1WordOfDayDateQueryOptions = <TData = Awaited<ReturnType<typeof getV1WordOfDayDate>>, TError = ErrorResponse>(date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayDate>>, TError, TData>>, }
+export const getGetV1WordOfDayDateQueryOptions = <TData = Awaited<ReturnType<typeof getV1WordOfDayDate>>, TError = ErrorResponse>(date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayDate>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1WordOfDayDateQueryKey(date);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1WordOfDayDate>>> = ({ signal }) => getV1WordOfDayDate(date, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1WordOfDayDate>>> = ({ signal }) => getV1WordOfDayDate(date, requestOptions, signal);
 
       
 
@@ -12360,7 +12364,7 @@ export function useGetV1WordOfDayDate<TData = Awaited<ReturnType<typeof getV1Wor
           TError,
           Awaited<ReturnType<typeof getV1WordOfDayDate>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1WordOfDayDate<TData = Awaited<ReturnType<typeof getV1WordOfDayDate>>, TError = ErrorResponse>(
@@ -12370,11 +12374,11 @@ export function useGetV1WordOfDayDate<TData = Awaited<ReturnType<typeof getV1Wor
           TError,
           Awaited<ReturnType<typeof getV1WordOfDayDate>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1WordOfDayDate<TData = Awaited<ReturnType<typeof getV1WordOfDayDate>>, TError = ErrorResponse>(
- date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayDate>>, TError, TData>>, }
+ date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayDate>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -12382,7 +12386,7 @@ export function useGetV1WordOfDayDate<TData = Awaited<ReturnType<typeof getV1Wor
  */
 
 export function useGetV1WordOfDayDate<TData = Awaited<ReturnType<typeof getV1WordOfDayDate>>, TError = ErrorResponse>(
- date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayDate>>, TError, TData>>, }
+ date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayDate>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -12405,14 +12409,14 @@ export function useGetV1WordOfDayDate<TData = Awaited<ReturnType<typeof getV1Wor
  */
 export const getV1WordOfDay = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<WordOfTheDayDisplay>(
       {url: `/v1/word-of-day`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -12425,16 +12429,16 @@ export const getGetV1WordOfDayQueryKey = () => {
     }
 
     
-export const getGetV1WordOfDayQueryOptions = <TData = Awaited<ReturnType<typeof getV1WordOfDay>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDay>>, TError, TData>>, }
+export const getGetV1WordOfDayQueryOptions = <TData = Awaited<ReturnType<typeof getV1WordOfDay>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDay>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1WordOfDayQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1WordOfDay>>> = ({ signal }) => getV1WordOfDay(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1WordOfDay>>> = ({ signal }) => getV1WordOfDay(requestOptions, signal);
 
       
 
@@ -12454,7 +12458,7 @@ export function useGetV1WordOfDay<TData = Awaited<ReturnType<typeof getV1WordOfD
           TError,
           Awaited<ReturnType<typeof getV1WordOfDay>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1WordOfDay<TData = Awaited<ReturnType<typeof getV1WordOfDay>>, TError = ErrorResponse>(
@@ -12464,11 +12468,11 @@ export function useGetV1WordOfDay<TData = Awaited<ReturnType<typeof getV1WordOfD
           TError,
           Awaited<ReturnType<typeof getV1WordOfDay>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1WordOfDay<TData = Awaited<ReturnType<typeof getV1WordOfDay>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDay>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDay>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -12476,7 +12480,7 @@ export function useGetV1WordOfDay<TData = Awaited<ReturnType<typeof getV1WordOfD
  */
 
 export function useGetV1WordOfDay<TData = Awaited<ReturnType<typeof getV1WordOfDay>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDay>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDay>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -12499,7 +12503,7 @@ export function useGetV1WordOfDay<TData = Awaited<ReturnType<typeof getV1WordOfD
  */
 export const getV1WordOfDayEmbed = (
     params?: GetV1WordOfDayEmbedParams,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -12507,7 +12511,7 @@ export const getV1WordOfDayEmbed = (
       {url: `/v1/word-of-day/embed`, method: 'GET',
         params, signal
     },
-      );
+      options);
     }
   
 
@@ -12520,16 +12524,16 @@ export const getGetV1WordOfDayEmbedQueryKey = (params?: GetV1WordOfDayEmbedParam
     }
 
     
-export const getGetV1WordOfDayEmbedQueryOptions = <TData = Awaited<ReturnType<typeof getV1WordOfDayEmbed>>, TError = string>(params?: GetV1WordOfDayEmbedParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayEmbed>>, TError, TData>>, }
+export const getGetV1WordOfDayEmbedQueryOptions = <TData = Awaited<ReturnType<typeof getV1WordOfDayEmbed>>, TError = string>(params?: GetV1WordOfDayEmbedParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayEmbed>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1WordOfDayEmbedQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1WordOfDayEmbed>>> = ({ signal }) => getV1WordOfDayEmbed(params, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1WordOfDayEmbed>>> = ({ signal }) => getV1WordOfDayEmbed(params, requestOptions, signal);
 
       
 
@@ -12549,7 +12553,7 @@ export function useGetV1WordOfDayEmbed<TData = Awaited<ReturnType<typeof getV1Wo
           TError,
           Awaited<ReturnType<typeof getV1WordOfDayEmbed>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1WordOfDayEmbed<TData = Awaited<ReturnType<typeof getV1WordOfDayEmbed>>, TError = string>(
@@ -12559,11 +12563,11 @@ export function useGetV1WordOfDayEmbed<TData = Awaited<ReturnType<typeof getV1Wo
           TError,
           Awaited<ReturnType<typeof getV1WordOfDayEmbed>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1WordOfDayEmbed<TData = Awaited<ReturnType<typeof getV1WordOfDayEmbed>>, TError = string>(
- params?: GetV1WordOfDayEmbedParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayEmbed>>, TError, TData>>, }
+ params?: GetV1WordOfDayEmbedParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayEmbed>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -12571,7 +12575,7 @@ export function useGetV1WordOfDayEmbed<TData = Awaited<ReturnType<typeof getV1Wo
  */
 
 export function useGetV1WordOfDayEmbed<TData = Awaited<ReturnType<typeof getV1WordOfDayEmbed>>, TError = string>(
- params?: GetV1WordOfDayEmbedParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayEmbed>>, TError, TData>>, }
+ params?: GetV1WordOfDayEmbedParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayEmbed>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -12594,14 +12598,14 @@ export function useGetV1WordOfDayEmbed<TData = Awaited<ReturnType<typeof getV1Wo
  */
 export const getV1WordOfDayDateEmbed = (
     date: string,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<string>(
       {url: `/v1/word-of-day/${date}/embed`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -12614,16 +12618,16 @@ export const getGetV1WordOfDayDateEmbedQueryKey = (date?: string,) => {
     }
 
     
-export const getGetV1WordOfDayDateEmbedQueryOptions = <TData = Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>, TError = string>(date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>, TError, TData>>, }
+export const getGetV1WordOfDayDateEmbedQueryOptions = <TData = Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>, TError = string>(date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1WordOfDayDateEmbedQueryKey(date);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>> = ({ signal }) => getV1WordOfDayDateEmbed(date, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>> = ({ signal }) => getV1WordOfDayDateEmbed(date, requestOptions, signal);
 
       
 
@@ -12643,7 +12647,7 @@ export function useGetV1WordOfDayDateEmbed<TData = Awaited<ReturnType<typeof get
           TError,
           Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1WordOfDayDateEmbed<TData = Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>, TError = string>(
@@ -12653,11 +12657,11 @@ export function useGetV1WordOfDayDateEmbed<TData = Awaited<ReturnType<typeof get
           TError,
           Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1WordOfDayDateEmbed<TData = Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>, TError = string>(
- date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>, TError, TData>>, }
+ date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -12665,7 +12669,7 @@ export function useGetV1WordOfDayDateEmbed<TData = Awaited<ReturnType<typeof get
  */
 
 export function useGetV1WordOfDayDateEmbed<TData = Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>, TError = string>(
- date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>, TError, TData>>, }
+ date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayDateEmbed>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -12688,7 +12692,7 @@ export function useGetV1WordOfDayDateEmbed<TData = Awaited<ReturnType<typeof get
  */
 export const getV1WordOfDayHistory = (
     params: GetV1WordOfDayHistoryParams,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -12696,7 +12700,7 @@ export const getV1WordOfDayHistory = (
       {url: `/v1/word-of-day/history`, method: 'GET',
         params, signal
     },
-      );
+      options);
     }
   
 
@@ -12709,16 +12713,16 @@ export const getGetV1WordOfDayHistoryQueryKey = (params?: GetV1WordOfDayHistoryP
     }
 
     
-export const getGetV1WordOfDayHistoryQueryOptions = <TData = Awaited<ReturnType<typeof getV1WordOfDayHistory>>, TError = ErrorResponse>(params: GetV1WordOfDayHistoryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayHistory>>, TError, TData>>, }
+export const getGetV1WordOfDayHistoryQueryOptions = <TData = Awaited<ReturnType<typeof getV1WordOfDayHistory>>, TError = ErrorResponse>(params: GetV1WordOfDayHistoryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayHistory>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1WordOfDayHistoryQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1WordOfDayHistory>>> = ({ signal }) => getV1WordOfDayHistory(params, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1WordOfDayHistory>>> = ({ signal }) => getV1WordOfDayHistory(params, requestOptions, signal);
 
       
 
@@ -12738,7 +12742,7 @@ export function useGetV1WordOfDayHistory<TData = Awaited<ReturnType<typeof getV1
           TError,
           Awaited<ReturnType<typeof getV1WordOfDayHistory>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1WordOfDayHistory<TData = Awaited<ReturnType<typeof getV1WordOfDayHistory>>, TError = ErrorResponse>(
@@ -12748,11 +12752,11 @@ export function useGetV1WordOfDayHistory<TData = Awaited<ReturnType<typeof getV1
           TError,
           Awaited<ReturnType<typeof getV1WordOfDayHistory>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1WordOfDayHistory<TData = Awaited<ReturnType<typeof getV1WordOfDayHistory>>, TError = ErrorResponse>(
- params: GetV1WordOfDayHistoryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayHistory>>, TError, TData>>, }
+ params: GetV1WordOfDayHistoryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayHistory>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -12760,7 +12764,7 @@ export function useGetV1WordOfDayHistory<TData = Awaited<ReturnType<typeof getV1
  */
 
 export function useGetV1WordOfDayHistory<TData = Awaited<ReturnType<typeof getV1WordOfDayHistory>>, TError = ErrorResponse>(
- params: GetV1WordOfDayHistoryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayHistory>>, TError, TData>>, }
+ params: GetV1WordOfDayHistoryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1WordOfDayHistory>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -12783,7 +12787,7 @@ export function useGetV1WordOfDayHistory<TData = Awaited<ReturnType<typeof getV1
  */
 export const postV1Story = (
     createStoryRequest: CreateStoryRequest,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -12792,21 +12796,21 @@ export const postV1Story = (
       headers: {'Content-Type': 'application/json', },
       data: createStoryRequest, signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1StoryMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1Story>>, TError,{data: CreateStoryRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1Story>>, TError,{data: CreateStoryRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1Story>>, TError,{data: CreateStoryRequest}, TContext> => {
 
 const mutationKey = ['postV1Story'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -12814,7 +12818,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1Story>>, {data: CreateStoryRequest}> = (props) => {
           const {data} = props ?? {};
 
-          return  postV1Story(data,)
+          return  postV1Story(data,requestOptions)
         }
 
         
@@ -12830,7 +12834,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Create a new story
  */
 export const usePostV1Story = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1Story>>, TError,{data: CreateStoryRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1Story>>, TError,{data: CreateStoryRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1Story>>,
         TError,
@@ -12849,7 +12853,7 @@ export const usePostV1Story = <TError = ErrorResponse,
  */
 export const getV1Story = (
     params?: GetV1StoryParams,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -12857,7 +12861,7 @@ export const getV1Story = (
       {url: `/v1/story`, method: 'GET',
         params, signal
     },
-      );
+      options);
     }
   
 
@@ -12870,16 +12874,16 @@ export const getGetV1StoryQueryKey = (params?: GetV1StoryParams,) => {
     }
 
     
-export const getGetV1StoryQueryOptions = <TData = Awaited<ReturnType<typeof getV1Story>>, TError = ErrorResponse>(params?: GetV1StoryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Story>>, TError, TData>>, }
+export const getGetV1StoryQueryOptions = <TData = Awaited<ReturnType<typeof getV1Story>>, TError = ErrorResponse>(params?: GetV1StoryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Story>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1StoryQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1Story>>> = ({ signal }) => getV1Story(params, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1Story>>> = ({ signal }) => getV1Story(params, requestOptions, signal);
 
       
 
@@ -12899,7 +12903,7 @@ export function useGetV1Story<TData = Awaited<ReturnType<typeof getV1Story>>, TE
           TError,
           Awaited<ReturnType<typeof getV1Story>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1Story<TData = Awaited<ReturnType<typeof getV1Story>>, TError = ErrorResponse>(
@@ -12909,11 +12913,11 @@ export function useGetV1Story<TData = Awaited<ReturnType<typeof getV1Story>>, TE
           TError,
           Awaited<ReturnType<typeof getV1Story>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1Story<TData = Awaited<ReturnType<typeof getV1Story>>, TError = ErrorResponse>(
- params?: GetV1StoryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Story>>, TError, TData>>, }
+ params?: GetV1StoryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Story>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -12921,7 +12925,7 @@ export function useGetV1Story<TData = Awaited<ReturnType<typeof getV1Story>>, TE
  */
 
 export function useGetV1Story<TData = Awaited<ReturnType<typeof getV1Story>>, TError = ErrorResponse>(
- params?: GetV1StoryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Story>>, TError, TData>>, }
+ params?: GetV1StoryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Story>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -12944,14 +12948,14 @@ export function useGetV1Story<TData = Awaited<ReturnType<typeof getV1Story>>, TE
  */
 export const getV1StoryCurrent = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<StoryWithSections | GeneratingResponse>(
       {url: `/v1/story/current`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -12964,16 +12968,16 @@ export const getGetV1StoryCurrentQueryKey = () => {
     }
 
     
-export const getGetV1StoryCurrentQueryOptions = <TData = Awaited<ReturnType<typeof getV1StoryCurrent>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryCurrent>>, TError, TData>>, }
+export const getGetV1StoryCurrentQueryOptions = <TData = Awaited<ReturnType<typeof getV1StoryCurrent>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryCurrent>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1StoryCurrentQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1StoryCurrent>>> = ({ signal }) => getV1StoryCurrent(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1StoryCurrent>>> = ({ signal }) => getV1StoryCurrent(requestOptions, signal);
 
       
 
@@ -12993,7 +12997,7 @@ export function useGetV1StoryCurrent<TData = Awaited<ReturnType<typeof getV1Stor
           TError,
           Awaited<ReturnType<typeof getV1StoryCurrent>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1StoryCurrent<TData = Awaited<ReturnType<typeof getV1StoryCurrent>>, TError = ErrorResponse>(
@@ -13003,11 +13007,11 @@ export function useGetV1StoryCurrent<TData = Awaited<ReturnType<typeof getV1Stor
           TError,
           Awaited<ReturnType<typeof getV1StoryCurrent>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1StoryCurrent<TData = Awaited<ReturnType<typeof getV1StoryCurrent>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryCurrent>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryCurrent>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -13015,7 +13019,7 @@ export function useGetV1StoryCurrent<TData = Awaited<ReturnType<typeof getV1Stor
  */
 
 export function useGetV1StoryCurrent<TData = Awaited<ReturnType<typeof getV1StoryCurrent>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryCurrent>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryCurrent>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -13038,14 +13042,14 @@ export function useGetV1StoryCurrent<TData = Awaited<ReturnType<typeof getV1Stor
  */
 export const getV1StoryId = (
     id: number,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<StoryWithSections>(
       {url: `/v1/story/${id}`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -13058,16 +13062,16 @@ export const getGetV1StoryIdQueryKey = (id?: number,) => {
     }
 
     
-export const getGetV1StoryIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1StoryId>>, TError = ErrorResponse>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryId>>, TError, TData>>, }
+export const getGetV1StoryIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1StoryId>>, TError = ErrorResponse>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1StoryIdQueryKey(id);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1StoryId>>> = ({ signal }) => getV1StoryId(id, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1StoryId>>> = ({ signal }) => getV1StoryId(id, requestOptions, signal);
 
       
 
@@ -13087,7 +13091,7 @@ export function useGetV1StoryId<TData = Awaited<ReturnType<typeof getV1StoryId>>
           TError,
           Awaited<ReturnType<typeof getV1StoryId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1StoryId<TData = Awaited<ReturnType<typeof getV1StoryId>>, TError = ErrorResponse>(
@@ -13097,11 +13101,11 @@ export function useGetV1StoryId<TData = Awaited<ReturnType<typeof getV1StoryId>>
           TError,
           Awaited<ReturnType<typeof getV1StoryId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1StoryId<TData = Awaited<ReturnType<typeof getV1StoryId>>, TError = ErrorResponse>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryId>>, TError, TData>>, }
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -13109,7 +13113,7 @@ export function useGetV1StoryId<TData = Awaited<ReturnType<typeof getV1StoryId>>
  */
 
 export function useGetV1StoryId<TData = Awaited<ReturnType<typeof getV1StoryId>>, TError = ErrorResponse>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryId>>, TError, TData>>, }
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -13132,27 +13136,27 @@ export function useGetV1StoryId<TData = Awaited<ReturnType<typeof getV1StoryId>>
  */
 export const deleteV1StoryId = (
     id: number,
- ) => {
+ options?: SecondParameter<typeof customInstance>,) => {
       
       
       return customInstance<void>(
       {url: `/v1/story/${id}`, method: 'DELETE'
     },
-      );
+      options);
     }
   
 
 
 export const getDeleteV1StoryIdMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1StoryId>>, TError,{id: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1StoryId>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof deleteV1StoryId>>, TError,{id: number}, TContext> => {
 
 const mutationKey = ['deleteV1StoryId'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -13160,7 +13164,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteV1StoryId>>, {id: number}> = (props) => {
           const {id} = props ?? {};
 
-          return  deleteV1StoryId(id,)
+          return  deleteV1StoryId(id,requestOptions)
         }
 
         
@@ -13176,7 +13180,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Delete a story
  */
 export const useDeleteV1StoryId = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1StoryId>>, TError,{id: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1StoryId>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteV1StoryId>>,
         TError,
@@ -13196,7 +13200,7 @@ export const useDeleteV1StoryId = <TError = ErrorResponse,
 export const postV1StoryIdGenerate = (
     id: number,
     emptyRequest?: EmptyRequest,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -13205,21 +13209,21 @@ export const postV1StoryIdGenerate = (
       headers: {'Content-Type': 'application/json', },
       data: emptyRequest, signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1StoryIdGenerateMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdGenerate>>, TError,{id: number;data: EmptyRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdGenerate>>, TError,{id: number;data: EmptyRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdGenerate>>, TError,{id: number;data: EmptyRequest}, TContext> => {
 
 const mutationKey = ['postV1StoryIdGenerate'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -13227,7 +13231,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1StoryIdGenerate>>, {id: number;data: EmptyRequest}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  postV1StoryIdGenerate(id,data,)
+          return  postV1StoryIdGenerate(id,data,requestOptions)
         }
 
         
@@ -13243,7 +13247,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Generate next section
  */
 export const usePostV1StoryIdGenerate = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdGenerate>>, TError,{id: number;data: EmptyRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdGenerate>>, TError,{id: number;data: EmptyRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1StoryIdGenerate>>,
         TError,
@@ -13262,28 +13266,28 @@ export const usePostV1StoryIdGenerate = <TError = ErrorResponse,
  */
 export const postV1StoryIdArchive = (
     id: number,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<void>(
       {url: `/v1/story/${id}/archive`, method: 'POST', signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1StoryIdArchiveMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdArchive>>, TError,{id: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdArchive>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdArchive>>, TError,{id: number}, TContext> => {
 
 const mutationKey = ['postV1StoryIdArchive'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -13291,7 +13295,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1StoryIdArchive>>, {id: number}> = (props) => {
           const {id} = props ?? {};
 
-          return  postV1StoryIdArchive(id,)
+          return  postV1StoryIdArchive(id,requestOptions)
         }
 
         
@@ -13307,7 +13311,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Archive a story
  */
 export const usePostV1StoryIdArchive = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdArchive>>, TError,{id: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdArchive>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1StoryIdArchive>>,
         TError,
@@ -13326,28 +13330,28 @@ export const usePostV1StoryIdArchive = <TError = ErrorResponse,
  */
 export const postV1StoryIdComplete = (
     id: number,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<void>(
       {url: `/v1/story/${id}/complete`, method: 'POST', signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1StoryIdCompleteMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdComplete>>, TError,{id: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdComplete>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdComplete>>, TError,{id: number}, TContext> => {
 
 const mutationKey = ['postV1StoryIdComplete'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -13355,7 +13359,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1StoryIdComplete>>, {id: number}> = (props) => {
           const {id} = props ?? {};
 
-          return  postV1StoryIdComplete(id,)
+          return  postV1StoryIdComplete(id,requestOptions)
         }
 
         
@@ -13371,7 +13375,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Complete a story
  */
 export const usePostV1StoryIdComplete = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdComplete>>, TError,{id: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdComplete>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1StoryIdComplete>>,
         TError,
@@ -13390,28 +13394,28 @@ export const usePostV1StoryIdComplete = <TError = ErrorResponse,
  */
 export const postV1StoryIdSetCurrent = (
     id: number,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<void>(
       {url: `/v1/story/${id}/set-current`, method: 'POST', signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1StoryIdSetCurrentMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdSetCurrent>>, TError,{id: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdSetCurrent>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdSetCurrent>>, TError,{id: number}, TContext> => {
 
 const mutationKey = ['postV1StoryIdSetCurrent'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -13419,7 +13423,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1StoryIdSetCurrent>>, {id: number}> = (props) => {
           const {id} = props ?? {};
 
-          return  postV1StoryIdSetCurrent(id,)
+          return  postV1StoryIdSetCurrent(id,requestOptions)
         }
 
         
@@ -13435,7 +13439,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Set story as current
  */
 export const usePostV1StoryIdSetCurrent = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdSetCurrent>>, TError,{id: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdSetCurrent>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1StoryIdSetCurrent>>,
         TError,
@@ -13455,7 +13459,7 @@ export const usePostV1StoryIdSetCurrent = <TError = ErrorResponse,
 export const postV1StoryIdToggleAutoGeneration = (
     id: number,
     toggleAutoGenerationRequest: ToggleAutoGenerationRequest,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -13464,21 +13468,21 @@ export const postV1StoryIdToggleAutoGeneration = (
       headers: {'Content-Type': 'application/json', },
       data: toggleAutoGenerationRequest, signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1StoryIdToggleAutoGenerationMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdToggleAutoGeneration>>, TError,{id: number;data: ToggleAutoGenerationRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdToggleAutoGeneration>>, TError,{id: number;data: ToggleAutoGenerationRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdToggleAutoGeneration>>, TError,{id: number;data: ToggleAutoGenerationRequest}, TContext> => {
 
 const mutationKey = ['postV1StoryIdToggleAutoGeneration'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -13486,7 +13490,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1StoryIdToggleAutoGeneration>>, {id: number;data: ToggleAutoGenerationRequest}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  postV1StoryIdToggleAutoGeneration(id,data,)
+          return  postV1StoryIdToggleAutoGeneration(id,data,requestOptions)
         }
 
         
@@ -13502,7 +13506,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Toggle auto-generation for a story
  */
 export const usePostV1StoryIdToggleAutoGeneration = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdToggleAutoGeneration>>, TError,{id: number;data: ToggleAutoGenerationRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1StoryIdToggleAutoGeneration>>, TError,{id: number;data: ToggleAutoGenerationRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1StoryIdToggleAutoGeneration>>,
         TError,
@@ -13521,14 +13525,14 @@ export const usePostV1StoryIdToggleAutoGeneration = <TError = ErrorResponse,
  */
 export const getV1StorySectionId = (
     id: number,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<StorySectionWithQuestions>(
       {url: `/v1/story/section/${id}`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -13541,16 +13545,16 @@ export const getGetV1StorySectionIdQueryKey = (id?: number,) => {
     }
 
     
-export const getGetV1StorySectionIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1StorySectionId>>, TError = ErrorResponse>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StorySectionId>>, TError, TData>>, }
+export const getGetV1StorySectionIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1StorySectionId>>, TError = ErrorResponse>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StorySectionId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1StorySectionIdQueryKey(id);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1StorySectionId>>> = ({ signal }) => getV1StorySectionId(id, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1StorySectionId>>> = ({ signal }) => getV1StorySectionId(id, requestOptions, signal);
 
       
 
@@ -13570,7 +13574,7 @@ export function useGetV1StorySectionId<TData = Awaited<ReturnType<typeof getV1St
           TError,
           Awaited<ReturnType<typeof getV1StorySectionId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1StorySectionId<TData = Awaited<ReturnType<typeof getV1StorySectionId>>, TError = ErrorResponse>(
@@ -13580,11 +13584,11 @@ export function useGetV1StorySectionId<TData = Awaited<ReturnType<typeof getV1St
           TError,
           Awaited<ReturnType<typeof getV1StorySectionId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1StorySectionId<TData = Awaited<ReturnType<typeof getV1StorySectionId>>, TError = ErrorResponse>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StorySectionId>>, TError, TData>>, }
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StorySectionId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -13592,7 +13596,7 @@ export function useGetV1StorySectionId<TData = Awaited<ReturnType<typeof getV1St
  */
 
 export function useGetV1StorySectionId<TData = Awaited<ReturnType<typeof getV1StorySectionId>>, TError = ErrorResponse>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StorySectionId>>, TError, TData>>, }
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StorySectionId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -13615,7 +13619,7 @@ export function useGetV1StorySectionId<TData = Awaited<ReturnType<typeof getV1St
  */
 export const getV1StoryIdExport = (
     id: number,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -13623,7 +13627,7 @@ export const getV1StoryIdExport = (
       {url: `/v1/story/${id}/export`, method: 'GET',
         responseType: 'blob', signal
     },
-      );
+      options);
     }
   
 
@@ -13636,16 +13640,16 @@ export const getGetV1StoryIdExportQueryKey = (id?: number,) => {
     }
 
     
-export const getGetV1StoryIdExportQueryOptions = <TData = Awaited<ReturnType<typeof getV1StoryIdExport>>, TError = ErrorResponse>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryIdExport>>, TError, TData>>, }
+export const getGetV1StoryIdExportQueryOptions = <TData = Awaited<ReturnType<typeof getV1StoryIdExport>>, TError = ErrorResponse>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryIdExport>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1StoryIdExportQueryKey(id);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1StoryIdExport>>> = ({ signal }) => getV1StoryIdExport(id, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1StoryIdExport>>> = ({ signal }) => getV1StoryIdExport(id, requestOptions, signal);
 
       
 
@@ -13665,7 +13669,7 @@ export function useGetV1StoryIdExport<TData = Awaited<ReturnType<typeof getV1Sto
           TError,
           Awaited<ReturnType<typeof getV1StoryIdExport>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1StoryIdExport<TData = Awaited<ReturnType<typeof getV1StoryIdExport>>, TError = ErrorResponse>(
@@ -13675,11 +13679,11 @@ export function useGetV1StoryIdExport<TData = Awaited<ReturnType<typeof getV1Sto
           TError,
           Awaited<ReturnType<typeof getV1StoryIdExport>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1StoryIdExport<TData = Awaited<ReturnType<typeof getV1StoryIdExport>>, TError = ErrorResponse>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryIdExport>>, TError, TData>>, }
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryIdExport>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -13687,7 +13691,7 @@ export function useGetV1StoryIdExport<TData = Awaited<ReturnType<typeof getV1Sto
  */
 
 export function useGetV1StoryIdExport<TData = Awaited<ReturnType<typeof getV1StoryIdExport>>, TError = ErrorResponse>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryIdExport>>, TError, TData>>, }
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1StoryIdExport>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -13710,14 +13714,14 @@ export function useGetV1StoryIdExport<TData = Awaited<ReturnType<typeof getV1Sto
  */
 export const getV1PreferencesLearning = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<UserLearningPreferences>(
       {url: `/v1/preferences/learning`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -13730,16 +13734,16 @@ export const getGetV1PreferencesLearningQueryKey = () => {
     }
 
     
-export const getGetV1PreferencesLearningQueryOptions = <TData = Awaited<ReturnType<typeof getV1PreferencesLearning>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1PreferencesLearning>>, TError, TData>>, }
+export const getGetV1PreferencesLearningQueryOptions = <TData = Awaited<ReturnType<typeof getV1PreferencesLearning>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1PreferencesLearning>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1PreferencesLearningQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1PreferencesLearning>>> = ({ signal }) => getV1PreferencesLearning(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1PreferencesLearning>>> = ({ signal }) => getV1PreferencesLearning(requestOptions, signal);
 
       
 
@@ -13759,7 +13763,7 @@ export function useGetV1PreferencesLearning<TData = Awaited<ReturnType<typeof ge
           TError,
           Awaited<ReturnType<typeof getV1PreferencesLearning>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1PreferencesLearning<TData = Awaited<ReturnType<typeof getV1PreferencesLearning>>, TError = ErrorResponse>(
@@ -13769,11 +13773,11 @@ export function useGetV1PreferencesLearning<TData = Awaited<ReturnType<typeof ge
           TError,
           Awaited<ReturnType<typeof getV1PreferencesLearning>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1PreferencesLearning<TData = Awaited<ReturnType<typeof getV1PreferencesLearning>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1PreferencesLearning>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1PreferencesLearning>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -13781,7 +13785,7 @@ export function useGetV1PreferencesLearning<TData = Awaited<ReturnType<typeof ge
  */
 
 export function useGetV1PreferencesLearning<TData = Awaited<ReturnType<typeof getV1PreferencesLearning>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1PreferencesLearning>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1PreferencesLearning>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -13804,7 +13808,7 @@ export function useGetV1PreferencesLearning<TData = Awaited<ReturnType<typeof ge
  */
 export const putV1PreferencesLearning = (
     userLearningPreferences: UserLearningPreferences,
- ) => {
+ options?: SecondParameter<typeof customInstance>,) => {
       
       
       return customInstance<UserLearningPreferences>(
@@ -13812,21 +13816,21 @@ export const putV1PreferencesLearning = (
       headers: {'Content-Type': 'application/json', },
       data: userLearningPreferences
     },
-      );
+      options);
     }
   
 
 
 export const getPutV1PreferencesLearningMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1PreferencesLearning>>, TError,{data: UserLearningPreferences}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1PreferencesLearning>>, TError,{data: UserLearningPreferences}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof putV1PreferencesLearning>>, TError,{data: UserLearningPreferences}, TContext> => {
 
 const mutationKey = ['putV1PreferencesLearning'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -13834,7 +13838,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof putV1PreferencesLearning>>, {data: UserLearningPreferences}> = (props) => {
           const {data} = props ?? {};
 
-          return  putV1PreferencesLearning(data,)
+          return  putV1PreferencesLearning(data,requestOptions)
         }
 
         
@@ -13850,7 +13854,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Update user learning preferences
  */
 export const usePutV1PreferencesLearning = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1PreferencesLearning>>, TError,{data: UserLearningPreferences}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putV1PreferencesLearning>>, TError,{data: UserLearningPreferences}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof putV1PreferencesLearning>>,
         TError,
@@ -13869,14 +13873,14 @@ export const usePutV1PreferencesLearning = <TError = ErrorResponse,
  */
 export const getV1Version = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<AggregatedVersion>(
       {url: `/v1/version`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -13889,16 +13893,16 @@ export const getGetV1VersionQueryKey = () => {
     }
 
     
-export const getGetV1VersionQueryOptions = <TData = Awaited<ReturnType<typeof getV1Version>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Version>>, TError, TData>>, }
+export const getGetV1VersionQueryOptions = <TData = Awaited<ReturnType<typeof getV1Version>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Version>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1VersionQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1Version>>> = ({ signal }) => getV1Version(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1Version>>> = ({ signal }) => getV1Version(requestOptions, signal);
 
       
 
@@ -13918,7 +13922,7 @@ export function useGetV1Version<TData = Awaited<ReturnType<typeof getV1Version>>
           TError,
           Awaited<ReturnType<typeof getV1Version>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1Version<TData = Awaited<ReturnType<typeof getV1Version>>, TError = unknown>(
@@ -13928,11 +13932,11 @@ export function useGetV1Version<TData = Awaited<ReturnType<typeof getV1Version>>
           TError,
           Awaited<ReturnType<typeof getV1Version>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1Version<TData = Awaited<ReturnType<typeof getV1Version>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Version>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Version>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -13940,7 +13944,7 @@ export function useGetV1Version<TData = Awaited<ReturnType<typeof getV1Version>>
  */
 
 export function useGetV1Version<TData = Awaited<ReturnType<typeof getV1Version>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Version>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1Version>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -13963,14 +13967,14 @@ export function useGetV1Version<TData = Awaited<ReturnType<typeof getV1Version>>
  */
 export const getHealth = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<HealthStatusResponse>(
       {url: `/health`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -13983,16 +13987,16 @@ export const getGetHealthQueryKey = () => {
     }
 
     
-export const getGetHealthQueryOptions = <TData = Awaited<ReturnType<typeof getHealth>>, TError = HealthErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData>>, }
+export const getGetHealthQueryOptions = <TData = Awaited<ReturnType<typeof getHealth>>, TError = HealthErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetHealthQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getHealth>>> = ({ signal }) => getHealth(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getHealth>>> = ({ signal }) => getHealth(requestOptions, signal);
 
       
 
@@ -14012,7 +14016,7 @@ export function useGetHealth<TData = Awaited<ReturnType<typeof getHealth>>, TErr
           TError,
           Awaited<ReturnType<typeof getHealth>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetHealth<TData = Awaited<ReturnType<typeof getHealth>>, TError = HealthErrorResponse>(
@@ -14022,11 +14026,11 @@ export function useGetHealth<TData = Awaited<ReturnType<typeof getHealth>>, TErr
           TError,
           Awaited<ReturnType<typeof getHealth>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetHealth<TData = Awaited<ReturnType<typeof getHealth>>, TError = HealthErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -14034,7 +14038,7 @@ export function useGetHealth<TData = Awaited<ReturnType<typeof getHealth>>, TErr
  */
 
 export function useGetHealth<TData = Awaited<ReturnType<typeof getHealth>>, TError = HealthErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getHealth>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -14058,14 +14062,14 @@ export function useGetHealth<TData = Awaited<ReturnType<typeof getHealth>>, TErr
 export const getV1AdminWorkerDailyUsersUserIdQuestionsDate = (
     userId: number,
     date: string,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<AdminDailyQuestionsResponse>(
       {url: `/v1/admin/worker/daily/users/${userId}/questions/${date}`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -14080,16 +14084,16 @@ export const getGetV1AdminWorkerDailyUsersUserIdQuestionsDateQueryKey = (userId?
 
     
 export const getGetV1AdminWorkerDailyUsersUserIdQuestionsDateQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminWorkerDailyUsersUserIdQuestionsDate>>, TError = ErrorResponse>(userId: number,
-    date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerDailyUsersUserIdQuestionsDate>>, TError, TData>>, }
+    date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerDailyUsersUserIdQuestionsDate>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AdminWorkerDailyUsersUserIdQuestionsDateQueryKey(userId,date);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminWorkerDailyUsersUserIdQuestionsDate>>> = ({ signal }) => getV1AdminWorkerDailyUsersUserIdQuestionsDate(userId,date, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminWorkerDailyUsersUserIdQuestionsDate>>> = ({ signal }) => getV1AdminWorkerDailyUsersUserIdQuestionsDate(userId,date, requestOptions, signal);
 
       
 
@@ -14110,7 +14114,7 @@ export function useGetV1AdminWorkerDailyUsersUserIdQuestionsDate<TData = Awaited
           TError,
           Awaited<ReturnType<typeof getV1AdminWorkerDailyUsersUserIdQuestionsDate>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminWorkerDailyUsersUserIdQuestionsDate<TData = Awaited<ReturnType<typeof getV1AdminWorkerDailyUsersUserIdQuestionsDate>>, TError = ErrorResponse>(
@@ -14121,12 +14125,12 @@ export function useGetV1AdminWorkerDailyUsersUserIdQuestionsDate<TData = Awaited
           TError,
           Awaited<ReturnType<typeof getV1AdminWorkerDailyUsersUserIdQuestionsDate>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminWorkerDailyUsersUserIdQuestionsDate<TData = Awaited<ReturnType<typeof getV1AdminWorkerDailyUsersUserIdQuestionsDate>>, TError = ErrorResponse>(
  userId: number,
-    date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerDailyUsersUserIdQuestionsDate>>, TError, TData>>, }
+    date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerDailyUsersUserIdQuestionsDate>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -14135,7 +14139,7 @@ export function useGetV1AdminWorkerDailyUsersUserIdQuestionsDate<TData = Awaited
 
 export function useGetV1AdminWorkerDailyUsersUserIdQuestionsDate<TData = Awaited<ReturnType<typeof getV1AdminWorkerDailyUsersUserIdQuestionsDate>>, TError = ErrorResponse>(
  userId: number,
-    date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerDailyUsersUserIdQuestionsDate>>, TError, TData>>, }
+    date: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminWorkerDailyUsersUserIdQuestionsDate>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -14159,28 +14163,28 @@ export function useGetV1AdminWorkerDailyUsersUserIdQuestionsDate<TData = Awaited
 export const postV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerate = (
     userId: number,
     date: string,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<SuccessResponse>(
       {url: `/v1/admin/worker/daily/users/${userId}/questions/${date}/regenerate`, method: 'POST', signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerateMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerate>>, TError,{userId: number;date: string}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerate>>, TError,{userId: number;date: string}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerate>>, TError,{userId: number;date: string}, TContext> => {
 
 const mutationKey = ['postV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerate'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -14188,7 +14192,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerate>>, {userId: number;date: string}> = (props) => {
           const {userId,date} = props ?? {};
 
-          return  postV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerate(userId,date,)
+          return  postV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerate(userId,date,requestOptions)
         }
 
         
@@ -14204,7 +14208,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Regenerate daily questions for a specific user and date
  */
 export const usePostV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerate = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerate>>, TError,{userId: number;date: string}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerate>>, TError,{userId: number;date: string}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerate>>,
         TError,
@@ -14223,7 +14227,7 @@ export const usePostV1AdminWorkerDailyUsersUserIdQuestionsDateRegenerate = <TErr
  */
 export const getV1AdminBackendFeedback = (
     params?: GetV1AdminBackendFeedbackParams,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -14231,7 +14235,7 @@ export const getV1AdminBackendFeedback = (
       {url: `/v1/admin/backend/feedback`, method: 'GET',
         params, signal
     },
-      );
+      options);
     }
   
 
@@ -14244,16 +14248,16 @@ export const getGetV1AdminBackendFeedbackQueryKey = (params?: GetV1AdminBackendF
     }
 
     
-export const getGetV1AdminBackendFeedbackQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendFeedback>>, TError = ErrorResponse>(params?: GetV1AdminBackendFeedbackParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendFeedback>>, TError, TData>>, }
+export const getGetV1AdminBackendFeedbackQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendFeedback>>, TError = ErrorResponse>(params?: GetV1AdminBackendFeedbackParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendFeedback>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AdminBackendFeedbackQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendFeedback>>> = ({ signal }) => getV1AdminBackendFeedback(params, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendFeedback>>> = ({ signal }) => getV1AdminBackendFeedback(params, requestOptions, signal);
 
       
 
@@ -14273,7 +14277,7 @@ export function useGetV1AdminBackendFeedback<TData = Awaited<ReturnType<typeof g
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendFeedback>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendFeedback<TData = Awaited<ReturnType<typeof getV1AdminBackendFeedback>>, TError = ErrorResponse>(
@@ -14283,11 +14287,11 @@ export function useGetV1AdminBackendFeedback<TData = Awaited<ReturnType<typeof g
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendFeedback>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendFeedback<TData = Awaited<ReturnType<typeof getV1AdminBackendFeedback>>, TError = ErrorResponse>(
- params?: GetV1AdminBackendFeedbackParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendFeedback>>, TError, TData>>, }
+ params?: GetV1AdminBackendFeedbackParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendFeedback>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -14295,7 +14299,7 @@ export function useGetV1AdminBackendFeedback<TData = Awaited<ReturnType<typeof g
  */
 
 export function useGetV1AdminBackendFeedback<TData = Awaited<ReturnType<typeof getV1AdminBackendFeedback>>, TError = ErrorResponse>(
- params?: GetV1AdminBackendFeedbackParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendFeedback>>, TError, TData>>, }
+ params?: GetV1AdminBackendFeedbackParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendFeedback>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -14318,28 +14322,28 @@ export function useGetV1AdminBackendFeedback<TData = Awaited<ReturnType<typeof g
  */
 export const deleteV1AdminBackendFeedback = (
     params: DeleteV1AdminBackendFeedbackParams,
- ) => {
+ options?: SecondParameter<typeof customInstance>,) => {
       
       
       return customInstance<BulkDeleteResponse>(
       {url: `/v1/admin/backend/feedback`, method: 'DELETE',
         params
     },
-      );
+      options);
     }
   
 
 
 export const getDeleteV1AdminBackendFeedbackMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendFeedback>>, TError,{params: DeleteV1AdminBackendFeedbackParams}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendFeedback>>, TError,{params: DeleteV1AdminBackendFeedbackParams}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendFeedback>>, TError,{params: DeleteV1AdminBackendFeedbackParams}, TContext> => {
 
 const mutationKey = ['deleteV1AdminBackendFeedback'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -14347,7 +14351,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteV1AdminBackendFeedback>>, {params: DeleteV1AdminBackendFeedbackParams}> = (props) => {
           const {params} = props ?? {};
 
-          return  deleteV1AdminBackendFeedback(params,)
+          return  deleteV1AdminBackendFeedback(params,requestOptions)
         }
 
         
@@ -14363,7 +14367,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Delete feedback reports by status
  */
 export const useDeleteV1AdminBackendFeedback = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendFeedback>>, TError,{params: DeleteV1AdminBackendFeedbackParams}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendFeedback>>, TError,{params: DeleteV1AdminBackendFeedbackParams}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteV1AdminBackendFeedback>>,
         TError,
@@ -14381,14 +14385,14 @@ export const useDeleteV1AdminBackendFeedback = <TError = ErrorResponse,
  */
 export const getV1AdminBackendFeedbackId = (
     id: number,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<FeedbackReport>(
       {url: `/v1/admin/backend/feedback/${id}`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -14401,16 +14405,16 @@ export const getGetV1AdminBackendFeedbackIdQueryKey = (id?: number,) => {
     }
 
     
-export const getGetV1AdminBackendFeedbackIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendFeedbackId>>, TError = ErrorResponse>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendFeedbackId>>, TError, TData>>, }
+export const getGetV1AdminBackendFeedbackIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1AdminBackendFeedbackId>>, TError = ErrorResponse>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendFeedbackId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AdminBackendFeedbackIdQueryKey(id);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendFeedbackId>>> = ({ signal }) => getV1AdminBackendFeedbackId(id, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AdminBackendFeedbackId>>> = ({ signal }) => getV1AdminBackendFeedbackId(id, requestOptions, signal);
 
       
 
@@ -14430,7 +14434,7 @@ export function useGetV1AdminBackendFeedbackId<TData = Awaited<ReturnType<typeof
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendFeedbackId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendFeedbackId<TData = Awaited<ReturnType<typeof getV1AdminBackendFeedbackId>>, TError = ErrorResponse>(
@@ -14440,11 +14444,11 @@ export function useGetV1AdminBackendFeedbackId<TData = Awaited<ReturnType<typeof
           TError,
           Awaited<ReturnType<typeof getV1AdminBackendFeedbackId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AdminBackendFeedbackId<TData = Awaited<ReturnType<typeof getV1AdminBackendFeedbackId>>, TError = ErrorResponse>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendFeedbackId>>, TError, TData>>, }
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendFeedbackId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -14452,7 +14456,7 @@ export function useGetV1AdminBackendFeedbackId<TData = Awaited<ReturnType<typeof
  */
 
 export function useGetV1AdminBackendFeedbackId<TData = Awaited<ReturnType<typeof getV1AdminBackendFeedbackId>>, TError = ErrorResponse>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendFeedbackId>>, TError, TData>>, }
+ id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AdminBackendFeedbackId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -14475,7 +14479,7 @@ export function useGetV1AdminBackendFeedbackId<TData = Awaited<ReturnType<typeof
 export const patchV1AdminBackendFeedbackId = (
     id: number,
     feedbackUpdateRequest: FeedbackUpdateRequest,
- ) => {
+ options?: SecondParameter<typeof customInstance>,) => {
       
       
       return customInstance<FeedbackReport>(
@@ -14483,21 +14487,21 @@ export const patchV1AdminBackendFeedbackId = (
       headers: {'Content-Type': 'application/json', },
       data: feedbackUpdateRequest
     },
-      );
+      options);
     }
   
 
 
 export const getPatchV1AdminBackendFeedbackIdMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchV1AdminBackendFeedbackId>>, TError,{id: number;data: FeedbackUpdateRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchV1AdminBackendFeedbackId>>, TError,{id: number;data: FeedbackUpdateRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof patchV1AdminBackendFeedbackId>>, TError,{id: number;data: FeedbackUpdateRequest}, TContext> => {
 
 const mutationKey = ['patchV1AdminBackendFeedbackId'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -14505,7 +14509,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof patchV1AdminBackendFeedbackId>>, {id: number;data: FeedbackUpdateRequest}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  patchV1AdminBackendFeedbackId(id,data,)
+          return  patchV1AdminBackendFeedbackId(id,data,requestOptions)
         }
 
         
@@ -14521,7 +14525,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Update feedback report status
  */
 export const usePatchV1AdminBackendFeedbackId = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchV1AdminBackendFeedbackId>>, TError,{id: number;data: FeedbackUpdateRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof patchV1AdminBackendFeedbackId>>, TError,{id: number;data: FeedbackUpdateRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof patchV1AdminBackendFeedbackId>>,
         TError,
@@ -14539,27 +14543,27 @@ export const usePatchV1AdminBackendFeedbackId = <TError = ErrorResponse,
  */
 export const deleteV1AdminBackendFeedbackId = (
     id: number,
- ) => {
+ options?: SecondParameter<typeof customInstance>,) => {
       
       
       return customInstance<void>(
       {url: `/v1/admin/backend/feedback/${id}`, method: 'DELETE'
     },
-      );
+      options);
     }
   
 
 
 export const getDeleteV1AdminBackendFeedbackIdMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendFeedbackId>>, TError,{id: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendFeedbackId>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendFeedbackId>>, TError,{id: number}, TContext> => {
 
 const mutationKey = ['deleteV1AdminBackendFeedbackId'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -14567,7 +14571,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteV1AdminBackendFeedbackId>>, {id: number}> = (props) => {
           const {id} = props ?? {};
 
-          return  deleteV1AdminBackendFeedbackId(id,)
+          return  deleteV1AdminBackendFeedbackId(id,requestOptions)
         }
 
         
@@ -14583,7 +14587,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Delete a feedback report
  */
 export const useDeleteV1AdminBackendFeedbackId = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendFeedbackId>>, TError,{id: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1AdminBackendFeedbackId>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteV1AdminBackendFeedbackId>>,
         TError,
@@ -14602,28 +14606,28 @@ export const useDeleteV1AdminBackendFeedbackId = <TError = ErrorResponse,
  */
 export const postV1AdminBackendFeedbackIdLinearIssue = (
     id: number,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<CreateLinearIssueResponse>(
       {url: `/v1/admin/backend/feedback/${id}/linear-issue`, method: 'POST', signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1AdminBackendFeedbackIdLinearIssueMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendFeedbackIdLinearIssue>>, TError,{id: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendFeedbackIdLinearIssue>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendFeedbackIdLinearIssue>>, TError,{id: number}, TContext> => {
 
 const mutationKey = ['postV1AdminBackendFeedbackIdLinearIssue'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -14631,7 +14635,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AdminBackendFeedbackIdLinearIssue>>, {id: number}> = (props) => {
           const {id} = props ?? {};
 
-          return  postV1AdminBackendFeedbackIdLinearIssue(id,)
+          return  postV1AdminBackendFeedbackIdLinearIssue(id,requestOptions)
         }
 
         
@@ -14647,7 +14651,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Create Linear issue from feedback
  */
 export const usePostV1AdminBackendFeedbackIdLinearIssue = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendFeedbackIdLinearIssue>>, TError,{id: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AdminBackendFeedbackIdLinearIssue>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1AdminBackendFeedbackIdLinearIssue>>,
         TError,
@@ -14666,7 +14670,7 @@ export const usePostV1AdminBackendFeedbackIdLinearIssue = <TError = ErrorRespons
  */
 export const postV1ApiKeys = (
     createAPIKeyRequest: CreateAPIKeyRequest,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -14675,21 +14679,21 @@ export const postV1ApiKeys = (
       headers: {'Content-Type': 'application/json', },
       data: createAPIKeyRequest, signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1ApiKeysMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1ApiKeys>>, TError,{data: CreateAPIKeyRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1ApiKeys>>, TError,{data: CreateAPIKeyRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1ApiKeys>>, TError,{data: CreateAPIKeyRequest}, TContext> => {
 
 const mutationKey = ['postV1ApiKeys'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -14697,7 +14701,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1ApiKeys>>, {data: CreateAPIKeyRequest}> = (props) => {
           const {data} = props ?? {};
 
-          return  postV1ApiKeys(data,)
+          return  postV1ApiKeys(data,requestOptions)
         }
 
         
@@ -14713,7 +14717,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Create API key
  */
 export const usePostV1ApiKeys = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1ApiKeys>>, TError,{data: CreateAPIKeyRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1ApiKeys>>, TError,{data: CreateAPIKeyRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1ApiKeys>>,
         TError,
@@ -14732,14 +14736,14 @@ export const usePostV1ApiKeys = <TError = ErrorResponse,
  */
 export const getV1ApiKeys = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<APIKeysListResponse>(
       {url: `/v1/api-keys`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -14752,16 +14756,16 @@ export const getGetV1ApiKeysQueryKey = () => {
     }
 
     
-export const getGetV1ApiKeysQueryOptions = <TData = Awaited<ReturnType<typeof getV1ApiKeys>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1ApiKeys>>, TError, TData>>, }
+export const getGetV1ApiKeysQueryOptions = <TData = Awaited<ReturnType<typeof getV1ApiKeys>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1ApiKeys>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1ApiKeysQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1ApiKeys>>> = ({ signal }) => getV1ApiKeys(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1ApiKeys>>> = ({ signal }) => getV1ApiKeys(requestOptions, signal);
 
       
 
@@ -14781,7 +14785,7 @@ export function useGetV1ApiKeys<TData = Awaited<ReturnType<typeof getV1ApiKeys>>
           TError,
           Awaited<ReturnType<typeof getV1ApiKeys>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1ApiKeys<TData = Awaited<ReturnType<typeof getV1ApiKeys>>, TError = ErrorResponse>(
@@ -14791,11 +14795,11 @@ export function useGetV1ApiKeys<TData = Awaited<ReturnType<typeof getV1ApiKeys>>
           TError,
           Awaited<ReturnType<typeof getV1ApiKeys>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1ApiKeys<TData = Awaited<ReturnType<typeof getV1ApiKeys>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1ApiKeys>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1ApiKeys>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -14803,7 +14807,7 @@ export function useGetV1ApiKeys<TData = Awaited<ReturnType<typeof getV1ApiKeys>>
  */
 
 export function useGetV1ApiKeys<TData = Awaited<ReturnType<typeof getV1ApiKeys>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1ApiKeys>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1ApiKeys>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -14826,27 +14830,27 @@ export function useGetV1ApiKeys<TData = Awaited<ReturnType<typeof getV1ApiKeys>>
  */
 export const deleteV1ApiKeysId = (
     id: number,
- ) => {
+ options?: SecondParameter<typeof customInstance>,) => {
       
       
       return customInstance<DeleteAPIKeyResponse>(
       {url: `/v1/api-keys/${id}`, method: 'DELETE'
     },
-      );
+      options);
     }
   
 
 
 export const getDeleteV1ApiKeysIdMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1ApiKeysId>>, TError,{id: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1ApiKeysId>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof deleteV1ApiKeysId>>, TError,{id: number}, TContext> => {
 
 const mutationKey = ['deleteV1ApiKeysId'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -14854,7 +14858,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteV1ApiKeysId>>, {id: number}> = (props) => {
           const {id} = props ?? {};
 
-          return  deleteV1ApiKeysId(id,)
+          return  deleteV1ApiKeysId(id,requestOptions)
         }
 
         
@@ -14870,7 +14874,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Delete API key
  */
 export const useDeleteV1ApiKeysId = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1ApiKeysId>>, TError,{id: number}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteV1ApiKeysId>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteV1ApiKeysId>>,
         TError,
@@ -14889,14 +14893,14 @@ export const useDeleteV1ApiKeysId = <TError = ErrorResponse,
  */
 export const getV1ApiKeysTestRead = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<APIKeyTestResponse>(
       {url: `/v1/api-keys/test-read`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -14909,16 +14913,16 @@ export const getGetV1ApiKeysTestReadQueryKey = () => {
     }
 
     
-export const getGetV1ApiKeysTestReadQueryOptions = <TData = Awaited<ReturnType<typeof getV1ApiKeysTestRead>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1ApiKeysTestRead>>, TError, TData>>, }
+export const getGetV1ApiKeysTestReadQueryOptions = <TData = Awaited<ReturnType<typeof getV1ApiKeysTestRead>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1ApiKeysTestRead>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1ApiKeysTestReadQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1ApiKeysTestRead>>> = ({ signal }) => getV1ApiKeysTestRead(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1ApiKeysTestRead>>> = ({ signal }) => getV1ApiKeysTestRead(requestOptions, signal);
 
       
 
@@ -14938,7 +14942,7 @@ export function useGetV1ApiKeysTestRead<TData = Awaited<ReturnType<typeof getV1A
           TError,
           Awaited<ReturnType<typeof getV1ApiKeysTestRead>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1ApiKeysTestRead<TData = Awaited<ReturnType<typeof getV1ApiKeysTestRead>>, TError = ErrorResponse>(
@@ -14948,11 +14952,11 @@ export function useGetV1ApiKeysTestRead<TData = Awaited<ReturnType<typeof getV1A
           TError,
           Awaited<ReturnType<typeof getV1ApiKeysTestRead>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1ApiKeysTestRead<TData = Awaited<ReturnType<typeof getV1ApiKeysTestRead>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1ApiKeysTestRead>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1ApiKeysTestRead>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -14960,7 +14964,7 @@ export function useGetV1ApiKeysTestRead<TData = Awaited<ReturnType<typeof getV1A
  */
 
 export function useGetV1ApiKeysTestRead<TData = Awaited<ReturnType<typeof getV1ApiKeysTestRead>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1ApiKeysTestRead>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1ApiKeysTestRead>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -14983,28 +14987,28 @@ export function useGetV1ApiKeysTestRead<TData = Awaited<ReturnType<typeof getV1A
  */
 export const postV1ApiKeysTestWrite = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<APIKeyTestResponse>(
       {url: `/v1/api-keys/test-write`, method: 'POST', signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1ApiKeysTestWriteMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1ApiKeysTestWrite>>, TError,void, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1ApiKeysTestWrite>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1ApiKeysTestWrite>>, TError,void, TContext> => {
 
 const mutationKey = ['postV1ApiKeysTestWrite'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -15012,7 +15016,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1ApiKeysTestWrite>>, void> = () => {
           
 
-          return  postV1ApiKeysTestWrite()
+          return  postV1ApiKeysTestWrite(requestOptions)
         }
 
         
@@ -15028,7 +15032,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Test API key (write)
  */
 export const usePostV1ApiKeysTestWrite = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1ApiKeysTestWrite>>, TError,void, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1ApiKeysTestWrite>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1ApiKeysTestWrite>>,
         TError,
@@ -15047,7 +15051,7 @@ export const usePostV1ApiKeysTestWrite = <TError = ErrorResponse,
  */
 export const postV1Translate = (
     translateRequest: TranslateRequest,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -15056,21 +15060,21 @@ export const postV1Translate = (
       headers: {'Content-Type': 'application/json', },
       data: translateRequest, signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1TranslateMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1Translate>>, TError,{data: TranslateRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1Translate>>, TError,{data: TranslateRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1Translate>>, TError,{data: TranslateRequest}, TContext> => {
 
 const mutationKey = ['postV1Translate'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -15078,7 +15082,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1Translate>>, {data: TranslateRequest}> = (props) => {
           const {data} = props ?? {};
 
-          return  postV1Translate(data,)
+          return  postV1Translate(data,requestOptions)
         }
 
         
@@ -15094,7 +15098,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Translate text
  */
 export const usePostV1Translate = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1Translate>>, TError,{data: TranslateRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1Translate>>, TError,{data: TranslateRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1Translate>>,
         TError,
@@ -15113,7 +15117,7 @@ export const usePostV1Translate = <TError = ErrorResponse,
  */
 export const postV1TranslationPracticeGenerate = (
     translationPracticeGenerateRequest: TranslationPracticeGenerateRequest,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -15122,21 +15126,21 @@ export const postV1TranslationPracticeGenerate = (
       headers: {'Content-Type': 'application/json', },
       data: translationPracticeGenerateRequest, signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1TranslationPracticeGenerateMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1TranslationPracticeGenerate>>, TError,{data: TranslationPracticeGenerateRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1TranslationPracticeGenerate>>, TError,{data: TranslationPracticeGenerateRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1TranslationPracticeGenerate>>, TError,{data: TranslationPracticeGenerateRequest}, TContext> => {
 
 const mutationKey = ['postV1TranslationPracticeGenerate'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -15144,7 +15148,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1TranslationPracticeGenerate>>, {data: TranslationPracticeGenerateRequest}> = (props) => {
           const {data} = props ?? {};
 
-          return  postV1TranslationPracticeGenerate(data,)
+          return  postV1TranslationPracticeGenerate(data,requestOptions)
         }
 
         
@@ -15160,7 +15164,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Generate a new sentence for translation practice
  */
 export const usePostV1TranslationPracticeGenerate = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1TranslationPracticeGenerate>>, TError,{data: TranslationPracticeGenerateRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1TranslationPracticeGenerate>>, TError,{data: TranslationPracticeGenerateRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1TranslationPracticeGenerate>>,
         TError,
@@ -15179,7 +15183,7 @@ export const usePostV1TranslationPracticeGenerate = <TError = ErrorResponse,
  */
 export const getV1TranslationPracticeSentence = (
     params: GetV1TranslationPracticeSentenceParams,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -15187,7 +15191,7 @@ export const getV1TranslationPracticeSentence = (
       {url: `/v1/translation-practice/sentence`, method: 'GET',
         params, signal
     },
-      );
+      options);
     }
   
 
@@ -15200,16 +15204,16 @@ export const getGetV1TranslationPracticeSentenceQueryKey = (params?: GetV1Transl
     }
 
     
-export const getGetV1TranslationPracticeSentenceQueryOptions = <TData = Awaited<ReturnType<typeof getV1TranslationPracticeSentence>>, TError = ErrorResponse>(params: GetV1TranslationPracticeSentenceParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1TranslationPracticeSentence>>, TError, TData>>, }
+export const getGetV1TranslationPracticeSentenceQueryOptions = <TData = Awaited<ReturnType<typeof getV1TranslationPracticeSentence>>, TError = ErrorResponse>(params: GetV1TranslationPracticeSentenceParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1TranslationPracticeSentence>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1TranslationPracticeSentenceQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1TranslationPracticeSentence>>> = ({ signal }) => getV1TranslationPracticeSentence(params, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1TranslationPracticeSentence>>> = ({ signal }) => getV1TranslationPracticeSentence(params, requestOptions, signal);
 
       
 
@@ -15229,7 +15233,7 @@ export function useGetV1TranslationPracticeSentence<TData = Awaited<ReturnType<t
           TError,
           Awaited<ReturnType<typeof getV1TranslationPracticeSentence>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1TranslationPracticeSentence<TData = Awaited<ReturnType<typeof getV1TranslationPracticeSentence>>, TError = ErrorResponse>(
@@ -15239,11 +15243,11 @@ export function useGetV1TranslationPracticeSentence<TData = Awaited<ReturnType<t
           TError,
           Awaited<ReturnType<typeof getV1TranslationPracticeSentence>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1TranslationPracticeSentence<TData = Awaited<ReturnType<typeof getV1TranslationPracticeSentence>>, TError = ErrorResponse>(
- params: GetV1TranslationPracticeSentenceParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1TranslationPracticeSentence>>, TError, TData>>, }
+ params: GetV1TranslationPracticeSentenceParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1TranslationPracticeSentence>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -15251,7 +15255,7 @@ export function useGetV1TranslationPracticeSentence<TData = Awaited<ReturnType<t
  */
 
 export function useGetV1TranslationPracticeSentence<TData = Awaited<ReturnType<typeof getV1TranslationPracticeSentence>>, TError = ErrorResponse>(
- params: GetV1TranslationPracticeSentenceParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1TranslationPracticeSentence>>, TError, TData>>, }
+ params: GetV1TranslationPracticeSentenceParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1TranslationPracticeSentence>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -15274,7 +15278,7 @@ export function useGetV1TranslationPracticeSentence<TData = Awaited<ReturnType<t
  */
 export const postV1TranslationPracticeSubmit = (
     translationPracticeSubmitRequest: TranslationPracticeSubmitRequest,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -15283,21 +15287,21 @@ export const postV1TranslationPracticeSubmit = (
       headers: {'Content-Type': 'application/json', },
       data: translationPracticeSubmitRequest, signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1TranslationPracticeSubmitMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1TranslationPracticeSubmit>>, TError,{data: TranslationPracticeSubmitRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1TranslationPracticeSubmit>>, TError,{data: TranslationPracticeSubmitRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1TranslationPracticeSubmit>>, TError,{data: TranslationPracticeSubmitRequest}, TContext> => {
 
 const mutationKey = ['postV1TranslationPracticeSubmit'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -15305,7 +15309,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1TranslationPracticeSubmit>>, {data: TranslationPracticeSubmitRequest}> = (props) => {
           const {data} = props ?? {};
 
-          return  postV1TranslationPracticeSubmit(data,)
+          return  postV1TranslationPracticeSubmit(data,requestOptions)
         }
 
         
@@ -15321,7 +15325,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Submit a translation for evaluation
  */
 export const usePostV1TranslationPracticeSubmit = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1TranslationPracticeSubmit>>, TError,{data: TranslationPracticeSubmitRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1TranslationPracticeSubmit>>, TError,{data: TranslationPracticeSubmitRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1TranslationPracticeSubmit>>,
         TError,
@@ -15340,7 +15344,7 @@ export const usePostV1TranslationPracticeSubmit = <TError = ErrorResponse,
  */
 export const getV1TranslationPracticeHistory = (
     params?: GetV1TranslationPracticeHistoryParams,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -15348,7 +15352,7 @@ export const getV1TranslationPracticeHistory = (
       {url: `/v1/translation-practice/history`, method: 'GET',
         params, signal
     },
-      );
+      options);
     }
   
 
@@ -15361,16 +15365,16 @@ export const getGetV1TranslationPracticeHistoryQueryKey = (params?: GetV1Transla
     }
 
     
-export const getGetV1TranslationPracticeHistoryQueryOptions = <TData = Awaited<ReturnType<typeof getV1TranslationPracticeHistory>>, TError = ErrorResponse>(params?: GetV1TranslationPracticeHistoryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1TranslationPracticeHistory>>, TError, TData>>, }
+export const getGetV1TranslationPracticeHistoryQueryOptions = <TData = Awaited<ReturnType<typeof getV1TranslationPracticeHistory>>, TError = ErrorResponse>(params?: GetV1TranslationPracticeHistoryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1TranslationPracticeHistory>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1TranslationPracticeHistoryQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1TranslationPracticeHistory>>> = ({ signal }) => getV1TranslationPracticeHistory(params, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1TranslationPracticeHistory>>> = ({ signal }) => getV1TranslationPracticeHistory(params, requestOptions, signal);
 
       
 
@@ -15390,7 +15394,7 @@ export function useGetV1TranslationPracticeHistory<TData = Awaited<ReturnType<ty
           TError,
           Awaited<ReturnType<typeof getV1TranslationPracticeHistory>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1TranslationPracticeHistory<TData = Awaited<ReturnType<typeof getV1TranslationPracticeHistory>>, TError = ErrorResponse>(
@@ -15400,11 +15404,11 @@ export function useGetV1TranslationPracticeHistory<TData = Awaited<ReturnType<ty
           TError,
           Awaited<ReturnType<typeof getV1TranslationPracticeHistory>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1TranslationPracticeHistory<TData = Awaited<ReturnType<typeof getV1TranslationPracticeHistory>>, TError = ErrorResponse>(
- params?: GetV1TranslationPracticeHistoryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1TranslationPracticeHistory>>, TError, TData>>, }
+ params?: GetV1TranslationPracticeHistoryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1TranslationPracticeHistory>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -15412,7 +15416,7 @@ export function useGetV1TranslationPracticeHistory<TData = Awaited<ReturnType<ty
  */
 
 export function useGetV1TranslationPracticeHistory<TData = Awaited<ReturnType<typeof getV1TranslationPracticeHistory>>, TError = ErrorResponse>(
- params?: GetV1TranslationPracticeHistoryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1TranslationPracticeHistory>>, TError, TData>>, }
+ params?: GetV1TranslationPracticeHistoryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1TranslationPracticeHistory>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -15435,14 +15439,14 @@ export function useGetV1TranslationPracticeHistory<TData = Awaited<ReturnType<ty
  */
 export const getV1TranslationPracticeStats = (
     
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
       return customInstance<TranslationPracticeStatsResponse>(
       {url: `/v1/translation-practice/stats`, method: 'GET', signal
     },
-      );
+      options);
     }
   
 
@@ -15455,16 +15459,16 @@ export const getGetV1TranslationPracticeStatsQueryKey = () => {
     }
 
     
-export const getGetV1TranslationPracticeStatsQueryOptions = <TData = Awaited<ReturnType<typeof getV1TranslationPracticeStats>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1TranslationPracticeStats>>, TError, TData>>, }
+export const getGetV1TranslationPracticeStatsQueryOptions = <TData = Awaited<ReturnType<typeof getV1TranslationPracticeStats>>, TError = ErrorResponse>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1TranslationPracticeStats>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1TranslationPracticeStatsQueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1TranslationPracticeStats>>> = ({ signal }) => getV1TranslationPracticeStats(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1TranslationPracticeStats>>> = ({ signal }) => getV1TranslationPracticeStats(requestOptions, signal);
 
       
 
@@ -15484,7 +15488,7 @@ export function useGetV1TranslationPracticeStats<TData = Awaited<ReturnType<type
           TError,
           Awaited<ReturnType<typeof getV1TranslationPracticeStats>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1TranslationPracticeStats<TData = Awaited<ReturnType<typeof getV1TranslationPracticeStats>>, TError = ErrorResponse>(
@@ -15494,11 +15498,11 @@ export function useGetV1TranslationPracticeStats<TData = Awaited<ReturnType<type
           TError,
           Awaited<ReturnType<typeof getV1TranslationPracticeStats>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1TranslationPracticeStats<TData = Awaited<ReturnType<typeof getV1TranslationPracticeStats>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1TranslationPracticeStats>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1TranslationPracticeStats>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -15506,7 +15510,7 @@ export function useGetV1TranslationPracticeStats<TData = Awaited<ReturnType<type
  */
 
 export function useGetV1TranslationPracticeStats<TData = Awaited<ReturnType<typeof getV1TranslationPracticeStats>>, TError = ErrorResponse>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1TranslationPracticeStats>>, TError, TData>>, }
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1TranslationPracticeStats>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -15529,7 +15533,7 @@ export function useGetV1TranslationPracticeStats<TData = Awaited<ReturnType<type
  */
 export const postV1AudioSpeech = (
     tTSRequest: TTSRequest,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -15538,21 +15542,21 @@ export const postV1AudioSpeech = (
       headers: {'Content-Type': 'application/json', },
       data: tTSRequest, signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1AudioSpeechMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AudioSpeech>>, TError,{data: TTSRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AudioSpeech>>, TError,{data: TTSRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1AudioSpeech>>, TError,{data: TTSRequest}, TContext> => {
 
 const mutationKey = ['postV1AudioSpeech'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -15560,7 +15564,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AudioSpeech>>, {data: TTSRequest}> = (props) => {
           const {data} = props ?? {};
 
-          return  postV1AudioSpeech(data,)
+          return  postV1AudioSpeech(data,requestOptions)
         }
 
         
@@ -15576,7 +15580,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Generate speech from text
  */
 export const usePostV1AudioSpeech = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AudioSpeech>>, TError,{data: TTSRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AudioSpeech>>, TError,{data: TTSRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1AudioSpeech>>,
         TError,
@@ -15595,7 +15599,7 @@ export const usePostV1AudioSpeech = <TError = ErrorResponse,
  */
 export const postV1AudioSpeechInit = (
     tTSRequest: TTSRequest,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -15604,21 +15608,21 @@ export const postV1AudioSpeechInit = (
       headers: {'Content-Type': 'application/json', },
       data: tTSRequest, signal
     },
-      );
+      options);
     }
   
 
 
 export const getPostV1AudioSpeechInitMutationOptions = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AudioSpeechInit>>, TError,{data: TTSRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AudioSpeechInit>>, TError,{data: TTSRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof postV1AudioSpeechInit>>, TError,{data: TTSRequest}, TContext> => {
 
 const mutationKey = ['postV1AudioSpeechInit'];
-const {mutation: mutationOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+      : {mutation: { mutationKey, }, request: undefined};
 
       
 
@@ -15626,7 +15630,7 @@ const {mutation: mutationOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1AudioSpeechInit>>, {data: TTSRequest}> = (props) => {
           const {data} = props ?? {};
 
-          return  postV1AudioSpeechInit(data,)
+          return  postV1AudioSpeechInit(data,requestOptions)
         }
 
         
@@ -15642,7 +15646,7 @@ const {mutation: mutationOptions} = options ?
  * @summary Initialize a TTS stream (for iOS playback)
  */
 export const usePostV1AudioSpeechInit = <TError = ErrorResponse,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AudioSpeechInit>>, TError,{data: TTSRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1AudioSpeechInit>>, TError,{data: TTSRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postV1AudioSpeechInit>>,
         TError,
@@ -15661,7 +15665,7 @@ export const usePostV1AudioSpeechInit = <TError = ErrorResponse,
  */
 export const getV1AudioSpeechStreamStreamId = (
     streamId: string,
- signal?: AbortSignal
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
 ) => {
       
       
@@ -15669,7 +15673,7 @@ export const getV1AudioSpeechStreamStreamId = (
       {url: `/v1/audio/speech/stream/${streamId}`, method: 'GET',
         responseType: 'blob', signal
     },
-      );
+      options);
     }
   
 
@@ -15682,16 +15686,16 @@ export const getGetV1AudioSpeechStreamStreamIdQueryKey = (streamId?: string,) =>
     }
 
     
-export const getGetV1AudioSpeechStreamStreamIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1AudioSpeechStreamStreamId>>, TError = ErrorResponse>(streamId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AudioSpeechStreamStreamId>>, TError, TData>>, }
+export const getGetV1AudioSpeechStreamStreamIdQueryOptions = <TData = Awaited<ReturnType<typeof getV1AudioSpeechStreamStreamId>>, TError = ErrorResponse>(streamId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AudioSpeechStreamStreamId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetV1AudioSpeechStreamStreamIdQueryKey(streamId);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AudioSpeechStreamStreamId>>> = ({ signal }) => getV1AudioSpeechStreamStreamId(streamId, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getV1AudioSpeechStreamStreamId>>> = ({ signal }) => getV1AudioSpeechStreamStreamId(streamId, requestOptions, signal);
 
       
 
@@ -15711,7 +15715,7 @@ export function useGetV1AudioSpeechStreamStreamId<TData = Awaited<ReturnType<typ
           TError,
           Awaited<ReturnType<typeof getV1AudioSpeechStreamStreamId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AudioSpeechStreamStreamId<TData = Awaited<ReturnType<typeof getV1AudioSpeechStreamStreamId>>, TError = ErrorResponse>(
@@ -15721,11 +15725,11 @@ export function useGetV1AudioSpeechStreamStreamId<TData = Awaited<ReturnType<typ
           TError,
           Awaited<ReturnType<typeof getV1AudioSpeechStreamStreamId>>
         > , 'initialData'
-      >, }
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetV1AudioSpeechStreamStreamId<TData = Awaited<ReturnType<typeof getV1AudioSpeechStreamStreamId>>, TError = ErrorResponse>(
- streamId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AudioSpeechStreamStreamId>>, TError, TData>>, }
+ streamId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AudioSpeechStreamStreamId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -15733,7 +15737,7 @@ export function useGetV1AudioSpeechStreamStreamId<TData = Awaited<ReturnType<typ
  */
 
 export function useGetV1AudioSpeechStreamStreamId<TData = Awaited<ReturnType<typeof getV1AudioSpeechStreamStreamId>>, TError = ErrorResponse>(
- streamId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AudioSpeechStreamStreamId>>, TError, TData>>, }
+ streamId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getV1AudioSpeechStreamStreamId>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
