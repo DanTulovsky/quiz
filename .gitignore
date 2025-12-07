@@ -33,3 +33,4 @@ backend/revive.log
 .env.prod
 
 dochia-report/
+.cfg
