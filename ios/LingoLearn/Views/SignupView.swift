@@ -1,17 +1,23 @@
 import SwiftUI
 
 struct SignupView: View {
-    @StateObject private var viewModel = AuthenticationViewModel()
+    @EnvironmentObject var viewModel: AuthenticationViewModel
 
     var body: some View {
         VStack {
             TextField("Username", text: $viewModel.username)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled(true)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
             TextField("Email", text: $viewModel.email)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled(true)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
             SecureField("Password", text: $viewModel.password)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled(true)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
             if viewModel.error != nil {

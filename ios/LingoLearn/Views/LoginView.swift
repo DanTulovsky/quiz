@@ -1,15 +1,19 @@
 import SwiftUI
 
 struct LoginView: View {
-    @StateObject private var viewModel = AuthenticationViewModel()
+    @EnvironmentObject var viewModel: AuthenticationViewModel
 
     var body: some View {
         NavigationView {
             VStack {
                 TextField("Username", text: $viewModel.username)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled(true)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding()
                 SecureField("Password", text: $viewModel.password)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled(true)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding()
                 if viewModel.error != nil {
@@ -23,7 +27,7 @@ struct LoginView: View {
                 .background(Color.blue)
                 .foregroundColor(.white)
                 .cornerRadius(8)
-                
+
                 NavigationLink("Don't have an account? Sign up", destination: SignupView())
                     .padding()
             }

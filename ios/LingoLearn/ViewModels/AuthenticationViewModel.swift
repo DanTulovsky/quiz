@@ -6,6 +6,7 @@ class AuthenticationViewModel: ObservableObject {
     @Published var password = ""
     @Published var email = ""
     @Published var isAuthenticated = false
+    @Published var user: User? = nil
     @Published var error: APIService.APIError?
 
     var apiService: APIService
@@ -13,22 +14,43 @@ class AuthenticationViewModel: ObservableObject {
 
     init(apiService: APIService = APIService.shared) {
         self.apiService = apiService
-        isAuthenticated = KeychainService.shared.loadToken() != nil
-    }
-
-    func login() {
-        let loginRequest = LoginRequest(username: username, password: password)
-        apiService.login(request: loginRequest)
-            .sink(receiveCompletion: { completion in
+        apiService.authStatus()
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { [weak self] completion in
+                guard let self else { return }
                 switch completion {
                 case .failure(let error):
                     self.error = error
                 case .finished:
                     break
                 }
-            }, receiveValue: { response in
-                KeychainService.shared.save(token: response.token)
-                self.isAuthenticated = true
+            }, receiveValue: { [weak self] response in
+                guard let self else { return }
+                self.error = nil
+                self.isAuthenticated = response.authenticated
+                self.user = response.user
+            })
+            .store(in: &cancellables)
+    }
+
+    func login() {
+        let loginRequest = LoginRequest(username: username, password: password)
+        apiService.login(request: loginRequest)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { [weak self] completion in
+                guard let self else { return }
+                switch completion {
+                case .failure(let error):
+                    self.error = error
+                    self.isAuthenticated = false
+                case .finished:
+                    break
+                }
+            }, receiveValue: { [weak self] response in
+                guard let self else { return }
+                self.error = nil
+                self.isAuthenticated = response.success
+                self.user = response.user
             })
             .store(in: &cancellables)
     }
@@ -36,14 +58,16 @@ class AuthenticationViewModel: ObservableObject {
     func signup() {
         let signupRequest = UserCreateRequest(username: username, email: email, password: password)
         apiService.signup(request: signupRequest)
-            .sink(receiveCompletion: { completion in
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { [weak self] completion in
+                guard let self else { return }
                 switch completion {
                 case .failure(let error):
                     self.error = error
                 case .finished:
                     break
                 }
-            }, receiveValue: { response in
+            }, receiveValue: { _ in
                 // For simplicity, we'll just consider the signup successful
                 // and the user can now login.
                 // A better approach would be to automatically log the user in.
@@ -52,7 +76,21 @@ class AuthenticationViewModel: ObservableObject {
     }
 
     func logout() {
-        KeychainService.shared.deleteToken()
-        isAuthenticated = false
+        apiService.logout()
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { [weak self] completion in
+                guard let self else { return }
+                switch completion {
+                case .failure(let error):
+                    self.error = error
+                case .finished:
+                    break
+                }
+            }, receiveValue: { [weak self] _ in
+                guard let self else { return }
+                self.error = nil
+                self.isAuthenticated = false
+            })
+            .store(in: &cancellables)
     }
 }

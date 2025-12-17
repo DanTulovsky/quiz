@@ -1,57 +1,141 @@
 import SwiftUI
 
 struct MainView: View {
+    @AppStorage("app_theme") private var appTheme: String = "system"
     @StateObject private var authViewModel = AuthenticationViewModel()
 
+    private var colorScheme: ColorScheme? {
+        switch appTheme {
+        case "light": return .light
+        case "dark": return .dark
+        default: return nil
+        }
+    }
+
     var body: some View {
-        if authViewModel.isAuthenticated {
-            TabView {
-                QuizView()
+        Group {
+            if authViewModel.isAuthenticated {
+                TabView {
+                    // Section 1: Menu
+                    NavigationView {
+                        List {
+                            Section("Menu") {
+                                NavigationLink(destination: QuizView()) {
+                                    Label("Quiz", systemImage: "questionmark.circle")
+                                }
+                                NavigationLink(destination: QuizView(questionType: "vocabulary")) {
+                                    Label("Vocabulary", systemImage: "text.book.closed")
+                                }
+                                NavigationLink(destination: QuizView(questionType: "reading_comprehension")) {
+                                    Label("Reading", systemImage: "doc.text")
+                                }
+                                NavigationLink(destination: StoryListView()) {
+                                    Label("Story", systemImage: "book")
+                                }
+                            }
+                        }
+                        .navigationTitle("LingoLearn")
+                    }
                     .tabItem {
                         Image(systemName: "house")
                         Text("Home")
                     }
-                NavigationView {
-                    List {
-                        NavigationLink("Stories", destination: StoryListView())
-                        NavigationLink("Translation Practice", destination: TranslationPracticeView())
-                        NavigationLink("Verb Conjugation", destination: VerbConjugationView())
-                    }
-                    .navigationTitle("Learn")
-                }
-                .tabItem {
-                    Image(systemName: "book")
-                    Text("Learn")
-                }
-                VocabularyView()
-                    .tabItem {
-                        Image(systemName: "list.bullet")
-                        Text("Vocabulary")
-                    }
-                PhrasebookView()
-                    .tabItem {
-                        Image(systemName: "text.book.closed")
-                        Text("Phrasebook")
-                    }
-                NavigationView {
-                    VStack {
-                        SettingsView()
-                        Button("Logout") {
-                            authViewModel.logout()
+
+                    // Section 2: Practice
+                    NavigationView {
+                        List {
+                            Section("Practice") {
+                                NavigationLink(destination: DailyView()) {
+                                    Label("Daily", systemImage: "calendar")
+                                }
+                                NavigationLink(destination: WordOfTheDayView()) {
+                                    Label("Word of the Day", systemImage: "sparkles")
+                                }
+                                NavigationLink(destination: TranslationPracticeView()) {
+                                    Label("Translation Practice", systemImage: "arrow.left.and.right.right.arrow.left")
+                                }
+                            }
                         }
-                        .padding()
-                        .background(Color.red)
-                        .foregroundColor(.white)
-                        .cornerRadius(8)
+                        .navigationTitle("Practice")
+                    }
+                    .tabItem {
+                        Image(systemName: "checkmark.circle")
+                        Text("Practice")
+                    }
+
+                    // Section 3: AI History
+                    NavigationView {
+                        List {
+                            Section("AI History") {
+                                NavigationLink(destination: AIConversationListView()) {
+                                    Label("AI Conversations", systemImage: "bubble.left.and.bubble.right")
+                                }
+                                NavigationLink(destination: BookmarkedMessagesView()) {
+                                    Label("Bookmarked Messages", systemImage: "bookmark")
+                                }
+                            }
+                        }
+                        .navigationTitle("AI History")
+                    }
+                    .tabItem {
+                        Image(systemName: "clock.arrow.circlepath")
+                        Text("History")
+                    }
+
+                    // Section 4: Reference
+                    NavigationView {
+                        List {
+                            Section("Reference") {
+                                NavigationLink(destination: SnippetListView()) {
+                                    Label("Snippets", systemImage: "text.quote")
+                                }
+                                NavigationLink(destination: PhrasebookView()) {
+                                    Label("Phrasebook", systemImage: "character.book.closed")
+                                }
+                                NavigationLink(destination: VerbConjugationView()) {
+                                    Label("Verb Conjugations", systemImage: "abc")
+                                }
+                            }
+                        }
+                        .navigationTitle("Reference")
+                    }
+                    .tabItem {
+                        Image(systemName: "info.circle")
+                        Text("Reference")
+                    }
+
+                    // Section 5: Profile
+                    NavigationView {
+                        VStack {
+                            SettingsView()
+                            Button(action: {
+                                authViewModel.logout()
+                            }) {
+                                HStack {
+                                    Image(systemName: "arrow.right.square")
+                                    Text("Logout")
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.red)
+                                .foregroundColor(.white)
+                                .cornerRadius(8)
+                                .padding()
+                            }
+                        }
+                        .navigationTitle("Profile")
+                    }
+                    .tabItem {
+                        Image(systemName: "person")
+                        Text("Profile")
                     }
                 }
-                .tabItem {
-                    Image(systemName: "person")
-                    Text("Profile")
-                }
+                .environmentObject(authViewModel)
+            } else {
+                LoginView()
+                    .environmentObject(authViewModel)
             }
-        } else {
-            LoginView()
         }
+        .preferredColorScheme(colorScheme)
     }
 }

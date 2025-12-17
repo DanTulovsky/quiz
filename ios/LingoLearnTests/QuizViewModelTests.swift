@@ -20,8 +20,8 @@ class QuizViewModelTests: XCTestCase {
 
     func testGetQuestionSuccess() {
         // Given
-        let question = Question(id: 1, text: "test question", type: "test", choices: nil)
-        mockAPIService.getQuestionResult = .success(question)
+        let question = Question(id: 1, type: "vocabulary", language: "it", level: "A1", content: [:], correctAnswerIndex: 1)
+        mockAPIService.getQuestionResult = .success(.question(question))
 
         // When
         viewModel.getQuestion()
@@ -30,25 +30,18 @@ class QuizViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.question)
         XCTAssertEqual(viewModel.question?.id, 1)
         XCTAssertNil(viewModel.error)
+        XCTAssertNil(viewModel.generatingMessage)
     }
 
-    func testGetQuestionFailure() {
+    func testGetQuestionGenerating() {
         // Given
-        mockAPIService.getQuestionResult = .failure(.invalidResponse)
+        mockAPIService.getQuestionResult = .success(.generating(GeneratingStatusResponse(message: "Wait", status: "generating")))
 
         // When
         viewModel.getQuestion()
 
         // Then
         XCTAssertNil(viewModel.question)
-        XCTAssertNotNil(viewModel.error)
-    }
-}
-
-extension MockAPIService {
-    var getQuestionResult: Result<Question, APIError>?
-    
-    override func getQuestion(language: Language?, level: Level?, type: String?, excludeType: String?) -> AnyPublisher<Question, APIError> {
-        return getQuestionResult!.publisher.eraseToAnyPublisher()
+        XCTAssertEqual(viewModel.generatingMessage, "Wait")
     }
 }

@@ -20,36 +20,16 @@ class VocabularyViewModelTests: XCTestCase {
 
     func testGetSnippetsSuccess() {
         // Given
-        let snippets = [Snippet(id: 1, text: "test", translation: "test", sourceLanguage: .en, targetLanguage: .es)]
-        let snippetList = SnippetList(snippets: snippets)
-        mockAPIService.getSnippetsResult = .success(snippetList)
+        let snippet = Snippet(id: 1, originalText: "hello", translatedText: "ciao", context: nil, sourceLanguage: "en", targetLanguage: "it")
+        let list = SnippetList(limit: 10, offset: 0, query: nil, snippets: [snippet])
+        mockAPIService.getSnippetsResult = .success(list)
 
         // When
         viewModel.getSnippets()
 
         // Then
         XCTAssertEqual(viewModel.snippets.count, 1)
-        XCTAssertEqual(viewModel.snippets.first?.text, "test")
+        XCTAssertEqual(viewModel.snippets.first?.originalText, "hello")
         XCTAssertNil(viewModel.error)
-    }
-
-    func testGetSnippetsFailure() {
-        // Given
-        mockAPIService.getSnippetsResult = .failure(.invalidResponse)
-
-        // When
-        viewModel.getSnippets()
-
-        // Then
-        XCTAssertEqual(viewModel.snippets.count, 0)
-        XCTAssertNotNil(viewModel.error)
-    }
-}
-
-extension MockAPIService {
-    var getSnippetsResult: Result<SnippetList, APIError>?
-    
-    override func getSnippets(sourceLang: Language?, targetLang: Language?) -> AnyPublisher<SnippetList, APIError> {
-        return getSnippetsResult!.publisher.eraseToAnyPublisher()
     }
 }

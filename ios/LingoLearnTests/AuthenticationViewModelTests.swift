@@ -9,6 +9,8 @@ class AuthenticationViewModelTests: XCTestCase {
     override func setUp() {
         super.setUp()
         mockAPIService = MockAPIService()
+        // AuthStatus must be provided for init
+        mockAPIService.authStatusResult = .success(AuthStatusResponse(authenticated: false, user: nil))
         viewModel = AuthenticationViewModel(apiService: mockAPIService)
     }
 
@@ -20,7 +22,8 @@ class AuthenticationViewModelTests: XCTestCase {
 
     func testLoginSuccess() {
         // Given
-        let loginResponse = LoginResponse(token: "test_token", user: User(id: 1, username: "test", email: "test@test.com", language: .en, level: .a1))
+        let user = User(id: 1, username: "test", email: "test@test.com", preferredLanguage: "it", currentLevel: "A1")
+        let loginResponse = LoginResponse(success: true, message: "OK", user: user)
         mockAPIService.loginResult = .success(loginResponse)
 
         // When
@@ -41,27 +44,5 @@ class AuthenticationViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(viewModel.isAuthenticated)
         XCTAssertNotNil(viewModel.error)
-    }
-}
-
-class MockAPIService: APIService {
-    var loginResult: Result<LoginResponse, APIError>?
-    
-    override func login(request: LoginRequest) -> AnyPublisher<LoginResponse, APIError> {
-        return loginResult!.publisher.eraseToAnyPublisher()
-    }
-}
-
-extension Result {
-    var publisher: AnyPublisher<Success, Failure> {
-        switch self {
-        case .success(let value):
-            return Just(value)
-                .setFailureType(to: Failure.self)
-                .eraseToAnyPublisher()
-        case .failure(let error):
-            return Fail(error: error)
-                .eraseToAnyPublisher()
-        }
     }
 }

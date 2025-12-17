@@ -79,6 +79,11 @@ providers:
           code: "gemini-2.5-flash",
           max_tokens: 65536,
         }
+      - {
+          name: "Gemini 3.0 Flash",
+          code: "gemini-3.0-flash",
+          max_tokens: 65536,
+        }
 
 # Server Configuration
 #
@@ -196,7 +201,7 @@ open_telemetry:
   enable_metrics: true
   enable_logging: true
   sampling_rate: 1.0
-  use_auto_sdk: true  # Default: true (use Auto SDK, set to false for standard SDK)
+  use_auto_sdk: true # Default: true (use Auto SDK, set to false for standard SDK)
 
 system:
   auth:

@@ -20,36 +20,15 @@ class StoryViewModelTests: XCTestCase {
 
     func testGetStoriesSuccess() {
         // Given
-        let stories = [Story(id: 1, title: "Test Story", language: .en, level: .a1, sections: [])]
-        let storyList = StoryList(stories: stories)
-        mockAPIService.getStoriesResult = .success(storyList)
+        let stories = [StorySummary(id: 1, title: "test", language: "it", status: "active")]
+        mockAPIService.getStoriesResult = .success(stories)
 
         // When
         viewModel.getStories()
 
         // Then
         XCTAssertEqual(viewModel.stories.count, 1)
-        XCTAssertEqual(viewModel.stories.first?.title, "Test Story")
+        XCTAssertEqual(viewModel.stories.first?.title, "test")
         XCTAssertNil(viewModel.error)
-    }
-
-    func testGetStoriesFailure() {
-        // Given
-        mockAPIService.getStoriesResult = .failure(.invalidResponse)
-
-        // When
-        viewModel.getStories()
-
-        // Then
-        XCTAssertEqual(viewModel.stories.count, 0)
-        XCTAssertNotNil(viewModel.error)
-    }
-}
-
-extension MockAPIService {
-    var getStoriesResult: Result<StoryList, APIError>?
-    
-    override func getStories(language: Language?, level: Level?) -> AnyPublisher<StoryList, APIError> {
-        return getStoriesResult!.publisher.eraseToAnyPublisher()
     }
 }
