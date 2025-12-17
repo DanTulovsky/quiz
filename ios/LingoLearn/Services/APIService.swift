@@ -168,7 +168,7 @@ class APIService {
     }
     
     func getStories(language: Language?, level: Level?) -> AnyPublisher<StoryList, APIError> {
-        var urlComponents = URLComponents(url: baseURL. appendingPathComponent("stories"), resolvingAgainstBaseURL: false)!
+        var urlComponents = URLComponents(url: baseURL.appendingPathComponent("stories"), resolvingAgainstBaseURL: false)!
         var queryItems = [URLQueryItem]()
         if let language = language {
             queryItems.append(URLQueryItem(name: "language", value: language.rawValue))
