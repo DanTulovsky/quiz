@@ -48,7 +48,7 @@ class APIService {
                 }
 
                 let decoder = JSONDecoder()
-                decoder.keyEncodingStrategy = .convertFromSnakeCase
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
                 return Just(data)
                     .decode(type: LoginResponse.self, decoder: decoder)
                     .mapError { error in
@@ -83,7 +83,7 @@ class APIService {
                 }
 
                 let decoder = JSONDecoder()
-                decoder.keyEncodingStrategy = .convertFromSnakeCase
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
                 return Just(data)
                     .decode(type: SuccessResponse.self, decoder: decoder)
                     .mapError { error in
@@ -123,7 +123,7 @@ class APIService {
                 }
                 
                 let decoder = JSONDecoder()
-                decoder.keyEncodingStrategy = .convertFromSnakeCase
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
                 return Just(data)
                     .decode(type: Question.self, decoder: decoder)
                     .mapError { error in
@@ -156,7 +156,7 @@ class APIService {
                 }
                 
                 let decoder = JSONDecoder()
-                decoder.keyEncodingStrategy = .convertFromSnakeCase
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
                 return Just(data)
                     .decode(type: AnswerResponse.self, decoder: decoder)
                     .mapError { error in
@@ -190,7 +190,7 @@ class APIService {
                 }
                 
                 let decoder = JSONDecoder()
-                decoder.keyEncodingStrategy = .convertFromSnakeCase
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
                 return Just(data)
                     .decode(type: StoryList.self, decoder: decoder)
                     .mapError { error in
@@ -215,7 +215,7 @@ class APIService {
                 }
                 
                 let decoder = JSONDecoder()
-                decoder.keyEncodingStrategy = .convertFromSnakeCase
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
                 return Just(data)
                     .decode(type: StoryContent.self, decoder: decoder)
                     .mapError { error in
@@ -249,7 +249,7 @@ class APIService {
                 }
                 
                 let decoder = JSONDecoder()
-                decoder.keyEncodingStrategy = .convertFromSnakeCase
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
                 return Just(data)
                     .decode(type: SnippetList.self, decoder: decoder)
                     .mapError { error in
@@ -282,7 +282,7 @@ class APIService {
                 }
                 
                 let decoder = JSONDecoder()
-                decoder.keyEncodingStrategy = .convertFromSnakeCase
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
                 return Just(data)
                     .decode(type: Snippet.self, decoder: decoder)
                     .mapError { error in
@@ -315,7 +315,7 @@ class APIService {
                 }
                 
                 let decoder = JSONDecoder()
-                decoder.keyEncodingStrategy = .convertFromSnakeCase
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
                 return Just(data)
                     .decode(type: Snippet.self, decoder: decoder)
                     .mapError { error in
@@ -342,7 +342,7 @@ class APIService {
                 }
                 
                 let decoder = JSONDecoder()
-                decoder.keyEncodingStrategy = .convertFromSnakeCase
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
                 return Just(data)
                     .decode(type: PhrasebookResponse.self, decoder: decoder)
                     .mapError { error in
@@ -375,7 +375,7 @@ class APIService {
                 }
                 
                 let decoder = JSONDecoder()
-                decoder.keyEncodingStrategy = .convertFromSnakeCase
+                decoder.keyDecodingStrategy = .convertFromSnakeCase
                 return Just(data)
                     .decode(type: User.self, decoder: decoder)
                     .mapError { error in
