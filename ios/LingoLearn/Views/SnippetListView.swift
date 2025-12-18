@@ -4,6 +4,9 @@ struct SnippetListView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = VocabularyViewModel()
     @State private var showAddSnippet = false
+    @State private var showEditSnippet = false
+    @State private var showDeleteConfirmation = false
+    @State private var selectedSnippet: Snippet? = nil
 
     var body: some View {
         ScrollView {
@@ -71,7 +74,13 @@ struct SnippetListView: View {
                             .padding()
                     } else {
                         ForEach(viewModel.filteredSnippets) { snippet in
-                            SnippetCard(snippet: snippet)
+                            SnippetCard(snippet: snippet, onEdit: {
+                                selectedSnippet = snippet
+                                showEditSnippet = true
+                            }, onDelete: {
+                                selectedSnippet = snippet
+                                showDeleteConfirmation = true
+                            })
                         }
                     }
                 }
@@ -85,6 +94,21 @@ struct SnippetListView: View {
         }
         .sheet(isPresented: $showAddSnippet) {
             AddSnippetView(viewModel: viewModel, isPresented: $showAddSnippet)
+        }
+        .sheet(isPresented: $showEditSnippet) {
+            if let snippet = selectedSnippet {
+                EditSnippetView(viewModel: viewModel, snippet: snippet, isPresented: $showEditSnippet)
+            }
+        }
+        .alert("Delete Snippet", isPresented: $showDeleteConfirmation) {
+            Button("Cancel", role: .cancel) { }
+            Button("Delete", role: .destructive) {
+                if let snippet = selectedSnippet {
+                    viewModel.deleteSnippet(id: snippet.id) { _ in }
+                }
+            }
+        } message: {
+            Text("Are you sure you want to delete this snippet? This action cannot be undone.")
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
@@ -198,6 +222,8 @@ struct SnippetListView: View {
 
 struct SnippetCard: View {
     let snippet: Snippet
+    let onEdit: () -> Void
+    let onDelete: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 15) {
@@ -244,14 +270,14 @@ struct SnippetCard: View {
                 Spacer()
 
                 HStack(spacing: 12) {
-                    Button(action: {}) {
+                    Button(action: onEdit) {
                         Image(systemName: "square.and.pencil")
                             .foregroundColor(.blue)
                             .padding(6)
                             .background(Color.blue.opacity(0.1))
                             .cornerRadius(6)
                     }
-                    Button(action: {}) {
+                    Button(action: onDelete) {
                         Image(systemName: "trash")
                             .foregroundColor(.red)
                             .padding(6)
@@ -467,6 +493,155 @@ struct AddSnippetView: View {
         )
 
         viewModel.createSnippet(request: request) { result in
+            isSubmitting = false
+            switch result {
+            case .success:
+                isPresented = false
+            case .failure(let error):
+                errorMessage = error.localizedDescription
+            }
+        }
+    }
+}
+
+struct EditSnippetView: View {
+    @ObservedObject var viewModel: VocabularyViewModel
+    let snippet: Snippet
+    @Binding var isPresented: Bool
+
+    @State private var originalText = ""
+    @State private var translatedText = ""
+    @State private var sourceLanguage = Language.italian
+    @State private var targetLanguage = Language.english
+    @State private var context = ""
+    @State private var isSubmitting = false
+    @State private var errorMessage: String? = nil
+
+    var body: some View {
+        NavigationView {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    if let errorMessage = errorMessage {
+                        Text(errorMessage)
+                            .foregroundColor(.red)
+                            .font(.caption)
+                            .padding()
+                            .background(Color.red.opacity(0.1))
+                            .cornerRadius(8)
+                    }
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Original Text").font(.subheadline).fontWeight(.medium)
+                        TextField("Enter word or phrase", text: $originalText)
+                            .padding(12)
+                            .background(Color(.secondarySystemBackground))
+                            .cornerRadius(8)
+                    }
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Translation").font(.subheadline).fontWeight(.medium)
+                        TextField("Enter translation", text: $translatedText)
+                            .padding(12)
+                            .background(Color(.secondarySystemBackground))
+                            .cornerRadius(8)
+                    }
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Source Language").font(.subheadline).fontWeight(.medium)
+                        Picker("Source Language", selection: $sourceLanguage) {
+                            Text("Italian").tag(Language.italian)
+                            Text("Spanish").tag(Language.spanish)
+                            Text("French").tag(Language.french)
+                            Text("German").tag(Language.german)
+                            Text("English").tag(Language.english)
+                        }
+                        .pickerStyle(.menu)
+                        .padding(12)
+                        .background(Color(.secondarySystemBackground))
+                        .cornerRadius(8)
+                    }
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Target Language").font(.subheadline).fontWeight(.medium)
+                        Picker("Target Language", selection: $targetLanguage) {
+                            Text("Italian").tag(Language.italian)
+                            Text("Spanish").tag(Language.spanish)
+                            Text("French").tag(Language.french)
+                            Text("German").tag(Language.german)
+                            Text("English").tag(Language.english)
+                        }
+                        .pickerStyle(.menu)
+                        .padding(12)
+                        .background(Color(.secondarySystemBackground))
+                        .cornerRadius(8)
+                    }
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Context (Optional)").font(.subheadline).fontWeight(.medium)
+                        TextEditor(text: $context)
+                            .frame(minHeight: 100)
+                            .padding(8)
+                            .background(Color(.secondarySystemBackground))
+                            .cornerRadius(8)
+                    }
+
+                    Button(action: submitEdit) {
+                        Text(isSubmitting ? "Saving..." : "Save Changes")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(canSubmit ? Color.blue : Color.gray)
+                            .cornerRadius(10)
+                    }
+                    .disabled(!canSubmit || isSubmitting)
+                }
+                .padding()
+            }
+            .navigationTitle("Edit Snippet")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        isPresented = false
+                    }) {
+                        Image(systemName: "xmark")
+                            .foregroundColor(.primary)
+                            .padding(8)
+                            .background(Color.blue.opacity(0.1))
+                            .clipShape(Circle())
+                    }
+                }
+            }
+        }
+        .onAppear {
+            originalText = snippet.originalText
+            translatedText = snippet.translatedText
+            sourceLanguage = Language(rawValue: snippet.sourceLanguage ?? "italian") ?? .italian
+            targetLanguage = Language(rawValue: snippet.targetLanguage ?? "english") ?? .english
+            context = snippet.context ?? ""
+        }
+    }
+
+    private var canSubmit: Bool {
+        !originalText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
+        !translatedText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
+        sourceLanguage != targetLanguage
+    }
+
+    private func submitEdit() {
+        errorMessage = nil
+        isSubmitting = true
+
+        let request = UpdateSnippetRequest(
+            originalText: originalText.trimmingCharacters(in: .whitespacesAndNewlines),
+            translatedText: translatedText.trimmingCharacters(in: .whitespacesAndNewlines),
+            sourceLanguage: sourceLanguage.rawValue,
+            targetLanguage: targetLanguage.rawValue,
+            context: context.isEmpty ? nil : context.trimmingCharacters(in: .whitespacesAndNewlines)
+        )
+
+        viewModel.updateSnippet(id: snippet.id, request: request) { result in
             isSubmitting = false
             switch result {
             case .success:

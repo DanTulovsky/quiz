@@ -234,6 +234,22 @@ struct CreateSnippetRequest: Codable {
     }
 }
 
+struct UpdateSnippetRequest: Codable {
+    let originalText: String
+    let translatedText: String
+    let sourceLanguage: String
+    let targetLanguage: String
+    let context: String?
+
+    enum CodingKeys: String, CodingKey {
+        case originalText = "original_text"
+        case translatedText = "translated_text"
+        case sourceLanguage = "source_language"
+        case targetLanguage = "target_language"
+        case context
+    }
+}
+
 struct StorySummary: Codable, Identifiable {
     let id: Int
     let title: String

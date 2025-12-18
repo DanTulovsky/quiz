@@ -61,6 +61,9 @@ struct SettingsView: View {
     @AppStorage("app_theme") private var appTheme: String = "system"
     @AppStorage("app_font_size") private var appFontSize: String = "M"
 
+    // Success feedback
+    @State private var showSuccessMessage = false
+
     private func formatTimezone(_ tz: String) -> String {
         let cityName = tz.split(separator: "/").last?.replacingOccurrences(of: "_", with: " ") ?? tz
         return "\(cityName) (\(tz.split(separator: "/").first ?? ""))"
@@ -377,21 +380,57 @@ struct SettingsView: View {
                     .padding(.top, 10)
                     .disabled(viewModel.isLoading)
 
-                    if viewModel.isSuccess {
-                        Text("Changes saved successfully!")
-                            .foregroundColor(.green)
-                            .padding()
-                    }
-
                     if let error = viewModel.error {
                         Text("Error: \(error.localizedDescription)")
                             .foregroundColor(.red)
+                            .font(.caption)
                             .padding()
+                            .background(Color.red.opacity(0.1))
+                            .cornerRadius(8)
                     }
+
+                    // Logout Button
+                    Button(action: {
+                        authViewModel.logout()
+                    }) {
+                        HStack {
+                            Image(systemName: "arrow.right.square")
+                            Text("Logout")
+                        }
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.red)
+                        .foregroundColor(.white)
+                        .cornerRadius(12)
+                    }
+                    .padding(.top, 20)
                 }
             }
             .padding()
         }
+        .overlay(
+            Group {
+                if showSuccessMessage {
+                    VStack {
+                        Spacer()
+                        HStack {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundColor(.white)
+                            Text("Changes saved successfully!")
+                                .foregroundColor(.white)
+                                .fontWeight(.medium)
+                        }
+                        .padding()
+                        .background(Color.green)
+                        .cornerRadius(12)
+                        .shadow(radius: 10)
+                        .padding()
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                    }
+                }
+            }
+        )
         .navigationTitle("Settings")
         .onAppear {
             loadInitialData()
@@ -482,6 +521,21 @@ struct SettingsView: View {
         )
 
         viewModel.saveChanges(userUpdate: userUpdate, prefs: prefs)
+
+        // Show success message after a short delay to ensure save completes
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            if viewModel.error == nil {
+                withAnimation {
+                    showSuccessMessage = true
+                }
+                // Hide after 3 seconds
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                    withAnimation {
+                        showSuccessMessage = false
+                    }
+                }
+            }
+        }
     }
 
     @ViewBuilder

@@ -117,24 +117,8 @@ struct MainView: View {
 
                     // Section 5: Profile
                     NavigationView {
-                        VStack {
-                            SettingsView()
-                            Button(action: {
-                                authViewModel.logout()
-                            }) {
-                                HStack {
-                                    Image(systemName: "arrow.right.square")
-                                    Text("Logout")
-                                }
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.red)
-                                .foregroundColor(.white)
-                                .cornerRadius(8)
-                                .padding()
-                            }
-                        }
-                        .navigationTitle("Profile")
+                        SettingsView()
+                            .navigationTitle("Profile")
                     }
                     .tabItem {
                         Image(systemName: "person")

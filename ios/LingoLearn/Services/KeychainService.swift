@@ -3,7 +3,7 @@ import Security
 
 class KeychainService {
     static let shared = KeychainService()
-    private let service = "com.LingoLearn.auth"
+    private let service = "com.wetsnow.quiz.auth"
 
     private init() {}
 

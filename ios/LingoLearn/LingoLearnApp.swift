@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct LingoLearnApp: App {
+struct QuizApp: App {
     var body: some Scene {
         WindowGroup {
             MainView()

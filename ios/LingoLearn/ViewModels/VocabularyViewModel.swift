@@ -75,6 +75,36 @@ class VocabularyViewModel: ObservableObject {
             .store(in: &cancellables)
     }
 
+    func updateSnippet(id: Int, request: UpdateSnippetRequest, completion: @escaping (Result<Snippet, APIService.APIError>) -> Void) {
+        apiService.updateSnippet(id: id, request: request)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { result in
+                if case .failure(let error) = result {
+                    completion(.failure(error))
+                }
+            }, receiveValue: { [weak self] updatedSnippet in
+                if let index = self?.snippets.firstIndex(where: { $0.id == id }) {
+                    self?.snippets[index] = updatedSnippet
+                }
+                completion(.success(updatedSnippet))
+            })
+            .store(in: &cancellables)
+    }
+
+    func deleteSnippet(id: Int, completion: @escaping (Result<Void, APIService.APIError>) -> Void) {
+        apiService.deleteSnippet(id: id)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { result in
+                if case .failure(let error) = result {
+                    completion(.failure(error))
+                }
+            }, receiveValue: { [weak self] _ in
+                self?.snippets.removeAll { $0.id == id }
+                completion(.success(()))
+            })
+            .store(in: &cancellables)
+    }
+
     var filteredSnippets: [Snippet] {
         var results = snippets
 

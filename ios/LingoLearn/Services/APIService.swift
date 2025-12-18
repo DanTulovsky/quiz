@@ -204,6 +204,33 @@ class APIService {
             .eraseToAnyPublisher()
     }
 
+    func updateSnippet(id: Int, request: UpdateSnippetRequest) -> AnyPublisher<Snippet, APIError> {
+        let url = baseURL.appendingPathComponent("snippets/\(id)")
+        var urlRequest = authenticatedRequest(for: url, method: "PUT")
+        urlRequest.httpBody = try? JSONEncoder().encode(request)
+        return URLSession.shared.dataTaskPublisher(for: urlRequest)
+            .mapError { .requestFailed($0) }
+            .flatMap { self.handleResponse($0.data, $0.response) }
+            .eraseToAnyPublisher()
+    }
+
+    func deleteSnippet(id: Int) -> AnyPublisher<Void, APIError> {
+        let url = baseURL.appendingPathComponent("snippets/\(id)")
+        let urlRequest = authenticatedRequest(for: url, method: "DELETE")
+        return URLSession.shared.dataTaskPublisher(for: urlRequest)
+            .mapError { .requestFailed($0) }
+            .flatMap { (data, response) -> AnyPublisher<Void, APIError> in
+                guard let httpResponse = response as? HTTPURLResponse else {
+                    return Fail(error: .invalidResponse).eraseToAnyPublisher()
+                }
+                if (200...299).contains(httpResponse.statusCode) {
+                    return Just(()).setFailureType(to: APIError.self).eraseToAnyPublisher()
+                }
+                return Fail(error: .invalidResponse).eraseToAnyPublisher()
+            }
+            .eraseToAnyPublisher()
+    }
+
     func getDailyQuestions(date: String) -> AnyPublisher<DailyQuestionsResponse, APIError> {
         let url = baseURL.appendingPathComponent("daily/questions/\(date)")
         let urlRequest = authenticatedRequest(for: url)
