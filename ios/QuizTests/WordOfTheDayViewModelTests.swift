@@ -26,12 +26,17 @@ class WordOfTheDayViewModelTests: XCTestCase {
             sourceType: "test", sourceId: 1, language: "it", level: "A1", context: nil,
             explanation: nil, topicCategory: nil)
         mockAPIService.getWordOfTheDayResult = .success(wotd)
+        let expectation = XCTestExpectation(description: "Word of the day fetched")
 
         // When
         viewModel.fetchWordOfTheDay()
 
-        // Then
-        XCTAssertEqual(viewModel.wordOfTheDay?.word, "test")
-        XCTAssertNil(viewModel.error)
+        // Then - wait for async operation
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            XCTAssertEqual(self.viewModel.wordOfTheDay?.word, "test")
+            XCTAssertNil(self.viewModel.error)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
     }
 }

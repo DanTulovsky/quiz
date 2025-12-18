@@ -26,12 +26,17 @@ class AIHistoryViewModelTests: XCTestCase {
             messageCount: 1, messages: nil)
         let response = ConversationListResponse(conversations: [conv], total: 1)
         mockAPIService.getAIConversationsResult = .success(response)
+        let expectation = XCTestExpectation(description: "Conversations fetched")
 
         // When
         viewModel.fetchConversations()
 
-        // Then
-        XCTAssertEqual(viewModel.conversations.count, 1)
-        XCTAssertEqual(viewModel.conversations.first?.title, "test")
+        // Then - wait for async operation
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            XCTAssertEqual(self.viewModel.conversations.count, 1)
+            XCTAssertEqual(self.viewModel.conversations.first?.title, "test")
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
     }
 }

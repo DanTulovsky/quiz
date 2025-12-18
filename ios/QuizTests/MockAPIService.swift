@@ -27,33 +27,54 @@ final class MockAPIService: APIService, @unchecked Sendable {
 
     // Method Overrides
     override func login(request: LoginRequest) -> AnyPublisher<LoginResponse, APIError> {
-        return loginResult!.publisher.eraseToAnyPublisher()
+        guard let result = loginResult else {
+            return Fail(error: .invalidResponse).eraseToAnyPublisher()
+        }
+        return result.publisher.eraseToAnyPublisher()
     }
 
     override func signup(request: UserCreateRequest) -> AnyPublisher<SuccessResponse, APIError> {
-        return signupResult!.publisher.eraseToAnyPublisher()
+        guard let result = signupResult else {
+            return Fail(error: .invalidResponse).eraseToAnyPublisher()
+        }
+        return result.publisher.eraseToAnyPublisher()
     }
 
     override func authStatus() -> AnyPublisher<AuthStatusResponse, APIError> {
-        return authStatusResult!.publisher.eraseToAnyPublisher()
+        guard let result = authStatusResult else {
+            return Fail(error: .invalidResponse).eraseToAnyPublisher()
+        }
+        return result.publisher.eraseToAnyPublisher()
     }
 
     override func getQuestion(
         language: Language?, level: Level?, type: String?, excludeType: String?
     ) -> AnyPublisher<QuestionFetchResult, APIError> {
-        return getQuestionResult!.publisher.eraseToAnyPublisher()
+        guard let result = getQuestionResult else {
+            return Fail(error: .invalidResponse).eraseToAnyPublisher()
+        }
+        return result.publisher.eraseToAnyPublisher()
     }
 
     override func postAnswer(request: AnswerRequest) -> AnyPublisher<AnswerResponse, APIError> {
-        return postAnswerResult!.publisher.eraseToAnyPublisher()
+        guard let result = postAnswerResult else {
+            return Fail(error: .invalidResponse).eraseToAnyPublisher()
+        }
+        return result.publisher.eraseToAnyPublisher()
     }
 
     override func getStories() -> AnyPublisher<[StorySummary], APIError> {
-        return getStoriesResult!.publisher.eraseToAnyPublisher()
+        guard let result = getStoriesResult else {
+            return Fail(error: .invalidResponse).eraseToAnyPublisher()
+        }
+        return result.publisher.eraseToAnyPublisher()
     }
 
     override func getStory(id: Int) -> AnyPublisher<StoryContent, APIError> {
-        return getStoryResult!.publisher.eraseToAnyPublisher()
+        guard let result = getStoryResult else {
+            return Fail(error: .invalidResponse).eraseToAnyPublisher()
+        }
+        return result.publisher.eraseToAnyPublisher()
     }
 
     override func getSnippets(sourceLang: Language?, targetLang: Language?, storyId: Int? = nil)
@@ -61,66 +82,102 @@ final class MockAPIService: APIService, @unchecked Sendable {
             SnippetList, APIError
         >
     {
-        return getSnippetsResult!.publisher.eraseToAnyPublisher()
+        guard let result = getSnippetsResult else {
+            return Fail(error: .invalidResponse).eraseToAnyPublisher()
+        }
+        return result.publisher.eraseToAnyPublisher()
     }
 
     override func getDailyQuestions(date: String) -> AnyPublisher<DailyQuestionsResponse, APIError>
     {
-        return getDailyQuestionsResult!.publisher.eraseToAnyPublisher()
+        guard let result = getDailyQuestionsResult else {
+            return Fail(error: .invalidResponse).eraseToAnyPublisher()
+        }
+        return result.publisher.eraseToAnyPublisher()
     }
 
     override func postDailyAnswer(date: String, questionId: Int, userAnswerIndex: Int)
         -> AnyPublisher<DailyAnswerResponse, APIError>
     {
-        return postDailyAnswerResult!.publisher.eraseToAnyPublisher()
+        guard let result = postDailyAnswerResult else {
+            return Fail(error: .invalidResponse).eraseToAnyPublisher()
+        }
+        return result.publisher.eraseToAnyPublisher()
     }
 
     override func generateTranslationSentence(request: TranslationPracticeGenerateRequest)
         -> AnyPublisher<TranslationPracticeSentenceResponse, APIError>
     {
-        return generateTranslationSentenceResult!.publisher.eraseToAnyPublisher()
+        guard let result = generateTranslationSentenceResult else {
+            return Fail(error: .invalidResponse).eraseToAnyPublisher()
+        }
+        return result.publisher.eraseToAnyPublisher()
     }
 
     override func submitTranslation(request: TranslationPracticeSubmitRequest) -> AnyPublisher<
         TranslationPracticeSessionResponse, APIError
     > {
-        return submitTranslationResult!.publisher.eraseToAnyPublisher()
+        guard let result = submitTranslationResult else {
+            return Fail(error: .invalidResponse).eraseToAnyPublisher()
+        }
+        return result.publisher.eraseToAnyPublisher()
     }
 
     override func getExistingTranslationSentence(language: String, level: String, direction: String)
         -> AnyPublisher<TranslationPracticeSentenceResponse, APIError>
     {
-        return getExistingTranslationSentenceResult!.publisher.eraseToAnyPublisher()
+        guard let result = getExistingTranslationSentenceResult else {
+            return Fail(error: .invalidResponse).eraseToAnyPublisher()
+        }
+        return result.publisher.eraseToAnyPublisher()
     }
 
     override func getVerbConjugations(language: String) -> AnyPublisher<
         VerbConjugationsData, APIError
     > {
-        return getVerbConjugationsResult!.publisher.eraseToAnyPublisher()
+        guard let result = getVerbConjugationsResult else {
+            return Fail(error: .invalidResponse).eraseToAnyPublisher()
+        }
+        return result.publisher.eraseToAnyPublisher()
     }
 
     override func getVerbConjugation(language: String, verb: String) -> AnyPublisher<
         VerbConjugationDetail, APIError
     > {
-        return getVerbConjugationResult!.publisher.eraseToAnyPublisher()
+        if let result = getVerbConjugationResult {
+            return result.publisher.eraseToAnyPublisher()
+        }
+        return Fail(error: .invalidResponse).eraseToAnyPublisher()
     }
 
     override func updateUser(request: UserUpdateRequest) -> AnyPublisher<User, APIError> {
-        return updateUserResult!.publisher.eraseToAnyPublisher()
+        guard let result = updateUserResult else {
+            return Fail(error: .invalidResponse).eraseToAnyPublisher()
+        }
+        return result.publisher.eraseToAnyPublisher()
     }
 
     override func getWordOfTheDay(date: String? = nil) -> AnyPublisher<
         WordOfTheDayDisplay, APIError
     > {
-        return getWordOfTheDayResult!.publisher.eraseToAnyPublisher()
+        guard let result = getWordOfTheDayResult else {
+            return Fail(error: .invalidResponse).eraseToAnyPublisher()
+        }
+        return result.publisher.eraseToAnyPublisher()
     }
 
     override func getAIConversations() -> AnyPublisher<ConversationListResponse, APIError> {
-        return getAIConversationsResult!.publisher.eraseToAnyPublisher()
+        guard let result = getAIConversationsResult else {
+            return Fail(error: .invalidResponse).eraseToAnyPublisher()
+        }
+        return result.publisher.eraseToAnyPublisher()
     }
 
     override func getBookmarkedMessages() -> AnyPublisher<BookmarkedMessagesResponse, APIError> {
-        return getBookmarkedMessagesResult!.publisher.eraseToAnyPublisher()
+        guard let result = getBookmarkedMessagesResult else {
+            return Fail(error: .invalidResponse).eraseToAnyPublisher()
+        }
+        return result.publisher.eraseToAnyPublisher()
     }
 }
 

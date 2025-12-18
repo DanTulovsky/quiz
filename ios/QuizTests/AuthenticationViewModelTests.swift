@@ -30,24 +30,34 @@ class AuthenticationViewModelTests: XCTestCase {
             wordOfDayEmailEnabled: nil, aiProvider: nil, aiModel: nil, hasApiKey: nil)
         let loginResponse = LoginResponse(success: true, message: "OK", user: user)
         mockAPIService.loginResult = .success(loginResponse)
+        let expectation = XCTestExpectation(description: "Login succeeded")
 
         // When
         viewModel.login()
 
-        // Then
-        XCTAssertTrue(viewModel.isAuthenticated)
-        XCTAssertNil(viewModel.error)
+        // Then - wait for async operation
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            XCTAssertTrue(self.viewModel.isAuthenticated)
+            XCTAssertNil(self.viewModel.error)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
     }
 
     func testLoginFailure() {
         // Given
         mockAPIService.loginResult = .failure(.invalidResponse)
+        let expectation = XCTestExpectation(description: "Login failed")
 
         // When
         viewModel.login()
 
-        // Then
-        XCTAssertFalse(viewModel.isAuthenticated)
-        XCTAssertNotNil(viewModel.error)
+        // Then - wait for async operation
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            XCTAssertFalse(self.viewModel.isAuthenticated)
+            XCTAssertNotNil(self.viewModel.error)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
     }
 }

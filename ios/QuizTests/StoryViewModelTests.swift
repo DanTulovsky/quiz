@@ -23,13 +23,18 @@ class StoryViewModelTests: XCTestCase {
         // Given
         let stories = [StorySummary(id: 1, title: "test", language: "it", status: "active")]
         mockAPIService.getStoriesResult = .success(stories)
+        let expectation = XCTestExpectation(description: "Stories fetched")
 
         // When
         viewModel.getStories()
 
-        // Then
-        XCTAssertEqual(viewModel.stories.count, 1)
-        XCTAssertEqual(viewModel.stories.first?.title, "test")
-        XCTAssertNil(viewModel.error)
+        // Then - wait for async operation
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            XCTAssertEqual(self.viewModel.stories.count, 1)
+            XCTAssertEqual(self.viewModel.stories.first?.title, "test")
+            XCTAssertNil(self.viewModel.error)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
     }
 }

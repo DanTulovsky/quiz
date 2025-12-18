@@ -28,13 +28,18 @@ class DailyViewModelTests: XCTestCase {
             id: 100, questionId: 1, question: question, isCompleted: false, userAnswerIndex: nil)
         let response = DailyQuestionsResponse(date: "2025-12-17", questions: [daily])
         mockAPIService.getDailyQuestionsResult = .success(response)
+        let expectation = XCTestExpectation(description: "Daily questions fetched")
 
         // When
         viewModel.fetchDaily()
 
-        // Then
-        XCTAssertEqual(viewModel.dailyQuestions.count, 1)
-        XCTAssertEqual(viewModel.dailyQuestions.first?.id, 100)
-        XCTAssertNil(viewModel.error)
+        // Then - wait for async operation
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            XCTAssertEqual(self.viewModel.dailyQuestions.count, 1)
+            XCTAssertEqual(self.viewModel.dailyQuestions.first?.id, 100)
+            XCTAssertNil(self.viewModel.error)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
     }
 }
