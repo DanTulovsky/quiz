@@ -123,7 +123,11 @@ struct TranslationPopupView: View {
                                     .textSelection(.enabled)
                                 Spacer()
                                 HStack(spacing: 12) {
-                                    TTSButton(text: translation.translatedText, language: targetLanguage)
+                                    TTSButton(
+                                        text: translation.translatedText,
+                                        language: targetLanguage,
+                                        voiceIdentifier: defaultVoiceForTargetLanguage()
+                                    )
                                     Button(action: {
                                         UIPasteboard.general.string = translation.translatedText
                                         copySuccess = "Translation copied"
@@ -263,6 +267,18 @@ struct TranslationPopupView: View {
             sourceLanguage: sourceLanguage,
             targetLanguage: targetLanguage
         )
+    }
+
+    private func defaultVoiceForTargetLanguage() -> String? {
+        // Find the default voice for the target language from available languages
+        let langKey = targetLanguage.lowercased()
+        if let languageInfo = viewModel.availableLanguages.first(where: {
+            $0.code.lowercased() == langKey || $0.name.lowercased() == langKey
+        }), let defaultVoice = languageInfo.ttsVoice {
+            return defaultVoice
+        }
+        // Fallback to using TTSSynthesizerManager's default voice method
+        return TTSSynthesizerManager.shared.defaultVoiceForLanguage(targetLanguage)
     }
 
     private func canSaveSnippet(translation: TranslateResponse) -> Bool {

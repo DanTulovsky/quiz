@@ -127,19 +127,22 @@ struct MainView: View {
                         Text("Practice")
                     }
 
-                    // Section 3: AI History
+                    // Section 3: History
                     NavigationView {
                         List {
-                            Section("AI History") {
+                            Section("History") {
                                 NavigationLink(destination: AIConversationListView()) {
                                     Label("AI Conversations", systemImage: "bubble.left.and.bubble.right")
                                 }
                                 NavigationLink(destination: BookmarkedMessagesView()) {
                                     Label("Bookmarked Messages", systemImage: "bookmark")
                                 }
+                                NavigationLink(destination: SnippetListView()) {
+                                    Label("Snippets", systemImage: "text.quote")
+                                }
                             }
                         }
-                        .navigationTitle("AI History")
+                        .navigationTitle("History")
                     }
                     .tabItem {
                         Image(systemName: "clock.arrow.circlepath")
@@ -150,9 +153,6 @@ struct MainView: View {
                     NavigationView {
                         List {
                             Section("Reference") {
-                                NavigationLink(destination: SnippetListView()) {
-                                    Label("Snippets", systemImage: "text.quote")
-                                }
                                 NavigationLink(destination: PhrasebookView()) {
                                     Label("Phrasebook", systemImage: "character.book.closed")
                                 }
