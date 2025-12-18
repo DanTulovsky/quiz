@@ -169,18 +169,13 @@ struct LoginView: View {
             }
             .navigationBarHidden(true)
             .onChange(of: viewModel.googleAuthURL) { newURL in
-                print("🔍 DEBUG: onChange(googleAuthURL) fired: newURL=\(newURL?.absoluteString ?? "nil"), isAuthenticated=\(viewModel.isAuthenticated), showWebAuth=\(showWebAuth)")
                 // Only show WebAuthView if URL is set, user is not already authenticated, and sheet is not already showing
                 if newURL != nil && !viewModel.isAuthenticated && !showWebAuth {
-                    print("🔍 DEBUG: Showing WebAuthView sheet")
                     isLoading = false
                     showWebAuth = true
                 } else if newURL == nil && showWebAuth {
                     // If URL is cleared while sheet is showing, dismiss it
-                    print("🔍 DEBUG: Dismissing WebAuthView sheet because URL was cleared")
                     showWebAuth = false
-                } else {
-                    print("🔍 DEBUG: Not showing WebAuthView - newURL=\(newURL != nil), isAuthenticated=\(viewModel.isAuthenticated), showWebAuth=\(showWebAuth)")
                 }
             }
             .onReceive(viewModel.$error) { error in
@@ -190,17 +185,11 @@ struct LoginView: View {
                         }
                     .sheet(isPresented: Binding(
                         get: {
-                            let shouldShow = showWebAuth && !viewModel.isAuthenticated
-                            if shouldShow != showWebAuth {
-                                print("🔍 DEBUG: sheet getter - shouldShow changed: \(showWebAuth) -> \(shouldShow), isAuthenticated=\(viewModel.isAuthenticated)")
-                            }
-                            return shouldShow
+                            showWebAuth && !viewModel.isAuthenticated
                         },
                         set: { newValue in
-                            print("🔍 DEBUG: sheet(isPresented) setter called: \(newValue), googleAuthURL=\(viewModel.googleAuthURL?.absoluteString ?? "nil"), isAuthenticated=\(viewModel.isAuthenticated)")
                             // If authenticated, force dismiss
                             if viewModel.isAuthenticated {
-                                print("🔒 DEBUG: Forcing sheet dismiss because authenticated")
                                 showWebAuth = false
                             } else {
                                 showWebAuth = newValue
@@ -217,7 +206,6 @@ struct LoginView: View {
                             // Guard: Don't process callback if already authenticated
                             // This prevents re-processing if the system dialog re-triggers after authentication
                             if viewModel.isAuthenticated {
-                                print("🔒 DEBUG: Ignoring callback - already authenticated")
                                 showWebAuth = false
                                 viewModel.googleAuthURL = nil
                                 return
@@ -260,20 +248,14 @@ struct LoginView: View {
                             }
                         },
                         onDismiss: {
-                            print("🔍 DEBUG: WebAuthView onDismiss called, isAuthenticated=\(viewModel.isAuthenticated)")
                             isLoading = false
                             showWebAuth = false
                             // Clear googleAuthURL when WebAuthView is dismissed to prevent re-triggering
-                            print("🔍 DEBUG: Clearing googleAuthURL in onDismiss, current value=\(viewModel.googleAuthURL?.absoluteString ?? "nil")")
                             viewModel.googleAuthURL = nil
-                            print("🔍 DEBUG: googleAuthURL after onDismiss clear: \(viewModel.googleAuthURL?.absoluteString ?? "nil")")
                         },
                         viewModel: viewModel)
                 } else {
                     EmptyView()
-                        .onAppear {
-                            print("🔍 DEBUG: Not creating WebAuthView - url=\(viewModel.googleAuthURL?.absoluteString ?? "nil"), isAuthenticated=\(viewModel.isAuthenticated)")
-                        }
                 }
             }
         }
@@ -287,14 +269,12 @@ struct WebAuthView: UIViewControllerRepresentable {
     @ObservedObject var viewModel: AuthenticationViewModel
 
     func makeUIViewController(context: Context) -> UIViewController {
-        print("🔍 DEBUG: makeUIViewController called - isAuthenticated=\(viewModel.isAuthenticated), existing session=\(context.coordinator.session != nil)")
         let viewController = UIViewController()
         viewController.view.backgroundColor = .clear
 
         // Guard: Don't start session if already authenticated
         // This prevents the session from restarting if the view is recreated after authentication
         if viewModel.isAuthenticated {
-            print("🔒 DEBUG: WebAuthView created but user is already authenticated, not starting session")
             DispatchQueue.main.async {
                 onDismiss()
             }
@@ -303,7 +283,6 @@ struct WebAuthView: UIViewControllerRepresentable {
 
         // Guard: Don't start a new session if one already exists
         if let existingSession = context.coordinator.session {
-            print("🔒 DEBUG: WebAuthView session already exists, cancelling old one and not creating new")
             existingSession.cancel()
             context.coordinator.session = nil
             DispatchQueue.main.async {
@@ -325,7 +304,6 @@ struct WebAuthView: UIViewControllerRepresentable {
             completionHandler: { callbackURL, error in
                 DispatchQueue.main.async {
                     if let error = error {
-                        print("🔍 DEBUG: ASWebAuthenticationSession error received, cancelling session")
                         // Clear session reference on error
                         coordinator.session = nil
 
@@ -342,7 +320,6 @@ struct WebAuthView: UIViewControllerRepresentable {
 
                     if let callbackURL = callbackURL {
                         print("✅ Received callback URL: \(callbackURL.absoluteString)")
-                        print("🔍 DEBUG: Cancelling ASWebAuthenticationSession after receiving callback")
                         // Cancel and clear the session immediately after receiving callback to prevent re-triggering
                         let sessionToCancel = coordinator.session
                         coordinator.session = nil
@@ -357,7 +334,6 @@ struct WebAuthView: UIViewControllerRepresentable {
                         }
                     } else {
                         print("⚠️ No callback URL received")
-                        print("🔍 DEBUG: Cancelling ASWebAuthenticationSession - no callback URL")
                         // Cancel the session if no callback URL
                         let sessionToCancel = coordinator.session
                         coordinator.session = nil
@@ -376,10 +352,8 @@ struct WebAuthView: UIViewControllerRepresentable {
 
         // Start the session
         DispatchQueue.main.async {
-            print("🔍 DEBUG: About to start ASWebAuthenticationSession - isAuthenticated=\(viewModel.isAuthenticated), session in coordinator=\(coordinator.session != nil)")
             // Double-check authentication state before starting
             if viewModel.isAuthenticated {
-                print("🔒 DEBUG: Authentication state changed, cancelling session before start")
                 coordinator.session = nil
                 session.cancel()
                 onDismiss()
@@ -390,9 +364,6 @@ struct WebAuthView: UIViewControllerRepresentable {
                 print("❌ Failed to start ASWebAuthenticationSession")
                 coordinator.session = nil
                 onDismiss()
-            } else {
-                print("🔍 DEBUG: ASWebAuthenticationSession started successfully at \(Date())")
-                print("🔍 DEBUG: Stack trace: \(Thread.callStackSymbols.prefix(5).joined(separator: "\n"))")
             }
         }
 
@@ -400,18 +371,14 @@ struct WebAuthView: UIViewControllerRepresentable {
     }
 
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
-        print("🔍 DEBUG: updateUIViewController called - isAuthenticated=\(viewModel.isAuthenticated), session exists=\(context.coordinator.session != nil)")
         // If authentication state changed, cancel the session immediately
         if viewModel.isAuthenticated {
             if let session = context.coordinator.session {
-                print("🔒 DEBUG: Authentication completed, cancelling session in updateUIViewController")
                 session.cancel()
                 context.coordinator.session = nil
                 DispatchQueue.main.async {
                     onDismiss()
                 }
-            } else {
-                print("🔍 DEBUG: updateUIViewController - authenticated but no session to cancel")
             }
         }
     }

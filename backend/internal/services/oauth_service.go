@@ -143,7 +143,6 @@ func (s *OAuthService) GetGoogleAuthURL(ctx context.Context, state string, isIOS
 	} else {
 		// For web clients, include redirect_uri in authorization request
 		params.Set("redirect_uri", s.config.GoogleOAuthRedirectURL)
-		redirectURI = s.config.GoogleOAuthRedirectURL
 	}
 	params.Set("response_type", "code")
 	params.Set("scope", "openid email profile")

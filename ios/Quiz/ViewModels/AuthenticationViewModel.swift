@@ -118,11 +118,8 @@ class AuthenticationViewModel: ObservableObject {
     func initiateGoogleLogin() {
         // Don't initiate Google login if already authenticated
         guard !isAuthenticated else {
-            print("🔒 DEBUG: initiateGoogleLogin() called but already authenticated (isAuthenticated=\(isAuthenticated))")
             return
         }
-
-        print("🔍 DEBUG: initiateGoogleLogin() starting, isAuthenticated=\(isAuthenticated), googleAuthURL=\(googleAuthURL?.absoluteString ?? "nil")")
 
         let publisher = apiService.initiateGoogleLogin()
         publisher
@@ -131,26 +128,19 @@ class AuthenticationViewModel: ObservableObject {
                 guard let self = self else { return }
                 switch completion {
                 case .failure(let error):
-                    print("❌ DEBUG: initiateGoogleLogin() failed: \(error.localizedDescription)")
                     self.error = error
                 case .finished:
-                    print("✅ DEBUG: initiateGoogleLogin() publisher finished")
                     break
                 }
             }, receiveValue: { [weak self] response in
                 guard let self = self else { return }
                 // Double-check we're still not authenticated before setting URL
                 guard !self.isAuthenticated else {
-                    print("⚠️ DEBUG: Authentication state changed during Google login initiation, skipping URL set (isAuthenticated=\(self.isAuthenticated))")
                     return
                 }
                 self.error = nil
                 if let url = URL(string: response.authUrl) {
-                    print("🔍 DEBUG: Setting googleAuthURL to: \(url.absoluteString), isAuthenticated=\(self.isAuthenticated)")
                     self.googleAuthURL = url
-                    print("🔍 DEBUG: googleAuthURL after setting: \(self.googleAuthURL?.absoluteString ?? "nil")")
-                } else {
-                    print("❌ DEBUG: Failed to create URL from authUrl: \(response.authUrl)")
                 }
             })
             .store(in: &cancellables)
@@ -160,7 +150,6 @@ class AuthenticationViewModel: ObservableObject {
         // Guard: Don't process callback if already authenticated
         // This prevents re-processing if the system dialog re-triggers after authentication
         if isAuthenticated {
-            print("🔒 DEBUG: Ignoring Google callback - already authenticated")
             googleAuthURL = nil
             return
         }
@@ -188,9 +177,7 @@ class AuthenticationViewModel: ObservableObject {
                     self.error = error
                     self.isAuthenticated = false
                     // Clear googleAuthURL on error to prevent re-triggering
-                    print("🔍 DEBUG: Clearing googleAuthURL on error, isAuthenticated=\(self.isAuthenticated), current googleAuthURL=\(self.googleAuthURL?.absoluteString ?? "nil")")
                     self.googleAuthURL = nil
-                    print("🔍 DEBUG: googleAuthURL after clearing on error: \(self.googleAuthURL?.absoluteString ?? "nil")")
                     // Remove from processed codes on error so it can be retried
                     self.processedCodes.remove(codeToProcess)
                 case .finished:
@@ -207,9 +194,7 @@ class AuthenticationViewModel: ObservableObject {
 
                 // Clear googleAuthURL immediately after callback to prevent re-triggering
                 // This must happen before any async operations to prevent race conditions
-                print("🔍 DEBUG: Clearing googleAuthURL after callback, isAuthenticated=\(self.isAuthenticated), current googleAuthURL=\(self.googleAuthURL?.absoluteString ?? "nil")")
                 self.googleAuthURL = nil
-                print("🔍 DEBUG: googleAuthURL after clearing: \(self.googleAuthURL?.absoluteString ?? "nil")")
 
                 // Verify auth status to ensure session cookies are working
                 if response.success {
@@ -225,9 +210,7 @@ class AuthenticationViewModel: ObservableObject {
                             self.isAuthenticated = authResponse.authenticated
                             self.user = authResponse.user
                             // Ensure googleAuthURL is still cleared (defensive check)
-                            print("🔍 DEBUG: Defensive check - clearing googleAuthURL after auth status, current value=\(self.googleAuthURL?.absoluteString ?? "nil")")
                             self.googleAuthURL = nil
-                            print("🔍 DEBUG: googleAuthURL after defensive clear: \(self.googleAuthURL?.absoluteString ?? "nil")")
                         })
                         .store(in: &self.cancellables)
                 }
