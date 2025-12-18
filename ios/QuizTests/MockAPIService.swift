@@ -3,7 +3,7 @@ import Foundation
 
 @testable import Quiz
 
-class MockAPIService: APIService {
+final class MockAPIService: APIService, @unchecked Sendable {
     // Result properties
     var loginResult: Result<LoginResponse, APIError>?
     var signupResult: Result<SuccessResponse, APIError>?
