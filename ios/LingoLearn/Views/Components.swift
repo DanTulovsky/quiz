@@ -1,5 +1,6 @@
 import Combine
 import SwiftUI
+import MediaPlayer
 
 struct BadgeView: View {
     let text: String
@@ -32,6 +33,32 @@ import AVFoundation
 
     override init() {
         super.init()
+        setupRemoteCommandCenter()
+    }
+
+    private func setupRemoteCommandCenter() {
+        let commandCenter = MPRemoteCommandCenter.shared()
+
+        commandCenter.playCommand.addTarget { [weak self] _ in
+            Task { @MainActor in
+                self?.player?.play()
+            }
+            return .success
+        }
+
+        commandCenter.pauseCommand.addTarget { [weak self] _ in
+            Task { @MainActor in
+                self?.player?.pause()
+            }
+            return .success
+        }
+
+        commandCenter.stopCommand.addTarget { [weak self] _ in
+            Task { @MainActor in
+                self?.stop()
+            }
+            return .success
+        }
     }
 
     func speak(_ text: String, language: String, voiceIdentifier: String? = nil) {
@@ -54,14 +81,12 @@ import AVFoundation
             effectiveVoice = defaultVoiceForLanguage(language)
         }
 
-        print("Requested TTS for text: \"\(text.prefix(20))...\", language: \(language), voice: \(effectiveVoice)")
-
         // Configure AVAudioSession for background playback
         do {
             try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
             try AVAudioSession.sharedInstance().setActive(true)
         } catch {
-            print("Failed to configure AVAudioSession: \(error)")
+            handleError("Failed to configure audio session.")
         }
 
         // Try backend TTS
@@ -70,11 +95,9 @@ import AVFoundation
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { [weak self] completion in
                 if case .failure(let error) = completion {
-                    print("Backend TTS initialization failed: \(error).")
                     self?.handleError("Failed to initialize audio: \(error.localizedDescription)")
                 }
             }, receiveValue: { [weak self] response in
-                print("Backend TTS initialized. Stream ID: \(response.streamId), Token: \(response.token ?? "none")")
                 self?.playStream(streamId: response.streamId, token: response.token)
             })
             .store(in: &cancellables)
@@ -82,7 +105,6 @@ import AVFoundation
 
     private func playStream(streamId: String, token: String?) {
         let url = APIService.shared.streamURL(for: streamId, token: token)
-        print("Downloading TTS audio from URL: \(url.absoluteString)")
 
         // Create request with authentication cookies
         var request = URLRequest(url: url)
@@ -94,7 +116,6 @@ import AVFoundation
             guard let self = self else { return }
 
             if let error = error {
-                print("Failed to download TTS audio: \(error.localizedDescription)")
                 DispatchQueue.main.async {
                     self.handleError("Network error: \(error.localizedDescription)")
                 }
@@ -109,7 +130,6 @@ import AVFoundation
             }
 
             guard (200...299).contains(httpResponse.statusCode) else {
-                print("Server returned status \(httpResponse.statusCode)")
                 DispatchQueue.main.async {
                     self.handleError("Server error \(httpResponse.statusCode)")
                 }
@@ -117,14 +137,11 @@ import AVFoundation
             }
 
             guard let audioData = data, !audioData.isEmpty else {
-                print("Received empty audio data")
                 DispatchQueue.main.async {
                     self.handleError("No audio data received.")
                 }
                 return
             }
-
-            print("Downloaded \(audioData.count) bytes of audio data. Playing...")
 
             // Play the audio data on the main thread
             DispatchQueue.main.async {
@@ -145,19 +162,24 @@ import AVFoundation
             let playerItem = AVPlayerItem(asset: asset)
 
             // Listen for completion
-            NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: playerItem, queue: .main) { [weak self] _ in
-                Task { @MainActor in
-                    self?.currentlySpeakingText = nil
+            NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: playerItem, queue: .main) { _ in
+                Task { @MainActor [weak self] in
+                    guard let self = self else { return }
+                    self.currentlySpeakingText = nil
+                    self.clearNowPlayingInfo()
                     // Clean up temp file
                     try? FileManager.default.removeItem(at: tempFile)
                 }
             }
 
             // Listen for errors
-            NotificationCenter.default.addObserver(forName: .AVPlayerItemFailedToPlayToEndTime, object: playerItem, queue: .main) { [weak self] _ in
-                print("AVPlayerItem failed to play to end.")
-                self?.handleError("Audio playback failed.")
-                try? FileManager.default.removeItem(at: tempFile)
+            NotificationCenter.default.addObserver(forName: .AVPlayerItemFailedToPlayToEndTime, object: playerItem, queue: .main) { _ in
+                Task { @MainActor [weak self] in
+                    guard let self = self else { return }
+                    self.handleError("Audio playback failed.")
+                    self.clearNowPlayingInfo()
+                    try? FileManager.default.removeItem(at: tempFile)
+                }
             }
 
             let player = AVPlayer(playerItem: playerItem)
@@ -168,18 +190,55 @@ import AVFoundation
             playerItem.addObserver(self, forKeyPath: "status", options: [.new, .initial], context: nil)
 
             player.play()
-            print("Audio playback started")
+
+            // Update Now Playing info for lock screen
+            Task {
+                await updateNowPlayingInfo(for: playerItem)
+            }
         } catch {
-            print("Failed to save or play audio: \(error.localizedDescription)")
             handleError("Playback error: \(error.localizedDescription)")
         }
+    }
+
+    private func updateNowPlayingInfo(for playerItem: AVPlayerItem) async {
+        var nowPlayingInfo = [String: Any]()
+
+        // Set title to a preview of the text being spoken
+        if let text = currentlySpeakingText {
+            let preview = text.prefix(50)
+            nowPlayingInfo[MPMediaItemPropertyTitle] = String(preview) + (text.count > 50 ? "..." : "")
+        } else {
+            nowPlayingInfo[MPMediaItemPropertyTitle] = "Text to Speech"
+        }
+
+        nowPlayingInfo[MPMediaItemPropertyArtist] = "LingoLearn"
+
+        // Set duration if available using modern async API
+        do {
+            let duration = try await playerItem.asset.load(.duration)
+            if duration.seconds.isFinite {
+                nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = duration.seconds
+            }
+        } catch {
+            // Duration not available, continue without it
+        }
+
+        nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = 0
+        nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = 1.0
+
+        await MainActor.run {
+            MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+        }
+    }
+
+    private func clearNowPlayingInfo() {
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
     }
 
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == "status", let playerItem = object as? AVPlayerItem {
             if playerItem.status == .failed {
                 if let error = playerItem.error {
-                    print("AVPlayerItem status failed: \(error.localizedDescription).")
                     handleError("Failed to load audio: \(error.localizedDescription)")
                 } else {
                     handleError("Failed to load audio stream.")
@@ -218,12 +277,11 @@ import AVFoundation
         player = nil
         currentlySpeakingText = nil
         cancellables.removeAll()
+        clearNowPlayingInfo()
 
         do {
             try AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
-        } catch {
-            print("Failed to deactivate AVAudioSession: \(error)")
-        }
+        } catch { }
     }
 }
 

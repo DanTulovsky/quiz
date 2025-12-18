@@ -156,9 +156,9 @@ struct PhrasebookCategoryView: View {
                                         Spacer()
 
                                         HStack(spacing: 15) {
-                                            TTSButton(text: word.term, language: authViewModel.user?.preferredLanguage ?? "italian")
+                                            TTSButton(text: word.translations[languageCode] ?? word.term, language: authViewModel.user?.preferredLanguage ?? "italian")
                                             Button(action: {
-                                                UIPasteboard.general.string = word.term
+                                                UIPasteboard.general.string = word.translations[languageCode] ?? word.term
                                             }) {
                                                 Image(systemName: "doc.on.doc")
                                                     .foregroundColor(.blue)

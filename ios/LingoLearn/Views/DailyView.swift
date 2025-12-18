@@ -3,6 +3,8 @@ import SwiftUI
 struct DailyView: View {
     @StateObject private var viewModel = DailyViewModel()
     @EnvironmentObject var authViewModel: AuthenticationViewModel
+    @State private var reportReason = ""
+    @State private var selectedConfidence: Int? = nil
 
     var body: some View {
         ScrollView {
@@ -22,20 +24,11 @@ struct DailyView: View {
 
                         if let response = viewModel.answerResponse {
                             feedbackSection(response)
-
-                            Button(action: {
-                                viewModel.nextQuestion()
-                            }) {
-                                Text("Next Question")
-                                    .font(.headline)
-                                    .frame(maxWidth: .infinity)
-                                    .padding()
-                                    .background(Color.blue)
-                                    .foregroundColor(.white)
-                                    .cornerRadius(12)
-                            }
-                            .padding(.top, 10)
                         }
+
+                        actionButtons()
+
+                        footerButtons()
                     } else if !viewModel.dailyQuestions.isEmpty {
                         completionView
                     }
@@ -59,8 +52,13 @@ struct DailyView: View {
                     }
             }
         }
-        .navigationTitle("Daily Challenge")
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $viewModel.showReportModal) {
+            reportSheet
+        }
+        .sheet(isPresented: $viewModel.showMarkKnownModal) {
+            markKnownSheet
+        }
         .onAppear {
             viewModel.fetchDaily()
         }
@@ -117,6 +115,19 @@ struct DailyView: View {
                 Spacer()
             }
 
+            if let passage = stringValue(question.content["passage"]) {
+                VStack(alignment: .trailing) {
+                    TTSButton(text: passage, language: question.language)
+                    Text(passage)
+                        .font(.body)
+                        .lineSpacing(4)
+                }
+                .padding()
+                .background(Color.gray.opacity(0.05))
+                .cornerRadius(12)
+                .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.gray.opacity(0.2), lineWidth: 1))
+            }
+
             let sentence = stringValue(question.content["sentence"])
             let questionText = stringValue(question.content["question"]) ?? stringValue(question.content["prompt"])
 
@@ -158,32 +169,42 @@ struct DailyView: View {
     private func optionButton(option: String, index: Int) -> some View {
         let isSelected = viewModel.selectedAnswerIndex == index
         let isCorrect = viewModel.answerResponse?.correctAnswerIndex == index
+        let isUserIncorrect = viewModel.answerResponse != nil && viewModel.answerResponse?.userAnswerIndex == index && !isCorrect
         let showResults = viewModel.answerResponse != nil
 
         return Button(action: {
             if !showResults {
-                viewModel.submitAnswer(index: index)
+                viewModel.selectedAnswerIndex = index
             }
         }) {
             HStack {
-                if showResults && isCorrect {
-                    Image(systemName: "checkmark")
-                        .foregroundColor(.green)
+                if showResults {
+                    if isCorrect {
+                        Image(systemName: "check.circle.fill")
+                            .foregroundColor(.green)
+                    } else if isUserIncorrect {
+                        Image(systemName: "x.circle.fill")
+                            .foregroundColor(.red)
+                    }
                 }
 
                 Text(option)
                     .font(.body)
-                    .foregroundColor(showResults ? (isCorrect ? .green : .gray.opacity(0.5)) : (isSelected ? .white : .primary))
+                    .foregroundColor(isUserIncorrect ? .red : (isCorrect ? .green : (isSelected ? .white : .primary)))
 
                 Spacer()
             }
             .padding()
             .frame(maxWidth: .infinity)
-            .background(isSelected && !showResults ? Color.blue : Color.gray.opacity(0.05))
+            .background(
+                isUserIncorrect ? Color.red.opacity(0.1) :
+                (isCorrect ? Color.green.opacity(0.1) :
+                (isSelected ? Color.blue : Color.blue.opacity(0.05)))
+            )
             .cornerRadius(12)
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(isSelected && !showResults ? Color.blue : Color.clear, lineWidth: 1)
+                    .stroke(isUserIncorrect ? Color.red : (isCorrect ? Color.green : Color.blue.opacity(0.2)), lineWidth: 1)
             )
         }
         .disabled(showResults)
@@ -273,6 +294,109 @@ struct DailyView: View {
             return Text("\(Text(before))\(Text(word).foregroundColor(.blue).fontWeight(.bold))\(Text(after))")
         } else {
             return Text(fullText)
+        }
+    }
+
+    @ViewBuilder
+    private func actionButtons() -> some View {
+        if let _ = viewModel.answerResponse {
+            Button("Next Question") {
+                viewModel.nextQuestion()
+            }
+            .buttonStyle(.borderedProminent)
+            .controlSize(.large)
+            .frame(maxWidth: .infinity)
+        } else {
+            Button("Submit Answer") {
+                if let idx = viewModel.selectedAnswerIndex {
+                    viewModel.submitAnswer(index: idx)
+                }
+            }
+            .buttonStyle(.borderedProminent)
+            .controlSize(.large)
+            .disabled(viewModel.selectedAnswerIndex == nil || viewModel.isSubmitting)
+            .frame(maxWidth: .infinity)
+        }
+    }
+
+    @ViewBuilder
+    private func footerButtons() -> some View {
+        HStack(spacing: 20) {
+            Button(action: { viewModel.showReportModal = true }) {
+                Label(viewModel.isReported ? "Reported" : "Report issue", systemImage: "flag")
+                    .font(.caption)
+            }
+            .disabled(viewModel.isReported)
+            .foregroundColor(.secondary)
+
+            Spacer()
+
+            Button(action: { viewModel.showMarkKnownModal = true }) {
+                Label("Adjust frequency", systemImage: "slider.horizontal.3")
+                    .font(.caption)
+            }
+            .foregroundColor(.secondary)
+        }
+        .padding(.top, 10)
+    }
+
+    private var reportSheet: some View {
+        NavigationView {
+            Form {
+                Section(header: Text("Why are you reporting this question?")) {
+                    TextEditor(text: $reportReason)
+                        .frame(minHeight: 100)
+                }
+
+                Button("Submit Report") {
+                    viewModel.reportQuestion(reason: reportReason)
+                }
+                .disabled(viewModel.isSubmittingAction)
+            }
+            .navigationTitle("Report Issue")
+            .navigationBarItems(trailing: Button("Cancel") { viewModel.showReportModal = false })
+        }
+    }
+
+    private var markKnownSheet: some View {
+        NavigationView {
+            VStack(spacing: 20) {
+                Text("Choose how often you want to see this question in future quizzes: 1–2 show it more, 3 no change, 4–5 show it less.")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .padding()
+
+                Text("How confident are you about this question?")
+                    .font(.headline)
+
+                HStack(spacing: 10) {
+                    ForEach(1...5, id: \.self) { level in
+                        Button("\(level)") {
+                            selectedConfidence = level
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(selectedConfidence == level ? Color.teal : Color.teal.opacity(0.1))
+                        .foregroundColor(selectedConfidence == level ? .white : .teal)
+                        .cornerRadius(12)
+                    }
+                }
+                .padding(.horizontal)
+
+                Spacer()
+
+                Button("Save Preference") {
+                    if let confidence = selectedConfidence {
+                        viewModel.markQuestionKnown(confidence: confidence)
+                    }
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.teal)
+                .disabled(selectedConfidence == nil || viewModel.isSubmittingAction)
+                .padding()
+            }
+            .navigationTitle("Adjust Frequency")
+            .navigationBarItems(trailing: Button("Cancel") { viewModel.showMarkKnownModal = false })
         }
     }
 }

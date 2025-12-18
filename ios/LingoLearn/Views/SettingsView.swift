@@ -9,6 +9,51 @@ struct SettingsView: View {
     @State private var email = ""
     @State private var timezone = ""
 
+    // Common timezones list
+    private let commonTimezones = [
+        "America/New_York",
+        "America/Chicago",
+        "America/Denver",
+        "America/Los_Angeles",
+        "America/Anchorage",
+        "Pacific/Honolulu",
+        "Europe/London",
+        "Europe/Paris",
+        "Europe/Berlin",
+        "Europe/Rome",
+        "Europe/Madrid",
+        "Europe/Amsterdam",
+        "Europe/Brussels",
+        "Europe/Vienna",
+        "Europe/Zurich",
+        "Europe/Stockholm",
+        "Europe/Oslo",
+        "Europe/Copenhagen",
+        "Europe/Helsinki",
+        "Europe/Athens",
+        "Europe/Istanbul",
+        "Europe/Moscow",
+        "Asia/Dubai",
+        "Asia/Kolkata",
+        "Asia/Bangkok",
+        "Asia/Singapore",
+        "Asia/Hong_Kong",
+        "Asia/Tokyo",
+        "Asia/Seoul",
+        "Asia/Shanghai",
+        "Australia/Sydney",
+        "Australia/Melbourne",
+        "Pacific/Auckland",
+        "America/Toronto",
+        "America/Vancouver",
+        "America/Mexico_City",
+        "America/Sao_Paulo",
+        "America/Buenos_Aires",
+        "Africa/Cairo",
+        "Africa/Johannesburg",
+        "UTC"
+    ]
+
     // Learning Preferences State
     @State private var learningLanguage: String = "italian"
     @State private var currentLevel: String = "A1"
@@ -35,6 +80,7 @@ struct SettingsView: View {
 
     // Theme State
     @AppStorage("app_theme") private var appTheme: String = "system"
+    @AppStorage("app_font_size") private var appFontSize: String = "M"
 
 
     var body: some View {
@@ -45,14 +91,40 @@ struct SettingsView: View {
                         .padding(.top, 50)
                 } else {
                     settingsSection(title: "Theme", icon: "paintbrush", id: "theme") {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Choose your preferred appearance").font(.caption).foregroundColor(.secondary)
-                            Picker("Theme", selection: $appTheme) {
-                                Text("System").tag("system")
-                                Text("Light").tag("light")
-                                Text("Dark").tag("dark")
+                        VStack(alignment: .leading, spacing: 20) {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Choose your preferred color theme and mode").font(.caption).foregroundColor(.secondary)
+
+                                Toggle(isOn: Binding(
+                                    get: { appTheme == "light" || (appTheme == "system" && UITraitCollection.current.userInterfaceStyle == .light) },
+                                    set: { newValue in
+                                        appTheme = newValue ? "light" : "dark"
+                                    }
+                                )) {
+                                    Text("Light mode")
+                                        .font(.subheadline)
+                                }
                             }
-                            .pickerStyle(.segmented)
+
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Font Size").font(.subheadline).fontWeight(.medium)
+                                HStack(spacing: 12) {
+                                    ForEach(["S", "M", "L", "XL"], id: \.self) { size in
+                                        Button(action: {
+                                            appFontSize = size
+                                        }) {
+                                            Text(size)
+                                                .font(.subheadline)
+                                                .fontWeight(appFontSize == size ? .bold : .regular)
+                                                .frame(maxWidth: .infinity)
+                                                .padding(.vertical, 12)
+                                                .background(appFontSize == size ? Color.blue : Color.blue.opacity(0.1))
+                                                .foregroundColor(appFontSize == size ? .white : .blue)
+                                                .cornerRadius(8)
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
 
@@ -60,7 +132,21 @@ struct SettingsView: View {
                         VStack(alignment: .leading, spacing: 15) {
                             settingsField(label: "Username", text: $username, required: true)
                             settingsField(label: "Email", text: $email, required: true)
-                            settingsField(label: "Timezone", text: $timezone)
+
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Timezone").font(.subheadline).fontWeight(.medium)
+                                Picker("Timezone", selection: $timezone) {
+                                    Text("Select Timezone").tag("")
+                                    ForEach(commonTimezones, id: \.self) { tz in
+                                        Text(tz).tag(tz)
+                                    }
+                                }
+                                .pickerStyle(.menu)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(8)
+                                .background(Color(.secondarySystemBackground))
+                                .cornerRadius(8)
+                            }
                         }
                     }
 
@@ -154,9 +240,22 @@ struct SettingsView: View {
                     settingsSection(title: "Notifications", icon: "bell", id: "notifications") {
                         VStack(alignment: .leading, spacing: 15) {
                             Toggle(isOn: $dailyReminderEnabled) {
-                                Label("App Daily Reminders", systemImage: "app.badge")
+                                Text("Daily Email Reminders")
+                                    .font(.subheadline)
                             }
-                            Text("Receive local push notifications to stay on track.").font(.caption).foregroundColor(.secondary)
+                            Text("Stay on track with your learning goals.").font(.caption).foregroundColor(.secondary)
+
+                            Button(action: { viewModel.sendTestEmail() }) {
+                                Text("Test Email")
+                                    .font(.subheadline)
+                                    .fontWeight(.medium)
+                                    .foregroundColor(.blue)
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 12)
+                                    .background(Color.blue.opacity(0.1))
+                                    .cornerRadius(10)
+                            }
+                            .disabled(email.isEmpty)
                         }
                     }
 

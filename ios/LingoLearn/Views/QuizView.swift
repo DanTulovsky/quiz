@@ -109,7 +109,7 @@ struct QuizView: View {
                     }
             }
         }
-        .navigationTitle(viewModel.question?.type.replacingOccurrences(of: "_", with: " ").capitalized ?? (viewModel.questionType?.replacingOccurrences(of: "_", with: " ").capitalized ?? "Quiz"))
+        .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $viewModel.showReportModal) {
             reportSheet
         }

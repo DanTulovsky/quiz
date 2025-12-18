@@ -6,7 +6,7 @@ struct AIConversationDetailView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 20) {
+            VStack(spacing: 12) {
                 if viewModel.isLoading && viewModel.selectedConversation == nil {
                     ProgressView()
                         .padding(.top, 50)
@@ -46,25 +46,51 @@ struct MessageBubble: View {
     }
 
     var body: some View {
-        HStack {
-            if isUser { Spacer() }
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text(isUser ? "YOU" : "AI")
+                    .font(.caption)
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(isUser ? Color.blue : Color.green)
+                    .cornerRadius(8)
 
-            VStack(alignment: isUser ? .trailing : .leading, spacing: 4) {
-                Text(message.content.text)
-                    .padding(12)
-                    .background(isUser ? Color.blue : Color(.secondarySystemBackground))
-                    .foregroundColor(isUser ? .white : .primary)
-                    .cornerRadius(16)
-                    .fixedSize(horizontal: false, vertical: true)
+                Text(message.createdAt, style: .date)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
 
                 Text(message.createdAt, style: .time)
-                    .font(.caption2)
+                    .font(.subheadline)
                     .foregroundColor(.secondary)
-                    .padding(.horizontal, 4)
+
+                Spacer()
+
+                if !isUser {
+                    Button(action: {
+                        // TODO: Implement bookmark functionality
+                    }) {
+                        Label("Bookmark", systemImage: "bookmark")
+                            .font(.caption)
+                            .foregroundColor(.blue)
+                    }
+                }
             }
 
-            if !isUser { Spacer() }
+            Text(message.content.text)
+                .font(.body)
+                .foregroundColor(.primary)
+                .fixedSize(horizontal: false, vertical: true)
         }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(isUser ? Color.blue.opacity(0.1) : Color(.systemBackground))
+        .cornerRadius(12)
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+        )
     }
 }
 

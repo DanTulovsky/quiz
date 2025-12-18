@@ -216,7 +216,25 @@ struct SnippetList: Codable {
     let snippets: [Snippet]
 }
 
-struct StorySummary: Codable {
+struct CreateSnippetRequest: Codable {
+    let originalText: String
+    let translatedText: String
+    let sourceLanguage: String
+    let targetLanguage: String
+    let context: String?
+    let questionId: Int?
+
+    enum CodingKeys: String, CodingKey {
+        case originalText = "original_text"
+        case translatedText = "translated_text"
+        case sourceLanguage = "source_language"
+        case targetLanguage = "target_language"
+        case context
+        case questionId = "question_id"
+    }
+}
+
+struct StorySummary: Codable, Identifiable {
     let id: Int
     let title: String
     let language: String
@@ -578,6 +596,10 @@ struct ConversationListResponse: Codable {
 struct BookmarkedMessagesResponse: Codable {
     let messages: [ChatMessage]
     let total: Int
+}
+
+struct BookmarkStatusResponse: Codable {
+    let bookmarked: Bool
 }
 
 struct ReportQuestionRequest: Codable {

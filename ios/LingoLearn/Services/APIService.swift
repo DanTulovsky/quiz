@@ -194,6 +194,16 @@ class APIService {
             .eraseToAnyPublisher()
     }
 
+    func createSnippet(request: CreateSnippetRequest) -> AnyPublisher<Snippet, APIError> {
+        let url = baseURL.appendingPathComponent("snippets")
+        var urlRequest = authenticatedRequest(for: url, method: "POST")
+        urlRequest.httpBody = try? JSONEncoder().encode(request)
+        return URLSession.shared.dataTaskPublisher(for: urlRequest)
+            .mapError { .requestFailed($0) }
+            .flatMap { self.handleResponse($0.data, $0.response) }
+            .eraseToAnyPublisher()
+    }
+
     func getDailyQuestions(date: String) -> AnyPublisher<DailyQuestionsResponse, APIError> {
         let url = baseURL.appendingPathComponent("daily/questions/\(date)")
         let urlRequest = authenticatedRequest(for: url)
@@ -297,6 +307,17 @@ class APIService {
     func getBookmarkedMessages() -> AnyPublisher<BookmarkedMessagesResponse, APIError> {
         let url = baseURL.appendingPathComponent("ai/bookmarks")
         let urlRequest = authenticatedRequest(for: url)
+        return URLSession.shared.dataTaskPublisher(for: urlRequest)
+            .mapError { .requestFailed($0) }
+            .flatMap { self.handleResponse($0.data, $0.response) }
+            .eraseToAnyPublisher()
+    }
+
+    func toggleBookmark(conversationId: String, messageId: String) -> AnyPublisher<BookmarkStatusResponse, APIError> {
+        let url = baseURL.appendingPathComponent("ai/conversations/bookmark")
+        var urlRequest = authenticatedRequest(for: url, method: "PUT")
+        let body = ["conversation_id": conversationId, "message_id": messageId]
+        urlRequest.httpBody = try? JSONSerialization.data(withJSONObject: body)
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { self.handleResponse($0.data, $0.response) }
@@ -472,9 +493,6 @@ class APIService {
         var urlRequest = authenticatedRequest(for: url, method: "POST")
         if let body = try? JSONEncoder().encode(request) {
             urlRequest.httpBody = body
-            if let bodyString = String(data: body, encoding: .utf8) {
-                print("TTS Init Request: \(bodyString)")
-            }
         }
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
@@ -506,9 +524,6 @@ class APIService {
             .flatMap { data, response -> AnyPublisher<[EdgeTTSVoiceInfo], APIError> in
                 guard let httpResponse = response as? HTTPURLResponse else { return Fail(error: .invalidResponse).eraseToAnyPublisher() }
 
-                let jsonStr = String(data: data, encoding: .utf8) ?? "binary data"
-                print("Voices response for \(language): \(jsonStr)")
-
                 if (200...299).contains(httpResponse.statusCode) {
                     let decoder = JSONDecoder()
 
@@ -535,7 +550,6 @@ class APIService {
                         return Just(voices).setFailureType(to: APIError.self).eraseToAnyPublisher()
                     }
 
-                    print("Voices decoding failed.")
                     return Fail(error: .decodingFailed(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to decode voices response"]))).eraseToAnyPublisher()
                 }
                 return Fail(error: .invalidResponse).eraseToAnyPublisher()

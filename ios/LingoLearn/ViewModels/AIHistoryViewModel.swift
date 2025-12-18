@@ -87,4 +87,21 @@ class AIHistoryViewModel: ObservableObject {
             })
             .store(in: &cancellables)
     }
+
+    func toggleBookmark(conversationId: String, messageId: String) {
+        apiService.toggleBookmark(conversationId: conversationId, messageId: messageId)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { [weak self] completion in
+                if case .failure(let error) = completion { self?.error = error }
+            }, receiveValue: { [weak self] response in
+                if response.bookmarked {
+                    // Message was bookmarked - refresh bookmarks list
+                    self?.fetchBookmarks()
+                } else {
+                    // Message was unbookmarked - remove from local list
+                    self?.bookmarks.removeAll(where: { $0.id == messageId })
+                }
+            })
+            .store(in: &cancellables)
+    }
 }

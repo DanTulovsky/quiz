@@ -3,7 +3,7 @@ import SwiftUI
 struct VerbConjugationView: View {
     @StateObject private var viewModel = VerbViewModel()
     @EnvironmentObject var authViewModel: AuthenticationViewModel
-    
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
@@ -12,7 +12,7 @@ struct VerbConjugationView: View {
                     Image(systemName: "book.closed.fill")
                         .font(.largeTitle)
                         .foregroundColor(.blue)
-                    
+
                     VStack(alignment: .leading) {
                         Text("Verb Conjugations")
                             .font(.title)
@@ -23,13 +23,13 @@ struct VerbConjugationView: View {
                     }
                 }
                 .padding(.horizontal)
-                
+
                 // Stats and Expand All
                 HStack {
                     BadgeView(text: "\(viewModel.verbs.count) VERBS", color: .blue)
-                    
+
                     Spacer()
-                    
+
                     Button(action: {
                         if viewModel.expandedTenses.count == (viewModel.selectedVerbDetail?.tenses.count ?? 0) {
                             viewModel.collapseAll()
@@ -49,7 +49,7 @@ struct VerbConjugationView: View {
                     }
                 }
                 .padding(.horizontal)
-                
+
                 // Verb Picker
                 Menu {
                     Picker("Select Verb", selection: $viewModel.selectedVerb) {
@@ -79,7 +79,7 @@ struct VerbConjugationView: View {
                     )
                 }
                 .padding(.horizontal)
-                
+
                 // Tenses List
                 if viewModel.isLoading && viewModel.selectedVerbDetail == nil {
                     ProgressView()
@@ -87,7 +87,11 @@ struct VerbConjugationView: View {
                 } else if let detail = viewModel.selectedVerbDetail {
                     VStack(spacing: 0) {
                         ForEach(detail.tenses, id: \.tenseId) { tense in
-                            TenseAccordionRow(tense: tense, isExpanded: viewModel.expandedTenses.contains(tense.tenseId)) {
+                            TenseAccordionRow(
+                                tense: tense,
+                                language: authViewModel.user?.preferredLanguage ?? "italian",
+                                isExpanded: viewModel.expandedTenses.contains(tense.tenseId)
+                            ) {
                                 viewModel.toggleTense(tense.tenseId)
                             }
                             Divider()
@@ -111,9 +115,10 @@ struct VerbConjugationView: View {
 
 struct TenseAccordionRow: View {
     let tense: Tense
+    let language: String
     let isExpanded: Bool
     let action: () -> Void
-    
+
     var body: some View {
         VStack(spacing: 0) {
             Button(action: action) {
@@ -121,11 +126,11 @@ struct TenseAccordionRow: View {
                     Text(tense.tenseName)
                         .font(.headline)
                         .foregroundColor(.primary)
-                    
+
                     Spacer()
-                    
+
                     BadgeView(text: tense.tenseNameEn.uppercased(), color: .blue)
-                    
+
                     Image(systemName: "chevron.down")
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -133,33 +138,39 @@ struct TenseAccordionRow: View {
                 }
                 .padding()
             }
-            
+
             if isExpanded {
                 VStack(alignment: .leading, spacing: 12) {
                     Text(tense.description)
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .padding(.horizontal)
-                    
+
                     ForEach(tense.conjugations, id: \.form) { conj in
-                        HStack(alignment: .top) {
+                        HStack(alignment: .top, spacing: 8) {
                             Text(conj.pronoun)
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
                                 .frame(width: 70, alignment: .leading)
-                            
-                            VStack(alignment: .leading) {
+
+                            VStack(alignment: .leading, spacing: 4) {
                                 Text(conj.form)
                                     .font(.subheadline)
                                     .bold()
                                     .foregroundColor(.blue)
-                                
-                                Text(conj.exampleSentence)
-                                    .font(.caption)
-                                    .italic()
-                                Text(conj.exampleSentenceEn)
-                                    .font(.caption2)
-                                    .foregroundColor(.secondary)
+
+                                HStack(alignment: .top, spacing: 8) {
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(conj.exampleSentence)
+                                            .font(.caption)
+                                            .italic()
+                                        Text(conj.exampleSentenceEn)
+                                            .font(.caption2)
+                                            .foregroundColor(.secondary)
+                                    }
+
+                                    TTSButton(text: conj.exampleSentence, language: language)
+                                }
                             }
                         }
                         .padding(.horizontal)
