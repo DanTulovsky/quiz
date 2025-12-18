@@ -1500,7 +1500,7 @@ tasks:
       DEBUG_STREAMING: ${DEBUG_STREAMING:-false}
     cmds:
       - echo "Restarting only the tts container (dev)..."
-      - docker compose restart tts
+      - docker compose pull tts && docker compose up -d tts
       - echo "✅ tts container rebuilt and restarted (dev)."
 
   test-merge-config:
