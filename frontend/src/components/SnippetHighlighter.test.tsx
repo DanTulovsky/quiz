@@ -26,9 +26,7 @@ const createWrapper = () => {
     <MantineProvider>
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <ThemeProvider>
-            {children}
-          </ThemeProvider>
+          <ThemeProvider>{children}</ThemeProvider>
         </MemoryRouter>
       </QueryClientProvider>
     </MantineProvider>
@@ -47,7 +45,7 @@ describe('SnippetHighlighter', () => {
   it('renders text with snippet highlighted', () => {
     render(
       <SnippetHighlighter
-        text="This is a Hello world example"
+        text='This is a Hello world example'
         snippets={[mockSnippet]}
       />,
       { wrapper: createWrapper() }
@@ -79,10 +77,14 @@ describe('SnippetHighlighter', () => {
     const hello = screen.getByText('Hello');
     const world = screen.getByText('world');
 
-    expect(hello.style.borderBottom).toBe('1px dashed var(--mantine-color-blue-6)');
+    expect(hello.style.borderBottom).toBe(
+      '1px dashed var(--mantine-color-blue-6)'
+    );
     expect(hello.style.paddingBottom).toBe('2px');
 
-    expect(world.style.borderBottom).toBe('1px dashed var(--mantine-color-blue-6)');
+    expect(world.style.borderBottom).toBe(
+      '1px dashed var(--mantine-color-blue-6)'
+    );
     expect(world.style.paddingBottom).toBe('2px');
 
     // Verify the parent doesn't have display: inline-block

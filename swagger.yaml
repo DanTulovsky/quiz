@@ -6584,7 +6584,7 @@ components:
           type: boolean
         message:
           type: string
-          maxLength: 500
+          maxLength: 5000
 
     DailyQuestionWithDetails:
       type: object

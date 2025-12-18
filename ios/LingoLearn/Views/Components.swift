@@ -1,0 +1,354 @@
+import Combine
+import SwiftUI
+import MediaPlayer
+
+struct BadgeView: View {
+    let text: String
+    let color: Color
+
+    var body: some View {
+        Text(text)
+            .font(.caption2)
+            .fontWeight(.bold)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(color.opacity(0.2))
+            .foregroundColor(color)
+            .cornerRadius(8)
+    }
+}
+
+import AVFoundation
+
+@MainActor class TTSSynthesizerManager: NSObject, ObservableObject {
+    static let shared = TTSSynthesizerManager()
+    private var player: AVPlayer?
+    private var cancellables = Set<AnyCancellable>()
+
+    // Global preferred voice
+    var preferredVoice: String?
+
+    @Published var currentlySpeakingText: String?
+    @Published var errorMessage: String?
+
+    override init() {
+        super.init()
+        setupRemoteCommandCenter()
+    }
+
+    private func setupRemoteCommandCenter() {
+        let commandCenter = MPRemoteCommandCenter.shared()
+
+        commandCenter.playCommand.addTarget { [weak self] _ in
+            Task { @MainActor in
+                self?.player?.play()
+            }
+            return .success
+        }
+
+        commandCenter.pauseCommand.addTarget { [weak self] _ in
+            Task { @MainActor in
+                self?.player?.pause()
+            }
+            return .success
+        }
+
+        commandCenter.stopCommand.addTarget { [weak self] _ in
+            Task { @MainActor in
+                self?.stop()
+            }
+            return .success
+        }
+    }
+
+    func speak(_ text: String, language: String, voiceIdentifier: String? = nil) {
+        if currentlySpeakingText == text {
+            stop()
+            return
+        }
+
+        stop()
+        currentlySpeakingText = text
+        errorMessage = nil
+
+        // Use provided voice, then preferred voice, then default for language
+        let effectiveVoice: String
+        if let provided = voiceIdentifier, !provided.isEmpty {
+            effectiveVoice = provided
+        } else if let preferred = preferredVoice, !preferred.isEmpty {
+            effectiveVoice = preferred
+        } else {
+            effectiveVoice = defaultVoiceForLanguage(language)
+        }
+
+        // Configure AVAudioSession for background playback
+        do {
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
+            try AVAudioSession.sharedInstance().setActive(true)
+        } catch {
+            handleError("Failed to configure audio session.")
+        }
+
+        // Try backend TTS
+        let request = TTSRequest(input: text, voice: effectiveVoice, responseFormat: "mp3", speed: 1.0)
+        APIService.shared.initializeTTSStream(request: request)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { [weak self] completion in
+                if case .failure(let error) = completion {
+                    self?.handleError("Failed to initialize audio: \(error.localizedDescription)")
+                }
+            }, receiveValue: { [weak self] response in
+                self?.playStream(streamId: response.streamId, token: response.token)
+            })
+            .store(in: &cancellables)
+    }
+
+    private func playStream(streamId: String, token: String?) {
+        let url = APIService.shared.streamURL(for: streamId, token: token)
+
+        // Create request with authentication cookies
+        var request = URLRequest(url: url)
+        request.httpShouldHandleCookies = true
+        request.cachePolicy = .reloadIgnoringLocalCacheData
+
+        // Download the complete audio data
+        URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+            guard let self = self else { return }
+
+            if let error = error {
+                DispatchQueue.main.async {
+                    self.handleError("Network error: \(error.localizedDescription)")
+                }
+                return
+            }
+
+            guard let httpResponse = response as? HTTPURLResponse else {
+                DispatchQueue.main.async {
+                    self.handleError("Invalid server response.")
+                }
+                return
+            }
+
+            guard (200...299).contains(httpResponse.statusCode) else {
+                DispatchQueue.main.async {
+                    self.handleError("Server error \(httpResponse.statusCode)")
+                }
+                return
+            }
+
+            guard let audioData = data, !audioData.isEmpty else {
+                DispatchQueue.main.async {
+                    self.handleError("No audio data received.")
+                }
+                return
+            }
+
+            // Play the audio data on the main thread
+            DispatchQueue.main.async {
+                self.playAudioData(audioData)
+            }
+        }.resume()
+    }
+
+    private func playAudioData(_ data: Data) {
+        do {
+            // Write to temporary file
+            let tempDir = FileManager.default.temporaryDirectory
+            let tempFile = tempDir.appendingPathComponent(UUID().uuidString + ".mp3")
+            try data.write(to: tempFile)
+
+            // Create player with local file
+            let asset = AVURLAsset(url: tempFile)
+            let playerItem = AVPlayerItem(asset: asset)
+
+            // Listen for completion
+            NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: playerItem, queue: .main) { _ in
+                Task { @MainActor [weak self] in
+                    guard let self = self else { return }
+                    self.currentlySpeakingText = nil
+                    self.clearNowPlayingInfo()
+                    // Clean up temp file
+                    try? FileManager.default.removeItem(at: tempFile)
+                }
+            }
+
+            // Listen for errors
+            NotificationCenter.default.addObserver(forName: .AVPlayerItemFailedToPlayToEndTime, object: playerItem, queue: .main) { _ in
+                Task { @MainActor [weak self] in
+                    guard let self = self else { return }
+                    self.handleError("Audio playback failed.")
+                    self.clearNowPlayingInfo()
+                    try? FileManager.default.removeItem(at: tempFile)
+                }
+            }
+
+            let player = AVPlayer(playerItem: playerItem)
+            player.automaticallyWaitsToMinimizeStalling = false
+            self.player = player
+
+            // Add observer for status
+            playerItem.addObserver(self, forKeyPath: "status", options: [.new, .initial], context: nil)
+
+            player.play()
+
+            // Update Now Playing info for lock screen
+            Task {
+                await updateNowPlayingInfo(for: playerItem)
+            }
+        } catch {
+            handleError("Playback error: \(error.localizedDescription)")
+        }
+    }
+
+    private func updateNowPlayingInfo(for playerItem: AVPlayerItem) async {
+        var nowPlayingInfo = [String: Any]()
+
+        // Set title to a preview of the text being spoken
+        if let text = currentlySpeakingText {
+            let preview = text.prefix(50)
+            nowPlayingInfo[MPMediaItemPropertyTitle] = String(preview) + (text.count > 50 ? "..." : "")
+        } else {
+            nowPlayingInfo[MPMediaItemPropertyTitle] = "Text to Speech"
+        }
+
+        nowPlayingInfo[MPMediaItemPropertyArtist] = "Quiz"
+
+        // Set duration if available using modern async API
+        do {
+            let duration = try await playerItem.asset.load(.duration)
+            if duration.seconds.isFinite {
+                nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = duration.seconds
+            }
+        } catch {
+            // Duration not available, continue without it
+        }
+
+        nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = 0
+        nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = 1.0
+
+        await MainActor.run {
+            MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+        }
+    }
+
+    private func clearNowPlayingInfo() {
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
+    }
+
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if keyPath == "status", let playerItem = object as? AVPlayerItem {
+            if playerItem.status == .failed {
+                if let error = playerItem.error {
+                    handleError("Failed to load audio: \(error.localizedDescription)")
+                } else {
+                    handleError("Failed to load audio stream.")
+                }
+            }
+        }
+    }
+
+    private func handleError(_ message: String) {
+        DispatchQueue.main.async {
+            self.errorMessage = message
+            self.currentlySpeakingText = nil
+            self.stop()
+        }
+    }
+
+    private func defaultVoiceForLanguage(_ lang: String) -> String {
+        switch lang.lowercased() {
+        case "italian", "it": return "it-IT-IsabellaNeural"
+        case "spanish", "es": return "es-ES-ElviraNeural"
+        case "french", "fr": return "fr-FR-DeniseNeural"
+        case "german", "de": return "de-DE-KatjaNeural"
+        case "english", "en": return "en-US-JennyNeural"
+        case "portuguese": return "pt-PT-RaquelNeural"
+        case "russian": return "ru-RU-DariyaNeural"
+        case "japanese": return "ja-JP-NanamiNeural"
+        case "korean": return "ko-KR-SunHiNeural"
+        case "chinese": return "zh-CN-XiaoxiaoNeural"
+        case "hindi": return "hi-IN-SwaraNeural"
+        default: return "en-US-JennyNeural"
+        }
+    }
+
+    func stop() {
+        player?.pause()
+        player = nil
+        currentlySpeakingText = nil
+        cancellables.removeAll()
+        clearNowPlayingInfo()
+
+        do {
+            try AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        } catch { }
+    }
+}
+
+struct TTSButton: View {
+    let text: String
+    let language: String
+    var voiceIdentifier: String? = nil
+    @StateObject private var ttsManager = TTSSynthesizerManager.shared
+
+    var isSpeaking: Bool {
+        ttsManager.currentlySpeakingText == text
+    }
+
+    var body: some View {
+        Button(action: {
+            ttsManager.speak(text, language: language, voiceIdentifier: voiceIdentifier)
+        }) {
+            Image(systemName: isSpeaking ? "stop.circle.fill" : "speaker.wave.2.circle.fill")
+                .font(.title2)
+                .foregroundColor(.blue)
+        }
+        .buttonStyle(.plain) // Prevent multi-action triggers in Lists
+    }
+}
+
+struct SnippetDetailView: View {
+    let snippet: Snippet
+    let onClose: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text(snippet.translatedText)
+                    .font(.headline)
+                Spacer()
+                Button(action: onClose) {
+                    Image(systemName: "xmark")
+                        .foregroundColor(.secondary)
+                }
+            }
+
+            HStack {
+                BadgeView(text: "\(snippet.sourceLanguage?.uppercased() ?? "??") → \(snippet.targetLanguage?.uppercased() ?? "??")", color: .blue)
+                if let level = snippet.difficultyLevel {
+                    BadgeView(text: level, color: .green)
+                }
+                Spacer()
+                HStack(spacing: 15) {
+                    Image(systemName: "arrow.up.right.square")
+                        .foregroundColor(.blue)
+                    Image(systemName: "trash")
+                        .foregroundColor(.red)
+                }
+            }
+
+            if let context = snippet.context {
+                Text("\"\(context)\"")
+                    .font(.subheadline)
+                    .italic()
+                    .foregroundColor(.secondary)
+                    .padding(.top, 4)
+            }
+        }
+        .padding()
+        .background(Color(.systemBackground))
+        .cornerRadius(12)
+        .shadow(radius: 10)
+        .padding()
+    }
+}
