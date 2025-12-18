@@ -3,7 +3,7 @@ import SwiftUI
 struct MainView: View {
     @AppStorage("app_theme") private var appTheme: String = "system"
     @AppStorage("app_font_size") private var appFontSize: String = "M"
-    @StateObject private var authViewModel = AuthenticationViewModel()
+    @EnvironmentObject var authViewModel: AuthenticationViewModel
 
     private var colorScheme: ColorScheme? {
         switch appTheme {

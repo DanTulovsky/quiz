@@ -303,7 +303,7 @@ func (suite *ServiceContainerIntegrationTestSuite) TestGetOAuthService_Integrati
 
 	// Test that the service is functional
 	ctx := context.Background()
-	authURL := oauthService.GetGoogleAuthURL(ctx, "test-state")
+	authURL := oauthService.GetGoogleAuthURL(ctx, "test-state", false)
 	assert.NotEmpty(suite.T(), authURL)
 }
 

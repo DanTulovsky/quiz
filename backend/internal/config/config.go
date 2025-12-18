@@ -92,6 +92,8 @@ type Config struct {
 	GoogleOAuthClientID     string `json:"google_oauth_client_id" yaml:"google_oauth_client_id"`
 	GoogleOAuthClientSecret string `json:"google_oauth_client_secret" yaml:"google_oauth_client_secret"`
 	GoogleOAuthRedirectURL  string `json:"google_oauth_redirect_url" yaml:"google_oauth_redirect_url"`
+	// iOS-specific OAuth client ID (optional, falls back to GoogleOAuthClientID if not set)
+	GoogleOAuthIOSClientID string `json:"google_oauth_ios_client_id" yaml:"google_oauth_ios_client_id"`
 
 	// OpenTelemetry Configuration
 	OpenTelemetry OpenTelemetryConfig `json:"open_telemetry" yaml:"open_telemetry"`

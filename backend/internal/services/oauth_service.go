@@ -50,6 +50,11 @@ func NewOAuthServiceWithLogger(cfg *config.Config, logger *observability.Logger)
 	}
 }
 
+// GetConfig returns the OAuth service configuration
+func (s *OAuthService) GetConfig() *config.Config {
+	return s.config
+}
+
 // GoogleUserInfo represents the user information returned by Google OAuth
 type GoogleUserInfo struct {
 	ID            string `json:"id"`
@@ -71,18 +76,34 @@ type GoogleTokenResponse struct {
 }
 
 // GetGoogleAuthURL generates the Google OAuth authorization URL
-func (s *OAuthService) GetGoogleAuthURL(ctx context.Context, state string) string {
+// If isIOS is true and GoogleOAuthIOSClientID is set, uses the iOS client ID
+func (s *OAuthService) GetGoogleAuthURL(ctx context.Context, state string, isIOS bool) string {
+	// Use iOS client ID if available and request is from iOS
+	// IMPORTANT: For iOS requests, we MUST use the iOS client ID, not the web client ID
+	clientID := s.config.GoogleOAuthClientID
+	if isIOS {
+		if s.config.GoogleOAuthIOSClientID != "" {
+			clientID = s.config.GoogleOAuthIOSClientID
+		} else {
+			// Log warning if iOS request detected but iOS client ID not configured
+			if s.logger != nil {
+				s.logger.Warn(ctx, "iOS OAuth request detected but GOOGLE_OAUTH_IOS_CLIENT_ID is not set - using web client ID which will cause errors", nil)
+			}
+		}
+	}
+
 	_, span := observability.TraceOAuthFunction(ctx, "get_google_auth_url",
 		attribute.String("oauth.state", state),
-		attribute.String("oauth.client_id", s.config.GoogleOAuthClientID),
+		attribute.String("oauth.client_id", clientID),
 		attribute.String("oauth.redirect_url", s.config.GoogleOAuthRedirectURL),
+		attribute.Bool("oauth.is_ios", isIOS),
 	)
 	defer span.End()
 
 	// Debug logging
-	if s.config.GoogleOAuthClientID == "" {
+	if clientID == "" {
 		if s.logger != nil {
-			s.logger.Warn(ctx, "Google OAuth client ID is not set", map[string]interface{}{"env_var": "GOOGLE_OAUTH_CLIENT_ID"})
+			s.logger.Warn(ctx, "Google OAuth client ID is not set", map[string]interface{}{"env_var": "GOOGLE_OAUTH_CLIENT_ID", "is_ios": isIOS})
 		}
 	}
 	if s.config.GoogleOAuthRedirectURL == "" {
@@ -92,31 +113,109 @@ func (s *OAuthService) GetGoogleAuthURL(ctx context.Context, state string) strin
 	}
 
 	params := url.Values{}
-	params.Set("client_id", s.config.GoogleOAuthClientID)
-	params.Set("redirect_uri", s.config.GoogleOAuthRedirectURL)
+	params.Set("client_id", clientID)
+
+	// For iOS client ID, use the iOS URL scheme as redirect URI
+	// According to Google OAuth 2.0 for Native Apps documentation:
+	// Format: com.googleusercontent.apps.{CLIENT_ID}:/redirect_uri_path
+	// The path component (starting with :) is required, typically :/oauth2redirect
+	// The iOS client ID may include .apps.googleusercontent.com suffix, which must be stripped
+	// Keep the hyphen in the client ID - it's part of the iOS URL scheme format
+	var redirectURI string
+	if isIOS && s.config.GoogleOAuthIOSClientID != "" {
+		// Strip .apps.googleusercontent.com suffix if present
+		// Keep the hyphen - it's part of the iOS URL scheme as shown in Google Console
+		clientIDForRedirect := strings.TrimSuffix(clientID, ".apps.googleusercontent.com")
+		// Add the required path component (:/oauth2redirect) per Google's documentation
+		redirectURI = fmt.Sprintf("com.googleusercontent.apps.%s:/oauth2redirect", clientIDForRedirect)
+		// Include redirect_uri in authorization request - Google requires it
+		params.Set("redirect_uri", redirectURI)
+
+		// Debug logging for iOS OAuth
+		if s.logger != nil {
+			s.logger.Info(ctx, "iOS OAuth URL generation", map[string]interface{}{
+				"ios_client_id":          clientID,
+				"client_id_for_redirect": clientIDForRedirect,
+				"redirect_uri":           redirectURI,
+				"state":                  state,
+			})
+		}
+	} else {
+		// For web clients, include redirect_uri in authorization request
+		params.Set("redirect_uri", s.config.GoogleOAuthRedirectURL)
+		redirectURI = s.config.GoogleOAuthRedirectURL
+	}
 	params.Set("response_type", "code")
 	params.Set("scope", "openid email profile")
 	params.Set("state", state)
-	params.Set("access_type", "offline")
-	params.Set("prompt", "consent")
 
-	return fmt.Sprintf("https://accounts.google.com/o/oauth2/v2/auth?%s", params.Encode())
+	// For iOS clients, don't include access_type and prompt as they may cause issues
+	// iOS OAuth clients are typically public clients and don't support offline access
+	if !isIOS || s.config.GoogleOAuthIOSClientID == "" {
+		params.Set("access_type", "offline")
+		params.Set("prompt", "consent")
+	}
+
+	authURL := fmt.Sprintf("https://accounts.google.com/o/oauth2/v2/auth?%s", params.Encode())
+
+	// Debug logging
+	if s.logger != nil && isIOS {
+		s.logger.Info(ctx, "Generated OAuth URL for iOS", map[string]interface{}{
+			"auth_url": authURL,
+		})
+	}
+
+	return authURL
 }
 
 // ExchangeCodeForToken exchanges the authorization code for an access token
-func (s *OAuthService) ExchangeCodeForToken(ctx context.Context, code string) (result0 *GoogleTokenResponse, err error) {
+// redirectURI is optional - if not provided, uses the default from config
+func (s *OAuthService) ExchangeCodeForToken(ctx context.Context, code string, redirectURI ...string) (result0 *GoogleTokenResponse, err error) {
 	ctx, span := observability.TraceOAuthFunction(ctx, "exchange_code_for_token",
 		attribute.String("oauth.code", code),
 		attribute.String("oauth.token_endpoint", s.TokenEndpoint),
 	)
 	defer observability.FinishSpan(span, &err)
 
+	// Use provided redirect URI or fall back to config default
+	redirectURIToUse := s.config.GoogleOAuthRedirectURL
+	if len(redirectURI) > 0 && redirectURI[0] != "" {
+		redirectURIToUse = redirectURI[0]
+	}
+
+	// Determine which client ID/secret to use based on redirect URI
+	// If redirect URI is the iOS URL scheme, use iOS client ID
+	clientID := s.config.GoogleOAuthClientID
+	clientSecret := s.config.GoogleOAuthClientSecret
+
+	// Check if this is an iOS redirect URI (custom URL scheme)
+	isIOSRedirect := strings.HasPrefix(redirectURIToUse, "com.googleusercontent.apps.")
+	if isIOSRedirect && s.config.GoogleOAuthIOSClientID != "" {
+		clientID = s.config.GoogleOAuthIOSClientID
+		// iOS OAuth clients are public clients and don't use client secrets
+		// Don't include client_secret for iOS clients - it will cause "invalid_client" error
+		clientSecret = ""
+	}
+
 	data := url.Values{}
-	data.Set("client_id", s.config.GoogleOAuthClientID)
-	data.Set("client_secret", s.config.GoogleOAuthClientSecret)
+	data.Set("client_id", clientID)
+	// Only include client_secret for web clients (iOS clients are public and don't use secrets)
+	if clientSecret != "" {
+		data.Set("client_secret", clientSecret)
+	}
 	data.Set("code", code)
 	data.Set("grant_type", "authorization_code")
-	data.Set("redirect_uri", s.config.GoogleOAuthRedirectURL)
+	data.Set("redirect_uri", redirectURIToUse)
+
+	// Debug logging for token exchange
+	if s.logger != nil {
+		s.logger.Info(ctx, "Exchanging code for token", map[string]interface{}{
+			"client_id":    clientID,
+			"has_secret":   clientSecret != "",
+			"redirect_uri": redirectURIToUse,
+			"is_ios":       isIOSRedirect,
+		})
+	}
 
 	tokenURL := s.TokenEndpoint
 	if tokenURL == "" {
@@ -154,6 +253,17 @@ func (s *OAuthService) ExchangeCodeForToken(ctx context.Context, code string) (r
 
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
+		bodyString := string(body)
+
+		// Log the full error response for debugging
+		if s.logger != nil {
+			s.logger.Error(ctx, "Google token exchange error response", nil, map[string]interface{}{
+				"status_code":   resp.StatusCode,
+				"response_body": bodyString,
+				"client_id":     clientID,
+				"redirect_uri":  redirectURIToUse,
+			})
+		}
 
 		// Try to parse the error response for better error messages
 		var errorResp struct {
@@ -262,14 +372,15 @@ func (s *OAuthService) GetGoogleUserInfo(ctx context.Context, accessToken string
 }
 
 // AuthenticateGoogleUser handles the complete Google OAuth flow
-func (s *OAuthService) AuthenticateGoogleUser(ctx context.Context, code string, userService UserServiceInterface) (result0 *models.User, err error) {
+// redirectURI is optional - if not provided, uses the default from config
+func (s *OAuthService) AuthenticateGoogleUser(ctx context.Context, code string, userService UserServiceInterface, redirectURI ...string) (result0 *models.User, err error) {
 	ctx, span := observability.TraceOAuthFunction(ctx, "authenticate_google_user",
 		attribute.String("oauth.code", code),
 	)
 	defer observability.FinishSpan(span, &err)
 
 	// Exchange code for token
-	tokenResp, err := s.ExchangeCodeForToken(ctx, code)
+	tokenResp, err := s.ExchangeCodeForToken(ctx, code, redirectURI...)
 	if err != nil {
 		span.SetAttributes(attribute.String("error", err.Error()))
 		return nil, contextutils.WrapError(err, "failed to exchange code for token")

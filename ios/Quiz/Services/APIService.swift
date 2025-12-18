@@ -3,7 +3,13 @@ import Foundation
 
 class APIService {
     static let shared = APIService()
-    private let baseURL = URL(string: "http://localhost:3000/v1")!
+    private let baseURL: URL = {
+        #if targetEnvironment(simulator)
+            return URL(string: "http://localhost:3000/v1")!
+        #else
+            return URL(string: "https://quiz.wetsnow.com/v1")!
+        #endif
+    }()
 
     enum APIError: Error, LocalizedError {
         case invalidURL
@@ -90,8 +96,13 @@ class APIService {
     }
 
     func initiateGoogleLogin() -> AnyPublisher<GoogleOAuthLoginResponse, APIError> {
-        let url = baseURL.appendingPathComponent("auth/google/login")
-        let urlRequest = URLRequest(url: url)
+        var components = URLComponents(
+            url: baseURL.appendingPathComponent("auth/google/login"),
+            resolvingAgainstBaseURL: false)!
+        // Add platform parameter to help backend detect iOS and use iOS client ID
+        components.queryItems = [URLQueryItem(name: "platform", value: "ios")]
+
+        let urlRequest = URLRequest(url: components.url!)
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { self.handleResponse($0.data, $0.response) }
@@ -100,6 +111,11 @@ class APIService {
 
     func handleGoogleCallback(code: String, state: String?) -> AnyPublisher<LoginResponse, APIError>
     {
+        print(
+            "🌐 Making callback API request to: \(baseURL.appendingPathComponent("auth/google/callback"))"
+        )
+        print("📝 Code: \(code.prefix(10))..., State: \(state ?? "nil")")
+
         var components = URLComponents(
             url: baseURL.appendingPathComponent("auth/google/callback"),
             resolvingAgainstBaseURL: false)!
@@ -111,9 +127,35 @@ class APIService {
 
         var urlRequest = URLRequest(url: components.url!)
         urlRequest.httpShouldHandleCookies = true
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
+
+        // Use URLSession.shared to ensure cookies are shared with other API calls
+        // This ensures the session cookie from OAuth is available for subsequent requests
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
-            .mapError { .requestFailed($0) }
-            .flatMap { self.handleResponse($0.data, $0.response) }
+            .mapError { error in
+                print("❌ Network error: \(error.localizedDescription)")
+                return .requestFailed(error)
+            }
+            .flatMap { data, response -> AnyPublisher<LoginResponse, APIError> in
+                print("📥 Received response: \(response)")
+                if let httpResponse = response as? HTTPURLResponse {
+                    print("📊 Status code: \(httpResponse.statusCode)")
+                    // Ensure cookies from the OAuth callback are stored
+                    if let url = httpResponse.url {
+                        let cookies = HTTPCookie.cookies(
+                            withResponseHeaderFields: httpResponse.allHeaderFields
+                                as! [String: String], for: url)
+                        for cookie in cookies {
+                            HTTPCookieStorage.shared.setCookie(cookie)
+                            print("🍪 Stored cookie: \(cookie.name)=\(cookie.value.prefix(20))...")
+                        }
+                    }
+                    if let responseString = String(data: data, encoding: .utf8) {
+                        print("📄 Response body: \(responseString.prefix(200))")
+                    }
+                }
+                return self.handleResponse(data, response)
+            }
             .eraseToAnyPublisher()
     }
 

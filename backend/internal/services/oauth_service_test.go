@@ -30,7 +30,7 @@ func TestGetGoogleAuthURL(t *testing.T) {
 	service := NewOAuthServiceWithLogger(cfg, logger)
 	ctx := context.Background()
 
-	url := service.GetGoogleAuthURL(ctx, "test-state")
+	url := service.GetGoogleAuthURL(ctx, "test-state", false)
 	assert.Contains(t, url, "accounts.google.com")
 	assert.Contains(t, url, "test-client-id")
 	assert.Contains(t, url, "test-state")

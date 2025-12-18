@@ -3,6 +3,7 @@ package handlers
 import (
 	"crypto/rand"
 	"errors"
+	"fmt"
 	"net/http"
 	"regexp"
 	"strings"
@@ -451,8 +452,42 @@ func (h *AuthHandler) GoogleLogin(c *gin.Context) {
 		return
 	}
 
-	// Generate Google OAuth URL
-	authURL := h.oauthService.GetGoogleAuthURL(c.Request.Context(), state)
+	// Check if request is from iOS (via User-Agent or platform query param)
+	isIOS := c.Query("platform") == "ios" ||
+		strings.Contains(c.GetHeader("User-Agent"), "iOS") ||
+		strings.Contains(c.GetHeader("User-Agent"), "iPhone") ||
+		strings.Contains(c.GetHeader("User-Agent"), "iPad")
+
+	// Log iOS detection and client ID availability
+	if isIOS {
+		iosClientID := h.oauthService.GetConfig().GoogleOAuthIOSClientID
+		if iosClientID == "" {
+			h.logger.Warn(c.Request.Context(), "iOS OAuth request detected but GOOGLE_OAUTH_IOS_CLIENT_ID is not set - will use web client ID", nil)
+		} else {
+			h.logger.Info(c.Request.Context(), "iOS OAuth request detected, using iOS client ID", map[string]interface{}{
+				"ios_client_id": iosClientID,
+			})
+		}
+	}
+
+	// Generate Google OAuth URL (with iOS client ID if available and request is from iOS)
+	authURL := h.oauthService.GetGoogleAuthURL(c.Request.Context(), state, isIOS)
+
+	// Store the redirect URI that will be used (for iOS, this is the custom URL scheme)
+	if isIOS && h.oauthService.GetConfig().GoogleOAuthIOSClientID != "" {
+		// For iOS, the redirect URI is the custom URL scheme with path component
+		// Format: com.googleusercontent.apps.{CLIENT_ID}:/oauth2redirect
+		// Strip .apps.googleusercontent.com suffix if present
+		// Keep the hyphen - it's part of the iOS URL scheme as shown in Google Console
+		iosClientID := h.oauthService.GetConfig().GoogleOAuthIOSClientID
+		iosClientIDForRedirect := strings.TrimSuffix(iosClientID, ".apps.googleusercontent.com")
+		iosRedirectURI := fmt.Sprintf("com.googleusercontent.apps.%s:/oauth2redirect", iosClientIDForRedirect)
+		session.Set("oauth_redirect_uri", iosRedirectURI)
+		if err := session.Save(); err != nil {
+			HandleAppError(c, contextutils.WrapError(err, "failed to save session"))
+			return
+		}
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"auth_url": authURL,
@@ -546,6 +581,11 @@ func (h *AuthHandler) GoogleCallback(c *gin.Context) {
 	var redirectURI string
 	if storedRedirectURI != nil {
 		redirectURI = storedRedirectURI.(string)
+		h.logger.Info(c.Request.Context(), "Using stored redirect URI for token exchange", map[string]interface{}{
+			"redirect_uri": redirectURI,
+		})
+	} else {
+		h.logger.Warn(c.Request.Context(), "No redirect URI stored in session, will use default", nil)
 	}
 
 	// Clear the state and redirect URI from session
@@ -558,7 +598,12 @@ func (h *AuthHandler) GoogleCallback(c *gin.Context) {
 	}
 
 	// Authenticate user with Google OAuth
-	user, err := h.oauthService.AuthenticateGoogleUser(c.Request.Context(), code, h.userService)
+	// Pass the stored redirect URI if available (for iOS custom URL scheme)
+	var redirectURIArg string
+	if redirectURI != "" {
+		redirectURIArg = redirectURI
+	}
+	user, err := h.oauthService.AuthenticateGoogleUser(c.Request.Context(), code, h.userService, redirectURIArg)
 	if err != nil {
 		h.logger.Error(c.Request.Context(), "Google OAuth authentication failed", err, map[string]interface{}{"error": err.Error()})
 
