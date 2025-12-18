@@ -26,6 +26,18 @@ class DailyViewModel: ObservableObject {
         return Double(currentQuestionIndex + 1) / Double(dailyQuestions.count)
     }
 
+    var isAllCompleted: Bool {
+        !dailyQuestions.isEmpty && dailyQuestions.allSatisfy { $0.isCompleted }
+    }
+
+    var hasPreviousQuestion: Bool {
+        currentQuestionIndex > 0
+    }
+
+    var hasNextQuestion: Bool {
+        currentQuestionIndex < dailyQuestions.count - 1
+    }
+
     private var apiService: APIService
     private var cancellables = Set<AnyCancellable>()
 
@@ -81,8 +93,28 @@ class DailyViewModel: ObservableObject {
     func nextQuestion() {
         answerResponse = nil
         selectedAnswerIndex = nil
-        if currentQuestionIndex < dailyQuestions.count - 1 {
-            currentQuestionIndex += 1
+
+        if isAllCompleted {
+            // When all completed, allow sequential navigation
+            if currentQuestionIndex < dailyQuestions.count - 1 {
+                currentQuestionIndex += 1
+            }
+        } else {
+            // Find next unanswered question
+            if let nextIncompleteIndex = dailyQuestions.enumerated().first(where: { index, question in
+                index > currentQuestionIndex && !question.isCompleted
+            })?.offset {
+                currentQuestionIndex = nextIncompleteIndex
+            }
+        }
+    }
+
+    func previousQuestion() {
+        answerResponse = nil
+        selectedAnswerIndex = nil
+
+        if currentQuestionIndex > 0 {
+            currentQuestionIndex -= 1
         }
     }
 

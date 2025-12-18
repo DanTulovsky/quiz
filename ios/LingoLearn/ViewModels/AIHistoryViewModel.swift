@@ -47,11 +47,35 @@ class AIHistoryViewModel: ObservableObject {
     }
 
     func updateTitle(id: String, newTitle: String) {
+        // Optimistically update the local array immediately for instant UI feedback
+        if let index = conversations.firstIndex(where: { $0.id == id }) {
+            let oldConversation = conversations[index]
+            // Create a new Conversation with updated title
+            let updatedConversation = Conversation(
+                id: oldConversation.id,
+                userId: oldConversation.userId,
+                title: newTitle,
+                createdAt: oldConversation.createdAt,
+                updatedAt: oldConversation.updatedAt,
+                messageCount: oldConversation.messageCount,
+                messages: oldConversation.messages
+            )
+            // Create a new array to ensure SwiftUI detects the change
+            var updatedConversations = conversations
+            updatedConversations[index] = updatedConversation
+            conversations = updatedConversations
+        }
+
         apiService.updateAIConversationTitle(id: id, title: newTitle)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { [weak self] completion in
-                if case .failure(let error) = completion { self?.error = error }
+                if case .failure(let error) = completion {
+                    self?.error = error
+                    // On error, refetch to restore correct state
+                    self?.fetchConversations()
+                }
             }, receiveValue: { [weak self] _ in
+                // Refetch to ensure we have the latest data from server
                 self?.fetchConversations()
                 if self?.selectedConversation?.id == id {
                     self?.fetchConversation(id: id)
@@ -68,7 +92,8 @@ class AIHistoryViewModel: ObservableObject {
                 self?.isDeleting = false
                 if case .failure(let error) = completion { self?.error = error }
             }, receiveValue: { [weak self] _ in
-                self?.conversations.removeAll(where: { $0.id == id })
+                // Refetch conversations to ensure instant update
+                self?.fetchConversations()
             })
             .store(in: &cancellables)
     }

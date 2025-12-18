@@ -5,21 +5,6 @@ struct AIConversationListView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // Header Stats
-            HStack {
-                Text("\(viewModel.conversations.count)")
-                    .font(.caption)
-                    .bold()
-                    .padding(6)
-                    .background(Color.blue.opacity(0.1))
-                    .foregroundColor(.blue)
-                    .clipShape(RoundedRectangle(cornerRadius: 6))
-
-                Spacer()
-            }
-            .padding(.horizontal)
-            .padding(.top)
-
             // Search Bar
             HStack {
                 Image(systemName: "magnifyingglass")
@@ -34,9 +19,10 @@ struct AIConversationListView: View {
             // Conversations List
             ScrollView {
                 LazyVStack(spacing: 16) {
-                    ForEach(viewModel.conversations) { conv in
+                    ForEach(viewModel.conversations, id: \.id) { conv in
                         NavigationLink(destination: AIConversationDetailView(conversationId: conv.id)) {
-                            ConversationCard(conversation: conv, viewModel: viewModel)
+                            ConversationCard(conversationId: conv.id, viewModel: viewModel)
+                                .id("\(conv.id)-\(conv.title)")
                         }
                         .buttonStyle(PlainButtonStyle())
                     }
@@ -47,23 +33,48 @@ struct AIConversationListView: View {
         .onAppear {
             viewModel.fetchConversations()
         }
-        .navigationTitle("Saved Conversations")
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                HStack(spacing: 8) {
+                    Text("Saved Conversations")
+                        .font(.headline)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+
+                    Text("\(viewModel.conversations.count)")
+                        .font(.caption)
+                        .bold()
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 4)
+                        .background(Color.blue.opacity(0.1))
+                        .foregroundColor(.blue)
+                        .clipShape(RoundedRectangle(cornerRadius: 6))
+                }
+            }
+        }
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
 struct ConversationCard: View {
-    let conversation: Conversation
+    let conversationId: String
     @ObservedObject var viewModel: AIHistoryViewModel
     @State private var showingEditTitle = false
     @State private var newTitle = ""
 
+    // Get the current conversation from viewModel to ensure we always show the latest data
+    private var conversation: Conversation? {
+        viewModel.conversations.first(where: { $0.id == conversationId })
+    }
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Text(conversation.title)
-                    .font(.headline)
-                    .lineLimit(1)
-                Spacer()
+        if let conversation = conversation {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Text(conversation.title)
+                        .font(.headline)
+                        .lineLimit(1)
+                    Spacer()
 
                 Menu {
                     NavigationLink(destination: AIConversationDetailView(conversationId: conversation.id)) {
@@ -90,41 +101,45 @@ struct ConversationCard: View {
                 }
             }
 
-            HStack(spacing: 10) {
-                HStack(spacing: 4) {
-                    Image(systemName: "calendar")
-                    Text(conversation.createdAt, style: .date)
-                    Text(conversation.createdAt, style: .time)
-                }
-                .font(.caption)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 4)
-                .background(Color.blue.opacity(0.1))
-                .foregroundColor(.blue)
-                .cornerRadius(6)
-
-                Text("\(conversation.messageCount ?? 0) MSGS")
+                HStack(spacing: 10) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "calendar")
+                        Text(conversation.createdAt, style: .date)
+                        Text(conversation.createdAt, style: .time)
+                    }
                     .font(.caption)
-                    .bold()
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
-                    .background(Color.green.opacity(0.1))
-                    .foregroundColor(.green)
+                    .background(Color.blue.opacity(0.1))
+                    .foregroundColor(.blue)
                     .cornerRadius(6)
+
+                    Text("\(conversation.messageCount ?? 0) MSGS")
+                        .font(.caption)
+                        .bold()
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Color.green.opacity(0.1))
+                        .foregroundColor(.green)
+                        .cornerRadius(6)
+                }
             }
-        }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(12)
-        .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
-        .alert("Edit Title", isPresented: $showingEditTitle) {
-            TextField("Title", text: $newTitle)
-            Button("Cancel", role: .cancel) { }
-            Button("Save") {
-                viewModel.updateTitle(id: conversation.id, newTitle: newTitle)
+            .padding()
+            .background(Color(.systemBackground))
+            .cornerRadius(12)
+            .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
+            .alert("Edit Title", isPresented: $showingEditTitle) {
+                TextField("Title", text: $newTitle)
+                Button("Cancel", role: .cancel) { }
+                Button("Save") {
+                    viewModel.updateTitle(id: conversation.id, newTitle: newTitle)
+                    showingEditTitle = false
+                }
+            } message: {
+                Text("Enter a new title for this conversation.")
             }
-        } message: {
-            Text("Enter a new title for this conversation.")
+        } else {
+            EmptyView()
         }
     }
 }

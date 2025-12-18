@@ -25,6 +25,9 @@ struct DailyView: View {
 
                         if let response = viewModel.answerResponse {
                             feedbackSection(response)
+                        } else if question.isCompleted {
+                            // Show feedback for completed questions even if answerResponse is nil
+                            completedQuestionFeedback(question)
                         }
 
                         actionButtons()
@@ -49,6 +52,12 @@ struct DailyView: View {
                             withAnimation {
                                 proxy.scrollTo("bottom", anchor: .bottom)
                             }
+                        }
+                    }
+                    .onChange(of: viewModel.currentQuestionIndex) { old, new in
+                        // When navigating to a completed question, set the selected answer
+                        if let question = viewModel.currentQuestion, question.isCompleted {
+                            viewModel.selectedAnswerIndex = question.userAnswerIndex
                         }
                     }
             }
@@ -182,10 +191,14 @@ struct DailyView: View {
     }
 
     private func optionButton(option: String, index: Int) -> some View {
+        let currentQuestion = viewModel.currentQuestion
+        let isCompleted = currentQuestion?.isCompleted ?? false
         let isSelected = viewModel.selectedAnswerIndex == index
-        let isCorrect = viewModel.answerResponse?.correctAnswerIndex == index
-        let isUserIncorrect = viewModel.answerResponse != nil && viewModel.answerResponse?.userAnswerIndex == index && !isCorrect
-        let showResults = viewModel.answerResponse != nil
+        let correctAnswerIndex = viewModel.answerResponse?.correctAnswerIndex ?? currentQuestion?.question.correctAnswerIndex
+        let isCorrect = correctAnswerIndex == index
+        let userAnswerIndex = viewModel.answerResponse?.userAnswerIndex ?? currentQuestion?.userAnswerIndex
+        let isUserIncorrect = userAnswerIndex == index && !isCorrect
+        let showResults = viewModel.answerResponse != nil || isCompleted
 
         return Button(action: {
             if !showResults {
@@ -245,6 +258,36 @@ struct DailyView: View {
         .background(response.isCorrect ? Color.green.opacity(0.05) : Color.red.opacity(0.05))
         .cornerRadius(12)
         .overlay(RoundedRectangle(cornerRadius: 12).stroke(response.isCorrect ? Color.green.opacity(0.2) : Color.red.opacity(0.2), lineWidth: 1))
+    }
+
+    private func completedQuestionFeedback(_ question: DailyQuestionWithDetails) -> some View {
+        // For completed questions, determine if the answer was correct
+        let correctAnswerIndex = question.question.correctAnswerIndex
+        let userAnswerIndex = question.userAnswerIndex
+        let isCorrect = userAnswerIndex == correctAnswerIndex
+
+        // Try to get explanation from question content or use a default message
+        let explanation = stringValue(question.question.content["explanation"]) ?? "Review your answer above."
+
+        return VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Image(systemName: isCorrect ? "checkmark" : "xmark")
+                    .foregroundColor(isCorrect ? .green : .red)
+                Text(isCorrect ? "Correct!" : "Incorrect")
+                    .font(.headline)
+                    .foregroundColor(isCorrect ? .green : .red)
+            }
+
+            Text(explanation)
+                .font(.subheadline)
+                .foregroundColor(.primary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(isCorrect ? Color.green.opacity(0.05) : Color.red.opacity(0.05))
+        .cornerRadius(12)
+        .overlay(RoundedRectangle(cornerRadius: 12).stroke(isCorrect ? Color.green.opacity(0.2) : Color.red.opacity(0.2), lineWidth: 1))
     }
 
     private var completionView: some View {
@@ -314,7 +357,27 @@ struct DailyView: View {
 
     @ViewBuilder
     private func actionButtons() -> some View {
-        if let _ = viewModel.answerResponse {
+        if viewModel.isAllCompleted {
+            // When all completed, show Previous/Next navigation
+            HStack(spacing: 12) {
+                Button("Previous") {
+                    viewModel.previousQuestion()
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.large)
+                .disabled(!viewModel.hasPreviousQuestion)
+                .frame(maxWidth: .infinity)
+
+                Button("Next") {
+                    viewModel.nextQuestion()
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.large)
+                .disabled(!viewModel.hasNextQuestion)
+                .frame(maxWidth: .infinity)
+            }
+        } else if let _ = viewModel.answerResponse {
+            // After submission but not all completed
             Button("Next Question") {
                 viewModel.nextQuestion()
             }
@@ -322,6 +385,7 @@ struct DailyView: View {
             .controlSize(.large)
             .frame(maxWidth: .infinity)
         } else {
+            // Not submitted yet
             Button("Submit Answer") {
                 if let idx = viewModel.selectedAnswerIndex {
                     viewModel.submitAnswer(index: idx)

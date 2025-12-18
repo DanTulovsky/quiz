@@ -391,11 +391,13 @@ struct DailyQuestionWithDetails: Codable {
     let questionId: Int
     let question: Question
     let isCompleted: Bool
+    let userAnswerIndex: Int?
 
     enum CodingKeys: String, CodingKey {
         case id, question
         case questionId = "question_id"
         case isCompleted = "is_completed"
+        case userAnswerIndex = "user_answer_index"
     }
 }
 
