@@ -25,6 +25,10 @@ class VerbViewModelTests: XCTestCase {
             infinitive: "andare", infinitiveEn: "to go", slug: nil, category: "test")
         let data = VerbConjugationsData(language: "it", languageName: "Italian", verbs: [verb])
         mockAPIService.getVerbConjugationsResult = .success(data)
+        // Set a default verb detail result to prevent crash when auto-fetch is triggered
+        let verbDetail = VerbConjugationDetail(
+            infinitive: "andare", infinitiveEn: "to go", slug: nil, category: "test", tenses: [])
+        mockAPIService.getVerbConjugationResult = .success(verbDetail)
         let expectation = XCTestExpectation(description: "Verbs fetched")
 
         // When
