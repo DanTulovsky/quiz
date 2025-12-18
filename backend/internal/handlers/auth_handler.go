@@ -574,15 +574,17 @@ func (h *AuthHandler) GoogleCallback(c *gin.Context) {
 	}
 
 	// Get the stored redirect URI from session
+	// This is used for post-authentication redirect (where to send user after login)
+	// For token exchange, we only use it if it's an iOS redirect URI
 	storedRedirectURI := session.Get("oauth_redirect_uri")
 	var redirectURI string
 	if storedRedirectURI != nil {
 		redirectURI = storedRedirectURI.(string)
-		h.logger.Info(c.Request.Context(), "Using stored redirect URI for token exchange", map[string]interface{}{
+		h.logger.Info(c.Request.Context(), "Retrieved stored redirect URI from session", map[string]interface{}{
 			"redirect_uri": redirectURI,
 		})
 	} else {
-		h.logger.Warn(c.Request.Context(), "No redirect URI stored in session, will use default", nil)
+		h.logger.Warn(c.Request.Context(), "No redirect URI stored in session, will use default for token exchange", nil)
 	}
 
 	// Clear the state and redirect URI from session
@@ -595,10 +597,18 @@ func (h *AuthHandler) GoogleCallback(c *gin.Context) {
 	}
 
 	// Authenticate user with Google OAuth
-	// Pass the stored redirect URI if available (for iOS custom URL scheme)
+	// Only use stored redirect URI for token exchange if it's iOS (starts with com.googleusercontent.apps.)
+	// For web OAuth, don't pass it so it uses the configured GoogleOAuthRedirectURL
 	var redirectURIArg string
-	if redirectURI != "" {
+	if redirectURI != "" && strings.HasPrefix(redirectURI, "com.googleusercontent.apps.") {
 		redirectURIArg = redirectURI
+		h.logger.Info(c.Request.Context(), "Using iOS redirect URI for token exchange", map[string]interface{}{
+			"redirect_uri": redirectURI,
+		})
+	} else if redirectURI != "" {
+		h.logger.Info(c.Request.Context(), "Ignoring stored redirect URI for token exchange (web OAuth, will use config default)", map[string]interface{}{
+			"stored_redirect_uri": redirectURI,
+		})
 	}
 	user, err := h.oauthService.AuthenticateGoogleUser(c.Request.Context(), code, h.userService, redirectURIArg)
 	if err != nil {
