@@ -2,6 +2,7 @@ import SwiftUI
 
 struct MainView: View {
     @AppStorage("app_theme") private var appTheme: String = "system"
+    @AppStorage("app_font_size") private var appFontSize: String = "M"
     @StateObject private var authViewModel = AuthenticationViewModel()
 
     private var colorScheme: ColorScheme? {
@@ -9,6 +10,16 @@ struct MainView: View {
         case "light": return .light
         case "dark": return .dark
         default: return nil
+        }
+    }
+
+    private var dynamicTypeSize: DynamicTypeSize {
+        switch appFontSize {
+        case "S": return .small
+        case "M": return .medium
+        case "L": return .large
+        case "XL": return .xLarge
+        default: return .medium
         }
     }
 
@@ -34,7 +45,7 @@ struct MainView: View {
                                 }
                             }
                         }
-                        .navigationTitle("LingoLearn")
+                        .navigationTitle("Quiz")
                     }
                     .tabItem {
                         Image(systemName: "house")
@@ -137,5 +148,6 @@ struct MainView: View {
             }
         }
         .preferredColorScheme(colorScheme)
+        .environment(\.dynamicTypeSize, dynamicTypeSize)
     }
 }

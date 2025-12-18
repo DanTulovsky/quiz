@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct TranslationPracticeView: View {
+    @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = TranslationPracticeViewModel()
     @EnvironmentObject var authViewModel: AuthenticationViewModel
 
@@ -88,6 +89,20 @@ struct TranslationPracticeView: View {
         }
         .navigationTitle("Translation Practice")
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: { dismiss() }) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 17, weight: .semibold))
+                        Text("Back")
+                            .font(.system(size: 17))
+                    }
+                    .foregroundColor(.blue)
+                }
+            }
+        }
         .onAppear {
             viewModel.fetchHistory()
         }

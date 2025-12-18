@@ -211,7 +211,7 @@ import AVFoundation
             nowPlayingInfo[MPMediaItemPropertyTitle] = "Text to Speech"
         }
 
-        nowPlayingInfo[MPMediaItemPropertyArtist] = "LingoLearn"
+        nowPlayingInfo[MPMediaItemPropertyArtist] = "Quiz"
 
         // Set duration if available using modern async API
         do {

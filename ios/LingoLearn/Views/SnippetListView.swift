@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct SnippetListView: View {
+    @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = VocabularyViewModel()
     @State private var showAddSnippet = false
 
@@ -86,6 +87,20 @@ struct SnippetListView: View {
             AddSnippetView(viewModel: viewModel, isPresented: $showAddSnippet)
         }
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: { dismiss() }) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 17, weight: .semibold))
+                        Text("Back")
+                            .font(.system(size: 17))
+                    }
+                    .foregroundColor(.blue)
+                }
+            }
+        }
     }
 
     @ViewBuilder

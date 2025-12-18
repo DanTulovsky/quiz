@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct AIConversationDetailView: View {
+    @Environment(\.dismiss) private var dismiss
     let conversationId: String
     @StateObject private var viewModel = AIHistoryViewModel()
 
@@ -32,6 +33,20 @@ struct AIConversationDetailView: View {
         }
         .navigationTitle(viewModel.selectedConversation?.title ?? "Conversation")
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: { dismiss() }) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 17, weight: .semibold))
+                        Text("Back")
+                            .font(.system(size: 17))
+                    }
+                    .foregroundColor(.blue)
+                }
+            }
+        }
         .onAppear {
             viewModel.fetchConversation(id: conversationId)
         }

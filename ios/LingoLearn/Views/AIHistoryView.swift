@@ -130,6 +130,7 @@ struct ConversationCard: View {
 }
 
 struct BookmarkedMessagesView: View {
+    @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = AIHistoryViewModel()
 
     var body: some View {
@@ -178,7 +179,20 @@ struct BookmarkedMessagesView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(false)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: { dismiss() }) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 17, weight: .semibold))
+                        Text("Back")
+                            .font(.system(size: 17))
+                    }
+                    .foregroundColor(.blue)
+                }
+            }
+        }
         .onAppear {
             viewModel.fetchBookmarks()
         }

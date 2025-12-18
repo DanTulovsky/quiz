@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct DailyView: View {
+    @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = DailyViewModel()
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @State private var reportReason = ""
@@ -53,6 +54,20 @@ struct DailyView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: { dismiss() }) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 17, weight: .semibold))
+                        Text("Back")
+                            .font(.system(size: 17))
+                    }
+                    .foregroundColor(.blue)
+                }
+            }
+        }
         .sheet(isPresented: $viewModel.showReportModal) {
             reportSheet
         }

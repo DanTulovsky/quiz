@@ -1,14 +1,15 @@
 import SwiftUI
 
 struct WordOfTheDayView: View {
+    @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = WordOfTheDayViewModel()
-    
+
     private var displayFormatter: DateFormatter {
         let formatter = DateFormatter()
         formatter.dateStyle = .full
         return formatter
     }
-    
+
     var body: some View {
         ScrollView {
             VStack(spacing: 25) {
@@ -25,7 +26,7 @@ struct WordOfTheDayView: View {
                     }
                 }
                 .padding(.top)
-                
+
                 // Date Navigation
                 HStack(spacing: 20) {
                     Button(action: { viewModel.previousDay() }) {
@@ -35,12 +36,12 @@ struct WordOfTheDayView: View {
                             .background(Color.blue.opacity(0.1))
                             .clipShape(Circle())
                     }
-                    
+
                     Text(displayFormatter.string(from: viewModel.currentDate))
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                         .frame(maxWidth: .infinity)
-                    
+
                     Button(action: { viewModel.nextDay() }) {
                         Image(systemName: "chevron.right")
                             .font(.title2)
@@ -50,13 +51,13 @@ struct WordOfTheDayView: View {
                     }
                     .disabled(Calendar.current.isDateInToday(viewModel.currentDate))
                 }
-                
+
                 if viewModel.isLoading {
                     ProgressView()
                         .padding(.top, 50)
                 } else if let wotd = viewModel.wordOfTheDay {
                     wordCard(wotd)
-                    
+
                     Text("Use arrows to navigate between days")
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -77,11 +78,25 @@ struct WordOfTheDayView: View {
             .padding()
         }
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: { dismiss() }) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 17, weight: .semibold))
+                        Text("Back")
+                            .font(.system(size: 17))
+                    }
+                    .foregroundColor(.blue)
+                }
+            }
+        }
         .onAppear {
             viewModel.fetchWordOfTheDay()
         }
     }
-    
+
     @ViewBuilder
     private func wordCard(_ wotd: WordOfTheDayDisplay) -> some View {
         VStack(spacing: 25) {
@@ -90,14 +105,14 @@ struct WordOfTheDayView: View {
                 Text(wotd.word)
                     .font(.system(size: 48, weight: .bold))
                     .foregroundColor(.primary)
-                
+
                 Text(wotd.translation)
                     .font(.title2)
                     .italic()
                     .foregroundColor(.secondary)
             }
             .padding(.top, 10)
-            
+
             // Example Sentence Inner Card
             VStack(alignment: .leading, spacing: 12) {
                 Text(wotd.sentence)
@@ -110,7 +125,7 @@ struct WordOfTheDayView: View {
             .cornerRadius(12)
             .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
             .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.blue.opacity(0.2), lineWidth: 1))
-            
+
             // Explanation Inner Card
             if let explanation = wotd.explanation {
                 VStack(alignment: .leading, spacing: 12) {
@@ -125,7 +140,7 @@ struct WordOfTheDayView: View {
                 .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
                 .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.blue.opacity(0.2), lineWidth: 1))
             }
-            
+
             // Badges
             HStack(spacing: 10) {
                 BadgeView(text: wotd.language.uppercased(), color: .gray)

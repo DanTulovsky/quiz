@@ -11,47 +11,26 @@ struct SettingsView: View {
 
     // Common timezones list
     private let commonTimezones = [
+        "UTC",
         "America/New_York",
         "America/Chicago",
         "America/Denver",
         "America/Los_Angeles",
-        "America/Anchorage",
-        "Pacific/Honolulu",
+        "America/Mexico_City",
+        "America/Sao_Paulo",
         "Europe/London",
         "Europe/Paris",
         "Europe/Berlin",
-        "Europe/Rome",
         "Europe/Madrid",
-        "Europe/Amsterdam",
-        "Europe/Brussels",
-        "Europe/Vienna",
-        "Europe/Zurich",
-        "Europe/Stockholm",
-        "Europe/Oslo",
-        "Europe/Copenhagen",
-        "Europe/Helsinki",
-        "Europe/Athens",
-        "Europe/Istanbul",
         "Europe/Moscow",
         "Asia/Dubai",
         "Asia/Kolkata",
         "Asia/Bangkok",
         "Asia/Singapore",
-        "Asia/Hong_Kong",
-        "Asia/Tokyo",
-        "Asia/Seoul",
         "Asia/Shanghai",
+        "Asia/Tokyo",
         "Australia/Sydney",
-        "Australia/Melbourne",
-        "Pacific/Auckland",
-        "America/Toronto",
-        "America/Vancouver",
-        "America/Mexico_City",
-        "America/Sao_Paulo",
-        "America/Buenos_Aires",
-        "Africa/Cairo",
-        "Africa/Johannesburg",
-        "UTC"
+        "Pacific/Auckland"
     ]
 
     // Learning Preferences State
@@ -82,6 +61,10 @@ struct SettingsView: View {
     @AppStorage("app_theme") private var appTheme: String = "system"
     @AppStorage("app_font_size") private var appFontSize: String = "M"
 
+    private func formatTimezone(_ tz: String) -> String {
+        let cityName = tz.split(separator: "/").last?.replacingOccurrences(of: "_", with: " ") ?? tz
+        return "\(cityName) (\(tz.split(separator: "/").first ?? ""))"
+    }
 
     var body: some View {
         ScrollView {
@@ -138,7 +121,7 @@ struct SettingsView: View {
                                 Picker("Timezone", selection: $timezone) {
                                     Text("Select Timezone").tag("")
                                     ForEach(commonTimezones, id: \.self) { tz in
-                                        Text(tz).tag(tz)
+                                        Text(formatTimezone(tz)).tag(tz)
                                     }
                                 }
                                 .pickerStyle(.menu)
@@ -265,9 +248,14 @@ struct SettingsView: View {
                                 Label("Daily Email Delivery", systemImage: "envelope.fill")
                             }
                             Button(action: { viewModel.sendTestEmail() }) {
-                                Label("Send Test Email", systemImage: "paperplane")
+                                Text("Test Email")
                                     .font(.subheadline)
+                                    .fontWeight(.medium)
                                     .foregroundColor(.blue)
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 12)
+                                    .background(Color.blue.opacity(0.1))
+                                    .cornerRadius(10)
                             }
                             .disabled(email.isEmpty)
                         }
