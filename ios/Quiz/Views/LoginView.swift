@@ -1,7 +1,7 @@
 import AuthenticationServices
+import Combine
 import SafariServices
 import SwiftUI
-import Combine
 
 struct LoginView: View {
     @EnvironmentObject var viewModel: AuthenticationViewModel
@@ -182,26 +182,27 @@ struct LoginView: View {
                 if error != nil {
                     isLoading = false
                 }
+            }
+            .sheet(
+                isPresented: Binding(
+                    get: {
+                        showWebAuth && !viewModel.isAuthenticated
+                    },
+                    set: { newValue in
+                        // If authenticated, force dismiss
+                        if viewModel.isAuthenticated {
+                            showWebAuth = false
+                        } else {
+                            showWebAuth = newValue
                         }
-                    .sheet(isPresented: Binding(
-                        get: {
-                            showWebAuth && !viewModel.isAuthenticated
-                        },
-                        set: { newValue in
-                            // If authenticated, force dismiss
-                            if viewModel.isAuthenticated {
-                                showWebAuth = false
-                            } else {
-                                showWebAuth = newValue
-                            }
-                        }
-                    )) {
+                    }
+                )
+            ) {
                 // Only show WebAuthView if URL is set and user is not authenticated
                 if let url = viewModel.googleAuthURL, !viewModel.isAuthenticated {
                     WebAuthView(
                         url: url,
                         onCallback: { components in
-                            print("📞 Callback received with components: \(components)")
 
                             // Guard: Don't process callback if already authenticated
                             // This prevents re-processing if the system dialog re-triggers after authentication
@@ -212,7 +213,9 @@ struct LoginView: View {
                             }
 
                             // Check for OAuth error first
-                            if let error = components.queryItems?.first(where: { $0.name == "error" })?.value {
+                            if let error = components.queryItems?.first(where: {
+                                $0.name == "error"
+                            })?.value {
                                 print("❌ OAuth error in callback: \(error)")
                                 isLoading = false
                                 showWebAuth = false
@@ -227,7 +230,6 @@ struct LoginView: View {
                                 let state = components.queryItems?.first(where: {
                                     $0.name == "state"
                                 })?.value
-                                print("✅ Code found: \(code.prefix(10))..., state: \(state ?? "nil")")
 
                                 // Immediately dismiss sheet and clear URL to prevent re-triggering
                                 // Do this synchronously to prevent any view updates
@@ -293,7 +295,8 @@ struct WebAuthView: UIViewControllerRepresentable {
 
         // Use ASWebAuthenticationSession with iOS URL scheme for proper OAuth flow
         // This uses the iOS client ID and custom URL scheme: com.googleusercontent.apps.53644033433-qpic9cnjknphdpa332d7flq7nvvdv520
-        let callbackURLScheme = "com.googleusercontent.apps.53644033433-qpic9cnjknphdpa332d7flq7nvvdv520"
+        let callbackURLScheme =
+            "com.googleusercontent.apps.53644033433-qpic9cnjknphdpa332d7flq7nvvdv520"
 
         // Capture coordinator reference for use in completion handler
         let coordinator = context.coordinator
@@ -308,7 +311,8 @@ struct WebAuthView: UIViewControllerRepresentable {
                         coordinator.session = nil
 
                         if let authError = error as? ASWebAuthenticationSessionError,
-                           authError.code == .canceledLogin {
+                            authError.code == .canceledLogin
+                        {
                             print("ℹ️ User cancelled OAuth flow")
                             onDismiss()
                             return
@@ -319,21 +323,21 @@ struct WebAuthView: UIViewControllerRepresentable {
                     }
 
                     if let callbackURL = callbackURL {
-                        print("✅ Received callback URL: \(callbackURL.absoluteString)")
                         // Cancel and clear the session immediately after receiving callback to prevent re-triggering
                         let sessionToCancel = coordinator.session
                         coordinator.session = nil
                         sessionToCancel?.cancel()
 
                         // Process callback immediately - the session is already cancelled
-                        if let components = URLComponents(url: callbackURL, resolvingAgainstBaseURL: false) {
+                        if let components = URLComponents(
+                            url: callbackURL, resolvingAgainstBaseURL: false)
+                        {
                             onCallback(components)
                         } else {
                             print("❌ Failed to parse callback URL")
                             onDismiss()
                         }
                     } else {
-                        print("⚠️ No callback URL received")
                         // Cancel the session if no callback URL
                         let sessionToCancel = coordinator.session
                         coordinator.session = nil
@@ -346,7 +350,7 @@ struct WebAuthView: UIViewControllerRepresentable {
 
         // Use SFSafariViewController presentation for better UX and credential access
         session.presentationContextProvider = coordinator
-        session.prefersEphemeralWebBrowserSession = false // Use saved credentials
+        session.prefersEphemeralWebBrowserSession = false  // Use saved credentials
 
         coordinator.session = session
 
@@ -382,7 +386,6 @@ struct WebAuthView: UIViewControllerRepresentable {
             }
         }
     }
-
 
     func makeCoordinator() -> Coordinator {
         Coordinator()

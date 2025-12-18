@@ -133,13 +133,10 @@ class APIService {
         // This ensures the session cookie from OAuth is available for subsequent requests
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { error in
-                print("❌ Network error: \(error.localizedDescription)")
                 return .requestFailed(error)
             }
             .flatMap { data, response -> AnyPublisher<LoginResponse, APIError> in
-                print("📥 Received response: \(response)")
                 if let httpResponse = response as? HTTPURLResponse {
-                    print("📊 Status code: \(httpResponse.statusCode)")
                     // Ensure cookies from the OAuth callback are stored
                     if let url = httpResponse.url {
                         let cookies = HTTPCookie.cookies(
@@ -147,11 +144,7 @@ class APIService {
                                 as! [String: String], for: url)
                         for cookie in cookies {
                             HTTPCookieStorage.shared.setCookie(cookie)
-                            print("🍪 Stored cookie: \(cookie.name)=\(cookie.value.prefix(20))...")
                         }
-                    }
-                    if let responseString = String(data: data, encoding: .utf8) {
-                        print("📄 Response body: \(responseString.prefix(200))")
                     }
                 }
                 return self.handleResponse(data, response)
