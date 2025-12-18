@@ -7,6 +7,8 @@ struct StoryDetailView: View {
     @State private var selectedAnswers: [Int: Int] = [:]
     @State private var submittedQuestions: Set<Int> = [] // QuestionID: OptionIndex
 
+    @StateObject private var ttsManager = TTSSynthesizerManager.shared
+
     var body: some View {
         ZStack {
             VStack(spacing: 0) {
@@ -95,13 +97,6 @@ struct StoryDetailView: View {
                             }
                             .disabled(viewModel.currentSectionIndex == story.sections.count - 1)
 
-                            if let content = viewModel.currentSection?.content {
-                                TTSButton(text: content, language: viewModel.selectedStory?.language ?? "en")
-                                    .padding(4)
-                                    .background(Color.blue.opacity(0.1))
-                                    .cornerRadius(6)
-                            }
-
                             BadgeView(text: "A1", color: .blue)
                         }
                         .padding()
@@ -110,6 +105,16 @@ struct StoryDetailView: View {
                     ScrollView {
                         ScrollViewReader { proxy in
                             VStack(alignment: .leading, spacing: 20) {
+                                if let error = ttsManager.errorMessage {
+                                    Text(error)
+                                        .font(.caption)
+                                        .foregroundColor(.red)
+                                        .padding()
+                                        .background(Color.red.opacity(0.1))
+                                        .cornerRadius(8)
+                                        .padding(.horizontal)
+                                }
+
                                 if viewModel.mode == .section, let section = viewModel.currentSection {
                                     sectionContent(section)
 

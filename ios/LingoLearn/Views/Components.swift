@@ -4,7 +4,7 @@ import SwiftUI
 struct BadgeView: View {
     let text: String
     let color: Color
-    
+
     var body: some View {
         Text(text)
             .font(.caption2)
@@ -19,14 +19,19 @@ struct BadgeView: View {
 
 import AVFoundation
 
-@MainActor class TTSSynthesizerManager: NSObject, ObservableObject, AVSpeechSynthesizerDelegate {
+@MainActor class TTSSynthesizerManager: NSObject, ObservableObject {
     static let shared = TTSSynthesizerManager()
-    private let synthesizer = AVSpeechSynthesizer()
+    private var player: AVPlayer?
+    private var cancellables = Set<AnyCancellable>()
+
+    // Global preferred voice
+    var preferredVoice: String?
+
     @Published var currentlySpeakingText: String?
+    @Published var errorMessage: String?
 
     override init() {
         super.init()
-        synthesizer.delegate = self
     }
 
     func speak(_ text: String, language: String, voiceIdentifier: String? = nil) {
@@ -34,9 +39,23 @@ import AVFoundation
             stop()
             return
         }
-        
+
         stop()
-        
+        currentlySpeakingText = text
+        errorMessage = nil
+
+        // Use provided voice, then preferred voice, then default for language
+        let effectiveVoice: String
+        if let provided = voiceIdentifier, !provided.isEmpty {
+            effectiveVoice = provided
+        } else if let preferred = preferredVoice, !preferred.isEmpty {
+            effectiveVoice = preferred
+        } else {
+            effectiveVoice = defaultVoiceForLanguage(language)
+        }
+
+        print("Requested TTS for text: \"\(text.prefix(20))...\", language: \(language), voice: \(effectiveVoice)")
+
         // Configure AVAudioSession for background playback
         do {
             try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
@@ -44,50 +63,166 @@ import AVFoundation
         } catch {
             print("Failed to configure AVAudioSession: \(error)")
         }
-        
-        let utterance = AVSpeechUtterance(string: text)
-        
-        if let voiceId = voiceIdentifier, !voiceIdentifier!.isEmpty, let voice = AVSpeechSynthesisVoice(identifier: voiceId) {
-            utterance.voice = voice
-        } else {
-            utterance.voice = AVSpeechSynthesisVoice(language: mapLanguageCode(language))
+
+        // Try backend TTS
+        let request = TTSRequest(input: text, voice: effectiveVoice, responseFormat: "mp3", speed: 1.0)
+        APIService.shared.initializeTTSStream(request: request)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { [weak self] completion in
+                if case .failure(let error) = completion {
+                    print("Backend TTS initialization failed: \(error).")
+                    self?.handleError("Failed to initialize audio: \(error.localizedDescription)")
+                }
+            }, receiveValue: { [weak self] response in
+                print("Backend TTS initialized. Stream ID: \(response.streamId), Token: \(response.token ?? "none")")
+                self?.playStream(streamId: response.streamId, token: response.token)
+            })
+            .store(in: &cancellables)
+    }
+
+    private func playStream(streamId: String, token: String?) {
+        let url = APIService.shared.streamURL(for: streamId, token: token)
+        print("Downloading TTS audio from URL: \(url.absoluteString)")
+
+        // Create request with authentication cookies
+        var request = URLRequest(url: url)
+        request.httpShouldHandleCookies = true
+        request.cachePolicy = .reloadIgnoringLocalCacheData
+
+        // Download the complete audio data
+        URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+            guard let self = self else { return }
+
+            if let error = error {
+                print("Failed to download TTS audio: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    self.handleError("Network error: \(error.localizedDescription)")
+                }
+                return
+            }
+
+            guard let httpResponse = response as? HTTPURLResponse else {
+                DispatchQueue.main.async {
+                    self.handleError("Invalid server response.")
+                }
+                return
+            }
+
+            guard (200...299).contains(httpResponse.statusCode) else {
+                print("Server returned status \(httpResponse.statusCode)")
+                DispatchQueue.main.async {
+                    self.handleError("Server error \(httpResponse.statusCode)")
+                }
+                return
+            }
+
+            guard let audioData = data, !audioData.isEmpty else {
+                print("Received empty audio data")
+                DispatchQueue.main.async {
+                    self.handleError("No audio data received.")
+                }
+                return
+            }
+
+            print("Downloaded \(audioData.count) bytes of audio data. Playing...")
+
+            // Play the audio data on the main thread
+            DispatchQueue.main.async {
+                self.playAudioData(audioData)
+            }
+        }.resume()
+    }
+
+    private func playAudioData(_ data: Data) {
+        do {
+            // Write to temporary file
+            let tempDir = FileManager.default.temporaryDirectory
+            let tempFile = tempDir.appendingPathComponent(UUID().uuidString + ".mp3")
+            try data.write(to: tempFile)
+
+            // Create player with local file
+            let asset = AVURLAsset(url: tempFile)
+            let playerItem = AVPlayerItem(asset: asset)
+
+            // Listen for completion
+            NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: playerItem, queue: .main) { [weak self] _ in
+                Task { @MainActor in
+                    self?.currentlySpeakingText = nil
+                    // Clean up temp file
+                    try? FileManager.default.removeItem(at: tempFile)
+                }
+            }
+
+            // Listen for errors
+            NotificationCenter.default.addObserver(forName: .AVPlayerItemFailedToPlayToEndTime, object: playerItem, queue: .main) { [weak self] _ in
+                print("AVPlayerItem failed to play to end.")
+                self?.handleError("Audio playback failed.")
+                try? FileManager.default.removeItem(at: tempFile)
+            }
+
+            let player = AVPlayer(playerItem: playerItem)
+            player.automaticallyWaitsToMinimizeStalling = false
+            self.player = player
+
+            // Add observer for status
+            playerItem.addObserver(self, forKeyPath: "status", options: [.new, .initial], context: nil)
+
+            player.play()
+            print("Audio playback started")
+        } catch {
+            print("Failed to save or play audio: \(error.localizedDescription)")
+            handleError("Playback error: \(error.localizedDescription)")
         }
-        
-        currentlySpeakingText = text
-        synthesizer.speak(utterance)
+    }
+
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if keyPath == "status", let playerItem = object as? AVPlayerItem {
+            if playerItem.status == .failed {
+                if let error = playerItem.error {
+                    print("AVPlayerItem status failed: \(error.localizedDescription).")
+                    handleError("Failed to load audio: \(error.localizedDescription)")
+                } else {
+                    handleError("Failed to load audio stream.")
+                }
+            }
+        }
+    }
+
+    private func handleError(_ message: String) {
+        DispatchQueue.main.async {
+            self.errorMessage = message
+            self.currentlySpeakingText = nil
+            self.stop()
+        }
+    }
+
+    private func defaultVoiceForLanguage(_ lang: String) -> String {
+        switch lang.lowercased() {
+        case "italian", "it": return "it-IT-IsabellaNeural"
+        case "spanish", "es": return "es-ES-ElviraNeural"
+        case "french", "fr": return "fr-FR-DeniseNeural"
+        case "german", "de": return "de-DE-KatjaNeural"
+        case "english", "en": return "en-US-JennyNeural"
+        case "portuguese": return "pt-PT-RaquelNeural"
+        case "russian": return "ru-RU-DariyaNeural"
+        case "japanese": return "ja-JP-NanamiNeural"
+        case "korean": return "ko-KR-SunHiNeural"
+        case "chinese": return "zh-CN-XiaoxiaoNeural"
+        case "hindi": return "hi-IN-SwaraNeural"
+        default: return "en-US-JennyNeural"
+        }
     }
 
     func stop() {
-        synthesizer.stopSpeaking(at: .immediate)
+        player?.pause()
+        player = nil
         currentlySpeakingText = nil
-        
+        cancellables.removeAll()
+
         do {
             try AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
         } catch {
             print("Failed to deactivate AVAudioSession: \(error)")
-        }
-    }
-
-    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
-        DispatchQueue.main.async {
-            self.currentlySpeakingText = nil
-        }
-    }
-
-    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) {
-        DispatchQueue.main.async {
-            self.currentlySpeakingText = nil
-        }
-    }
-
-    private func mapLanguageCode(_ lang: String) -> String {
-        switch lang.lowercased() {
-        case "italian", "it": return "it-IT"
-        case "spanish", "es": return "es-ES"
-        case "french", "fr": return "fr-FR"
-        case "german", "de": return "de-DE"
-        case "english", "en": return "en-US"
-        default: return "en-US"
         }
     }
 }
@@ -117,7 +252,6 @@ struct TTSButton: View {
 struct SnippetDetailView: View {
     let snippet: Snippet
     let onClose: () -> Void
-    let onOpenQuiz: (() -> Void)? = nil // Placeholder for "Open Quiz" icon
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -130,7 +264,7 @@ struct SnippetDetailView: View {
                         .foregroundColor(.secondary)
                 }
             }
-            
+
             HStack {
                 BadgeView(text: "\(snippet.sourceLanguage?.uppercased() ?? "??") → \(snippet.targetLanguage?.uppercased() ?? "??")", color: .blue)
                 if let level = snippet.difficultyLevel {
@@ -144,7 +278,7 @@ struct SnippetDetailView: View {
                         .foregroundColor(.red)
                 }
             }
-            
+
             if let context = snippet.context {
                 Text("\"\(context)\"")
                     .font(.subheadline)

@@ -277,7 +277,7 @@ struct SettingsView: View {
 
                     Button(action: saveChanges) {
                         HStack {
-                            Image(systemName: "save")
+                            Image(systemName: "checkmark.circle")
                             Text("Save Changes")
                         }
                         .font(.headline)
@@ -310,7 +310,10 @@ struct SettingsView: View {
             loadInitialData()
             viewModel.fetchSettings(); viewModel.fetchAIProviders(); viewModel.fetchVoices(language: learningLanguage)
         }
-                        .onChange(of: learningLanguage) { _, newValue in
+                        .onChange(of: ttsVoice) { _, newValue in
+            TTSSynthesizerManager.shared.preferredVoice = newValue
+        }
+        .onChange(of: learningLanguage) { _, newValue in
             viewModel.fetchVoices(language: newValue)
         }
         .onChange(of: authViewModel.user) { _, user in
@@ -329,6 +332,7 @@ struct SettingsView: View {
                 learningLanguage = authViewModel.user?.preferredLanguage ?? "italian"
                 currentLevel = authViewModel.user?.currentLevel ?? "A1"
                 ttsVoice = prefs.ttsVoice ?? ""
+                TTSSynthesizerManager.shared.preferredVoice = ttsVoice
                 focusOnWeakAreas = prefs.focusOnWeakAreas
                 freshQuestionRatio = prefs.freshQuestionRatio
                 knownQuestionPenalty = prefs.knownQuestionPenalty
@@ -350,6 +354,9 @@ struct SettingsView: View {
             wordOfDayEmailEnabled = user.wordOfDayEmailEnabled ?? false
             selectedProvider = user.aiProvider ?? ""
             selectedModel = user.aiModel ?? ""
+        }
+        if let prefs = viewModel.learningPrefs {
+            ttsVoice = prefs.ttsVoice ?? ""
         }
     }
 

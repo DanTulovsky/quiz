@@ -5,6 +5,8 @@ struct QuizView: View {
     @State private var reportReason = ""
     @State private var selectedConfidence: Int? = nil
 
+    @StateObject private var ttsManager = TTSSynthesizerManager.shared
+
     init(question: Question? = nil, questionType: String? = nil, isDaily: Bool = false) {
         _viewModel = StateObject(wrappedValue: QuizViewModel(question: question, questionType: questionType, isDaily: isDaily))
     }
@@ -29,6 +31,15 @@ struct QuizView: View {
         ScrollView {
             ScrollViewReader { proxy in
                 VStack(spacing: 20) {
+                    if let error = ttsManager.errorMessage {
+                        Text(error)
+                            .font(.caption)
+                            .foregroundColor(.red)
+                            .padding()
+                            .background(Color.red.opacity(0.1))
+                            .cornerRadius(8)
+                    }
+
                     if viewModel.isLoading && viewModel.question == nil {
                         ProgressView()
                             .padding(.top, 50)

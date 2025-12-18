@@ -303,6 +303,34 @@ class APIService {
             .eraseToAnyPublisher()
     }
 
+    func getAIConversation(id: String) -> AnyPublisher<Conversation, APIError> {
+        let url = baseURL.appendingPathComponent("ai/conversations/\(id)")
+        let urlRequest = authenticatedRequest(for: url)
+        return URLSession.shared.dataTaskPublisher(for: urlRequest)
+            .mapError { .requestFailed($0) }
+            .flatMap { self.handleResponse($0.data, $0.response) }
+            .eraseToAnyPublisher()
+    }
+
+    func updateAIConversationTitle(id: String, title: String) -> AnyPublisher<SuccessResponse, APIError> {
+        let url = baseURL.appendingPathComponent("ai/conversations/\(id)")
+        var urlRequest = authenticatedRequest(for: url, method: "PUT")
+        urlRequest.httpBody = try? JSONSerialization.data(withJSONObject: ["title": title])
+        return URLSession.shared.dataTaskPublisher(for: urlRequest)
+            .mapError { .requestFailed($0) }
+            .flatMap { self.handleResponse($0.data, $0.response) }
+            .eraseToAnyPublisher()
+    }
+
+    func deleteAIConversation(id: String) -> AnyPublisher<SuccessResponse, APIError> {
+        let url = baseURL.appendingPathComponent("ai/conversations/\(id)")
+        let urlRequest = authenticatedRequest(for: url, method: "DELETE")
+        return URLSession.shared.dataTaskPublisher(for: urlRequest)
+            .mapError { .requestFailed($0) }
+            .flatMap { self.handleResponse($0.data, $0.response) }
+            .eraseToAnyPublisher()
+    }
+
     func reportQuestion(id: Int, request: ReportQuestionRequest) -> AnyPublisher<SuccessResponse, APIError> {
         let url = baseURL.appendingPathComponent("quiz/question/\(id)/report")
         var urlRequest = authenticatedRequest(for: url, method: "POST")
@@ -438,9 +466,16 @@ class APIService {
     }
 
     func initializeTTSStream(request: TTSRequest) -> AnyPublisher<TTSStreamInitResponse, APIError> {
-        let url = baseURL.appendingPathComponent("audio/speech/init")
+        let url = baseURL.appendingPathComponent("audio")
+            .appendingPathComponent("speech")
+            .appendingPathComponent("init")
         var urlRequest = authenticatedRequest(for: url, method: "POST")
-        urlRequest.httpBody = try? JSONEncoder().encode(request)
+        if let body = try? JSONEncoder().encode(request) {
+            urlRequest.httpBody = body
+            if let bodyString = String(data: body, encoding: .utf8) {
+                print("TTS Init Request: \(bodyString)")
+            }
+        }
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { self.handleResponse($0.data, $0.response) }
@@ -448,7 +483,12 @@ class APIService {
     }
 
     func streamURL(for streamId: String, token: String?) -> URL {
-        var components = URLComponents(url: baseURL.appendingPathComponent("audio/speech/stream/\(streamId)"), resolvingAgainstBaseURL: false)!
+        let streamPath = baseURL.appendingPathComponent("audio")
+            .appendingPathComponent("speech")
+            .appendingPathComponent("stream")
+            .appendingPathComponent(streamId)
+
+        var components = URLComponents(url: streamPath, resolvingAgainstBaseURL: false)!
         if let token = token {
             components.queryItems = [URLQueryItem(name: "token", value: token)]
         }
@@ -456,40 +496,47 @@ class APIService {
     }
 
     func getVoices(language: String) -> AnyPublisher<[EdgeTTSVoiceInfo], APIError> {
-        var urlComponents = URLComponents(url: baseURL.appendingPathComponent("voices"), resolvingAgainstBaseURL: false)!
-        urlComponents.queryItems = [URLQueryItem(name: "language", value: language)]
-        let urlRequest = authenticatedRequest(for: urlComponents.url!)
+        let url = baseURL.appendingPathComponent("voices")
+        var components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
+        components.queryItems = [URLQueryItem(name: "language", value: language)]
+
+        let urlRequest = authenticatedRequest(for: components.url!)
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { data, response -> AnyPublisher<[EdgeTTSVoiceInfo], APIError> in
                 guard let httpResponse = response as? HTTPURLResponse else { return Fail(error: .invalidResponse).eraseToAnyPublisher() }
+
+                let jsonStr = String(data: data, encoding: .utf8) ?? "binary data"
+                print("Voices response for \(language): \(jsonStr)")
+
                 if (200...299).contains(httpResponse.statusCode) {
                     let decoder = JSONDecoder()
 
-                    // Try [EdgeTTSVoiceInfo]
+                    // Try direct array of objects
                     if let voices = try? decoder.decode([EdgeTTSVoiceInfo].self, from: data) {
                         return Just(voices).setFailureType(to: APIError.self).eraseToAnyPublisher()
                     }
 
-                    // Try {"voices": [EdgeTTSVoiceInfo]}
+                    // Try decoding as a dictionary with "voices" key
                     if let wrapper = try? decoder.decode([String: [EdgeTTSVoiceInfo]].self, from: data), let voices = wrapper["voices"] {
                         return Just(voices).setFailureType(to: APIError.self).eraseToAnyPublisher()
                     }
 
-                    // Try [String]
-                    if let voiceStrings = try? decoder.decode([String].self, from: data) {
-                        let voices = voiceStrings.map { EdgeTTSVoiceInfo(shortName: $0) }
+                    // Try array of strings
+                    if let strings = try? decoder.decode([String].self, from: data) {
+                        let voices = strings.map { EdgeTTSVoiceInfo(shortName: $0) }
                         return Just(voices).setFailureType(to: APIError.self).eraseToAnyPublisher()
                     }
 
-                    // Try {"voices": [String]}
-                    if let wrapper = try? decoder.decode([String: [String]].self, from: data), let voiceStrings = wrapper["voices"] {
-                        let voices = voiceStrings.map { EdgeTTSVoiceInfo(shortName: $0) }
+                    // Fallback: try to see if it's a JSON object at all
+                    if let json = try? JSONSerialization.jsonObject(with: data, options: []),
+                       let voicesArray = json as? [String] {
+                        let voices = voicesArray.map { EdgeTTSVoiceInfo(shortName: $0) }
                         return Just(voices).setFailureType(to: APIError.self).eraseToAnyPublisher()
                     }
 
-                    print("Fetching voices for locale: \(language). Response: \(String(data: data, encoding: .utf8) ?? "null")")
-                    return Fail(error: .decodingFailed(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to decode voices"]))).eraseToAnyPublisher()
+                    print("Voices decoding failed.")
+                    return Fail(error: .decodingFailed(NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to decode voices response"]))).eraseToAnyPublisher()
                 }
                 return Fail(error: .invalidResponse).eraseToAnyPublisher()
             }
