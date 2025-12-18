@@ -94,16 +94,17 @@ struct SettingsView: View {
 
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("Font Size").font(.subheadline).fontWeight(.medium)
-                                HStack(spacing: 12) {
+                                HStack(spacing: 8) {
                                     ForEach(["S", "M", "L", "XL"], id: \.self) { size in
                                         Button(action: {
                                             appFontSize = size
                                         }) {
                                             Text(size)
-                                                .font(.subheadline)
+                                                .font(size == "S" ? .caption : (size == "M" ? .subheadline : (size == "L" ? .body : .title3)))
                                                 .fontWeight(appFontSize == size ? .bold : .regular)
                                                 .frame(maxWidth: .infinity)
-                                                .padding(.vertical, 12)
+                                                .padding(.vertical, 8)
+                                                .padding(.horizontal, 4)
                                                 .background(appFontSize == size ? AppTheme.Colors.primaryBlue : AppTheme.Colors.primaryBlue.opacity(0.1))
                                                 .foregroundColor(appFontSize == size ? .white : AppTheme.Colors.primaryBlue)
                                                 .cornerRadius(AppTheme.CornerRadius.badge)
