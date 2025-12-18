@@ -122,6 +122,8 @@ class AuthenticationViewModel: ObservableObject {
                     guard let self else { return }
                     self.error = nil
                     self.isAuthenticated = false
+                    TTSSynthesizerManager.shared.stop()
+                    TTSSynthesizerManager.shared.preferredVoice = nil
                 }
             )
             .store(in: &cancellables)
