@@ -1,6 +1,7 @@
-import XCTest
 import Combine
-@testable import LingoLearn
+import XCTest
+
+@testable import Quiz
 
 class SettingsViewModelTests: XCTestCase {
     var viewModel: SettingsViewModel!
@@ -20,35 +21,45 @@ class SettingsViewModelTests: XCTestCase {
 
     func testUpdateUserSuccess() {
         // Given
-        let user = User(id: 1, username: "test", email: "test@test.com", language: .en, level: .a1)
+        let user = User(
+            id: 1, username: "test", email: "test@test.com", timezone: nil,
+            preferredLanguage: "en", currentLevel: "A1", aiEnabled: nil, isPaused: nil,
+            wordOfDayEmailEnabled: nil, aiProvider: nil, aiModel: nil, hasApiKey: nil)
         mockAPIService.updateUserResult = .success(user)
+        let userUpdate = UserUpdateRequest(
+            username: "test", email: "test@test.com", preferredLanguage: "en", currentLevel: "A1")
 
         // When
-        viewModel.updateUser(username: "test", email: "test@test.com", language: .en, level: .a1)
+        viewModel.saveChanges(userUpdate: userUpdate, prefs: nil)
 
         // Then
-        XCTAssertNotNil(viewModel.user)
-        XCTAssertEqual(viewModel.user?.username, "test")
-        XCTAssertNil(viewModel.error)
+        // Wait a bit for async operation
+        let expectation = XCTestExpectation(description: "User updated")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            XCTAssertNotNil(self.viewModel.user)
+            XCTAssertEqual(self.viewModel.user?.username, "test")
+            XCTAssertNil(self.viewModel.error)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
     }
 
     func testUpdateUserFailure() {
         // Given
         mockAPIService.updateUserResult = .failure(.invalidResponse)
+        let userUpdate = UserUpdateRequest(
+            username: "test", email: "test@test.com", preferredLanguage: "en", currentLevel: "A1")
 
         // When
-        viewModel.updateUser(username: "test", email: "test@test.com", language: .en, level: .a1)
+        viewModel.saveChanges(userUpdate: userUpdate, prefs: nil)
 
         // Then
-        XCTAssertNil(viewModel.user)
-        XCTAssertNotNil(viewModel.error)
-    }
-}
-
-extension MockAPIService {
-    var updateUserResult: Result<User, APIError>?
-    
-    override func updateUser(request: UserUpdateRequest) -> AnyPublisher<User, APIError> {
-        return updateUserResult!.publisher.eraseToAnyPublisher()
+        // Wait a bit for async operation
+        let expectation = XCTestExpectation(description: "User update failed")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            XCTAssertNotNil(self.viewModel.error)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
     }
 }

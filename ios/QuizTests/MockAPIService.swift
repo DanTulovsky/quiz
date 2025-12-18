@@ -1,6 +1,7 @@
-import Foundation
 import Combine
-@testable import LingoLearn
+import Foundation
+
+@testable import Quiz
 
 class MockAPIService: APIService {
     // Result properties
@@ -28,75 +29,96 @@ class MockAPIService: APIService {
     override func login(request: LoginRequest) -> AnyPublisher<LoginResponse, APIError> {
         return loginResult!.publisher.eraseToAnyPublisher()
     }
-    
+
     override func signup(request: UserCreateRequest) -> AnyPublisher<SuccessResponse, APIError> {
         return signupResult!.publisher.eraseToAnyPublisher()
     }
-    
+
     override func authStatus() -> AnyPublisher<AuthStatusResponse, APIError> {
         return authStatusResult!.publisher.eraseToAnyPublisher()
     }
-    
-    override func getQuestion(language: Language?, level: Level?, type: String?, excludeType: String?) -> AnyPublisher<QuestionFetchResult, APIError> {
+
+    override func getQuestion(
+        language: Language?, level: Level?, type: String?, excludeType: String?
+    ) -> AnyPublisher<QuestionFetchResult, APIError> {
         return getQuestionResult!.publisher.eraseToAnyPublisher()
     }
-    
+
     override func postAnswer(request: AnswerRequest) -> AnyPublisher<AnswerResponse, APIError> {
         return postAnswerResult!.publisher.eraseToAnyPublisher()
     }
-    
+
     override func getStories() -> AnyPublisher<[StorySummary], APIError> {
         return getStoriesResult!.publisher.eraseToAnyPublisher()
     }
-    
+
     override func getStory(id: Int) -> AnyPublisher<StoryContent, APIError> {
         return getStoryResult!.publisher.eraseToAnyPublisher()
     }
-    
-    override func getSnippets(sourceLang: Language?, targetLang: Language?) -> AnyPublisher<SnippetList, APIError> {
+
+    override func getSnippets(sourceLang: Language?, targetLang: Language?, storyId: Int? = nil)
+        -> AnyPublisher<
+            SnippetList, APIError
+        >
+    {
         return getSnippetsResult!.publisher.eraseToAnyPublisher()
     }
-    
-    override func getDailyQuestions(date: String) -> AnyPublisher<DailyQuestionsResponse, APIError> {
+
+    override func getDailyQuestions(date: String) -> AnyPublisher<DailyQuestionsResponse, APIError>
+    {
         return getDailyQuestionsResult!.publisher.eraseToAnyPublisher()
     }
-    
-    override func postDailyAnswer(date: String, questionId: Int, userAnswerIndex: Int) -> AnyPublisher<DailyAnswerResponse, APIError> {
+
+    override func postDailyAnswer(date: String, questionId: Int, userAnswerIndex: Int)
+        -> AnyPublisher<DailyAnswerResponse, APIError>
+    {
         return postDailyAnswerResult!.publisher.eraseToAnyPublisher()
     }
-    
-    override func generateTranslationSentence(request: TranslationPracticeGenerateRequest) -> AnyPublisher<TranslationPracticeSentenceResponse, APIError> {
+
+    override func generateTranslationSentence(request: TranslationPracticeGenerateRequest)
+        -> AnyPublisher<TranslationPracticeSentenceResponse, APIError>
+    {
         return generateTranslationSentenceResult!.publisher.eraseToAnyPublisher()
     }
-    
-    override func submitTranslation(request: TranslationPracticeSubmitRequest) -> AnyPublisher<TranslationPracticeSessionResponse, APIError> {
+
+    override func submitTranslation(request: TranslationPracticeSubmitRequest) -> AnyPublisher<
+        TranslationPracticeSessionResponse, APIError
+    > {
         return submitTranslationResult!.publisher.eraseToAnyPublisher()
     }
-    
-    override func getExistingTranslationSentence(language: String, level: String, direction: String) -> AnyPublisher<TranslationPracticeSentenceResponse, APIError> {
+
+    override func getExistingTranslationSentence(language: String, level: String, direction: String)
+        -> AnyPublisher<TranslationPracticeSentenceResponse, APIError>
+    {
         return getExistingTranslationSentenceResult!.publisher.eraseToAnyPublisher()
     }
-    
-    override func getVerbConjugations(language: String) -> AnyPublisher<VerbConjugationsData, APIError> {
+
+    override func getVerbConjugations(language: String) -> AnyPublisher<
+        VerbConjugationsData, APIError
+    > {
         return getVerbConjugationsResult!.publisher.eraseToAnyPublisher()
     }
-    
-    override func getVerbConjugation(language: String, verb: String) -> AnyPublisher<VerbConjugationDetail, APIError> {
+
+    override func getVerbConjugation(language: String, verb: String) -> AnyPublisher<
+        VerbConjugationDetail, APIError
+    > {
         return getVerbConjugationResult!.publisher.eraseToAnyPublisher()
     }
-    
+
     override func updateUser(request: UserUpdateRequest) -> AnyPublisher<User, APIError> {
         return updateUserResult!.publisher.eraseToAnyPublisher()
     }
-    
-    override func getWordOfTheDay() -> AnyPublisher<WordOfTheDayDisplay, APIError> {
+
+    override func getWordOfTheDay(date: String? = nil) -> AnyPublisher<
+        WordOfTheDayDisplay, APIError
+    > {
         return getWordOfTheDayResult!.publisher.eraseToAnyPublisher()
     }
-    
+
     override func getAIConversations() -> AnyPublisher<ConversationListResponse, APIError> {
         return getAIConversationsResult!.publisher.eraseToAnyPublisher()
     }
-    
+
     override func getBookmarkedMessages() -> AnyPublisher<BookmarkedMessagesResponse, APIError> {
         return getBookmarkedMessagesResult!.publisher.eraseToAnyPublisher()
     }

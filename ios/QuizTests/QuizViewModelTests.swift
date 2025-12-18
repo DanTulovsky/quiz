@@ -1,6 +1,7 @@
-import XCTest
 import Combine
-@testable import LingoLearn
+import XCTest
+
+@testable import Quiz
 
 class QuizViewModelTests: XCTestCase {
     var viewModel: QuizViewModel!
@@ -20,7 +21,9 @@ class QuizViewModelTests: XCTestCase {
 
     func testGetQuestionSuccess() {
         // Given
-        let question = Question(id: 1, type: "vocabulary", language: "it", level: "A1", content: [:], correctAnswerIndex: 1)
+        let question = Question(
+            id: 1, type: "vocabulary", language: "it", level: "A1", content: [:],
+            correctAnswerIndex: 1)
         mockAPIService.getQuestionResult = .success(.question(question))
 
         // When
@@ -35,7 +38,8 @@ class QuizViewModelTests: XCTestCase {
 
     func testGetQuestionGenerating() {
         // Given
-        mockAPIService.getQuestionResult = .success(.generating(GeneratingStatusResponse(message: "Wait", status: "generating")))
+        mockAPIService.getQuestionResult = .success(
+            .generating(GeneratingStatusResponse(message: "Wait", status: "generating")))
 
         // When
         viewModel.getQuestion()

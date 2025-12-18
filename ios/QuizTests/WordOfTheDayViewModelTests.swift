@@ -1,6 +1,7 @@
-import XCTest
 import Combine
-@testable import LingoLearn
+import XCTest
+
+@testable import Quiz
 
 class WordOfTheDayViewModelTests: XCTestCase {
     var viewModel: WordOfTheDayViewModel!
@@ -20,7 +21,10 @@ class WordOfTheDayViewModelTests: XCTestCase {
 
     func testFetchWordOfTheDaySuccess() {
         // Given
-        let wotd = WordOfTheDayDisplay(date: "2025-12-17", word: "test", translation: "test", sentence: "test", sourceType: "test", sourceId: 1, language: "it", level: "A1", context: nil, explanation: nil, topicCategory: nil)
+        let wotd = WordOfTheDayDisplay(
+            date: "2025-12-17", word: "test", translation: "test", sentence: "test",
+            sourceType: "test", sourceId: 1, language: "it", level: "A1", context: nil,
+            explanation: nil, topicCategory: nil)
         mockAPIService.getWordOfTheDayResult = .success(wotd)
 
         // When
@@ -29,14 +33,5 @@ class WordOfTheDayViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.wordOfTheDay?.word, "test")
         XCTAssertNil(viewModel.error)
-    }
-}
-
-
-        set { Self._wotdResult = newValue }
-    }
-    
-    override func getWordOfTheDay() -> AnyPublisher<WordOfTheDayDisplay, APIError> {
-        return getWordOfTheDayResult!.publisher.eraseToAnyPublisher()
     }
 }

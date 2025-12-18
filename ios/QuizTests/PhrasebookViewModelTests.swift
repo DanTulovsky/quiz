@@ -1,6 +1,7 @@
-import XCTest
 import Combine
-@testable import LingoLearn
+import XCTest
+
+@testable import Quiz
 
 class PhrasebookViewModelTests: XCTestCase {
     var viewModel: PhrasebookViewModel!

@@ -1,6 +1,7 @@
-import XCTest
 import Combine
-@testable import LingoLearn
+import XCTest
+
+@testable import Quiz
 
 class DailyViewModelTests: XCTestCase {
     var viewModel: DailyViewModel!
@@ -20,8 +21,11 @@ class DailyViewModelTests: XCTestCase {
 
     func testFetchDailySuccess() {
         // Given
-        let question = Question(id: 1, type: "vocabulary", language: "it", level: "A1", content: [:], correctAnswerIndex: 1)
-        let daily = DailyQuestionWithDetails(id: 100, questionId: 1, question: question, isCompleted: false)
+        let question = Question(
+            id: 1, type: "vocabulary", language: "it", level: "A1", content: [:],
+            correctAnswerIndex: 1)
+        let daily = DailyQuestionWithDetails(
+            id: 100, questionId: 1, question: question, isCompleted: false, userAnswerIndex: nil)
         let response = DailyQuestionsResponse(date: "2025-12-17", questions: [daily])
         mockAPIService.getDailyQuestionsResult = .success(response)
 

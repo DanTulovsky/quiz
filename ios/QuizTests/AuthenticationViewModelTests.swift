@@ -1,6 +1,7 @@
-import XCTest
 import Combine
-@testable import LingoLearn
+import XCTest
+
+@testable import Quiz
 
 class AuthenticationViewModelTests: XCTestCase {
     var viewModel: AuthenticationViewModel!
@@ -10,7 +11,8 @@ class AuthenticationViewModelTests: XCTestCase {
         super.setUp()
         mockAPIService = MockAPIService()
         // AuthStatus must be provided for init
-        mockAPIService.authStatusResult = .success(AuthStatusResponse(authenticated: false, user: nil))
+        mockAPIService.authStatusResult = .success(
+            AuthStatusResponse(authenticated: false, user: nil))
         viewModel = AuthenticationViewModel(apiService: mockAPIService)
     }
 
@@ -22,7 +24,10 @@ class AuthenticationViewModelTests: XCTestCase {
 
     func testLoginSuccess() {
         // Given
-        let user = User(id: 1, username: "test", email: "test@test.com", preferredLanguage: "it", currentLevel: "A1")
+        let user = User(
+            id: 1, username: "test", email: "test@test.com", timezone: nil,
+            preferredLanguage: "it", currentLevel: "A1", aiEnabled: nil, isPaused: nil,
+            wordOfDayEmailEnabled: nil, aiProvider: nil, aiModel: nil, hasApiKey: nil)
         let loginResponse = LoginResponse(success: true, message: "OK", user: user)
         mockAPIService.loginResult = .success(loginResponse)
 
