@@ -19,8 +19,7 @@ struct StoryDetailView: View {
                         HStack {
                             Image(systemName: "book")
                             Text(story.title)
-                                .font(.title3)
-                                .fontWeight(.bold)
+                                .font(AppTheme.Typography.headingFont)
                         }
 
                         HStack(spacing: 10) {
@@ -28,9 +27,9 @@ struct StoryDetailView: View {
                                 Label("Section", systemImage: "list.bullet.indent")
                                     .padding(.horizontal, 12)
                                     .padding(.vertical, 8)
-                                    .background(viewModel.mode == .section ? Color.blue : Color.blue.opacity(0.1))
-                                    .foregroundColor(viewModel.mode == .section ? .white : .blue)
-                                    .cornerRadius(8)
+                                    .background(viewModel.mode == .section ? AppTheme.Colors.primaryBlue : AppTheme.Colors.primaryBlue.opacity(0.1))
+                                    .foregroundColor(viewModel.mode == .section ? .white : AppTheme.Colors.primaryBlue)
+                                    .cornerRadius(AppTheme.CornerRadius.badge)
                             }
 
                             HStack(spacing: 8) {
@@ -38,24 +37,21 @@ struct StoryDetailView: View {
                                     Label("Reading", systemImage: "text.bubble")
                                         .padding(.horizontal, 12)
                                         .padding(.vertical, 8)
-                                        .background(viewModel.mode == .reading ? Color.blue : Color.blue.opacity(0.1))
-                                        .foregroundColor(viewModel.mode == .reading ? .white : .blue)
-                                        .cornerRadius(8)
+                                        .background(viewModel.mode == .reading ? AppTheme.Colors.primaryBlue : AppTheme.Colors.primaryBlue.opacity(0.1))
+                                        .foregroundColor(viewModel.mode == .reading ? .white : AppTheme.Colors.primaryBlue)
+                                        .cornerRadius(AppTheme.CornerRadius.badge)
                                 }
 
                                 if viewModel.mode == .reading {
                                     TTSButton(text: viewModel.fullStoryContent, language: story.language)
                                         .padding(8)
-                                        .background(Color.blue.opacity(0.1))
-                                        .cornerRadius(8)
+                                        .background(AppTheme.Colors.primaryBlue.opacity(0.1))
+                                        .cornerRadius(AppTheme.CornerRadius.badge)
                                 }
                             }
                         }
                     }
-                    .padding()
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(Color(.systemBackground))
-                    .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
+                    .appCard()
 
                     if viewModel.mode == .section {
                         // Pagination for Section mode
@@ -63,7 +59,7 @@ struct StoryDetailView: View {
                             Button(action: { viewModel.previousPage() }) {
                                 Image(systemName: "chevron.left.2")
                                     .padding(8)
-                                    .background(Color.gray.opacity(0.1))
+                                    .background(AppTheme.Colors.secondaryBackground)
                                     .cornerRadius(6)
                             }
                             .disabled(viewModel.currentSectionIndex == 0)
@@ -71,21 +67,21 @@ struct StoryDetailView: View {
                             Button(action: { viewModel.previousPage() }) {
                                 Image(systemName: "chevron.left")
                                     .padding(8)
-                                    .background(Color.gray.opacity(0.1))
+                                    .background(AppTheme.Colors.secondaryBackground)
                                     .cornerRadius(6)
                             }
                             .disabled(viewModel.currentSectionIndex == 0)
 
                             Spacer()
                             Text("\(viewModel.currentSectionIndex + 1) / \(story.sections.count)")
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
+                                .font(AppTheme.Typography.subheadlineFont)
+                                .foregroundColor(AppTheme.Colors.secondaryText)
                             Spacer()
 
                             Button(action: { viewModel.nextPage() }) {
                                 Image(systemName: "chevron.right")
                                     .padding(8)
-                                    .background(Color.gray.opacity(0.1))
+                                    .background(AppTheme.Colors.secondaryBackground)
                                     .cornerRadius(6)
                             }
                             .disabled(viewModel.currentSectionIndex == story.sections.count - 1)
@@ -93,12 +89,12 @@ struct StoryDetailView: View {
                             Button(action: { viewModel.nextPage() }) {
                                 Image(systemName: "chevron.right.2")
                                     .padding(8)
-                                    .background(Color.gray.opacity(0.1))
+                                    .background(AppTheme.Colors.secondaryBackground)
                                     .cornerRadius(6)
                             }
                             .disabled(viewModel.currentSectionIndex == story.sections.count - 1)
 
-                            BadgeView(text: "A1", color: .blue)
+                            BadgeView(text: "A1", color: AppTheme.Colors.primaryBlue)
                         }
                         .padding()
                     }
@@ -108,11 +104,11 @@ struct StoryDetailView: View {
                             VStack(alignment: .leading, spacing: 20) {
                                 if let error = ttsManager.errorMessage {
                                     Text(error)
-                                        .font(.caption)
-                                        .foregroundColor(.red)
+                                        .font(AppTheme.Typography.captionFont)
+                                        .foregroundColor(AppTheme.Colors.errorRed)
                                         .padding()
-                                        .background(Color.red.opacity(0.1))
-                                        .cornerRadius(8)
+                                        .background(AppTheme.Colors.errorRed.opacity(0.1))
+                                        .cornerRadius(AppTheme.CornerRadius.badge)
                                         .padding(.horizontal)
                                 }
 
@@ -122,7 +118,7 @@ struct StoryDetailView: View {
                                     if !section.questions.isEmpty {
                                         Divider().padding(.vertical)
                                         Text("Comprehension Questions")
-                                            .font(.headline)
+                                            .font(AppTheme.Typography.headingFont)
                                             .padding(.horizontal)
 
                                         ForEach(section.questions) { question in
@@ -213,9 +209,7 @@ struct StoryDetailView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(12)
+        .appInnerCard()
         .padding(.horizontal)
     }
 
@@ -259,17 +253,17 @@ struct StoryDetailView: View {
                 }
 
                 Text(option)
-                    .font(.subheadline)
-                    .foregroundColor(hasSubmitted ? (isCorrect ? .green : (isSelected ? .red : .primary)) : .primary)
+                    .font(AppTheme.Typography.subheadlineFont)
+                    .foregroundColor(hasSubmitted ? (isCorrect ? AppTheme.Colors.successGreen : (isSelected ? AppTheme.Colors.errorRed : AppTheme.Colors.primaryText)) : AppTheme.Colors.primaryText)
                 Spacer()
             }
             .padding(10)
             .background(
                 hasSubmitted ?
-                (isCorrect ? Color.green.opacity(0.1) : (isSelected ? Color.red.opacity(0.1) : Color.gray.opacity(0.05))) :
-                (isSelected ? Color.blue.opacity(0.1) : Color.gray.opacity(0.05))
+                (isCorrect ? AppTheme.Colors.successGreen.opacity(0.1) : (isSelected ? AppTheme.Colors.errorRed.opacity(0.1) : AppTheme.Colors.secondaryBackground)) :
+                (isSelected ? AppTheme.Colors.primaryBlue.opacity(0.1) : AppTheme.Colors.secondaryBackground)
             )
-            .cornerRadius(8)
+            .cornerRadius(AppTheme.CornerRadius.badge)
         }
         .disabled(hasSubmitted)
     }
@@ -293,13 +287,12 @@ struct StoryDetailView: View {
                     submittedQuestions.insert(question.id)
                 }) {
                     Text("Submit Answer")
-                        .font(.subheadline)
-                        .fontWeight(.bold)
+                        .font(AppTheme.Typography.subheadlineFont.weight(.bold))
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 10)
-                        .background(selectedIdx == nil ? Color.blue.opacity(0.3) : Color.blue)
+                        .background(selectedIdx == nil ? AppTheme.Colors.primaryBlue.opacity(0.3) : AppTheme.Colors.primaryBlue)
                         .foregroundColor(.white)
-                        .cornerRadius(8)
+                        .cornerRadius(AppTheme.CornerRadius.badge)
                 }
                 .disabled(selectedIdx == nil)
                 .padding(.top, 4)
@@ -307,22 +300,19 @@ struct StoryDetailView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Divider()
                     Text("Explanation")
-                        .font(.caption)
-                        .fontWeight(.bold)
-                        .foregroundColor(.secondary)
+                        .font(AppTheme.Typography.captionFont.weight(.bold))
+                        .foregroundColor(AppTheme.Colors.secondaryText)
                     Text(explanation)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                        .font(AppTheme.Typography.captionFont)
+                        .foregroundColor(AppTheme.Colors.secondaryText)
                 }
                 .padding(.top, 4)
             }
         }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(12)
+        .appInnerCard()
         .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(hasSubmitted ? (selectedIdx == question.correctAnswerIndex ? Color.green.opacity(0.3) : Color.red.opacity(0.3)) : Color.gray.opacity(0.1), lineWidth: 1)
+            RoundedRectangle(cornerRadius: AppTheme.CornerRadius.innerCard)
+                .stroke(hasSubmitted ? (selectedIdx == question.correctAnswerIndex ? AppTheme.Colors.successGreen.opacity(0.3) : AppTheme.Colors.errorRed.opacity(0.3)) : AppTheme.Colors.borderGray, lineWidth: 1)
         )
         .padding(.horizontal)
     }

@@ -18,7 +18,7 @@ struct SnippetListView: View {
                             .font(.largeTitle)
                             .bold()
                         Spacer()
-                        BadgeView(text: "\(viewModel.snippets.count)", color: .blue)
+                        BadgeView(text: "\(viewModel.snippets.count)", color: AppTheme.Colors.primaryBlue)
                     }
                     Text("Your saved words and phrases")
                         .font(.subheadline)
@@ -37,9 +37,9 @@ struct SnippetListView: View {
                     .font(.headline)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.blue)
+                    .background(AppTheme.Colors.primaryBlue)
                     .foregroundColor(.white)
-                    .cornerRadius(12)
+                    .cornerRadius(AppTheme.CornerRadius.button)
                 }
                 .padding(.horizontal)
 
@@ -50,8 +50,8 @@ struct SnippetListView: View {
                     TextField("Search snippets...", text: $viewModel.searchQuery)
                 }
                 .padding(12)
-                .background(Color(.secondarySystemBackground))
-                .cornerRadius(10)
+                    .background(AppTheme.Colors.secondaryBackground)
+                    .cornerRadius(AppTheme.CornerRadius.button)
                 .padding(.horizontal)
 
                 // Filters
@@ -121,7 +121,7 @@ struct SnippetListView: View {
                         Text("Back")
                             .font(.system(size: 17))
                     }
-                    .foregroundColor(.blue)
+                    .foregroundColor(AppTheme.Colors.primaryBlue)
                 }
             }
         }
@@ -154,9 +154,9 @@ struct SnippetListView: View {
                     .foregroundColor(.secondary)
             }
             .padding(12)
-            .background(Color(.systemBackground))
-            .cornerRadius(10)
-            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.gray.opacity(0.2), lineWidth: 1))
+            .background(AppTheme.Colors.cardBackground)
+            .cornerRadius(AppTheme.CornerRadius.button)
+            .overlay(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(AppTheme.Colors.borderGray, lineWidth: 1))
         }
     }
 
@@ -181,9 +181,9 @@ struct SnippetListView: View {
                     .foregroundColor(.secondary)
             }
             .padding(12)
-            .background(Color(.systemBackground))
-            .cornerRadius(10)
-            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.gray.opacity(0.2), lineWidth: 1))
+            .background(AppTheme.Colors.cardBackground)
+            .cornerRadius(AppTheme.CornerRadius.button)
+            .overlay(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(AppTheme.Colors.borderGray, lineWidth: 1))
         }
     }
 
@@ -213,9 +213,9 @@ struct SnippetListView: View {
                     .foregroundColor(.secondary)
             }
             .padding(12)
-            .background(Color(.systemBackground))
-            .cornerRadius(10)
-            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.gray.opacity(0.2), lineWidth: 1))
+            .background(AppTheme.Colors.cardBackground)
+            .cornerRadius(AppTheme.CornerRadius.button)
+            .overlay(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(AppTheme.Colors.borderGray, lineWidth: 1))
         }
     }
 }
@@ -233,13 +233,13 @@ struct SnippetCard: View {
 
             Text(snippet.translatedText)
                 .font(.subheadline)
-                .foregroundColor(.blue)
+                .foregroundColor(AppTheme.Colors.primaryBlue)
 
             if let context = snippet.context {
                 HStack(alignment: .top, spacing: 8) {
                     Image(systemName: "character.bubble") // Translation icon replacement
                         .font(.caption)
-                        .foregroundColor(.blue)
+                        .foregroundColor(AppTheme.Colors.primaryBlue)
                     Text("\"\(context)\"")
                         .font(.caption)
                         .italic()
@@ -249,11 +249,11 @@ struct SnippetCard: View {
 
             HStack(spacing: 10) {
                 if let lang = snippet.sourceLanguage, let target = snippet.targetLanguage {
-                    BadgeView(text: "\(lang.uppercased()) -> \(target.uppercased())", color: .gray)
+                    BadgeView(text: "\(lang.uppercased()) -> \(target.uppercased())", color: AppTheme.Colors.accentIndigo)
                 }
 
                 if let level = snippet.difficultyLevel {
-                    BadgeView(text: level, color: .blue)
+                    BadgeView(text: level, color: AppTheme.Colors.primaryBlue)
                 }
 
                 if snippet.questionId != nil {
@@ -263,7 +263,7 @@ struct SnippetCard: View {
                             Text("View Question")
                         }
                         .font(.caption)
-                        .foregroundColor(.blue)
+                        .foregroundColor(AppTheme.Colors.primaryBlue)
                     }
                 }
 
@@ -272,7 +272,7 @@ struct SnippetCard: View {
                 HStack(spacing: 12) {
                     Button(action: onEdit) {
                         Image(systemName: "square.and.pencil")
-                            .foregroundColor(.blue)
+                            .foregroundColor(AppTheme.Colors.primaryBlue)
                             .padding(6)
                             .background(Color.blue.opacity(0.1))
                             .cornerRadius(6)
@@ -287,11 +287,7 @@ struct SnippetCard: View {
                 }
             }
         }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(16)
-        .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 4)
-        .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.gray.opacity(0.1), lineWidth: 1))
+        .appCard()
     }
 }
 
@@ -327,8 +323,8 @@ struct AddSnippetView: View {
                         TextField("Enter the original text...", text: $originalText)
                             .textFieldStyle(.plain)
                             .padding(12)
-                            .background(Color(.secondarySystemBackground))
-                            .cornerRadius(10)
+                    .background(AppTheme.Colors.secondaryBackground)
+                    .cornerRadius(AppTheme.CornerRadius.button)
                     }
 
                     // Translation
@@ -342,8 +338,8 @@ struct AddSnippetView: View {
                         TextField("Enter the translation...", text: $translatedText)
                             .textFieldStyle(.plain)
                             .padding(12)
-                            .background(Color(.secondarySystemBackground))
-                            .cornerRadius(10)
+                    .background(AppTheme.Colors.secondaryBackground)
+                    .cornerRadius(AppTheme.CornerRadius.button)
                     }
 
                     // Source Language
@@ -401,8 +397,8 @@ struct AddSnippetView: View {
                         TextEditor(text: $context)
                             .frame(minHeight: 100)
                             .padding(8)
-                            .background(Color(.secondarySystemBackground))
-                            .cornerRadius(10)
+                    .background(AppTheme.Colors.secondaryBackground)
+                    .cornerRadius(AppTheme.CornerRadius.button)
                             .overlay(
                                 Group {
                                     if context.isEmpty {
@@ -437,7 +433,7 @@ struct AddSnippetView: View {
                                 .frame(maxWidth: .infinity)
                                 .padding()
                                 .background(Color.blue.opacity(0.1))
-                                .foregroundColor(.blue)
+                                .foregroundColor(AppTheme.Colors.primaryBlue)
                                 .cornerRadius(12)
                         }
 
@@ -454,9 +450,9 @@ struct AddSnippetView: View {
                             }
                         }
                         .disabled(!isFormValid || isSubmitting)
-                        .background(isFormValid && !isSubmitting ? Color.blue : Color.gray.opacity(0.3))
+                        .background(isFormValid && !isSubmitting ? AppTheme.Colors.primaryBlue : Color.gray.opacity(0.3))
                         .foregroundColor(.white)
-                        .cornerRadius(12)
+                        .cornerRadius(AppTheme.CornerRadius.button)
                     }
                 }
                 .padding()

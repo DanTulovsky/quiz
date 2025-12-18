@@ -189,38 +189,43 @@ struct DailyView: View {
                 if showResults {
                     if isCorrect {
                         Image(systemName: "check.circle.fill")
-                            .foregroundColor(.green)
+                            .foregroundColor(AppTheme.Colors.successGreen)
                     } else if isUserIncorrect {
                         Image(systemName: "x.circle.fill")
-                            .foregroundColor(.red)
+                            .foregroundColor(AppTheme.Colors.errorRed)
                     }
                 }
 
                 Text(option)
-                    .font(.body)
-                    .foregroundColor(isUserIncorrect ? .red : (isCorrect ? .green : (isSelected ? .white : .primary)))
+                    .font(AppTheme.Typography.bodyFont)
+                    .foregroundColor(isUserIncorrect ? AppTheme.Colors.errorRed : (isCorrect ? AppTheme.Colors.successGreen : (isSelected ? .white : AppTheme.Colors.primaryText)))
 
                 Spacer()
             }
-            .padding()
+            .padding(AppTheme.Spacing.innerPadding)
             .frame(maxWidth: .infinity)
-            .buttonStyle(OptionButtonStyle(
-                isSelected: isSelected,
-                isCorrect: isCorrect,
-                isIncorrect: isUserIncorrect
-            ))
+            .background(
+                isUserIncorrect ? AppTheme.Colors.errorRed.opacity(0.1) :
+                (isCorrect ? AppTheme.Colors.successGreen.opacity(0.1) :
+                (isSelected ? AppTheme.Colors.primaryBlue : AppTheme.Colors.primaryBlue.opacity(0.05)))
+            )
+            .cornerRadius(AppTheme.CornerRadius.button)
+            .overlay(
+                RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button)
+                    .stroke(isUserIncorrect ? AppTheme.Colors.errorRed : (isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.borderBlue), lineWidth: 1)
+            )
         }
         .disabled(showResults)
     }
 
     private func feedbackSection(_ response: DailyAnswerResponse) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: AppTheme.Spacing.itemSpacing) {
             HStack {
                 Image(systemName: response.isCorrect ? "checkmark" : "xmark")
-                    .foregroundColor(response.isCorrect ? .green : .red)
+                    .foregroundColor(response.isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.errorRed)
                 Text(response.isCorrect ? "Correct!" : "Incorrect")
-                    .font(.headline)
-                    .foregroundColor(response.isCorrect ? .green : .red)
+                    .font(AppTheme.Typography.headingFont)
+                    .foregroundColor(response.isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.errorRed)
             }
 
             Text(response.explanation)
@@ -439,9 +444,7 @@ struct DailyView: View {
                         viewModel.markQuestionKnown(confidence: confidence)
                     }
                 }
-                .buttonStyle(.borderedProminent)
-                .tint(.teal)
-                .disabled(selectedConfidence == nil || viewModel.isSubmittingAction)
+                .buttonStyle(PrimaryButtonStyle(isDisabled: selectedConfidence == nil || viewModel.isSubmittingAction))
                 .padding()
             }
             .navigationTitle("Adjust Frequency")

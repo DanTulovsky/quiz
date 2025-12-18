@@ -7,13 +7,7 @@ struct PhrasebookView: View {
         VStack(spacing: 0) {
             // Header Stats
             HStack {
-                Text("\(viewModel.categories.count) CATEGORIES")
-                    .font(.caption)
-                    .bold()
-                    .padding(6)
-                    .background(Color.blue.opacity(0.1))
-                    .foregroundColor(.blue)
-                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                BadgeView(text: "\(viewModel.categories.count) CATEGORIES", color: AppTheme.Colors.primaryBlue)
 
                 Spacer()
             }
@@ -23,12 +17,12 @@ struct PhrasebookView: View {
             // Search Bar (Placeholder for now)
             HStack {
                 Image(systemName: "magnifyingglass")
-                    .foregroundColor(.secondary)
+                    .foregroundColor(AppTheme.Colors.secondaryText)
                 TextField("Search phrasebook...", text: .constant(""))
             }
             .padding(10)
-            .background(Color(.secondarySystemBackground))
-            .cornerRadius(10)
+            .background(AppTheme.Colors.secondaryBackground)
+            .cornerRadius(AppTheme.CornerRadius.button)
             .padding()
 
             List(viewModel.categories, id: \.id) { category in
@@ -75,19 +69,19 @@ struct PhrasebookCategoryView: View {
                     // Search Bar
                     HStack {
                         Image(systemName: "magnifyingglass")
-                            .foregroundColor(.secondary)
+                            .foregroundColor(AppTheme.Colors.secondaryText)
                         TextField("Search terms...", text: $searchText)
                     }
                     .padding(10)
-                    .background(Color(.secondarySystemBackground))
-                    .cornerRadius(10)
+                    .background(AppTheme.Colors.secondaryBackground)
+                    .cornerRadius(AppTheme.CornerRadius.button)
                     .padding(.horizontal)
 
                     // Section Picker
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Section")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+                            .font(AppTheme.Typography.captionFont)
+                            .foregroundColor(AppTheme.Colors.secondaryText)
 
                         Menu {
                             Button("All Sections") { selectedSection = "All Sections" }
@@ -104,11 +98,11 @@ struct PhrasebookCategoryView: View {
                                     .foregroundColor(.secondary)
                             }
                             .padding(10)
-                            .background(Color(.secondarySystemBackground))
-                            .cornerRadius(8)
+                            .background(AppTheme.Colors.secondaryBackground)
+                            .cornerRadius(AppTheme.CornerRadius.button)
                             .overlay(
-                                RoundedRectangle(cornerRadius: 8)
-                                    .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+                                RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button)
+                                    .stroke(AppTheme.Colors.borderGray, lineWidth: 1)
                             )
                         }
                     }
@@ -128,9 +122,9 @@ struct PhrasebookCategoryView: View {
                             Section(header:
                                 HStack {
                                     Text(section.title)
-                                        .font(.headline)
-                                        .foregroundColor(.primary)
-                                    BadgeView(text: "\(filteredWords.count)", color: .blue)
+                                        .font(AppTheme.Typography.headingFont)
+                                        .foregroundColor(AppTheme.Colors.primaryText)
+                                    BadgeView(text: "\(filteredWords.count)", color: AppTheme.Colors.primaryBlue)
                                 }
                                 .padding(.vertical, 4)
                             ) {
@@ -140,16 +134,16 @@ struct PhrasebookCategoryView: View {
                                             HStack {
                                                 if let icon = word.icon { Text(icon) }
                                                 Text(word.term.capitalized)
-                                                    .font(.headline)
+                                                    .font(AppTheme.Typography.headingFont)
                                             }
                                             Text(word.translations[languageCode] ?? "N/A")
-                                                .font(.subheadline)
-                                                .foregroundColor(.blue)
+                                                .font(AppTheme.Typography.subheadlineFont)
+                                                .foregroundColor(AppTheme.Colors.primaryBlue)
                                             if let note = word.note {
                                                 Text(note)
-                                                    .font(.caption)
+                                                    .font(AppTheme.Typography.captionFont)
                                                     .italic()
-                                                    .foregroundColor(.secondary)
+                                                    .foregroundColor(AppTheme.Colors.secondaryText)
                                             }
                                         }
 
@@ -161,7 +155,7 @@ struct PhrasebookCategoryView: View {
                                                 UIPasteboard.general.string = word.translations[languageCode] ?? word.term
                                             }) {
                                                 Image(systemName: "doc.on.doc")
-                                                    .foregroundColor(.blue)
+                                                    .foregroundColor(AppTheme.Colors.primaryBlue)
                                             }
                                             .buttonStyle(.plain)
                                         }
@@ -178,7 +172,7 @@ struct PhrasebookCategoryView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 Text("No data available for this category.")
-                    .foregroundColor(.secondary)
+                    .foregroundColor(AppTheme.Colors.secondaryText)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }

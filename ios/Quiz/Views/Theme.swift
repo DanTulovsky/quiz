@@ -6,17 +6,17 @@ struct AppTheme {
         static let accentIndigo = Color.indigo
         static let successGreen = Color.green
         static let errorRed = Color.red
-        
+
         static let cardBackground = Color(.systemBackground)
         static let secondaryBackground = Color(.secondarySystemBackground)
-        
+
         static let primaryText = Color.primary
         static let secondaryText = Color.secondary
-        
+
         static let borderGray = Color.gray.opacity(0.1)
         static let borderBlue = Color.blue.opacity(0.2)
     }
-    
+
     struct Spacing {
         static let cardPadding: CGFloat = 20
         static let innerPadding: CGFloat = 12
@@ -24,18 +24,18 @@ struct AppTheme {
         static let itemSpacing: CGFloat = 12
         static let buttonVerticalPadding: CGFloat = 12
     }
-    
+
     struct CornerRadius {
         static let card: CGFloat = 16
         static let button: CGFloat = 12
         static let badge: CGFloat = 8
         static let innerCard: CGFloat = 12
     }
-    
+
     struct Shadow {
         static let card = (color: Color.black.opacity(0.05), radius: CGFloat(8), x: CGFloat(0), y: CGFloat(4))
     }
-    
+
     struct Typography {
         static let badgeFont = Font.caption2.bold()
         static let headingFont = Font.title3.weight(.medium)
@@ -80,7 +80,7 @@ struct InnerCardModifier: ViewModifier {
 
 struct PrimaryButtonStyle: ButtonStyle {
     var isDisabled: Bool = false
-    
+
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(AppTheme.Typography.buttonFont)
@@ -114,7 +114,7 @@ struct OptionButtonStyle: ButtonStyle {
     var isSelected: Bool
     var isCorrect: Bool = false
     var isIncorrect: Bool = false
-    
+
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(AppTheme.Typography.bodyFont)
@@ -147,7 +147,7 @@ extension View {
     func appCard() -> some View {
         modifier(CardModifier())
     }
-    
+
     func appInnerCard() -> some View {
         modifier(InnerCardModifier())
     }

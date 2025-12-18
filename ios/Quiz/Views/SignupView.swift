@@ -16,7 +16,7 @@ struct SignupView: View {
                         .background(AppTheme.Colors.secondaryBackground)
                         .cornerRadius(AppTheme.CornerRadius.button)
                 }
-                
+
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Email")
                         .font(AppTheme.Typography.subheadlineFont.weight(.medium))
@@ -27,7 +27,7 @@ struct SignupView: View {
                         .background(AppTheme.Colors.secondaryBackground)
                         .cornerRadius(AppTheme.CornerRadius.button)
                 }
-                
+
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Password")
                         .font(AppTheme.Typography.subheadlineFont.weight(.medium))
@@ -38,7 +38,7 @@ struct SignupView: View {
                         .background(AppTheme.Colors.secondaryBackground)
                         .cornerRadius(AppTheme.CornerRadius.button)
                 }
-                
+
                 if viewModel.error != nil {
                     Text("Signup failed. Please try again.")
                         .foregroundColor(AppTheme.Colors.errorRed)
@@ -47,7 +47,7 @@ struct SignupView: View {
                         .background(AppTheme.Colors.errorRed.opacity(0.1))
                         .cornerRadius(AppTheme.CornerRadius.button)
                 }
-                
+
                 Button("Sign Up") {
                     viewModel.signup()
                 }

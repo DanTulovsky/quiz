@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
+import React, {useState, useEffect, useRef} from 'react';
+import {useNavigate, useSearchParams} from 'react-router-dom';
+import {useAuth} from '../hooks/useAuth';
 import {
   Container,
   Paper,
@@ -15,12 +15,12 @@ import {
   ThemeIcon,
   Divider,
 } from '@mantine/core';
-import { IconBrain, IconCheck } from '@tabler/icons-react';
+import {IconBrain, IconCheck} from '@tabler/icons-react';
 import GoogleOAuthButton from '../components/GoogleOAuthButton';
-import { useGetV1AuthSignupStatus } from '../api/api';
+import {useGetV1AuthSignupStatus} from '../api/api';
 
 const LoginPage: React.FC = () => {
-  const { login } = useAuth();
+  const {login} = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [formData, setFormData] = useState({
@@ -73,7 +73,7 @@ const LoginPage: React.FC = () => {
       const success = await login(formData.username, formData.password);
       if (success) {
         // Use replace to avoid adding login page to history
-        navigate('/', { replace: true });
+        navigate('/', {replace: true});
       }
     } finally {
       setIsLoading(false);
@@ -84,7 +84,7 @@ const LoginPage: React.FC = () => {
     <Container
       size='xs'
       h='100vh'
-      style={{ display: 'flex', alignItems: 'center' }}
+      style={{display: 'flex', alignItems: 'center'}}
     >
       <Paper shadow='xl' p='xl' radius='lg' w='100%'>
         <Stack align='center' gap='lg'>
@@ -94,7 +94,7 @@ const LoginPage: React.FC = () => {
               <IconBrain size={32} />
             </ThemeIcon>
             <Title order={2} ta='center' fw={700}>
-              AI Language Quiz
+              Language Quiz
             </Title>
             <Text size='sm' c='dimmed' ta='center'>
               Sign in to start your personalized learning journey
@@ -116,7 +116,7 @@ const LoginPage: React.FC = () => {
           )}
 
           {/* Login Form */}
-          <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+          <form onSubmit={handleSubmit} style={{width: '100%'}}>
             <Stack gap='md'>
               <TextInput
                 label='Username'

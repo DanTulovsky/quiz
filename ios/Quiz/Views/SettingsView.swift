@@ -104,9 +104,9 @@ struct SettingsView: View {
                                                 .fontWeight(appFontSize == size ? .bold : .regular)
                                                 .frame(maxWidth: .infinity)
                                                 .padding(.vertical, 12)
-                                                .background(appFontSize == size ? Color.blue : Color.blue.opacity(0.1))
-                                                .foregroundColor(appFontSize == size ? .white : .blue)
-                                                .cornerRadius(8)
+                                                .background(appFontSize == size ? AppTheme.Colors.primaryBlue : AppTheme.Colors.primaryBlue.opacity(0.1))
+                                                .foregroundColor(appFontSize == size ? .white : AppTheme.Colors.primaryBlue)
+                                                .cornerRadius(AppTheme.CornerRadius.badge)
                                         }
                                     }
                                 }
@@ -130,8 +130,8 @@ struct SettingsView: View {
                                 .pickerStyle(.menu)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding(8)
-                                .background(Color(.secondarySystemBackground))
-                                .cornerRadius(8)
+                                .background(AppTheme.Colors.secondaryBackground)
+                                .cornerRadius(AppTheme.CornerRadius.badge)
                             }
                         }
                     }
@@ -150,8 +150,8 @@ struct SettingsView: View {
                                 .pickerStyle(.menu)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding(8)
-                                .background(Color(.secondarySystemBackground))
-                                .cornerRadius(8)
+                                .background(AppTheme.Colors.secondaryBackground)
+                                .cornerRadius(AppTheme.CornerRadius.badge)
                             }
 
                             VStack(alignment: .leading, spacing: 8) {
@@ -164,8 +164,8 @@ struct SettingsView: View {
                                 .pickerStyle(.menu)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding(8)
-                                .background(Color(.secondarySystemBackground))
-                                .cornerRadius(8)
+                                .background(AppTheme.Colors.secondaryBackground)
+                                .cornerRadius(AppTheme.CornerRadius.badge)
                             }
 
                             VStack(alignment: .leading, spacing: 8) {
@@ -194,9 +194,9 @@ struct SettingsView: View {
                                     .cornerRadius(8)
 
                                     TTSButton(text: ttsTestText, language: learningLanguage, voiceIdentifier: ttsVoice)
-                                        .padding(8)
-                                        .background(Color.blue.opacity(0.1))
-                                        .cornerRadius(8)
+                                    .padding(8)
+                                    .background(AppTheme.Colors.primaryBlue.opacity(0.1))
+                                    .cornerRadius(AppTheme.CornerRadius.badge)
                                 }
                             }
 
@@ -235,11 +235,11 @@ struct SettingsView: View {
                                 Text("Test Email")
                                     .font(.subheadline)
                                     .fontWeight(.medium)
-                                    .foregroundColor(.blue)
+                                        .foregroundColor(AppTheme.Colors.primaryBlue)
                                     .frame(maxWidth: .infinity)
-                                    .padding(.vertical, 12)
-                                    .background(Color.blue.opacity(0.1))
-                                    .cornerRadius(10)
+                                    .padding(.vertical, AppTheme.Spacing.buttonVerticalPadding)
+                                    .background(AppTheme.Colors.primaryBlue.opacity(0.1))
+                                    .cornerRadius(AppTheme.CornerRadius.button)
                             }
                             .disabled(email.isEmpty)
                         }
@@ -254,11 +254,11 @@ struct SettingsView: View {
                                 Text("Test Email")
                                     .font(.subheadline)
                                     .fontWeight(.medium)
-                                    .foregroundColor(.blue)
+                                        .foregroundColor(AppTheme.Colors.primaryBlue)
                                     .frame(maxWidth: .infinity)
-                                    .padding(.vertical, 12)
-                                    .background(Color.blue.opacity(0.1))
-                                    .cornerRadius(10)
+                                    .padding(.vertical, AppTheme.Spacing.buttonVerticalPadding)
+                                    .background(AppTheme.Colors.primaryBlue.opacity(0.1))
+                                    .cornerRadius(AppTheme.CornerRadius.button)
                             }
                             .disabled(email.isEmpty)
                         }
@@ -298,8 +298,8 @@ struct SettingsView: View {
                                         .pickerStyle(.menu)
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                         .padding(8)
-                                        .background(Color(.secondarySystemBackground))
-                                        .cornerRadius(8)
+                                        .background(AppTheme.Colors.secondaryBackground)
+                                        .cornerRadius(AppTheme.CornerRadius.badge)
 
                                         Text("Endpoint URL").font(.subheadline).fontWeight(.medium)
                                         Text(viewModel.aiProviders.first(where: { $0.code == selectedProvider })?.url ?? "N/A")
@@ -314,23 +314,23 @@ struct SettingsView: View {
                                         Text("API Key")
                                         if authViewModel.user?.hasApiKey == true {
                                             Text("(Saved)")
-                                                .foregroundColor(.green)
+                                                .foregroundColor(AppTheme.Colors.successGreen)
                                                 .font(.caption)
                                         }
                                     }
                                     .font(.subheadline).fontWeight(.medium)
                                     SecureField("Enter API Key (Optional if saved)", text: $apiKey)
                                         .padding(10)
-                                        .background(Color(.secondarySystemBackground))
-                                        .cornerRadius(8)
+                                        .background(AppTheme.Colors.secondaryBackground)
+                                        .cornerRadius(AppTheme.CornerRadius.badge)
 
                                     Button(action: { viewModel.testAI(provider: selectedProvider, model: selectedModel, apiKey: apiKey) }) {
                                         Label("Test AI Connection", systemImage: "bolt.fill")
                                             .font(.subheadline)
                                             .frame(maxWidth: .infinity)
                                             .padding(.vertical, 10)
-                                            .background(Color.blue.opacity(0.1))
-                                            .cornerRadius(8)
+                                        .background(AppTheme.Colors.primaryBlue.opacity(0.1))
+                                        .cornerRadius(AppTheme.CornerRadius.badge)
                                     }
                                     .disabled(selectedProvider.isEmpty || selectedModel.isEmpty)
 
@@ -373,9 +373,9 @@ struct SettingsView: View {
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.blue)
+                        .background(AppTheme.Colors.primaryBlue)
                         .foregroundColor(.white)
-                        .cornerRadius(12)
+                        .cornerRadius(AppTheme.CornerRadius.button)
                     }
                     .padding(.top, 10)
                     .disabled(viewModel.isLoading)
@@ -385,8 +385,8 @@ struct SettingsView: View {
                             .foregroundColor(.red)
                             .font(.caption)
                             .padding()
-                            .background(Color.red.opacity(0.1))
-                            .cornerRadius(8)
+                        .background(AppTheme.Colors.errorRed.opacity(0.1))
+                        .cornerRadius(AppTheme.CornerRadius.badge)
                     }
 
                     // Logout Button
@@ -400,9 +400,9 @@ struct SettingsView: View {
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.red)
+                        .background(AppTheme.Colors.errorRed)
                         .foregroundColor(.white)
-                        .cornerRadius(12)
+                        .cornerRadius(AppTheme.CornerRadius.button)
                     }
                     .padding(.top, 20)
                 }
@@ -422,8 +422,8 @@ struct SettingsView: View {
                                 .fontWeight(.medium)
                         }
                         .padding()
-                        .background(Color.green)
-                        .cornerRadius(12)
+                        .background(AppTheme.Colors.successGreen)
+                        .cornerRadius(AppTheme.CornerRadius.button)
                         .shadow(radius: 10)
                         .padding()
                         .transition(.move(edge: .bottom).combined(with: .opacity))
@@ -552,7 +552,7 @@ struct SettingsView: View {
             }) {
                 HStack {
                     Image(systemName: icon)
-                        .foregroundColor(color == .primary ? .blue : color)
+                        .foregroundColor(color == .primary ? AppTheme.Colors.primaryBlue : color)
                         .frame(width: 24)
                     Text(title)
                         .foregroundColor(color)
@@ -576,9 +576,7 @@ struct SettingsView: View {
                 .background(Color(.systemBackground))
             }
         }
-        .cornerRadius(12)
-        .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
-        .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.gray.opacity(0.1), lineWidth: 1))
+        .appCard()
     }
 
     @ViewBuilder
@@ -622,7 +620,7 @@ struct SettingsView: View {
                 Spacer()
                 Text("\(Int(value.wrappedValue * multiplier))\(unit)")
                     .font(.caption)
-                    .foregroundColor(.blue)
+                                        .foregroundColor(AppTheme.Colors.primaryBlue)
                     .fontWeight(.bold)
             }
             Slider(value: value, in: range, step: step)

@@ -1,6 +1,6 @@
-import SwiftUI
 import AuthenticationServices
 import SafariServices
+import SwiftUI
 
 struct LoginView: View {
     @EnvironmentObject var viewModel: AuthenticationViewModel
@@ -24,7 +24,7 @@ struct LoginView: View {
                     }
 
                     VStack(spacing: 8) {
-                        Text("AI Language Quiz")
+                        Text("Language Quiz")
                             .font(.largeTitle)
                             .fontWeight(.bold)
 
@@ -99,11 +99,16 @@ struct LoginView: View {
                             }
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(isLoading || viewModel.username.isEmpty || viewModel.password.isEmpty ? Color.gray : AppTheme.Colors.primaryBlue)
+                            .background(
+                                isLoading || viewModel.username.isEmpty
+                                    || viewModel.password.isEmpty
+                                    ? Color.gray : AppTheme.Colors.primaryBlue
+                            )
                             .foregroundColor(.white)
                             .cornerRadius(AppTheme.CornerRadius.button)
                         }
-                        .disabled(isLoading || viewModel.username.isEmpty || viewModel.password.isEmpty)
+                        .disabled(
+                            isLoading || viewModel.username.isEmpty || viewModel.password.isEmpty)
 
                         if viewModel.error != nil {
                             Text("Login failed. Please check your credentials.")
@@ -160,13 +165,18 @@ struct LoginView: View {
             .navigationBarHidden(true)
             .sheet(isPresented: $showWebAuth) {
                 if let url = viewModel.googleAuthURL {
-                    SafariWebView(url: url, onCallback: { components in
-                        if let code = components.queryItems?.first(where: { $0.name == "code" })?.value {
-                            let state = components.queryItems?.first(where: { $0.name == "state" })?.value
-                            viewModel.handleGoogleCallback(code: code, state: state)
-                            showWebAuth = false
-                        }
-                    })
+                    SafariWebView(
+                        url: url,
+                        onCallback: { components in
+                            if let code = components.queryItems?.first(where: { $0.name == "code" }
+                            )?.value {
+                                let state = components.queryItems?.first(where: {
+                                    $0.name == "state"
+                                })?.value
+                                viewModel.handleGoogleCallback(code: code, state: state)
+                                showWebAuth = false
+                            }
+                        })
                 }
             }
         }
@@ -196,9 +206,12 @@ struct SafariWebView: UIViewControllerRepresentable {
             self.onCallback = onCallback
         }
 
-        func safariViewController(_ controller: SFSafariViewController, initialLoadDidRedirectTo URL: URL) {
+        func safariViewController(
+            _ controller: SFSafariViewController, initialLoadDidRedirectTo URL: URL
+        ) {
             if let components = URLComponents(url: URL, resolvingAgainstBaseURL: false),
-               components.path.contains("callback") {
+                components.path.contains("callback")
+            {
                 onCallback(components)
             }
         }

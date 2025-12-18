@@ -69,8 +69,8 @@ struct MessageBubble: View {
                     .foregroundColor(.white)
                     .padding(.horizontal, 12)
                     .padding(.vertical, 6)
-                    .background(isUser ? Color.blue : Color.green)
-                    .cornerRadius(8)
+                    .background(isUser ? AppTheme.Colors.primaryBlue : AppTheme.Colors.successGreen)
+                    .cornerRadius(AppTheme.CornerRadius.badge)
 
                 Text(message.createdAt, style: .date)
                     .font(.subheadline)
@@ -98,14 +98,8 @@ struct MessageBubble: View {
                 .foregroundColor(.primary)
                 .fixedSize(horizontal: false, vertical: true)
         }
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(isUser ? Color.blue.opacity(0.1) : Color(.systemBackground))
-        .cornerRadius(12)
-        .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-        )
+        .appInnerCard()
+        .background(isUser ? AppTheme.Colors.primaryBlue.opacity(0.1) : AppTheme.Colors.cardBackground)
     }
 }
 

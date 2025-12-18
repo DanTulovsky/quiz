@@ -19,8 +19,8 @@ struct TranslationPracticeView: View {
                         }
                         .pickerStyle(.menu)
                         .padding(8)
-                        .background(Color(.secondarySystemBackground))
-                        .cornerRadius(10)
+                        .background(AppTheme.Colors.secondaryBackground)
+                        .cornerRadius(AppTheme.CornerRadius.button)
                         Spacer()
                     }
 
@@ -32,13 +32,12 @@ struct TranslationPracticeView: View {
                             viewModel.generateSentence(language: lang, level: level)
                         }) {
                             Text("Generate AI")
-                                .font(.subheadline)
-                                .fontWeight(.medium)
+                                .font(AppTheme.Typography.subheadlineFont.weight(.medium))
                                 .frame(maxWidth: .infinity)
-                                .padding(.vertical, 12)
-                                .background(Color.blue.opacity(0.1))
-                                .foregroundColor(.blue)
-                                .cornerRadius(10)
+                                .padding(.vertical, AppTheme.Spacing.buttonVerticalPadding)
+                                .background(AppTheme.Colors.primaryBlue.opacity(0.1))
+                                .foregroundColor(AppTheme.Colors.primaryBlue)
+                                .cornerRadius(AppTheme.CornerRadius.button)
                         }
 
                         Button(action: {
@@ -47,13 +46,12 @@ struct TranslationPracticeView: View {
                             viewModel.fetchExistingSentence(language: lang, level: level)
                         }) {
                             Text("From Content")
-                                .font(.subheadline)
-                                .fontWeight(.medium)
+                                .font(AppTheme.Typography.subheadlineFont.weight(.medium))
                                 .frame(maxWidth: .infinity)
-                                .padding(.vertical, 12)
-                                .background(Color.blue.opacity(0.1))
-                                .foregroundColor(.blue)
-                                .cornerRadius(10)
+                                .padding(.vertical, AppTheme.Spacing.buttonVerticalPadding)
+                                .background(AppTheme.Colors.primaryBlue.opacity(0.1))
+                                .foregroundColor(AppTheme.Colors.primaryBlue)
+                                .cornerRadius(AppTheme.CornerRadius.button)
                         }
                     }
 
@@ -114,71 +112,67 @@ struct TranslationPracticeView: View {
             // Card Header
             HStack {
                 Text("Prompt")
-                    .font(.title3)
-                    .fontWeight(.bold)
+                    .font(AppTheme.Typography.headingFont)
                 Spacer()
                 HStack(spacing: 8) {
-                    BadgeView(text: sentence.sourceLanguage.uppercased(), color: .blue)
-                    BadgeView(text: "LEVEL \(sentence.languageLevel.uppercased())", color: .blue)
+                    BadgeView(text: sentence.sourceLanguage.uppercased(), color: AppTheme.Colors.primaryBlue)
+                    BadgeView(text: "LEVEL \(sentence.languageLevel.uppercased())", color: AppTheme.Colors.primaryBlue)
                 }
             }
 
             // Topic Input
             VStack(alignment: .leading, spacing: 8) {
                 Text("Optional topic")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
+                    .font(AppTheme.Typography.subheadlineFont)
+                    .foregroundColor(AppTheme.Colors.secondaryText)
                 TextField("e.g., travel, ordering food, work", text: $viewModel.optionalTopic)
                     .padding(12)
-                    .background(Color(.secondarySystemBackground))
-                    .cornerRadius(8)
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.2), lineWidth: 1))
+                    .background(AppTheme.Colors.secondaryBackground)
+                    .cornerRadius(AppTheme.CornerRadius.button)
+                    .overlay(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(AppTheme.Colors.borderGray, lineWidth: 1))
             }
 
             // Text to Translate Section
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: AppTheme.Spacing.itemSpacing) {
                 HStack {
                     Text("Text to translate")
-                        .font(.subheadline)
-                        .fontWeight(.semibold)
+                        .font(AppTheme.Typography.subheadlineFont.weight(.semibold))
                     Spacer()
                     TTSButton(text: sentence.sentenceText, language: sentence.sourceLanguage)
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
                     Text(sentence.sentenceText)
-                        .font(.title3)
-                        .fontWeight(.medium)
+                        .font(AppTheme.Typography.headingFont)
 
                     HStack(spacing: 4) {
                         Text("From existing content:")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+                            .font(AppTheme.Typography.captionFont)
+                            .foregroundColor(AppTheme.Colors.secondaryText)
                         Text(sentence.sourceType.replacingOccurrences(of: "_", with: " "))
-                            .font(.caption)
-                            .foregroundColor(.blue)
+                            .font(AppTheme.Typography.captionFont)
+                            .foregroundColor(AppTheme.Colors.primaryBlue)
                     }
                 }
-                .padding()
+                .padding(AppTheme.Spacing.innerPadding)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color.blue.opacity(0.03))
-                .cornerRadius(12)
+                .background(AppTheme.Colors.primaryBlue.opacity(0.03))
+                .cornerRadius(AppTheme.CornerRadius.button)
                 .contentShape(Rectangle())
-                .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.blue.opacity(0.1), lineWidth: 1))
+                .overlay(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(AppTheme.Colors.primaryBlue.opacity(0.1), lineWidth: 1))
             }
 
             // User Input Section
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: AppTheme.Spacing.itemSpacing) {
                 Text("Your translation")
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
+                    .font(AppTheme.Typography.subheadlineFont.weight(.semibold))
 
                 TextEditor(text: $viewModel.userTranslation)
                     .frame(minHeight: 100)
                     .padding(8)
-                    .background(Color(.systemBackground))
-                    .cornerRadius(8)
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.2), lineWidth: 1))
+                    .background(AppTheme.Colors.cardBackground)
+                    .cornerRadius(AppTheme.CornerRadius.button)
+                    .overlay(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(AppTheme.Colors.borderGray, lineWidth: 1))
             }
 
             if let feedback = viewModel.feedback {
@@ -197,108 +191,96 @@ struct TranslationPracticeView: View {
                             .padding(.trailing, 8)
                     }
                     Text(viewModel.isLoading ? "Submitting..." : "Submit for feedback")
-                        .font(.headline)
+                        .font(AppTheme.Typography.buttonFont)
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(viewModel.userTranslation.isEmpty ? Color.gray : Color.blue)
+                .background(viewModel.userTranslation.isEmpty ? Color.gray : AppTheme.Colors.primaryBlue)
                 .foregroundColor(.white)
-                .cornerRadius(12)
+                .cornerRadius(AppTheme.CornerRadius.button)
                 .contentShape(Rectangle())
             }
             .disabled(viewModel.userTranslation.isEmpty || viewModel.isLoading)
             if let error = viewModel.error {
                 Text(error.localizedDescription)
-                    .font(.caption)
-                    .foregroundColor(.red)
+                    .font(AppTheme.Typography.captionFont)
+                    .foregroundColor(AppTheme.Colors.errorRed)
                     .padding(.top, 4)
             }
         }
-        .padding(20)
-        .background(Color(.systemBackground))
-        .cornerRadius(16)
-        .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
-        .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.gray.opacity(0.1), lineWidth: 1))
+        .appCard()
     }
 
     private func feedbackSection(_ feedback: TranslationPracticeSessionResponse) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: AppTheme.Spacing.itemSpacing) {
             HStack {
                 Image(systemName: "sparkles")
-                    .foregroundColor(.orange)
+                    .foregroundColor(AppTheme.Colors.primaryBlue)
                 Text("AI Feedback")
-                    .font(.headline)
+                    .font(AppTheme.Typography.headingFont)
                 Spacer()
                 if let score = feedback.aiScore {
                     Text("Score: \(Int(score * 100))%")
-                        .font(.caption)
-                        .fontWeight(.bold)
+                        .font(AppTheme.Typography.captionFont.weight(.bold))
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
-                        .background(Color.orange.opacity(0.1))
-                        .foregroundColor(.orange)
+                        .background(AppTheme.Colors.primaryBlue.opacity(0.1))
+                        .foregroundColor(AppTheme.Colors.primaryBlue)
                         .cornerRadius(6)
                 }
             }
 
             Text(feedback.aiFeedback)
-                .font(.subheadline)
+                .font(AppTheme.Typography.subheadlineFont)
                 .lineSpacing(4)
         }
-        .padding()
-        .background(Color.orange.opacity(0.05))
-        .cornerRadius(12)
-                .contentShape(Rectangle())
-        .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.orange.opacity(0.2), lineWidth: 1))
+        .padding(AppTheme.Spacing.innerPadding)
+        .background(AppTheme.Colors.primaryBlue.opacity(0.05))
+        .cornerRadius(AppTheme.CornerRadius.button)
+        .contentShape(Rectangle())
+        .overlay(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(AppTheme.Colors.primaryBlue.opacity(0.2), lineWidth: 1))
     }
 
     private var historySection: some View {
         VStack(alignment: .leading, spacing: 15) {
             HStack {
                 Text("History")
-                    .font(.title3)
-                    .fontWeight(.bold)
+                    .font(AppTheme.Typography.headingFont)
                 Spacer()
                 Text("Showing 1-\(viewModel.history.count) of \(viewModel.totalHistoryCount)")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                    .font(AppTheme.Typography.captionFont)
+                    .foregroundColor(AppTheme.Colors.secondaryText)
             }
 
-            VStack(spacing: 12) {
+            VStack(spacing: AppTheme.Spacing.itemSpacing) {
                 ForEach(viewModel.history) { session in
                     VStack(alignment: .leading, spacing: 8) {
                         HStack {
-                            BadgeView(text: session.translationDirection.replacingOccurrences(of: "_", with: " ").uppercased(), color: .gray)
+                            BadgeView(text: session.translationDirection.replacingOccurrences(of: "_", with: " ").uppercased(), color: AppTheme.Colors.accentIndigo)
                             Spacer()
                             if let score = session.aiScore {
                                 Text("\(Int(score * 100))%")
-                                    .font(.caption2)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(score > 0.8 ? .green : .orange)
+                                    .font(AppTheme.Typography.badgeFont)
+                                    .foregroundColor(score > 0.8 ? AppTheme.Colors.successGreen : AppTheme.Colors.primaryBlue)
                             }
                         }
 
                         Text(session.originalSentence)
-                            .font(.subheadline)
-                            .fontWeight(.medium)
+                            .font(AppTheme.Typography.subheadlineFont.weight(.medium))
                             .lineLimit(1)
 
                         Text(session.userTranslation)
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+                            .font(AppTheme.Typography.captionFont)
+                            .foregroundColor(AppTheme.Colors.secondaryText)
                             .lineLimit(1)
                     }
-                    .padding()
+                    .padding(AppTheme.Spacing.innerPadding)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(Color(.secondarySystemBackground).opacity(0.5))
+                    .background(AppTheme.Colors.secondaryBackground.opacity(0.5))
                     .cornerRadius(10)
                 }
             }
         }
-        .padding(20)
-        .background(Color(.systemBackground))
-        .cornerRadius(16)
-        .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5)
-        .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.gray.opacity(0.1), lineWidth: 1))
+        .appCard()
     }
 }

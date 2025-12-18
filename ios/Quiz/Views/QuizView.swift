@@ -140,9 +140,9 @@ struct QuizView: View {
     private func questionCard(_ question: Question) -> some View {
         VStack(alignment: .leading, spacing: 15) {
             HStack {
-                BadgeView(text: question.type.replacingOccurrences(of: "_", with: " ").uppercased(), color: .indigo)
+                BadgeView(text: question.type.replacingOccurrences(of: "_", with: " ").uppercased(), color: AppTheme.Colors.accentIndigo)
                 Spacer()
-                BadgeView(text: "\(question.language.uppercased()) - \(question.level)", color: .blue)
+                BadgeView(text: "\(question.language.uppercased()) - \(question.level)", color: AppTheme.Colors.primaryBlue)
             }
 
             if let passage = stringValue(question.content["passage"]) {
@@ -152,10 +152,7 @@ struct QuizView: View {
                         .font(.body)
                         .lineSpacing(4)
                 }
-                .padding()
-                .background(Color(.systemBackground))
-                .cornerRadius(12)
-                .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.gray.opacity(0.2), lineWidth: 1))
+                .appInnerCard()
             }
 
             if let sentence = stringValue(question.content["sentence"]) {
@@ -173,12 +170,7 @@ struct QuizView: View {
                 Text("What does **\(targetWord)** mean in this context?")
             }
         }
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.systemBackground))
-        .cornerRadius(16)
-        .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 4)
-        .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.gray.opacity(0.1), lineWidth: 1))
+        .appCard()
     }
 
     @ViewBuilder
@@ -220,30 +212,30 @@ struct QuizView: View {
                 if viewModel.answerResponse != nil {
                     if isCorrect {
                         Image(systemName: "check.circle.fill")
-                            .foregroundColor(.green)
+                            .foregroundColor(AppTheme.Colors.successGreen)
                     } else if isUserIncorrect {
                         Image(systemName: "x.circle.fill")
-                            .foregroundColor(.red)
+                            .foregroundColor(AppTheme.Colors.errorRed)
                     }
                 }
 
                 Text(option)
-                    .font(.body)
-                    .foregroundColor(isUserIncorrect ? .red : (isCorrect ? .green : (isSelected ? .white : .primary)))
+                    .font(AppTheme.Typography.bodyFont)
+                    .foregroundColor(isUserIncorrect ? AppTheme.Colors.errorRed : (isCorrect ? AppTheme.Colors.successGreen : (isSelected ? .white : AppTheme.Colors.primaryText)))
 
                 Spacer()
             }
-            .padding()
+            .padding(AppTheme.Spacing.innerPadding)
             .frame(maxWidth: .infinity)
             .background(
-                isUserIncorrect ? Color.red.opacity(0.1) :
-                (isCorrect ? Color.green.opacity(0.1) :
-                (isSelected ? Color.blue : Color.blue.opacity(0.05)))
+                isUserIncorrect ? AppTheme.Colors.errorRed.opacity(0.1) :
+                (isCorrect ? AppTheme.Colors.successGreen.opacity(0.1) :
+                (isSelected ? AppTheme.Colors.primaryBlue : AppTheme.Colors.primaryBlue.opacity(0.05)))
             )
-            .cornerRadius(12)
+            .cornerRadius(AppTheme.CornerRadius.button)
             .overlay(
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(isUserIncorrect ? Color.red : (isCorrect ? Color.green : Color.blue.opacity(0.2)), lineWidth: 1)
+                RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button)
+                    .stroke(isUserIncorrect ? AppTheme.Colors.errorRed : (isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.borderBlue), lineWidth: 1)
             )
         }
         .disabled(viewModel.answerResponse != nil)
@@ -254,21 +246,21 @@ struct QuizView: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
                 Image(systemName: response.isCorrect ? "checkmark.circle.fill" : "xmark.circle.fill")
-                    .foregroundColor(response.isCorrect ? .green : .red)
+                    .foregroundColor(response.isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.errorRed)
                 Text(response.isCorrect ? "Correct!" : "Incorrect")
-                    .font(.headline)
-                    .foregroundColor(response.isCorrect ? .green : .red)
+                    .font(AppTheme.Typography.headingFont)
+                    .foregroundColor(response.isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.errorRed)
             }
 
             Text(response.explanation)
-                .font(.subheadline)
-                .foregroundColor(.secondary)
+                .font(AppTheme.Typography.subheadlineFont)
+                .foregroundColor(AppTheme.Colors.secondaryText)
                 .fixedSize(horizontal: false, vertical: true)
         }
-        .padding()
+        .padding(AppTheme.Spacing.innerPadding)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(response.isCorrect ? Color.green.opacity(0.05) : Color.red.opacity(0.05))
-        .cornerRadius(12)
+        .background(response.isCorrect ? AppTheme.Colors.successGreen.opacity(0.05) : AppTheme.Colors.errorRed.opacity(0.05))
+        .cornerRadius(AppTheme.CornerRadius.button)
     }
 
     @ViewBuilder
@@ -278,19 +270,14 @@ struct QuizView: View {
                 viewModel.selectedAnswerIndex = nil
                 viewModel.getQuestion()
             }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-            .frame(maxWidth: .infinity)
+            .buttonStyle(PrimaryButtonStyle())
         } else {
             Button("Submit Answer") {
                 if let idx = viewModel.selectedAnswerIndex {
                     viewModel.submitAnswer(userAnswerIndex: idx)
                 }
             }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-            .disabled(viewModel.selectedAnswerIndex == nil || viewModel.isLoading)
-            .frame(maxWidth: .infinity)
+            .buttonStyle(PrimaryButtonStyle(isDisabled: viewModel.selectedAnswerIndex == nil || viewModel.isLoading))
         }
     }
 
@@ -351,9 +338,9 @@ struct QuizView: View {
                         }
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(selectedConfidence == level ? Color.teal : Color.teal.opacity(0.1))
-                        .foregroundColor(selectedConfidence == level ? .white : .teal)
-                        .cornerRadius(12)
+                        .background(selectedConfidence == level ? AppTheme.Colors.primaryBlue : AppTheme.Colors.primaryBlue.opacity(0.1))
+                        .foregroundColor(selectedConfidence == level ? .white : AppTheme.Colors.primaryBlue)
+                        .cornerRadius(AppTheme.CornerRadius.button)
                     }
                 }
                 .padding(.horizontal)
@@ -365,9 +352,7 @@ struct QuizView: View {
                         viewModel.markQuestionKnown(confidence: confidence)
                     }
                 }
-                .buttonStyle(.borderedProminent)
-                .tint(.teal)
-                .disabled(selectedConfidence == nil || viewModel.isSubmittingAction)
+                .buttonStyle(PrimaryButtonStyle(isDisabled: selectedConfidence == nil || viewModel.isSubmittingAction))
                 .padding()
             }
             .navigationTitle("Adjust Frequency")

@@ -8,9 +8,9 @@ struct StoryListView: View {
             NavigationLink(destination: StoryDetailView(storyId: story.id)) {
                 VStack(alignment: .leading) {
                     Text(story.title)
-                        .font(.headline)
+                        .font(AppTheme.Typography.headingFont)
                     Text("Language: \(story.language)")
-                        .font(.subheadline)
+                        .font(AppTheme.Typography.subheadlineFont)
                 }
             }
         }

@@ -6,10 +6,10 @@ import {
   act,
   waitFor,
 } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
-import { describe, it, expect, vi } from 'vitest';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { MantineProvider } from '@mantine/core';
+import {MemoryRouter} from 'react-router-dom';
+import {describe, it, expect, vi} from 'vitest';
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
+import {MantineProvider} from '@mantine/core';
 import MobileLoginPage from '../MobileLoginPage';
 
 // Mock the hooks and contexts
@@ -22,7 +22,7 @@ vi.mock('../../../hooks/useAuth', () => ({
 vi.mock('../../../api/api', () => ({
   useGetV1AuthSignupStatus: () => ({
     isLoading: false,
-    data: { signups_disabled: false },
+    data: {signups_disabled: false},
   }),
 }));
 
@@ -58,19 +58,19 @@ describe('MobileLoginPage', () => {
     renderWithProviders(<MobileLoginPage />);
 
     await waitFor(() => {
-      expect(screen.getByText('AI Language Quiz')).toBeInTheDocument();
+      expect(screen.getByText('Language Quiz')).toBeInTheDocument();
     });
     expect(screen.getByText('Sign in to start learning')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('admin')).toBeInTheDocument(); // Username input
     expect(screen.getByPlaceholderText('••••••••')).toBeInTheDocument(); // Password input
-    expect(screen.getByRole('button', { name: 'Sign In' })).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: 'Sign In'})).toBeInTheDocument();
   });
 
   it('should allow entering username and password', async () => {
     renderWithProviders(<MobileLoginPage />);
 
     await waitFor(() => {
-      expect(screen.getByText('AI Language Quiz')).toBeInTheDocument();
+      expect(screen.getByText('Language Quiz')).toBeInTheDocument();
     });
 
     const usernameInput = screen.getByPlaceholderText('admin');
@@ -78,8 +78,8 @@ describe('MobileLoginPage', () => {
 
     // Wrap form interactions in act and wait for state updates
     await act(async () => {
-      fireEvent.change(usernameInput, { target: { value: 'testuser' } });
-      fireEvent.change(passwordInput, { target: { value: 'testpass' } });
+      fireEvent.change(usernameInput, {target: {value: 'testuser'}});
+      fireEvent.change(passwordInput, {target: {value: 'testpass'}});
     });
 
     expect(usernameInput).toHaveValue('testuser');
@@ -108,17 +108,17 @@ describe('MobileLoginPage', () => {
     renderWithProviders(<MobileLoginPage />);
 
     await waitFor(() => {
-      expect(screen.getByText('AI Language Quiz')).toBeInTheDocument();
+      expect(screen.getByText('Language Quiz')).toBeInTheDocument();
     });
 
     const usernameInput = screen.getByPlaceholderText('admin');
     const passwordInput = screen.getByPlaceholderText('••••••••');
-    const submitButton = screen.getByRole('button', { name: 'Sign In' });
+    const submitButton = screen.getByRole('button', {name: 'Sign In'});
 
     // Wrap form interactions in act and wait for state updates
     await act(async () => {
-      fireEvent.change(usernameInput, { target: { value: 'testuser' } });
-      fireEvent.change(passwordInput, { target: { value: 'testpass' } });
+      fireEvent.change(usernameInput, {target: {value: 'testuser'}});
+      fireEvent.change(passwordInput, {target: {value: 'testpass'}});
       fireEvent.click(submitButton);
     });
 
@@ -134,7 +134,7 @@ describe('MobileLoginPage', () => {
     await waitFor(() => {
       // Should have mobile layout elements (but mobile login page doesn't use MobileLayout)
       // Just verify the page renders correctly
-      expect(screen.getByText('AI Language Quiz')).toBeInTheDocument();
+      expect(screen.getByText('Language Quiz')).toBeInTheDocument();
     });
   });
 });

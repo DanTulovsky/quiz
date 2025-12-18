@@ -46,8 +46,8 @@ struct AIConversationListView: View {
                         .bold()
                         .padding(.horizontal, 6)
                         .padding(.vertical, 4)
-                        .background(Color.blue.opacity(0.1))
-                        .foregroundColor(.blue)
+                        .background(AppTheme.Colors.primaryBlue.opacity(0.1))
+                        .foregroundColor(AppTheme.Colors.primaryBlue)
                         .clipShape(RoundedRectangle(cornerRadius: 6))
                 }
             }
@@ -110,8 +110,8 @@ struct ConversationCard: View {
                     .font(.caption)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
-                    .background(Color.blue.opacity(0.1))
-                    .foregroundColor(.blue)
+                    .background(AppTheme.Colors.primaryBlue.opacity(0.1))
+                    .foregroundColor(AppTheme.Colors.primaryBlue)
                     .cornerRadius(6)
 
                     Text("\(conversation.messageCount ?? 0) MSGS")
@@ -119,15 +119,12 @@ struct ConversationCard: View {
                         .bold()
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
-                        .background(Color.green.opacity(0.1))
-                        .foregroundColor(.green)
+                        .background(AppTheme.Colors.successGreen.opacity(0.1))
+                        .foregroundColor(AppTheme.Colors.successGreen)
                         .cornerRadius(6)
                 }
             }
-            .padding()
-            .background(Color(.systemBackground))
-            .cornerRadius(12)
-            .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
+            .appInnerCard()
             .alert("Edit Title", isPresented: $showingEditTitle) {
                 TextField("Title", text: $newTitle)
                 Button("Cancel", role: .cancel) { }

@@ -16,13 +16,12 @@ struct WordOfTheDayView: View {
                 // Header with Today button
                 HStack {
                     Text("Word of the Day")
-                        .font(.title)
-                        .fontWeight(.bold)
+                        .font(AppTheme.Typography.headingFont)
                     Spacer()
                     Button(action: { viewModel.fetchToday() }) {
                         Label("Today", systemImage: "calendar")
-                            .font(.subheadline)
-                            .foregroundColor(.blue)
+                            .font(AppTheme.Typography.subheadlineFont)
+                            .foregroundColor(AppTheme.Colors.primaryBlue)
                     }
                 }
                 .padding(.top)
@@ -33,20 +32,20 @@ struct WordOfTheDayView: View {
                         Image(systemName: "chevron.left")
                             .font(.title2)
                             .padding(10)
-                            .background(Color.blue.opacity(0.1))
+                            .background(AppTheme.Colors.primaryBlue.opacity(0.1))
                             .clipShape(Circle())
                     }
 
                     Text(displayFormatter.string(from: viewModel.currentDate))
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
+                        .font(AppTheme.Typography.subheadlineFont)
+                        .foregroundColor(AppTheme.Colors.secondaryText)
                         .frame(maxWidth: .infinity)
 
                     Button(action: { viewModel.nextDay() }) {
                         Image(systemName: "chevron.right")
                             .font(.title2)
                             .padding(10)
-                            .background(Color.blue.opacity(0.1))
+                            .background(AppTheme.Colors.primaryBlue.opacity(0.1))
                             .clipShape(Circle())
                     }
                     .disabled(Calendar.current.isDateInToday(viewModel.currentDate))
@@ -59,8 +58,8 @@ struct WordOfTheDayView: View {
                     wordCard(wotd)
 
                     Text("Use arrows to navigate between days")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                        .font(AppTheme.Typography.captionFont)
+                        .foregroundColor(AppTheme.Colors.secondaryText)
                         .padding(.top)
                 } else if let error = viewModel.error {
                     VStack(spacing: 15) {
@@ -104,61 +103,45 @@ struct WordOfTheDayView: View {
             VStack(spacing: 10) {
                 Text(wotd.word)
                     .font(.system(size: 48, weight: .bold))
-                    .foregroundColor(.primary)
+                    .foregroundColor(AppTheme.Colors.primaryText)
 
                 Text(wotd.translation)
                     .font(.title2)
                     .italic()
-                    .foregroundColor(.secondary)
+                    .foregroundColor(AppTheme.Colors.secondaryText)
             }
             .padding(.top, 10)
 
             // Example Sentence Inner Card
             VStack(alignment: .leading, spacing: 12) {
                 Text(wotd.sentence)
-                    .font(.title3)
+                    .font(AppTheme.Typography.headingFont)
                     .lineSpacing(4)
             }
-            .padding()
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color(.systemBackground))
-            .cornerRadius(12)
-            .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
-            .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.blue.opacity(0.2), lineWidth: 1))
+            .appInnerCard()
+            .overlay(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.innerCard).stroke(AppTheme.Colors.borderBlue, lineWidth: 1))
 
             // Explanation Inner Card
             if let explanation = wotd.explanation {
                 VStack(alignment: .leading, spacing: 12) {
                     Text(explanation)
-                        .font(.body)
-                        .foregroundColor(.primary)
+                        .font(AppTheme.Typography.bodyFont)
+                        .foregroundColor(AppTheme.Colors.primaryText)
                 }
-                .padding()
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color(.systemBackground))
-                .cornerRadius(12)
-                .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
-                .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.blue.opacity(0.2), lineWidth: 1))
+                .appInnerCard()
+                .overlay(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.innerCard).stroke(AppTheme.Colors.borderBlue, lineWidth: 1))
             }
 
             // Badges
             HStack(spacing: 10) {
-                BadgeView(text: wotd.language.uppercased(), color: .gray)
+                BadgeView(text: wotd.language.uppercased(), color: AppTheme.Colors.primaryBlue)
                 if let level = wotd.level {
-                    BadgeView(text: level.uppercased(), color: .gray)
+                    BadgeView(text: level.uppercased(), color: AppTheme.Colors.primaryBlue)
                 }
-                BadgeView(text: "VOCABULARY", color: .gray)
+                BadgeView(text: "VOCABULARY", color: AppTheme.Colors.accentIndigo)
             }
             .padding(.bottom, 10)
         }
-        .padding(25)
-        .frame(maxWidth: .infinity)
-        .background(Color(.systemBackground))
-        .cornerRadius(20)
-        .overlay(
-            RoundedRectangle(cornerRadius: 20)
-                .stroke(Color.blue.opacity(0.5), lineWidth: 2)
-        )
-        .shadow(color: Color.black.opacity(0.1), radius: 15, x: 0, y: 10)
+        .appCard()
     }
 }

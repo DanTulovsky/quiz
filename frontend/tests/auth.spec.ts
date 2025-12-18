@@ -148,7 +148,7 @@ test.describe('Signup Disable Feature', () => {
 
     // Should navigate back to login page
     await expect(page).toHaveURL('/login');
-    await expect(page.locator('h2')).toContainText('AI Language Quiz');
+    await expect(page.locator('h2')).toContainText('Language Quiz');
   });
 
   test('should show normal signup form when signups are enabled', async ({page}) => {
