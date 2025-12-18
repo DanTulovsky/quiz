@@ -11,6 +11,14 @@ struct LoginResponse: Codable {
     let user: User
 }
 
+struct GoogleOAuthLoginResponse: Codable {
+    let authUrl: String
+
+    enum CodingKeys: String, CodingKey {
+        case authUrl = "auth_url"
+    }
+}
+
 struct User: Codable, Equatable {
     let id: Int
     let username: String
@@ -38,6 +46,11 @@ struct User: Codable, Equatable {
     }
 }
 
+struct UserProfileMessageResponse: Codable {
+    let message: String
+    let user: User
+}
+
 struct ErrorResponse: Codable {
     let error: String?
     let message: String?
@@ -63,13 +76,6 @@ struct SignupStatusResponse: Codable {
     let signupsEnabled: Bool
     enum CodingKeys: String, CodingKey {
         case signupsEnabled = "signups_enabled"
-    }
-}
-
-struct GoogleOAuthLoginResponse: Codable {
-    let redirectUrl: String
-    enum CodingKeys: String, CodingKey {
-        case redirectUrl = "redirect_url"
     }
 }
 

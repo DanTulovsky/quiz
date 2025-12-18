@@ -81,6 +81,31 @@ class APIService {
             .eraseToAnyPublisher()
     }
 
+    func initiateGoogleLogin() -> AnyPublisher<GoogleOAuthLoginResponse, APIError> {
+        let url = baseURL.appendingPathComponent("auth/google/login")
+        let urlRequest = URLRequest(url: url)
+        return URLSession.shared.dataTaskPublisher(for: urlRequest)
+            .mapError { .requestFailed($0) }
+            .flatMap { self.handleResponse($0.data, $0.response) }
+            .eraseToAnyPublisher()
+    }
+
+    func handleGoogleCallback(code: String, state: String?) -> AnyPublisher<LoginResponse, APIError> {
+        var components = URLComponents(url: baseURL.appendingPathComponent("auth/google/callback"), resolvingAgainstBaseURL: false)!
+        var queryItems = [URLQueryItem(name: "code", value: code)]
+        if let state = state {
+            queryItems.append(URLQueryItem(name: "state", value: state))
+        }
+        components.queryItems = queryItems
+
+        var urlRequest = URLRequest(url: components.url!)
+        urlRequest.httpShouldHandleCookies = true
+        return URLSession.shared.dataTaskPublisher(for: urlRequest)
+            .mapError { .requestFailed($0) }
+            .flatMap { self.handleResponse($0.data, $0.response) }
+            .eraseToAnyPublisher()
+    }
+
     func authStatus() -> AnyPublisher<AuthStatusResponse, APIError> {
         let url = baseURL.appendingPathComponent("auth/status")
         let urlRequest = authenticatedRequest(for: url)
@@ -304,8 +329,34 @@ class APIService {
         urlRequest.httpBody = try? JSONEncoder().encode(request)
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
-            .flatMap { self.handleResponse($0.data, $0.response) }
+            .flatMap { data, response -> AnyPublisher<User, APIError> in
+                do {
+                    let profileResponse: UserProfileMessageResponse = try self.decodeResponse(data, response)
+                    return Just(profileResponse.user)
+                        .setFailureType(to: APIError.self)
+                        .eraseToAnyPublisher()
+                } catch let error as APIError {
+                    return Fail(error: error).eraseToAnyPublisher()
+                } catch {
+                    return Fail(error: .decodingFailed(error)).eraseToAnyPublisher()
+                }
+            }
             .eraseToAnyPublisher()
+    }
+
+    private func decodeResponse<T: Decodable>(_ data: Data, _ response: URLResponse) throws -> T {
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIError.invalidResponse
+        }
+        guard (200...299).contains(httpResponse.statusCode) else {
+            throw APIError.invalidResponse
+        }
+        do {
+            let decoder = JSONDecoder()
+            return try decoder.decode(T.self, from: data)
+        } catch {
+            throw APIError.decodingFailed(error)
+        }
     }
 
     func getWordOfTheDay(date: String? = nil) -> AnyPublisher<WordOfTheDayDisplay, APIError> {
