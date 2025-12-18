@@ -1,6 +1,7 @@
+import AVFoundation
 import Combine
-import SwiftUI
 import MediaPlayer
+import SwiftUI
 
 struct BadgeView: View {
     let text: String
@@ -16,8 +17,6 @@ struct BadgeView: View {
             .cornerRadius(AppTheme.CornerRadius.badge)
     }
 }
-
-import AVFoundation
 
 @MainActor class TTSSynthesizerManager: NSObject, ObservableObject {
     static let shared = TTSSynthesizerManager()
@@ -89,16 +88,21 @@ import AVFoundation
         }
 
         // Try backend TTS
-        let request = TTSRequest(input: text, voice: effectiveVoice, responseFormat: "mp3", speed: 1.0)
+        let request = TTSRequest(
+            input: text, voice: effectiveVoice, responseFormat: "mp3", speed: 1.0)
         APIService.shared.initializeTTSStream(request: request)
             .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [weak self] completion in
-                if case .failure(let error) = completion {
-                    self?.handleError("Failed to initialize audio: \(error.localizedDescription)")
+            .sink(
+                receiveCompletion: { [weak self] completion in
+                    if case .failure(let error) = completion {
+                        self?.handleError(
+                            "Failed to initialize audio: \(error.localizedDescription)")
+                    }
+                },
+                receiveValue: { [weak self] response in
+                    self?.playStream(streamId: response.streamId, token: response.token)
                 }
-            }, receiveValue: { [weak self] response in
-                self?.playStream(streamId: response.streamId, token: response.token)
-            })
+            )
             .store(in: &cancellables)
     }
 
@@ -161,7 +165,9 @@ import AVFoundation
             let playerItem = AVPlayerItem(asset: asset)
 
             // Listen for completion
-            NotificationCenter.default.addObserver(forName: .AVPlayerItemDidPlayToEndTime, object: playerItem, queue: .main) { _ in
+            NotificationCenter.default.addObserver(
+                forName: .AVPlayerItemDidPlayToEndTime, object: playerItem, queue: .main
+            ) { _ in
                 Task { @MainActor [weak self] in
                     guard let self = self else { return }
                     self.currentlySpeakingText = nil
@@ -172,7 +178,9 @@ import AVFoundation
             }
 
             // Listen for errors
-            NotificationCenter.default.addObserver(forName: .AVPlayerItemFailedToPlayToEndTime, object: playerItem, queue: .main) { _ in
+            NotificationCenter.default.addObserver(
+                forName: .AVPlayerItemFailedToPlayToEndTime, object: playerItem, queue: .main
+            ) { _ in
                 Task { @MainActor [weak self] in
                     guard let self = self else { return }
                     self.handleError("Audio playback failed.")
@@ -186,7 +194,8 @@ import AVFoundation
             self.player = player
 
             // Add observer for status
-            playerItem.addObserver(self, forKeyPath: "status", options: [.new, .initial], context: nil)
+            playerItem.addObserver(
+                self, forKeyPath: "status", options: [.new, .initial], context: nil)
 
             player.play()
 
@@ -205,7 +214,8 @@ import AVFoundation
         // Set title to a preview of the text being spoken
         if let text = currentlySpeakingText {
             let preview = text.prefix(50)
-            nowPlayingInfo[MPMediaItemPropertyTitle] = String(preview) + (text.count > 50 ? "..." : "")
+            nowPlayingInfo[MPMediaItemPropertyTitle] =
+                String(preview) + (text.count > 50 ? "..." : "")
         } else {
             nowPlayingInfo[MPMediaItemPropertyTitle] = "Text to Speech"
         }
@@ -234,7 +244,10 @@ import AVFoundation
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
     }
 
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+    override func observeValue(
+        forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?,
+        context: UnsafeMutableRawPointer?
+    ) {
         if keyPath == "status", let playerItem = object as? AVPlayerItem {
             if playerItem.status == .failed {
                 if let error = playerItem.error {
@@ -262,7 +275,7 @@ import AVFoundation
         case "german", "de": return "de-DE-KatjaNeural"
         case "english", "en": return "en-US-JennyNeural"
         case "portuguese": return "pt-PT-RaquelNeural"
-        case "russian": return "ru-RU-DariyaNeural"
+        case "russian": return "ru-RU-DmitryNeural"
         case "japanese": return "ja-JP-NanamiNeural"
         case "korean": return "ko-KR-SunHiNeural"
         case "chinese": return "zh-CN-XiaoxiaoNeural"
@@ -279,8 +292,9 @@ import AVFoundation
         clearNowPlayingInfo()
 
         do {
-            try AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
-        } catch { }
+            try AVAudioSession.sharedInstance().setActive(
+                false, options: .notifyOthersOnDeactivation)
+        } catch {}
     }
 }
 
@@ -302,7 +316,7 @@ struct TTSButton: View {
                 .font(.title2)
                 .foregroundColor(.blue)
         }
-        .buttonStyle(.plain) // Prevent multi-action triggers in Lists
+        .buttonStyle(.plain)  // Prevent multi-action triggers in Lists
     }
 }
 
@@ -323,7 +337,10 @@ struct SnippetDetailView: View {
             }
 
             HStack {
-                BadgeView(text: "\(snippet.sourceLanguage?.uppercased() ?? "??") → \(snippet.targetLanguage?.uppercased() ?? "??")", color: .blue)
+                BadgeView(
+                    text:
+                        "\(snippet.sourceLanguage?.uppercased() ?? "??") → \(snippet.targetLanguage?.uppercased() ?? "??")",
+                    color: .blue)
                 if let level = snippet.difficultyLevel {
                     BadgeView(text: level, color: .green)
                 }

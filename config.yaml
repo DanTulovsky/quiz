@@ -362,7 +362,7 @@ language_levels:
   russian:
     code: "ru"
     tts_locale: "ru-RU"
-    tts_voice: "ru-RU-DariyaNeural"
+    tts_voice: "ru-RU-DmitryNeural"
     levels:
       - "A1"
       - "A2"
