@@ -452,11 +452,8 @@ func (h *AuthHandler) GoogleLogin(c *gin.Context) {
 		return
 	}
 
-	// Check if request is from iOS (via User-Agent or platform query param)
-	isIOS := c.Query("platform") == "ios" ||
-		strings.Contains(c.GetHeader("User-Agent"), "iOS") ||
-		strings.Contains(c.GetHeader("User-Agent"), "iPhone") ||
-		strings.Contains(c.GetHeader("User-Agent"), "iPad")
+	// Check if request is from iOS (only via platform query param to avoid false positives from web browsers on iOS devices)
+	isIOS := c.Query("platform") == "ios"
 
 	// Log iOS detection and client ID availability
 	if isIOS {
