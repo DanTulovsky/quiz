@@ -59,13 +59,37 @@ class DailyViewModel: ObservableObject {
                     self?.error = error
                 }
             }, receiveValue: { [weak self] response in
-                self?.dailyQuestions = response.questions
-                // Find first incomplete question
+                guard let self = self else { return }
+                self.dailyQuestions = response.questions
+                // Always position on the first incomplete question when questions are loaded
+                // This ensures users never start on a completed question
                 if let firstIncomplete = response.questions.firstIndex(where: { !$0.isCompleted }) {
-                    self?.currentQuestionIndex = firstIncomplete
+                    self.currentQuestionIndex = firstIncomplete
+                } else if !response.questions.isEmpty {
+                    // All questions are completed, start at the first one
+                    self.currentQuestionIndex = 0
                 }
             })
             .store(in: &cancellables)
+    }
+
+    func ensurePositionedOnFirstIncomplete() {
+        guard !dailyQuestions.isEmpty else { return }
+
+        // Check if current question is completed or invalid
+        let currentIsCompleted = currentQuestionIndex < dailyQuestions.count && dailyQuestions[currentQuestionIndex].isCompleted
+        let currentIsInvalid = currentQuestionIndex >= dailyQuestions.count
+
+        // If we're on a completed question or invalid index, find the first incomplete question
+        if currentIsCompleted || currentIsInvalid {
+            if let firstIncomplete = dailyQuestions.firstIndex(where: { !$0.isCompleted }) {
+                currentQuestionIndex = firstIncomplete
+            } else {
+                // All questions are completed, go to first question
+                currentQuestionIndex = 0
+            }
+        }
+        // If current question is valid and not completed, we're already positioned correctly
     }
 
     func submitAnswer(index: Int) {
@@ -85,7 +109,20 @@ class DailyViewModel: ObservableObject {
                     self?.error = error
                 }
             }, receiveValue: { [weak self] response in
-                self?.answerResponse = response
+                guard let self = self else { return }
+                self.answerResponse = response
+
+                // Update the question's completed status in the array
+                if self.currentQuestionIndex < self.dailyQuestions.count {
+                    let updatedQuestion = DailyQuestionWithDetails(
+                        id: self.dailyQuestions[self.currentQuestionIndex].id,
+                        questionId: self.dailyQuestions[self.currentQuestionIndex].questionId,
+                        question: self.dailyQuestions[self.currentQuestionIndex].question,
+                        isCompleted: response.isCompleted,
+                        userAnswerIndex: response.userAnswerIndex
+                    )
+                    self.dailyQuestions[self.currentQuestionIndex] = updatedQuestion
+                }
             })
             .store(in: &cancellables)
     }

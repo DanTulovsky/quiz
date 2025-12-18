@@ -168,12 +168,12 @@ struct LoginView: View {
                 }
             }
             .navigationBarHidden(true)
-            .onChange(of: viewModel.googleAuthURL) { newURL in
+            .onChange(of: viewModel.googleAuthURL) { oldValue, newValue in
                 // Only show WebAuthView if URL is set, user is not already authenticated, and sheet is not already showing
-                if newURL != nil && !viewModel.isAuthenticated && !showWebAuth {
+                if newValue != nil && !viewModel.isAuthenticated && !showWebAuth {
                     isLoading = false
                     showWebAuth = true
-                } else if newURL == nil && showWebAuth {
+                } else if newValue == nil && showWebAuth {
                     // If URL is cleared while sheet is showing, dismiss it
                     showWebAuth = false
                 }

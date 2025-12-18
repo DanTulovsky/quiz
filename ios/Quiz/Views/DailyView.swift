@@ -85,6 +85,21 @@ struct DailyView: View {
         }
         .onAppear {
             viewModel.fetchDaily()
+            // Also check positioning after a delay to catch any edge cases
+            Task { @MainActor in
+                try? await Task.sleep(nanoseconds: 200_000_000) // 0.2 seconds
+                if !viewModel.dailyQuestions.isEmpty {
+                    viewModel.ensurePositionedOnFirstIncomplete()
+                }
+            }
+        }
+        .onChange(of: viewModel.dailyQuestions.count) { old, new in
+            // When questions count changes (questions loaded), ensure positioning
+            if new > 0 {
+                DispatchQueue.main.async {
+                    viewModel.ensurePositionedOnFirstIncomplete()
+                }
+            }
         }
     }
 
@@ -174,11 +189,13 @@ struct DailyView: View {
         let currentQuestion = viewModel.currentQuestion
         let isCompleted = currentQuestion?.isCompleted ?? false
         let isSelected = viewModel.selectedAnswerIndex == index
-        let correctAnswerIndex = viewModel.answerResponse?.correctAnswerIndex ?? currentQuestion?.question.correctAnswerIndex
-        let isCorrect = correctAnswerIndex == index
-        let userAnswerIndex = viewModel.answerResponse?.userAnswerIndex ?? currentQuestion?.userAnswerIndex
-        let isUserIncorrect = userAnswerIndex == index && !isCorrect
         let showResults = viewModel.answerResponse != nil || isCompleted
+
+        // Only get correct answer info when we should show results
+        let correctAnswerIndex: Int? = showResults ? (viewModel.answerResponse?.correctAnswerIndex ?? currentQuestion?.question.correctAnswerIndex) : nil
+        let isCorrect = correctAnswerIndex != nil && correctAnswerIndex == index
+        let userAnswerIndex = viewModel.answerResponse?.userAnswerIndex ?? (isCompleted ? currentQuestion?.userAnswerIndex : nil)
+        let isUserIncorrect = userAnswerIndex != nil && userAnswerIndex == index && !isCorrect
 
         return Button(action: {
             if !showResults {
@@ -198,21 +215,21 @@ struct DailyView: View {
 
                 Text(option)
                     .font(AppTheme.Typography.bodyFont)
-                    .foregroundColor(isUserIncorrect ? AppTheme.Colors.errorRed : (isCorrect ? AppTheme.Colors.successGreen : (isSelected ? .white : AppTheme.Colors.primaryText)))
+                    .foregroundColor(showResults && isUserIncorrect ? AppTheme.Colors.errorRed : (showResults && isCorrect ? AppTheme.Colors.successGreen : (isSelected ? .white : AppTheme.Colors.primaryText)))
 
                 Spacer()
             }
             .padding(AppTheme.Spacing.innerPadding)
             .frame(maxWidth: .infinity)
             .background(
-                isUserIncorrect ? AppTheme.Colors.errorRed.opacity(0.1) :
-                (isCorrect ? AppTheme.Colors.successGreen.opacity(0.1) :
+                showResults && isUserIncorrect ? AppTheme.Colors.errorRed.opacity(0.1) :
+                (showResults && isCorrect ? AppTheme.Colors.successGreen.opacity(0.1) :
                 (isSelected ? AppTheme.Colors.primaryBlue : AppTheme.Colors.primaryBlue.opacity(0.05)))
             )
             .cornerRadius(AppTheme.CornerRadius.button)
             .overlay(
                 RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button)
-                    .stroke(isUserIncorrect ? AppTheme.Colors.errorRed : (isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.borderBlue), lineWidth: 1)
+                    .stroke(showResults && isUserIncorrect ? AppTheme.Colors.errorRed : (showResults && isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.borderBlue), lineWidth: 1)
             )
         }
         .disabled(showResults)
@@ -358,6 +375,12 @@ struct DailyView: View {
             }
         } else if let _ = viewModel.answerResponse {
             // After submission but not all completed
+            Button("Next Question") {
+                viewModel.nextQuestion()
+            }
+            .buttonStyle(PrimaryButtonStyle())
+        } else if let question = viewModel.currentQuestion, question.isCompleted {
+            // Viewing a completed question (answerResponse is nil but question is completed)
             Button("Next Question") {
                 viewModel.nextQuestion()
             }

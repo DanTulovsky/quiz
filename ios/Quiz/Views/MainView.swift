@@ -63,7 +63,7 @@ struct MainView: View {
                                     Label("Word of the Day", systemImage: "sparkles")
                                 }
                                 NavigationLink(destination: TranslationPracticeView()) {
-                                    Label("Translation Practice", systemImage: "arrow.left.and.right.right.arrow.left")
+                                    Label("Translation Practice", systemImage: "arrow.left.and.right")
                                 }
                             }
                         }

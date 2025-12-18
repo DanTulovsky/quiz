@@ -144,7 +144,7 @@ enum JSONValue: Codable, Equatable {
     }
 }
 
-struct Question: Codable {
+struct Question: Codable, Equatable {
     let id: Int
     let type: String
     let language: String
@@ -389,7 +389,7 @@ struct DailyQuestionsResponse: Codable {
     let questions: [DailyQuestionWithDetails]
 }
 
-struct DailyQuestionWithDetails: Codable {
+struct DailyQuestionWithDetails: Codable, Equatable {
     let id: Int
     let questionId: Int
     let question: Question
