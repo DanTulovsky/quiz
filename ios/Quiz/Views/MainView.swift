@@ -1,9 +1,62 @@
 import SwiftUI
+import Combine
+
+class TTSInitializationManager: ObservableObject {
+    private var cancellables = Set<AnyCancellable>()
+    var isInitialized = false
+    private var loadedLanguages: [LanguageInfo] = []
+
+    func initialize(apiService: APIService, userLanguage: String?) {
+        guard !isInitialized else { return }
+        isInitialized = true
+
+        // First, load languages to populate the default voice cache
+        apiService.getLanguages()
+            .receive(on: DispatchQueue.main)
+            .flatMap { [weak self] languages -> AnyPublisher<UserLearningPreferences, APIService.APIError> in
+                guard let self = self else {
+                    return Fail(error: APIService.APIError.invalidResponse).eraseToAnyPublisher()
+                }
+                // Store languages for later use
+                self.loadedLanguages = languages
+                // Update the default voice cache (we're on main thread from receive(on:))
+                TTSSynthesizerManager.shared.updateDefaultVoiceCache(languages: languages)
+
+                // Then load user preferences
+                return apiService.getLearningPreferences()
+            }
+            .receive(on: DispatchQueue.main)
+            .sink(
+                receiveCompletion: { completion in
+                    if case .failure(let error) = completion {
+                        print("Failed to initialize TTS settings: \(error.localizedDescription)")
+                    }
+                },
+                receiveValue: { [weak self] preferences in
+                    guard let self = self else { return }
+                    // Set the preferred voice from user preferences (we're on main thread from receive(on:))
+                    if let savedVoice = preferences.ttsVoice, !savedVoice.isEmpty {
+                        TTSSynthesizerManager.shared.preferredVoice = savedVoice
+                    } else if let userLanguage = userLanguage {
+                        // If no saved voice, find the default voice for the user's language
+                        let langKey = userLanguage.lowercased()
+                        if let languageInfo = self.loadedLanguages.first(where: {
+                            $0.name.lowercased() == langKey || $0.code.lowercased() == langKey
+                        }), let defaultVoice = languageInfo.ttsVoice {
+                            TTSSynthesizerManager.shared.preferredVoice = defaultVoice
+                        }
+                    }
+                }
+            )
+            .store(in: &cancellables)
+    }
+}
 
 struct MainView: View {
     @AppStorage("app_theme") private var appTheme: String = "system"
     @AppStorage("app_font_size") private var appFontSize: String = "M"
     @EnvironmentObject var authViewModel: AuthenticationViewModel
+    @StateObject private var ttsInitManager = TTSInitializationManager()
 
     private var colorScheme: ColorScheme? {
         switch appTheme {
@@ -133,5 +186,21 @@ struct MainView: View {
         }
         .preferredColorScheme(colorScheme)
         .environment(\.dynamicTypeSize, dynamicTypeSize)
+        .onChange(of: authViewModel.isAuthenticated) { _, isAuthenticated in
+            if isAuthenticated && !ttsInitManager.isInitialized {
+                ttsInitManager.initialize(
+                    apiService: APIService.shared,
+                    userLanguage: authViewModel.user?.preferredLanguage
+                )
+            }
+        }
+        .onAppear {
+            if authViewModel.isAuthenticated && !ttsInitManager.isInitialized {
+                ttsInitManager.initialize(
+                    apiService: APIService.shared,
+                    userLanguage: authViewModel.user?.preferredLanguage
+                )
+            }
+        }
     }
 }

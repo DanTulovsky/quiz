@@ -16,31 +16,28 @@ struct SelectableTextView: UIViewRepresentable {
 
     func makeUIView(context: Context) -> UITextView {
         let textView = UITextView()
-        updateTextView(textView, context: context)
+        textView.delegate = context.coordinator
+        updateTextView(textView)
         textView.isEditable = false
         textView.isSelectable = true
         textView.backgroundColor = .clear
         textView.textContainerInset = .zero
         textView.textContainer.lineFragmentPadding = 0
+        textView.allowsEditingTextAttributes = false
 
-        // Add long press gesture to detect selection
-        let longPress = UILongPressGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleLongPress(_:)))
-        longPress.minimumPressDuration = 0.5
-        textView.addGestureRecognizer(longPress)
-
-        // Add tap gesture to check selection
-        let tap = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleTap(_:)))
-        textView.addGestureRecognizer(tap)
+        // Enable text selection
+        textView.isUserInteractionEnabled = true
 
         context.coordinator.textView = textView
+        context.coordinator.onTextSelected = onTextSelected
         return textView
     }
 
     func updateUIView(_ uiView: UITextView, context: Context) {
-        updateTextView(uiView, context: context)
+        updateTextView(uiView)
     }
 
-    private func updateTextView(_ textView: UITextView, context: Context) {
+    private func updateTextView(_ textView: UITextView) {
         let attributedString = NSMutableAttributedString(string: text)
         attributedString.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .body), range: NSRange(location: 0, length: text.count))
 
@@ -67,43 +64,49 @@ struct SelectableTextView: UIViewRepresentable {
     }
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(onTextSelected: onTextSelected)
+        let coordinator = Coordinator()
+        coordinator.onTextSelected = onTextSelected
+        return coordinator
     }
 
-    class Coordinator: NSObject {
+    class Coordinator: NSObject, UITextViewDelegate {
         var textView: UITextView?
-        let onTextSelected: (String) -> Void
+        var onTextSelected: ((String) -> Void)?
+        private var selectionTimer: Timer?
 
-        init(onTextSelected: @escaping (String) -> Void) {
-            self.onTextSelected = onTextSelected
-        }
+        func textViewDidChangeSelection(_ textView: UITextView) {
+            // Cancel previous timer
+            selectionTimer?.invalidate()
 
-        @objc func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
-            guard gesture.state == .began,
-                  let textView = textView,
-                  let selectedRange = textView.selectedTextRange,
+            // Check if there's a selection
+            guard let selectedRange = textView.selectedTextRange,
                   !selectedRange.isEmpty else {
                 return
             }
 
             let selectedText = textView.text(in: selectedRange) ?? ""
-            if selectedText.trimmingCharacters(in: .whitespacesAndNewlines).count > 1 {
-                onTextSelected(selectedText.trimmingCharacters(in: .whitespacesAndNewlines))
-            }
-        }
+            let trimmedText = selectedText.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        @objc func handleTap(_ gesture: UITapGestureRecognizer) {
-            // Small delay to allow selection to be set
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                guard let textView = self.textView,
-                      let selectedRange = textView.selectedTextRange,
-                      !selectedRange.isEmpty else {
-                    return
-                }
+            // Only trigger if selection is meaningful (more than 1 character)
+            if trimmedText.count > 1 {
+                // Wait a bit for the selection menu to appear, then show our popup
+                // This gives users a chance to use the native menu if they want
+                selectionTimer = Timer.scheduledTimer(withTimeInterval: 0.8, repeats: false) { [weak self] _ in
+                    guard let self = self,
+                          let textView = self.textView,
+                          let currentRange = textView.selectedTextRange,
+                          !currentRange.isEmpty else {
+                        return
+                    }
 
-                let selectedText = textView.text(in: selectedRange) ?? ""
-                if selectedText.trimmingCharacters(in: .whitespacesAndNewlines).count > 1 {
-                    self.onTextSelected(selectedText.trimmingCharacters(in: .whitespacesAndNewlines))
+                    let currentText = textView.text(in: currentRange) ?? ""
+                    let currentTrimmed = currentText.trimmingCharacters(in: .whitespacesAndNewlines)
+
+                    if currentTrimmed.count > 1 {
+                        // Clear selection to hide native menu and show our popup
+                        textView.selectedTextRange = nil
+                        self.onTextSelected?(currentTrimmed)
+                    }
                 }
             }
         }

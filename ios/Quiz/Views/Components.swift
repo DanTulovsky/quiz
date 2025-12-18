@@ -279,7 +279,7 @@ struct BadgeView: View {
         }
     }
 
-    private func defaultVoiceForLanguage(_ lang: String) -> String {
+    func defaultVoiceForLanguage(_ lang: String) -> String {
         // Check cache from server-provided languages (must be loaded)
         let langKey = lang.lowercased()
         if let cachedVoice = defaultVoiceCache[langKey] {
@@ -288,6 +288,9 @@ struct BadgeView: View {
 
         // If not in cache, return a default (this should only happen if languages haven't loaded yet)
         // In practice, this should be avoided by ensuring languages are loaded before using TTS
+        print(
+            "⚠️ TTS Warning: Default voice cache not populated for language '\(lang)'. Using English fallback. This may indicate TTS initialization failed."
+        )
         return "en-US-JennyNeural"
     }
 
