@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		BE5781DD2EF24DFC00A9FE36 /* LingoLearn.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LingoLearn.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE5781DD2EF24DFC00A9FE36 /* Quiz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Quiz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		BE5781DF2EF24DFC00A9FE36 /* LingoLearn */ = {
+		BE5781DF2EF24DFC00A9FE36 /* Quiz */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = LingoLearn;
+			path = Quiz;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -32,7 +32,7 @@
 		BE5781D42EF24DFC00A9FE36 = {
 			isa = PBXGroup;
 			children = (
-				BE5781DF2EF24DFC00A9FE36 /* LingoLearn */,
+				BE5781DF2EF24DFC00A9FE36 /* Quiz */,
 				BE5781DE2EF24DFC00A9FE36 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -40,7 +40,7 @@
 		BE5781DE2EF24DFC00A9FE36 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				BE5781DD2EF24DFC00A9FE36 /* LingoLearn.app */,
+				BE5781DD2EF24DFC00A9FE36 /* Quiz.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,9 +48,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		BE5781DC2EF24DFC00A9FE36 /* LingoLearn */ = {
+		BE5781DC2EF24DFC00A9FE36 /* Quiz */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = BE5781E82EF24DFD00A9FE36 /* Build configuration list for PBXNativeTarget "LingoLearn" */;
+			buildConfigurationList = BE5781E82EF24DFD00A9FE36 /* Build configuration list for PBXNativeTarget "Quiz" */;
 			buildPhases = (
 				BE5781D92EF24DFC00A9FE36 /* Sources */,
 				BE5781DA2EF24DFC00A9FE36 /* Frameworks */,
@@ -61,13 +61,13 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				BE5781DF2EF24DFC00A9FE36 /* LingoLearn */,
+				BE5781DF2EF24DFC00A9FE36 /* Quiz */,
 			);
-			name = LingoLearn;
+			name = Quiz;
 			packageProductDependencies = (
 			);
 			productName = LingoLearn;
-			productReference = BE5781DD2EF24DFC00A9FE36 /* LingoLearn.app */;
+			productReference = BE5781DD2EF24DFC00A9FE36 /* Quiz.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -85,7 +85,7 @@
 					};
 				};
 			};
-			buildConfigurationList = BE5781D82EF24DFC00A9FE36 /* Build configuration list for PBXProject "LingoLearn" */;
+			buildConfigurationList = BE5781D82EF24DFC00A9FE36 /* Build configuration list for PBXProject "Quiz" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -99,7 +99,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				BE5781DC2EF24DFC00A9FE36 /* LingoLearn */,
+				BE5781DC2EF24DFC00A9FE36 /* Quiz */,
 			);
 		};
 /* End PBXProject section */
@@ -319,7 +319,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		BE5781D82EF24DFC00A9FE36 /* Build configuration list for PBXProject "LingoLearn" */ = {
+		BE5781D82EF24DFC00A9FE36 /* Build configuration list for PBXProject "Quiz" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BE5781E62EF24DFD00A9FE36 /* Debug */,
@@ -328,7 +328,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BE5781E82EF24DFD00A9FE36 /* Build configuration list for PBXNativeTarget "LingoLearn" */ = {
+		BE5781E82EF24DFD00A9FE36 /* Build configuration list for PBXNativeTarget "Quiz" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BE5781E92EF24DFD00A9FE36 /* Debug */,

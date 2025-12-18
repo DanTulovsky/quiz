@@ -8,13 +8,12 @@ struct BadgeView: View {
 
     var body: some View {
         Text(text)
-            .font(.caption2)
-            .fontWeight(.bold)
+            .font(AppTheme.Typography.badgeFont)
             .padding(.horizontal, 8)
             .padding(.vertical, 4)
             .background(color.opacity(0.2))
             .foregroundColor(color)
-            .cornerRadius(8)
+            .cornerRadius(AppTheme.CornerRadius.badge)
     }
 }
 

@@ -89,11 +89,11 @@ struct DailyView: View {
     }
 
     private var headerSection: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: AppTheme.Spacing.itemSpacing) {
             HStack {
-                BadgeView(text: "DAILY CHALLENGE", color: .orange)
+                BadgeView(text: "DAILY CHALLENGE", color: AppTheme.Colors.accentIndigo)
                 Spacer()
-                BadgeView(text: "\(viewModel.currentQuestion?.question.language.uppercased() ?? "") - \(viewModel.currentQuestion?.question.level ?? "")", color: .blue)
+                BadgeView(text: "\(viewModel.currentQuestion?.question.language.uppercased() ?? "") - \(viewModel.currentQuestion?.question.level ?? "")", color: AppTheme.Colors.primaryBlue)
             }
 
             HStack {
@@ -111,30 +111,17 @@ struct DailyView: View {
             }
 
             ProgressView(value: viewModel.progress)
-                .accentColor(.orange)
+                .accentColor(AppTheme.Colors.primaryBlue)
                 .scaleEffect(x: 1, y: 2, anchor: .center)
                 .clipShape(RoundedRectangle(cornerRadius: 4))
         }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(16)
-        .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 4)
+        .appCard()
     }
 
     private func questionCard(_ question: Question) -> some View {
         VStack(alignment: .leading, spacing: 15) {
             HStack {
-                HStack(spacing: 4) {
-                    Circle().fill(Color.blue).frame(width: 6, height: 6)
-                    Text(question.type.replacingOccurrences(of: "_", with: " ").capitalized)
-                        .font(.caption)
-                        .fontWeight(.bold)
-                }
-                .padding(.horizontal, 8)
-                .padding(.vertical, 4)
-                .background(Color.blue.opacity(0.1))
-                .foregroundColor(.blue)
-                .cornerRadius(12)
+                BadgeView(text: question.type.replacingOccurrences(of: "_", with: " ").uppercased(), color: AppTheme.Colors.accentIndigo)
 
                 Spacer()
             }
@@ -146,10 +133,7 @@ struct DailyView: View {
                         .font(.body)
                         .lineSpacing(4)
                 }
-                .padding()
-                .background(Color.gray.opacity(0.05))
-                .cornerRadius(12)
-                .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.gray.opacity(0.2), lineWidth: 1))
+                .appInnerCard()
             }
 
             let sentence = stringValue(question.content["sentence"])
@@ -173,11 +157,7 @@ struct DailyView: View {
                     .foregroundColor(.secondary)
             }
         }
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.systemBackground))
-        .cornerRadius(16)
-        .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 4)
+        .appCard()
     }
 
     private func optionsList(_ question: Question) -> some View {
@@ -224,16 +204,11 @@ struct DailyView: View {
             }
             .padding()
             .frame(maxWidth: .infinity)
-            .background(
-                isUserIncorrect ? Color.red.opacity(0.1) :
-                (isCorrect ? Color.green.opacity(0.1) :
-                (isSelected ? Color.blue : Color.blue.opacity(0.05)))
-            )
-            .cornerRadius(12)
-            .overlay(
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(isUserIncorrect ? Color.red : (isCorrect ? Color.green : Color.blue.opacity(0.2)), lineWidth: 1)
-            )
+            .buttonStyle(OptionButtonStyle(
+                isSelected: isSelected,
+                isCorrect: isCorrect,
+                isIncorrect: isUserIncorrect
+            ))
         }
         .disabled(showResults)
     }
@@ -253,11 +228,11 @@ struct DailyView: View {
                 .foregroundColor(.primary)
                 .fixedSize(horizontal: false, vertical: true)
         }
-        .padding()
+        .padding(AppTheme.Spacing.innerPadding)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(response.isCorrect ? Color.green.opacity(0.05) : Color.red.opacity(0.05))
-        .cornerRadius(12)
-        .overlay(RoundedRectangle(cornerRadius: 12).stroke(response.isCorrect ? Color.green.opacity(0.2) : Color.red.opacity(0.2), lineWidth: 1))
+        .background(response.isCorrect ? AppTheme.Colors.successGreen.opacity(0.05) : AppTheme.Colors.errorRed.opacity(0.05))
+        .cornerRadius(AppTheme.CornerRadius.button)
+        .overlay(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(response.isCorrect ? AppTheme.Colors.successGreen.opacity(0.2) : AppTheme.Colors.errorRed.opacity(0.2), lineWidth: 1))
     }
 
     private func completedQuestionFeedback(_ question: DailyQuestionWithDetails) -> some View {
@@ -269,32 +244,32 @@ struct DailyView: View {
         // Try to get explanation from question content or use a default message
         let explanation = stringValue(question.question.content["explanation"]) ?? "Review your answer above."
 
-        return VStack(alignment: .leading, spacing: 12) {
+        return VStack(alignment: .leading, spacing: AppTheme.Spacing.itemSpacing) {
             HStack {
                 Image(systemName: isCorrect ? "checkmark" : "xmark")
-                    .foregroundColor(isCorrect ? .green : .red)
+                    .foregroundColor(isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.errorRed)
                 Text(isCorrect ? "Correct!" : "Incorrect")
-                    .font(.headline)
-                    .foregroundColor(isCorrect ? .green : .red)
+                    .font(AppTheme.Typography.headingFont)
+                    .foregroundColor(isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.errorRed)
             }
 
             Text(explanation)
-                .font(.subheadline)
-                .foregroundColor(.primary)
+                .font(AppTheme.Typography.subheadlineFont)
+                .foregroundColor(AppTheme.Colors.primaryText)
                 .fixedSize(horizontal: false, vertical: true)
         }
-        .padding()
+        .padding(AppTheme.Spacing.innerPadding)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(isCorrect ? Color.green.opacity(0.05) : Color.red.opacity(0.05))
-        .cornerRadius(12)
-        .overlay(RoundedRectangle(cornerRadius: 12).stroke(isCorrect ? Color.green.opacity(0.2) : Color.red.opacity(0.2), lineWidth: 1))
+        .background(isCorrect ? AppTheme.Colors.successGreen.opacity(0.05) : AppTheme.Colors.errorRed.opacity(0.05))
+        .cornerRadius(AppTheme.CornerRadius.button)
+        .overlay(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(isCorrect ? AppTheme.Colors.successGreen.opacity(0.2) : AppTheme.Colors.errorRed.opacity(0.2), lineWidth: 1))
     }
 
     private var completionView: some View {
         VStack(spacing: 20) {
             Image(systemName: "trophy.fill")
                 .font(.system(size: 80))
-                .foregroundColor(.orange)
+                .foregroundColor(AppTheme.Colors.primaryBlue)
 
             Text("Daily Challenge Complete!")
                 .font(.title)
@@ -381,9 +356,7 @@ struct DailyView: View {
             Button("Next Question") {
                 viewModel.nextQuestion()
             }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-            .frame(maxWidth: .infinity)
+            .buttonStyle(PrimaryButtonStyle())
         } else {
             // Not submitted yet
             Button("Submit Answer") {
@@ -391,10 +364,7 @@ struct DailyView: View {
                     viewModel.submitAnswer(index: idx)
                 }
             }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-            .disabled(viewModel.selectedAnswerIndex == nil || viewModel.isSubmitting)
-            .frame(maxWidth: .infinity)
+            .buttonStyle(PrimaryButtonStyle(isDisabled: viewModel.selectedAnswerIndex == nil || viewModel.isSubmitting))
         }
     }
 
@@ -455,9 +425,9 @@ struct DailyView: View {
                         }
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(selectedConfidence == level ? Color.teal : Color.teal.opacity(0.1))
-                        .foregroundColor(selectedConfidence == level ? .white : .teal)
-                        .cornerRadius(12)
+                        .background(selectedConfidence == level ? AppTheme.Colors.primaryBlue : AppTheme.Colors.primaryBlue.opacity(0.1))
+                        .foregroundColor(selectedConfidence == level ? .white : AppTheme.Colors.primaryBlue)
+                        .cornerRadius(AppTheme.CornerRadius.button)
                     }
                 }
                 .padding(.horizontal)

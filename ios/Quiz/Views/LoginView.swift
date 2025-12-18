@@ -47,8 +47,8 @@ struct LoginView: View {
                                 .textInputAutocapitalization(.never)
                                 .autocorrectionDisabled(true)
                                 .padding()
-                                .background(Color(.secondarySystemBackground))
-                                .cornerRadius(8)
+                                .background(AppTheme.Colors.secondaryBackground)
+                                .cornerRadius(AppTheme.CornerRadius.button)
                         }
 
                         VStack(alignment: .leading, spacing: 8) {
@@ -77,8 +77,8 @@ struct LoginView: View {
                                 }
                             }
                             .padding()
-                            .background(Color(.secondarySystemBackground))
-                            .cornerRadius(8)
+                            .background(AppTheme.Colors.secondaryBackground)
+                            .cornerRadius(AppTheme.CornerRadius.button)
                         }
 
                         Button(action: {
@@ -99,19 +99,19 @@ struct LoginView: View {
                             }
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color(.systemGray4))
-                            .foregroundColor(.secondary)
-                            .cornerRadius(12)
+                            .background(isLoading || viewModel.username.isEmpty || viewModel.password.isEmpty ? Color.gray : AppTheme.Colors.primaryBlue)
+                            .foregroundColor(.white)
+                            .cornerRadius(AppTheme.CornerRadius.button)
                         }
                         .disabled(isLoading || viewModel.username.isEmpty || viewModel.password.isEmpty)
 
                         if viewModel.error != nil {
                             Text("Login failed. Please check your credentials.")
-                                .foregroundColor(.red)
-                                .font(.caption)
+                                .foregroundColor(AppTheme.Colors.errorRed)
+                                .font(AppTheme.Typography.captionFont)
                                 .padding()
-                                .background(Color.red.opacity(0.1))
-                                .cornerRadius(8)
+                                .background(AppTheme.Colors.errorRed.opacity(0.1))
+                                .cornerRadius(AppTheme.CornerRadius.button)
                         }
 
                         HStack {
@@ -144,12 +144,12 @@ struct LoginView: View {
                             }
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color(.systemBackground))
+                            .background(AppTheme.Colors.cardBackground)
                             .overlay(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .stroke(Color(.systemGray4), lineWidth: 1)
+                                RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button)
+                                    .stroke(AppTheme.Colors.borderGray, lineWidth: 1)
                             )
-                            .cornerRadius(12)
+                            .cornerRadius(AppTheme.CornerRadius.button)
                         }
                     }
                     .padding(.horizontal, 24)
