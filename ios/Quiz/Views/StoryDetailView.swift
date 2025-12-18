@@ -7,6 +7,9 @@ struct StoryDetailView: View {
     @State private var showingSnippet: Snippet? = nil
     @State private var selectedAnswers: [Int: Int] = [:]
     @State private var submittedQuestions: Set<Int> = [] // QuestionID: OptionIndex
+    @State private var selectedText: String?
+    @State private var showTranslationPopup = false
+    @State private var translationSentence: String?
 
     @StateObject private var ttsManager = TTSSynthesizerManager.shared
 
@@ -127,8 +130,18 @@ struct StoryDetailView: View {
                                     }
                                 } else if viewModel.mode == .reading {
                                     ForEach(story.sections, id: \.id) { section in
-                                        Text(highlightSnippets(in: section.content))
-                                            .padding()
+                                        SelectableTextView(
+                                            text: section.content,
+                                            language: story.language,
+                                            onTextSelected: { text in
+                                                selectedText = text
+                                                translationSentence = extractSentence(from: section.content, containing: text)
+                                                showTranslationPopup = true
+                                            },
+                                            highlightedSnippets: viewModel.snippets
+                                        )
+                                        .frame(minHeight: 100)
+                                        .padding()
                                     }
                                 }
                                 Color.clear.frame(height: 1).id("bottom")
@@ -179,6 +192,23 @@ struct StoryDetailView: View {
             }
             return .systemAction
         })
+        .sheet(isPresented: $showTranslationPopup) {
+            if let text = selectedText, let story = viewModel.selectedStory, let section = viewModel.currentSection {
+                TranslationPopupView(
+                    selectedText: text,
+                    sourceLanguage: story.language,
+                    questionId: nil,
+                    sectionId: section.id,
+                    storyId: story.id,
+                    sentence: translationSentence,
+                    onClose: {
+                        showTranslationPopup = false
+                        selectedText = nil
+                        translationSentence = nil
+                    }
+                )
+            }
+        }
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .toolbar {
@@ -202,10 +232,17 @@ struct StoryDetailView: View {
             TTSButton(text: section.content, language: viewModel.selectedStory?.language ?? "en")
 
             VStack(alignment: .leading) {
-                let highlighted = highlightSnippets(in: section.content)
-                Text(highlighted)
-                    .lineSpacing(6)
-                    .font(.body)
+                SelectableTextView(
+                    text: section.content,
+                    language: viewModel.selectedStory?.language ?? "en",
+                    onTextSelected: { text in
+                        selectedText = text
+                        translationSentence = extractSentence(from: section.content, containing: text)
+                        showTranslationPopup = true
+                    },
+                    highlightedSnippets: viewModel.snippets
+                )
+                .frame(minHeight: 100)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
@@ -315,5 +352,42 @@ struct StoryDetailView: View {
                 .stroke(hasSubmitted ? (selectedIdx == question.correctAnswerIndex ? AppTheme.Colors.successGreen.opacity(0.3) : AppTheme.Colors.errorRed.opacity(0.3)) : AppTheme.Colors.borderGray, lineWidth: 1)
         )
         .padding(.horizontal)
+    }
+
+    private func extractSentence(from text: String, containing selectedText: String) -> String? {
+        guard let range = text.range(of: selectedText, options: .caseInsensitive) else {
+            return nil
+        }
+
+        // Find sentence boundaries
+        let startIndex = text.startIndex
+        let endIndex = text.endIndex
+
+        // Find the start of the sentence (look backwards for sentence-ending punctuation)
+        var sentenceStart = range.lowerBound
+        let sentenceEnders = CharacterSet(charactersIn: ".!?\n")
+
+        while sentenceStart > startIndex {
+            let char = text[sentenceStart]
+            if sentenceEnders.contains(char.unicodeScalars.first!) {
+                sentenceStart = text.index(after: sentenceStart)
+                break
+            }
+            sentenceStart = text.index(before: sentenceStart)
+        }
+
+        // Find the end of the sentence
+        var sentenceEnd = range.upperBound
+        while sentenceEnd < endIndex {
+            let char = text[sentenceEnd]
+            if sentenceEnders.contains(char.unicodeScalars.first!) {
+                sentenceEnd = text.index(after: sentenceEnd)
+                break
+            }
+            sentenceEnd = text.index(after: sentenceEnd)
+        }
+
+        let sentence = String(text[sentenceStart..<sentenceEnd]).trimmingCharacters(in: .whitespacesAndNewlines)
+        return sentence.isEmpty ? nil : sentence
     }
 }

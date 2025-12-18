@@ -5,6 +5,9 @@ struct QuizView: View {
     @StateObject private var viewModel: QuizViewModel
     @State private var reportReason = ""
     @State private var selectedConfidence: Int? = nil
+    @State private var selectedText: String?
+    @State private var showTranslationPopup = false
+    @State private var translationSentence: String?
 
     @StateObject private var ttsManager = TTSSynthesizerManager.shared
 
@@ -131,9 +134,63 @@ struct QuizView: View {
         .sheet(isPresented: $viewModel.showMarkKnownModal) {
             markKnownSheet
         }
+        .sheet(isPresented: $showTranslationPopup) {
+            if let text = selectedText, let question = viewModel.question {
+                TranslationPopupView(
+                    selectedText: text,
+                    sourceLanguage: question.language,
+                    questionId: question.id,
+                    sectionId: nil,
+                    storyId: nil,
+                    sentence: translationSentence,
+                    onClose: {
+                        showTranslationPopup = false
+                        selectedText = nil
+                        translationSentence = nil
+                    }
+                )
+            }
+        }
         .onAppear {
             if viewModel.question == nil { viewModel.getQuestion() }
         }
+    }
+
+    private func extractSentence(from text: String, containing selectedText: String) -> String? {
+        guard let range = text.range(of: selectedText, options: .caseInsensitive) else {
+            return nil
+        }
+
+        // Find sentence boundaries
+        let startIndex = text.startIndex
+        let endIndex = text.endIndex
+
+        // Find the start of the sentence (look backwards for sentence-ending punctuation)
+        var sentenceStart = range.lowerBound
+        let sentenceEnders = CharacterSet(charactersIn: ".!?\n")
+
+        while sentenceStart > startIndex {
+            let char = text[sentenceStart]
+            if sentenceEnders.contains(char.unicodeScalars.first!) {
+                sentenceStart = text.index(after: sentenceStart)
+                break
+            }
+            sentenceStart = text.index(before: sentenceStart)
+        }
+
+        // Find the end of the sentence
+        var sentenceEnd = range.upperBound
+        while sentenceEnd < endIndex {
+            let char = text[sentenceEnd]
+            if sentenceEnders.contains(char.unicodeScalars.first!) {
+                sentenceEnd = text.index(after: sentenceEnd)
+                break
+            }
+            sentenceEnd = text.index(after: sentenceEnd)
+        }
+
+        let sentence = String(text[sentenceStart..<sentenceEnd]).trimmingCharacters(in: .whitespacesAndNewlines)
+        return sentence.isEmpty ? nil : sentence
     }
 
     @ViewBuilder
@@ -148,22 +205,42 @@ struct QuizView: View {
             if let passage = stringValue(question.content["passage"]) {
                 VStack(alignment: .trailing) {
                     TTSButton(text: passage, language: question.language)
-                    Text(passage)
-                        .font(.body)
-                        .lineSpacing(4)
+                    SelectableTextView(
+                        text: passage,
+                        language: question.language,
+                        onTextSelected: { text in
+                            selectedText = text
+                            translationSentence = extractSentence(from: passage, containing: text)
+                            showTranslationPopup = true
+                        }
+                    )
+                    .frame(minHeight: 100)
                 }
                 .appInnerCard()
             }
 
             if let sentence = stringValue(question.content["sentence"]) {
-                let targetWord = stringValue(question.content["question"])
-                highlightedText(sentence, targetWord: targetWord)
-                    .font(.title3)
-                    .fontWeight(.medium)
+                SelectableTextView(
+                    text: sentence,
+                    language: question.language,
+                    onTextSelected: { text in
+                        selectedText = text
+                        translationSentence = extractSentence(from: sentence, containing: text)
+                        showTranslationPopup = true
+                    }
+                )
+                .frame(minHeight: 44)
             } else if let questionText = stringValue(question.content["question"]) ?? stringValue(question.content["prompt"]) {
-                Text(questionText)
-                    .font(.title3)
-                    .fontWeight(.medium)
+                SelectableTextView(
+                    text: questionText,
+                    language: question.language,
+                    onTextSelected: { text in
+                        selectedText = text
+                        translationSentence = extractSentence(from: questionText, containing: text)
+                        showTranslationPopup = true
+                    }
+                )
+                .frame(minHeight: 44)
             }
 
             if question.type == "vocabulary", let targetWord = stringValue(question.content["question"]) {

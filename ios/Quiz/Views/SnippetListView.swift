@@ -526,7 +526,9 @@ struct AddSnippetView: View {
             targetLanguage: targetLanguage.rawValue,
             context: context.isEmpty
                 ? nil : context.trimmingCharacters(in: .whitespacesAndNewlines),
-            questionId: nil
+            questionId: nil,
+            sectionId: nil,
+            storyId: nil
         )
 
         viewModel.createSnippet(request: request) { result in

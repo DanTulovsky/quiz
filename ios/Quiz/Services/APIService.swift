@@ -780,4 +780,14 @@ class APIService {
             }
             .eraseToAnyPublisher()
     }
+
+    func translateText(request: TranslateRequest) -> AnyPublisher<TranslateResponse, APIError> {
+        let url = baseURL.appendingPathComponent("translate")
+        var urlRequest = authenticatedRequest(for: url, method: "POST")
+        urlRequest.httpBody = try? JSONEncoder().encode(request)
+        return URLSession.shared.dataTaskPublisher(for: urlRequest)
+            .mapError { .requestFailed($0) }
+            .flatMap { self.handleResponse($0.data, $0.response) }
+            .eraseToAnyPublisher()
+    }
 }

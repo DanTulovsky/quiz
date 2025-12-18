@@ -230,6 +230,8 @@ struct CreateSnippetRequest: Codable {
     let targetLanguage: String
     let context: String?
     let questionId: Int?
+    let sectionId: Int?
+    let storyId: Int?
 
     enum CodingKeys: String, CodingKey {
         case originalText = "original_text"
@@ -238,6 +240,8 @@ struct CreateSnippetRequest: Codable {
         case targetLanguage = "target_language"
         case context
         case questionId = "question_id"
+        case sectionId = "section_id"
+        case storyId = "story_id"
     }
 }
 
@@ -828,5 +832,32 @@ struct TTSStreamInitResponse: Codable {
     enum CodingKeys: String, CodingKey {
         case streamId = "stream_id"
         case token
+    }
+}
+
+// Translation Models
+struct TranslateRequest: Codable {
+    let text: String
+    let targetLanguage: String
+    let sourceLanguage: String?
+
+    enum CodingKeys: String, CodingKey {
+        case text
+        case targetLanguage = "target_language"
+        case sourceLanguage = "source_language"
+    }
+}
+
+struct TranslateResponse: Codable {
+    let translatedText: String
+    let sourceLanguage: String
+    let targetLanguage: String
+    let confidence: Float?
+
+    enum CodingKeys: String, CodingKey {
+        case translatedText = "translated_text"
+        case sourceLanguage = "source_language"
+        case targetLanguage = "target_language"
+        case confidence
     }
 }

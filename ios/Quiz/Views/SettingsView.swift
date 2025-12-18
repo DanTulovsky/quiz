@@ -9,29 +9,10 @@ struct SettingsView: View {
     @State private var email = ""
     @State private var timezone = ""
 
-    // Common timezones list
-    private let commonTimezones = [
-        "UTC",
-        "America/New_York",
-        "America/Chicago",
-        "America/Denver",
-        "America/Los_Angeles",
-        "America/Mexico_City",
-        "America/Sao_Paulo",
-        "Europe/London",
-        "Europe/Paris",
-        "Europe/Berlin",
-        "Europe/Madrid",
-        "Europe/Moscow",
-        "Asia/Dubai",
-        "Asia/Kolkata",
-        "Asia/Bangkok",
-        "Asia/Singapore",
-        "Asia/Shanghai",
-        "Asia/Tokyo",
-        "Australia/Sydney",
-        "Pacific/Auckland",
-    ]
+    // All available IANA timezone identifiers
+    private var commonTimezones: [String] {
+        TimeZone.knownTimeZoneIdentifiers.sorted()
+    }
 
     // Learning Preferences State
     @State private var learningLanguage: String = "italian"
