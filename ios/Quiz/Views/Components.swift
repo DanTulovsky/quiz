@@ -26,12 +26,24 @@ struct BadgeView: View {
     // Global preferred voice
     var preferredVoice: String?
 
+    // Cache of language name/code -> default voice mappings from server
+    private var defaultVoiceCache: [String: String] = [:]
+
     @Published var currentlySpeakingText: String?
     @Published var errorMessage: String?
 
     override init() {
         super.init()
         setupRemoteCommandCenter()
+    }
+
+    func updateDefaultVoiceCache(languages: [LanguageInfo]) {
+        for lang in languages {
+            if let voice = lang.ttsVoice {
+                defaultVoiceCache[lang.name.lowercased()] = voice
+                defaultVoiceCache[lang.code.lowercased()] = voice
+            }
+        }
     }
 
     private func setupRemoteCommandCenter() {
@@ -268,20 +280,15 @@ struct BadgeView: View {
     }
 
     private func defaultVoiceForLanguage(_ lang: String) -> String {
-        switch lang.lowercased() {
-        case "italian", "it": return "it-IT-IsabellaNeural"
-        case "spanish", "es": return "es-ES-ElviraNeural"
-        case "french", "fr": return "fr-FR-DeniseNeural"
-        case "german", "de": return "de-DE-KatjaNeural"
-        case "english", "en": return "en-US-JennyNeural"
-        case "portuguese": return "pt-PT-RaquelNeural"
-        case "russian": return "ru-RU-DmitryNeural"
-        case "japanese": return "ja-JP-NanamiNeural"
-        case "korean": return "ko-KR-SunHiNeural"
-        case "chinese": return "zh-CN-XiaoxiaoNeural"
-        case "hindi": return "hi-IN-SwaraNeural"
-        default: return "en-US-JennyNeural"
+        // Check cache from server-provided languages (must be loaded)
+        let langKey = lang.lowercased()
+        if let cachedVoice = defaultVoiceCache[langKey] {
+            return cachedVoice
         }
+
+        // If not in cache, return a default (this should only happen if languages haven't loaded yet)
+        // In practice, this should be avoided by ensuring languages are loaded before using TTS
+        return "en-US-JennyNeural"
     }
 
     func stop() {

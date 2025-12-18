@@ -606,6 +606,28 @@ class APIService {
             .eraseToAnyPublisher()
     }
 
+    func getLanguages() -> AnyPublisher<[LanguageInfo], APIError> {
+        let url = baseURL.appendingPathComponent("settings/languages")
+        let urlRequest = authenticatedRequest(for: url)
+        return URLSession.shared.dataTaskPublisher(for: urlRequest)
+            .mapError { .requestFailed($0) }
+            .flatMap { self.handleResponse($0.data, $0.response) }
+            .eraseToAnyPublisher()
+    }
+
+    func getLevels(language: String?) -> AnyPublisher<LevelsResponse, APIError> {
+        var urlComponents = URLComponents(
+            url: baseURL.appendingPathComponent("settings/levels"), resolvingAgainstBaseURL: false)!
+        if let language = language {
+            urlComponents.queryItems = [URLQueryItem(name: "language", value: language)]
+        }
+        let urlRequest = authenticatedRequest(for: urlComponents.url!)
+        return URLSession.shared.dataTaskPublisher(for: urlRequest)
+            .mapError { .requestFailed($0) }
+            .flatMap { self.handleResponse($0.data, $0.response) }
+            .eraseToAnyPublisher()
+    }
+
     func updateWordOfDayEmailPreference(enabled: Bool) -> AnyPublisher<SuccessResponse, APIError> {
         let url = baseURL.appendingPathComponent("settings/word-of-day-email")
         var urlRequest = authenticatedRequest(for: url, method: "PUT")

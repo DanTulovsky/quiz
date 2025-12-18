@@ -1,10 +1,12 @@
-import Foundation
 import Combine
+import Foundation
 
 class SettingsViewModel: ObservableObject {
     @Published var aiProviders: [AIProviderInfo] = []
     @Published var availableVoices: [EdgeTTSVoiceInfo] = []
     @Published var availableLevels: [String] = []
+    @Published var levelDescriptions: [String: String] = [:]
+    @Published var availableLanguages: [LanguageInfo] = []
 
     @Published var testResult: String?
 
@@ -28,15 +30,18 @@ class SettingsViewModel: ObservableObject {
         // Fetch learning preferences
         apiService.getLearningPreferences()
             .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [weak self] completion in
-                if case .failure(let error) = completion {
-                    self?.error = error
+            .sink(
+                receiveCompletion: { [weak self] completion in
+                    if case .failure(let error) = completion {
+                        self?.error = error
+                        self?.isLoading = false
+                    }
+                },
+                receiveValue: { [weak self] prefs in
+                    self?.learningPrefs = prefs
                     self?.isLoading = false
                 }
-            }, receiveValue: { [weak self] prefs in
-                self?.learningPrefs = prefs
-                self?.isLoading = false
-            })
+            )
             .store(in: &cancellables)
     }
 
@@ -52,29 +57,35 @@ class SettingsViewModel: ObservableObject {
 
             Publishers.Zip(userPublisher, prefsPublisher)
                 .receive(on: DispatchQueue.main)
-                .sink(receiveCompletion: { [weak self] completion in
-                    self?.isLoading = false
-                    if case .failure(let error) = completion {
-                        self?.error = error
+                .sink(
+                    receiveCompletion: { [weak self] completion in
+                        self?.isLoading = false
+                        if case .failure(let error) = completion {
+                            self?.error = error
+                        }
+                    },
+                    receiveValue: { [weak self] user, prefs in
+                        self?.user = user
+                        self?.learningPrefs = prefs
+                        self?.isSuccess = true
                     }
-                }, receiveValue: { [weak self] user, prefs in
-                    self?.user = user
-                    self?.learningPrefs = prefs
-                    self?.isSuccess = true
-                })
+                )
                 .store(in: &cancellables)
         } else {
             userPublisher
                 .receive(on: DispatchQueue.main)
-                .sink(receiveCompletion: { [weak self] completion in
-                    self?.isLoading = false
-                    if case .failure(let error) = completion {
-                        self?.error = error
+                .sink(
+                    receiveCompletion: { [weak self] completion in
+                        self?.isLoading = false
+                        if case .failure(let error) = completion {
+                            self?.error = error
+                        }
+                    },
+                    receiveValue: { [weak self] user in
+                        self?.user = user
+                        self?.isSuccess = true
                     }
-                }, receiveValue: { [weak self] user in
-                    self?.user = user
-                    self?.isSuccess = true
-                })
+                )
                 .store(in: &cancellables)
         }
     }
@@ -82,10 +93,37 @@ class SettingsViewModel: ObservableObject {
     func fetchAIProviders() {
         apiService.getAIProviders()
             .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] resp in
-                self?.aiProviders = resp.providers
-                self?.availableLevels = resp.levels
-            })
+            .sink(
+                receiveCompletion: { _ in },
+                receiveValue: { [weak self] resp in
+                    self?.aiProviders = resp.providers
+                }
+            )
+            .store(in: &cancellables)
+    }
+
+    func fetchLanguages() {
+        apiService.getLanguages()
+            .receive(on: DispatchQueue.main)
+            .sink(
+                receiveCompletion: { _ in },
+                receiveValue: { [weak self] languages in
+                    self?.availableLanguages = languages
+                }
+            )
+            .store(in: &cancellables)
+    }
+
+    func fetchLevels(language: String?) {
+        apiService.getLevels(language: language)
+            .receive(on: DispatchQueue.main)
+            .sink(
+                receiveCompletion: { _ in },
+                receiveValue: { [weak self] response in
+                    self?.availableLevels = response.levels
+                    self?.levelDescriptions = response.levelDescriptions
+                }
+            )
             .store(in: &cancellables)
     }
 
@@ -93,92 +131,122 @@ class SettingsViewModel: ObservableObject {
         testResult = nil
         apiService.testAIConnection(provider: provider, model: model, apiKey: apiKey)
             .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [weak self] completion in
-                if case .failure(let error) = completion {
-                    self?.testResult = "Error: \(error.localizedDescription)"
+            .sink(
+                receiveCompletion: { [weak self] completion in
+                    if case .failure(let error) = completion {
+                        self?.testResult = "Error: \(error.localizedDescription)"
+                    }
+                },
+                receiveValue: { [weak self] resp in
+                    self?.testResult = "Success: \(resp.message)"
                 }
-            }, receiveValue: { [weak self] resp in
-                self?.testResult = "Success: \(resp.message)"
-            })
+            )
             .store(in: &cancellables)
     }
 
     func sendTestEmail() {
         apiService.sendTestEmail()
             .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [weak self] completion in
-                if case .failure(let error) = completion {
-                    self?.error = error
+            .sink(
+                receiveCompletion: { [weak self] completion in
+                    if case .failure(let error) = completion {
+                        self?.error = error
+                    }
+                },
+                receiveValue: { [weak self] _ in
+                    self?.isSuccess = true
                 }
-            }, receiveValue: { [weak self] _ in
-                self?.isSuccess = true
-            })
+            )
             .store(in: &cancellables)
     }
 
     func clearStories() {
         apiService.clearStories()
             .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [weak self] completion in
-                if case .failure(let error) = completion { self?.error = error }
-            }, receiveValue: { [weak self] _ in self?.isSuccess = true })
+            .sink(
+                receiveCompletion: { [weak self] completion in
+                    if case .failure(let error) = completion { self?.error = error }
+                }, receiveValue: { [weak self] _ in self?.isSuccess = true }
+            )
             .store(in: &cancellables)
     }
 
     func clearAIChats() {
         apiService.clearAIChats()
             .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [weak self] completion in
-                if case .failure(let error) = completion { self?.error = error }
-            }, receiveValue: { [weak self] _ in self?.isSuccess = true })
+            .sink(
+                receiveCompletion: { [weak self] completion in
+                    if case .failure(let error) = completion { self?.error = error }
+                }, receiveValue: { [weak self] _ in self?.isSuccess = true }
+            )
             .store(in: &cancellables)
     }
 
     func clearTranslationHistory() {
         apiService.clearTranslationHistory()
             .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [weak self] completion in
-                if case .failure(let error) = completion { self?.error = error }
-            }, receiveValue: { [weak self] _ in self?.isSuccess = true })
+            .sink(
+                receiveCompletion: { [weak self] completion in
+                    if case .failure(let error) = completion { self?.error = error }
+                }, receiveValue: { [weak self] _ in self?.isSuccess = true }
+            )
             .store(in: &cancellables)
     }
 
     func resetAccount() {
         apiService.resetAccount()
             .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [weak self] completion in
-                if case .failure(let error) = completion { self?.error = error }
-            }, receiveValue: { [weak self] _ in self?.isSuccess = true })
+            .sink(
+                receiveCompletion: { [weak self] completion in
+                    if case .failure(let error) = completion { self?.error = error }
+                }, receiveValue: { [weak self] _ in self?.isSuccess = true }
+            )
             .store(in: &cancellables)
     }
 
-
-
-        private func mapLanguageToLocale(_ lang: String) -> String {
-        switch lang.lowercased() {
-        case "italian", "it": return "it-IT"
-        case "spanish", "es": return "es-ES"
-        case "french", "fr": return "fr-FR"
-        case "german", "de": return "de-DE"
-        case "english", "en": return "en-US"
-        case "hindi": return "hi-IN"
-        case "russian": return "ru-RU"
-        case "japanese": return "ja-JP"
-        case "chinese": return "zh-CN"
-        case "portuguese": return "pt-PT"
-        case "korean": return "ko-KR"
-        default: return lang
+    private func mapLanguageToLocale(_ lang: String) -> String? {
+        // Find the language in availableLanguages (must be loaded from server)
+        if let languageInfo = availableLanguages.first(where: {
+            $0.name.lowercased() == lang.lowercased() || $0.code.lowercased() == lang.lowercased()
+        }) {
+            return languageInfo.ttsLocale
         }
+        return nil
     }
 
     func fetchVoices(language: String) {
-        let locale = mapLanguageToLocale(language)
+        guard let locale = mapLanguageToLocale(language) else {
+            // Languages not loaded yet, skip fetching voices
+            return
+        }
         apiService.getVoices(language: locale)
             .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] voices in
-                self?.availableVoices = voices
-            })
+            .sink(
+                receiveCompletion: { _ in },
+                receiveValue: { [weak self] voices in
+                    self?.availableVoices = voices
+                }
+            )
             .store(in: &cancellables)
+    }
+
+    func getDefaultVoiceIdentifier(for language: String) -> String? {
+        // First try to get the default voice from LanguageInfo
+        if let defaultVoice = getDefaultVoice(for: language) {
+            return defaultVoice
+        }
+        // If no default in LanguageInfo, return the first voice in the list
+        return availableVoices.first?.shortName ?? availableVoices.first?.name
+    }
+
+    func getDefaultVoice(for language: String) -> String? {
+        if let languageInfo = availableLanguages.first(where: {
+            $0.name.lowercased() == language.lowercased()
+                || $0.code.lowercased() == language.lowercased()
+        }) {
+            return languageInfo.ttsVoice
+        }
+        return nil
     }
 
 }

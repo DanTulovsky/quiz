@@ -2,7 +2,9 @@ import SwiftUI
 
 struct SnippetListView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var authViewModel: AuthenticationViewModel
     @StateObject private var viewModel = VocabularyViewModel()
+    @StateObject private var settingsViewModel = SettingsViewModel()
     @State private var showAddSnippet = false
     @State private var showEditSnippet = false
     @State private var showDeleteConfirmation = false
@@ -18,7 +20,8 @@ struct SnippetListView: View {
                             .font(.largeTitle)
                             .bold()
                         Spacer()
-                        BadgeView(text: "\(viewModel.snippets.count)", color: AppTheme.Colors.primaryBlue)
+                        BadgeView(
+                            text: "\(viewModel.snippets.count)", color: AppTheme.Colors.primaryBlue)
                     }
                     Text("Your saved words and phrases")
                         .font(.subheadline)
@@ -50,8 +53,8 @@ struct SnippetListView: View {
                     TextField("Search snippets...", text: $viewModel.searchQuery)
                 }
                 .padding(12)
-                    .background(AppTheme.Colors.secondaryBackground)
-                    .cornerRadius(AppTheme.CornerRadius.button)
+                .background(AppTheme.Colors.secondaryBackground)
+                .cornerRadius(AppTheme.CornerRadius.button)
                 .padding(.horizontal)
 
                 // Filters
@@ -74,13 +77,16 @@ struct SnippetListView: View {
                             .padding()
                     } else {
                         ForEach(viewModel.filteredSnippets) { snippet in
-                            SnippetCard(snippet: snippet, onEdit: {
-                                selectedSnippet = snippet
-                                showEditSnippet = true
-                            }, onDelete: {
-                                selectedSnippet = snippet
-                                showDeleteConfirmation = true
-                            })
+                            SnippetCard(
+                                snippet: snippet,
+                                onEdit: {
+                                    selectedSnippet = snippet
+                                    showEditSnippet = true
+                                },
+                                onDelete: {
+                                    selectedSnippet = snippet
+                                    showDeleteConfirmation = true
+                                })
                         }
                     }
                 }
@@ -91,17 +97,20 @@ struct SnippetListView: View {
         .onAppear {
             viewModel.fetchStories()
             viewModel.getSnippets()
+            let language = authViewModel.user?.preferredLanguage
+            settingsViewModel.fetchLevels(language: language)
         }
         .sheet(isPresented: $showAddSnippet) {
             AddSnippetView(viewModel: viewModel, isPresented: $showAddSnippet)
         }
         .sheet(isPresented: $showEditSnippet) {
             if let snippet = selectedSnippet {
-                EditSnippetView(viewModel: viewModel, snippet: snippet, isPresented: $showEditSnippet)
+                EditSnippetView(
+                    viewModel: viewModel, snippet: snippet, isPresented: $showEditSnippet)
             }
         }
         .alert("Delete Snippet", isPresented: $showDeleteConfirmation) {
-            Button("Cancel", role: .cancel) { }
+            Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
                 if let snippet = selectedSnippet {
                     viewModel.deleteSnippet(id: snippet.id) { _ in }
@@ -141,7 +150,8 @@ struct SnippetListView: View {
         } label: {
             HStack {
                 if let selectedId = viewModel.selectedStoryId,
-                   let story = viewModel.stories.first(where: { $0.id == selectedId }) {
+                    let story = viewModel.stories.first(where: { $0.id == selectedId })
+                {
                     Text(story.title)
                         .foregroundColor(.primary)
                 } else {
@@ -156,7 +166,9 @@ struct SnippetListView: View {
             .padding(12)
             .background(AppTheme.Colors.cardBackground)
             .cornerRadius(AppTheme.CornerRadius.button)
-            .overlay(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(AppTheme.Colors.borderGray, lineWidth: 1))
+            .overlay(
+                RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(
+                    AppTheme.Colors.borderGray, lineWidth: 1))
         }
     }
 
@@ -166,7 +178,7 @@ struct SnippetListView: View {
             Button("All levels") {
                 viewModel.selectedLevel = nil
             }
-            ForEach(["A1", "A2", "B1", "B2", "C1", "C2"], id: \.self) { level in
+            ForEach(settingsViewModel.availableLevels, id: \.self) { level in
                 Button(level) {
                     viewModel.selectedLevel = level
                 }
@@ -183,7 +195,9 @@ struct SnippetListView: View {
             .padding(12)
             .background(AppTheme.Colors.cardBackground)
             .cornerRadius(AppTheme.CornerRadius.button)
-            .overlay(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(AppTheme.Colors.borderGray, lineWidth: 1))
+            .overlay(
+                RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(
+                    AppTheme.Colors.borderGray, lineWidth: 1))
         }
     }
 
@@ -193,7 +207,12 @@ struct SnippetListView: View {
             Button("All languages") {
                 viewModel.selectedSourceLang = nil
             }
-            ForEach([Language.italian, Language.spanish, Language.french, Language.german, Language.english], id: \.self) { lang in
+            ForEach(
+                [
+                    Language.italian, Language.spanish, Language.french, Language.german,
+                    Language.english,
+                ], id: \.self
+            ) { lang in
                 Button(lang.rawValue.capitalized) {
                     viewModel.selectedSourceLang = lang
                 }
@@ -215,7 +234,9 @@ struct SnippetListView: View {
             .padding(12)
             .background(AppTheme.Colors.cardBackground)
             .cornerRadius(AppTheme.CornerRadius.button)
-            .overlay(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(AppTheme.Colors.borderGray, lineWidth: 1))
+            .overlay(
+                RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(
+                    AppTheme.Colors.borderGray, lineWidth: 1))
         }
     }
 }
@@ -237,7 +258,7 @@ struct SnippetCard: View {
 
             if let context = snippet.context {
                 HStack(alignment: .top, spacing: 8) {
-                    Image(systemName: "character.bubble") // Translation icon replacement
+                    Image(systemName: "character.bubble")  // Translation icon replacement
                         .font(.caption)
                         .foregroundColor(AppTheme.Colors.primaryBlue)
                     Text("\"\(context)\"")
@@ -249,7 +270,9 @@ struct SnippetCard: View {
 
             HStack(spacing: 10) {
                 if let lang = snippet.sourceLanguage, let target = snippet.targetLanguage {
-                    BadgeView(text: "\(lang.uppercased()) -> \(target.uppercased())", color: AppTheme.Colors.accentIndigo)
+                    BadgeView(
+                        text: "\(lang.uppercased()) -> \(target.uppercased())",
+                        color: AppTheme.Colors.accentIndigo)
                 }
 
                 if let level = snippet.difficultyLevel {
@@ -304,8 +327,8 @@ struct AddSnippetView: View {
     @State private var errorMessage: String?
 
     private var isFormValid: Bool {
-        !originalText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-        !translatedText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        !originalText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            && !translatedText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
     var body: some View {
@@ -323,8 +346,8 @@ struct AddSnippetView: View {
                         TextField("Enter the original text...", text: $originalText)
                             .textFieldStyle(.plain)
                             .padding(12)
-                    .background(AppTheme.Colors.secondaryBackground)
-                    .cornerRadius(AppTheme.CornerRadius.button)
+                            .background(AppTheme.Colors.secondaryBackground)
+                            .cornerRadius(AppTheme.CornerRadius.button)
                     }
 
                     // Translation
@@ -338,8 +361,8 @@ struct AddSnippetView: View {
                         TextField("Enter the translation...", text: $translatedText)
                             .textFieldStyle(.plain)
                             .padding(12)
-                    .background(AppTheme.Colors.secondaryBackground)
-                    .cornerRadius(AppTheme.CornerRadius.button)
+                            .background(AppTheme.Colors.secondaryBackground)
+                            .cornerRadius(AppTheme.CornerRadius.button)
                     }
 
                     // Source Language
@@ -347,7 +370,12 @@ struct AddSnippetView: View {
                         Text("Source Language")
                             .font(.headline)
                         Menu {
-                            ForEach([Language.italian, Language.spanish, Language.french, Language.german, Language.english], id: \.self) { lang in
+                            ForEach(
+                                [
+                                    Language.italian, Language.spanish, Language.french,
+                                    Language.german, Language.english,
+                                ], id: \.self
+                            ) { lang in
                                 Button(lang.rawValue.capitalized) {
                                     sourceLanguage = lang
                                 }
@@ -362,7 +390,9 @@ struct AddSnippetView: View {
                             .padding(12)
                             .background(Color(.systemBackground))
                             .cornerRadius(10)
-                            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.gray.opacity(0.2), lineWidth: 1))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10).stroke(
+                                    Color.gray.opacity(0.2), lineWidth: 1))
                         }
                     }
 
@@ -371,7 +401,12 @@ struct AddSnippetView: View {
                         Text("Target Language")
                             .font(.headline)
                         Menu {
-                            ForEach([Language.italian, Language.spanish, Language.french, Language.german, Language.english], id: \.self) { lang in
+                            ForEach(
+                                [
+                                    Language.italian, Language.spanish, Language.french,
+                                    Language.german, Language.english,
+                                ], id: \.self
+                            ) { lang in
                                 Button(lang.rawValue.capitalized) {
                                     targetLanguage = lang
                                 }
@@ -386,7 +421,9 @@ struct AddSnippetView: View {
                             .padding(12)
                             .background(Color(.systemBackground))
                             .cornerRadius(10)
-                            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.gray.opacity(0.2), lineWidth: 1))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10).stroke(
+                                    Color.gray.opacity(0.2), lineWidth: 1))
                         }
                     }
 
@@ -397,8 +434,8 @@ struct AddSnippetView: View {
                         TextEditor(text: $context)
                             .frame(minHeight: 100)
                             .padding(8)
-                    .background(AppTheme.Colors.secondaryBackground)
-                    .cornerRadius(AppTheme.CornerRadius.button)
+                            .background(AppTheme.Colors.secondaryBackground)
+                            .cornerRadius(AppTheme.CornerRadius.button)
                             .overlay(
                                 Group {
                                     if context.isEmpty {
@@ -450,7 +487,10 @@ struct AddSnippetView: View {
                             }
                         }
                         .disabled(!isFormValid || isSubmitting)
-                        .background(isFormValid && !isSubmitting ? AppTheme.Colors.primaryBlue : Color.gray.opacity(0.3))
+                        .background(
+                            isFormValid && !isSubmitting
+                                ? AppTheme.Colors.primaryBlue : Color.gray.opacity(0.3)
+                        )
                         .foregroundColor(.white)
                         .cornerRadius(AppTheme.CornerRadius.button)
                     }
@@ -484,7 +524,8 @@ struct AddSnippetView: View {
             translatedText: translatedText.trimmingCharacters(in: .whitespacesAndNewlines),
             sourceLanguage: sourceLanguage.rawValue,
             targetLanguage: targetLanguage.rawValue,
-            context: context.isEmpty ? nil : context.trimmingCharacters(in: .whitespacesAndNewlines),
+            context: context.isEmpty
+                ? nil : context.trimmingCharacters(in: .whitespacesAndNewlines),
             questionId: nil
         )
 
@@ -620,9 +661,9 @@ struct EditSnippetView: View {
     }
 
     private var canSubmit: Bool {
-        !originalText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-        !translatedText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-        sourceLanguage != targetLanguage
+        !originalText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            && !translatedText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            && sourceLanguage != targetLanguage
     }
 
     private func submitEdit() {

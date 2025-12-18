@@ -119,7 +119,8 @@ enum JSONValue: Codable, Equatable {
         } else {
             throw DecodingError.typeMismatch(
                 JSONValue.self,
-                DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Unsupported JSON value")
+                DecodingError.Context(
+                    codingPath: decoder.codingPath, debugDescription: "Unsupported JSON value")
             )
         }
     }
@@ -375,10 +376,12 @@ struct PhrasebookWord: Codable {
 struct DynamicKey: CodingKey {
     var stringValue: String
     var intValue: Int?
-    init?(stringValue: String) { self.stringValue = stringValue; self.intValue = nil }
+    init?(stringValue: String) {
+        self.stringValue = stringValue
+        self.intValue = nil
+    }
     init?(intValue: Int) { return nil }
 }
-
 
 // Daily Questions
 struct DailyQuestionsResponse: Codable {
@@ -480,7 +483,9 @@ struct TranslationPracticeSessionResponse: Codable, Identifiable, Equatable {
     let createdAt: String
 
     enum CodingKeys: String, CodingKey {
-        case id, aiFeedback = "ai_feedback", aiScore = "ai_score"
+        case id
+        case aiFeedback = "ai_feedback"
+        case aiScore = "ai_score"
         case sentenceId = "sentence_id"
         case originalSentence = "original_sentence"
         case userTranslation = "user_translation"
@@ -719,7 +724,33 @@ struct AIProvidersResponse: Codable {
     let levels: [String]
 }
 
-struct EdgeTTSVoiceInfo: Codable, Identifiable {
+struct LanguageInfo: Codable, Identifiable, Equatable {
+    let code: String
+    let name: String
+    let ttsLocale: String?
+    let ttsVoice: String?
+
+    var id: String { code }
+
+    enum CodingKeys: String, CodingKey {
+        case code
+        case name
+        case ttsLocale = "tts_locale"
+        case ttsVoice = "tts_voice"
+    }
+}
+
+struct LevelsResponse: Codable {
+    let levels: [String]
+    let levelDescriptions: [String: String]
+
+    enum CodingKeys: String, CodingKey {
+        case levels
+        case levelDescriptions = "level_descriptions"
+    }
+}
+
+struct EdgeTTSVoiceInfo: Codable, Identifiable, Equatable {
     var id: String { shortName ?? name ?? UUID().uuidString }
 
     let name: String?
@@ -750,21 +781,26 @@ struct EdgeTTSVoiceInfo: Codable, Identifiable {
         let container = try decoder.container(keyedBy: DynamicKey.self)
 
         // Try various common naming conventions (PascalCase, snake_case, camelCase)
-        self.name = (try? container.decode(String.self, forKey: DynamicKey(stringValue: "Name")!))
+        self.name =
+            (try? container.decode(String.self, forKey: DynamicKey(stringValue: "Name")!))
             ?? (try? container.decode(String.self, forKey: DynamicKey(stringValue: "name")!))
 
-        self.shortName = (try? container.decode(String.self, forKey: DynamicKey(stringValue: "ShortName")!))
+        self.shortName =
+            (try? container.decode(String.self, forKey: DynamicKey(stringValue: "ShortName")!))
             ?? (try? container.decode(String.self, forKey: DynamicKey(stringValue: "short_name")!))
             ?? (try? container.decode(String.self, forKey: DynamicKey(stringValue: "shortName")!))
 
-        self.displayName = (try? container.decode(String.self, forKey: DynamicKey(stringValue: "DisplayName")!))
+        self.displayName =
+            (try? container.decode(String.self, forKey: DynamicKey(stringValue: "DisplayName")!))
             ?? (try? container.decode(String.self, forKey: DynamicKey(stringValue: "display_name")!))
             ?? (try? container.decode(String.self, forKey: DynamicKey(stringValue: "displayName")!))
 
-        self.locale = (try? container.decode(String.self, forKey: DynamicKey(stringValue: "Locale")!))
+        self.locale =
+            (try? container.decode(String.self, forKey: DynamicKey(stringValue: "Locale")!))
             ?? (try? container.decode(String.self, forKey: DynamicKey(stringValue: "locale")!))
 
-        self.gender = (try? container.decode(String.self, forKey: DynamicKey(stringValue: "Gender")!))
+        self.gender =
+            (try? container.decode(String.self, forKey: DynamicKey(stringValue: "Gender")!))
             ?? (try? container.decode(String.self, forKey: DynamicKey(stringValue: "gender")!))
     }
 }
