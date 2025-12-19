@@ -25,6 +25,7 @@ struct BadgeView: View {
     private var player: AVPlayer?
     private var cancellables = Set<AnyCancellable>()
     private var notificationObservers: [NSObjectProtocol] = []
+    private var currentDataTask: URLSessionDataTask?
 
     // Global preferred voice
     var preferredVoice: String?
@@ -130,7 +131,7 @@ struct BadgeView: View {
         request.cachePolicy = .reloadIgnoringLocalCacheData
 
         // Download the complete audio data
-        URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+        let dataTask = URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
             guard let self = self else { return }
 
             if let error = error {
@@ -165,7 +166,9 @@ struct BadgeView: View {
             DispatchQueue.main.async {
                 self.playAudioData(audioData)
             }
-        }.resume()
+        }
+        currentDataTask = dataTask
+        dataTask.resume()
     }
 
     private func playAudioData(_ data: Data) {
@@ -188,7 +191,11 @@ struct BadgeView: View {
                     self.currentlySpeakingText = nil
                     self.clearNowPlayingInfo()
                     // Clean up temp file
-                    try? FileManager.default.removeItem(at: tempFile)
+                    do {
+                        try FileManager.default.removeItem(at: tempFile)
+                    } catch {
+                        print("Warning: Failed to remove temp file: \(error.localizedDescription)")
+                    }
                 }
             }
             notificationObservers.append(completionObserver)
@@ -201,7 +208,11 @@ struct BadgeView: View {
                     guard let self = self else { return }
                     self.handleError("Audio playback failed.")
                     self.clearNowPlayingInfo()
-                    try? FileManager.default.removeItem(at: tempFile)
+                    do {
+                        try FileManager.default.removeItem(at: tempFile)
+                    } catch {
+                        print("Warning: Failed to remove temp file after error: \(error.localizedDescription)")
+                    }
                 }
             }
             notificationObservers.append(errorObserver)
@@ -310,6 +321,10 @@ struct BadgeView: View {
     }
 
     func stop() {
+        // Cancel any ongoing network requests
+        currentDataTask?.cancel()
+        currentDataTask = nil
+
         // Remove KVO observer from player item
         if let playerItem = player?.currentItem {
             playerItem.removeObserver(self, forKeyPath: "status")

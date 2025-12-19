@@ -57,12 +57,15 @@ extension Publisher where Failure == APIService.APIError {
             }
 
             // Retry with exponential backoff
-            return Just(())
-                .delay(for: .seconds(delay), scheduler: DispatchQueue.global())
-                .flatMap { _ in
-                    self.retryOnTransientFailure(maxRetries: maxRetries - 1, delay: delay * 1.5)
-                }
-                .eraseToAnyPublisher()
+            // Use Deferred to ensure the publisher is recreated on each retry
+            return Deferred {
+                Just(())
+            }
+            .delay(for: .seconds(delay), scheduler: DispatchQueue.global())
+            .flatMap { _ in
+                self.retryOnTransientFailure(maxRetries: maxRetries - 1, delay: delay * 1.5)
+            }
+            .eraseToAnyPublisher()
         }
         .eraseToAnyPublisher()
     }

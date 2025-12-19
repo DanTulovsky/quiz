@@ -83,13 +83,25 @@ class APIService {
         return APIService.decoder
     }
 
+    private func validateQueryItem(_ item: URLQueryItem) -> Bool {
+        // Filter out empty values and validate non-empty values
+        guard let value = item.value, !value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            return false
+        }
+        return true
+    }
+
     private func buildURL(path: String, queryItems: [URLQueryItem]? = nil) -> Result<URL, APIError> {
         let fullPath = baseURL.appendingPathComponent(path)
         guard var components = URLComponents(url: fullPath, resolvingAgainstBaseURL: false) else {
             return .failure(.invalidURL)
         }
         if let queryItems = queryItems, !queryItems.isEmpty {
-            components.queryItems = queryItems
+            // Filter out invalid query items (empty values)
+            let validItems = queryItems.filter { validateQueryItem($0) }
+            if !validItems.isEmpty {
+                components.queryItems = validItems
+            }
         }
         guard let url = components.url else {
             return .failure(.invalidURL)

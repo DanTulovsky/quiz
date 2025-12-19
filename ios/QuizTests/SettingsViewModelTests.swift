@@ -73,7 +73,7 @@ class SettingsViewModelTests: XCTestCase {
         mockAPIService.getLanguagesResult = .success(languages)
 
         // When
-        viewModel.fetchSettings()
+        viewModel.fetchLanguages()
 
         // Then - wait for languages to load
         let expectation = XCTestExpectation(description: "Languages loaded and cached")
@@ -99,7 +99,7 @@ class SettingsViewModelTests: XCTestCase {
             LanguageInfo(code: "en", name: "English", ttsLocale: "en-US", ttsVoice: "en-US-Standard-A")
         ]
         mockAPIService.getLanguagesResult = .success(languages)
-        viewModel.fetchSettings()
+        viewModel.fetchLanguages()
 
         // When - wait for languages to load
         let expectation = XCTestExpectation(description: "Case insensitive lookup works")

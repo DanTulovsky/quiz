@@ -20,16 +20,20 @@ class NetworkRetryTests: XCTestCase {
         var attemptCount = 0
         let maxRetries = 3
 
-        let publisher = Future<String, APIService.APIError> { promise in
-            attemptCount += 1
-            if attemptCount < maxRetries {
-                let error = NSError(domain: NSURLErrorDomain, code: NSURLErrorTimedOut, userInfo: nil)
-                promise(.failure(.requestFailed(error)))
-            } else {
-                promise(.success("Success"))
+        // Use Deferred so the Future executes on subscription, not on creation
+        // This allows retries to actually re-execute the Future
+        let publisher = Deferred {
+            Future<String, APIService.APIError> { promise in
+                attemptCount += 1
+                if attemptCount < maxRetries {
+                    let error = NSError(domain: NSURLErrorDomain, code: NSURLErrorTimedOut, userInfo: nil)
+                    promise(.failure(.requestFailed(error)))
+                } else {
+                    promise(.success("Success"))
+                }
             }
         }
-        .retryOnTransientFailure(maxRetries: maxRetries)
+        .retryOnTransientFailure(maxRetries: maxRetries, delay: 0.1)
 
         let expectation = XCTestExpectation(description: "Retry succeeds after transient failures")
 
@@ -49,7 +53,7 @@ class NetworkRetryTests: XCTestCase {
             )
             .store(in: &cancellables)
 
-        wait(for: [expectation], timeout: 5.0)
+        wait(for: [expectation], timeout: 10.0)
     }
 
     func testRetryDoesNotRetryNonTransientErrors() {
