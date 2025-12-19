@@ -6,6 +6,9 @@ struct DailyView: View {
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @State private var reportReason = ""
     @State private var selectedConfidence: Int? = nil
+    @State private var selectedText: String?
+    @State private var showTranslationPopup = false
+    @State private var translationSentence: String?
 
     var body: some View {
         ScrollView {
@@ -82,6 +85,23 @@ struct DailyView: View {
         }
         .sheet(isPresented: $viewModel.showMarkKnownModal) {
             markKnownSheet
+        }
+        .sheet(isPresented: $showTranslationPopup) {
+            if let text = selectedText, let question = viewModel.currentQuestion {
+                TranslationPopupView(
+                    selectedText: text,
+                    sourceLanguage: question.question.language,
+                    questionId: question.question.id,
+                    sectionId: nil,
+                    storyId: nil,
+                    sentence: translationSentence,
+                    onClose: {
+                        showTranslationPopup = false
+                        selectedText = nil
+                        translationSentence = nil
+                    }
+                )
+            }
         }
         .onAppear {
             viewModel.fetchDaily()
@@ -196,46 +216,51 @@ struct DailyView: View {
         let isCorrect = correctAnswerIndex != nil && correctAnswerIndex == index
         let userAnswerIndex = viewModel.answerResponse?.userAnswerIndex ?? (isCompleted ? currentQuestion?.userAnswerIndex : nil)
         let isUserIncorrect = userAnswerIndex != nil && userAnswerIndex == index && !isCorrect
+        let language = currentQuestion?.question.language ?? "en"
 
-        return Button(action: {
+        return HStack {
+            if showResults {
+                if isCorrect {
+                    Image(systemName: "check.circle.fill")
+                        .foregroundColor(AppTheme.Colors.successGreen)
+                } else if isUserIncorrect {
+                    Image(systemName: "x.circle.fill")
+                        .foregroundColor(AppTheme.Colors.errorRed)
+                }
+            }
+
+            Text(option)
+                .font(AppTheme.Typography.bodyFont)
+                .foregroundColor(showResults && isUserIncorrect ? AppTheme.Colors.errorRed : (showResults && isCorrect ? AppTheme.Colors.successGreen : (isSelected ? .white : AppTheme.Colors.primaryText)))
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            Spacer()
+        }
+        .padding(AppTheme.Spacing.innerPadding)
+        .frame(maxWidth: .infinity)
+        .background(
+            showResults && isUserIncorrect ? AppTheme.Colors.errorRed.opacity(0.1) :
+            (showResults && isCorrect ? AppTheme.Colors.successGreen.opacity(0.1) :
+            (isSelected ? AppTheme.Colors.primaryBlue : AppTheme.Colors.primaryBlue.opacity(0.05)))
+        )
+        .cornerRadius(AppTheme.CornerRadius.button)
+        .overlay(
+            RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button)
+                .stroke(showResults && isUserIncorrect ? AppTheme.Colors.errorRed : (showResults && isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.borderBlue), lineWidth: 1)
+        )
+        .contentShape(Rectangle())
+        .onTapGesture {
             if !showResults {
                 viewModel.selectedAnswerIndex = index
             }
-        }) {
-            HStack {
-                if showResults {
-                    if isCorrect {
-                        Image(systemName: "check.circle.fill")
-                            .foregroundColor(AppTheme.Colors.successGreen)
-                    } else if isUserIncorrect {
-                        Image(systemName: "x.circle.fill")
-                            .foregroundColor(AppTheme.Colors.errorRed)
-                    }
-                }
-
-                Text(option)
-                    .font(AppTheme.Typography.bodyFont)
-                    .foregroundColor(showResults && isUserIncorrect ? AppTheme.Colors.errorRed : (showResults && isCorrect ? AppTheme.Colors.successGreen : (isSelected ? .white : AppTheme.Colors.primaryText)))
-
-                Spacer()
-            }
-            .padding(AppTheme.Spacing.innerPadding)
-            .frame(maxWidth: .infinity)
-            .background(
-                showResults && isUserIncorrect ? AppTheme.Colors.errorRed.opacity(0.1) :
-                (showResults && isCorrect ? AppTheme.Colors.successGreen.opacity(0.1) :
-                (isSelected ? AppTheme.Colors.primaryBlue : AppTheme.Colors.primaryBlue.opacity(0.05)))
-            )
-            .cornerRadius(AppTheme.CornerRadius.button)
-            .overlay(
-                RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button)
-                    .stroke(showResults && isUserIncorrect ? AppTheme.Colors.errorRed : (showResults && isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.borderBlue), lineWidth: 1)
-            )
         }
         .disabled(showResults)
     }
 
+    @ViewBuilder
     private func feedbackSection(_ response: DailyAnswerResponse) -> some View {
+        let language = viewModel.currentQuestion?.question.language ?? "en"
+
         VStack(alignment: .leading, spacing: AppTheme.Spacing.itemSpacing) {
             HStack {
                 Image(systemName: response.isCorrect ? "checkmark" : "xmark")
@@ -245,10 +270,16 @@ struct DailyView: View {
                     .foregroundColor(response.isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.errorRed)
             }
 
-            Text(response.explanation)
-                .font(.subheadline)
-                .foregroundColor(.primary)
-                .fixedSize(horizontal: false, vertical: true)
+            SelectableTextView(
+                text: response.explanation,
+                language: language,
+                onTextSelected: { text in
+                    selectedText = text
+                    translationSentence = extractSentence(from: response.explanation, containing: text)
+                    showTranslationPopup = true
+                }
+            )
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(AppTheme.Spacing.innerPadding)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -275,10 +306,16 @@ struct DailyView: View {
                     .foregroundColor(isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.errorRed)
             }
 
-            Text(explanation)
-                .font(AppTheme.Typography.subheadlineFont)
-                .foregroundColor(AppTheme.Colors.primaryText)
-                .fixedSize(horizontal: false, vertical: true)
+            SelectableTextView(
+                text: explanation,
+                language: question.question.language,
+                onTextSelected: { text in
+                    selectedText = text
+                    translationSentence = extractSentence(from: explanation, containing: text)
+                    showTranslationPopup = true
+                }
+            )
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(AppTheme.Spacing.innerPadding)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -350,6 +387,43 @@ struct DailyView: View {
         } else {
             return Text(fullText)
         }
+    }
+
+    private func extractSentence(from text: String, containing selectedText: String) -> String? {
+        guard let range = text.range(of: selectedText, options: .caseInsensitive) else {
+            return nil
+        }
+
+        // Find sentence boundaries
+        let startIndex = text.startIndex
+        let endIndex = text.endIndex
+
+        // Find the start of the sentence (look backwards for sentence-ending punctuation)
+        var sentenceStart = range.lowerBound
+        let sentenceEnders = CharacterSet(charactersIn: ".!?\n")
+
+        while sentenceStart > startIndex {
+            let char = text[sentenceStart]
+            if sentenceEnders.contains(char.unicodeScalars.first!) {
+                sentenceStart = text.index(after: sentenceStart)
+                break
+            }
+            sentenceStart = text.index(before: sentenceStart)
+        }
+
+        // Find the end of the sentence
+        var sentenceEnd = range.upperBound
+        while sentenceEnd < endIndex {
+            let char = text[sentenceEnd]
+            if sentenceEnders.contains(char.unicodeScalars.first!) {
+                sentenceEnd = text.index(after: sentenceEnd)
+                break
+            }
+            sentenceEnd = text.index(after: sentenceEnd)
+        }
+
+        let sentence = String(text[sentenceStart..<sentenceEnd]).trimmingCharacters(in: .whitespacesAndNewlines)
+        return sentence.isEmpty ? nil : sentence
     }
 
     @ViewBuilder

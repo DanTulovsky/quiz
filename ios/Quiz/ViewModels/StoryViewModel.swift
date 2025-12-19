@@ -91,6 +91,20 @@ class StoryViewModel: ObservableObject {
         fetchSection(id: story.sections[currentSectionIndex].id)
     }
 
+    func goToBeginning() {
+        guard let story = selectedStory, !story.sections.isEmpty, currentSectionIndex != 0 else { return }
+        currentSectionIndex = 0
+        fetchSection(id: story.sections[0].id)
+    }
+
+    func goToEnd() {
+        guard let story = selectedStory, !story.sections.isEmpty else { return }
+        let lastIndex = story.sections.count - 1
+        guard currentSectionIndex != lastIndex else { return }
+        currentSectionIndex = lastIndex
+        fetchSection(id: story.sections[lastIndex].id)
+    }
+
     var fullStoryContent: String {
         guard let story = selectedStory else { return "" }
         return story.sections.map { $0.content }.joined(separator: "\n\n")

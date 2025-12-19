@@ -8,6 +8,7 @@ struct SnippetListView: View {
     @State private var showAddSnippet = false
     @State private var showEditSnippet = false
     @State private var showDeleteConfirmation = false
+    @State private var showSnippetDetail = false
     @State private var selectedSnippet: Snippet? = nil
 
     var body: some View {
@@ -79,13 +80,9 @@ struct SnippetListView: View {
                         ForEach(viewModel.filteredSnippets) { snippet in
                             SnippetCard(
                                 snippet: snippet,
-                                onEdit: {
+                                onTap: {
                                     selectedSnippet = snippet
-                                    showEditSnippet = true
-                                },
-                                onDelete: {
-                                    selectedSnippet = snippet
-                                    showDeleteConfirmation = true
+                                    showSnippetDetail = true
                                 })
                         }
                     }
@@ -102,6 +99,24 @@ struct SnippetListView: View {
         }
         .sheet(isPresented: $showAddSnippet) {
             AddSnippetView(viewModel: viewModel, isPresented: $showAddSnippet)
+        }
+        .sheet(isPresented: $showSnippetDetail) {
+            if let snippet = selectedSnippet {
+                SnippetDetailSheetView(
+                    snippet: snippet,
+                    viewModel: viewModel,
+                    isPresented: $showSnippetDetail,
+                    onEdit: {
+                        showSnippetDetail = false
+                        selectedSnippet = snippet
+                        showEditSnippet = true
+                    },
+                    onDelete: {
+                        showSnippetDetail = false
+                        selectedSnippet = snippet
+                        showDeleteConfirmation = true
+                    })
+            }
         }
         .sheet(isPresented: $showEditSnippet) {
             if let snippet = selectedSnippet {
@@ -243,74 +258,151 @@ struct SnippetListView: View {
 
 struct SnippetCard: View {
     let snippet: Snippet
-    let onEdit: () -> Void
-    let onDelete: () -> Void
+    let onTap: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 15) {
-            Text(snippet.originalText)
-                .font(.headline)
-                .fontWeight(.bold)
+        Button(action: onTap) {
+            HStack(alignment: .center, spacing: 12) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(snippet.originalText)
+                        .font(.body)
+                        .fontWeight(.medium)
+                        .foregroundColor(.primary)
+                        .lineLimit(2)
+                        .multilineTextAlignment(.leading)
 
-            Text(snippet.translatedText)
-                .font(.subheadline)
-                .foregroundColor(AppTheme.Colors.primaryBlue)
-
-            if let context = snippet.context {
-                HStack(alignment: .top, spacing: 8) {
-                    Image(systemName: "character.bubble")  // Translation icon replacement
-                        .font(.caption)
-                        .foregroundColor(AppTheme.Colors.primaryBlue)
-                    Text("\"\(context)\"")
-                        .font(.caption)
-                        .italic()
-                        .foregroundColor(.secondary)
-                }
-            }
-
-            HStack(spacing: 10) {
-                if let lang = snippet.sourceLanguage, let target = snippet.targetLanguage {
-                    BadgeView(
-                        text: "\(lang.uppercased()) -> \(target.uppercased())",
-                        color: AppTheme.Colors.accentIndigo)
-                }
-
-                if let level = snippet.difficultyLevel {
-                    BadgeView(text: level, color: AppTheme.Colors.primaryBlue)
-                }
-
-                if snippet.questionId != nil {
-                    Button(action: {}) {
-                        HStack(spacing: 4) {
-                            Image(systemName: "arrow.up.right.square")
-                            Text("View Question")
-                        }
-                        .font(.caption)
-                        .foregroundColor(AppTheme.Colors.primaryBlue)
+                    if let lang = snippet.sourceLanguage, let target = snippet.targetLanguage {
+                        Text("\(lang.uppercased()) → \(target.uppercased())")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
                     }
                 }
 
                 Spacer()
 
-                HStack(spacing: 12) {
-                    Button(action: onEdit) {
-                        Image(systemName: "square.and.pencil")
-                            .foregroundColor(AppTheme.Colors.primaryBlue)
-                            .padding(6)
-                            .background(Color.blue.opacity(0.1))
-                            .cornerRadius(6)
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .buttonStyle(PlainButtonStyle())
+        .appCard()
+    }
+}
+
+struct SnippetDetailSheetView: View {
+    let snippet: Snippet
+    @ObservedObject var viewModel: VocabularyViewModel
+    @Binding var isPresented: Bool
+    let onEdit: () -> Void
+    let onDelete: () -> Void
+
+    var body: some View {
+        NavigationView {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 24) {
+                    // Original Text
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Original Text")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            .foregroundColor(.secondary)
+                        Text(snippet.originalText)
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.primary)
                     }
-                    Button(action: onDelete) {
-                        Image(systemName: "trash")
-                            .foregroundColor(.red)
-                            .padding(6)
-                            .background(Color.red.opacity(0.1))
-                            .cornerRadius(6)
+
+                    // Translation
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Translation")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            .foregroundColor(.secondary)
+                        Text(snippet.translatedText)
+                            .font(.title3)
+                            .foregroundColor(AppTheme.Colors.primaryBlue)
+                    }
+
+                    // Language and Level Info
+                    HStack(spacing: 12) {
+                        if let lang = snippet.sourceLanguage, let target = snippet.targetLanguage {
+                            BadgeView(
+                                text: "\(lang.uppercased()) → \(target.uppercased())",
+                                color: AppTheme.Colors.accentIndigo)
+                        }
+                        if let level = snippet.difficultyLevel {
+                            BadgeView(text: level, color: AppTheme.Colors.primaryBlue)
+                        }
+                    }
+
+                    // Context
+                    if let context = snippet.context, !context.isEmpty {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Context")
+                                .font(.subheadline)
+                                .fontWeight(.medium)
+                                .foregroundColor(.secondary)
+                            Text("\"\(context)\"")
+                                .font(.body)
+                                .foregroundColor(.primary)
+                                .padding()
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(AppTheme.Colors.secondaryBackground)
+                                .cornerRadius(AppTheme.CornerRadius.button)
+                        }
+                    }
+
+                    // Action Buttons
+                    VStack(spacing: 12) {
+                        Button(action: onEdit) {
+                            HStack {
+                                Image(systemName: "square.and.pencil")
+                                Text("Edit")
+                            }
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(AppTheme.Colors.primaryBlue)
+                            .cornerRadius(AppTheme.CornerRadius.button)
+                        }
+
+                        Button(action: onDelete) {
+                            HStack {
+                                Image(systemName: "trash")
+                                Text("Delete")
+                            }
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.red)
+                            .cornerRadius(AppTheme.CornerRadius.button)
+                        }
+                    }
+                    .padding(.top, 8)
+                }
+                .padding()
+            }
+            .navigationTitle("Snippet Details")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        isPresented = false
+                    }) {
+                        Image(systemName: "xmark")
+                            .foregroundColor(.primary)
+                            .padding(8)
+                            .background(Color.blue.opacity(0.1))
+                            .clipShape(Circle())
                     }
                 }
             }
         }
-        .appCard()
     }
 }
 
@@ -556,6 +648,40 @@ struct EditSnippetView: View {
     @State private var isSubmitting = false
     @State private var errorMessage: String? = nil
 
+    private func mapLanguageStringToEnum(_ languageString: String?, defaultLanguage: Language)
+        -> Language
+    {
+        guard let langString = languageString?.lowercased() else {
+            return defaultLanguage
+        }
+
+        // Try direct enum match
+        if let lang = Language(rawValue: langString) {
+            return lang
+        }
+
+        // Map common language codes to enum cases
+        let languageCodeMap: [String: Language] = [
+            "en": .english,
+            "english": .english,
+            "es": .spanish,
+            "spanish": .spanish,
+            "fr": .french,
+            "french": .french,
+            "de": .german,
+            "german": .german,
+            "it": .italian,
+            "italian": .italian,
+        ]
+
+        if let mapped = languageCodeMap[langString] {
+            return mapped
+        }
+
+        // For unsupported languages, return default
+        return defaultLanguage
+    }
+
     var body: some View {
         NavigationView {
             ScrollView {
@@ -656,8 +782,10 @@ struct EditSnippetView: View {
         .onAppear {
             originalText = snippet.originalText
             translatedText = snippet.translatedText
-            sourceLanguage = Language(rawValue: snippet.sourceLanguage ?? "italian") ?? .italian
-            targetLanguage = Language(rawValue: snippet.targetLanguage ?? "english") ?? .english
+            sourceLanguage = mapLanguageStringToEnum(
+                snippet.sourceLanguage, defaultLanguage: .italian)
+            targetLanguage = mapLanguageStringToEnum(
+                snippet.targetLanguage, defaultLanguage: .english)
             context = snippet.context ?? ""
         }
     }

@@ -4,26 +4,267 @@ import Foundation
 @testable import Quiz
 
 final class MockAPIService: APIService, @unchecked Sendable {
-    // Result properties
-    var loginResult: Result<LoginResponse, APIError>?
-    var signupResult: Result<SuccessResponse, APIError>?
-    var authStatusResult: Result<AuthStatusResponse, APIError>?
-    var getQuestionResult: Result<QuestionFetchResult, APIError>?
-    var postAnswerResult: Result<AnswerResponse, APIError>?
-    var getStoriesResult: Result<[StorySummary], APIError>?
-    var getStoryResult: Result<StoryContent, APIError>?
-    var getSnippetsResult: Result<SnippetList, APIError>?
-    var getDailyQuestionsResult: Result<DailyQuestionsResponse, APIError>?
-    var postDailyAnswerResult: Result<DailyAnswerResponse, APIError>?
-    var generateTranslationSentenceResult: Result<TranslationPracticeSentenceResponse, APIError>?
-    var submitTranslationResult: Result<TranslationPracticeSessionResponse, APIError>?
+    private let lock = NSLock()
+
+    // Result properties - marked nonisolated(unsafe) because access is protected by lock
+    nonisolated(unsafe) private var _loginResult: Result<LoginResponse, APIError>?
+    nonisolated(unsafe) private var _signupResult: Result<SuccessResponse, APIError>?
+    nonisolated(unsafe) private var _authStatusResult: Result<AuthStatusResponse, APIError>?
+    nonisolated(unsafe) private var _getQuestionResult: Result<QuestionFetchResult, APIError>?
+    nonisolated(unsafe) private var _postAnswerResult: Result<AnswerResponse, APIError>?
+    nonisolated(unsafe) private var _getStoriesResult: Result<[StorySummary], APIError>?
+    nonisolated(unsafe) private var _getStoryResult: Result<StoryContent, APIError>?
+    nonisolated(unsafe) private var _getSnippetsResult: Result<SnippetList, APIError>?
+    nonisolated(unsafe) private var _getDailyQuestionsResult:
+        Result<DailyQuestionsResponse, APIError>?
+    nonisolated(unsafe) private var _postDailyAnswerResult: Result<DailyAnswerResponse, APIError>?
+    nonisolated(unsafe) private var _generateTranslationSentenceResult:
+        Result<TranslationPracticeSentenceResponse, APIError>?
+    nonisolated(unsafe) private var _submitTranslationResult:
+        Result<TranslationPracticeSessionResponse, APIError>?
+    nonisolated(unsafe) private var _getExistingTranslationSentenceResult:
+        Result<TranslationPracticeSentenceResponse, APIError>?
+    nonisolated(unsafe) private var _getVerbConjugationsResult:
+        Result<VerbConjugationsData, APIError>?
+    nonisolated(unsafe) private var _getVerbConjugationResult:
+        Result<VerbConjugationDetail, APIError>?
+    nonisolated(unsafe) private var _updateUserResult: Result<User, APIError>?
+    nonisolated(unsafe) private var _getWordOfTheDayResult: Result<WordOfTheDayDisplay, APIError>?
+    nonisolated(unsafe) private var _getAIConversationsResult:
+        Result<ConversationListResponse, APIError>?
+    nonisolated(unsafe) private var _getBookmarkedMessagesResult:
+        Result<BookmarkedMessagesResponse, APIError>?
+
+    // Thread-safe property accessors
+    var loginResult: Result<LoginResponse, APIError>? {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return _loginResult
+        }
+        set {
+            lock.lock()
+            defer { lock.unlock() }
+            _loginResult = newValue
+        }
+    }
+    var signupResult: Result<SuccessResponse, APIError>? {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return _signupResult
+        }
+        set {
+            lock.lock()
+            defer { lock.unlock() }
+            _signupResult = newValue
+        }
+    }
+    var authStatusResult: Result<AuthStatusResponse, APIError>? {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return _authStatusResult
+        }
+        set {
+            lock.lock()
+            defer { lock.unlock() }
+            _authStatusResult = newValue
+        }
+    }
+    var getQuestionResult: Result<QuestionFetchResult, APIError>? {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return _getQuestionResult
+        }
+        set {
+            lock.lock()
+            defer { lock.unlock() }
+            _getQuestionResult = newValue
+        }
+    }
+    var postAnswerResult: Result<AnswerResponse, APIError>? {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return _postAnswerResult
+        }
+        set {
+            lock.lock()
+            defer { lock.unlock() }
+            _postAnswerResult = newValue
+        }
+    }
+    var getStoriesResult: Result<[StorySummary], APIError>? {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return _getStoriesResult
+        }
+        set {
+            lock.lock()
+            defer { lock.unlock() }
+            _getStoriesResult = newValue
+        }
+    }
+    var getStoryResult: Result<StoryContent, APIError>? {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return _getStoryResult
+        }
+        set {
+            lock.lock()
+            defer { lock.unlock() }
+            _getStoryResult = newValue
+        }
+    }
+    var getSnippetsResult: Result<SnippetList, APIError>? {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return _getSnippetsResult
+        }
+        set {
+            lock.lock()
+            defer { lock.unlock() }
+            _getSnippetsResult = newValue
+        }
+    }
+    var getDailyQuestionsResult: Result<DailyQuestionsResponse, APIError>? {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return _getDailyQuestionsResult
+        }
+        set {
+            lock.lock()
+            defer { lock.unlock() }
+            _getDailyQuestionsResult = newValue
+        }
+    }
+    var postDailyAnswerResult: Result<DailyAnswerResponse, APIError>? {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return _postDailyAnswerResult
+        }
+        set {
+            lock.lock()
+            defer { lock.unlock() }
+            _postDailyAnswerResult = newValue
+        }
+    }
+    var generateTranslationSentenceResult: Result<TranslationPracticeSentenceResponse, APIError>? {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return _generateTranslationSentenceResult
+        }
+        set {
+            lock.lock()
+            defer { lock.unlock() }
+            _generateTranslationSentenceResult = newValue
+        }
+    }
+    var submitTranslationResult: Result<TranslationPracticeSessionResponse, APIError>? {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return _submitTranslationResult
+        }
+        set {
+            lock.lock()
+            defer { lock.unlock() }
+            _submitTranslationResult = newValue
+        }
+    }
     var getExistingTranslationSentenceResult: Result<TranslationPracticeSentenceResponse, APIError>?
-    var getVerbConjugationsResult: Result<VerbConjugationsData, APIError>?
-    var getVerbConjugationResult: Result<VerbConjugationDetail, APIError>?
-    var updateUserResult: Result<User, APIError>?
-    var getWordOfTheDayResult: Result<WordOfTheDayDisplay, APIError>?
-    var getAIConversationsResult: Result<ConversationListResponse, APIError>?
-    var getBookmarkedMessagesResult: Result<BookmarkedMessagesResponse, APIError>?
+    {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return _getExistingTranslationSentenceResult
+        }
+        set {
+            lock.lock()
+            defer { lock.unlock() }
+            _getExistingTranslationSentenceResult = newValue
+        }
+    }
+    var getVerbConjugationsResult: Result<VerbConjugationsData, APIError>? {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return _getVerbConjugationsResult
+        }
+        set {
+            lock.lock()
+            defer { lock.unlock() }
+            _getVerbConjugationsResult = newValue
+        }
+    }
+    var getVerbConjugationResult: Result<VerbConjugationDetail, APIError>? {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return _getVerbConjugationResult
+        }
+        set {
+            lock.lock()
+            defer { lock.unlock() }
+            _getVerbConjugationResult = newValue
+        }
+    }
+    var updateUserResult: Result<User, APIError>? {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return _updateUserResult
+        }
+        set {
+            lock.lock()
+            defer { lock.unlock() }
+            _updateUserResult = newValue
+        }
+    }
+    var getWordOfTheDayResult: Result<WordOfTheDayDisplay, APIError>? {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return _getWordOfTheDayResult
+        }
+        set {
+            lock.lock()
+            defer { lock.unlock() }
+            _getWordOfTheDayResult = newValue
+        }
+    }
+    var getAIConversationsResult: Result<ConversationListResponse, APIError>? {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return _getAIConversationsResult
+        }
+        set {
+            lock.lock()
+            defer { lock.unlock() }
+            _getAIConversationsResult = newValue
+        }
+    }
+    var getBookmarkedMessagesResult: Result<BookmarkedMessagesResponse, APIError>? {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return _getBookmarkedMessagesResult
+        }
+        set {
+            lock.lock()
+            defer { lock.unlock() }
+            _getBookmarkedMessagesResult = newValue
+        }
+    }
 
     // Method Overrides
     override func login(request: LoginRequest) -> AnyPublisher<LoginResponse, APIError> {

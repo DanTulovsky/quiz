@@ -245,6 +245,7 @@ struct QuizView: View {
 
             if question.type == "vocabulary", let targetWord = stringValue(question.content["question"]) {
                 Text("What does **\(targetWord)** mean in this context?")
+                    .textSelection(.enabled)
             }
         }
         .appCard()
@@ -279,47 +280,51 @@ struct QuizView: View {
         let isSelected = viewModel.selectedAnswerIndex == index
         let isCorrect = viewModel.answerResponse?.correctAnswerIndex == index
         let isUserIncorrect = viewModel.answerResponse != nil && viewModel.answerResponse?.userAnswerIndex == index && !isCorrect
+        let question = viewModel.question
 
-        Button(action: {
+        HStack {
+            if viewModel.answerResponse != nil {
+                if isCorrect {
+                    Image(systemName: "check.circle.fill")
+                        .foregroundColor(AppTheme.Colors.successGreen)
+                } else if isUserIncorrect {
+                    Image(systemName: "x.circle.fill")
+                        .foregroundColor(AppTheme.Colors.errorRed)
+                }
+            }
+
+            Text(option)
+                .font(AppTheme.Typography.bodyFont)
+                .foregroundColor(isUserIncorrect ? AppTheme.Colors.errorRed : (isCorrect ? AppTheme.Colors.successGreen : (isSelected ? .white : AppTheme.Colors.primaryText)))
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            Spacer()
+        }
+        .padding(AppTheme.Spacing.innerPadding)
+        .frame(maxWidth: .infinity)
+        .background(
+            isUserIncorrect ? AppTheme.Colors.errorRed.opacity(0.1) :
+            (isCorrect ? AppTheme.Colors.successGreen.opacity(0.1) :
+            (isSelected ? AppTheme.Colors.primaryBlue : AppTheme.Colors.primaryBlue.opacity(0.05)))
+        )
+        .cornerRadius(AppTheme.CornerRadius.button)
+        .overlay(
+            RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button)
+                .stroke(isUserIncorrect ? AppTheme.Colors.errorRed : (isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.borderBlue), lineWidth: 1)
+        )
+        .contentShape(Rectangle())
+        .onTapGesture {
             if viewModel.answerResponse == nil {
                 viewModel.selectedAnswerIndex = index
             }
-        }) {
-            HStack {
-                if viewModel.answerResponse != nil {
-                    if isCorrect {
-                        Image(systemName: "check.circle.fill")
-                            .foregroundColor(AppTheme.Colors.successGreen)
-                    } else if isUserIncorrect {
-                        Image(systemName: "x.circle.fill")
-                            .foregroundColor(AppTheme.Colors.errorRed)
-                    }
-                }
-
-                Text(option)
-                    .font(AppTheme.Typography.bodyFont)
-                    .foregroundColor(isUserIncorrect ? AppTheme.Colors.errorRed : (isCorrect ? AppTheme.Colors.successGreen : (isSelected ? .white : AppTheme.Colors.primaryText)))
-
-                Spacer()
-            }
-            .padding(AppTheme.Spacing.innerPadding)
-            .frame(maxWidth: .infinity)
-            .background(
-                isUserIncorrect ? AppTheme.Colors.errorRed.opacity(0.1) :
-                (isCorrect ? AppTheme.Colors.successGreen.opacity(0.1) :
-                (isSelected ? AppTheme.Colors.primaryBlue : AppTheme.Colors.primaryBlue.opacity(0.05)))
-            )
-            .cornerRadius(AppTheme.CornerRadius.button)
-            .overlay(
-                RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button)
-                    .stroke(isUserIncorrect ? AppTheme.Colors.errorRed : (isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.borderBlue), lineWidth: 1)
-            )
         }
         .disabled(viewModel.answerResponse != nil)
     }
 
     @ViewBuilder
     private func feedbackSection(_ response: AnswerResponse) -> some View {
+        let question = viewModel.question
+
         VStack(alignment: .leading, spacing: 10) {
             HStack {
                 Image(systemName: response.isCorrect ? "checkmark.circle.fill" : "xmark.circle.fill")
@@ -329,10 +334,16 @@ struct QuizView: View {
                     .foregroundColor(response.isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.errorRed)
             }
 
-            Text(response.explanation)
-                .font(AppTheme.Typography.subheadlineFont)
-                .foregroundColor(AppTheme.Colors.secondaryText)
-                .fixedSize(horizontal: false, vertical: true)
+            SelectableTextView(
+                text: response.explanation,
+                language: question?.language ?? "en",
+                onTextSelected: { text in
+                    selectedText = text
+                    translationSentence = extractSentence(from: response.explanation, containing: text)
+                    showTranslationPopup = true
+                }
+            )
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(AppTheme.Spacing.innerPadding)
         .frame(maxWidth: .infinity, alignment: .leading)

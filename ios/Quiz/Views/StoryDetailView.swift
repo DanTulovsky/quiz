@@ -59,7 +59,7 @@ struct StoryDetailView: View {
                     if viewModel.mode == .section {
                         // Pagination for Section mode
                         HStack {
-                            Button(action: { viewModel.previousPage() }) {
+                            Button(action: { viewModel.goToBeginning() }) {
                                 Image(systemName: "chevron.left.2")
                                     .padding(8)
                                     .background(AppTheme.Colors.secondaryBackground)
@@ -89,7 +89,7 @@ struct StoryDetailView: View {
                             }
                             .disabled(viewModel.currentSectionIndex == story.sections.count - 1)
 
-                            Button(action: { viewModel.nextPage() }) {
+                            Button(action: { viewModel.goToEnd() }) {
                                 Image(systemName: "chevron.right.2")
                                     .padding(8)
                                     .background(AppTheme.Colors.secondaryBackground)
@@ -193,12 +193,12 @@ struct StoryDetailView: View {
             return .systemAction
         })
         .sheet(isPresented: $showTranslationPopup) {
-            if let text = selectedText, let story = viewModel.selectedStory, let section = viewModel.currentSection {
+            if let text = selectedText, let story = viewModel.selectedStory {
                 TranslationPopupView(
                     selectedText: text,
                     sourceLanguage: story.language,
                     questionId: nil,
-                    sectionId: section.id,
+                    sectionId: viewModel.currentSection?.id,
                     storyId: story.id,
                     sentence: translationSentence,
                     onClose: {
@@ -272,35 +272,38 @@ struct StoryDetailView: View {
     private func optionRow(question: StorySectionQuestion, idx: Int, option: String, hasSubmitted: Bool, selectedIdx: Int?) -> some View {
         let isCorrect = idx == question.correctAnswerIndex
         let isSelected = selectedIdx == idx
+        let language = viewModel.selectedStory?.language ?? "en"
 
-        Button(action: {
+        HStack {
+            if hasSubmitted {
+                Image(systemName: isCorrect ? "checkmark.circle.fill" : (isSelected ? "xmark.circle.fill" : "circle"))
+                    .foregroundColor(isCorrect ? .green : (isSelected ? .red : .gray))
+            } else {
+                Circle()
+                    .stroke(isSelected ? Color.blue : Color.gray, lineWidth: 1)
+                    .frame(width: 18, height: 18)
+                    .overlay(Circle().fill(isSelected ? Color.blue : Color.clear).padding(4))
+            }
+
+            Text(option)
+                .font(AppTheme.Typography.subheadlineFont)
+                .foregroundColor(hasSubmitted ? (isCorrect ? AppTheme.Colors.successGreen : (isSelected ? AppTheme.Colors.errorRed : AppTheme.Colors.primaryText)) : AppTheme.Colors.primaryText)
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            Spacer()
+        }
+        .padding(10)
+        .background(
+            hasSubmitted ?
+            (isCorrect ? AppTheme.Colors.successGreen.opacity(0.1) : (isSelected ? AppTheme.Colors.errorRed.opacity(0.1) : AppTheme.Colors.secondaryBackground)) :
+            (isSelected ? AppTheme.Colors.primaryBlue.opacity(0.1) : AppTheme.Colors.secondaryBackground)
+        )
+        .cornerRadius(AppTheme.CornerRadius.badge)
+        .contentShape(Rectangle())
+        .onTapGesture {
             if !hasSubmitted {
                 selectedAnswers[question.id] = idx
             }
-        }) {
-            HStack {
-                if hasSubmitted {
-                    Image(systemName: isCorrect ? "checkmark.circle.fill" : (isSelected ? "xmark.circle.fill" : "circle"))
-                        .foregroundColor(isCorrect ? .green : (isSelected ? .red : .gray))
-                } else {
-                    Circle()
-                        .stroke(isSelected ? Color.blue : Color.gray, lineWidth: 1)
-                        .frame(width: 18, height: 18)
-                        .overlay(Circle().fill(isSelected ? Color.blue : Color.clear).padding(4))
-                }
-
-                Text(option)
-                    .font(AppTheme.Typography.subheadlineFont)
-                    .foregroundColor(hasSubmitted ? (isCorrect ? AppTheme.Colors.successGreen : (isSelected ? AppTheme.Colors.errorRed : AppTheme.Colors.primaryText)) : AppTheme.Colors.primaryText)
-                Spacer()
-            }
-            .padding(10)
-            .background(
-                hasSubmitted ?
-                (isCorrect ? AppTheme.Colors.successGreen.opacity(0.1) : (isSelected ? AppTheme.Colors.errorRed.opacity(0.1) : AppTheme.Colors.secondaryBackground)) :
-                (isSelected ? AppTheme.Colors.primaryBlue.opacity(0.1) : AppTheme.Colors.secondaryBackground)
-            )
-            .cornerRadius(AppTheme.CornerRadius.badge)
         }
         .disabled(hasSubmitted)
     }
@@ -311,9 +314,16 @@ struct StoryDetailView: View {
         let selectedIdx = selectedAnswers[question.id]
 
         VStack(alignment: .leading, spacing: 12) {
-            Text(question.questionText)
-                .font(.subheadline)
-                .fontWeight(.medium)
+            SelectableTextView(
+                text: question.questionText,
+                language: viewModel.selectedStory?.language ?? "en",
+                onTextSelected: { text in
+                    selectedText = text
+                    translationSentence = extractSentence(from: question.questionText, containing: text)
+                    showTranslationPopup = true
+                }
+            )
+            .frame(maxWidth: .infinity, alignment: .leading)
 
             ForEach(Array(question.options.enumerated()), id: \.offset) { idx, option in
                 optionRow(question: question, idx: idx, option: option, hasSubmitted: hasSubmitted, selectedIdx: selectedIdx)
@@ -339,9 +349,16 @@ struct StoryDetailView: View {
                     Text("Explanation")
                         .font(AppTheme.Typography.captionFont.weight(.bold))
                         .foregroundColor(AppTheme.Colors.secondaryText)
-                    Text(explanation)
-                        .font(AppTheme.Typography.captionFont)
-                        .foregroundColor(AppTheme.Colors.secondaryText)
+                    SelectableTextView(
+                        text: explanation,
+                        language: viewModel.selectedStory?.language ?? "en",
+                        onTextSelected: { text in
+                            selectedText = text
+                            translationSentence = extractSentence(from: explanation, containing: text)
+                            showTranslationPopup = true
+                        }
+                    )
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .padding(.top, 4)
             }

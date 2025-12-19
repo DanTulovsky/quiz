@@ -103,6 +103,8 @@ struct WordOfTheDayView: View {
             VStack(spacing: 10) {
                 Text(wotd.word)
                     .font(.system(size: 48, weight: .bold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
                     .foregroundColor(AppTheme.Colors.primaryText)
 
                 Text(wotd.translation)

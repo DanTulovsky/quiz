@@ -6,40 +6,65 @@ struct SelectableTextView: UIViewRepresentable {
     let language: String
     let onTextSelected: (String) -> Void
     let highlightedSnippets: [Snippet]?
+    let textColor: UIColor?
 
-    init(text: String, language: String, onTextSelected: @escaping (String) -> Void, highlightedSnippets: [Snippet]? = nil) {
+    init(text: String, language: String, onTextSelected: @escaping (String) -> Void, highlightedSnippets: [Snippet]? = nil, textColor: UIColor? = nil) {
         self.text = text
         self.language = language
         self.onTextSelected = onTextSelected
         self.highlightedSnippets = highlightedSnippets
+        self.textColor = textColor
     }
 
     func makeUIView(context: Context) -> UITextView {
         let textView = UITextView()
         textView.delegate = context.coordinator
-        updateTextView(textView)
         textView.isEditable = false
         textView.isSelectable = true
         textView.backgroundColor = .clear
         textView.textContainerInset = .zero
         textView.textContainer.lineFragmentPadding = 0
+        textView.textContainer.widthTracksTextView = true
+        textView.textContainer.heightTracksTextView = false
         textView.allowsEditingTextAttributes = false
+        textView.isScrollEnabled = false
+        textView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        textView.setContentCompressionResistancePriority(.required, for: .vertical)
 
         // Enable text selection
         textView.isUserInteractionEnabled = true
 
         context.coordinator.textView = textView
         context.coordinator.onTextSelected = onTextSelected
+        updateTextView(textView)
+
+        // Force layout to ensure proper sizing
+        textView.layoutIfNeeded()
         return textView
     }
 
     func updateUIView(_ uiView: UITextView, context: Context) {
         updateTextView(uiView)
+        // Force layout update to ensure text displays correctly
+        DispatchQueue.main.async {
+            uiView.layoutIfNeeded()
+            uiView.invalidateIntrinsicContentSize()
+        }
     }
 
     private func updateTextView(_ textView: UITextView) {
+        guard !text.isEmpty else {
+            textView.attributedText = nil
+            textView.text = ""
+            return
+        }
+
         let attributedString = NSMutableAttributedString(string: text)
         attributedString.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .body), range: NSRange(location: 0, length: text.count))
+
+        // Apply text color - use provided color or default to label color
+        let color = textColor ?? UIColor.label
+        attributedString.addAttribute(.foregroundColor, value: color, range: NSRange(location: 0, length: text.count))
 
         // Apply snippet highlighting if available
         if let snippets = highlightedSnippets {
