@@ -141,4 +141,12 @@ class VocabularyViewModel: ObservableObject {
         // This just returns the snippets from the server
         return snippets
     }
+
+    func cancelAllRequests() {
+        cancellables.removeAll()
+    }
+
+    deinit {
+        cancelAllRequests()
+    }
 }

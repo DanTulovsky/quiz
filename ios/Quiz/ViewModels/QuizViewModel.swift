@@ -123,12 +123,20 @@ class QuizViewModel: ObservableObject {
                 if case .failure(let error) = completion { self?.error = error }
             }, receiveValue: { [weak self] response in
                 self?.answerResponse = AnswerResponse(isCorrect: response.isCorrect,
-                                                      userAnswer: "",
-                                                      userAnswerIndex: userAnswerIndex,
+                                                      userAnswer: response.userAnswer,
+                                                      userAnswerIndex: response.userAnswerIndex,
                                                       explanation: response.explanation,
-                                                      correctAnswerIndex: 0) // Placeholder
+                                                      correctAnswerIndex: response.correctAnswerIndex)
             })
             .store(in: &cancellables)
+    }
+
+    func cancelAllRequests() {
+        cancellables.removeAll()
+    }
+
+    deinit {
+        cancelAllRequests()
     }
 
 

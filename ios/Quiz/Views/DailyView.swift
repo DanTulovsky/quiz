@@ -130,7 +130,7 @@ struct DailyView: View {
             viewModel.fetchDaily()
             // Also check positioning after a delay to catch any edge cases
             Task { @MainActor in
-                try? await Task.sleep(nanoseconds: 200_000_000) // 0.2 seconds
+                try? await Task.sleep(nanoseconds: 200_000_000)  // 0.2 seconds
                 if !viewModel.dailyQuestions.isEmpty {
                     viewModel.ensurePositionedOnFirstIncomplete()
                     if let question = viewModel.currentQuestion {
@@ -154,7 +154,10 @@ struct DailyView: View {
             HStack {
                 BadgeView(text: "DAILY CHALLENGE", color: AppTheme.Colors.accentIndigo)
                 Spacer()
-                BadgeView(text: "\(viewModel.currentQuestion?.question.language.uppercased() ?? "") - \(viewModel.currentQuestion?.question.level ?? "")", color: AppTheme.Colors.primaryBlue)
+                BadgeView(
+                    text:
+                        "\(viewModel.currentQuestion?.question.language.uppercased() ?? "") - \(viewModel.currentQuestion?.question.level ?? "")",
+                    color: AppTheme.Colors.primaryBlue)
             }
 
             HStack {
@@ -164,11 +167,16 @@ struct DailyView: View {
                     .padding(.vertical, 8)
                     .background(Color(.systemBackground))
                     .cornerRadius(8)
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.2), lineWidth: 1))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8).stroke(
+                            Color.gray.opacity(0.2), lineWidth: 1))
 
                 Spacer()
 
-                BadgeView(text: "\(viewModel.currentQuestionIndex + 1) OF \(viewModel.dailyQuestions.count)", color: .blue)
+                BadgeView(
+                    text:
+                        "\(viewModel.currentQuestionIndex + 1) OF \(viewModel.dailyQuestions.count)",
+                    color: .blue)
             }
 
             ProgressView(value: viewModel.progress)
@@ -182,7 +190,9 @@ struct DailyView: View {
     private func questionCard(_ question: Question) -> some View {
         VStack(alignment: .leading, spacing: 15) {
             HStack {
-                BadgeView(text: question.type.replacingOccurrences(of: "_", with: " ").uppercased(), color: AppTheme.Colors.accentIndigo)
+                BadgeView(
+                    text: question.type.replacingOccurrences(of: "_", with: " ").uppercased(),
+                    color: AppTheme.Colors.accentIndigo)
 
                 Spacer()
             }
@@ -210,7 +220,8 @@ struct DailyView: View {
             }
 
             let sentence = stringValue(question.content["sentence"])
-            let questionText = stringValue(question.content["question"]) ?? stringValue(question.content["prompt"])
+            let questionText =
+                stringValue(question.content["question"]) ?? stringValue(question.content["prompt"])
 
             if let sentence = sentence {
                 SelectableTextView(
@@ -246,13 +257,16 @@ struct DailyView: View {
                 .frame(minHeight: 44)
             }
 
-            if question.type == "vocabulary", let targetWord = stringValue(question.content["question"]) {
+            if question.type == "vocabulary",
+                let targetWord = stringValue(question.content["question"])
+            {
                 SelectableTextView(
                     text: "What does \(targetWord) mean in this context?",
                     language: question.language,
                     onTextSelected: { text in
                         selectedText = text
-                        translationSentence = extractSentence(from: "What does \(targetWord) mean in this context?", containing: text)
+                        translationSentence = extractSentence(
+                            from: "What does \(targetWord) mean in this context?", containing: text)
                         showTranslationPopup = true
                     },
                     highlightedSnippets: viewModel.snippets,
@@ -284,9 +298,14 @@ struct DailyView: View {
         let showResults = viewModel.answerResponse != nil || isCompleted
 
         // Only get correct answer info when we should show results
-        let correctAnswerIndex: Int? = showResults ? (viewModel.answerResponse?.correctAnswerIndex ?? currentQuestion?.question.correctAnswerIndex) : nil
+        let correctAnswerIndex: Int? =
+            showResults
+            ? (viewModel.answerResponse?.correctAnswerIndex
+                ?? currentQuestion?.question.correctAnswerIndex) : nil
         let isCorrect = correctAnswerIndex != nil && correctAnswerIndex == index
-        let userAnswerIndex = viewModel.answerResponse?.userAnswerIndex ?? (isCompleted ? currentQuestion?.userAnswerIndex : nil)
+        let userAnswerIndex =
+            viewModel.answerResponse?.userAnswerIndex
+            ?? (isCompleted ? currentQuestion?.userAnswerIndex : nil)
         let isUserIncorrect = userAnswerIndex != nil && userAnswerIndex == index && !isCorrect
 
         return HStack {
@@ -302,7 +321,13 @@ struct DailyView: View {
 
             Text(option)
                 .font(AppTheme.Typography.bodyFont)
-                .foregroundColor(showResults && isUserIncorrect ? AppTheme.Colors.errorRed : (showResults && isCorrect ? AppTheme.Colors.successGreen : (isSelected ? .white : AppTheme.Colors.primaryText)))
+                .foregroundColor(
+                    showResults && isUserIncorrect
+                        ? AppTheme.Colors.errorRed
+                        : (showResults && isCorrect
+                            ? AppTheme.Colors.successGreen
+                            : (isSelected ? .white : AppTheme.Colors.primaryText))
+                )
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             Spacer()
@@ -310,14 +335,22 @@ struct DailyView: View {
         .padding(AppTheme.Spacing.innerPadding)
         .frame(maxWidth: .infinity)
         .background(
-            showResults && isUserIncorrect ? AppTheme.Colors.errorRed.opacity(0.1) :
-            (showResults && isCorrect ? AppTheme.Colors.successGreen.opacity(0.1) :
-            (isSelected ? AppTheme.Colors.primaryBlue : AppTheme.Colors.primaryBlue.opacity(0.05)))
+            showResults && isUserIncorrect
+                ? AppTheme.Colors.errorRed.opacity(0.1)
+                : (showResults && isCorrect
+                    ? AppTheme.Colors.successGreen.opacity(0.1)
+                    : (isSelected
+                        ? AppTheme.Colors.primaryBlue : AppTheme.Colors.primaryBlue.opacity(0.05)))
         )
         .cornerRadius(AppTheme.CornerRadius.button)
         .overlay(
             RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button)
-                .stroke(showResults && isUserIncorrect ? AppTheme.Colors.errorRed : (showResults && isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.borderBlue), lineWidth: 1)
+                .stroke(
+                    showResults && isUserIncorrect
+                        ? AppTheme.Colors.errorRed
+                        : (showResults && isCorrect
+                            ? AppTheme.Colors.successGreen : AppTheme.Colors.borderBlue),
+                    lineWidth: 1)
         )
         .contentShape(Rectangle())
         .onTapGesture {
@@ -335,10 +368,14 @@ struct DailyView: View {
         VStack(alignment: .leading, spacing: AppTheme.Spacing.itemSpacing) {
             HStack {
                 Image(systemName: response.isCorrect ? "checkmark" : "xmark")
-                    .foregroundColor(response.isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.errorRed)
+                    .foregroundColor(
+                        response.isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.errorRed
+                    )
                 Text(response.isCorrect ? "Correct!" : "Incorrect")
                     .font(AppTheme.Typography.headingFont)
-                    .foregroundColor(response.isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.errorRed)
+                    .foregroundColor(
+                        response.isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.errorRed
+                    )
             }
 
             SelectableTextView(
@@ -346,7 +383,8 @@ struct DailyView: View {
                 language: language,
                 onTextSelected: { text in
                     selectedText = text
-                    translationSentence = extractSentence(from: response.explanation, containing: text)
+                    translationSentence = extractSentence(
+                        from: response.explanation, containing: text)
                     showTranslationPopup = true
                 },
                 highlightedSnippets: viewModel.snippets,
@@ -359,9 +397,17 @@ struct DailyView: View {
         }
         .padding(AppTheme.Spacing.innerPadding)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(response.isCorrect ? AppTheme.Colors.successGreen.opacity(0.05) : AppTheme.Colors.errorRed.opacity(0.05))
+        .background(
+            response.isCorrect
+                ? AppTheme.Colors.successGreen.opacity(0.05)
+                : AppTheme.Colors.errorRed.opacity(0.05)
+        )
         .cornerRadius(AppTheme.CornerRadius.button)
-        .overlay(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(response.isCorrect ? AppTheme.Colors.successGreen.opacity(0.2) : AppTheme.Colors.errorRed.opacity(0.2), lineWidth: 1))
+        .overlay(
+            RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(
+                response.isCorrect
+                    ? AppTheme.Colors.successGreen.opacity(0.2)
+                    : AppTheme.Colors.errorRed.opacity(0.2), lineWidth: 1))
     }
 
     private func completedQuestionFeedback(_ question: DailyQuestionWithDetails) -> some View {
@@ -371,15 +417,18 @@ struct DailyView: View {
         let isCorrect = userAnswerIndex == correctAnswerIndex
 
         // Try to get explanation from question content or use a default message
-        let explanation = stringValue(question.question.content["explanation"]) ?? "Review your answer above."
+        let explanation =
+            stringValue(question.question.content["explanation"]) ?? "Review your answer above."
 
         return VStack(alignment: .leading, spacing: AppTheme.Spacing.itemSpacing) {
             HStack {
                 Image(systemName: isCorrect ? "checkmark" : "xmark")
-                    .foregroundColor(isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.errorRed)
+                    .foregroundColor(
+                        isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.errorRed)
                 Text(isCorrect ? "Correct!" : "Incorrect")
                     .font(AppTheme.Typography.headingFont)
-                    .foregroundColor(isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.errorRed)
+                    .foregroundColor(
+                        isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.errorRed)
             }
 
             SelectableTextView(
@@ -400,9 +449,17 @@ struct DailyView: View {
         }
         .padding(AppTheme.Spacing.innerPadding)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(isCorrect ? AppTheme.Colors.successGreen.opacity(0.05) : AppTheme.Colors.errorRed.opacity(0.05))
+        .background(
+            isCorrect
+                ? AppTheme.Colors.successGreen.opacity(0.05)
+                : AppTheme.Colors.errorRed.opacity(0.05)
+        )
         .cornerRadius(AppTheme.CornerRadius.button)
-        .overlay(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(isCorrect ? AppTheme.Colors.successGreen.opacity(0.2) : AppTheme.Colors.errorRed.opacity(0.2), lineWidth: 1))
+        .overlay(
+            RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(
+                isCorrect
+                    ? AppTheme.Colors.successGreen.opacity(0.2)
+                    : AppTheme.Colors.errorRed.opacity(0.2), lineWidth: 1))
     }
 
     private var completionView: some View {
@@ -459,12 +516,16 @@ struct DailyView: View {
     }
 
     private func highlightedText(_ fullText: String, targetWord: String?) -> some View {
-        if let targetWord = targetWord, let range = fullText.range(of: targetWord, options: .caseInsensitive) {
+        if let targetWord = targetWord,
+            let range = fullText.range(of: targetWord, options: .caseInsensitive)
+        {
             let before = String(fullText[..<range.lowerBound])
             let word = String(fullText[range])
             let after = String(fullText[range.upperBound...])
 
-            return Text("\(Text(before))\(Text(word).foregroundColor(.blue).fontWeight(.bold))\(Text(after))")
+            return Text(
+                "\(Text(before))\(Text(word).foregroundColor(.blue).fontWeight(.bold))\(Text(after))"
+            )
         } else {
             return Text(fullText)
         }
@@ -503,7 +564,8 @@ struct DailyView: View {
             sentenceEnd = text.index(after: sentenceEnd)
         }
 
-        let sentence = String(text[sentenceStart..<sentenceEnd]).trimmingCharacters(in: .whitespacesAndNewlines)
+        let sentence = String(text[sentenceStart..<sentenceEnd]).trimmingCharacters(
+            in: .whitespacesAndNewlines)
         return sentence.isEmpty ? nil : sentence
     }
 
@@ -528,7 +590,7 @@ struct DailyView: View {
                 .disabled(!viewModel.hasNextQuestion)
                 .frame(maxWidth: .infinity)
             }
-        } else if let _ = viewModel.answerResponse {
+        } else if viewModel.answerResponse != nil {
             // After submission but not all completed
             Button("Next Question") {
                 viewModel.nextQuestion()
@@ -547,7 +609,9 @@ struct DailyView: View {
                     viewModel.submitAnswer(index: idx)
                 }
             }
-            .buttonStyle(PrimaryButtonStyle(isDisabled: viewModel.selectedAnswerIndex == nil || viewModel.isSubmitting))
+            .buttonStyle(
+                PrimaryButtonStyle(
+                    isDisabled: viewModel.selectedAnswerIndex == nil || viewModel.isSubmitting))
         }
     }
 
@@ -593,10 +657,12 @@ struct DailyView: View {
     private var markKnownSheet: some View {
         NavigationView {
             VStack(spacing: 20) {
-                Text("Choose how often you want to see this question in future quizzes: 1–2 show it more, 3 no change, 4–5 show it less.")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                    .padding()
+                Text(
+                    "Choose how often you want to see this question in future quizzes: 1–2 show it more, 3 no change, 4–5 show it less."
+                )
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+                .padding()
 
                 Text("How confident are you about this question?")
                     .font(.headline)
@@ -608,8 +674,14 @@ struct DailyView: View {
                         }
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(selectedConfidence == level ? AppTheme.Colors.primaryBlue : AppTheme.Colors.primaryBlue.opacity(0.1))
-                        .foregroundColor(selectedConfidence == level ? .white : AppTheme.Colors.primaryBlue)
+                        .background(
+                            selectedConfidence == level
+                                ? AppTheme.Colors.primaryBlue
+                                : AppTheme.Colors.primaryBlue.opacity(0.1)
+                        )
+                        .foregroundColor(
+                            selectedConfidence == level ? .white : AppTheme.Colors.primaryBlue
+                        )
                         .cornerRadius(AppTheme.CornerRadius.button)
                     }
                 }
@@ -622,7 +694,10 @@ struct DailyView: View {
                         viewModel.markQuestionKnown(confidence: confidence)
                     }
                 }
-                .buttonStyle(PrimaryButtonStyle(isDisabled: selectedConfidence == nil || viewModel.isSubmittingAction))
+                .buttonStyle(
+                    PrimaryButtonStyle(
+                        isDisabled: selectedConfidence == nil || viewModel.isSubmittingAction)
+                )
                 .padding()
             }
             .navigationTitle("Adjust Frequency")

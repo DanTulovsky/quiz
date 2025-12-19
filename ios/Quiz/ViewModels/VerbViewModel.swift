@@ -8,14 +8,14 @@ class VerbViewModel: ObservableObject {
     @Published var expandedTenses: Set<String> = []
     @Published var isLoading = false
     @Published var error: APIService.APIError?
-    
+
     private var currentLanguage: String = "it"
     private var apiService: APIService
     private var cancellables = Set<AnyCancellable>()
-    
+
     init(apiService: APIService = .shared) {
         self.apiService = apiService
-        
+
         $selectedVerb
             .dropFirst()
             .removeDuplicates()
@@ -25,7 +25,7 @@ class VerbViewModel: ObservableObject {
             }
             .store(in: &cancellables)
     }
-    
+
     func fetchVerbs(language: String) {
         self.currentLanguage = language
         isLoading = true
@@ -42,7 +42,7 @@ class VerbViewModel: ObservableObject {
             })
             .store(in: &cancellables)
     }
-    
+
     func fetchVerbDetail(language: String, verb: String) {
         isLoading = true
         apiService.getVerbConjugation(language: language, verb: verb)
@@ -55,7 +55,7 @@ class VerbViewModel: ObservableObject {
             })
             .store(in: &cancellables)
     }
-    
+
     func toggleTense(_ tenseId: String) {
         if expandedTenses.contains(tenseId) {
             expandedTenses.remove(tenseId)
@@ -63,14 +63,22 @@ class VerbViewModel: ObservableObject {
             expandedTenses.insert(tenseId)
         }
     }
-    
+
     func expandAll() {
         if let detail = selectedVerbDetail {
             expandedTenses = Set(detail.tenses.map { $0.tenseId })
         }
     }
-    
+
     func collapseAll() {
         expandedTenses.removeAll()
+    }
+
+    func cancelAllRequests() {
+        cancellables.removeAll()
+    }
+
+    deinit {
+        cancelAllRequests()
     }
 }

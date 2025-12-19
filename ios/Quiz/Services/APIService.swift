@@ -3,13 +3,7 @@ import Foundation
 
 class APIService {
     static let shared = APIService()
-    private let baseURL: URL = {
-        #if targetEnvironment(simulator)
-            return URL(string: "http://localhost:3000/v1")!
-        #else
-            return URL(string: "https://quiz.wetsnow.com/v1")!
-        #endif
-    }()
+    private let baseURL: URL
 
     enum APIError: Error, LocalizedError {
         case invalidURL
@@ -17,6 +11,7 @@ class APIService {
         case invalidResponse
         case decodingFailed(Error)
         case backendError(code: String?, message: String, details: String?)
+        case encodingFailed(Error)
 
         var errorDescription: String? {
             switch self {
@@ -25,6 +20,8 @@ class APIService {
             case .invalidResponse: return "Invalid response from server"
             case .decodingFailed(let error):
                 return "Failed to decode response: \(error.localizedDescription)"
+            case .encodingFailed(let error):
+                return "Failed to encode request: \(error.localizedDescription)"
             case .backendError(let code, let message, _):
                 if let code = code {
                     return "\(code): \(message)"
@@ -48,9 +45,21 @@ class APIService {
         }
     }
 
-    init() {}
+    init() {
+        #if targetEnvironment(simulator)
+            guard let url = URL(string: "http://localhost:3000/v1") else {
+                fatalError("Invalid base URL for simulator")
+            }
+            self.baseURL = url
+        #else
+            guard let url = URL(string: "https://quiz.wetsnow.com/v1") else {
+                fatalError("Invalid base URL for production")
+            }
+            self.baseURL = url
+        #endif
+    }
 
-    private var decoder: JSONDecoder {
+    private static let decoder: JSONDecoder = {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .custom { decoder in
             let container = try decoder.singleValueContainer()
@@ -68,13 +77,51 @@ class APIService {
                 in: container, debugDescription: "Invalid date format: \(dateStr)")
         }
         return decoder
+    }()
+
+    private var decoder: JSONDecoder {
+        return APIService.decoder
     }
 
-    private func authenticatedRequest(for url: URL, method: String = "GET") -> URLRequest {
+    private func buildURL(path: String, queryItems: [URLQueryItem]? = nil) -> Result<URL, APIError> {
+        let fullPath = baseURL.appendingPathComponent(path)
+        guard var components = URLComponents(url: fullPath, resolvingAgainstBaseURL: false) else {
+            return .failure(.invalidURL)
+        }
+        if let queryItems = queryItems, !queryItems.isEmpty {
+            components.queryItems = queryItems
+        }
+        guard let url = components.url else {
+            return .failure(.invalidURL)
+        }
+        return .success(url)
+    }
+
+    private func encodeBody<T: Encodable>(_ value: T) -> Result<Data, APIError> {
+        do {
+            let data = try JSONEncoder().encode(value)
+            return .success(data)
+        } catch {
+            return .failure(.encodingFailed(error))
+        }
+    }
+
+    private func encodeJSONBody(_ value: [String: Any]) -> Result<Data, APIError> {
+        do {
+            let data = try JSONSerialization.data(withJSONObject: value)
+            return .success(data)
+        } catch {
+            return .failure(.encodingFailed(error))
+        }
+    }
+
+    private func authenticatedRequest(for url: URL, method: String = "GET", body: Data? = nil) -> URLRequest {
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = method
         urlRequest.httpShouldHandleCookies = true
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        urlRequest.httpBody = body
+        urlRequest.timeoutInterval = 30.0
         return urlRequest
     }
 
@@ -102,11 +149,10 @@ class APIService {
 
     func login(request: LoginRequest) -> AnyPublisher<LoginResponse, APIError> {
         let url = baseURL.appendingPathComponent("auth/login")
-        var urlRequest = URLRequest(url: url)
-        urlRequest.httpMethod = "POST"
-        urlRequest.httpShouldHandleCookies = true
-        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        urlRequest.httpBody = try? JSONEncoder().encode(request)
+        guard case .success(let body) = encodeBody(request) else {
+            return Fail(error: .encodingFailed(NSError(domain: "APIService", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to encode login request"]))).eraseToAnyPublisher()
+        }
+        let urlRequest = authenticatedRequest(for: url, method: "POST", body: body)
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { self.handleResponse($0.data, $0.response) }
@@ -115,18 +161,11 @@ class APIService {
     }
 
     func initiateGoogleLogin() -> AnyPublisher<GoogleOAuthLoginResponse, APIError> {
-        guard var components = URLComponents(
-            url: baseURL.appendingPathComponent("auth/google/login"),
-            resolvingAgainstBaseURL: false) else {
+        let queryItems = [URLQueryItem(name: "platform", value: "ios")]
+        guard case .success(let url) = buildURL(path: "auth/google/login", queryItems: queryItems) else {
             return Fail(error: .invalidURL).eraseToAnyPublisher()
         }
-        // Add platform parameter to help backend detect iOS and use iOS client ID
-        components.queryItems = [URLQueryItem(name: "platform", value: "ios")]
-
-        guard let url = components.url else {
-            return Fail(error: .invalidURL).eraseToAnyPublisher()
-        }
-        let urlRequest = URLRequest(url: url)
+        let urlRequest = authenticatedRequest(for: url)
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { self.handleResponse($0.data, $0.response) }
@@ -140,22 +179,14 @@ class APIService {
         )
         print("📝 Code: \(code.prefix(10))..., State: \(state ?? "nil")")
 
-        guard var components = URLComponents(
-            url: baseURL.appendingPathComponent("auth/google/callback"),
-            resolvingAgainstBaseURL: false) else {
-            return Fail(error: .invalidURL).eraseToAnyPublisher()
-        }
         var queryItems = [URLQueryItem(name: "code", value: code)]
         if let state = state {
             queryItems.append(URLQueryItem(name: "state", value: state))
         }
-        components.queryItems = queryItems
-
-        guard let url = components.url else {
+        guard case .success(let url) = buildURL(path: "auth/google/callback", queryItems: queryItems) else {
             return Fail(error: .invalidURL).eraseToAnyPublisher()
         }
-        var urlRequest = URLRequest(url: url)
-        urlRequest.httpShouldHandleCookies = true
+        var urlRequest = authenticatedRequest(for: url)
         urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
 
         // Use URLSession.shared to ensure cookies are shared with other API calls
@@ -168,9 +199,15 @@ class APIService {
                 if let httpResponse = response as? HTTPURLResponse {
                     // Ensure cookies from the OAuth callback are stored
                     if let url = httpResponse.url {
+                        let headerFields = httpResponse.allHeaderFields
+                        var cookieHeaders: [String: String] = [:]
+                        for (key, value) in headerFields {
+                            if let keyString = key as? String, let valueString = value as? String {
+                                cookieHeaders[keyString] = valueString
+                            }
+                        }
                         let cookies = HTTPCookie.cookies(
-                            withResponseHeaderFields: httpResponse.allHeaderFields
-                                as! [String: String], for: url)
+                            withResponseHeaderFields: cookieHeaders, for: url)
                         for cookie in cookies {
                             HTTPCookieStorage.shared.setCookie(cookie)
                         }
@@ -210,11 +247,10 @@ class APIService {
 
     func signup(request: UserCreateRequest) -> AnyPublisher<SuccessResponse, APIError> {
         let url = baseURL.appendingPathComponent("auth/signup")
-        var urlRequest = URLRequest(url: url)
-        urlRequest.httpMethod = "POST"
-        urlRequest.httpShouldHandleCookies = true
-        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        urlRequest.httpBody = try? JSONEncoder().encode(request)
+        guard case .success(let body) = encodeBody(request) else {
+            return Fail(error: .encodingFailed(NSError(domain: "APIService", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to encode signup request"]))).eraseToAnyPublisher()
+        }
+        let urlRequest = authenticatedRequest(for: url, method: "POST", body: body)
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { self.handleResponse($0.data, $0.response) }
@@ -229,10 +265,6 @@ class APIService {
     func getQuestion(language: Language?, level: Level?, type: String?, excludeType: String?)
         -> AnyPublisher<QuestionFetchResult, APIError>
     {
-        guard var urlComponents = URLComponents(
-            url: baseURL.appendingPathComponent("quiz/question"), resolvingAgainstBaseURL: false) else {
-            return Fail(error: .invalidURL).eraseToAnyPublisher()
-        }
         var queryItems = [URLQueryItem]()
         if let language = language {
             queryItems.append(URLQueryItem(name: "language", value: language.rawValue))
@@ -244,8 +276,7 @@ class APIService {
         if let excludeType = excludeType {
             queryItems.append(URLQueryItem(name: "exclude_type", value: excludeType))
         }
-        urlComponents.queryItems = queryItems
-        guard let url = urlComponents.url else {
+        guard case .success(let url) = buildURL(path: "quiz/question", queryItems: queryItems.isEmpty ? nil : queryItems) else {
             return Fail(error: .invalidURL).eraseToAnyPublisher()
         }
         let urlRequest = authenticatedRequest(for: url)
@@ -278,8 +309,10 @@ class APIService {
 
     func postAnswer(request: AnswerRequest) -> AnyPublisher<AnswerResponse, APIError> {
         let url = baseURL.appendingPathComponent("quiz/answer")
-        var urlRequest = authenticatedRequest(for: url, method: "POST")
-        urlRequest.httpBody = try? JSONEncoder().encode(request)
+        guard case .success(let body) = encodeBody(request) else {
+            return Fail(error: .encodingFailed(NSError(domain: "APIService", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to encode answer request"]))).eraseToAnyPublisher()
+        }
+        let urlRequest = authenticatedRequest(for: url, method: "POST", body: body)
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { self.handleResponse($0.data, $0.response) }
@@ -307,10 +340,6 @@ class APIService {
     func getSnippets(sourceLang: String?, targetLang: String?, storyId: Int? = nil, query: String? = nil, level: String? = nil)
         -> AnyPublisher<SnippetList, APIError>
     {
-        guard var urlComponents = URLComponents(
-            url: baseURL.appendingPathComponent("snippets"), resolvingAgainstBaseURL: false) else {
-            return Fail(error: .invalidURL).eraseToAnyPublisher()
-        }
         var queryItems = [URLQueryItem]()
         if let sourceLang = sourceLang {
             queryItems.append(URLQueryItem(name: "source_lang", value: sourceLang))
@@ -327,8 +356,7 @@ class APIService {
         if let level = level, !level.isEmpty {
             queryItems.append(URLQueryItem(name: "level", value: level))
         }
-        urlComponents.queryItems = queryItems
-        guard let url = urlComponents.url else {
+        guard case .success(let url) = buildURL(path: "snippets", queryItems: queryItems.isEmpty ? nil : queryItems) else {
             return Fail(error: .invalidURL).eraseToAnyPublisher()
         }
         let urlRequest = authenticatedRequest(for: url)
@@ -340,8 +368,10 @@ class APIService {
 
     func createSnippet(request: CreateSnippetRequest) -> AnyPublisher<Snippet, APIError> {
         let url = baseURL.appendingPathComponent("snippets")
-        var urlRequest = authenticatedRequest(for: url, method: "POST")
-        urlRequest.httpBody = try? JSONEncoder().encode(request)
+        guard case .success(let body) = encodeBody(request) else {
+            return Fail(error: .encodingFailed(NSError(domain: "APIService", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to encode create snippet request"]))).eraseToAnyPublisher()
+        }
+        let urlRequest = authenticatedRequest(for: url, method: "POST", body: body)
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { self.handleResponse($0.data, $0.response) }
@@ -350,8 +380,10 @@ class APIService {
 
     func updateSnippet(id: Int, request: UpdateSnippetRequest) -> AnyPublisher<Snippet, APIError> {
         let url = baseURL.appendingPathComponent("snippets/\(id)")
-        var urlRequest = authenticatedRequest(for: url, method: "PUT")
-        urlRequest.httpBody = try? JSONEncoder().encode(request)
+        guard case .success(let body) = encodeBody(request) else {
+            return Fail(error: .encodingFailed(NSError(domain: "APIService", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to encode update snippet request"]))).eraseToAnyPublisher()
+        }
+        let urlRequest = authenticatedRequest(for: url, method: "PUT", body: body)
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { self.handleResponse($0.data, $0.response) }
@@ -388,10 +420,10 @@ class APIService {
         DailyAnswerResponse, APIError
     > {
         let url = baseURL.appendingPathComponent("daily/questions/\(date)/answer/\(questionId)")
-        var urlRequest = authenticatedRequest(for: url, method: "POST")
-        urlRequest.httpBody = try? JSONSerialization.data(withJSONObject: [
-            "user_answer_index": userAnswerIndex
-        ])
+        guard case .success(let body) = encodeJSONBody(["user_answer_index": userAnswerIndex]) else {
+            return Fail(error: .encodingFailed(NSError(domain: "APIService", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to encode daily answer request"]))).eraseToAnyPublisher()
+        }
+        let urlRequest = authenticatedRequest(for: url, method: "POST", body: body)
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { self.handleResponse($0.data, $0.response) }
@@ -401,17 +433,12 @@ class APIService {
     func getExistingTranslationSentence(language: String, level: String, direction: String)
         -> AnyPublisher<TranslationPracticeSentenceResponse, APIError>
     {
-        guard var urlComponents = URLComponents(
-            url: baseURL.appendingPathComponent("translation-practice/sentence"),
-            resolvingAgainstBaseURL: false) else {
-            return Fail(error: .invalidURL).eraseToAnyPublisher()
-        }
-        urlComponents.queryItems = [
+        let queryItems = [
             URLQueryItem(name: "language", value: language),
             URLQueryItem(name: "level", value: level),
             URLQueryItem(name: "direction", value: direction),
         ]
-        guard let url = urlComponents.url else {
+        guard case .success(let url) = buildURL(path: "translation-practice/sentence", queryItems: queryItems) else {
             return Fail(error: .invalidURL).eraseToAnyPublisher()
         }
         let urlRequest = authenticatedRequest(for: url)
@@ -425,8 +452,10 @@ class APIService {
         TranslationPracticeSentenceResponse, APIError
     > {
         let url = baseURL.appendingPathComponent("translation-practice/generate")
-        var urlRequest = authenticatedRequest(for: url, method: "POST")
-        urlRequest.httpBody = try? JSONEncoder().encode(request)
+        guard case .success(let body) = encodeBody(request) else {
+            return Fail(error: .encodingFailed(NSError(domain: "APIService", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to encode translation generate request"]))).eraseToAnyPublisher()
+        }
+        let urlRequest = authenticatedRequest(for: url, method: "POST", body: body)
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { self.handleResponse($0.data, $0.response) }
@@ -437,8 +466,10 @@ class APIService {
         TranslationPracticeSessionResponse, APIError
     > {
         let url = baseURL.appendingPathComponent("translation-practice/submit")
-        var urlRequest = authenticatedRequest(for: url, method: "POST")
-        urlRequest.httpBody = try? JSONEncoder().encode(request)
+        guard case .success(let body) = encodeBody(request) else {
+            return Fail(error: .encodingFailed(NSError(domain: "APIService", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to encode translation submit request"]))).eraseToAnyPublisher()
+        }
+        let urlRequest = authenticatedRequest(for: url, method: "POST", body: body)
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { self.handleResponse($0.data, $0.response) }
@@ -467,8 +498,10 @@ class APIService {
 
     func updateUser(request: UserUpdateRequest) -> AnyPublisher<User, APIError> {
         let url = baseURL.appendingPathComponent("userz/profile")
-        var urlRequest = authenticatedRequest(for: url, method: "PUT")
-        urlRequest.httpBody = try? JSONEncoder().encode(request)
+        guard case .success(let body) = encodeBody(request) else {
+            return Fail(error: .encodingFailed(NSError(domain: "APIService", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to encode user update request"]))).eraseToAnyPublisher()
+        }
+        let urlRequest = authenticatedRequest(for: url, method: "PUT", body: body)
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { data, response -> AnyPublisher<User, APIError> in
@@ -538,9 +571,11 @@ class APIService {
         BookmarkStatusResponse, APIError
     > {
         let url = baseURL.appendingPathComponent("ai/conversations/bookmark")
-        var urlRequest = authenticatedRequest(for: url, method: "PUT")
         let body = ["conversation_id": conversationId, "message_id": messageId]
-        urlRequest.httpBody = try? JSONSerialization.data(withJSONObject: body)
+        guard case .success(let bodyData) = encodeJSONBody(body) else {
+            return Fail(error: .encodingFailed(NSError(domain: "APIService", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to encode bookmark request"]))).eraseToAnyPublisher()
+        }
+        let urlRequest = authenticatedRequest(for: url, method: "PUT", body: bodyData)
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { self.handleResponse($0.data, $0.response) }
@@ -560,8 +595,10 @@ class APIService {
         SuccessResponse, APIError
     > {
         let url = baseURL.appendingPathComponent("ai/conversations/\(id)")
-        var urlRequest = authenticatedRequest(for: url, method: "PUT")
-        urlRequest.httpBody = try? JSONSerialization.data(withJSONObject: ["title": title])
+        guard case .success(let body) = encodeJSONBody(["title": title]) else {
+            return Fail(error: .encodingFailed(NSError(domain: "APIService", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to encode conversation title request"]))).eraseToAnyPublisher()
+        }
+        let urlRequest = authenticatedRequest(for: url, method: "PUT", body: body)
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { self.handleResponse($0.data, $0.response) }
@@ -581,8 +618,10 @@ class APIService {
         SuccessResponse, APIError
     > {
         let url = baseURL.appendingPathComponent("quiz/question/\(id)/report")
-        var urlRequest = authenticatedRequest(for: url, method: "POST")
-        urlRequest.httpBody = try? JSONEncoder().encode(request)
+        guard case .success(let body) = encodeBody(request) else {
+            return Fail(error: .encodingFailed(NSError(domain: "APIService", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to encode report question request"]))).eraseToAnyPublisher()
+        }
+        let urlRequest = authenticatedRequest(for: url, method: "POST", body: body)
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { self.handleResponse($0.data, $0.response) }
@@ -593,8 +632,10 @@ class APIService {
         SuccessResponse, APIError
     > {
         let url = baseURL.appendingPathComponent("quiz/question/\(id)/mark-known")
-        var urlRequest = authenticatedRequest(for: url, method: "POST")
-        urlRequest.httpBody = try? JSONEncoder().encode(request)
+        guard case .success(let body) = encodeBody(request) else {
+            return Fail(error: .encodingFailed(NSError(domain: "APIService", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to encode mark question known request"]))).eraseToAnyPublisher()
+        }
+        let urlRequest = authenticatedRequest(for: url, method: "POST", body: body)
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { self.handleResponse($0.data, $0.response) }
@@ -623,8 +664,10 @@ class APIService {
         UserLearningPreferences, APIError
     > {
         let url = baseURL.appendingPathComponent("preferences/learning")
-        var urlRequest = authenticatedRequest(for: url, method: "PUT")
-        urlRequest.httpBody = try? JSONEncoder().encode(prefs)
+        guard case .success(let body) = encodeBody(prefs) else {
+            return Fail(error: .encodingFailed(NSError(domain: "APIService", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to encode learning preferences request"]))).eraseToAnyPublisher()
+        }
+        let urlRequest = authenticatedRequest(for: url, method: "PUT", body: body)
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { self.handleResponse($0.data, $0.response) }
@@ -634,16 +677,11 @@ class APIService {
     func getTranslationPracticeHistory(limit: Int = 10, offset: Int = 0) -> AnyPublisher<
         TranslationPracticeHistoryResponse, APIError
     > {
-        guard var urlComponents = URLComponents(
-            url: baseURL.appendingPathComponent("translation-practice/history"),
-            resolvingAgainstBaseURL: false) else {
-            return Fail(error: .invalidURL).eraseToAnyPublisher()
-        }
-        urlComponents.queryItems = [
+        let queryItems = [
             URLQueryItem(name: "limit", value: String(limit)),
             URLQueryItem(name: "offset", value: String(offset)),
         ]
-        guard let url = urlComponents.url else {
+        guard case .success(let url) = buildURL(path: "translation-practice/history", queryItems: queryItems) else {
             return Fail(error: .invalidURL).eraseToAnyPublisher()
         }
         let urlRequest = authenticatedRequest(for: url)
@@ -672,14 +710,8 @@ class APIService {
     }
 
     func getLevels(language: String?) -> AnyPublisher<LevelsResponse, APIError> {
-        guard var urlComponents = URLComponents(
-            url: baseURL.appendingPathComponent("settings/levels"), resolvingAgainstBaseURL: false) else {
-            return Fail(error: .invalidURL).eraseToAnyPublisher()
-        }
-        if let language = language {
-            urlComponents.queryItems = [URLQueryItem(name: "language", value: language)]
-        }
-        guard let url = urlComponents.url else {
+        let queryItems = language.map { [URLQueryItem(name: "language", value: $0)] }
+        guard case .success(let url) = buildURL(path: "settings/levels", queryItems: queryItems) else {
             return Fail(error: .invalidURL).eraseToAnyPublisher()
         }
         let urlRequest = authenticatedRequest(for: url)
@@ -691,8 +723,10 @@ class APIService {
 
     func updateWordOfDayEmailPreference(enabled: Bool) -> AnyPublisher<SuccessResponse, APIError> {
         let url = baseURL.appendingPathComponent("settings/word-of-day-email")
-        var urlRequest = authenticatedRequest(for: url, method: "PUT")
-        urlRequest.httpBody = try? JSONEncoder().encode(["enabled": enabled])
+        guard case .success(let body) = encodeJSONBody(["enabled": enabled]) else {
+            return Fail(error: .encodingFailed(NSError(domain: "APIService", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to encode email preference request"]))).eraseToAnyPublisher()
+        }
+        let urlRequest = authenticatedRequest(for: url, method: "PUT", body: body)
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { self.handleResponse($0.data, $0.response) }
@@ -703,10 +737,12 @@ class APIService {
         SuccessResponse, APIError
     > {
         let url = baseURL.appendingPathComponent("settings/test-ai")
-        var urlRequest = authenticatedRequest(for: url, method: "POST")
         var body: [String: String] = ["provider": provider, "model": model]
         if let apiKey = apiKey { body["api_key"] = apiKey }
-        urlRequest.httpBody = try? JSONEncoder().encode(body)
+        guard case .success(let bodyData) = encodeJSONBody(body) else {
+            return Fail(error: .encodingFailed(NSError(domain: "APIService", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to encode AI test request"]))).eraseToAnyPublisher()
+        }
+        let urlRequest = authenticatedRequest(for: url, method: "POST", body: bodyData)
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { self.handleResponse($0.data, $0.response) }
@@ -762,10 +798,10 @@ class APIService {
         let url = baseURL.appendingPathComponent("audio")
             .appendingPathComponent("speech")
             .appendingPathComponent("init")
-        var urlRequest = authenticatedRequest(for: url, method: "POST")
-        if let body = try? JSONEncoder().encode(request) {
-            urlRequest.httpBody = body
+        guard case .success(let body) = encodeBody(request) else {
+            return Fail(error: .encodingFailed(NSError(domain: "APIService", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to encode TTS request"]))).eraseToAnyPublisher()
         }
+        let urlRequest = authenticatedRequest(for: url, method: "POST", body: body)
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { self.handleResponse($0.data, $0.response) }
@@ -788,16 +824,11 @@ class APIService {
     }
 
     func getVoices(language: String) -> AnyPublisher<[EdgeTTSVoiceInfo], APIError> {
-        let url = baseURL.appendingPathComponent("voices")
-        guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+        let queryItems = [URLQueryItem(name: "language", value: language)]
+        guard case .success(let url) = buildURL(path: "voices", queryItems: queryItems) else {
             return Fail(error: .invalidURL).eraseToAnyPublisher()
         }
-        components.queryItems = [URLQueryItem(name: "language", value: language)]
-
-        guard let requestURL = components.url else {
-            return Fail(error: .invalidURL).eraseToAnyPublisher()
-        }
-        let urlRequest = authenticatedRequest(for: requestURL)
+        let urlRequest = authenticatedRequest(for: url)
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { data, response -> AnyPublisher<[EdgeTTSVoiceInfo], APIError> in
@@ -851,8 +882,10 @@ class APIService {
 
     func translateText(request: TranslateRequest) -> AnyPublisher<TranslateResponse, APIError> {
         let url = baseURL.appendingPathComponent("translate")
-        var urlRequest = authenticatedRequest(for: url, method: "POST")
-        urlRequest.httpBody = try? JSONEncoder().encode(request)
+        guard case .success(let body) = encodeBody(request) else {
+            return Fail(error: .encodingFailed(NSError(domain: "APIService", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to encode translate request"]))).eraseToAnyPublisher()
+        }
+        let urlRequest = authenticatedRequest(for: url, method: "POST", body: body)
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { self.handleResponse($0.data, $0.response) }

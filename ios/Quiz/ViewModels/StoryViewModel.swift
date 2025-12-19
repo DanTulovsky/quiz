@@ -109,4 +109,12 @@ class StoryViewModel: ObservableObject {
         guard let story = selectedStory else { return "" }
         return story.sections.map { $0.content }.joined(separator: "\n\n")
     }
+
+    func cancelAllRequests() {
+        cancellables.removeAll()
+    }
+
+    deinit {
+        cancelAllRequests()
+    }
 }

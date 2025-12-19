@@ -204,4 +204,12 @@ class DailyViewModel: ObservableObject {
             }, receiveValue: { _ in })
             .store(in: &cancellables)
     }
+
+    func cancelAllRequests() {
+        cancellables.removeAll()
+    }
+
+    deinit {
+        cancelAllRequests()
+    }
 }

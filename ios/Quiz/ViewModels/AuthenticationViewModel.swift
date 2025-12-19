@@ -195,8 +195,10 @@ class AuthenticationViewModel: ObservableObject {
                         return
                     }
                     self.error = nil
-                    if let url = URL(string: response.authUrl) {
+                    if let url = URL(string: response.authUrl), url.scheme != nil, url.host != nil {
                         self.googleAuthURL = url
+                    } else {
+                        self.error = .invalidURL
                     }
                 }
             )
@@ -282,5 +284,13 @@ class AuthenticationViewModel: ObservableObject {
                 }
             )
             .store(in: &cancellables)
+    }
+
+    func cancelAllRequests() {
+        cancellables.removeAll()
+    }
+
+    deinit {
+        cancelAllRequests()
     }
 }

@@ -36,6 +36,8 @@ final class MockAPIService: APIService, @unchecked Sendable {
         Result<BookmarkedMessagesResponse, APIError>?
     nonisolated(unsafe) private var _handleGoogleCallbackResult: Result<LoginResponse, APIError>?
     nonisolated(unsafe) private var _getLanguagesResult: Result<[LanguageInfo], APIError>?
+    nonisolated(unsafe) private var _googleOAuthResponse: GoogleOAuthLoginResponse?
+    nonisolated(unsafe) private var _dailyAnswerResponse: DailyAnswerResponse?
 
     // Thread-safe property accessors
     var loginResult: Result<LoginResponse, APIError>? {
@@ -291,6 +293,30 @@ final class MockAPIService: APIService, @unchecked Sendable {
             _getLanguagesResult = newValue
         }
     }
+    var googleOAuthResponse: GoogleOAuthLoginResponse? {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return _googleOAuthResponse
+        }
+        set {
+            lock.lock()
+            defer { lock.unlock() }
+            _googleOAuthResponse = newValue
+        }
+    }
+    var dailyAnswerResponse: DailyAnswerResponse? {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return _dailyAnswerResponse
+        }
+        set {
+            lock.lock()
+            defer { lock.unlock() }
+            _dailyAnswerResponse = newValue
+        }
+    }
 
     // Method Overrides
     override func login(request: LoginRequest) -> AnyPublisher<LoginResponse, APIError> {
@@ -366,6 +392,11 @@ final class MockAPIService: APIService, @unchecked Sendable {
     override func postDailyAnswer(date: String, questionId: Int, userAnswerIndex: Int)
         -> AnyPublisher<DailyAnswerResponse, APIError>
     {
+        if let response = dailyAnswerResponse {
+            return Just(response)
+                .setFailureType(to: APIError.self)
+                .eraseToAnyPublisher()
+        }
         guard let result = postDailyAnswerResult else {
             return Fail(error: .invalidResponse).eraseToAnyPublisher()
         }
@@ -460,6 +491,16 @@ final class MockAPIService: APIService, @unchecked Sendable {
         }
         return result.publisher.eraseToAnyPublisher()
     }
+
+    override func initiateGoogleLogin() -> AnyPublisher<GoogleOAuthLoginResponse, APIError> {
+        guard let response = googleOAuthResponse else {
+            return Fail(error: .invalidResponse).eraseToAnyPublisher()
+        }
+        return Just(response)
+            .setFailureType(to: APIError.self)
+            .eraseToAnyPublisher()
+    }
+
 }
 
 extension Result {

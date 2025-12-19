@@ -257,4 +257,11 @@ class SettingsViewModel: ObservableObject {
             ?? languageCacheByName[lowercased]?.ttsVoice
     }
 
+    func cancelAllRequests() {
+        cancellables.removeAll()
+    }
+
+    deinit {
+        cancelAllRequests()
+    }
 }

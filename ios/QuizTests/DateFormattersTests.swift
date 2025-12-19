@@ -1,11 +1,12 @@
 import XCTest
+
 @testable import Quiz
 
 class DateFormattersTests: XCTestCase {
 
     func testISO8601Formatter() {
         // Given
-        let date = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
+        let date = Date(timeIntervalSince1970: 1_609_459_200)  // 2021-01-01 00:00:00 UTC
         let expected = "2021-01-01"
 
         // When
@@ -44,7 +45,7 @@ class DateFormattersTests: XCTestCase {
 
     func testDisplayFullFormatter() {
         // Given
-        let date = Date(timeIntervalSince1970: 1609459200)
+        let date = Date(timeIntervalSince1970: 1_609_459_200)
 
         // When
         let formatted = DateFormatters.displayFull.string(from: date)
@@ -57,7 +58,7 @@ class DateFormattersTests: XCTestCase {
 
     func testDisplayMediumFormatter() {
         // Given
-        let date = Date(timeIntervalSince1970: 1609459200)
+        let date = Date(timeIntervalSince1970: 1_609_459_200)
 
         // When
         let formatted = DateFormatters.displayMedium.string(from: date)
@@ -69,9 +70,9 @@ class DateFormattersTests: XCTestCase {
     func testFormatterReusability() {
         // Given
         let dates = [
-            Date(timeIntervalSince1970: 1609459200),
-            Date(timeIntervalSince1970: 1640995200),
-            Date(timeIntervalSince1970: 1672531200)
+            Date(timeIntervalSince1970: 1_609_459_200),
+            Date(timeIntervalSince1970: 1_640_995_200),
+            Date(timeIntervalSince1970: 1_672_531_200),
         ]
 
         // When
@@ -84,4 +85,3 @@ class DateFormattersTests: XCTestCase {
         XCTAssertEqual(formatted[2], "2023-01-01")
     }
 }
-

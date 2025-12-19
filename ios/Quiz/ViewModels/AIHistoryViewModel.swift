@@ -129,4 +129,12 @@ class AIHistoryViewModel: ObservableObject {
             })
             .store(in: &cancellables)
     }
+
+    func cancelAllRequests() {
+        cancellables.removeAll()
+    }
+
+    deinit {
+        cancelAllRequests()
+    }
 }

@@ -1,5 +1,6 @@
-import XCTest
 import Security
+import XCTest
+
 @testable import Quiz
 
 class KeychainServiceTests: XCTestCase {
@@ -89,8 +90,10 @@ class KeychainServiceTests: XCTestCase {
         XCTAssertTrue(secondSaveSuccess, "Saving second token should succeed")
 
         // Then
-        XCTAssertEqual(keychainService.loadToken(), secondToken, "Second token should overwrite first")
-        XCTAssertNotEqual(keychainService.loadToken(), firstToken, "First token should no longer exist")
+        XCTAssertEqual(
+            keychainService.loadToken(), secondToken, "Second token should overwrite first")
+        XCTAssertNotEqual(
+            keychainService.loadToken(), firstToken, "First token should no longer exist")
     }
 
     func testTokenPersistence() {
@@ -103,7 +106,7 @@ class KeychainServiceTests: XCTestCase {
         let newKeychainService = KeychainService.shared
 
         // Then
-        XCTAssertEqual(newKeychainService.loadToken(), token, "Token should persist across instances")
+        XCTAssertEqual(
+            newKeychainService.loadToken(), token, "Token should persist across instances")
     }
 }
-

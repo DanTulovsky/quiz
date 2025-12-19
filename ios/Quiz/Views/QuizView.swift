@@ -13,7 +13,9 @@ struct QuizView: View {
     @StateObject private var ttsManager = TTSSynthesizerManager.shared
 
     init(question: Question? = nil, questionType: String? = nil, isDaily: Bool = false) {
-        _viewModel = StateObject(wrappedValue: QuizViewModel(question: question, questionType: questionType, isDaily: isDaily))
+        _viewModel = StateObject(
+            wrappedValue: QuizViewModel(
+                question: question, questionType: questionType, isDaily: isDaily))
     }
 
     private func stringValue(_ v: JSONValue?) -> String? {
@@ -219,7 +221,8 @@ struct QuizView: View {
             sentenceEnd = text.index(after: sentenceEnd)
         }
 
-        let sentence = String(text[sentenceStart..<sentenceEnd]).trimmingCharacters(in: .whitespacesAndNewlines)
+        let sentence = String(text[sentenceStart..<sentenceEnd]).trimmingCharacters(
+            in: .whitespacesAndNewlines)
         return sentence.isEmpty ? nil : sentence
     }
 
@@ -227,9 +230,13 @@ struct QuizView: View {
     private func questionCard(_ question: Question) -> some View {
         VStack(alignment: .leading, spacing: 15) {
             HStack {
-                BadgeView(text: question.type.replacingOccurrences(of: "_", with: " ").uppercased(), color: AppTheme.Colors.accentIndigo)
+                BadgeView(
+                    text: question.type.replacingOccurrences(of: "_", with: " ").uppercased(),
+                    color: AppTheme.Colors.accentIndigo)
                 Spacer()
-                BadgeView(text: "\(question.language.uppercased()) - \(question.level)", color: AppTheme.Colors.primaryBlue)
+                BadgeView(
+                    text: "\(question.language.uppercased()) - \(question.level)",
+                    color: AppTheme.Colors.primaryBlue)
             }
 
             if let passage = stringValue(question.content["passage"]) {
@@ -270,7 +277,9 @@ struct QuizView: View {
                 )
                 .id("\(sentence)-\(viewModel.snippets.count)")
                 .frame(minHeight: 44)
-            } else if let questionText = stringValue(question.content["question"]) ?? stringValue(question.content["prompt"]) {
+            } else if let questionText = stringValue(question.content["question"])
+                ?? stringValue(question.content["prompt"])
+            {
                 SelectableTextView(
                     text: questionText,
                     language: question.language,
@@ -288,13 +297,16 @@ struct QuizView: View {
                 .frame(minHeight: 44)
             }
 
-            if question.type == "vocabulary", let targetWord = stringValue(question.content["question"]) {
+            if question.type == "vocabulary",
+                let targetWord = stringValue(question.content["question"])
+            {
                 SelectableTextView(
                     text: "What does \(targetWord) mean in this context?",
                     language: question.language,
                     onTextSelected: { text in
                         selectedText = text
-                        translationSentence = extractSentence(from: "What does \(targetWord) mean in this context?", containing: text)
+                        translationSentence = extractSentence(
+                            from: "What does \(targetWord) mean in this context?", containing: text)
                         showTranslationPopup = true
                     },
                     highlightedSnippets: viewModel.snippets,
@@ -311,12 +323,16 @@ struct QuizView: View {
 
     @ViewBuilder
     private func highlightedText(_ fullText: String, targetWord: String?) -> some View {
-        if let targetWord = targetWord, let range = fullText.range(of: targetWord, options: .caseInsensitive) {
+        if let targetWord = targetWord,
+            let range = fullText.range(of: targetWord, options: .caseInsensitive)
+        {
             let before = String(fullText[..<range.lowerBound])
             let word = String(fullText[range])
             let after = String(fullText[range.upperBound...])
 
-            Text("\(Text(before))\(Text(word).foregroundColor(.blue).fontWeight(.bold))\(Text(after))")
+            Text(
+                "\(Text(before))\(Text(word).foregroundColor(.blue).fontWeight(.bold))\(Text(after))"
+            )
         } else {
             Text(fullText)
         }
@@ -337,7 +353,9 @@ struct QuizView: View {
     private func optionButton(option: String, index: Int) -> some View {
         let isSelected = viewModel.selectedAnswerIndex == index
         let isCorrect = viewModel.answerResponse?.correctAnswerIndex == index
-        let isUserIncorrect = viewModel.answerResponse != nil && viewModel.answerResponse?.userAnswerIndex == index && !isCorrect
+        let isUserIncorrect =
+            viewModel.answerResponse != nil && viewModel.answerResponse?.userAnswerIndex == index
+            && !isCorrect
 
         HStack {
             if viewModel.answerResponse != nil {
@@ -352,7 +370,13 @@ struct QuizView: View {
 
             Text(option)
                 .font(AppTheme.Typography.bodyFont)
-                .foregroundColor(isUserIncorrect ? AppTheme.Colors.errorRed : (isCorrect ? AppTheme.Colors.successGreen : (isSelected ? .white : AppTheme.Colors.primaryText)))
+                .foregroundColor(
+                    isUserIncorrect
+                        ? AppTheme.Colors.errorRed
+                        : (isCorrect
+                            ? AppTheme.Colors.successGreen
+                            : (isSelected ? .white : AppTheme.Colors.primaryText))
+                )
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             Spacer()
@@ -360,14 +384,21 @@ struct QuizView: View {
         .padding(AppTheme.Spacing.innerPadding)
         .frame(maxWidth: .infinity)
         .background(
-            isUserIncorrect ? AppTheme.Colors.errorRed.opacity(0.1) :
-            (isCorrect ? AppTheme.Colors.successGreen.opacity(0.1) :
-            (isSelected ? AppTheme.Colors.primaryBlue : AppTheme.Colors.primaryBlue.opacity(0.05)))
+            isUserIncorrect
+                ? AppTheme.Colors.errorRed.opacity(0.1)
+                : (isCorrect
+                    ? AppTheme.Colors.successGreen.opacity(0.1)
+                    : (isSelected
+                        ? AppTheme.Colors.primaryBlue : AppTheme.Colors.primaryBlue.opacity(0.05)))
         )
         .cornerRadius(AppTheme.CornerRadius.button)
         .overlay(
             RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button)
-                .stroke(isUserIncorrect ? AppTheme.Colors.errorRed : (isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.borderBlue), lineWidth: 1)
+                .stroke(
+                    isUserIncorrect
+                        ? AppTheme.Colors.errorRed
+                        : (isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.borderBlue),
+                    lineWidth: 1)
         )
         .contentShape(Rectangle())
         .onTapGesture {
@@ -384,11 +415,16 @@ struct QuizView: View {
 
         VStack(alignment: .leading, spacing: 10) {
             HStack {
-                Image(systemName: response.isCorrect ? "checkmark.circle.fill" : "xmark.circle.fill")
-                    .foregroundColor(response.isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.errorRed)
+                Image(
+                    systemName: response.isCorrect ? "checkmark.circle.fill" : "xmark.circle.fill"
+                )
+                .foregroundColor(
+                    response.isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.errorRed)
                 Text(response.isCorrect ? "Correct!" : "Incorrect")
                     .font(AppTheme.Typography.headingFont)
-                    .foregroundColor(response.isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.errorRed)
+                    .foregroundColor(
+                        response.isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.errorRed
+                    )
                     .textSelection(.enabled)
             }
 
@@ -397,7 +433,8 @@ struct QuizView: View {
                 language: question?.language ?? "en",
                 onTextSelected: { text in
                     selectedText = text
-                    translationSentence = extractSentence(from: response.explanation, containing: text)
+                    translationSentence = extractSentence(
+                        from: response.explanation, containing: text)
                     showTranslationPopup = true
                 },
                 highlightedSnippets: viewModel.snippets,
@@ -410,13 +447,17 @@ struct QuizView: View {
         }
         .padding(AppTheme.Spacing.innerPadding)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(response.isCorrect ? AppTheme.Colors.successGreen.opacity(0.05) : AppTheme.Colors.errorRed.opacity(0.05))
+        .background(
+            response.isCorrect
+                ? AppTheme.Colors.successGreen.opacity(0.05)
+                : AppTheme.Colors.errorRed.opacity(0.05)
+        )
         .cornerRadius(AppTheme.CornerRadius.button)
     }
 
     @ViewBuilder
     private func actionButtons() -> some View {
-        if let _ = viewModel.answerResponse {
+        if viewModel.answerResponse != nil {
             Button("Next Question") {
                 viewModel.selectedAnswerIndex = nil
                 viewModel.getQuestion()
@@ -428,7 +469,9 @@ struct QuizView: View {
                     viewModel.submitAnswer(userAnswerIndex: idx)
                 }
             }
-            .buttonStyle(PrimaryButtonStyle(isDisabled: viewModel.selectedAnswerIndex == nil || viewModel.isLoading))
+            .buttonStyle(
+                PrimaryButtonStyle(
+                    isDisabled: viewModel.selectedAnswerIndex == nil || viewModel.isLoading))
         }
     }
 
@@ -474,10 +517,12 @@ struct QuizView: View {
     private var markKnownSheet: some View {
         NavigationView {
             VStack(spacing: 20) {
-                Text("Choose how often you want to see this question in future quizzes: 1–2 show it more, 3 no change, 4–5 show it less.")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                    .padding()
+                Text(
+                    "Choose how often you want to see this question in future quizzes: 1–2 show it more, 3 no change, 4–5 show it less."
+                )
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+                .padding()
 
                 Text("How confident are you about this question?")
                     .font(.headline)
@@ -489,8 +534,14 @@ struct QuizView: View {
                         }
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(selectedConfidence == level ? AppTheme.Colors.primaryBlue : AppTheme.Colors.primaryBlue.opacity(0.1))
-                        .foregroundColor(selectedConfidence == level ? .white : AppTheme.Colors.primaryBlue)
+                        .background(
+                            selectedConfidence == level
+                                ? AppTheme.Colors.primaryBlue
+                                : AppTheme.Colors.primaryBlue.opacity(0.1)
+                        )
+                        .foregroundColor(
+                            selectedConfidence == level ? .white : AppTheme.Colors.primaryBlue
+                        )
                         .cornerRadius(AppTheme.CornerRadius.button)
                     }
                 }
@@ -503,7 +554,10 @@ struct QuizView: View {
                         viewModel.markQuestionKnown(confidence: confidence)
                     }
                 }
-                .buttonStyle(PrimaryButtonStyle(isDisabled: selectedConfidence == nil || viewModel.isSubmittingAction))
+                .buttonStyle(
+                    PrimaryButtonStyle(
+                        isDisabled: selectedConfidence == nil || viewModel.isSubmittingAction)
+                )
                 .padding()
             }
             .navigationTitle("Adjust Frequency")
