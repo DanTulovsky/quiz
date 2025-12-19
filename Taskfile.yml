@@ -1831,14 +1831,14 @@ tasks:
 
   # --- iOS Tasks ---
   ios-build:
-    desc: "Build iOS app (scheme: Quiz). Use -p flag for interactive destination picker"
+    desc: "Build iOS app"
     env:
       DESTINATION: "{{.DESTINATION}}"
     cmds:
       - "{{.TASKFILE_DIR}}/scripts/ios-build.sh {{.CLI_ARGS}}"
 
   ios-test:
-    desc: "Run iOS tests (scheme: Quiz) - defaults to Mac (iPad compatible) to avoid simulator clones. Use -p flag for interactive destination picker"
+    desc: "Run iOS tests"
     env:
       DESTINATION: "{{.DESTINATION}}"
     cmds:
