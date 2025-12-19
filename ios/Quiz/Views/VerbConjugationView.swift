@@ -79,6 +79,16 @@ struct VerbConjugationView: View {
                 }
                 .padding(.horizontal)
 
+                // Empty state for verbs
+                if viewModel.verbs.isEmpty && !viewModel.isLoading {
+                    EmptyStateView(
+                        icon: "abc",
+                        title: "No Verbs Available",
+                        message: "Verb conjugations are not available for this language yet."
+                    )
+                    .padding()
+                }
+
                 // Tenses List
                 if viewModel.isLoading && viewModel.selectedVerbDetail == nil {
                     ProgressView()

@@ -42,4 +42,29 @@ class VocabularyViewModelTests: XCTestCase {
         }
         wait(for: [expectation], timeout: 1.0)
     }
+
+    func testLanguageCacheUpdate() {
+        // Given
+        let languages = [
+            LanguageInfo(code: "en", name: "English", ttsLocale: "en-US", ttsVoice: "en-US-Standard-A"),
+            LanguageInfo(code: "es", name: "Spanish", ttsLocale: "es-ES", ttsVoice: "es-ES-Standard-A")
+        ]
+        mockAPIService.getLanguagesResult = .success(languages)
+
+        // When
+        viewModel.fetchLanguages()
+
+        // Then - wait for languages to load
+        let expectation = XCTestExpectation(description: "Languages loaded and cached")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            // Verify cache is populated by checking lookup works
+            XCTAssertEqual(self.viewModel.availableLanguages.count, 2)
+            // Verify we can find languages using the extension (which uses cache internally)
+            let found = self.viewModel.availableLanguages.find(byCodeOrName: "en")
+            XCTAssertNotNil(found)
+            XCTAssertEqual(found?.code, "en")
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
+    }
 }

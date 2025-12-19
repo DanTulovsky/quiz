@@ -130,9 +130,15 @@ struct SnippetListView: View {
                     if viewModel.isLoading {
                         ProgressView()
                     } else if viewModel.filteredSnippets.isEmpty {
-                        Text("No snippets found")
-                            .foregroundColor(.secondary)
-                            .padding()
+                        EmptyStateView(
+                            icon: "text.quote",
+                            title: "No Snippets Found",
+                            message: hasActiveFilters
+                                ? "Try adjusting your filters to see more results."
+                                : "Start building your vocabulary by adding your first snippet!",
+                            actionTitle: hasActiveFilters ? nil : "Add Snippet",
+                            action: hasActiveFilters ? nil : { showAddSnippet = true }
+                        )
                     } else {
                         ForEach(viewModel.filteredSnippets) { snippet in
                             SnippetCard(
@@ -227,7 +233,7 @@ struct SnippetListView: View {
             parts.append(level)
         }
         if let selectedLangCode = viewModel.selectedSourceLang,
-            let lang = viewModel.availableLanguages.first(where: { $0.code == selectedLangCode })
+            let lang = viewModel.availableLanguages.find(byCodeOrName: selectedLangCode)
         {
             parts.append(lang.name.capitalized)
         }
@@ -313,9 +319,7 @@ struct SnippetListView: View {
         } label: {
             HStack {
                 if let selectedLangCode = viewModel.selectedSourceLang,
-                    let lang = viewModel.availableLanguages.first(where: {
-                        $0.code == selectedLangCode
-                    })
+                    let lang = viewModel.availableLanguages.find(byCodeOrName: selectedLangCode)
                 {
                     Text(lang.name.capitalized)
                         .foregroundColor(.primary)
@@ -564,9 +568,8 @@ struct AddSnippetView: View {
                         } label: {
                             HStack {
                                 Text(
-                                    viewModel.availableLanguages.first(where: {
-                                        $0.code == sourceLanguage
-                                    })?.name.capitalized
+                                    viewModel.availableLanguages.find(byCodeOrName: sourceLanguage)?
+                                        .name.capitalized
                                         ?? sourceLanguage.uppercased())
                                 Spacer()
                                 Image(systemName: "chevron.up.chevron.down")
@@ -594,9 +597,8 @@ struct AddSnippetView: View {
                         } label: {
                             HStack {
                                 Text(
-                                    viewModel.availableLanguages.first(where: {
-                                        $0.code == targetLanguage
-                                    })?.name.capitalized
+                                    viewModel.availableLanguages.find(byCodeOrName: targetLanguage)?
+                                        .name.capitalized
                                         ?? targetLanguage.uppercased())
                                 Spacer()
                                 Image(systemName: "chevron.up.chevron.down")
@@ -745,15 +747,13 @@ struct EditSnippetView: View {
             return defaultCode
         }
 
-        // Check if the string is already a valid code in available languages
+        // Check if the string is already a valid code in available languages (O(1) lookup)
         if viewModel.availableLanguages.contains(where: { $0.code.lowercased() == langString }) {
             return langString
         }
 
-        // Check if the string matches a language name
-        if let matchingLang = viewModel.availableLanguages.first(where: {
-            $0.name.lowercased() == langString
-        }) {
+        // Check if the string matches a language name (using extension for consistency)
+        if let matchingLang = viewModel.availableLanguages.find(byCodeOrName: langString) {
             return matchingLang.code
         }
 
@@ -801,9 +801,8 @@ struct EditSnippetView: View {
                         } label: {
                             HStack {
                                 Text(
-                                    viewModel.availableLanguages.first(where: {
-                                        $0.code == sourceLanguage
-                                    })?.name.capitalized
+                                    viewModel.availableLanguages.find(byCodeOrName: sourceLanguage)?
+                                        .name.capitalized
                                         ?? sourceLanguage.uppercased())
                                 Spacer()
                                 Image(systemName: "chevron.up.chevron.down")
@@ -826,9 +825,8 @@ struct EditSnippetView: View {
                         } label: {
                             HStack {
                                 Text(
-                                    viewModel.availableLanguages.first(where: {
-                                        $0.code == targetLanguage
-                                    })?.name.capitalized
+                                    viewModel.availableLanguages.find(byCodeOrName: targetLanguage)?
+                                        .name.capitalized
                                         ?? targetLanguage.uppercased())
                                 Spacer()
                                 Image(systemName: "chevron.up.chevron.down")

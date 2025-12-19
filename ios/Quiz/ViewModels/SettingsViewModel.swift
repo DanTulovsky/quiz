@@ -6,7 +6,14 @@ class SettingsViewModel: ObservableObject {
     @Published var availableVoices: [EdgeTTSVoiceInfo] = []
     @Published var availableLevels: [String] = []
     @Published var levelDescriptions: [String: String] = [:]
-    @Published var availableLanguages: [LanguageInfo] = []
+    @Published var availableLanguages: [LanguageInfo] = [] {
+        didSet {
+            updateLanguageCache()
+        }
+    }
+
+    private var languageCacheByCode: [String: LanguageInfo] = [:]
+    private var languageCacheByName: [String: LanguageInfo] = [:]
 
     @Published var testResult: String?
 
@@ -18,6 +25,15 @@ class SettingsViewModel: ObservableObject {
 
     var apiService: APIService
     private var cancellables = Set<AnyCancellable>()
+
+    private func updateLanguageCache() {
+        languageCacheByCode.removeAll()
+        languageCacheByName.removeAll()
+        for lang in availableLanguages {
+            languageCacheByCode[lang.code.lowercased()] = lang
+            languageCacheByName[lang.name.lowercased()] = lang
+        }
+    }
 
     init(apiService: APIService = APIService.shared) {
         self.apiService = apiService
@@ -205,7 +221,9 @@ class SettingsViewModel: ObservableObject {
     }
 
     private func mapLanguageToLocale(_ lang: String) -> String? {
-        return availableLanguages.find(byCodeOrName: lang)?.ttsLocale
+        let lowercased = lang.lowercased()
+        return languageCacheByCode[lowercased]?.ttsLocale
+            ?? languageCacheByName[lowercased]?.ttsLocale
     }
 
     func fetchVoices(language: String) {
@@ -234,7 +252,9 @@ class SettingsViewModel: ObservableObject {
     }
 
     func getDefaultVoice(for language: String) -> String? {
-        return availableLanguages.find(byCodeOrName: language)?.ttsVoice
+        let lowercased = language.lowercased()
+        return languageCacheByCode[lowercased]?.ttsVoice
+            ?? languageCacheByName[lowercased]?.ttsVoice
     }
 
 }

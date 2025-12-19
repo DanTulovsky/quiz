@@ -30,6 +30,44 @@ extension AnyPublisher {
     }
 }
 
+extension Publisher where Failure == APIService.APIError {
+    func retryOnTransientFailure(maxRetries: Int = 3, delay: TimeInterval = 1.0) -> AnyPublisher<Output, Failure> {
+        guard maxRetries > 0 else {
+            return self.eraseToAnyPublisher()
+        }
+
+        return self.catch { error -> AnyPublisher<Output, Failure> in
+            // Only retry on network-related errors
+            guard case .requestFailed(let underlyingError) = error else {
+                return Fail(error: error).eraseToAnyPublisher()
+            }
+
+            // Check if it's a transient network error
+            let nsError = underlyingError as NSError
+            let isTransient = nsError.domain == NSURLErrorDomain && (
+                nsError.code == NSURLErrorTimedOut ||
+                nsError.code == NSURLErrorNetworkConnectionLost ||
+                nsError.code == NSURLErrorNotConnectedToInternet ||
+                nsError.code == NSURLErrorCannotConnectToHost ||
+                nsError.code == NSURLErrorDNSLookupFailed
+            )
+
+            guard isTransient else {
+                return Fail(error: error).eraseToAnyPublisher()
+            }
+
+            // Retry with exponential backoff
+            return Just(())
+                .delay(for: .seconds(delay), scheduler: DispatchQueue.global())
+                .flatMap { _ in
+                    self.retryOnTransientFailure(maxRetries: maxRetries - 1, delay: delay * 1.5)
+                }
+                .eraseToAnyPublisher()
+        }
+        .eraseToAnyPublisher()
+    }
+}
+
 extension APIService {
     func getSnippetsForQuestion(questionId: Int) -> AnyPublisher<SnippetList, APIError> {
         return getSnippets(sourceLang: nil, targetLang: nil, storyId: nil, query: nil, level: nil)

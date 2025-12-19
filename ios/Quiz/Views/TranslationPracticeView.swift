@@ -131,7 +131,14 @@ struct TranslationPracticeView: View {
                                 AppTheme.Colors.errorRed.opacity(0.3), lineWidth: 1))
                     }
 
-                    if !viewModel.history.isEmpty {
+                    if viewModel.history.isEmpty {
+                        EmptyStateView(
+                            icon: "arrow.left.and.right",
+                            title: "No Translation History",
+                            message: "Your translation practice history will appear here after you complete some translations."
+                        )
+                        .padding()
+                    } else {
                         historySection
                     }
                 }

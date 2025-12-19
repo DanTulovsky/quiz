@@ -110,6 +110,7 @@ class APIService {
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { self.handleResponse($0.data, $0.response) }
+            .retryOnTransientFailure(maxRetries: 2)
             .eraseToAnyPublisher()
     }
 
@@ -186,6 +187,7 @@ class APIService {
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { self.handleResponse($0.data, $0.response) }
+            .retryOnTransientFailure(maxRetries: 2)
             .eraseToAnyPublisher()
     }
 

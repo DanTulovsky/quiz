@@ -13,8 +13,48 @@ class AuthenticationViewModel: ObservableObject {
 
     var apiService: APIService
     private var cancellables = Set<AnyCancellable>()
-    private var isProcessingGoogleCallback = false
-    private var processedCodes = Set<String>()
+    private let stateQueue = DispatchQueue(
+        label: "com.wetsnow.quiz.auth.state", attributes: .concurrent)
+    private var _isProcessingGoogleCallback = false
+    private var _processedCodes = Set<String>()
+
+    private var isProcessingGoogleCallback: Bool {
+        get {
+            return stateQueue.sync { _isProcessingGoogleCallback }
+        }
+        set {
+            stateQueue.async(flags: .barrier) {
+                self._isProcessingGoogleCallback = newValue
+            }
+        }
+    }
+
+    private var processedCodes: Set<String> {
+        get {
+            return stateQueue.sync { _processedCodes }
+        }
+        set {
+            stateQueue.async(flags: .barrier) {
+                self._processedCodes = newValue
+            }
+        }
+    }
+
+    private func containsProcessedCode(_ code: String) -> Bool {
+        return stateQueue.sync { _processedCodes.contains(code) }
+    }
+
+    private func insertProcessedCode(_ code: String) {
+        stateQueue.async(flags: .barrier) {
+            self._processedCodes.insert(code)
+        }
+    }
+
+    private func removeProcessedCode(_ code: String) {
+        stateQueue.async(flags: .barrier) {
+            self._processedCodes.remove(code)
+        }
+    }
 
     init(apiService: APIService = APIService.shared) {
         self.apiService = apiService
@@ -171,13 +211,13 @@ class AuthenticationViewModel: ObservableObject {
             return
         }
 
-        // Prevent duplicate processing of the same authorization code
-        if isProcessingGoogleCallback || processedCodes.contains(code) {
+        // Prevent duplicate processing of the same authorization code (thread-safe check)
+        if isProcessingGoogleCallback || containsProcessedCode(code) {
             return
         }
 
         isProcessingGoogleCallback = true
-        processedCodes.insert(code)
+        insertProcessedCode(code)
 
         let publisher = apiService.handleGoogleCallback(code: code, state: state)
         let codeToProcess = code  // Capture code for use in closure
@@ -186,26 +226,30 @@ class AuthenticationViewModel: ObservableObject {
             .sink(
                 receiveCompletion: { [weak self] completion in
                     guard let self = self else { return }
-                    self.isProcessingGoogleCallback = false
-                    switch completion {
-                    case .failure(let error):
-                        print("❌ Google callback failed: \(error.localizedDescription)")
-                        self.error = error
-                        self.isAuthenticated = false
-                        // Clear googleAuthURL on error to prevent re-triggering
-                        self.googleAuthURL = nil
-                        // Remove from processed codes on error so it can be retried
-                        self.processedCodes.remove(codeToProcess)
-                    case .finished:
-                        break
+                    DispatchQueue.main.async {
+                        self.isProcessingGoogleCallback = false
+                        switch completion {
+                        case .failure(let error):
+                            print("❌ Google callback failed: \(error.localizedDescription)")
+                            self.error = error
+                            self.isAuthenticated = false
+                            // Clear googleAuthURL on error to prevent re-triggering
+                            self.googleAuthURL = nil
+                            // Remove from processed codes on error so it can be retried
+                            self.removeProcessedCode(codeToProcess)
+                        case .finished:
+                            break
+                        }
                     }
                 },
                 receiveValue: { [weak self] response in
                     guard let self = self else { return }
-                    self.error = nil
-                    self.isAuthenticated = response.success
-                    self.user = response.user
-                    self.isProcessingGoogleCallback = false
+                    DispatchQueue.main.async {
+                        self.error = nil
+                        self.isAuthenticated = response.success
+                        self.user = response.user
+                        self.isProcessingGoogleCallback = false
+                    }
 
                     // Clear googleAuthURL immediately after callback to prevent re-triggering
                     // This must happen before any async operations to prevent race conditions
@@ -213,25 +257,27 @@ class AuthenticationViewModel: ObservableObject {
 
                     // Verify auth status to ensure session cookies are working
                     if response.success {
-                        self.apiService.authStatus()
-                            .receive(on: DispatchQueue.main)
-                            .sink(
-                                receiveCompletion: { completion in
-                                    if case .failure(let error) = completion {
-                                        print(
-                                            "⚠️ Auth status check failed after OAuth: \(error.localizedDescription)"
-                                        )
+                        DispatchQueue.main.async {
+                            self.apiService.authStatus()
+                                .receive(on: DispatchQueue.main)
+                                .sink(
+                                    receiveCompletion: { completion in
+                                        if case .failure(let error) = completion {
+                                            print(
+                                                "⚠️ Auth status check failed after OAuth: \(error.localizedDescription)"
+                                            )
+                                        }
+                                    },
+                                    receiveValue: { [weak self] authResponse in
+                                        guard let self = self else { return }
+                                        self.isAuthenticated = authResponse.authenticated
+                                        self.user = authResponse.user
+                                        // Ensure googleAuthURL is still cleared (defensive check)
+                                        self.googleAuthURL = nil
                                     }
-                                },
-                                receiveValue: { [weak self] authResponse in
-                                    guard let self = self else { return }
-                                    self.isAuthenticated = authResponse.authenticated
-                                    self.user = authResponse.user
-                                    // Ensure googleAuthURL is still cleared (defensive check)
-                                    self.googleAuthURL = nil
-                                }
-                            )
-                            .store(in: &self.cancellables)
+                                )
+                                .store(in: &self.cancellables)
+                        }
                     }
                 }
             )

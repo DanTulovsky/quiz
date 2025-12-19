@@ -18,16 +18,25 @@ struct AIConversationListView: View {
 
             // Conversations List
             ScrollView {
-                LazyVStack(spacing: 16) {
-                    ForEach(viewModel.conversations, id: \.id) { conv in
-                        NavigationLink(destination: AIConversationDetailView(conversationId: conv.id)) {
-                            ConversationCard(conversationId: conv.id, viewModel: viewModel)
-                                .id("\(conv.id)-\(conv.title)")
+                if viewModel.conversations.isEmpty && !viewModel.isLoading {
+                    EmptyStateView(
+                        icon: "bubble.left.and.bubble.right",
+                        title: "No Conversations Yet",
+                        message: "Start a conversation with the AI tutor to get personalized help with your language learning."
+                    )
+                    .padding()
+                } else {
+                    LazyVStack(spacing: 16) {
+                        ForEach(viewModel.conversations, id: \.id) { conv in
+                            NavigationLink(destination: AIConversationDetailView(conversationId: conv.id)) {
+                                ConversationCard(conversationId: conv.id, viewModel: viewModel)
+                                    .id("\(conv.id)-\(conv.title)")
+                            }
+                            .buttonStyle(PlainButtonStyle())
                         }
-                        .buttonStyle(PlainButtonStyle())
                     }
+                    .padding()
                 }
-                .padding()
             }
         }
         .onAppear {

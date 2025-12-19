@@ -11,7 +11,23 @@ class VocabularyViewModel: ObservableObject {
     @Published var selectedStoryId: Int? = nil
     @Published var selectedLevel: String? = nil
     @Published var selectedSourceLang: String? = nil
-    @Published var availableLanguages: [LanguageInfo] = []
+    @Published var availableLanguages: [LanguageInfo] = [] {
+        didSet {
+            updateLanguageCache()
+        }
+    }
+
+    private var languageCacheByCode: [String: LanguageInfo] = [:]
+    private var languageCacheByName: [String: LanguageInfo] = [:]
+
+    private func updateLanguageCache() {
+        languageCacheByCode.removeAll()
+        languageCacheByName.removeAll()
+        for lang in availableLanguages {
+            languageCacheByCode[lang.code.lowercased()] = lang
+            languageCacheByName[lang.name.lowercased()] = lang
+        }
+    }
 
     private var apiService: APIService
     private var cancellables = Set<AnyCancellable>()

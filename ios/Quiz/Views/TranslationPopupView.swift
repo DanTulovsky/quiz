@@ -341,8 +341,24 @@ class TranslationPopupViewModel: ObservableObject {
     @Published var translation: TranslateResponse?
     @Published var isLoading = false
     @Published var error: String?
-    @Published var availableLanguages: [LanguageInfo] = []
+    @Published var availableLanguages: [LanguageInfo] = [] {
+        didSet {
+            updateLanguageCache()
+        }
+    }
     @Published var user: User?
+
+    private var languageCacheByCode: [String: LanguageInfo] = [:]
+    private var languageCacheByName: [String: LanguageInfo] = [:]
+
+    private func updateLanguageCache() {
+        languageCacheByCode.removeAll()
+        languageCacheByName.removeAll()
+        for lang in availableLanguages {
+            languageCacheByCode[lang.code.lowercased()] = lang
+            languageCacheByName[lang.name.lowercased()] = lang
+        }
+    }
 
     private var apiService = APIService.shared
     var cancellables = Set<AnyCancellable>()

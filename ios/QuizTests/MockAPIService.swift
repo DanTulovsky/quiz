@@ -34,6 +34,8 @@ final class MockAPIService: APIService, @unchecked Sendable {
         Result<ConversationListResponse, APIError>?
     nonisolated(unsafe) private var _getBookmarkedMessagesResult:
         Result<BookmarkedMessagesResponse, APIError>?
+    nonisolated(unsafe) private var _handleGoogleCallbackResult: Result<LoginResponse, APIError>?
+    nonisolated(unsafe) private var _getLanguagesResult: Result<[LanguageInfo], APIError>?
 
     // Thread-safe property accessors
     var loginResult: Result<LoginResponse, APIError>? {
@@ -265,6 +267,30 @@ final class MockAPIService: APIService, @unchecked Sendable {
             _getBookmarkedMessagesResult = newValue
         }
     }
+    var handleGoogleCallbackResult: Result<LoginResponse, APIError>? {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return _handleGoogleCallbackResult
+        }
+        set {
+            lock.lock()
+            defer { lock.unlock() }
+            _handleGoogleCallbackResult = newValue
+        }
+    }
+    var getLanguagesResult: Result<[LanguageInfo], APIError>? {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return _getLanguagesResult
+        }
+        set {
+            lock.lock()
+            defer { lock.unlock() }
+            _getLanguagesResult = newValue
+        }
+    }
 
     // Method Overrides
     override func login(request: LoginRequest) -> AnyPublisher<LoginResponse, APIError> {
@@ -416,6 +442,20 @@ final class MockAPIService: APIService, @unchecked Sendable {
 
     override func getBookmarkedMessages() -> AnyPublisher<BookmarkedMessagesResponse, APIError> {
         guard let result = getBookmarkedMessagesResult else {
+            return Fail(error: .invalidResponse).eraseToAnyPublisher()
+        }
+        return result.publisher.eraseToAnyPublisher()
+    }
+
+    override func handleGoogleCallback(code: String, state: String?) -> AnyPublisher<LoginResponse, APIError> {
+        guard let result = handleGoogleCallbackResult else {
+            return Fail(error: .invalidResponse).eraseToAnyPublisher()
+        }
+        return result.publisher.eraseToAnyPublisher()
+    }
+
+    override func getLanguages() -> AnyPublisher<[LanguageInfo], APIError> {
+        guard let result = getLanguagesResult else {
             return Fail(error: .invalidResponse).eraseToAnyPublisher()
         }
         return result.publisher.eraseToAnyPublisher()

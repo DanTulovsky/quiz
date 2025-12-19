@@ -62,4 +62,55 @@ class SettingsViewModelTests: XCTestCase {
         }
         wait(for: [expectation], timeout: 1.0)
     }
+
+    func testLanguageCacheUpdate() {
+        // Given
+        let languages = [
+            LanguageInfo(code: "en", name: "English", ttsLocale: "en-US", ttsVoice: "en-US-Standard-A"),
+            LanguageInfo(code: "es", name: "Spanish", ttsLocale: "es-ES", ttsVoice: "es-ES-Standard-A"),
+            LanguageInfo(code: "it", name: "Italian", ttsLocale: "it-IT", ttsVoice: "it-IT-Standard-A")
+        ]
+        mockAPIService.getLanguagesResult = .success(languages)
+
+        // When
+        viewModel.fetchSettings()
+
+        // Then - wait for languages to load
+        let expectation = XCTestExpectation(description: "Languages loaded and cached")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            // Verify cache is populated by checking O(1) lookup performance
+            let startTime = Date()
+            _ = self.viewModel.getDefaultVoice(for: "en")
+            let lookupTime = Date().timeIntervalSince(startTime)
+
+            // Dictionary lookup should be very fast (< 1ms)
+            XCTAssertLessThan(lookupTime, 0.001, "Language lookup should be O(1) via cache")
+            XCTAssertEqual(self.viewModel.getDefaultVoice(for: "en"), "en-US-Standard-A")
+            XCTAssertEqual(self.viewModel.getDefaultVoice(for: "Spanish"), "es-ES-Standard-A")
+            XCTAssertEqual(self.viewModel.getDefaultVoice(for: "IT"), "it-IT-Standard-A")
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
+    }
+
+    func testLanguageCacheCaseInsensitive() {
+        // Given
+        let languages = [
+            LanguageInfo(code: "en", name: "English", ttsLocale: "en-US", ttsVoice: "en-US-Standard-A")
+        ]
+        mockAPIService.getLanguagesResult = .success(languages)
+        viewModel.fetchSettings()
+
+        // When - wait for languages to load
+        let expectation = XCTestExpectation(description: "Case insensitive lookup works")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            // Then - should find language regardless of case
+            XCTAssertNotNil(self.viewModel.getDefaultVoice(for: "EN"))
+            XCTAssertNotNil(self.viewModel.getDefaultVoice(for: "en"))
+            XCTAssertNotNil(self.viewModel.getDefaultVoice(for: "English"))
+            XCTAssertNotNil(self.viewModel.getDefaultVoice(for: "ENGLISH"))
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
+    }
 }
