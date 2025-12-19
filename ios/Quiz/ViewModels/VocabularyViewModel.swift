@@ -51,7 +51,9 @@ class VocabularyViewModel: ObservableObject {
 
     func getSnippets() {
         isLoading = true
-        apiService.getSnippets(sourceLang: selectedSourceLang, targetLang: nil, storyId: selectedStoryId)
+        let searchQueryTrimmed = searchQuery.trimmingCharacters(in: .whitespacesAndNewlines)
+        let query = searchQueryTrimmed.isEmpty ? nil : searchQueryTrimmed
+        apiService.getSnippets(sourceLang: selectedSourceLang, targetLang: nil, storyId: selectedStoryId, query: query, level: selectedLevel)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { [weak self] completion in
                 self?.isLoading = false
@@ -119,21 +121,8 @@ class VocabularyViewModel: ObservableObject {
     }
 
     var filteredSnippets: [Snippet] {
-        var results = snippets
-
-        // Filter by search query
-        if !searchQuery.isEmpty {
-            results = results.filter {
-                $0.originalText.localizedCaseInsensitiveContains(searchQuery) ||
-                $0.translatedText.localizedCaseInsensitiveContains(searchQuery)
-            }
-        }
-
-        // Filter by level (client-side)
-        if let level = selectedLevel, !level.isEmpty {
-            results = results.filter { $0.difficultyLevel?.uppercased() == level.uppercased() }
-        }
-
-        return results
+        // Server-side filtering is now handled by the API
+        // This just returns the snippets from the server
+        return snippets
     }
 }

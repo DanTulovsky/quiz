@@ -287,7 +287,7 @@ class APIService {
             .eraseToAnyPublisher()
     }
 
-    func getSnippets(sourceLang: String?, targetLang: String?, storyId: Int? = nil)
+    func getSnippets(sourceLang: String?, targetLang: String?, storyId: Int? = nil, query: String? = nil, level: String? = nil)
         -> AnyPublisher<SnippetList, APIError>
     {
         var urlComponents = URLComponents(
@@ -301,6 +301,12 @@ class APIService {
         }
         if let storyId = storyId {
             queryItems.append(URLQueryItem(name: "story_id", value: String(storyId)))
+        }
+        if let query = query, !query.isEmpty {
+            queryItems.append(URLQueryItem(name: "q", value: query))
+        }
+        if let level = level, !level.isEmpty {
+            queryItems.append(URLQueryItem(name: "level", value: level))
         }
         urlComponents.queryItems = queryItems
         let urlRequest = authenticatedRequest(for: urlComponents.url!)

@@ -18,6 +18,7 @@ struct SnippetListView: View {
     @State private var showDeleteConfirmation = false
     @State private var showSnippetDetail = false
     @State private var selectedSnippet: Snippet? = nil
+    @State private var filtersExpanded = false
 
     let initialSearchQuery: String?
 
@@ -61,22 +62,64 @@ struct SnippetListView: View {
                 }
                 .padding(.horizontal)
 
-                // Search Section
-                HStack {
-                    Image(systemName: "magnifyingglass")
-                        .foregroundColor(.secondary)
-                    TextField("Search snippets...", text: $viewModel.searchQuery)
-                }
-                .padding(12)
-                .background(AppTheme.Colors.secondaryBackground)
-                .cornerRadius(AppTheme.CornerRadius.button)
-                .padding(.horizontal)
+                // Search and Filters
+                VStack(spacing: 0) {
+                    Button(action: {
+                        withAnimation {
+                            filtersExpanded.toggle()
+                        }
+                    }) {
+                        HStack {
+                            Image(systemName: "line.3.horizontal.decrease.circle")
+                                .foregroundColor(.secondary)
+                            Text("Search and Filters")
+                                .font(.subheadline)
+                                .fontWeight(.medium)
+                                .foregroundColor(.primary)
 
-                // Filters
-                VStack(spacing: 12) {
-                    storyFilterPicker()
-                    levelFilterPicker()
-                    sourceLanguageFilterPicker()
+                            if hasActiveFilters {
+                                Text(filterSummary)
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 4)
+                                    .background(AppTheme.Colors.primaryBlue.opacity(0.1))
+                                    .cornerRadius(8)
+                            }
+
+                            Spacer()
+
+                            Image(systemName: filtersExpanded ? "chevron.up" : "chevron.down")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        .padding(12)
+                        .background(AppTheme.Colors.cardBackground)
+                        .cornerRadius(AppTheme.CornerRadius.button)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(
+                                AppTheme.Colors.borderGray, lineWidth: 1))
+                    }
+                    .buttonStyle(PlainButtonStyle())
+
+                    if filtersExpanded {
+                        VStack(spacing: 12) {
+                            // Search Section
+                            HStack {
+                                Image(systemName: "magnifyingglass")
+                                    .foregroundColor(.secondary)
+                                TextField("Search snippets...", text: $viewModel.searchQuery)
+                            }
+                            .padding(12)
+                            .background(AppTheme.Colors.secondaryBackground)
+                            .cornerRadius(AppTheme.CornerRadius.button)
+
+                            storyFilterPicker()
+                            levelFilterPicker()
+                            sourceLanguageFilterPicker()
+                        }
+                        .padding(.top, 12)
+                    }
                 }
                 .padding(.horizontal)
 
@@ -166,6 +209,29 @@ struct SnippetListView: View {
                 }
             }
         }
+    }
+
+    private var hasActiveFilters: Bool {
+        viewModel.selectedStoryId != nil || viewModel.selectedLevel != nil
+            || viewModel.selectedSourceLang != nil
+    }
+
+    private var filterSummary: String {
+        var parts: [String] = []
+        if let selectedId = viewModel.selectedStoryId,
+            let story = viewModel.stories.first(where: { $0.id == selectedId })
+        {
+            parts.append(story.title)
+        }
+        if let level = viewModel.selectedLevel {
+            parts.append(level)
+        }
+        if let selectedLangCode = viewModel.selectedSourceLang,
+            let lang = viewModel.availableLanguages.first(where: { $0.code == selectedLangCode })
+        {
+            parts.append(lang.name.capitalized)
+        }
+        return parts.joined(separator: ", ")
     }
 
     @ViewBuilder
@@ -300,11 +366,23 @@ struct SnippetCard: View {
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
-            .padding()
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
             .frame(maxWidth: .infinity, alignment: .leading)
+            .background(AppTheme.Colors.cardBackground)
+            .cornerRadius(AppTheme.CornerRadius.card)
+            .shadow(
+                color: AppTheme.Shadow.card.color,
+                radius: AppTheme.Shadow.card.radius,
+                x: AppTheme.Shadow.card.x,
+                y: AppTheme.Shadow.card.y
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: AppTheme.CornerRadius.card)
+                    .stroke(AppTheme.Colors.borderGray, lineWidth: 1)
+            )
         }
         .buttonStyle(PlainButtonStyle())
-        .appCard()
     }
 }
 
