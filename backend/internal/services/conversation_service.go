@@ -391,9 +391,6 @@ func (s *ConversationService) GetConversationMessages(ctx context.Context, conve
 			return nil, contextutils.WrapError(err, "failed to unmarshal message content")
 		}
 		msg.Content = contentObj
-		if err != nil {
-			return nil, contextutils.WrapError(err, "failed to unmarshal message content")
-		}
 
 		if questionIDPtr != nil {
 			msg.QuestionId = questionIDPtr
