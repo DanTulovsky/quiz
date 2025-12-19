@@ -7,7 +7,7 @@ class KeychainService {
 
     private init() {}
 
-    func save(token: String) {
+    func save(token: String) -> Bool {
         let data = Data(token.utf8)
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
@@ -16,7 +16,8 @@ class KeychainService {
         ]
 
         SecItemDelete(query as CFDictionary)
-        SecItemAdd(query as CFDictionary, nil)
+        let status = SecItemAdd(query as CFDictionary, nil)
+        return status == errSecSuccess
     }
 
     func loadToken() -> String? {
@@ -38,11 +39,13 @@ class KeychainService {
         return nil
     }
 
-    func deleteToken() {
+    @discardableResult
+    func deleteToken() -> Bool {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service
         ]
-        SecItemDelete(query as CFDictionary)
+        let status = SecItemDelete(query as CFDictionary)
+        return status == errSecSuccess || status == errSecItemNotFound
     }
 }

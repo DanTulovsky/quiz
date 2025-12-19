@@ -342,10 +342,10 @@ struct QuizView: View {
         HStack {
             if viewModel.answerResponse != nil {
                 if isCorrect {
-                    Image(systemName: "check.circle.fill")
+                    Image(systemName: "checkmark.circle.fill")
                         .foregroundColor(AppTheme.Colors.successGreen)
                 } else if isUserIncorrect {
-                    Image(systemName: "x.circle.fill")
+                    Image(systemName: "xmark.circle.fill")
                         .foregroundColor(AppTheme.Colors.errorRed)
                 }
             }

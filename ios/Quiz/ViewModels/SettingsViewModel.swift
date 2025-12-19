@@ -205,13 +205,7 @@ class SettingsViewModel: ObservableObject {
     }
 
     private func mapLanguageToLocale(_ lang: String) -> String? {
-        // Find the language in availableLanguages (must be loaded from server)
-        if let languageInfo = availableLanguages.first(where: {
-            $0.name.lowercased() == lang.lowercased() || $0.code.lowercased() == lang.lowercased()
-        }) {
-            return languageInfo.ttsLocale
-        }
-        return nil
+        return availableLanguages.find(byCodeOrName: lang)?.ttsLocale
     }
 
     func fetchVoices(language: String) {
@@ -240,13 +234,7 @@ class SettingsViewModel: ObservableObject {
     }
 
     func getDefaultVoice(for language: String) -> String? {
-        if let languageInfo = availableLanguages.first(where: {
-            $0.name.lowercased() == language.lowercased()
-                || $0.code.lowercased() == language.lowercased()
-        }) {
-            return languageInfo.ttsVoice
-        }
-        return nil
+        return availableLanguages.find(byCodeOrName: language)?.ttsVoice
     }
 
 }

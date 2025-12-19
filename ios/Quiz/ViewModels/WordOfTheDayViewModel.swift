@@ -10,18 +10,12 @@ class WordOfTheDayViewModel: ObservableObject {
     private var apiService: APIService
     private var cancellables = Set<AnyCancellable>()
 
-    private var dateFormatter: DateFormatter {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        return formatter
-    }
-
     init(apiService: APIService = APIService.shared) {
         self.apiService = apiService
     }
 
     func fetchWordOfTheDay() {
-        let dateStr = dateFormatter.string(from: currentDate)
+        let dateStr = DateFormatters.iso8601.string(from: currentDate)
         fetchWord(for: dateStr)
     }
 

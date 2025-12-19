@@ -272,10 +272,8 @@ struct TranslationPopupView: View {
 
     private func defaultVoiceForTargetLanguage() -> String? {
         // Find the default voice for the target language from available languages
-        let langKey = targetLanguage.lowercased()
-        if let languageInfo = viewModel.availableLanguages.first(where: {
-            $0.code.lowercased() == langKey || $0.name.lowercased() == langKey
-        }), let defaultVoice = languageInfo.ttsVoice {
+        if let languageInfo = viewModel.availableLanguages.find(byCodeOrName: targetLanguage),
+           let defaultVoice = languageInfo.ttsVoice {
             return defaultVoice
         }
         // Fallback to using TTSSynthesizerManager's default voice method

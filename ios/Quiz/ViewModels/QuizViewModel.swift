@@ -78,7 +78,7 @@ class QuizViewModel: ObservableObject {
     }
 
     func getSnippets(questionId: Int) {
-        apiService.getSnippets(sourceLang: nil, targetLang: nil, storyId: nil)
+        apiService.getSnippetsForQuestion(questionId: questionId)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] snippetList in
                 self?.snippets = snippetList.snippets
@@ -115,9 +115,7 @@ class QuizViewModel: ObservableObject {
 
     func submitDailyAnswer(userAnswerIndex: Int) {
         guard let question else { return }
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        let today = formatter.string(from: Date())
+        let today = DateFormatters.iso8601.string(from: Date())
 
         apiService.postDailyAnswer(date: today, questionId: question.id, userAnswerIndex: userAnswerIndex)
             .receive(on: DispatchQueue.main)

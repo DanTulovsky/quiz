@@ -42,4 +42,94 @@ class DailyViewModelTests: XCTestCase {
         }
         wait(for: [expectation], timeout: 1.0)
     }
+
+    func testSubmitAnswerWithBoundsCheck() {
+        // Given
+        let question = Question(
+            id: 1, type: "vocabulary", language: "it", level: "A1", content: [:],
+            correctAnswerIndex: 1)
+        let daily = DailyQuestionWithDetails(
+            id: 100, questionId: 1, question: question, isCompleted: false, userAnswerIndex: nil)
+        let response = DailyQuestionsResponse(date: "2025-12-17", questions: [daily])
+        mockAPIService.getDailyQuestionsResult = .success(response)
+
+        let answerResponse = DailyAnswerResponse(
+            isCorrect: true,
+            explanation: "Correct!",
+            isCompleted: true,
+            correctAnswerIndex: 1,
+            userAnswer: "Answer",
+            userAnswerIndex: 1
+        )
+        mockAPIService.postDailyAnswerResult = .success(answerResponse)
+
+        let fetchExpectation = XCTestExpectation(description: "Daily questions fetched")
+        let submitExpectation = XCTestExpectation(description: "Answer submitted")
+
+        // When - fetch daily questions first
+        viewModel.fetchDaily()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            fetchExpectation.fulfill()
+        }
+        wait(for: [fetchExpectation], timeout: 1.0)
+
+        // Simulate index becoming invalid (e.g., array cleared or modified)
+        viewModel.currentQuestionIndex = 999 // Invalid index
+
+        // When - submit answer with invalid index
+        viewModel.submitAnswer(index: 1)
+
+        // Then - should not crash, should handle gracefully
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            // Should not have updated the array at invalid index
+            XCTAssertEqual(self.viewModel.dailyQuestions.count, 1, "Array should still have one question")
+            submitExpectation.fulfill()
+        }
+        wait(for: [submitExpectation], timeout: 1.0)
+    }
+
+    func testSubmitAnswerWithValidIndex() {
+        // Given
+        let question = Question(
+            id: 1, type: "vocabulary", language: "it", level: "A1", content: [:],
+            correctAnswerIndex: 1)
+        let daily = DailyQuestionWithDetails(
+            id: 100, questionId: 1, question: question, isCompleted: false, userAnswerIndex: nil)
+        let response = DailyQuestionsResponse(date: "2025-12-17", questions: [daily])
+        mockAPIService.getDailyQuestionsResult = .success(response)
+
+        let answerResponse = DailyAnswerResponse(
+            isCorrect: true,
+            explanation: "Correct!",
+            isCompleted: true,
+            correctAnswerIndex: 1,
+            userAnswer: "Answer",
+            userAnswerIndex: 1
+        )
+        mockAPIService.postDailyAnswerResult = .success(answerResponse)
+
+        let fetchExpectation = XCTestExpectation(description: "Daily questions fetched")
+        let submitExpectation = XCTestExpectation(description: "Answer submitted")
+
+        // When - fetch daily questions first
+        viewModel.fetchDaily()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            fetchExpectation.fulfill()
+        }
+        wait(for: [fetchExpectation], timeout: 1.0)
+
+        // Ensure valid index
+        viewModel.currentQuestionIndex = 0
+
+        // When - submit answer with valid index
+        viewModel.submitAnswer(index: 1)
+
+        // Then - should update the question
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            XCTAssertTrue(self.viewModel.dailyQuestions[0].isCompleted, "Question should be marked as completed")
+            XCTAssertEqual(self.viewModel.dailyQuestions[0].userAnswerIndex, 1, "Should have correct answer index")
+            submitExpectation.fulfill()
+        }
+        wait(for: [submitExpectation], timeout: 1.0)
+    }
 }

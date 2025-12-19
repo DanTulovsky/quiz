@@ -114,13 +114,18 @@ class APIService {
     }
 
     func initiateGoogleLogin() -> AnyPublisher<GoogleOAuthLoginResponse, APIError> {
-        var components = URLComponents(
+        guard var components = URLComponents(
             url: baseURL.appendingPathComponent("auth/google/login"),
-            resolvingAgainstBaseURL: false)!
+            resolvingAgainstBaseURL: false) else {
+            return Fail(error: .invalidURL).eraseToAnyPublisher()
+        }
         // Add platform parameter to help backend detect iOS and use iOS client ID
         components.queryItems = [URLQueryItem(name: "platform", value: "ios")]
 
-        let urlRequest = URLRequest(url: components.url!)
+        guard let url = components.url else {
+            return Fail(error: .invalidURL).eraseToAnyPublisher()
+        }
+        let urlRequest = URLRequest(url: url)
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { self.handleResponse($0.data, $0.response) }
@@ -134,16 +139,21 @@ class APIService {
         )
         print("📝 Code: \(code.prefix(10))..., State: \(state ?? "nil")")
 
-        var components = URLComponents(
+        guard var components = URLComponents(
             url: baseURL.appendingPathComponent("auth/google/callback"),
-            resolvingAgainstBaseURL: false)!
+            resolvingAgainstBaseURL: false) else {
+            return Fail(error: .invalidURL).eraseToAnyPublisher()
+        }
         var queryItems = [URLQueryItem(name: "code", value: code)]
         if let state = state {
             queryItems.append(URLQueryItem(name: "state", value: state))
         }
         components.queryItems = queryItems
 
-        var urlRequest = URLRequest(url: components.url!)
+        guard let url = components.url else {
+            return Fail(error: .invalidURL).eraseToAnyPublisher()
+        }
+        var urlRequest = URLRequest(url: url)
         urlRequest.httpShouldHandleCookies = true
         urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
 
@@ -217,8 +227,10 @@ class APIService {
     func getQuestion(language: Language?, level: Level?, type: String?, excludeType: String?)
         -> AnyPublisher<QuestionFetchResult, APIError>
     {
-        var urlComponents = URLComponents(
-            url: baseURL.appendingPathComponent("quiz/question"), resolvingAgainstBaseURL: false)!
+        guard var urlComponents = URLComponents(
+            url: baseURL.appendingPathComponent("quiz/question"), resolvingAgainstBaseURL: false) else {
+            return Fail(error: .invalidURL).eraseToAnyPublisher()
+        }
         var queryItems = [URLQueryItem]()
         if let language = language {
             queryItems.append(URLQueryItem(name: "language", value: language.rawValue))
@@ -231,7 +243,10 @@ class APIService {
             queryItems.append(URLQueryItem(name: "exclude_type", value: excludeType))
         }
         urlComponents.queryItems = queryItems
-        let urlRequest = authenticatedRequest(for: urlComponents.url!)
+        guard let url = urlComponents.url else {
+            return Fail(error: .invalidURL).eraseToAnyPublisher()
+        }
+        let urlRequest = authenticatedRequest(for: url)
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { data, response -> AnyPublisher<QuestionFetchResult, APIError> in
@@ -290,8 +305,10 @@ class APIService {
     func getSnippets(sourceLang: String?, targetLang: String?, storyId: Int? = nil, query: String? = nil, level: String? = nil)
         -> AnyPublisher<SnippetList, APIError>
     {
-        var urlComponents = URLComponents(
-            url: baseURL.appendingPathComponent("snippets"), resolvingAgainstBaseURL: false)!
+        guard var urlComponents = URLComponents(
+            url: baseURL.appendingPathComponent("snippets"), resolvingAgainstBaseURL: false) else {
+            return Fail(error: .invalidURL).eraseToAnyPublisher()
+        }
         var queryItems = [URLQueryItem]()
         if let sourceLang = sourceLang {
             queryItems.append(URLQueryItem(name: "source_lang", value: sourceLang))
@@ -309,7 +326,10 @@ class APIService {
             queryItems.append(URLQueryItem(name: "level", value: level))
         }
         urlComponents.queryItems = queryItems
-        let urlRequest = authenticatedRequest(for: urlComponents.url!)
+        guard let url = urlComponents.url else {
+            return Fail(error: .invalidURL).eraseToAnyPublisher()
+        }
+        let urlRequest = authenticatedRequest(for: url)
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { self.handleResponse($0.data, $0.response) }
@@ -379,15 +399,20 @@ class APIService {
     func getExistingTranslationSentence(language: String, level: String, direction: String)
         -> AnyPublisher<TranslationPracticeSentenceResponse, APIError>
     {
-        var urlComponents = URLComponents(
+        guard var urlComponents = URLComponents(
             url: baseURL.appendingPathComponent("translation-practice/sentence"),
-            resolvingAgainstBaseURL: false)!
+            resolvingAgainstBaseURL: false) else {
+            return Fail(error: .invalidURL).eraseToAnyPublisher()
+        }
         urlComponents.queryItems = [
             URLQueryItem(name: "language", value: language),
             URLQueryItem(name: "level", value: level),
             URLQueryItem(name: "direction", value: direction),
         ]
-        let urlRequest = authenticatedRequest(for: urlComponents.url!)
+        guard let url = urlComponents.url else {
+            return Fail(error: .invalidURL).eraseToAnyPublisher()
+        }
+        let urlRequest = authenticatedRequest(for: url)
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { self.handleResponse($0.data, $0.response) }
@@ -607,14 +632,19 @@ class APIService {
     func getTranslationPracticeHistory(limit: Int = 10, offset: Int = 0) -> AnyPublisher<
         TranslationPracticeHistoryResponse, APIError
     > {
-        var urlComponents = URLComponents(
+        guard var urlComponents = URLComponents(
             url: baseURL.appendingPathComponent("translation-practice/history"),
-            resolvingAgainstBaseURL: false)!
+            resolvingAgainstBaseURL: false) else {
+            return Fail(error: .invalidURL).eraseToAnyPublisher()
+        }
         urlComponents.queryItems = [
             URLQueryItem(name: "limit", value: String(limit)),
             URLQueryItem(name: "offset", value: String(offset)),
         ]
-        let urlRequest = authenticatedRequest(for: urlComponents.url!)
+        guard let url = urlComponents.url else {
+            return Fail(error: .invalidURL).eraseToAnyPublisher()
+        }
+        let urlRequest = authenticatedRequest(for: url)
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { self.handleResponse($0.data, $0.response) }
@@ -640,12 +670,17 @@ class APIService {
     }
 
     func getLevels(language: String?) -> AnyPublisher<LevelsResponse, APIError> {
-        var urlComponents = URLComponents(
-            url: baseURL.appendingPathComponent("settings/levels"), resolvingAgainstBaseURL: false)!
+        guard var urlComponents = URLComponents(
+            url: baseURL.appendingPathComponent("settings/levels"), resolvingAgainstBaseURL: false) else {
+            return Fail(error: .invalidURL).eraseToAnyPublisher()
+        }
         if let language = language {
             urlComponents.queryItems = [URLQueryItem(name: "language", value: language)]
         }
-        let urlRequest = authenticatedRequest(for: urlComponents.url!)
+        guard let url = urlComponents.url else {
+            return Fail(error: .invalidURL).eraseToAnyPublisher()
+        }
+        let urlRequest = authenticatedRequest(for: url)
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { self.handleResponse($0.data, $0.response) }
@@ -741,19 +776,26 @@ class APIService {
             .appendingPathComponent("stream")
             .appendingPathComponent(streamId)
 
-        var components = URLComponents(url: streamPath, resolvingAgainstBaseURL: false)!
+        guard var components = URLComponents(url: streamPath, resolvingAgainstBaseURL: false) else {
+            return streamPath
+        }
         if let token = token {
             components.queryItems = [URLQueryItem(name: "token", value: token)]
         }
-        return components.url!
+        return components.url ?? streamPath
     }
 
     func getVoices(language: String) -> AnyPublisher<[EdgeTTSVoiceInfo], APIError> {
         let url = baseURL.appendingPathComponent("voices")
-        var components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
+        guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            return Fail(error: .invalidURL).eraseToAnyPublisher()
+        }
         components.queryItems = [URLQueryItem(name: "language", value: language)]
 
-        let urlRequest = authenticatedRequest(for: components.url!)
+        guard let requestURL = components.url else {
+            return Fail(error: .invalidURL).eraseToAnyPublisher()
+        }
+        let urlRequest = authenticatedRequest(for: requestURL)
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { data, response -> AnyPublisher<[EdgeTTSVoiceInfo], APIError> in

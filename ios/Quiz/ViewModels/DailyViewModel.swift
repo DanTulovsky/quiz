@@ -48,9 +48,7 @@ class DailyViewModel: ObservableObject {
 
     func fetchDaily() {
         isLoading = true
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        let today = formatter.string(from: Date())
+        let today = DateFormatters.iso8601.string(from: Date())
 
         apiService.getDailyQuestions(date: today)
             .receive(on: DispatchQueue.main)
@@ -76,16 +74,12 @@ class DailyViewModel: ObservableObject {
     }
 
     func getSnippets() {
-        apiService.getSnippets(sourceLang: nil, targetLang: nil, storyId: nil)
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] snippetList in
-                self?.snippets = snippetList.snippets
-            })
-            .store(in: &cancellables)
+        guard let question = currentQuestion else { return }
+        getSnippetsForQuestion(questionId: question.question.id)
     }
 
     func getSnippetsForQuestion(questionId: Int) {
-        apiService.getSnippets(sourceLang: nil, targetLang: nil, storyId: nil)
+        apiService.getSnippetsForQuestion(questionId: questionId)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] snippetList in
                 self?.snippets = snippetList.snippets
@@ -117,9 +111,7 @@ class DailyViewModel: ObservableObject {
         selectedAnswerIndex = index
         isSubmitting = true
 
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        let today = formatter.string(from: Date())
+        let today = DateFormatters.iso8601.string(from: Date())
 
         apiService.postDailyAnswer(date: today, questionId: question.question.id, userAnswerIndex: index)
             .receive(on: DispatchQueue.main)
@@ -133,16 +125,17 @@ class DailyViewModel: ObservableObject {
                 self.answerResponse = response
 
                 // Update the question's completed status in the array
-                if self.currentQuestionIndex < self.dailyQuestions.count {
-                    let updatedQuestion = DailyQuestionWithDetails(
-                        id: self.dailyQuestions[self.currentQuestionIndex].id,
-                        questionId: self.dailyQuestions[self.currentQuestionIndex].questionId,
-                        question: self.dailyQuestions[self.currentQuestionIndex].question,
-                        isCompleted: response.isCompleted,
-                        userAnswerIndex: response.userAnswerIndex
-                    )
-                    self.dailyQuestions[self.currentQuestionIndex] = updatedQuestion
+                guard self.currentQuestionIndex >= 0 && self.currentQuestionIndex < self.dailyQuestions.count else {
+                    return
                 }
+                let updatedQuestion = DailyQuestionWithDetails(
+                    id: self.dailyQuestions[self.currentQuestionIndex].id,
+                    questionId: self.dailyQuestions[self.currentQuestionIndex].questionId,
+                    question: self.dailyQuestions[self.currentQuestionIndex].question,
+                    isCompleted: response.isCompleted,
+                    userAnswerIndex: response.userAnswerIndex
+                )
+                self.dailyQuestions[self.currentQuestionIndex] = updatedQuestion
             })
             .store(in: &cancellables)
     }

@@ -6,19 +6,11 @@ struct WordOfTheDayView: View {
     @State private var showDatePicker = false
     @State private var selectedDate = Date()
 
-    private var displayFormatter: DateFormatter {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .full
-        return formatter
-    }
-
     private var dateButtonLabel: String {
         if Calendar.current.isDateInToday(viewModel.currentDate) {
             return "Today"
         } else {
-            let formatter = DateFormatter()
-            formatter.dateStyle = .medium
-            return formatter.string(from: viewModel.currentDate)
+            return DateFormatters.displayMedium.string(from: viewModel.currentDate)
         }
     }
 
@@ -51,7 +43,7 @@ struct WordOfTheDayView: View {
                             .clipShape(Circle())
                     }
 
-                    Text(displayFormatter.string(from: viewModel.currentDate))
+                    Text(DateFormatters.displayFull.string(from: viewModel.currentDate))
                         .font(AppTheme.Typography.subheadlineFont)
                         .foregroundColor(AppTheme.Colors.secondaryText)
                         .frame(maxWidth: .infinity)

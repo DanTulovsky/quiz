@@ -41,6 +41,7 @@ struct DailyView: View {
                         completionView
                     }
                 }
+                .id("top")
                 .padding()
                 Color.clear.frame(height: 1).id("bottom")
 
@@ -59,6 +60,12 @@ struct DailyView: View {
                         }
                     }
                     .onChange(of: viewModel.currentQuestionIndex) { old, new in
+                        // Scroll to top when switching questions (but not on initial load)
+                        if old != new {
+                            withAnimation {
+                                proxy.scrollTo("top", anchor: .top)
+                            }
+                        }
                         // When navigating to a completed question, set the selected answer
                         if let question = viewModel.currentQuestion, question.isCompleted {
                             viewModel.selectedAnswerIndex = question.userAnswerIndex
@@ -285,10 +292,10 @@ struct DailyView: View {
         return HStack {
             if showResults {
                 if isCorrect {
-                    Image(systemName: "check.circle.fill")
+                    Image(systemName: "checkmark.circle.fill")
                         .foregroundColor(AppTheme.Colors.successGreen)
                 } else if isUserIncorrect {
-                    Image(systemName: "x.circle.fill")
+                    Image(systemName: "xmark.circle.fill")
                         .foregroundColor(AppTheme.Colors.errorRed)
                 }
             }

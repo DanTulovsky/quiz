@@ -71,7 +71,7 @@ class StoryViewModel: ObservableObject {
     }
 
     func getSnippets(storyId: Int) {
-        apiService.getSnippets(sourceLang: nil, targetLang: nil, storyId: storyId)
+        apiService.getSnippetsForStory(storyId: storyId)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] snippetList in
                 self?.snippets = snippetList.snippets

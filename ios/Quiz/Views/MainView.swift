@@ -39,10 +39,8 @@ class TTSInitializationManager: ObservableObject {
                         TTSSynthesizerManager.shared.preferredVoice = savedVoice
                     } else if let userLanguage = userLanguage {
                         // If no saved voice, find the default voice for the user's language
-                        let langKey = userLanguage.lowercased()
-                        if let languageInfo = self.loadedLanguages.first(where: {
-                            $0.name.lowercased() == langKey || $0.code.lowercased() == langKey
-                        }), let defaultVoice = languageInfo.ttsVoice {
+                        if let languageInfo = self.loadedLanguages.find(byCodeOrName: userLanguage),
+                           let defaultVoice = languageInfo.ttsVoice {
                             TTSSynthesizerManager.shared.preferredVoice = defaultVoice
                         }
                     }

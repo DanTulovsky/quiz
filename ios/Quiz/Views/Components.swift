@@ -24,6 +24,7 @@ struct BadgeView: View {
     static let shared = TTSSynthesizerManager()
     private var player: AVPlayer?
     private var cancellables = Set<AnyCancellable>()
+    private var notificationObservers: [NSObjectProtocol] = []
 
     // Global preferred voice
     var preferredVoice: String?
@@ -98,7 +99,7 @@ struct BadgeView: View {
             try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
             try AVAudioSession.sharedInstance().setActive(true)
         } catch {
-            handleError("Failed to configure audio session.")
+            handleError("Failed to configure audio session: \(error.localizedDescription)")
         }
 
         // Try backend TTS
@@ -179,9 +180,9 @@ struct BadgeView: View {
             let playerItem = AVPlayerItem(asset: asset)
 
             // Listen for completion
-            NotificationCenter.default.addObserver(
+            let completionObserver = NotificationCenter.default.addObserver(
                 forName: .AVPlayerItemDidPlayToEndTime, object: playerItem, queue: .main
-            ) { _ in
+            ) { [weak self] _ in
                 Task { @MainActor [weak self] in
                     guard let self = self else { return }
                     self.currentlySpeakingText = nil
@@ -190,11 +191,12 @@ struct BadgeView: View {
                     try? FileManager.default.removeItem(at: tempFile)
                 }
             }
+            notificationObservers.append(completionObserver)
 
             // Listen for errors
-            NotificationCenter.default.addObserver(
+            let errorObserver = NotificationCenter.default.addObserver(
                 forName: .AVPlayerItemFailedToPlayToEndTime, object: playerItem, queue: .main
-            ) { _ in
+            ) { [weak self] _ in
                 Task { @MainActor [weak self] in
                     guard let self = self else { return }
                     self.handleError("Audio playback failed.")
@@ -202,12 +204,13 @@ struct BadgeView: View {
                     try? FileManager.default.removeItem(at: tempFile)
                 }
             }
+            notificationObservers.append(errorObserver)
 
             let player = AVPlayer(playerItem: playerItem)
             player.automaticallyWaitsToMinimizeStalling = false
             self.player = player
 
-            // Add observer for status
+            // Add observer for status (will be removed in stop() or deinit)
             playerItem.addObserver(
                 self, forKeyPath: "status", options: [.new, .initial], context: nil)
 
@@ -275,7 +278,17 @@ struct BadgeView: View {
 
     private func handleError(_ message: String) {
         DispatchQueue.main.async {
-            self.errorMessage = message
+            let userFriendlyMessage: String
+            if message.contains("Network error") || message.contains("requestFailed") {
+                userFriendlyMessage = "Unable to connect to the server. Please check your internet connection and try again."
+            } else if message.contains("No audio data") {
+                userFriendlyMessage = "Audio data was not received. Please try again."
+            } else if message.contains("Failed to load audio") {
+                userFriendlyMessage = "Failed to load audio. Please try again."
+            } else {
+                userFriendlyMessage = "Text-to-speech error: \(message)"
+            }
+            self.errorMessage = userFriendlyMessage
             self.currentlySpeakingText = nil
             self.stop()
         }
@@ -297,16 +310,39 @@ struct BadgeView: View {
     }
 
     func stop() {
+        // Remove KVO observer from player item
+        if let playerItem = player?.currentItem {
+            playerItem.removeObserver(self, forKeyPath: "status")
+        }
+
         player?.pause()
         player = nil
         currentlySpeakingText = nil
         cancellables.removeAll()
         clearNowPlayingInfo()
 
+        // Remove all notification observers
+        for observer in notificationObservers {
+            NotificationCenter.default.removeObserver(observer)
+        }
+        notificationObservers.removeAll()
+
         do {
             try AVAudioSession.sharedInstance().setActive(
                 false, options: .notifyOthersOnDeactivation)
         } catch {}
+    }
+
+    deinit {
+        // Remove KVO observer if still present
+        if let playerItem = player?.currentItem {
+            playerItem.removeObserver(self, forKeyPath: "status")
+        }
+
+        // Remove all notification observers
+        for observer in notificationObservers {
+            NotificationCenter.default.removeObserver(observer)
+        }
     }
 }
 
