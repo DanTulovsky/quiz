@@ -1993,7 +1993,7 @@ func (s *QuestionService) getAvailableQuestionsWithPriority(ctx context.Context,
 
 	rows, err := s.db.QueryContext(ctx, query, userID, language, level, qType)
 	if err != nil {
-		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to query questions: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to query questions: %v", err)
 	}
 	defer func() {
 		if err := rows.Close(); err != nil {
@@ -2085,7 +2085,7 @@ func (s *QuestionService) getAvailableQuestionsForDailyWithPriority(ctx context.
 
 	rows, err := s.db.QueryContext(ctx, query, userID, language, level, qType, avoidDays)
 	if err != nil {
-		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to query questions (daily): %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to query questions (daily): %v", err)
 	}
 	defer func() {
 		if err := rows.Close(); err != nil {
@@ -2240,7 +2240,7 @@ func (s *QuestionService) GetUserQuestionCount(ctx context.Context, userID int) 
 	var count int
 	err = s.db.QueryRowContext(ctx, query, userID).Scan(&count)
 	if err != nil {
-		return 0, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get user question count: %w", err)
+		return 0, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get user question count: %v", err)
 	}
 	return count, nil
 }
@@ -2260,7 +2260,7 @@ func (s *QuestionService) GetUserResponseCount(ctx context.Context, userID int) 
 	var count int
 	err = s.db.QueryRowContext(ctx, query, userID).Scan(&count)
 	if err != nil {
-		return 0, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get user response count: %w", err)
+		return 0, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get user response count: %v", err)
 	}
 	return count, nil
 }
@@ -2281,7 +2281,7 @@ func (s *QuestionService) GetUsersForQuestion(ctx context.Context, questionID in
 	var totalCount int
 	err = s.db.QueryRowContext(ctx, countQuery, questionID).Scan(&totalCount)
 	if err != nil {
-		return nil, 0, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get user count for question: %w", err)
+		return nil, 0, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get user count for question: %v", err)
 	}
 
 	// Then get up to 5 users
@@ -2298,7 +2298,7 @@ func (s *QuestionService) GetUsersForQuestion(ctx context.Context, questionID in
 
 	rows, err := s.db.QueryContext(ctx, usersQuery, questionID)
 	if err != nil {
-		return nil, 0, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get users for question: %w", err)
+		return nil, 0, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get users for question: %v", err)
 	}
 	defer func() {
 		if err := rows.Close(); err != nil {
@@ -2326,13 +2326,13 @@ func (s *QuestionService) GetUsersForQuestion(ctx context.Context, questionID in
 			&user.UpdatedAt,
 		)
 		if err != nil {
-			return nil, 0, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to scan user: %w", err)
+			return nil, 0, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to scan user: %v", err)
 		}
 		users = append(users, user)
 	}
 
 	if err = rows.Err(); err != nil {
-		return nil, 0, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "error iterating users: %w", err)
+		return nil, 0, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "error iterating users: %v", err)
 	}
 
 	// Ensure we always return an empty slice instead of nil
@@ -2548,7 +2548,7 @@ func (s *QuestionService) GetAllQuestionsPaginated(ctx context.Context, page, pa
 	var total int
 	err = s.db.QueryRowContext(ctx, countQuery, args...).Scan(&total)
 	if err != nil {
-		return nil, 0, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get total count: %w", err)
+		return nil, 0, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get total count: %v", err)
 	}
 
 	// Add pagination
@@ -2559,7 +2559,7 @@ func (s *QuestionService) GetAllQuestionsPaginated(ctx context.Context, page, pa
 	// Execute the main query
 	rows, err := s.db.QueryContext(ctx, baseQuery, args...)
 	if err != nil {
-		return nil, 0, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get questions: %w", err)
+		return nil, 0, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get questions: %v", err)
 	}
 	defer func() {
 		if closeErr := rows.Close(); closeErr != nil {
@@ -2639,7 +2639,7 @@ func (s *QuestionService) GetReportedQuestionsPaginated(ctx context.Context, pag
 	var total int
 	err = s.db.QueryRowContext(ctx, countQuery, args...).Scan(&total)
 	if err != nil {
-		return nil, 0, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get total count: %w", err)
+		return nil, 0, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get total count: %v", err)
 	}
 
 	// Calculate offset
@@ -2680,7 +2680,7 @@ func (s *QuestionService) GetReportedQuestionsPaginated(ctx context.Context, pag
 	// Execute the main query
 	rows, err := s.db.QueryContext(ctx, query, args...)
 	if err != nil {
-		return nil, 0, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get reported questions: %w", err)
+		return nil, 0, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get reported questions: %v", err)
 	}
 	defer func() {
 		if closeErr := rows.Close(); closeErr != nil {
@@ -2717,7 +2717,7 @@ func (s *QuestionService) GetReportedQuestionsStats(ctx context.Context) (result
 	var totalReported int
 	err = s.db.QueryRowContext(ctx, `SELECT COUNT(*) FROM questions WHERE status = 'reported'`).Scan(&totalReported)
 	if err != nil {
-		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get total reported questions: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get total reported questions: %v", err)
 	}
 	stats["total_reported"] = totalReported
 
@@ -2730,7 +2730,7 @@ func (s *QuestionService) GetReportedQuestionsStats(ctx context.Context) (result
 		ORDER BY count DESC
 	`)
 	if err != nil {
-		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get reported questions by type: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get reported questions by type: %v", err)
 	}
 	defer func() {
 		if closeErr := rows.Close(); closeErr != nil {
@@ -2758,7 +2758,7 @@ func (s *QuestionService) GetReportedQuestionsStats(ctx context.Context) (result
 		ORDER BY count DESC
 	`)
 	if err != nil {
-		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get reported questions by level: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get reported questions by level: %v", err)
 	}
 	defer func() {
 		if closeErr := rows.Close(); closeErr != nil {
@@ -2786,7 +2786,7 @@ func (s *QuestionService) GetReportedQuestionsStats(ctx context.Context) (result
 		ORDER BY count DESC
 	`)
 	if err != nil {
-		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get reported questions by language: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get reported questions by language: %v", err)
 	}
 	defer func() {
 		if closeErr := rows.Close(); closeErr != nil {

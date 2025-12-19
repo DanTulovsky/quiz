@@ -1563,7 +1563,7 @@ func (s *StoryService) GenerateStorySection(ctx context.Context, storyID, userID
 				"story_id": storyID,
 				"user_id":  userID,
 			})
-			return nil, contextutils.WrapErrorf(contextutils.ErrTimeout, "story generation timed out: %w", err)
+			return nil, contextutils.WrapErrorf(contextutils.ErrTimeout, "story generation timed out: %v", err)
 		}
 		return nil, contextutils.WrapErrorf(err, "failed to generate story section")
 	}

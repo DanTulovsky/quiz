@@ -1094,13 +1094,13 @@ func (s *LearningService) CalculatePriorityScore(ctx context.Context, userID, qu
 	// Get user preferences
 	prefs, err := s.GetUserLearningPreferences(ctx, userID)
 	if err != nil {
-		return 0, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get user preferences: %w", err)
+		return 0, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get user preferences: %v", err)
 	}
 
 	// Get user's performance history for this question
 	performance, err := s.getQuestionPerformance(ctx, userID, questionID)
 	if err != nil {
-		return 0, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get question performance: %w", err)
+		return 0, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get question performance: %v", err)
 	}
 
 	// Calculate components
@@ -1197,7 +1197,7 @@ func (s *LearningService) getQuestionPerformance(ctx context.Context, userID, qu
 	)
 
 	if err != nil && err != sql.ErrNoRows {
-		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get response statistics: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get response statistics: %v", err)
 	}
 
 	// Get metadata
@@ -1210,7 +1210,7 @@ func (s *LearningService) getQuestionPerformance(ctx context.Context, userID, qu
 	`, userID, questionID).Scan(&performance.MarkedAsKnown, &markedAsKnownAt, &confidenceLevel)
 
 	if err != nil && err != sql.ErrNoRows {
-		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get question metadata: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get question metadata: %v", err)
 	}
 
 	if markedAsKnownAt.Valid {
@@ -1356,7 +1356,7 @@ func (s *LearningService) GetPriorityScoreDistribution(ctx context.Context) (res
 
 	err = s.db.QueryRowContext(ctx, query).Scan(&high, &medium, &low, &average)
 	if err != nil {
-		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get priority score distribution: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get priority score distribution: %v", err)
 	}
 
 	result := map[string]interface{}{
@@ -1408,7 +1408,7 @@ func (s *LearningService) GetHighPriorityQuestions(ctx context.Context, limit in
 
 	rows, err := s.db.QueryContext(ctx, query, limit)
 	if err != nil {
-		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get high priority questions: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get high priority questions: %v", err)
 	}
 	defer func() {
 		if err := rows.Close(); err != nil {
@@ -1466,7 +1466,7 @@ func (s *LearningService) GetWeakAreasByTopic(ctx context.Context, limit int) (r
 
 	rows, err := s.db.QueryContext(ctx, query, limit)
 	if err != nil {
-		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get weak areas: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get weak areas: %v", err)
 	}
 	defer func() {
 		if err := rows.Close(); err != nil {
@@ -1528,7 +1528,7 @@ func (s *LearningService) GetLearningPreferencesUsage(ctx context.Context) (resu
 		&avgKnownQuestionPenalty,
 	)
 	if err != nil {
-		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get learning preferences usage: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get learning preferences usage: %v", err)
 	}
 
 	result := map[string]interface{}{
@@ -1593,7 +1593,7 @@ func (s *LearningService) GetQuestionTypeGaps(ctx context.Context) (result0 []ma
 	rows, err := s.db.QueryContext(ctx, query)
 	if err != nil {
 		span.SetAttributes(attribute.String("error.type", "database_query_failed"), attribute.String("error", err.Error()))
-		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get question type gaps: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get question type gaps: %v", err)
 	}
 	defer func() {
 		if err := rows.Close(); err != nil {
@@ -1626,7 +1626,7 @@ func (s *LearningService) GetQuestionTypeGaps(ctx context.Context) (result0 []ma
 
 	if err := rows.Err(); err != nil {
 		span.SetAttributes(attribute.String("error.type", "rows_iteration_failed"), attribute.String("error", err.Error()))
-		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "error during rows iteration: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "error during rows iteration: %v", err)
 	}
 
 	span.SetAttributes(
@@ -1665,7 +1665,7 @@ func (s *LearningService) GetGenerationSuggestions(ctx context.Context) (result0
 	rows, err := s.db.QueryContext(ctx, query)
 	if err != nil {
 		span.SetAttributes(attribute.String("error.type", "database_query_failed"), attribute.String("error", err.Error()))
-		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get generation suggestions: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get generation suggestions: %v", err)
 	}
 	defer func() {
 		if err := rows.Close(); err != nil {
@@ -1708,7 +1708,7 @@ func (s *LearningService) GetGenerationSuggestions(ctx context.Context) (result0
 
 	if err := rows.Err(); err != nil {
 		span.SetAttributes(attribute.String("error.type", "rows_iteration_failed"), attribute.String("error", err.Error()))
-		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "error during rows iteration: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "error during rows iteration: %v", err)
 	}
 
 	span.SetAttributes(
@@ -1745,7 +1745,7 @@ func (s *LearningService) GetPrioritySystemPerformance(ctx context.Context) (res
 
 	err = s.db.QueryRowContext(ctx, query).Scan(&totalCalculations, &avgScore, &lastCalculation)
 	if err != nil {
-		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get priority system performance: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrDatabaseQuery, "failed to get priority system performance: %v", err)
 	}
 
 	result := map[string]interface{}{

@@ -1248,7 +1248,7 @@ func (s *AIService) callOpenAI(ctx context.Context, userConfig *models.UserAICon
 	var openAIResp OpenAIResponse
 	if err := json.Unmarshal(body, &openAIResp); err != nil {
 		span.SetAttributes(attribute.String("call.result", "json_unmarshal_failed"), attribute.String("error", err.Error()), attribute.String("body", string(body)))
-		return "", contextutils.WrapErrorf(contextutils.ErrAIResponseInvalid, "failed to parse AI response as JSON: %w. Raw Response: %s", err, string(body))
+		return "", contextutils.WrapErrorf(contextutils.ErrAIResponseInvalid, "failed to parse AI response as JSON: %v. Raw Response: %s", err, string(body))
 	}
 
 	if openAIResp.Error != nil {
@@ -1469,7 +1469,7 @@ func (s *AIService) callOpenAIStream(ctx context.Context, userConfig *models.Use
 			"user_prefix": userPrefix,
 		})
 		span.SetAttributes(attribute.String("stream.result", "http_request_failed"), attribute.String("error", err.Error()))
-		return contextutils.WrapErrorf(contextutils.ErrAIRequestFailed, "http client error: %w", err)
+		return contextutils.WrapErrorf(contextutils.ErrAIRequestFailed, "http client error: %v", err)
 	}
 	defer func() {
 		if err := resp.Body.Close(); err != nil {
@@ -1573,7 +1573,7 @@ func (s *AIService) callOpenAIStream(ctx context.Context, userConfig *models.Use
 
 	if err := scanner.Err(); err != nil {
 		span.SetAttributes(attribute.String("stream.result", "scanner_error"), attribute.String("error", err.Error()))
-		return contextutils.WrapErrorf(contextutils.ErrAIRequestFailed, "error reading streaming response: %w", err)
+		return contextutils.WrapErrorf(contextutils.ErrAIRequestFailed, "error reading streaming response: %v", err)
 	}
 
 	s.logger.Info(ctx, "AI Service Streaming response completed", map[string]interface{}{
@@ -1748,7 +1748,7 @@ func (s *AIService) parseQuestionsResponse(ctx context.Context, response, langua
 	var questions []map[string]interface{}
 	if err := json.Unmarshal([]byte(cleanedResponse), &questions); err != nil {
 		span.SetAttributes(attribute.String("parse.result", "json_unmarshal_failed"), attribute.String("error", err.Error()))
-		return nil, contextutils.WrapErrorf(contextutils.ErrAIResponseInvalid, "failed to parse AI response as JSON: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrAIResponseInvalid, "failed to parse AI response as JSON: %v", err)
 	}
 
 	if len(questions) == 0 {
@@ -2019,7 +2019,7 @@ func (s *AIService) parseQuestionResponse(ctx context.Context, response, languag
 		s.logger.Error(ctx, "Failed to parse JSON response", err, map[string]interface{}{
 			"raw_response": response,
 		})
-		return nil, contextutils.WrapErrorf(contextutils.ErrAIResponseInvalid, "failed to parse AI response as JSON: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrAIResponseInvalid, "failed to parse AI response as JSON: %v", err)
 	}
 
 	question, err := s.createQuestionFromData(ctx, data, language, level, qType)
@@ -2028,7 +2028,7 @@ func (s *AIService) parseQuestionResponse(ctx context.Context, response, languag
 			"raw_question_data":   data,
 			"full_model_response": response,
 		})
-		return nil, contextutils.WrapErrorf(contextutils.ErrAIResponseInvalid, "failed to create question: %w", err)
+		return nil, contextutils.WrapErrorf(contextutils.ErrAIResponseInvalid, "failed to create question: %v", err)
 	}
 	valid, err := s.ValidateQuestionSchema(ctx, qType, question)
 	if err != nil {
@@ -2249,7 +2249,7 @@ func (s *AIService) acquireGlobalSlot(ctx context.Context) error {
 	case s.globalSemaphore <- struct{}{}:
 		return nil
 	case <-ctx.Done():
-		return contextutils.WrapErrorf(contextutils.ErrTimeout, "request cancelled while waiting for global AI slot: %w", ctx.Err())
+		return contextutils.WrapErrorf(contextutils.ErrTimeout, "request cancelled while waiting for global AI slot: %v", ctx.Err())
 	default:
 		return contextutils.WrapErrorf(contextutils.ErrServiceUnavailable, "AI service at capacity (%d concurrent requests), please try again", s.maxConcurrent)
 	}

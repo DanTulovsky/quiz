@@ -53,7 +53,7 @@ func generateAPIKey() (string, error) {
 	// Generate 32 random bytes
 	randomBytes := make([]byte, KeyLength/2) // 16 bytes = 32 hex characters
 	if _, err := rand.Read(randomBytes); err != nil {
-		return "", contextutils.WrapErrorf(err, "failed to generate random key: %w", err)
+		return "", contextutils.WrapErrorf(err, "failed to generate random key: %v", err)
 	}
 
 	// Convert to hex string
@@ -67,7 +67,7 @@ func generateAPIKey() (string, error) {
 func hashAPIKey(key string) (string, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(key), bcrypt.DefaultCost)
 	if err != nil {
-		return "", contextutils.WrapErrorf(err, "failed to hash API key: %w", err)
+		return "", contextutils.WrapErrorf(err, "failed to hash API key: %v", err)
 	}
 	return string(hash), nil
 }

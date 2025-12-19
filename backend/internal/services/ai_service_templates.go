@@ -134,7 +134,7 @@ func (tm *AITemplateManager) LoadExample(questionType string) (result0 string, e
 	examplePath := fmt.Sprintf("templates/examples/%s_example.json", questionType)
 	content, err := exampleFilesFS.ReadFile(examplePath)
 	if err != nil {
-		return "", contextutils.WrapErrorf(contextutils.ErrInternalError, "failed to load example for %s: %w", questionType, err)
+		return "", contextutils.WrapErrorf(contextutils.ErrInternalError, "failed to load example for %s: %v", questionType, err)
 	}
 	return string(content), nil
 }
