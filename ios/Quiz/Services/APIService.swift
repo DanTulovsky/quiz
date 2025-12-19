@@ -269,17 +269,17 @@ class APIService {
             .eraseToAnyPublisher()
     }
 
-    func getSnippets(sourceLang: Language?, targetLang: Language?, storyId: Int? = nil)
+    func getSnippets(sourceLang: String?, targetLang: String?, storyId: Int? = nil)
         -> AnyPublisher<SnippetList, APIError>
     {
         var urlComponents = URLComponents(
             url: baseURL.appendingPathComponent("snippets"), resolvingAgainstBaseURL: false)!
         var queryItems = [URLQueryItem]()
         if let sourceLang = sourceLang {
-            queryItems.append(URLQueryItem(name: "source_lang", value: sourceLang.rawValue))
+            queryItems.append(URLQueryItem(name: "source_lang", value: sourceLang))
         }
         if let targetLang = targetLang {
-            queryItems.append(URLQueryItem(name: "target_lang", value: targetLang.rawValue))
+            queryItems.append(URLQueryItem(name: "target_lang", value: targetLang))
         }
         if let storyId = storyId {
             queryItems.append(URLQueryItem(name: "story_id", value: String(storyId)))

@@ -318,7 +318,7 @@ final class MockAPIService: APIService, @unchecked Sendable {
         return result.publisher.eraseToAnyPublisher()
     }
 
-    override func getSnippets(sourceLang: Language?, targetLang: Language?, storyId: Int? = nil)
+    override func getSnippets(sourceLang: String?, targetLang: String?, storyId: Int? = nil)
         -> AnyPublisher<
             SnippetList, APIError
         >

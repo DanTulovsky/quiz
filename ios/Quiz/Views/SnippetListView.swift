@@ -93,9 +93,9 @@ struct SnippetListView: View {
         }
         .onAppear {
             viewModel.fetchStories()
+            viewModel.fetchLanguages()
             viewModel.getSnippets()
-            let language = authViewModel.user?.preferredLanguage
-            settingsViewModel.fetchLevels(language: language)
+            settingsViewModel.fetchLevels(language: nil)
         }
         .sheet(isPresented: $showAddSnippet) {
             AddSnippetView(viewModel: viewModel, isPresented: $showAddSnippet)
@@ -222,20 +222,19 @@ struct SnippetListView: View {
             Button("All languages") {
                 viewModel.selectedSourceLang = nil
             }
-            ForEach(
-                [
-                    Language.italian, Language.spanish, Language.french, Language.german,
-                    Language.english,
-                ], id: \.self
-            ) { lang in
-                Button(lang.rawValue.capitalized) {
-                    viewModel.selectedSourceLang = lang
+            ForEach(viewModel.availableLanguages) { lang in
+                Button(lang.name.capitalized) {
+                    viewModel.selectedSourceLang = lang.code
                 }
             }
         } label: {
             HStack {
-                if let lang = viewModel.selectedSourceLang {
-                    Text(lang.rawValue.capitalized)
+                if let selectedLangCode = viewModel.selectedSourceLang,
+                    let lang = viewModel.availableLanguages.first(where: {
+                        $0.code == selectedLangCode
+                    })
+                {
+                    Text(lang.name.capitalized)
                         .foregroundColor(.primary)
                 } else {
                     Text("Filter by source language")
@@ -412,8 +411,8 @@ struct AddSnippetView: View {
 
     @State private var originalText = ""
     @State private var translatedText = ""
-    @State private var sourceLanguage = Language.italian
-    @State private var targetLanguage = Language.english
+    @State private var sourceLanguage: String = "it"
+    @State private var targetLanguage: String = "en"
     @State private var context = ""
     @State private var isSubmitting = false
     @State private var errorMessage: String?
@@ -462,19 +461,18 @@ struct AddSnippetView: View {
                         Text("Source Language")
                             .font(.headline)
                         Menu {
-                            ForEach(
-                                [
-                                    Language.italian, Language.spanish, Language.french,
-                                    Language.german, Language.english,
-                                ], id: \.self
-                            ) { lang in
-                                Button(lang.rawValue.capitalized) {
-                                    sourceLanguage = lang
+                            ForEach(viewModel.availableLanguages) { lang in
+                                Button(lang.name.capitalized) {
+                                    sourceLanguage = lang.code
                                 }
                             }
                         } label: {
                             HStack {
-                                Text(sourceLanguage.rawValue.capitalized)
+                                Text(
+                                    viewModel.availableLanguages.first(where: {
+                                        $0.code == sourceLanguage
+                                    })?.name.capitalized
+                                        ?? sourceLanguage.uppercased())
                                 Spacer()
                                 Image(systemName: "chevron.up.chevron.down")
                                     .font(.caption)
@@ -493,19 +491,18 @@ struct AddSnippetView: View {
                         Text("Target Language")
                             .font(.headline)
                         Menu {
-                            ForEach(
-                                [
-                                    Language.italian, Language.spanish, Language.french,
-                                    Language.german, Language.english,
-                                ], id: \.self
-                            ) { lang in
-                                Button(lang.rawValue.capitalized) {
-                                    targetLanguage = lang
+                            ForEach(viewModel.availableLanguages) { lang in
+                                Button(lang.name.capitalized) {
+                                    targetLanguage = lang.code
                                 }
                             }
                         } label: {
                             HStack {
-                                Text(targetLanguage.rawValue.capitalized)
+                                Text(
+                                    viewModel.availableLanguages.first(where: {
+                                        $0.code == targetLanguage
+                                    })?.name.capitalized
+                                        ?? targetLanguage.uppercased())
                                 Spacer()
                                 Image(systemName: "chevron.up.chevron.down")
                                     .font(.caption)
@@ -614,8 +611,8 @@ struct AddSnippetView: View {
         let request = CreateSnippetRequest(
             originalText: originalText.trimmingCharacters(in: .whitespacesAndNewlines),
             translatedText: translatedText.trimmingCharacters(in: .whitespacesAndNewlines),
-            sourceLanguage: sourceLanguage.rawValue,
-            targetLanguage: targetLanguage.rawValue,
+            sourceLanguage: sourceLanguage,
+            targetLanguage: targetLanguage,
             context: context.isEmpty
                 ? nil : context.trimmingCharacters(in: .whitespacesAndNewlines),
             questionId: nil,
@@ -642,44 +639,31 @@ struct EditSnippetView: View {
 
     @State private var originalText = ""
     @State private var translatedText = ""
-    @State private var sourceLanguage = Language.italian
-    @State private var targetLanguage = Language.english
+    @State private var sourceLanguage: String = "it"
+    @State private var targetLanguage: String = "en"
     @State private var context = ""
     @State private var isSubmitting = false
     @State private var errorMessage: String? = nil
 
-    private func mapLanguageStringToEnum(_ languageString: String?, defaultLanguage: Language)
-        -> Language
-    {
+    private func mapLanguageStringToCode(_ languageString: String?, defaultCode: String) -> String {
         guard let langString = languageString?.lowercased() else {
-            return defaultLanguage
+            return defaultCode
         }
 
-        // Try direct enum match
-        if let lang = Language(rawValue: langString) {
-            return lang
+        // Check if the string is already a valid code in available languages
+        if viewModel.availableLanguages.contains(where: { $0.code.lowercased() == langString }) {
+            return langString
         }
 
-        // Map common language codes to enum cases
-        let languageCodeMap: [String: Language] = [
-            "en": .english,
-            "english": .english,
-            "es": .spanish,
-            "spanish": .spanish,
-            "fr": .french,
-            "french": .french,
-            "de": .german,
-            "german": .german,
-            "it": .italian,
-            "italian": .italian,
-        ]
-
-        if let mapped = languageCodeMap[langString] {
-            return mapped
+        // Check if the string matches a language name
+        if let matchingLang = viewModel.availableLanguages.first(where: {
+            $0.name.lowercased() == langString
+        }) {
+            return matchingLang.code
         }
 
         // For unsupported languages, return default
-        return defaultLanguage
+        return defaultCode
     }
 
     var body: some View {
@@ -713,32 +697,52 @@ struct EditSnippetView: View {
 
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Source Language").font(.subheadline).fontWeight(.medium)
-                        Picker("Source Language", selection: $sourceLanguage) {
-                            Text("Italian").tag(Language.italian)
-                            Text("Spanish").tag(Language.spanish)
-                            Text("French").tag(Language.french)
-                            Text("German").tag(Language.german)
-                            Text("English").tag(Language.english)
+                        Menu {
+                            ForEach(viewModel.availableLanguages) { lang in
+                                Button(lang.name.capitalized) {
+                                    sourceLanguage = lang.code
+                                }
+                            }
+                        } label: {
+                            HStack {
+                                Text(
+                                    viewModel.availableLanguages.first(where: {
+                                        $0.code == sourceLanguage
+                                    })?.name.capitalized
+                                        ?? sourceLanguage.uppercased())
+                                Spacer()
+                                Image(systemName: "chevron.up.chevron.down")
+                                    .font(.caption)
+                            }
+                            .padding(12)
+                            .background(Color(.secondarySystemBackground))
+                            .cornerRadius(8)
                         }
-                        .pickerStyle(.menu)
-                        .padding(12)
-                        .background(Color(.secondarySystemBackground))
-                        .cornerRadius(8)
                     }
 
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Target Language").font(.subheadline).fontWeight(.medium)
-                        Picker("Target Language", selection: $targetLanguage) {
-                            Text("Italian").tag(Language.italian)
-                            Text("Spanish").tag(Language.spanish)
-                            Text("French").tag(Language.french)
-                            Text("German").tag(Language.german)
-                            Text("English").tag(Language.english)
+                        Menu {
+                            ForEach(viewModel.availableLanguages) { lang in
+                                Button(lang.name.capitalized) {
+                                    targetLanguage = lang.code
+                                }
+                            }
+                        } label: {
+                            HStack {
+                                Text(
+                                    viewModel.availableLanguages.first(where: {
+                                        $0.code == targetLanguage
+                                    })?.name.capitalized
+                                        ?? targetLanguage.uppercased())
+                                Spacer()
+                                Image(systemName: "chevron.up.chevron.down")
+                                    .font(.caption)
+                            }
+                            .padding(12)
+                            .background(Color(.secondarySystemBackground))
+                            .cornerRadius(8)
                         }
-                        .pickerStyle(.menu)
-                        .padding(12)
-                        .background(Color(.secondarySystemBackground))
-                        .cornerRadius(8)
                     }
 
                     VStack(alignment: .leading, spacing: 8) {
@@ -782,10 +786,10 @@ struct EditSnippetView: View {
         .onAppear {
             originalText = snippet.originalText
             translatedText = snippet.translatedText
-            sourceLanguage = mapLanguageStringToEnum(
-                snippet.sourceLanguage, defaultLanguage: .italian)
-            targetLanguage = mapLanguageStringToEnum(
-                snippet.targetLanguage, defaultLanguage: .english)
+            sourceLanguage = mapLanguageStringToCode(
+                snippet.sourceLanguage, defaultCode: "it")
+            targetLanguage = mapLanguageStringToCode(
+                snippet.targetLanguage, defaultCode: "en")
             context = snippet.context ?? ""
         }
     }
@@ -803,8 +807,8 @@ struct EditSnippetView: View {
         let request = UpdateSnippetRequest(
             originalText: originalText.trimmingCharacters(in: .whitespacesAndNewlines),
             translatedText: translatedText.trimmingCharacters(in: .whitespacesAndNewlines),
-            sourceLanguage: sourceLanguage.rawValue,
-            targetLanguage: targetLanguage.rawValue,
+            sourceLanguage: sourceLanguage,
+            targetLanguage: targetLanguage,
             context: context.isEmpty ? nil : context.trimmingCharacters(in: .whitespacesAndNewlines)
         )
 

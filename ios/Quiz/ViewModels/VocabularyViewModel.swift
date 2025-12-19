@@ -10,7 +10,8 @@ class VocabularyViewModel: ObservableObject {
 
     @Published var selectedStoryId: Int? = nil
     @Published var selectedLevel: String? = nil
-    @Published var selectedSourceLang: Language? = nil
+    @Published var selectedSourceLang: String? = nil
+    @Published var availableLanguages: [LanguageInfo] = []
 
     private var apiService: APIService
     private var cancellables = Set<AnyCancellable>()
@@ -58,6 +59,18 @@ class VocabularyViewModel: ObservableObject {
             }, receiveValue: { [weak self] snippetList in
                 self?.snippets = snippetList.snippets
             })
+            .store(in: &cancellables)
+    }
+
+    func fetchLanguages() {
+        apiService.getLanguages()
+            .receive(on: DispatchQueue.main)
+            .sink(
+                receiveCompletion: { _ in },
+                receiveValue: { [weak self] languages in
+                    self?.availableLanguages = languages
+                }
+            )
             .store(in: &cancellables)
     }
 
