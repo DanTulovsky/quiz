@@ -451,12 +451,14 @@ struct MarkdownTextView: UIViewRepresentable {
             return
         }
 
+        let processedMarkdown = preprocessMarkdownForLineBreaks(markdown)
+
         let mutableAttributedString: NSMutableAttributedString
-        if let attributedString = try? AttributedString(markdown: markdown) {
+        if let attributedString = try? AttributedString(markdown: processedMarkdown) {
             let nsAttributedString = NSAttributedString(attributedString)
             mutableAttributedString = NSMutableAttributedString(attributedString: nsAttributedString)
         } else {
-            mutableAttributedString = NSMutableAttributedString(string: markdown)
+            mutableAttributedString = NSMutableAttributedString(string: processedMarkdown)
         }
 
         let fullRange = NSRange(location: 0, length: mutableAttributedString.length)
@@ -493,5 +495,54 @@ struct MarkdownTextView: UIViewRepresentable {
         }
 
         textView.attributedText = mutableAttributedString
+    }
+
+    private func preprocessMarkdownForLineBreaks(_ markdown: String) -> String {
+        let paragraphs = markdown.components(separatedBy: "\n\n")
+        
+        let processedParagraphs = paragraphs.map { paragraph in
+            var processed = paragraph
+            var result = ""
+            var i = processed.startIndex
+            
+            while i < processed.endIndex {
+                let char = processed[i]
+                
+                if char == "\n" {
+                    let nextIndex = processed.index(after: i)
+                    if nextIndex < processed.endIndex {
+                        let nextChar = processed[nextIndex]
+                        if nextChar == "\n" {
+                            result.append("\n\n")
+                            i = processed.index(after: nextIndex)
+                            continue
+                        }
+                    }
+                    
+                    let prevIndex = processed.index(before: i)
+                    if prevIndex >= processed.startIndex {
+                        let prevChar = processed[prevIndex]
+                        if prevChar == " " {
+                            let prevPrevIndex = processed.index(before: prevIndex)
+                            if prevPrevIndex >= processed.startIndex && processed[prevPrevIndex] == " " {
+                                result.append("\n")
+                                i = processed.index(after: i)
+                                continue
+                            }
+                        }
+                    }
+                    
+                    result.append("  \n")
+                } else {
+                    result.append(char)
+                }
+                
+                i = processed.index(after: i)
+            }
+            
+            return result
+        }
+        
+        return processedParagraphs.joined(separator: "\n\n")
     }
 }
