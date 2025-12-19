@@ -5,6 +5,7 @@ struct TranslationPracticeView: View {
     @StateObject private var viewModel = TranslationPracticeViewModel()
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @State private var showErrorDetails = false
+    @State private var selectedHistorySession: TranslationPracticeSessionResponse?
 
     var body: some View {
         ScrollView {
@@ -14,7 +15,8 @@ struct TranslationPracticeView: View {
                     HStack {
                         Spacer()
                         Picker("Direction", selection: $viewModel.selectedDirection) {
-                            let langName = authViewModel.user?.preferredLanguage?.capitalized ?? "Learning"
+                            let langName =
+                                authViewModel.user?.preferredLanguage?.capitalized ?? "Learning"
                             Text("\(langName) → English").tag("learning_to_en")
                             Text("English → \(langName)").tag("en_to_learning")
                         }
@@ -31,11 +33,15 @@ struct TranslationPracticeView: View {
                             Text("Optional topic")
                                 .font(AppTheme.Typography.subheadlineFont)
                                 .foregroundColor(AppTheme.Colors.secondaryText)
-                            TextField("e.g., travel, ordering food, work", text: $viewModel.optionalTopic)
-                                .padding(12)
-                                .background(AppTheme.Colors.secondaryBackground)
-                                .cornerRadius(AppTheme.CornerRadius.button)
-                                .overlay(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(AppTheme.Colors.borderGray, lineWidth: 1))
+                            TextField(
+                                "e.g., travel, ordering food, work", text: $viewModel.optionalTopic
+                            )
+                            .padding(12)
+                            .background(AppTheme.Colors.secondaryBackground)
+                            .cornerRadius(AppTheme.CornerRadius.button)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(
+                                    AppTheme.Colors.borderGray, lineWidth: 1))
                         }
                     }
 
@@ -120,7 +126,9 @@ struct TranslationPracticeView: View {
                         .padding(AppTheme.Spacing.innerPadding)
                         .background(AppTheme.Colors.errorRed.opacity(0.1))
                         .cornerRadius(AppTheme.CornerRadius.button)
-                        .overlay(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(AppTheme.Colors.errorRed.opacity(0.3), lineWidth: 1))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(
+                                AppTheme.Colors.errorRed.opacity(0.3), lineWidth: 1))
                     }
 
                     if !viewModel.history.isEmpty {
@@ -169,6 +177,9 @@ struct TranslationPracticeView: View {
             if let error = viewModel.error {
                 errorDetailsSheet(error: error)
             }
+        }
+        .sheet(item: $selectedHistorySession) { session in
+            historyDetailSheet(session: session)
         }
     }
 
@@ -236,18 +247,22 @@ struct TranslationPracticeView: View {
         textToFormat = textToFormat.replacingOccurrences(of: "\\\\", with: "\\")
 
         if let jsonData = textToFormat.data(using: .utf8),
-           let jsonObject = try? JSONSerialization.jsonObject(with: jsonData, options: []),
-           let prettyData = try? JSONSerialization.data(withJSONObject: jsonObject, options: [.prettyPrinted]),
-           let prettyString = String(data: prettyData, encoding: .utf8) {
+            let jsonObject = try? JSONSerialization.jsonObject(with: jsonData, options: []),
+            let prettyData = try? JSONSerialization.data(
+                withJSONObject: jsonObject, options: [.prettyPrinted]),
+            let prettyString = String(data: prettyData, encoding: .utf8)
+        {
             return prettyString
         }
 
         if let jsonArrayRange = findJSONArrayRange(in: textToFormat) {
             let jsonSubstring = String(textToFormat[jsonArrayRange])
             if let jsonData = jsonSubstring.data(using: .utf8),
-               let jsonObject = try? JSONSerialization.jsonObject(with: jsonData, options: []),
-               let prettyData = try? JSONSerialization.data(withJSONObject: jsonObject, options: [.prettyPrinted]),
-               let prettyString = String(data: prettyData, encoding: .utf8) {
+                let jsonObject = try? JSONSerialization.jsonObject(with: jsonData, options: []),
+                let prettyData = try? JSONSerialization.data(
+                    withJSONObject: jsonObject, options: [.prettyPrinted]),
+                let prettyString = String(data: prettyData, encoding: .utf8)
+            {
                 let before = String(textToFormat[..<jsonArrayRange.lowerBound])
                 let after = String(textToFormat[jsonArrayRange.upperBound...])
                 return before + "\n\n" + prettyString + "\n\n" + after
@@ -313,8 +328,12 @@ struct TranslationPracticeView: View {
                     .font(AppTheme.Typography.headingFont)
                 Spacer()
                 HStack(spacing: 8) {
-                    BadgeView(text: sentence.sourceLanguage.uppercased(), color: AppTheme.Colors.primaryBlue)
-                    BadgeView(text: "LEVEL \(sentence.languageLevel.uppercased())", color: AppTheme.Colors.primaryBlue)
+                    BadgeView(
+                        text: sentence.sourceLanguage.uppercased(),
+                        color: AppTheme.Colors.primaryBlue)
+                    BadgeView(
+                        text: "LEVEL \(sentence.languageLevel.uppercased())",
+                        color: AppTheme.Colors.primaryBlue)
                 }
             }
 
@@ -327,7 +346,9 @@ struct TranslationPracticeView: View {
                     .padding(12)
                     .background(AppTheme.Colors.secondaryBackground)
                     .cornerRadius(AppTheme.CornerRadius.button)
-                    .overlay(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(AppTheme.Colors.borderGray, lineWidth: 1))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(
+                            AppTheme.Colors.borderGray, lineWidth: 1))
             }
 
             // Text to Translate Section
@@ -344,7 +365,7 @@ struct TranslationPracticeView: View {
                         .font(AppTheme.Typography.headingFont)
 
                     HStack(spacing: 4) {
-                        Text("From existing content:")
+                        Text("Source:")
                             .font(AppTheme.Typography.captionFont)
                             .foregroundColor(AppTheme.Colors.secondaryText)
                         Text(sentence.sourceType.replacingOccurrences(of: "_", with: " "))
@@ -357,7 +378,9 @@ struct TranslationPracticeView: View {
                 .background(AppTheme.Colors.primaryBlue.opacity(0.03))
                 .cornerRadius(AppTheme.CornerRadius.button)
                 .contentShape(Rectangle())
-                .overlay(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(AppTheme.Colors.primaryBlue.opacity(0.1), lineWidth: 1))
+                .overlay(
+                    RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(
+                        AppTheme.Colors.primaryBlue.opacity(0.1), lineWidth: 1))
             }
 
             // User Input Section
@@ -370,7 +393,9 @@ struct TranslationPracticeView: View {
                     .padding(8)
                     .background(AppTheme.Colors.cardBackground)
                     .cornerRadius(AppTheme.CornerRadius.button)
-                    .overlay(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(AppTheme.Colors.borderGray, lineWidth: 1))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(
+                            AppTheme.Colors.borderGray, lineWidth: 1))
             }
 
             if let feedback = viewModel.feedback {
@@ -379,7 +404,8 @@ struct TranslationPracticeView: View {
 
             Button(action: {
                 // Force resign focus to ensure binding is updated
-                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                UIApplication.shared.sendAction(
+                    #selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                 viewModel.submitTranslation()
             }) {
                 HStack {
@@ -393,7 +419,9 @@ struct TranslationPracticeView: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(viewModel.userTranslation.isEmpty ? Color.gray : AppTheme.Colors.primaryBlue)
+                .background(
+                    viewModel.userTranslation.isEmpty ? Color.gray : AppTheme.Colors.primaryBlue
+                )
                 .foregroundColor(.white)
                 .cornerRadius(AppTheme.CornerRadius.button)
                 .contentShape(Rectangle())
@@ -442,41 +470,146 @@ struct TranslationPracticeView: View {
                 .padding(AppTheme.Spacing.innerPadding)
                 .background(AppTheme.Colors.errorRed.opacity(0.1))
                 .cornerRadius(AppTheme.CornerRadius.button)
-                .overlay(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(AppTheme.Colors.errorRed.opacity(0.3), lineWidth: 1))
+                .overlay(
+                    RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(
+                        AppTheme.Colors.errorRed.opacity(0.3), lineWidth: 1)
+                )
                 .padding(.top, 8)
             }
         }
         .appCard()
     }
 
-    private func feedbackSection(_ feedback: TranslationPracticeSessionResponse) -> some View {
-        VStack(alignment: .leading, spacing: AppTheme.Spacing.itemSpacing) {
-            HStack {
-                Image(systemName: "sparkles")
-                    .foregroundColor(AppTheme.Colors.primaryBlue)
-                Text("AI Feedback")
-                    .font(AppTheme.Typography.headingFont)
-                Spacer()
-                if let score = feedback.aiScore {
-                    Text("Score: \(Int(score * 100))%")
-                        .font(AppTheme.Typography.captionFont.weight(.bold))
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(AppTheme.Colors.primaryBlue.opacity(0.1))
-                        .foregroundColor(AppTheme.Colors.primaryBlue)
-                        .cornerRadius(6)
+    @ViewBuilder
+    private func historyDetailSheet(session: TranslationPracticeSessionResponse) -> some View {
+        NavigationView {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    VStack(alignment: .leading, spacing: 12) {
+                        let langName =
+                            authViewModel.user?.preferredLanguage?.capitalized ?? "Learning"
+                        let directionText =
+                            session.translationDirection == "learning_to_en"
+                            ? "\(langName) → English"
+                            : "English → \(langName)"
+                        HStack {
+                            BadgeView(
+                                text: directionText.uppercased(),
+                                color: AppTheme.Colors.accentIndigo)
+                            Spacer()
+                            if let score = session.aiScore {
+                                Text("Score: \(Int((score / 5.0) * 100))%")
+                                    .font(AppTheme.Typography.captionFont.weight(.bold))
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 4)
+                                    .background(
+                                        score >= 4.0
+                                            ? AppTheme.Colors.successGreen.opacity(0.1)
+                                            : score >= 3.0
+                                                ? AppTheme.Colors.primaryBlue.opacity(0.1)
+                                                : AppTheme.Colors.errorRed.opacity(0.1)
+                                    )
+                                    .foregroundColor(
+                                        score >= 4.0
+                                            ? AppTheme.Colors.successGreen
+                                            : score >= 3.0
+                                                ? AppTheme.Colors.primaryBlue
+                                                : AppTheme.Colors.errorRed
+                                    )
+                                    .cornerRadius(6)
+                            }
+                        }
+
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Original")
+                                .font(AppTheme.Typography.captionFont)
+                                .foregroundColor(AppTheme.Colors.secondaryText)
+                            Text(session.originalSentence)
+                                .font(AppTheme.Typography.subheadlineFont)
+                        }
+                        .padding(AppTheme.Spacing.innerPadding)
+                        .background(AppTheme.Colors.secondaryBackground.opacity(0.5))
+                        .cornerRadius(10)
+
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Your Translation")
+                                .font(AppTheme.Typography.captionFont)
+                                .foregroundColor(AppTheme.Colors.secondaryText)
+                            Text(session.userTranslation)
+                                .font(AppTheme.Typography.subheadlineFont)
+                        }
+                        .padding(AppTheme.Spacing.innerPadding)
+                        .background(AppTheme.Colors.secondaryBackground.opacity(0.5))
+                        .cornerRadius(10)
+                    }
+                    .padding()
+
+                    feedbackSection(session)
+                        .padding(.horizontal)
+                }
+                .padding(.bottom)
+            }
+            .navigationTitle("Translation Details")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Done") {
+                        selectedHistorySession = nil
+                    }
                 }
             }
+        }
+    }
 
-            Text(feedback.aiFeedback)
-                .font(AppTheme.Typography.subheadlineFont)
-                .lineSpacing(4)
+    private func feedbackSection(_ feedback: TranslationPracticeSessionResponse) -> some View {
+        VStack(alignment: .leading, spacing: AppTheme.Spacing.itemSpacing) {
+            feedbackHeader(score: feedback.aiScore)
+            feedbackContent(feedback.aiFeedback)
         }
         .padding(AppTheme.Spacing.innerPadding)
         .background(AppTheme.Colors.primaryBlue.opacity(0.05))
         .cornerRadius(AppTheme.CornerRadius.button)
         .contentShape(Rectangle())
-        .overlay(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(AppTheme.Colors.primaryBlue.opacity(0.2), lineWidth: 1))
+        .overlay(feedbackOverlay)
+    }
+
+    @ViewBuilder
+    private func feedbackHeader(score: Float?) -> some View {
+        HStack {
+            Image(systemName: "sparkles")
+                .foregroundColor(AppTheme.Colors.primaryBlue)
+            Text("AI Feedback")
+                .font(AppTheme.Typography.headingFont)
+            Spacer()
+            if let score = score {
+                scoreBadge(score: score)
+            }
+        }
+    }
+
+    private func scoreBadge(score: Float) -> some View {
+        let percentage = Int((score / 5.0) * 100)
+        return Text("Score: \(percentage)%")
+            .font(AppTheme.Typography.captionFont.weight(.bold))
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(AppTheme.Colors.primaryBlue.opacity(0.1))
+            .foregroundColor(AppTheme.Colors.primaryBlue)
+            .cornerRadius(6)
+    }
+
+    private func feedbackContent(_ markdown: String) -> some View {
+        MarkdownTextView(
+            markdown: markdown,
+            font: UIFont.preferredFont(forTextStyle: .subheadline),
+            textColor: UIColor.label
+        )
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var feedbackOverlay: some View {
+        RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button)
+            .stroke(AppTheme.Colors.primaryBlue.opacity(0.2), lineWidth: 1)
     }
 
     private var historySection: some View {
@@ -492,30 +625,49 @@ struct TranslationPracticeView: View {
 
             VStack(spacing: AppTheme.Spacing.itemSpacing) {
                 ForEach(viewModel.history) { session in
-                    VStack(alignment: .leading, spacing: 8) {
-                        HStack {
-                            BadgeView(text: session.translationDirection.replacingOccurrences(of: "_", with: " ").uppercased(), color: AppTheme.Colors.accentIndigo)
-                            Spacer()
-                            if let score = session.aiScore {
-                                Text("\(Int(score * 100))%")
-                                    .font(AppTheme.Typography.badgeFont)
-                                    .foregroundColor(score > 0.8 ? AppTheme.Colors.successGreen : AppTheme.Colors.primaryBlue)
+                    Button(action: {
+                        selectedHistorySession = session
+                    }) {
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack {
+                                let langName =
+                                    authViewModel.user?.preferredLanguage?.capitalized ?? "Learning"
+                                let directionText =
+                                    session.translationDirection == "learning_to_en"
+                                    ? "\(langName) → English"
+                                    : "English → \(langName)"
+                                BadgeView(
+                                    text: directionText.uppercased(),
+                                    color: AppTheme.Colors.accentIndigo)
+                                Spacer()
+                                if let score = session.aiScore {
+                                    Text("\(Int((score / 5.0) * 100))%")
+                                        .font(AppTheme.Typography.badgeFont)
+                                        .foregroundColor(
+                                            score >= 4.0
+                                                ? AppTheme.Colors.successGreen
+                                                : score >= 3.0
+                                                    ? AppTheme.Colors.primaryBlue
+                                                    : AppTheme.Colors.errorRed)
+                                }
                             }
+
+                            Text(session.originalSentence)
+                                .font(AppTheme.Typography.subheadlineFont.weight(.medium))
+                                .lineLimit(1)
+                                .foregroundColor(.primary)
+
+                            Text(session.userTranslation)
+                                .font(AppTheme.Typography.captionFont)
+                                .foregroundColor(AppTheme.Colors.secondaryText)
+                                .lineLimit(1)
                         }
-
-                        Text(session.originalSentence)
-                            .font(AppTheme.Typography.subheadlineFont.weight(.medium))
-                            .lineLimit(1)
-
-                        Text(session.userTranslation)
-                            .font(AppTheme.Typography.captionFont)
-                            .foregroundColor(AppTheme.Colors.secondaryText)
-                            .lineLimit(1)
+                        .padding(AppTheme.Spacing.innerPadding)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(AppTheme.Colors.secondaryBackground.opacity(0.5))
+                        .cornerRadius(10)
                     }
-                    .padding(AppTheme.Spacing.innerPadding)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(AppTheme.Colors.secondaryBackground.opacity(0.5))
-                    .cornerRadius(10)
+                    .buttonStyle(PlainButtonStyle())
                 }
             }
         }

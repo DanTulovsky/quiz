@@ -26,12 +26,12 @@ import {
   Transition,
   Tooltip,
 } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
+import {notifications} from '@mantine/notifications';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { useHotkeys } from 'react-hotkeys-hook';
-import { useMediaQuery, useLocalStorage } from '@mantine/hooks';
-import { useLocation } from 'react-router-dom';
+import {useHotkeys} from 'react-hotkeys-hook';
+import {useMediaQuery, useLocalStorage} from '@mantine/hooks';
+import {useLocation} from 'react-router-dom';
 import {
   useGeneratePracticeSentence,
   useGetPracticeSentence,
@@ -41,14 +41,14 @@ import {
   TranslationDirection,
   SentenceResponse,
 } from '../api/translationPracticeApi';
-import { AXIOS_INSTANCE } from '../api/axios';
-import { useAuth } from '../hooks/useAuth';
+import {AXIOS_INSTANCE} from '../api/axios';
+import {useAuth} from '../hooks/useAuth';
 import * as TablerIcons from '@tabler/icons-react';
 import TTSButton from '../components/TTSButton';
-import { defaultVoiceForLanguage } from '../utils/tts';
-import { useGetV1PreferencesLearning, ErrorResponse } from '../api/api';
+import {defaultVoiceForLanguage} from '../utils/tts';
+import {useGetV1PreferencesLearning, ErrorResponse} from '../api/api';
 import AIGenerationErrorModal from '../components/AIGenerationErrorModal';
-import { AxiosError } from 'axios';
+import {AxiosError} from 'axios';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const IconChevronRight = TablerIcons.IconChevronRight as unknown as any;
@@ -87,7 +87,7 @@ const isTypingTarget = (target: EventTarget | null): boolean => {
 };
 
 const TranslationPracticePage: React.FC = () => {
-  const { user, isAuthenticated } = useAuth();
+  const {user, isAuthenticated} = useAuth();
   const location = useLocation();
   const isMobileRoute = location.pathname.startsWith('/m/');
   const [direction, setDirection] =
@@ -145,19 +145,19 @@ const TranslationPracticePage: React.FC = () => {
   const languageDisplay = toTitle(learningLanguage || 'learning language');
   const directionOptions = useMemo(
     () => [
-      { label: `English → ${languageDisplay}`, value: 'en_to_learning' },
-      { label: `${languageDisplay} → English`, value: 'learning_to_en' },
-      { label: 'Random', value: 'random' },
+      {label: `English → ${languageDisplay}`, value: 'en_to_learning'},
+      {label: `${languageDisplay} → English`, value: 'learning_to_en'},
+      {label: 'Random', value: 'random'},
     ],
     [languageDisplay]
   );
 
-  const { mutateAsync: generateSentence, isPending: isGenerating } =
+  const {mutateAsync: generateSentence, isPending: isGenerating} =
     useGeneratePracticeSentence();
-  const { mutateAsync: submitTranslation, isPending: isSubmitting } =
+  const {mutateAsync: submitTranslation, isPending: isSubmitting} =
     useSubmitTranslation();
-  const { data: stats } = usePracticeStats();
-  const { data: history } = usePracticeHistory(
+  const {data: stats} = usePracticeStats();
+  const {data: history} = usePracticeHistory(
     HISTORY_PAGE_SIZE,
     historyOffset,
     historySearch.trim() || undefined
@@ -167,7 +167,7 @@ const TranslationPracticePage: React.FC = () => {
   useEffect(() => {
     setHistoryOffset(0);
   }, [historySearch]);
-  const { data: learningPrefs } = useGetV1PreferencesLearning();
+  const {data: learningPrefs} = useGetV1PreferencesLearning();
 
   // fetch from existing content on demand (not mounted auto-query)
   useGetPracticeSentence(
@@ -294,7 +294,7 @@ const TranslationPracticePage: React.FC = () => {
       const resp = await AXIOS_INSTANCE.get(
         `/v1/translation-practice/sentence?${qs.toString()}`,
         {
-          headers: { Accept: 'application/json' },
+          headers: {Accept: 'application/json'},
         }
       );
       const data = resp.data as SentenceResponse;
@@ -339,7 +339,7 @@ const TranslationPracticePage: React.FC = () => {
         translation_direction: actualDirection,
       });
       // Show feedback inline (no notification)
-      setFeedback({ text: resp.ai_feedback, score: resp.ai_score ?? null });
+      setFeedback({text: resp.ai_feedback, score: resp.ai_score ?? null});
       // Scroll to feedback after it appears - position with offset to keep header visible
       setTimeout(() => {
         if (feedbackCardRef.current) {
@@ -348,7 +348,7 @@ const TranslationPracticePage: React.FC = () => {
             window.pageYOffset || document.documentElement.scrollTop;
           const headerOffset = 100; // Offset to keep header visible
           const targetPosition = currentScroll + cardRect.top - headerOffset;
-          window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+          window.scrollTo({top: targetPosition, behavior: 'smooth'});
         }
       }, 200);
     } catch (error) {
@@ -403,7 +403,7 @@ const TranslationPracticePage: React.FC = () => {
       e.preventDefault();
       handleGenerate();
     },
-    { enableOnFormTags: false, preventDefault: true },
+    {enableOnFormTags: false, preventDefault: true},
     [isInputFocused, isDirectionFocused, handleGenerate]
   );
 
@@ -415,7 +415,7 @@ const TranslationPracticePage: React.FC = () => {
       e.preventDefault();
       handleFromExisting();
     },
-    { enableOnFormTags: false, preventDefault: true },
+    {enableOnFormTags: false, preventDefault: true},
     [
       isInputFocused,
       isDirectionFocused,
@@ -431,7 +431,7 @@ const TranslationPracticePage: React.FC = () => {
       e.preventDefault();
       handleNextSameType();
     },
-    { enableOnFormTags: false, preventDefault: true },
+    {enableOnFormTags: false, preventDefault: true},
     [isInputFocused, isDirectionFocused, handleNextSameType]
   );
 
@@ -447,7 +447,7 @@ const TranslationPracticePage: React.FC = () => {
         handleTabCycle();
       }
     },
-    { enableOnFormTags: true, preventDefault: true },
+    {enableOnFormTags: true, preventDefault: true},
     [handleTabCycle]
   );
 
@@ -457,7 +457,7 @@ const TranslationPracticePage: React.FC = () => {
       e.preventDefault();
       handleSubmit();
     },
-    { enableOnFormTags: true, preventDefault: true },
+    {enableOnFormTags: true, preventDefault: true},
     [handleSubmit]
   );
 
@@ -472,7 +472,7 @@ const TranslationPracticePage: React.FC = () => {
         setIsDirectionFocused(false);
       }
     },
-    { enableOnFormTags: true, preventDefault: true }
+    {enableOnFormTags: true, preventDefault: true}
   );
 
   useHotkeys(
@@ -480,9 +480,9 @@ const TranslationPracticePage: React.FC = () => {
     e => {
       if (isInputFocused || isDirectionFocused) return;
       e.preventDefault();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({top: 0, behavior: 'smooth'});
     },
-    { enableOnFormTags: false, preventDefault: true },
+    {enableOnFormTags: false, preventDefault: true},
     [isInputFocused, isDirectionFocused]
   );
 
@@ -499,7 +499,7 @@ const TranslationPracticePage: React.FC = () => {
         historySearchInputRef.current?.focus();
       }, 100);
     },
-    { enableOnFormTags: false, preventDefault: true },
+    {enableOnFormTags: false, preventDefault: true},
     [isInputFocused, isDirectionFocused]
   );
 
@@ -518,7 +518,7 @@ const TranslationPracticePage: React.FC = () => {
         ttsButton.click();
       }
     },
-    { enableOnFormTags: false, preventDefault: true },
+    {enableOnFormTags: false, preventDefault: true},
     [isInputFocused, isDirectionFocused, currentSentence]
   );
 
@@ -530,7 +530,7 @@ const TranslationPracticePage: React.FC = () => {
       e.preventDefault();
       topicInputRef.current?.focus();
     },
-    { enableOnFormTags: false, preventDefault: true },
+    {enableOnFormTags: false, preventDefault: true},
     [isInputFocused, isDirectionFocused]
   );
 
@@ -542,7 +542,7 @@ const TranslationPracticePage: React.FC = () => {
       e.preventDefault();
       translationInputRef.current?.focus();
     },
-    { enableOnFormTags: false, preventDefault: true },
+    {enableOnFormTags: false, preventDefault: true},
     [isInputFocused, isDirectionFocused]
   );
 
@@ -570,7 +570,7 @@ const TranslationPracticePage: React.FC = () => {
         }
       }
     },
-    { enableOnFormTags: false, preventDefault: true },
+    {enableOnFormTags: false, preventDefault: true},
     [isInputFocused]
   );
 
@@ -624,7 +624,7 @@ const TranslationPracticePage: React.FC = () => {
         }, 50);
       }
     },
-    { enableOnFormTags: true, preventDefault: false },
+    {enableOnFormTags: true, preventDefault: false},
     [isDirectionFocused, isDirectionDropdownOpen]
   );
 
@@ -635,7 +635,7 @@ const TranslationPracticePage: React.FC = () => {
       e.preventDefault();
       setShortcutsExpanded(true);
     },
-    { enableOnFormTags: false, preventDefault: true },
+    {enableOnFormTags: false, preventDefault: true},
     []
   );
 
@@ -645,7 +645,7 @@ const TranslationPracticePage: React.FC = () => {
       e.preventDefault();
       setShortcutsExpanded(false);
     },
-    { enableOnFormTags: false, preventDefault: true },
+    {enableOnFormTags: false, preventDefault: true},
     []
   );
   // Pagination helpers
@@ -660,13 +660,13 @@ const TranslationPracticePage: React.FC = () => {
 
   const handlePrevPage = () => {
     setHistoryOffset(prev => Math.max(0, prev - HISTORY_PAGE_SIZE));
-    historyViewportRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+    historyViewportRef.current?.scrollTo({top: 0, behavior: 'smooth'});
   };
 
   const handleNextPage = () => {
     if (hasNextPage) {
       setHistoryOffset(prev => prev + HISTORY_PAGE_SIZE);
-      historyViewportRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+      historyViewportRef.current?.scrollTo({top: 0, behavior: 'smooth'});
     }
   };
   // Server-side search is now handled by the API, so we use the sessions directly
@@ -678,7 +678,7 @@ const TranslationPracticePage: React.FC = () => {
     if (!sourceType || !sourceId) return null;
     const type = sourceType.toLowerCase();
     if (type === 'vocabulary_question') {
-      return { label: 'Vocabulary question', href: `/vocabulary/${sourceId}` };
+      return {label: 'Vocabulary question', href: `/vocabulary/${sourceId}`};
     }
     if (type === 'reading_comprehension') {
       return {
@@ -688,13 +688,13 @@ const TranslationPracticePage: React.FC = () => {
     }
     if (type === 'story_section') {
       // Best-effort jump: Story page, passing sectionId as query for now
-      return { label: 'Story section', href: `/story?sectionId=${sourceId}` };
+      return {label: 'Story section', href: `/story?sectionId=${sourceId}`};
     }
     if (type === 'snippet') {
-      return { label: 'Snippet', href: `/snippets` };
+      return {label: 'Snippet', href: `/snippets`};
     }
     if (type === 'phrasebook') {
-      return { label: 'Phrasebook', href: `/phrasebook` };
+      return {label: 'Phrasebook', href: `/phrasebook`};
     }
     return {
       label: type.replaceAll('_', ' '),
@@ -705,7 +705,7 @@ const TranslationPracticePage: React.FC = () => {
   const isExpanded = shortcutsExpanded && !isSmallScreen;
 
   return (
-    <Box style={{ position: 'relative' }}>
+    <Box style={{position: 'relative'}}>
       <Container size={isMobileRoute ? 'sm' : 'lg'} pt='md' pb='xl'>
         <Stack gap={isMobileRoute ? 'sm' : 'md'}>
           {isMobileRoute ? (
@@ -743,7 +743,7 @@ const TranslationPracticePage: React.FC = () => {
                   setTimeout(() => setIsDirectionFocused(false), 100);
                 }}
                 aria-label='Translation direction'
-                style={{ width: '100%' }}
+                style={{width: '100%'}}
               />
               <Group grow>
                 <Button
@@ -777,7 +777,7 @@ const TranslationPracticePage: React.FC = () => {
             <Group justify='space-between' align='center' mb='md'>
               <Title order={2}>Translation Practice</Title>
               <Group gap='xs'>
-                <Box style={{ position: 'relative' }}>
+                <Box style={{position: 'relative'}}>
                   <Select
                     data={
                       directionOptions as unknown as {
@@ -995,7 +995,7 @@ const TranslationPracticePage: React.FC = () => {
                         );
                         return info ? (
                           <Text size='xs' c='dimmed'>
-                            From existing content:{' '}
+                            Source:{' '}
                             {info.href ? (
                               <Anchor href={info.href}>{info.label}</Anchor>
                             ) : (
@@ -1091,7 +1091,7 @@ const TranslationPracticePage: React.FC = () => {
                       remarkPlugins={[remarkGfm]}
                       components={{
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        p: ({ children }: any) => (
+                        p: ({children}: any) => (
                           <Box mb='md' component='p'>
                             {children}
                           </Box>
@@ -1131,7 +1131,7 @@ const TranslationPracticePage: React.FC = () => {
                         color='gray'
                         variant='filled'
                         radius='sm'
-                        style={{ pointerEvents: 'none' }}
+                        style={{pointerEvents: 'none'}}
                       >
                         H
                       </Badge>
@@ -1139,7 +1139,7 @@ const TranslationPracticePage: React.FC = () => {
                   />
                   {(sessions.length ?? 0) > 0 ? (
                     <ScrollArea
-                      style={{ height: '60vh' }}
+                      style={{height: '60vh'}}
                       viewportRef={historyViewportRef}
                     >
                       <Accordion variant='separated'>
@@ -1151,7 +1151,7 @@ const TranslationPracticePage: React.FC = () => {
                                 align='flex-start'
                                 wrap='nowrap'
                               >
-                                <Stack gap={2} style={{ flex: 1, minWidth: 0 }}>
+                                <Stack gap={2} style={{flex: 1, minWidth: 0}}>
                                   <Text size='sm' fw={600} lineClamp={1}>
                                     {s.original_sentence}
                                   </Text>
@@ -1162,15 +1162,15 @@ const TranslationPracticePage: React.FC = () => {
                                 <Group gap='xs' wrap='nowrap'>
                                   <Badge variant='light'>
                                     {s.translation_direction ===
-                                    'en_to_learning'
+                                      'en_to_learning'
                                       ? `English → ${languageDisplay}`
                                       : s.translation_direction ===
-                                          'learning_to_en'
+                                        'learning_to_en'
                                         ? `${languageDisplay} → English`
                                         : s.translation_direction.replaceAll(
-                                            '_',
-                                            ' '
-                                          )}
+                                          '_',
+                                          ' '
+                                        )}
                                   </Badge>
                                   {s.ai_score != null ? (
                                     <Badge
@@ -1230,7 +1230,7 @@ const TranslationPracticePage: React.FC = () => {
                                     remarkPlugins={[remarkGfm]}
                                     components={{
                                       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                      p: ({ children }: any) => (
+                                      p: ({children}: any) => (
                                         <Box mb='md' component='p'>
                                           {children}
                                         </Box>
@@ -1307,13 +1307,13 @@ const TranslationPracticePage: React.FC = () => {
 
       {/* Scroll to top indicator at bottom */}
       {!isMobileRoute && (
-        <Group justify='center' style={{ marginTop: 8, marginBottom: 8 }}>
+        <Group justify='center' style={{marginTop: 8, marginBottom: 8}}>
           <Badge
             size='xs'
             color='gray'
             variant='filled'
             radius='sm'
-            style={{ opacity: 0.85, marginRight: 1 }}
+            style={{opacity: 0.85, marginRight: 1}}
           >
             ↑
           </Badge>
@@ -1335,7 +1335,7 @@ const TranslationPracticePage: React.FC = () => {
             pointerEvents: 'none',
           }}
         >
-          <Group gap={0} align='stretch' style={{ pointerEvents: 'auto' }}>
+          <Group gap={0} align='stretch' style={{pointerEvents: 'auto'}}>
             <Button
               onClick={() => setShortcutsExpanded(!shortcutsExpanded)}
               variant='subtle'
@@ -1396,14 +1396,14 @@ const TranslationPracticePage: React.FC = () => {
                       <Badge
                         size='sm'
                         variant='light'
-                        style={{ minWidth: '32px' }}
+                        style={{minWidth: '32px'}}
                       >
                         {'<'}
                       </Badge>
                       <Badge
                         size='sm'
                         variant='light'
-                        style={{ minWidth: '32px' }}
+                        style={{minWidth: '32px'}}
                       >
                         {'>'}
                       </Badge>
@@ -1419,7 +1419,7 @@ const TranslationPracticePage: React.FC = () => {
                             <Badge
                               size='sm'
                               variant='light'
-                              style={{ minWidth: '32px' }}
+                              style={{minWidth: '32px'}}
                             >
                               Esc
                             </Badge>
@@ -1432,7 +1432,7 @@ const TranslationPracticePage: React.FC = () => {
                               <Badge
                                 size='sm'
                                 variant='light'
-                                style={{ minWidth: '32px' }}
+                                style={{minWidth: '32px'}}
                               >
                                 ⌘↵
                               </Badge>
@@ -1448,7 +1448,7 @@ const TranslationPracticePage: React.FC = () => {
                             <Badge
                               size='sm'
                               variant='light'
-                              style={{ minWidth: '32px' }}
+                              style={{minWidth: '32px'}}
                             >
                               A
                             </Badge>
@@ -1493,7 +1493,7 @@ const TranslationPracticePage: React.FC = () => {
                             <Text
                               size='xs'
                               c='dimmed'
-                              style={{ opacity: lastGenerationType ? 1 : 0.5 }}
+                              style={{opacity: lastGenerationType ? 1 : 0.5}}
                             >
                               {lastGenerationType
                                 ? `Generate another (${lastGenerationType === 'ai' ? 'AI' : 'existing'})`
@@ -1504,7 +1504,7 @@ const TranslationPracticePage: React.FC = () => {
                             <Badge
                               size='sm'
                               variant='light'
-                              style={{ minWidth: '32px' }}
+                              style={{minWidth: '32px'}}
                             >
                               Tab
                             </Badge>
@@ -1516,7 +1516,7 @@ const TranslationPracticePage: React.FC = () => {
                             <Badge
                               size='sm'
                               variant='light'
-                              style={{ minWidth: '32px' }}
+                              style={{minWidth: '32px'}}
                             >
                               O
                             </Badge>
@@ -1528,7 +1528,7 @@ const TranslationPracticePage: React.FC = () => {
                             <Badge
                               size='sm'
                               variant='light'
-                              style={{ minWidth: '32px' }}
+                              style={{minWidth: '32px'}}
                             >
                               Y
                             </Badge>
@@ -1540,7 +1540,7 @@ const TranslationPracticePage: React.FC = () => {
                             <Badge
                               size='sm'
                               variant='light'
-                              style={{ minWidth: '32px' }}
+                              style={{minWidth: '32px'}}
                             >
                               ⌘↵
                             </Badge>
@@ -1552,7 +1552,7 @@ const TranslationPracticePage: React.FC = () => {
                             <Badge
                               size='sm'
                               variant='light'
-                              style={{ minWidth: '32px' }}
+                              style={{minWidth: '32px'}}
                             >
                               Esc
                             </Badge>
@@ -1564,7 +1564,7 @@ const TranslationPracticePage: React.FC = () => {
                             <Badge
                               size='sm'
                               variant='light'
-                              style={{ minWidth: '32px' }}
+                              style={{minWidth: '32px'}}
                             >
                               T
                             </Badge>
@@ -1576,7 +1576,7 @@ const TranslationPracticePage: React.FC = () => {
                             <Badge
                               size='sm'
                               variant='light'
-                              style={{ minWidth: '32px' }}
+                              style={{minWidth: '32px'}}
                             >
                               H
                             </Badge>
@@ -1588,7 +1588,7 @@ const TranslationPracticePage: React.FC = () => {
                             <Badge
                               size='sm'
                               variant='light'
-                              style={{ minWidth: '32px' }}
+                              style={{minWidth: '32px'}}
                             >
                               D
                             </Badge>
@@ -1602,7 +1602,7 @@ const TranslationPracticePage: React.FC = () => {
                                 <Badge
                                   size='sm'
                                   variant='light'
-                                  style={{ minWidth: '32px' }}
+                                  style={{minWidth: '32px'}}
                                 >
                                   ↑↓
                                 </Badge>
@@ -1614,7 +1614,7 @@ const TranslationPracticePage: React.FC = () => {
                                 <Badge
                                   size='sm'
                                   variant='light'
-                                  style={{ minWidth: '32px' }}
+                                  style={{minWidth: '32px'}}
                                 >
                                   ↵
                                 </Badge>

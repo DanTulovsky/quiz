@@ -2,6 +2,7 @@ import AVFoundation
 import Combine
 import MediaPlayer
 import SwiftUI
+import UIKit
 
 struct BadgeView: View {
     let text: String
@@ -376,5 +377,81 @@ struct SnippetDetailView: View {
         .cornerRadius(12)
         .shadow(radius: 10)
         .padding()
+    }
+}
+
+struct MarkdownTextView: UIViewRepresentable {
+    let markdown: String
+    let font: UIFont
+    let textColor: UIColor
+
+    init(
+        markdown: String, font: UIFont = UIFont.preferredFont(forTextStyle: .body),
+        textColor: UIColor = .label
+    ) {
+        self.markdown = markdown
+        self.font = font
+        self.textColor = textColor
+    }
+
+    func makeUIView(context: Context) -> UITextView {
+        let textView = UITextView()
+        textView.isEditable = false
+        textView.isSelectable = true
+        textView.backgroundColor = .clear
+        textView.textContainerInset = .zero
+        textView.textContainer.lineFragmentPadding = 0
+        textView.textContainer.widthTracksTextView = true
+        textView.textContainer.heightTracksTextView = false
+        textView.isScrollEnabled = false
+        textView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        textView.setContentCompressionResistancePriority(.required, for: .vertical)
+        updateTextView(textView)
+        return textView
+    }
+
+    func updateUIView(_ uiView: UITextView, context: Context) {
+        updateTextView(uiView)
+        DispatchQueue.main.async {
+            uiView.layoutIfNeeded()
+            uiView.invalidateIntrinsicContentSize()
+        }
+    }
+
+    private func updateTextView(_ textView: UITextView) {
+        guard !markdown.isEmpty else {
+            textView.attributedText = nil
+            textView.text = ""
+            return
+        }
+
+        if let attributedString = try? AttributedString(markdown: markdown) {
+            let nsAttributedString = NSAttributedString(attributedString)
+            let mutableAttributedString = NSMutableAttributedString(
+                attributedString: nsAttributedString)
+            let fullRange = NSRange(location: 0, length: mutableAttributedString.length)
+
+            mutableAttributedString.addAttribute(.font, value: font, range: fullRange)
+            mutableAttributedString.addAttribute(
+                .foregroundColor, value: textColor, range: fullRange)
+
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.lineSpacing = 4
+            mutableAttributedString.addAttribute(
+                .paragraphStyle, value: paragraphStyle, range: fullRange)
+
+            textView.attributedText = mutableAttributedString
+        } else {
+            let attributedString = NSMutableAttributedString(string: markdown)
+            let fullRange = NSRange(location: 0, length: markdown.count)
+            attributedString.addAttribute(.font, value: font, range: fullRange)
+            attributedString.addAttribute(.foregroundColor, value: textColor, range: fullRange)
+
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.lineSpacing = 4
+            attributedString.addAttribute(.paragraphStyle, value: paragraphStyle, range: fullRange)
+
+            textView.attributedText = attributedString
+        }
     }
 }
