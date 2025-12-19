@@ -150,13 +150,6 @@ struct StoryDetailView: View {
             selectedAnswers.removeAll()
             submittedQuestions.removeAll()
         }
-                        .onChange(of: submittedQuestions) { old, val in
-                                if !val.isEmpty {
-                                    withAnimation {
-                                        proxy.scrollTo("bottom", anchor: .bottom)
-                                    }
-                                }
-                            }
                         }
                     }
                 } else if viewModel.isLoading {
@@ -272,7 +265,6 @@ struct StoryDetailView: View {
     private func optionRow(question: StorySectionQuestion, idx: Int, option: String, hasSubmitted: Bool, selectedIdx: Int?) -> some View {
         let isCorrect = idx == question.correctAnswerIndex
         let isSelected = selectedIdx == idx
-        let language = viewModel.selectedStory?.language ?? "en"
 
         HStack {
             if hasSubmitted {

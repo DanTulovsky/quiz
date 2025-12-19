@@ -52,6 +52,7 @@ struct UserProfileMessageResponse: Codable {
 }
 
 struct ErrorResponse: Codable {
+    let code: String?
     let error: String?
     let message: String?
     let details: String?

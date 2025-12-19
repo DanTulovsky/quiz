@@ -4,6 +4,7 @@ struct TranslationPracticeView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = TranslationPracticeViewModel()
     @EnvironmentObject var authViewModel: AuthenticationViewModel
+    @State private var showErrorDetails = false
 
     var body: some View {
         ScrollView {
@@ -78,7 +79,7 @@ struct TranslationPracticeView: View {
 
                     // Error display for initial screen (when generation fails)
                     if viewModel.currentSentence == nil, let error = viewModel.error {
-                        VStack(spacing: 12) {
+                        VStack(alignment: .leading, spacing: 12) {
                             HStack {
                                 Image(systemName: "exclamationmark.triangle.fill")
                                     .foregroundColor(AppTheme.Colors.errorRed)
@@ -86,11 +87,35 @@ struct TranslationPracticeView: View {
                                     .font(AppTheme.Typography.subheadlineFont.weight(.semibold))
                                     .foregroundColor(AppTheme.Colors.errorRed)
                                 Spacer()
+                                if let code = error.errorCode {
+                                    Text(code)
+                                        .font(AppTheme.Typography.captionFont.weight(.bold))
+                                        .foregroundColor(AppTheme.Colors.errorRed)
+                                        .padding(.horizontal, 8)
+                                        .padding(.vertical, 4)
+                                        .background(AppTheme.Colors.errorRed.opacity(0.15))
+                                        .cornerRadius(6)
+                                }
                             }
                             Text(error.localizedDescription)
                                 .font(AppTheme.Typography.subheadlineFont)
                                 .foregroundColor(AppTheme.Colors.secondaryText)
                                 .frame(maxWidth: .infinity, alignment: .leading)
+
+                            if error.errorDetails != nil {
+                                Button(action: {
+                                    showErrorDetails = true
+                                }) {
+                                    HStack(spacing: 4) {
+                                        Text("View Details")
+                                            .font(AppTheme.Typography.captionFont)
+                                        Image(systemName: "chevron.right")
+                                            .font(.system(size: 10))
+                                    }
+                                    .foregroundColor(AppTheme.Colors.primaryBlue)
+                                }
+                                .padding(.top, 4)
+                            }
                         }
                         .padding(AppTheme.Spacing.innerPadding)
                         .background(AppTheme.Colors.errorRed.opacity(0.1))
@@ -140,6 +165,143 @@ struct TranslationPracticeView: View {
         .onAppear {
             viewModel.fetchHistory()
         }
+        .sheet(isPresented: $showErrorDetails) {
+            if let error = viewModel.error {
+                errorDetailsSheet(error: error)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func errorDetailsSheet(error: APIService.APIError) -> some View {
+        NavigationView {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    if let code = error.errorCode {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Error Code")
+                                .font(AppTheme.Typography.subheadlineFont.weight(.semibold))
+                                .foregroundColor(AppTheme.Colors.secondaryText)
+                            Text(code)
+                                .font(AppTheme.Typography.headingFont)
+                                .foregroundColor(AppTheme.Colors.errorRed)
+                        }
+                    }
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Message")
+                            .font(AppTheme.Typography.subheadlineFont.weight(.semibold))
+                            .foregroundColor(AppTheme.Colors.secondaryText)
+                        Text(error.localizedDescription)
+                            .font(AppTheme.Typography.subheadlineFont)
+                    }
+
+                    if let details = error.errorDetails {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Details")
+                                .font(AppTheme.Typography.subheadlineFont.weight(.semibold))
+                                .foregroundColor(AppTheme.Colors.secondaryText)
+
+                            ScrollView {
+                                Text(formatErrorDetails(details))
+                                    .font(.system(.caption, design: .monospaced))
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding()
+                                    .background(AppTheme.Colors.secondaryBackground)
+                                    .cornerRadius(AppTheme.CornerRadius.button)
+                            }
+                            .frame(maxHeight: 400)
+                        }
+                    }
+                }
+                .padding()
+            }
+            .navigationTitle("Error Details")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Done") {
+                        showErrorDetails = false
+                    }
+                }
+            }
+        }
+    }
+
+    private func formatErrorDetails(_ details: String) -> String {
+        var textToFormat = details
+
+        textToFormat = textToFormat.replacingOccurrences(of: "\\n", with: "\n")
+        textToFormat = textToFormat.replacingOccurrences(of: "\\\"", with: "\"")
+        textToFormat = textToFormat.replacingOccurrences(of: "\\\\", with: "\\")
+
+        if let jsonData = textToFormat.data(using: .utf8),
+           let jsonObject = try? JSONSerialization.jsonObject(with: jsonData, options: []),
+           let prettyData = try? JSONSerialization.data(withJSONObject: jsonObject, options: [.prettyPrinted]),
+           let prettyString = String(data: prettyData, encoding: .utf8) {
+            return prettyString
+        }
+
+        if let jsonArrayRange = findJSONArrayRange(in: textToFormat) {
+            let jsonSubstring = String(textToFormat[jsonArrayRange])
+            if let jsonData = jsonSubstring.data(using: .utf8),
+               let jsonObject = try? JSONSerialization.jsonObject(with: jsonData, options: []),
+               let prettyData = try? JSONSerialization.data(withJSONObject: jsonObject, options: [.prettyPrinted]),
+               let prettyString = String(data: prettyData, encoding: .utf8) {
+                let before = String(textToFormat[..<jsonArrayRange.lowerBound])
+                let after = String(textToFormat[jsonArrayRange.upperBound...])
+                return before + "\n\n" + prettyString + "\n\n" + after
+            }
+        }
+
+        return textToFormat
+    }
+
+    private func findJSONArrayRange(in text: String) -> Range<String.Index>? {
+        guard let startIndex = text.range(of: "[{")?.lowerBound else { return nil }
+
+        var bracketCount = 0
+        var braceCount = 0
+        var inString = false
+        var escapeNext = false
+        var currentIndex = startIndex
+
+        while currentIndex < text.endIndex {
+            let char = text[currentIndex]
+
+            if escapeNext {
+                escapeNext = false
+                currentIndex = text.index(after: currentIndex)
+                continue
+            }
+
+            if char == "\\" {
+                escapeNext = true
+                currentIndex = text.index(after: currentIndex)
+                continue
+            }
+
+            if char == "\"" {
+                inString.toggle()
+            } else if !inString {
+                if char == "[" {
+                    bracketCount += 1
+                } else if char == "]" {
+                    bracketCount -= 1
+                    if bracketCount == 0 && braceCount == 0 {
+                        return startIndex..<text.index(after: currentIndex)
+                    }
+                } else if char == "{" {
+                    braceCount += 1
+                } else if char == "}" {
+                    braceCount -= 1
+                }
+            }
+
+            currentIndex = text.index(after: currentIndex)
+        }
+
+        return nil
     }
 
     @ViewBuilder
@@ -237,11 +399,51 @@ struct TranslationPracticeView: View {
                 .contentShape(Rectangle())
             }
             .disabled(viewModel.userTranslation.isEmpty || viewModel.isLoading)
+
             if let error = viewModel.error {
-                Text(error.localizedDescription)
-                    .font(AppTheme.Typography.captionFont)
-                    .foregroundColor(AppTheme.Colors.errorRed)
-                    .padding(.top, 4)
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundColor(AppTheme.Colors.errorRed)
+                        Text("Error")
+                            .font(AppTheme.Typography.subheadlineFont.weight(.semibold))
+                            .foregroundColor(AppTheme.Colors.errorRed)
+                        Spacer()
+                        if let code = error.errorCode {
+                            Text(code)
+                                .font(AppTheme.Typography.captionFont.weight(.bold))
+                                .foregroundColor(AppTheme.Colors.errorRed)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(AppTheme.Colors.errorRed.opacity(0.15))
+                                .cornerRadius(6)
+                        }
+                    }
+                    Text(error.localizedDescription)
+                        .font(AppTheme.Typography.subheadlineFont)
+                        .foregroundColor(AppTheme.Colors.secondaryText)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                    if error.errorDetails != nil {
+                        Button(action: {
+                            showErrorDetails = true
+                        }) {
+                            HStack(spacing: 4) {
+                                Text("View Details")
+                                    .font(AppTheme.Typography.captionFont)
+                                Image(systemName: "chevron.right")
+                                    .font(.system(size: 10))
+                            }
+                            .foregroundColor(AppTheme.Colors.primaryBlue)
+                        }
+                        .padding(.top, 4)
+                    }
+                }
+                .padding(AppTheme.Spacing.innerPadding)
+                .background(AppTheme.Colors.errorRed.opacity(0.1))
+                .cornerRadius(AppTheme.CornerRadius.button)
+                .overlay(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(AppTheme.Colors.errorRed.opacity(0.3), lineWidth: 1))
+                .padding(.top, 8)
             }
         }
         .appCard()

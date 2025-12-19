@@ -216,7 +216,6 @@ struct DailyView: View {
         let isCorrect = correctAnswerIndex != nil && correctAnswerIndex == index
         let userAnswerIndex = viewModel.answerResponse?.userAnswerIndex ?? (isCompleted ? currentQuestion?.userAnswerIndex : nil)
         let isUserIncorrect = userAnswerIndex != nil && userAnswerIndex == index && !isCorrect
-        let language = currentQuestion?.question.language ?? "en"
 
         return HStack {
             if showResults {

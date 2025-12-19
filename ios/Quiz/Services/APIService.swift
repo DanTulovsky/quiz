@@ -16,7 +16,7 @@ class APIService {
         case requestFailed(Error)
         case invalidResponse
         case decodingFailed(Error)
-        case backendError(String)
+        case backendError(code: String?, message: String, details: String?)
 
         var errorDescription: String? {
             switch self {
@@ -25,7 +25,25 @@ class APIService {
             case .invalidResponse: return "Invalid response from server"
             case .decodingFailed(let error):
                 return "Failed to decode response: \(error.localizedDescription)"
-            case .backendError(let message): return message
+            case .backendError(let code, let message, _):
+                if let code = code {
+                    return "\(code): \(message)"
+                }
+                return message
+            }
+        }
+
+        var errorCode: String? {
+            switch self {
+            case .backendError(let code, _, _): return code
+            default: return nil
+            }
+        }
+
+        var errorDetails: String? {
+            switch self {
+            case .backendError(_, _, let details): return details
+            default: return nil
             }
         }
     }
@@ -74,9 +92,9 @@ class APIService {
                 .eraseToAnyPublisher()
         } else {
             if let errorResp = try? self.decoder.decode(ErrorResponse.self, from: data),
-                let msg = errorResp.message
+                let msg = errorResp.message ?? errorResp.error
             {
-                return Fail(error: .backendError(msg)).eraseToAnyPublisher()
+                return Fail(error: .backendError(code: errorResp.code, message: msg, details: errorResp.details)).eraseToAnyPublisher()
             }
             return Fail(error: .invalidResponse).eraseToAnyPublisher()
         }
@@ -231,9 +249,9 @@ class APIService {
                         .eraseToAnyPublisher()
                 } else {
                     if let errorResp = try? self.decoder.decode(ErrorResponse.self, from: data),
-                        let msg = errorResp.message
+                        let msg = errorResp.message ?? errorResp.error
                     {
-                        return Fail(error: .backendError(msg)).eraseToAnyPublisher()
+                        return Fail(error: .backendError(code: errorResp.code, message: msg, details: errorResp.details)).eraseToAnyPublisher()
                     }
                     return Fail(error: .invalidResponse).eraseToAnyPublisher()
                 }

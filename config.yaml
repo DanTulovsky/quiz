@@ -70,11 +70,6 @@ providers:
     models:
       - { name: "Gemini 2.0 Flash", code: "gemini-2.0-flash", max_tokens: 8192 }
       - {
-          name: "Gemini 2.5 Flash Lite",
-          code: "gemini-2.5-flash-lite-preview-06-17",
-          max_tokens: 64000,
-        }
-      - {
           name: "Gemini 2.5 Flash",
           code: "gemini-2.5-flash",
           max_tokens: 65536,

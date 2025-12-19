@@ -280,7 +280,6 @@ struct QuizView: View {
         let isSelected = viewModel.selectedAnswerIndex == index
         let isCorrect = viewModel.answerResponse?.correctAnswerIndex == index
         let isUserIncorrect = viewModel.answerResponse != nil && viewModel.answerResponse?.userAnswerIndex == index && !isCorrect
-        let question = viewModel.question
 
         HStack {
             if viewModel.answerResponse != nil {

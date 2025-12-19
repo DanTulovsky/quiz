@@ -8,18 +8,18 @@ class TranslationPracticeViewModel: ObservableObject {
     @Published var totalHistoryCount = 0
     @Published var isLoading = false
     @Published var error: APIService.APIError?
-    
+
     @Published var userTranslation = ""
     @Published var optionalTopic = ""
     @Published var selectedDirection = "learning_to_en"
-    
+
     private var apiService: APIService
     private var cancellables = Set<AnyCancellable>()
-    
+
     init(apiService: APIService = .shared) {
         self.apiService = apiService
     }
-    
+
     func fetchHistory() {
         apiService.getTranslationPracticeHistory()
             .receive(on: DispatchQueue.main)
@@ -35,7 +35,7 @@ class TranslationPracticeViewModel: ObservableObject {
         error = nil
         feedback = nil
         userTranslation = ""
-        
+
         apiService.getExistingTranslationSentence(language: language, level: level, direction: selectedDirection)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { [weak self] completion in
@@ -52,7 +52,8 @@ class TranslationPracticeViewModel: ObservableObject {
         error = nil
         feedback = nil
         userTranslation = ""
-        
+        currentSentence = nil
+
         let topic = optionalTopic.isEmpty ? nil : optionalTopic
         let request = TranslationPracticeGenerateRequest(language: language, level: level, direction: selectedDirection, topic: topic)
         apiService.generateTranslationSentence(request: request)
@@ -65,20 +66,20 @@ class TranslationPracticeViewModel: ObservableObject {
             })
             .store(in: &cancellables)
     }
-    
+
     func submitTranslation() {
 
         guard let sentence = currentSentence else { return }
         isLoading = true
         error = nil
-        
+
         let request = TranslationPracticeSubmitRequest(
             sentenceId: sentence.id,
             originalSentence: sentence.sentenceText,
             userTranslation: userTranslation,
             translationDirection: selectedDirection
         )
-        
+
         apiService.submitTranslation(request: request)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { [weak self] completion in
