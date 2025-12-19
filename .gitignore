@@ -34,3 +34,22 @@ backend/revive.log
 
 dochia-report/
 .cfg
+
+# Xcode
+*.xcuserstate
+*.xcscmblueprint
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+xcuserdata/
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+DerivedData/
+*.swiftmodule
+*.swiftdoc
+*.swiftsourceinfo
+ios/build/
+*.app
+*.framework
