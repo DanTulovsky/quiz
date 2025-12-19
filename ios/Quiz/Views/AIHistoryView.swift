@@ -219,68 +219,82 @@ struct BookmarkCard: View {
     private let maxPreviewLength = 100
 
     var body: some View {
-        Button(action: {
-            withAnimation {
-                isExpanded.toggle()
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text(message.role.uppercased())
+                    .font(.caption)
+                    .bold()
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(message.role == "user" ? Color.blue : Color.green)
+                    .foregroundColor(.white)
+                    .cornerRadius(6)
+
+                Text(message.createdAt, style: .date)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                Text(message.createdAt, style: .time)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+
+                Spacer()
+
+                Button(action: {
+                    viewModel.toggleBookmark(conversationId: message.conversationId, messageId: message.id)
+                }) {
+                    Image(systemName: "bookmark.slash.fill")
+                        .font(.caption)
+                        .foregroundColor(.red)
+                        .padding(8)
+                        .background(Color.red.opacity(0.1))
+                        .clipShape(Circle())
+                }
+                .buttonStyle(.plain)
             }
-        }) {
-            VStack(alignment: .leading, spacing: 12) {
-                HStack {
-                    Text(message.role.uppercased())
-                        .font(.caption)
-                        .bold()
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(message.role == "user" ? Color.blue : Color.green)
-                        .foregroundColor(.white)
-                        .cornerRadius(6)
 
-                    Text(message.createdAt, style: .date)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    Text(message.createdAt, style: .time)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+            if let title = message.conversationTitle {
+                Text(title.uppercased())
+                    .font(.system(size: 10, weight: .bold))
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(Color.gray.opacity(0.1))
+                    .foregroundColor(.secondary)
+                    .cornerRadius(4)
+            }
 
-                    Spacer()
+            Button(action: {
+                withAnimation {
+                    isExpanded.toggle()
                 }
+            }) {
+                VStack(alignment: .leading, spacing: 8) {
+                    if isExpanded {
+                        Text(message.content.text)
+                            .font(.body)
+                            .foregroundColor(.primary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    } else {
+                        let preview = message.content.text.prefix(maxPreviewLength)
+                        Text(preview + (message.content.text.count > maxPreviewLength ? "..." : ""))
+                            .font(.body)
+                            .foregroundColor(.primary)
+                            .lineLimit(2)
+                    }
 
-                if let title = message.conversationTitle {
-                    Text(title.uppercased())
-                        .font(.system(size: 10, weight: .bold))
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(Color.gray.opacity(0.1))
-                        .foregroundColor(.secondary)
-                        .cornerRadius(4)
-                }
-
-                if isExpanded {
-                    Text(message.content.text)
-                        .font(.body)
-                        .foregroundColor(.primary)
-                        .fixedSize(horizontal: false, vertical: true)
-                } else {
-                    let preview = message.content.text.prefix(maxPreviewLength)
-                    Text(preview + (message.content.text.count > maxPreviewLength ? "..." : ""))
-                        .font(.body)
-                        .foregroundColor(.primary)
-                        .lineLimit(2)
-                }
-
-                HStack {
-                    Spacer()
-                    Image(systemName: isExpanded ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right")
-                        .font(.caption)
-                        .foregroundColor(.blue)
+                    HStack {
+                        Spacer()
+                        Image(systemName: isExpanded ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right")
+                            .font(.caption)
+                            .foregroundColor(.blue)
+                    }
                 }
             }
-            .padding()
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color(.systemBackground))
-            .cornerRadius(12)
-            .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.gray.opacity(0.2), lineWidth: 1))
+            .buttonStyle(.plain)
         }
-        .buttonStyle(.plain)
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(.systemBackground))
+        .cornerRadius(12)
+        .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.gray.opacity(0.2), lineWidth: 1))
     }
 }
