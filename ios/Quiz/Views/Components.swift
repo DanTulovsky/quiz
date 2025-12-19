@@ -455,17 +455,30 @@ private class SizingTextView: UITextView {
             return CGSize(width: UIView.noIntrinsicMetric, height: 0)
         }
 
-        let layoutManager = self.layoutManager
-        let textContainer = self.textContainer
-
         let width = bounds.width > 0 ? bounds.width : UIScreen.main.bounds.width - 64
-        textContainer.size = CGSize(width: width, height: .greatestFiniteMagnitude)
 
-        layoutManager.ensureLayout(for: textContainer)
-        let usedRect = layoutManager.usedRect(for: textContainer)
-        let height = ceil(usedRect.height)
+        if let textLayoutManager = textLayoutManager,
+           let textContentManager = textLayoutManager.textContentManager,
+           let textContainer = textLayoutManager.textContainer {
+            let containerSize = CGSize(width: width, height: .greatestFiniteMagnitude)
+            textContainer.size = containerSize
 
-        return CGSize(width: UIView.noIntrinsicMetric, height: height)
+            textLayoutManager.textViewportLayoutController.layoutViewport()
+
+            var totalHeight: CGFloat = 0
+            let documentRange = textContentManager.documentRange
+            textLayoutManager.enumerateTextLayoutFragments(from: documentRange.location) { fragment in
+                totalHeight = max(totalHeight, fragment.layoutFragmentFrame.maxY)
+                return true
+            }
+
+            let height = ceil(totalHeight)
+            return CGSize(width: UIView.noIntrinsicMetric, height: height)
+        } else {
+            let size = CGSize(width: width, height: .greatestFiniteMagnitude)
+            let calculatedSize = sizeThatFits(size)
+            return CGSize(width: UIView.noIntrinsicMetric, height: calculatedSize.height)
+        }
     }
 
     override func layoutSubviews() {

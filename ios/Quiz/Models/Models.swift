@@ -339,7 +339,7 @@ struct PhrasebookWord: Codable {
     let note: String?
     let translations: [String: String]
 
-    init(from decoder: Decoder) throws {
+    nonisolated init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: DynamicKey.self)
         var trans: [String: String] = [:]
 
@@ -367,7 +367,7 @@ struct PhrasebookWord: Codable {
         self.translations = trans
     }
 
-    func encode(to encoder: Encoder) throws {
+    nonisolated func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: DynamicKey.self)
         guard let termKey = DynamicKey(stringValue: "term") else {
             throw EncodingError.invalidValue("term", EncodingError.Context(codingPath: encoder.codingPath, debugDescription: "Invalid key: term"))
@@ -782,7 +782,7 @@ struct EdgeTTSVoiceInfo: Codable, Identifiable, Equatable {
         self.gender = nil
     }
 
-    init(from decoder: Decoder) throws {
+    nonisolated init(from decoder: Decoder) throws {
         // Try to decode as a single string (short name)
         if let singleString = try? decoder.singleValueContainer().decode(String.self) {
             self.shortName = singleString

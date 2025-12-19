@@ -150,6 +150,13 @@ else
 fi
 
 echo "🧪 Running iOS tests with destination: $DEST"
-xcodebuild test -scheme Quiz -destination "$DEST" 2>&1 | grep -E "(Test Suite|Test Case|passed|failed|error:|Testing failed|BUILD)" | tail -50
-echo "✅ iOS tests completed!"
+xcodebuild test -scheme Quiz -destination "$DEST"
+EXIT_CODE=$?
+
+if [ $EXIT_CODE -eq 0 ]; then
+    echo "✅ iOS tests completed successfully!"
+else
+    echo "❌ iOS tests failed!"
+    exit $EXIT_CODE
+fi
 

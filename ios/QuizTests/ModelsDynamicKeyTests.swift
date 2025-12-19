@@ -38,7 +38,7 @@ class ModelsDynamicKeyTests: XCTestCase {
         XCTAssertEqual(key?.stringValue, specialString, "Key should preserve special characters")
     }
 
-    func testPhrasebookWordEncoding() {
+    nonisolated func testPhrasebookWordEncoding() {
         // Given - create a PhrasebookWord by decoding from JSON
         let jsonString = """
         {
@@ -58,7 +58,7 @@ class ModelsDynamicKeyTests: XCTestCase {
         }(), "Encoding/Decoding PhrasebookWord should not throw")
     }
 
-    func testEdgeTTSVoiceInfoDecoding() {
+    nonisolated func testEdgeTTSVoiceInfoDecoding() {
         // Given - test various decoding scenarios
         let jsonString = """
         {
@@ -78,7 +78,7 @@ class ModelsDynamicKeyTests: XCTestCase {
         }(), "Decoding EdgeTTSVoiceInfo should not throw")
     }
 
-    func testEdgeTTSVoiceInfoDecodingWithMissingFields() {
+    nonisolated func testEdgeTTSVoiceInfoDecodingWithMissingFields() {
         // Given - test with missing optional fields
         let jsonString = """
         {
