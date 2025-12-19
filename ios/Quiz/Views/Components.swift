@@ -380,6 +380,31 @@ struct SnippetDetailView: View {
     }
 }
 
+private class SizingTextView: UITextView {
+    override var intrinsicContentSize: CGSize {
+        guard !text.isEmpty, attributedText != nil else {
+            return CGSize(width: UIView.noIntrinsicMetric, height: 0)
+        }
+
+        let layoutManager = self.layoutManager
+        let textContainer = self.textContainer
+
+        let width = bounds.width > 0 ? bounds.width : UIScreen.main.bounds.width - 64
+        textContainer.size = CGSize(width: width, height: .greatestFiniteMagnitude)
+
+        layoutManager.ensureLayout(for: textContainer)
+        let usedRect = layoutManager.usedRect(for: textContainer)
+        let height = ceil(usedRect.height)
+
+        return CGSize(width: UIView.noIntrinsicMetric, height: height)
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        invalidateIntrinsicContentSize()
+    }
+}
+
 struct MarkdownTextView: UIViewRepresentable {
     let markdown: String
     let font: UIFont
@@ -395,7 +420,7 @@ struct MarkdownTextView: UIViewRepresentable {
     }
 
     func makeUIView(context: Context) -> UITextView {
-        let textView = UITextView()
+        let textView = SizingTextView()
         textView.isEditable = false
         textView.isSelectable = true
         textView.backgroundColor = .clear
@@ -422,36 +447,51 @@ struct MarkdownTextView: UIViewRepresentable {
         guard !markdown.isEmpty else {
             textView.attributedText = nil
             textView.text = ""
+            textView.invalidateIntrinsicContentSize()
             return
         }
 
+        let mutableAttributedString: NSMutableAttributedString
         if let attributedString = try? AttributedString(markdown: markdown) {
             let nsAttributedString = NSAttributedString(attributedString)
-            let mutableAttributedString = NSMutableAttributedString(
-                attributedString: nsAttributedString)
-            let fullRange = NSRange(location: 0, length: mutableAttributedString.length)
-
-            mutableAttributedString.addAttribute(.font, value: font, range: fullRange)
-            mutableAttributedString.addAttribute(
-                .foregroundColor, value: textColor, range: fullRange)
-
-            let paragraphStyle = NSMutableParagraphStyle()
-            paragraphStyle.lineSpacing = 4
-            mutableAttributedString.addAttribute(
-                .paragraphStyle, value: paragraphStyle, range: fullRange)
-
-            textView.attributedText = mutableAttributedString
+            mutableAttributedString = NSMutableAttributedString(attributedString: nsAttributedString)
         } else {
-            let attributedString = NSMutableAttributedString(string: markdown)
-            let fullRange = NSRange(location: 0, length: markdown.count)
-            attributedString.addAttribute(.font, value: font, range: fullRange)
-            attributedString.addAttribute(.foregroundColor, value: textColor, range: fullRange)
-
-            let paragraphStyle = NSMutableParagraphStyle()
-            paragraphStyle.lineSpacing = 4
-            attributedString.addAttribute(.paragraphStyle, value: paragraphStyle, range: fullRange)
-
-            textView.attributedText = attributedString
+            mutableAttributedString = NSMutableAttributedString(string: markdown)
         }
+
+        let fullRange = NSRange(location: 0, length: mutableAttributedString.length)
+        mutableAttributedString.addAttribute(.font, value: font, range: fullRange)
+        mutableAttributedString.addAttribute(.foregroundColor, value: textColor, range: fullRange)
+
+        let string = mutableAttributedString.string as NSString
+        let hasDoubleNewlines = markdown.contains("\n\n")
+
+        string.enumerateSubstrings(in: NSRange(location: 0, length: string.length), options: [.byParagraphs, .localized]) { _, paragraphRange, enclosingRange, stop in
+            var effectiveRange = NSRange()
+            let existingStyle = mutableAttributedString.attribute(.paragraphStyle, at: paragraphRange.location, longestEffectiveRange: &effectiveRange, in: paragraphRange) as? NSParagraphStyle
+
+            let paragraphStyle: NSMutableParagraphStyle
+            if let existingStyle = existingStyle {
+                paragraphStyle = existingStyle.mutableCopy() as! NSMutableParagraphStyle
+            } else {
+                paragraphStyle = NSMutableParagraphStyle()
+            }
+            paragraphStyle.lineSpacing = 4
+
+            let isLastParagraph = (paragraphRange.location + paragraphRange.length >= string.length)
+            let hasTrailingSeparator = paragraphRange.location + paragraphRange.length < enclosingRange.location + enclosingRange.length
+
+            if hasDoubleNewlines && hasTrailingSeparator && !isLastParagraph {
+                paragraphStyle.paragraphSpacing = 16
+            } else if hasTrailingSeparator && !isLastParagraph {
+                paragraphStyle.paragraphSpacing = 8
+            } else {
+                paragraphStyle.paragraphSpacing = 0
+            }
+
+            mutableAttributedString.addAttribute(.paragraphStyle, value: paragraphStyle, range: paragraphRange)
+        }
+
+        textView.attributedText = mutableAttributedString
     }
 }

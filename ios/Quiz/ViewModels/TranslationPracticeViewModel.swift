@@ -87,7 +87,6 @@ class TranslationPracticeViewModel: ObservableObject {
                 if case .failure(let error) = completion { self?.error = error }
             }, receiveValue: { [weak self] response in
                 self?.feedback = response
-                self?.userTranslation = "" // Clear after success
                 self?.fetchHistory() // Refresh history after submission
             })
             .store(in: &cancellables)

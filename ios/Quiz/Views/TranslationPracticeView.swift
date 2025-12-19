@@ -145,13 +145,6 @@ struct TranslationPracticeView: View {
                             }
                         }
                     }
-                    .onChange(of: viewModel.feedback) { old, val in
-                        if val != nil {
-                            withAnimation {
-                                proxy.scrollTo("bottom", anchor: .bottom)
-                            }
-                        }
-                    }
             }
         }
         .navigationTitle("Translation Practice")
