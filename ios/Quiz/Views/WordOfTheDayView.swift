@@ -3,6 +3,8 @@ import SwiftUI
 struct WordOfTheDayView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = WordOfTheDayViewModel()
+    @State private var showDatePicker = false
+    @State private var selectedDate = Date()
 
     private var displayFormatter: DateFormatter {
         let formatter = DateFormatter()
@@ -10,16 +12,29 @@ struct WordOfTheDayView: View {
         return formatter
     }
 
+    private var dateButtonLabel: String {
+        if Calendar.current.isDateInToday(viewModel.currentDate) {
+            return "Today"
+        } else {
+            let formatter = DateFormatter()
+            formatter.dateStyle = .medium
+            return formatter.string(from: viewModel.currentDate)
+        }
+    }
+
     var body: some View {
         ScrollView {
             VStack(spacing: 25) {
-                // Header with Today button
+                // Header with Date button
                 HStack {
                     Text("Word of the Day")
                         .font(AppTheme.Typography.headingFont)
                     Spacer()
-                    Button(action: { viewModel.fetchToday() }) {
-                        Label("Today", systemImage: "calendar")
+                    Button(action: {
+                        selectedDate = viewModel.currentDate
+                        showDatePicker = true
+                    }) {
+                        Label(dateButtonLabel, systemImage: "calendar")
                             .font(AppTheme.Typography.subheadlineFont)
                             .foregroundColor(AppTheme.Colors.primaryBlue)
                     }
@@ -88,6 +103,38 @@ struct WordOfTheDayView: View {
                             .font(.system(size: 17))
                     }
                     .foregroundColor(.blue)
+                }
+            }
+        }
+        .sheet(isPresented: $showDatePicker) {
+            NavigationView {
+                VStack {
+                    DatePicker(
+                        "Select Date",
+                        selection: $selectedDate,
+                        in: ...Date(),
+                        displayedComponents: .date
+                    )
+                    .datePickerStyle(.graphical)
+                    .padding()
+
+                    Spacer()
+                }
+                .navigationTitle("Select Date")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button("Cancel") {
+                            showDatePicker = false
+                        }
+                    }
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button("Done") {
+                            viewModel.selectDate(selectedDate)
+                            showDatePicker = false
+                        }
+                        .fontWeight(.semibold)
+                    }
                 }
             }
         }

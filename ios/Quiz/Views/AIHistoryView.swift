@@ -243,15 +243,6 @@ struct BookmarkCard: View {
                         .foregroundColor(.secondary)
 
                     Spacer()
-
-                    Button(action: {
-                        viewModel.toggleBookmark(conversationId: message.conversationId, messageId: message.id)
-                    }) {
-                        Image(systemName: "bookmark.fill")
-                            .foregroundColor(.red.opacity(0.7))
-                            .font(.system(size: 16))
-                    }
-                    .buttonStyle(.plain)
                 }
 
                 if let title = message.conversationTitle {

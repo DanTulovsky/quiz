@@ -24,6 +24,20 @@ struct TranslationPracticeView: View {
                         Spacer()
                     }
 
+                    // Optional Topic Field (shown on initial screen)
+                    if viewModel.currentSentence == nil {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Optional topic")
+                                .font(AppTheme.Typography.subheadlineFont)
+                                .foregroundColor(AppTheme.Colors.secondaryText)
+                            TextField("e.g., travel, ordering food, work", text: $viewModel.optionalTopic)
+                                .padding(12)
+                                .background(AppTheme.Colors.secondaryBackground)
+                                .cornerRadius(AppTheme.CornerRadius.button)
+                                .overlay(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(AppTheme.Colors.borderGray, lineWidth: 1))
+                        }
+                    }
+
                     // Action Buttons
                     HStack(spacing: 15) {
                         Button(action: {
@@ -60,6 +74,28 @@ struct TranslationPracticeView: View {
                             .padding(.top, 20)
                     } else if let sentence = viewModel.currentSentence {
                         promptCard(sentence).id("prompt_card")
+                    }
+
+                    // Error display for initial screen (when generation fails)
+                    if viewModel.currentSentence == nil, let error = viewModel.error {
+                        VStack(spacing: 12) {
+                            HStack {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .foregroundColor(AppTheme.Colors.errorRed)
+                                Text("Error")
+                                    .font(AppTheme.Typography.subheadlineFont.weight(.semibold))
+                                    .foregroundColor(AppTheme.Colors.errorRed)
+                                Spacer()
+                            }
+                            Text(error.localizedDescription)
+                                .font(AppTheme.Typography.subheadlineFont)
+                                .foregroundColor(AppTheme.Colors.secondaryText)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                        .padding(AppTheme.Spacing.innerPadding)
+                        .background(AppTheme.Colors.errorRed.opacity(0.1))
+                        .cornerRadius(AppTheme.CornerRadius.button)
+                        .overlay(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(AppTheme.Colors.errorRed.opacity(0.3), lineWidth: 1))
                     }
 
                     if !viewModel.history.isEmpty {
