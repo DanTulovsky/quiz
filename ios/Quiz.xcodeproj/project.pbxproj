@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		BEC857D42EF4FBDD00722DEE /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BEC857D32EF4FBDD00722DEE /* MarkdownUI */; };
+		BEC857D62EF4FBEF00722DEE /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BEC857D52EF4FBEF00722DEE /* MarkdownUI */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		BE5781F52EF24DFC00A9FE36 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -39,6 +44,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BEC857D62EF4FBEF00722DEE /* MarkdownUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -46,6 +52,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BEC857D42EF4FBDD00722DEE /* MarkdownUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -57,6 +64,7 @@
 			children = (
 				BE5781DF2EF24DFC00A9FE36 /* Quiz */,
 				BE5781EC2EF24DFC00A9FE36 /* QuizTests */,
+				BEC857D22EF4FBDD00722DEE /* Frameworks */,
 				BE5781DE2EF24DFC00A9FE36 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -68,6 +76,13 @@
 				BE5781EB2EF24DFC00A9FE36 /* QuizTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		BEC857D22EF4FBDD00722DEE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -90,6 +105,7 @@
 			);
 			name = Quiz;
 			packageProductDependencies = (
+				BEC857D52EF4FBEF00722DEE /* MarkdownUI */,
 			);
 			productName = LingoLearn;
 			productReference = BE5781DD2EF24DFC00A9FE36 /* Quiz.app */;
@@ -113,6 +129,7 @@
 			);
 			name = QuizTests;
 			packageProductDependencies = (
+				BEC857D32EF4FBDD00722DEE /* MarkdownUI */,
 			);
 			productName = QuizTests;
 			productReference = BE5781EB2EF24DFC00A9FE36 /* QuizTests.xctest */;
@@ -146,6 +163,9 @@
 			);
 			mainGroup = BE5781D42EF24DFC00A9FE36;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				BEC857D12EF4FBB400722DEE /* XCRemoteSwiftPackageReference "MarkdownUI" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = BE5781DE2EF24DFC00A9FE36 /* Products */;
 			projectDirPath = "";
@@ -479,6 +499,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		BEC857D12EF4FBB400722DEE /* XCRemoteSwiftPackageReference "MarkdownUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/gonzalezreal/MarkdownUI";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.4.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		BEC857D32EF4FBDD00722DEE /* MarkdownUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BEC857D12EF4FBB400722DEE /* XCRemoteSwiftPackageReference "MarkdownUI" */;
+			productName = MarkdownUI;
+		};
+		BEC857D52EF4FBEF00722DEE /* MarkdownUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BEC857D12EF4FBB400722DEE /* XCRemoteSwiftPackageReference "MarkdownUI" */;
+			productName = MarkdownUI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = BE5781D52EF24DFC00A9FE36 /* Project object */;
 }

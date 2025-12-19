@@ -3,6 +3,7 @@ import Combine
 import MediaPlayer
 import SwiftUI
 import UIKit
+import MarkdownUI
 
 struct BadgeView: View {
     let text: String
@@ -405,7 +406,7 @@ private class SizingTextView: UITextView {
     }
 }
 
-struct MarkdownTextView: UIViewRepresentable {
+struct MarkdownTextView: View {
     let markdown: String
     let font: UIFont
     let textColor: UIColor
@@ -419,130 +420,15 @@ struct MarkdownTextView: UIViewRepresentable {
         self.textColor = textColor
     }
 
-    func makeUIView(context: Context) -> UITextView {
-        let textView = SizingTextView()
-        textView.isEditable = false
-        textView.isSelectable = true
-        textView.backgroundColor = .clear
-        textView.textContainerInset = .zero
-        textView.textContainer.lineFragmentPadding = 0
-        textView.textContainer.widthTracksTextView = true
-        textView.textContainer.heightTracksTextView = false
-        textView.isScrollEnabled = false
-        textView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-        textView.setContentCompressionResistancePriority(.required, for: .vertical)
-        updateTextView(textView)
-        return textView
-    }
-
-    func updateUIView(_ uiView: UITextView, context: Context) {
-        updateTextView(uiView)
-        DispatchQueue.main.async {
-            uiView.layoutIfNeeded()
-            uiView.invalidateIntrinsicContentSize()
-        }
-    }
-
-    private func updateTextView(_ textView: UITextView) {
-        guard !markdown.isEmpty else {
-            textView.attributedText = nil
-            textView.text = ""
-            textView.invalidateIntrinsicContentSize()
-            return
-        }
-
-        let processedMarkdown = preprocessMarkdownForLineBreaks(markdown)
-
-        let mutableAttributedString: NSMutableAttributedString
-        if let attributedString = try? AttributedString(markdown: processedMarkdown) {
-            let nsAttributedString = NSAttributedString(attributedString)
-            mutableAttributedString = NSMutableAttributedString(attributedString: nsAttributedString)
-        } else {
-            mutableAttributedString = NSMutableAttributedString(string: processedMarkdown)
-        }
-
-        let fullRange = NSRange(location: 0, length: mutableAttributedString.length)
-        mutableAttributedString.addAttribute(.font, value: font, range: fullRange)
-        mutableAttributedString.addAttribute(.foregroundColor, value: textColor, range: fullRange)
-
-        let string = mutableAttributedString.string as NSString
-        let hasDoubleNewlines = markdown.contains("\n\n")
-
-        string.enumerateSubstrings(in: NSRange(location: 0, length: string.length), options: [.byParagraphs, .localized]) { _, paragraphRange, enclosingRange, stop in
-            var effectiveRange = NSRange()
-            let existingStyle = mutableAttributedString.attribute(.paragraphStyle, at: paragraphRange.location, longestEffectiveRange: &effectiveRange, in: paragraphRange) as? NSParagraphStyle
-
-            let paragraphStyle: NSMutableParagraphStyle
-            if let existingStyle = existingStyle {
-                paragraphStyle = existingStyle.mutableCopy() as! NSMutableParagraphStyle
-            } else {
-                paragraphStyle = NSMutableParagraphStyle()
+    var body: some View {
+        Markdown(markdown)
+            .markdownTextStyle {
+                FontSize(font.pointSize)
+                ForegroundColor(Color(textColor))
             }
-            paragraphStyle.lineSpacing = 4
-
-            let isLastParagraph = (paragraphRange.location + paragraphRange.length >= string.length)
-            let hasTrailingSeparator = paragraphRange.location + paragraphRange.length < enclosingRange.location + enclosingRange.length
-
-            if hasDoubleNewlines && hasTrailingSeparator && !isLastParagraph {
-                paragraphStyle.paragraphSpacing = 16
-            } else if hasTrailingSeparator && !isLastParagraph {
-                paragraphStyle.paragraphSpacing = 8
-            } else {
-                paragraphStyle.paragraphSpacing = 0
+            .markdownBlockStyle(\.paragraph) { configuration in
+                configuration.label
+                    .padding(.bottom, 8)
             }
-
-            mutableAttributedString.addAttribute(.paragraphStyle, value: paragraphStyle, range: paragraphRange)
-        }
-
-        textView.attributedText = mutableAttributedString
-    }
-
-    private func preprocessMarkdownForLineBreaks(_ markdown: String) -> String {
-        let paragraphs = markdown.components(separatedBy: "\n\n")
-        
-        let processedParagraphs = paragraphs.map { paragraph in
-            var processed = paragraph
-            var result = ""
-            var i = processed.startIndex
-            
-            while i < processed.endIndex {
-                let char = processed[i]
-                
-                if char == "\n" {
-                    let nextIndex = processed.index(after: i)
-                    if nextIndex < processed.endIndex {
-                        let nextChar = processed[nextIndex]
-                        if nextChar == "\n" {
-                            result.append("\n\n")
-                            i = processed.index(after: nextIndex)
-                            continue
-                        }
-                    }
-                    
-                    let prevIndex = processed.index(before: i)
-                    if prevIndex >= processed.startIndex {
-                        let prevChar = processed[prevIndex]
-                        if prevChar == " " {
-                            let prevPrevIndex = processed.index(before: prevIndex)
-                            if prevPrevIndex >= processed.startIndex && processed[prevPrevIndex] == " " {
-                                result.append("\n")
-                                i = processed.index(after: i)
-                                continue
-                            }
-                        }
-                    }
-                    
-                    result.append("  \n")
-                } else {
-                    result.append(char)
-                }
-                
-                i = processed.index(after: i)
-            }
-            
-            return result
-        }
-        
-        return processedParagraphs.joined(separator: "\n\n")
     }
 }
