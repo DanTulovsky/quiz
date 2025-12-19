@@ -215,6 +215,7 @@ struct BookmarkCard: View {
     let message: ChatMessage
     @ObservedObject var viewModel: AIHistoryViewModel
     @State private var isExpanded = false
+    @State private var showDeleteConfirmation = false
 
     private let maxPreviewLength = 100
 
@@ -240,7 +241,7 @@ struct BookmarkCard: View {
                 Spacer()
 
                 Button(action: {
-                    viewModel.toggleBookmark(conversationId: message.conversationId, messageId: message.id)
+                    showDeleteConfirmation = true
                 }) {
                     Image(systemName: "bookmark.slash.fill")
                         .font(.caption)
@@ -296,5 +297,13 @@ struct BookmarkCard: View {
         .background(Color(.systemBackground))
         .cornerRadius(12)
         .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.gray.opacity(0.2), lineWidth: 1))
+        .alert("Remove Bookmark", isPresented: $showDeleteConfirmation) {
+            Button("Cancel", role: .cancel) {}
+            Button("Remove", role: .destructive) {
+                viewModel.toggleBookmark(conversationId: message.conversationId, messageId: message.id)
+            }
+        } message: {
+            Text("Are you sure you want to remove this bookmark?")
+        }
     }
 }
