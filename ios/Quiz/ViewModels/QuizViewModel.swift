@@ -7,7 +7,12 @@ class QuizViewModel: ObservableObject {
     @Published var generatingMessage: String?
     @Published var error: APIService.APIError?
     @Published var isLoading = false
-    @Published var selectedAnswerIndex: Int? = nil
+    @Published var selectedAnswerIndex: Int? = nil {
+        didSet {
+            saveState()
+        }
+    }
+    @Published var snippets = [Snippet]()
 
     @Published var isReported = false
     @Published var showReportModal = false
@@ -25,6 +30,12 @@ class QuizViewModel: ObservableObject {
         self.questionType = questionType
         self.isDaily = isDaily
         self.apiService = apiService
+
+        if !isDaily, question == nil, let savedState = QuizStateManager.shared.getState(for: questionType) {
+            self.question = savedState.question
+            self.answerResponse = savedState.answerResponse
+            self.selectedAnswerIndex = savedState.selectedAnswerIndex
+        }
     }
 
     func getQuestion() {
@@ -34,6 +45,10 @@ class QuizViewModel: ObservableObject {
         answerResponse = nil
         selectedAnswerIndex = nil
         isReported = false
+
+        if !isDaily {
+            QuizStateManager.shared.clearState(for: questionType)
+        }
 
         apiService.getQuestion(language: nil, level: nil, type: questionType, excludeType: nil)
             .receive(on: DispatchQueue.main)
@@ -52,10 +67,21 @@ class QuizViewModel: ObservableObject {
                 case .question(let question):
                     self.question = question
                     self.generatingMessage = nil
+                    self.getSnippets(questionId: question.id)
+                    self.saveState()
                 case .generating(let status):
                     self.question = nil
                     self.generatingMessage = status.message
                 }
+            })
+            .store(in: &cancellables)
+    }
+
+    func getSnippets(questionId: Int) {
+        apiService.getSnippets(sourceLang: nil, targetLang: nil, storyId: nil)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] snippetList in
+                self?.snippets = snippetList.snippets
             })
             .store(in: &cancellables)
     }
@@ -82,6 +108,7 @@ class QuizViewModel: ObservableObject {
             }, receiveValue: { [weak self] response in
                 guard let self else { return }
                 self.answerResponse = response
+                self.saveState()
             })
             .store(in: &cancellables)
     }
@@ -136,5 +163,15 @@ class QuizViewModel: ObservableObject {
                 self?.showMarkKnownModal = false
             })
             .store(in: &cancellables)
+    }
+
+    private func saveState() {
+        guard !isDaily else { return }
+        let state = QuizStateManager.QuizState(
+            question: question,
+            answerResponse: answerResponse,
+            selectedAnswerIndex: selectedAnswerIndex
+        )
+        QuizStateManager.shared.saveState(for: questionType, state: state)
     }
 }

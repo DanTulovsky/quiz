@@ -9,6 +9,7 @@ struct DailyView: View {
     @State private var selectedText: String?
     @State private var showTranslationPopup = false
     @State private var translationSentence: String?
+    @State private var showingSnippet: Snippet? = nil
 
     var body: some View {
         ScrollView {
@@ -62,6 +63,10 @@ struct DailyView: View {
                         if let question = viewModel.currentQuestion, question.isCompleted {
                             viewModel.selectedAnswerIndex = question.userAnswerIndex
                         }
+                        // Fetch snippets for the new question
+                        if let question = viewModel.currentQuestion {
+                            viewModel.getSnippetsForQuestion(questionId: question.question.id)
+                        }
                     }
             }
         }
@@ -99,10 +104,21 @@ struct DailyView: View {
                         showTranslationPopup = false
                         selectedText = nil
                         translationSentence = nil
+                    },
+                    onSnippetSaved: {
+                        if let questionId = viewModel.currentQuestion?.question.id {
+                            viewModel.getSnippetsForQuestion(questionId: questionId)
+                        }
                     }
                 )
             }
         }
+        .snippetDetailPopup(
+            showingSnippet: $showingSnippet,
+            onSnippetDeleted: { snippet in
+                viewModel.snippets.removeAll { $0.id == snippet.id }
+            }
+        )
         .onAppear {
             viewModel.fetchDaily()
             // Also check positioning after a delay to catch any edge cases
@@ -110,6 +126,9 @@ struct DailyView: View {
                 try? await Task.sleep(nanoseconds: 200_000_000) // 0.2 seconds
                 if !viewModel.dailyQuestions.isEmpty {
                     viewModel.ensurePositionedOnFirstIncomplete()
+                    if let question = viewModel.currentQuestion {
+                        viewModel.getSnippetsForQuestion(questionId: question.question.id)
+                    }
                 }
             }
         }
@@ -164,9 +183,21 @@ struct DailyView: View {
             if let passage = stringValue(question.content["passage"]) {
                 VStack(alignment: .trailing) {
                     TTSButton(text: passage, language: question.language)
-                    Text(passage)
-                        .font(.body)
-                        .lineSpacing(4)
+                    SelectableTextView(
+                        text: passage,
+                        language: question.language,
+                        onTextSelected: { text in
+                            selectedText = text
+                            translationSentence = extractSentence(from: passage, containing: text)
+                            showTranslationPopup = true
+                        },
+                        highlightedSnippets: viewModel.snippets,
+                        onSnippetTapped: { snippet in
+                            showingSnippet = snippet
+                        }
+                    )
+                    .id("passage-\(viewModel.snippets.count)")
+                    .frame(minHeight: 100)
                 }
                 .appInnerCard()
             }
@@ -175,21 +206,55 @@ struct DailyView: View {
             let questionText = stringValue(question.content["question"]) ?? stringValue(question.content["prompt"])
 
             if let sentence = sentence {
-                let targetWord = stringValue(question.content["question"])
-                highlightedText(sentence, targetWord: targetWord)
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .lineSpacing(4)
+                SelectableTextView(
+                    text: sentence,
+                    language: question.language,
+                    onTextSelected: { text in
+                        selectedText = text
+                        translationSentence = extractSentence(from: sentence, containing: text)
+                        showTranslationPopup = true
+                    },
+                    highlightedSnippets: viewModel.snippets,
+                    onSnippetTapped: { snippet in
+                        showingSnippet = snippet
+                    }
+                )
+                .id("sentence-\(viewModel.snippets.count)")
+                .frame(minHeight: 44)
             } else if let questionText = questionText {
-                Text(questionText)
-                    .font(.title2)
-                    .fontWeight(.bold)
+                SelectableTextView(
+                    text: questionText,
+                    language: question.language,
+                    onTextSelected: { text in
+                        selectedText = text
+                        translationSentence = extractSentence(from: questionText, containing: text)
+                        showTranslationPopup = true
+                    },
+                    highlightedSnippets: viewModel.snippets,
+                    onSnippetTapped: { snippet in
+                        showingSnippet = snippet
+                    }
+                )
+                .id("question-\(viewModel.snippets.count)")
+                .frame(minHeight: 44)
             }
 
             if question.type == "vocabulary", let targetWord = stringValue(question.content["question"]) {
-                Text("What does **\(targetWord)** mean in this context?")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
+                SelectableTextView(
+                    text: "What does \(targetWord) mean in this context?",
+                    language: question.language,
+                    onTextSelected: { text in
+                        selectedText = text
+                        translationSentence = extractSentence(from: "What does \(targetWord) mean in this context?", containing: text)
+                        showTranslationPopup = true
+                    },
+                    highlightedSnippets: viewModel.snippets,
+                    onSnippetTapped: { snippet in
+                        showingSnippet = snippet
+                    }
+                )
+                .id("vocab-\(viewModel.snippets.count)")
+                .frame(minHeight: 44)
             }
         }
         .appCard()
@@ -276,8 +341,13 @@ struct DailyView: View {
                     selectedText = text
                     translationSentence = extractSentence(from: response.explanation, containing: text)
                     showTranslationPopup = true
+                },
+                highlightedSnippets: viewModel.snippets,
+                onSnippetTapped: { snippet in
+                    showingSnippet = snippet
                 }
             )
+            .id("explanation-\(viewModel.snippets.count)")
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(AppTheme.Spacing.innerPadding)
@@ -312,8 +382,13 @@ struct DailyView: View {
                     selectedText = text
                     translationSentence = extractSentence(from: explanation, containing: text)
                     showTranslationPopup = true
+                },
+                highlightedSnippets: viewModel.snippets,
+                onSnippetTapped: { snippet in
+                    showingSnippet = snippet
                 }
             )
+            .id("completed-explanation-\(viewModel.snippets.count)")
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(AppTheme.Spacing.innerPadding)

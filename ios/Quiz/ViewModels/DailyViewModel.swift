@@ -6,6 +6,7 @@ class DailyViewModel: ObservableObject {
     @Published var currentQuestionIndex = 0
     @Published var isLoading = false
     @Published var error: APIService.APIError?
+    @Published var snippets = [Snippet]()
 
     @Published var selectedAnswerIndex: Int? = nil
     @Published var answerResponse: DailyAnswerResponse? = nil
@@ -69,6 +70,25 @@ class DailyViewModel: ObservableObject {
                     // All questions are completed, start at the first one
                     self.currentQuestionIndex = 0
                 }
+                self.getSnippets()
+            })
+            .store(in: &cancellables)
+    }
+
+    func getSnippets() {
+        apiService.getSnippets(sourceLang: nil, targetLang: nil, storyId: nil)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] snippetList in
+                self?.snippets = snippetList.snippets
+            })
+            .store(in: &cancellables)
+    }
+
+    func getSnippetsForQuestion(questionId: Int) {
+        apiService.getSnippets(sourceLang: nil, targetLang: nil, storyId: nil)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] snippetList in
+                self?.snippets = snippetList.snippets
             })
             .store(in: &cancellables)
     }

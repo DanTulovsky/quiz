@@ -1,5 +1,13 @@
 import SwiftUI
 
+struct SnippetListViewWithSearch: View {
+    let query: String
+
+    var body: some View {
+        SnippetListView(initialSearchQuery: query)
+    }
+}
+
 struct SnippetListView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var authViewModel: AuthenticationViewModel
@@ -10,6 +18,12 @@ struct SnippetListView: View {
     @State private var showDeleteConfirmation = false
     @State private var showSnippetDetail = false
     @State private var selectedSnippet: Snippet? = nil
+
+    let initialSearchQuery: String?
+
+    init(initialSearchQuery: String? = nil) {
+        self.initialSearchQuery = initialSearchQuery
+    }
 
     var body: some View {
         ScrollView {
@@ -92,6 +106,9 @@ struct SnippetListView: View {
             .padding(.vertical)
         }
         .onAppear {
+            if let query = initialSearchQuery {
+                viewModel.searchQuery = query
+            }
             viewModel.fetchStories()
             viewModel.fetchLanguages()
             viewModel.getSnippets()

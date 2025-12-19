@@ -335,6 +335,15 @@ struct TTSButton: View {
 struct SnippetDetailView: View {
     let snippet: Snippet
     let onClose: () -> Void
+    let onNavigateToSnippets: ((String) -> Void)?
+    let onDelete: (() -> Void)?
+
+    init(snippet: Snippet, onClose: @escaping () -> Void, onNavigateToSnippets: ((String) -> Void)? = nil, onDelete: (() -> Void)? = nil) {
+        self.snippet = snippet
+        self.onClose = onClose
+        self.onNavigateToSnippets = onNavigateToSnippets
+        self.onDelete = onDelete
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -358,10 +367,18 @@ struct SnippetDetailView: View {
                 }
                 Spacer()
                 HStack(spacing: 15) {
-                    Image(systemName: "arrow.up.right.square")
-                        .foregroundColor(.blue)
-                    Image(systemName: "trash")
-                        .foregroundColor(.red)
+                    Button(action: {
+                        onNavigateToSnippets?(snippet.originalText)
+                    }) {
+                        Image(systemName: "arrow.up.right.square")
+                            .foregroundColor(.blue)
+                    }
+                    Button(action: {
+                        onDelete?()
+                    }) {
+                        Image(systemName: "trash")
+                            .foregroundColor(.red)
+                    }
                 }
             }
 

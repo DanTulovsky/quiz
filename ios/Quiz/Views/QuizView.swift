@@ -8,6 +8,7 @@ struct QuizView: View {
     @State private var selectedText: String?
     @State private var showTranslationPopup = false
     @State private var translationSentence: String?
+    @State private var showingSnippet: Snippet? = nil
 
     @StateObject private var ttsManager = TTSSynthesizerManager.shared
 
@@ -147,12 +148,41 @@ struct QuizView: View {
                         showTranslationPopup = false
                         selectedText = nil
                         translationSentence = nil
+                    },
+                    onSnippetSaved: {
+                        if let questionId = viewModel.question?.id {
+                            viewModel.getSnippets(questionId: questionId)
+                        }
                     }
                 )
             }
         }
+        .snippetDetailPopup(
+            showingSnippet: $showingSnippet,
+            onSnippetDeleted: { snippet in
+                viewModel.snippets.removeAll { $0.id == snippet.id }
+            }
+        )
+        .onChange(of: viewModel.question?.id) { _, questionId in
+            if let questionId = questionId {
+                viewModel.getSnippets(questionId: questionId)
+            } else {
+                viewModel.snippets = []
+            }
+        }
+        .onChange(of: viewModel.question) { _, _ in
+            if let questionId = viewModel.question?.id {
+                viewModel.getSnippets(questionId: questionId)
+            } else {
+                viewModel.snippets = []
+            }
+        }
         .onAppear {
-            if viewModel.question == nil { viewModel.getQuestion() }
+            if viewModel.question == nil {
+                viewModel.getQuestion()
+            } else if let questionId = viewModel.question?.id {
+                viewModel.getSnippets(questionId: questionId)
+            }
         }
     }
 
@@ -212,8 +242,13 @@ struct QuizView: View {
                             selectedText = text
                             translationSentence = extractSentence(from: passage, containing: text)
                             showTranslationPopup = true
+                        },
+                        highlightedSnippets: viewModel.snippets,
+                        onSnippetTapped: { snippet in
+                            showingSnippet = snippet
                         }
                     )
+                    .id("\(passage)-\(viewModel.snippets.count)")
                     .frame(minHeight: 100)
                 }
                 .appInnerCard()
@@ -227,8 +262,13 @@ struct QuizView: View {
                         selectedText = text
                         translationSentence = extractSentence(from: sentence, containing: text)
                         showTranslationPopup = true
+                    },
+                    highlightedSnippets: viewModel.snippets,
+                    onSnippetTapped: { snippet in
+                        showingSnippet = snippet
                     }
                 )
+                .id("\(sentence)-\(viewModel.snippets.count)")
                 .frame(minHeight: 44)
             } else if let questionText = stringValue(question.content["question"]) ?? stringValue(question.content["prompt"]) {
                 SelectableTextView(
@@ -238,14 +278,32 @@ struct QuizView: View {
                         selectedText = text
                         translationSentence = extractSentence(from: questionText, containing: text)
                         showTranslationPopup = true
+                    },
+                    highlightedSnippets: viewModel.snippets,
+                    onSnippetTapped: { snippet in
+                        showingSnippet = snippet
                     }
                 )
+                .id("\(questionText)-\(viewModel.snippets.count)")
                 .frame(minHeight: 44)
             }
 
             if question.type == "vocabulary", let targetWord = stringValue(question.content["question"]) {
-                Text("What does **\(targetWord)** mean in this context?")
-                    .textSelection(.enabled)
+                SelectableTextView(
+                    text: "What does \(targetWord) mean in this context?",
+                    language: question.language,
+                    onTextSelected: { text in
+                        selectedText = text
+                        translationSentence = extractSentence(from: "What does \(targetWord) mean in this context?", containing: text)
+                        showTranslationPopup = true
+                    },
+                    highlightedSnippets: viewModel.snippets,
+                    onSnippetTapped: { snippet in
+                        showingSnippet = snippet
+                    }
+                )
+                .id("vocab-\(targetWord)-\(viewModel.snippets.count)")
+                .frame(minHeight: 44)
             }
         }
         .appCard()
@@ -331,6 +389,7 @@ struct QuizView: View {
                 Text(response.isCorrect ? "Correct!" : "Incorrect")
                     .font(AppTheme.Typography.headingFont)
                     .foregroundColor(response.isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.errorRed)
+                    .textSelection(.enabled)
             }
 
             SelectableTextView(
@@ -340,8 +399,13 @@ struct QuizView: View {
                     selectedText = text
                     translationSentence = extractSentence(from: response.explanation, containing: text)
                     showTranslationPopup = true
+                },
+                highlightedSnippets: viewModel.snippets,
+                onSnippetTapped: { snippet in
+                    showingSnippet = snippet
                 }
             )
+            .id("explanation-\(viewModel.snippets.count)")
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(AppTheme.Spacing.innerPadding)

@@ -9,6 +9,7 @@ struct TranslationPopupView: View {
     let storyId: Int?
     let sentence: String?
     let onClose: () -> Void
+    let onSnippetSaved: (() -> Void)?
 
     @StateObject private var viewModel = TranslationPopupViewModel()
     @StateObject private var ttsManager = TTSSynthesizerManager.shared
@@ -326,6 +327,12 @@ struct TranslationPopupView: View {
                     isSaving = false
                     isSaved = true
                     saveError = nil
+
+                    onSnippetSaved?()
+
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        onClose()
+                    }
                 }
             )
             .store(in: &viewModel.cancellables)

@@ -138,7 +138,10 @@ struct StoryDetailView: View {
                                                 translationSentence = extractSentence(from: section.content, containing: text)
                                                 showTranslationPopup = true
                                             },
-                                            highlightedSnippets: viewModel.snippets
+                                            highlightedSnippets: viewModel.snippets,
+                                            onSnippetTapped: { snippet in
+                                                showingSnippet = snippet
+                                            }
                                         )
                                         .frame(minHeight: 100)
                                         .padding()
@@ -160,18 +163,6 @@ struct StoryDetailView: View {
                 }
             }
 
-            // Snippet Popup
-            if let snippet = showingSnippet {
-                Color.black.opacity(0.3)
-                    .ignoresSafeArea()
-                    .onTapGesture { showingSnippet = nil }
-
-                SnippetDetailView(snippet: snippet) {
-                    showingSnippet = nil
-                }
-                .transition(.scale.combined(with: .opacity))
-                .zIndex(1)
-            }
         }
         .onAppear {
             viewModel.getStory(id: storyId)
@@ -198,6 +189,9 @@ struct StoryDetailView: View {
                         showTranslationPopup = false
                         selectedText = nil
                         translationSentence = nil
+                    },
+                    onSnippetSaved: {
+                        viewModel.getSnippets(storyId: story.id)
                     }
                 )
             }
@@ -217,6 +211,12 @@ struct StoryDetailView: View {
                 }
             }
         }
+        .snippetDetailPopup(
+            showingSnippet: $showingSnippet,
+            onSnippetDeleted: { snippet in
+                viewModel.snippets.removeAll { $0.id == snippet.id }
+            }
+        )
     }
 
     @ViewBuilder
@@ -233,7 +233,10 @@ struct StoryDetailView: View {
                         translationSentence = extractSentence(from: section.content, containing: text)
                         showTranslationPopup = true
                     },
-                    highlightedSnippets: viewModel.snippets
+                    highlightedSnippets: viewModel.snippets,
+                    onSnippetTapped: { snippet in
+                        showingSnippet = snippet
+                    }
                 )
                 .frame(minHeight: 100)
             }
