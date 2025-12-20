@@ -4,4 +4,25 @@
    <FileRef
       location = "self:">
    </FileRef>
+   <FileRef
+      location = "group:UserModels.swift">
+   </FileRef>
+   <FileRef
+      location = "group:QuestionModels.swift">
+   </FileRef>
+   <FileRef
+      location = "group:SnippetModels.swift">
+   </FileRef>
+   <FileRef
+      location = "group:StoryModels.swift">
+   </FileRef>
+   <FileRef
+      location = "group:TranslationModels.swift">
+   </FileRef>
+   <FileRef
+      location = "group:AIModels.swift">
+   </FileRef>
+   <FileRef
+      location = "group:MiscModels.swift">
+   </FileRef>
 </Workspace>
