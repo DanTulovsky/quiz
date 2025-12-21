@@ -74,6 +74,10 @@ struct MainView: View {
         }
     }
 
+    private var fontSizeMultiplier: CGFloat {
+        FontSizeHelper.multiplier(for: appFontSize)
+    }
+
     var body: some View {
         Group {
             if authViewModel.isAuthenticated {
@@ -184,6 +188,7 @@ struct MainView: View {
         }
         .preferredColorScheme(colorScheme)
         .environment(\.dynamicTypeSize, dynamicTypeSize)
+        .environment(\.fontSizeMultiplier, fontSizeMultiplier)
         .onChange(of: authViewModel.isAuthenticated) { _, isAuthenticated in
             if isAuthenticated && !ttsInitManager.isInitialized {
                 ttsInitManager.initialize(

@@ -159,12 +159,12 @@ struct BookmarkedMessagesView: View {
             // Header with Title and Count
             HStack(spacing: 8) {
                 Text("Bookmarked Messages")
-                    .font(.system(size: 28, weight: .bold))
+                    .scaledFont(size: 28, weight: .bold)
                     .lineLimit(1)
                     .minimumScaleFactor(0.5)
 
                 Text("\(viewModel.bookmarks.count)")
-                    .font(.system(size: 18))
+                    .scaledFont(size: 18)
                     .bold()
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
@@ -206,9 +206,9 @@ struct BookmarkedMessagesView: View {
                 Button(action: { dismiss() }) {
                     HStack(spacing: 4) {
                         Image(systemName: "chevron.left")
-                            .font(.system(size: 17, weight: .semibold))
+                            .scaledFont(size: 17, weight: .semibold)
                         Text("Back")
-                            .font(.system(size: 17))
+                            .scaledFont(size: 17)
                     }
                     .foregroundColor(.blue)
                 }
@@ -264,7 +264,7 @@ struct BookmarkCard: View {
 
             if let title = message.conversationTitle {
                 Text(title.uppercased())
-                    .font(.system(size: 10, weight: .bold))
+                    .scaledFont(size: 10, weight: .bold)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
                     .background(Color.gray.opacity(0.1))

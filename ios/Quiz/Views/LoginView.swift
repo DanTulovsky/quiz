@@ -20,7 +20,7 @@ struct LoginView: View {
                             .fill(Color.blue.opacity(0.1))
                             .frame(width: 80, height: 80)
                         Image(systemName: "brain")
-                            .font(.system(size: 40))
+                            .scaledFont(size: 40)
                             .foregroundColor(.blue)
                     }
 

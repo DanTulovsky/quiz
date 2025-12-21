@@ -84,7 +84,7 @@ struct QuizView: View {
                     } else {
                         VStack(spacing: 20) {
                             Image(systemName: "questionmark.circle")
-                                .font(.system(size: 60))
+                                .scaledFont(size: 60)
                                 .foregroundColor(.blue)
                             Text("Ready to test your knowledge?")
                                 .font(.title2)
@@ -123,9 +123,9 @@ struct QuizView: View {
                 Button(action: { dismiss() }) {
                     HStack(spacing: 4) {
                         Image(systemName: "chevron.left")
-                            .font(.system(size: 17, weight: .semibold))
+                            .scaledFont(size: 17, weight: .semibold)
                         Text("Back")
-                            .font(.system(size: 17))
+                            .scaledFont(size: 17)
                     }
                     .foregroundColor(.blue)
                 }

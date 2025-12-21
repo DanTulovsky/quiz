@@ -84,9 +84,9 @@ struct DailyView: View {
                 Button(action: { dismiss() }) {
                     HStack(spacing: 4) {
                         Image(systemName: "chevron.left")
-                            .font(.system(size: 17, weight: .semibold))
+                            .scaledFont(size: 17, weight: .semibold)
                         Text("Back")
-                            .font(.system(size: 17))
+                            .scaledFont(size: 17)
                     }
                     .foregroundColor(.blue)
                 }
@@ -465,7 +465,7 @@ struct DailyView: View {
     private var completionView: some View {
         VStack(spacing: 20) {
             Image(systemName: "trophy.fill")
-                .font(.system(size: 80))
+                .scaledFont(size: 80)
                 .foregroundColor(AppTheme.Colors.primaryBlue)
 
             Text("Daily Challenge Complete!")

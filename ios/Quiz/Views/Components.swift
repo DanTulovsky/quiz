@@ -491,6 +491,7 @@ struct MarkdownTextView: View {
     let markdown: String
     let font: UIFont
     let textColor: UIColor
+    @Environment(\.fontSizeMultiplier) var fontSizeMultiplier
 
     init(
         markdown: String, font: UIFont = UIFont.preferredFont(forTextStyle: .body),
@@ -502,9 +503,10 @@ struct MarkdownTextView: View {
     }
 
     var body: some View {
-        Markdown(markdown)
+        let scaledFontSize = font.pointSize * fontSizeMultiplier
+        return Markdown(markdown)
             .markdownTextStyle {
-                FontSize(font.pointSize)
+                FontSize(scaledFontSize)
                 ForegroundColor(Color(textColor))
             }
             .markdownBlockStyle(\.paragraph) { configuration in

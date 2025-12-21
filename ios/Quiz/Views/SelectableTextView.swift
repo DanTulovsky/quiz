@@ -46,6 +46,7 @@ struct SelectableTextView: UIViewRepresentable {
     let highlightedSnippets: [Snippet]?
     let textColor: UIColor?
     let onSnippetTapped: ((Snippet) -> Void)?
+    @Environment(\.fontSizeMultiplier) var fontSizeMultiplier
 
     init(text: String, language: String, onTextSelected: @escaping (String) -> Void, highlightedSnippets: [Snippet]? = nil, textColor: UIColor? = nil, onSnippetTapped: ((Snippet) -> Void)? = nil) {
         self.text = text
@@ -103,8 +104,12 @@ struct SelectableTextView: UIViewRepresentable {
             return
         }
 
+        let baseFont = UIFont.preferredFont(forTextStyle: .body)
+        let scaledFontSize = baseFont.pointSize * fontSizeMultiplier
+        let scaledFont = UIFont(descriptor: baseFont.fontDescriptor, size: scaledFontSize)
+
         let attributedString = NSMutableAttributedString(string: text)
-        attributedString.addAttribute(.font, value: UIFont.preferredFont(forTextStyle: .body), range: NSRange(location: 0, length: text.count))
+        attributedString.addAttribute(.font, value: scaledFont, range: NSRange(location: 0, length: text.count))
 
         // Apply text color - use provided color or default to label color
         let color = textColor ?? UIColor.label

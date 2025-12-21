@@ -7,8 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		BEC857D42EF4FBDD00722DEE /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BEC857D32EF4FBDD00722DEE /* MarkdownUI */; };
-		BEC857D62EF4FBEF00722DEE /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BEC857D52EF4FBEF00722DEE /* MarkdownUI */; };
+		BEB954C92EF634710094D96E /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BEB954C82EF634710094D96E /* MarkdownUI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,7 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BEC857D62EF4FBEF00722DEE /* MarkdownUI in Frameworks */,
+				BEB954C92EF634710094D96E /* MarkdownUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -52,7 +51,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BEC857D42EF4FBDD00722DEE /* MarkdownUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -105,7 +103,7 @@
 			);
 			name = Quiz;
 			packageProductDependencies = (
-				BEC857D52EF4FBEF00722DEE /* MarkdownUI */,
+				BEB954C82EF634710094D96E /* MarkdownUI */,
 			);
 			productName = LingoLearn;
 			productReference = BE5781DD2EF24DFC00A9FE36 /* Quiz.app */;
@@ -129,7 +127,6 @@
 			);
 			name = QuizTests;
 			packageProductDependencies = (
-				BEC857D32EF4FBDD00722DEE /* MarkdownUI */,
 			);
 			productName = QuizTests;
 			productReference = BE5781EB2EF24DFC00A9FE36 /* QuizTests.xctest */;
@@ -144,6 +141,7 @@
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2620;
 				LastUpgradeCheck = 2620;
+				ORGANIZATIONNAME = Wetsnow;
 				TargetAttributes = {
 					BE5781DC2EF24DFC00A9FE36 = {
 						CreatedOnToolsVersion = 26.2;
@@ -164,7 +162,7 @@
 			mainGroup = BE5781D42EF24DFC00A9FE36;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				BEC857D12EF4FBB400722DEE /* XCRemoteSwiftPackageReference "MarkdownUI" */,
+				BEB954C72EF634710094D96E /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = BE5781DE2EF24DFC00A9FE36 /* Products */;
@@ -352,7 +350,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = Quiz;
+				INFOPLIST_KEY_CFBundleDisplayName = Verba;
 				INFOPLIST_KEY_CFBundleURLTypes = "{\n    CFBundleURLName = \"com.wetsnow.quiz.oauth\";\n    CFBundleURLSchemes =     (\n        \"com.googleusercontent.apps.53644033433-qpic9cnjknphdpa332d7flq7nvvdv520\"\n    );\n}";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -370,6 +368,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.wetsnow.quiz;
 				PRODUCT_NAME = Quiz;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -388,7 +389,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = Quiz;
+				INFOPLIST_KEY_CFBundleDisplayName = Verba;
 				INFOPLIST_KEY_CFBundleURLTypes = "{\n    CFBundleURLName = \"com.wetsnow.quiz.oauth\";\n    CFBundleURLSchemes =     (\n        \"com.googleusercontent.apps.53644033433-qpic9cnjknphdpa332d7flq7nvvdv520\"\n    );\n}";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -406,6 +407,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.wetsnow.quiz;
 				PRODUCT_NAME = Quiz;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -499,9 +503,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		BEC857D12EF4FBB400722DEE /* XCRemoteSwiftPackageReference "MarkdownUI" */ = {
+		BEB954C72EF634710094D96E /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/gonzalezreal/MarkdownUI";
+			repositoryURL = "https://github.com/gonzalezreal/swift-markdown-ui";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 2.4.1;
@@ -510,14 +514,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		BEC857D32EF4FBDD00722DEE /* MarkdownUI */ = {
+		BEB954C82EF634710094D96E /* MarkdownUI */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = BEC857D12EF4FBB400722DEE /* XCRemoteSwiftPackageReference "MarkdownUI" */;
-			productName = MarkdownUI;
-		};
-		BEC857D52EF4FBEF00722DEE /* MarkdownUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = BEC857D12EF4FBB400722DEE /* XCRemoteSwiftPackageReference "MarkdownUI" */;
+			package = BEB954C72EF634710094D96E /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
 			productName = MarkdownUI;
 		};
 /* End XCSwiftPackageProductDependency section */

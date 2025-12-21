@@ -116,7 +116,7 @@ struct TranslationPracticeView: View {
                                         Text("View Details")
                                             .font(AppTheme.Typography.captionFont)
                                         Image(systemName: "chevron.right")
-                                            .font(.system(size: 10))
+                                            .scaledFont(size: 10)
                                     }
                                     .foregroundColor(AppTheme.Colors.primaryBlue)
                                 }
@@ -162,9 +162,9 @@ struct TranslationPracticeView: View {
                 Button(action: { dismiss() }) {
                     HStack(spacing: 4) {
                         Image(systemName: "chevron.left")
-                            .font(.system(size: 17, weight: .semibold))
+                            .scaledFont(size: 17, weight: .semibold)
                         Text("Back")
-                            .font(.system(size: 17))
+                            .scaledFont(size: 17)
                     }
                     .foregroundColor(.blue)
                 }
@@ -460,7 +460,7 @@ struct TranslationPracticeView: View {
                                 Text("View Details")
                                     .font(AppTheme.Typography.captionFont)
                                 Image(systemName: "chevron.right")
-                                    .font(.system(size: 10))
+                                    .scaledFont(size: 10)
                             }
                             .foregroundColor(AppTheme.Colors.primaryBlue)
                         }

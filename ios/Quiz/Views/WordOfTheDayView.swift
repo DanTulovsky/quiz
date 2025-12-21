@@ -90,9 +90,9 @@ struct WordOfTheDayView: View {
                 Button(action: { dismiss() }) {
                     HStack(spacing: 4) {
                         Image(systemName: "chevron.left")
-                            .font(.system(size: 17, weight: .semibold))
+                            .scaledFont(size: 17, weight: .semibold)
                         Text("Back")
-                            .font(.system(size: 17))
+                            .scaledFont(size: 17)
                     }
                     .foregroundColor(.blue)
                 }
@@ -141,7 +141,7 @@ struct WordOfTheDayView: View {
             // Word and Translation
             VStack(spacing: 10) {
                 Text(wotd.word)
-                    .font(.system(size: 48, weight: .bold))
+                    .scaledFont(size: 48, weight: .bold)
                     .lineLimit(1)
                     .minimumScaleFactor(0.5)
                     .foregroundColor(AppTheme.Colors.primaryText)

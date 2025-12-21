@@ -43,6 +43,10 @@ struct AppTheme {
         static let subheadlineFont = Font.subheadline
         static let captionFont = Font.caption
         static let buttonFont = Font.headline
+
+        static func scaledFont(size: CGFloat, weight: Font.Weight = .regular, multiplier: CGFloat) -> Font {
+            return .system(size: size * multiplier, weight: weight)
+        }
     }
 }
 
