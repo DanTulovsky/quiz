@@ -7,14 +7,14 @@ class AIHistoryViewModel: BaseViewModel {
     @Published var selectedConversation: Conversation?
     @Published var isDeleting = false
 
-    init(apiService: APIService = .shared) {
+    override init(apiService: APIService = .shared) {
         super.init(apiService: apiService)
     }
 
     func fetchConversations() {
         apiService.getAIConversations()
             .handleLoadingAndError(on: self)
-            .sink(receiveValue: { [weak self] response in
+            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] response in
                 self?.conversations = response.conversations
             })
             .store(in: &cancellables)
@@ -23,7 +23,7 @@ class AIHistoryViewModel: BaseViewModel {
     func fetchConversation(id: String) {
         apiService.getAIConversation(id: id)
             .handleLoadingAndError(on: self)
-            .sink(receiveValue: { [weak self] conversation in
+            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] conversation in
                 self?.selectedConversation = conversation
             })
             .store(in: &cancellables)
@@ -113,11 +113,7 @@ class AIHistoryViewModel: BaseViewModel {
             .store(in: &cancellables)
     }
 
-    func cancelAllRequests() {
+    override func cancelAllRequests() {
         cancellables.removeAll()
-    }
-
-    deinit {
-        cancelAllRequests()
     }
 }

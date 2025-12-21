@@ -11,7 +11,7 @@ class TranslationPracticeViewModel: BaseViewModel {
     @Published var optionalTopic = ""
     @Published var selectedDirection = "learning_to_en"
 
-    init(apiService: APIService = .shared) {
+    override init(apiService: APIService = .shared) {
         super.init(apiService: apiService)
     }
 
@@ -33,7 +33,7 @@ class TranslationPracticeViewModel: BaseViewModel {
 
         apiService.getExistingTranslationSentence(language: language, level: level, direction: selectedDirection)
             .handleLoadingAndError(on: self)
-            .sink(receiveValue: { [weak self] response in
+            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] response in
                 self?.currentSentence = response
             })
             .store(in: &cancellables)
@@ -50,7 +50,7 @@ class TranslationPracticeViewModel: BaseViewModel {
         let request = TranslationPracticeGenerateRequest(language: language, level: level, direction: selectedDirection, topic: topic)
         apiService.generateTranslationSentence(request: request)
             .handleLoadingAndError(on: self)
-            .sink(receiveValue: { [weak self] response in
+            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] response in
                 self?.currentSentence = response
             })
             .store(in: &cancellables)
@@ -70,7 +70,7 @@ class TranslationPracticeViewModel: BaseViewModel {
 
         apiService.submitTranslation(request: request)
             .handleLoadingAndError(on: self)
-            .sink(receiveValue: { [weak self] response in
+            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] response in
                 self?.feedback = response
                 self?.fetchHistory() // Refresh history after submission
             })

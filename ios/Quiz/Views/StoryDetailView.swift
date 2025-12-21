@@ -191,7 +191,7 @@ struct StoryDetailView: View {
                         translationSentence = nil
                     },
                     onSnippetSaved: {
-                        viewModel.getSnippets(storyId: story.id)
+                        viewModel.loadSnippets(storyId: story.id)
                     }
                 )
             }

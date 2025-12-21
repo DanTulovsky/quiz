@@ -30,7 +30,7 @@ class SettingsViewModel: BaseViewModel {
         }
     }
 
-    init(apiService: APIService = APIService.shared) {
+    override init(apiService: APIService = APIService.shared) {
         super.init(apiService: apiService)
     }
 
@@ -41,7 +41,7 @@ class SettingsViewModel: BaseViewModel {
         // Fetch learning preferences
         apiService.getLearningPreferences()
             .handleLoadingAndError(on: self)
-            .sink(receiveValue: { [weak self] prefs in
+            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] prefs in
                 self?.learningPrefs = prefs
             })
             .store(in: &cancellables)

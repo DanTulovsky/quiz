@@ -9,7 +9,7 @@ class VerbViewModel: BaseViewModel {
 
     private var currentLanguage: String = "it"
 
-    init(apiService: APIService = .shared) {
+    override init(apiService: APIService = .shared) {
         super.init(apiService: apiService)
 
         $selectedVerb
@@ -26,7 +26,7 @@ class VerbViewModel: BaseViewModel {
         self.currentLanguage = language
         apiService.getVerbConjugations(language: language)
             .handleLoadingAndError(on: self)
-            .sink(receiveValue: { [weak self] data in
+            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] data in
                 self?.verbs = data.verbs
                 if self?.selectedVerb.isEmpty == true, let first = data.verbs.first {
                     self?.selectedVerb = first.infinitive
@@ -38,7 +38,7 @@ class VerbViewModel: BaseViewModel {
     func fetchVerbDetail(language: String, verb: String) {
         apiService.getVerbConjugation(language: language, verb: verb)
             .handleLoadingAndError(on: self)
-            .sink(receiveValue: { [weak self] detail in
+            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] detail in
                 self?.selectedVerbDetail = detail
             })
             .store(in: &cancellables)

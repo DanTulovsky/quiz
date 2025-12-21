@@ -72,7 +72,7 @@ struct DailyView: View {
                         }
                         // Fetch snippets for the new question
                         if let question = viewModel.currentQuestion {
-                            viewModel.getSnippetsForQuestion(questionId: question.question.id)
+                            viewModel.loadSnippets(questionId: question.question.id)
                         }
                     }
             }
@@ -114,7 +114,7 @@ struct DailyView: View {
                     },
                     onSnippetSaved: {
                         if let questionId = viewModel.currentQuestion?.question.id {
-                            viewModel.getSnippetsForQuestion(questionId: questionId)
+                            viewModel.loadSnippets(questionId: questionId)
                         }
                     }
                 )
@@ -134,7 +134,7 @@ struct DailyView: View {
                 if !viewModel.dailyQuestions.isEmpty {
                     viewModel.ensurePositionedOnFirstIncomplete()
                     if let question = viewModel.currentQuestion {
-                        viewModel.getSnippetsForQuestion(questionId: question.question.id)
+                        viewModel.loadSnippets(questionId: question.question.id)
                     }
                 }
             }

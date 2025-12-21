@@ -47,7 +47,7 @@ class QuizViewModel: BaseViewModel, QuestionActions, SnippetLoading {
 
         apiService.getQuestion(language: nil, level: nil, type: questionType, excludeType: nil)
             .handleLoadingAndError(on: self)
-            .sink(receiveValue: { [weak self] result in
+            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] result in
                 guard let self else { return }
                 switch result {
                 case .question(let question):
@@ -74,7 +74,7 @@ class QuizViewModel: BaseViewModel, QuestionActions, SnippetLoading {
         let answerRequest = AnswerRequest(questionId: question.id, userAnswerIndex: userAnswerIndex, responseTimeMs: nil)
         apiService.postAnswer(request: answerRequest)
             .handleErrorOnly(on: self)
-            .sink(receiveValue: { [weak self] response in
+            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] response in
                 guard let self else { return }
                 self.answerResponse = response
                 self.saveState()
@@ -88,7 +88,7 @@ class QuizViewModel: BaseViewModel, QuestionActions, SnippetLoading {
 
         apiService.postDailyAnswer(date: today, questionId: question.id, userAnswerIndex: userAnswerIndex)
             .handleErrorOnly(on: self)
-            .sink(receiveValue: { [weak self] response in
+            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] response in
                 self?.answerResponse = AnswerResponse(isCorrect: response.isCorrect,
                                                       userAnswer: response.userAnswer,
                                                       userAnswerIndex: response.userAnswerIndex,

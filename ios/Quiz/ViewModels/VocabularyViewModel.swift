@@ -27,7 +27,7 @@ class VocabularyViewModel: BaseViewModel, SnippetLoading {
         }
     }
 
-    init(apiService: APIService = APIService.shared) {
+    override init(apiService: APIService = APIService.shared) {
         super.init(apiService: apiService)
 
         // Handle search with debounce
@@ -137,11 +137,7 @@ class VocabularyViewModel: BaseViewModel, SnippetLoading {
         return snippets
     }
 
-    func cancelAllRequests() {
+    override func cancelAllRequests() {
         cancellables.removeAll()
-    }
-
-    deinit {
-        cancelAllRequests()
     }
 }

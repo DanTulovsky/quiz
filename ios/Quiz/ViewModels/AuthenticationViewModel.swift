@@ -52,7 +52,7 @@ class AuthenticationViewModel: BaseViewModel {
         }
     }
 
-    init(apiService: APIService = APIService.shared) {
+    override init(apiService: APIService = APIService.shared) {
         super.init(apiService: apiService)
         // Check auth status on init with a small delay to allow cookies to be set
         // This is especially important after OAuth callbacks
@@ -97,7 +97,7 @@ class AuthenticationViewModel: BaseViewModel {
         let loginRequest = LoginRequest(username: username, password: password)
         apiService.login(request: loginRequest)
             .handleErrorOnly(on: self)
-            .sink(receiveValue: { [weak self] response in
+            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] response in
                 guard let self else { return }
                 self.clearError()
                 self.isAuthenticated = response.success
@@ -110,7 +110,7 @@ class AuthenticationViewModel: BaseViewModel {
         let signupRequest = UserCreateRequest(username: username, email: email, password: password)
         apiService.signup(request: signupRequest)
             .handleErrorOnly(on: self)
-            .sink(receiveValue: { _ in
+            .sink(receiveCompletion: { _ in }, receiveValue: { _ in
                 // For simplicity, we'll just consider the signup successful
                 // and the user can now login.
                 // A better approach would be to automatically log the user in.
@@ -121,7 +121,7 @@ class AuthenticationViewModel: BaseViewModel {
     func logout() {
         apiService.logout()
             .handleErrorOnly(on: self)
-            .sink(receiveValue: { [weak self] _ in
+            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] _ in
                 guard let self else { return }
                 self.clearError()
                 self.isAuthenticated = false

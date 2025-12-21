@@ -37,7 +37,7 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading {
         currentQuestionIndex < dailyQuestions.count - 1
     }
 
-    init(apiService: APIService = APIService.shared) {
+    override init(apiService: APIService = APIService.shared) {
         super.init(apiService: apiService)
     }
 
@@ -47,7 +47,7 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading {
 
         apiService.getDailyQuestions(date: today)
             .handleLoadingAndError(on: self)
-            .sink(receiveValue: { [weak self] response in
+            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] response in
                 guard let self = self else { return }
                 self.dailyQuestions = response.questions
                 // Always position on the first incomplete question when questions are loaded
@@ -95,7 +95,7 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading {
                 self?.isSubmitting = false
             })
             .handleErrorOnly(on: self)
-            .sink(receiveValue: { [weak self] response in
+            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] response in
                 guard let self = self else { return }
                 self.answerResponse = response
 

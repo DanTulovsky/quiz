@@ -98,8 +98,9 @@ struct QuizView: View {
                     }
                 }
                 .padding()
-                Color.clear.frame(height: 1).id("bottom")
-
+                Color.clear
+                    .frame(height: 1)
+                    .id("bottom")
                     .onChange(of: viewModel.selectedAnswerIndex) { old, val in
                         if val != nil {
                             withAnimation {
@@ -153,7 +154,7 @@ struct QuizView: View {
                     },
                     onSnippetSaved: {
                         if let questionId = viewModel.question?.id {
-                            viewModel.getSnippets(questionId: questionId)
+                            viewModel.loadSnippets(questionId: questionId)
                         }
                     }
                 )
@@ -167,14 +168,14 @@ struct QuizView: View {
         )
         .onChange(of: viewModel.question?.id) { _, questionId in
             if let questionId = questionId {
-                viewModel.getSnippets(questionId: questionId)
+                viewModel.loadSnippets(questionId: questionId)
             } else {
                 viewModel.snippets = []
             }
         }
         .onChange(of: viewModel.question) { _, _ in
             if let questionId = viewModel.question?.id {
-                viewModel.getSnippets(questionId: questionId)
+                viewModel.loadSnippets(questionId: questionId)
             } else {
                 viewModel.snippets = []
             }
@@ -183,7 +184,7 @@ struct QuizView: View {
             if viewModel.question == nil {
                 viewModel.getQuestion()
             } else if let questionId = viewModel.question?.id {
-                viewModel.getSnippets(questionId: questionId)
+                viewModel.loadSnippets(questionId: questionId)
             }
         }
     }

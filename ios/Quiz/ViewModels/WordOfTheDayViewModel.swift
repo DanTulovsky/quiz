@@ -5,7 +5,7 @@ class WordOfTheDayViewModel: BaseViewModel {
     @Published var wordOfTheDay: WordOfTheDayDisplay?
     @Published var currentDate = Date()
 
-    init(apiService: APIService = APIService.shared) {
+    override init(apiService: APIService = APIService.shared) {
         super.init(apiService: apiService)
     }
 
@@ -51,7 +51,7 @@ class WordOfTheDayViewModel: BaseViewModel {
 
         apiService.getWordOfTheDay(date: date)
             .handleLoadingAndError(on: self)
-            .sink(receiveValue: { [weak self] word in
+            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] word in
                 self?.wordOfTheDay = word
             })
             .store(in: &cancellables)
