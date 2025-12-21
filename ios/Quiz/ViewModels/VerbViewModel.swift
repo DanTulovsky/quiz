@@ -1,20 +1,16 @@
 import Foundation
 import Combine
 
-class VerbViewModel: ObservableObject {
+class VerbViewModel: BaseViewModel {
     @Published var verbs: [VerbConjugationSummary] = []
     @Published var selectedVerb: String = ""
     @Published var selectedVerbDetail: VerbConjugationDetail?
     @Published var expandedTenses: Set<String> = []
-    @Published var isLoading = false
-    @Published var error: APIService.APIError?
 
     private var currentLanguage: String = "it"
-    private var apiService: APIService
-    private var cancellables = Set<AnyCancellable>()
 
     init(apiService: APIService = .shared) {
-        self.apiService = apiService
+        super.init(apiService: apiService)
 
         $selectedVerb
             .dropFirst()
@@ -28,13 +24,9 @@ class VerbViewModel: ObservableObject {
 
     func fetchVerbs(language: String) {
         self.currentLanguage = language
-        isLoading = true
         apiService.getVerbConjugations(language: language)
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [weak self] completion in
-                self?.isLoading = false
-                if case .failure(let error) = completion { self?.error = error }
-            }, receiveValue: { [weak self] data in
+            .handleLoadingAndError(on: self)
+            .sink(receiveValue: { [weak self] data in
                 self?.verbs = data.verbs
                 if self?.selectedVerb.isEmpty == true, let first = data.verbs.first {
                     self?.selectedVerb = first.infinitive
@@ -44,13 +36,9 @@ class VerbViewModel: ObservableObject {
     }
 
     func fetchVerbDetail(language: String, verb: String) {
-        isLoading = true
         apiService.getVerbConjugation(language: language, verb: verb)
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [weak self] completion in
-                self?.isLoading = false
-                if case .failure(let error) = completion { self?.error = error }
-            }, receiveValue: { [weak self] detail in
+            .handleLoadingAndError(on: self)
+            .sink(receiveValue: { [weak self] detail in
                 self?.selectedVerbDetail = detail
             })
             .store(in: &cancellables)
@@ -72,13 +60,5 @@ class VerbViewModel: ObservableObject {
 
     func collapseAll() {
         expandedTenses.removeAll()
-    }
-
-    func cancelAllRequests() {
-        cancellables.removeAll()
-    }
-
-    deinit {
-        cancelAllRequests()
     }
 }

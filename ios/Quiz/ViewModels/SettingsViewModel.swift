@@ -1,7 +1,7 @@
 import Combine
 import Foundation
 
-class SettingsViewModel: ObservableObject {
+class SettingsViewModel: BaseViewModel {
     @Published var aiProviders: [AIProviderInfo] = []
     @Published var availableVoices: [EdgeTTSVoiceInfo] = []
     @Published var availableLevels: [String] = []
@@ -19,12 +19,7 @@ class SettingsViewModel: ObservableObject {
 
     @Published var user: User?
     @Published var learningPrefs: UserLearningPreferences?
-    @Published var error: APIService.APIError?
-    @Published var isLoading = false
     @Published var isSuccess = false
-
-    var apiService: APIService
-    private var cancellables = Set<AnyCancellable>()
 
     private func updateLanguageCache() {
         languageCacheByCode.removeAll()
@@ -36,7 +31,7 @@ class SettingsViewModel: ObservableObject {
     }
 
     init(apiService: APIService = APIService.shared) {
-        self.apiService = apiService
+        super.init(apiService: apiService)
     }
 
     func fetchSettings() {
@@ -45,19 +40,10 @@ class SettingsViewModel: ObservableObject {
 
         // Fetch learning preferences
         apiService.getLearningPreferences()
-            .receive(on: DispatchQueue.main)
-            .sink(
-                receiveCompletion: { [weak self] completion in
-                    if case .failure(let error) = completion {
-                        self?.error = error
-                        self?.isLoading = false
-                    }
-                },
-                receiveValue: { [weak self] prefs in
-                    self?.learningPrefs = prefs
-                    self?.isLoading = false
-                }
-            )
+            .handleLoadingAndError(on: self)
+            .sink(receiveValue: { [weak self] prefs in
+                self?.learningPrefs = prefs
+            })
             .store(in: &cancellables)
     }
 
@@ -255,13 +241,5 @@ class SettingsViewModel: ObservableObject {
         let lowercased = language.lowercased()
         return languageCacheByCode[lowercased]?.ttsVoice
             ?? languageCacheByName[lowercased]?.ttsVoice
-    }
-
-    func cancelAllRequests() {
-        cancellables.removeAll()
-    }
-
-    deinit {
-        cancelAllRequests()
     }
 }

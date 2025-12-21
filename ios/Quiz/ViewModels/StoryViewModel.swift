@@ -1,36 +1,27 @@
 import Foundation
 import Combine
 
-class StoryViewModel: ObservableObject {
+class StoryViewModel: BaseViewModel, SnippetLoading {
     @Published var stories = [StorySummary]()
     @Published var selectedStory: StoryContent?
     @Published var currentSection: StorySectionWithQuestions?
     @Published var currentSectionIndex = 0
     @Published var snippets = [Snippet]()
     @Published var mode: StoryMode = .section
-    @Published var isLoading = false
-    @Published var error: APIService.APIError?
 
     enum StoryMode {
         case section
         case reading
     }
 
-    var apiService: APIService
-    private var cancellables = Set<AnyCancellable>()
-
     init(apiService: APIService = APIService.shared) {
-        self.apiService = apiService
+        super.init(apiService: apiService)
     }
 
     func getStories() {
-        isLoading = true
         apiService.getStories()
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [weak self] completion in
-                self?.isLoading = false
-                if case .failure(let error) = completion { self?.error = error }
-            }, receiveValue: { [weak self] storyList in
+            .handleLoadingAndError(on: self)
+            .sink(receiveValue: { [weak self] storyList in
                 self?.stories = storyList
             })
             .store(in: &cancellables)
@@ -39,42 +30,25 @@ class StoryViewModel: ObservableObject {
     func getStory(id: Int) {
         isLoading = true
         apiService.getStory(id: id)
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [weak self] completion in
-                if case .failure(let error) = completion {
-                    self?.isLoading = false
-                    self?.error = error
-                }
-            }, receiveValue: { [weak self] storyContent in
-                self?.selectedStory = storyContent
-                self?.getSnippets(storyId: id)
+            .handleLoadingAndError(on: self)
+            .sink(receiveValue: { [weak self] storyContent in
+                guard let self = self else { return }
+                self.selectedStory = storyContent
+                self.loadSnippets(storyId: id)
                 if !storyContent.sections.isEmpty {
-                    self?.fetchSection(id: storyContent.sections[0].id)
+                    self.fetchSection(id: storyContent.sections[0].id)
                 } else {
-                    self?.isLoading = false
+                    self.isLoading = false
                 }
             })
             .store(in: &cancellables)
     }
 
     func fetchSection(id: Int) {
-        isLoading = true
         apiService.getStorySection(id: id)
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [weak self] completion in
-                self?.isLoading = false
-                if case .failure(let error) = completion { self?.error = error }
-            }, receiveValue: { [weak self] section in
+            .handleLoadingAndError(on: self)
+            .sink(receiveValue: { [weak self] section in
                 self?.currentSection = section
-            })
-            .store(in: &cancellables)
-    }
-
-    func getSnippets(storyId: Int) {
-        apiService.getSnippetsForStory(storyId: storyId)
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] snippetList in
-                self?.snippets = snippetList.snippets
             })
             .store(in: &cancellables)
     }
@@ -108,13 +82,5 @@ class StoryViewModel: ObservableObject {
     var fullStoryContent: String {
         guard let story = selectedStory else { return "" }
         return story.sections.map { $0.content }.joined(separator: "\n\n")
-    }
-
-    func cancelAllRequests() {
-        cancellables.removeAll()
-    }
-
-    deinit {
-        cancelAllRequests()
     }
 }

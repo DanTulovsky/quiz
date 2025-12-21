@@ -1,46 +1,29 @@
 import Foundation
 import Combine
 
-class AIHistoryViewModel: ObservableObject {
+class AIHistoryViewModel: BaseViewModel {
     @Published var conversations: [Conversation] = []
     @Published var bookmarks: [ChatMessage] = []
     @Published var selectedConversation: Conversation?
-    @Published var isLoading = false
     @Published var isDeleting = false
-    @Published var error: APIService.APIError?
-
-    private var apiService: APIService
-    private var cancellables = Set<AnyCancellable>()
 
     init(apiService: APIService = .shared) {
-        self.apiService = apiService
+        super.init(apiService: apiService)
     }
 
     func fetchConversations() {
-        isLoading = true
-        error = nil
-
         apiService.getAIConversations()
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [weak self] completion in
-                self?.isLoading = false
-                if case .failure(let error) = completion { self?.error = error }
-            }, receiveValue: { [weak self] response in
+            .handleLoadingAndError(on: self)
+            .sink(receiveValue: { [weak self] response in
                 self?.conversations = response.conversations
             })
             .store(in: &cancellables)
     }
 
     func fetchConversation(id: String) {
-        isLoading = true
-        error = nil
-
         apiService.getAIConversation(id: id)
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [weak self] completion in
-                self?.isLoading = false
-                if case .failure(let error) = completion { self?.error = error }
-            }, receiveValue: { [weak self] conversation in
+            .handleLoadingAndError(on: self)
+            .sink(receiveValue: { [weak self] conversation in
                 self?.selectedConversation = conversation
             })
             .store(in: &cancellables)

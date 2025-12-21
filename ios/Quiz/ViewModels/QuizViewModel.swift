@@ -1,12 +1,10 @@
 import Foundation
 import Combine
 
-class QuizViewModel: ObservableObject {
+class QuizViewModel: BaseViewModel, QuestionActions, SnippetLoading {
     @Published var question: Question?
     @Published var answerResponse: AnswerResponse?
     @Published var generatingMessage: String?
-    @Published var error: APIService.APIError?
-    @Published var isLoading = false
     @Published var selectedAnswerIndex: Int? = nil {
         didSet {
             saveState()
@@ -19,9 +17,6 @@ class QuizViewModel: ObservableObject {
     @Published var showMarkKnownModal = false
     @Published var isSubmittingAction = false
 
-
-    var apiService: APIService
-    private var cancellables = Set<AnyCancellable>()
     let questionType: String?
     private let isDaily: Bool
 
@@ -29,7 +24,7 @@ class QuizViewModel: ObservableObject {
         self.question = question
         self.questionType = questionType
         self.isDaily = isDaily
-        self.apiService = apiService
+        super.init(apiService: apiService)
 
         if !isDaily, question == nil, let savedState = QuizStateManager.shared.getState(for: questionType) {
             self.question = savedState.question
@@ -40,7 +35,7 @@ class QuizViewModel: ObservableObject {
 
     func getQuestion() {
         isLoading = true
-        error = nil
+        clearError()
         generatingMessage = nil
         answerResponse = nil
         selectedAnswerIndex = nil
@@ -51,37 +46,19 @@ class QuizViewModel: ObservableObject {
         }
 
         apiService.getQuestion(language: nil, level: nil, type: questionType, excludeType: nil)
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [weak self] completion in
-                guard let self else { return }
-                self.isLoading = false
-                switch completion {
-                case .failure(let error):
-                    self.error = error
-                case .finished:
-                    break
-                }
-            }, receiveValue: { [weak self] result in
+            .handleLoadingAndError(on: self)
+            .sink(receiveValue: { [weak self] result in
                 guard let self else { return }
                 switch result {
                 case .question(let question):
                     self.question = question
                     self.generatingMessage = nil
-                    self.getSnippets(questionId: question.id)
+                    self.loadSnippets(questionId: question.id)
                     self.saveState()
                 case .generating(let status):
                     self.question = nil
                     self.generatingMessage = status.message
                 }
-            })
-            .store(in: &cancellables)
-    }
-
-    func getSnippets(questionId: Int) {
-        apiService.getSnippetsForQuestion(questionId: questionId)
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] snippetList in
-                self?.snippets = snippetList.snippets
             })
             .store(in: &cancellables)
     }
@@ -96,16 +73,8 @@ class QuizViewModel: ObservableObject {
 
         let answerRequest = AnswerRequest(questionId: question.id, userAnswerIndex: userAnswerIndex, responseTimeMs: nil)
         apiService.postAnswer(request: answerRequest)
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [weak self] completion in
-                guard let self else { return }
-                switch completion {
-                case .failure(let error):
-                    self.error = error
-                case .finished:
-                    break
-                }
-            }, receiveValue: { [weak self] response in
+            .handleErrorOnly(on: self)
+            .sink(receiveValue: { [weak self] response in
                 guard let self else { return }
                 self.answerResponse = response
                 self.saveState()
@@ -115,58 +84,16 @@ class QuizViewModel: ObservableObject {
 
     func submitDailyAnswer(userAnswerIndex: Int) {
         guard let question else { return }
-        let today = DateFormatters.iso8601.string(from: Date())
+        let today = Date().iso8601String
 
         apiService.postDailyAnswer(date: today, questionId: question.id, userAnswerIndex: userAnswerIndex)
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [weak self] completion in
-                if case .failure(let error) = completion { self?.error = error }
-            }, receiveValue: { [weak self] response in
+            .handleErrorOnly(on: self)
+            .sink(receiveValue: { [weak self] response in
                 self?.answerResponse = AnswerResponse(isCorrect: response.isCorrect,
                                                       userAnswer: response.userAnswer,
                                                       userAnswerIndex: response.userAnswerIndex,
                                                       explanation: response.explanation,
                                                       correctAnswerIndex: response.correctAnswerIndex)
-            })
-            .store(in: &cancellables)
-    }
-
-    func cancelAllRequests() {
-        cancellables.removeAll()
-    }
-
-    deinit {
-        cancelAllRequests()
-    }
-
-
-    func reportQuestion(reason: String?) {
-        guard let question = question else { return }
-        isSubmittingAction = true
-        let request = ReportQuestionRequest(reportReason: reason)
-        apiService.reportQuestion(id: question.id, request: request)
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [weak self] completion in
-                self?.isSubmittingAction = false
-                if case .failure(let error) = completion { self?.error = error }
-            }, receiveValue: { [weak self] _ in
-                self?.isReported = true
-                self?.showReportModal = false
-            })
-            .store(in: &cancellables)
-    }
-
-    func markQuestionKnown(confidence: Int) {
-        guard let question = question else { return }
-        isSubmittingAction = true
-        let request = MarkQuestionKnownRequest(confidenceLevel: confidence)
-        apiService.markQuestionKnown(id: question.id, request: request)
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [weak self] completion in
-                self?.isSubmittingAction = false
-                if case .failure(let error) = completion { self?.error = error }
-            }, receiveValue: { [weak self] _ in
-                self?.showMarkKnownModal = false
             })
             .store(in: &cancellables)
     }
@@ -179,5 +106,17 @@ class QuizViewModel: ObservableObject {
             selectedAnswerIndex: selectedAnswerIndex
         )
         QuizStateManager.shared.saveState(for: questionType, state: state)
+    }
+}
+
+extension QuizViewModel {
+    func reportQuestion(reason: String?) {
+        guard let question = question else { return }
+        reportQuestion(id: question.id, reason: reason)
+    }
+
+    func markQuestionKnown(confidence: Int) {
+        guard let question = question else { return }
+        markQuestionKnown(id: question.id, confidence: confidence)
     }
 }

@@ -2,17 +2,13 @@ import AuthenticationServices
 import Combine
 import Foundation
 
-class AuthenticationViewModel: ObservableObject {
+class AuthenticationViewModel: BaseViewModel {
     @Published var username = ""
     @Published var password = ""
     @Published var email = ""
     @Published var isAuthenticated = false
     @Published var user: User? = nil
-    @Published var error: APIService.APIError?
     @Published var googleAuthURL: URL?
-
-    var apiService: APIService
-    private var cancellables = Set<AnyCancellable>()
     private let stateQueue = DispatchQueue(
         label: "com.wetsnow.quiz.auth.state", attributes: .concurrent)
     private var _isProcessingGoogleCallback = false
@@ -57,7 +53,7 @@ class AuthenticationViewModel: ObservableObject {
     }
 
     init(apiService: APIService = APIService.shared) {
-        self.apiService = apiService
+        super.init(apiService: apiService)
         // Check auth status on init with a small delay to allow cookies to be set
         // This is especially important after OAuth callbacks
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
@@ -79,7 +75,7 @@ class AuthenticationViewModel: ObservableObject {
                     },
                     receiveValue: { [weak self] response in
                         guard let self = self else { return }
-                        self.error = nil
+                        self.clearError()
                         // Only update auth state if not already authenticated
                         // This prevents overriding a successful OAuth login
                         if !self.isAuthenticated {
@@ -100,72 +96,38 @@ class AuthenticationViewModel: ObservableObject {
     func login() {
         let loginRequest = LoginRequest(username: username, password: password)
         apiService.login(request: loginRequest)
-            .receive(on: DispatchQueue.main)
-            .sink(
-                receiveCompletion: { [weak self] completion in
-                    guard let self else { return }
-                    switch completion {
-                    case .failure(let error):
-                        self.error = error
-                        self.isAuthenticated = false
-                    case .finished:
-                        break
-                    }
-                },
-                receiveValue: { [weak self] response in
-                    guard let self else { return }
-                    self.error = nil
-                    self.isAuthenticated = response.success
-                    self.user = response.user
-                }
-            )
+            .handleErrorOnly(on: self)
+            .sink(receiveValue: { [weak self] response in
+                guard let self else { return }
+                self.clearError()
+                self.isAuthenticated = response.success
+                self.user = response.user
+            })
             .store(in: &cancellables)
     }
 
     func signup() {
         let signupRequest = UserCreateRequest(username: username, email: email, password: password)
         apiService.signup(request: signupRequest)
-            .receive(on: DispatchQueue.main)
-            .sink(
-                receiveCompletion: { [weak self] completion in
-                    guard let self else { return }
-                    switch completion {
-                    case .failure(let error):
-                        self.error = error
-                    case .finished:
-                        break
-                    }
-                },
-                receiveValue: { _ in
-                    // For simplicity, we'll just consider the signup successful
-                    // and the user can now login.
-                    // A better approach would be to automatically log the user in.
-                }
-            )
+            .handleErrorOnly(on: self)
+            .sink(receiveValue: { _ in
+                // For simplicity, we'll just consider the signup successful
+                // and the user can now login.
+                // A better approach would be to automatically log the user in.
+            })
             .store(in: &cancellables)
     }
 
     func logout() {
         apiService.logout()
-            .receive(on: DispatchQueue.main)
-            .sink(
-                receiveCompletion: { [weak self] completion in
-                    guard let self else { return }
-                    switch completion {
-                    case .failure(let error):
-                        self.error = error
-                    case .finished:
-                        break
-                    }
-                },
-                receiveValue: { [weak self] _ in
-                    guard let self else { return }
-                    self.error = nil
-                    self.isAuthenticated = false
-                    TTSSynthesizerManager.shared.stop()
-                    TTSSynthesizerManager.shared.preferredVoice = nil
-                }
-            )
+            .handleErrorOnly(on: self)
+            .sink(receiveValue: { [weak self] _ in
+                guard let self else { return }
+                self.clearError()
+                self.isAuthenticated = false
+                TTSSynthesizerManager.shared.stop()
+                TTSSynthesizerManager.shared.preferredVoice = nil
+            })
             .store(in: &cancellables)
     }
 
@@ -286,11 +248,4 @@ class AuthenticationViewModel: ObservableObject {
             .store(in: &cancellables)
     }
 
-    func cancelAllRequests() {
-        cancellables.removeAll()
-    }
-
-    deinit {
-        cancelAllRequests()
-    }
 }

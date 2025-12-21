@@ -1,11 +1,9 @@
 import Foundation
 import Combine
 
-class DailyViewModel: ObservableObject {
+class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading {
     @Published var dailyQuestions: [DailyQuestionWithDetails] = []
     @Published var currentQuestionIndex = 0
-    @Published var isLoading = false
-    @Published var error: APIService.APIError?
     @Published var snippets = [Snippet]()
 
     @Published var selectedAnswerIndex: Int? = nil
@@ -39,25 +37,17 @@ class DailyViewModel: ObservableObject {
         currentQuestionIndex < dailyQuestions.count - 1
     }
 
-    private var apiService: APIService
-    private var cancellables = Set<AnyCancellable>()
-
     init(apiService: APIService = APIService.shared) {
-        self.apiService = apiService
+        super.init(apiService: apiService)
     }
 
     func fetchDaily() {
         isLoading = true
-        let today = DateFormatters.iso8601.string(from: Date())
+        let today = Date().iso8601String
 
         apiService.getDailyQuestions(date: today)
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [weak self] completion in
-                self?.isLoading = false
-                if case .failure(let error) = completion {
-                    self?.error = error
-                }
-            }, receiveValue: { [weak self] response in
+            .handleLoadingAndError(on: self)
+            .sink(receiveValue: { [weak self] response in
                 guard let self = self else { return }
                 self.dailyQuestions = response.questions
                 // Always position on the first incomplete question when questions are loaded
@@ -68,21 +58,7 @@ class DailyViewModel: ObservableObject {
                     // All questions are completed, start at the first one
                     self.currentQuestionIndex = 0
                 }
-                self.getSnippets()
-            })
-            .store(in: &cancellables)
-    }
-
-    func getSnippets() {
-        guard let question = currentQuestion else { return }
-        getSnippetsForQuestion(questionId: question.question.id)
-    }
-
-    func getSnippetsForQuestion(questionId: Int) {
-        apiService.getSnippetsForQuestion(questionId: questionId)
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] snippetList in
-                self?.snippets = snippetList.snippets
+                self.loadSnippets(questionId: self.currentQuestion?.question.id)
             })
             .store(in: &cancellables)
     }
@@ -111,16 +87,15 @@ class DailyViewModel: ObservableObject {
         selectedAnswerIndex = index
         isSubmitting = true
 
-        let today = DateFormatters.iso8601.string(from: Date())
+        let today = Date().iso8601String
 
         apiService.postDailyAnswer(date: today, questionId: question.question.id, userAnswerIndex: index)
             .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [weak self] completion in
+            .handleEvents(receiveCompletion: { [weak self] _ in
                 self?.isSubmitting = false
-                if case .failure(let error) = completion {
-                    self?.error = error
-                }
-            }, receiveValue: { [weak self] response in
+            })
+            .handleErrorOnly(on: self)
+            .sink(receiveValue: { [weak self] response in
                 guard let self = self else { return }
                 self.answerResponse = response
 
@@ -168,48 +143,16 @@ class DailyViewModel: ObservableObject {
         }
     }
 
+}
+
+extension DailyViewModel {
     func reportQuestion(reason: String) {
         guard let question = currentQuestion else { return }
-        isSubmittingAction = true
-
-        let request = ReportQuestionRequest(reportReason: reason)
-        apiService.reportQuestion(id: question.question.id, request: request)
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [weak self] completion in
-                self?.isSubmittingAction = false
-                if case .failure(let error) = completion {
-                    self?.error = error
-                } else {
-                    self?.isReported = true
-                    self?.showReportModal = false
-                }
-            }, receiveValue: { _ in })
-            .store(in: &cancellables)
+        reportQuestion(id: question.question.id, reason: reason)
     }
 
     func markQuestionKnown(confidence: Int) {
         guard let question = currentQuestion else { return }
-        isSubmittingAction = true
-
-        let request = MarkQuestionKnownRequest(confidenceLevel: confidence)
-        apiService.markQuestionKnown(id: question.question.id, request: request)
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [weak self] completion in
-                self?.isSubmittingAction = false
-                if case .failure(let error) = completion {
-                    self?.error = error
-                } else {
-                    self?.showMarkKnownModal = false
-                }
-            }, receiveValue: { _ in })
-            .store(in: &cancellables)
-    }
-
-    func cancelAllRequests() {
-        cancellables.removeAll()
-    }
-
-    deinit {
-        cancelAllRequests()
+        markQuestionKnown(id: question.question.id, confidence: confidence)
     }
 }

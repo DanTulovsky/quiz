@@ -71,6 +71,40 @@ extension Publisher where Failure == APIService.APIError {
     }
 }
 
+extension Publisher where Failure == APIService.APIError {
+    func handleLoadingAndError<T: BaseViewModel>(
+        on viewModel: T
+    ) -> AnyPublisher<Output, Failure> {
+        return self
+            .receive(on: DispatchQueue.main)
+            .handleEvents(
+                receiveSubscription: { _ in
+                    viewModel.isLoading = true
+                },
+                receiveCompletion: { completion in
+                    viewModel.isLoading = false
+                    if case .failure(let error) = completion {
+                        viewModel.error = error
+                    }
+                }
+            )
+            .eraseToAnyPublisher()
+    }
+
+    func handleErrorOnly<T: BaseViewModel>(
+        on viewModel: T
+    ) -> AnyPublisher<Output, Failure> {
+        return self
+            .receive(on: DispatchQueue.main)
+            .handleEvents(receiveCompletion: { completion in
+                if case .failure(let error) = completion {
+                    viewModel.error = error
+                }
+            })
+            .eraseToAnyPublisher()
+    }
+}
+
 extension APIService {
     func getSnippetsForQuestion(questionId: Int) -> AnyPublisher<SnippetList, APIError> {
         return getSnippets(sourceLang: nil, targetLang: nil, storyId: nil, query: nil, level: nil)

@@ -1,11 +1,9 @@
 import Foundation
 import Combine
 
-class VocabularyViewModel: ObservableObject {
+class VocabularyViewModel: BaseViewModel, SnippetLoading {
     @Published var snippets = [Snippet]()
     @Published var stories = [StorySummary]()
-    @Published var isLoading = false
-    @Published var error: APIService.APIError?
     @Published var searchQuery = ""
 
     @Published var selectedStoryId: Int? = nil
@@ -29,11 +27,8 @@ class VocabularyViewModel: ObservableObject {
         }
     }
 
-    private var apiService: APIService
-    private var cancellables = Set<AnyCancellable>()
-
     init(apiService: APIService = APIService.shared) {
-        self.apiService = apiService
+        super.init(apiService: apiService)
 
         // Handle search with debounce
         $searchQuery

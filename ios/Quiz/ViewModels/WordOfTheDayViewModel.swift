@@ -1,21 +1,16 @@
 import Foundation
 import Combine
 
-class WordOfTheDayViewModel: ObservableObject {
+class WordOfTheDayViewModel: BaseViewModel {
     @Published var wordOfTheDay: WordOfTheDayDisplay?
     @Published var currentDate = Date()
-    @Published var isLoading = false
-    @Published var error: APIService.APIError?
-
-    private var apiService: APIService
-    private var cancellables = Set<AnyCancellable>()
 
     init(apiService: APIService = APIService.shared) {
-        self.apiService = apiService
+        super.init(apiService: apiService)
     }
 
     func fetchWordOfTheDay() {
-        let dateStr = DateFormatters.iso8601.string(from: currentDate)
+        let dateStr = currentDate.iso8601String
         fetchWord(for: dateStr)
     }
 
@@ -52,26 +47,13 @@ class WordOfTheDayViewModel: ObservableObject {
 
     private func fetchWord(for date: String?) {
         isLoading = true
-        error = nil
+        clearError()
 
         apiService.getWordOfTheDay(date: date)
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [weak self] completion in
-                self?.isLoading = false
-                if case .failure(let error) = completion {
-                    self?.error = error
-                }
-            }, receiveValue: { [weak self] word in
+            .handleLoadingAndError(on: self)
+            .sink(receiveValue: { [weak self] word in
                 self?.wordOfTheDay = word
             })
             .store(in: &cancellables)
-    }
-
-    func cancelAllRequests() {
-        cancellables.removeAll()
-    }
-
-    deinit {
-        cancelAllRequests()
     }
 }
