@@ -48,16 +48,14 @@ struct QuizView: View {
                     }
 
                     if viewModel.isLoading && viewModel.question == nil {
-                        ProgressView()
+                        LoadingView()
                             .padding(.top, 50)
                     }
 
-                    if let error = viewModel.error {
-                        Text("Error: \(error.localizedDescription)")
-                            .foregroundColor(.red)
-                            .padding()
-                            .background(Color.red.opacity(0.1))
-                            .cornerRadius(8)
+                    if let _ = viewModel.error {
+                        ErrorDisplay(error: viewModel.error, onDismiss: {
+                            viewModel.clearError()
+                        })
                     }
 
                     if let message = viewModel.generatingMessage {

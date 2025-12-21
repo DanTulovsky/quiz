@@ -34,7 +34,6 @@ class QuizViewModel: BaseViewModel, QuestionActions, SnippetLoading {
     }
 
     func getQuestion() {
-        isLoading = true
         clearError()
         generatingMessage = nil
         answerResponse = nil

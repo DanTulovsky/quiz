@@ -51,25 +51,19 @@ class VocabularyViewModel: BaseViewModel, SnippetLoading {
 
     func fetchStories() {
         apiService.getStories()
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [weak self] completion in
-                if case .failure(let error) = completion { self?.error = error }
-            }, receiveValue: { [weak self] stories in
+            .handleErrorOnly(on: self)
+            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] stories in
                 self?.stories = stories
             })
             .store(in: &cancellables)
     }
 
     func getSnippets() {
-        isLoading = true
         let searchQueryTrimmed = searchQuery.trimmingCharacters(in: .whitespacesAndNewlines)
         let query = searchQueryTrimmed.isEmpty ? nil : searchQueryTrimmed
         apiService.getSnippets(sourceLang: selectedSourceLang, targetLang: nil, storyId: selectedStoryId, query: query, level: selectedLevel)
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [weak self] completion in
-                self?.isLoading = false
-                if case .failure(let error) = completion { self?.error = error }
-            }, receiveValue: { [weak self] snippetList in
+            .handleLoadingAndError(on: self)
+            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] snippetList in
                 self?.snippets = snippetList.snippets
             })
             .store(in: &cancellables)
@@ -77,19 +71,16 @@ class VocabularyViewModel: BaseViewModel, SnippetLoading {
 
     func fetchLanguages() {
         apiService.getLanguages()
-            .receive(on: DispatchQueue.main)
-            .sink(
-                receiveCompletion: { _ in },
-                receiveValue: { [weak self] languages in
-                    self?.availableLanguages = languages
-                }
-            )
+            .handleErrorOnly(on: self)
+            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] languages in
+                self?.availableLanguages = languages
+            })
             .store(in: &cancellables)
     }
 
     func createSnippet(request: CreateSnippetRequest, completion: @escaping (Result<Snippet, APIService.APIError>) -> Void) {
         apiService.createSnippet(request: request)
-            .receive(on: DispatchQueue.main)
+            .handleErrorOnly(on: self)
             .sink(receiveCompletion: { result in
                 if case .failure(let error) = result {
                     completion(.failure(error))
@@ -103,7 +94,7 @@ class VocabularyViewModel: BaseViewModel, SnippetLoading {
 
     func updateSnippet(id: Int, request: UpdateSnippetRequest, completion: @escaping (Result<Snippet, APIService.APIError>) -> Void) {
         apiService.updateSnippet(id: id, request: request)
-            .receive(on: DispatchQueue.main)
+            .handleErrorOnly(on: self)
             .sink(receiveCompletion: { result in
                 if case .failure(let error) = result {
                     completion(.failure(error))
@@ -119,7 +110,7 @@ class VocabularyViewModel: BaseViewModel, SnippetLoading {
 
     func deleteSnippet(id: Int, completion: @escaping (Result<Void, APIService.APIError>) -> Void) {
         apiService.deleteSnippet(id: id)
-            .receive(on: DispatchQueue.main)
+            .handleErrorOnly(on: self)
             .sink(receiveCompletion: { result in
                 if case .failure(let error) = result {
                     completion(.failure(error))
@@ -135,9 +126,5 @@ class VocabularyViewModel: BaseViewModel, SnippetLoading {
         // Server-side filtering is now handled by the API
         // This just returns the snippets from the server
         return snippets
-    }
-
-    override func cancelAllRequests() {
-        cancellables.removeAll()
     }
 }

@@ -28,7 +28,6 @@ class StoryViewModel: BaseViewModel, SnippetLoading {
     }
 
     func getStory(id: Int) {
-        isLoading = true
         apiService.getStory(id: id)
             .handleLoadingAndError(on: self)
             .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] storyContent in

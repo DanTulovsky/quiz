@@ -42,7 +42,6 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading {
     }
 
     func fetchDaily() {
-        isLoading = true
         let today = Date().iso8601String
 
         apiService.getDailyQuestions(date: today)

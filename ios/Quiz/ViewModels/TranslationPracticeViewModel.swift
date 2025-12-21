@@ -17,7 +17,7 @@ class TranslationPracticeViewModel: BaseViewModel {
 
     func fetchHistory() {
         apiService.getTranslationPracticeHistory()
-            .receive(on: DispatchQueue.main)
+            .handleErrorOnly(on: self)
             .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] response in
                 self?.history = response.sessions
                 self?.totalHistoryCount = response.total
@@ -26,7 +26,6 @@ class TranslationPracticeViewModel: BaseViewModel {
     }
 
     func fetchExistingSentence(language: String, level: String) {
-        isLoading = true
         clearError()
         feedback = nil
         userTranslation = ""
@@ -40,7 +39,6 @@ class TranslationPracticeViewModel: BaseViewModel {
     }
 
     func generateSentence(language: String, level: String) {
-        isLoading = true
         clearError()
         feedback = nil
         userTranslation = ""
@@ -58,7 +56,6 @@ class TranslationPracticeViewModel: BaseViewModel {
 
     func submitTranslation() {
         guard let sentence = currentSentence else { return }
-        isLoading = true
         clearError()
 
         let request = TranslationPracticeSubmitRequest(

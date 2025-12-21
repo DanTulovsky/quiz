@@ -77,58 +77,25 @@ struct TranslationPracticeView: View {
                     }
 
                     if viewModel.isLoading && viewModel.currentSentence == nil {
-                        ProgressView()
+                        LoadingView(message: "Loading sentence...")
                             .padding(.top, 20)
                     } else if let sentence = viewModel.currentSentence {
                         promptCard(sentence).id("prompt_card")
                     }
 
                     // Error display for initial screen (when generation fails)
-                    if viewModel.currentSentence == nil, let error = viewModel.error {
-                        VStack(alignment: .leading, spacing: 12) {
-                            HStack {
-                                Image(systemName: "exclamationmark.triangle.fill")
-                                    .foregroundColor(AppTheme.Colors.errorRed)
-                                Text("Error")
-                                    .font(AppTheme.Typography.subheadlineFont.weight(.semibold))
-                                    .foregroundColor(AppTheme.Colors.errorRed)
-                                Spacer()
-                                if let code = error.errorCode {
-                                    Text(code)
-                                        .font(AppTheme.Typography.captionFont.weight(.bold))
-                                        .foregroundColor(AppTheme.Colors.errorRed)
-                                        .padding(.horizontal, 8)
-                                        .padding(.vertical, 4)
-                                        .background(AppTheme.Colors.errorRed.opacity(0.15))
-                                        .cornerRadius(6)
-                                }
+                    if viewModel.currentSentence == nil {
+                        ErrorDisplay(
+                            error: viewModel.error,
+                            onDismiss: {
+                                viewModel.clearError()
+                            },
+                            showDetailsButton: true,
+                            onShowDetails: {
+                                showErrorDetails = true
                             }
-                            Text(error.localizedDescription)
-                                .font(AppTheme.Typography.subheadlineFont)
-                                .foregroundColor(AppTheme.Colors.secondaryText)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-
-                            if error.errorDetails != nil {
-                                Button(action: {
-                                    showErrorDetails = true
-                                }) {
-                                    HStack(spacing: 4) {
-                                        Text("View Details")
-                                            .font(AppTheme.Typography.captionFont)
-                                        Image(systemName: "chevron.right")
-                                            .scaledFont(size: 10)
-                                    }
-                                    .foregroundColor(AppTheme.Colors.primaryBlue)
-                                }
-                                .padding(.top, 4)
-                            }
-                        }
-                        .padding(AppTheme.Spacing.innerPadding)
-                        .background(AppTheme.Colors.errorRed.opacity(0.1))
-                        .cornerRadius(AppTheme.CornerRadius.button)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(
-                                AppTheme.Colors.errorRed.opacity(0.3), lineWidth: 1))
+                        )
+                        .padding(.horizontal)
                     }
 
                     if viewModel.history.isEmpty {
@@ -428,53 +395,19 @@ struct TranslationPracticeView: View {
             }
             .disabled(viewModel.userTranslation.isEmpty || viewModel.isLoading)
 
-            if let error = viewModel.error {
-                VStack(alignment: .leading, spacing: 12) {
-                    HStack {
-                        Image(systemName: "exclamationmark.triangle.fill")
-                            .foregroundColor(AppTheme.Colors.errorRed)
-                        Text("Error")
-                            .font(AppTheme.Typography.subheadlineFont.weight(.semibold))
-                            .foregroundColor(AppTheme.Colors.errorRed)
-                        Spacer()
-                        if let code = error.errorCode {
-                            Text(code)
-                                .font(AppTheme.Typography.captionFont.weight(.bold))
-                                .foregroundColor(AppTheme.Colors.errorRed)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 4)
-                                .background(AppTheme.Colors.errorRed.opacity(0.15))
-                                .cornerRadius(6)
-                        }
-                    }
-                    Text(error.localizedDescription)
-                        .font(AppTheme.Typography.subheadlineFont)
-                        .foregroundColor(AppTheme.Colors.secondaryText)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-
-                    if error.errorDetails != nil {
-                        Button(action: {
-                            showErrorDetails = true
-                        }) {
-                            HStack(spacing: 4) {
-                                Text("View Details")
-                                    .font(AppTheme.Typography.captionFont)
-                                Image(systemName: "chevron.right")
-                                    .scaledFont(size: 10)
-                            }
-                            .foregroundColor(AppTheme.Colors.primaryBlue)
-                        }
-                        .padding(.top, 4)
-                    }
+            ErrorDisplay(
+                error: viewModel.error,
+                onDismiss: {
+                    viewModel.clearError()
+                },
+                showDetailsButton: true,
+                onShowDetails: {
+                    showErrorDetails = true
                 }
-                .padding(AppTheme.Spacing.innerPadding)
-                .background(AppTheme.Colors.errorRed.opacity(0.1))
-                .cornerRadius(AppTheme.CornerRadius.button)
-                .overlay(
-                    RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(
-                        AppTheme.Colors.errorRed.opacity(0.3), lineWidth: 1)
-                )
-                .padding(.top, 8)
+            )
+            if viewModel.error != nil {
+                Spacer()
+                    .frame(height: AppTheme.Spacing.innerPadding)
             }
         }
         .appCard()

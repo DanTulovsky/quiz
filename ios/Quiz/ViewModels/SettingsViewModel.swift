@@ -35,7 +35,6 @@ class SettingsViewModel: BaseViewModel {
     }
 
     func fetchSettings() {
-        isLoading = true
         isSuccess = false
 
         // Fetch learning preferences
@@ -94,7 +93,7 @@ class SettingsViewModel: BaseViewModel {
 
     func fetchAIProviders() {
         apiService.getAIProviders()
-            .receive(on: DispatchQueue.main)
+            .handleErrorOnly(on: self)
             .sink(
                 receiveCompletion: { _ in },
                 receiveValue: { [weak self] resp in
@@ -106,7 +105,7 @@ class SettingsViewModel: BaseViewModel {
 
     func fetchLanguages() {
         apiService.getLanguages()
-            .receive(on: DispatchQueue.main)
+            .handleErrorOnly(on: self)
             .sink(
                 receiveCompletion: { _ in },
                 receiveValue: { [weak self] languages in
@@ -118,7 +117,7 @@ class SettingsViewModel: BaseViewModel {
 
     func fetchLevels(language: String?) {
         apiService.getLevels(language: language)
-            .receive(on: DispatchQueue.main)
+            .handleErrorOnly(on: self)
             .sink(
                 receiveCompletion: { _ in },
                 receiveValue: { [weak self] response in
@@ -148,13 +147,9 @@ class SettingsViewModel: BaseViewModel {
 
     func sendTestEmail() {
         apiService.sendTestEmail()
-            .receive(on: DispatchQueue.main)
+            .handleErrorOnly(on: self)
             .sink(
-                receiveCompletion: { [weak self] completion in
-                    if case .failure(let error) = completion {
-                        self?.error = error
-                    }
-                },
+                receiveCompletion: { _ in },
                 receiveValue: { [weak self] _ in
                     self?.isSuccess = true
                 }
@@ -164,44 +159,40 @@ class SettingsViewModel: BaseViewModel {
 
     func clearStories() {
         apiService.clearStories()
-            .receive(on: DispatchQueue.main)
+            .handleErrorOnly(on: self)
             .sink(
-                receiveCompletion: { [weak self] completion in
-                    if case .failure(let error) = completion { self?.error = error }
-                }, receiveValue: { [weak self] _ in self?.isSuccess = true }
+                receiveCompletion: { _ in },
+                receiveValue: { [weak self] _ in self?.isSuccess = true }
             )
             .store(in: &cancellables)
     }
 
     func clearAIChats() {
         apiService.clearAIChats()
-            .receive(on: DispatchQueue.main)
+            .handleErrorOnly(on: self)
             .sink(
-                receiveCompletion: { [weak self] completion in
-                    if case .failure(let error) = completion { self?.error = error }
-                }, receiveValue: { [weak self] _ in self?.isSuccess = true }
+                receiveCompletion: { _ in },
+                receiveValue: { [weak self] _ in self?.isSuccess = true }
             )
             .store(in: &cancellables)
     }
 
     func clearTranslationHistory() {
         apiService.clearTranslationHistory()
-            .receive(on: DispatchQueue.main)
+            .handleErrorOnly(on: self)
             .sink(
-                receiveCompletion: { [weak self] completion in
-                    if case .failure(let error) = completion { self?.error = error }
-                }, receiveValue: { [weak self] _ in self?.isSuccess = true }
+                receiveCompletion: { _ in },
+                receiveValue: { [weak self] _ in self?.isSuccess = true }
             )
             .store(in: &cancellables)
     }
 
     func resetAccount() {
         apiService.resetAccount()
-            .receive(on: DispatchQueue.main)
+            .handleErrorOnly(on: self)
             .sink(
-                receiveCompletion: { [weak self] completion in
-                    if case .failure(let error) = completion { self?.error = error }
-                }, receiveValue: { [weak self] _ in self?.isSuccess = true }
+                receiveCompletion: { _ in },
+                receiveValue: { [weak self] _ in self?.isSuccess = true }
             )
             .store(in: &cancellables)
     }
@@ -218,7 +209,7 @@ class SettingsViewModel: BaseViewModel {
             return
         }
         apiService.getVoices(language: locale)
-            .receive(on: DispatchQueue.main)
+            .handleErrorOnly(on: self)
             .sink(
                 receiveCompletion: { _ in },
                 receiveValue: { [weak self] voices in

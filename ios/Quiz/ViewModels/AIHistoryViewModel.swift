@@ -50,10 +50,9 @@ class AIHistoryViewModel: BaseViewModel {
         }
 
         apiService.updateAIConversationTitle(id: id, title: newTitle)
-            .receive(on: DispatchQueue.main)
+            .handleErrorOnly(on: self)
             .sink(receiveCompletion: { [weak self] completion in
-                if case .failure(let error) = completion {
-                    self?.error = error
+                if case .failure = completion {
                     // On error, refetch to restore correct state
                     self?.fetchConversations()
                 }
@@ -70,11 +69,11 @@ class AIHistoryViewModel: BaseViewModel {
     func deleteConversation(id: String) {
         isDeleting = true
         apiService.deleteAIConversation(id: id)
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [weak self] completion in
+            .handleErrorOnly(on: self)
+            .handleEvents(receiveCompletion: { [weak self] _ in
                 self?.isDeleting = false
-                if case .failure(let error) = completion { self?.error = error }
-            }, receiveValue: { [weak self] _ in
+            })
+            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] _ in
                 // Refetch conversations to ensure instant update
                 self?.fetchConversations()
             })
@@ -82,15 +81,9 @@ class AIHistoryViewModel: BaseViewModel {
     }
 
     func fetchBookmarks() {
-        isLoading = true
-        error = nil
-
         apiService.getBookmarkedMessages()
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [weak self] completion in
-                self?.isLoading = false
-                if case .failure(let error) = completion { self?.error = error }
-            }, receiveValue: { [weak self] response in
+            .handleLoadingAndError(on: self)
+            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] response in
                 self?.bookmarks = response.messages
             })
             .store(in: &cancellables)
@@ -98,10 +91,8 @@ class AIHistoryViewModel: BaseViewModel {
 
     func toggleBookmark(conversationId: String, messageId: String) {
         apiService.toggleBookmark(conversationId: conversationId, messageId: messageId)
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [weak self] completion in
-                if case .failure(let error) = completion { self?.error = error }
-            }, receiveValue: { [weak self] response in
+            .handleErrorOnly(on: self)
+            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] response in
                 if response.bookmarked {
                     // Message was bookmarked - refresh bookmarks list
                     self?.fetchBookmarks()
@@ -111,9 +102,5 @@ class AIHistoryViewModel: BaseViewModel {
                 }
             })
             .store(in: &cancellables)
-    }
-
-    override func cancelAllRequests() {
-        cancellables.removeAll()
     }
 }

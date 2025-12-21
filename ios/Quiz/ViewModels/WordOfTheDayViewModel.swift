@@ -46,7 +46,6 @@ class WordOfTheDayViewModel: BaseViewModel {
     }
 
     private func fetchWord(for date: String?) {
-        isLoading = true
         clearError()
 
         apiService.getWordOfTheDay(date: date)
