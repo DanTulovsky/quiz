@@ -26,7 +26,7 @@ struct SettingsView: View {
     @State private var dailyGoal: Int = 10
 
     // Expanded States
-    @State private var expandedSections: Set<String> = ["account"]
+    @State private var expandedSections: Set<String> = []
 
     // AI Settings State
     @State private var aiEnabled = false
