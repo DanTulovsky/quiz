@@ -28,6 +28,8 @@ class DailyViewModelTests: XCTestCase {
             id: 100, questionId: 1, question: question, isCompleted: false, userAnswerIndex: nil)
         let response = DailyQuestionsResponse(date: "2025-12-17", questions: [daily])
         mockAPIService.getDailyQuestionsResult = .success(response)
+        // Set snippets result to avoid error from loadSnippets call
+        mockAPIService.getSnippetsResult = .success(SnippetList(limit: 0, offset: 0, query: nil, snippets: []))
         let expectation = XCTestExpectation(description: "Daily questions fetched")
 
         // When

@@ -103,6 +103,14 @@ extension Publisher where Failure == APIService.APIError {
             })
             .eraseToAnyPublisher()
     }
+
+    func sinkValue<T: BaseViewModel>(
+        on viewModel: T,
+        receiveValue: @escaping (Output) -> Void
+    ) -> AnyCancellable {
+        return self
+            .sink(receiveCompletion: { _ in }, receiveValue: receiveValue)
+    }
 }
 
 extension APIService {

@@ -40,9 +40,9 @@ class SettingsViewModel: BaseViewModel {
         // Fetch learning preferences
         apiService.getLearningPreferences()
             .handleLoadingAndError(on: self)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] prefs in
+            .sinkValue(on: self) { [weak self] prefs in
                 self?.learningPrefs = prefs
-            })
+            }
             .store(in: &cancellables)
     }
 

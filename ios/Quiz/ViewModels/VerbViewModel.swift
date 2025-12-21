@@ -26,21 +26,21 @@ class VerbViewModel: BaseViewModel {
         self.currentLanguage = language
         apiService.getVerbConjugations(language: language)
             .handleLoadingAndError(on: self)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] data in
+            .sinkValue(on: self) { [weak self] data in
                 self?.verbs = data.verbs
                 if self?.selectedVerb.isEmpty == true, let first = data.verbs.first {
                     self?.selectedVerb = first.infinitive
                 }
-            })
+            }
             .store(in: &cancellables)
     }
 
     func fetchVerbDetail(language: String, verb: String) {
         apiService.getVerbConjugation(language: language, verb: verb)
             .handleLoadingAndError(on: self)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] detail in
+            .sinkValue(on: self) { [weak self] detail in
                 self?.selectedVerbDetail = detail
-            })
+            }
             .store(in: &cancellables)
     }
 

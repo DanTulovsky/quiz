@@ -14,13 +14,10 @@ extension SnippetLoading {
             query: nil,
             level: nil
         )
-        .receive(on: DispatchQueue.main)
-        .sink(
-            receiveCompletion: { _ in },
-            receiveValue: { [weak self] snippetList in
-                self?.snippets = snippetList.snippets
-            }
-        )
+        .handleErrorOnly(on: self)
+        .sinkValue(on: self) { [weak self] snippetList in
+            self?.snippets = snippetList.snippets
+        }
         .store(in: &cancellables)
     }
 }

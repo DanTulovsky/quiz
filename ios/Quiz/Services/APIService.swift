@@ -129,6 +129,16 @@ class APIService {
         }
     }
 
+    private func encodingError(description: String) -> APIError {
+        return .encodingFailed(
+            NSError(
+                domain: "APIService",
+                code: -1,
+                userInfo: [NSLocalizedDescriptionKey: description]
+            )
+        )
+    }
+
     private func authenticatedRequest(for url: URL, method: String = "GET", body: Data? = nil)
         -> URLRequest
     {
@@ -167,21 +177,7 @@ class APIService {
     }
 
     func login(request: LoginRequest) -> AnyPublisher<LoginResponse, APIError> {
-        let url = baseURL.appendingPathComponent("auth/login")
-        guard case .success(let body) = encodeBody(request) else {
-            return Fail(
-                error: .encodingFailed(
-                    NSError(
-                        domain: "APIService", code: -1,
-                        userInfo: [NSLocalizedDescriptionKey: "Failed to encode login request"]))
-            ).eraseToAnyPublisher()
-        }
-        let urlRequest = authenticatedRequest(for: url, method: "POST", body: body)
-        return URLSession.shared.dataTaskPublisher(for: urlRequest)
-            .mapError { .requestFailed($0) }
-            .flatMap { self.handleResponse($0.data, $0.response) }
-            .retryOnTransientFailure(maxRetries: 2)
-            .eraseToAnyPublisher()
+        return post(path: "auth/login", body: request, responseType: LoginResponse.self, retry: true)
     }
 
     func initiateGoogleLogin() -> AnyPublisher<GoogleOAuthLoginResponse, APIError> {
@@ -273,20 +269,7 @@ class APIService {
     }
 
     func signup(request: UserCreateRequest) -> AnyPublisher<SuccessResponse, APIError> {
-        let url = baseURL.appendingPathComponent("auth/signup")
-        guard case .success(let body) = encodeBody(request) else {
-            return Fail(
-                error: .encodingFailed(
-                    NSError(
-                        domain: "APIService", code: -1,
-                        userInfo: [NSLocalizedDescriptionKey: "Failed to encode signup request"]))
-            ).eraseToAnyPublisher()
-        }
-        let urlRequest = authenticatedRequest(for: url, method: "POST", body: body)
-        return URLSession.shared.dataTaskPublisher(for: urlRequest)
-            .mapError { .requestFailed($0) }
-            .flatMap { self.handleResponse($0.data, $0.response) }
-            .eraseToAnyPublisher()
+        return post(path: "auth/signup", body: request, responseType: SuccessResponse.self)
     }
 
     enum QuestionFetchResult {
@@ -346,20 +329,7 @@ class APIService {
     }
 
     func postAnswer(request: AnswerRequest) -> AnyPublisher<AnswerResponse, APIError> {
-        let url = baseURL.appendingPathComponent("quiz/answer")
-        guard case .success(let body) = encodeBody(request) else {
-            return Fail(
-                error: .encodingFailed(
-                    NSError(
-                        domain: "APIService", code: -1,
-                        userInfo: [NSLocalizedDescriptionKey: "Failed to encode answer request"]))
-            ).eraseToAnyPublisher()
-        }
-        let urlRequest = authenticatedRequest(for: url, method: "POST", body: body)
-        return URLSession.shared.dataTaskPublisher(for: urlRequest)
-            .mapError { .requestFailed($0) }
-            .flatMap { self.handleResponse($0.data, $0.response) }
-            .eraseToAnyPublisher()
+        return post(path: "quiz/answer", body: request, responseType: AnswerResponse.self)
     }
 
     func getStories() -> AnyPublisher<[StorySummary], APIError> {
@@ -416,23 +386,11 @@ class APIService {
     func postDailyAnswer(date: String, questionId: Int, userAnswerIndex: Int) -> AnyPublisher<
         DailyAnswerResponse, APIError
     > {
-        let url = baseURL.appendingPathComponent("daily/questions/\(date)/answer/\(questionId)")
-        guard case .success(let body) = encodeJSONBody(["user_answer_index": userAnswerIndex])
-        else {
-            return Fail(
-                error: .encodingFailed(
-                    NSError(
-                        domain: "APIService", code: -1,
-                        userInfo: [
-                            NSLocalizedDescriptionKey: "Failed to encode daily answer request"
-                        ]))
-            ).eraseToAnyPublisher()
-        }
-        let urlRequest = authenticatedRequest(for: url, method: "POST", body: body)
-        return URLSession.shared.dataTaskPublisher(for: urlRequest)
-            .mapError { .requestFailed($0) }
-            .flatMap { self.handleResponse($0.data, $0.response) }
-            .eraseToAnyPublisher()
+        return postJSON(
+            path: "daily/questions/\(date)/answer/\(questionId)",
+            body: ["user_answer_index": userAnswerIndex],
+            responseType: DailyAnswerResponse.self
+        )
     }
 
     func getExistingTranslationSentence(language: String, level: String, direction: String)
@@ -476,33 +434,8 @@ class APIService {
     }
 
     func updateUser(request: UserUpdateRequest) -> AnyPublisher<User, APIError> {
-        let url = baseURL.appendingPathComponent("userz/profile")
-        guard case .success(let body) = encodeBody(request) else {
-            return Fail(
-                error: .encodingFailed(
-                    NSError(
-                        domain: "APIService", code: -1,
-                        userInfo: [
-                            NSLocalizedDescriptionKey: "Failed to encode user update request"
-                        ]))
-            ).eraseToAnyPublisher()
-        }
-        let urlRequest = authenticatedRequest(for: url, method: "PUT", body: body)
-        return URLSession.shared.dataTaskPublisher(for: urlRequest)
-            .mapError { .requestFailed($0) }
-            .flatMap { data, response -> AnyPublisher<User, APIError> in
-                do {
-                    let profileResponse: UserProfileMessageResponse = try self.decodeResponse(
-                        data, response)
-                    return Just(profileResponse.user)
-                        .setFailureType(to: APIError.self)
-                        .eraseToAnyPublisher()
-                } catch let error as APIError {
-                    return Fail(error: error).eraseToAnyPublisher()
-                } catch {
-                    return Fail(error: .decodingFailed(error)).eraseToAnyPublisher()
-                }
-            }
+        return put(path: "userz/profile", body: request, responseType: UserProfileMessageResponse.self)
+            .map { $0.user }
             .eraseToAnyPublisher()
     }
 
@@ -540,21 +473,11 @@ class APIService {
     func toggleBookmark(conversationId: String, messageId: String) -> AnyPublisher<
         BookmarkStatusResponse, APIError
     > {
-        let url = baseURL.appendingPathComponent("ai/conversations/bookmark")
-        let body = ["conversation_id": conversationId, "message_id": messageId]
-        guard case .success(let bodyData) = encodeJSONBody(body) else {
-            return Fail(
-                error: .encodingFailed(
-                    NSError(
-                        domain: "APIService", code: -1,
-                        userInfo: [NSLocalizedDescriptionKey: "Failed to encode bookmark request"]))
-            ).eraseToAnyPublisher()
-        }
-        let urlRequest = authenticatedRequest(for: url, method: "PUT", body: bodyData)
-        return URLSession.shared.dataTaskPublisher(for: urlRequest)
-            .mapError { .requestFailed($0) }
-            .flatMap { self.handleResponse($0.data, $0.response) }
-            .eraseToAnyPublisher()
+        return putJSON(
+            path: "ai/conversations/bookmark",
+            body: ["conversation_id": conversationId, "message_id": messageId],
+            responseType: BookmarkStatusResponse.self
+        )
     }
 
     func getAIConversation(id: String) -> AnyPublisher<Conversation, APIError> {
@@ -564,22 +487,11 @@ class APIService {
     func updateAIConversationTitle(id: String, title: String) -> AnyPublisher<
         SuccessResponse, APIError
     > {
-        let url = baseURL.appendingPathComponent("ai/conversations/\(id)")
-        guard case .success(let body) = encodeJSONBody(["title": title]) else {
-            return Fail(
-                error: .encodingFailed(
-                    NSError(
-                        domain: "APIService", code: -1,
-                        userInfo: [
-                            NSLocalizedDescriptionKey: "Failed to encode conversation title request"
-                        ]))
-            ).eraseToAnyPublisher()
-        }
-        let urlRequest = authenticatedRequest(for: url, method: "PUT", body: body)
-        return URLSession.shared.dataTaskPublisher(for: urlRequest)
-            .mapError { .requestFailed($0) }
-            .flatMap { self.handleResponse($0.data, $0.response) }
-            .eraseToAnyPublisher()
+        return putJSON(
+            path: "ai/conversations/\(id)",
+            body: ["title": title],
+            responseType: SuccessResponse.self
+        )
     }
 
     func deleteAIConversation(id: String) -> AnyPublisher<SuccessResponse, APIError> {
@@ -643,43 +555,23 @@ class APIService {
     }
 
     func updateWordOfDayEmailPreference(enabled: Bool) -> AnyPublisher<SuccessResponse, APIError> {
-        let url = baseURL.appendingPathComponent("settings/word-of-day-email")
-        guard case .success(let body) = encodeJSONBody(["enabled": enabled]) else {
-            return Fail(
-                error: .encodingFailed(
-                    NSError(
-                        domain: "APIService", code: -1,
-                        userInfo: [
-                            NSLocalizedDescriptionKey: "Failed to encode email preference request"
-                        ]))
-            ).eraseToAnyPublisher()
-        }
-        let urlRequest = authenticatedRequest(for: url, method: "PUT", body: body)
-        return URLSession.shared.dataTaskPublisher(for: urlRequest)
-            .mapError { .requestFailed($0) }
-            .flatMap { self.handleResponse($0.data, $0.response) }
-            .eraseToAnyPublisher()
+        return putJSON(
+            path: "settings/word-of-day-email",
+            body: ["enabled": enabled],
+            responseType: SuccessResponse.self
+        )
     }
 
     func testAIConnection(provider: String, model: String, apiKey: String?) -> AnyPublisher<
         SuccessResponse, APIError
     > {
-        let url = baseURL.appendingPathComponent("settings/test-ai")
-        var body: [String: String] = ["provider": provider, "model": model]
+        var body: [String: Any] = ["provider": provider, "model": model]
         if let apiKey = apiKey { body["api_key"] = apiKey }
-        guard case .success(let bodyData) = encodeJSONBody(body) else {
-            return Fail(
-                error: .encodingFailed(
-                    NSError(
-                        domain: "APIService", code: -1,
-                        userInfo: [NSLocalizedDescriptionKey: "Failed to encode AI test request"]))
-            ).eraseToAnyPublisher()
-        }
-        let urlRequest = authenticatedRequest(for: url, method: "POST", body: bodyData)
-        return URLSession.shared.dataTaskPublisher(for: urlRequest)
-            .mapError { .requestFailed($0) }
-            .flatMap { self.handleResponse($0.data, $0.response) }
-            .eraseToAnyPublisher()
+        return postJSON(
+            path: "settings/test-ai",
+            body: body,
+            responseType: SuccessResponse.self
+        )
     }
 
     func sendTestEmail() -> AnyPublisher<SuccessResponse, APIError> {
@@ -699,31 +591,15 @@ class APIService {
     }
 
     func resetAccount() -> AnyPublisher<SuccessResponse, APIError> {
-        let url = baseURL.appendingPathComponent("settings/reset-account")
-        let urlRequest = authenticatedRequest(for: url, method: "POST")
-        return URLSession.shared.dataTaskPublisher(for: urlRequest)
-            .mapError { .requestFailed($0) }
-            .flatMap { self.handleResponse($0.data, $0.response) }
-            .eraseToAnyPublisher()
+        return postVoid(path: "settings/reset-account")
     }
 
     func initializeTTSStream(request: TTSRequest) -> AnyPublisher<TTSStreamInitResponse, APIError> {
-        let url = baseURL.appendingPathComponent("audio")
-            .appendingPathComponent("speech")
-            .appendingPathComponent("init")
-        guard case .success(let body) = encodeBody(request) else {
-            return Fail(
-                error: .encodingFailed(
-                    NSError(
-                        domain: "APIService", code: -1,
-                        userInfo: [NSLocalizedDescriptionKey: "Failed to encode TTS request"]))
-            ).eraseToAnyPublisher()
-        }
-        let urlRequest = authenticatedRequest(for: url, method: "POST", body: body)
-        return URLSession.shared.dataTaskPublisher(for: urlRequest)
-            .mapError { .requestFailed($0) }
-            .flatMap { self.handleResponse($0.data, $0.response) }
-            .eraseToAnyPublisher()
+        return post(
+            path: "audio/speech/init",
+            body: request,
+            responseType: TTSStreamInitResponse.self
+        )
     }
 
     func streamURL(for streamId: String, token: String?) -> URL {
@@ -829,13 +705,8 @@ extension APIService {
             return Fail(error: .invalidURL).eraseToAnyPublisher()
         }
         guard case .success(let bodyData) = encodeBody(body) else {
-            return Fail(
-                error: .encodingFailed(
-                    NSError(
-                        domain: "APIService", code: -1,
-                        userInfo: [NSLocalizedDescriptionKey: "Failed to encode request"]))
-            )
-            .eraseToAnyPublisher()
+            return Fail(error: encodingError(description: "Failed to encode request"))
+                .eraseToAnyPublisher()
         }
         let request = authenticatedRequest(for: url, method: "POST", body: bodyData)
         var publisher: AnyPublisher<T, APIError> = URLSession.shared.dataTaskPublisher(for: request)
@@ -858,13 +729,8 @@ extension APIService {
             return Fail(error: .invalidURL).eraseToAnyPublisher()
         }
         guard case .success(let bodyData) = encodeBody(body) else {
-            return Fail(
-                error: .encodingFailed(
-                    NSError(
-                        domain: "APIService", code: -1,
-                        userInfo: [NSLocalizedDescriptionKey: "Failed to encode request"]))
-            )
-            .eraseToAnyPublisher()
+            return Fail(error: encodingError(description: "Failed to encode request"))
+                .eraseToAnyPublisher()
         }
         let request = authenticatedRequest(for: url, method: "PUT", body: bodyData)
         return URLSession.shared.dataTaskPublisher(for: request)
@@ -915,15 +781,29 @@ extension APIService {
             return Fail(error: .invalidURL).eraseToAnyPublisher()
         }
         guard case .success(let bodyData) = encodeJSONBody(body) else {
-            return Fail(
-                error: .encodingFailed(
-                    NSError(
-                        domain: "APIService", code: -1,
-                        userInfo: [NSLocalizedDescriptionKey: "Failed to encode request"]))
-            )
-            .eraseToAnyPublisher()
+            return Fail(error: encodingError(description: "Failed to encode request"))
+                .eraseToAnyPublisher()
         }
         let request = authenticatedRequest(for: url, method: "POST", body: bodyData)
+        return URLSession.shared.dataTaskPublisher(for: request)
+            .mapError { .requestFailed($0) }
+            .flatMap { self.handleResponse($0.data, $0.response) }
+            .eraseToAnyPublisher()
+    }
+
+    func putJSON<T: Decodable>(
+        path: String,
+        body: [String: Any],
+        responseType: T.Type
+    ) -> AnyPublisher<T, APIError> {
+        guard case .success(let url) = buildURL(path: path) else {
+            return Fail(error: .invalidURL).eraseToAnyPublisher()
+        }
+        guard case .success(let bodyData) = encodeJSONBody(body) else {
+            return Fail(error: encodingError(description: "Failed to encode request"))
+                .eraseToAnyPublisher()
+        }
+        let request = authenticatedRequest(for: url, method: "PUT", body: bodyData)
         return URLSession.shared.dataTaskPublisher(for: request)
             .mapError { .requestFailed($0) }
             .flatMap { self.handleResponse($0.data, $0.response) }

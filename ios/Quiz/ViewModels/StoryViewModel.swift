@@ -21,16 +21,16 @@ class StoryViewModel: BaseViewModel, SnippetLoading {
     func getStories() {
         apiService.getStories()
             .handleLoadingAndError(on: self)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] storyList in
+            .sinkValue(on: self) { [weak self] storyList in
                 self?.stories = storyList
-            })
+            }
             .store(in: &cancellables)
     }
 
     func getStory(id: Int) {
         apiService.getStory(id: id)
             .handleLoadingAndError(on: self)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] storyContent in
+            .sinkValue(on: self) { [weak self] storyContent in
                 guard let self = self else { return }
                 self.selectedStory = storyContent
                 self.loadSnippets(storyId: id)
@@ -39,16 +39,16 @@ class StoryViewModel: BaseViewModel, SnippetLoading {
                 } else {
                     self.isLoading = false
                 }
-            })
+            }
             .store(in: &cancellables)
     }
 
     func fetchSection(id: Int) {
         apiService.getStorySection(id: id)
             .handleLoadingAndError(on: self)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] section in
+            .sinkValue(on: self) { [weak self] section in
                 self?.currentSection = section
-            })
+            }
             .store(in: &cancellables)
     }
 

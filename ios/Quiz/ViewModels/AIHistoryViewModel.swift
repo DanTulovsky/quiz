@@ -14,18 +14,18 @@ class AIHistoryViewModel: BaseViewModel {
     func fetchConversations() {
         apiService.getAIConversations()
             .handleLoadingAndError(on: self)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] response in
+            .sinkValue(on: self) { [weak self] response in
                 self?.conversations = response.conversations
-            })
+            }
             .store(in: &cancellables)
     }
 
     func fetchConversation(id: String) {
         apiService.getAIConversation(id: id)
             .handleLoadingAndError(on: self)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] conversation in
+            .sinkValue(on: self) { [weak self] conversation in
                 self?.selectedConversation = conversation
-            })
+            }
             .store(in: &cancellables)
     }
 
@@ -83,16 +83,16 @@ class AIHistoryViewModel: BaseViewModel {
     func fetchBookmarks() {
         apiService.getBookmarkedMessages()
             .handleLoadingAndError(on: self)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] response in
+            .sinkValue(on: self) { [weak self] response in
                 self?.bookmarks = response.messages
-            })
+            }
             .store(in: &cancellables)
     }
 
     func toggleBookmark(conversationId: String, messageId: String) {
         apiService.toggleBookmark(conversationId: conversationId, messageId: messageId)
             .handleErrorOnly(on: self)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] response in
+            .sinkValue(on: self) { [weak self] response in
                 if response.bookmarked {
                     // Message was bookmarked - refresh bookmarks list
                     self?.fetchBookmarks()
@@ -100,7 +100,7 @@ class AIHistoryViewModel: BaseViewModel {
                     // Message was unbookmarked - remove from local list
                     self?.bookmarks.removeAll(where: { $0.id == messageId })
                 }
-            })
+            }
             .store(in: &cancellables)
     }
 }

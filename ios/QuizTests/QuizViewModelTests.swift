@@ -25,6 +25,8 @@ class QuizViewModelTests: XCTestCase {
             id: 1, type: "vocabulary", language: "it", level: "A1", content: [:],
             correctAnswerIndex: 1)
         mockAPIService.getQuestionResult = .success(.question(question))
+        // Set snippets result to avoid error from loadSnippets call
+        mockAPIService.getSnippetsResult = .success(SnippetList(limit: 0, offset: 0, query: nil, snippets: []))
         let expectation = XCTestExpectation(description: "Question fetched")
 
         // When

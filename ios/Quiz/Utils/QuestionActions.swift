@@ -13,13 +13,11 @@ extension QuestionActions {
         isSubmittingAction = true
         let request = ReportQuestionRequest(reportReason: reason)
         apiService.reportQuestion(id: id, request: request)
-            .receive(on: DispatchQueue.main)
+            .handleErrorOnly(on: self)
             .sink(receiveCompletion: { [weak self] completion in
                 guard let self = self else { return }
                 self.isSubmittingAction = false
-                if case .failure(let error) = completion {
-                    self.error = error
-                } else {
+                if case .finished = completion {
                     self.isReported = true
                     self.showReportModal = false
                 }
@@ -31,13 +29,11 @@ extension QuestionActions {
         isSubmittingAction = true
         let request = MarkQuestionKnownRequest(confidenceLevel: confidence)
         apiService.markQuestionKnown(id: id, request: request)
-            .receive(on: DispatchQueue.main)
+            .handleErrorOnly(on: self)
             .sink(receiveCompletion: { [weak self] completion in
                 guard let self = self else { return }
                 self.isSubmittingAction = false
-                if case .failure(let error) = completion {
-                    self.error = error
-                } else {
+                if case .finished = completion {
                     self.showMarkKnownModal = false
                 }
             }, receiveValue: { _ in })

@@ -50,9 +50,9 @@ class WordOfTheDayViewModel: BaseViewModel {
 
         apiService.getWordOfTheDay(date: date)
             .handleLoadingAndError(on: self)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] word in
+            .sinkValue(on: self) { [weak self] word in
                 self?.wordOfTheDay = word
-            })
+            }
             .store(in: &cancellables)
     }
 }

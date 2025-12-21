@@ -52,9 +52,9 @@ class VocabularyViewModel: BaseViewModel, SnippetLoading {
     func fetchStories() {
         apiService.getStories()
             .handleErrorOnly(on: self)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] stories in
+            .sinkValue(on: self) { [weak self] stories in
                 self?.stories = stories
-            })
+            }
             .store(in: &cancellables)
     }
 
@@ -63,18 +63,18 @@ class VocabularyViewModel: BaseViewModel, SnippetLoading {
         let query = searchQueryTrimmed.isEmpty ? nil : searchQueryTrimmed
         apiService.getSnippets(sourceLang: selectedSourceLang, targetLang: nil, storyId: selectedStoryId, query: query, level: selectedLevel)
             .handleLoadingAndError(on: self)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] snippetList in
+            .sinkValue(on: self) { [weak self] snippetList in
                 self?.snippets = snippetList.snippets
-            })
+            }
             .store(in: &cancellables)
     }
 
     func fetchLanguages() {
         apiService.getLanguages()
             .handleErrorOnly(on: self)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] languages in
+            .sinkValue(on: self) { [weak self] languages in
                 self?.availableLanguages = languages
-            })
+            }
             .store(in: &cancellables)
     }
 
