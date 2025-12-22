@@ -125,7 +125,7 @@ struct PhrasebookCategoryView: View {
                             searchText.isEmpty
                                 || $0.term.localizedCaseInsensitiveContains(searchText)
                                 || ($0.translations[languageCode]?.localizedCaseInsensitiveContains(
-                                    searchText) ?? false)
+                                        searchText) ?? false)
                         }
 
                         if !filteredWords.isEmpty {

@@ -224,5 +224,3 @@ struct AddSnippetView: View {
         }
     }
 }
-
-

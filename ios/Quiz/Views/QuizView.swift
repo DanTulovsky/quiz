@@ -2,14 +2,14 @@ import SwiftUI
 
 struct QuizView: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel: QuizViewModel
+    @StateObject var viewModel: QuizViewModel
     @State private var reportReason = ""
     @State private var selectedConfidence: Int?
-    @State private var selectedText: String?
-    @State private var showTranslationPopup = false
-    @State private var translationSentence: String?
+    @State var selectedText: String?
+    @State var showTranslationPopup = false
+    @State var translationSentence: String?
     @State private var showingSnippet: Snippet?
-    @State private var snippetRefreshTrigger: Int = 0
+    @State var snippetRefreshTrigger: Int = 0
 
     @StateObject private var ttsManager = TTSSynthesizerManager.shared
 
@@ -17,22 +17,6 @@ struct QuizView: View {
         _viewModel = StateObject(
             wrappedValue: QuizViewModel(
                 question: question, questionType: questionType, isDaily: isDaily))
-    }
-
-    private func stringValue(_ value: JSONValue?) -> String? {
-        guard let value else { return nil }
-        if case .string(let stringValue) = value { return stringValue }
-        return nil
-    }
-
-    private func stringArrayValue(_ value: JSONValue?) -> [String]? {
-        guard let value else { return nil }
-        guard case .array(let arr) = value else { return nil }
-        let strings = arr.compactMap { item -> String? in
-            guard case .string(let stringValue) = item else { return nil }
-            return stringValue
-        }
-        return strings.isEmpty ? nil : strings
     }
 
     private var questionCardId: String {
@@ -146,7 +130,7 @@ struct QuizView: View {
                             snippets: viewModel.snippets,
                             onTextSelected: { text, fullText in
                                 selectedText = text
-                                translationSentence = extractSentence(
+                                translationSentence = TextUtils.extractSentence(
                                     from: fullText, containing: text)
                                 showTranslationPopup = true
                             },
@@ -174,7 +158,7 @@ struct QuizView: View {
                                 snippets: viewModel.snippets,
                                 onTextSelected: { text, fullText in
                                     selectedText = text
-                                    translationSentence = extractSentence(
+                                    translationSentence = TextUtils.extractSentence(
                                         from: fullText, containing: text)
                                     showTranslationPopup = true
                                 },
@@ -229,39 +213,6 @@ struct QuizView: View {
         }
     }
 
-    @ViewBuilder
-    private var translationSheetContent: some View {
-        if let text = selectedText, let question = viewModel.question {
-            TranslationPopupView(
-                selectedText: text,
-                sourceLanguage: question.language,
-                questionId: question.id,
-                sectionId: nil,
-                storyId: nil,
-                sentence: translationSentence,
-                onClose: {
-                    showTranslationPopup = false
-                    selectedText = nil
-                    translationSentence = nil
-                },
-                onSnippetSaved: { snippet in
-                    // Optimistically add the snippet immediately for instant UI update
-                    if !viewModel.snippets.contains(where: { $0.id == snippet.id }) {
-                        viewModel.snippets += [snippet]
-                        snippetRefreshTrigger += 1
-                    }
-                    // Reload snippets from server to ensure we have the latest data
-                    // This handles the case where the snippet already existed
-                    if let questionId = viewModel.question?.id {
-                        // Reset cache to force reload
-                        viewModel.resetSnippetCache()
-                        viewModel.loadSnippets(questionId: questionId)
-                    }
-                }
-            )
-        }
-    }
-
     private func handleOnAppear() {
         if viewModel.question == nil {
             viewModel.getQuestion()
@@ -270,44 +221,6 @@ struct QuizView: View {
             // This handles the case when navigating back to the quiz
             viewModel.loadSnippets(questionId: questionId)
         }
-    }
-
-    private func extractSentence(from text: String, containing selectedText: String) -> String? {
-        guard let range = text.range(of: selectedText, options: .caseInsensitive) else {
-            return nil
-        }
-
-        // Find sentence boundaries
-        let startIndex = text.startIndex
-        let endIndex = text.endIndex
-
-        // Find the start of the sentence (look backwards for sentence-ending punctuation)
-        var sentenceStart = range.lowerBound
-        let sentenceEnders = CharacterSet(charactersIn: ".!?\n")
-
-        while sentenceStart > startIndex {
-            let char = text[sentenceStart]
-            if sentenceEnders.contains(char.unicodeScalars.first!) {
-                sentenceStart = text.index(after: sentenceStart)
-                break
-            }
-            sentenceStart = text.index(before: sentenceStart)
-        }
-
-        // Find the end of the sentence
-        var sentenceEnd = range.upperBound
-        while sentenceEnd < endIndex {
-            let char = text[sentenceEnd]
-            if sentenceEnders.contains(char.unicodeScalars.first!) {
-                sentenceEnd = text.index(after: sentenceEnd)
-                break
-            }
-            sentenceEnd = text.index(after: sentenceEnd)
-        }
-
-        let sentence = String(text[sentenceStart..<sentenceEnd]).trimmingCharacters(
-            in: .whitespacesAndNewlines)
-        return sentence.isEmpty ? nil : sentence
     }
 
     @ViewBuilder

@@ -2,38 +2,7 @@ import SwiftUI
 
 extension StoryDetailView {
     func extractSentence(from text: String, containing selectedText: String) -> String? {
-        guard let range = text.range(of: selectedText, options: .caseInsensitive) else {
-            return nil
-        }
-
-        let startIndex = text.startIndex
-        let endIndex = text.endIndex
-
-        var sentenceStart = range.lowerBound
-        let sentenceEnders = CharacterSet(charactersIn: ".!?\n")
-
-        while sentenceStart > startIndex {
-            let char = text[sentenceStart]
-            if sentenceEnders.contains(char.unicodeScalars.first!) {
-                sentenceStart = text.index(after: sentenceStart)
-                break
-            }
-            sentenceStart = text.index(before: sentenceStart)
-        }
-
-        var sentenceEnd = range.upperBound
-        while sentenceEnd < endIndex {
-            let char = text[sentenceEnd]
-            if sentenceEnders.contains(char.unicodeScalars.first!) {
-                sentenceEnd = text.index(after: sentenceEnd)
-                break
-            }
-            sentenceEnd = text.index(after: sentenceEnd)
-        }
-
-        let sentence = String(text[sentenceStart..<sentenceEnd]).trimmingCharacters(
-            in: .whitespacesAndNewlines)
-        return sentence.isEmpty ? nil : sentence
+        return TextUtils.extractSentence(from: text, containing: selectedText)
     }
 
     func highlightSnippets(in text: String) -> AttributedString {
@@ -45,7 +14,8 @@ extension StoryDetailView {
         for snippet in sortedSnippets {
             var searchRange = attrStr.startIndex..<attrStr.endIndex
             while let range = attrStr[searchRange].range(
-                    of: snippet.originalText, options: .caseInsensitive) {
+                of: snippet.originalText, options: .caseInsensitive)
+            {
                 attrStr[range].underlineStyle = Text.LineStyle(pattern: .dash)
                 attrStr[range].foregroundColor = .blue
                 if let url = URL(string: "snippet://\(snippet.id)") {
@@ -112,5 +82,125 @@ extension StoryDetailView {
             }
         }
         .disabled(hasSubmitted)
+    }
+
+    @ViewBuilder
+    func submitButton(questionId: Int, selectedIdx: Int?) -> some View {
+        Button(
+            action: {
+                submittedQuestions.insert(questionId)
+            },
+            label: {
+                Text("Submit Answer")
+                    .font(AppTheme.Typography.subheadlineFont.weight(.bold))
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 10)
+                    .background(
+                        selectedIdx == nil
+                            ? AppTheme.Colors.primaryBlue.opacity(0.3)
+                            : AppTheme.Colors.primaryBlue
+                    )
+                    .foregroundColor(.white)
+                    .cornerRadius(AppTheme.CornerRadius.badge)
+            }
+        )
+        .disabled(selectedIdx == nil)
+        .padding(.top, 4)
+    }
+
+    @ViewBuilder
+    func explanationView(explanation: String, question: StorySectionQuestion) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Divider()
+            Text("Explanation")
+                .font(AppTheme.Typography.captionFont.weight(.bold))
+                .foregroundColor(AppTheme.Colors.secondaryText)
+            SelectableTextView(
+                text: explanation,
+                language: viewModel.selectedStory?.language ?? "en",
+                onTextSelected: { text in
+                    selectedText = text
+                    translationSentence = TextUtils.extractSentence(
+                        from: explanation, containing: text)
+                    showTranslationPopup = true
+                }
+            )
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(.top, 4)
+    }
+
+    @ViewBuilder
+    func sectionContent(_ section: StorySectionWithQuestions) -> some View {
+        VStack(alignment: .trailing) {
+            TTSButton(text: section.content, language: viewModel.selectedStory?.language ?? "en")
+
+            VStack(alignment: .leading) {
+                SelectableTextView(
+                    text: section.content,
+                    language: viewModel.selectedStory?.language ?? "en",
+                    onTextSelected: { text in
+                        selectedText = text
+                        translationSentence = TextUtils.extractSentence(
+                            from: section.content, containing: text)
+                        showTranslationPopup = true
+                    },
+                    highlightedSnippets: viewModel.snippets,
+                    onSnippetTapped: { snippet in
+                        showingSnippet = snippet
+                    }
+                )
+                .frame(minHeight: 100)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .appInnerCard()
+        .padding(.horizontal)
+    }
+
+    @ViewBuilder
+    func questionView(_ question: StorySectionQuestion) -> some View {
+        let hasSubmitted = submittedQuestions.contains(question.id)
+        let selectedIdx = selectedAnswers[question.id]
+
+        VStack(alignment: .leading, spacing: 12) {
+            SelectableTextView(
+                text: question.questionText,
+                language: viewModel.selectedStory?.language ?? "en",
+                onTextSelected: { text in
+                    selectedText = text
+                    translationSentence = TextUtils.extractSentence(
+                        from: question.questionText, containing: text)
+                    showTranslationPopup = true
+                }
+            )
+            .frame(maxWidth: .infinity, alignment: .leading)
+
+            ForEach(Array(question.options.enumerated()), id: \.offset) { idx, option in
+                optionRow(
+                    question: question, idx: idx, option: option, hasSubmitted: hasSubmitted,
+                    selectedIdx: selectedIdx
+                )
+            }
+
+            if !hasSubmitted {
+                submitButton(questionId: question.id, selectedIdx: selectedIdx)
+            } else if let explanation = question.explanation, !explanation.isEmpty {
+                explanationView(explanation: explanation, question: question)
+            }
+        }
+        .appInnerCard()
+        .overlay(
+            RoundedRectangle(cornerRadius: AppTheme.CornerRadius.innerCard)
+                .stroke(
+                    hasSubmitted
+                        ? (selectedIdx == question.correctAnswerIndex
+                            ? AppTheme.Colors.successGreen.opacity(0.3)
+                            : AppTheme.Colors.errorRed.opacity(0.3))
+                        : AppTheme.Colors.borderGray,
+                    lineWidth: 1
+                )
+        )
+        .padding(.horizontal)
     }
 }

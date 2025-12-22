@@ -158,8 +158,8 @@ struct BadgeView: View {
                     if let options = options, options.contains(.shouldResume) {
                         // Resume playback if we were playing
                         if let player = self.player,
-                            !self.isPaused,
-                            self.currentlySpeakingText != nil {
+                           !self.isPaused,
+                           self.currentlySpeakingText != nil {
                             do {
                                 try AVAudioSession.sharedInstance().setActive(true)
                                 player.play()
@@ -810,8 +810,8 @@ private class SizingTextView: UITextView {
         let width = bounds.width > 0 ? bounds.width : UIScreen.main.bounds.width - 64
 
         if let textLayoutManager = textLayoutManager,
-            let textContentManager = textLayoutManager.textContentManager,
-            let textContainer = textLayoutManager.textContainer {
+           let textContentManager = textLayoutManager.textContentManager,
+           let textContainer = textLayoutManager.textContainer {
             let containerSize = CGSize(width: width, height: .greatestFiniteMagnitude)
             textContainer.size = containerSize
 
@@ -951,7 +951,7 @@ struct QuestionCardView: View {
                 .id("\(sentence)-\(snippetsId)")
                 .frame(minHeight: 44)
             } else if let questionText = stringValue(question.content["question"])
-                ?? stringValue(question.content["prompt"]) {
+                        ?? stringValue(question.content["prompt"]) {
                 SelectableTextView(
                     text: questionText,
                     language: question.language,
@@ -966,7 +966,7 @@ struct QuestionCardView: View {
             }
 
             if question.type == "vocabulary",
-                let targetWord = stringValue(question.content["question"]) {
+               let targetWord = stringValue(question.content["question"]) {
                 let vocabText = "What does \(targetWord) mean in this context?"
                 SelectableTextView(
                     text: vocabText,

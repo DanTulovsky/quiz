@@ -66,8 +66,7 @@ extension APIService {
         data: Data, decoder: JSONDecoder
     ) -> AnyPublisher<QuestionFetchResult, APIError> {
         if let errorResp = try? decoder.decode(ErrorResponse.self, from: data),
-            let msg = errorResp.message ?? errorResp.error
-        {
+           let msg = errorResp.message ?? errorResp.error {
             return Fail(
                 error: .backendError(
                     code: errorResp.code, message: msg, details: errorResp.details)
@@ -83,13 +82,12 @@ extension APIService {
             let dateStr = try container.decode(String.self)
             let iso8601WithFractional = ISO8601DateFormatter()
             iso8601WithFractional.formatOptions = [
-                .withInternetDateTime, .withFractionalSeconds,
+                .withInternetDateTime, .withFractionalSeconds
             ]
             let iso8601Standard = ISO8601DateFormatter()
             iso8601Standard.formatOptions = [.withInternetDateTime]
             if let date = iso8601WithFractional.date(from: dateStr)
-                ?? iso8601Standard.date(from: dateStr)
-            {
+                ?? iso8601Standard.date(from: dateStr) {
                 return date
             }
             throw DecodingError.dataCorruptedError(

@@ -2,8 +2,7 @@ import Combine
 import Foundation
 
 class QuizViewModel: BaseViewModel, QuestionActions, SnippetLoading, QuestionIDProvider,
-    AnswerSubmittable
-{
+                     AnswerSubmittable {
     @Published var question: Question?
     @Published var answerResponse: AnswerResponse?
     @Published var generatingMessage: String?
@@ -34,8 +33,7 @@ class QuizViewModel: BaseViewModel, QuestionActions, SnippetLoading, QuestionIDP
         super.init(apiService: apiService)
 
         if !isDaily, question == nil,
-            let savedState = QuizStateManager.shared.getState(for: questionType)
-        {
+           let savedState = QuizStateManager.shared.getState(for: questionType) {
             self.question = savedState.question
             self.answerResponse = savedState.answerResponse
             self.selectedAnswerIndex = savedState.selectedAnswerIndex

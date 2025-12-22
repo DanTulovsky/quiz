@@ -4,12 +4,12 @@ struct StoryDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject var viewModel = StoryViewModel()
     let storyId: Int
-    @State private var showingSnippet: Snippet?
+    @State var showingSnippet: Snippet?
     @State var selectedAnswers: [Int: Int] = [:]
-    @State private var submittedQuestions: Set<Int> = [] // QuestionID: OptionIndex
-    @State private var selectedText: String?
-    @State private var showTranslationPopup = false
-    @State private var translationSentence: String?
+    @State var submittedQuestions: Set<Int> = [] // QuestionID: OptionIndex
+    @State var selectedText: String?
+    @State var showTranslationPopup = false
+    @State var translationSentence: String?
 
     @StateObject private var ttsManager = TTSSynthesizerManager.shared
 
@@ -145,9 +145,9 @@ struct StoryDetailView: View {
                                             language: story.language,
                                             onTextSelected: { text in
                                                 selectedText = text
-                                                translationSentence = extractSentence(
-                                                    from: section.content, containing: text
-                                                )
+                    translationSentence = TextUtils.extractSentence(
+                        from: section.content, containing: text
+                    )
                                                 showTranslationPopup = true
                                             },
                                             highlightedSnippets: viewModel.snippets,
@@ -174,7 +174,6 @@ struct StoryDetailView: View {
                         .foregroundColor(.secondary)
                 }
             }
-
         }
         .onAppear {
             viewModel.getStory(id: storyId)
@@ -235,120 +234,6 @@ struct StoryDetailView: View {
                 viewModel.snippets.removeAll { $0.id == snippet.id }
             }
         )
-    }
-
-    @ViewBuilder
-    private func sectionContent(_ section: StorySectionWithQuestions) -> some View {
-        VStack(alignment: .trailing) {
-            TTSButton(text: section.content, language: viewModel.selectedStory?.language ?? "en")
-
-            VStack(alignment: .leading) {
-                SelectableTextView(
-                    text: section.content,
-                    language: viewModel.selectedStory?.language ?? "en",
-                    onTextSelected: { text in
-                        selectedText = text
-                        translationSentence = extractSentence(from: section.content, containing: text)
-                        showTranslationPopup = true
-                    },
-                    highlightedSnippets: viewModel.snippets,
-                    onSnippetTapped: { snippet in
-                        showingSnippet = snippet
-                    }
-                )
-                .frame(minHeight: 100)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-        }
-        .appInnerCard()
-        .padding(.horizontal)
-    }
-
-    @ViewBuilder
-    private func questionView(_ question: StorySectionQuestion) -> some View {
-        let hasSubmitted = submittedQuestions.contains(question.id)
-        let selectedIdx = selectedAnswers[question.id]
-
-        VStack(alignment: .leading, spacing: 12) {
-            SelectableTextView(
-                text: question.questionText,
-                language: viewModel.selectedStory?.language ?? "en",
-                onTextSelected: { text in
-                    selectedText = text
-                    translationSentence = extractSentence(from: question.questionText, containing: text)
-                    showTranslationPopup = true
-                }
-            )
-            .frame(maxWidth: .infinity, alignment: .leading)
-
-            ForEach(Array(question.options.enumerated()), id: \.offset) { idx, option in
-                optionRow(
-                    question: question, idx: idx, option: option, hasSubmitted: hasSubmitted,
-                    selectedIdx: selectedIdx
-                )
-            }
-
-            if !hasSubmitted {
-                submitButton(questionId: question.id, selectedIdx: selectedIdx)
-            } else if let explanation = question.explanation, !explanation.isEmpty {
-                explanationView(explanation: explanation, question: question)
-            }
-        }
-        .appInnerCard()
-        .overlay(
-            RoundedRectangle(cornerRadius: AppTheme.CornerRadius.innerCard)
-                .stroke(
-                    hasSubmitted
-                        ? (selectedIdx == question.correctAnswerIndex
-                            ? AppTheme.Colors.successGreen.opacity(0.3)
-                            : AppTheme.Colors.errorRed.opacity(0.3))
-                        : AppTheme.Colors.borderGray,
-                    lineWidth: 1
-                )
-        )
-        .padding(.horizontal)
-    }
-
-    @ViewBuilder
-    private func submitButton(questionId: Int, selectedIdx: Int?) -> some View {
-        Button(action: {
-            submittedQuestions.insert(questionId)
-        }, label: {
-            Text("Submit Answer")
-                .font(AppTheme.Typography.subheadlineFont.weight(.bold))
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 10)
-                .background(
-                    selectedIdx == nil
-                        ? AppTheme.Colors.primaryBlue.opacity(0.3)
-                        : AppTheme.Colors.primaryBlue
-                )
-                .foregroundColor(.white)
-                .cornerRadius(AppTheme.CornerRadius.badge)
-        })
-        .disabled(selectedIdx == nil)
-        .padding(.top, 4)
-    }
-
-    @ViewBuilder
-    private func explanationView(explanation: String, question: StorySectionQuestion) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Divider()
-            Text("Explanation")
-                .font(AppTheme.Typography.captionFont.weight(.bold))
-                .foregroundColor(AppTheme.Colors.secondaryText)
-            SelectableTextView(
-                text: explanation,
-                language: viewModel.selectedStory?.language ?? "en",
-                onTextSelected: { text in
-                    selectedText = text
-                    translationSentence = extractSentence(from: explanation, containing: text)
-                    showTranslationPopup = true
-                }
-            )
-            .frame(maxWidth: .infinity, alignment: .leading)
-        }
-        .padding(.top, 4)
     }
 
 }

@@ -47,5 +47,3 @@ struct SnippetCard: View {
         .buttonStyle(PlainButtonStyle())
     }
 }
-
-

@@ -11,16 +11,16 @@ struct TranslationPopupView: View {
     let onClose: () -> Void
     let onSnippetSaved: ((Snippet) -> Void)?
 
-    @StateObject private var viewModel = TranslationPopupViewModel()
+    @StateObject var viewModel = TranslationPopupViewModel()
     @StateObject private var ttsManager = TTSSynthesizerManager.shared
-    @State private var targetLanguage: String = "en"
-    @State private var isSaving = false
-    @State private var saveError: String?
-    @State private var isSaved = false
+    @State var targetLanguage: String = "en"
+    @State var isSaving = false
+    @State var saveError: String?
+    @State var isSaved = false
     @State private var copySuccess: String?
 
-    private let maxTranslationLength = 5000
-    private let maxSnippetLength = 2000
+    let maxTranslationLength = 5000
+    let maxSnippetLength = 2000
 
     var body: some View {
         VStack(spacing: 0) {
@@ -248,183 +248,4 @@ struct TranslationPopupView: View {
         }
     }
 
-    private func translateText() {
-        // Validate text length
-        guard selectedText.count <= maxTranslationLength else {
-            viewModel.error = "Text exceeds maximum translation length of \(maxTranslationLength) characters"
-            return
-        }
-
-        guard selectedText.count > 1 else {
-            viewModel.error = "Text must be more than 1 character"
-            return
-        }
-
-        // Ensure source and target are different
-        guard sourceLanguage.lowercased() != targetLanguage.lowercased() else {
-            viewModel.error = "Source and target languages must be different"
-            return
-        }
-
-        viewModel.translate(
-            text: selectedText,
-            sourceLanguage: sourceLanguage,
-            targetLanguage: targetLanguage
-        )
-    }
-
-    private func defaultVoiceForTargetLanguage() -> String? {
-        // Find the default voice for the target language from available languages
-        if let languageInfo = viewModel.availableLanguages.find(byCodeOrName: targetLanguage),
-           let defaultVoice = languageInfo.ttsVoice {
-            return defaultVoice
-        }
-        // Fallback to using TTSSynthesizerManager's default voice method
-        return TTSSynthesizerManager.shared.defaultVoiceForLanguage(targetLanguage)
-    }
-
-    private func canSaveSnippet(translation: TranslateResponse) -> Bool {
-        return selectedText.count <= maxSnippetLength && translation.translatedText.count <= maxSnippetLength
-    }
-
-    private func saveSnippet() {
-        guard let translation = viewModel.translation else { return }
-
-        // Validate lengths
-        guard selectedText.count <= maxSnippetLength else {
-            saveError = "Original text exceeds snippet limit of \(maxSnippetLength) characters"
-            return
-        }
-
-        guard translation.translatedText.count <= maxSnippetLength else {
-            saveError = "Translated text exceeds snippet limit of \(maxSnippetLength) characters"
-            return
-        }
-
-        isSaving = true
-        saveError = nil
-
-        let request = CreateSnippetRequest(
-            originalText: selectedText,
-            translatedText: translation.translatedText,
-            sourceLanguage: translation.sourceLanguage,
-            targetLanguage: translation.targetLanguage,
-            context: sentence,
-            questionId: questionId,
-            sectionId: sectionId,
-            storyId: storyId
-        )
-
-        APIService.shared.createSnippet(request: request)
-            .receive(on: DispatchQueue.main)
-            .sink(
-                receiveCompletion: { completion in
-                    isSaving = false
-                    if case .failure(let error) = completion {
-                        saveError = error.localizedDescription
-                    }
-                },
-                receiveValue: { snippet in
-                    isSaving = false
-                    isSaved = true
-                    saveError = nil
-
-                    onSnippetSaved?(snippet)
-
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        onClose()
-                    }
-                }
-            )
-            .store(in: &viewModel.cancellables)
-    }
-}
-
-class TranslationPopupViewModel: ObservableObject {
-    @Published var translation: TranslateResponse?
-    @Published var isLoading = false
-    @Published var error: String?
-    @Published var availableLanguages: [LanguageInfo] = [] {
-        didSet {
-            updateLanguageCache()
-        }
-    }
-    @Published var user: User?
-
-    private var languageCacheByCode: [String: LanguageInfo] = [:]
-    private var languageCacheByName: [String: LanguageInfo] = [:]
-
-    private func updateLanguageCache() {
-        languageCacheByCode.removeAll()
-        languageCacheByName.removeAll()
-        for lang in availableLanguages {
-            languageCacheByCode[lang.code.lowercased()] = lang
-            languageCacheByName[lang.name.lowercased()] = lang
-        }
-    }
-
-    private var apiService = APIService.shared
-    var cancellables = Set<AnyCancellable>()
-
-    init() {
-        loadUser()
-    }
-
-    func loadUser() {
-        apiService.authStatus()
-            .receive(on: DispatchQueue.main)
-            .sink(
-                receiveCompletion: { _ in },
-                receiveValue: { [weak self] response in
-                    if response.authenticated {
-                        self?.user = response.user
-                    }
-                }
-            )
-            .store(in: &cancellables)
-    }
-
-    func loadLanguages() {
-        apiService.getLanguages()
-            .receive(on: DispatchQueue.main)
-            .sink(
-                receiveCompletion: { completion in
-                    if case .failure(let error) = completion {
-                        print("Failed to load languages: \(error)")
-                    }
-                },
-                receiveValue: { [weak self] languages in
-                    self?.availableLanguages = languages
-                }
-            )
-            .store(in: &cancellables)
-    }
-
-    func translate(text: String, sourceLanguage: String, targetLanguage: String) {
-        isLoading = true
-        error = nil
-
-        let request = TranslateRequest(
-            text: text,
-            targetLanguage: targetLanguage,
-            sourceLanguage: sourceLanguage
-        )
-
-        apiService.translateText(request: request)
-            .receive(on: DispatchQueue.main)
-            .sink(
-                receiveCompletion: { [weak self] completion in
-                    self?.isLoading = false
-                    if case .failure(let error) = completion {
-                        self?.error = error.localizedDescription
-                    }
-                },
-                receiveValue: { [weak self] response in
-                    self?.isLoading = false
-                    self?.translation = response
-                    self?.error = nil
-                }
-            )
-            .store(in: &cancellables)
-    }
 }

@@ -187,5 +187,3 @@ struct EditSnippetView: View {
         }
     }
 }
-
-
