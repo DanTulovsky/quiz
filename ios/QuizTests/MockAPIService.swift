@@ -3,6 +3,7 @@ import Foundation
 
 @testable import Quiz
 
+// swiftlint:disable file_length
 // swiftlint:disable:next type_body_length
 final class MockAPIService: APIServiceProtocol, @unchecked Sendable {
     private let lock = NSLock()
@@ -635,7 +636,8 @@ final class MockAPIService: APIServiceProtocol, @unchecked Sendable {
         }
     }
 
-    // Method implementations (cannot override extension methods, but these will be used when called on MockAPIService instances)
+    // Method implementations (cannot override extension methods,
+    // but these will be used when called on MockAPIService instances)
     func login(request: LoginRequest) -> AnyPublisher<LoginResponse, APIError> {
         guard let result = loginResult else {
             return Fail(error: .invalidResponse).eraseToAnyPublisher()

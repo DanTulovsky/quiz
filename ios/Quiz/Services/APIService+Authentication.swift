@@ -46,47 +46,66 @@ extension APIService {
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { data, response -> AnyPublisher<LoginResponse, APIError> in
-                if let httpResponse = response as? HTTPURLResponse {
-                    self.storeCookies(from: httpResponse)
-                }
-                guard let httpResponse = response as? HTTPURLResponse else {
-                    return Fail(error: .invalidResponse).eraseToAnyPublisher()
-                }
-                if (200...299).contains(httpResponse.statusCode) {
-                    let decoder = JSONDecoder()
-                    decoder.dateDecodingStrategy = .custom { decoder in
-                        let container = try decoder.singleValueContainer()
-                        let dateStr = try container.decode(String.self)
-                        let iso8601WithFractional = ISO8601DateFormatter()
-                        iso8601WithFractional.formatOptions = [
-                            .withInternetDateTime, .withFractionalSeconds
-                        ]
-                        let iso8601Standard = ISO8601DateFormatter()
-                        iso8601Standard.formatOptions = [.withInternetDateTime]
-                        if let date = iso8601WithFractional.date(from: dateStr)
-                            ?? iso8601Standard.date(from: dateStr) {
-                            return date
-                        }
-                        throw DecodingError.dataCorruptedError(
-                            in: container, debugDescription: "Invalid date format: \(dateStr)")
-                    }
-                    return Just(data)
-                        .decode(type: LoginResponse.self, decoder: decoder)
-                        .mapError { .decodingFailed($0) }
-                        .eraseToAnyPublisher()
-                } else {
-                    let decoder = JSONDecoder()
-                    if let errorResp = try? decoder.decode(ErrorResponse.self, from: data),
-                       let msg = errorResp.message ?? errorResp.error {
-                        return Fail(
-                            error: .backendError(
-                                code: errorResp.code, message: msg, details: errorResp.details)
-                        ).eraseToAnyPublisher()
-                    }
-                    return Fail(error: .invalidResponse).eraseToAnyPublisher()
-                }
+                self.handleGoogleCallbackResponse(data: data, response: response)
             }
             .eraseToAnyPublisher()
+    }
+
+    private func handleGoogleCallbackResponse(
+        data: Data, response: URLResponse
+    ) -> AnyPublisher<LoginResponse, APIError> {
+        if let httpResponse = response as? HTTPURLResponse {
+            self.storeCookies(from: httpResponse)
+        }
+        guard let httpResponse = response as? HTTPURLResponse else {
+            return Fail(error: .invalidResponse).eraseToAnyPublisher()
+        }
+        if (200...299).contains(httpResponse.statusCode) {
+            return decodeLoginResponse(data: data)
+        } else {
+            return decodeErrorResponse(data: data)
+        }
+    }
+
+    private func decodeLoginResponse(data: Data) -> AnyPublisher<LoginResponse, APIError> {
+        let decoder = createDateDecoder()
+        return Just(data)
+            .decode(type: LoginResponse.self, decoder: decoder)
+            .mapError { .decodingFailed($0) }
+            .eraseToAnyPublisher()
+    }
+
+    private func decodeErrorResponse(data: Data) -> AnyPublisher<LoginResponse, APIError> {
+        let decoder = JSONDecoder()
+        if let errorResp = try? decoder.decode(ErrorResponse.self, from: data),
+           let msg = errorResp.message ?? errorResp.error {
+            return Fail(
+                error: .backendError(
+                    code: errorResp.code, message: msg, details: errorResp.details)
+            ).eraseToAnyPublisher()
+        }
+        return Fail(error: .invalidResponse).eraseToAnyPublisher()
+    }
+
+    private func createDateDecoder() -> JSONDecoder {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .custom { decoder in
+            let container = try decoder.singleValueContainer()
+            let dateStr = try container.decode(String.self)
+            let iso8601WithFractional = ISO8601DateFormatter()
+            iso8601WithFractional.formatOptions = [
+                .withInternetDateTime, .withFractionalSeconds
+            ]
+            let iso8601Standard = ISO8601DateFormatter()
+            iso8601Standard.formatOptions = [.withInternetDateTime]
+            if let date = iso8601WithFractional.date(from: dateStr)
+                ?? iso8601Standard.date(from: dateStr) {
+                return date
+            }
+            throw DecodingError.dataCorruptedError(
+                in: container, debugDescription: "Invalid date format: \(dateStr)")
+        }
+        return decoder
     }
 
     func updateUser(request: UserUpdateRequest) -> AnyPublisher<User, APIError> {

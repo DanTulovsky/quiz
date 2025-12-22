@@ -1,6 +1,6 @@
 import SwiftUI
 
-// swiftlint:disable type_body_length
+// swiftlint:disable:next type_body_length
 struct SettingsView: View {
     @StateObject private var viewModel = SettingsViewModel()
     @EnvironmentObject var authViewModel: AuthenticationViewModel

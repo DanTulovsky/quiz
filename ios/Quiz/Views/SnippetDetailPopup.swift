@@ -18,59 +18,72 @@ struct SnippetDetailPopup: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .overlay(
-                Group {
-                    if let snippet = showingSnippet {
-                        Color.black.opacity(0.3)
-                            .ignoresSafeArea()
-                            .onTapGesture { showingSnippet = nil }
-
-                        SnippetDetailView(
-                            snippet: snippet,
-                            onClose: {
-                                showingSnippet = nil
-                            },
-                            onNavigateToSnippets: { searchText in
-                                showingSnippet = nil
-                                snippetSearchQuery = searchText
-                                showSnippetsView = true
-                            },
-                            onDelete: {
-                                snippetToDelete = snippet
-                                showDeleteConfirmation = true
-                            }
-                        )
-                        .transition(.scale.combined(with: .opacity))
-                        .zIndex(1)
-                    }
-                }
-            )
+            .overlay(snippetOverlay)
             .sheet(isPresented: $showSnippetsView) {
                 NavigationView {
                     SnippetListViewWithSearch(query: snippetSearchQuery)
                 }
             }
             .alert("Delete Snippet", isPresented: $showDeleteConfirmation) {
-                Button("Cancel", role: .cancel) {
-                    snippetToDelete = nil
-                }
-                Button("Delete", role: .destructive) {
-                    if let snippet = snippetToDelete {
-                        getVocabularyViewModel().deleteSnippet(id: snippet.id) { result in
-                            switch result {
-                            case .success:
-                                onSnippetDeleted?(snippet)
-                                showingSnippet = nil
-                            case .failure:
-                                break
-                            }
-                        }
-                        snippetToDelete = nil
-                    }
-                }
+                deleteAlertButtons
             } message: {
                 Text("Are you sure you want to delete this snippet?")
             }
+    }
+
+    @ViewBuilder
+    private var snippetOverlay: some View {
+        Group {
+            if let snippet = showingSnippet {
+                Color.black.opacity(0.3)
+                    .ignoresSafeArea()
+                    .onTapGesture { showingSnippet = nil }
+
+                SnippetDetailView(
+                    snippet: snippet,
+                    onClose: {
+                        showingSnippet = nil
+                    },
+                    onNavigateToSnippets: { searchText in
+                        showingSnippet = nil
+                        snippetSearchQuery = searchText
+                        showSnippetsView = true
+                    },
+                    onDelete: {
+                        snippetToDelete = snippet
+                        showDeleteConfirmation = true
+                    }
+                )
+                .transition(.scale.combined(with: .opacity))
+                .zIndex(1)
+            }
+        }
+    }
+
+    private var deleteAlertButtons: some View {
+        Group {
+            Button("Cancel", role: .cancel) {
+                snippetToDelete = nil
+            }
+            Button("Delete", role: .destructive) {
+                handleDeleteSnippet()
+            }
+        }
+    }
+
+    private func handleDeleteSnippet() {
+        if let snippet = snippetToDelete {
+            getVocabularyViewModel().deleteSnippet(id: snippet.id) { result in
+                switch result {
+                case .success:
+                    onSnippetDeleted?(snippet)
+                    showingSnippet = nil
+                case .failure:
+                    break
+                }
+            }
+            snippetToDelete = nil
+        }
     }
 }
 

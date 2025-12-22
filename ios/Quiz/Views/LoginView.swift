@@ -251,77 +251,18 @@ struct WebAuthView: UIViewControllerRepresentable {
         let viewController = UIViewController()
         viewController.view.backgroundColor = .clear
 
-        // Guard: Don't start session if already authenticated
-        // This prevents the session from restarting if the view is recreated after authentication
-        if viewModel.isAuthenticated {
-            DispatchQueue.main.async {
-                onDismiss()
-            }
+        if shouldDismissWithoutSession(context: context) {
             return viewController
         }
 
-        // Guard: Don't start a new session if one already exists
-        if let existingSession = context.coordinator.session {
-            existingSession.cancel()
-            context.coordinator.session = nil
-            DispatchQueue.main.async {
-                onDismiss()
-            }
-            return viewController
-        }
-
-        // Use ASWebAuthenticationSession with iOS URL scheme for proper OAuth flow
-        // This uses the iOS client ID and custom URL scheme:
-        // com.googleusercontent.apps.53644033433-qpic9cnjknphdpa332d7flq7nvvdv520
         let callbackURLScheme =
             "com.googleusercontent.apps.53644033433-qpic9cnjknphdpa332d7flq7nvvdv520"
-
-        // Capture coordinator reference for use in completion handler
         let coordinator = context.coordinator
 
         let session = ASWebAuthenticationSession(
             url: url,
             callbackURLScheme: callbackURLScheme,
-            completionHandler: { callbackURL, error in
-                DispatchQueue.main.async {
-                    if let error = error {
-                        // Clear session reference on error
-                        coordinator.session = nil
-
-                        if let authError = error as? ASWebAuthenticationSessionError,
-                           authError.code == .canceledLogin {
-                            print("ℹ️ User cancelled OAuth flow")
-                            onDismiss()
-                            return
-                        }
-                        print("❌ OAuth error: \(error.localizedDescription)")
-                        onDismiss()
-                        return
-                    }
-
-                    if let callbackURL = callbackURL {
-                        // Cancel and clear the session immediately after receiving callback to prevent re-triggering
-                        let sessionToCancel = coordinator.session
-                        coordinator.session = nil
-                        sessionToCancel?.cancel()
-
-                        // Process callback immediately - the session is already cancelled
-                        if let components = URLComponents(
-                            url: callbackURL, resolvingAgainstBaseURL: false) {
-                            onCallback(components)
-                        } else {
-                            print("❌ Failed to parse callback URL")
-                            onDismiss()
-                        }
-                    } else {
-                        // Cancel the session if no callback URL
-                        let sessionToCancel = coordinator.session
-                        coordinator.session = nil
-                        sessionToCancel?.cancel()
-                        onDismiss()
-                    }
-                }
-            }
+            completionHandler: createCompletionHandler(coordinator: coordinator)
         )
 
         // Use SFSafariViewController presentation for better UX and credential access
@@ -365,6 +306,67 @@ struct WebAuthView: UIViewControllerRepresentable {
 
     func makeCoordinator() -> Coordinator {
         Coordinator()
+    }
+
+    private func shouldDismissWithoutSession(context: Context) -> Bool {
+        // Guard: Don't start session if already authenticated
+        if viewModel.isAuthenticated {
+            DispatchQueue.main.async {
+                onDismiss()
+            }
+            return true
+        }
+
+        // Guard: Don't start a new session if one already exists
+        if let existingSession = context.coordinator.session {
+            existingSession.cancel()
+            context.coordinator.session = nil
+            DispatchQueue.main.async {
+                onDismiss()
+            }
+            return true
+        }
+
+        return false
+    }
+
+    private func createCompletionHandler(coordinator: Coordinator) -> (URL?, Error?) -> Void {
+        return { [weak coordinator] callbackURL, error in
+            guard let coordinator = coordinator else { return }
+            DispatchQueue.main.async {
+                if let error = error {
+                    coordinator.session = nil
+                    if let authError = error as? ASWebAuthenticationSessionError,
+                       authError.code == .canceledLogin {
+                        print("ℹ️ User cancelled OAuth flow")
+                        onDismiss()
+                        return
+                    }
+                    print("❌ OAuth error: \(error.localizedDescription)")
+                    onDismiss()
+                    return
+                }
+
+                if let callbackURL = callbackURL {
+                    let sessionToCancel = coordinator.session
+                    coordinator.session = nil
+                    sessionToCancel?.cancel()
+
+                    if let components = URLComponents(
+                        url: callbackURL, resolvingAgainstBaseURL: false) {
+                        onCallback(components)
+                    } else {
+                        print("❌ Failed to parse callback URL")
+                        onDismiss()
+                    }
+                } else {
+                    let sessionToCancel = coordinator.session
+                    coordinator.session = nil
+                    sessionToCancel?.cancel()
+                    onDismiss()
+                }
+            }
+        }
     }
 
     class Coordinator: NSObject, ASWebAuthenticationPresentationContextProviding {

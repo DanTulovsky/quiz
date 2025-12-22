@@ -2,7 +2,7 @@ import XCTest
 import Combine
 @testable import Quiz
 
-class AuthenticationViewModelURLValidationTests: XCTestCase {
+class AuthViewModelURLValidationTests: XCTestCase {
     var viewModel: AuthenticationViewModel!
     var mockAPIService: MockAPIService!
     var cancellables: Set<AnyCancellable>!

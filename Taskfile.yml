@@ -1210,7 +1210,7 @@ tasks:
     dir: ios
     cmds:
       - echo "Running iOS linter (SwiftLint)..."
-      - swiftlint lint -quiet
+      - swiftlint lint --quiet
       - echo "✅ iOS linting passed!"
 
   test-frontend:

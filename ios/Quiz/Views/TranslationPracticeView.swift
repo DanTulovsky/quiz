@@ -239,48 +239,83 @@ struct TranslationPracticeView: View {
     private func findJSONArrayRange(in text: String) -> Range<String.Index>? {
         guard let startIndex = text.range(of: "[{")?.lowerBound else { return nil }
 
+        var parser = JSONArrayParser(text: text, startIndex: startIndex)
+        return parser.parse()
+    }
+
+    private struct JSONArrayParser {
+        let text: String
+        let startIndex: String.Index
         var bracketCount = 0
         var braceCount = 0
         var inString = false
         var escapeNext = false
-        var currentIndex = startIndex
+        var currentIndex: String.Index
 
-        while currentIndex < text.endIndex {
-            let char = text[currentIndex]
+        init(text: String, startIndex: String.Index) {
+            self.text = text
+            self.startIndex = startIndex
+            self.currentIndex = startIndex
+        }
 
+        mutating func parse() -> Range<String.Index>? {
+            while currentIndex < text.endIndex {
+                if handleEscape() {
+                    continue
+                }
+
+                let char = text[currentIndex]
+
+                if char == "\"" {
+                    inString.toggle()
+                } else if !inString {
+                    if updateCounters(char) {
+                        if bracketCount == 0 && braceCount == 0 {
+                            return startIndex..<text.index(after: currentIndex)
+                        }
+                    }
+                }
+
+                currentIndex = text.index(after: currentIndex)
+            }
+
+            return nil
+        }
+
+        private mutating func handleEscape() -> Bool {
             if escapeNext {
                 escapeNext = false
                 currentIndex = text.index(after: currentIndex)
-                continue
+                return true
             }
 
-            if char == "\\" {
+            if text[currentIndex] == "\\" {
                 escapeNext = true
                 currentIndex = text.index(after: currentIndex)
-                continue
+                return true
             }
 
-            if char == "\"" {
-                inString.toggle()
-            } else if !inString {
-                if char == "[" {
-                    bracketCount += 1
-                } else if char == "]" {
-                    bracketCount -= 1
-                    if bracketCount == 0 && braceCount == 0 {
-                        return startIndex..<text.index(after: currentIndex)
-                    }
-                } else if char == "{" {
-                    braceCount += 1
-                } else if char == "}" {
-                    braceCount -= 1
-                }
-            }
-
-            currentIndex = text.index(after: currentIndex)
+            return false
         }
 
-        return nil
+        private mutating func updateCounters(_ char: Character) -> Bool {
+            switch char {
+            case "[":
+                bracketCount += 1
+                return false
+            case "]":
+                bracketCount -= 1
+                return true
+            case "{":
+                braceCount += 1
+                return false
+            case "}":
+                braceCount -= 1
+                return false
+            default:
+                return false
+            }
+        }
     }
 
     @ViewBuilder
@@ -415,65 +450,8 @@ struct TranslationPracticeView: View {
         NavigationView {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    VStack(alignment: .leading, spacing: 12) {
-                        let langName =
-                            authViewModel.user?.preferredLanguage?.capitalized ?? "Learning"
-                        let directionText =
-                            session.translationDirection == "learning_to_en"
-                            ? "\(langName) → English"
-                            : "English → \(langName)"
-                        HStack {
-                            BadgeView(
-                                text: directionText.uppercased(),
-                                color: AppTheme.Colors.accentIndigo)
-                            Spacer()
-                            if let score = session.aiScore {
-                                Text("Score: \(Int((score / 5.0) * 100))%")
-                                    .font(AppTheme.Typography.captionFont.weight(.bold))
-                                    .padding(.horizontal, 8)
-                                    .padding(.vertical, 4)
-                                    .background(
-                                        score >= 4.0
-                                            ? AppTheme.Colors.successGreen.opacity(0.1)
-                                            : score >= 3.0
-                                            ? AppTheme.Colors.primaryBlue.opacity(0.1)
-                                            : AppTheme.Colors.errorRed.opacity(0.1)
-                                    )
-                                    .foregroundColor(
-                                        score >= 4.0
-                                            ? AppTheme.Colors.successGreen
-                                            : score >= 3.0
-                                            ? AppTheme.Colors.primaryBlue
-                                            : AppTheme.Colors.errorRed
-                                    )
-                                    .cornerRadius(6)
-                            }
-                        }
-
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Original")
-                                .font(AppTheme.Typography.captionFont)
-                                .foregroundColor(AppTheme.Colors.secondaryText)
-                            Text(session.originalSentence)
-                                .font(AppTheme.Typography.subheadlineFont)
-                        }
-                        .padding(AppTheme.Spacing.innerPadding)
-                        .background(AppTheme.Colors.secondaryBackground.opacity(0.5))
-                        .cornerRadius(10)
-
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Your Translation")
-                                .font(AppTheme.Typography.captionFont)
-                                .foregroundColor(AppTheme.Colors.secondaryText)
-                            Text(session.userTranslation)
-                                .font(AppTheme.Typography.subheadlineFont)
-                        }
-                        .padding(AppTheme.Spacing.innerPadding)
-                        .background(AppTheme.Colors.secondaryBackground.opacity(0.5))
-                        .cornerRadius(10)
-                    }
-                    .padding()
-
+                    historyDetailHeader(session: session)
+                    historyDetailSentences(session: session)
                     feedbackSection(session)
                         .padding(.horizontal)
                 }
@@ -489,6 +467,74 @@ struct TranslationPracticeView: View {
                 }
             }
         }
+    }
+
+    @ViewBuilder
+    private func historyDetailHeader(session: TranslationPracticeSessionResponse) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            let langName =
+                authViewModel.user?.preferredLanguage?.capitalized ?? "Learning"
+            let directionText =
+                session.translationDirection == "learning_to_en"
+                ? "\(langName) → English"
+                : "English → \(langName)"
+            HStack {
+                BadgeView(
+                    text: directionText.uppercased(),
+                    color: AppTheme.Colors.accentIndigo)
+                Spacer()
+                if let score = session.aiScore {
+                    scoreBadge(score: score)
+                }
+            }
+        }
+        .padding()
+    }
+
+    @ViewBuilder
+    private func scoreBadge(score: Float) -> some View {
+        Text("Score: \(Int((score / 5.0) * 100))%")
+            .font(AppTheme.Typography.captionFont.weight(.bold))
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(
+                score >= 4.0
+                    ? AppTheme.Colors.successGreen.opacity(0.1)
+                    : score >= 3.0
+                    ? AppTheme.Colors.primaryBlue.opacity(0.1)
+                    : AppTheme.Colors.errorRed.opacity(0.1)
+            )
+            .foregroundColor(
+                score >= 4.0
+                    ? AppTheme.Colors.successGreen
+                    : score >= 3.0
+                    ? AppTheme.Colors.primaryBlue
+                    : AppTheme.Colors.errorRed
+            )
+            .cornerRadius(6)
+    }
+
+    @ViewBuilder
+    private func historyDetailSentences(session: TranslationPracticeSessionResponse) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            sentenceCard(title: "Original", text: session.originalSentence)
+            sentenceCard(title: "Your Translation", text: session.userTranslation)
+        }
+        .padding()
+    }
+
+    @ViewBuilder
+    private func sentenceCard(title: String, text: String) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title)
+                .font(AppTheme.Typography.captionFont)
+                .foregroundColor(AppTheme.Colors.secondaryText)
+            Text(text)
+                .font(AppTheme.Typography.subheadlineFont)
+        }
+        .padding(AppTheme.Spacing.innerPadding)
+        .background(AppTheme.Colors.secondaryBackground.opacity(0.5))
+        .cornerRadius(10)
     }
 
     private func feedbackSection(_ feedback: TranslationPracticeSessionResponse) -> some View {
@@ -515,17 +561,6 @@ struct TranslationPracticeView: View {
                 scoreBadge(score: score)
             }
         }
-    }
-
-    private func scoreBadge(score: Float) -> some View {
-        let percentage = Int((score / 5.0) * 100)
-        return Text("Score: \(percentage)%")
-            .font(AppTheme.Typography.captionFont.weight(.bold))
-            .padding(.horizontal, 8)
-            .padding(.vertical, 4)
-            .background(AppTheme.Colors.primaryBlue.opacity(0.1))
-            .foregroundColor(AppTheme.Colors.primaryBlue)
-            .cornerRadius(6)
     }
 
     private func feedbackContent(_ markdown: String) -> some View {

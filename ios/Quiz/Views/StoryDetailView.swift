@@ -289,41 +289,9 @@ struct StoryDetailView: View {
             }
 
             if !hasSubmitted {
-                Button(action: {
-                    submittedQuestions.insert(question.id)
-                }, label: {
-                    Text("Submit Answer")
-                        .font(AppTheme.Typography.subheadlineFont.weight(.bold))
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 10)
-                        .background(
-                            selectedIdx == nil
-                                ? AppTheme.Colors.primaryBlue.opacity(0.3)
-                                : AppTheme.Colors.primaryBlue
-                        )
-                        .foregroundColor(.white)
-                        .cornerRadius(AppTheme.CornerRadius.badge)
-                })
-                .disabled(selectedIdx == nil)
-                .padding(.top, 4)
+                submitButton(questionId: question.id, selectedIdx: selectedIdx)
             } else if let explanation = question.explanation, !explanation.isEmpty {
-                VStack(alignment: .leading, spacing: 8) {
-                    Divider()
-                    Text("Explanation")
-                        .font(AppTheme.Typography.captionFont.weight(.bold))
-                        .foregroundColor(AppTheme.Colors.secondaryText)
-                    SelectableTextView(
-                        text: explanation,
-                        language: viewModel.selectedStory?.language ?? "en",
-                        onTextSelected: { text in
-                            selectedText = text
-                            translationSentence = extractSentence(from: explanation, containing: text)
-                            showTranslationPopup = true
-                        }
-                    )
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .padding(.top, 4)
+                explanationView(explanation: explanation, question: question)
             }
         }
         .appInnerCard()
@@ -339,6 +307,48 @@ struct StoryDetailView: View {
                 )
         )
         .padding(.horizontal)
+    }
+
+    @ViewBuilder
+    private func submitButton(questionId: Int, selectedIdx: Int?) -> some View {
+        Button(action: {
+            submittedQuestions.insert(questionId)
+        }, label: {
+            Text("Submit Answer")
+                .font(AppTheme.Typography.subheadlineFont.weight(.bold))
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 10)
+                .background(
+                    selectedIdx == nil
+                        ? AppTheme.Colors.primaryBlue.opacity(0.3)
+                        : AppTheme.Colors.primaryBlue
+                )
+                .foregroundColor(.white)
+                .cornerRadius(AppTheme.CornerRadius.badge)
+        })
+        .disabled(selectedIdx == nil)
+        .padding(.top, 4)
+    }
+
+    @ViewBuilder
+    private func explanationView(explanation: String, question: StorySectionQuestion) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Divider()
+            Text("Explanation")
+                .font(AppTheme.Typography.captionFont.weight(.bold))
+                .foregroundColor(AppTheme.Colors.secondaryText)
+            SelectableTextView(
+                text: explanation,
+                language: viewModel.selectedStory?.language ?? "en",
+                onTextSelected: { text in
+                    selectedText = text
+                    translationSentence = extractSentence(from: explanation, containing: text)
+                    showTranslationPopup = true
+                }
+            )
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(.top, 4)
     }
 
 }

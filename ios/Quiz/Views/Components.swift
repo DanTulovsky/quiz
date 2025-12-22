@@ -104,7 +104,8 @@ struct BadgeView: View {
             // Use .default mode - .spokenAudio can sometimes cause issues with background playback
             // With .playback category and background mode enabled, audio should continue when device locks
             // Options are optional - .playback category alone enables autorun behavior
-            // Don't deactivate first - just configure and activate. Deactivation can cause iOS to not maintain the session.
+            // Don't deactivate first - just configure and activate.
+            // Deactivation can cause iOS to not maintain the session.
             try audioSession.setCategory(
                 .playback,
                 mode: .default,
@@ -158,8 +159,7 @@ struct BadgeView: View {
                         // Resume playback if we were playing
                         if let player = self.player,
                             !self.isPaused,
-                            self.currentlySpeakingText != nil
-                        {
+                            self.currentlySpeakingText != nil {
                             do {
                                 try AVAudioSession.sharedInstance().setActive(true)
                                 player.play()
@@ -265,8 +265,7 @@ struct BadgeView: View {
                         if case .requestFailed(let underlyingError) = error {
                             let nsError = underlyingError as NSError
                             if nsError.domain == NSURLErrorDomain
-                                && nsError.code == NSURLErrorCancelled
-                            {
+                                && nsError.code == NSURLErrorCancelled {
                                 // Request was cancelled, don't show error
                                 return
                             }
@@ -285,77 +284,82 @@ struct BadgeView: View {
 
     private func playStream(streamId: String, token: String?) {
         let url = APIService.shared.streamURL(for: streamId, token: token)
+        let request = createStreamRequest(url: url)
+        startBackgroundTask()
 
-        // Create request with authentication cookies
-        var request = URLRequest(url: url)
-        request.httpShouldHandleCookies = true
-        request.cachePolicy = .reloadIgnoringLocalCacheData
-
-        // Start background task to ensure download and playback can complete even if phone locks
-        backgroundTaskID = UIApplication.shared.beginBackgroundTask { [weak self] in
-            self?.endBackgroundTask()
-        }
-
-        // Download the complete audio data
-        // Use backgroundURLSession which is configured to continue in background
-        let dataTask = backgroundURLSession.dataTask(with: request) {
-            [weak self] data, response, error in
-            guard let self = self else {
-                return
-            }
-
-            if let error = error {
-                DispatchQueue.main.async {
-                    // Ignore cancellation errors (user intentionally cancelled)
-                    let nsError = error as NSError
-                    if nsError.domain == NSURLErrorDomain && nsError.code == NSURLErrorCancelled {
-                        // Request was cancelled, don't show error
-                        self.endBackgroundTask()
-                        return
-                    }
-                    self.isLoading = false
-                    self.handleError("Network error: \(error.localizedDescription)")
-                    self.endBackgroundTask()
-                }
-                return
-            }
-
-            guard let httpResponse = response as? HTTPURLResponse else {
-                DispatchQueue.main.async {
-                    self.isLoading = false
-                    self.handleError("Invalid server response.")
-                    self.endBackgroundTask()
-                }
-                return
-            }
-
-            guard (200...299).contains(httpResponse.statusCode) else {
-                DispatchQueue.main.async {
-                    self.isLoading = false
-                    self.handleError("Server error \(httpResponse.statusCode)")
-                    self.endBackgroundTask()
-                }
-                return
-            }
-
-            guard let audioData = data, !audioData.isEmpty else {
-                DispatchQueue.main.async {
-                    self.isLoading = false
-                    self.handleError("No audio data received.")
-                    self.endBackgroundTask()
-                }
-                return
-            }
-
-            // Play the audio data on the main thread
-            DispatchQueue.main.async {
-                self.playAudioData(audioData)
-                // End background task once playback starts
-                self.endBackgroundTask()
+        let dataTask = backgroundURLSession.dataTask(with: request) { [weak self] data, response, error in
+            guard let self = self else { return }
+            Task { @MainActor in
+                self.handleStreamResponse(data: data, response: response, error: error)
             }
         }
         currentDataTask = dataTask
         dataTask.resume()
+    }
+
+    private func createStreamRequest(url: URL) -> URLRequest {
+        var request = URLRequest(url: url)
+        request.httpShouldHandleCookies = true
+        request.cachePolicy = .reloadIgnoringLocalCacheData
+        return request
+    }
+
+    private func startBackgroundTask() {
+        backgroundTaskID = UIApplication.shared.beginBackgroundTask { [weak self] in
+            self?.endBackgroundTask()
+        }
+    }
+
+    private func handleStreamResponse(data: Data?, response: URLResponse?, error: Error?) {
+        if let error = error {
+            handleStreamError(error: error)
+            return
+        }
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            DispatchQueue.main.async {
+                self.isLoading = false
+                self.handleError("Invalid server response.")
+                self.endBackgroundTask()
+            }
+            return
+        }
+
+        guard (200...299).contains(httpResponse.statusCode) else {
+            DispatchQueue.main.async {
+                self.isLoading = false
+                self.handleError("Server error \(httpResponse.statusCode)")
+                self.endBackgroundTask()
+            }
+            return
+        }
+
+        guard let audioData = data, !audioData.isEmpty else {
+            DispatchQueue.main.async {
+                self.isLoading = false
+                self.handleError("No audio data received.")
+                self.endBackgroundTask()
+            }
+            return
+        }
+
+        DispatchQueue.main.async {
+            self.playAudioData(audioData)
+            self.endBackgroundTask()
+        }
+    }
+
+    private func handleStreamError(error: Error) {
+        DispatchQueue.main.async {
+            let nsError = error as NSError
+            if nsError.domain == NSURLErrorDomain && nsError.code == NSURLErrorCancelled {
+                self.endBackgroundTask()
+                return
+            }
+            self.isLoading = false
+            self.handleError("Network error: \(error.localizedDescription)")
+            self.endBackgroundTask()
+        }
     }
 
     private func endBackgroundTask() {
@@ -367,84 +371,81 @@ struct BadgeView: View {
 
     private func playAudioData(_ data: Data) {
         do {
-            // Audio session should already be configured and active from setupAudioSession()
-            // No need to reactivate - it should stay active for background playback
-            // Per Apple docs and best practices, activate once during setup, not repeatedly
-
-            // Write to temporary file
-            let tempDir = FileManager.default.temporaryDirectory
-            let tempFile = tempDir.appendingPathComponent(UUID().uuidString + ".mp3")
-            try data.write(to: tempFile)
-
-            // Create player with local file
-            let asset = AVURLAsset(url: tempFile)
-            let playerItem = AVPlayerItem(asset: asset)
-
-            // Listen for completion
-            let completionObserver = NotificationCenter.default.addObserver(
-                forName: .AVPlayerItemDidPlayToEndTime, object: playerItem, queue: .main
-            ) { [weak self] _ in
-                Task { @MainActor [weak self] in
-                    guard let self = self else { return }
-                    self.currentlySpeakingText = nil
-                    self.isPaused = false
-                    self.clearNowPlayingInfo()
-                    // Clean up temp file
-                    try? FileManager.default.removeItem(at: tempFile)
-                }
-            }
-            notificationObservers.append(completionObserver)
-
-            // Listen for errors
-            let errorObserver = NotificationCenter.default.addObserver(
-                forName: .AVPlayerItemFailedToPlayToEndTime, object: playerItem, queue: .main
-            ) { [weak self] _ in
-                Task { @MainActor [weak self] in
-                    guard let self = self else { return }
-                    self.handleError("Audio playback failed.")
-                    self.clearNowPlayingInfo()
-                    try? FileManager.default.removeItem(at: tempFile)
-                }
-            }
-            notificationObservers.append(errorObserver)
-
-            let player = AVPlayer(playerItem: playerItem)
-            player.automaticallyWaitsToMinimizeStalling = false
-            self.player = player
-
-            // Add observer for status (will be removed in stop() or deinit)
-            playerItem.addObserver(
-                self, forKeyPath: "status", options: [.new, .initial], context: nil)
-
-            // Observe timeControlStatus to detect when player gets paused by system
-            player.addObserver(
-                self, forKeyPath: "timeControlStatus", options: [.new, .initial], context: nil)
-
-            // Audio session should already be configured and active from setupAudioSession()
-            // Per Apple docs and best practices, activate once during setup, not repeatedly
-            // The session should stay active for background playback
-            player.play()
-            isPaused = false
-
-            // Set loading to false when player actually starts (check after a brief delay)
-            Task { @MainActor in
-                // Wait a moment for playback to actually start
-                try? await Task.sleep(nanoseconds: 100_000_000)  // 0.1 seconds
-                if player.timeControlStatus == .playing {
-                    isLoading = false
-                }
-            }
-
-            // Update Now Playing info for lock screen
-            Task {
-                await updateNowPlayingInfo(for: playerItem)
-            }
-
-            // Start periodic updates for elapsed time during playback
-            startNowPlayingUpdates()
+            let tempFile = try createTempAudioFile(data: data)
+            let playerItem = createPlayerItem(url: tempFile)
+            setupPlayerObservers(playerItem: playerItem, tempFile: tempFile)
+            createPlayer(playerItem: playerItem)
         } catch {
-            handleError("Playback error: \(error.localizedDescription)")
+            handleError("Failed to prepare audio: \(error.localizedDescription)")
         }
+    }
+
+    private func createTempAudioFile(data: Data) throws -> URL {
+        let tempDir = FileManager.default.temporaryDirectory
+        let tempFile = tempDir.appendingPathComponent(UUID().uuidString + ".mp3")
+        try data.write(to: tempFile)
+        return tempFile
+    }
+
+    private func createPlayerItem(url: URL) -> AVPlayerItem {
+        let asset = AVURLAsset(url: url)
+        return AVPlayerItem(asset: asset)
+    }
+
+    private func setupPlayerObservers(playerItem: AVPlayerItem, tempFile: URL) {
+        let completionObserver = NotificationCenter.default.addObserver(
+            forName: .AVPlayerItemDidPlayToEndTime, object: playerItem, queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                guard let self = self else { return }
+                self.currentlySpeakingText = nil
+                self.isPaused = false
+                self.clearNowPlayingInfo()
+                try? FileManager.default.removeItem(at: tempFile)
+            }
+        }
+        notificationObservers.append(completionObserver)
+
+        let errorObserver = NotificationCenter.default.addObserver(
+            forName: .AVPlayerItemFailedToPlayToEndTime, object: playerItem, queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                guard let self = self else { return }
+                self.handleError("Audio playback failed.")
+                self.clearNowPlayingInfo()
+                try? FileManager.default.removeItem(at: tempFile)
+            }
+        }
+        notificationObservers.append(errorObserver)
+    }
+
+    private func createPlayer(playerItem: AVPlayerItem) {
+        let player = AVPlayer(playerItem: playerItem)
+        player.automaticallyWaitsToMinimizeStalling = false
+        self.player = player
+        playerItem.addObserver(
+            self, forKeyPath: "status", options: [.new, .initial], context: nil)
+        player.addObserver(
+            self, forKeyPath: "timeControlStatus", options: [.new, .initial], context: nil)
+        startPlayback(player: player, playerItem: playerItem)
+    }
+
+    private func startPlayback(player: AVPlayer, playerItem: AVPlayerItem) {
+        player.play()
+        isPaused = false
+
+        Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 100_000_000)
+            if player.timeControlStatus == .playing {
+                isLoading = false
+            }
+        }
+
+        Task {
+            await updateNowPlayingInfo(for: playerItem)
+        }
+
+        startNowPlayingUpdates()
     }
 
     private func updateNowPlayingInfo(for playerItem: AVPlayerItem) async {
@@ -486,8 +487,7 @@ struct BadgeView: View {
 
     private func startNowPlayingUpdates() {
         stopNowPlayingUpdates()
-        nowPlayingUpdateTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) {
-            [weak self] _ in
+        nowPlayingUpdateTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
             guard let self = self else { return }
             Task { @MainActor in
                 self.updateNowPlayingPlaybackState()
@@ -811,8 +811,7 @@ private class SizingTextView: UITextView {
 
         if let textLayoutManager = textLayoutManager,
             let textContentManager = textLayoutManager.textContentManager,
-            let textContainer = textLayoutManager.textContainer
-        {
+            let textContainer = textLayoutManager.textContainer {
             let containerSize = CGSize(width: width, height: .greatestFiniteMagnitude)
             textContainer.size = containerSize
 
@@ -820,8 +819,7 @@ private class SizingTextView: UITextView {
 
             var totalHeight: CGFloat = 0
             let documentRange = textContentManager.documentRange
-            textLayoutManager.enumerateTextLayoutFragments(from: documentRange.location) {
-                fragment in
+            textLayoutManager.enumerateTextLayoutFragments(from: documentRange.location) { fragment in
                 totalHeight = max(totalHeight, fragment.layoutFragmentFrame.maxY)
                 return true
             }
@@ -953,8 +951,7 @@ struct QuestionCardView: View {
                 .id("\(sentence)-\(snippetsId)")
                 .frame(minHeight: 44)
             } else if let questionText = stringValue(question.content["question"])
-                ?? stringValue(question.content["prompt"])
-            {
+                ?? stringValue(question.content["prompt"]) {
                 SelectableTextView(
                     text: questionText,
                     language: question.language,
@@ -969,8 +966,7 @@ struct QuestionCardView: View {
             }
 
             if question.type == "vocabulary",
-                let targetWord = stringValue(question.content["question"])
-            {
+                let targetWord = stringValue(question.content["question"]) {
                 let vocabText = "What does \(targetWord) mean in this context?"
                 SelectableTextView(
                     text: vocabText,
