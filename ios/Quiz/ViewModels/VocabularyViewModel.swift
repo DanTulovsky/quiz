@@ -14,7 +14,7 @@ class VocabularyViewModel: BaseViewModel, SnippetLoading, LanguageCaching, ListF
         set { stories = newValue }
     }
     @Published var searchQuery = ""
-    
+
     var searchQueryPublisher: Published<String>.Publisher {
         $searchQuery
     }

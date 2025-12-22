@@ -1,5 +1,5 @@
-import Foundation
 import Combine
+import Foundation
 
 class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, SubmittingState {
     @Published var dailyQuestions: [DailyQuestionWithDetails] = []
@@ -66,7 +66,9 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, Submitting
         guard !dailyQuestions.isEmpty else { return }
 
         // Check if current question is completed or invalid
-        let currentIsCompleted = currentQuestionIndex < dailyQuestions.count && dailyQuestions[currentQuestionIndex].isCompleted
+        let currentIsCompleted =
+            currentQuestionIndex < dailyQuestions.count
+            && dailyQuestions[currentQuestionIndex].isCompleted
         let currentIsInvalid = currentQuestionIndex >= dailyQuestions.count
 
         // If we're on a completed question or invalid index, find the first incomplete question
@@ -88,13 +90,17 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, Submitting
         let today = Date().iso8601String
 
         executeWithSubmittingState(
-            publisher: apiService.postDailyAnswer(date: today, questionId: question.question.id, userAnswerIndex: index)
+            publisher: apiService.postDailyAnswer(
+                date: today, questionId: question.question.id, userAnswerIndex: index)
         ) { [weak self] (response: DailyAnswerResponse) in
             guard let self = self else { return }
             self.answerResponse = response
 
             // Update the question's completed status in the array
-            guard self.currentQuestionIndex >= 0 && self.currentQuestionIndex < self.dailyQuestions.count else {
+            guard
+                self.currentQuestionIndex >= 0
+                    && self.currentQuestionIndex < self.dailyQuestions.count
+            else {
                 return
             }
             let updatedQuestion = DailyQuestionWithDetails(
@@ -120,7 +126,8 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, Submitting
             }
         } else {
             // Find next unanswered question
-            if let nextIncompleteIndex = dailyQuestions.enumerated().first(where: { index, question in
+            if let nextIncompleteIndex = dailyQuestions.enumerated().first(where: {
+                index, question in
                 index > currentQuestionIndex && !question.isCompleted
             })?.offset {
                 currentQuestionIndex = nextIncompleteIndex
