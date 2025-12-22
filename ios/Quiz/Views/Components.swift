@@ -29,6 +29,15 @@ struct BadgeView: View {
     private var notificationObservers: [NSObjectProtocol] = []
     private var currentDataTask: URLSessionDataTask?
     private var nowPlayingUpdateTimer: Timer?
+    private var backgroundTaskID: UIBackgroundTaskIdentifier = .invalid
+    private lazy var backgroundURLSession: URLSession = {
+        let config = URLSessionConfiguration.default
+        config.allowsCellularAccess = true
+        config.waitsForConnectivity = true
+        config.timeoutIntervalForRequest = 60
+        config.timeoutIntervalForResource = 300
+        return URLSession(configuration: config)
+    }()
 
     // Global preferred voice
     var preferredVoice: String?
@@ -75,10 +84,9 @@ struct BadgeView: View {
     }
 
     private func handleAppGoingToBackground() {
-        // If loading, cancel it (can't load in background)
-        if isLoading {
-            cancel()
-        }
+        // Don't cancel downloads - allow them to continue in background
+        // The network request will continue, and once the audio data is downloaded,
+        // playback will start even if the phone is locked
         // Don't pause playing audio - let it continue in background
         // The background audio mode allows playback to continue
     }
@@ -228,10 +236,18 @@ struct BadgeView: View {
         request.httpShouldHandleCookies = true
         request.cachePolicy = .reloadIgnoringLocalCacheData
 
+        // Start background task to ensure download and playback can complete even if phone locks
+        backgroundTaskID = UIApplication.shared.beginBackgroundTask { [weak self] in
+            self?.endBackgroundTask()
+        }
+
         // Download the complete audio data
-        let dataTask = URLSession.shared.dataTask(with: request) {
+        // Use backgroundURLSession which is configured to continue in background
+        let dataTask = backgroundURLSession.dataTask(with: request) {
             [weak self] data, response, error in
-            guard let self = self else { return }
+            guard let self = self else {
+                return
+            }
 
             if let error = error {
                 DispatchQueue.main.async {
@@ -239,10 +255,12 @@ struct BadgeView: View {
                     let nsError = error as NSError
                     if nsError.domain == NSURLErrorDomain && nsError.code == NSURLErrorCancelled {
                         // Request was cancelled, don't show error
+                        self.endBackgroundTask()
                         return
                     }
                     self.isLoading = false
                     self.handleError("Network error: \(error.localizedDescription)")
+                    self.endBackgroundTask()
                 }
                 return
             }
@@ -251,6 +269,7 @@ struct BadgeView: View {
                 DispatchQueue.main.async {
                     self.isLoading = false
                     self.handleError("Invalid server response.")
+                    self.endBackgroundTask()
                 }
                 return
             }
@@ -259,6 +278,7 @@ struct BadgeView: View {
                 DispatchQueue.main.async {
                     self.isLoading = false
                     self.handleError("Server error \(httpResponse.statusCode)")
+                    self.endBackgroundTask()
                 }
                 return
             }
@@ -267,6 +287,7 @@ struct BadgeView: View {
                 DispatchQueue.main.async {
                     self.isLoading = false
                     self.handleError("No audio data received.")
+                    self.endBackgroundTask()
                 }
                 return
             }
@@ -274,10 +295,19 @@ struct BadgeView: View {
             // Play the audio data on the main thread
             DispatchQueue.main.async {
                 self.playAudioData(audioData)
+                // End background task once playback starts
+                self.endBackgroundTask()
             }
         }
         currentDataTask = dataTask
         dataTask.resume()
+    }
+
+    private func endBackgroundTask() {
+        if backgroundTaskID != .invalid {
+            UIApplication.shared.endBackgroundTask(backgroundTaskID)
+            backgroundTaskID = .invalid
+        }
     }
 
     private func playAudioData(_ data: Data) {
@@ -535,6 +565,9 @@ struct BadgeView: View {
         isLoading = false
         errorMessage = nil
         clearNowPlayingInfo()
+
+        // End background task if active
+        endBackgroundTask()
     }
 
     func stop() {
@@ -561,6 +594,9 @@ struct BadgeView: View {
             NotificationCenter.default.removeObserver(observer)
         }
         notificationObservers.removeAll()
+
+        // End background task if active
+        endBackgroundTask()
 
         // Keep audio session active for background playback support
         // Only deactivate if truly necessary (e.g., app termination)

@@ -5,6 +5,11 @@
 #   -p: Interactive picker to select destination
 
 set -e
+set -o pipefail
+
+# Ensure UTF-8 encoding for xcpretty to avoid parsing errors
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
 
 cd "$(dirname "$0")/../ios" || exit 1
 
