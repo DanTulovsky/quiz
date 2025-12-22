@@ -26,6 +26,7 @@ struct BadgeView: View {
     private var cancellables = Set<AnyCancellable>()
     private var notificationObservers: [NSObjectProtocol] = []
     private var currentDataTask: URLSessionDataTask?
+    private var nowPlayingUpdateTimer: Timer?
 
     // Global preferred voice
     var preferredVoice: String?
@@ -35,10 +36,53 @@ struct BadgeView: View {
 
     @Published var currentlySpeakingText: String?
     @Published var errorMessage: String?
+    @Published var isPaused: Bool = false
+    @Published var isLoading: Bool = false
 
     override init() {
         super.init()
+        setupAudioSession()
         setupRemoteCommandCenter()
+        setupAppLifecycleObservers()
+    }
+
+    private func setupAppLifecycleObservers() {
+        // Observe when app goes to background
+        let willResignActiveObserver = NotificationCenter.default.addObserver(
+            forName: UIApplication.willResignActiveNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                self?.handleAppGoingToBackground()
+            }
+        }
+        notificationObservers.append(willResignActiveObserver)
+    }
+
+    private func handleAppGoingToBackground() {
+        // If loading, cancel it
+        if isLoading {
+            cancel()
+        }
+        // If playing, pause it
+        else if currentlySpeakingText != nil && !isPaused {
+            pause()
+        }
+    }
+
+    private func setupAudioSession() {
+        do {
+            let audioSession = AVAudioSession.sharedInstance()
+            try audioSession.setCategory(
+                .playback,
+                mode: .default,
+                options: [.allowBluetoothHFP, .allowBluetoothA2DP]
+            )
+            try audioSession.setActive(true)
+        } catch {
+            print("Failed to configure audio session: \(error.localizedDescription)")
+        }
     }
 
     func updateDefaultVoiceCache(languages: [LanguageInfo]) {
@@ -53,16 +97,21 @@ struct BadgeView: View {
     private func setupRemoteCommandCenter() {
         let commandCenter = MPRemoteCommandCenter.shared()
 
+        // Enable commands
+        commandCenter.playCommand.isEnabled = true
+        commandCenter.pauseCommand.isEnabled = true
+        commandCenter.stopCommand.isEnabled = true
+
         commandCenter.playCommand.addTarget { [weak self] _ in
             Task { @MainActor in
-                self?.player?.play()
+                self?.resume()
             }
             return .success
         }
 
         commandCenter.pauseCommand.addTarget { [weak self] _ in
             Task { @MainActor in
-                self?.player?.pause()
+                self?.pause()
             }
             return .success
         }
@@ -76,14 +125,26 @@ struct BadgeView: View {
     }
 
     func speak(_ text: String, language: String, voiceIdentifier: String? = nil) {
+        // If same text is already loaded, toggle pause/resume or cancel if loading
         if currentlySpeakingText == text {
-            stop()
+            if isLoading {
+                // Cancel loading
+                cancel()
+                return
+            }
+            if isPaused {
+                resume()
+            } else {
+                pause()
+            }
             return
         }
 
         stop()
         currentlySpeakingText = text
         errorMessage = nil
+        isPaused = false
+        isLoading = true
 
         // Use provided voice, then preferred voice, then default for language
         let effectiveVoice: String
@@ -95,12 +156,11 @@ struct BadgeView: View {
             effectiveVoice = defaultVoiceForLanguage(language)
         }
 
-        // Configure AVAudioSession for background playback
+        // Ensure audio session is active for background playback
         do {
-            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
             try AVAudioSession.sharedInstance().setActive(true)
         } catch {
-            handleError("Failed to configure audio session: \(error.localizedDescription)")
+            handleError("Failed to activate audio session: \(error.localizedDescription)")
         }
 
         // Try backend TTS
@@ -111,6 +171,17 @@ struct BadgeView: View {
             .sink(
                 receiveCompletion: { [weak self] completion in
                     if case .failure(let error) = completion {
+                        // Ignore cancellation errors (user intentionally cancelled)
+                        if case .requestFailed(let underlyingError) = error {
+                            let nsError = underlyingError as NSError
+                            if nsError.domain == NSURLErrorDomain
+                                && nsError.code == NSURLErrorCancelled
+                            {
+                                // Request was cancelled, don't show error
+                                return
+                            }
+                        }
+                        self?.isLoading = false
                         self?.handleError(
                             "Failed to initialize audio: \(error.localizedDescription)")
                     }
@@ -137,6 +208,13 @@ struct BadgeView: View {
 
             if let error = error {
                 DispatchQueue.main.async {
+                    // Ignore cancellation errors (user intentionally cancelled)
+                    let nsError = error as NSError
+                    if nsError.domain == NSURLErrorDomain && nsError.code == NSURLErrorCancelled {
+                        // Request was cancelled, don't show error
+                        return
+                    }
+                    self.isLoading = false
                     self.handleError("Network error: \(error.localizedDescription)")
                 }
                 return
@@ -144,6 +222,7 @@ struct BadgeView: View {
 
             guard let httpResponse = response as? HTTPURLResponse else {
                 DispatchQueue.main.async {
+                    self.isLoading = false
                     self.handleError("Invalid server response.")
                 }
                 return
@@ -151,6 +230,7 @@ struct BadgeView: View {
 
             guard (200...299).contains(httpResponse.statusCode) else {
                 DispatchQueue.main.async {
+                    self.isLoading = false
                     self.handleError("Server error \(httpResponse.statusCode)")
                 }
                 return
@@ -158,6 +238,7 @@ struct BadgeView: View {
 
             guard let audioData = data, !audioData.isEmpty else {
                 DispatchQueue.main.async {
+                    self.isLoading = false
                     self.handleError("No audio data received.")
                 }
                 return
@@ -190,6 +271,7 @@ struct BadgeView: View {
                 Task { @MainActor [weak self] in
                     guard let self = self else { return }
                     self.currentlySpeakingText = nil
+                    self.isPaused = false
                     self.clearNowPlayingInfo()
                     // Clean up temp file
                     do {
@@ -229,11 +311,24 @@ struct BadgeView: View {
                 self, forKeyPath: "status", options: [.new, .initial], context: nil)
 
             player.play()
+            isPaused = false
+
+            // Set loading to false when player actually starts (check after a brief delay)
+            Task { @MainActor in
+                // Wait a moment for playback to actually start
+                try? await Task.sleep(nanoseconds: 100_000_000)  // 0.1 seconds
+                if player.timeControlStatus == .playing {
+                    isLoading = false
+                }
+            }
 
             // Update Now Playing info for lock screen
             Task {
                 await updateNowPlayingInfo(for: playerItem)
             }
+
+            // Start periodic updates for elapsed time during playback
+            startNowPlayingUpdates()
         } catch {
             handleError("Playback error: \(error.localizedDescription)")
         }
@@ -273,6 +368,27 @@ struct BadgeView: View {
 
     private func clearNowPlayingInfo() {
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
+        stopNowPlayingUpdates()
+    }
+
+    private func startNowPlayingUpdates() {
+        stopNowPlayingUpdates()
+        nowPlayingUpdateTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) {
+            [weak self] _ in
+            guard let self = self else { return }
+            Task { @MainActor in
+                self.updateNowPlayingPlaybackState()
+            }
+        }
+        // Ensure timer runs on main run loop
+        if let timer = nowPlayingUpdateTimer {
+            RunLoop.main.add(timer, forMode: .common)
+        }
+    }
+
+    private func stopNowPlayingUpdates() {
+        nowPlayingUpdateTimer?.invalidate()
+        nowPlayingUpdateTimer = nil
     }
 
     override func observeValue(
@@ -281,16 +397,23 @@ struct BadgeView: View {
     ) {
         if keyPath == "status", let playerItem = object as? AVPlayerItem {
             if playerItem.status == .failed {
+                isLoading = false
                 if let error = playerItem.error {
                     handleError("Failed to load audio: \(error.localizedDescription)")
                 } else {
                     handleError("Failed to load audio stream.")
+                }
+            } else if playerItem.status == .readyToPlay, let player = player {
+                // When ready, check if it's actually playing
+                if player.timeControlStatus == .playing {
+                    isLoading = false
                 }
             }
         }
     }
 
     private func handleError(_ message: String) {
+        isLoading = false
         DispatchQueue.main.async {
             let userFriendlyMessage: String
             if message.contains("Network error") || message.contains("requestFailed") {
@@ -324,6 +447,52 @@ struct BadgeView: View {
         return "en-US-JennyNeural"
     }
 
+    func pause() {
+        guard let player = player, currentlySpeakingText != nil else { return }
+        player.pause()
+        isPaused = true
+        updateNowPlayingPlaybackState()
+    }
+
+    func resume() {
+        guard let player = player, currentlySpeakingText != nil else { return }
+        player.play()
+        isPaused = false
+        updateNowPlayingPlaybackState()
+    }
+
+    private func updateNowPlayingPlaybackState() {
+        guard let player = player, let playerItem = player.currentItem else { return }
+        var nowPlayingInfo = MPNowPlayingInfoCenter.default().nowPlayingInfo ?? [String: Any]()
+
+        // Update playback rate (0 = paused, 1 = playing)
+        nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = isPaused ? 0.0 : 1.0
+
+        // Update elapsed time
+        let currentTime = CMTimeGetSeconds(playerItem.currentTime())
+        if currentTime.isFinite {
+            nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = currentTime
+        }
+
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+    }
+
+    func cancel() {
+        // Cancel any ongoing network requests
+        currentDataTask?.cancel()
+        currentDataTask = nil
+
+        // Cancel any Combine publishers
+        cancellables.removeAll()
+
+        // Reset state
+        currentlySpeakingText = nil
+        isPaused = false
+        isLoading = false
+        errorMessage = nil
+        clearNowPlayingInfo()
+    }
+
     func stop() {
         // Cancel any ongoing network requests
         currentDataTask?.cancel()
@@ -337,7 +506,10 @@ struct BadgeView: View {
         player?.pause()
         player = nil
         currentlySpeakingText = nil
+        isPaused = false
+        isLoading = false
         cancellables.removeAll()
+        stopNowPlayingUpdates()
         clearNowPlayingInfo()
 
         // Remove all notification observers
@@ -346,10 +518,8 @@ struct BadgeView: View {
         }
         notificationObservers.removeAll()
 
-        do {
-            try AVAudioSession.sharedInstance().setActive(
-                false, options: .notifyOthersOnDeactivation)
-        } catch {}
+        // Keep audio session active for background playback support
+        // Only deactivate if truly necessary (e.g., app termination)
     }
 
     deinit {
@@ -362,6 +532,10 @@ struct BadgeView: View {
         for observer in notificationObservers {
             NotificationCenter.default.removeObserver(observer)
         }
+
+        // Stop timer (can't call MainActor method in deinit, so invalidate directly)
+        nowPlayingUpdateTimer?.invalidate()
+        nowPlayingUpdateTimer = nil
     }
 }
 
@@ -370,20 +544,47 @@ struct TTSButton: View {
     let language: String
     var voiceIdentifier: String? = nil
     @StateObject private var ttsManager = TTSSynthesizerManager.shared
+    @State private var rotation: Double = 0
 
     var isSpeaking: Bool {
         ttsManager.currentlySpeakingText == text
+    }
+
+    var isLoading: Bool {
+        isSpeaking && ttsManager.isLoading
+    }
+
+    var iconName: String {
+        if isLoading {
+            return "speaker.wave.2.circle.fill"
+        } else if isSpeaking {
+            return ttsManager.isPaused ? "play.circle.fill" : "pause.circle.fill"
+        } else {
+            return "speaker.wave.2.circle.fill"
+        }
     }
 
     var body: some View {
         Button(action: {
             ttsManager.speak(text, language: language, voiceIdentifier: voiceIdentifier)
         }) {
-            Image(systemName: isSpeaking ? "stop.circle.fill" : "speaker.wave.2.circle.fill")
+            Image(systemName: iconName)
                 .font(.title2)
                 .foregroundColor(.blue)
+                .rotationEffect(.degrees(rotation))
         }
         .buttonStyle(.plain)  // Prevent multi-action triggers in Lists
+        .onChange(of: isLoading) { _, newValue in
+            if newValue {
+                withAnimation(.linear(duration: 1.5).repeatForever(autoreverses: false)) {
+                    rotation = 360
+                }
+            } else {
+                withAnimation {
+                    rotation = 0
+                }
+            }
+        }
     }
 }
 
