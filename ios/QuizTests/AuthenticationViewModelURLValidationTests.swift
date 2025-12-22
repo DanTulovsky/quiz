@@ -64,7 +64,9 @@ class AuthenticationViewModelURLValidationTests: XCTestCase {
     func testInitiateGoogleLoginWithValidURL() {
         // Given
         let expectation = XCTestExpectation(description: "Valid URL handled")
-        mockAPIService.googleOAuthResponse = GoogleOAuthLoginResponse(authUrl: "https://accounts.google.com/o/oauth2/auth")
+        mockAPIService.googleOAuthResponse = GoogleOAuthLoginResponse(
+            authUrl: "https://accounts.google.com/o/oauth2/auth"
+        )
 
         // When
         viewModel.initiateGoogleLogin()
@@ -82,4 +84,3 @@ class AuthenticationViewModelURLValidationTests: XCTestCase {
         XCTAssertTrue(true, "Valid URL should be handled")
     }
 }
-

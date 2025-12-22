@@ -1,5 +1,6 @@
 import SwiftUI
 
+// swiftlint:disable:next type_body_length
 struct TranslationPracticeView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = TranslationPracticeViewModel()
@@ -33,7 +34,12 @@ struct TranslationPracticeView: View {
                             Text("Optional topic")
                                 .font(AppTheme.Typography.subheadlineFont)
                                 .foregroundColor(AppTheme.Colors.secondaryText)
-                            FormTextField(placeholder: "e.g., travel, ordering food, work", text: $viewModel.optionalTopic, showBorder: true, padding: 12)
+                            FormTextField(
+                                placeholder: "e.g., travel, ordering food, work",
+                                text: $viewModel.optionalTopic,
+                                showBorder: true,
+                                padding: 12
+                            )
                         }
                     }
 
@@ -43,7 +49,7 @@ struct TranslationPracticeView: View {
                             let lang = authViewModel.user?.preferredLanguage ?? "italian"
                             let level = authViewModel.user?.currentLevel ?? "A1"
                             viewModel.generateSentence(language: lang, level: level)
-                        }) {
+                        }, label: {
                             Text("Generate AI")
                                 .font(AppTheme.Typography.subheadlineFont.weight(.medium))
                                 .frame(maxWidth: .infinity)
@@ -51,13 +57,13 @@ struct TranslationPracticeView: View {
                                 .background(AppTheme.Colors.primaryBlue.opacity(0.1))
                                 .foregroundColor(AppTheme.Colors.primaryBlue)
                                 .cornerRadius(AppTheme.CornerRadius.button)
-                        }
+                        })
 
                         Button(action: {
                             let lang = authViewModel.user?.preferredLanguage ?? "italian"
                             let level = authViewModel.user?.currentLevel ?? "A1"
                             viewModel.fetchExistingSentence(language: lang, level: level)
-                        }) {
+                        }, label: {
                             Text("From Content")
                                 .font(AppTheme.Typography.subheadlineFont.weight(.medium))
                                 .frame(maxWidth: .infinity)
@@ -65,7 +71,7 @@ struct TranslationPracticeView: View {
                                 .background(AppTheme.Colors.primaryBlue.opacity(0.1))
                                 .foregroundColor(AppTheme.Colors.primaryBlue)
                                 .cornerRadius(AppTheme.CornerRadius.button)
-                        }
+                        })
                     }
 
                     if viewModel.isLoading && viewModel.currentSentence == nil {
@@ -94,7 +100,8 @@ struct TranslationPracticeView: View {
                         EmptyStateView(
                             icon: "arrow.left.and.right",
                             title: "No Translation History",
-                            message: "Your translation practice history will appear here after you complete some translations."
+                            message: "Your translation practice history will appear here "
+                                + "after you complete some translations."
                         )
                         .padding()
                     } else {
@@ -104,7 +111,7 @@ struct TranslationPracticeView: View {
                 .padding()
                 Color.clear.frame(height: 1).id("bottom")
 
-                    .onChange(of: viewModel.currentSentence) { old, val in
+                    .onChange(of: viewModel.currentSentence) { _, val in
                         if val != nil {
                             withAnimation {
                                 proxy.scrollTo("prompt_card", anchor: .top)
@@ -118,7 +125,7 @@ struct TranslationPracticeView: View {
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: { dismiss() }) {
+                Button(action: { dismiss() }, label: {
                     HStack(spacing: 4) {
                         Image(systemName: "chevron.left")
                             .scaledFont(size: 17, weight: .semibold)
@@ -126,7 +133,7 @@ struct TranslationPracticeView: View {
                             .scaledFont(size: 17)
                     }
                     .foregroundColor(.blue)
-                }
+                })
             }
         }
         .onAppear {
@@ -206,22 +213,20 @@ struct TranslationPracticeView: View {
         textToFormat = textToFormat.replacingOccurrences(of: "\\\\", with: "\\")
 
         if let jsonData = textToFormat.data(using: .utf8),
-            let jsonObject = try? JSONSerialization.jsonObject(with: jsonData, options: []),
-            let prettyData = try? JSONSerialization.data(
-                withJSONObject: jsonObject, options: [.prettyPrinted]),
-            let prettyString = String(data: prettyData, encoding: .utf8)
-        {
+           let jsonObject = try? JSONSerialization.jsonObject(with: jsonData, options: []),
+           let prettyData = try? JSONSerialization.data(
+            withJSONObject: jsonObject, options: [.prettyPrinted]),
+           let prettyString = String(data: prettyData, encoding: .utf8) {
             return prettyString
         }
 
         if let jsonArrayRange = findJSONArrayRange(in: textToFormat) {
             let jsonSubstring = String(textToFormat[jsonArrayRange])
             if let jsonData = jsonSubstring.data(using: .utf8),
-                let jsonObject = try? JSONSerialization.jsonObject(with: jsonData, options: []),
-                let prettyData = try? JSONSerialization.data(
-                    withJSONObject: jsonObject, options: [.prettyPrinted]),
-                let prettyString = String(data: prettyData, encoding: .utf8)
-            {
+               let jsonObject = try? JSONSerialization.jsonObject(with: jsonData, options: []),
+               let prettyData = try? JSONSerialization.data(
+                withJSONObject: jsonObject, options: [.prettyPrinted]),
+               let prettyString = String(data: prettyData, encoding: .utf8) {
                 let before = String(textToFormat[..<jsonArrayRange.lowerBound])
                 let after = String(textToFormat[jsonArrayRange.upperBound...])
                 return before + "\n\n" + prettyString + "\n\n" + after
@@ -279,6 +284,7 @@ struct TranslationPracticeView: View {
     }
 
     @ViewBuilder
+    // swiftlint:disable:next function_body_length
     private func promptCard(_ sentence: TranslationPracticeSentenceResponse) -> some View {
         VStack(alignment: .leading, spacing: 20) {
             // Card Header
@@ -301,7 +307,12 @@ struct TranslationPracticeView: View {
                 Text("Optional topic")
                     .font(AppTheme.Typography.subheadlineFont)
                     .foregroundColor(AppTheme.Colors.secondaryText)
-                FormTextField(placeholder: "e.g., travel, ordering food, work", text: $viewModel.optionalTopic, showBorder: true, padding: 12)
+                FormTextField(
+                    placeholder: "e.g., travel, ordering food, work",
+                    text: $viewModel.optionalTopic,
+                    showBorder: true,
+                    padding: 12
+                )
             }
 
             // Text to Translate Section
@@ -360,7 +371,7 @@ struct TranslationPracticeView: View {
                 UIApplication.shared.sendAction(
                     #selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                 viewModel.submitTranslation()
-            }) {
+            }, label: {
                 HStack {
                     if viewModel.isLoading {
                         ProgressView()
@@ -378,7 +389,7 @@ struct TranslationPracticeView: View {
                 .foregroundColor(.white)
                 .cornerRadius(AppTheme.CornerRadius.button)
                 .contentShape(Rectangle())
-            }
+            })
             .disabled(viewModel.userTranslation.isEmpty || viewModel.isLoading)
 
             ErrorDisplay(
@@ -425,15 +436,15 @@ struct TranslationPracticeView: View {
                                         score >= 4.0
                                             ? AppTheme.Colors.successGreen.opacity(0.1)
                                             : score >= 3.0
-                                                ? AppTheme.Colors.primaryBlue.opacity(0.1)
-                                                : AppTheme.Colors.errorRed.opacity(0.1)
+                                            ? AppTheme.Colors.primaryBlue.opacity(0.1)
+                                            : AppTheme.Colors.errorRed.opacity(0.1)
                                     )
                                     .foregroundColor(
                                         score >= 4.0
                                             ? AppTheme.Colors.successGreen
                                             : score >= 3.0
-                                                ? AppTheme.Colors.primaryBlue
-                                                : AppTheme.Colors.errorRed
+                                            ? AppTheme.Colors.primaryBlue
+                                            : AppTheme.Colors.errorRed
                                     )
                                     .cornerRadius(6)
                             }
@@ -546,7 +557,7 @@ struct TranslationPracticeView: View {
                 ForEach(viewModel.history) { session in
                     Button(action: {
                         selectedHistorySession = session
-                    }) {
+                    }, label: {
                         VStack(alignment: .leading, spacing: 8) {
                             HStack {
                                 let langName =
@@ -566,8 +577,8 @@ struct TranslationPracticeView: View {
                                             score >= 4.0
                                                 ? AppTheme.Colors.successGreen
                                                 : score >= 3.0
-                                                    ? AppTheme.Colors.primaryBlue
-                                                    : AppTheme.Colors.errorRed)
+                                                ? AppTheme.Colors.primaryBlue
+                                                : AppTheme.Colors.errorRed)
                                 }
                             }
 
@@ -585,7 +596,7 @@ struct TranslationPracticeView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .background(AppTheme.Colors.secondaryBackground.opacity(0.5))
                         .cornerRadius(10)
-                    }
+                    })
                     .buttonStyle(PlainButtonStyle())
                 }
             }

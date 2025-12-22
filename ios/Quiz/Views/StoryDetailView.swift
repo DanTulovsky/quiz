@@ -2,10 +2,10 @@ import SwiftUI
 
 struct StoryDetailView: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel = StoryViewModel()
+    @StateObject var viewModel = StoryViewModel()
     let storyId: Int
-    @State private var showingSnippet: Snippet? = nil
-    @State private var selectedAnswers: [Int: Int] = [:]
+    @State private var showingSnippet: Snippet?
+    @State var selectedAnswers: [Int: Int] = [:]
     @State private var submittedQuestions: Set<Int> = [] // QuestionID: OptionIndex
     @State private var selectedText: String?
     @State private var showTranslationPopup = false
@@ -26,24 +26,34 @@ struct StoryDetailView: View {
                         }
 
                         HStack(spacing: 10) {
-                            Button(action: { viewModel.mode = .section }) {
+                            Button(action: { viewModel.mode = .section }, label: {
                                 Label("Section", systemImage: "list.bullet.indent")
                                     .padding(.horizontal, 12)
                                     .padding(.vertical, 8)
-                                    .background(viewModel.mode == .section ? AppTheme.Colors.primaryBlue : AppTheme.Colors.primaryBlue.opacity(0.1))
+                                    .background(
+                                        viewModel.mode == .section
+                                            ? AppTheme.Colors.primaryBlue
+                                            : AppTheme.Colors.primaryBlue.opacity(0.1)
+                                    )
                                     .foregroundColor(viewModel.mode == .section ? .white : AppTheme.Colors.primaryBlue)
                                     .cornerRadius(AppTheme.CornerRadius.badge)
-                            }
+                            })
 
                             HStack(spacing: 8) {
-                                Button(action: { viewModel.mode = .reading }) {
+                                Button(action: { viewModel.mode = .reading }, label: {
                                     Label("Reading", systemImage: "text.bubble")
                                         .padding(.horizontal, 12)
                                         .padding(.vertical, 8)
-                                        .background(viewModel.mode == .reading ? AppTheme.Colors.primaryBlue : AppTheme.Colors.primaryBlue.opacity(0.1))
-                                        .foregroundColor(viewModel.mode == .reading ? .white : AppTheme.Colors.primaryBlue)
+                                        .background(
+                                            viewModel.mode == .reading
+                                                ? AppTheme.Colors.primaryBlue
+                                                : AppTheme.Colors.primaryBlue.opacity(0.1)
+                                        )
+                                        .foregroundColor(
+                                            viewModel.mode == .reading ? .white : AppTheme.Colors.primaryBlue
+                                        )
                                         .cornerRadius(AppTheme.CornerRadius.badge)
-                                }
+                                })
 
                                 if viewModel.mode == .reading {
                                     TTSButton(text: viewModel.fullStoryContent, language: story.language)
@@ -59,20 +69,20 @@ struct StoryDetailView: View {
                     if viewModel.mode == .section {
                         // Pagination for Section mode
                         HStack {
-                            Button(action: { viewModel.goToBeginning() }) {
+                            Button(action: { viewModel.goToBeginning() }, label: {
                                 Image(systemName: "chevron.left.2")
                                     .padding(8)
                                     .background(AppTheme.Colors.secondaryBackground)
                                     .cornerRadius(6)
-                            }
+                            })
                             .disabled(viewModel.currentSectionIndex == 0)
 
-                            Button(action: { viewModel.previousPage() }) {
+                            Button(action: { viewModel.previousPage() }, label: {
                                 Image(systemName: "chevron.left")
                                     .padding(8)
                                     .background(AppTheme.Colors.secondaryBackground)
                                     .cornerRadius(6)
-                            }
+                            })
                             .disabled(viewModel.currentSectionIndex == 0)
 
                             Spacer()
@@ -81,20 +91,20 @@ struct StoryDetailView: View {
                                 .foregroundColor(AppTheme.Colors.secondaryText)
                             Spacer()
 
-                            Button(action: { viewModel.nextPage() }) {
+                            Button(action: { viewModel.nextPage() }, label: {
                                 Image(systemName: "chevron.right")
                                     .padding(8)
                                     .background(AppTheme.Colors.secondaryBackground)
                                     .cornerRadius(6)
-                            }
+                            })
                             .disabled(viewModel.currentSectionIndex == story.sections.count - 1)
 
-                            Button(action: { viewModel.goToEnd() }) {
+                            Button(action: { viewModel.goToEnd() }, label: {
                                 Image(systemName: "chevron.right.2")
                                     .padding(8)
                                     .background(AppTheme.Colors.secondaryBackground)
                                     .cornerRadius(6)
-                            }
+                            })
                             .disabled(viewModel.currentSectionIndex == story.sections.count - 1)
 
                             BadgeView(text: "A1", color: AppTheme.Colors.primaryBlue)
@@ -103,7 +113,7 @@ struct StoryDetailView: View {
                     }
 
                     ScrollView {
-                        ScrollViewReader { proxy in
+                        ScrollViewReader { _ in
                             VStack(alignment: .leading, spacing: 20) {
                                 if let error = ttsManager.errorMessage {
                                     Text(error)
@@ -135,7 +145,9 @@ struct StoryDetailView: View {
                                             language: story.language,
                                             onTextSelected: { text in
                                                 selectedText = text
-                                                translationSentence = extractSentence(from: section.content, containing: text)
+                                                translationSentence = extractSentence(
+                                                    from: section.content, containing: text
+                                                )
                                                 showTranslationPopup = true
                                             },
                                             highlightedSnippets: viewModel.snippets,
@@ -149,10 +161,10 @@ struct StoryDetailView: View {
                                 }
                                 Color.clear.frame(height: 1).id("bottom")
                             }
-                                    .onChange(of: viewModel.currentSectionIndex) { _, _ in
-            selectedAnswers.removeAll()
-            submittedQuestions.removeAll()
-        }
+                            .onChange(of: viewModel.currentSectionIndex) { _, _ in
+                                selectedAnswers.removeAll()
+                                submittedQuestions.removeAll()
+                            }
                         }
                     }
                 } else if viewModel.isLoading {
@@ -194,7 +206,7 @@ struct StoryDetailView: View {
                         // Optimistically add the snippet immediately for instant UI update
                         // Create a new array to ensure SwiftUI detects the change
                         if !viewModel.snippets.contains(where: { $0.id == snippet.id }) {
-                            viewModel.snippets = viewModel.snippets + [snippet]
+                            viewModel.snippets += [snippet]
                         }
                         // Then reload to ensure consistency with server
                         viewModel.loadSnippets(storyId: story.id)
@@ -206,7 +218,7 @@ struct StoryDetailView: View {
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: { dismiss() }) {
+                Button(action: { dismiss() }, label: {
                     HStack(spacing: 4) {
                         Image(systemName: "chevron.left")
                             .scaledFont(size: 17, weight: .semibold)
@@ -214,7 +226,7 @@ struct StoryDetailView: View {
                             .scaledFont(size: 17)
                     }
                     .foregroundColor(.blue)
-                }
+                })
             }
         }
         .snippetDetailPopup(
@@ -252,63 +264,6 @@ struct StoryDetailView: View {
         .padding(.horizontal)
     }
 
-    private func highlightSnippets(in text: String) -> AttributedString {
-        var attrStr = AttributedString(text)
-        let sortedSnippets = viewModel.snippets.sorted { $0.originalText.count > $1.originalText.count }
-
-        for snippet in sortedSnippets {
-            var searchRange = attrStr.startIndex..<attrStr.endIndex
-            while let range = attrStr[searchRange].range(of: snippet.originalText, options: .caseInsensitive) {
-                attrStr[range].underlineStyle = Text.LineStyle(pattern: .dash)
-                attrStr[range].foregroundColor = .blue
-                if let url = URL(string: "snippet://\(snippet.id)") {
-                    attrStr[range].link = url
-                }
-                searchRange = range.upperBound..<attrStr.endIndex
-            }
-        }
-        return attrStr
-    }
-
-        @ViewBuilder
-    private func optionRow(question: StorySectionQuestion, idx: Int, option: String, hasSubmitted: Bool, selectedIdx: Int?) -> some View {
-        let isCorrect = idx == question.correctAnswerIndex
-        let isSelected = selectedIdx == idx
-
-        HStack {
-            if hasSubmitted {
-                Image(systemName: isCorrect ? "checkmark.circle.fill" : (isSelected ? "xmark.circle.fill" : "circle"))
-                    .foregroundColor(isCorrect ? .green : (isSelected ? .red : .gray))
-            } else {
-                Circle()
-                    .stroke(isSelected ? Color.blue : Color.gray, lineWidth: 1)
-                    .frame(width: 18, height: 18)
-                    .overlay(Circle().fill(isSelected ? Color.blue : Color.clear).padding(4))
-            }
-
-            Text(option)
-                .font(AppTheme.Typography.subheadlineFont)
-                .foregroundColor(hasSubmitted ? (isCorrect ? AppTheme.Colors.successGreen : (isSelected ? AppTheme.Colors.errorRed : AppTheme.Colors.primaryText)) : AppTheme.Colors.primaryText)
-                .frame(maxWidth: .infinity, alignment: .leading)
-
-            Spacer()
-        }
-        .padding(10)
-        .background(
-            hasSubmitted ?
-            (isCorrect ? AppTheme.Colors.successGreen.opacity(0.1) : (isSelected ? AppTheme.Colors.errorRed.opacity(0.1) : AppTheme.Colors.secondaryBackground)) :
-            (isSelected ? AppTheme.Colors.primaryBlue.opacity(0.1) : AppTheme.Colors.secondaryBackground)
-        )
-        .cornerRadius(AppTheme.CornerRadius.badge)
-        .contentShape(Rectangle())
-        .onTapGesture {
-            if !hasSubmitted {
-                selectedAnswers[question.id] = idx
-            }
-        }
-        .disabled(hasSubmitted)
-    }
-
     @ViewBuilder
     private func questionView(_ question: StorySectionQuestion) -> some View {
         let hasSubmitted = submittedQuestions.contains(question.id)
@@ -327,21 +282,28 @@ struct StoryDetailView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
 
             ForEach(Array(question.options.enumerated()), id: \.offset) { idx, option in
-                optionRow(question: question, idx: idx, option: option, hasSubmitted: hasSubmitted, selectedIdx: selectedIdx)
+                optionRow(
+                    question: question, idx: idx, option: option, hasSubmitted: hasSubmitted,
+                    selectedIdx: selectedIdx
+                )
             }
 
             if !hasSubmitted {
                 Button(action: {
                     submittedQuestions.insert(question.id)
-                }) {
+                }, label: {
                     Text("Submit Answer")
                         .font(AppTheme.Typography.subheadlineFont.weight(.bold))
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 10)
-                        .background(selectedIdx == nil ? AppTheme.Colors.primaryBlue.opacity(0.3) : AppTheme.Colors.primaryBlue)
+                        .background(
+                            selectedIdx == nil
+                                ? AppTheme.Colors.primaryBlue.opacity(0.3)
+                                : AppTheme.Colors.primaryBlue
+                        )
                         .foregroundColor(.white)
                         .cornerRadius(AppTheme.CornerRadius.badge)
-                }
+                })
                 .disabled(selectedIdx == nil)
                 .padding(.top, 4)
             } else if let explanation = question.explanation, !explanation.isEmpty {
@@ -367,45 +329,16 @@ struct StoryDetailView: View {
         .appInnerCard()
         .overlay(
             RoundedRectangle(cornerRadius: AppTheme.CornerRadius.innerCard)
-                .stroke(hasSubmitted ? (selectedIdx == question.correctAnswerIndex ? AppTheme.Colors.successGreen.opacity(0.3) : AppTheme.Colors.errorRed.opacity(0.3)) : AppTheme.Colors.borderGray, lineWidth: 1)
+                .stroke(
+                    hasSubmitted
+                        ? (selectedIdx == question.correctAnswerIndex
+                            ? AppTheme.Colors.successGreen.opacity(0.3)
+                            : AppTheme.Colors.errorRed.opacity(0.3))
+                        : AppTheme.Colors.borderGray,
+                    lineWidth: 1
+                )
         )
         .padding(.horizontal)
     }
 
-    private func extractSentence(from text: String, containing selectedText: String) -> String? {
-        guard let range = text.range(of: selectedText, options: .caseInsensitive) else {
-            return nil
-        }
-
-        // Find sentence boundaries
-        let startIndex = text.startIndex
-        let endIndex = text.endIndex
-
-        // Find the start of the sentence (look backwards for sentence-ending punctuation)
-        var sentenceStart = range.lowerBound
-        let sentenceEnders = CharacterSet(charactersIn: ".!?\n")
-
-        while sentenceStart > startIndex {
-            let char = text[sentenceStart]
-            if sentenceEnders.contains(char.unicodeScalars.first!) {
-                sentenceStart = text.index(after: sentenceStart)
-                break
-            }
-            sentenceStart = text.index(before: sentenceStart)
-        }
-
-        // Find the end of the sentence
-        var sentenceEnd = range.upperBound
-        while sentenceEnd < endIndex {
-            let char = text[sentenceEnd]
-            if sentenceEnders.contains(char.unicodeScalars.first!) {
-                sentenceEnd = text.index(after: sentenceEnd)
-                break
-            }
-            sentenceEnd = text.index(after: sentenceEnd)
-        }
-
-        let sentence = String(text[sentenceStart..<sentenceEnd]).trimmingCharacters(in: .whitespacesAndNewlines)
-        return sentence.isEmpty ? nil : sentence
-    }
 }

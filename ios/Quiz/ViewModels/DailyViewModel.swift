@@ -2,14 +2,13 @@ import Combine
 import Foundation
 
 class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, SubmittingState,
-    QuestionIDProvider
-{
+                      QuestionIDProvider {
     @Published var dailyQuestions: [DailyQuestionWithDetails] = []
     @Published var currentQuestionIndex = 0
     @Published var snippets = [Snippet]()
 
-    @Published var selectedAnswerIndex: Int? = nil
-    @Published var answerResponse: DailyAnswerResponse? = nil
+    @Published var selectedAnswerIndex: Int?
+    @Published var answerResponse: DailyAnswerResponse?
     @Published var isSubmitting = false
 
     @Published var showReportModal = false
@@ -17,7 +16,7 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, Submitting
     @Published var isReported = false
     @Published var isSubmittingAction = false
 
-    private var lastLoadedQuestionId: Int? = nil
+    private var lastLoadedQuestionId: Int?
 
     var currentQuestion: DailyQuestionWithDetails? {
         guard currentQuestionIndex < dailyQuestions.count else { return nil }
@@ -41,7 +40,7 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, Submitting
         currentQuestionIndex < dailyQuestions.count - 1
     }
 
-    override init(apiService: APIService = APIService.shared) {
+    override init(apiService: APIServiceProtocol = APIService.shared) {
         super.init(apiService: apiService)
     }
 
@@ -134,8 +133,7 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, Submitting
             }
         } else {
             // Find next unanswered question
-            if let nextIncompleteIndex = dailyQuestions.enumerated().first(where: {
-                index, question in
+            if let nextIncompleteIndex = dailyQuestions.enumerated().first(where: { index, question in
                 index > currentQuestionIndex && !question.isCompleted
             })?.offset {
                 currentQuestionIndex = nextIncompleteIndex
@@ -180,7 +178,7 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, Submitting
         let publisher = apiService.getSnippetsByQuestion(questionId: questionId)
 
         publisher
-            .catch { error -> AnyPublisher<SnippetList, APIService.APIError> in
+            .catch { _ -> AnyPublisher<SnippetList, APIService.APIError> in
                 // Return empty snippet list instead of propagating error
                 return Just(SnippetList(limit: 0, offset: 0, query: nil, snippets: []))
                     .setFailureType(to: APIService.APIError.self)

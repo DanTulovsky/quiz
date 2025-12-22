@@ -57,7 +57,10 @@ class FontSizeHelperTests: XCTestCase {
         // When & Then
         for size in invalidSizes {
             let multiplier = FontSizeHelper.multiplier(for: size)
-            XCTAssertEqual(multiplier, 1.0, accuracy: 0.001, "Invalid size '\(size)' should default to multiplier of 1.0")
+            XCTAssertEqual(
+                multiplier, 1.0, accuracy: 0.001,
+                "Invalid size '\(size)' should default to multiplier of 1.0"
+            )
         }
     }
 
@@ -306,7 +309,10 @@ class FontSizeHelperTests: XCTestCase {
         for size in sizes {
             let multiplier1 = FontSizeHelper.multiplier(for: size)
             let multiplier2 = FontSizeHelper.multiplier(for: size)
-            XCTAssertEqual(multiplier1, multiplier2, accuracy: 0.001, "Multiplier should be consistent for size: \(size)")
+            XCTAssertEqual(
+                multiplier1, multiplier2, accuracy: 0.001,
+                "Multiplier should be consistent for size: \(size)"
+            )
         }
     }
 
@@ -325,4 +331,3 @@ class FontSizeHelperTests: XCTestCase {
         XCTAssertNotNil(font2)
     }
 }
-

@@ -64,7 +64,7 @@ struct LoginView: View {
                             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                                 isLoading = false
                             }
-                        }) {
+                        }, label: {
                             HStack {
                                 if isLoading {
                                     ProgressView()
@@ -83,7 +83,7 @@ struct LoginView: View {
                             )
                             .foregroundColor(.white)
                             .cornerRadius(AppTheme.CornerRadius.button)
-                        }
+                        })
                         .disabled(
                             isLoading || viewModel.username.isEmpty || viewModel.password.isEmpty)
 
@@ -120,7 +120,7 @@ struct LoginView: View {
                             }
                             isLoading = true
                             viewModel.initiateGoogleLogin()
-                        }) {
+                        }, label: {
                             HStack {
                                 Image(systemName: "globe")
                                     .foregroundColor(.secondary)
@@ -136,7 +136,7 @@ struct LoginView: View {
                                     .stroke(AppTheme.Colors.borderGray, lineWidth: 1)
                             )
                             .cornerRadius(AppTheme.CornerRadius.button)
-                        }
+                        })
                     }
                     .padding(.horizontal, 24)
 
@@ -144,8 +144,9 @@ struct LoginView: View {
                 }
             }
             .navigationBarHidden(true)
-            .onChange(of: viewModel.googleAuthURL) { oldValue, newValue in
-                // Only show WebAuthView if URL is set, user is not already authenticated, and sheet is not already showing
+            .onChange(of: viewModel.googleAuthURL) { _, newValue in
+                // Only show WebAuthView if URL is set, user is not already authenticated,
+                // and sheet is not already showing
                 if newValue != nil && !viewModel.isAuthenticated && !showWebAuth {
                     isLoading = false
                     showWebAuth = true
@@ -270,7 +271,8 @@ struct WebAuthView: UIViewControllerRepresentable {
         }
 
         // Use ASWebAuthenticationSession with iOS URL scheme for proper OAuth flow
-        // This uses the iOS client ID and custom URL scheme: com.googleusercontent.apps.53644033433-qpic9cnjknphdpa332d7flq7nvvdv520
+        // This uses the iOS client ID and custom URL scheme:
+        // com.googleusercontent.apps.53644033433-qpic9cnjknphdpa332d7flq7nvvdv520
         let callbackURLScheme =
             "com.googleusercontent.apps.53644033433-qpic9cnjknphdpa332d7flq7nvvdv520"
 
@@ -287,8 +289,7 @@ struct WebAuthView: UIViewControllerRepresentable {
                         coordinator.session = nil
 
                         if let authError = error as? ASWebAuthenticationSessionError,
-                            authError.code == .canceledLogin
-                        {
+                           authError.code == .canceledLogin {
                             print("ℹ️ User cancelled OAuth flow")
                             onDismiss()
                             return
@@ -306,8 +307,7 @@ struct WebAuthView: UIViewControllerRepresentable {
 
                         // Process callback immediately - the session is already cancelled
                         if let components = URLComponents(
-                            url: callbackURL, resolvingAgainstBaseURL: false)
-                        {
+                            url: callbackURL, resolvingAgainstBaseURL: false) {
                             onCallback(components)
                         } else {
                             print("❌ Failed to parse callback URL")

@@ -41,10 +41,10 @@ extension Publisher where Failure == APIService.APIError {
             let isTransient =
                 nsError.domain == NSURLErrorDomain
                 && (nsError.code == NSURLErrorTimedOut
-                    || nsError.code == NSURLErrorNetworkConnectionLost
-                    || nsError.code == NSURLErrorNotConnectedToInternet
-                    || nsError.code == NSURLErrorCannotConnectToHost
-                    || nsError.code == NSURLErrorDNSLookupFailed)
+                        || nsError.code == NSURLErrorNetworkConnectionLost
+                        || nsError.code == NSURLErrorNotConnectedToInternet
+                        || nsError.code == NSURLErrorCannotConnectToHost
+                        || nsError.code == NSURLErrorDNSLookupFailed)
 
             guard isTransient else {
                 return Fail(error: error).eraseToAnyPublisher()
@@ -195,4 +195,3 @@ extension Publisher where Failure == APIService.APIError {
             )
     }
 }
-

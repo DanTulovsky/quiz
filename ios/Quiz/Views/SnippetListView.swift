@@ -17,7 +17,7 @@ struct SnippetListView: View {
     @State private var showEditSnippet = false
     @State private var showDeleteConfirmation = false
     @State private var showSnippetDetail = false
-    @State private var selectedSnippet: Snippet? = nil
+    @State private var selectedSnippet: Snippet?
     @State private var filtersExpanded = false
 
     let initialSearchQuery: String?
@@ -48,7 +48,7 @@ struct SnippetListView: View {
                 // Add New Snippet Button
                 Button(action: {
                     showAddSnippet = true
-                }) {
+                }, label: {
                     HStack {
                         Image(systemName: "plus")
                         Text("Add New Snippet")
@@ -59,7 +59,7 @@ struct SnippetListView: View {
                     .background(AppTheme.Colors.primaryBlue)
                     .foregroundColor(.white)
                     .cornerRadius(AppTheme.CornerRadius.button)
-                }
+                })
                 .padding(.horizontal)
 
                 // Search and Filters
@@ -68,7 +68,7 @@ struct SnippetListView: View {
                         withAnimation {
                             filtersExpanded.toggle()
                         }
-                    }) {
+                    }, label: {
                         HStack {
                             Image(systemName: "line.3.horizontal.decrease.circle")
                                 .foregroundColor(.secondary)
@@ -99,7 +99,7 @@ struct SnippetListView: View {
                         .overlay(
                             RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(
                                 AppTheme.Colors.borderGray, lineWidth: 1))
-                    }
+                    })
                     .buttonStyle(PlainButtonStyle())
 
                     if filtersExpanded {
@@ -204,7 +204,7 @@ struct SnippetListView: View {
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: { dismiss() }) {
+                Button(action: { dismiss() }, label: {
                     HStack(spacing: 4) {
                         Image(systemName: "chevron.left")
                             .scaledFont(size: 17, weight: .semibold)
@@ -212,7 +212,7 @@ struct SnippetListView: View {
                             .scaledFont(size: 17)
                     }
                     .foregroundColor(AppTheme.Colors.primaryBlue)
-                }
+                })
             }
         }
     }
@@ -225,16 +225,14 @@ struct SnippetListView: View {
     private var filterSummary: String {
         var parts: [String] = []
         if let selectedId = viewModel.selectedStoryId,
-            let story = viewModel.stories.first(where: { $0.id == selectedId })
-        {
+           let story = viewModel.stories.first(where: { $0.id == selectedId }) {
             parts.append(story.title)
         }
         if let level = viewModel.selectedLevel {
             parts.append(level)
         }
         if let selectedLangCode = viewModel.selectedSourceLang,
-            let lang = viewModel.availableLanguages.find(byCodeOrName: selectedLangCode)
-        {
+           let lang = viewModel.availableLanguages.find(byCodeOrName: selectedLangCode) {
             parts.append(lang.name.capitalized)
         }
         return parts.joined(separator: ", ")
@@ -254,8 +252,7 @@ struct SnippetListView: View {
         } label: {
             HStack {
                 if let selectedId = viewModel.selectedStoryId,
-                    let story = viewModel.stories.first(where: { $0.id == selectedId })
-                {
+                   let story = viewModel.stories.first(where: { $0.id == selectedId }) {
                     Text(story.title)
                         .foregroundColor(.primary)
                 } else {
@@ -319,8 +316,7 @@ struct SnippetListView: View {
         } label: {
             HStack {
                 if let selectedLangCode = viewModel.selectedSourceLang,
-                    let lang = viewModel.availableLanguages.find(byCodeOrName: selectedLangCode)
-                {
+                   let lang = viewModel.availableLanguages.find(byCodeOrName: selectedLangCode) {
                     Text(lang.name.capitalized)
                         .foregroundColor(.primary)
                 } else {
@@ -491,13 +487,13 @@ struct SnippetDetailSheetView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
                         isPresented = false
-                    }) {
+                    }, label: {
                         Image(systemName: "xmark")
                             .foregroundColor(.primary)
                             .padding(8)
                             .background(Color.blue.opacity(0.1))
                             .clipShape(Circle())
-                    }
+                    })
                 }
             }
         }
@@ -650,7 +646,7 @@ struct AddSnippetView: View {
                     VStack(spacing: 12) {
                         Button(action: {
                             isPresented = false
-                        }) {
+                        }, label: {
                             Text("Cancel")
                                 .font(.headline)
                                 .frame(maxWidth: .infinity)
@@ -658,7 +654,7 @@ struct AddSnippetView: View {
                                 .background(Color.blue.opacity(0.1))
                                 .foregroundColor(AppTheme.Colors.primaryBlue)
                                 .cornerRadius(12)
-                        }
+                        })
 
                         Button(action: submitSnippet) {
                             if isSubmitting {
@@ -689,13 +685,13 @@ struct AddSnippetView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
                         isPresented = false
-                    }) {
+                    }, label: {
                         Image(systemName: "xmark")
                             .foregroundColor(.primary)
                             .padding(8)
                             .background(Color.blue.opacity(0.1))
                             .clipShape(Circle())
-                    }
+                    })
                 }
             }
         }
@@ -740,7 +736,7 @@ struct EditSnippetView: View {
     @State private var targetLanguage: String = "en"
     @State private var context = ""
     @State private var isSubmitting = false
-    @State private var errorMessage: String? = nil
+    @State private var errorMessage: String?
 
     private func mapLanguageStringToCode(_ languageString: String?, defaultCode: String) -> String {
         guard let langString = languageString?.lowercased() else {
@@ -866,13 +862,13 @@ struct EditSnippetView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
                         isPresented = false
-                    }) {
+                    }, label: {
                         Image(systemName: "xmark")
                             .foregroundColor(.primary)
                             .padding(8)
                             .background(Color.blue.opacity(0.1))
                             .clipShape(Circle())
-                    }
+                    })
                 }
             }
         }

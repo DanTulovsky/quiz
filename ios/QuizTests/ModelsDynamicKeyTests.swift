@@ -94,4 +94,3 @@ class ModelsDynamicKeyTests: XCTestCase {
         }(), "Decoding EdgeTTSVoiceInfo with missing fields should not throw")
     }
 }
-

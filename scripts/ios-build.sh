@@ -126,6 +126,27 @@ else
 fi
 
 echo "📱 Building iOS app with destination: $DEST"
-xcodebuild -scheme Quiz -destination "$DEST" clean build
-echo "✅ iOS build completed!"
+
+# Capture xcodebuild output and exit code while showing output in real-time
+BUILD_OUTPUT=$(mktemp)
+trap "rm -f '$BUILD_OUTPUT'" EXIT
+
+# Temporarily disable set -e to capture exit code
+set +e
+xcodebuild -scheme Quiz -destination "$DEST" clean build 2>&1 | tee "$BUILD_OUTPUT"
+EXIT_CODE=${PIPESTATUS[0]}
+set -e
+
+if [ $EXIT_CODE -eq 0 ]; then
+    echo "✅ iOS build completed!"
+else
+    echo ""
+    echo "❌ iOS build failed with exit code $EXIT_CODE!"
+    echo ""
+    echo "Last 50 lines of build output (errors typically appear here):"
+    echo "----------------------------------------"
+    tail -n 50 "$BUILD_OUTPUT"
+    echo "----------------------------------------"
+    exit $EXIT_CODE
+fi
 

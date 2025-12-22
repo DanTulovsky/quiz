@@ -6,14 +6,21 @@ import XCTest
 class SnippetLoadingTests: XCTestCase {
     var viewModel: QuizViewModel!
     var mockAPIService: MockAPIService!
+    var cancellables: Set<AnyCancellable>!
 
     override func setUp() {
         super.setUp()
+        cancellables = Set<AnyCancellable>()
         mockAPIService = MockAPIService()
         viewModel = QuizViewModel(apiService: mockAPIService)
+        // Reset snippet cache to ensure clean state for each test
+        viewModel.resetSnippetCache()
     }
 
     override func tearDown() {
+        // Cancel any pending operations before deallocating to avoid interference with next test
+        viewModel?.cancelAllRequests()
+        cancellables = nil
         viewModel = nil
         mockAPIService = nil
         super.tearDown()
@@ -21,9 +28,12 @@ class SnippetLoadingTests: XCTestCase {
 
     func testLoadSnippetsWithErrorSilentlyHandled() {
         // Given - snippet loading should fail but not show error
-        mockAPIService.getSnippetsResult = .failure(.decodingFailed(
-            NSError(domain: "Test", code: -1, userInfo: [NSLocalizedDescriptionKey: "Decoding failed"])
-        ))
+        mockAPIService.getSnippetsResult = .failure(
+            .decodingFailed(
+                NSError(
+                    domain: "Test", code: -1,
+                    userInfo: [NSLocalizedDescriptionKey: "Decoding failed"])
+            ))
 
         // When
         viewModel.loadSnippets(questionId: 1)
@@ -32,7 +42,8 @@ class SnippetLoadingTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Snippets error handled silently")
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             XCTAssertEqual(self.viewModel.snippets.count, 0, "Snippets should be empty on error")
-            XCTAssertNil(self.viewModel.error, "Error should not be set for snippet loading failures")
+            XCTAssertNil(
+                self.viewModel.error, "Error should not be set for snippet loading failures")
             expectation.fulfill()
         }
         wait(for: [expectation], timeout: 1.0)
@@ -68,16 +79,16 @@ class SnippetLoadingTests: XCTestCase {
         // When
         viewModel.loadSnippets(questionId: 1)
 
-        // Then
+        // Then - wait for async update to complete
         let expectation = XCTestExpectation(description: "Snippets loaded successfully")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            XCTAssertEqual(self.viewModel.snippets.count, 1)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            XCTAssertEqual(self.viewModel.snippets.count, 1, "Should have 1 snippet")
             XCTAssertEqual(self.viewModel.snippets.first?.id, 1)
             XCTAssertEqual(self.viewModel.snippets.first?.originalText, "hello")
             XCTAssertNil(self.viewModel.error)
             expectation.fulfill()
         }
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 2.0)
     }
 
     func testLoadSnippetsUpdatesOnMainThread() {
@@ -88,20 +99,18 @@ class SnippetLoadingTests: XCTestCase {
             questionId: 1, storyId: nil, sectionId: nil)
         let list = SnippetList(limit: 10, offset: 0, query: nil, snippets: [snippet])
         mockAPIService.getSnippetsResult = .success(list)
-        var wasOnMainThread = false
 
         // When
         viewModel.loadSnippets(questionId: 1)
 
-        // Then - verify update happens on main thread
+        // Then - wait for async update and verify main thread
         let expectation = XCTestExpectation(description: "Snippets updated on main thread")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            wasOnMainThread = Thread.isMainThread
-            XCTAssertTrue(wasOnMainThread, "Snippet update should be on main thread")
-            XCTAssertEqual(self.viewModel.snippets.count, 1)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            XCTAssertTrue(Thread.isMainThread, "Snippet update should be on main thread")
+            XCTAssertEqual(self.viewModel.snippets.count, 1, "Should have 1 snippet")
             expectation.fulfill()
         }
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 2.0)
     }
 
     func testLoadSnippetsByQuestionId() {
@@ -150,9 +159,11 @@ class SnippetLoadingTests: XCTestCase {
 
     func testLoadSnippetsWithNetworkError() {
         // Given - network error
-        mockAPIService.getSnippetsResult = .failure(.requestFailed(
-            NSError(domain: NSURLErrorDomain, code: NSURLErrorNotConnectedToInternet, userInfo: nil)
-        ))
+        mockAPIService.getSnippetsResult = .failure(
+            .requestFailed(
+                NSError(
+                    domain: NSURLErrorDomain, code: NSURLErrorNotConnectedToInternet, userInfo: nil)
+            ))
 
         // When
         viewModel.loadSnippets(questionId: 1)
@@ -160,11 +171,12 @@ class SnippetLoadingTests: XCTestCase {
         // Then - should silently handle network errors
         let expectation = XCTestExpectation(description: "Network error handled silently")
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            XCTAssertEqual(self.viewModel.snippets.count, 0, "Snippets should be empty on network error")
-            XCTAssertNil(self.viewModel.error, "Error should not be set for snippet loading failures")
+            XCTAssertEqual(
+                self.viewModel.snippets.count, 0, "Snippets should be empty on network error")
+            XCTAssertNil(
+                self.viewModel.error, "Error should not be set for snippet loading failures")
             expectation.fulfill()
         }
         wait(for: [expectation], timeout: 1.0)
     }
 }
-

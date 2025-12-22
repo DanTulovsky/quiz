@@ -184,4 +184,3 @@ class ExtensionsTests: XCTestCase {
         XCTAssertEqual(receivedSnippets?.snippets.first?.storyId, 456, "Snippet should have correct story ID")
     }
 }
-

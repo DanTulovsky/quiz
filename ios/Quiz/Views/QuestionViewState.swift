@@ -4,9 +4,9 @@ import SwiftUI
 
 class QuestionViewState: ObservableObject {
     @Published var reportReason = ""
-    @Published var selectedConfidence: Int? = nil
+    @Published var selectedConfidence: Int?
     @Published var selectedText: String?
     @Published var showTranslationPopup = false
     @Published var translationSentence: String?
-    @Published var showingSnippet: Snippet? = nil
+    @Published var showingSnippet: Snippet?
 }

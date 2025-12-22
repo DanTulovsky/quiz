@@ -1,5 +1,6 @@
 import SwiftUI
 
+// swiftlint:disable type_body_length
 struct SettingsView: View {
     @StateObject private var viewModel = SettingsViewModel()
     @EnvironmentObject var authViewModel: AuthenticationViewModel
@@ -45,9 +46,9 @@ struct SettingsView: View {
     // Success feedback
     @State private var showSuccessMessage = false
 
-    private func formatTimezone(_ tz: String) -> String {
-        let cityName = tz.split(separator: "/").last?.replacingOccurrences(of: "_", with: " ") ?? tz
-        return "\(cityName) (\(tz.split(separator: "/").first ?? ""))"
+    private func formatTimezone(_ timezone: String) -> String {
+        let cityName = timezone.split(separator: "/").last?.replacingOccurrences(of: "_", with: " ") ?? timezone
+        return "\(cityName) (\(timezone.split(separator: "/").first ?? ""))"
     }
 
     var body: some View {
@@ -131,7 +132,7 @@ struct SettingsView: View {
                             get: {
                                 appTheme == "light"
                                     || (appTheme == "system"
-                                        && UITraitCollection.current.userInterfaceStyle
+                                            && UITraitCollection.current.userInterfaceStyle
                                             == .light)
                             },
                             set: { newValue in
@@ -150,7 +151,7 @@ struct SettingsView: View {
                         ForEach(["S", "M", "L", "XL"], id: \.self) { size in
                             Button(action: {
                                 appFontSize = size
-                            }) {
+                            }, label: {
                                 Text(size)
                                     .font(
                                         size == "S"
@@ -173,7 +174,7 @@ struct SettingsView: View {
                                             ? .white : AppTheme.Colors.primaryBlue
                                     )
                                     .cornerRadius(AppTheme.CornerRadius.badge)
-                            }
+                            })
                         }
                     }
                 }
@@ -189,8 +190,8 @@ struct SettingsView: View {
                     Text("Timezone").font(.subheadline).fontWeight(.medium)
                     Picker("Timezone", selection: $timezone) {
                         Text("Select Timezone").tag("")
-                        ForEach(commonTimezones, id: \.self) { tz in
-                            Text(formatTimezone(tz)).tag(tz)
+                        ForEach(commonTimezones, id: \.self) { timezone in
+                            Text(formatTimezone(timezone)).tag(timezone)
                         }
                     }
                     .pickerStyle(.menu)
@@ -317,7 +318,7 @@ struct SettingsView: View {
                 Text("Stay on track with your learning goals.").font(.caption)
                     .foregroundColor(.secondary)
 
-                Button(action: { viewModel.sendTestEmail() }) {
+                Button(action: { viewModel.sendTestEmail() }, label: {
                     Text("Test Email")
                         .font(.subheadline)
                         .fontWeight(.medium)
@@ -326,7 +327,7 @@ struct SettingsView: View {
                         .padding(.vertical, AppTheme.Spacing.buttonVerticalPadding)
                         .background(AppTheme.Colors.primaryBlue.opacity(0.1))
                         .cornerRadius(AppTheme.CornerRadius.button)
-                }
+                })
                 .disabled(email.isEmpty)
             }
         }
@@ -336,7 +337,7 @@ struct SettingsView: View {
                 Toggle(isOn: $wordOfDayEmailEnabled) {
                     Label("Daily Email Delivery", systemImage: "envelope.fill")
                 }
-                Button(action: { viewModel.sendTestEmail() }) {
+                Button(action: { viewModel.sendTestEmail() }, label: {
                     Text("Test Email")
                         .font(.subheadline)
                         .fontWeight(.medium)
@@ -345,7 +346,7 @@ struct SettingsView: View {
                         .padding(.vertical, AppTheme.Spacing.buttonVerticalPadding)
                         .background(AppTheme.Colors.primaryBlue.opacity(0.1))
                         .cornerRadius(AppTheme.CornerRadius.button)
-                }
+                })
                 .disabled(email.isEmpty)
             }
         }
@@ -411,20 +412,24 @@ struct SettingsView: View {
                             }
                         }
                         .font(.subheadline).fontWeight(.medium)
-                        FormSecureField(placeholder: "Enter API Key (Optional if saved)", text: $apiKey, showPasswordToggle: false)
+                        FormSecureField(
+                            placeholder: "Enter API Key (Optional if saved)",
+                            text: $apiKey,
+                            showPasswordToggle: false
+                        )
 
                         Button(action: {
                             viewModel.testAI(
                                 provider: selectedProvider, model: selectedModel,
                                 apiKey: apiKey)
-                        }) {
+                        }, label: {
                             Label("Test AI Connection", systemImage: "bolt.fill")
                                 .font(.subheadline)
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 10)
                                 .background(AppTheme.Colors.primaryBlue.opacity(0.1))
                                 .cornerRadius(AppTheme.CornerRadius.badge)
-                        }
+                        })
                         .disabled(selectedProvider.isEmpty || selectedModel.isEmpty)
 
                         if let testResult = viewModel.testResult {
@@ -457,14 +462,14 @@ struct SettingsView: View {
 
                 Divider().padding(.vertical, 5)
 
-                Button(action: { viewModel.resetAccount() }) {
+                Button(action: { viewModel.resetAccount() }, label: {
                     Label("Reset All Progress", systemImage: "exclamationmark.triangle")
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding()
                         .background(Color.red)
                         .cornerRadius(10)
-                }
+                })
             }
         }
 
@@ -495,7 +500,7 @@ struct SettingsView: View {
         // Logout Button
         Button(action: {
             authViewModel.logout()
-        }) {
+        }, label: {
             HStack {
                 Image(systemName: "arrow.right.square")
                 Text("Logout")
@@ -506,7 +511,7 @@ struct SettingsView: View {
             .background(AppTheme.Colors.errorRed)
             .foregroundColor(.white)
             .cornerRadius(AppTheme.CornerRadius.button)
-        }
+        })
         .padding(.top, 20)
     }
 
@@ -594,7 +599,7 @@ struct SettingsView: View {
                 } else {
                     expandedSections.insert(id)
                 }
-            }) {
+            }, label: {
                 HStack {
                     Image(systemName: icon)
                         .foregroundColor(color == .primary ? AppTheme.Colors.primaryBlue : color)
@@ -609,25 +614,21 @@ struct SettingsView: View {
                 }
                 .padding()
                 .background(Color(.systemBackground))
+            })
+            Divider().padding(.horizontal)
+            VStack(alignment: .leading) {
+                content()
             }
-
-            if isExpanded {
-                Divider().padding(.horizontal)
-                VStack(alignment: .leading) {
-                    content()
-                }
-                .padding()
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color(.systemBackground))
-            }
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color(.systemBackground))
         }
         .appCard()
     }
 
     @ViewBuilder
     private func settingsField(label: String, text: Binding<String>, required: Bool = false)
-        -> some View
-    {
+    -> some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Text(label)
@@ -642,8 +643,7 @@ struct SettingsView: View {
     }
 
     @ViewBuilder
-    private func dataButton(title: String, icon: String, action: @escaping () -> Void) -> some View
-    {
+    private func dataButton(title: String, icon: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack {
                 Label(title, systemImage: icon)
@@ -706,8 +706,7 @@ struct SettingsView: View {
                         if currentVoiceId == nil || !voiceIds.contains(currentVoiceId!) {
                             // Set to default voice from LanguageInfo, or first in list
                             if let defaultVoice = viewModel.getDefaultVoiceIdentifier(
-                                for: learningLanguage)
-                            {
+                                for: learningLanguage) {
                                 ttsVoice = defaultVoice
                                 TTSSynthesizerManager.shared.preferredVoice = defaultVoice
                             } else if let firstVoice = voices.first {

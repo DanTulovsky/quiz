@@ -11,12 +11,12 @@ class TranslationPracticeViewModel: BaseViewModel, Refreshable, StateClearing {
     @Published var optionalTopic = ""
     @Published var selectedDirection = "learning_to_en"
 
-    override init(apiService: APIService = .shared) {
+    override init(apiService: APIServiceProtocol = APIService.shared) {
         super.init(apiService: apiService)
     }
 
     func fetchHistory() {
-        apiService.getTranslationPracticeHistory()
+        apiService.getTranslationPracticeHistory(limit: 10, offset: 0)
             .handleErrorOnly(on: self)
             .sinkValue(on: self) { [weak self] response in
                 self?.history = response.sessions

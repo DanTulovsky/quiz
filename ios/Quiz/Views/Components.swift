@@ -3,6 +3,7 @@ import Combine
 import MarkdownUI
 import MediaPlayer
 import SwiftUI
+// swiftlint:disable file_length
 import UIKit
 
 struct BadgeView: View {
@@ -20,6 +21,7 @@ struct BadgeView: View {
     }
 }
 
+// swiftlint:disable:next type_body_length
 @MainActor class TTSSynthesizerManager: NSObject, ObservableObject {
     static let shared = TTSSynthesizerManager()
     private var player: AVPlayer?
@@ -61,14 +63,12 @@ struct BadgeView: View {
     }
 
     private func handleAppGoingToBackground() {
-        // If loading, cancel it
+        // If loading, cancel it (can't load in background)
         if isLoading {
             cancel()
         }
-        // If playing, pause it
-        else if currentlySpeakingText != nil && !isPaused {
-            pause()
-        }
+        // Don't pause playing audio - let it continue in background
+        // The background audio mode allows playback to continue
     }
 
     private func setupAudioSession() {
@@ -175,8 +175,7 @@ struct BadgeView: View {
                         if case .requestFailed(let underlyingError) = error {
                             let nsError = underlyingError as NSError
                             if nsError.domain == NSURLErrorDomain
-                                && nsError.code == NSURLErrorCancelled
-                            {
+                                && nsError.code == NSURLErrorCancelled {
                                 // Request was cancelled, don't show error
                                 return
                             }
@@ -391,6 +390,7 @@ struct BadgeView: View {
         nowPlayingUpdateTimer = nil
     }
 
+    // swiftlint:disable:next block_based_kvo
     override func observeValue(
         forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?,
         context: UnsafeMutableRawPointer?
@@ -442,7 +442,8 @@ struct BadgeView: View {
         // If not in cache, return a default (this should only happen if languages haven't loaded yet)
         // In practice, this should be avoided by ensuring languages are loaded before using TTS
         print(
-            "⚠️ TTS Warning: Default voice cache not populated for language '\(lang)'. Using English fallback. This may indicate TTS initialization failed."
+            "⚠️ TTS Warning: Default voice cache not populated for language '\(lang)'. "
+                + "Using English fallback. This may indicate TTS initialization failed."
         )
         return "en-US-JennyNeural"
     }
@@ -542,7 +543,7 @@ struct BadgeView: View {
 struct TTSButton: View {
     let text: String
     let language: String
-    var voiceIdentifier: String? = nil
+    var voiceIdentifier: String?
     @StateObject private var ttsManager = TTSSynthesizerManager.shared
     @State private var rotation: Double = 0
 
@@ -565,14 +566,17 @@ struct TTSButton: View {
     }
 
     var body: some View {
-        Button(action: {
-            ttsManager.speak(text, language: language, voiceIdentifier: voiceIdentifier)
-        }) {
-            Image(systemName: iconName)
-                .font(.title2)
-                .foregroundColor(.blue)
-                .rotationEffect(.degrees(rotation))
-        }
+        Button(
+            action: {
+                ttsManager.speak(text, language: language, voiceIdentifier: voiceIdentifier)
+            },
+            label: {
+                Image(systemName: iconName)
+                    .font(.title2)
+                    .foregroundColor(.blue)
+                    .rotationEffect(.degrees(rotation))
+            }
+        )
         .buttonStyle(.plain)  // Prevent multi-action triggers in Lists
         .onChange(of: isLoading) { _, newValue in
             if newValue {
@@ -619,25 +623,30 @@ struct SnippetDetailView: View {
             HStack {
                 BadgeView(
                     text:
-                        "\(snippet.sourceLanguage?.uppercased() ?? "??") → \(snippet.targetLanguage?.uppercased() ?? "??")",
+                        "\(snippet.sourceLanguage?.uppercased() ?? "??") → "
+                        + "\(snippet.targetLanguage?.uppercased() ?? "??")",
                     color: .blue)
                 if let level = snippet.difficultyLevel {
                     BadgeView(text: level, color: .green)
                 }
                 Spacer()
                 HStack(spacing: 15) {
-                    Button(action: {
-                        onNavigateToSnippets?(snippet.originalText)
-                    }) {
-                        Image(systemName: "arrow.up.right.square")
-                            .foregroundColor(.blue)
-                    }
-                    Button(action: {
-                        onDelete?()
-                    }) {
-                        Image(systemName: "trash")
-                            .foregroundColor(.red)
-                    }
+                    Button(
+                        action: {
+                            onNavigateToSnippets?(snippet.originalText)
+                        },
+                        label: {
+                            Image(systemName: "arrow.up.right.square")
+                                .foregroundColor(.blue)
+                        })
+                    Button(
+                        action: {
+                            onDelete?()
+                        },
+                        label: {
+                            Image(systemName: "trash")
+                                .foregroundColor(.red)
+                        })
                 }
             }
 
@@ -666,9 +675,8 @@ private class SizingTextView: UITextView {
         let width = bounds.width > 0 ? bounds.width : UIScreen.main.bounds.width - 64
 
         if let textLayoutManager = textLayoutManager,
-            let textContentManager = textLayoutManager.textContentManager,
-            let textContainer = textLayoutManager.textContainer
-        {
+           let textContentManager = textLayoutManager.textContentManager,
+           let textContainer = textLayoutManager.textContainer {
             let containerSize = CGSize(width: width, height: .greatestFiniteMagnitude)
             textContainer.size = containerSize
 
@@ -758,9 +766,9 @@ struct QuestionCardView: View {
         self.showLanguageBadge = showLanguageBadge
     }
 
-    private func stringValue(_ v: JSONValue?) -> String? {
-        guard let v else { return nil }
-        if case .string(let s) = v { return s }
+    private func stringValue(_ value: JSONValue?) -> String? {
+        guard let value else { return nil }
+        if case .string(let stringValue) = value { return stringValue }
         return nil
     }
 
@@ -809,8 +817,7 @@ struct QuestionCardView: View {
                 .id("\(sentence)-\(snippetsId)")
                 .frame(minHeight: 44)
             } else if let questionText = stringValue(question.content["question"])
-                ?? stringValue(question.content["prompt"])
-            {
+                        ?? stringValue(question.content["prompt"]) {
                 SelectableTextView(
                     text: questionText,
                     language: question.language,
@@ -825,8 +832,7 @@ struct QuestionCardView: View {
             }
 
             if question.type == "vocabulary",
-                let targetWord = stringValue(question.content["question"])
-            {
+               let targetWord = stringValue(question.content["question"]) {
                 let vocabText = "What does \(targetWord) mean in this context?"
                 SelectableTextView(
                     text: vocabText,
@@ -872,12 +878,12 @@ struct QuestionOptionsView: View {
         self.onOptionSelected = onOptionSelected
     }
 
-    private func stringArrayValue(_ v: JSONValue?) -> [String]? {
-        guard let v else { return nil }
-        guard case .array(let arr) = v else { return nil }
+    private func stringArrayValue(_ value: JSONValue?) -> [String]? {
+        guard let value else { return nil }
+        guard case .array(let arr) = value else { return nil }
         let strings = arr.compactMap { item -> String? in
-            guard case .string(let s) = item else { return nil }
-            return s
+            guard case .string(let stringValue) = item else { return nil }
+            return stringValue
         }
         return strings.isEmpty ? nil : strings
     }
@@ -1081,7 +1087,7 @@ struct FormTextField: View {
     var autocapitalization: TextInputAutocapitalization = .never
     var autocorrection: Bool = false
     var showBorder: Bool = false
-    var padding: CGFloat? = nil
+    var padding: CGFloat?
 
     var body: some View {
         TextField(placeholder, text: $text)
@@ -1121,10 +1127,12 @@ struct FormSecureField: View {
             }
 
             if showPasswordToggle {
-                Button(action: { showPassword.toggle() }) {
-                    Image(systemName: showPassword ? "eye.slash" : "eye")
-                        .foregroundColor(.secondary)
-                }
+                Button(
+                    action: { showPassword.toggle() },
+                    label: {
+                        Image(systemName: showPassword ? "eye.slash" : "eye")
+                            .foregroundColor(.secondary)
+                    })
             }
         }
         .padding()
@@ -1194,7 +1202,8 @@ struct MarkKnownSheet: View {
         NavigationView {
             VStack(spacing: 20) {
                 Text(
-                    "Choose how often you want to see this question in future quizzes: 1–2 show it more, 3 no change, 4–5 show it less."
+                    "Choose how often you want to see this question in future quizzes: "
+                        + "1–2 show it more, 3 no change, 4–5 show it less."
                 )
                 .font(.subheadline)
                 .foregroundColor(.secondary)

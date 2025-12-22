@@ -2,8 +2,7 @@ import Combine
 import Foundation
 
 class VocabularyViewModel: BaseViewModel, SnippetLoading, LanguageCaching, ListFetching,
-    LanguageFetching, Searchable, Filterable, CRUDOperations
-{
+                           LanguageFetching, Searchable, Filterable, CRUDOperations {
     typealias Item = StorySummary
     typealias CRUDItem = Snippet
 
@@ -26,9 +25,9 @@ class VocabularyViewModel: BaseViewModel, SnippetLoading, LanguageCaching, ListF
         $searchQuery
     }
 
-    @Published var selectedStoryId: Int? = nil
-    @Published var selectedLevel: String? = nil
-    @Published var selectedSourceLang: String? = nil
+    @Published var selectedStoryId: Int?
+    @Published var selectedLevel: String?
+    @Published var selectedSourceLang: String?
     @Published var availableLanguages: [LanguageInfo] = [] {
         didSet {
             updateLanguageCache()
@@ -38,7 +37,7 @@ class VocabularyViewModel: BaseViewModel, SnippetLoading, LanguageCaching, ListF
     var languageCacheByCode: [String: LanguageInfo] = [:]
     var languageCacheByName: [String: LanguageInfo] = [:]
 
-    override init(apiService: APIService = APIService.shared) {
+    override init(apiService: APIServiceProtocol = APIService.shared) {
         super.init(apiService: apiService)
 
         setupSearchDebounce(delay: 0.5)

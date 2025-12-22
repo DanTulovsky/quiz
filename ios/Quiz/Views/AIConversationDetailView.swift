@@ -36,7 +36,7 @@ struct AIConversationDetailView: View {
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: { dismiss() }) {
+                Button(action: { dismiss() }, label: {
                     HStack(spacing: 4) {
                         Image(systemName: "chevron.left")
                             .scaledFont(size: 17, weight: .semibold)
@@ -44,7 +44,7 @@ struct AIConversationDetailView: View {
                             .scaledFont(size: 17)
                     }
                     .foregroundColor(.blue)
-                }
+                })
             }
         }
         .onAppear {
@@ -84,12 +84,12 @@ struct MessageBubble: View {
 
                 if !isUser {
                     Button(action: {
-                        // TODO: Implement bookmark functionality
-                    }) {
+                        // Bookmark functionality to be implemented
+                    }, label: {
                         Label("Bookmark", systemImage: "bookmark")
                             .font(.caption)
                             .foregroundColor(.blue)
-                    }
+                    })
                 }
             }
 
@@ -102,4 +102,3 @@ struct MessageBubble: View {
         .background(isUser ? AppTheme.Colors.primaryBlue.opacity(0.1) : AppTheme.Colors.cardBackground)
     }
 }
-

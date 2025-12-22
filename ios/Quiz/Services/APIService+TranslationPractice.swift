@@ -14,4 +14,3 @@ extension APIService {
             responseType: TranslationPracticeHistoryResponse.self)
     }
 }
-

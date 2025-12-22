@@ -58,13 +58,17 @@ class QuizViewModelDailyAnswerTests: XCTestCase {
         // Then - verify the answerResponse uses the correct answer index from response
         XCTAssertNotNil(viewModel.answerResponse, "Answer response should be set")
         if let response = viewModel.answerResponse {
-            XCTAssertEqual(response.correctAnswerIndex, expectedResponse.correctAnswerIndex, "Should use correct answer index from response, not placeholder")
+            XCTAssertEqual(
+                response.correctAnswerIndex,
+                expectedResponse.correctAnswerIndex,
+                "Should use correct answer index from response, not placeholder"
+            )
             XCTAssertEqual(response.userAnswer, expectedResponse.userAnswer, "Should use user answer from response")
-            XCTAssertEqual(response.userAnswerIndex, expectedResponse.userAnswerIndex, "Should use user answer index from response")
+            XCTAssertEqual(
+                response.userAnswerIndex,
+                expectedResponse.userAnswerIndex,
+                "Should use user answer index from response"
+            )
         }
     }
 }
-
-
-
-

@@ -1165,10 +1165,11 @@ tasks:
       - go mod tidy
 
   lint:
-    desc: "Run all linters (frontend and backend)"
+    desc: "Run all linters (frontend, backend, and iOS)"
     cmds:
       - task: lint-backend
       - task: lint-frontend
+      - task: lint-ios
       - task: lint-go-mod-tidy
       - echo "✅ All linting passed!"
 
@@ -1204,6 +1205,14 @@ tasks:
       - npm run lint
       - echo "✅ Frontend linting passed!"
 
+  lint-ios:
+    desc: "Run iOS linter (SwiftLint)"
+    dir: ios
+    cmds:
+      - echo "Running iOS linter (SwiftLint)..."
+      - swiftlint lint -quiet
+      - echo "✅ iOS linting passed!"
+
   test-frontend:
     desc: "Run frontend unit tests"
     dir: frontend
@@ -1217,10 +1226,11 @@ tasks:
       - npm test
 
   format:
-    desc: "Format all code (Prettier for frontend, gofmt for backend)"
+    desc: "Format all code (Prettier for frontend, gofmt for backend, SwiftLint for iOS)"
     cmds:
       - task: format-frontend
       - task: format-backend
+      - task: format-ios
       - echo "✅ All code formatted!"
 
   format-frontend:
@@ -1250,6 +1260,14 @@ tasks:
       - command -v goimports >/dev/null 2>&1 && goimports -w .
       - gofumpt -w -extra .
       - echo "✅ Backend code formatted!"
+
+  format-ios:
+    desc: "Format iOS code with SwiftLint auto-fix"
+    dir: ios
+    cmds:
+      - echo "Formatting iOS code with SwiftLint..."
+      - swiftlint --quiet --fix --format
+      - echo "✅ iOS code formatted!"
 
   deadcode:
     desc: "Detect dead code in backend and frontend"

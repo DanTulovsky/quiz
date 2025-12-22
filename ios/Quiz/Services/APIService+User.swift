@@ -14,4 +14,3 @@ extension APIService {
             path: "preferences/learning", body: prefs, responseType: UserLearningPreferences.self)
     }
 }
-

@@ -6,7 +6,7 @@ class TTSInitializationManager: ObservableObject {
     var isInitialized = false
     private var loadedLanguages: [LanguageInfo] = []
 
-    func initialize(apiService: APIService, userLanguage: String?) {
+    func initialize(apiService: APIServiceProtocol, userLanguage: String?) {
         guard !isInitialized else { return }
         isInitialized = true
 

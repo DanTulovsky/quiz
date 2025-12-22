@@ -2,8 +2,7 @@ import Combine
 import Foundation
 
 class AIHistoryViewModel: BaseViewModel, Refreshable, ListFetchingWithName, DetailFetching,
-    OptimisticUpdating
-{
+                          OptimisticUpdating {
     typealias Item = Conversation
     typealias DetailID = String
     typealias DetailItem = Conversation
@@ -23,7 +22,7 @@ class AIHistoryViewModel: BaseViewModel, Refreshable, ListFetchingWithName, Deta
         set { selectedConversation = newValue }
     }
 
-    override init(apiService: APIService = .shared) {
+    override init(apiService: APIServiceProtocol = APIService.shared) {
         super.init(apiService: apiService)
     }
 

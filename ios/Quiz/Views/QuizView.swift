@@ -4,11 +4,11 @@ struct QuizView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: QuizViewModel
     @State private var reportReason = ""
-    @State private var selectedConfidence: Int? = nil
+    @State private var selectedConfidence: Int?
     @State private var selectedText: String?
     @State private var showTranslationPopup = false
     @State private var translationSentence: String?
-    @State private var showingSnippet: Snippet? = nil
+    @State private var showingSnippet: Snippet?
     @State private var snippetRefreshTrigger: Int = 0
 
     @StateObject private var ttsManager = TTSSynthesizerManager.shared
@@ -19,18 +19,18 @@ struct QuizView: View {
                 question: question, questionType: questionType, isDaily: isDaily))
     }
 
-    private func stringValue(_ v: JSONValue?) -> String? {
-        guard let v else { return nil }
-        if case .string(let s) = v { return s }
+    private func stringValue(_ value: JSONValue?) -> String? {
+        guard let value else { return nil }
+        if case .string(let stringValue) = value { return stringValue }
         return nil
     }
 
-    private func stringArrayValue(_ v: JSONValue?) -> [String]? {
-        guard let v else { return nil }
-        guard case .array(let arr) = v else { return nil }
+    private func stringArrayValue(_ value: JSONValue?) -> [String]? {
+        guard let value else { return nil }
+        guard case .array(let arr) = value else { return nil }
         let strings = arr.compactMap { item -> String? in
-            guard case .string(let s) = item else { return nil }
-            return s
+            guard case .string(let stringValue) = item else { return nil }
+            return stringValue
         }
         return strings.isEmpty ? nil : strings
     }
@@ -48,15 +48,17 @@ struct QuizView: View {
             .navigationBarBackButtonHidden(true)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: { dismiss() }) {
-                        HStack(spacing: 4) {
-                            Image(systemName: "chevron.left")
-                                .scaledFont(size: 17, weight: .semibold)
-                            Text("Back")
-                                .scaledFont(size: 17)
-                        }
-                        .foregroundColor(.blue)
-                    }
+                    Button(
+                        action: { dismiss() },
+                        label: {
+                            HStack(spacing: 4) {
+                                Image(systemName: "chevron.left")
+                                    .scaledFont(size: 17, weight: .semibold)
+                                Text("Back")
+                                    .scaledFont(size: 17)
+                            }
+                            .foregroundColor(.blue)
+                        })
                 }
             }
             .sheet(isPresented: $viewModel.showReportModal) {
@@ -209,14 +211,14 @@ struct QuizView: View {
                 Color.clear
                     .frame(height: 1)
                     .id("bottom")
-                    .onChange(of: viewModel.selectedAnswerIndex) { old, val in
+                    .onChange(of: viewModel.selectedAnswerIndex) { _, val in
                         if val != nil {
                             withAnimation {
                                 proxy.scrollTo("bottom", anchor: .bottom)
                             }
                         }
                     }
-                    .onChange(of: viewModel.answerResponse) { old, response in
+                    .onChange(of: viewModel.answerResponse) { _, response in
                         if response != nil {
                             withAnimation {
                                 proxy.scrollTo("bottom", anchor: .bottom)
@@ -245,7 +247,7 @@ struct QuizView: View {
                 onSnippetSaved: { snippet in
                     // Optimistically add the snippet immediately for instant UI update
                     if !viewModel.snippets.contains(where: { $0.id == snippet.id }) {
-                        viewModel.snippets = viewModel.snippets + [snippet]
+                        viewModel.snippets += [snippet]
                         snippetRefreshTrigger += 1
                     }
                     // Reload snippets from server to ensure we have the latest data

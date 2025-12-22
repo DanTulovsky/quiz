@@ -1,9 +1,10 @@
 import Combine
 import Foundation
 
-class PhrasebookViewModel: BaseViewModel {
+class PhrasebookViewModel: BaseViewModel, LanguageFetching {
     @Published var categories: [PhrasebookCategoryInfo] = []
     @Published var selectedCategoryData: PhrasebookData?
+    @Published var availableLanguages: [LanguageInfo] = []
 
     func fetchCategories() {
         isLoading = true

@@ -6,7 +6,7 @@ struct SnippetDetailPopup: ViewModifier {
     @State private var showSnippetsView = false
     @State private var snippetSearchQuery = ""
     @State private var showDeleteConfirmation = false
-    @State private var snippetToDelete: Snippet? = nil
+    @State private var snippetToDelete: Snippet?
     var onSnippetDeleted: ((Snippet) -> Void)?
 
     private func getVocabularyViewModel() -> VocabularyViewModel {
@@ -79,7 +79,7 @@ extension View {
         showingSnippet: Binding<Snippet?>,
         onSnippetDeleted: ((Snippet) -> Void)? = nil
     ) -> some View {
-        modifier(SnippetDetailPopup(showingSnippet: showingSnippet, onSnippetDeleted: onSnippetDeleted))
+        modifier(
+            SnippetDetailPopup(showingSnippet: showingSnippet, onSnippetDeleted: onSnippetDeleted))
     }
 }
-

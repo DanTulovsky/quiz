@@ -1,7 +1,7 @@
-import Foundation
 import Combine
+import Foundation
 
-class VerbViewModel: BaseViewModel, ListFetchingWithName {
+class VerbViewModel: BaseViewModel, ListFetchingWithName, LanguageFetching {
     typealias Item = VerbConjugationSummary
 
     @Published var verbs: [VerbConjugationSummary] = []
@@ -13,10 +13,11 @@ class VerbViewModel: BaseViewModel, ListFetchingWithName {
     @Published var selectedVerb: String = ""
     @Published var selectedVerbDetail: VerbConjugationDetail?
     @Published var expandedTenses: Set<String> = []
+    @Published var availableLanguages: [LanguageInfo] = []
 
     private var currentLanguage: String = "it"
 
-    override init(apiService: APIService = .shared) {
+    override init(apiService: APIServiceProtocol = APIService.shared) {
         super.init(apiService: apiService)
 
         $selectedVerb

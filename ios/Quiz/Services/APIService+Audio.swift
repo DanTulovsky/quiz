@@ -41,8 +41,7 @@ extension APIService {
                 guard (200...299).contains(httpResponse.statusCode) else {
                     let decoder = JSONDecoder()
                     if let errorResp = try? decoder.decode(ErrorResponse.self, from: data),
-                        let msg = errorResp.message ?? errorResp.error
-                    {
+                       let msg = errorResp.message ?? errorResp.error {
                         return Fail(
                             error: .backendError(code: errorResp.code, message: msg, details: errorResp.details)
                         ).eraseToAnyPublisher()
@@ -54,8 +53,7 @@ extension APIService {
             .eraseToAnyPublisher()
     }
 
-    private func decodeVoicesWithFallbacks(data: Data) -> AnyPublisher<[EdgeTTSVoiceInfo], APIError>
-    {
+    private func decodeVoicesWithFallbacks(data: Data) -> AnyPublisher<[EdgeTTSVoiceInfo], APIError> {
         let decoder = JSONDecoder()
 
         if let voices = try? decoder.decode([EdgeTTSVoiceInfo].self, from: data) {
@@ -63,8 +61,7 @@ extension APIService {
         }
 
         if let wrapper = try? decoder.decode([String: [EdgeTTSVoiceInfo]].self, from: data),
-            let voices = wrapper["voices"]
-        {
+           let voices = wrapper["voices"] {
             return Just(voices).setFailureType(to: APIError.self).eraseToAnyPublisher()
         }
 
@@ -74,8 +71,7 @@ extension APIService {
         }
 
         if let json = try? JSONSerialization.jsonObject(with: data, options: []),
-            let voicesArray = json as? [String]
-        {
+           let voicesArray = json as? [String] {
             let voices = voicesArray.map { EdgeTTSVoiceInfo(shortName: $0) }
             return Just(voices).setFailureType(to: APIError.self).eraseToAnyPublisher()
         }
@@ -90,4 +86,3 @@ extension APIService {
         ).eraseToAnyPublisher()
     }
 }
-

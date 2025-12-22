@@ -90,7 +90,10 @@ class DailyViewModelTests: XCTestCase {
             // Should not have updated the array at invalid index
             XCTAssertEqual(self.viewModel.dailyQuestions.count, 1, "Array should still have one question")
             // Question should still be uncompleted since submitAnswer returned early
-            XCTAssertFalse(self.viewModel.dailyQuestions[0].isCompleted, "Question should not be marked completed with invalid index")
+            XCTAssertFalse(
+                self.viewModel.dailyQuestions[0].isCompleted,
+                "Question should not be marked completed with invalid index"
+            )
             submitExpectation.fulfill()
         }
         wait(for: [submitExpectation], timeout: 1.0)

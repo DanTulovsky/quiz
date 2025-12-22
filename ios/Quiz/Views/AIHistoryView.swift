@@ -22,7 +22,8 @@ struct AIConversationListView: View {
                     EmptyStateView(
                         icon: "bubble.left.and.bubble.right",
                         title: "No Conversations Yet",
-                        message: "Start a conversation with the AI tutor to get personalized help with your language learning."
+                        message: "Start a conversation with the AI tutor to get personalized help "
+                            + "with your language learning."
                     )
                     .padding()
                 } else {
@@ -85,30 +86,30 @@ struct ConversationCard: View {
                         .lineLimit(1)
                     Spacer()
 
-                Menu {
-                    NavigationLink(destination: AIConversationDetailView(conversationId: conversation.id)) {
-                        Label("View", systemImage: "eye")
-                    }
+                    Menu {
+                        NavigationLink(destination: AIConversationDetailView(conversationId: conversation.id)) {
+                            Label("View", systemImage: "eye")
+                        }
 
-                    Button(action: {
-                        newTitle = conversation.title
-                        showingEditTitle = true
-                    }) {
-                        Label("Edit Title", systemImage: "pencil")
-                    }
+                        Button(action: {
+                            newTitle = conversation.title
+                            showingEditTitle = true
+                        }, label: {
+                            Label("Edit Title", systemImage: "pencil")
+                        })
 
-                    Button(role: .destructive, action: {
-                        viewModel.deleteConversation(id: conversation.id)
-                    }) {
-                        Label("Delete", systemImage: "trash")
+                        Button(role: .destructive, action: {
+                            viewModel.deleteConversation(id: conversation.id)
+                        }, label: {
+                            Label("Delete", systemImage: "trash")
+                        })
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
+                            .font(.title3)
+                            .foregroundColor(.secondary)
+                            .padding(4)
                     }
-                } label: {
-                    Image(systemName: "ellipsis.circle")
-                        .font(.title3)
-                        .foregroundColor(.secondary)
-                        .padding(4)
                 }
-            }
 
                 HStack(spacing: 10) {
                     HStack(spacing: 4) {
@@ -203,7 +204,7 @@ struct BookmarkedMessagesView: View {
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: { dismiss() }) {
+                Button(action: { dismiss() }, label: {
                     HStack(spacing: 4) {
                         Image(systemName: "chevron.left")
                             .scaledFont(size: 17, weight: .semibold)
@@ -211,7 +212,7 @@ struct BookmarkedMessagesView: View {
                             .scaledFont(size: 17)
                     }
                     .foregroundColor(.blue)
-                }
+                })
             }
         }
         .onAppear {
@@ -251,14 +252,14 @@ struct BookmarkCard: View {
 
                 Button(action: {
                     showDeleteConfirmation = true
-                }) {
+                }, label: {
                     Image(systemName: "bookmark.slash.fill")
                         .font(.caption)
                         .foregroundColor(.red)
                         .padding(8)
                         .background(Color.red.opacity(0.1))
                         .clipShape(Circle())
-                }
+                })
                 .buttonStyle(.plain)
             }
 
@@ -276,7 +277,7 @@ struct BookmarkCard: View {
                 withAnimation {
                     isExpanded.toggle()
                 }
-            }) {
+            }, label: {
                 VStack(alignment: .leading, spacing: 8) {
                     if isExpanded {
                         Text(message.content.text)
@@ -293,12 +294,16 @@ struct BookmarkCard: View {
 
                     HStack {
                         Spacer()
-                        Image(systemName: isExpanded ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right")
-                            .font(.caption)
-                            .foregroundColor(.blue)
+                        Image(
+                            systemName: isExpanded
+                                ? "arrow.down.right.and.arrow.up.left"
+                                : "arrow.up.left.and.arrow.down.right"
+                        )
+                        .font(.caption)
+                        .foregroundColor(.blue)
                     }
                 }
-            }
+            })
             .buttonStyle(.plain)
         }
         .padding()

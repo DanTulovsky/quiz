@@ -26,7 +26,3 @@ class QuizStateManager: ObservableObject {
         states[questionType] = nil
     }
 }
-
-
-
-

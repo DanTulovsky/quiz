@@ -7,7 +7,7 @@ class AuthenticationViewModel: BaseViewModel {
     @Published var password = ""
     @Published var email = ""
     @Published var isAuthenticated = false
-    @Published var user: User? = nil
+    @Published var user: User?
     @Published var googleAuthURL: URL?
     private let stateQueue = DispatchQueue(
         label: "com.wetsnow.quiz.auth.state", attributes: .concurrent)
@@ -52,7 +52,7 @@ class AuthenticationViewModel: BaseViewModel {
         }
     }
 
-    override init(apiService: APIService = APIService.shared) {
+    override init(apiService: APIServiceProtocol = APIService.shared) {
         super.init(apiService: apiService)
         // Check auth status on init with a small delay to allow cookies to be set
         // This is especially important after OAuth callbacks

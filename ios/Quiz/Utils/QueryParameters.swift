@@ -27,4 +27,3 @@ struct QueryParameters {
         return items.isEmpty ? nil : items
     }
 }
-

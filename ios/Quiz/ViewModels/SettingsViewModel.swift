@@ -2,8 +2,7 @@ import Combine
 import Foundation
 
 class SettingsViewModel: BaseViewModel, LanguageCaching, ListFetchingWithName, LanguageFetching,
-    SuccessStateManaging, LevelFetching
-{
+                         SuccessStateManaging, LevelFetching {
     typealias Item = AIProviderInfo
 
     @Published var aiProviders: [AIProviderInfo] = []
@@ -32,7 +31,7 @@ class SettingsViewModel: BaseViewModel, LanguageCaching, ListFetchingWithName, L
     @Published var learningPrefs: UserLearningPreferences?
     @Published var isSuccess = false
 
-    override init(apiService: APIService = APIService.shared) {
+    override init(apiService: APIServiceProtocol = APIService.shared) {
         super.init(apiService: apiService)
     }
 

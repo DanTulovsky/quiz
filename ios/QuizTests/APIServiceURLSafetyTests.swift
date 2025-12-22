@@ -26,7 +26,7 @@ class APIServiceURLSafetyTests: XCTestCase {
         var receivedError: APIService.APIError?
 
         // When
-        apiService.getQuestion(language: .english, level: .a1, type: "vocabulary", excludeType: nil)
+        apiService.getQuestion(language: "en", level: "A1", type: "vocabulary", excludeType: nil)
             .sink(
                 receiveCompletion: { completion in
                     if case .failure(let error) = completion {
@@ -165,4 +165,3 @@ class APIServiceURLSafetyTests: XCTestCase {
         XCTAssertNotNil(receivedError != nil || true, "Should handle error gracefully")
     }
 }
-

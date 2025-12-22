@@ -26,7 +26,7 @@ class StoryViewModel: BaseViewModel, SnippetLoading, Refreshable, ListFetching, 
         selectedStory?.sections ?? []
     }
 
-    override init(apiService: APIService = APIService.shared) {
+    override init(apiService: APIServiceProtocol = APIService.shared) {
         super.init(apiService: apiService)
     }
 

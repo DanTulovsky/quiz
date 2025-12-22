@@ -5,10 +5,10 @@ class BaseViewModel: ObservableObject {
     @Published var error: APIService.APIError?
     @Published var isLoading = false
 
-    var apiService: APIService
+    var apiService: APIServiceProtocol
     var cancellables = Set<AnyCancellable>()
 
-    init(apiService: APIService = APIService.shared) {
+    init(apiService: APIServiceProtocol = APIService.shared) {
         self.apiService = apiService
     }
 
@@ -33,4 +33,3 @@ class BaseViewModel: ObservableObject {
         self.error = nil
     }
 }
-

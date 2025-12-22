@@ -124,23 +124,23 @@ struct OptionButtonStyle: ButtonStyle {
             .font(AppTheme.Typography.bodyFont)
             .foregroundColor(
                 isIncorrect ? AppTheme.Colors.errorRed :
-                (isCorrect ? AppTheme.Colors.successGreen :
-                (isSelected ? .white : AppTheme.Colors.primaryText))
+                    (isCorrect ? AppTheme.Colors.successGreen :
+                        (isSelected ? .white : AppTheme.Colors.primaryText))
             )
             .frame(maxWidth: .infinity)
             .padding(AppTheme.Spacing.innerPadding)
             .background(
                 isIncorrect ? AppTheme.Colors.errorRed.opacity(0.1) :
-                (isCorrect ? AppTheme.Colors.successGreen.opacity(0.1) :
-                (isSelected ? AppTheme.Colors.primaryBlue : AppTheme.Colors.primaryBlue.opacity(0.05)))
+                    (isCorrect ? AppTheme.Colors.successGreen.opacity(0.1) :
+                        (isSelected ? AppTheme.Colors.primaryBlue : AppTheme.Colors.primaryBlue.opacity(0.05)))
             )
             .cornerRadius(AppTheme.CornerRadius.button)
             .overlay(
                 RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button)
                     .stroke(
                         isIncorrect ? AppTheme.Colors.errorRed :
-                        (isCorrect ? AppTheme.Colors.successGreen :
-                        AppTheme.Colors.borderBlue),
+                            (isCorrect ? AppTheme.Colors.successGreen :
+                                AppTheme.Colors.borderBlue),
                         lineWidth: 1
                     )
             )
@@ -156,4 +156,3 @@ extension View {
         modifier(InnerCardModifier())
     }
 }
-

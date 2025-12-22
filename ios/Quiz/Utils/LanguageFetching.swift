@@ -1,5 +1,5 @@
-import Foundation
 import Combine
+import Foundation
 
 protocol LanguageFetching: BaseViewModel {
     var availableLanguages: [LanguageInfo] { get set }
@@ -15,4 +15,3 @@ extension LanguageFetching {
             .store(in: &cancellables)
     }
 }
-

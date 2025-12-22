@@ -6,4 +6,3 @@ extension APIService {
         return post(path: "translate", body: request, responseType: TranslateResponse.self)
     }
 }
-

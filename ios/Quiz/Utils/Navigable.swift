@@ -46,4 +46,3 @@ extension Navigable {
         return true
     }
 }
-

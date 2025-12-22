@@ -80,7 +80,3 @@ class APIServiceURLValidationTests: XCTestCase {
         XCTAssertTrue(true, "Should handle special characters in query")
     }
 }
-
-
-
-

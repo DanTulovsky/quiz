@@ -7,7 +7,9 @@ struct PhrasebookView: View {
         VStack(spacing: 0) {
             // Header Stats
             HStack {
-                BadgeView(text: "\(viewModel.categories.count) CATEGORIES", color: AppTheme.Colors.primaryBlue)
+                BadgeView(
+                    text: "\(viewModel.categories.count) CATEGORIES",
+                    color: AppTheme.Colors.primaryBlue)
 
                 Spacer()
             }
@@ -26,7 +28,10 @@ struct PhrasebookView: View {
             .padding()
 
             List(viewModel.categories, id: \.id) { category in
-                NavigationLink(destination: PhrasebookCategoryView(categoryId: category.id, title: category.name)) {
+                NavigationLink(
+                    destination: PhrasebookCategoryView(
+                        categoryId: category.id, title: category.name)
+                ) {
                     HStack {
                         if let emoji = category.emoji {
                             Text(emoji)
@@ -47,7 +52,6 @@ struct PhrasebookView: View {
     }
 }
 
-
 struct PhrasebookCategoryView: View {
     @StateObject private var viewModel = PhrasebookViewModel()
     @EnvironmentObject var authViewModel: AuthenticationViewModel
@@ -59,7 +63,7 @@ struct PhrasebookCategoryView: View {
 
     var languageCode: String {
         let langName = (authViewModel.user?.preferredLanguage ?? "it")
-        return Language(rawValue: langName)?.code ?? "it"
+        return viewModel.availableLanguages.find(byCodeOrName: langName)?.code ?? "it"
     }
 
     var body: some View {
@@ -111,22 +115,31 @@ struct PhrasebookCategoryView: View {
                 .padding(.vertical)
 
                 List {
-                    ForEach(data.sections.filter { selectedSection == "All Sections" || $0.title == selectedSection }, id: \.title) { section in
+                    ForEach(
+                        data.sections.filter {
+                            selectedSection == "All Sections" || $0.title == selectedSection
+                        },
+                        id: \.title
+                    ) { section in
                         let filteredWords = section.words.filter {
-                            searchText.isEmpty ||
-                            $0.term.localizedCaseInsensitiveContains(searchText) ||
-                            ($0.translations[languageCode]?.localizedCaseInsensitiveContains(searchText) ?? false)
+                            searchText.isEmpty
+                                || $0.term.localizedCaseInsensitiveContains(searchText)
+                                || ($0.translations[languageCode]?.localizedCaseInsensitiveContains(
+                                    searchText) ?? false)
                         }
 
                         if !filteredWords.isEmpty {
-                            Section(header:
-                                HStack {
-                                    Text(section.title)
-                                        .font(AppTheme.Typography.headingFont)
-                                        .foregroundColor(AppTheme.Colors.primaryText)
-                                    BadgeView(text: "\(filteredWords.count)", color: AppTheme.Colors.primaryBlue)
-                                }
-                                .padding(.vertical, 4)
+                            Section(
+                                header:
+                                    HStack {
+                                        Text(section.title)
+                                            .font(AppTheme.Typography.headingFont)
+                                            .foregroundColor(AppTheme.Colors.primaryText)
+                                        BadgeView(
+                                            text: "\(filteredWords.count)",
+                                            color: AppTheme.Colors.primaryBlue)
+                                    }
+                                    .padding(.vertical, 4)
                             ) {
                                 ForEach(filteredWords, id: \.term) { word in
                                     HStack(alignment: .center) {
@@ -150,13 +163,22 @@ struct PhrasebookCategoryView: View {
                                         Spacer()
 
                                         HStack(spacing: 15) {
-                                            TTSButton(text: word.translations[languageCode] ?? word.term, language: authViewModel.user?.preferredLanguage ?? "italian")
-                                            Button(action: {
-                                                UIPasteboard.general.string = word.translations[languageCode] ?? word.term
-                                            }) {
-                                                Image(systemName: "doc.on.doc")
-                                                    .foregroundColor(AppTheme.Colors.primaryBlue)
-                                            }
+                                            TTSButton(
+                                                text: word.translations[languageCode] ?? word.term,
+                                                language: authViewModel.user?.preferredLanguage
+                                                    ?? "italian"
+                                            )
+                                            Button(
+                                                action: {
+                                                    UIPasteboard.general.string =
+                                                        word.translations[languageCode] ?? word.term
+                                                },
+                                                label: {
+                                                    Image(systemName: "doc.on.doc")
+                                                        .foregroundColor(
+                                                            AppTheme.Colors.primaryBlue)
+                                                }
+                                            )
                                             .buttonStyle(.plain)
                                         }
                                     }
@@ -179,6 +201,7 @@ struct PhrasebookCategoryView: View {
         .navigationTitle(title)
         .onAppear {
             viewModel.fetchCategoryData(id: categoryId)
+            viewModel.fetchLanguages()
         }
     }
 }

@@ -82,19 +82,6 @@ struct SignupStatusResponse: Codable {
     }
 }
 
-enum Language: String, Codable, CaseIterable {
-    case english, spanish, french, german, italian, en, es, fr, de, it
-}
-
-enum Level: String, Codable, CaseIterable {
-    case a1 = "A1"
-    case a2 = "A2"
-    case b1 = "B1"
-    case b2 = "B2"
-    case c1 = "C1"
-    case c2 = "C2"
-}
-
 enum JSONValue: Codable, Equatable {
     case string(String)
     case number(Double)
@@ -107,18 +94,18 @@ enum JSONValue: Codable, Equatable {
         let container = try decoder.singleValueContainer()
         if container.decodeNil() {
             self = .null
-        } else if let b = try? container.decode(Bool.self) {
-            self = .bool(b)
-        } else if let i = try? container.decode(Int.self) {
-            self = .number(Double(i))
-        } else if let d = try? container.decode(Double.self) {
-            self = .number(d)
-        } else if let s = try? container.decode(String.self) {
-            self = .string(s)
-        } else if let a = try? container.decode([JSONValue].self) {
-            self = .array(a)
-        } else if let o = try? container.decode([String: JSONValue].self) {
-            self = .object(o)
+        } else if let boolValue = try? container.decode(Bool.self) {
+            self = .bool(boolValue)
+        } else if let intValue = try? container.decode(Int.self) {
+            self = .number(Double(intValue))
+        } else if let doubleValue = try? container.decode(Double.self) {
+            self = .number(doubleValue)
+        } else if let stringValue = try? container.decode(String.self) {
+            self = .string(stringValue)
+        } else if let arrayValue = try? container.decode([JSONValue].self) {
+            self = .array(arrayValue)
+        } else if let objectValue = try? container.decode([String: JSONValue].self) {
+            self = .object(objectValue)
         } else {
             throw DecodingError.typeMismatch(
                 JSONValue.self,
@@ -131,16 +118,16 @@ enum JSONValue: Codable, Equatable {
     func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         switch self {
-        case .string(let s):
-            try container.encode(s)
-        case .number(let n):
-            try container.encode(n)
-        case .bool(let b):
-            try container.encode(b)
-        case .object(let o):
-            try container.encode(o)
-        case .array(let a):
-            try container.encode(a)
+        case .string(let stringValue):
+            try container.encode(stringValue)
+        case .number(let numberValue):
+            try container.encode(numberValue)
+        case .bool(let boolValue):
+            try container.encode(boolValue)
+        case .object(let objectValue):
+            try container.encode(objectValue)
+        case .array(let arrayValue):
+            try container.encode(arrayValue)
         case .null:
             try container.encodeNil()
         }
@@ -347,8 +334,8 @@ struct PhrasebookWord: Codable {
 
         let allKeys = container.allKeys
         var termVal = ""
-        var iconVal: String? = nil
-        var noteVal: String? = nil
+        var iconVal: String?
+        var noteVal: String?
 
         for key in allKeys {
             if key.stringValue == "term" {
@@ -384,14 +371,15 @@ struct PhrasebookWord: Codable {
         if let note = note, let noteKey = DynamicKey(stringValue: "note") {
             try container.encode(note, forKey: noteKey)
         }
-        for (k, v) in translations {
-            guard let key = DynamicKey(stringValue: k) else {
+        for (keyString, value) in translations {
+            guard let key = DynamicKey(stringValue: keyString) else {
                 throw EncodingError.invalidValue(
-                    k,
+                    keyString,
                     EncodingError.Context(
-                        codingPath: encoder.codingPath, debugDescription: "Invalid key: \(k)"))
+                        codingPath: encoder.codingPath,
+                        debugDescription: "Invalid key: \(keyString)"))
             }
-            try container.encode(v, forKey: key)
+            try container.encode(value, forKey: key)
         }
     }
 }
@@ -559,18 +547,6 @@ struct Conjugation: Codable {
     let form: String
     let exampleSentence: String
     let exampleSentenceEn: String
-}
-
-extension Language {
-    var code: String {
-        switch self {
-        case .english, .en: return "en"
-        case .spanish, .es: return "es"
-        case .french, .fr: return "fr"
-        case .german, .de: return "de"
-        case .italian, .it: return "it"
-        }
-    }
 }
 
 // Word of the Day

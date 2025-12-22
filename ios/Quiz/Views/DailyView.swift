@@ -2,14 +2,14 @@ import SwiftUI
 
 struct DailyView: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel = DailyViewModel()
+    @StateObject var viewModel = DailyViewModel()
     @EnvironmentObject var authViewModel: AuthenticationViewModel
     @State private var reportReason = ""
-    @State private var selectedConfidence: Int? = nil
+    @State private var selectedConfidence: Int?
     @State private var selectedText: String?
     @State private var showTranslationPopup = false
     @State private var translationSentence: String?
-    @State private var showingSnippet: Snippet? = nil
+    @State private var showingSnippet: Snippet?
     @State private var snippetRefreshTrigger: Int = 0
 
     var body: some View {
@@ -114,14 +114,14 @@ struct DailyView: View {
                 .padding()
                 Color.clear.frame(height: 1).id("bottom")
 
-                    .onChange(of: viewModel.selectedAnswerIndex) { old, val in
+                    .onChange(of: viewModel.selectedAnswerIndex) { _, val in
                         if val != nil {
                             withAnimation {
                                 proxy.scrollTo("bottom", anchor: .bottom)
                             }
                         }
                     }
-                    .onChange(of: viewModel.answerResponse) { old, response in
+                    .onChange(of: viewModel.answerResponse) { _, response in
                         if response != nil {
                             withAnimation {
                                 proxy.scrollTo("bottom", anchor: .bottom)
@@ -153,15 +153,17 @@ struct DailyView: View {
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: { dismiss() }) {
-                    HStack(spacing: 4) {
-                        Image(systemName: "chevron.left")
-                            .scaledFont(size: 17, weight: .semibold)
-                        Text("Back")
-                            .scaledFont(size: 17)
-                    }
-                    .foregroundColor(.blue)
-                }
+                Button(
+                    action: { dismiss() },
+                    label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: "chevron.left")
+                                .scaledFont(size: 17, weight: .semibold)
+                            Text("Back")
+                                .scaledFont(size: 17)
+                        }
+                        .foregroundColor(.blue)
+                    })
             }
         }
         .sheet(isPresented: $viewModel.showReportModal) {
@@ -199,7 +201,7 @@ struct DailyView: View {
                     onSnippetSaved: { snippet in
                         // Optimistically add the snippet immediately for instant UI update
                         if !viewModel.snippets.contains(where: { $0.id == snippet.id }) {
-                            viewModel.snippets = viewModel.snippets + [snippet]
+                            viewModel.snippets += [snippet]
                             snippetRefreshTrigger += 1
                         }
                         // Reload snippets from server to ensure we have the latest data
@@ -229,15 +231,14 @@ struct DailyView: View {
                     // Only load snippets if we don't already have them for this question
                     if let question = viewModel.currentQuestion {
                         if viewModel.snippets.isEmpty
-                            || viewModel.snippets.first?.questionId != question.question.id
-                        {
+                            || viewModel.snippets.first?.questionId != question.question.id {
                             viewModel.loadSnippets(questionId: question.question.id)
                         }
                     }
                 }
             }
         }
-        .onChange(of: viewModel.dailyQuestions.count) { old, new in
+        .onChange(of: viewModel.dailyQuestions.count) { _, new in
             // When questions count changes (questions loaded), ensure positioning
             if new > 0 {
                 DispatchQueue.main.async {
@@ -274,7 +275,8 @@ struct DailyView: View {
         guard let question = viewModel.currentQuestion else { return "" }
         let snippetIds = viewModel.snippets.map { "\($0.id)" }.joined(separator: ",")
         return
-            "question-\(question.question.id)-snippets-\(viewModel.snippets.count)-\(snippetIds)-\(snippetRefreshTrigger)"
+            "question-\(question.question.id)-snippets-\(viewModel.snippets.count)-"
+            + "\(snippetIds)-\(snippetRefreshTrigger)"
     }
 
     private var headerSection: some View {
@@ -284,7 +286,8 @@ struct DailyView: View {
                 Spacer()
                 BadgeView(
                     text:
-                        "\(viewModel.currentQuestion?.question.language.uppercased() ?? "") - \(viewModel.currentQuestion?.question.level ?? "")",
+                        "\(viewModel.currentQuestion?.question.language.uppercased() ?? "") - "
+                        + "\(viewModel.currentQuestion?.question.level ?? "")",
                     color: AppTheme.Colors.primaryBlue)
             }
 
@@ -335,106 +338,6 @@ struct DailyView: View {
             .buttonStyle(.borderedProminent)
         }
         .padding(.top, 50)
-    }
-
-    // Helpers
-    private func stringValue(_ v: JSONValue?) -> String? {
-        guard let v else { return nil }
-        if case .string(let s) = v { return s }
-        return nil
-    }
-
-    private func stringArrayValue(_ v: JSONValue?) -> [String]? {
-        guard let v else { return nil }
-        guard case .array(let arr) = v else { return nil }
-        return arr.compactMap { item -> String? in
-            if case .string(let s) = item { return s }
-            return nil
-        }
-    }
-
-    private func extractSentence(from text: String, containing selectedText: String) -> String? {
-        guard let range = text.range(of: selectedText, options: .caseInsensitive) else {
-            return nil
-        }
-
-        // Find sentence boundaries
-        let startIndex = text.startIndex
-        let endIndex = text.endIndex
-
-        // Find the start of the sentence (look backwards for sentence-ending punctuation)
-        var sentenceStart = range.lowerBound
-        let sentenceEnders = CharacterSet(charactersIn: ".!?\n")
-
-        while sentenceStart > startIndex {
-            let char = text[sentenceStart]
-            if sentenceEnders.contains(char.unicodeScalars.first!) {
-                sentenceStart = text.index(after: sentenceStart)
-                break
-            }
-            sentenceStart = text.index(before: sentenceStart)
-        }
-
-        // Find the end of the sentence
-        var sentenceEnd = range.upperBound
-        while sentenceEnd < endIndex {
-            let char = text[sentenceEnd]
-            if sentenceEnders.contains(char.unicodeScalars.first!) {
-                sentenceEnd = text.index(after: sentenceEnd)
-                break
-            }
-            sentenceEnd = text.index(after: sentenceEnd)
-        }
-
-        let sentence = String(text[sentenceStart..<sentenceEnd]).trimmingCharacters(
-            in: .whitespacesAndNewlines)
-        return sentence.isEmpty ? nil : sentence
-    }
-
-    @ViewBuilder
-    private func actionButtons() -> some View {
-        if viewModel.isAllCompleted {
-            // When all completed, show Previous/Next navigation
-            HStack(spacing: 12) {
-                Button("Previous") {
-                    viewModel.previousQuestion()
-                }
-                .buttonStyle(.bordered)
-                .controlSize(.large)
-                .disabled(!viewModel.hasPreviousQuestion)
-                .frame(maxWidth: .infinity)
-
-                Button("Next") {
-                    viewModel.nextQuestion()
-                }
-                .buttonStyle(.bordered)
-                .controlSize(.large)
-                .disabled(!viewModel.hasNextQuestion)
-                .frame(maxWidth: .infinity)
-            }
-        } else if viewModel.answerResponse != nil {
-            // After submission but not all completed
-            Button("Next Question") {
-                viewModel.nextQuestion()
-            }
-            .buttonStyle(PrimaryButtonStyle())
-        } else if let question = viewModel.currentQuestion, question.isCompleted {
-            // Viewing a completed question (answerResponse is nil but question is completed)
-            Button("Next Question") {
-                viewModel.nextQuestion()
-            }
-            .buttonStyle(PrimaryButtonStyle())
-        } else {
-            // Not submitted yet
-            Button("Submit Answer") {
-                if let idx = viewModel.selectedAnswerIndex {
-                    viewModel.submitAnswer(index: idx)
-                }
-            }
-            .buttonStyle(
-                PrimaryButtonStyle(
-                    isDisabled: viewModel.selectedAnswerIndex == nil || viewModel.isSubmitting))
-        }
     }
 
 }

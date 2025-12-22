@@ -45,10 +45,10 @@ struct TranslationPopupView: View {
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                                         copySuccess = nil
                                     }
-                                }) {
+                                }, label: {
                                     Image(systemName: "doc.on.doc")
                                         .foregroundColor(.blue)
-                                }
+                                })
                             }
                         }
                     }
@@ -62,7 +62,12 @@ struct TranslationPopupView: View {
                             .font(AppTheme.Typography.subheadlineFont)
                             .foregroundColor(AppTheme.Colors.secondaryText)
                         Picker("Target Language", selection: $targetLanguage) {
-                            ForEach(viewModel.availableLanguages.filter { $0.code.lowercased() != sourceLanguage.lowercased() }, id: \.code) { language in
+                            ForEach(
+                                viewModel.availableLanguages.filter {
+                                    $0.code.lowercased() != sourceLanguage.lowercased()
+                                },
+                                id: \.code
+                            ) { language in
                                 Text(language.name).tag(language.code)
                             }
                         }
@@ -71,7 +76,9 @@ struct TranslationPopupView: View {
                             // Ensure target is different from source
                             if newValue.lowercased() == sourceLanguage.lowercased() {
                                 // Reset to a valid language
-                                if let alternative = viewModel.availableLanguages.first(where: { $0.code.lowercased() != sourceLanguage.lowercased() }) {
+                                if let alternative = viewModel.availableLanguages.first(
+                                    where: { $0.code.lowercased() != sourceLanguage.lowercased() }
+                                ) {
                                     targetLanguage = alternative.code
                                 }
                             } else {
@@ -124,10 +131,10 @@ struct TranslationPopupView: View {
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                                             copySuccess = nil
                                         }
-                                    }) {
+                                    }, label: {
                                         Image(systemName: "doc.on.doc")
                                             .foregroundColor(.blue)
-                                    }
+                                    })
                                 }
                             }
                         }
@@ -160,7 +167,11 @@ struct TranslationPopupView: View {
                                     .font(AppTheme.Typography.buttonFont)
                             }
                         }
-                        .buttonStyle(PrimaryButtonStyle(isDisabled: isSaving || isSaved || !canSaveSnippet(translation: translation)))
+                        .buttonStyle(
+                            PrimaryButtonStyle(
+                                isDisabled: isSaving || isSaved || !canSaveSnippet(translation: translation)
+                            )
+                        )
                         .padding(.top, 8)
                     }
 
@@ -180,10 +191,13 @@ struct TranslationPopupView: View {
                             .padding(.horizontal)
                     }
                     if selectedText.count > maxSnippetLength {
-                        Text("Text exceeds snippet limit (\(maxSnippetLength) characters). Translation will be saved, but snippet saving may be limited.")
-                            .font(AppTheme.Typography.captionFont)
-                            .foregroundColor(AppTheme.Colors.errorRed)
-                            .padding(.horizontal)
+                        Text(
+                            "Text exceeds snippet limit (\(maxSnippetLength) characters). "
+                                + "Translation will be saved, but snippet saving may be limited."
+                        )
+                        .font(AppTheme.Typography.captionFont)
+                        .foregroundColor(AppTheme.Colors.errorRed)
+                        .padding(.horizontal)
                     }
                 }
                 .padding()
@@ -414,4 +428,3 @@ class TranslationPopupViewModel: ObservableObject {
             .store(in: &cancellables)
     }
 }
-

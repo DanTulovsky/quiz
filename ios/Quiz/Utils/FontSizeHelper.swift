@@ -48,4 +48,3 @@ struct ScaledFontModifier: ViewModifier {
         content.font(.system(size: baseSize * multiplier, weight: weight))
     }
 }
-

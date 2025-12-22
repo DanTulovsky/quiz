@@ -37,4 +37,3 @@ extension DateNavigable {
         fetchData(for: nil)
     }
 }
-

@@ -25,36 +25,36 @@ struct WordOfTheDayView: View {
                     Button(action: {
                         selectedDate = viewModel.currentDate
                         showDatePicker = true
-                    }) {
+                    }, label: {
                         Label(dateButtonLabel, systemImage: "calendar")
                             .font(AppTheme.Typography.subheadlineFont)
                             .foregroundColor(AppTheme.Colors.primaryBlue)
-                    }
+                    })
                 }
                 .padding(.top)
 
                 // Date Navigation
                 HStack(spacing: 20) {
-                    Button(action: { viewModel.previousDay() }) {
+                    Button(action: { viewModel.previousDay() }, label: {
                         Image(systemName: "chevron.left")
                             .font(.title2)
                             .padding(10)
                             .background(AppTheme.Colors.primaryBlue.opacity(0.1))
                             .clipShape(Circle())
-                    }
+                    })
 
                     Text(DateFormatters.displayFull.string(from: viewModel.currentDate))
                         .font(AppTheme.Typography.subheadlineFont)
                         .foregroundColor(AppTheme.Colors.secondaryText)
                         .frame(maxWidth: .infinity)
 
-                    Button(action: { viewModel.nextDay() }) {
+                    Button(action: { viewModel.nextDay() }, label: {
                         Image(systemName: "chevron.right")
                             .font(.title2)
                             .padding(10)
                             .background(AppTheme.Colors.primaryBlue.opacity(0.1))
                             .clipShape(Circle())
-                    }
+                    })
                     .disabled(Calendar.current.isDateInToday(viewModel.currentDate))
                 }
 
@@ -87,7 +87,7 @@ struct WordOfTheDayView: View {
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: { dismiss() }) {
+                Button(action: { dismiss() }, label: {
                     HStack(spacing: 4) {
                         Image(systemName: "chevron.left")
                             .scaledFont(size: 17, weight: .semibold)
@@ -95,7 +95,7 @@ struct WordOfTheDayView: View {
                             .scaledFont(size: 17)
                     }
                     .foregroundColor(.blue)
-                }
+                })
             }
         }
         .sheet(isPresented: $showDatePicker) {
@@ -160,7 +160,10 @@ struct WordOfTheDayView: View {
                     .lineSpacing(4)
             }
             .appInnerCard()
-            .overlay(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.innerCard).stroke(AppTheme.Colors.borderBlue, lineWidth: 1))
+            .overlay(
+                RoundedRectangle(cornerRadius: AppTheme.CornerRadius.innerCard)
+                    .stroke(AppTheme.Colors.borderBlue, lineWidth: 1)
+            )
 
             // Explanation Inner Card
             if let explanation = wotd.explanation {
@@ -170,7 +173,10 @@ struct WordOfTheDayView: View {
                         .foregroundColor(AppTheme.Colors.primaryText)
                 }
                 .appInnerCard()
-                .overlay(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.innerCard).stroke(AppTheme.Colors.borderBlue, lineWidth: 1))
+                .overlay(
+                    RoundedRectangle(cornerRadius: AppTheme.CornerRadius.innerCard)
+                        .stroke(AppTheme.Colors.borderBlue, lineWidth: 1)
+                )
             }
 
             // Badges

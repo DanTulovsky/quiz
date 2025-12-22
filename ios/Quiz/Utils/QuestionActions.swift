@@ -56,4 +56,3 @@ extension QuestionActions where Self: QuestionIDProvider {
         markQuestionKnown(id: questionId, confidence: confidence)
     }
 }
-

@@ -7,7 +7,7 @@ class QuizViewModel: BaseViewModel, QuestionActions, SnippetLoading, QuestionIDP
     @Published var question: Question?
     @Published var answerResponse: AnswerResponse?
     @Published var generatingMessage: String?
-    @Published var selectedAnswerIndex: Int? = nil {
+    @Published var selectedAnswerIndex: Int? {
         didSet {
             saveState()
         }
@@ -21,11 +21,12 @@ class QuizViewModel: BaseViewModel, QuestionActions, SnippetLoading, QuestionIDP
 
     let questionType: String?
     private let isDaily: Bool
-    private var lastLoadedQuestionId: Int? = nil
+    private var lastLoadedQuestionId: Int?
+    private var lastLoadedStoryId: Int?
 
     init(
         question: Question? = nil, questionType: String? = nil, isDaily: Bool = false,
-        apiService: APIService = APIService.shared
+        apiService: APIServiceProtocol = APIService.shared
     ) {
         self.question = question
         self.questionType = questionType
@@ -52,6 +53,7 @@ class QuizViewModel: BaseViewModel, QuestionActions, SnippetLoading, QuestionIDP
         selectedAnswerIndex = nil
         isReported = false
         lastLoadedQuestionId = nil
+        lastLoadedStoryId = nil
         snippets = []
 
         if !isDaily {
@@ -77,31 +79,35 @@ class QuizViewModel: BaseViewModel, QuestionActions, SnippetLoading, QuestionIDP
     }
 
     func loadSnippets(questionId: Int? = nil, storyId: Int? = nil) {
-        print(
-            "🟢 [QuizViewModel] loadSnippets called - questionId: \(questionId?.description ?? "nil"), storyId: \(storyId?.description ?? "nil")"
-        )
+        let publisher: AnyPublisher<SnippetList, APIService.APIError>
 
-        // For QuizViewModel, we should always have a questionId - don't load all snippets
-        guard let questionId = questionId else {
-            print("🟢 [QuizViewModel] No questionId provided, returning early")
-            // If no questionId provided, don't make any API call
+        if let questionId = questionId {
+            // Prevent duplicate API calls for the same question
+            if questionId == lastLoadedQuestionId {
+                return
+            }
+            lastLoadedQuestionId = questionId
+            publisher = apiService.getSnippetsByQuestion(questionId: questionId)
+        } else if let storyId = storyId {
+            // Prevent duplicate API calls for the same story
+            if storyId == lastLoadedStoryId {
+                return
+            }
+            lastLoadedStoryId = storyId
+            publisher = apiService.getSnippets(
+                sourceLang: nil,
+                targetLang: nil,
+                storyId: storyId,
+                query: nil,
+                level: nil
+            )
+        } else {
+            // If neither questionId nor storyId provided, don't make any API call
             return
         }
-
-        // Prevent duplicate API calls for the same question
-        if questionId == lastLoadedQuestionId {
-            print("🟢 [QuizViewModel] Duplicate call for questionId \(questionId), returning early")
-            return
-        }
-
-        print("🟢 [QuizViewModel] Loading snippets for questionId: \(questionId)")
-        lastLoadedQuestionId = questionId
-
-        // Always use getSnippetsByQuestion for quiz questions
-        let publisher = apiService.getSnippetsByQuestion(questionId: questionId)
 
         publisher
-            .catch { error -> AnyPublisher<SnippetList, APIService.APIError> in
+            .catch { _ -> AnyPublisher<SnippetList, APIService.APIError> in
                 // Silently handle snippet loading errors - snippets are optional
                 // Return empty snippet list instead of propagating error
                 return Just(SnippetList(limit: 0, offset: 0, query: nil, snippets: []))
@@ -110,24 +116,9 @@ class QuizViewModel: BaseViewModel, QuestionActions, SnippetLoading, QuestionIDP
             }
             .receive(on: DispatchQueue.main)
             .sink(
-                receiveCompletion: { completion in
-                    if case .failure(let error) = completion {
-                        print("🟢 [QuizViewModel] Error loading snippets: \(error)")
-                    }
-                },
+                receiveCompletion: { _ in },
                 receiveValue: { [weak self] snippetList in
-                    print(
-                        "🟢 [QuizViewModel] Received \(snippetList.snippets.count) snippets for questionId \(questionId)"
-                    )
-                    snippetList.snippets.forEach { snippet in
-                        print(
-                            "🟢   - Snippet ID: \(snippet.id), originalText: '\(snippet.originalText)', questionId: \(snippet.questionId?.description ?? "nil")"
-                        )
-                    }
                     self?.snippets = snippetList.snippets
-                    print(
-                        "🟢 [QuizViewModel] Updated snippets array, count: \(self?.snippets.count ?? 0)"
-                    )
                 }
             )
             .store(in: &cancellables)
@@ -188,5 +179,6 @@ class QuizViewModel: BaseViewModel, QuestionActions, SnippetLoading, QuestionIDP
 
     func resetSnippetCache() {
         lastLoadedQuestionId = nil
+        lastLoadedStoryId = nil
     }
 }

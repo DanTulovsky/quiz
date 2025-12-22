@@ -150,7 +150,7 @@ else
 fi
 
 echo "🧪 Running iOS tests with destination: $DEST"
-xcodebuild test -scheme Quiz -destination "$DEST"
+xcodebuild test -scheme Quiz -destination "$DEST" | xcpretty --test
 EXIT_CODE=$?
 
 if [ $EXIT_CODE -eq 0 ]; then

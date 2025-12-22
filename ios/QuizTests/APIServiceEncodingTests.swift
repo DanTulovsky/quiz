@@ -88,7 +88,3 @@ class APIServiceEncodingTests: XCTestCase {
         XCTAssertNotNil(receivedError != nil || true, "Should handle encoding errors gracefully")
     }
 }
-
-
-
-

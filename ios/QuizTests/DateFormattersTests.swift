@@ -72,7 +72,7 @@ class DateFormattersTests: XCTestCase {
         let dates = [
             Date(timeIntervalSince1970: 1_609_459_200),
             Date(timeIntervalSince1970: 1_640_995_200),
-            Date(timeIntervalSince1970: 1_672_531_200),
+            Date(timeIntervalSince1970: 1_672_531_200)
         ]
 
         // When

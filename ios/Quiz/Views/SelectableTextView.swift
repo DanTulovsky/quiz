@@ -10,9 +10,8 @@ private class SelectableSizingTextView: UITextView {
         let width = bounds.width > 0 ? bounds.width : UIScreen.main.bounds.width - 64
 
         if let textLayoutManager = textLayoutManager,
-            let textContentManager = textLayoutManager.textContentManager,
-            let textContainer = textLayoutManager.textContainer
-        {
+           let textContentManager = textLayoutManager.textContentManager,
+           let textContainer = textLayoutManager.textContainer {
             let containerSize = CGSize(width: width, height: .greatestFiniteMagnitude)
             textContainer.size = containerSize
 
@@ -20,8 +19,7 @@ private class SelectableSizingTextView: UITextView {
 
             var totalHeight: CGFloat = 0
             let documentRange = textContentManager.documentRange
-            textLayoutManager.enumerateTextLayoutFragments(from: documentRange.location) {
-                fragment in
+            textLayoutManager.enumerateTextLayoutFragments(from: documentRange.location) { fragment in
                 totalHeight = max(totalHeight, fragment.layoutFragmentFrame.maxY)
                 return true
             }
@@ -185,8 +183,8 @@ struct SelectableTextView: UIViewRepresentable, Equatable {
         private var selectionTimer: Timer?
 
         @available(
-            iOS, deprecated: 17.0,
-            message: "Use textView(_:shouldInteractWith:in:characterRange:) instead"
+        iOS, deprecated: 17.0,
+        message: "Use textView(_:shouldInteractWith:in:characterRange:) instead"
         )
         func textView(
             _ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange,
@@ -218,7 +216,7 @@ struct SelectableTextView: UIViewRepresentable, Equatable {
 
             // Check if there's a selection
             guard let selectedRange = textView.selectedTextRange,
-                !selectedRange.isEmpty
+                  !selectedRange.isEmpty
             else {
                 return
             }
@@ -230,12 +228,11 @@ struct SelectableTextView: UIViewRepresentable, Equatable {
             if trimmedText.count > 1 {
                 // Wait a bit for the selection menu to appear, then show our popup
                 // This gives users a chance to use the native menu if they want
-                selectionTimer = Timer.scheduledTimer(withTimeInterval: 0.8, repeats: false) {
-                    [weak self] _ in
+                selectionTimer = Timer.scheduledTimer(withTimeInterval: 0.8, repeats: false) { [weak self] _ in
                     guard let self = self,
-                        let textView = self.textView,
-                        let currentRange = textView.selectedTextRange,
-                        !currentRange.isEmpty
+                          let textView = self.textView,
+                          let currentRange = textView.selectedTextRange,
+                          !currentRange.isEmpty
                     else {
                         return
                     }

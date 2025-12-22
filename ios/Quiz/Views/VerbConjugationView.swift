@@ -16,36 +16,48 @@ struct VerbConjugationView: View {
                     VStack(alignment: .leading) {
                         Text("Verb Conjugations")
                             .font(AppTheme.Typography.headingFont)
-                        Text("\(authViewModel.user?.preferredLanguage?.capitalized ?? "Italian") verb conjugation tables")
-                            .font(AppTheme.Typography.subheadlineFont)
-                            .foregroundColor(AppTheme.Colors.secondaryText)
+                        Text(
+                            "\(authViewModel.user?.preferredLanguage?.capitalized ?? "Italian") "
+                                + "verb conjugation tables"
+                        )
+                        .font(AppTheme.Typography.subheadlineFont)
+                        .foregroundColor(AppTheme.Colors.secondaryText)
                     }
                 }
                 .padding(.horizontal)
 
                 // Stats and Expand All
                 HStack {
-                    BadgeView(text: "\(viewModel.verbs.count) VERBS", color: AppTheme.Colors.primaryBlue)
+                    BadgeView(
+                        text: "\(viewModel.verbs.count) VERBS", color: AppTheme.Colors.primaryBlue)
 
                     Spacer()
 
-                    Button(action: {
-                        if viewModel.expandedTenses.count == (viewModel.selectedVerbDetail?.tenses.count ?? 0) {
-                            viewModel.collapseAll()
-                        } else {
-                            viewModel.expandAll()
-                        }
-                    }) {
-                        HStack {
-                            Image(systemName: viewModel.expandedTenses.isEmpty ? "chevron.down" : "chevron.up")
-                            Text(viewModel.expandedTenses.isEmpty ? "Expand All" : "Collapse All")
-                        }
-                        .font(AppTheme.Typography.captionFont)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 6)
-                        .background(AppTheme.Colors.primaryBlue.opacity(0.1))
-                        .cornerRadius(AppTheme.CornerRadius.badge)
-                    }
+                    Button(
+                        action: {
+                            if viewModel.expandedTenses.count
+                                == (viewModel.selectedVerbDetail?.tenses.count ?? 0)
+                            {
+                                viewModel.collapseAll()
+                            } else {
+                                viewModel.expandAll()
+                            }
+                        },
+                        label: {
+                            HStack {
+                                Image(
+                                    systemName: viewModel.expandedTenses.isEmpty
+                                        ? "chevron.down" : "chevron.up")
+                                Text(
+                                    viewModel.expandedTenses.isEmpty ? "Expand All" : "Collapse All"
+                                )
+                            }
+                            .font(AppTheme.Typography.captionFont)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(AppTheme.Colors.primaryBlue.opacity(0.1))
+                            .cornerRadius(AppTheme.CornerRadius.badge)
+                        })
                 }
                 .padding(.horizontal)
 
@@ -58,10 +70,15 @@ struct VerbConjugationView: View {
                     }
                 } label: {
                     HStack {
-                        Text(viewModel.selectedVerb.isEmpty ? "Select a verb" : viewModel.selectedVerb)
-                            .foregroundColor(AppTheme.Colors.primaryText)
-                        if let v = viewModel.verbs.first(where: { $0.infinitive == viewModel.selectedVerb }) {
-                            Text("(\(v.infinitiveEn))")
+                        Text(
+                            viewModel.selectedVerb.isEmpty
+                                ? "Select a verb" : viewModel.selectedVerb
+                        )
+                        .foregroundColor(AppTheme.Colors.primaryText)
+                        if let verb = viewModel.verbs.first(where: {
+                            $0.infinitive == viewModel.selectedVerb
+                        }) {
+                            Text("(\(verb.infinitiveEn))")
                                 .foregroundColor(AppTheme.Colors.secondaryText)
                         }
                         Spacer()
@@ -114,9 +131,24 @@ struct VerbConjugationView: View {
             .padding(.vertical)
         }
         .onAppear {
+            viewModel.fetchLanguages()
             let langName = (authViewModel.user?.preferredLanguage ?? "it")
-            let lang = Language(rawValue: langName)?.code ?? "it"
-            viewModel.fetchVerbs(language: lang)
+            // If languages are already loaded, use them; otherwise fetch verbs with fallback
+            if !viewModel.availableLanguages.isEmpty {
+                let langCode =
+                    viewModel.availableLanguages.find(byCodeOrName: langName)?.code ?? "it"
+                viewModel.fetchVerbs(language: langCode)
+            } else {
+                // Fallback to "it" if languages not loaded yet; will be updated in onChange
+                viewModel.fetchVerbs(language: "it")
+            }
+        }
+        .onChange(of: viewModel.availableLanguages) { _, languages in
+            if !languages.isEmpty {
+                let langName = (authViewModel.user?.preferredLanguage ?? "it")
+                let langCode = languages.find(byCodeOrName: langName)?.code ?? "it"
+                viewModel.fetchVerbs(language: langCode)
+            }
         }
         .navigationBarHidden(true)
     }
@@ -138,7 +170,8 @@ struct TenseAccordionRow: View {
 
                     Spacer()
 
-                    BadgeView(text: tense.tenseNameEn.uppercased(), color: AppTheme.Colors.primaryBlue)
+                    BadgeView(
+                        text: tense.tenseNameEn.uppercased(), color: AppTheme.Colors.primaryBlue)
 
                     Image(systemName: "chevron.down")
                         .font(AppTheme.Typography.captionFont)

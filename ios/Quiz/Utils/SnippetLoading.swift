@@ -1,5 +1,5 @@
-import Foundation
 import Combine
+import Foundation
 
 protocol SnippetLoading: BaseViewModel {
     var snippets: [Snippet] { get set }
@@ -7,16 +7,11 @@ protocol SnippetLoading: BaseViewModel {
 
 extension SnippetLoading {
     func loadSnippets(questionId: Int? = nil, storyId: Int? = nil) {
-        print("🔵 [SnippetLoading Protocol Extension] loadSnippets called - questionId: \(questionId?.description ?? "nil"), storyId: \(storyId?.description ?? "nil")")
-        print("🔵 [SnippetLoading] Caller: \(String(describing: type(of: self)))")
-
         let publisher: AnyPublisher<SnippetList, APIService.APIError>
 
         if let questionId = questionId {
-            print("🔵 [SnippetLoading] Using getSnippetsByQuestion(\(questionId))")
             publisher = apiService.getSnippetsByQuestion(questionId: questionId)
         } else {
-            print("🔵 [SnippetLoading] Using getSnippets() - GENERAL ENDPOINT")
             publisher = apiService.getSnippets(
                 sourceLang: nil,
                 targetLang: nil,
@@ -27,7 +22,7 @@ extension SnippetLoading {
         }
 
         publisher
-            .catch { error -> AnyPublisher<SnippetList, APIService.APIError> in
+            .catch { _ -> AnyPublisher<SnippetList, APIService.APIError> in
                 // Silently handle snippet loading errors - snippets are optional
                 // Return empty snippet list instead of propagating error
                 return Just(SnippetList(limit: 0, offset: 0, query: nil, snippets: []))
@@ -44,4 +39,3 @@ extension SnippetLoading {
             .store(in: &cancellables)
     }
 }
-
