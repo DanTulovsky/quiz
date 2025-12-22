@@ -2,6 +2,8 @@ import SwiftUI
 import UIKit
 
 private class SelectableSizingTextView: UITextView {
+    var onTouchEnd: (() -> Void)?
+
     override var intrinsicContentSize: CGSize {
         guard !text.isEmpty, attributedText != nil else {
             return CGSize(width: UIView.noIntrinsicMetric, height: 0)
@@ -36,6 +38,11 @@ private class SelectableSizingTextView: UITextView {
     override func layoutSubviews() {
         super.layoutSubviews()
         invalidateIntrinsicContentSize()
+    }
+
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+        onTouchEnd?()
     }
 }
 
@@ -79,11 +86,17 @@ struct SelectableTextView: UIViewRepresentable, Equatable {
         textView.isUserInteractionEnabled = true
         textView.linkTextAttributes = [:]
 
-        context.coordinator.textView = textView
-        context.coordinator.onTextSelected = onTextSelected
-        context.coordinator.onSnippetTapped = onSnippetTapped
-        context.coordinator.highlightedSnippets = highlightedSnippets
+        let coordinator = context.coordinator
+        coordinator.textView = textView
+        coordinator.onTextSelected = onTextSelected
+        coordinator.onSnippetTapped = onSnippetTapped
+        coordinator.highlightedSnippets = highlightedSnippets
         updateTextView(textView, snippets: highlightedSnippets)
+
+        // Set up touch end handler
+        textView.onTouchEnd = { [weak coordinator] in
+            coordinator?.handleTouchEnd()
+        }
 
         textView.layoutIfNeeded()
         return textView
@@ -180,7 +193,6 @@ struct SelectableTextView: UIViewRepresentable, Equatable {
         var onTextSelected: ((String) -> Void)?
         var onSnippetTapped: ((Snippet) -> Void)?
         var highlightedSnippets: [Snippet]?
-        private var selectionTimer: Timer?
 
         @available(
         iOS, deprecated: 17.0,
@@ -211,10 +223,15 @@ struct SelectableTextView: UIViewRepresentable, Equatable {
         }
 
         func textViewDidChangeSelection(_ textView: UITextView) {
-            // Cancel previous timer
-            selectionTimer?.invalidate()
+            // Selection tracking is now handled by touch end handler
+        }
 
-            // Check if there's a selection
+        func handleTouchEnd() {
+            guard let textView = textView else {
+                return
+            }
+
+            // Check if there's a valid selection
             guard let selectedRange = textView.selectedTextRange,
                   !selectedRange.isEmpty
             else {
@@ -226,26 +243,9 @@ struct SelectableTextView: UIViewRepresentable, Equatable {
 
             // Only trigger if selection is meaningful (more than 1 character)
             if trimmedText.count > 1 {
-                // Wait a bit for the selection menu to appear, then show our popup
-                // This gives users a chance to use the native menu if they want
-                selectionTimer = Timer.scheduledTimer(withTimeInterval: 0.8, repeats: false) { [weak self] _ in
-                    guard let self = self,
-                          let textView = self.textView,
-                          let currentRange = textView.selectedTextRange,
-                          !currentRange.isEmpty
-                    else {
-                        return
-                    }
-
-                    let currentText = textView.text(in: currentRange) ?? ""
-                    let currentTrimmed = currentText.trimmingCharacters(in: .whitespacesAndNewlines)
-
-                    if currentTrimmed.count > 1 {
-                        // Clear selection to hide native menu and show our popup
-                        textView.selectedTextRange = nil
-                        self.onTextSelected?(currentTrimmed)
-                    }
-                }
+                // Clear selection to hide native menu and show our popup
+                textView.selectedTextRange = nil
+                onTextSelected?(trimmedText)
             }
         }
     }

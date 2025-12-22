@@ -88,4 +88,3 @@ extension TranslationPopupView {
             .store(in: &viewModel.cancellables)
     }
 }
-

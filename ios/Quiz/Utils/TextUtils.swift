@@ -36,4 +36,3 @@ enum TextUtils {
         return sentence.isEmpty ? nil : sentence
     }
 }
-

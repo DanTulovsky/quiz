@@ -14,8 +14,7 @@ extension StoryDetailView {
         for snippet in sortedSnippets {
             var searchRange = attrStr.startIndex..<attrStr.endIndex
             while let range = attrStr[searchRange].range(
-                of: snippet.originalText, options: .caseInsensitive)
-            {
+                    of: snippet.originalText, options: .caseInsensitive) {
                 attrStr[range].underlineStyle = Text.LineStyle(pattern: .dash)
                 attrStr[range].foregroundColor = .blue
                 if let url = URL(string: "snippet://\(snippet.id)") {

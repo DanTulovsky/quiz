@@ -36,8 +36,7 @@ struct VerbConjugationView: View {
                     Button(
                         action: {
                             if viewModel.expandedTenses.count
-                                == (viewModel.selectedVerbDetail?.tenses.count ?? 0)
-                            {
+                                == (viewModel.selectedVerbDetail?.tenses.count ?? 0) {
                                 viewModel.collapseAll()
                             } else {
                                 viewModel.expandAll()

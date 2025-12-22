@@ -145,9 +145,9 @@ struct StoryDetailView: View {
                                             language: story.language,
                                             onTextSelected: { text in
                                                 selectedText = text
-                    translationSentence = TextUtils.extractSentence(
-                        from: section.content, containing: text
-                    )
+                                                translationSentence = TextUtils.extractSentence(
+                                                    from: section.content, containing: text
+                                                )
                                                 showTranslationPopup = true
                                             },
                                             highlightedSnippets: viewModel.snippets,
