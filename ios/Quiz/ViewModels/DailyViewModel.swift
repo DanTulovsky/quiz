@@ -1,7 +1,7 @@
 import Foundation
 import Combine
 
-class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading {
+class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, SubmittingState {
     @Published var dailyQuestions: [DailyQuestionWithDetails] = []
     @Published var currentQuestionIndex = 0
     @Published var snippets = [Snippet]()
@@ -46,7 +46,7 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading {
 
         apiService.getDailyQuestions(date: today)
             .handleLoadingAndError(on: self)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] response in
+            .sinkValue(on: self) { [weak self] response in
                 guard let self = self else { return }
                 self.dailyQuestions = response.questions
                 // Always position on the first incomplete question when questions are loaded
@@ -58,7 +58,7 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading {
                     self.currentQuestionIndex = 0
                 }
                 self.loadSnippets(questionId: self.currentQuestion?.question.id)
-            })
+            }
             .store(in: &cancellables)
     }
 
@@ -84,34 +84,29 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading {
     func submitAnswer(index: Int) {
         guard let question = currentQuestion else { return }
         selectedAnswerIndex = index
-        isSubmitting = true
 
         let today = Date().iso8601String
 
-        apiService.postDailyAnswer(date: today, questionId: question.question.id, userAnswerIndex: index)
-            .receive(on: DispatchQueue.main)
-            .handleEvents(receiveCompletion: { [weak self] _ in
-                self?.isSubmitting = false
-            })
-            .handleErrorOnly(on: self)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] response in
-                guard let self = self else { return }
-                self.answerResponse = response
+        executeWithSubmittingState(
+            publisher: apiService.postDailyAnswer(date: today, questionId: question.question.id, userAnswerIndex: index)
+        ) { [weak self] (response: DailyAnswerResponse) in
+            guard let self = self else { return }
+            self.answerResponse = response
 
-                // Update the question's completed status in the array
-                guard self.currentQuestionIndex >= 0 && self.currentQuestionIndex < self.dailyQuestions.count else {
-                    return
-                }
-                let updatedQuestion = DailyQuestionWithDetails(
-                    id: self.dailyQuestions[self.currentQuestionIndex].id,
-                    questionId: self.dailyQuestions[self.currentQuestionIndex].questionId,
-                    question: self.dailyQuestions[self.currentQuestionIndex].question,
-                    isCompleted: response.isCompleted,
-                    userAnswerIndex: response.userAnswerIndex
-                )
-                self.dailyQuestions[self.currentQuestionIndex] = updatedQuestion
-            })
-            .store(in: &cancellables)
+            // Update the question's completed status in the array
+            guard self.currentQuestionIndex >= 0 && self.currentQuestionIndex < self.dailyQuestions.count else {
+                return
+            }
+            let updatedQuestion = DailyQuestionWithDetails(
+                id: self.dailyQuestions[self.currentQuestionIndex].id,
+                questionId: self.dailyQuestions[self.currentQuestionIndex].questionId,
+                question: self.dailyQuestions[self.currentQuestionIndex].question,
+                isCompleted: response.isCompleted,
+                userAnswerIndex: response.userAnswerIndex
+            )
+            self.dailyQuestions[self.currentQuestionIndex] = updatedQuestion
+        }
+        .store(in: &cancellables)
     }
 
     func nextQuestion() {

@@ -1,19 +1,30 @@
 import Combine
 import Foundation
 
-class SettingsViewModel: BaseViewModel {
+class SettingsViewModel: BaseViewModel, LanguageCaching, ListFetchingWithName, LanguageFetching,
+    SuccessStateManaging, LevelFetching
+{
+    typealias Item = AIProviderInfo
+
     @Published var aiProviders: [AIProviderInfo] = []
+
+    var items: [AIProviderInfo] {
+        get { aiProviders }
+        set { aiProviders = newValue }
+    }
     @Published var availableVoices: [EdgeTTSVoiceInfo] = []
     @Published var availableLevels: [String] = []
     @Published var levelDescriptions: [String: String] = [:]
     @Published var availableLanguages: [LanguageInfo] = [] {
         didSet {
-            updateLanguageCache()
+            DispatchQueue.main.async { [weak self] in
+                self?.updateLanguageCache()
+            }
         }
     }
 
-    private var languageCacheByCode: [String: LanguageInfo] = [:]
-    private var languageCacheByName: [String: LanguageInfo] = [:]
+    var languageCacheByCode: [String: LanguageInfo] = [:]
+    var languageCacheByName: [String: LanguageInfo] = [:]
 
     @Published var testResult: String?
 
@@ -21,21 +32,12 @@ class SettingsViewModel: BaseViewModel {
     @Published var learningPrefs: UserLearningPreferences?
     @Published var isSuccess = false
 
-    private func updateLanguageCache() {
-        languageCacheByCode.removeAll()
-        languageCacheByName.removeAll()
-        for lang in availableLanguages {
-            languageCacheByCode[lang.code.lowercased()] = lang
-            languageCacheByName[lang.name.lowercased()] = lang
-        }
-    }
-
     override init(apiService: APIService = APIService.shared) {
         super.init(apiService: apiService)
     }
 
     func fetchSettings() {
-        isSuccess = false
+        resetSuccessState()
 
         // Fetch learning preferences
         apiService.getLearningPreferences()
@@ -47,9 +49,7 @@ class SettingsViewModel: BaseViewModel {
     }
 
     func saveChanges(userUpdate: UserUpdateRequest, prefs: UserLearningPreferences?) {
-        isLoading = true
-        isSuccess = false
-        error = nil
+        resetSuccessState()
 
         let userPublisher = apiService.updateUser(request: userUpdate)
 
@@ -57,81 +57,42 @@ class SettingsViewModel: BaseViewModel {
             let prefsPublisher = apiService.updateLearningPreferences(prefs: prefs)
 
             Publishers.Zip(userPublisher, prefsPublisher)
-                .receive(on: DispatchQueue.main)
-                .sink(
-                    receiveCompletion: { [weak self] completion in
-                        self?.isLoading = false
-                        if case .failure(let error) = completion {
-                            self?.error = error
-                        }
-                    },
-                    receiveValue: { [weak self] user, prefs in
-                        self?.user = user
-                        self?.learningPrefs = prefs
-                        self?.isSuccess = true
-                    }
-                )
+                .handleLoadingAndError(on: self)
+                .sinkValue(on: self) { [weak self] user, prefs in
+                    self?.user = user
+                    self?.learningPrefs = prefs
+                    self?.setSuccessState()
+                }
                 .store(in: &cancellables)
         } else {
             userPublisher
-                .receive(on: DispatchQueue.main)
-                .sink(
-                    receiveCompletion: { [weak self] completion in
-                        self?.isLoading = false
-                        if case .failure(let error) = completion {
-                            self?.error = error
-                        }
-                    },
-                    receiveValue: { [weak self] user in
-                        self?.user = user
-                        self?.isSuccess = true
-                    }
-                )
+                .handleLoadingAndError(on: self)
+                .sinkValue(on: self) { [weak self] user in
+                    self?.user = user
+                    self?.setSuccessState()
+                }
                 .store(in: &cancellables)
         }
     }
 
+    func fetchItemsPublisher() -> AnyPublisher<[AIProviderInfo], APIService.APIError> {
+        return apiService.getAIProviders()
+            .map { $0.providers }
+            .eraseToAnyPublisher()
+    }
+
+    func updateItems(_ items: [AIProviderInfo]) {
+        aiProviders = items
+    }
+
     func fetchAIProviders() {
-        apiService.getAIProviders()
-            .handleErrorOnly(on: self)
-            .sink(
-                receiveCompletion: { _ in },
-                receiveValue: { [weak self] resp in
-                    self?.aiProviders = resp.providers
-                }
-            )
-            .store(in: &cancellables)
-    }
-
-    func fetchLanguages() {
-        apiService.getLanguages()
-            .handleErrorOnly(on: self)
-            .sink(
-                receiveCompletion: { _ in },
-                receiveValue: { [weak self] languages in
-                    self?.availableLanguages = languages
-                }
-            )
-            .store(in: &cancellables)
-    }
-
-    func fetchLevels(language: String?) {
-        apiService.getLevels(language: language)
-            .handleErrorOnly(on: self)
-            .sink(
-                receiveCompletion: { _ in },
-                receiveValue: { [weak self] response in
-                    self?.availableLevels = response.levels
-                    self?.levelDescriptions = response.levelDescriptions
-                }
-            )
-            .store(in: &cancellables)
+        fetchItems()
     }
 
     func testAI(provider: String, model: String, apiKey: String?) {
         testResult = nil
         apiService.testAIConnection(provider: provider, model: model, apiKey: apiKey)
-            .receive(on: DispatchQueue.main)
+            .handleErrorOnly(on: self)
             .sink(
                 receiveCompletion: { [weak self] completion in
                     if case .failure(let error) = completion {
@@ -146,54 +107,27 @@ class SettingsViewModel: BaseViewModel {
     }
 
     func sendTestEmail() {
-        apiService.sendTestEmail()
-            .handleErrorOnly(on: self)
-            .sink(
-                receiveCompletion: { _ in },
-                receiveValue: { [weak self] _ in
-                    self?.isSuccess = true
-                }
-            )
+        executeVoidWithSuccessState(publisher: apiService.sendTestEmail())
             .store(in: &cancellables)
     }
 
     func clearStories() {
-        apiService.clearStories()
-            .handleErrorOnly(on: self)
-            .sink(
-                receiveCompletion: { _ in },
-                receiveValue: { [weak self] _ in self?.isSuccess = true }
-            )
+        executeVoidWithSuccessState(publisher: apiService.clearStories())
             .store(in: &cancellables)
     }
 
     func clearAIChats() {
-        apiService.clearAIChats()
-            .handleErrorOnly(on: self)
-            .sink(
-                receiveCompletion: { _ in },
-                receiveValue: { [weak self] _ in self?.isSuccess = true }
-            )
+        executeVoidWithSuccessState(publisher: apiService.clearAIChats())
             .store(in: &cancellables)
     }
 
     func clearTranslationHistory() {
-        apiService.clearTranslationHistory()
-            .handleErrorOnly(on: self)
-            .sink(
-                receiveCompletion: { _ in },
-                receiveValue: { [weak self] _ in self?.isSuccess = true }
-            )
+        executeVoidWithSuccessState(publisher: apiService.clearTranslationHistory())
             .store(in: &cancellables)
     }
 
     func resetAccount() {
-        apiService.resetAccount()
-            .handleErrorOnly(on: self)
-            .sink(
-                receiveCompletion: { _ in },
-                receiveValue: { [weak self] _ in self?.isSuccess = true }
-            )
+        executeVoidWithSuccessState(publisher: apiService.resetAccount())
             .store(in: &cancellables)
     }
 
@@ -210,12 +144,9 @@ class SettingsViewModel: BaseViewModel {
         }
         apiService.getVoices(language: locale)
             .handleErrorOnly(on: self)
-            .sink(
-                receiveCompletion: { _ in },
-                receiveValue: { [weak self] voices in
-                    self?.availableVoices = voices
-                }
-            )
+            .sinkValue(on: self) { [weak self] voices in
+                self?.availableVoices = voices
+            }
             .store(in: &cancellables)
     }
 

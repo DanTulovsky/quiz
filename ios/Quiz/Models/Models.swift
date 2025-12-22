@@ -1,5 +1,7 @@
 import Foundation
 
+struct EmptyBody: Codable {}
+
 struct LoginRequest: Codable {
     let username: String
     let password: String
@@ -370,7 +372,10 @@ struct PhrasebookWord: Codable {
     nonisolated func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: DynamicKey.self)
         guard let termKey = DynamicKey(stringValue: "term") else {
-            throw EncodingError.invalidValue("term", EncodingError.Context(codingPath: encoder.codingPath, debugDescription: "Invalid key: term"))
+            throw EncodingError.invalidValue(
+                "term",
+                EncodingError.Context(
+                    codingPath: encoder.codingPath, debugDescription: "Invalid key: term"))
         }
         try container.encode(term, forKey: termKey)
         if let icon = icon, let iconKey = DynamicKey(stringValue: "icon") {
@@ -381,7 +386,10 @@ struct PhrasebookWord: Codable {
         }
         for (k, v) in translations {
             guard let key = DynamicKey(stringValue: k) else {
-                throw EncodingError.invalidValue(k, EncodingError.Context(codingPath: encoder.codingPath, debugDescription: "Invalid key: \(k)"))
+                throw EncodingError.invalidValue(
+                    k,
+                    EncodingError.Context(
+                        codingPath: encoder.codingPath, debugDescription: "Invalid key: \(k)"))
             }
             try container.encode(v, forKey: key)
         }
@@ -797,26 +805,50 @@ struct EdgeTTSVoiceInfo: Codable, Identifiable, Equatable {
 
         // Try various common naming conventions (PascalCase, snake_case, camelCase)
         self.name =
-            (DynamicKey(stringValue: "Name").flatMap { try? container.decode(String.self, forKey: $0) })
-            ?? (DynamicKey(stringValue: "name").flatMap { try? container.decode(String.self, forKey: $0) })
+            (DynamicKey(stringValue: "Name").flatMap {
+                try? container.decode(String.self, forKey: $0)
+            })
+            ?? (DynamicKey(stringValue: "name").flatMap {
+                try? container.decode(String.self, forKey: $0)
+            })
 
         self.shortName =
-            (DynamicKey(stringValue: "ShortName").flatMap { try? container.decode(String.self, forKey: $0) })
-            ?? (DynamicKey(stringValue: "short_name").flatMap { try? container.decode(String.self, forKey: $0) })
-            ?? (DynamicKey(stringValue: "shortName").flatMap { try? container.decode(String.self, forKey: $0) })
+            (DynamicKey(stringValue: "ShortName").flatMap {
+                try? container.decode(String.self, forKey: $0)
+            })
+            ?? (DynamicKey(stringValue: "short_name").flatMap {
+                try? container.decode(String.self, forKey: $0)
+            })
+            ?? (DynamicKey(stringValue: "shortName").flatMap {
+                try? container.decode(String.self, forKey: $0)
+            })
 
         self.displayName =
-            (DynamicKey(stringValue: "DisplayName").flatMap { try? container.decode(String.self, forKey: $0) })
-            ?? (DynamicKey(stringValue: "display_name").flatMap { try? container.decode(String.self, forKey: $0) })
-            ?? (DynamicKey(stringValue: "displayName").flatMap { try? container.decode(String.self, forKey: $0) })
+            (DynamicKey(stringValue: "DisplayName").flatMap {
+                try? container.decode(String.self, forKey: $0)
+            })
+            ?? (DynamicKey(stringValue: "display_name").flatMap {
+                try? container.decode(String.self, forKey: $0)
+            })
+            ?? (DynamicKey(stringValue: "displayName").flatMap {
+                try? container.decode(String.self, forKey: $0)
+            })
 
         self.locale =
-            (DynamicKey(stringValue: "Locale").flatMap { try? container.decode(String.self, forKey: $0) })
-            ?? (DynamicKey(stringValue: "locale").flatMap { try? container.decode(String.self, forKey: $0) })
+            (DynamicKey(stringValue: "Locale").flatMap {
+                try? container.decode(String.self, forKey: $0)
+            })
+            ?? (DynamicKey(stringValue: "locale").flatMap {
+                try? container.decode(String.self, forKey: $0)
+            })
 
         self.gender =
-            (DynamicKey(stringValue: "Gender").flatMap { try? container.decode(String.self, forKey: $0) })
-            ?? (DynamicKey(stringValue: "gender").flatMap { try? container.decode(String.self, forKey: $0) })
+            (DynamicKey(stringValue: "Gender").flatMap {
+                try? container.decode(String.self, forKey: $0)
+            })
+            ?? (DynamicKey(stringValue: "gender").flatMap {
+                try? container.decode(String.self, forKey: $0)
+            })
     }
 }
 

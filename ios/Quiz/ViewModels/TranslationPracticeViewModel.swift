@@ -1,5 +1,5 @@
-import Foundation
 import Combine
+import Foundation
 
 class TranslationPracticeViewModel: BaseViewModel {
     @Published var currentSentence: TranslationPracticeSentenceResponse?
@@ -18,10 +18,10 @@ class TranslationPracticeViewModel: BaseViewModel {
     func fetchHistory() {
         apiService.getTranslationPracticeHistory()
             .handleErrorOnly(on: self)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] response in
+            .sinkValue(on: self) { [weak self] response in
                 self?.history = response.sessions
                 self?.totalHistoryCount = response.total
-            })
+            }
             .store(in: &cancellables)
     }
 
@@ -30,12 +30,14 @@ class TranslationPracticeViewModel: BaseViewModel {
         feedback = nil
         userTranslation = ""
 
-        apiService.getExistingTranslationSentence(language: language, level: level, direction: selectedDirection)
-            .handleLoadingAndError(on: self)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] response in
-                self?.currentSentence = response
-            })
-            .store(in: &cancellables)
+        apiService.getExistingTranslationSentence(
+            language: language, level: level, direction: selectedDirection
+        )
+        .handleLoadingAndError(on: self)
+        .sinkValue(on: self) { [weak self] response in
+            self?.currentSentence = response
+        }
+        .store(in: &cancellables)
     }
 
     func generateSentence(language: String, level: String) {
@@ -45,12 +47,13 @@ class TranslationPracticeViewModel: BaseViewModel {
         currentSentence = nil
 
         let topic = optionalTopic.isEmpty ? nil : optionalTopic
-        let request = TranslationPracticeGenerateRequest(language: language, level: level, direction: selectedDirection, topic: topic)
+        let request = TranslationPracticeGenerateRequest(
+            language: language, level: level, direction: selectedDirection, topic: topic)
         apiService.generateTranslationSentence(request: request)
             .handleLoadingAndError(on: self)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] response in
+            .sinkValue(on: self) { [weak self] response in
                 self?.currentSentence = response
-            })
+            }
             .store(in: &cancellables)
     }
 
@@ -67,10 +70,10 @@ class TranslationPracticeViewModel: BaseViewModel {
 
         apiService.submitTranslation(request: request)
             .handleLoadingAndError(on: self)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] response in
+            .sinkValue(on: self) { [weak self] response in
                 self?.feedback = response
-                self?.fetchHistory() // Refresh history after submission
-            })
+                self?.fetchHistory()  // Refresh history after submission
+            }
             .store(in: &cancellables)
     }
 }

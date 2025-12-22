@@ -52,10 +52,12 @@ struct QuizView: View {
                             .padding(.top, 50)
                     }
 
-                    if let _ = viewModel.error {
-                        ErrorDisplay(error: viewModel.error, onDismiss: {
-                            viewModel.clearError()
-                        })
+                    if viewModel.error != nil {
+                        ErrorDisplay(
+                            error: viewModel.error,
+                            onDismiss: {
+                                viewModel.clearError()
+                            })
                     }
 
                     if let message = viewModel.generatingMessage {
@@ -68,17 +70,55 @@ struct QuizView: View {
                             .buttonStyle(.bordered)
                         }
                     } else if let question = viewModel.question {
-                        questionCard(question)
+                        QuestionCardView(
+                            question: question,
+                            snippets: viewModel.snippets,
+                            onTextSelected: { text, fullText in
+                                selectedText = text
+                                translationSentence = extractSentence(
+                                    from: fullText, containing: text)
+                                showTranslationPopup = true
+                            },
+                            onSnippetTapped: { snippet in
+                                showingSnippet = snippet
+                            }
+                        )
 
-                        optionsList(question)
+                        QuestionOptionsView(
+                            question: question,
+                            selectedAnswerIndex: viewModel.selectedAnswerIndex,
+                            answerResponse: viewModel.answerResponse,
+                            showResults: viewModel.answerResponse != nil,
+                            onOptionSelected: { index in
+                                viewModel.selectedAnswerIndex = index
+                            }
+                        )
 
                         if let response = viewModel.answerResponse {
-                            feedbackSection(response)
+                            AnswerFeedbackView(
+                                isCorrect: response.isCorrect,
+                                explanation: response.explanation,
+                                language: question.language,
+                                snippets: viewModel.snippets,
+                                onTextSelected: { text, fullText in
+                                    selectedText = text
+                                    translationSentence = extractSentence(
+                                        from: fullText, containing: text)
+                                    showTranslationPopup = true
+                                },
+                                onSnippetTapped: { snippet in
+                                    showingSnippet = snippet
+                                }
+                            )
                         }
 
                         actionButtons()
 
-                        footerButtons()
+                        QuestionActionButtons(
+                            isReported: viewModel.isReported,
+                            onReport: { viewModel.showReportModal = true },
+                            onMarkKnown: { viewModel.showMarkKnownModal = true }
+                        )
                     } else {
                         VStack(spacing: 20) {
                             Image(systemName: "questionmark.circle")
@@ -131,10 +171,22 @@ struct QuizView: View {
             }
         }
         .sheet(isPresented: $viewModel.showReportModal) {
-            reportSheet
+            ReportQuestionSheet(
+                reportReason: $reportReason,
+                isPresented: $viewModel.showReportModal,
+                isSubmitting: viewModel.isSubmittingAction
+            ) { reason in
+                viewModel.reportQuestion(reason: reason.isEmpty ? nil : reason)
+            }
         }
         .sheet(isPresented: $viewModel.showMarkKnownModal) {
-            markKnownSheet
+            MarkKnownSheet(
+                selectedConfidence: $selectedConfidence,
+                isPresented: $viewModel.showMarkKnownModal,
+                isSubmitting: viewModel.isSubmittingAction
+            ) { confidence in
+                viewModel.markQuestionKnown(confidence: confidence)
+            }
         }
         .sheet(isPresented: $showTranslationPopup) {
             if let text = selectedText, let question = viewModel.question {
@@ -226,235 +278,6 @@ struct QuizView: View {
     }
 
     @ViewBuilder
-    private func questionCard(_ question: Question) -> some View {
-        VStack(alignment: .leading, spacing: 15) {
-            HStack {
-                BadgeView(
-                    text: question.type.replacingOccurrences(of: "_", with: " ").uppercased(),
-                    color: AppTheme.Colors.accentIndigo)
-                Spacer()
-                BadgeView(
-                    text: "\(question.language.uppercased()) - \(question.level)",
-                    color: AppTheme.Colors.primaryBlue)
-            }
-
-            if let passage = stringValue(question.content["passage"]) {
-                VStack(alignment: .trailing) {
-                    TTSButton(text: passage, language: question.language)
-                    SelectableTextView(
-                        text: passage,
-                        language: question.language,
-                        onTextSelected: { text in
-                            selectedText = text
-                            translationSentence = extractSentence(from: passage, containing: text)
-                            showTranslationPopup = true
-                        },
-                        highlightedSnippets: viewModel.snippets,
-                        onSnippetTapped: { snippet in
-                            showingSnippet = snippet
-                        }
-                    )
-                    .id("\(passage)-\(viewModel.snippets.count)")
-                    .frame(minHeight: 100)
-                }
-                .appInnerCard()
-            }
-
-            if let sentence = stringValue(question.content["sentence"]) {
-                SelectableTextView(
-                    text: sentence,
-                    language: question.language,
-                    onTextSelected: { text in
-                        selectedText = text
-                        translationSentence = extractSentence(from: sentence, containing: text)
-                        showTranslationPopup = true
-                    },
-                    highlightedSnippets: viewModel.snippets,
-                    onSnippetTapped: { snippet in
-                        showingSnippet = snippet
-                    }
-                )
-                .id("\(sentence)-\(viewModel.snippets.count)")
-                .frame(minHeight: 44)
-            } else if let questionText = stringValue(question.content["question"])
-                ?? stringValue(question.content["prompt"])
-            {
-                SelectableTextView(
-                    text: questionText,
-                    language: question.language,
-                    onTextSelected: { text in
-                        selectedText = text
-                        translationSentence = extractSentence(from: questionText, containing: text)
-                        showTranslationPopup = true
-                    },
-                    highlightedSnippets: viewModel.snippets,
-                    onSnippetTapped: { snippet in
-                        showingSnippet = snippet
-                    }
-                )
-                .id("\(questionText)-\(viewModel.snippets.count)")
-                .frame(minHeight: 44)
-            }
-
-            if question.type == "vocabulary",
-                let targetWord = stringValue(question.content["question"])
-            {
-                SelectableTextView(
-                    text: "What does \(targetWord) mean in this context?",
-                    language: question.language,
-                    onTextSelected: { text in
-                        selectedText = text
-                        translationSentence = extractSentence(
-                            from: "What does \(targetWord) mean in this context?", containing: text)
-                        showTranslationPopup = true
-                    },
-                    highlightedSnippets: viewModel.snippets,
-                    onSnippetTapped: { snippet in
-                        showingSnippet = snippet
-                    }
-                )
-                .id("vocab-\(targetWord)-\(viewModel.snippets.count)")
-                .frame(minHeight: 44)
-            }
-        }
-        .appCard()
-    }
-
-    @ViewBuilder
-    private func highlightedText(_ fullText: String, targetWord: String?) -> some View {
-        if let targetWord = targetWord,
-            let range = fullText.range(of: targetWord, options: .caseInsensitive)
-        {
-            let before = String(fullText[..<range.lowerBound])
-            let word = String(fullText[range])
-            let after = String(fullText[range.upperBound...])
-
-            Text(
-                "\(Text(before))\(Text(word).foregroundColor(.blue).fontWeight(.bold))\(Text(after))"
-            )
-        } else {
-            Text(fullText)
-        }
-    }
-
-    @ViewBuilder
-    private func optionsList(_ question: Question) -> some View {
-        if let options = stringArrayValue(question.content["options"]) {
-            VStack(spacing: 12) {
-                ForEach(Array(options.enumerated()), id: \.offset) { idx, option in
-                    optionButton(option: option, index: idx)
-                }
-            }
-        }
-    }
-
-    @ViewBuilder
-    private func optionButton(option: String, index: Int) -> some View {
-        let isSelected = viewModel.selectedAnswerIndex == index
-        let isCorrect = viewModel.answerResponse?.correctAnswerIndex == index
-        let isUserIncorrect =
-            viewModel.answerResponse != nil && viewModel.answerResponse?.userAnswerIndex == index
-            && !isCorrect
-
-        HStack {
-            if viewModel.answerResponse != nil {
-                if isCorrect {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundColor(AppTheme.Colors.successGreen)
-                } else if isUserIncorrect {
-                    Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(AppTheme.Colors.errorRed)
-                }
-            }
-
-            Text(option)
-                .font(AppTheme.Typography.bodyFont)
-                .foregroundColor(
-                    isUserIncorrect
-                        ? AppTheme.Colors.errorRed
-                        : (isCorrect
-                            ? AppTheme.Colors.successGreen
-                            : (isSelected ? .white : AppTheme.Colors.primaryText))
-                )
-                .frame(maxWidth: .infinity, alignment: .leading)
-
-            Spacer()
-        }
-        .padding(AppTheme.Spacing.innerPadding)
-        .frame(maxWidth: .infinity)
-        .background(
-            isUserIncorrect
-                ? AppTheme.Colors.errorRed.opacity(0.1)
-                : (isCorrect
-                    ? AppTheme.Colors.successGreen.opacity(0.1)
-                    : (isSelected
-                        ? AppTheme.Colors.primaryBlue : AppTheme.Colors.primaryBlue.opacity(0.05)))
-        )
-        .cornerRadius(AppTheme.CornerRadius.button)
-        .overlay(
-            RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button)
-                .stroke(
-                    isUserIncorrect
-                        ? AppTheme.Colors.errorRed
-                        : (isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.borderBlue),
-                    lineWidth: 1)
-        )
-        .contentShape(Rectangle())
-        .onTapGesture {
-            if viewModel.answerResponse == nil {
-                viewModel.selectedAnswerIndex = index
-            }
-        }
-        .disabled(viewModel.answerResponse != nil)
-    }
-
-    @ViewBuilder
-    private func feedbackSection(_ response: AnswerResponse) -> some View {
-        let question = viewModel.question
-
-        VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                Image(
-                    systemName: response.isCorrect ? "checkmark.circle.fill" : "xmark.circle.fill"
-                )
-                .foregroundColor(
-                    response.isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.errorRed)
-                Text(response.isCorrect ? "Correct!" : "Incorrect")
-                    .font(AppTheme.Typography.headingFont)
-                    .foregroundColor(
-                        response.isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.errorRed
-                    )
-                    .textSelection(.enabled)
-            }
-
-            SelectableTextView(
-                text: response.explanation,
-                language: question?.language ?? "en",
-                onTextSelected: { text in
-                    selectedText = text
-                    translationSentence = extractSentence(
-                        from: response.explanation, containing: text)
-                    showTranslationPopup = true
-                },
-                highlightedSnippets: viewModel.snippets,
-                onSnippetTapped: { snippet in
-                    showingSnippet = snippet
-                }
-            )
-            .id("explanation-\(viewModel.snippets.count)")
-            .frame(maxWidth: .infinity, alignment: .leading)
-        }
-        .padding(AppTheme.Spacing.innerPadding)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            response.isCorrect
-                ? AppTheme.Colors.successGreen.opacity(0.05)
-                : AppTheme.Colors.errorRed.opacity(0.05)
-        )
-        .cornerRadius(AppTheme.CornerRadius.button)
-    }
-
-    @ViewBuilder
     private func actionButtons() -> some View {
         if viewModel.answerResponse != nil {
             Button("Next Question") {
@@ -474,93 +297,4 @@ struct QuizView: View {
         }
     }
 
-    @ViewBuilder
-    private func footerButtons() -> some View {
-        HStack(spacing: 20) {
-            Button(action: { viewModel.showReportModal = true }) {
-                Label(viewModel.isReported ? "Reported" : "Report issue", systemImage: "flag")
-                    .font(.caption)
-            }
-            .disabled(viewModel.isReported)
-            .foregroundColor(.secondary)
-
-            Spacer()
-
-            Button(action: { viewModel.showMarkKnownModal = true }) {
-                Label("Adjust frequency", systemImage: "slider.horizontal.3")
-                    .font(.caption)
-            }
-            .foregroundColor(.secondary)
-        }
-        .padding(.top, 10)
-    }
-
-    private var reportSheet: some View {
-        NavigationView {
-            Form {
-                Section(header: Text("Why are you reporting this question?")) {
-                    TextEditor(text: $reportReason)
-                        .frame(minHeight: 100)
-                }
-
-                Button("Submit Report") {
-                    viewModel.reportQuestion(reason: reportReason)
-                }
-                .disabled(viewModel.isSubmittingAction)
-            }
-            .navigationTitle("Report Issue")
-            .navigationBarItems(trailing: Button("Cancel") { viewModel.showReportModal = false })
-        }
-    }
-
-    private var markKnownSheet: some View {
-        NavigationView {
-            VStack(spacing: 20) {
-                Text(
-                    "Choose how often you want to see this question in future quizzes: 1–2 show it more, 3 no change, 4–5 show it less."
-                )
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-                .padding()
-
-                Text("How confident are you about this question?")
-                    .font(.headline)
-
-                HStack(spacing: 10) {
-                    ForEach(1...5, id: \.self) { level in
-                        Button("\(level)") {
-                            selectedConfidence = level
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(
-                            selectedConfidence == level
-                                ? AppTheme.Colors.primaryBlue
-                                : AppTheme.Colors.primaryBlue.opacity(0.1)
-                        )
-                        .foregroundColor(
-                            selectedConfidence == level ? .white : AppTheme.Colors.primaryBlue
-                        )
-                        .cornerRadius(AppTheme.CornerRadius.button)
-                    }
-                }
-                .padding(.horizontal)
-
-                Spacer()
-
-                Button("Save Preference") {
-                    if let confidence = selectedConfidence {
-                        viewModel.markQuestionKnown(confidence: confidence)
-                    }
-                }
-                .buttonStyle(
-                    PrimaryButtonStyle(
-                        isDisabled: selectedConfidence == nil || viewModel.isSubmittingAction)
-                )
-                .padding()
-            }
-            .navigationTitle("Adjust Frequency")
-            .navigationBarItems(trailing: Button("Cancel") { viewModel.showMarkKnownModal = false })
-        }
-    }
 }

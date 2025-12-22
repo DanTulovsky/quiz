@@ -57,39 +57,30 @@ class AuthenticationViewModel: BaseViewModel {
         // Check auth status on init with a small delay to allow cookies to be set
         // This is especially important after OAuth callbacks
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
-            guard let strongSelf = self else { return }
+            guard let self = self else { return }
             apiService.authStatus()
-                .receive(on: DispatchQueue.main)
-                .sink(
-                    receiveCompletion: { [weak self] completion in
-                        guard let self = self else { return }
-                        switch completion {
-                        case .failure(let error):
-                            // Only set error if not already authenticated (might be a transient network issue)
-                            if !self.isAuthenticated {
-                                self.error = error
-                            }
-                        case .finished:
-                            break
-                        }
-                    },
-                    receiveValue: { [weak self] response in
-                        guard let self = self else { return }
+                .handleErrorOnly(on: self)
+                .sinkValue(on: self) { [weak self] response in
+                    guard let self = self else { return }
+                    // Only set error if not already authenticated (might be a transient network issue)
+                    if self.error != nil && !self.isAuthenticated {
+                        // Error was set by handleErrorOnly, keep it
+                    } else {
                         self.clearError()
-                        // Only update auth state if not already authenticated
-                        // This prevents overriding a successful OAuth login
-                        if !self.isAuthenticated {
-                            self.isAuthenticated = response.authenticated
-                            if response.authenticated {
-                                self.user = response.user
-                            }
-                        } else if response.authenticated {
-                            // If already authenticated, just update user info
+                    }
+                    // Only update auth state if not already authenticated
+                    // This prevents overriding a successful OAuth login
+                    if !self.isAuthenticated {
+                        self.isAuthenticated = response.authenticated
+                        if response.authenticated {
                             self.user = response.user
                         }
+                    } else if response.authenticated {
+                        // If already authenticated, just update user info
+                        self.user = response.user
                     }
-                )
-                .store(in: &strongSelf.cancellables)
+                }
+                .store(in: &self.cancellables)
         }
     }
 
@@ -97,12 +88,12 @@ class AuthenticationViewModel: BaseViewModel {
         let loginRequest = LoginRequest(username: username, password: password)
         apiService.login(request: loginRequest)
             .handleErrorOnly(on: self)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] response in
+            .sinkValue(on: self) { [weak self] response in
                 guard let self else { return }
                 self.clearError()
                 self.isAuthenticated = response.success
                 self.user = response.user
-            })
+            }
             .store(in: &cancellables)
     }
 
@@ -110,24 +101,24 @@ class AuthenticationViewModel: BaseViewModel {
         let signupRequest = UserCreateRequest(username: username, email: email, password: password)
         apiService.signup(request: signupRequest)
             .handleErrorOnly(on: self)
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in
+            .sinkVoid(on: self) {
                 // For simplicity, we'll just consider the signup successful
                 // and the user can now login.
                 // A better approach would be to automatically log the user in.
-            })
+            }
             .store(in: &cancellables)
     }
 
     func logout() {
         apiService.logout()
             .handleErrorOnly(on: self)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] _ in
+            .sinkVoid(on: self) { [weak self] in
                 guard let self else { return }
                 self.clearError()
                 self.isAuthenticated = false
                 TTSSynthesizerManager.shared.stop()
                 TTSSynthesizerManager.shared.preferredVoice = nil
-            })
+            }
             .store(in: &cancellables)
     }
 
@@ -137,33 +128,21 @@ class AuthenticationViewModel: BaseViewModel {
             return
         }
 
-        let publisher = apiService.initiateGoogleLogin()
-        publisher
-            .receive(on: DispatchQueue.main)
-            .sink(
-                receiveCompletion: { [weak self] completion in
-                    guard let self = self else { return }
-                    switch completion {
-                    case .failure(let error):
-                        self.error = error
-                    case .finished:
-                        break
-                    }
-                },
-                receiveValue: { [weak self] response in
-                    guard let self = self else { return }
-                    // Double-check we're still not authenticated before setting URL
-                    guard !self.isAuthenticated else {
-                        return
-                    }
-                    self.error = nil
-                    if let url = URL(string: response.authUrl), url.scheme != nil, url.host != nil {
-                        self.googleAuthURL = url
-                    } else {
-                        self.error = .invalidURL
-                    }
+        apiService.initiateGoogleLogin()
+            .handleErrorOnly(on: self)
+            .sinkValue(on: self) { [weak self] response in
+                guard let self = self else { return }
+                // Double-check we're still not authenticated before setting URL
+                guard !self.isAuthenticated else {
+                    return
                 }
-            )
+                self.clearError()
+                if let url = URL(string: response.authUrl), url.scheme != nil, url.host != nil {
+                    self.googleAuthURL = url
+                } else {
+                    self.error = .invalidURL
+                }
+            }
             .store(in: &cancellables)
     }
 
@@ -183,37 +162,28 @@ class AuthenticationViewModel: BaseViewModel {
         isProcessingGoogleCallback = true
         insertProcessedCode(code)
 
-        let publisher = apiService.handleGoogleCallback(code: code, state: state)
         let codeToProcess = code  // Capture code for use in closure
-        publisher
-            .receive(on: DispatchQueue.main)
+        apiService.handleGoogleCallback(code: code, state: state)
+            .handleErrorOnly(on: self)
             .sink(
                 receiveCompletion: { [weak self] completion in
                     guard let self = self else { return }
-                    DispatchQueue.main.async {
-                        self.isProcessingGoogleCallback = false
-                        switch completion {
-                        case .failure(let error):
-                            print("❌ Google callback failed: \(error.localizedDescription)")
-                            self.error = error
-                            self.isAuthenticated = false
-                            // Clear googleAuthURL on error to prevent re-triggering
-                            self.googleAuthURL = nil
-                            // Remove from processed codes on error so it can be retried
-                            self.removeProcessedCode(codeToProcess)
-                        case .finished:
-                            break
-                        }
+                    self.isProcessingGoogleCallback = false
+                    if case .failure(let error) = completion {
+                        print("❌ Google callback failed: \(error.localizedDescription)")
+                        self.isAuthenticated = false
+                        // Clear googleAuthURL on error to prevent re-triggering
+                        self.googleAuthURL = nil
+                        // Remove from processed codes on error so it can be retried
+                        self.removeProcessedCode(codeToProcess)
                     }
                 },
                 receiveValue: { [weak self] response in
                     guard let self = self else { return }
-                    DispatchQueue.main.async {
-                        self.error = nil
-                        self.isAuthenticated = response.success
-                        self.user = response.user
-                        self.isProcessingGoogleCallback = false
-                    }
+                    self.clearError()
+                    self.isAuthenticated = response.success
+                    self.user = response.user
+                    self.isProcessingGoogleCallback = false
 
                     // Clear googleAuthURL immediately after callback to prevent re-triggering
                     // This must happen before any async operations to prevent race conditions
@@ -221,27 +191,16 @@ class AuthenticationViewModel: BaseViewModel {
 
                     // Verify auth status to ensure session cookies are working
                     if response.success {
-                        DispatchQueue.main.async {
-                            self.apiService.authStatus()
-                                .receive(on: DispatchQueue.main)
-                                .sink(
-                                    receiveCompletion: { completion in
-                                        if case .failure(let error) = completion {
-                                            print(
-                                                "⚠️ Auth status check failed after OAuth: \(error.localizedDescription)"
-                                            )
-                                        }
-                                    },
-                                    receiveValue: { [weak self] authResponse in
-                                        guard let self = self else { return }
-                                        self.isAuthenticated = authResponse.authenticated
-                                        self.user = authResponse.user
-                                        // Ensure googleAuthURL is still cleared (defensive check)
-                                        self.googleAuthURL = nil
-                                    }
-                                )
-                                .store(in: &self.cancellables)
-                        }
+                        self.apiService.authStatus()
+                            .handleErrorOnly(on: self)
+                            .sinkValue(on: self) { [weak self] authResponse in
+                                guard let self = self else { return }
+                                self.isAuthenticated = authResponse.authenticated
+                                self.user = authResponse.user
+                                // Ensure googleAuthURL is still cleared (defensive check)
+                                self.googleAuthURL = nil
+                            }
+                            .store(in: &self.cancellables)
                     }
                 }
             )

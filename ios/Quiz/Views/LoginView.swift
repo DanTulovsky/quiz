@@ -5,7 +5,6 @@ import SwiftUI
 
 struct LoginView: View {
     @EnvironmentObject var viewModel: AuthenticationViewModel
-    @State private var showPassword = false
     @State private var isLoading = false
     @State private var showWebAuth = false
 
@@ -44,12 +43,7 @@ struct LoginView: View {
                                     .foregroundColor(.red)
                             }
 
-                            TextField("admin", text: $viewModel.username)
-                                .textInputAutocapitalization(.never)
-                                .autocorrectionDisabled(true)
-                                .padding()
-                                .background(AppTheme.Colors.secondaryBackground)
-                                .cornerRadius(AppTheme.CornerRadius.button)
+                            FormTextField(placeholder: "admin", text: $viewModel.username)
                         }
 
                         VStack(alignment: .leading, spacing: 8) {
@@ -61,25 +55,7 @@ struct LoginView: View {
                                     .foregroundColor(.red)
                             }
 
-                            HStack {
-                                if showPassword {
-                                    TextField("", text: $viewModel.password)
-                                        .textInputAutocapitalization(.never)
-                                        .autocorrectionDisabled(true)
-                                } else {
-                                    SecureField("••••••••", text: $viewModel.password)
-                                        .textInputAutocapitalization(.never)
-                                        .autocorrectionDisabled(true)
-                                }
-
-                                Button(action: { showPassword.toggle() }) {
-                                    Image(systemName: showPassword ? "eye.slash" : "eye")
-                                        .foregroundColor(.secondary)
-                                }
-                            }
-                            .padding()
-                            .background(AppTheme.Colors.secondaryBackground)
-                            .cornerRadius(AppTheme.CornerRadius.button)
+                            FormSecureField(placeholder: "••••••••", text: $viewModel.password)
                         }
 
                         Button(action: {

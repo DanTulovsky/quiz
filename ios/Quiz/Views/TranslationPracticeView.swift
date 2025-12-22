@@ -33,15 +33,7 @@ struct TranslationPracticeView: View {
                             Text("Optional topic")
                                 .font(AppTheme.Typography.subheadlineFont)
                                 .foregroundColor(AppTheme.Colors.secondaryText)
-                            TextField(
-                                "e.g., travel, ordering food, work", text: $viewModel.optionalTopic
-                            )
-                            .padding(12)
-                            .background(AppTheme.Colors.secondaryBackground)
-                            .cornerRadius(AppTheme.CornerRadius.button)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(
-                                    AppTheme.Colors.borderGray, lineWidth: 1))
+                            FormTextField(placeholder: "e.g., travel, ordering food, work", text: $viewModel.optionalTopic, showBorder: true, padding: 12)
                         }
                     }
 
@@ -309,13 +301,7 @@ struct TranslationPracticeView: View {
                 Text("Optional topic")
                     .font(AppTheme.Typography.subheadlineFont)
                     .foregroundColor(AppTheme.Colors.secondaryText)
-                TextField("e.g., travel, ordering food, work", text: $viewModel.optionalTopic)
-                    .padding(12)
-                    .background(AppTheme.Colors.secondaryBackground)
-                    .cornerRadius(AppTheme.CornerRadius.button)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(
-                            AppTheme.Colors.borderGray, lineWidth: 1))
+                FormTextField(placeholder: "e.g., travel, ordering food, work", text: $viewModel.optionalTopic, showBorder: true, padding: 12)
             }
 
             // Text to Translate Section

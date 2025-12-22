@@ -13,11 +13,15 @@ class BaseViewModel: ObservableObject {
     }
 
     func cancelAllRequests() {
-        cancellables.removeAll()
-    }
-
-    deinit {
-        cancelAllRequests()
+        // Cancel all subscriptions synchronously on the main queue to avoid deadlocks
+        // when deallocating while publishers are still processing on the main queue
+        if Thread.isMainThread {
+            cancellables.removeAll()
+        } else {
+            DispatchQueue.main.sync {
+                cancellables.removeAll()
+            }
+        }
     }
 
     func handleError(_ error: APIService.APIError) {

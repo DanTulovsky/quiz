@@ -34,7 +34,6 @@ class QuizViewModel: BaseViewModel, QuestionActions, SnippetLoading {
     }
 
     func getQuestion() {
-        clearError()
         generatingMessage = nil
         answerResponse = nil
         selectedAnswerIndex = nil
@@ -46,7 +45,7 @@ class QuizViewModel: BaseViewModel, QuestionActions, SnippetLoading {
 
         apiService.getQuestion(language: nil, level: nil, type: questionType, excludeType: nil)
             .handleLoadingAndError(on: self)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] result in
+            .sinkValue(on: self) { [weak self] result in
                 guard let self else { return }
                 switch result {
                 case .question(let question):
@@ -58,7 +57,7 @@ class QuizViewModel: BaseViewModel, QuestionActions, SnippetLoading {
                     self.question = nil
                     self.generatingMessage = status.message
                 }
-            })
+            }
             .store(in: &cancellables)
     }
 
@@ -73,11 +72,11 @@ class QuizViewModel: BaseViewModel, QuestionActions, SnippetLoading {
         let answerRequest = AnswerRequest(questionId: question.id, userAnswerIndex: userAnswerIndex, responseTimeMs: nil)
         apiService.postAnswer(request: answerRequest)
             .handleErrorOnly(on: self)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] response in
+            .sinkValue(on: self) { [weak self] response in
                 guard let self else { return }
                 self.answerResponse = response
                 self.saveState()
-            })
+            }
             .store(in: &cancellables)
     }
 
@@ -87,13 +86,13 @@ class QuizViewModel: BaseViewModel, QuestionActions, SnippetLoading {
 
         apiService.postDailyAnswer(date: today, questionId: question.id, userAnswerIndex: userAnswerIndex)
             .handleErrorOnly(on: self)
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] response in
+            .sinkValue(on: self) { [weak self] response in
                 self?.answerResponse = AnswerResponse(isCorrect: response.isCorrect,
                                                       userAnswer: response.userAnswer,
                                                       userAnswerIndex: response.userAnswerIndex,
                                                       explanation: response.explanation,
                                                       correctAnswerIndex: response.correctAnswerIndex)
-            })
+            }
             .store(in: &cancellables)
     }
 

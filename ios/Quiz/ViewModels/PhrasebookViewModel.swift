@@ -1,5 +1,5 @@
-import Foundation
 import Combine
+import Foundation
 
 class PhrasebookViewModel: BaseViewModel {
     @Published var categories: [PhrasebookCategoryInfo] = []
@@ -10,8 +10,6 @@ class PhrasebookViewModel: BaseViewModel {
     }
 
     func fetchCategoryData(id: String) {
-        self.isLoading = true
-        self.selectedCategoryData = PhrasebookService.shared.loadCategoryData(id: id)
-        self.isLoading = false
+        selectedCategoryData = PhrasebookService.shared.loadCategoryData(id: id)
     }
 }

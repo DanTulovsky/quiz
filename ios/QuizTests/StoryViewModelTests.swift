@@ -26,7 +26,7 @@ class StoryViewModelTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Stories fetched")
 
         // When
-        viewModel.getStories()
+        viewModel.fetchItems()
 
         // Then - wait for async operation
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {

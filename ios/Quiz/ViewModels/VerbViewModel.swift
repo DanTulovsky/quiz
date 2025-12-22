@@ -1,8 +1,15 @@
 import Foundation
 import Combine
 
-class VerbViewModel: BaseViewModel {
+class VerbViewModel: BaseViewModel, ListFetchingWithName {
+    typealias Item = VerbConjugationSummary
+
     @Published var verbs: [VerbConjugationSummary] = []
+
+    var items: [VerbConjugationSummary] {
+        get { verbs }
+        set { verbs = newValue }
+    }
     @Published var selectedVerb: String = ""
     @Published var selectedVerbDetail: VerbConjugationDetail?
     @Published var expandedTenses: Set<String> = []
@@ -22,17 +29,22 @@ class VerbViewModel: BaseViewModel {
             .store(in: &cancellables)
     }
 
+    func fetchItemsPublisher() -> AnyPublisher<[VerbConjugationSummary], APIService.APIError> {
+        return apiService.getVerbConjugations(language: currentLanguage)
+            .map { $0.verbs }
+            .eraseToAnyPublisher()
+    }
+
+    func updateItems(_ items: [VerbConjugationSummary]) {
+        verbs = items
+        if selectedVerb.isEmpty, let first = items.first {
+            selectedVerb = first.infinitive
+        }
+    }
+
     func fetchVerbs(language: String) {
-        self.currentLanguage = language
-        apiService.getVerbConjugations(language: language)
-            .handleLoadingAndError(on: self)
-            .sinkValue(on: self) { [weak self] data in
-                self?.verbs = data.verbs
-                if self?.selectedVerb.isEmpty == true, let first = data.verbs.first {
-                    self?.selectedVerb = first.infinitive
-                }
-            }
-            .store(in: &cancellables)
+        currentLanguage = language
+        fetchItems()
     }
 
     func fetchVerbDetail(language: String, verb: String) {

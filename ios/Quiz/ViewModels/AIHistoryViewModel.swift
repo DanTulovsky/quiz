@@ -1,40 +1,53 @@
-import Foundation
 import Combine
+import Foundation
 
-class AIHistoryViewModel: BaseViewModel {
+class AIHistoryViewModel: BaseViewModel, Refreshable, ListFetchingWithName, DetailFetching,
+    OptimisticUpdating
+{
+    typealias Item = Conversation
+    typealias DetailID = String
+    typealias DetailItem = Conversation
+
     @Published var conversations: [Conversation] = []
     @Published var bookmarks: [ChatMessage] = []
     @Published var selectedConversation: Conversation?
     @Published var isDeleting = false
 
+    var items: [Conversation] {
+        get { conversations }
+        set { conversations = newValue }
+    }
+
+    var selectedDetail: Conversation? {
+        get { selectedConversation }
+        set { selectedConversation = newValue }
+    }
+
     override init(apiService: APIService = .shared) {
         super.init(apiService: apiService)
     }
 
-    func fetchConversations() {
-        apiService.getAIConversations()
-            .handleLoadingAndError(on: self)
-            .sinkValue(on: self) { [weak self] response in
-                self?.conversations = response.conversations
-            }
-            .store(in: &cancellables)
+    func fetchItemsPublisher() -> AnyPublisher<[Conversation], APIService.APIError> {
+        return apiService.getAIConversations()
+            .map { $0.conversations }
+            .eraseToAnyPublisher()
+    }
+
+    func updateItems(_ items: [Conversation]) {
+        conversations = items
+    }
+
+    func fetchDetailPublisher(id: String) -> AnyPublisher<Conversation, APIService.APIError> {
+        return apiService.getAIConversation(id: id)
     }
 
     func fetchConversation(id: String) {
-        apiService.getAIConversation(id: id)
-            .handleLoadingAndError(on: self)
-            .sinkValue(on: self) { [weak self] conversation in
-                self?.selectedConversation = conversation
-            }
-            .store(in: &cancellables)
+        fetchDetail(id: id)
     }
 
     func updateTitle(id: String, newTitle: String) {
-        // Optimistically update the local array immediately for instant UI feedback
-        if let index = conversations.firstIndex(where: { $0.id == id }) {
-            let oldConversation = conversations[index]
-            // Create a new Conversation with updated title
-            let updatedConversation = Conversation(
+        applyOptimisticUpdate(id: id) { oldConversation in
+            Conversation(
                 id: oldConversation.id,
                 userId: oldConversation.userId,
                 title: newTitle,
@@ -43,26 +56,23 @@ class AIHistoryViewModel: BaseViewModel {
                 messageCount: oldConversation.messageCount,
                 messages: oldConversation.messages
             )
-            // Create a new array to ensure SwiftUI detects the change
-            var updatedConversations = conversations
-            updatedConversations[index] = updatedConversation
-            conversations = updatedConversations
         }
 
         apiService.updateAIConversationTitle(id: id, title: newTitle)
             .handleErrorOnly(on: self)
-            .sink(receiveCompletion: { [weak self] completion in
+            .handleEvents(receiveCompletion: { [weak self] completion in
                 if case .failure = completion {
                     // On error, refetch to restore correct state
-                    self?.fetchConversations()
+                    self?.fetchItems()
                 }
-            }, receiveValue: { [weak self] _ in
+            })
+            .sinkValue(on: self) { [weak self] _ in
                 // Refetch to ensure we have the latest data from server
-                self?.fetchConversations()
+                self?.fetchItems()
                 if self?.selectedConversation?.id == id {
                     self?.fetchConversation(id: id)
                 }
-            })
+            }
             .store(in: &cancellables)
     }
 
@@ -73,10 +83,10 @@ class AIHistoryViewModel: BaseViewModel {
             .handleEvents(receiveCompletion: { [weak self] _ in
                 self?.isDeleting = false
             })
-            .sink(receiveCompletion: { _ in }, receiveValue: { [weak self] _ in
+            .sinkVoid(on: self) { [weak self] in
                 // Refetch conversations to ensure instant update
-                self?.fetchConversations()
-            })
+                self?.fetchItems()
+            }
             .store(in: &cancellables)
     }
 
@@ -102,5 +112,9 @@ class AIHistoryViewModel: BaseViewModel {
                 }
             }
             .store(in: &cancellables)
+    }
+
+    func refreshData() {
+        fetchItems()
     }
 }

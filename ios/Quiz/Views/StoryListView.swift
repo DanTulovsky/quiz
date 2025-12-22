@@ -28,7 +28,7 @@ struct StoryListView: View {
             }
         }
         .onAppear {
-            viewModel.getStories()
+            viewModel.fetchItems()
         }
         .navigationTitle("Stories")
     }

@@ -177,20 +177,16 @@ class APIService {
     }
 
     func login(request: LoginRequest) -> AnyPublisher<LoginResponse, APIError> {
-        return post(path: "auth/login", body: request, responseType: LoginResponse.self, retry: true)
+        return post(
+            path: "auth/login", body: request, responseType: LoginResponse.self, retry: true)
     }
 
     func initiateGoogleLogin() -> AnyPublisher<GoogleOAuthLoginResponse, APIError> {
-        let queryItems = [URLQueryItem(name: "platform", value: "ios")]
-        guard case .success(let url) = buildURL(path: "auth/google/login", queryItems: queryItems)
-        else {
-            return Fail(error: .invalidURL).eraseToAnyPublisher()
-        }
-        let urlRequest = authenticatedRequest(for: url)
-        return URLSession.shared.dataTaskPublisher(for: urlRequest)
-            .mapError { .requestFailed($0) }
-            .flatMap { self.handleResponse($0.data, $0.response) }
-            .eraseToAnyPublisher()
+        var params = QueryParameters()
+        params.add("platform", value: "ios")
+        return get(
+            path: "auth/google/login", queryItems: params.build(),
+            responseType: GoogleOAuthLoginResponse.self)
     }
 
     func handleGoogleCallback(code: String, state: String?) -> AnyPublisher<LoginResponse, APIError>
@@ -200,12 +196,12 @@ class APIService {
         )
         print("📝 Code: \(code.prefix(10))..., State: \(state ?? "nil")")
 
-        var queryItems = [URLQueryItem(name: "code", value: code)]
-        if let state = state {
-            queryItems.append(URLQueryItem(name: "state", value: state))
-        }
+        var params = QueryParameters()
+        params.add("code", value: code)
+        params.add("state", value: state)
         guard
-            case .success(let url) = buildURL(path: "auth/google/callback", queryItems: queryItems)
+            case .success(let url) = buildURL(
+                path: "auth/google/callback", queryItems: params.build())
         else {
             return Fail(error: .invalidURL).eraseToAnyPublisher()
         }
@@ -215,26 +211,10 @@ class APIService {
         // Use URLSession.shared to ensure cookies are shared with other API calls
         // This ensures the session cookie from OAuth is available for subsequent requests
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
-            .mapError { error in
-                return .requestFailed(error)
-            }
+            .mapError { .requestFailed($0) }
             .flatMap { data, response -> AnyPublisher<LoginResponse, APIError> in
                 if let httpResponse = response as? HTTPURLResponse {
-                    // Ensure cookies from the OAuth callback are stored
-                    if let url = httpResponse.url {
-                        let headerFields = httpResponse.allHeaderFields
-                        var cookieHeaders: [String: String] = [:]
-                        for (key, value) in headerFields {
-                            if let keyString = key as? String, let valueString = value as? String {
-                                cookieHeaders[keyString] = valueString
-                            }
-                        }
-                        let cookies = HTTPCookie.cookies(
-                            withResponseHeaderFields: cookieHeaders, for: url)
-                        for cookie in cookies {
-                            HTTPCookieStorage.shared.setCookie(cookie)
-                        }
-                    }
+                    self.storeCookies(from: httpResponse)
                 }
                 return self.handleResponse(data, response)
             }
@@ -242,28 +222,15 @@ class APIService {
     }
 
     func authStatus() -> AnyPublisher<AuthStatusResponse, APIError> {
-        let url = baseURL.appendingPathComponent("auth/status")
-        let urlRequest = authenticatedRequest(for: url)
-        return URLSession.shared.dataTaskPublisher(for: urlRequest)
-            .mapError { .requestFailed($0) }
-            .flatMap { self.handleResponse($0.data, $0.response) }
+        return get(path: "auth/status", responseType: AuthStatusResponse.self)
             .retryOnTransientFailure(maxRetries: 2)
             .eraseToAnyPublisher()
     }
 
     func logout() -> AnyPublisher<SuccessResponse, APIError> {
-        let url = baseURL.appendingPathComponent("auth/logout")
-        let urlRequest = authenticatedRequest(for: url, method: "POST")
-        return URLSession.shared.dataTaskPublisher(for: urlRequest)
-            .mapError { .requestFailed($0) }
-            .flatMap { (data, response) -> AnyPublisher<SuccessResponse, APIError> in
-                self.handleResponse(data, response)
-            }
+        return postVoid(path: "auth/logout")
             .handleEvents(receiveOutput: { _ in
-                guard let cookies = HTTPCookieStorage.shared.cookies else { return }
-                for cookie in cookies where cookie.name == "quiz-session" {
-                    HTTPCookieStorage.shared.deleteCookie(cookie)
-                }
+                self.clearSessionCookie()
             })
             .eraseToAnyPublisher()
     }
@@ -280,20 +247,14 @@ class APIService {
     func getQuestion(language: Language?, level: Level?, type: String?, excludeType: String?)
         -> AnyPublisher<QuestionFetchResult, APIError>
     {
-        var queryItems = [URLQueryItem]()
-        if let language = language {
-            queryItems.append(URLQueryItem(name: "language", value: language.rawValue))
-        }
-        if let level = level {
-            queryItems.append(URLQueryItem(name: "level", value: level.rawValue))
-        }
-        if let type = type { queryItems.append(URLQueryItem(name: "type", value: type)) }
-        if let excludeType = excludeType {
-            queryItems.append(URLQueryItem(name: "exclude_type", value: excludeType))
-        }
+        var params = QueryParameters()
+        params.add("language", value: language?.rawValue)
+        params.add("level", value: level?.rawValue)
+        params.add("type", value: type)
+        params.add("exclude_type", value: excludeType)
         guard
             case .success(let url) = buildURL(
-                path: "quiz/question", queryItems: queryItems.isEmpty ? nil : queryItems)
+                path: "quiz/question", queryItems: params.build())
         else {
             return Fail(error: .invalidURL).eraseToAnyPublisher()
         }
@@ -305,27 +266,34 @@ class APIService {
                     return Fail(error: .invalidResponse).eraseToAnyPublisher()
                 }
                 if httpResponse.statusCode == 200 {
-                    return Just(data).decode(type: Question.self, decoder: self.decoder).map(
-                        QuestionFetchResult.question
-                    ).mapError { .decodingFailed($0) }.eraseToAnyPublisher()
+                    return Just(data)
+                        .decode(type: Question.self, decoder: self.decoder)
+                        .map(QuestionFetchResult.question)
+                        .mapError { .decodingFailed($0) }
+                        .eraseToAnyPublisher()
                 } else if httpResponse.statusCode == 202 {
-                    return Just(data).decode(
-                        type: GeneratingStatusResponse.self, decoder: self.decoder
-                    ).map(QuestionFetchResult.generating).mapError { .decodingFailed($0) }
+                    return Just(data)
+                        .decode(type: GeneratingStatusResponse.self, decoder: self.decoder)
+                        .map(QuestionFetchResult.generating)
+                        .mapError { .decodingFailed($0) }
                         .eraseToAnyPublisher()
                 } else {
-                    if let errorResp = try? self.decoder.decode(ErrorResponse.self, from: data),
-                        let msg = errorResp.message ?? errorResp.error
-                    {
-                        return Fail(
-                            error: .backendError(
-                                code: errorResp.code, message: msg, details: errorResp.details)
-                        ).eraseToAnyPublisher()
-                    }
-                    return Fail(error: .invalidResponse).eraseToAnyPublisher()
+                    return self.handleErrorResponse(data: data)
                 }
             }
             .eraseToAnyPublisher()
+    }
+
+    private func handleErrorResponse<T>(data: Data) -> AnyPublisher<T, APIError> {
+        if let errorResp = try? self.decoder.decode(ErrorResponse.self, from: data),
+            let msg = errorResp.message ?? errorResp.error
+        {
+            return Fail(
+                error: .backendError(code: errorResp.code, message: msg, details: errorResp.details)
+            )
+            .eraseToAnyPublisher()
+        }
+        return Fail(error: .invalidResponse).eraseToAnyPublisher()
     }
 
     func postAnswer(request: AnswerRequest) -> AnyPublisher<AnswerResponse, APIError> {
@@ -346,24 +314,14 @@ class APIService {
     )
         -> AnyPublisher<SnippetList, APIError>
     {
-        var queryItems = [URLQueryItem]()
-        if let sourceLang = sourceLang {
-            queryItems.append(URLQueryItem(name: "source_lang", value: sourceLang))
-        }
-        if let targetLang = targetLang {
-            queryItems.append(URLQueryItem(name: "target_lang", value: targetLang))
-        }
-        if let storyId = storyId {
-            queryItems.append(URLQueryItem(name: "story_id", value: String(storyId)))
-        }
-        if let query = query, !query.isEmpty {
-            queryItems.append(URLQueryItem(name: "q", value: query))
-        }
-        if let level = level, !level.isEmpty {
-            queryItems.append(URLQueryItem(name: "level", value: level))
-        }
+        var params = QueryParameters()
+        params.add("source_lang", value: sourceLang)
+        params.add("target_lang", value: targetLang)
+        params.add("story_id", value: storyId)
+        params.add("q", value: query)
+        params.add("level", value: level)
         return get(
-            path: "snippets", queryItems: queryItems.isEmpty ? nil : queryItems,
+            path: "snippets", queryItems: params.build(),
             responseType: SnippetList.self)
     }
 
@@ -396,13 +354,12 @@ class APIService {
     func getExistingTranslationSentence(language: String, level: String, direction: String)
         -> AnyPublisher<TranslationPracticeSentenceResponse, APIError>
     {
-        let queryItems = [
-            URLQueryItem(name: "language", value: language),
-            URLQueryItem(name: "level", value: level),
-            URLQueryItem(name: "direction", value: direction),
-        ]
+        var params = QueryParameters()
+        params.add("language", value: language)
+        params.add("level", value: level)
+        params.add("direction", value: direction)
         return get(
-            path: "translation-practice/sentence", queryItems: queryItems,
+            path: "translation-practice/sentence", queryItems: params.build(),
             responseType: TranslationPracticeSentenceResponse.self)
     }
 
@@ -434,9 +391,11 @@ class APIService {
     }
 
     func updateUser(request: UserUpdateRequest) -> AnyPublisher<User, APIError> {
-        return put(path: "userz/profile", body: request, responseType: UserProfileMessageResponse.self)
-            .map { $0.user }
-            .eraseToAnyPublisher()
+        return put(
+            path: "userz/profile", body: request, responseType: UserProfileMessageResponse.self
+        )
+        .map { $0.user }
+        .eraseToAnyPublisher()
     }
 
     private func decodeResponse<T: Decodable>(_ data: Data, _ response: URLResponse) throws -> T {
@@ -531,12 +490,11 @@ class APIService {
     func getTranslationPracticeHistory(limit: Int = 10, offset: Int = 0) -> AnyPublisher<
         TranslationPracticeHistoryResponse, APIError
     > {
-        let queryItems = [
-            URLQueryItem(name: "limit", value: String(limit)),
-            URLQueryItem(name: "offset", value: String(offset)),
-        ]
+        var params = QueryParameters()
+        params.add("limit", value: limit)
+        params.add("offset", value: offset)
         return get(
-            path: "translation-practice/history", queryItems: queryItems,
+            path: "translation-practice/history", queryItems: params.build(),
             responseType: TranslationPracticeHistoryResponse.self)
     }
 
@@ -549,9 +507,10 @@ class APIService {
     }
 
     func getLevels(language: String?) -> AnyPublisher<LevelsResponse, APIError> {
-        let queryItems = language.map { [URLQueryItem(name: "language", value: $0)] }
+        var params = QueryParameters()
+        params.add("language", value: language)
         return get(
-            path: "settings/levels", queryItems: queryItems, responseType: LevelsResponse.self)
+            path: "settings/levels", queryItems: params.build(), responseType: LevelsResponse.self)
     }
 
     func updateWordOfDayEmailPreference(enabled: Bool) -> AnyPublisher<SuccessResponse, APIError> {
@@ -618,8 +577,9 @@ class APIService {
     }
 
     func getVoices(language: String) -> AnyPublisher<[EdgeTTSVoiceInfo], APIError> {
-        let queryItems = [URLQueryItem(name: "language", value: language)]
-        guard case .success(let url) = buildURL(path: "voices", queryItems: queryItems) else {
+        var params = QueryParameters()
+        params.add("language", value: language)
+        guard case .success(let url) = buildURL(path: "voices", queryItems: params.build()) else {
             return Fail(error: .invalidURL).eraseToAnyPublisher()
         }
         let urlRequest = authenticatedRequest(for: url)
@@ -629,49 +589,52 @@ class APIService {
                 guard let httpResponse = response as? HTTPURLResponse else {
                     return Fail(error: .invalidResponse).eraseToAnyPublisher()
                 }
-
-                if (200...299).contains(httpResponse.statusCode) {
-                    let decoder = JSONDecoder()
-
-                    // Try direct array of objects
-                    if let voices = try? decoder.decode([EdgeTTSVoiceInfo].self, from: data) {
-                        return Just(voices).setFailureType(to: APIError.self).eraseToAnyPublisher()
-                    }
-
-                    // Try decoding as a dictionary with "voices" key
-                    if let wrapper = try? decoder.decode(
-                        [String: [EdgeTTSVoiceInfo]].self, from: data),
-                        let voices = wrapper["voices"]
-                    {
-                        return Just(voices).setFailureType(to: APIError.self).eraseToAnyPublisher()
-                    }
-
-                    // Try array of strings
-                    if let strings = try? decoder.decode([String].self, from: data) {
-                        let voices = strings.map { EdgeTTSVoiceInfo(shortName: $0) }
-                        return Just(voices).setFailureType(to: APIError.self).eraseToAnyPublisher()
-                    }
-
-                    // Fallback: try to see if it's a JSON object at all
-                    if let json = try? JSONSerialization.jsonObject(with: data, options: []),
-                        let voicesArray = json as? [String]
-                    {
-                        let voices = voicesArray.map { EdgeTTSVoiceInfo(shortName: $0) }
-                        return Just(voices).setFailureType(to: APIError.self).eraseToAnyPublisher()
-                    }
-
-                    return Fail(
-                        error: .decodingFailed(
-                            NSError(
-                                domain: "", code: 0,
-                                userInfo: [
-                                    NSLocalizedDescriptionKey: "Failed to decode voices response"
-                                ]))
-                    ).eraseToAnyPublisher()
+                guard (200...299).contains(httpResponse.statusCode) else {
+                    return self.handleErrorResponse(data: data)
                 }
-                return Fail(error: .invalidResponse).eraseToAnyPublisher()
+                return self.decodeVoicesWithFallbacks(data: data)
             }
             .eraseToAnyPublisher()
+    }
+
+    private func decodeVoicesWithFallbacks(data: Data) -> AnyPublisher<[EdgeTTSVoiceInfo], APIError>
+    {
+        let decoder = JSONDecoder()
+
+        // Try direct array of objects
+        if let voices = try? decoder.decode([EdgeTTSVoiceInfo].self, from: data) {
+            return Just(voices).setFailureType(to: APIError.self).eraseToAnyPublisher()
+        }
+
+        // Try decoding as a dictionary with "voices" key
+        if let wrapper = try? decoder.decode([String: [EdgeTTSVoiceInfo]].self, from: data),
+            let voices = wrapper["voices"]
+        {
+            return Just(voices).setFailureType(to: APIError.self).eraseToAnyPublisher()
+        }
+
+        // Try array of strings
+        if let strings = try? decoder.decode([String].self, from: data) {
+            let voices = strings.map { EdgeTTSVoiceInfo(shortName: $0) }
+            return Just(voices).setFailureType(to: APIError.self).eraseToAnyPublisher()
+        }
+
+        // Fallback: try to see if it's a JSON object at all
+        if let json = try? JSONSerialization.jsonObject(with: data, options: []),
+            let voicesArray = json as? [String]
+        {
+            let voices = voicesArray.map { EdgeTTSVoiceInfo(shortName: $0) }
+            return Just(voices).setFailureType(to: APIError.self).eraseToAnyPublisher()
+        }
+
+        return Fail(
+            error: .decodingFailed(
+                NSError(
+                    domain: "", code: 0,
+                    userInfo: [NSLocalizedDescriptionKey: "Failed to decode voices response"]
+                )
+            )
+        ).eraseToAnyPublisher()
     }
 
     func translateText(request: TranslateRequest) -> AnyPublisher<TranslateResponse, APIError> {
@@ -772,8 +735,9 @@ extension APIService {
             .eraseToAnyPublisher()
     }
 
-    func postJSON<T: Decodable>(
+    private func jsonRequest<T: Decodable>(
         path: String,
+        method: String,
         body: [String: Any],
         responseType: T.Type
     ) -> AnyPublisher<T, APIError> {
@@ -784,11 +748,19 @@ extension APIService {
             return Fail(error: encodingError(description: "Failed to encode request"))
                 .eraseToAnyPublisher()
         }
-        let request = authenticatedRequest(for: url, method: "POST", body: bodyData)
+        let request = authenticatedRequest(for: url, method: method, body: bodyData)
         return URLSession.shared.dataTaskPublisher(for: request)
             .mapError { .requestFailed($0) }
             .flatMap { self.handleResponse($0.data, $0.response) }
             .eraseToAnyPublisher()
+    }
+
+    func postJSON<T: Decodable>(
+        path: String,
+        body: [String: Any],
+        responseType: T.Type
+    ) -> AnyPublisher<T, APIError> {
+        return jsonRequest(path: path, method: "POST", body: body, responseType: responseType)
     }
 
     func putJSON<T: Decodable>(
@@ -796,18 +768,7 @@ extension APIService {
         body: [String: Any],
         responseType: T.Type
     ) -> AnyPublisher<T, APIError> {
-        guard case .success(let url) = buildURL(path: path) else {
-            return Fail(error: .invalidURL).eraseToAnyPublisher()
-        }
-        guard case .success(let bodyData) = encodeJSONBody(body) else {
-            return Fail(error: encodingError(description: "Failed to encode request"))
-                .eraseToAnyPublisher()
-        }
-        let request = authenticatedRequest(for: url, method: "PUT", body: bodyData)
-        return URLSession.shared.dataTaskPublisher(for: request)
-            .mapError { .requestFailed($0) }
-            .flatMap { self.handleResponse($0.data, $0.response) }
-            .eraseToAnyPublisher()
+        return jsonRequest(path: path, method: "PUT", body: body, responseType: responseType)
     }
 
     func postVoid(path: String) -> AnyPublisher<SuccessResponse, APIError> {
@@ -819,5 +780,27 @@ extension APIService {
             .mapError { .requestFailed($0) }
             .flatMap { self.handleResponse($0.data, $0.response) }
             .eraseToAnyPublisher()
+    }
+
+    func clearSessionCookie() {
+        guard let cookies = HTTPCookieStorage.shared.cookies else { return }
+        for cookie in cookies where cookie.name == "quiz-session" {
+            HTTPCookieStorage.shared.deleteCookie(cookie)
+        }
+    }
+
+    func storeCookies(from response: HTTPURLResponse) {
+        guard let url = response.url else { return }
+        let headerFields = response.allHeaderFields
+        var cookieHeaders: [String: String] = [:]
+        for (key, value) in headerFields {
+            if let keyString = key as? String, let valueString = value as? String {
+                cookieHeaders[keyString] = valueString
+            }
+        }
+        let cookies = HTTPCookie.cookies(withResponseHeaderFields: cookieHeaders, for: url)
+        for cookie in cookies {
+            HTTPCookieStorage.shared.setCookie(cookie)
+        }
     }
 }

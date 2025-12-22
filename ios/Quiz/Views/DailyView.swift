@@ -18,25 +18,92 @@ struct DailyView: View {
                     if viewModel.isLoading && viewModel.dailyQuestions.isEmpty {
                         ProgressView("Loading Daily Challenge...")
                             .padding(.top, 50)
-                    } else if let error = viewModel.error {
-                        errorView(error)
+                    } else if viewModel.error != nil {
+                        ErrorDisplay(
+                            error: viewModel.error,
+                            onDismiss: { viewModel.clearError() },
+                            showRetryButton: true,
+                            onRetry: { viewModel.fetchDaily() }
+                        )
                     } else if let question = viewModel.currentQuestion {
                         headerSection
 
-                        questionCard(question.question)
+                        QuestionCardView(
+                            question: question.question,
+                            snippets: viewModel.snippets,
+                            onTextSelected: { text, fullText in
+                                selectedText = text
+                                translationSentence = extractSentence(
+                                    from: fullText, containing: text)
+                                showTranslationPopup = true
+                            },
+                            onSnippetTapped: { snippet in
+                                showingSnippet = snippet
+                            },
+                            showLanguageBadge: false
+                        )
 
-                        optionsList(question.question)
+                        QuestionOptionsView(
+                            question: question.question,
+                            selectedAnswerIndex: viewModel.selectedAnswerIndex,
+                            correctAnswerIndex: question.isCompleted
+                                ? question.question.correctAnswerIndex : nil,
+                            userAnswerIndex: question.isCompleted ? question.userAnswerIndex : nil,
+                            showResults: viewModel.answerResponse != nil || question.isCompleted,
+                            onOptionSelected: { index in
+                                viewModel.selectedAnswerIndex = index
+                            }
+                        )
 
                         if let response = viewModel.answerResponse {
-                            feedbackSection(response)
+                            AnswerFeedbackView(
+                                isCorrect: response.isCorrect,
+                                explanation: response.explanation,
+                                language: question.question.language,
+                                snippets: viewModel.snippets,
+                                onTextSelected: { text, fullText in
+                                    selectedText = text
+                                    translationSentence = extractSentence(
+                                        from: fullText, containing: text)
+                                    showTranslationPopup = true
+                                },
+                                onSnippetTapped: { snippet in
+                                    showingSnippet = snippet
+                                },
+                                showOverlay: true
+                            )
                         } else if question.isCompleted {
                             // Show feedback for completed questions even if answerResponse is nil
-                            completedQuestionFeedback(question)
+                            let isCorrect =
+                                question.userAnswerIndex == question.question.correctAnswerIndex
+                            let explanation =
+                                stringValue(question.question.content["explanation"])
+                                ?? "Review your answer above."
+                            AnswerFeedbackView(
+                                isCorrect: isCorrect,
+                                explanation: explanation,
+                                language: question.question.language,
+                                snippets: viewModel.snippets,
+                                onTextSelected: { text, fullText in
+                                    selectedText = text
+                                    translationSentence = extractSentence(
+                                        from: fullText, containing: text)
+                                    showTranslationPopup = true
+                                },
+                                onSnippetTapped: { snippet in
+                                    showingSnippet = snippet
+                                },
+                                showOverlay: true
+                            )
                         }
 
                         actionButtons()
 
-                        footerButtons()
+                        QuestionActionButtons(
+                            isReported: viewModel.isReported,
+                            onReport: { viewModel.showReportModal = true },
+                            onMarkKnown: { viewModel.showMarkKnownModal = true }
+                        )
                     } else if !viewModel.dailyQuestions.isEmpty {
                         completionView
                     }
@@ -93,10 +160,22 @@ struct DailyView: View {
             }
         }
         .sheet(isPresented: $viewModel.showReportModal) {
-            reportSheet
+            ReportQuestionSheet(
+                reportReason: $reportReason,
+                isPresented: $viewModel.showReportModal,
+                isSubmitting: viewModel.isSubmittingAction
+            ) { reason in
+                viewModel.reportQuestion(reason: reason)
+            }
         }
         .sheet(isPresented: $viewModel.showMarkKnownModal) {
-            markKnownSheet
+            MarkKnownSheet(
+                selectedConfidence: $selectedConfidence,
+                isPresented: $viewModel.showMarkKnownModal,
+                isSubmitting: viewModel.isSubmittingAction
+            ) { confidence in
+                viewModel.markQuestionKnown(confidence: confidence)
+            }
         }
         .sheet(isPresented: $showTranslationPopup) {
             if let text = selectedText, let question = viewModel.currentQuestion {
@@ -187,281 +266,6 @@ struct DailyView: View {
         .appCard()
     }
 
-    private func questionCard(_ question: Question) -> some View {
-        VStack(alignment: .leading, spacing: 15) {
-            HStack {
-                BadgeView(
-                    text: question.type.replacingOccurrences(of: "_", with: " ").uppercased(),
-                    color: AppTheme.Colors.accentIndigo)
-
-                Spacer()
-            }
-
-            if let passage = stringValue(question.content["passage"]) {
-                VStack(alignment: .trailing) {
-                    TTSButton(text: passage, language: question.language)
-                    SelectableTextView(
-                        text: passage,
-                        language: question.language,
-                        onTextSelected: { text in
-                            selectedText = text
-                            translationSentence = extractSentence(from: passage, containing: text)
-                            showTranslationPopup = true
-                        },
-                        highlightedSnippets: viewModel.snippets,
-                        onSnippetTapped: { snippet in
-                            showingSnippet = snippet
-                        }
-                    )
-                    .id("passage-\(viewModel.snippets.count)")
-                    .frame(minHeight: 100)
-                }
-                .appInnerCard()
-            }
-
-            let sentence = stringValue(question.content["sentence"])
-            let questionText =
-                stringValue(question.content["question"]) ?? stringValue(question.content["prompt"])
-
-            if let sentence = sentence {
-                SelectableTextView(
-                    text: sentence,
-                    language: question.language,
-                    onTextSelected: { text in
-                        selectedText = text
-                        translationSentence = extractSentence(from: sentence, containing: text)
-                        showTranslationPopup = true
-                    },
-                    highlightedSnippets: viewModel.snippets,
-                    onSnippetTapped: { snippet in
-                        showingSnippet = snippet
-                    }
-                )
-                .id("sentence-\(viewModel.snippets.count)")
-                .frame(minHeight: 44)
-            } else if let questionText = questionText {
-                SelectableTextView(
-                    text: questionText,
-                    language: question.language,
-                    onTextSelected: { text in
-                        selectedText = text
-                        translationSentence = extractSentence(from: questionText, containing: text)
-                        showTranslationPopup = true
-                    },
-                    highlightedSnippets: viewModel.snippets,
-                    onSnippetTapped: { snippet in
-                        showingSnippet = snippet
-                    }
-                )
-                .id("question-\(viewModel.snippets.count)")
-                .frame(minHeight: 44)
-            }
-
-            if question.type == "vocabulary",
-                let targetWord = stringValue(question.content["question"])
-            {
-                SelectableTextView(
-                    text: "What does \(targetWord) mean in this context?",
-                    language: question.language,
-                    onTextSelected: { text in
-                        selectedText = text
-                        translationSentence = extractSentence(
-                            from: "What does \(targetWord) mean in this context?", containing: text)
-                        showTranslationPopup = true
-                    },
-                    highlightedSnippets: viewModel.snippets,
-                    onSnippetTapped: { snippet in
-                        showingSnippet = snippet
-                    }
-                )
-                .id("vocab-\(viewModel.snippets.count)")
-                .frame(minHeight: 44)
-            }
-        }
-        .appCard()
-    }
-
-    private func optionsList(_ question: Question) -> some View {
-        VStack(spacing: 12) {
-            if let options = stringArrayValue(question.content["options"]) {
-                ForEach(Array(options.enumerated()), id: \.offset) { idx, option in
-                    optionButton(option: option, index: idx)
-                }
-            }
-        }
-    }
-
-    private func optionButton(option: String, index: Int) -> some View {
-        let currentQuestion = viewModel.currentQuestion
-        let isCompleted = currentQuestion?.isCompleted ?? false
-        let isSelected = viewModel.selectedAnswerIndex == index
-        let showResults = viewModel.answerResponse != nil || isCompleted
-
-        // Only get correct answer info when we should show results
-        let correctAnswerIndex: Int? =
-            showResults
-            ? (viewModel.answerResponse?.correctAnswerIndex
-                ?? currentQuestion?.question.correctAnswerIndex) : nil
-        let isCorrect = correctAnswerIndex != nil && correctAnswerIndex == index
-        let userAnswerIndex =
-            viewModel.answerResponse?.userAnswerIndex
-            ?? (isCompleted ? currentQuestion?.userAnswerIndex : nil)
-        let isUserIncorrect = userAnswerIndex != nil && userAnswerIndex == index && !isCorrect
-
-        return HStack {
-            if showResults {
-                if isCorrect {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundColor(AppTheme.Colors.successGreen)
-                } else if isUserIncorrect {
-                    Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(AppTheme.Colors.errorRed)
-                }
-            }
-
-            Text(option)
-                .font(AppTheme.Typography.bodyFont)
-                .foregroundColor(
-                    showResults && isUserIncorrect
-                        ? AppTheme.Colors.errorRed
-                        : (showResults && isCorrect
-                            ? AppTheme.Colors.successGreen
-                            : (isSelected ? .white : AppTheme.Colors.primaryText))
-                )
-                .frame(maxWidth: .infinity, alignment: .leading)
-
-            Spacer()
-        }
-        .padding(AppTheme.Spacing.innerPadding)
-        .frame(maxWidth: .infinity)
-        .background(
-            showResults && isUserIncorrect
-                ? AppTheme.Colors.errorRed.opacity(0.1)
-                : (showResults && isCorrect
-                    ? AppTheme.Colors.successGreen.opacity(0.1)
-                    : (isSelected
-                        ? AppTheme.Colors.primaryBlue : AppTheme.Colors.primaryBlue.opacity(0.05)))
-        )
-        .cornerRadius(AppTheme.CornerRadius.button)
-        .overlay(
-            RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button)
-                .stroke(
-                    showResults && isUserIncorrect
-                        ? AppTheme.Colors.errorRed
-                        : (showResults && isCorrect
-                            ? AppTheme.Colors.successGreen : AppTheme.Colors.borderBlue),
-                    lineWidth: 1)
-        )
-        .contentShape(Rectangle())
-        .onTapGesture {
-            if !showResults {
-                viewModel.selectedAnswerIndex = index
-            }
-        }
-        .disabled(showResults)
-    }
-
-    @ViewBuilder
-    private func feedbackSection(_ response: DailyAnswerResponse) -> some View {
-        let language = viewModel.currentQuestion?.question.language ?? "en"
-
-        VStack(alignment: .leading, spacing: AppTheme.Spacing.itemSpacing) {
-            HStack {
-                Image(systemName: response.isCorrect ? "checkmark" : "xmark")
-                    .foregroundColor(
-                        response.isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.errorRed
-                    )
-                Text(response.isCorrect ? "Correct!" : "Incorrect")
-                    .font(AppTheme.Typography.headingFont)
-                    .foregroundColor(
-                        response.isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.errorRed
-                    )
-            }
-
-            SelectableTextView(
-                text: response.explanation,
-                language: language,
-                onTextSelected: { text in
-                    selectedText = text
-                    translationSentence = extractSentence(
-                        from: response.explanation, containing: text)
-                    showTranslationPopup = true
-                },
-                highlightedSnippets: viewModel.snippets,
-                onSnippetTapped: { snippet in
-                    showingSnippet = snippet
-                }
-            )
-            .id("explanation-\(viewModel.snippets.count)")
-            .frame(maxWidth: .infinity, alignment: .leading)
-        }
-        .padding(AppTheme.Spacing.innerPadding)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            response.isCorrect
-                ? AppTheme.Colors.successGreen.opacity(0.05)
-                : AppTheme.Colors.errorRed.opacity(0.05)
-        )
-        .cornerRadius(AppTheme.CornerRadius.button)
-        .overlay(
-            RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(
-                response.isCorrect
-                    ? AppTheme.Colors.successGreen.opacity(0.2)
-                    : AppTheme.Colors.errorRed.opacity(0.2), lineWidth: 1))
-    }
-
-    private func completedQuestionFeedback(_ question: DailyQuestionWithDetails) -> some View {
-        // For completed questions, determine if the answer was correct
-        let correctAnswerIndex = question.question.correctAnswerIndex
-        let userAnswerIndex = question.userAnswerIndex
-        let isCorrect = userAnswerIndex == correctAnswerIndex
-
-        // Try to get explanation from question content or use a default message
-        let explanation =
-            stringValue(question.question.content["explanation"]) ?? "Review your answer above."
-
-        return VStack(alignment: .leading, spacing: AppTheme.Spacing.itemSpacing) {
-            HStack {
-                Image(systemName: isCorrect ? "checkmark" : "xmark")
-                    .foregroundColor(
-                        isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.errorRed)
-                Text(isCorrect ? "Correct!" : "Incorrect")
-                    .font(AppTheme.Typography.headingFont)
-                    .foregroundColor(
-                        isCorrect ? AppTheme.Colors.successGreen : AppTheme.Colors.errorRed)
-            }
-
-            SelectableTextView(
-                text: explanation,
-                language: question.question.language,
-                onTextSelected: { text in
-                    selectedText = text
-                    translationSentence = extractSentence(from: explanation, containing: text)
-                    showTranslationPopup = true
-                },
-                highlightedSnippets: viewModel.snippets,
-                onSnippetTapped: { snippet in
-                    showingSnippet = snippet
-                }
-            )
-            .id("completed-explanation-\(viewModel.snippets.count)")
-            .frame(maxWidth: .infinity, alignment: .leading)
-        }
-        .padding(AppTheme.Spacing.innerPadding)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            isCorrect
-                ? AppTheme.Colors.successGreen.opacity(0.05)
-                : AppTheme.Colors.errorRed.opacity(0.05)
-        )
-        .cornerRadius(AppTheme.CornerRadius.button)
-        .overlay(
-            RoundedRectangle(cornerRadius: AppTheme.CornerRadius.button).stroke(
-                isCorrect
-                    ? AppTheme.Colors.successGreen.opacity(0.2)
-                    : AppTheme.Colors.errorRed.opacity(0.2), lineWidth: 1))
-    }
-
     private var completionView: some View {
         VStack(spacing: 20) {
             Image(systemName: "trophy.fill")
@@ -484,21 +288,6 @@ struct DailyView: View {
         .padding(.top, 50)
     }
 
-    private func errorView(_ error: Error) -> some View {
-        VStack(spacing: 15) {
-            Image(systemName: "exclamationmark.triangle")
-                .font(.largeTitle)
-                .foregroundColor(.red)
-            Text("Error: \(error.localizedDescription)")
-                .multilineTextAlignment(.center)
-            Button("Retry") {
-                viewModel.fetchDaily()
-            }
-            .buttonStyle(.bordered)
-        }
-        .padding()
-    }
-
     // Helpers
     private func stringValue(_ v: JSONValue?) -> String? {
         guard let v else { return nil }
@@ -512,22 +301,6 @@ struct DailyView: View {
         return arr.compactMap { item -> String? in
             if case .string(let s) = item { return s }
             return nil
-        }
-    }
-
-    private func highlightedText(_ fullText: String, targetWord: String?) -> some View {
-        if let targetWord = targetWord,
-            let range = fullText.range(of: targetWord, options: .caseInsensitive)
-        {
-            let before = String(fullText[..<range.lowerBound])
-            let word = String(fullText[range])
-            let after = String(fullText[range.upperBound...])
-
-            return Text(
-                "\(Text(before))\(Text(word).foregroundColor(.blue).fontWeight(.bold))\(Text(after))"
-            )
-        } else {
-            return Text(fullText)
         }
     }
 
@@ -615,93 +388,4 @@ struct DailyView: View {
         }
     }
 
-    @ViewBuilder
-    private func footerButtons() -> some View {
-        HStack(spacing: 20) {
-            Button(action: { viewModel.showReportModal = true }) {
-                Label(viewModel.isReported ? "Reported" : "Report issue", systemImage: "flag")
-                    .font(.caption)
-            }
-            .disabled(viewModel.isReported)
-            .foregroundColor(.secondary)
-
-            Spacer()
-
-            Button(action: { viewModel.showMarkKnownModal = true }) {
-                Label("Adjust frequency", systemImage: "slider.horizontal.3")
-                    .font(.caption)
-            }
-            .foregroundColor(.secondary)
-        }
-        .padding(.top, 10)
-    }
-
-    private var reportSheet: some View {
-        NavigationView {
-            Form {
-                Section(header: Text("Why are you reporting this question?")) {
-                    TextEditor(text: $reportReason)
-                        .frame(minHeight: 100)
-                }
-
-                Button("Submit Report") {
-                    viewModel.reportQuestion(reason: reportReason)
-                }
-                .disabled(viewModel.isSubmittingAction)
-            }
-            .navigationTitle("Report Issue")
-            .navigationBarItems(trailing: Button("Cancel") { viewModel.showReportModal = false })
-        }
-    }
-
-    private var markKnownSheet: some View {
-        NavigationView {
-            VStack(spacing: 20) {
-                Text(
-                    "Choose how often you want to see this question in future quizzes: 1–2 show it more, 3 no change, 4–5 show it less."
-                )
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-                .padding()
-
-                Text("How confident are you about this question?")
-                    .font(.headline)
-
-                HStack(spacing: 10) {
-                    ForEach(1...5, id: \.self) { level in
-                        Button("\(level)") {
-                            selectedConfidence = level
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(
-                            selectedConfidence == level
-                                ? AppTheme.Colors.primaryBlue
-                                : AppTheme.Colors.primaryBlue.opacity(0.1)
-                        )
-                        .foregroundColor(
-                            selectedConfidence == level ? .white : AppTheme.Colors.primaryBlue
-                        )
-                        .cornerRadius(AppTheme.CornerRadius.button)
-                    }
-                }
-                .padding(.horizontal)
-
-                Spacer()
-
-                Button("Save Preference") {
-                    if let confidence = selectedConfidence {
-                        viewModel.markQuestionKnown(confidence: confidence)
-                    }
-                }
-                .buttonStyle(
-                    PrimaryButtonStyle(
-                        isDisabled: selectedConfidence == nil || viewModel.isSubmittingAction)
-                )
-                .padding()
-            }
-            .navigationTitle("Adjust Frequency")
-            .navigationBarItems(trailing: Button("Cancel") { viewModel.showMarkKnownModal = false })
-        }
-    }
 }

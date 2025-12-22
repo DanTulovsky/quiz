@@ -158,7 +158,7 @@ struct SnippetListView: View {
             if let query = initialSearchQuery {
                 viewModel.searchQuery = query
             }
-            viewModel.fetchStories()
+            viewModel.fetchItems()
             viewModel.fetchLanguages()
             viewModel.getSnippets()
             settingsViewModel.fetchLevels(language: nil)

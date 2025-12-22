@@ -9,34 +9,19 @@ struct SignupView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Username")
                         .font(AppTheme.Typography.subheadlineFont.weight(.medium))
-                    TextField("Username", text: $viewModel.username)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled(true)
-                        .padding()
-                        .background(AppTheme.Colors.secondaryBackground)
-                        .cornerRadius(AppTheme.CornerRadius.button)
+                    FormTextField(placeholder: "Username", text: $viewModel.username)
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Email")
                         .font(AppTheme.Typography.subheadlineFont.weight(.medium))
-                    TextField("Email", text: $viewModel.email)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled(true)
-                        .padding()
-                        .background(AppTheme.Colors.secondaryBackground)
-                        .cornerRadius(AppTheme.CornerRadius.button)
+                    FormTextField(placeholder: "Email", text: $viewModel.email)
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Password")
                         .font(AppTheme.Typography.subheadlineFont.weight(.medium))
-                    SecureField("Password", text: $viewModel.password)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled(true)
-                        .padding()
-                        .background(AppTheme.Colors.secondaryBackground)
-                        .cornerRadius(AppTheme.CornerRadius.button)
+                    FormSecureField(placeholder: "Password", text: $viewModel.password, showPasswordToggle: false)
                 }
 
                 if viewModel.error != nil {

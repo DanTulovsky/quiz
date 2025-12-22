@@ -1,8 +1,16 @@
 import Foundation
 import Combine
 
-class StoryViewModel: BaseViewModel, SnippetLoading {
+class StoryViewModel: BaseViewModel, SnippetLoading, Refreshable, ListFetching, SectionNavigable {
+    typealias Item = StorySummary
+    typealias Section = StorySection
+
     @Published var stories = [StorySummary]()
+
+    var items: [StorySummary] {
+        get { stories }
+        set { stories = newValue }
+    }
     @Published var selectedStory: StoryContent?
     @Published var currentSection: StorySectionWithQuestions?
     @Published var currentSectionIndex = 0
@@ -14,17 +22,16 @@ class StoryViewModel: BaseViewModel, SnippetLoading {
         case reading
     }
 
+    var sections: [StorySection] {
+        selectedStory?.sections ?? []
+    }
+
     override init(apiService: APIService = APIService.shared) {
         super.init(apiService: apiService)
     }
 
-    func getStories() {
-        apiService.getStories()
-            .handleLoadingAndError(on: self)
-            .sinkValue(on: self) { [weak self] storyList in
-                self?.stories = storyList
-            }
-            .store(in: &cancellables)
+    func fetchItemsPublisher() -> AnyPublisher<[StorySummary], APIService.APIError> {
+        return apiService.getStories()
     }
 
     func getStory(id: Int) {
@@ -35,7 +42,8 @@ class StoryViewModel: BaseViewModel, SnippetLoading {
                 self.selectedStory = storyContent
                 self.loadSnippets(storyId: id)
                 if !storyContent.sections.isEmpty {
-                    self.fetchSection(id: storyContent.sections[0].id)
+                    self.currentSectionIndex = 0
+                    self.fetchSection(at: 0)
                 } else {
                     self.isLoading = false
                 }
@@ -43,7 +51,12 @@ class StoryViewModel: BaseViewModel, SnippetLoading {
             .store(in: &cancellables)
     }
 
-    func fetchSection(id: Int) {
+    func fetchSection(at index: Int) {
+        guard let story = selectedStory, index >= 0 && index < story.sections.count else { return }
+        fetchSection(id: story.sections[index].id)
+    }
+
+    private func fetchSection(id: Int) {
         apiService.getStorySection(id: id)
             .handleLoadingAndError(on: self)
             .sinkValue(on: self) { [weak self] section in
@@ -53,33 +66,27 @@ class StoryViewModel: BaseViewModel, SnippetLoading {
     }
 
     func nextPage() {
-        guard let story = selectedStory, currentSectionIndex < story.sections.count - 1 else { return }
-        currentSectionIndex += 1
-        fetchSection(id: story.sections[currentSectionIndex].id)
+        _ = nextSection()
     }
 
     func previousPage() {
-        guard let story = selectedStory, currentSectionIndex > 0 else { return }
-        currentSectionIndex -= 1
-        fetchSection(id: story.sections[currentSectionIndex].id)
+        _ = previousSection()
     }
 
     func goToBeginning() {
-        guard let story = selectedStory, !story.sections.isEmpty, currentSectionIndex != 0 else { return }
-        currentSectionIndex = 0
-        fetchSection(id: story.sections[0].id)
+        _ = goToSectionBeginning()
     }
 
     func goToEnd() {
-        guard let story = selectedStory, !story.sections.isEmpty else { return }
-        let lastIndex = story.sections.count - 1
-        guard currentSectionIndex != lastIndex else { return }
-        currentSectionIndex = lastIndex
-        fetchSection(id: story.sections[lastIndex].id)
+        _ = goToSectionEnd()
     }
 
     var fullStoryContent: String {
         guard let story = selectedStory else { return "" }
         return story.sections.map { $0.content }.joined(separator: "\n\n")
+    }
+
+    func refreshData() {
+        fetchItems()
     }
 }

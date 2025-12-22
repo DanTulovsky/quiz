@@ -15,6 +15,15 @@ class AuthenticationViewModelURLValidationTests: XCTestCase {
     }
 
     override func tearDown() {
+        // Cancel any pending operations before deallocating to avoid deadlocks
+        viewModel?.cancelAllRequests()
+        // Small delay to allow any async operations to complete
+        let expectation = XCTestExpectation(description: "Cleanup")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 0.2)
+
         cancellables = nil
         viewModel = nil
         mockAPIService = nil

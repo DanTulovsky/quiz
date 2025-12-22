@@ -5,17 +5,23 @@ struct ErrorDisplay: View {
     let onDismiss: (() -> Void)?
     let showDetailsButton: Bool
     let onShowDetails: (() -> Void)?
+    let showRetryButton: Bool
+    let onRetry: (() -> Void)?
 
     init(
         error: APIService.APIError?,
         onDismiss: (() -> Void)? = nil,
         showDetailsButton: Bool = false,
-        onShowDetails: (() -> Void)? = nil
+        onShowDetails: (() -> Void)? = nil,
+        showRetryButton: Bool = false,
+        onRetry: (() -> Void)? = nil
     ) {
         self.error = error
         self.onDismiss = onDismiss
         self.showDetailsButton = showDetailsButton
         self.onShowDetails = onShowDetails
+        self.showRetryButton = showRetryButton
+        self.onRetry = onRetry
     }
 
     var body: some View {
@@ -49,18 +55,31 @@ struct ErrorDisplay: View {
                     .foregroundColor(AppTheme.Colors.secondaryText)
                     .frame(maxWidth: .infinity, alignment: .leading)
 
-                if showDetailsButton, error.errorDetails != nil, let onShowDetails = onShowDetails {
-                    Button(action: onShowDetails) {
-                        HStack(spacing: 4) {
-                            Text("View Details")
-                                .font(AppTheme.Typography.captionFont)
-                            Image(systemName: "chevron.right")
-                                .font(.system(size: 10))
+                HStack(spacing: 12) {
+                    if showDetailsButton, error.errorDetails != nil, let onShowDetails = onShowDetails {
+                        Button(action: onShowDetails) {
+                            HStack(spacing: 4) {
+                                Text("View Details")
+                                    .font(AppTheme.Typography.captionFont)
+                                Image(systemName: "chevron.right")
+                                    .font(.system(size: 10))
+                            }
+                            .foregroundColor(AppTheme.Colors.primaryBlue)
                         }
-                        .foregroundColor(AppTheme.Colors.primaryBlue)
                     }
-                    .padding(.top, 4)
+                    if showRetryButton, let onRetry = onRetry {
+                        Button(action: onRetry) {
+                            HStack(spacing: 4) {
+                                Image(systemName: "arrow.clockwise")
+                                    .font(.system(size: 12))
+                                Text("Retry")
+                                    .font(AppTheme.Typography.captionFont)
+                            }
+                            .foregroundColor(AppTheme.Colors.primaryBlue)
+                        }
+                    }
                 }
+                .padding(.top, 4)
             }
             .padding(AppTheme.Spacing.innerPadding)
             .background(AppTheme.Colors.errorRed.opacity(0.1))

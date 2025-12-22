@@ -411,10 +411,7 @@ struct SettingsView: View {
                             }
                         }
                         .font(.subheadline).fontWeight(.medium)
-                        SecureField("Enter API Key (Optional if saved)", text: $apiKey)
-                            .padding(10)
-                            .background(AppTheme.Colors.secondaryBackground)
-                            .cornerRadius(AppTheme.CornerRadius.badge)
+                        FormSecureField(placeholder: "Enter API Key (Optional if saved)", text: $apiKey, showPasswordToggle: false)
 
                         Button(action: {
                             viewModel.testAI(
@@ -640,10 +637,7 @@ struct SettingsView: View {
                     Text("*").foregroundColor(.red)
                 }
             }
-            TextField(label, text: text)
-                .padding(10)
-                .background(Color(.secondarySystemBackground))
-                .cornerRadius(8)
+            FormTextField(placeholder: label, text: text)
         }
     }
 

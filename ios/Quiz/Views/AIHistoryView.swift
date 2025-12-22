@@ -40,7 +40,7 @@ struct AIConversationListView: View {
             }
         }
         .onAppear {
-            viewModel.fetchConversations()
+            viewModel.fetchItems()
         }
         .toolbar {
             ToolbarItem(placement: .principal) {

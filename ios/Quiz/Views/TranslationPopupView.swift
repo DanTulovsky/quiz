@@ -24,18 +24,7 @@ struct TranslationPopupView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // Header
-            HStack {
-                Text("Translation")
-                    .font(AppTheme.Typography.headingFont)
-                Spacer()
-                Button(action: onClose) {
-                    Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.secondary)
-                        .font(.title2)
-                }
-            }
-            .padding()
+            ModalHeader(title: "Translation", onClose: onClose)
 
             Divider()
 

@@ -29,7 +29,7 @@ class AIHistoryViewModelTests: XCTestCase {
         let expectation = XCTestExpectation(description: "Conversations fetched")
 
         // When
-        viewModel.fetchConversations()
+        viewModel.fetchItems()
 
         // Then - wait for async operation
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
