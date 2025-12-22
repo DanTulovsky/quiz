@@ -60,6 +60,18 @@ struct BadgeView: View {
             }
         }
         notificationObservers.append(willResignActiveObserver)
+
+        // Observe when app fully enters background state
+        let didEnterBackgroundObserver = NotificationCenter.default.addObserver(
+            forName: UIApplication.didEnterBackgroundNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                self?.handleAppEnteringBackground()
+            }
+        }
+        notificationObservers.append(didEnterBackgroundObserver)
     }
 
     private func handleAppGoingToBackground() {
@@ -71,13 +83,28 @@ struct BadgeView: View {
         // The background audio mode allows playback to continue
     }
 
+    private func handleAppEnteringBackground() {
+        // Reactivate audio session to ensure background playback continues
+        do {
+            let audioSession = AVAudioSession.sharedInstance()
+            try audioSession.setActive(true)
+
+            // Ensure player continues if it's currently playing
+            if let player = player, !isPaused, currentlySpeakingText != nil {
+                player.play()
+            }
+        } catch {
+            print("Failed to reactivate audio session in background: \(error.localizedDescription)")
+        }
+    }
+
     private func setupAudioSession() {
         do {
             let audioSession = AVAudioSession.sharedInstance()
             try audioSession.setCategory(
                 .playback,
                 mode: .default,
-                options: [.allowBluetoothHFP, .allowBluetoothA2DP]
+                options: [.allowBluetoothHFP, .allowBluetoothA2DP, .duckOthers]
             )
             try audioSession.setActive(true)
         } catch {
@@ -175,7 +202,8 @@ struct BadgeView: View {
                         if case .requestFailed(let underlyingError) = error {
                             let nsError = underlyingError as NSError
                             if nsError.domain == NSURLErrorDomain
-                                && nsError.code == NSURLErrorCancelled {
+                                && nsError.code == NSURLErrorCancelled
+                            {
                                 // Request was cancelled, don't show error
                                 return
                             }
@@ -308,6 +336,15 @@ struct BadgeView: View {
             // Add observer for status (will be removed in stop() or deinit)
             playerItem.addObserver(
                 self, forKeyPath: "status", options: [.new, .initial], context: nil)
+
+            // Ensure audio session is active before playing (critical for background playback)
+            do {
+                try AVAudioSession.sharedInstance().setActive(true)
+            } catch {
+                print(
+                    "Failed to activate audio session before playback: \(error.localizedDescription)"
+                )
+            }
 
             player.play()
             isPaused = false
@@ -457,6 +494,12 @@ struct BadgeView: View {
 
     func resume() {
         guard let player = player, currentlySpeakingText != nil else { return }
+        // Ensure audio session is active before resuming playback
+        do {
+            try AVAudioSession.sharedInstance().setActive(true)
+        } catch {
+            print("Failed to activate audio session on resume: \(error.localizedDescription)")
+        }
         player.play()
         isPaused = false
         updateNowPlayingPlaybackState()
@@ -675,8 +718,9 @@ private class SizingTextView: UITextView {
         let width = bounds.width > 0 ? bounds.width : UIScreen.main.bounds.width - 64
 
         if let textLayoutManager = textLayoutManager,
-           let textContentManager = textLayoutManager.textContentManager,
-           let textContainer = textLayoutManager.textContainer {
+            let textContentManager = textLayoutManager.textContentManager,
+            let textContainer = textLayoutManager.textContainer
+        {
             let containerSize = CGSize(width: width, height: .greatestFiniteMagnitude)
             textContainer.size = containerSize
 
@@ -817,7 +861,8 @@ struct QuestionCardView: View {
                 .id("\(sentence)-\(snippetsId)")
                 .frame(minHeight: 44)
             } else if let questionText = stringValue(question.content["question"])
-                        ?? stringValue(question.content["prompt"]) {
+                ?? stringValue(question.content["prompt"])
+            {
                 SelectableTextView(
                     text: questionText,
                     language: question.language,
@@ -832,7 +877,8 @@ struct QuestionCardView: View {
             }
 
             if question.type == "vocabulary",
-               let targetWord = stringValue(question.content["question"]) {
+                let targetWord = stringValue(question.content["question"])
+            {
                 let vocabText = "What does \(targetWord) mean in this context?"
                 SelectableTextView(
                     text: vocabText,
