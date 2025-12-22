@@ -370,7 +370,6 @@ struct BadgeView: View {
             // Audio session should already be configured and active from setupAudioSession()
             // No need to reactivate - it should stay active for background playback
             // Per Apple docs and best practices, activate once during setup, not repeatedly
-            let audioSession = AVAudioSession.sharedInstance()
 
             // Write to temporary file
             let tempDir = FileManager.default.temporaryDirectory
@@ -525,11 +524,9 @@ struct BadgeView: View {
                 }
             }
         } else if keyPath == "timeControlStatus", let player = object as? AVPlayer {
-            // Monitor player state for debugging
-            // If audio session is properly configured, player should NOT pause when phone locks
-            // Log unexpected pauses for debugging - don't auto-resume (causes app termination)
             // Monitor player state - if it pauses unexpectedly, it may indicate a configuration issue
-            // With proper configuration, the player should continue playing when device locks else if player.timeControlStatus == .playing {
+            // With proper configuration, the player should continue playing when device locks
+            if player.timeControlStatus == .playing {
                 // Update our state when player starts playing
                 if isPaused && player == self.player {
                     isPaused = false
