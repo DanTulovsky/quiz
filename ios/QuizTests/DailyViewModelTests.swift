@@ -54,6 +54,8 @@ class DailyViewModelTests: XCTestCase {
             id: 100, questionId: 1, question: question, isCompleted: false, userAnswerIndex: nil)
         let response = DailyQuestionsResponse(date: "2025-12-17", questions: [daily])
         mockAPIService.getDailyQuestionsResult = .success(response)
+        // Set snippets result to avoid error from loadSnippets call
+        mockAPIService.getSnippetsResult = .success(SnippetList(limit: 0, offset: 0, query: nil, snippets: []))
 
         let answerResponse = DailyAnswerResponse(
             isCorrect: true,
@@ -70,7 +72,7 @@ class DailyViewModelTests: XCTestCase {
 
         // When - fetch daily questions first
         viewModel.fetchDaily()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             fetchExpectation.fulfill()
         }
         wait(for: [fetchExpectation], timeout: 1.0)
@@ -79,12 +81,16 @@ class DailyViewModelTests: XCTestCase {
         viewModel.currentQuestionIndex = 999 // Invalid index
 
         // When - submit answer with invalid index
+        // Since currentQuestion will be nil with invalid index, submitAnswer will return early
+        // and not call the API, so the array should remain unchanged
         viewModel.submitAnswer(index: 1)
 
         // Then - should not crash, should handle gracefully
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             // Should not have updated the array at invalid index
             XCTAssertEqual(self.viewModel.dailyQuestions.count, 1, "Array should still have one question")
+            // Question should still be uncompleted since submitAnswer returned early
+            XCTAssertFalse(self.viewModel.dailyQuestions[0].isCompleted, "Question should not be marked completed with invalid index")
             submitExpectation.fulfill()
         }
         wait(for: [submitExpectation], timeout: 1.0)

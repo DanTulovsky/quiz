@@ -101,14 +101,15 @@ class SettingsViewModelTests: XCTestCase {
         mockAPIService.getLanguagesResult = .success(languages)
         viewModel.fetchLanguages()
 
-        // When - wait for languages to load
+        // When - wait for languages to load and cache to update
+        // The didSet on availableLanguages uses DispatchQueue.main.async, so we need to wait longer
         let expectation = XCTestExpectation(description: "Case insensitive lookup works")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             // Then - should find language regardless of case
-            XCTAssertNotNil(self.viewModel.getDefaultVoice(for: "EN"))
-            XCTAssertNotNil(self.viewModel.getDefaultVoice(for: "en"))
-            XCTAssertNotNil(self.viewModel.getDefaultVoice(for: "English"))
-            XCTAssertNotNil(self.viewModel.getDefaultVoice(for: "ENGLISH"))
+            XCTAssertNotNil(self.viewModel.getDefaultVoice(for: "EN"), "Should find language with uppercase code")
+            XCTAssertNotNil(self.viewModel.getDefaultVoice(for: "en"), "Should find language with lowercase code")
+            XCTAssertNotNil(self.viewModel.getDefaultVoice(for: "English"), "Should find language with mixed case name")
+            XCTAssertNotNil(self.viewModel.getDefaultVoice(for: "ENGLISH"), "Should find language with uppercase name")
             expectation.fulfill()
         }
         wait(for: [expectation], timeout: 1.0)

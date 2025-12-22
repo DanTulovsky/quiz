@@ -2,12 +2,19 @@ import SwiftUI
 
 struct SnippetDetailPopup: ViewModifier {
     @Binding var showingSnippet: Snippet?
-    @StateObject private var vocabularyViewModel = VocabularyViewModel()
+    @State private var vocabularyViewModel: VocabularyViewModel?
     @State private var showSnippetsView = false
     @State private var snippetSearchQuery = ""
     @State private var showDeleteConfirmation = false
     @State private var snippetToDelete: Snippet? = nil
     var onSnippetDeleted: ((Snippet) -> Void)?
+
+    private func getVocabularyViewModel() -> VocabularyViewModel {
+        if vocabularyViewModel == nil {
+            vocabularyViewModel = VocabularyViewModel()
+        }
+        return vocabularyViewModel!
+    }
 
     func body(content: Content) -> some View {
         content
@@ -49,7 +56,7 @@ struct SnippetDetailPopup: ViewModifier {
                 }
                 Button("Delete", role: .destructive) {
                     if let snippet = snippetToDelete {
-                        vocabularyViewModel.deleteSnippet(id: snippet.id) { result in
+                        getVocabularyViewModel().deleteSnippet(id: snippet.id) { result in
                             switch result {
                             case .success:
                                 onSnippetDeleted?(snippet)

@@ -534,6 +534,15 @@ struct QuestionCardView: View {
     let onSnippetTapped: (Snippet) -> Void
     let showLanguageBadge: Bool
 
+    // Create a stable ID based on snippet IDs to force view updates when snippets change
+    // Use a more unique ID that includes snippet count and first snippet ID to ensure changes are detected
+    private var snippetsId: String {
+        if snippets.isEmpty {
+            return "empty"
+        }
+        return "\(snippets.count)-\(snippets.map { "\($0.id)" }.joined(separator: ","))"
+    }
+
     init(
         question: Question,
         snippets: [Snippet],
@@ -580,7 +589,7 @@ struct QuestionCardView: View {
                         highlightedSnippets: snippets,
                         onSnippetTapped: onSnippetTapped
                     )
-                    .id("\(passage)-\(snippets.count)")
+                    .id("\(passage)-\(snippetsId)")
                     .frame(minHeight: 100)
                 }
                 .appInnerCard()
@@ -596,7 +605,7 @@ struct QuestionCardView: View {
                     highlightedSnippets: snippets,
                     onSnippetTapped: onSnippetTapped
                 )
-                .id("\(sentence)-\(snippets.count)")
+                .id("\(sentence)-\(snippetsId)")
                 .frame(minHeight: 44)
             } else if let questionText = stringValue(question.content["question"])
                 ?? stringValue(question.content["prompt"])
@@ -610,7 +619,7 @@ struct QuestionCardView: View {
                     highlightedSnippets: snippets,
                     onSnippetTapped: onSnippetTapped
                 )
-                .id("\(questionText)-\(snippets.count)")
+                .id("\(questionText)-\(snippetsId)")
                 .frame(minHeight: 44)
             }
 
@@ -627,7 +636,7 @@ struct QuestionCardView: View {
                     highlightedSnippets: snippets,
                     onSnippetTapped: onSnippetTapped
                 )
-                .id("vocab-\(targetWord)-\(snippets.count)")
+                .id("vocab-\(targetWord)-\(snippetsId)")
                 .frame(minHeight: 44)
             }
         }
@@ -766,6 +775,11 @@ struct AnswerFeedbackView: View {
     let onSnippetTapped: (Snippet) -> Void
     let showOverlay: Bool
 
+    // Create a stable ID based on snippet IDs to force view updates when snippets change
+    private var snippetsId: String {
+        snippets.map { "\($0.id)" }.joined(separator: ",")
+    }
+
     init(
         isCorrect: Bool,
         explanation: String,
@@ -807,7 +821,7 @@ struct AnswerFeedbackView: View {
                 highlightedSnippets: snippets,
                 onSnippetTapped: onSnippetTapped
             )
-            .id("explanation-\(snippets.count)")
+            .id("explanation-\(snippetsId)")
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(AppTheme.Spacing.innerPadding)

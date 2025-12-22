@@ -537,6 +537,134 @@ func TestSnippetsService_GetSnippetsByQuestion_Integration(t *testing.T) {
 	assert.Empty(t, snippets, "Different user should not see other user's snippets")
 }
 
+// TestSnippetsService_CreateSnippet_DifferentQuestionIds_Integration tests that the same snippet text
+// can be created for different question_ids, and that duplicate check includes question_id
+func TestSnippetsService_CreateSnippet_DifferentQuestionIds_Integration(t *testing.T) {
+	db := SharedTestDBSetup(t)
+	defer db.Close()
+
+	cfg, err := config.NewConfig()
+	require.NoError(t, err)
+	logger := observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false})
+
+	// Create a test user
+	userService := NewUserServiceWithLogger(db, cfg, logger)
+	username := fmt.Sprintf("testuser_diff_questions_%d", time.Now().UnixNano())
+	user, err := userService.CreateUser(context.Background(), username, "russian", "A1")
+	require.NoError(t, err, "Should be able to create test user")
+	require.NotNil(t, user, "Created user should not be nil")
+
+	// Create two test questions
+	var questionID1 int64
+	err = db.QueryRow(`
+		INSERT INTO questions (type, language, level, difficulty_score, content, correct_answer, explanation)
+		VALUES ($1, $2, $3, $4, $5, $6, $7)
+		RETURNING id
+	`, "fill_blank", "russian", "A1", 0.5, `{"question":"Какой сегодня день? Сегодня ___ день.","options":["солнечный","солнечно","солнечная","солнечные"]}`, 1, "Test explanation 1").Scan(&questionID1)
+	require.NoError(t, err, "Should be able to create first test question")
+
+	var questionID2 int64
+	err = db.QueryRow(`
+		INSERT INTO questions (type, language, level, difficulty_score, content, correct_answer, explanation)
+		VALUES ($1, $2, $3, $4, $5, $6, $7)
+		RETURNING id
+	`, "vocabulary", "russian", "A1", 0.5, `{"question":"сегодня","sentence":"Сколько стоит эта книга?"}`, 2, "Test explanation 2").Scan(&questionID2)
+	require.NoError(t, err, "Should be able to create second test question")
+
+	service := NewSnippetsService(db, cfg, logger)
+
+	// Test: Create snippet for question 1
+	req1 := api.CreateSnippetRequest{
+		OriginalText:   "сегодня",
+		TranslatedText: "сегодня",
+		SourceLanguage: "russian",
+		TargetLanguage: "en",
+		QuestionId:     &questionID1,
+		Context:        stringPtr("Какой сегодня день?"),
+	}
+
+	snippet1, err := service.CreateSnippet(context.Background(), int64(user.ID), req1)
+	require.NoError(t, err, "Should be able to create snippet for question 1")
+	require.NotNil(t, snippet1, "Snippet 1 should not be nil")
+	require.NotNil(t, snippet1.QuestionID, "Snippet 1 should have question_id")
+	assert.Equal(t, questionID1, *snippet1.QuestionID, "Snippet 1 should have question_id 1")
+
+	// Test: Create the same text for question 2 (should succeed - different question_id)
+	req2 := api.CreateSnippetRequest{
+		OriginalText:   "сегодня",
+		TranslatedText: "сегодня",
+		SourceLanguage: "russian",
+		TargetLanguage: "en",
+		QuestionId:     &questionID2,
+		Context:        stringPtr("Сколько стоит эта книга?"),
+	}
+
+	snippet2, err := service.CreateSnippet(context.Background(), int64(user.ID), req2)
+	require.NoError(t, err, "Should be able to create same text for different question_id")
+	require.NotNil(t, snippet2, "Snippet 2 should not be nil")
+	require.NotNil(t, snippet2.QuestionID, "Snippet 2 should have question_id")
+	assert.Equal(t, questionID2, *snippet2.QuestionID, "Snippet 2 should have question_id 2")
+	assert.NotEqual(t, snippet1.ID, snippet2.ID, "Snippets should have different IDs")
+
+	// Test: Try to create duplicate for question 1 (should fail)
+	req1Duplicate := api.CreateSnippetRequest{
+		OriginalText:   "сегодня",
+		TranslatedText: "сегодня",
+		SourceLanguage: "russian",
+		TargetLanguage: "en",
+		QuestionId:     &questionID1,
+		Context:        stringPtr("Different context"),
+	}
+
+	_, err = service.CreateSnippet(context.Background(), int64(user.ID), req1Duplicate)
+	assert.Error(t, err, "Should fail to create duplicate snippet for same question_id")
+	assert.Contains(t, err.Error(), "snippet already exists", "Error should mention snippet already exists")
+
+	// Test: Verify GetSnippetsByQuestion returns correct snippets
+	snippetsForQ1, err := service.GetSnippetsByQuestion(context.Background(), int64(user.ID), questionID1)
+	require.NoError(t, err, "Should be able to get snippets for question 1")
+	assert.Len(t, snippetsForQ1, 1, "Question 1 should have exactly 1 snippet")
+	assert.Equal(t, "сегодня", *snippetsForQ1[0].OriginalText, "Snippet for question 1 should have correct text")
+	require.NotNil(t, snippetsForQ1[0].QuestionId, "Snippet should have question_id")
+	assert.Equal(t, questionID1, *snippetsForQ1[0].QuestionId, "Snippet should have correct question_id")
+
+	snippetsForQ2, err := service.GetSnippetsByQuestion(context.Background(), int64(user.ID), questionID2)
+	require.NoError(t, err, "Should be able to get snippets for question 2")
+	assert.Len(t, snippetsForQ2, 1, "Question 2 should have exactly 1 snippet")
+	assert.Equal(t, "сегодня", *snippetsForQ2[0].OriginalText, "Snippet for question 2 should have correct text")
+	require.NotNil(t, snippetsForQ2[0].QuestionId, "Snippet should have question_id")
+	assert.Equal(t, questionID2, *snippetsForQ2[0].QuestionId, "Snippet should have correct question_id")
+
+	// Test: Create snippet without question_id (should succeed)
+	reqNoQuestion := api.CreateSnippetRequest{
+		OriginalText:   "сегодня",
+		TranslatedText: "сегодня",
+		SourceLanguage: "russian",
+		TargetLanguage: "en",
+		// No question_id
+		Context: stringPtr("General context"),
+	}
+
+	snippetNoQuestion, err := service.CreateSnippet(context.Background(), int64(user.ID), reqNoQuestion)
+	require.NoError(t, err, "Should be able to create snippet without question_id")
+	require.NotNil(t, snippetNoQuestion, "Snippet without question should not be nil")
+	assert.Nil(t, snippetNoQuestion.QuestionID, "Snippet without question_id should have nil QuestionID")
+
+	// Test: Try to create another snippet without question_id (should fail - duplicate)
+	reqNoQuestionDuplicate := api.CreateSnippetRequest{
+		OriginalText:   "сегодня",
+		TranslatedText: "сегодня",
+		SourceLanguage: "russian",
+		TargetLanguage: "en",
+		// No question_id
+		Context: stringPtr("Another context"),
+	}
+
+	_, err = service.CreateSnippet(context.Background(), int64(user.ID), reqNoQuestionDuplicate)
+	assert.Error(t, err, "Should fail to create duplicate snippet without question_id")
+	assert.Contains(t, err.Error(), "snippet already exists", "Error should mention snippet already exists")
+}
+
 // TestSnippetsService_GetSnippets_WithStoryContext_Integration tests that GetSnippets returns section_id and story_id
 func TestSnippetsService_GetSnippets_WithStoryContext_Integration(t *testing.T) {
 	db := SharedTestDBSetup(t)

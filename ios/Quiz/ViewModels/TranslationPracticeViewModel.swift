@@ -1,7 +1,7 @@
 import Combine
 import Foundation
 
-class TranslationPracticeViewModel: BaseViewModel {
+class TranslationPracticeViewModel: BaseViewModel, Refreshable, StateClearing {
     @Published var currentSentence: TranslationPracticeSentenceResponse?
     @Published var feedback: TranslationPracticeSessionResponse?
     @Published var history: [TranslationPracticeSessionResponse] = []
@@ -25,8 +25,12 @@ class TranslationPracticeViewModel: BaseViewModel {
             .store(in: &cancellables)
     }
 
+    func refreshData() {
+        fetchHistory()
+    }
+
     func fetchExistingSentence(language: String, level: String) {
-        clearError()
+        clearStateBeforeFetch()
         feedback = nil
         userTranslation = ""
 
@@ -41,7 +45,7 @@ class TranslationPracticeViewModel: BaseViewModel {
     }
 
     func generateSentence(language: String, level: String) {
-        clearError()
+        clearStateBeforeFetch()
         feedback = nil
         userTranslation = ""
         currentSentence = nil
@@ -72,7 +76,7 @@ class TranslationPracticeViewModel: BaseViewModel {
             .handleLoadingAndError(on: self)
             .sinkValue(on: self) { [weak self] response in
                 self?.feedback = response
-                self?.fetchHistory()  // Refresh history after submission
+                self?.fetchHistory()
             }
             .store(in: &cancellables)
     }

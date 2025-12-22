@@ -10,8 +10,9 @@ private class SelectableSizingTextView: UITextView {
         let width = bounds.width > 0 ? bounds.width : UIScreen.main.bounds.width - 64
 
         if let textLayoutManager = textLayoutManager,
-           let textContentManager = textLayoutManager.textContentManager,
-           let textContainer = textLayoutManager.textContainer {
+            let textContentManager = textLayoutManager.textContentManager,
+            let textContainer = textLayoutManager.textContainer
+        {
             let containerSize = CGSize(width: width, height: .greatestFiniteMagnitude)
             textContainer.size = containerSize
 
@@ -19,7 +20,8 @@ private class SelectableSizingTextView: UITextView {
 
             var totalHeight: CGFloat = 0
             let documentRange = textContentManager.documentRange
-            textLayoutManager.enumerateTextLayoutFragments(from: documentRange.location) { fragment in
+            textLayoutManager.enumerateTextLayoutFragments(from: documentRange.location) {
+                fragment in
                 totalHeight = max(totalHeight, fragment.layoutFragmentFrame.maxY)
                 return true
             }
@@ -39,7 +41,7 @@ private class SelectableSizingTextView: UITextView {
     }
 }
 
-struct SelectableTextView: UIViewRepresentable {
+struct SelectableTextView: UIViewRepresentable, Equatable {
     let text: String
     let language: String
     let onTextSelected: (String) -> Void
@@ -48,7 +50,11 @@ struct SelectableTextView: UIViewRepresentable {
     let onSnippetTapped: ((Snippet) -> Void)?
     @Environment(\.fontSizeMultiplier) var fontSizeMultiplier
 
-    init(text: String, language: String, onTextSelected: @escaping (String) -> Void, highlightedSnippets: [Snippet]? = nil, textColor: UIColor? = nil, onSnippetTapped: ((Snippet) -> Void)? = nil) {
+    init(
+        text: String, language: String, onTextSelected: @escaping (String) -> Void,
+        highlightedSnippets: [Snippet]? = nil, textColor: UIColor? = nil,
+        onSnippetTapped: ((Snippet) -> Void)? = nil
+    ) {
         self.text = text
         self.language = language
         self.onTextSelected = onTextSelected
@@ -109,31 +115,42 @@ struct SelectableTextView: UIViewRepresentable {
         let scaledFont = UIFont(descriptor: baseFont.fontDescriptor, size: scaledFontSize)
 
         let attributedString = NSMutableAttributedString(string: text)
-        attributedString.addAttribute(.font, value: scaledFont, range: NSRange(location: 0, length: text.count))
+        attributedString.addAttribute(
+            .font, value: scaledFont, range: NSRange(location: 0, length: text.count))
 
         // Apply text color - use provided color or default to label color
         let color = textColor ?? UIColor.label
-        attributedString.addAttribute(.foregroundColor, value: color, range: NSRange(location: 0, length: text.count))
+        attributedString.addAttribute(
+            .foregroundColor, value: color, range: NSRange(location: 0, length: text.count))
 
         // Apply snippet highlighting if available
         if let snippets = snippets, !snippets.isEmpty {
             let sortedSnippets = snippets.sorted { $0.originalText.count > $1.originalText.count }
             let highlightColor = UIColor.systemBlue.withAlphaComponent(0.25)
             for snippet in sortedSnippets {
-                let searchText = snippet.originalText.trimmingCharacters(in: .whitespacesAndNewlines)
+                let searchText = snippet.originalText.trimmingCharacters(
+                    in: .whitespacesAndNewlines)
                 guard !searchText.isEmpty else { continue }
 
                 var searchRange = NSRange(location: 0, length: text.count)
                 while searchRange.location < text.count {
-                    let range = (text as NSString).range(of: searchText, options: [.caseInsensitive, .diacriticInsensitive], range: searchRange)
+                    let range = (text as NSString).range(
+                        of: searchText, options: [.caseInsensitive, .diacriticInsensitive],
+                        range: searchRange)
                     if range.location != NSNotFound {
                         if let url = URL(string: "snippet://\(snippet.id)") {
                             attributedString.addAttribute(.link, value: url, range: range)
                         }
-                        attributedString.addAttribute(.backgroundColor, value: highlightColor, range: range)
-                        attributedString.addAttribute(.underlineStyle, value: NSUnderlineStyle.patternDash.rawValue, range: range)
-                        attributedString.addAttribute(.underlineColor, value: UIColor.systemBlue, range: range)
-                        searchRange = NSRange(location: range.location + range.length, length: text.count - (range.location + range.length))
+                        attributedString.addAttribute(
+                            .backgroundColor, value: highlightColor, range: range)
+                        attributedString.addAttribute(
+                            .underlineStyle, value: NSUnderlineStyle.patternDash.rawValue,
+                            range: range)
+                        attributedString.addAttribute(
+                            .underlineColor, value: UIColor.systemBlue, range: range)
+                        searchRange = NSRange(
+                            location: range.location + range.length,
+                            length: text.count - (range.location + range.length))
                     } else {
                         break
                     }
@@ -143,6 +160,15 @@ struct SelectableTextView: UIViewRepresentable {
 
         textView.attributedText = attributedString
         textView.invalidateIntrinsicContentSize()
+    }
+
+    static func == (lhs: SelectableTextView, rhs: SelectableTextView) -> Bool {
+        // Compare all properties that affect the view
+        // Also compare originalText to ensure content changes trigger updates
+        let lhsSnippetTexts = lhs.highlightedSnippets?.map { "\($0.id):\($0.originalText)" } ?? []
+        let rhsSnippetTexts = rhs.highlightedSnippets?.map { "\($0.id):\($0.originalText)" } ?? []
+        return lhs.text == rhs.text && lhs.language == rhs.language
+            && lhsSnippetTexts == rhsSnippetTexts
     }
 
     func makeCoordinator() -> Coordinator {
@@ -158,13 +184,21 @@ struct SelectableTextView: UIViewRepresentable {
         var highlightedSnippets: [Snippet]?
         private var selectionTimer: Timer?
 
-        @available(iOS, deprecated: 17.0, message: "Use textView(_:shouldInteractWith:in:characterRange:) instead")
-        func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        @available(
+            iOS, deprecated: 17.0,
+            message: "Use textView(_:shouldInteractWith:in:characterRange:) instead"
+        )
+        func textView(
+            _ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange,
+            interaction: UITextItemInteraction
+        ) -> Bool {
             return handleSnippetURL(URL)
         }
 
         @available(iOS 17.0, *)
-        func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange) -> Bool {
+        func textView(
+            _ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange
+        ) -> Bool {
             return handleSnippetURL(URL)
         }
 
@@ -184,7 +218,8 @@ struct SelectableTextView: UIViewRepresentable {
 
             // Check if there's a selection
             guard let selectedRange = textView.selectedTextRange,
-                  !selectedRange.isEmpty else {
+                !selectedRange.isEmpty
+            else {
                 return
             }
 
@@ -195,11 +230,13 @@ struct SelectableTextView: UIViewRepresentable {
             if trimmedText.count > 1 {
                 // Wait a bit for the selection menu to appear, then show our popup
                 // This gives users a chance to use the native menu if they want
-                selectionTimer = Timer.scheduledTimer(withTimeInterval: 0.8, repeats: false) { [weak self] _ in
+                selectionTimer = Timer.scheduledTimer(withTimeInterval: 0.8, repeats: false) {
+                    [weak self] _ in
                     guard let self = self,
-                          let textView = self.textView,
-                          let currentRange = textView.selectedTextRange,
-                          !currentRange.isEmpty else {
+                        let textView = self.textView,
+                        let currentRange = textView.selectedTextRange,
+                        !currentRange.isEmpty
+                    else {
                         return
                     }
 
@@ -216,4 +253,3 @@ struct SelectableTextView: UIViewRepresentable {
         }
     }
 }
-

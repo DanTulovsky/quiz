@@ -1,7 +1,9 @@
 import Combine
 import Foundation
 
-class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, SubmittingState {
+class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, SubmittingState,
+    QuestionIDProvider
+{
     @Published var dailyQuestions: [DailyQuestionWithDetails] = []
     @Published var currentQuestionIndex = 0
     @Published var snippets = [Snippet]()
@@ -14,6 +16,8 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, Submitting
     @Published var showMarkKnownModal = false
     @Published var isReported = false
     @Published var isSubmittingAction = false
+
+    private var lastLoadedQuestionId: Int? = nil
 
     var currentQuestion: DailyQuestionWithDetails? {
         guard currentQuestionIndex < dailyQuestions.count else { return nil }
@@ -57,7 +61,9 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, Submitting
                     // All questions are completed, start at the first one
                     self.currentQuestionIndex = 0
                 }
-                self.loadSnippets(questionId: self.currentQuestion?.question.id)
+                if let questionId = self.currentQuestion?.question.id {
+                    self.loadSnippets(questionId: questionId)
+                }
             }
             .store(in: &cancellables)
     }
@@ -118,6 +124,8 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, Submitting
     func nextQuestion() {
         answerResponse = nil
         selectedAnswerIndex = nil
+        lastLoadedQuestionId = nil
+        snippets = []
 
         if isAllCompleted {
             // When all completed, allow sequential navigation
@@ -138,22 +146,60 @@ class DailyViewModel: BaseViewModel, QuestionActions, SnippetLoading, Submitting
     func previousQuestion() {
         answerResponse = nil
         selectedAnswerIndex = nil
+        lastLoadedQuestionId = nil
+        snippets = []
 
         if currentQuestionIndex > 0 {
             currentQuestionIndex -= 1
         }
     }
 
-}
-
-extension DailyViewModel {
-    func reportQuestion(reason: String) {
-        guard let question = currentQuestion else { return }
-        reportQuestion(id: question.question.id, reason: reason)
+    var currentQuestionId: Int? {
+        return currentQuestion?.question.id
     }
 
-    func markQuestionKnown(confidence: Int) {
-        guard let question = currentQuestion else { return }
-        markQuestionKnown(id: question.question.id, confidence: confidence)
+    func resetSnippetCache() {
+        lastLoadedQuestionId = nil
+    }
+
+    func loadSnippets(questionId: Int? = nil, storyId: Int? = nil) {
+        // For DailyViewModel, we should always have a questionId - don't load all snippets
+        guard let questionId = questionId else {
+            // If no questionId provided, don't make any API call
+            return
+        }
+
+        // Prevent duplicate API calls for the same question
+        if questionId == lastLoadedQuestionId {
+            return
+        }
+
+        lastLoadedQuestionId = questionId
+
+        // Always use getSnippetsByQuestion for daily questions
+        let publisher = apiService.getSnippetsByQuestion(questionId: questionId)
+
+        publisher
+            .catch { error -> AnyPublisher<SnippetList, APIService.APIError> in
+                // Return empty snippet list instead of propagating error
+                return Just(SnippetList(limit: 0, offset: 0, query: nil, snippets: []))
+                    .setFailureType(to: APIService.APIError.self)
+                    .eraseToAnyPublisher()
+            }
+            .receive(on: DispatchQueue.main)
+            .sink(
+                receiveCompletion: { _ in },
+                receiveValue: { [weak self] snippetList in
+                    guard let self = self else { return }
+                    // Filter snippets to only include those for the current question
+                    // The API should already filter, but we do it here as a safety measure
+                    let filteredSnippets = snippetList.snippets.filter {
+                        $0.questionId == questionId
+                    }
+                    // Create a new array to ensure SwiftUI detects the change
+                    self.snippets = Array(filteredSnippets)
+                }
+            )
+            .store(in: &cancellables)
     }
 }

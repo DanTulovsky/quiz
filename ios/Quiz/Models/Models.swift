@@ -220,8 +220,8 @@ struct Snippet: Codable, Identifiable {
 }
 
 struct SnippetList: Codable {
-    let limit: Int
-    let offset: Int
+    let limit: Int?
+    let offset: Int?
     let query: String?
     let snippets: [Snippet]
 }

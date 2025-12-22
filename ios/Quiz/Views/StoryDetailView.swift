@@ -190,7 +190,13 @@ struct StoryDetailView: View {
                         selectedText = nil
                         translationSentence = nil
                     },
-                    onSnippetSaved: {
+                    onSnippetSaved: { snippet in
+                        // Optimistically add the snippet immediately for instant UI update
+                        // Create a new array to ensure SwiftUI detects the change
+                        if !viewModel.snippets.contains(where: { $0.id == snippet.id }) {
+                            viewModel.snippets = viewModel.snippets + [snippet]
+                        }
+                        // Then reload to ensure consistency with server
                         viewModel.loadSnippets(storyId: story.id)
                     }
                 )

@@ -507,21 +507,30 @@ CREATE TABLE IF NOT EXISTS snippets (
     target_language VARCHAR(10) NOT NULL,
     question_id INTEGER REFERENCES questions(id) ON DELETE
     SET NULL,
+        section_id INTEGER REFERENCES story_sections(id) ON DELETE
+    SET NULL,
+        story_id INTEGER REFERENCES stories(id) ON DELETE
+    SET NULL,
         context TEXT,
         difficulty_level VARCHAR(20),
         -- CEFR level (A1, A2, B1, B2, C1, C2) or calculated level
         created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-        -- Ensure one snippet per user per original text (case-insensitive)
-        UNIQUE(
-            user_id,
-            original_text,
-            source_language,
-            target_language
-        ),
         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
         FOREIGN KEY (question_id) REFERENCES questions (id)
 );
+-- Unique constraint that includes question_id, section_id, and story_id
+-- This allows the same snippet text to exist for different contexts (question, section, story)
+CREATE UNIQUE INDEX IF NOT EXISTS unique_snippet_per_user_text_language_context ON snippets (
+    user_id,
+    original_text,
+    source_language,
+    target_language,
+    question_id,
+    section_id,
+    story_id
+)
+WHERE original_text IS NOT NULL;
 -- Usage stats table - tracks usage statistics for various services (translation, TTS, AI) by month
 CREATE TABLE IF NOT EXISTS usage_stats (
     id SERIAL PRIMARY KEY,
@@ -643,7 +652,16 @@ CREATE TABLE IF NOT EXISTS translation_practice_sentences (
     source_language VARCHAR(10) NOT NULL,
     target_language VARCHAR(10) NOT NULL,
     language_level VARCHAR(5) NOT NULL,
-    source_type VARCHAR(50) NOT NULL CHECK (source_type IN ('ai_generated', 'story_section', 'vocabulary_question', 'reading_comprehension', 'snippet', 'phrasebook')),
+    source_type VARCHAR(50) NOT NULL CHECK (
+        source_type IN (
+            'ai_generated',
+            'story_section',
+            'vocabulary_question',
+            'reading_comprehension',
+            'snippet',
+            'phrasebook'
+        )
+    ),
     source_id INTEGER,
     -- ID of the source (story_id, question_id, snippet_id, etc.)
     topic TEXT,
@@ -663,9 +681,14 @@ CREATE TABLE IF NOT EXISTS translation_practice_sessions (
     sentence_id INTEGER NOT NULL REFERENCES translation_practice_sentences(id) ON DELETE CASCADE,
     original_sentence TEXT NOT NULL,
     user_translation TEXT NOT NULL,
-    translation_direction VARCHAR(20) NOT NULL CHECK (translation_direction IN ('en_to_learning', 'learning_to_en')),
+    translation_direction VARCHAR(20) NOT NULL CHECK (
+        translation_direction IN ('en_to_learning', 'learning_to_en')
+    ),
     ai_feedback TEXT NOT NULL,
-    ai_score DECIMAL(3, 2) CHECK (ai_score >= 0 AND ai_score <= 5),
+    ai_score DECIMAL(3, 2) CHECK (
+        ai_score >= 0
+        AND ai_score <= 5
+    ),
     -- Score from 0 to 5
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

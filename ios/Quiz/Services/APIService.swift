@@ -3,7 +3,7 @@ import Foundation
 
 class APIService {
     static let shared = APIService()
-    private let baseURL: URL
+    let baseURL: URL
 
     enum APIError: Error, LocalizedError {
         case invalidURL
@@ -83,7 +83,7 @@ class APIService {
         return APIService.decoder
     }
 
-    private func validateQueryItem(_ item: URLQueryItem) -> Bool {
+    func validateQueryItem(_ item: URLQueryItem) -> Bool {
         // Filter out empty values and validate non-empty values
         guard let value = item.value, !value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
         else {
@@ -92,8 +92,7 @@ class APIService {
         return true
     }
 
-    private func buildURL(path: String, queryItems: [URLQueryItem]? = nil) -> Result<URL, APIError>
-    {
+    func buildURL(path: String, queryItems: [URLQueryItem]? = nil) -> Result<URL, APIError> {
         let fullPath = baseURL.appendingPathComponent(path)
         guard var components = URLComponents(url: fullPath, resolvingAgainstBaseURL: false) else {
             return .failure(.invalidURL)
@@ -139,7 +138,7 @@ class APIService {
         )
     }
 
-    private func authenticatedRequest(for url: URL, method: String = "GET", body: Data? = nil)
+    func authenticatedRequest(for url: URL, method: String = "GET", body: Data? = nil)
         -> URLRequest
     {
         var urlRequest = URLRequest(url: url)
@@ -151,7 +150,7 @@ class APIService {
         return urlRequest
     }
 
-    private func handleResponse<T: Decodable>(_ data: Data, _ response: URLResponse)
+    func handleResponse<T: Decodable>(_ data: Data, _ response: URLResponse)
         -> AnyPublisher<T, APIError>
     {
         guard let httpResponse = response as? HTTPURLResponse else {
@@ -159,6 +158,30 @@ class APIService {
         }
 
         if (200...299).contains(httpResponse.statusCode) {
+            // For SnippetList, allow empty responses (204 No Content or empty body)
+            if T.self == SnippetList.self {
+                if data.isEmpty || httpResponse.statusCode == 204 {
+                    let emptyList = SnippetList(limit: 0, offset: 0, query: nil, snippets: [])
+                    return Just(emptyList as! T)
+                        .setFailureType(to: APIError.self)
+                        .eraseToAnyPublisher()
+                }
+            }
+            // Check for empty data before attempting to decode (for other types)
+            guard !data.isEmpty else {
+                return Fail(
+                    error: .decodingFailed(
+                        NSError(
+                            domain: "APIService",
+                            code: -1,
+                            userInfo: [
+                                NSLocalizedDescriptionKey:
+                                    "The data couldn't be read because it is missing."
+                            ]
+                        )
+                    )
+                ).eraseToAnyPublisher()
+            }
             return Just(data)
                 .decode(type: T.self, decoder: self.decoder)
                 .mapError { .decodingFailed($0) }
@@ -176,9 +199,36 @@ class APIService {
         }
     }
 
+    private func handleErrorResponse<T>(data: Data) -> AnyPublisher<T, APIError> {
+        if let errorResp = try? self.decoder.decode(ErrorResponse.self, from: data),
+            let msg = errorResp.message ?? errorResp.error
+        {
+            return Fail(
+                error: .backendError(code: errorResp.code, message: msg, details: errorResp.details)
+            )
+            .eraseToAnyPublisher()
+        }
+        return Fail(error: .invalidResponse).eraseToAnyPublisher()
+    }
+
+    enum QuestionFetchResult {
+        case question(Question)
+        case generating(GeneratingStatusResponse)
+    }
+
     func login(request: LoginRequest) -> AnyPublisher<LoginResponse, APIError> {
         return post(
             path: "auth/login", body: request, responseType: LoginResponse.self, retry: true)
+    }
+
+    func signup(request: UserCreateRequest) -> AnyPublisher<SuccessResponse, APIError> {
+        return post(path: "auth/signup", body: request, responseType: SuccessResponse.self)
+    }
+
+    func authStatus() -> AnyPublisher<AuthStatusResponse, APIError> {
+        return get(path: "auth/status", responseType: AuthStatusResponse.self)
+            .retryOnTransientFailure(maxRetries: 2)
+            .eraseToAnyPublisher()
     }
 
     func initiateGoogleLogin() -> AnyPublisher<GoogleOAuthLoginResponse, APIError> {
@@ -208,40 +258,52 @@ class APIService {
         var urlRequest = authenticatedRequest(for: url)
         urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
 
-        // Use URLSession.shared to ensure cookies are shared with other API calls
-        // This ensures the session cookie from OAuth is available for subsequent requests
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .mapError { .requestFailed($0) }
             .flatMap { data, response -> AnyPublisher<LoginResponse, APIError> in
                 if let httpResponse = response as? HTTPURLResponse {
                     self.storeCookies(from: httpResponse)
                 }
-                return self.handleResponse(data, response)
+                guard let httpResponse = response as? HTTPURLResponse else {
+                    return Fail(error: .invalidResponse).eraseToAnyPublisher()
+                }
+                if (200...299).contains(httpResponse.statusCode) {
+                    let decoder = JSONDecoder()
+                    decoder.dateDecodingStrategy = .custom { decoder in
+                        let container = try decoder.singleValueContainer()
+                        let dateStr = try container.decode(String.self)
+                        let iso8601WithFractional = ISO8601DateFormatter()
+                        iso8601WithFractional.formatOptions = [
+                            .withInternetDateTime, .withFractionalSeconds,
+                        ]
+                        let iso8601Standard = ISO8601DateFormatter()
+                        iso8601Standard.formatOptions = [.withInternetDateTime]
+                        if let date = iso8601WithFractional.date(from: dateStr)
+                            ?? iso8601Standard.date(from: dateStr)
+                        {
+                            return date
+                        }
+                        throw DecodingError.dataCorruptedError(
+                            in: container, debugDescription: "Invalid date format: \(dateStr)")
+                    }
+                    return Just(data)
+                        .decode(type: LoginResponse.self, decoder: decoder)
+                        .mapError { .decodingFailed($0) }
+                        .eraseToAnyPublisher()
+                } else {
+                    let decoder = JSONDecoder()
+                    if let errorResp = try? decoder.decode(ErrorResponse.self, from: data),
+                        let msg = errorResp.message ?? errorResp.error
+                    {
+                        return Fail(
+                            error: .backendError(
+                                code: errorResp.code, message: msg, details: errorResp.details)
+                        ).eraseToAnyPublisher()
+                    }
+                    return Fail(error: .invalidResponse).eraseToAnyPublisher()
+                }
             }
             .eraseToAnyPublisher()
-    }
-
-    func authStatus() -> AnyPublisher<AuthStatusResponse, APIError> {
-        return get(path: "auth/status", responseType: AuthStatusResponse.self)
-            .retryOnTransientFailure(maxRetries: 2)
-            .eraseToAnyPublisher()
-    }
-
-    func logout() -> AnyPublisher<SuccessResponse, APIError> {
-        return postVoid(path: "auth/logout")
-            .handleEvents(receiveOutput: { _ in
-                self.clearSessionCookie()
-            })
-            .eraseToAnyPublisher()
-    }
-
-    func signup(request: UserCreateRequest) -> AnyPublisher<SuccessResponse, APIError> {
-        return post(path: "auth/signup", body: request, responseType: SuccessResponse.self)
-    }
-
-    enum QuestionFetchResult {
-        case question(Question)
-        case generating(GeneratingStatusResponse)
     }
 
     func getQuestion(language: Language?, level: Level?, type: String?, excludeType: String?)
@@ -265,35 +327,50 @@ class APIService {
                 guard let httpResponse = response as? HTTPURLResponse else {
                     return Fail(error: .invalidResponse).eraseToAnyPublisher()
                 }
+                let decoder = JSONDecoder()
+                decoder.dateDecodingStrategy = .custom { decoder in
+                    let container = try decoder.singleValueContainer()
+                    let dateStr = try container.decode(String.self)
+                    let iso8601WithFractional = ISO8601DateFormatter()
+                    iso8601WithFractional.formatOptions = [
+                        .withInternetDateTime, .withFractionalSeconds,
+                    ]
+                    let iso8601Standard = ISO8601DateFormatter()
+                    iso8601Standard.formatOptions = [.withInternetDateTime]
+                    if let date = iso8601WithFractional.date(from: dateStr)
+                        ?? iso8601Standard.date(from: dateStr)
+                    {
+                        return date
+                    }
+                    throw DecodingError.dataCorruptedError(
+                        in: container, debugDescription: "Invalid date format: \(dateStr)")
+                }
+
                 if httpResponse.statusCode == 200 {
                     return Just(data)
-                        .decode(type: Question.self, decoder: self.decoder)
+                        .decode(type: Question.self, decoder: decoder)
                         .map(QuestionFetchResult.question)
                         .mapError { .decodingFailed($0) }
                         .eraseToAnyPublisher()
                 } else if httpResponse.statusCode == 202 {
                     return Just(data)
-                        .decode(type: GeneratingStatusResponse.self, decoder: self.decoder)
+                        .decode(type: GeneratingStatusResponse.self, decoder: decoder)
                         .map(QuestionFetchResult.generating)
                         .mapError { .decodingFailed($0) }
                         .eraseToAnyPublisher()
                 } else {
-                    return self.handleErrorResponse(data: data)
+                    if let errorResp = try? decoder.decode(ErrorResponse.self, from: data),
+                        let msg = errorResp.message ?? errorResp.error
+                    {
+                        return Fail(
+                            error: .backendError(
+                                code: errorResp.code, message: msg, details: errorResp.details)
+                        ).eraseToAnyPublisher()
+                    }
+                    return Fail(error: .invalidResponse).eraseToAnyPublisher()
                 }
             }
             .eraseToAnyPublisher()
-    }
-
-    private func handleErrorResponse<T>(data: Data) -> AnyPublisher<T, APIError> {
-        if let errorResp = try? self.decoder.decode(ErrorResponse.self, from: data),
-            let msg = errorResp.message ?? errorResp.error
-        {
-            return Fail(
-                error: .backendError(code: errorResp.code, message: msg, details: errorResp.details)
-            )
-            .eraseToAnyPublisher()
-        }
-        return Fail(error: .invalidResponse).eraseToAnyPublisher()
     }
 
     func postAnswer(request: AnswerRequest) -> AnyPublisher<AnswerResponse, APIError> {
@@ -325,16 +402,10 @@ class APIService {
             responseType: SnippetList.self)
     }
 
-    func createSnippet(request: CreateSnippetRequest) -> AnyPublisher<Snippet, APIError> {
-        return post(path: "snippets", body: request, responseType: Snippet.self)
-    }
-
-    func updateSnippet(id: Int, request: UpdateSnippetRequest) -> AnyPublisher<Snippet, APIError> {
-        return put(path: "snippets/\(id)", body: request, responseType: Snippet.self)
-    }
-
-    func deleteSnippet(id: Int) -> AnyPublisher<Void, APIError> {
-        return deleteVoid(path: "snippets/\(id)")
+    func getSnippetsByQuestion(questionId: Int) -> AnyPublisher<SnippetList, APIError> {
+        return get(
+            path: "snippets/by-question/\(questionId)", queryItems: nil,
+            responseType: SnippetList.self)
     }
 
     func getDailyQuestions(date: String) -> AnyPublisher<DailyQuestionsResponse, APIError> {
@@ -398,21 +469,6 @@ class APIService {
         .eraseToAnyPublisher()
     }
 
-    private func decodeResponse<T: Decodable>(_ data: Data, _ response: URLResponse) throws -> T {
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw APIError.invalidResponse
-        }
-        guard (200...299).contains(httpResponse.statusCode) else {
-            throw APIError.invalidResponse
-        }
-        do {
-            let decoder = JSONDecoder()
-            return try decoder.decode(T.self, from: data)
-        } catch {
-            throw APIError.decodingFailed(error)
-        }
-    }
-
     func getWordOfTheDay(date: String? = nil) -> AnyPublisher<WordOfTheDayDisplay, APIError> {
         if let date = date {
             return get(path: "word-of-day/\(date)", responseType: WordOfTheDayDisplay.self)
@@ -429,216 +485,8 @@ class APIService {
         return get(path: "ai/bookmarks", responseType: BookmarkedMessagesResponse.self)
     }
 
-    func toggleBookmark(conversationId: String, messageId: String) -> AnyPublisher<
-        BookmarkStatusResponse, APIError
-    > {
-        return putJSON(
-            path: "ai/conversations/bookmark",
-            body: ["conversation_id": conversationId, "message_id": messageId],
-            responseType: BookmarkStatusResponse.self
-        )
-    }
-
-    func getAIConversation(id: String) -> AnyPublisher<Conversation, APIError> {
-        return get(path: "ai/conversations/\(id)", responseType: Conversation.self)
-    }
-
-    func updateAIConversationTitle(id: String, title: String) -> AnyPublisher<
-        SuccessResponse, APIError
-    > {
-        return putJSON(
-            path: "ai/conversations/\(id)",
-            body: ["title": title],
-            responseType: SuccessResponse.self
-        )
-    }
-
-    func deleteAIConversation(id: String) -> AnyPublisher<SuccessResponse, APIError> {
-        return delete(path: "ai/conversations/\(id)", responseType: SuccessResponse.self)
-    }
-
-    func reportQuestion(id: Int, request: ReportQuestionRequest) -> AnyPublisher<
-        SuccessResponse, APIError
-    > {
-        return post(
-            path: "quiz/question/\(id)/report", body: request, responseType: SuccessResponse.self)
-    }
-
-    func markQuestionKnown(id: Int, request: MarkQuestionKnownRequest) -> AnyPublisher<
-        SuccessResponse, APIError
-    > {
-        return post(
-            path: "quiz/question/\(id)/mark-known", body: request,
-            responseType: SuccessResponse.self)
-    }
-
-    func getStorySection(id: Int) -> AnyPublisher<StorySectionWithQuestions, APIError> {
-        return get(path: "story/section/\(id)", responseType: StorySectionWithQuestions.self)
-    }
-
-    func getLearningPreferences() -> AnyPublisher<UserLearningPreferences, APIError> {
-        return get(path: "preferences/learning", responseType: UserLearningPreferences.self)
-    }
-
-    func updateLearningPreferences(prefs: UserLearningPreferences) -> AnyPublisher<
-        UserLearningPreferences, APIError
-    > {
-        return put(
-            path: "preferences/learning", body: prefs, responseType: UserLearningPreferences.self)
-    }
-
-    func getTranslationPracticeHistory(limit: Int = 10, offset: Int = 0) -> AnyPublisher<
-        TranslationPracticeHistoryResponse, APIError
-    > {
-        var params = QueryParameters()
-        params.add("limit", value: limit)
-        params.add("offset", value: offset)
-        return get(
-            path: "translation-practice/history", queryItems: params.build(),
-            responseType: TranslationPracticeHistoryResponse.self)
-    }
-
-    func getAIProviders() -> AnyPublisher<AIProvidersResponse, APIError> {
-        return get(path: "settings/ai-providers", responseType: AIProvidersResponse.self)
-    }
-
     func getLanguages() -> AnyPublisher<[LanguageInfo], APIError> {
         return get(path: "settings/languages", responseType: [LanguageInfo].self)
-    }
-
-    func getLevels(language: String?) -> AnyPublisher<LevelsResponse, APIError> {
-        var params = QueryParameters()
-        params.add("language", value: language)
-        return get(
-            path: "settings/levels", queryItems: params.build(), responseType: LevelsResponse.self)
-    }
-
-    func updateWordOfDayEmailPreference(enabled: Bool) -> AnyPublisher<SuccessResponse, APIError> {
-        return putJSON(
-            path: "settings/word-of-day-email",
-            body: ["enabled": enabled],
-            responseType: SuccessResponse.self
-        )
-    }
-
-    func testAIConnection(provider: String, model: String, apiKey: String?) -> AnyPublisher<
-        SuccessResponse, APIError
-    > {
-        var body: [String: Any] = ["provider": provider, "model": model]
-        if let apiKey = apiKey { body["api_key"] = apiKey }
-        return postJSON(
-            path: "settings/test-ai",
-            body: body,
-            responseType: SuccessResponse.self
-        )
-    }
-
-    func sendTestEmail() -> AnyPublisher<SuccessResponse, APIError> {
-        return postVoid(path: "settings/test-email")
-    }
-
-    func clearStories() -> AnyPublisher<SuccessResponse, APIError> {
-        return postVoid(path: "settings/clear-stories")
-    }
-
-    func clearAIChats() -> AnyPublisher<SuccessResponse, APIError> {
-        return postVoid(path: "settings/clear-ai-chats")
-    }
-
-    func clearTranslationHistory() -> AnyPublisher<SuccessResponse, APIError> {
-        return postVoid(path: "settings/clear-translation-practice-history")
-    }
-
-    func resetAccount() -> AnyPublisher<SuccessResponse, APIError> {
-        return postVoid(path: "settings/reset-account")
-    }
-
-    func initializeTTSStream(request: TTSRequest) -> AnyPublisher<TTSStreamInitResponse, APIError> {
-        return post(
-            path: "audio/speech/init",
-            body: request,
-            responseType: TTSStreamInitResponse.self
-        )
-    }
-
-    func streamURL(for streamId: String, token: String?) -> URL {
-        let streamPath = baseURL.appendingPathComponent("audio")
-            .appendingPathComponent("speech")
-            .appendingPathComponent("stream")
-            .appendingPathComponent(streamId)
-
-        guard var components = URLComponents(url: streamPath, resolvingAgainstBaseURL: false) else {
-            return streamPath
-        }
-        if let token = token {
-            components.queryItems = [URLQueryItem(name: "token", value: token)]
-        }
-        return components.url ?? streamPath
-    }
-
-    func getVoices(language: String) -> AnyPublisher<[EdgeTTSVoiceInfo], APIError> {
-        var params = QueryParameters()
-        params.add("language", value: language)
-        guard case .success(let url) = buildURL(path: "voices", queryItems: params.build()) else {
-            return Fail(error: .invalidURL).eraseToAnyPublisher()
-        }
-        let urlRequest = authenticatedRequest(for: url)
-        return URLSession.shared.dataTaskPublisher(for: urlRequest)
-            .mapError { .requestFailed($0) }
-            .flatMap { data, response -> AnyPublisher<[EdgeTTSVoiceInfo], APIError> in
-                guard let httpResponse = response as? HTTPURLResponse else {
-                    return Fail(error: .invalidResponse).eraseToAnyPublisher()
-                }
-                guard (200...299).contains(httpResponse.statusCode) else {
-                    return self.handleErrorResponse(data: data)
-                }
-                return self.decodeVoicesWithFallbacks(data: data)
-            }
-            .eraseToAnyPublisher()
-    }
-
-    private func decodeVoicesWithFallbacks(data: Data) -> AnyPublisher<[EdgeTTSVoiceInfo], APIError>
-    {
-        let decoder = JSONDecoder()
-
-        // Try direct array of objects
-        if let voices = try? decoder.decode([EdgeTTSVoiceInfo].self, from: data) {
-            return Just(voices).setFailureType(to: APIError.self).eraseToAnyPublisher()
-        }
-
-        // Try decoding as a dictionary with "voices" key
-        if let wrapper = try? decoder.decode([String: [EdgeTTSVoiceInfo]].self, from: data),
-            let voices = wrapper["voices"]
-        {
-            return Just(voices).setFailureType(to: APIError.self).eraseToAnyPublisher()
-        }
-
-        // Try array of strings
-        if let strings = try? decoder.decode([String].self, from: data) {
-            let voices = strings.map { EdgeTTSVoiceInfo(shortName: $0) }
-            return Just(voices).setFailureType(to: APIError.self).eraseToAnyPublisher()
-        }
-
-        // Fallback: try to see if it's a JSON object at all
-        if let json = try? JSONSerialization.jsonObject(with: data, options: []),
-            let voicesArray = json as? [String]
-        {
-            let voices = voicesArray.map { EdgeTTSVoiceInfo(shortName: $0) }
-            return Just(voices).setFailureType(to: APIError.self).eraseToAnyPublisher()
-        }
-
-        return Fail(
-            error: .decodingFailed(
-                NSError(
-                    domain: "", code: 0,
-                    userInfo: [NSLocalizedDescriptionKey: "Failed to decode voices response"]
-                )
-            )
-        ).eraseToAnyPublisher()
-    }
-
-    func translateText(request: TranslateRequest) -> AnyPublisher<TranslateResponse, APIError> {
-        return post(path: "translate", body: request, responseType: TranslateResponse.self)
     }
 }
 

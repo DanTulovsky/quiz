@@ -9,6 +9,7 @@ struct QuizView: View {
     @State private var showTranslationPopup = false
     @State private var translationSentence: String?
     @State private var showingSnippet: Snippet? = nil
+    @State private var snippetRefreshTrigger: Int = 0
 
     @StateObject private var ttsManager = TTSSynthesizerManager.shared
 
@@ -34,7 +35,75 @@ struct QuizView: View {
         return strings.isEmpty ? nil : strings
     }
 
+    private var questionCardId: String {
+        guard let question = viewModel.question else { return "" }
+        let snippetIds = viewModel.snippets.map { "\($0.id)" }.joined(separator: ",")
+        return
+            "question-\(question.id)-snippets-\(viewModel.snippets.count)-\(snippetIds)-\(snippetRefreshTrigger)"
+    }
+
     var body: some View {
+        mainContent
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: { dismiss() }) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "chevron.left")
+                                .scaledFont(size: 17, weight: .semibold)
+                            Text("Back")
+                                .scaledFont(size: 17)
+                        }
+                        .foregroundColor(.blue)
+                    }
+                }
+            }
+            .sheet(isPresented: $viewModel.showReportModal) {
+                ReportQuestionSheet(
+                    reportReason: $reportReason,
+                    isPresented: $viewModel.showReportModal,
+                    isSubmitting: viewModel.isSubmittingAction
+                ) { reason in
+                    viewModel.reportQuestion(reason: reason.isEmpty ? nil : reason)
+                }
+            }
+            .sheet(isPresented: $viewModel.showMarkKnownModal) {
+                MarkKnownSheet(
+                    selectedConfidence: $selectedConfidence,
+                    isPresented: $viewModel.showMarkKnownModal,
+                    isSubmitting: viewModel.isSubmittingAction
+                ) { confidence in
+                    viewModel.markQuestionKnown(confidence: confidence)
+                }
+            }
+            .sheet(isPresented: $showTranslationPopup) {
+                translationSheetContent
+            }
+            .snippetDetailPopup(
+                showingSnippet: $showingSnippet,
+                onSnippetDeleted: { snippet in
+                    viewModel.snippets.removeAll { $0.id == snippet.id }
+                }
+            )
+            .onChange(of: viewModel.question?.id) { _, questionId in
+                if questionId == nil {
+                    viewModel.snippets = []
+                } else if let questionId = questionId {
+                    viewModel.loadSnippets(questionId: questionId)
+                }
+            }
+            .onAppear {
+                handleOnAppear()
+            }
+            .onChange(of: viewModel.snippets.count) { _, _ in
+                // Force view update when snippets change
+                snippetRefreshTrigger += 1
+            }
+    }
+
+    @ViewBuilder
+    private var mainContent: some View {
         ScrollView {
             ScrollViewReader { proxy in
                 VStack(spacing: 20) {
@@ -83,6 +152,7 @@ struct QuizView: View {
                                 showingSnippet = snippet
                             }
                         )
+                        .id(questionCardId)
 
                         QuestionOptionsView(
                             question: question,
@@ -155,87 +225,48 @@ struct QuizView: View {
                     }
             }
         }
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: { dismiss() }) {
-                    HStack(spacing: 4) {
-                        Image(systemName: "chevron.left")
-                            .scaledFont(size: 17, weight: .semibold)
-                        Text("Back")
-                            .scaledFont(size: 17)
+    }
+
+    @ViewBuilder
+    private var translationSheetContent: some View {
+        if let text = selectedText, let question = viewModel.question {
+            TranslationPopupView(
+                selectedText: text,
+                sourceLanguage: question.language,
+                questionId: question.id,
+                sectionId: nil,
+                storyId: nil,
+                sentence: translationSentence,
+                onClose: {
+                    showTranslationPopup = false
+                    selectedText = nil
+                    translationSentence = nil
+                },
+                onSnippetSaved: { snippet in
+                    // Optimistically add the snippet immediately for instant UI update
+                    if !viewModel.snippets.contains(where: { $0.id == snippet.id }) {
+                        viewModel.snippets = viewModel.snippets + [snippet]
+                        snippetRefreshTrigger += 1
                     }
-                    .foregroundColor(.blue)
+                    // Reload snippets from server to ensure we have the latest data
+                    // This handles the case where the snippet already existed
+                    if let questionId = viewModel.question?.id {
+                        // Reset cache to force reload
+                        viewModel.resetSnippetCache()
+                        viewModel.loadSnippets(questionId: questionId)
+                    }
                 }
-            }
+            )
         }
-        .sheet(isPresented: $viewModel.showReportModal) {
-            ReportQuestionSheet(
-                reportReason: $reportReason,
-                isPresented: $viewModel.showReportModal,
-                isSubmitting: viewModel.isSubmittingAction
-            ) { reason in
-                viewModel.reportQuestion(reason: reason.isEmpty ? nil : reason)
-            }
-        }
-        .sheet(isPresented: $viewModel.showMarkKnownModal) {
-            MarkKnownSheet(
-                selectedConfidence: $selectedConfidence,
-                isPresented: $viewModel.showMarkKnownModal,
-                isSubmitting: viewModel.isSubmittingAction
-            ) { confidence in
-                viewModel.markQuestionKnown(confidence: confidence)
-            }
-        }
-        .sheet(isPresented: $showTranslationPopup) {
-            if let text = selectedText, let question = viewModel.question {
-                TranslationPopupView(
-                    selectedText: text,
-                    sourceLanguage: question.language,
-                    questionId: question.id,
-                    sectionId: nil,
-                    storyId: nil,
-                    sentence: translationSentence,
-                    onClose: {
-                        showTranslationPopup = false
-                        selectedText = nil
-                        translationSentence = nil
-                    },
-                    onSnippetSaved: {
-                        if let questionId = viewModel.question?.id {
-                            viewModel.loadSnippets(questionId: questionId)
-                        }
-                    }
-                )
-            }
-        }
-        .snippetDetailPopup(
-            showingSnippet: $showingSnippet,
-            onSnippetDeleted: { snippet in
-                viewModel.snippets.removeAll { $0.id == snippet.id }
-            }
-        )
-        .onChange(of: viewModel.question?.id) { _, questionId in
-            if let questionId = questionId {
-                viewModel.loadSnippets(questionId: questionId)
-            } else {
-                viewModel.snippets = []
-            }
-        }
-        .onChange(of: viewModel.question) { _, _ in
-            if let questionId = viewModel.question?.id {
-                viewModel.loadSnippets(questionId: questionId)
-            } else {
-                viewModel.snippets = []
-            }
-        }
-        .onAppear {
-            if viewModel.question == nil {
-                viewModel.getQuestion()
-            } else if let questionId = viewModel.question?.id {
-                viewModel.loadSnippets(questionId: questionId)
-            }
+    }
+
+    private func handleOnAppear() {
+        if viewModel.question == nil {
+            viewModel.getQuestion()
+        } else if let questionId = viewModel.question?.id {
+            // Always reload snippets when view appears to ensure fresh data
+            // This handles the case when navigating back to the quiz
+            viewModel.loadSnippets(questionId: questionId)
         }
     }
 

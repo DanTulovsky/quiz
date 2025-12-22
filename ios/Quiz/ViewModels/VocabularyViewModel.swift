@@ -2,17 +2,24 @@ import Combine
 import Foundation
 
 class VocabularyViewModel: BaseViewModel, SnippetLoading, LanguageCaching, ListFetching,
-    LanguageFetching, Searchable, Filterable
+    LanguageFetching, Searchable, Filterable, CRUDOperations
 {
     typealias Item = StorySummary
+    typealias CRUDItem = Snippet
 
     @Published var snippets = [Snippet]()
     @Published var stories = [StorySummary]()
+
+    var crudItems: [Snippet] {
+        get { snippets }
+        set { snippets = newValue }
+    }
 
     var items: [StorySummary] {
         get { stories }
         set { stories = newValue }
     }
+
     @Published var searchQuery = ""
 
     var searchQueryPublisher: Published<String>.Publisher {
@@ -69,44 +76,35 @@ class VocabularyViewModel: BaseViewModel, SnippetLoading, LanguageCaching, ListF
         request: CreateSnippetRequest,
         completion: @escaping (Result<Snippet, APIService.APIError>) -> Void
     ) {
-        apiService.createSnippet(request: request)
-            .executeWithCompletion(
-                on: self,
-                receiveValue: { [weak self] snippet in
-                    self?.snippets.insert(snippet, at: 0)
-                },
-                completion: completion
-            )
-            .store(in: &cancellables)
+        createItem(
+            publisher: apiService.createSnippet(request: request),
+            transform: { $0 },
+            insertAt: 0,
+            completion: completion
+        )
+        .store(in: &cancellables)
     }
 
     func updateSnippet(
         id: Int, request: UpdateSnippetRequest,
         completion: @escaping (Result<Snippet, APIService.APIError>) -> Void
     ) {
-        apiService.updateSnippet(id: id, request: request)
-            .executeWithCompletion(
-                on: self,
-                receiveValue: { [weak self] updatedSnippet in
-                    if let index = self?.snippets.firstIndex(where: { $0.id == id }) {
-                        self?.snippets[index] = updatedSnippet
-                    }
-                },
-                completion: completion
-            )
-            .store(in: &cancellables)
+        updateItem(
+            id: id,
+            publisher: apiService.updateSnippet(id: id, request: request),
+            transform: { $0 },
+            completion: completion
+        )
+        .store(in: &cancellables)
     }
 
     func deleteSnippet(id: Int, completion: @escaping (Result<Void, APIService.APIError>) -> Void) {
-        apiService.deleteSnippet(id: id)
-            .executeWithCompletion(
-                on: self,
-                receiveValue: { [weak self] _ in
-                    self?.snippets.removeAll { $0.id == id }
-                },
-                completion: completion
-            )
-            .store(in: &cancellables)
+        deleteItem(
+            id: id,
+            publisher: apiService.deleteSnippet(id: id),
+            completion: completion
+        )
+        .store(in: &cancellables)
     }
 
     var filteredSnippets: [Snippet] {

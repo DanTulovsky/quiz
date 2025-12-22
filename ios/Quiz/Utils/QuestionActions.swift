@@ -41,3 +41,19 @@ extension QuestionActions {
     }
 }
 
+protocol QuestionIDProvider {
+    var currentQuestionId: Int? { get }
+}
+
+extension QuestionActions where Self: QuestionIDProvider {
+    func reportQuestion(reason: String?) {
+        guard let questionId = currentQuestionId else { return }
+        reportQuestion(id: questionId, reason: reason)
+    }
+
+    func markQuestionKnown(confidence: Int) {
+        guard let questionId = currentQuestionId else { return }
+        markQuestionKnown(id: questionId, confidence: confidence)
+    }
+}
+

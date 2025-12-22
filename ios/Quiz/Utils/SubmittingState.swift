@@ -1,5 +1,5 @@
-import Foundation
 import Combine
+import Foundation
 
 protocol SubmittingState: BaseViewModel {
     var isSubmitting: Bool { get set }
@@ -11,7 +11,8 @@ extension SubmittingState {
         onSuccess: @escaping (T) -> Void
     ) -> AnyCancellable {
         isSubmitting = true
-        return publisher
+        return
+            publisher
             .handleErrorOnly(on: self)
             .sink(
                 receiveCompletion: { [weak self] _ in
@@ -28,7 +29,8 @@ extension SubmittingState {
         onSuccess: @escaping () -> Void
     ) -> AnyCancellable {
         isSubmitting = true
-        return publisher
+        return
+            publisher
             .handleErrorOnly(on: self)
             .sink(
                 receiveCompletion: { [weak self] _ in
@@ -41,3 +43,23 @@ extension SubmittingState {
     }
 }
 
+protocol AnswerSubmittable: BaseViewModel {
+    associatedtype AnswerResponseType
+    var answerResponse: AnswerResponseType? { get set }
+    var selectedAnswerIndex: Int? { get set }
+}
+
+extension AnswerSubmittable {
+    func submitAnswer<T>(
+        publisher: AnyPublisher<T, APIService.APIError>,
+        onSuccess: @escaping (T) -> Void
+    ) -> AnyCancellable {
+        clearError()
+        return
+            publisher
+            .handleErrorOnly(on: self)
+            .sinkValue(on: self) { response in
+                onSuccess(response)
+            }
+    }
+}

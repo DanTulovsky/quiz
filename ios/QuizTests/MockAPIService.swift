@@ -381,6 +381,13 @@ final class MockAPIService: APIService, @unchecked Sendable {
         return result.publisher.eraseToAnyPublisher()
     }
 
+    override func getSnippetsByQuestion(questionId: Int) -> AnyPublisher<SnippetList, APIError> {
+        guard let result = getSnippetsResult else {
+            return Fail(error: .invalidResponse).eraseToAnyPublisher()
+        }
+        return result.publisher.eraseToAnyPublisher()
+    }
+
     override func getDailyQuestions(date: String) -> AnyPublisher<DailyQuestionsResponse, APIError>
     {
         guard let result = getDailyQuestionsResult else {
