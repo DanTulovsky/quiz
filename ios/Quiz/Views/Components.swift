@@ -92,32 +92,91 @@ struct BadgeView: View {
     }
 
     private func handleAppEnteringBackground() {
-        // Reactivate audio session to ensure background playback continues
-        do {
-            let audioSession = AVAudioSession.sharedInstance()
-            try audioSession.setActive(true)
-
-            // Ensure player continues if it's currently playing
-            if let player = player, !isPaused, currentlySpeakingText != nil {
-                player.play()
-            }
-        } catch {
-            print("Failed to reactivate audio session in background: \(error.localizedDescription)")
-        }
+        // Audio session should remain active with proper configuration
+        // No need to reactivate - it should stay active for background playback
     }
 
     private func setupAudioSession() {
         do {
             let audioSession = AVAudioSession.sharedInstance()
+
+            // Use .playback category for background audio playback (enables autorun mode)
+            // Use .default mode - .spokenAudio can sometimes cause issues with background playback
+            // With .playback category and background mode enabled, audio should continue when device locks
+            // Options are optional - .playback category alone enables autorun behavior
+            // Don't deactivate first - just configure and activate. Deactivation can cause iOS to not maintain the session.
             try audioSession.setCategory(
                 .playback,
                 mode: .default,
-                options: [.allowBluetoothHFP, .allowBluetoothA2DP, .duckOthers]
+                options: []
             )
+
+            // Activate the session - this puts it in autorun mode
+            // With .playback category, it will stay active for background playback
+            // The session should remain active and not be deactivated when device locks
             try audioSession.setActive(true)
+
+            // Observe audio session interruptions
+            setupAudioSessionInterruptionObserver()
         } catch {
-            print("Failed to configure audio session: \(error.localizedDescription)")
+            // Try fallback configuration without mode
+            do {
+                let audioSession = AVAudioSession.sharedInstance()
+                try audioSession.setCategory(.playback, options: [])
+                try audioSession.setActive(true)
+            } catch {
+                // Fallback configuration also failed
+            }
         }
+    }
+
+    private func setupAudioSessionInterruptionObserver() {
+        let interruptionObserver = NotificationCenter.default.addObserver(
+            forName: AVAudioSession.interruptionNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            // Extract values from notification before entering Task to avoid Sendable warning
+            let userInfo = notification.userInfo
+            let typeValue = userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt
+            let type = typeValue.map { AVAudioSession.InterruptionType(rawValue: $0) }
+            let optionsValue = userInfo?[AVAudioSessionInterruptionOptionKey] as? UInt
+            let options = optionsValue.map { AVAudioSession.InterruptionOptions(rawValue: $0) }
+
+            Task { @MainActor [weak self] in
+                guard let self = self, let type = type else {
+                    return
+                }
+
+                switch type {
+                case .began:
+                    // Interruption began - don't pause, let it handle naturally
+                    break
+                case .ended:
+                    // Interruption ended - resume if we should be playing
+                    if let options = options, options.contains(.shouldResume) {
+                        // Resume playback if we were playing
+                        if let player = self.player,
+                            !self.isPaused,
+                            self.currentlySpeakingText != nil
+                        {
+                            do {
+                                try AVAudioSession.sharedInstance().setActive(true)
+                                player.play()
+                            } catch {
+                                // Failed to resume after interruption
+                            }
+                        }
+                    }
+                case .none:
+                    // No interruption
+                    break
+                @unknown default:
+                    break
+                }
+            }
+        }
+        notificationObservers.append(interruptionObserver)
     }
 
     func updateDefaultVoiceCache(languages: [LanguageInfo]) {
@@ -191,12 +250,8 @@ struct BadgeView: View {
             effectiveVoice = defaultVoiceForLanguage(language)
         }
 
-        // Ensure audio session is active for background playback
-        do {
-            try AVAudioSession.sharedInstance().setActive(true)
-        } catch {
-            handleError("Failed to activate audio session: \(error.localizedDescription)")
-        }
+        // Audio session should already be configured and active from setupAudioSession() in init()
+        // Per Apple docs: configure once before starting playback, not repeatedly
 
         // Try backend TTS
         let request = TTSRequest(
@@ -312,6 +367,11 @@ struct BadgeView: View {
 
     private func playAudioData(_ data: Data) {
         do {
+            // Audio session should already be configured and active from setupAudioSession()
+            // No need to reactivate - it should stay active for background playback
+            // Per Apple docs and best practices, activate once during setup, not repeatedly
+            let audioSession = AVAudioSession.sharedInstance()
+
             // Write to temporary file
             let tempDir = FileManager.default.temporaryDirectory
             let tempFile = tempDir.appendingPathComponent(UUID().uuidString + ".mp3")
@@ -331,11 +391,7 @@ struct BadgeView: View {
                     self.isPaused = false
                     self.clearNowPlayingInfo()
                     // Clean up temp file
-                    do {
-                        try FileManager.default.removeItem(at: tempFile)
-                    } catch {
-                        print("Warning: Failed to remove temp file: \(error.localizedDescription)")
-                    }
+                    try? FileManager.default.removeItem(at: tempFile)
                 }
             }
             notificationObservers.append(completionObserver)
@@ -348,13 +404,7 @@ struct BadgeView: View {
                     guard let self = self else { return }
                     self.handleError("Audio playback failed.")
                     self.clearNowPlayingInfo()
-                    do {
-                        try FileManager.default.removeItem(at: tempFile)
-                    } catch {
-                        print(
-                            "Warning: Failed to remove temp file after error: \(error.localizedDescription)"
-                        )
-                    }
+                    try? FileManager.default.removeItem(at: tempFile)
                 }
             }
             notificationObservers.append(errorObserver)
@@ -367,15 +417,13 @@ struct BadgeView: View {
             playerItem.addObserver(
                 self, forKeyPath: "status", options: [.new, .initial], context: nil)
 
-            // Ensure audio session is active before playing (critical for background playback)
-            do {
-                try AVAudioSession.sharedInstance().setActive(true)
-            } catch {
-                print(
-                    "Failed to activate audio session before playback: \(error.localizedDescription)"
-                )
-            }
+            // Observe timeControlStatus to detect when player gets paused by system
+            player.addObserver(
+                self, forKeyPath: "timeControlStatus", options: [.new, .initial], context: nil)
 
+            // Audio session should already be configured and active from setupAudioSession()
+            // Per Apple docs and best practices, activate once during setup, not repeatedly
+            // The session should stay active for background playback
             player.play()
             isPaused = false
 
@@ -476,6 +524,19 @@ struct BadgeView: View {
                     isLoading = false
                 }
             }
+        } else if keyPath == "timeControlStatus", let player = object as? AVPlayer {
+            // Monitor player state for debugging
+            // If audio session is properly configured, player should NOT pause when phone locks
+            // Log unexpected pauses for debugging - don't auto-resume (causes app termination)
+            // Monitor player state - if it pauses unexpectedly, it may indicate a configuration issue
+            // With proper configuration, the player should continue playing when device locks else if player.timeControlStatus == .playing {
+                // Update our state when player starts playing
+                if isPaused && player == self.player {
+                    isPaused = false
+                    updateNowPlayingPlaybackState()
+                }
+                isLoading = false
+            }
         }
     }
 
@@ -508,10 +569,6 @@ struct BadgeView: View {
 
         // If not in cache, return a default (this should only happen if languages haven't loaded yet)
         // In practice, this should be avoided by ensuring languages are loaded before using TTS
-        print(
-            "⚠️ TTS Warning: Default voice cache not populated for language '\(lang)'. "
-                + "Using English fallback. This may indicate TTS initialization failed."
-        )
         return "en-US-JennyNeural"
     }
 
@@ -524,12 +581,8 @@ struct BadgeView: View {
 
     func resume() {
         guard let player = player, currentlySpeakingText != nil else { return }
-        // Ensure audio session is active before resuming playback
-        do {
-            try AVAudioSession.sharedInstance().setActive(true)
-        } catch {
-            print("Failed to activate audio session on resume: \(error.localizedDescription)")
-        }
+        // Audio session should already be active from setupAudioSession()
+        // No need to reactivate - it should stay active for background playback
         player.play()
         isPaused = false
         updateNowPlayingPlaybackState()
@@ -575,9 +628,12 @@ struct BadgeView: View {
         currentDataTask?.cancel()
         currentDataTask = nil
 
-        // Remove KVO observer from player item
+        // Remove KVO observers from player and player item
         if let playerItem = player?.currentItem {
             playerItem.removeObserver(self, forKeyPath: "status")
+        }
+        if let player = player {
+            player.removeObserver(self, forKeyPath: "timeControlStatus")
         }
 
         player?.pause()
@@ -603,9 +659,12 @@ struct BadgeView: View {
     }
 
     deinit {
-        // Remove KVO observer if still present
+        // Remove KVO observers if still present
         if let playerItem = player?.currentItem {
             playerItem.removeObserver(self, forKeyPath: "status")
+        }
+        if let player = player {
+            player.removeObserver(self, forKeyPath: "timeControlStatus")
         }
 
         // Remove all notification observers

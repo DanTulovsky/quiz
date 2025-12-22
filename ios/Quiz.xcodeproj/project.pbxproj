@@ -25,9 +25,22 @@
 		BE5781EB2EF24DFC00A9FE36 /* QuizTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QuizTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		BE3CD7E32EF9F0FA00227B19 /* Exceptions for "Quiz" folder in "Quiz" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = BE5781DC2EF24DFC00A9FE36 /* Quiz */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		BE5781DF2EF24DFC00A9FE36 /* Quiz */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				BE3CD7E32EF9F0FA00227B19 /* Exceptions for "Quiz" folder in "Quiz" target */,
+			);
 			path = Quiz;
 			sourceTree = "<group>";
 		};
@@ -349,6 +362,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Quiz/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = VerbaFlow;
 				INFOPLIST_KEY_CFBundleIconName = AppIcon;
 				INFOPLIST_KEY_CFBundleURLTypes = "(\n    {\n        CFBundleURLName = \"com.wetsnow.quiz.oauth\";\n        CFBundleURLSchemes = (\n            \"com.googleusercontent.apps.53644033433-qpic9cnjknphdpa332d7flq7nvvdv520\"\n        );\n    }\n)";
@@ -389,6 +403,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Quiz/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = VerbaFlow;
 				INFOPLIST_KEY_CFBundleIconName = AppIcon;
 				INFOPLIST_KEY_CFBundleURLTypes = "(\n    {\n        CFBundleURLName = \"com.wetsnow.quiz.oauth\";\n        CFBundleURLSchemes = (\n            \"com.googleusercontent.apps.53644033433-qpic9cnjknphdpa332d7flq7nvvdv520\"\n        );\n    }\n)";
