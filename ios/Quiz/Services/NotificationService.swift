@@ -115,7 +115,12 @@ extension NotificationService: UNUserNotificationCenterDelegate {
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
     ) {
         // Show notification even when app is in foreground
-        completionHandler([.banner, .sound, .badge])
+        // Use .list in addition to .banner for better compatibility across iOS versions
+        if #available(iOS 14.0, *) {
+            completionHandler([.banner, .list, .sound, .badge])
+        } else {
+            completionHandler([.alert, .sound, .badge])
+        }
     }
 
     func userNotificationCenter(

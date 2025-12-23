@@ -163,10 +163,28 @@ func (a *APNSService) SendNotification(ctx context.Context, deviceToken string, 
 	// Build APS payload
 	p := payload.NewPayload()
 
+	// Handle payload structure - can be either:
+	// 1. Direct structure: { "alert": {...}, "sound": "...", ... }
+	// 2. Nested structure: { "aps": { "alert": {...}, "sound": "..." }, ... }
+	var apsData map[string]interface{}
+	if aps, ok := notificationPayload["aps"].(map[string]interface{}); ok {
+		// Nested structure - extract aps data
+		apsData = aps
+		// Extract non-aps custom data for later
+		for key, value := range notificationPayload {
+			if key != "aps" {
+				p.Custom(key, value)
+			}
+		}
+	} else {
+		// Direct structure - use the payload directly
+		apsData = notificationPayload
+	}
+
 	// Handle alert (can be string or map)
-	if alert, ok := notificationPayload["alert"].(string); ok {
+	if alert, ok := apsData["alert"].(string); ok {
 		p.Alert(alert)
-	} else if alertMap, ok := notificationPayload["alert"].(map[string]interface{}); ok {
+	} else if alertMap, ok := apsData["alert"].(map[string]interface{}); ok {
 		if title, ok := alertMap["title"].(string); ok {
 			p.AlertTitle(title)
 		}
@@ -176,21 +194,23 @@ func (a *APNSService) SendNotification(ctx context.Context, deviceToken string, 
 	}
 
 	// Handle sound
-	if sound, ok := notificationPayload["sound"].(string); ok {
+	if sound, ok := apsData["sound"].(string); ok {
 		p.Sound(sound)
 	} else {
 		p.Sound("default")
 	}
 
 	// Handle badge
-	if badge, ok := notificationPayload["badge"].(int); ok {
+	if badge, ok := apsData["badge"].(int); ok {
 		p.Badge(badge)
 	}
 
-	// Add custom data (everything except aps)
-	for key, value := range notificationPayload {
-		if key != "aps" && key != "alert" && key != "sound" && key != "badge" {
-			p.Custom(key, value)
+	// For direct structure, add remaining custom data (everything except aps fields)
+	if _, ok := notificationPayload["aps"]; !ok {
+		for key, value := range notificationPayload {
+			if key != "alert" && key != "sound" && key != "badge" {
+				p.Custom(key, value)
+			}
 		}
 	}
 
