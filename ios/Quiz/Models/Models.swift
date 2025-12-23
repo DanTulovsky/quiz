@@ -1,5 +1,7 @@
 import Foundation
 
+// swiftlint:disable file_length
+
 struct EmptyBody: Codable {}
 
 struct LoginRequest: Codable {

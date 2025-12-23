@@ -123,14 +123,16 @@ class SettingsViewModel: BaseViewModel, LanguageCaching, ListFetchingWithName, L
             .sink(
                 receiveCompletion: { [weak self] completion in
                     if case .failure(let error) = completion {
-                        self?.testNotificationResults[notificationType] = "Error: \(error.localizedDescription)"
+                        self?.testNotificationResults[notificationType] =
+                            "Error: \(error.localizedDescription)"
                     }
                 },
                 receiveValue: { [weak self] resp in
                     if let message = resp.message {
                         self?.testNotificationResults[notificationType] = "Success: \(message)"
                     } else {
-                        self?.testNotificationResults[notificationType] = "Success: Test notification sent"
+                        self?.testNotificationResults[notificationType] =
+                            "Success: Test notification sent"
                     }
                 }
             )

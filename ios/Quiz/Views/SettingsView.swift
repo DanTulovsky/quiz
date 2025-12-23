@@ -2,6 +2,7 @@ import SwiftUI
 import Combine
 import UserNotifications
 
+// swiftlint:disable file_length
 // swiftlint:disable:next type_body_length
 struct SettingsView: View {
     @StateObject private var viewModel = SettingsViewModel()
@@ -361,7 +362,11 @@ struct SettingsView: View {
                 if let testResult = viewModel.testNotificationResults["daily_reminder"] {
                     Text(testResult)
                         .font(.caption)
-                        .foregroundColor(testResult.contains("Success") ? AppTheme.Colors.successGreen : AppTheme.Colors.errorRed)
+                        .foregroundColor(
+                            testResult.contains("Success")
+                                ? AppTheme.Colors.successGreen
+                                : AppTheme.Colors.errorRed
+                        )
                         .padding(.top, 4)
                 }
 
@@ -390,7 +395,11 @@ struct SettingsView: View {
                 if let testResult = viewModel.testNotificationResults["word_of_day"] {
                     Text(testResult)
                         .font(.caption)
-                        .foregroundColor(testResult.contains("Success") ? AppTheme.Colors.successGreen : AppTheme.Colors.errorRed)
+                        .foregroundColor(
+                            testResult.contains("Success")
+                                ? AppTheme.Colors.successGreen
+                                : AppTheme.Colors.errorRed
+                        )
                         .padding(.top, 4)
                 }
             }
@@ -414,7 +423,6 @@ struct SettingsView: View {
                 .disabled(email.isEmpty)
             }
         }
-
 
         settingsSection(title: "AI Settings", icon: "cpu", id: "ai") {
             VStack(alignment: .leading, spacing: 20) {
@@ -836,63 +844,18 @@ struct SettingsView: View {
         }
 
         private func applyChangeModifiers<V: SwiftUI.View>(to view: V) -> some View {
-            // First group: Language and level validation onChange handlers
-            let viewWithLanguageModifiers = view
+            let viewWithLanguageModifiers = applyLanguageValidationModifiers(to: view)
+            let viewWithAIModifiers = applyAIValidationModifiers(to: viewWithLanguageModifiers)
+            return applyUserValidationModifiers(to: viewWithAIModifiers)
+        }
+
+        private func applyLanguageValidationModifiers<V: SwiftUI.View>(to view: V) -> some View {
+            view
                 .onChange(of: viewModel.availableLanguages) { _, languages in
-                    // When languages load, validate that learningLanguage matches an available tag
-                    if !languages.isEmpty {
-                        if learningLanguage.isEmpty {
-                            // If empty, try to get from user preferences or default to first
-                            let preferredLang = authViewModel.user?.preferredLanguage ?? languages.first?.name ?? ""
-                            if !preferredLang.isEmpty {
-                                let lowercasedSelection = preferredLang.lowercased()
-                                if let nameMatch = languages.first(where: { $0.name.lowercased() == lowercasedSelection }) {
-                                    learningLanguage = nameMatch.name
-                                } else if let codeMatch = languages.first(where: { $0.code.lowercased() == lowercasedSelection }) {
-                                    learningLanguage = codeMatch.name
-                                } else if languages.contains(where: { $0.name == preferredLang }) {
-                                    learningLanguage = preferredLang
-                                } else {
-                                    learningLanguage = languages.first?.name ?? ""
-                                }
-                            } else {
-                                learningLanguage = languages.first?.name ?? ""
-                            }
-                        } else {
-                            // Validate existing selection
-                            let lowercasedSelection = learningLanguage.lowercased()
-                            let exactMatch = languages.first { $0.name == learningLanguage }
-                            if exactMatch != nil {
-                                // Exact match found, keep current value - no change needed
-                            } else if let nameMatch = languages.first(where: { $0.name.lowercased() == lowercasedSelection }) {
-                                // Case-insensitive match by name found, use the exact name from API
-                                learningLanguage = nameMatch.name
-                            } else if let codeMatch = languages.first(where: { $0.code.lowercased() == lowercasedSelection }) {
-                                // Case-insensitive match by code found, use the name from API
-                                learningLanguage = codeMatch.name
-                            } else {
-                                // No match found, use first available language
-                                learningLanguage = languages.first?.name ?? ""
-                            }
-                        }
-                    }
+                    validateAndSetLanguage(languages: languages)
                 }
                 .onChange(of: viewModel.availableLevels) { _, levels in
-                    // When levels load, validate that currentLevel matches an available tag
-                    if !levels.isEmpty {
-                        if currentLevel.isEmpty {
-                            // If empty, try to get from user preferences or default to first
-                            let preferredLevel = authViewModel.user?.currentLevel ?? levels.first ?? ""
-                            if !preferredLevel.isEmpty && levels.contains(preferredLevel) {
-                                currentLevel = preferredLevel
-                            } else {
-                                currentLevel = levels.first ?? ""
-                            }
-                        } else if !levels.contains(currentLevel) {
-                            // Current level not in list, use first available level
-                            currentLevel = levels.first ?? ""
-                        }
-                    }
+                    validateAndSetLevel(levels: levels)
                 }
                 .onChange(of: learningLanguage) { _, newValue in
                     if !viewModel.availableLanguages.isEmpty {
@@ -900,123 +863,173 @@ struct SettingsView: View {
                         viewModel.fetchLevels(language: newValue)
                     }
                 }
+        }
 
-            // Second group: AI provider/model validation onChange handlers
-            let viewWithAIModifiers = viewWithLanguageModifiers
+        private func validateAndSetLanguage(languages: [LanguageInfo]) {
+            guard !languages.isEmpty else { return }
+            if learningLanguage.isEmpty {
+                setLanguageFromPreferences(languages: languages)
+            } else {
+                validateExistingLanguage(languages: languages)
+            }
+        }
+
+        private func setLanguageFromPreferences(languages: [LanguageInfo]) {
+            let preferredLang = authViewModel.user?.preferredLanguage ?? languages.first?.name ?? ""
+            guard !preferredLang.isEmpty else {
+                learningLanguage = languages.first?.name ?? ""
+                return
+            }
+            let lowercasedSelection = preferredLang.lowercased()
+            if let nameMatch = languages.first(where: { $0.name.lowercased() == lowercasedSelection }) {
+                learningLanguage = nameMatch.name
+            } else if let codeMatch = languages.first(where: { $0.code.lowercased() == lowercasedSelection }) {
+                learningLanguage = codeMatch.name
+            } else if languages.contains(where: { $0.name == preferredLang }) {
+                learningLanguage = preferredLang
+            } else {
+                learningLanguage = languages.first?.name ?? ""
+            }
+        }
+
+        private func validateExistingLanguage(languages: [LanguageInfo]) {
+            let lowercasedSelection = learningLanguage.lowercased()
+            let exactMatch = languages.first { $0.name == learningLanguage }
+            if exactMatch != nil {
+                return
+            }
+            if let nameMatch = languages.first(where: { $0.name.lowercased() == lowercasedSelection }) {
+                learningLanguage = nameMatch.name
+            } else if let codeMatch = languages.first(where: { $0.code.lowercased() == lowercasedSelection }) {
+                learningLanguage = codeMatch.name
+            } else {
+                learningLanguage = languages.first?.name ?? ""
+            }
+        }
+
+        private func validateAndSetLevel(levels: [String]) {
+            guard !levels.isEmpty else { return }
+            if currentLevel.isEmpty {
+                let preferredLevel = authViewModel.user?.currentLevel ?? levels.first ?? ""
+                if !preferredLevel.isEmpty && levels.contains(preferredLevel) {
+                    currentLevel = preferredLevel
+                } else {
+                    currentLevel = levels.first ?? ""
+                }
+            } else if !levels.contains(currentLevel) {
+                currentLevel = levels.first ?? ""
+            }
+        }
+
+        private func applyAIValidationModifiers<V: SwiftUI.View>(to view: V) -> some View {
+            view
                 .onChange(of: viewModel.aiProviders) { _, providers in
-                    // When AI providers load, validate that selectedProvider and selectedModel match available tags
-                    if !providers.isEmpty {
-                        if !selectedProvider.isEmpty {
-                            if let provider = providers.first(where: { $0.code == selectedProvider }) {
-                                // Provider is valid, validate model
-                                if !selectedModel.isEmpty {
-                                    let modelExists = provider.models.contains { $0.code == selectedModel }
-                                    if !modelExists {
-                                        // Model not in provider's model list, clear it
-                                        selectedModel = ""
-                                    }
-                                }
-                            } else {
-                                // Provider not in list, clear both selections
-                                selectedProvider = ""
-                                selectedModel = ""
-                            }
-                        }
-                    }
+                    validateAIProviders(providers: providers)
                 }
                 .onChange(of: selectedProvider) { _, newProvider in
-                    // When provider changes, validate model
-                    if !newProvider.isEmpty {
-                        if let provider = viewModel.aiProviders.first(where: { $0.code == newProvider }) {
-                            // Validate selectedModel is still valid for this provider
-                            if !selectedModel.isEmpty {
-                                let modelExists = provider.models.contains { $0.code == selectedModel }
-                                if !modelExists {
-                                    selectedModel = ""
-                                }
-                            }
-                        } else {
-                            selectedModel = ""
-                        }
-                    } else {
+                    validateSelectedProvider(newProvider: newProvider)
+                }
+        }
+
+        private func validateAIProviders(providers: [AIProviderInfo]) {
+            guard !providers.isEmpty && !selectedProvider.isEmpty else { return }
+            if let provider = providers.first(where: { $0.code == selectedProvider }) {
+                if !selectedModel.isEmpty {
+                    let modelExists = provider.models.contains { $0.code == selectedModel }
+                    if !modelExists {
                         selectedModel = ""
                     }
                 }
+            } else {
+                selectedProvider = ""
+                selectedModel = ""
+            }
+        }
 
-            // Third group: User and learning preferences onChange handlers
-            return viewWithAIModifiers
+        private func validateSelectedProvider(newProvider: String) {
+            guard !newProvider.isEmpty else {
+                selectedModel = ""
+                return
+            }
+            if let provider = viewModel.aiProviders.first(where: { $0.code == newProvider }) {
+                if !selectedModel.isEmpty {
+                    let modelExists = provider.models.contains { $0.code == selectedModel }
+                    if !modelExists {
+                        selectedModel = ""
+                    }
+                }
+            } else {
+                selectedModel = ""
+            }
+        }
+
+        private func applyUserValidationModifiers<V: SwiftUI.View>(to view: V) -> some View {
+            view
                 .onChange(of: authViewModel.user) { _, user in
                     if let user = user {
-                        username = user.username
-                        email = user.email
-                        timezone = user.timezone ?? ""
-                        aiEnabled = user.aiEnabled ?? false
-                        wordOfDayEmailEnabled = user.wordOfDayEmailEnabled ?? false
-                        // Validate provider and model when setting from user
-                        if let provider = user.aiProvider, !provider.isEmpty {
-                            if viewModel.aiProviders.contains(where: { $0.code == provider }) {
-                                selectedProvider = provider
-                                // Validate model
-                                if let model = user.aiModel, !model.isEmpty,
-                                   let providerInfo = viewModel.aiProviders.first(where: { $0.code == provider }),
-                                   providerInfo.models.contains(where: { $0.code == model }) {
-                                    selectedModel = model
-                                } else {
-                                    selectedModel = ""
-                                }
-                            } else {
-                                selectedProvider = ""
-                                selectedModel = ""
-                            }
-                        } else {
-                            selectedProvider = ""
-                            selectedModel = ""
-                        }
+                        updateFromUser(user: user)
                     }
                 }
                 .onChange(of: viewModel.learningPrefs) { _, prefs in
                     if let prefs = prefs {
-                        // Validate language before setting
-                        let preferredLang = authViewModel.user?.preferredLanguage ?? ""
-                        if !preferredLang.isEmpty && !viewModel.availableLanguages.isEmpty {
-                            let lowercasedSelection = preferredLang.lowercased()
-                            if let nameMatch = viewModel.availableLanguages.first(where: { $0.name.lowercased() == lowercasedSelection }) {
-                                learningLanguage = nameMatch.name
-                            } else if let codeMatch = viewModel.availableLanguages.first(where: { $0.code.lowercased() == lowercasedSelection }) {
-                                learningLanguage = codeMatch.name
-                            } else if viewModel.availableLanguages.contains(where: { $0.name == preferredLang }) {
-                                learningLanguage = preferredLang
-                            } else {
-                                learningLanguage = viewModel.availableLanguages.first?.name ?? ""
-                            }
-                        } else if !viewModel.availableLanguages.isEmpty && learningLanguage.isEmpty {
-                            // If no preferred language and current is empty, use first available
-                            learningLanguage = viewModel.availableLanguages.first?.name ?? ""
-                        }
-                        // Validate level before setting
-                        let preferredLevel = authViewModel.user?.currentLevel ?? ""
-                        if !preferredLevel.isEmpty && !viewModel.availableLevels.isEmpty {
-                            if viewModel.availableLevels.contains(preferredLevel) {
-                                currentLevel = preferredLevel
-                            } else {
-                                currentLevel = viewModel.availableLevels.first ?? ""
-                            }
-                        } else if !viewModel.availableLevels.isEmpty && currentLevel.isEmpty {
-                            // If no preferred level and current is empty, use first available
-                            currentLevel = viewModel.availableLevels.first ?? ""
-                        }
-                        ttsVoice = prefs.ttsVoice ?? ""
-                        TTSSynthesizerManager.shared.preferredVoice = ttsVoice
-                        focusOnWeakAreas = prefs.focusOnWeakAreas
-                        freshQuestionRatio = prefs.freshQuestionRatio
-                        knownQuestionPenalty = prefs.knownQuestionPenalty
-                        weakAreaBoost = prefs.weakAreaBoost
-                        reviewIntervalDays = prefs.reviewIntervalDays
-                        dailyGoal = prefs.dailyGoal ?? 10
-                        wordOfDayIOSNotifyEnabled = prefs.wordOfDayIosNotifyEnabled ?? false
-                        dailyReminderIOSNotifyEnabled = prefs.dailyReminderIosNotifyEnabled ?? false
+                        updateFromLearningPreferences(prefs: prefs)
                     }
                 }
+        }
+
+        private func updateFromUser(user: User) {
+            username = user.username
+            email = user.email
+            timezone = user.timezone ?? ""
+            aiEnabled = user.aiEnabled ?? false
+            wordOfDayEmailEnabled = user.wordOfDayEmailEnabled ?? false
+            if let provider = user.aiProvider, !provider.isEmpty {
+                if viewModel.aiProviders.contains(where: { $0.code == provider }) {
+                    selectedProvider = provider
+                    if let model = user.aiModel, !model.isEmpty,
+                       let providerInfo = viewModel.aiProviders.first(where: { $0.code == provider }),
+                       providerInfo.models.contains(where: { $0.code == model }) {
+                        selectedModel = model
+                    } else {
+                        selectedModel = ""
+                    }
+                } else {
+                    selectedProvider = ""
+                    selectedModel = ""
+                }
+            } else {
+                selectedProvider = ""
+                selectedModel = ""
+            }
+        }
+
+        private func updateFromLearningPreferences(prefs: UserLearningPreferences) {
+            let preferredLang = authViewModel.user?.preferredLanguage ?? ""
+            if !preferredLang.isEmpty && !viewModel.availableLanguages.isEmpty {
+                setLanguageFromPreferences(languages: viewModel.availableLanguages)
+            } else if !viewModel.availableLanguages.isEmpty && learningLanguage.isEmpty {
+                learningLanguage = viewModel.availableLanguages.first?.name ?? ""
+            }
+            let preferredLevel = authViewModel.user?.currentLevel ?? ""
+            if !preferredLevel.isEmpty && !viewModel.availableLevels.isEmpty {
+                if viewModel.availableLevels.contains(preferredLevel) {
+                    currentLevel = preferredLevel
+                } else {
+                    currentLevel = viewModel.availableLevels.first ?? ""
+                }
+            } else if !viewModel.availableLevels.isEmpty && currentLevel.isEmpty {
+                currentLevel = viewModel.availableLevels.first ?? ""
+            }
+            ttsVoice = prefs.ttsVoice ?? ""
+            TTSSynthesizerManager.shared.preferredVoice = ttsVoice
+            focusOnWeakAreas = prefs.focusOnWeakAreas
+            freshQuestionRatio = prefs.freshQuestionRatio
+            knownQuestionPenalty = prefs.knownQuestionPenalty
+            weakAreaBoost = prefs.weakAreaBoost
+            reviewIntervalDays = prefs.reviewIntervalDays
+            dailyGoal = prefs.dailyGoal ?? 10
+            wordOfDayIOSNotifyEnabled = prefs.wordOfDayIosNotifyEnabled ?? false
+            dailyReminderIOSNotifyEnabled = prefs.dailyReminderIosNotifyEnabled ?? false
         }
     }
 

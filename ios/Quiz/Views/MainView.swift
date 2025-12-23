@@ -115,12 +115,12 @@ struct MainView: View {
                     NavigationStack {
                         List {
                             Section("Practice") {
-                                Button(action: { navigateToDaily = true }) {
+                                Button(action: { navigateToDaily = true }, label: {
                                     Label("Daily", systemImage: "calendar")
-                                }
-                                Button(action: { navigateToWordOfDay = true }) {
+                                })
+                                Button(action: { navigateToWordOfDay = true }, label: {
                                     Label("Word of the Day", systemImage: "sparkles")
-                                }
+                                })
                                 NavigationLink(destination: TranslationPracticeView()) {
                                     Label("Translation Practice", systemImage: "arrow.left.and.right")
                                 }
