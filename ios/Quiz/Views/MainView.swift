@@ -112,13 +112,13 @@ struct MainView: View {
                     }
 
                     // Section 2: Practice
-                    NavigationView {
+                    NavigationStack {
                         List {
                             Section("Practice") {
-                                NavigationLink(destination: DailyView(), isActive: $navigateToDaily) {
+                                Button(action: { navigateToDaily = true }) {
                                     Label("Daily", systemImage: "calendar")
                                 }
-                                NavigationLink(destination: WordOfTheDayView(), isActive: $navigateToWordOfDay) {
+                                Button(action: { navigateToWordOfDay = true }) {
                                     Label("Word of the Day", systemImage: "sparkles")
                                 }
                                 NavigationLink(destination: TranslationPracticeView()) {
@@ -127,6 +127,12 @@ struct MainView: View {
                             }
                         }
                         .navigationTitle("Practice")
+                        .navigationDestination(isPresented: $navigateToDaily) {
+                            DailyView()
+                        }
+                        .navigationDestination(isPresented: $navigateToWordOfDay) {
+                            WordOfTheDayView()
+                        }
                     }
                     .tag(1)
                     .tabItem {
