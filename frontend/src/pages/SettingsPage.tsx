@@ -527,7 +527,6 @@ const SettingsPage: React.FC = () => {
     }
   };
 
-
   // Handler functions for dangerous actions
   const handleDeleteAllStories = async () => {
     setDeleteAllStoriesModal(false);
