@@ -1434,7 +1434,7 @@ tasks:
       - echo "🔍 Review the reports for comprehensive security findings"
 
   install-tooling:
-    desc: "Install all required development tooling (macOS and Linux)"
+    desc: "Install all required development tooling"
     cmds:
       - echo "🔧 Installing development tooling for Quiz Application..."
       - echo "This will install:"
@@ -1462,7 +1462,7 @@ tasks:
       - python3 scripts/update_csp_hashes.py
 
   restart-dev-backend:
-    desc: "Rebuild and restart only the backend Docker container (production)"
+    desc: "Rebuild and restart only the backend Docker container"
     deps: [build-backend-with-version, generate-api-types]
     env:
       DOCKER_BUILDKIT: 1
@@ -1475,7 +1475,7 @@ tasks:
       - echo "✅ Backend container rebuilt and restarted (dev)."
 
   restart-dev-worker:
-    desc: "Rebuild and restart only the worker Docker container (production)"
+    desc: "Rebuild and restart only the worker Docker container"
     deps: [build-backend-with-version, generate-api-types]
     env:
       DOCKER_BUILDKIT: 1
@@ -1488,7 +1488,7 @@ tasks:
       - echo "✅ Worker container rebuilt and restarted (dev)."
 
   restart-dev-frontend:
-    desc: "Rebuild and restart only the frontend Docker container (production)"
+    desc: "Rebuild and restart only the frontend Docker container"
     deps:
       [
         build-frontend-with-version,
@@ -1506,14 +1506,14 @@ tasks:
       - echo "✅ Frontend container rebuilt and restarted (dev)."
 
   restart-dev-otel-collector:
-    desc: "Rebuild and restart only the otel-collector Docker container (production)"
+    desc: "Rebuild and restart only the otel-collector Docker container"
     cmds:
       - echo "Restarting only the otel-collector container (dev)..."
       - docker compose restart otel-collector
       - echo "✅ otel-collector container rebuilt and restarted (dev)."
 
   restart-dev-tts:
-    desc: "Rebuild and restart only the tts Docker container (production)"
+    desc: "Rebuild and restart only the tts Docker container"
     env:
       DEBUG_STREAMING: ${DEBUG_STREAMING:-false}
     cmds:

@@ -9,7 +9,6 @@ import {
   useGetV1PreferencesLearning,
   usePutV1PreferencesLearning,
   usePostV1SettingsTestEmail,
-  usePostV1SettingsTestIosNotification,
   UserLearningPreferences,
   UserUpdateRequest,
 } from '../../api/api';
@@ -167,7 +166,6 @@ const MobileSettingsPage: React.FC = () => {
   const testConnectionMutation = usePostV1SettingsTestAi();
   const profileUpdateMutation = usePutV1UserzProfile();
   const testEmailMutation = usePostV1SettingsTestEmail();
-  const testIOSNotificationMutation = usePostV1SettingsTestIosNotification();
 
   // Check API key availability for the currently selected provider (no special case for ollama)
   const { data: apiKeyAvailable, refetch: refetchApiKeyAvailability } =
@@ -1246,141 +1244,6 @@ const MobileSettingsPage: React.FC = () => {
                       fullWidth
                     >
                       Test Email
-                    </Button>
-                  )}
-                </Stack>
-              </Accordion.Panel>
-            </Accordion.Item>
-
-            {/* Daily Reminder iOS Notifications */}
-            <Accordion.Item value='daily-reminder-ios'>
-              <Accordion.Control icon={<IconBell size={20} />}>
-                <Text fw={500}>Daily Reminder iOS Notifications</Text>
-              </Accordion.Control>
-              <Accordion.Panel>
-                <Stack gap='md'>
-                  <Group justify='space-between' align='flex-start'>
-                    <Box style={{ flex: 1 }}>
-                      <Text fw={500} mb='xs'>
-                        Daily Reminder iOS Notifications
-                      </Text>
-                      <Text size='sm' c='dimmed'>
-                        Receive push notifications on your iOS device for daily
-                        reminders.
-                      </Text>
-                    </Box>
-                    <Switch
-                      checked={
-                        learningPrefs?.daily_reminder_ios_notify_enabled ||
-                        false
-                      }
-                      onChange={async e => {
-                        const next = e.currentTarget.checked;
-                        if (learningPrefs) {
-                          const updatedPrefs = {
-                            ...learningPrefs,
-                            daily_reminder_ios_notify_enabled: next,
-                          };
-                          try {
-                            await prefsMutation.mutateAsync({
-                              data: updatedPrefs,
-                            });
-                            showNotificationWithClean({
-                              title: 'Saved',
-                              message:
-                                'Daily reminder iOS notification setting updated',
-                              color: 'green',
-                            });
-                          } catch {
-                            showNotificationWithClean({
-                              title: 'Error',
-                              message: 'Failed to update setting',
-                              color: 'red',
-                            });
-                          }
-                        }
-                      }}
-                      size='lg'
-                      data-testid='daily-reminder-ios-switch-mobile'
-                    />
-                  </Group>
-                  {learningPrefs?.daily_reminder_ios_notify_enabled && (
-                    <Button
-                      variant='outline'
-                      onClick={() =>
-                        handleTestIOSNotification('daily_reminder')
-                      }
-                      loading={testIOSNotificationMutation.isPending}
-                      data-testid='test-ios-daily-reminder-button-mobile'
-                      fullWidth
-                    >
-                      Test iOS Notification
-                    </Button>
-                  )}
-                </Stack>
-              </Accordion.Panel>
-            </Accordion.Item>
-
-            {/* Word of the Day iOS Notifications */}
-            <Accordion.Item value='wotd-ios'>
-              <Accordion.Control icon={<IconBell size={20} />}>
-                <Text fw={500}>Word of the Day iOS Notifications</Text>
-              </Accordion.Control>
-              <Accordion.Panel>
-                <Stack gap='md'>
-                  <Group justify='space-between' align='flex-start'>
-                    <Box style={{ flex: 1 }}>
-                      <Text fw={500} mb='xs'>
-                        Word of the Day iOS Notifications
-                      </Text>
-                      <Text size='sm' c='dimmed'>
-                        Receive push notifications on your iOS device with your
-                        Word of the Day.
-                      </Text>
-                    </Box>
-                    <Switch
-                      checked={
-                        learningPrefs?.word_of_day_ios_notify_enabled || false
-                      }
-                      onChange={async e => {
-                        const next = e.currentTarget.checked;
-                        if (learningPrefs) {
-                          const updatedPrefs = {
-                            ...learningPrefs,
-                            word_of_day_ios_notify_enabled: next,
-                          };
-                          try {
-                            await prefsMutation.mutateAsync({
-                              data: updatedPrefs,
-                            });
-                            showNotificationWithClean({
-                              title: 'Saved',
-                              message:
-                                'Word of the Day iOS notification setting updated',
-                              color: 'green',
-                            });
-                          } catch {
-                            showNotificationWithClean({
-                              title: 'Error',
-                              message: 'Failed to update setting',
-                              color: 'red',
-                            });
-                          }
-                        }
-                      }}
-                      size='lg'
-                      data-testid='wotd-ios-switch-mobile'
-                    />
-                  </Group>
-                  {learningPrefs?.word_of_day_ios_notify_enabled && (
-                    <Button
-                      variant='outline'
-                      onClick={() => handleTestIOSNotification('word_of_day')}
-                      loading={testIOSNotificationMutation.isPending}
-                      data-testid='test-ios-wotd-button-mobile'
-                      fullWidth
-                    >
-                      Test iOS Notification
                     </Button>
                   )}
                 </Stack>
