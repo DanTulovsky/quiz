@@ -50,9 +50,35 @@ class NotificationService: NSObject, ObservableObject {
         }
     }
 
+    func registerExistingDeviceToken() {
+        guard let token = deviceToken, !token.isEmpty, let apiService = apiService else {
+            print("❌ Cannot register device token: token is empty or API service not configured")
+            return
+        }
+
+        apiService.registerDeviceToken(deviceToken: token)
+            .sink(
+                receiveCompletion: { completion in
+                    if case .failure(let error) = completion {
+                        print("❌ Failed to register device token: \(error.localizedDescription)")
+                    }
+                },
+                receiveValue: { _ in
+                    print("✅ Device token registered successfully")
+                }
+            )
+            .store(in: &cancellables)
+    }
+
     func didRegisterForRemoteNotifications(deviceToken: Data) {
         let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
         let token = tokenParts.joined()
+
+        // Validate token is not empty
+        guard !token.isEmpty else {
+            print("❌ Device token is empty")
+            return
+        }
 
         DispatchQueue.main.async {
             self.deviceToken = token
@@ -72,6 +98,8 @@ class NotificationService: NSObject, ObservableObject {
                     }
                 )
                 .store(in: &self.cancellables)
+        } else {
+            print("❌ APIService not configured in NotificationService")
         }
     }
 

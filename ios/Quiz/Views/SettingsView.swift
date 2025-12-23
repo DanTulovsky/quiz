@@ -60,6 +60,9 @@ struct SettingsView: View {
         scrollContent
             .navigationTitle("Settings")
             .modifier(bodyModifiers)
+            .onAppear {
+                ensureDeviceTokenRegistered()
+            }
     }
 
     private var bodyModifiers: some ViewModifier {
@@ -614,6 +617,28 @@ struct SettingsView: View {
         case "german", "de": return "Dies ist ein Test der ausgewählten Stimme."
         case "russian", "ru": return "Это тест выбранного голоса."
         default: return "This is a test of the selected voice."
+        }
+    }
+
+    private func ensureDeviceTokenRegistered() {
+        // Check if notifications are already authorized
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            DispatchQueue.main.async {
+                if settings.authorizationStatus == .authorized {
+                    // Already authorized - check if we have a device token
+                    if let existingToken = NotificationService.shared.deviceToken, !existingToken.isEmpty {
+                        // We have a token, try to register it (in case registration failed before)
+                        NotificationService.shared.registerExistingDeviceToken()
+                    } else {
+                        // No token yet, request one from iOS
+                        // Calling this will trigger iOS to call the delegate method with the device token
+                        NotificationService.shared.registerForRemoteNotifications()
+                    }
+                } else {
+                    // Not authorized yet, request authorization (will trigger registration if granted)
+                    NotificationService.shared.requestAuthorization()
+                }
+            }
         }
     }
 

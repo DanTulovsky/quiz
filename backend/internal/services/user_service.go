@@ -1643,9 +1643,23 @@ func (s *UserService) RegisterDeviceToken(ctx context.Context, userID int, devic
 		DO UPDATE SET updated_at = NOW()
 	`
 
-	_, err = s.db.ExecContext(ctx, query, userID, deviceToken)
+	result, err := s.db.ExecContext(ctx, query, userID, deviceToken)
 	if err != nil {
 		return contextutils.WrapError(err, "failed to register device token")
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		s.logger.Warn(ctx, "Failed to get rows affected for device token registration", map[string]interface{}{
+			"user_id": userID,
+			"error":   err.Error(),
+		})
+	} else {
+		s.logger.Info(ctx, "Device token registered successfully", map[string]interface{}{
+			"user_id":       userID,
+			"device_token":  deviceToken[:20] + "...",
+			"rows_affected": rowsAffected,
+		})
 	}
 
 	return nil
@@ -1684,6 +1698,11 @@ func (s *UserService) GetUserDeviceTokens(ctx context.Context, userID int) (resu
 	if err := rows.Err(); err != nil {
 		return nil, contextutils.WrapError(err, "error iterating device tokens")
 	}
+
+	s.logger.Info(ctx, "Retrieved device tokens for user", map[string]interface{}{
+		"user_id":     userID,
+		"token_count": len(tokens),
+	})
 
 	return tokens, nil
 }
