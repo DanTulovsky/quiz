@@ -76,7 +76,7 @@ func setupSettingsIntegrationTest(t *testing.T) (*gin.Engine, *services.UserServ
 	// Create settings handler
 	usageStatsService := services.NewUsageStatsService(cfg, db, logger)
 	translationPracticeService := services.NewTranslationPracticeService(db, storyService, questionService, cfg, logger)
-	settingsHandler := NewSettingsHandler(userService, storyService, conversationService, translationPracticeService, aiService, learningService, emailService, usageStatsService, cfg, logger)
+	settingsHandler := NewSettingsHandler(userService, storyService, conversationService, translationPracticeService, aiService, learningService, emailService, usageStatsService, nil, nil, cfg, logger)
 
 	// Setup routes
 	v1 := router.Group("/v1")

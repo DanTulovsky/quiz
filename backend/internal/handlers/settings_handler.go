@@ -3,12 +3,14 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"quizapp/internal/api"
 	"quizapp/internal/config"
 	"quizapp/internal/middleware"
 	"quizapp/internal/models"
 	"quizapp/internal/observability"
+	serviceinterfaces "quizapp/internal/serviceinterfaces"
 	"quizapp/internal/services"
 	"quizapp/internal/services/mailer"
 	contextutils "quizapp/internal/utils"
@@ -28,12 +30,14 @@ type SettingsHandler struct {
 	learningService            services.LearningServiceInterface
 	usageStatsSvc              services.UsageStatsServiceInterface
 	emailService               mailer.Mailer
+	apnsService                serviceinterfaces.APNSService
+	wordOfTheDayService        services.WordOfTheDayServiceInterface
 	cfg                        *config.Config
 	logger                     *observability.Logger
 }
 
 // NewSettingsHandler creates a new SettingsHandler instance
-func NewSettingsHandler(userService services.UserServiceInterface, storyService services.StoryServiceInterface, conversationService services.ConversationServiceInterface, translationPracticeService services.TranslationPracticeServiceInterface, aiService services.AIServiceInterface, learningService services.LearningServiceInterface, emailService mailer.Mailer, usageStatsSvc services.UsageStatsServiceInterface, cfg *config.Config, logger *observability.Logger) *SettingsHandler {
+func NewSettingsHandler(userService services.UserServiceInterface, storyService services.StoryServiceInterface, conversationService services.ConversationServiceInterface, translationPracticeService services.TranslationPracticeServiceInterface, aiService services.AIServiceInterface, learningService services.LearningServiceInterface, emailService mailer.Mailer, usageStatsSvc services.UsageStatsServiceInterface, apnsService serviceinterfaces.APNSService, wordOfTheDayService services.WordOfTheDayServiceInterface, cfg *config.Config, logger *observability.Logger) *SettingsHandler {
 	return &SettingsHandler{
 		userService:                userService,
 		storyService:               storyService,
@@ -43,6 +47,8 @@ func NewSettingsHandler(userService services.UserServiceInterface, storyService 
 		learningService:            learningService,
 		usageStatsSvc:              usageStatsSvc,
 		emailService:               emailService,
+		apnsService:                apnsService,
+		wordOfTheDayService:        wordOfTheDayService,
 		cfg:                        cfg,
 		logger:                     logger,
 	}
@@ -448,6 +454,190 @@ func (h *SettingsHandler) SendTestEmail(c *gin.Context) {
 	})
 
 	c.JSON(http.StatusOK, api.SuccessResponse{Success: true, Message: stringPtr("Test email sent successfully")})
+}
+
+// SendTestIOSNotificationRequest represents the request body for test iOS notification
+type SendTestIOSNotificationRequest struct {
+	NotificationType string `json:"notification_type" binding:"required,oneof=daily_reminder word_of_day"`
+}
+
+// SendTestIOSNotification sends a test iOS notification to the current user
+func (h *SettingsHandler) SendTestIOSNotification(c *gin.Context) {
+	ctx, span := observability.TraceHandlerFunction(c.Request.Context(), "send_test_ios_notification")
+	defer observability.FinishSpan(span, nil)
+
+	session := sessions.Default(c)
+	userID, ok := session.Get(middleware.UserIDKey).(int)
+	if !ok {
+		HandleAppError(c, contextutils.ErrUnauthorized)
+		return
+	}
+
+	// Parse request body
+	var req SendTestIOSNotificationRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		HandleAppError(c, contextutils.NewAppErrorWithCause(
+			contextutils.ErrorCodeInvalidInput,
+			contextutils.SeverityWarn,
+			"Invalid request body",
+			"",
+			err,
+		))
+		return
+	}
+
+	// Get the current user
+	user, err := h.userService.GetUserByID(ctx, userID)
+	if err != nil {
+		h.logger.Error(ctx, "Failed to get user for test iOS notification", err, map[string]interface{}{
+			"user_id": userID,
+		})
+		HandleAppError(c, contextutils.WrapError(err, "failed to get user information"))
+		return
+	}
+
+	// Check if APNS service is enabled
+	if !h.apnsService.IsEnabled() {
+		HandleAppError(c, contextutils.ErrServiceUnavailable)
+		return
+	}
+
+	// Check if user has device tokens
+	deviceTokens, err := h.userService.GetUserDeviceTokens(ctx, userID)
+	if err != nil {
+		h.logger.Error(ctx, "Failed to get device tokens for test iOS notification", err, map[string]interface{}{
+			"user_id": userID,
+		})
+		HandleAppError(c, contextutils.WrapError(err, "failed to get device tokens"))
+		return
+	}
+
+	if len(deviceTokens) == 0 {
+		HandleAppError(c, contextutils.NewAppError(
+			contextutils.ErrorCodeInvalidInput,
+			contextutils.SeverityWarn,
+			"No device tokens registered",
+			"Please register a device token from your iOS app first",
+		))
+		return
+	}
+
+	// Send test notification based on type
+	var payload map[string]interface{}
+	var notificationType string
+	var successMessage string
+
+	switch req.NotificationType {
+	case "daily_reminder":
+		payload = map[string]interface{}{
+			"aps": map[string]interface{}{
+				"alert": map[string]interface{}{
+					"title": "Time for your daily quiz! 🧠",
+					"body":  "Tap to continue your learning journey.",
+				},
+				"sound": "default",
+			},
+			"deep_link": "daily",
+		}
+		notificationType = "daily_reminder_ios"
+		successMessage = "Test daily reminder iOS notification sent successfully"
+
+	case "word_of_day":
+		// Get word of the day for the user (use today's date)
+		// Get user timezone for proper date calculation
+		userTimezone := "UTC"
+		if user.Timezone.Valid && user.Timezone.String != "" {
+			userTimezone = user.Timezone.String
+		}
+		loc, err := time.LoadLocation(userTimezone)
+		if err != nil {
+			loc = time.UTC
+		}
+		today := time.Now().In(loc)
+
+		wordOfTheDay, err := h.wordOfTheDayService.GetWordOfTheDay(ctx, userID, today)
+		if err != nil {
+			h.logger.Error(ctx, "Failed to get word of the day for test iOS notification", err, map[string]interface{}{
+				"user_id": userID,
+			})
+			HandleAppError(c, contextutils.WrapError(err, "failed to get word of the day"))
+			return
+		}
+
+		if wordOfTheDay == nil {
+			HandleAppError(c, contextutils.NewAppError(
+				contextutils.ErrorCodeInvalidInput,
+				contextutils.SeverityWarn,
+				"No word of the day available",
+				"Please try again later",
+			))
+			return
+		}
+
+		payload = map[string]interface{}{
+			"aps": map[string]interface{}{
+				"alert": map[string]interface{}{
+					"title": "Word of the Day: " + wordOfTheDay.Word,
+					"body":  wordOfTheDay.Translation,
+				},
+				"sound": "default",
+			},
+			"word":        wordOfTheDay.Word,
+			"translation": wordOfTheDay.Translation,
+		}
+		notificationType = "word_of_the_day_ios"
+		successMessage = "Test word of the day iOS notification sent successfully"
+
+	default:
+		HandleAppError(c, contextutils.NewAppError(
+			contextutils.ErrorCodeInvalidInput,
+			contextutils.SeverityWarn,
+			"Invalid notification type",
+			"Notification type must be 'daily_reminder' or 'word_of_day'",
+		))
+		return
+	}
+
+	// Send notification to all device tokens
+	var sentCount int
+	var failedCount int
+	for _, deviceToken := range deviceTokens {
+		if err := h.apnsService.SendNotification(ctx, deviceToken, payload); err != nil {
+			failedCount++
+			h.logger.Error(ctx, "Failed to send test iOS notification to device", err, map[string]interface{}{
+				"user_id":      userID,
+				"device_token": deviceToken[:20] + "...",
+			})
+		} else {
+			sentCount++
+		}
+	}
+
+	if sentCount == 0 {
+		HandleAppError(c, contextutils.NewAppError(
+			contextutils.ErrorCodeInternalError,
+			contextutils.SeverityError,
+			"Failed to send test iOS notification",
+			"All device tokens failed",
+		))
+		return
+	}
+
+	// Record notification
+	if err := h.emailService.RecordSentNotification(ctx, userID, notificationType, "Test Notification", notificationType, "sent", ""); err != nil {
+		h.logger.Warn(ctx, "Failed to record test iOS notification", map[string]interface{}{
+			"user_id": userID,
+			"error":   err.Error(),
+		})
+	}
+
+	h.logger.Info(ctx, "Test iOS notification sent successfully", map[string]interface{}{
+		"user_id":      userID,
+		"sent_count":   sentCount,
+		"failed_count": failedCount,
+	})
+
+	c.JSON(http.StatusOK, api.SuccessResponse{Success: true, Message: stringPtr(successMessage)})
 }
 
 // ClearAllStories deletes all stories belonging to the current user

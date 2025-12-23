@@ -532,6 +532,23 @@ export interface SuccessResponse {
   message?: string;
 }
 
+/**
+ * Type of iOS notification to send
+ */
+export type TestIOSNotificationRequestNotificationType = typeof TestIOSNotificationRequestNotificationType[keyof typeof TestIOSNotificationRequestNotificationType];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const TestIOSNotificationRequestNotificationType = {
+  daily_reminder: 'daily_reminder',
+  word_of_day: 'word_of_day',
+} as const;
+
+export interface TestIOSNotificationRequest {
+  /** Type of iOS notification to send */
+  notification_type: TestIOSNotificationRequestNotificationType;
+}
+
 export interface DailyQuestionWithDetails {
   /** Daily question assignment ID */
   id: number;
@@ -5314,6 +5331,72 @@ export const usePostV1SettingsTestEmail = <TError = ErrorResponse,
       > => {
 
       const mutationOptions = getPostV1SettingsTestEmailMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    
+/**
+ * Send a test iOS push notification to the authenticated user's registered devices. Supports both daily_reminder and word_of_day notification types.
+ * @summary Send test iOS notification
+ */
+export const postV1SettingsTestIosNotification = (
+    testIOSNotificationRequest: TestIOSNotificationRequest,
+ options?: SecondParameter<typeof customInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<SuccessResponse>(
+      {url: `/v1/settings/test-ios-notification`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: testIOSNotificationRequest, signal
+    },
+      options);
+    }
+  
+
+
+export const getPostV1SettingsTestIosNotificationMutationOptions = <TError = ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsTestIosNotification>>, TError,{data: TestIOSNotificationRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsTestIosNotification>>, TError,{data: TestIOSNotificationRequest}, TContext> => {
+
+const mutationKey = ['postV1SettingsTestIosNotification'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postV1SettingsTestIosNotification>>, {data: TestIOSNotificationRequest}> = (props) => {
+          const {data} = props ?? {};
+
+          return  postV1SettingsTestIosNotification(data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostV1SettingsTestIosNotificationMutationResult = NonNullable<Awaited<ReturnType<typeof postV1SettingsTestIosNotification>>>
+    export type PostV1SettingsTestIosNotificationMutationBody = TestIOSNotificationRequest
+    export type PostV1SettingsTestIosNotificationMutationError = ErrorResponse
+
+    /**
+ * @summary Send test iOS notification
+ */
+export const usePostV1SettingsTestIosNotification = <TError = ErrorResponse,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postV1SettingsTestIosNotification>>, TError,{data: TestIOSNotificationRequest}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postV1SettingsTestIosNotification>>,
+        TError,
+        {data: TestIOSNotificationRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getPostV1SettingsTestIosNotificationMutationOptions(options);
 
       return useMutation(mutationOptions, queryClient);
     }
@@ -15942,6 +16025,8 @@ export const getPostV1SettingsTestAiResponseMock = (overrideResponse: Partial< S
 
 export const getPostV1SettingsTestEmailResponseMock = (overrideResponse: Partial< SuccessResponse > = {}): SuccessResponse => ({success: faker.datatype.boolean(), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 5000}}), undefined]), ...overrideResponse})
 
+export const getPostV1SettingsTestIosNotificationResponseMock = (overrideResponse: Partial< SuccessResponse > = {}): SuccessResponse => ({success: faker.datatype.boolean(), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 5000}}), undefined]), ...overrideResponse})
+
 export const getPutV1SettingsWordOfDayEmailResponseMock = (overrideResponse: Partial< SuccessResponse > = {}): SuccessResponse => ({success: faker.datatype.boolean(), message: faker.helpers.arrayElement([faker.string.alpha({length: {min: 10, max: 5000}}), undefined]), ...overrideResponse})
 
 export const getGetV1SettingsLevelsResponseMock = (overrideResponse: Partial< LevelsResponse > = {}): LevelsResponse => ({levels: Array.from({ length: faker.number.int({ min: 1, max: 20 }) }, (_, i) => i + 1).map(() => (faker.string.alpha({length: {min: 10, max: 20}}))), level_descriptions: {
@@ -16527,6 +16612,18 @@ export const getPostV1SettingsTestEmailMockHandler = (overrideResponse?: Success
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined
     ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
     : getPostV1SettingsTestEmailResponseMock()),
+      { status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      })
+  }, options)
+}
+
+export const getPostV1SettingsTestIosNotificationMockHandler = (overrideResponse?: SuccessResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<SuccessResponse> | SuccessResponse), options?: RequestHandlerOptions) => {
+  return http.post('*/v1/settings/test-ios-notification', async (info) => {await delay(1000);
+  
+    return new HttpResponse(JSON.stringify(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getPostV1SettingsTestIosNotificationResponseMock()),
       { status: 200,
         headers: { 'Content-Type': 'application/json' }
       })
@@ -18123,6 +18220,7 @@ export const getQuizApplicationAPIMock = () => [
   getGetV1SettingsAiProvidersMockHandler(),
   getPostV1SettingsTestAiMockHandler(),
   getPostV1SettingsTestEmailMockHandler(),
+  getPostV1SettingsTestIosNotificationMockHandler(),
   getPutV1SettingsWordOfDayEmailMockHandler(),
   getGetV1SettingsLevelsMockHandler(),
   getGetV1SettingsLanguagesMockHandler(),

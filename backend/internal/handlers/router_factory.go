@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"os"
@@ -176,7 +177,17 @@ func NewRouter(
 	authHandler := NewAuthHandler(userService, oauthService, cfg, logger)
 	authAPIKeyHandler := NewAuthAPIKeyHandler(authAPIKeyService, logger)
 	emailService := services.CreateEmailService(cfg, logger)
-	settingsHandler := NewSettingsHandler(userService, storyService, conversationService, translationPracticeService, aiService, learningService, emailService, usageStatsService, cfg, logger)
+
+	// Initialize APNS service for iOS notifications
+	apnsService, err := services.NewAPNSService(cfg, logger)
+	if err != nil {
+		logger.Warn(context.Background(), "Failed to initialize APNS service, iOS notifications will be disabled", map[string]interface{}{
+			"error": err.Error(),
+		})
+		apnsService = nil
+	}
+
+	settingsHandler := NewSettingsHandler(userService, storyService, conversationService, translationPracticeService, aiService, learningService, emailService, usageStatsService, apnsService, wordOfTheDayService, cfg, logger)
 	quizHandler := NewQuizHandler(userService, questionService, aiService, learningService, workerService, generationHintService, usageStatsService, cfg, logger)
 	dailyQuestionHandler := NewDailyQuestionHandler(userService, dailyQuestionService, cfg, logger)
 	storyHandler := NewStoryHandler(storyService, userService, aiService, cfg, logger)
@@ -355,6 +366,7 @@ func NewRouter(
 			settings.GET("/languages", settingsHandler.GetLanguages)
 			settings.POST("/test-ai", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), middleware.RequestValidationMiddleware(logger), settingsHandler.TestAIConnection)
 			settings.POST("/test-email", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), middleware.RequestValidationMiddleware(logger), settingsHandler.SendTestEmail)
+			settings.POST("/test-ios-notification", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), middleware.RequestValidationMiddleware(logger), settingsHandler.SendTestIOSNotification)
 			settings.PUT("", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), middleware.RequestValidationMiddleware(logger), settingsHandler.UpdateUserSettings)
 			settings.PUT("/word-of-day-email", middleware.RequireAuthWithAPIKey(authAPIKeyService, userService), middleware.RequestValidationMiddleware(logger), settingsHandler.UpdateWordOfDayEmailPreference)
 			// User data management endpoints

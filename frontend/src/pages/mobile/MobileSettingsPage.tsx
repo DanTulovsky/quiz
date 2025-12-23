@@ -9,6 +9,7 @@ import {
   useGetV1PreferencesLearning,
   usePutV1PreferencesLearning,
   usePostV1SettingsTestEmail,
+  usePostV1SettingsTestIosNotification,
   UserLearningPreferences,
   UserUpdateRequest,
 } from '../../api/api';
@@ -166,6 +167,7 @@ const MobileSettingsPage: React.FC = () => {
   const testConnectionMutation = usePostV1SettingsTestAi();
   const profileUpdateMutation = usePutV1UserzProfile();
   const testEmailMutation = usePostV1SettingsTestEmail();
+  const testIOSNotificationMutation = usePostV1SettingsTestIosNotification();
 
   // Check API key availability for the currently selected provider (no special case for ollama)
   const { data: apiKeyAvailable, refetch: refetchApiKeyAvailability } =
@@ -1302,6 +1304,19 @@ const MobileSettingsPage: React.FC = () => {
                       data-testid='daily-reminder-ios-switch-mobile'
                     />
                   </Group>
+                  {learningPrefs?.daily_reminder_ios_notify_enabled && (
+                    <Button
+                      variant='outline'
+                      onClick={() =>
+                        handleTestIOSNotification('daily_reminder')
+                      }
+                      loading={testIOSNotificationMutation.isPending}
+                      data-testid='test-ios-daily-reminder-button-mobile'
+                      fullWidth
+                    >
+                      Test iOS Notification
+                    </Button>
+                  )}
                 </Stack>
               </Accordion.Panel>
             </Accordion.Item>
@@ -1357,6 +1372,17 @@ const MobileSettingsPage: React.FC = () => {
                       data-testid='wotd-ios-switch-mobile'
                     />
                   </Group>
+                  {learningPrefs?.word_of_day_ios_notify_enabled && (
+                    <Button
+                      variant='outline'
+                      onClick={() => handleTestIOSNotification('word_of_day')}
+                      loading={testIOSNotificationMutation.isPending}
+                      data-testid='test-ios-wotd-button-mobile'
+                      fullWidth
+                    >
+                      Test iOS Notification
+                    </Button>
+                  )}
                 </Stack>
               </Accordion.Panel>
             </Accordion.Item>

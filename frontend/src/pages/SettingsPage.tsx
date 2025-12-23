@@ -9,6 +9,7 @@ import {
   useGetV1PreferencesLearning,
   usePutV1PreferencesLearning,
   usePostV1SettingsTestEmail,
+  usePostV1SettingsTestIosNotification,
   UserLearningPreferences,
   UserUpdateRequest,
 } from '../api/api';
@@ -174,6 +175,7 @@ const SettingsPage: React.FC = () => {
   const testConnectionMutation = usePostV1SettingsTestAi();
   const profileUpdateMutation = usePutV1UserzProfile();
   const testEmailMutation = usePostV1SettingsTestEmail();
+  const testIOSNotificationMutation = usePostV1SettingsTestIosNotification();
 
   // Check API key availability for the currently selected provider (no special case for ollama)
   const { data: apiKeyAvailable, refetch: refetchApiKeyAvailability } =
@@ -522,6 +524,42 @@ const SettingsPage: React.FC = () => {
       setErrorModal({
         isOpen: true,
         title: 'Test Email Failed',
+        message: message,
+      });
+    }
+  };
+
+  const handleTestIOSNotification = async (
+    notificationType: 'daily_reminder' | 'word_of_day'
+  ) => {
+    try {
+      const response = await testIOSNotificationMutation.mutateAsync({
+        data: { notification_type: notificationType },
+      });
+
+      if (response.success) {
+        showNotificationWithClean({
+          title: 'Success',
+          message:
+            response.message ||
+            `Test ${notificationType === 'daily_reminder' ? 'daily reminder' : 'word of the day'} iOS notification sent successfully!`,
+          color: 'green',
+        });
+      } else {
+        setErrorModal({
+          isOpen: true,
+          title: 'Test iOS Notification Failed',
+          message: 'Failed to send test iOS notification',
+        });
+      }
+    } catch (error: unknown) {
+      const message =
+        (error as ApiError)?.response?.data?.error ||
+        (error as ApiError)?.response?.data?.details ||
+        'Test iOS notification failed';
+      setErrorModal({
+        isOpen: true,
+        title: 'Test iOS Notification Failed',
         message: message,
       });
     }
@@ -1393,6 +1431,30 @@ const SettingsPage: React.FC = () => {
                       data-testid='daily-reminder-ios-switch'
                     />
                   </Group>
+
+                  {learningPrefs?.daily_reminder_ios_notify_enabled && (
+                    <Group align='end' gap='xs'>
+                      <Box style={{ flex: 1 }}>
+                        <Text size='sm' fw={500} mb='xs'>
+                          Test iOS Notification
+                        </Text>
+                        <Text size='xs' c='dimmed'>
+                          Send a test push notification to verify your iOS
+                          notification settings are working correctly.
+                        </Text>
+                      </Box>
+                      <Button
+                        variant='outline'
+                        onClick={() =>
+                          handleTestIOSNotification('daily_reminder')
+                        }
+                        loading={testIOSNotificationMutation.isPending}
+                        data-testid='test-ios-daily-reminder-button'
+                      >
+                        Test Notification
+                      </Button>
+                    </Group>
+                  )}
                 </Stack>
               </Card>
 
@@ -1515,6 +1577,28 @@ const SettingsPage: React.FC = () => {
                       data-testid='wotd-ios-switch'
                     />
                   </Group>
+
+                  {learningPrefs?.word_of_day_ios_notify_enabled && (
+                    <Group align='end' gap='xs'>
+                      <Box style={{ flex: 1 }}>
+                        <Text size='sm' fw={500} mb='xs'>
+                          Test iOS Notification
+                        </Text>
+                        <Text size='xs' c='dimmed'>
+                          Send a test push notification to verify your iOS
+                          notification settings are working correctly.
+                        </Text>
+                      </Box>
+                      <Button
+                        variant='outline'
+                        onClick={() => handleTestIOSNotification('word_of_day')}
+                        loading={testIOSNotificationMutation.isPending}
+                        data-testid='test-ios-wotd-button'
+                      >
+                        Test Notification
+                      </Button>
+                    </Group>
+                  )}
                 </Stack>
               </Card>
             </Stack>

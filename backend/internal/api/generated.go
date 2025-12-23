@@ -196,6 +196,12 @@ const (
 	TTSResponseTypeUsage TTSResponseType = "usage"
 )
 
+// Defines values for TestIOSNotificationRequestNotificationType.
+const (
+	TestIOSNotificationRequestNotificationTypeDailyReminder TestIOSNotificationRequestNotificationType = "daily_reminder"
+	TestIOSNotificationRequestNotificationTypeWordOfDay     TestIOSNotificationRequestNotificationType = "word_of_day"
+)
+
 // Defines values for TranslationPracticeGenerateRequestDirection.
 const (
 	TranslationPracticeGenerateRequestDirectionEnToLearning TranslationPracticeGenerateRequestDirection = "en_to_learning"
@@ -272,8 +278,8 @@ const (
 
 // Defines values for GetV1AdminWorkerNotificationsSentParamsNotificationType.
 const (
-	GetV1AdminWorkerNotificationsSentParamsNotificationTypeDailyReminder GetV1AdminWorkerNotificationsSentParamsNotificationType = "daily_reminder"
-	GetV1AdminWorkerNotificationsSentParamsNotificationTypeTestEmail     GetV1AdminWorkerNotificationsSentParamsNotificationType = "test_email"
+	DailyReminder GetV1AdminWorkerNotificationsSentParamsNotificationType = "daily_reminder"
+	TestEmail     GetV1AdminWorkerNotificationsSentParamsNotificationType = "test_email"
 )
 
 // Defines values for GetV1AdminWorkerNotificationsSentParamsStatus.
@@ -1754,6 +1760,15 @@ type TestAIRequest struct {
 	Provider string `json:"provider"`
 }
 
+// TestIOSNotificationRequest defines model for TestIOSNotificationRequest.
+type TestIOSNotificationRequest struct {
+	// NotificationType Type of iOS notification to send
+	NotificationType TestIOSNotificationRequestNotificationType `json:"notification_type"`
+}
+
+// TestIOSNotificationRequestNotificationType Type of iOS notification to send
+type TestIOSNotificationRequestNotificationType string
+
 // ToggleAutoGenerationRequest defines model for ToggleAutoGenerationRequest.
 type ToggleAutoGenerationRequest struct {
 	// Paused Whether to pause (true) or resume (false) auto-generation
@@ -3006,6 +3021,9 @@ type PutV1SettingsJSONRequestBody = UserSettings
 
 // PostV1SettingsTestAiJSONRequestBody defines body for PostV1SettingsTestAi for application/json ContentType.
 type PostV1SettingsTestAiJSONRequestBody = TestAIRequest
+
+// PostV1SettingsTestIosNotificationJSONRequestBody defines body for PostV1SettingsTestIosNotification for application/json ContentType.
+type PostV1SettingsTestIosNotificationJSONRequestBody = TestIOSNotificationRequest
 
 // PutV1SettingsWordOfDayEmailJSONRequestBody defines body for PutV1SettingsWordOfDayEmail for application/json ContentType.
 type PutV1SettingsWordOfDayEmailJSONRequestBody = WordOfDayEmailPreferenceRequest

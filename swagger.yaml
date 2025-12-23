@@ -689,6 +689,46 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /v1/settings/test-ios-notification:
+    post:
+      tags:
+        - Settings
+      summary: Send test iOS notification
+      description: Send a test iOS push notification to the authenticated user's registered devices. Supports both daily_reminder and word_of_day notification types.
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TestIOSNotificationRequest"
+      responses:
+        "200":
+          description: Test iOS notification sent successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "400":
+          description: Invalid request format, no device tokens registered, or no word of the day available
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: User not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: APNS service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /v1/settings/word-of-day-email:
     put:
       tags:
@@ -6671,6 +6711,17 @@ components:
         message:
           type: string
           maxLength: 5000
+
+    TestIOSNotificationRequest:
+      type: object
+      properties:
+        notification_type:
+          type: string
+          enum: [daily_reminder, word_of_day]
+          description: Type of iOS notification to send
+          example: daily_reminder
+      required:
+        - notification_type
 
     DailyQuestionWithDetails:
       type: object
