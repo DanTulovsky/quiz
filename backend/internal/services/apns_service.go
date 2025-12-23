@@ -213,6 +213,8 @@ func (a *APNSService) SendNotification(ctx context.Context, deviceToken string, 
 			"device_token": deviceToken[:20] + "...",
 			"status_code":  res.StatusCode,
 			"reason":       res.Reason,
+			"apns_env":     map[bool]string{true: "production", false: "sandbox"}[a.cfg.APNS.Production],
+			"token_length": len(deviceToken),
 		})
 		return err
 	}

@@ -627,11 +627,12 @@ struct SettingsView: View {
                 if settings.authorizationStatus == .authorized {
                     // Already authorized - check if we have a device token
                     if let existingToken = NotificationService.shared.deviceToken, !existingToken.isEmpty {
-                        // We have a token, try to register it (in case registration failed before)
+                        // We have a token, try to register it with backend (in case registration failed before)
+                        // The token from iOS is stable, so we don't need to request a new one
                         NotificationService.shared.registerExistingDeviceToken()
                     } else {
                         // No token yet, request one from iOS
-                        // Calling this will trigger iOS to call the delegate method with the device token
+                        // This will trigger iOS to call the delegate method with the device token
                         NotificationService.shared.registerForRemoteNotifications()
                     }
                 } else {
