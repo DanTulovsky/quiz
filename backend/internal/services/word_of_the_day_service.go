@@ -54,8 +54,9 @@ func (s *WordOfTheDayService) GetWordOfTheDay(ctx context.Context, userID int, d
 	)
 	defer observability.FinishSpan(span, nil)
 
-	// Normalize date to just the date part (no time)
-	date = time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)
+	// Normalize date to just the date part (no time), preserving timezone
+	// This ensures the calendar date extracted matches the user's local date
+	date = time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, date.Location())
 
 	// Try to get existing word of the day
 	// Attach username to span (best-effort)
@@ -97,8 +98,9 @@ func (s *WordOfTheDayService) SelectWordOfTheDay(ctx context.Context, userID int
 	)
 	defer observability.FinishSpan(span, nil)
 
-	// Normalize date to just the date part (no time)
-	date = time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)
+	// Normalize date to just the date part (no time), preserving timezone
+	// This ensures the calendar date extracted matches the user's local date
+	date = time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, date.Location())
 
 	// Get user preferences
 	user, err := s.getUserByID(ctx, userID)
@@ -205,9 +207,10 @@ func (s *WordOfTheDayService) GetWordHistory(ctx context.Context, userID int, st
 		span.SetAttributes(attribute.String("user.username", u.Username))
 	}
 
-	// Normalize dates
-	startDate = time.Date(startDate.Year(), startDate.Month(), startDate.Day(), 0, 0, 0, 0, time.UTC)
-	endDate = time.Date(endDate.Year(), endDate.Month(), endDate.Day(), 0, 0, 0, 0, time.UTC)
+	// Normalize dates to just the date part (no time), preserving timezone
+	// This ensures the calendar date extracted matches the user's local date
+	startDate = time.Date(startDate.Year(), startDate.Month(), startDate.Day(), 0, 0, 0, 0, startDate.Location())
+	endDate = time.Date(endDate.Year(), endDate.Month(), endDate.Day(), 0, 0, 0, 0, endDate.Location())
 
 	query := `
 		SELECT id, user_id, assignment_date, source_type, source_id, created_at

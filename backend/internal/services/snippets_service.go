@@ -726,7 +726,7 @@ func (s *SnippetsService) SearchSnippets(ctx context.Context, userID int64, quer
 
 // snippetExists checks if a snippet already exists for the user with the same context
 // This matches the unique constraint: (user_id, original_text, source_language, target_language, question_id, section_id, story_id)
-func (s *SnippetsService) snippetExists(ctx context.Context, userID int64, originalText, sourceLanguage, targetLanguage string, questionId, sectionId, storyId *int64) (bool, error) {
+func (s *SnippetsService) snippetExists(ctx context.Context, userID int64, originalText, sourceLanguage, targetLanguage string, questionID, sectionID, storyID *int64) (bool, error) {
 	ctx, span := observability.TraceFunction(ctx, "snippets", "snippet_exists")
 	defer observability.FinishSpan(span, nil)
 
@@ -752,7 +752,7 @@ func (s *SnippetsService) snippetExists(ctx context.Context, userID int64, origi
 		  AND story_id IS NOT DISTINCT FROM $7`
 
 	var count int
-	err := s.db.QueryRowContext(ctx, query, userID, originalText, sourceLanguage, targetLanguage, questionId, sectionId, storyId).Scan(&count)
+	err := s.db.QueryRowContext(ctx, query, userID, originalText, sourceLanguage, targetLanguage, questionID, sectionID, storyID).Scan(&count)
 	if err != nil {
 		return false, contextutils.WrapErrorf(err, "failed to check snippet existence")
 	}
