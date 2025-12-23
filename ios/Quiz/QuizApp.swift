@@ -46,17 +46,6 @@ struct QuizApp: App {
             MainView()
                 .environmentObject(authViewModel)
                 .environmentObject(notificationService)
-                .onAppear {
-                    // Request notification permissions when app appears
-                    if authViewModel.isAuthenticated {
-                        NotificationService.shared.requestAuthorization()
-                    }
-                }
-                .onChange(of: authViewModel.isAuthenticated) { _, isAuthenticated in
-                    if isAuthenticated {
-                        NotificationService.shared.requestAuthorization()
-                    }
-                }
                 .onOpenURL { url in
                     handleDeepLink(url: url)
                 }

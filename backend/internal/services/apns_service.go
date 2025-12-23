@@ -3,6 +3,10 @@ package services
 
 import (
 	"context"
+	"crypto/ecdsa"
+	"crypto/x509"
+	"encoding/base64"
+	"encoding/pem"
 
 	"quizapp/internal/config"
 	"quizapp/internal/observability"
@@ -31,6 +35,29 @@ type APNSServiceInterface = serviceinterfaces.APNSService
 // Ensure APNSService implements the APNSServiceInterface
 var _ serviceinterfaces.APNSService = (*APNSService)(nil)
 
+// parseAPNSKeyFromBytes parses an APNS key from bytes (PKCS#8 format)
+func parseAPNSKeyFromBytes(keyBytes []byte) (*ecdsa.PrivateKey, error) {
+	// Try to parse as PEM first
+	block, _ := pem.Decode(keyBytes)
+	if block != nil {
+		keyBytes = block.Bytes
+	}
+
+	// Parse PKCS#8 private key
+	privateKey, err := x509.ParsePKCS8PrivateKey(keyBytes)
+	if err != nil {
+		return nil, contextutils.WrapErrorf(err, "failed to parse PKCS#8 private key")
+	}
+
+	// Convert to ECDSA private key
+	ecdsaKey, ok := privateKey.(*ecdsa.PrivateKey)
+	if !ok {
+		return nil, contextutils.ErrorWithContextf("key is not an ECDSA private key")
+	}
+
+	return ecdsaKey, nil
+}
+
 // NewAPNSService creates a new APNSService instance
 func NewAPNSService(cfg *config.Config, logger *observability.Logger) (*APNSService, error) {
 	service := &APNSService{
@@ -45,8 +72,8 @@ func NewAPNSService(cfg *config.Config, logger *observability.Logger) (*APNSServ
 	}
 
 	// Validate required configuration
-	if cfg.APNS.KeyPath == "" {
-		return nil, contextutils.ErrorWithContextf("APNS key_path is required when APNS is enabled")
+	if cfg.APNS.KeyPath == "" && cfg.APNS.Key == "" {
+		return nil, contextutils.ErrorWithContextf("APNS key_path or key is required when APNS is enabled")
 	}
 	if cfg.APNS.KeyID == "" {
 		return nil, contextutils.ErrorWithContextf("APNS key_id is required when APNS is enabled")
@@ -58,10 +85,26 @@ func NewAPNSService(cfg *config.Config, logger *observability.Logger) (*APNSServ
 		return nil, contextutils.ErrorWithContextf("APNS bundle_id is required when APNS is enabled")
 	}
 
-	// Load APNS key
-	authKey, err := token.AuthKeyFromFile(cfg.APNS.KeyPath)
-	if err != nil {
-		return nil, contextutils.WrapErrorf(err, "failed to load APNS key from file: %s", cfg.APNS.KeyPath)
+	// Load APNS key from environment variable (preferred) or file path
+	var authKey *ecdsa.PrivateKey
+	var err error
+	if cfg.APNS.Key != "" {
+		// Try to load from key content (base64 encoded or raw)
+		keyBytes := []byte(cfg.APNS.Key)
+		// Try base64 decoding first
+		if decoded, decodeErr := base64.StdEncoding.DecodeString(cfg.APNS.Key); decodeErr == nil {
+			keyBytes = decoded
+		}
+		authKey, err = parseAPNSKeyFromBytes(keyBytes)
+		if err != nil {
+			return nil, contextutils.WrapErrorf(err, "failed to load APNS key from key content")
+		}
+	} else {
+		// Fall back to file path
+		authKey, err = token.AuthKeyFromFile(cfg.APNS.KeyPath)
+		if err != nil {
+			return nil, contextutils.WrapErrorf(err, "failed to load APNS key from file: %s", cfg.APNS.KeyPath)
+		}
 	}
 
 	// Create token

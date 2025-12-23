@@ -61,7 +61,8 @@ struct ErrorResponse: Codable {
 }
 
 struct SuccessResponse: Codable {
-    let message: String
+    let message: String?
+    let success: Bool
 }
 
 struct AuthStatusResponse: Codable {
@@ -646,6 +647,14 @@ struct MarkQuestionKnownRequest: Codable {
     }
 }
 
+struct TestIOSNotificationRequest: Codable {
+    let notificationType: String
+
+    enum CodingKeys: String, CodingKey {
+        case notificationType = "notification_type"
+    }
+}
+
 struct StorySectionQuestion: Codable, Identifiable {
     let id: Int
     let sectionId: Int
@@ -702,12 +711,12 @@ struct UserLearningPreferences: Codable, Equatable {
     }
 }
 
-struct AIModelInfo: Codable {
+struct AIModelInfo: Codable, Equatable {
     let code: String
     let name: String
 }
 
-struct AIProviderInfo: Codable, Identifiable {
+struct AIProviderInfo: Codable, Identifiable, Equatable {
     let code: String
     let name: String
     let url: String?

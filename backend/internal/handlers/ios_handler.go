@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 
+	"quizapp/internal/api"
 	"quizapp/internal/middleware"
 	"quizapp/internal/observability"
 	"quizapp/internal/services"
@@ -60,7 +61,7 @@ func (h *IOSHandler) RegisterDeviceToken(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"success": true})
+	c.JSON(http.StatusOK, api.SuccessResponse{Success: true})
 }
 
 // RemoveDeviceToken removes a device token for the authenticated user
@@ -96,5 +97,5 @@ func (h *IOSHandler) RemoveDeviceToken(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"success": true})
+	c.JSON(http.StatusOK, api.SuccessResponse{Success: true})
 }

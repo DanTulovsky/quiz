@@ -2,7 +2,8 @@ import Combine
 import Foundation
 
 class SettingsViewModel: BaseViewModel, LanguageCaching, ListFetchingWithName, LanguageFetching,
-                         SuccessStateManaging, LevelFetching {
+    SuccessStateManaging, LevelFetching
+{
     typealias Item = AIProviderInfo
 
     @Published var aiProviders: [AIProviderInfo] = []
@@ -99,7 +100,11 @@ class SettingsViewModel: BaseViewModel, LanguageCaching, ListFetchingWithName, L
                     }
                 },
                 receiveValue: { [weak self] resp in
-                    self?.testResult = "Success: \(resp.message)"
+                    if let message = resp.message {
+                        self?.testResult = "Success: \(message)"
+                    } else {
+                        self?.testResult = "Success"
+                    }
                 }
             )
             .store(in: &cancellables)
@@ -108,6 +113,13 @@ class SettingsViewModel: BaseViewModel, LanguageCaching, ListFetchingWithName, L
     func sendTestEmail() {
         executeVoidWithSuccessState(publisher: apiService.sendTestEmail())
             .store(in: &cancellables)
+    }
+
+    func sendTestIOSNotification(notificationType: String) {
+        executeVoidWithSuccessState(
+            publisher: apiService.sendTestIOSNotification(notificationType: notificationType)
+        )
+        .store(in: &cancellables)
     }
 
     func clearStories() {

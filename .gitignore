@@ -62,6 +62,3 @@ DerivedData/
 ios/build/
 *.app
 *.framework
-
-# apple
-apn_auth_key.p8

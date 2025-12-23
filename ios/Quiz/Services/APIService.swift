@@ -92,7 +92,11 @@ class APIService: APIServiceProtocol {
     }
 
     func buildURL(path: String, queryItems: [URLQueryItem]? = nil) -> Result<URL, APIError> {
-        let fullPath = baseURL.appendingPathComponent(path)
+        let pathComponents = path.split(separator: "/").map(String.init)
+        var fullPath = baseURL
+        for component in pathComponents {
+            fullPath = fullPath.appendingPathComponent(component)
+        }
         guard var components = URLComponents(url: fullPath, resolvingAgainstBaseURL: false) else {
             return .failure(.invalidURL)
         }

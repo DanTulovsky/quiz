@@ -465,7 +465,8 @@ type LinearConfig struct {
 
 // APNSConfig represents Apple Push Notification Service configuration
 type APNSConfig struct {
-	KeyPath    string `json:"key_path" yaml:"key_path"`     // Path to APNS key file (.p8)
+	KeyPath    string `json:"key_path" yaml:"key_path"`     // Path to APNS key file (.p8) - optional if key is provided
+	Key        string `json:"key" yaml:"key"`               // APNS key content (base64 encoded or raw) - optional if key_path is provided
 	KeyID      string `json:"key_id" yaml:"key_id"`         // APNS key ID
 	TeamID     string `json:"team_id" yaml:"team_id"`       // Apple Team ID
 	BundleID   string `json:"bundle_id" yaml:"bundle_id"`   // App bundle ID (com.wetsnow.quiz)

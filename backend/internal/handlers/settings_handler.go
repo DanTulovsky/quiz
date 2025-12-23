@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"quizapp/internal/api"
@@ -601,24 +602,57 @@ func (h *SettingsHandler) SendTestIOSNotification(c *gin.Context) {
 	// Send notification to all device tokens
 	var sentCount int
 	var failedCount int
+	var invalidTokens []string
 	for _, deviceToken := range deviceTokens {
 		if err := h.apnsService.SendNotification(ctx, deviceToken, payload); err != nil {
 			failedCount++
-			h.logger.Error(ctx, "Failed to send test iOS notification to device", err, map[string]interface{}{
-				"user_id":      userID,
-				"device_token": deviceToken[:20] + "...",
-			})
+			errStr := err.Error()
+			// Check if this is an invalid device token error that should be removed
+			// APNS returns "BadDeviceToken" (400) or "Unregistered" (410) for invalid tokens
+			if strings.Contains(errStr, "BadDeviceToken") || strings.Contains(errStr, "Unregistered") {
+				invalidTokens = append(invalidTokens, deviceToken)
+				h.logger.Warn(ctx, "Invalid device token detected, will be removed", map[string]interface{}{
+					"user_id":      userID,
+					"device_token": deviceToken[:20] + "...",
+					"error":        errStr,
+				})
+			} else {
+				h.logger.Error(ctx, "Failed to send test iOS notification to device", err, map[string]interface{}{
+					"user_id":      userID,
+					"device_token": deviceToken[:20] + "...",
+				})
+			}
 		} else {
 			sentCount++
 		}
 	}
 
+	// Remove invalid device tokens
+	for _, token := range invalidTokens {
+		if err := h.userService.RemoveDeviceToken(ctx, userID, token); err != nil {
+			h.logger.Warn(ctx, "Failed to remove invalid device token", map[string]interface{}{
+				"user_id":      userID,
+				"device_token": token[:20] + "...",
+				"error":        err.Error(),
+			})
+		} else {
+			h.logger.Info(ctx, "Removed invalid device token", map[string]interface{}{
+				"user_id":      userID,
+				"device_token": token[:20] + "...",
+			})
+		}
+	}
+
 	if sentCount == 0 {
+		details := "All device tokens failed"
+		if len(invalidTokens) > 0 {
+			details = fmt.Sprintf("All device tokens failed. %d invalid token(s) have been removed. Please re-register your device token from the iOS app.", len(invalidTokens))
+		}
 		HandleAppError(c, contextutils.NewAppError(
-			contextutils.ErrorCodeInternalError,
-			contextutils.SeverityError,
+			contextutils.ErrorCodeInvalidInput,
+			contextutils.SeverityWarn,
 			"Failed to send test iOS notification",
-			"All device tokens failed",
+			details,
 		))
 		return
 	}

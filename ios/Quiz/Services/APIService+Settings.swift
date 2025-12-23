@@ -37,6 +37,14 @@ extension APIService {
         return postVoid(path: "settings/test-email")
     }
 
+    func sendTestIOSNotification(notificationType: String) -> AnyPublisher<SuccessResponse, APIError> {
+        return postJSON(
+            path: "settings/test-ios-notification",
+            body: ["notification_type": notificationType],
+            responseType: SuccessResponse.self
+        )
+    }
+
     func clearStories() -> AnyPublisher<SuccessResponse, APIError> {
         return postVoid(path: "settings/clear-stories")
     }

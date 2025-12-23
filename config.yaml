@@ -242,16 +242,20 @@ email:
 #
 # Apple Push Notification Service settings for iOS push notifications
 # APNS settings are configured via environment variables:
-# - APNS_KEY_PATH: Path to APNS key file (.p8)
+# - APNS_KEY_PATH: Path to APNS key file (.p8) - optional if APNS_KEY is provided
+# - APNS_KEY: APNS key content (base64 encoded or raw PEM) - optional if APNS_KEY_PATH is provided
 # - APNS_KEY_ID: APNS key ID
 # - APNS_TEAM_ID: Apple Team ID
 # - APNS_BUNDLE_ID: App bundle ID (e.g., com.wetsnow.quiz)
 # - APNS_PRODUCTION: Use production APNS (true/false, default: false for sandbox)
 # - APNS_ENABLED: Whether APNS is enabled (true/false)
+#
+# Note: Either APNS_KEY_PATH or APNS_KEY must be provided (APNS_KEY takes precedence)
 
 apns:
   enabled: false
-  key_path: "" # Path to .p8 key file
+  key_path: "" # Path to .p8 key file (optional if key is provided)
+  key: "" # APNS key content - base64 encoded or raw PEM format (optional if key_path is provided)
   key_id: "" # APNS key ID
   team_id: "" # Apple Team ID
   bundle_id: "com.wetsnow.quiz"

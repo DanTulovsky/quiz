@@ -1,5 +1,6 @@
 import SwiftUI
 import Combine
+import UserNotifications
 
 // swiftlint:disable:next type_body_length
 struct SettingsView: View {
@@ -17,8 +18,8 @@ struct SettingsView: View {
     }
 
     // Learning Preferences State
-    @State private var learningLanguage: String = "italian"
-    @State private var currentLevel: String = "A1"
+    @State private var learningLanguage: String = ""
+    @State private var currentLevel: String = ""
     @State private var ttsVoice: String = ""
     @State private var focusOnWeakAreas = true
     @State private var freshQuestionRatio: Float = 0.2
@@ -334,6 +335,50 @@ struct SettingsView: View {
                         .cornerRadius(AppTheme.CornerRadius.button)
                 })
                 .disabled(email.isEmpty)
+
+                Divider().padding(.vertical, 5)
+
+                Toggle(isOn: $dailyReminderIOSNotifyEnabled) {
+                    Label("Daily Reminder iOS Notifications", systemImage: "bell.badge.fill")
+                }
+                .onChange(of: dailyReminderIOSNotifyEnabled) { _, newValue in
+                    updateIOSNotificationPreference(field: "daily_reminder_ios_notify_enabled", value: newValue)
+                }
+                Text("Receive push notifications on your iOS device for daily reminders.").font(.caption)
+                    .foregroundColor(.secondary)
+
+                Button(action: { viewModel.sendTestIOSNotification(notificationType: "daily_reminder") }, label: {
+                    Text("Test Notification")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .foregroundColor(AppTheme.Colors.primaryBlue)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, AppTheme.Spacing.buttonVerticalPadding)
+                        .background(AppTheme.Colors.primaryBlue.opacity(0.1))
+                        .cornerRadius(AppTheme.CornerRadius.button)
+                })
+
+                Divider().padding(.vertical, 5)
+
+                Toggle(isOn: $wordOfDayIOSNotifyEnabled) {
+                    Label("Word of the Day iOS Notifications", systemImage: "bell.badge.fill")
+                }
+                .onChange(of: wordOfDayIOSNotifyEnabled) { _, newValue in
+                    updateIOSNotificationPreference(field: "word_of_day_ios_notify_enabled", value: newValue)
+                }
+                Text("Receive push notifications on your iOS device with your Word of the Day.").font(.caption)
+                    .foregroundColor(.secondary)
+
+                Button(action: { viewModel.sendTestIOSNotification(notificationType: "word_of_day") }, label: {
+                    Text("Test Notification")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .foregroundColor(AppTheme.Colors.primaryBlue)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, AppTheme.Spacing.buttonVerticalPadding)
+                        .background(AppTheme.Colors.primaryBlue.opacity(0.1))
+                        .cornerRadius(AppTheme.CornerRadius.button)
+                })
             }
         }
 
@@ -356,31 +401,6 @@ struct SettingsView: View {
             }
         }
 
-        settingsSection(title: "Daily Reminder iOS Notifications", icon: "bell.badge", id: "daily-reminder-ios") {
-            VStack(alignment: .leading, spacing: 15) {
-                Toggle(isOn: $dailyReminderIOSNotifyEnabled) {
-                    Label("Daily Reminder iOS Notifications", systemImage: "bell.badge.fill")
-                }
-                .onChange(of: dailyReminderIOSNotifyEnabled) { _, newValue in
-                    updateIOSNotificationPreference(field: "daily_reminder_ios_notify_enabled", value: newValue)
-                }
-                Text("Receive push notifications on your iOS device for daily reminders.").font(.caption)
-                    .foregroundColor(.secondary)
-            }
-        }
-
-        settingsSection(title: "Word of the Day iOS Notifications", icon: "bell.badge", id: "wotd-ios") {
-            VStack(alignment: .leading, spacing: 15) {
-                Toggle(isOn: $wordOfDayIOSNotifyEnabled) {
-                    Label("Word of the Day iOS Notifications", systemImage: "bell.badge.fill")
-                }
-                .onChange(of: wordOfDayIOSNotifyEnabled) { _, newValue in
-                    updateIOSNotificationPreference(field: "word_of_day_ios_notify_enabled", value: newValue)
-                }
-                Text("Receive push notifications on your iOS device with your Word of the Day.").font(.caption)
-                    .foregroundColor(.secondary)
-            }
-        }
 
         settingsSection(title: "AI Settings", icon: "cpu", id: "ai") {
             VStack(alignment: .leading, spacing: 20) {
@@ -551,12 +571,11 @@ struct SettingsView: View {
             username = user.username
             email = user.email
             timezone = user.timezone ?? ""
-            learningLanguage = user.preferredLanguage ?? "italian"
-            currentLevel = user.currentLevel ?? "A1"
+            // Don't set language/level/provider/model here - validation handlers will set valid values when data loads
+            // This prevents warnings from Pickers rendering with invalid selections before data is available
             aiEnabled = user.aiEnabled ?? false
             wordOfDayEmailEnabled = user.wordOfDayEmailEnabled ?? false
-            selectedProvider = user.aiProvider ?? ""
-            selectedModel = user.aiModel ?? ""
+            // Validation handlers will set these from user preferences when data loads
         }
         if let prefs = viewModel.learningPrefs {
             ttsVoice = prefs.ttsVoice ?? ""
@@ -585,7 +604,19 @@ struct SettingsView: View {
             currentPrefs.wordOfDayIosNotifyEnabled = value
         }
 
+        // Request notification permissions when user enables a notification toggle
+        if value {
+            UNUserNotificationCenter.current().getNotificationSettings { settings in
+                DispatchQueue.main.async {
+                    if settings.authorizationStatus != .authorized {
+                        NotificationService.shared.requestAuthorization()
+                    }
+                }
+            }
+        }
+
         viewModel.apiService.updateLearningPreferences(prefs: currentPrefs)
+            .receive(on: DispatchQueue.main)
             .sink(
                 receiveCompletion: { (completion: Subscribers.Completion<APIService.APIError>) in
                     switch completion {
@@ -673,17 +704,23 @@ struct SettingsView: View {
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
-                .padding()
+                .padding(.horizontal, 16)
+                .padding(.vertical, 12)
                 .background(Color(.systemBackground))
             })
-            Divider().padding(.horizontal)
-            VStack(alignment: .leading) {
-                content()
+            if isExpanded {
+                Divider().padding(.horizontal)
+                VStack(alignment: .leading) {
+                    content()
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 12)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color(.systemBackground))
+                .transition(.opacity.combined(with: .move(edge: .bottom)))
             }
-            .padding()
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color(.systemBackground))
         }
+        .animation(.easeInOut(duration: 0.2), value: isExpanded)
         .appCard()
     }
 
@@ -785,11 +822,62 @@ struct SettingsView: View {
         }
 
         private func applyChangeModifiers<V: SwiftUI.View>(to view: V) -> some View {
-            view
+            // First group: Language and level validation onChange handlers
+            let viewWithLanguageModifiers = view
+                .onChange(of: viewModel.availableLanguages) { _, languages in
+                    // When languages load, validate that learningLanguage matches an available tag
+                    if !languages.isEmpty {
+                        if learningLanguage.isEmpty {
+                            // If empty, try to get from user preferences or default to first
+                            let preferredLang = authViewModel.user?.preferredLanguage ?? languages.first?.name ?? ""
+                            if !preferredLang.isEmpty {
+                                let lowercasedSelection = preferredLang.lowercased()
+                                if let nameMatch = languages.first(where: { $0.name.lowercased() == lowercasedSelection }) {
+                                    learningLanguage = nameMatch.name
+                                } else if let codeMatch = languages.first(where: { $0.code.lowercased() == lowercasedSelection }) {
+                                    learningLanguage = codeMatch.name
+                                } else if languages.contains(where: { $0.name == preferredLang }) {
+                                    learningLanguage = preferredLang
+                                } else {
+                                    learningLanguage = languages.first?.name ?? ""
+                                }
+                            } else {
+                                learningLanguage = languages.first?.name ?? ""
+                            }
+                        } else {
+                            // Validate existing selection
+                            let lowercasedSelection = learningLanguage.lowercased()
+                            let exactMatch = languages.first { $0.name == learningLanguage }
+                            if exactMatch != nil {
+                                // Exact match found, keep current value - no change needed
+                            } else if let nameMatch = languages.first(where: { $0.name.lowercased() == lowercasedSelection }) {
+                                // Case-insensitive match by name found, use the exact name from API
+                                learningLanguage = nameMatch.name
+                            } else if let codeMatch = languages.first(where: { $0.code.lowercased() == lowercasedSelection }) {
+                                // Case-insensitive match by code found, use the name from API
+                                learningLanguage = codeMatch.name
+                            } else {
+                                // No match found, use first available language
+                                learningLanguage = languages.first?.name ?? ""
+                            }
+                        }
+                    }
+                }
                 .onChange(of: viewModel.availableLevels) { _, levels in
-                    // When levels load, if currentLevel is not in the list, set to first
-                    if !levels.isEmpty && !levels.contains(currentLevel) {
-                        currentLevel = levels.first ?? "A1"
+                    // When levels load, validate that currentLevel matches an available tag
+                    if !levels.isEmpty {
+                        if currentLevel.isEmpty {
+                            // If empty, try to get from user preferences or default to first
+                            let preferredLevel = authViewModel.user?.currentLevel ?? levels.first ?? ""
+                            if !preferredLevel.isEmpty && levels.contains(preferredLevel) {
+                                currentLevel = preferredLevel
+                            } else {
+                                currentLevel = levels.first ?? ""
+                            }
+                        } else if !levels.contains(currentLevel) {
+                            // Current level not in list, use first available level
+                            currentLevel = levels.first ?? ""
+                        }
                     }
                 }
                 .onChange(of: learningLanguage) { _, newValue in
@@ -798,6 +886,51 @@ struct SettingsView: View {
                         viewModel.fetchLevels(language: newValue)
                     }
                 }
+
+            // Second group: AI provider/model validation onChange handlers
+            let viewWithAIModifiers = viewWithLanguageModifiers
+                .onChange(of: viewModel.aiProviders) { _, providers in
+                    // When AI providers load, validate that selectedProvider and selectedModel match available tags
+                    if !providers.isEmpty {
+                        if !selectedProvider.isEmpty {
+                            if let provider = providers.first(where: { $0.code == selectedProvider }) {
+                                // Provider is valid, validate model
+                                if !selectedModel.isEmpty {
+                                    let modelExists = provider.models.contains { $0.code == selectedModel }
+                                    if !modelExists {
+                                        // Model not in provider's model list, clear it
+                                        selectedModel = ""
+                                    }
+                                }
+                            } else {
+                                // Provider not in list, clear both selections
+                                selectedProvider = ""
+                                selectedModel = ""
+                            }
+                        }
+                    }
+                }
+                .onChange(of: selectedProvider) { _, newProvider in
+                    // When provider changes, validate model
+                    if !newProvider.isEmpty {
+                        if let provider = viewModel.aiProviders.first(where: { $0.code == newProvider }) {
+                            // Validate selectedModel is still valid for this provider
+                            if !selectedModel.isEmpty {
+                                let modelExists = provider.models.contains { $0.code == selectedModel }
+                                if !modelExists {
+                                    selectedModel = ""
+                                }
+                            }
+                        } else {
+                            selectedModel = ""
+                        }
+                    } else {
+                        selectedModel = ""
+                    }
+                }
+
+            // Third group: User and learning preferences onChange handlers
+            return viewWithAIModifiers
                 .onChange(of: authViewModel.user) { _, user in
                     if let user = user {
                         username = user.username
@@ -805,14 +938,59 @@ struct SettingsView: View {
                         timezone = user.timezone ?? ""
                         aiEnabled = user.aiEnabled ?? false
                         wordOfDayEmailEnabled = user.wordOfDayEmailEnabled ?? false
-                        selectedProvider = user.aiProvider ?? ""
-                        selectedModel = user.aiModel ?? ""
+                        // Validate provider and model when setting from user
+                        if let provider = user.aiProvider, !provider.isEmpty {
+                            if viewModel.aiProviders.contains(where: { $0.code == provider }) {
+                                selectedProvider = provider
+                                // Validate model
+                                if let model = user.aiModel, !model.isEmpty,
+                                   let providerInfo = viewModel.aiProviders.first(where: { $0.code == provider }),
+                                   providerInfo.models.contains(where: { $0.code == model }) {
+                                    selectedModel = model
+                                } else {
+                                    selectedModel = ""
+                                }
+                            } else {
+                                selectedProvider = ""
+                                selectedModel = ""
+                            }
+                        } else {
+                            selectedProvider = ""
+                            selectedModel = ""
+                        }
                     }
                 }
                 .onChange(of: viewModel.learningPrefs) { _, prefs in
                     if let prefs = prefs {
-                        learningLanguage = authViewModel.user?.preferredLanguage ?? "italian"
-                        currentLevel = authViewModel.user?.currentLevel ?? "A1"
+                        // Validate language before setting
+                        let preferredLang = authViewModel.user?.preferredLanguage ?? ""
+                        if !preferredLang.isEmpty && !viewModel.availableLanguages.isEmpty {
+                            let lowercasedSelection = preferredLang.lowercased()
+                            if let nameMatch = viewModel.availableLanguages.first(where: { $0.name.lowercased() == lowercasedSelection }) {
+                                learningLanguage = nameMatch.name
+                            } else if let codeMatch = viewModel.availableLanguages.first(where: { $0.code.lowercased() == lowercasedSelection }) {
+                                learningLanguage = codeMatch.name
+                            } else if viewModel.availableLanguages.contains(where: { $0.name == preferredLang }) {
+                                learningLanguage = preferredLang
+                            } else {
+                                learningLanguage = viewModel.availableLanguages.first?.name ?? ""
+                            }
+                        } else if !viewModel.availableLanguages.isEmpty && learningLanguage.isEmpty {
+                            // If no preferred language and current is empty, use first available
+                            learningLanguage = viewModel.availableLanguages.first?.name ?? ""
+                        }
+                        // Validate level before setting
+                        let preferredLevel = authViewModel.user?.currentLevel ?? ""
+                        if !preferredLevel.isEmpty && !viewModel.availableLevels.isEmpty {
+                            if viewModel.availableLevels.contains(preferredLevel) {
+                                currentLevel = preferredLevel
+                            } else {
+                                currentLevel = viewModel.availableLevels.first ?? ""
+                            }
+                        } else if !viewModel.availableLevels.isEmpty && currentLevel.isEmpty {
+                            // If no preferred level and current is empty, use first available
+                            currentLevel = viewModel.availableLevels.first ?? ""
+                        }
                         ttsVoice = prefs.ttsVoice ?? ""
                         TTSSynthesizerManager.shared.preferredVoice = ttsVoice
                         focusOnWeakAreas = prefs.focusOnWeakAreas

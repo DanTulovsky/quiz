@@ -38,7 +38,7 @@ protocol APIServiceProtocol {
         TranslationPracticeSessionResponse, APIService.APIError
     >
     func getExistingTranslationSentence(language: String, level: String, direction: String)
-    -> AnyPublisher<TranslationPracticeSentenceResponse, APIService.APIError>
+        -> AnyPublisher<TranslationPracticeSentenceResponse, APIService.APIError>
 
     func getVerbConjugations(language: String) -> AnyPublisher<
         VerbConjugationsData, APIService.APIError
@@ -78,6 +78,9 @@ protocol APIServiceProtocol {
         SuccessResponse, APIService.APIError
     >
     func sendTestEmail() -> AnyPublisher<SuccessResponse, APIService.APIError>
+    func sendTestIOSNotification(notificationType: String) -> AnyPublisher<
+        SuccessResponse, APIService.APIError
+    >
     func clearStories() -> AnyPublisher<SuccessResponse, APIService.APIError>
     func clearAIChats() -> AnyPublisher<SuccessResponse, APIService.APIError>
     func clearTranslationHistory() -> AnyPublisher<SuccessResponse, APIService.APIError>

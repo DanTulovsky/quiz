@@ -65,6 +65,8 @@ final class MockAPIService: APIServiceProtocol, @unchecked Sendable {
     nonisolated(unsafe) private var _getAIProvidersResult: Result<AIProvidersResponse, APIError>?
     nonisolated(unsafe) private var _testAIConnectionResult: Result<SuccessResponse, APIError>?
     nonisolated(unsafe) private var _sendTestEmailResult: Result<SuccessResponse, APIError>?
+    nonisolated(unsafe) private var _sendTestIOSNotificationResult:
+        Result<SuccessResponse, APIError>?
     nonisolated(unsafe) private var _clearStoriesResult: Result<SuccessResponse, APIError>?
     nonisolated(unsafe) private var _clearAIChatsResult: Result<SuccessResponse, APIError>?
     nonisolated(unsafe) private var _clearTranslationHistoryResult:
@@ -226,7 +228,8 @@ final class MockAPIService: APIServiceProtocol, @unchecked Sendable {
             _submitTranslationResult = newValue
         }
     }
-    var getExistingTranslationSentenceResult: Result<TranslationPracticeSentenceResponse, APIError>? {
+    var getExistingTranslationSentenceResult: Result<TranslationPracticeSentenceResponse, APIError>?
+    {
         get {
             lock.lock()
             defer { lock.unlock() }
@@ -490,6 +493,18 @@ final class MockAPIService: APIServiceProtocol, @unchecked Sendable {
             _sendTestEmailResult = newValue
         }
     }
+    var sendTestIOSNotificationResult: Result<SuccessResponse, APIError>? {
+        get {
+            lock.lock()
+            defer { lock.unlock() }
+            return _sendTestIOSNotificationResult
+        }
+        set {
+            lock.lock()
+            defer { lock.unlock() }
+            _sendTestIOSNotificationResult = newValue
+        }
+    }
     var clearStoriesResult: Result<SuccessResponse, APIError>? {
         get {
             lock.lock()
@@ -692,9 +707,10 @@ final class MockAPIService: APIServiceProtocol, @unchecked Sendable {
         sourceLang: String?, targetLang: String?, storyId: Int?,
         query: String?, level: String?
     )
-    -> AnyPublisher<
-        SnippetList, APIError
-    > {
+        -> AnyPublisher<
+            SnippetList, APIError
+        >
+    {
         guard let result = getSnippetsResult else {
             return Fail(error: .invalidResponse).eraseToAnyPublisher()
         }
@@ -716,7 +732,8 @@ final class MockAPIService: APIServiceProtocol, @unchecked Sendable {
     }
 
     func postDailyAnswer(date: String, questionId: Int, userAnswerIndex: Int)
-    -> AnyPublisher<DailyAnswerResponse, APIError> {
+        -> AnyPublisher<DailyAnswerResponse, APIError>
+    {
         if let response = dailyAnswerResponse {
             return Just(response)
                 .setFailureType(to: APIError.self)
@@ -729,7 +746,8 @@ final class MockAPIService: APIServiceProtocol, @unchecked Sendable {
     }
 
     func generateTranslationSentence(request: TranslationPracticeGenerateRequest)
-    -> AnyPublisher<TranslationPracticeSentenceResponse, APIError> {
+        -> AnyPublisher<TranslationPracticeSentenceResponse, APIError>
+    {
         guard let result = generateTranslationSentenceResult else {
             return Fail(error: .invalidResponse).eraseToAnyPublisher()
         }
@@ -746,7 +764,8 @@ final class MockAPIService: APIServiceProtocol, @unchecked Sendable {
     }
 
     func getExistingTranslationSentence(language: String, level: String, direction: String)
-    -> AnyPublisher<TranslationPracticeSentenceResponse, APIError> {
+        -> AnyPublisher<TranslationPracticeSentenceResponse, APIError>
+    {
         guard let result = getExistingTranslationSentenceResult else {
             return Fail(error: .invalidResponse).eraseToAnyPublisher()
         }
@@ -801,7 +820,8 @@ final class MockAPIService: APIServiceProtocol, @unchecked Sendable {
         return result.publisher.eraseToAnyPublisher()
     }
 
-    func handleGoogleCallback(code: String, state: String?) -> AnyPublisher<LoginResponse, APIError> {
+    func handleGoogleCallback(code: String, state: String?) -> AnyPublisher<LoginResponse, APIError>
+    {
         guard let result = handleGoogleCallbackResult else {
             return Fail(error: .invalidResponse).eraseToAnyPublisher()
         }
@@ -913,6 +933,15 @@ final class MockAPIService: APIServiceProtocol, @unchecked Sendable {
 
     func sendTestEmail() -> AnyPublisher<SuccessResponse, APIError> {
         guard let result = sendTestEmailResult else {
+            return Fail(error: .invalidResponse).eraseToAnyPublisher()
+        }
+        return result.publisher.eraseToAnyPublisher()
+    }
+
+    func sendTestIOSNotification(notificationType: String) -> AnyPublisher<
+        SuccessResponse, APIError
+    > {
+        guard let result = sendTestIOSNotificationResult else {
             return Fail(error: .invalidResponse).eraseToAnyPublisher()
         }
         return result.publisher.eraseToAnyPublisher()

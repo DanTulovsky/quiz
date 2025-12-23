@@ -21,6 +21,14 @@ class NotificationService: NSObject, ObservableObject {
         self.apiService = apiService
     }
 
+    func checkAuthorizationStatus() {
+        UNUserNotificationCenter.current().getNotificationSettings { [weak self] settings in
+            DispatchQueue.main.async {
+                self?.isAuthorized = settings.authorizationStatus == .authorized
+            }
+        }
+    }
+
     func requestAuthorization() {
         UNUserNotificationCenter.current().requestAuthorization(
             options: [.alert, .sound, .badge]
