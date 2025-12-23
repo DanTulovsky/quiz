@@ -358,6 +358,13 @@ struct SettingsView: View {
                         .cornerRadius(AppTheme.CornerRadius.button)
                 })
 
+                if let testResult = viewModel.testNotificationResults["daily_reminder"] {
+                    Text(testResult)
+                        .font(.caption)
+                        .foregroundColor(testResult.contains("Success") ? AppTheme.Colors.successGreen : AppTheme.Colors.errorRed)
+                        .padding(.top, 4)
+                }
+
                 Divider().padding(.vertical, 5)
 
                 Toggle(isOn: $wordOfDayIOSNotifyEnabled) {
@@ -379,6 +386,13 @@ struct SettingsView: View {
                         .background(AppTheme.Colors.primaryBlue.opacity(0.1))
                         .cornerRadius(AppTheme.CornerRadius.button)
                 })
+
+                if let testResult = viewModel.testNotificationResults["word_of_day"] {
+                    Text(testResult)
+                        .font(.caption)
+                        .foregroundColor(testResult.contains("Success") ? AppTheme.Colors.successGreen : AppTheme.Colors.errorRed)
+                        .padding(.top, 4)
+                }
             }
         }
 

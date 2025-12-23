@@ -427,6 +427,8 @@ func TestWorker_CheckForWordOfTheDayEmails_SkipsWhenAlreadySent(t *testing.T) {
 		On("HasSentWordOfTheDayEmail", mock.Anything, user.ID, mock.AnythingOfType("time.Time")).
 		Return(true, nil)
 
+	w.apnsService.(*mockAPNSService).On("IsEnabled").Return(false)
+
 	err := w.checkForWordOfTheDayEmails(context.Background())
 	assert.NoError(t, err)
 
@@ -466,6 +468,8 @@ func TestWorker_CheckForWordOfTheDayEmails_SendsWhenNotSent(t *testing.T) {
 	w.emailService.(*mockEmailService).
 		On("SendWordOfTheDayEmail", mock.Anything, user.ID, mock.AnythingOfType("time.Time"), mock.AnythingOfType("*models.WordOfTheDayDisplay")).
 		Return(nil)
+
+	w.apnsService.(*mockAPNSService).On("IsEnabled").Return(false)
 
 	err := w.checkForWordOfTheDayEmails(context.Background())
 	assert.NoError(t, err)
@@ -2662,6 +2666,9 @@ func TestWorker_CheckForDailyReminders_Integration(t *testing.T) {
 	// Mock learning service to update timestamp
 	w.learningService.(*mockLearningService).On("UpdateLastDailyReminderSent", mock.Anything, 1).Return(nil)
 
+	// Mock APNS service
+	w.apnsService.(*mockAPNSService).On("IsEnabled").Return(false)
+
 	// Test the daily reminder check
 	ctx := context.Background()
 	err := w.checkForDailyReminders(ctx)
@@ -2697,6 +2704,11 @@ func TestWorker_CheckForDailyReminders_WrongHour(t *testing.T) {
 	// We can't easily mock time.Now() in unit tests, so we'll test the logic
 	// by ensuring no users are processed when it's not the right hour
 
+	// Mock APNS service (shouldn't be called, but mock it to avoid panics)
+	apnsService := &mockAPNSService{}
+	apnsService.On("IsEnabled").Return(false)
+	w.apnsService = apnsService
+
 	// Test the daily reminder check
 	ctx := context.Background()
 	err := w.checkForDailyReminders(ctx)
@@ -2721,7 +2733,9 @@ func TestWorker_CheckForDailyReminders_Disabled(t *testing.T) {
 	// Disable daily reminders
 	cfg.Email.DailyReminder.Enabled = false
 
-	w := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, &mockWordOfTheDayService{}, &mockStoryService{}, emailService, &mockAPNSService{}, &mockGenerationHintService{}, services.NewInMemoryTranslationCacheRepository(), "test-instance", cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
+	apnsService := &mockAPNSService{}
+	apnsService.On("IsEnabled").Return(false)
+	w := NewWorker(userService, questionService, aiService, learningService, workerService, dailyQuestionService, &mockWordOfTheDayService{}, &mockStoryService{}, emailService, apnsService, &mockGenerationHintService{}, services.NewInMemoryTranslationCacheRepository(), "test-instance", cfg, observability.NewLogger(&config.OpenTelemetryConfig{EnableLogging: false}))
 
 	// Test the daily reminder check
 	ctx := context.Background()
@@ -3158,6 +3172,11 @@ func TestDailyQuestionAssignmentIndependent(t *testing.T) {
 	worker.learningService = mockLearning
 	worker.emailService = mockEmailSvc
 	worker.timeNow = func() time.Time { return fixedTime }
+
+	// Mock APNS service
+	mockAPNS := &mockAPNSService{}
+	mockAPNS.On("IsEnabled").Return(false)
+	worker.apnsService = mockAPNS
 
 	// Execute both methods (simulating the worker run cycle)
 	ctx := context.Background()

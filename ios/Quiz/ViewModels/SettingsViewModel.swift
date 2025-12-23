@@ -27,6 +27,7 @@ class SettingsViewModel: BaseViewModel, LanguageCaching, ListFetchingWithName, L
     var languageCacheByName: [String: LanguageInfo] = [:]
 
     @Published var testResult: String?
+    @Published var testNotificationResults: [String: String] = [:]
 
     @Published var user: User?
     @Published var learningPrefs: UserLearningPreferences?
@@ -116,10 +117,24 @@ class SettingsViewModel: BaseViewModel, LanguageCaching, ListFetchingWithName, L
     }
 
     func sendTestIOSNotification(notificationType: String) {
-        executeVoidWithSuccessState(
-            publisher: apiService.sendTestIOSNotification(notificationType: notificationType)
-        )
-        .store(in: &cancellables)
+        testNotificationResults[notificationType] = nil
+        apiService.sendTestIOSNotification(notificationType: notificationType)
+            .handleErrorOnly(on: self)
+            .sink(
+                receiveCompletion: { [weak self] completion in
+                    if case .failure(let error) = completion {
+                        self?.testNotificationResults[notificationType] = "Error: \(error.localizedDescription)"
+                    }
+                },
+                receiveValue: { [weak self] resp in
+                    if let message = resp.message {
+                        self?.testNotificationResults[notificationType] = "Success: \(message)"
+                    } else {
+                        self?.testNotificationResults[notificationType] = "Success: Test notification sent"
+                    }
+                }
+            )
+            .store(in: &cancellables)
     }
 
     func clearStories() {
