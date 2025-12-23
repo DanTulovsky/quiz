@@ -22,7 +22,9 @@ class NotificationService: NSObject, ObservableObject {
     }
 
     func requestAuthorization() {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { [weak self] granted, error in
+        UNUserNotificationCenter.current().requestAuthorization(
+            options: [.alert, .sound, .badge]
+        ) { [weak self] granted, error in
             DispatchQueue.main.async {
                 self?.isAuthorized = granted
                 if granted {
@@ -104,4 +106,3 @@ extension NotificationService: UNUserNotificationCenterDelegate {
         )
     }
 }
-

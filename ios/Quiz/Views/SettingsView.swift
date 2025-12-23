@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 // swiftlint:disable:next type_body_length
 struct SettingsView: View {
@@ -79,6 +80,8 @@ struct SettingsView: View {
             weakAreaBoost: $weakAreaBoost,
             reviewIntervalDays: $reviewIntervalDays,
             dailyGoal: $dailyGoal,
+            wordOfDayIOSNotifyEnabled: $wordOfDayIOSNotifyEnabled,
+            dailyReminderIOSNotifyEnabled: $dailyReminderIOSNotifyEnabled,
             loadInitialData: loadInitialData
         )
     }
@@ -584,9 +587,12 @@ struct SettingsView: View {
 
         viewModel.apiService.updateLearningPreferences(prefs: currentPrefs)
             .sink(
-                receiveCompletion: { completion in
-                    if case .failure(let error) = completion {
+                receiveCompletion: { (completion: Subscribers.Completion<APIService.APIError>) in
+                    switch completion {
+                    case .failure(let error):
                         print("❌ Failed to update iOS notification preference: \(error.localizedDescription)")
+                    case .finished:
+                        break
                     }
                 },
                 receiveValue: { [weak viewModel] updatedPrefs in
@@ -729,6 +735,8 @@ struct SettingsView: View {
         @Binding var weakAreaBoost: Float
         @Binding var reviewIntervalDays: Int
         @Binding var dailyGoal: Int
+        @Binding var wordOfDayIOSNotifyEnabled: Bool
+        @Binding var dailyReminderIOSNotifyEnabled: Bool
         let loadInitialData: () -> Void
 
         func body(content: Content) -> some View {
